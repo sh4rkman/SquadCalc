@@ -21,7 +21,7 @@ h4,
 h5,
 h6,
 label {
-    color: #34495e;
+    color: #ffffff;
 }
 
 .pure-img-responsive {
@@ -46,8 +46,6 @@ label {
     text-align: center;
 }
 
-
-
 /*
  * -- PURE FORM STYLES --
  * Style the form inputs and labels
@@ -64,6 +62,23 @@ label {
     font-size: 100%;
     width: 100%;
     margin-bottom: 1em;
+}
+
+input { 
+    border: 0;
+    border-bottom: 2px solid rgb(192, 193, 194);
+    width: 100%;
+    font-size: 30px;
+    line-height: 35px;
+    height: 70px;
+    text-align: center;
+    padding: 10px;
+    background: transparent;
+    color: #ffffff;
+}
+
+input:focus{
+    outline: none;
 }
 
 /*

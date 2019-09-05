@@ -273,22 +273,6 @@ export function getDist(a, b) {
   return Math.sqrt(dLat * dLat + dLng * dLng);
 }
 
-/**
- * Calculates the bearing required to see point B from point A.
- *
- * @param {LatLng} a - base point A
- * @param {LatLng} b - target point B
- * @returns {number} - bearing required to see B from A
- */
-export function getBearing(a, b) {
-  // oh no, vector maths!
-  let bearing = Math.atan2(b.lng - a.lng, b.lat - a.lat) * 180 / Math.PI;
-
-  // point it north and do some rounding
-  bearing = (180 - bearing) % 360;
-
-  return bearing;
-}
 
 /**
  * Calculates mortar settings for a mortar to hit a target.

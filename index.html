@@ -23,7 +23,9 @@
         <!--<![endif]-->
 </head>
 
-<body>
+<body>        
+    
+    <script type="text/javascript" src="./js/main.js"></script>
 
     <div class="header">
         <div class="home-menu pure-menu pure-menu-horizontal pure-menu-fixed">
@@ -38,26 +40,27 @@
 
     <div class="splash-container">
         <div class="splash">
-            <h1 class="splash-head">Big Bold Text</h1>
-            <p class="splash-subhead">
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-            </p>
-
+            <h1 class="splash-head">
+                <script>
+                    var a = shoot("A0155", "C0355");
+                    document.write("B: "+ a.bearing +" - "+ "E: " + a.elevation);
+                </script>
+            </h1>
 
             <div class="pure-g">
                 <div class="pure-u-11-24">
-                    <label for="first-name">MORTAR</label>
-                    <input id="first-name" class="pure-u-23-24" type="text">
+                    <img src="./img/common/mortar-xxl.png" alt="mortar" height="42" width="42">
+                    <input id="mortar-location" class="pure-u-23-24" type="text" placeholder="Mortar location">
                 </div>
 
-                <div class="pure-u-2-24">
+                <div class="pure-u-1-24">
 
                 </div>
 
     
                 <div class="pure-u-11-24">
-                    <label for="last-name">TARGET</label>
-                    <input id="last-name" class="pure-u-23-24" type="text">
+                    <img src="./img/common/target-audience-xxl.png" alt="target" height="42" width="42">
+                    <input id="last-name" class="pure-u-23-24" type="text" placeholder="Target location">
                 </div>      
             </div>
 
@@ -71,7 +74,7 @@
 
         <div class="ribbon l-box-lrg pure-g">
             <div class="l-box-lrg is-center pure-u-1 pure-u-md-1-2 pure-u-lg-2-5">
-                <img width="300" alt="File Icons" class="pure-img-responsive" src="img/common/file-icons.png">
+                
             </div>
             <div class="pure-u-1 pure-u-md-1-2 pure-u-lg-3-5">
 
@@ -91,7 +94,6 @@
         </div>
 
     </div>
-
-    <script src="./js/utils.js"></script>
+   
 </body>
 </html>
