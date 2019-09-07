@@ -97,9 +97,12 @@ function formatKeyPad(text = "") {
  function getBearing(a, b) {
   // oh no, vector maths!
   let bearing = Math.atan2(b.lng - a.lng, b.lat - a.lat) * 180 / Math.PI;
-  // point it north
-  //bearing = (180 - bearing) % 360;
+
+  // Point it north
   bearing = bearing+90;
+
+  //todo: in some case negative degrees occures
+  //bearing = (180 - bearing) % 360
 
   return bearing;
 }
@@ -112,7 +115,6 @@ function formatKeyPad(text = "") {
 function radToMil(rad) {
   return degToMil(radToDeg(rad));
 }
-
 
 /**
  * Converts degrees into radians
@@ -181,20 +183,28 @@ function getElevation(x, y = 0, v = 109.890938, g = 9.8) {
  * @param {string} b - keypad string where target is
  * @returns {target} elevation + bearing
  */
-function shoot(a, b) {
+function shoot() {
   
-  a = getPos(a);
-  b = getPos(b);
+  a = getPos(document.getElementById('mortar-location').value);
+  b = getPos(document.getElementById('target-location').value);
 
-  var bearing = getBearing(a, b);
   var distance = getDist(a, b);
-  var elevation = getElevation(distance, 0)
+  var elevation = getElevation(distance, 0);
+  var bearing = getBearing(a, b);
 
-  var settings = {
-    bearing: bearing.toFixed(1),
-    elevation: elevation.toFixed(1),
-    distance: distance.toFixed(1)
-  };
+  // If Target too far, display it and exit function
+  if(isNaN(elevation)){
+    console.log("Target is too far : " + distance.toFixed(0)+"m !");
+    document.getElementById('settings').classList.add("toofar");
+    document.getElementById('bearing').innerHTML = bearing.toFixed(1) + "°";
+    document.getElementById('elevation').innerHTML = "∞";
+    return 1
+  }
+  else {
+    document.getElementById('settings').classList.remove("toofar");
+    document.getElementById('bearing').innerHTML = bearing.toFixed(1) + "°";
+    document.getElementById('elevation').innerHTML = elevation.toFixed(0);
+  }
+  
 
-  return settings;
 }
