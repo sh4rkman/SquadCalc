@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="A layout example that shows off a responsive product landing page.">    <title>sharkman's mortars v0.2 </title>    
     <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.1/build/pure-min.css" integrity="sha384-" crossorigin="anonymous">
-    
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
     <!--[if lte IE 8]>
         <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.1/build/grids-responsive-old-ie-min.css">
     <![endif]-->
@@ -43,41 +43,42 @@
             
             <div id="settings" class="splash-head">
                     <div class="pure-g">
-                            <div id="bearing" class="pure-u-11-24">
-                                123°
-                            </div>
-            
-                            <div class="pure-u-1-24">
-                                -
-                            </div>
-            
-                
-                            <div id="elevation" class="pure-u-11-24">
-                                1234
-                            </div>      
+                        <div id="bearing" class="pure-u-11-24">
+                            123.4°
                         </div>
+        
+                        <div class="pure-u-1-24">
+                            -
+                        </div>
+        
+            
+                        <div id="elevation" class="pure-u-11-24">
+                            1234
+                        </div>      
+                    </div>
 
             </div>
 
 
-            <div class="pure-g">
-                <div class="pure-u-11-24">
+            <div class="pure-g coord">
+
+                <div class="pure-u-3-24"></div>
+                
+                <div class="pure-u-8-24">
                     <img src="./img/common/mortar.png" alt="mortar" height="42" width="42">
-                    <input id="mortar-location" class="pure-u-23-24" type="text" placeholder="A0157" onkeydown="shoot()">
+                    <input id="mortar-location" class="pure-u-23-24" spellcheck="false" type="text" placeholder="A157" onkeydown="shoot()">
                 </div>
 
-                <div class="pure-u-1-24">
-
-                </div>
+                <div class="pure-u-2-24"></div>
 
     
-                <div class="pure-u-11-24">
+                <div id="target" class="pure-u-8-24">
                     <img src="./img/common/target.png" alt="target" height="42" width="42">
-                    <input id="target-location" class="pure-u-23-24" type="text" placeholder="C0327" onkeydown="shoot()">
-                </div>      
+                    <input id="target-location" class="pure-u-23-24" spellcheck="false" type="text" placeholder="C327" onkeydown="shoot()">
+                </div>
+
+                <div class="pure-u-2-24"></div>
             </div>
-
-
 
         </div>
     </div>

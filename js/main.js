@@ -1,3 +1,6 @@
+window.onload = function() {
+  document.getElementById('mortar-location').focus();
+}
 
 /**
  * Returns the latlng coordinates based on the given keypad string.
@@ -75,15 +78,17 @@ function formatKeyPad(text = "") {
       .join("");
     const textParts = [];
   
-    textParts.push(textND.slice(0, 3));
+    textParts.push(textND.slice(0, 2));
   
     // iteration through sub-keypads
-    let i = 3;
+    let i = 2;
     while (i < textND.length) {
       textParts.push(textND.slice(i, i + 1));
       i += 1;
     }
-  
+
+
+    //alert(textParts.join("-"));
     return textParts.join("-");
   }
 
@@ -185,25 +190,35 @@ function getElevation(x, y = 0, v = 109.890938, g = 9.8) {
  */
 function shoot() {
   
-  a = getPos(document.getElementById('mortar-location').value);
-  b = getPos(document.getElementById('target-location').value);
+  a = document.getElementById('mortar-location').value;
+  b = document.getElementById('target-location').value;
 
-  var distance = getDist(a, b);
-  var elevation = getElevation(distance, 0);
-  var bearing = getBearing(a, b);
-
-  // If Target too far, display it and exit function
-  if(isNaN(elevation)){
-    console.log("Target is too far : " + distance.toFixed(0)+"m !");
-    document.getElementById('settings').classList.add("toofar");
-    document.getElementById('bearing').innerHTML = bearing.toFixed(1) + "°";
-    document.getElementById('elevation').innerHTML = "∞";
-    return 1
+  if (a.length < 3 || b.length < 3) {
+     console.log('invalid keypad string');
+     return 1
   }
-  else {
-    document.getElementById('settings').classList.remove("toofar");
-    document.getElementById('bearing').innerHTML = bearing.toFixed(1) + "°";
-    document.getElementById('elevation').innerHTML = elevation.toFixed(0);
+  else{
+    a = getPos(a);
+    b = getPos(b);
+
+    var distance = getDist(a, b);
+    var elevation = getElevation(distance, 0);
+    var bearing = getBearing(a, b);
+
+    // If Target too far, display it and exit function
+    if(isNaN(elevation)){
+      console.log("Target is too far : " + distance.toFixed(0)+"m !");
+      document.getElementById('settings').classList.add("toofar");
+      document.getElementById('bearing').innerHTML = bearing.toFixed(1) + "°";
+      document.getElementById('elevation').innerHTML = "toofar!";
+      return 1
+    }
+    else {
+      document.getElementById('settings').classList.remove("toofar");
+      document.getElementById('bearing').innerHTML = bearing.toFixed(1) + "°";
+      document.getElementById('elevation').innerHTML = elevation.toFixed(0);
+    }
+
   }
   
 

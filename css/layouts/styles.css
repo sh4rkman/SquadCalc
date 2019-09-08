@@ -14,6 +14,11 @@ body {
     font-size: 13px;
 }
 
+html, button, input, select, textarea,
+    .pure-g [class *= "pure-u"] {
+        font-family: 'Montserrat', Times, "Times New Roman", serif;
+        letter-spacing: 0.2em;
+    }
 h1,
 h2,
 h3,
@@ -66,15 +71,16 @@ label {
 
 input { 
     border: 0;
-    border-bottom: 2px solid rgb(192, 193, 194);
+    border-bottom: 3px solid white;
     width: 100%;
-    font-size: 30px;
-    line-height: 35px;
-    height: 70px;
+    font-size: 1.8em;
+    line-height: 2.188em;
+    height: 60px;
     text-align: center;
-    padding: 10px;
+    padding: 0;
     background: transparent;
     color: #ffffff;
+    font-weight: bold
 }
 
 input:focus{
@@ -160,33 +166,34 @@ a.pure-button-primary {
 
 .splash {
     /* absolute center .splash within .splash-container */
-    width: 80%;
-    height: 50%;
-    margin: auto;
+    width: 100%;
+    height: 100%;
+    margin: 7% auto;
     position: absolute;
     top: 0; left: 0; bottom: 0; right: 0;
     text-align: center;
-    /*text-transform: uppercase;*/
+    width: 90%;
 }
 
 
 /* This is the main heading that appears on the blue section */
 .splash-head {
     font-size: 20px;
-    font-weight: bold;
     color: white;
-    border: 3px solid white;
+    border: 5px solid white;
     padding: 1em 0.6em;
-    margin: 1.6em;
-    font-weight: 100;
+    margin: 1.6em auto;
     border-radius: 5px;
     line-height: 1em;
+    font-weight: bold;
+    width: 100%;
 }
 
 .toofar {
-    border: 3px solid red;
+    border: 5px solid red;
     color: red;
 }
+
 
 /* This is the subheading that appears on the blue section */
 .splash-subhead {
