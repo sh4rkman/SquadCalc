@@ -220,7 +220,7 @@ function shoot() {
       return 1
     }
     else {
-      console.log($("#mortar-location").val() + " -> " + $("#target-location").val() + " = " + bearing.toFixed(1) + "° - " + elevation.toFixed(0));
+      console.log($("#mortar-location").val().toUpperCase() + "->" + $("#target-location").val().toUpperCase() + " = " + bearing.toFixed(1) + "° - " + elevation.toFixed(0));
       $("#settings").removeClass("toofar");
       $("#bearing").html(bearing.toFixed(1) + "°");
       $("#elevation").html(elevation.toFixed(0) + "∡");

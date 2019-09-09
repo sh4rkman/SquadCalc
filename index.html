@@ -32,9 +32,8 @@
 
 <body>        
     
-    
 
-    <div class="header">
+    <div class="header unselectable">
         <div class="home-menu pure-menu pure-menu-horizontal pure-menu-fixed">
             <a class="pure-menu-heading" tabIndex=-1 href="">MSMC</a>
             <span id="version" class="pure-menu-subheading" tabIndex=-1 href=""></span>
@@ -74,7 +73,7 @@
                 <div class="pure-u-3-24"><span tabindex="1" onFocus="document.querySelector('.autofocus11').focus()"></span></div>
                 
                 <div class="pure-u-8-24">
-                    <img src="./img/common/mortar.png" alt="mortar" height="42" width="42">
+                    <img class="unselectable" src="./img/common/mortar.png" alt="mortar" height="42" width="42">
                     <input id="mortar-location" class="pure-u-23-24 autofocus1" spellcheck="false" maxlength="6" 
                         type="text" placeholder="A157" tabindex="2"
                         oninput="shoot()" onkeypress="filterInput(this)" autofocus>
@@ -84,7 +83,7 @@
 
     
                 <div id="target" class="pure-u-8-24">
-                    <img src="./img/common/target.png" alt="target" height="42" width="42">
+                    <img class="unselectable" src="./img/common/target.png" alt="target" height="42" width="42">
                     <input id="target-location" class="pure-u-23-24 autofocus11" spellcheck="false" maxlength="6"
                          type="text" placeholder="C327" tabindex="3"
                          oninput="shoot()" onkeypress="filterInput(this)"">
@@ -98,7 +97,7 @@
 
 
 
-        <div class="footer l-box is-center">
+        <div class="footer l-box is-center unselectable">
             Minimalist Squad Mortar Calculator by sharkman
         </div>
 
