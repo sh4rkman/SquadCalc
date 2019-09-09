@@ -77,6 +77,7 @@ input {
     line-height: 2.188em;
     height: 60px;
     text-align: center;
+    text-transform: uppercase;
     padding: 0;
     background: transparent;
     color: #ffffff;
@@ -128,8 +129,16 @@ a.pure-button-primary {
 
 .home-menu .pure-menu-heading {
     color: white;
-    font-weight: 400;
-    font-size: 120%;
+    font-size: 150%;
+    margin: auto;
+    padding-right: 0;
+    font-weight: bold;
+}
+
+.pure-menu-subheading{
+    margin: auto;
+    letter-spacing: 0.1em;
+    margin-bottom: 0;
 }
 
 .home-menu .pure-menu-selected a {

@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="A layout example that shows off a responsive product landing page.">    <title>sharkman's mortars v0.2 </title>    
+    <meta name="description" content="Minimalist Squad Mortar Calculator v1.0">    <title>Minimalist Squad Mortar Calculator v1.0 </title>    
     <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.1/build/pure-min.css" integrity="sha384-" crossorigin="anonymous">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
     <!--[if lte IE 8]>
@@ -15,12 +15,9 @@
     
     <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css">
     
-        <!--[if lte IE 8]>
-            <link rel="stylesheet" href="css/layouts/styles-old-ie.css">
-        <![endif]-->
-        <!--[if gt IE 8]><!-->
-            <link rel="stylesheet" href="css/layouts/styles.css ">
-        <!--<![endif]-->
+    <!--[if gt IE 8]><!-->
+        <link rel="stylesheet" href="css/layouts/styles.css ">
+    <!--<![endif]-->
 </head>
 
 <body>        
@@ -29,12 +26,14 @@
 
     <div class="header">
         <div class="home-menu pure-menu pure-menu-horizontal pure-menu-fixed">
-            <a class="pure-menu-heading" href="">MSMC</a>
-
-            <ul class="pure-menu-list">
-                <li class="pure-menu-item"><a href="#" class="pure-menu-link">Home</a></li>
-                <li class="pure-menu-item"><a href="#" class="pure-menu-link">Tour</a></li>
-            </ul>
+            <a class="pure-menu-heading" tabIndex=-1 href="">MSMC</a>
+            <span class="pure-menu-subheading" tabIndex=-1 href="">v1.0</span>
+            <!--
+                 <ul class="pure-menu-list">
+                    <li class="pure-menu-item"><a href="#" class="pure-menu-link">Home</a></li>
+                    <li class="pure-menu-item"><a href="#" class="pure-menu-link">Tour</a></li>
+                </ul>
+            -->
         </div>
     </div>
 
@@ -44,7 +43,7 @@
             <div id="settings" class="splash-head">
                     <div class="pure-g">
                         <div id="bearing" class="pure-u-11-24">
-                            123.4°
+                            xxx°
                         </div>
         
                         <div class="pure-u-1-24">
@@ -53,7 +52,7 @@
         
             
                         <div id="elevation" class="pure-u-11-24">
-                            1234
+                            xxxx∡
                         </div>      
                     </div>
 
@@ -62,11 +61,13 @@
 
             <div class="pure-g coord">
 
-                <div class="pure-u-3-24"></div>
+                <div class="pure-u-3-24"><span tabindex="1" onFocus="document.querySelector('.autofocus11').focus()"></span></div>
                 
                 <div class="pure-u-8-24">
                     <img src="./img/common/mortar.png" alt="mortar" height="42" width="42">
-                    <input id="mortar-location" class="pure-u-23-24" spellcheck="false" type="text" placeholder="A157" onkeydown="shoot()">
+                    <input id="mortar-location" class="pure-u-23-24 autofocus1" spellcheck="false" maxlength="6" 
+                        type="text" placeholder="A157" tabindex="2"
+                        oninput="shoot()" onkeypress="filterInput(this)" autofocus>
                 </div>
 
                 <div class="pure-u-2-24"></div>
@@ -74,10 +75,12 @@
     
                 <div id="target" class="pure-u-8-24">
                     <img src="./img/common/target.png" alt="target" height="42" width="42">
-                    <input id="target-location" class="pure-u-23-24" spellcheck="false" type="text" placeholder="C327" onkeydown="shoot()">
+                    <input id="target-location" class="pure-u-23-24 autofocus11" spellcheck="false" maxlength="6"
+                         type="text" placeholder="C327" tabindex="3"
+                         oninput="shoot()" onkeypress="filterInput(this)"">
                 </div>
 
-                <div class="pure-u-2-24"></div>
+                <div class="pure-u-2-24"><span tabindex="4" onFocus="document.querySelector('.autofocus1').focus()"></span></div>
             </div>
 
         </div>
@@ -86,7 +89,7 @@
 
 
         <div class="footer l-box is-center">
-            MSMC - Minimalist Squad Mortar Calculator by sharkman.
+            Minimalist Squad Mortar Calculator by sharkman
         </div>
 
     </div>

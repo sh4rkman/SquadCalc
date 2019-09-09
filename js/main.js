@@ -1,6 +1,3 @@
-window.onload = function() {
-  document.getElementById('mortar-location').focus();
-}
 
 /**
  * Returns the latlng coordinates based on the given keypad string.
@@ -12,7 +9,7 @@ window.onload = function() {
 function getPos(kp) {
     const fkp = formatKeyPad(kp);
     if (!fkp || fkp.length < 2) {
-      throw new Error(`invalid keypad string: ${fkp}`);
+      console.log(`invalid keypad string: ${fkp}`);
     }
   
     const parts = fkp.split("-");
@@ -33,7 +30,7 @@ function getPos(kp) {
         // opposite of calculations in getKP()
         const sub = Number(parts[i]);
         if (Number.isNaN(sub)) {
-          throw new Error(`Invalid keypad string: ${fkp}`);
+          console.log(`invalid keypad string: ${fkp}`);
         }
         const subX = (sub - 1) % 3;
         const subY = 2 - (Math.ceil(sub / 3) - 1);
@@ -106,8 +103,8 @@ function formatKeyPad(text = "") {
   // Point it north
   bearing = bearing+90;
 
-  //todo: in some case negative degrees occures
-  //bearing = (180 - bearing) % 360
+  // Avoid Negative Angle by adding a whole rotation
+  if(bearing<0) bearing += 360;
 
   return bearing;
 }
@@ -194,8 +191,9 @@ function shoot() {
   b = document.getElementById('target-location').value;
 
   if (a.length < 3 || b.length < 3) {
-     console.log('invalid keypad string');
-     return 1
+    // If keypads are imprecises, do nothing 
+    console.log('keypad too short');
+    return 1
   }
   else{
     a = getPos(a);
@@ -216,10 +214,49 @@ function shoot() {
     else {
       document.getElementById('settings').classList.remove("toofar");
       document.getElementById('bearing').innerHTML = bearing.toFixed(1) + "°";
-      document.getElementById('elevation').innerHTML = elevation.toFixed(0);
+      document.getElementById('elevation').innerHTML = elevation.toFixed(0) + "∡";
     }
 
   }
-  
 
 }
+
+
+/**
+ * Filter invalid key pressed by the user 
+ *
+ * @param {string} a - html input object from where the event is triggered
+ * @param {string} e - keypress event
+ * @returns {event} - empty event if we don't want the user input
+ */
+function filterInput(a, e) {
+  var chrTyped, chrCode=0, evt=e?e:event;
+  if (evt.charCode!=null)     chrCode = evt.charCode;
+  else if (evt.which!=null)   chrCode = evt.which;
+  else if (evt.keyCode!=null) chrCode = evt.keyCode;
+ 
+  if (chrCode==0) chrTyped = 'SPECIAL KEY';
+  else chrTyped = String.fromCharCode(chrCode);
+ 
+  // If there is already a letter in the input.value, prevent the keypress
+  if (chrTyped.match(/[A-z]/)){
+    if(a.value[0] != undefined){
+      if(a.value[0].match(/[A-z]/)){
+        console.log('there is already a letter');
+        evt.returnValue=false;
+        return false;
+      }
+      return true;
+    } 
+  } 
+
+  //Letters, Digits, special keys & backspace [\b] work as usual:
+  if (chrTyped.match(/\d|[\b]|SPECIAL|[A-z]/)) return true;
+  if (evt.altKey || evt.ctrlKey || chrCode<28) return true;
+ 
+  //Any other input Prevent the default response:
+  if (evt.preventDefault) evt.preventDefault();
+  evt.returnValue=false;
+  return false;
+ }
+ 
