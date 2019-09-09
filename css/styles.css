@@ -81,7 +81,8 @@ input {
     padding: 0;
     background: transparent;
     color: #ffffff;
-    font-weight: bold
+    font-weight: bold;
+    width: 230px;
 }
 
 input:focus{
@@ -129,7 +130,7 @@ a.pure-button-primary {
 
 .home-menu .pure-menu-heading {
     color: white;
-    font-size: 150%;
+    font-size: 250%;
     margin: auto;
     padding-right: 0;
     font-weight: bold;
@@ -314,5 +315,6 @@ a.pure-button-primary {
     /* We increase the header font size even more */
     .splash-head {
         font-size: 300%;
+        max-width: 1000px;
     }
 }

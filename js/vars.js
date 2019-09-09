@@ -3,7 +3,7 @@
  * @type {number}
  */
 
-const VERSION = "1.1";
+const VERSION = "1.2";
 
 const MIN_DISTANCE = 50;
 const SQUAD_VELOCITY = 109.890938;
