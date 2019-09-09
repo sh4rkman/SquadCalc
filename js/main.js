@@ -1,4 +1,12 @@
 
+// Hide the settings div @load
+$(document ).ready(function() {
+  $("#version").html("v"+ VERSION); // set version
+  $("#settings").animate({opacity: 0}, 0); // hide settings
+  console.log( "Calculator Loaded!" );
+});
+
+
 /**
  * Returns the latlng coordinates based on the given keypad string.
  * Supports unlimited amount of sub-keypads.
@@ -187,8 +195,8 @@ function getElevation(x, y = 0, v = 109.890938, g = 9.8) {
  */
 function shoot() {
   
-  a = document.getElementById('mortar-location').value;
-  b = document.getElementById('target-location').value;
+  a = $("#mortar-location").val();
+  b = $("#target-location").val();
 
   if (a.length < 3 || b.length < 3) {
     // If keypads are imprecises, do nothing 
@@ -206,21 +214,22 @@ function shoot() {
     // If Target too far, display it and exit function
     if(isNaN(elevation)){
       console.log("Target is too far : " + distance.toFixed(0)+"m !");
-      document.getElementById('settings').classList.add("toofar");
-      document.getElementById('bearing').innerHTML = bearing.toFixed(1) + "°";
-      document.getElementById('elevation').innerHTML = "toofar!";
+      $("#settings").addClass("toofar");
+      $("#bearing").html(bearing.toFixed(1) + "°");
+      $("#elevation").html("toofar!");
       return 1
     }
     else {
-      document.getElementById('settings').classList.remove("toofar");
-      document.getElementById('bearing').innerHTML = bearing.toFixed(1) + "°";
-      document.getElementById('elevation').innerHTML = elevation.toFixed(0) + "∡";
+      console.log($("#mortar-location").val() + " -> " + $("#target-location").val() + " = " + bearing.toFixed(1) + "° - " + elevation.toFixed(0));
+      $("#settings").removeClass("toofar");
+      $("#bearing").html(bearing.toFixed(1) + "°");
+      $("#elevation").html(elevation.toFixed(0) + "∡");
+      $("#settings").animate({opacity: 1}, 1000);
     }
 
   }
 
 }
-
 
 /**
  * Filter invalid key pressed by the user 
