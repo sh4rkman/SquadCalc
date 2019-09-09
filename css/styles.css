@@ -8,13 +8,17 @@
  * -- BASE STYLES --
  * Most of these are inherited from Base, but I want to change a few.
  */
-
 body {
     line-height: 1.7em;
     color: #7f8c8d;
     font-size: 13px;
 }
 
+html, button, input, select, textarea,
+    .pure-g [class *= "pure-u"] {
+        font-family: 'Montserrat', Times, "Times New Roman", serif;
+        letter-spacing: 0.2em;
+    }
 h1,
 h2,
 h3,
@@ -22,7 +26,7 @@ h4,
 h5,
 h6,
 label {
-    color: #34495e;
+    color: #ffffff;
 }
 
 .pure-img-responsive {
@@ -34,7 +38,6 @@ label {
  * -- LAYOUT STYLES --
  * These are some useful classes which I will need
  */
-
 .l-box {
     padding: 1em;
 }
@@ -52,7 +55,6 @@ label {
  * -- PURE FORM STYLES --
  * Style the form inputs and labels
  */
-
 .pure-form label {
     margin: 1em 0 0;
     font-weight: bold;
@@ -67,11 +69,29 @@ label {
     margin-bottom: 1em;
 }
 
+input { 
+    border: 0;
+    border-bottom: 3px solid white;
+    width: 100%;
+    font-size: 1.8em;
+    line-height: 2.188em;
+    height: 60px;
+    text-align: center;
+    text-transform: uppercase;
+    padding: 0;
+    background: transparent;
+    color: #ffffff;
+    font-weight: bold
+}
+
+input:focus{
+    outline: none;
+}
+
 /*
  * -- PURE BUTTON STYLES --
  * I want my pure-button elements to look a little different
  */
-
 .pure-button {
     background-color: #1f8dd6;
     color: white;
@@ -81,10 +101,11 @@ label {
 
 a.pure-button-primary {
     background: white;
-    color: #1f8dd6;
+    color: #ffffff;
     border-radius: 5px;
     font-size: 120%;
 }
+
 
 /*
  * -- MENU STYLES --
@@ -96,11 +117,9 @@ a.pure-button-primary {
     text-align: center;
     box-shadow: 0 1px 1px rgba(0,0,0, 0.10);
 }
-
 .home-menu {
-    background: #2d3e50;
+    background: #111;
 }
-
 .pure-menu.pure-menu-fixed {
     /* Fixed menus normally have a border at the bottom. */
     border-bottom: none;
@@ -110,8 +129,16 @@ a.pure-button-primary {
 
 .home-menu .pure-menu-heading {
     color: white;
-    font-weight: 400;
-    font-size: 120%;
+    font-size: 150%;
+    margin: auto;
+    padding-right: 0;
+    font-weight: bold;
+}
+
+.pure-menu-subheading{
+    margin: auto;
+    letter-spacing: 0.1em;
+    margin-bottom: 0;
 }
 
 .home-menu .pure-menu-selected a {
@@ -119,15 +146,15 @@ a.pure-button-primary {
 }
 
 .home-menu a {
-    color: #6FBEF3;
+    color: #ffffff;
 }
-
 .home-menu li a:hover,
 .home-menu li a:focus {
     background: none;
-    border: none;
+    border-bottom: 1px white solid;
     color: #AECFE5;
 }
+
 
 /*
  * -- SPLASH STYLES --
@@ -135,12 +162,12 @@ a.pure-button-primary {
  */
 
 .splash-container {
-    background: #1f8dd6;
+    background: #111;
     z-index: 1;
     overflow: hidden;
     /* The following styles are required for the "scroll-over" effect */
     width: 100%;
-    height: 88%;
+    height: 94%;
     top: 0;
     left: 0;
     position: fixed !important;
@@ -148,33 +175,44 @@ a.pure-button-primary {
 
 .splash {
     /* absolute center .splash within .splash-container */
-    width: 80%;
-    height: 50%;
-    margin: auto;
+    width: 100%;
+    height: 100%;
+    margin: 7% auto;
     position: absolute;
-    top: 100px;
-    left: 0;
-    bottom: 0;
-    right: 0;
+    top: 0; left: 0; bottom: 0; right: 0;
     text-align: center;
-    text-transform: uppercase;
+    width: 90%;
 }
 
-/* This is the main heading that appears on the blue section */
 
+/* This is the main heading that appears on the blue section */
 .splash-head {
     font-size: 20px;
-    font-weight: bold;
     color: white;
-    border: 3px solid white;
-    padding: 1em 1.6em;
-    font-weight: 100;
+    border: 5px solid white;
+    padding: 1em 0.6em;
+    margin: 1.6em auto;
     border-radius: 5px;
     line-height: 1em;
+    font-weight: bold;
+    width: 100%;
+}
+
+.toofar {
+    border: 5px solid red;
+    color: red;
+}
+
+.unselectable {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 /* This is the subheading that appears on the blue section */
-
 .splash-subhead {
     color: white;
     letter-spacing: 0.05em;
@@ -185,7 +223,6 @@ a.pure-button-primary {
  * -- CONTENT STYLES --
  * This represents the content area (everything below the blue section)
  */
-
 .content-wrapper {
     /* These styles are required for the "scroll-over" effect */
     position: absolute;
@@ -194,16 +231,15 @@ a.pure-button-primary {
     min-height: 12%;
     z-index: 2;
     background: white;
+
 }
 
 /* We want to give the content area some more padding */
-
 .content {
     padding: 1em 1em 3em;
 }
 
 /* This is the class used for the main content headers (<h2>) */
-
 .content-head {
     font-weight: 400;
     text-transform: uppercase;
@@ -212,30 +248,25 @@ a.pure-button-primary {
 }
 
 /* This is a modifier class used when the content-head is inside a ribbon */
-
 .content-head-ribbon {
     color: white;
 }
 
 /* This is the class used for the content sub-headers (<h3>) */
-
 .content-subhead {
     color: #1f8dd6;
 }
-
-.content-subhead i {
-    margin-right: 7px;
-}
+    .content-subhead i {
+        margin-right: 7px;
+    }
 
 /* This is the class used for the dark-background areas. */
-
 .ribbon {
     background: #2d3e50;
     color: #aaa;
 }
 
 /* This is the class used for the footer */
-
 .footer {
     background: #111;
     position: fixed;
@@ -248,46 +279,44 @@ a.pure-button-primary {
  * On tablets and other medium-sized devices, we want to customize some
  * of the mobile styles.
  */
+@media (min-width: 48em) {
 
-/* We increase the body font size */
+    /* We increase the body font size */
+    body {
+        font-size: 16px;
+    }
 
-body {
-    font-size: 16px;
-}
-
-/* We can align the menu header to the left, but float the
+    /* We can align the menu header to the left, but float the
     menu items to the right. */
+    .home-menu {
+        
+    }
+        .home-menu ul {
+            float: right;
+        }
 
-.home-menu {
-    text-align: left;
-}
-
-.home-menu ul {
-    float: right;
-}
-
-/* We increase the height of the splash-container */
-
+    /* We increase the height of the splash-container */
 /*    .splash-container {
         height: 500px;
     }*/
 
-/* We decrease the width of the .splash, since we have more width
+    /* We decrease the width of the .splash, since we have more width
     to work with */
+    .splash {
+        width: 50%;
+        height: 50%;
+    }
 
-.splash {
-    width: 50%;
-    height: 50%;
-}
+    .splash-head {
+        font-size: 250%;
+    }
 
-.splash-head {
-    font-size: 250%;
-}
 
-/* We remove the border-separator assigned to .l-box-lrg */
+    /* We remove the border-separator assigned to .l-box-lrg */
+    .l-box-lrg {
+        border: none;
+    }
 
-.l-box-lrg {
-    border: none;
 }
 
 /*
@@ -295,3 +324,9 @@ body {
  * On desktops and other large devices, we want to over-ride some
  * of the mobile and tablet styles.
  */
+@media (min-width: 78em) {
+    /* We increase the header font size even more */
+    .splash-head {
+        font-size: 300%;
+    }
+}
