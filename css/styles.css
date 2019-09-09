@@ -132,7 +132,7 @@ a.pure-button-primary {
     color: white;
     font-size: 250%;
     margin: auto;
-    padding-right: 0;
+    padding: 0.3em 0;
     font-weight: bold;
 }
 
