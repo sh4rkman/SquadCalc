@@ -275,6 +275,15 @@ a.pure-button-primary {
     width: 100%;
 }
 
+.youtube {
+    color: brown;
+    text-decoration: none;
+}
+
+.youtube:hover {
+    color: brown;
+    text-decoration: underline;
+}
 
 /*
  * -- DESKTOP (AND UP) MEDIA QUERIES --
