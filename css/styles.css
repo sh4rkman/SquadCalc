@@ -339,7 +339,7 @@ a.pure-button-primary {
     /* We increase the header font size even more */
     .splash-head {
         font-size: 200%;
-        max-width: 1000px;
+        max-width: 800px;
     }
 }
 
@@ -357,7 +357,7 @@ a.pure-button-primary {
 }
 
 /*
- * -- DESKTOP LARGE MEDIA QUERIES --
+ * -- LARGE DESKTOP 21/9 MEDIA QUERIES --
  * On desktops and other large devices, we want to over-ride some
  * of the mobile and tablet styles.
  */

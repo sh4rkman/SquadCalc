@@ -2,7 +2,6 @@
 // Hide the settings div @load
 $(document ).ready(function() {
   $("#version").html("v"+ VERSION); // set version
-  //$("#settings").animate({opacity: 0}, 0); // hide settings
   console.log( "Calculator Loaded!" );
 });
 
