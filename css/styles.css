@@ -290,12 +290,12 @@ a.pure-button-primary {
     /* We decrease the width of the .splash, since we have more width
     to work with */
     .splash {
-        width: 50%;
-        height: 50%;
+        width: 30%;
+        height: 30%;
     }
 
     .splash-head {
-        font-size: 250%;
+        font-size: 200%;
     }
 
 
