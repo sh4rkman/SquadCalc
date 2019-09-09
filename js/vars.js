@@ -3,8 +3,7 @@
  * @type {number}
  */
 
-const VERSION = "1.2";
-
+const VERSION = "1.3";
 
 const GRAVITY = 9.8;
 const MIL_TO_DEG_FACTOR = 360 / 6400;
