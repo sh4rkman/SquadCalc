@@ -264,6 +264,7 @@ function filterInput(a, e) {
  
   //Any other input Prevent the default response:
   if (evt.preventDefault) evt.preventDefault();
+  console.log('forbidden character');
   evt.returnValue=false;
   return false;
  }

@@ -39,18 +39,11 @@
         <div class="home-menu pure-menu pure-menu-horizontal pure-menu-fixed">
             <a class="pure-menu-heading" tabIndex=-1 href="https://github.com/sh4rkman/MSMC" target="_blank">MSMC</a>
             <span id="version" class="pure-menu-subheading" tabIndex=-1></span>
-            <!--
-                 <ul class="pure-menu-list">
-                    <li class="pure-menu-item"><a href="#" class="pure-menu-link">Home</a></li>
-                    <li class="pure-menu-item"><a href="#" class="pure-menu-link">Tour</a></li>
-                </ul>
-            -->
         </div>
     </div>
 
     <div class="splash-container">
         <div class="splash">
-            
             <div id="settings" class="splash-head">
                     <div class="pure-g">
                         <div id="bearing" class="pure-u-11-24">
@@ -66,29 +59,28 @@
                             xxxx∡
                         </div>      
                     </div>
-
             </div>
 
 
             <div class="pure-g coord">
 
-                <div class="pure-u-3-24"><span tabindex="1" onFocus="document.querySelector('.autofocus11').focus()"></span></div>
+                <div class="pure-u-2-24"><span tabindex="1" onFocus="document.querySelector('.autofocus11').focus()"></span></div>
                 
                 <div class="pure-u-8-24">
                     <img class="unselectable" src="./img/mortar.png" alt="mortar" height="42" width="42">
                     <input id="mortar-location" class="pure-u-23-24 autofocus1" spellcheck="false" maxlength="6" 
                         type="text" placeholder="A157" tabindex="2"
-                        oninput="shoot()" onkeypress="filterInput(this)" autofocus>
+                        oninput="shoot()" onkeypress="filterInput(this, event)" autofocus>
                 </div>
 
-                <div class="pure-u-2-24"></div>
+                <div class="pure-u-3-24"></div>
 
     
                 <div id="target" class="pure-u-8-24">
                     <img class="unselectable" src="./img/target.png" alt="target" height="42" width="42">
                     <input id="target-location" class="pure-u-23-24 autofocus11" spellcheck="false" maxlength="6"
                          type="text" placeholder="C327" tabindex="3"
-                         oninput="shoot()" onkeypress="filterInput(this)">
+                         oninput="shoot()" onkeypress="filterInput(this, event)">
                 </div>
 
                 <div class="pure-u-2-24"><span tabindex="4" onFocus="document.querySelector('.autofocus1').focus()"></span></div>
