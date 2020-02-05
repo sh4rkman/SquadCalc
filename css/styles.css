@@ -378,7 +378,7 @@ a.pure-button-primary {
 
 #heatmap{
     padding: 0;
-    /*display: none;*/
+    display: none;
 }
 
 #canvas {

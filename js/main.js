@@ -220,13 +220,14 @@ function getElevation(x, y = 0, v = 109.890938, g = 9.8) {
 function getHeight(a, b) {
 
 
-  var ctx = document.getElementById('canvas').getContext('2d');
+  
 
   if(document.getElementById("selectbox").value > 1){ // if user didn't select map, no height calculation
     var mapScale = 250 / document.getElementById("selectbox").value; // load map size for scaling lat&lng
   } else return 0;
   
   // Read Heightmap values for a & b
+  var ctx = document.getElementById('canvas').getContext('2d');
   var Aheight = ctx.getImageData(Math.round(a.lat*mapScale), Math.round(a.lng*mapScale), 1, 1).data;
   var Bheight = ctx.getImageData(Math.round(b.lat*mapScale), Math.round(b.lng*mapScale), 1, 1).data;
 
@@ -273,7 +274,7 @@ function shoot() {
       return 1
     }
     else {
-      console.log($("#mortar-location").val().toUpperCase() + "->" + $("#target-location").val().toUpperCase() + " = " + bearing.toFixed(1) + "° - " + elevation.toFixed(0) + " Height Diff': " + height + 'm');
+      console.log($("#mortar-location").val().toUpperCase() + "->" + $("#target-location").val().toUpperCase() + " = " + bearing.toFixed(1) + "° - " + elevation.toFixed(0));
       $("#settings").removeClass("toofar");
       $("#bearing").html(bearing.toFixed(1) + "°");
       $("#elevation").html(elevation.toFixed(0) + "∡");
