@@ -3,8 +3,22 @@
 $(document ).ready(function() {
   $("#version").html("v"+ VERSION); // set version
   console.log( "Calculator Loaded!" );
+  drawHeatmap();
+  mapScale = foolsroadScale
 });
 
+/**
+ * Load the heatmap to the canvas
+ */
+function drawHeatmap() {
+  var img = new Image();   // Create new img element
+  img.addEventListener('load', function() {
+    var ctx = document.getElementById('canvas').getContext('2d');
+    ctx.drawImage(img, 0, 0, 250, 250); // Draw img at good scale
+  }, false);
+  img.src = './img/heightmaps/foolsroad.jpg'; // Set source path
+
+}
 
 /**
  * Returns the latlng coordinates based on the given keypad string.
@@ -186,6 +200,30 @@ function getElevation(x, y = 0, v = 109.890938, g = 9.8) {
 }
 
 /**
+ * Calculates the angle the mortar needs to be set,
+ * in order to hit the target at the desired distance and vertical delta.
+ *
+   * @param {Number} a - {lat;lng} where mortar is
+   * @param {Number} b - {lat;lng} where target is
+   * @returns {number} - relative height in meters
+ */
+function getHeight(a, b) {
+
+  var mapScale = foolsroadScale; // load map size for scaling lat&lng
+
+  // Read Heightmap values for a & b
+  var ctx = document.getElementById('canvas').getContext('2d');
+  var Aheight = ctx.getImageData(Math.round(a.lat*mapScale), Math.round(a.lng*mapScale), 1, 1).data;
+  var Bheight = ctx.getImageData(Math.round(b.lat*mapScale), Math.round(b.lng*mapScale), 1, 1).data;
+
+  Aheight = (255 + Aheight[0] - Aheight[2])*0.153; // don't ask
+  Bheight = (255 + Bheight[0] - Bheight[2])*0.153;
+  
+  return Aheight-Bheight
+  
+}
+
+/**
  * Calculates the distance between two points.
  *
  * @param {string} a - keypad string where mortar is
@@ -207,8 +245,10 @@ function shoot() {
     b = getPos(b);
 
     var distance = getDist(a, b);
-    var elevation = getElevation(distance, 0);
+    var height = getHeight(a, b);
+    var elevation = getElevation(distance, height);
     var bearing = getBearing(a, b);
+    var height = getHeight(a, b);
 
     // If Target too far, display it and exit function
     if(isNaN(elevation)){
@@ -219,7 +259,7 @@ function shoot() {
       return 1
     }
     else {
-      console.log($("#mortar-location").val().toUpperCase() + "->" + $("#target-location").val().toUpperCase() + " = " + bearing.toFixed(1) + "° - " + elevation.toFixed(0));
+      console.log($("#mortar-location").val().toUpperCase() + "->" + $("#target-location").val().toUpperCase() + " = " + bearing.toFixed(1) + "° - " + elevation.toFixed(0) + " Height Diff': " + height);
       $("#settings").removeClass("toofar");
       $("#bearing").html(bearing.toFixed(1) + "°");
       $("#elevation").html(elevation.toFixed(0) + "∡");
@@ -246,7 +286,10 @@ function filterInput(a, e) {
   if (chrCode==0) chrTyped = 'SPECIAL KEY';
   else chrTyped = String.fromCharCode(chrCode);
  
+  
   // If there is already a letter in the input.value, prevent the keypress
+  // Disabled for now, it prevent overwritting a keypad without reasing it completly first
+  /*
   if (chrTyped.match(/[A-z]/)){
     if(a.value[0] != undefined){
       if(a.value[0].match(/[A-z]/)){
@@ -257,6 +300,7 @@ function filterInput(a, e) {
       return true;
     } 
   } 
+  */
 
   //Letters, Digits, special keys & backspace [\b] work as usual:
   if (chrTyped.match(/\d|[\b]|SPECIAL|[A-z]/)) return true;
