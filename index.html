@@ -43,7 +43,32 @@
     </div>
 
     <div class="splash-container">
+
+        
         <div class="splash">
+
+                <div id="mapSelector">
+
+                        <select id="selectbox" data-selected="" onchange="drawHeatmap();">
+                            <option value="1" selected="selected" disabled="disabled">Select a map</option>
+                            <option value="3200">Al Basrah</option>
+                            <option value="3904">Belaya</option>
+                            <option value="4064">Chora</option>
+                            <option value="1736">Fool's Road</option>
+                            <option value="4340">Gorodok</option>
+                            <option value="4032">Kamdesh</option>
+                            <option value="4017">Kohat</option>
+                            <option value="2496">Kokan</option>
+                            <option value="1761">Logar</option>
+                            <option value="2400">Mestia</option>
+                            <option value="2800">Narva</option>
+                            <option value="7600">Skorpo</option>
+                            <option value="1300">Sumari</option>
+                            <option value="4680">Tallil</option>
+                            <option value="5000">Yehorivka</option>
+                        </select>
+        
+                    </div>
             <div id="settings" class="splash-head">
                     <div class="pure-g">
                         <div id="bearing" class="pure-u-11-24">
@@ -87,9 +112,11 @@
             </div>
 
 
+
             <div id="heatmap" class="heatmap">
                 <canvas id="canvas" width="250px" height="250px" style="border:1px solid white;"></canvas>
             </div>
+
         </div>
 
 
