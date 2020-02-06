@@ -230,7 +230,6 @@ function getHeight(a, b) {
 
   Aheight = (255 + Aheight[0] - Aheight[2])*0.153; // don't ask why 0.153, idk how it works
   Bheight = (255 + Bheight[0] - Bheight[2])*0.153;
-  alert(Bheight-Aheight);
   return Math.round(Bheight-Aheight);
 }
 
