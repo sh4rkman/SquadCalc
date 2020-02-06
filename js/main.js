@@ -1,7 +1,7 @@
 
 
 $(document ).ready(function() {
-  $("#version").html("v"+ VERSION); // set version
+  $("#version").html("v1.8"); // set version
   loadHeatmap();
   console.log( "Calculator Loaded!" );
 });
