@@ -26,6 +26,8 @@ function drawHeatmap(){
     ctx.drawImage(img, 0, 0, 250, 250); // Draw img at good scale
   }, false);
   img.src = './img/heightmaps/'+map+'.jpg'; // Set source path
+
+  shoot(); // if there is already coordinates
 }
 
 
@@ -115,8 +117,6 @@ function formatKeyPad(text = "") {
       i += 1;
     }
 
-
-    //alert(textParts.join("-"));
     return textParts.join("-");
   }
 
@@ -219,13 +219,11 @@ function getElevation(x, y = 0, v = 109.890938, g = 9.8) {
  */
 function getHeight(a, b) {
 
+  if(document.getElementById("selectbox").value = 1) return 0; // if user didn't select map, no height calculation
 
-  
-
-  if(document.getElementById("selectbox").value > 1){ // if user didn't select map, no height calculation
-    var mapScale = 250 / document.getElementById("selectbox").value; // load map size for scaling lat&lng
-  } else return 0;
-  
+  // load map size for scaling lat&lng
+  var mapScale = 250 / document.getElementById("selectbox").value; 
+   
   // Read Heightmap values for a & b
   var ctx = document.getElementById('canvas').getContext('2d');
   var Aheight = ctx.getImageData(Math.round(a.lat*mapScale), Math.round(a.lng*mapScale), 1, 1).data;
