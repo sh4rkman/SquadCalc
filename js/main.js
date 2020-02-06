@@ -1,9 +1,9 @@
 
-// Hide the settings div @load
+
 $(document ).ready(function() {
   $("#version").html("v"+ VERSION); // set version
-  console.log( "Calculator Loaded!" );
   loadHeatmap();
+  console.log( "Calculator Loaded!" );
 });
 
 /**
@@ -18,9 +18,13 @@ function loadHeatmap() {
 
 }
 
+/**
+ * Draw the selected Heatmaps in a hidden canvas
+ */
 function drawHeatmap(){
   var img = new Image();   // Create new img element
   var map = document.getElementById("selectbox").options[document.getElementById("selectbox").selectedIndex].text.toLowerCase()
+  
   img.addEventListener('load', function() {
     var ctx = document.getElementById('canvas').getContext('2d');
     ctx.drawImage(img, 0, 0, 250, 250); // Draw img at good scale
@@ -76,7 +80,7 @@ function getPos(kp) {
       i += 1;
     }
       
-      // at the end, add half of last interval, so it points to the center of the deepest sub-keypad
+    // at the end, add half of last interval, so it points to the center of the deepest sub-keypad
     const interval = 300 / 3 ** (i - 1);
     x += interval / 2;
     y += interval / 2;
@@ -178,7 +182,6 @@ function degToMil(deg) {
 
 /**
  * Calculates the distance between two points.
- *
  * @param {LatLng} a - point A
  * @param {LatLng} b - point B
  * @returns {number} distance A and B
@@ -192,13 +195,10 @@ function degToMil(deg) {
 /**
  * Calculates the angle the mortar needs to be set,
  * in order to hit the target at the desired distance and vertical delta.
- *
- * Function taken from https://en.wikipedia.org/wiki/Projectile_motion
- *
- * @param {number} x - distance between mortar and target
- * @param {number} [y] - vertical delta between mortar and target
- * @param {number} [v] - initial mortar projectile velocity
- * @param {number} [g] - gravity force
+ * @param {number} x - distance between mortar and target from getDist()
+ * @param {number} [y] - vertical delta between mortar and target from getHeight()
+ * @param {number} [v] - initial mortar projectile velocity (109.890938)
+ * @param {number} [g] - gravity force (9.8)
  * @returns {number || NaN} mil if target in range, NaN otherwise
  */
 function getElevation(x, y = 0, v = 109.890938, g = 9.8) {
@@ -210,16 +210,15 @@ function getElevation(x, y = 0, v = 109.890938, g = 9.8) {
 }
 
 /**
- * Calculates the angle the mortar needs to be set,
- * in order to hit the target at the desired distance and vertical delta.
+ * Calculates the height difference between mortar and target
  *
    * @param {Number} a - {lat;lng} where mortar is
    * @param {Number} b - {lat;lng} where target is
    * @returns {number} - relative height in meters
  */
 function getHeight(a, b) {
-
-  if(document.getElementById("selectbox").value = 1) return 0; // if user didn't select map, no height calculation
+  
+  if(document.getElementById("selectbox").value == 1) return 0; // if user didn't select map, no height calculation
 
   // load map size for scaling lat&lng
   var mapScale = 250 / document.getElementById("selectbox").value; 
@@ -229,11 +228,10 @@ function getHeight(a, b) {
   var Aheight = ctx.getImageData(Math.round(a.lat*mapScale), Math.round(a.lng*mapScale), 1, 1).data;
   var Bheight = ctx.getImageData(Math.round(b.lat*mapScale), Math.round(b.lng*mapScale), 1, 1).data;
 
-  Aheight = (255 + Aheight[0] - Aheight[2])*0.153; // don't ask
+  Aheight = (255 + Aheight[0] - Aheight[2])*0.153; // don't ask why 0.153, idk how it works
   Bheight = (255 + Bheight[0] - Bheight[2])*0.153;
-  
+  alert(Bheight-Aheight);
   return Math.round(Bheight-Aheight);
-  
 }
 
 /**
@@ -253,33 +251,30 @@ function shoot() {
     console.log('keypad too short');
     return 1
   }
-  else{
-    a = getPos(a);
-    b = getPos(b);
+  
+  a = getPos(a);
+  b = getPos(b);
 
-    var distance = getDist(a, b);
-    var height = getHeight(a, b);
-    var elevation = getElevation(distance, height);
-    var bearing = getBearing(a, b);
-    var height = getHeight(a, b);
+  var distance = getDist(a, b);
+  var height = getHeight(a, b);
+  var elevation = getElevation(distance, height);
+  var bearing = getBearing(a, b);
 
-    // If Target too far, display it and exit function
-    if(isNaN(elevation)){
-      console.log("Target is too far : " + distance.toFixed(0)+"m !");
-      $("#settings").addClass("toofar");
-      $("#bearing").html(bearing.toFixed(1) + "°");
-      $("#elevation").html("toofar!");
-      return 1
-    }
-    else {
-      console.log($("#mortar-location").val().toUpperCase() + "->" + $("#target-location").val().toUpperCase() + " = " + bearing.toFixed(1) + "° - " + elevation.toFixed(0));
-      $("#settings").removeClass("toofar");
-      $("#bearing").html(bearing.toFixed(1) + "°");
-      $("#elevation").html(elevation.toFixed(0) + "∡");
-      $("#settings").animate({opacity: 1}, 1000);
-    }
-
+  // If Target too far, display it and exit function
+  if(isNaN(elevation)){
+    console.log("Target is too far : " + distance.toFixed(0)+"m !");
+    $("#settings").addClass("toofar");
+    $("#bearing").html(bearing.toFixed(1) + "°");
+    $("#elevation").html("toofar!");
+    return 1
   }
+  
+  console.log($("#mortar-location").val().toUpperCase() + "->" + $("#target-location").val().toUpperCase() + " = " + bearing.toFixed(1) + "° - " + elevation.toFixed(0));
+  $("#settings").removeClass("toofar");
+  $("#bearing").html(bearing.toFixed(1) + "°");
+  $("#elevation").html(elevation.toFixed(0) + "∡");
+  $("#settings").animate({opacity: 1}, 1000);
+  
 
 }
 
