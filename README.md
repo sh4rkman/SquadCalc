@@ -4,8 +4,9 @@
  MSMC is a simple, easy on the eye mortar calculator for Squad.
  It allow quick calculation without fancy map, buttons and icons. Just enter locations and shoot.
  
- ![msmc_gif](https://i.imgur.com/fJ5tVRP.gif "Preview")
- 
+ <p align="center">
+   <img width="722" height="684" src="https://i.imgur.com/uFnqK3X.gif">
+ </p>
  
 # Features
 
