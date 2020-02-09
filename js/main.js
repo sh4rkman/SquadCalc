@@ -1,7 +1,25 @@
+// Each map has a different size and require scaling w, y and z when calculating height
+var maps = [
+  ['Al Basrah', 3200, 0.47],
+  ['Belaya', 3904, 0.5],
+  ['Chora', 4064, 0.06],
+  ['FoolsRoad', 1736, 0.149],
+  ['Gorodok', 4340, 0.13],
+  ['Kamdesh', 4032, 0.2],
+  ['Kohat', 4017, 0.777],
+  ['Kokan', 2496, 0.01],
+  ['Logar', 1761, 0.14],
+  ['Mestia', 2400, 0.4],
+  ['Narva', 2800, 0.057],
+  ['Skorpo', 7600, 0.4],
+  ['Sumari', 1300, 0.037],
+  ['Tallil', 4680, 0.055],
+  ['Yehorivka', 5000, 0.29]
+];
 
 
 $(document ).ready(function() {
-  $("#version").html("v1.8"); // set version
+  $("#version").html("v1.9"); // set version
   loadHeatmap();
   console.log( "Calculator Loaded!" );
 });
@@ -11,11 +29,10 @@ $(document ).ready(function() {
  */
 function loadHeatmap() {
   img = new Image();   // Create new img element
-  img.addEventListener('load', function() {
+  img.addEventListener('load', function() { 
     var ctx = document.getElementById('canvas').getContext('2d');
     ctx.drawImage(img, 0, 0, 250, 250); // Draw img at good scale
   }, false);
-
 }
 
 /**
@@ -25,13 +42,12 @@ function drawHeatmap(){
   var img = new Image();   // Create new img element
   var map = document.getElementById("selectbox").options[document.getElementById("selectbox").selectedIndex].text.toLowerCase()
   
-  img.addEventListener('load', function() {
+  img.addEventListener('load', function() { // wait for the image to load or it does crazy stuff
     var ctx = document.getElementById('canvas').getContext('2d');
-    ctx.drawImage(img, 0, 0, 250, 250); // Draw img at good scale
+    ctx.drawImage(img, 0, 0, 250, 250); 
+    shoot(); // just in case there is already coordinates
   }, false);
   img.src = './img/heightmaps/'+map+'.jpg'; // Set source path
-
-  shoot(); // if there is already coordinates
 }
 
 
@@ -218,19 +234,20 @@ function getElevation(x, y = 0, v = 109.890938, g = 9.8) {
  */
 function getHeight(a, b) {
   
-  if(document.getElementById("selectbox").value == 1) return 0; // if user didn't select map, no height calculation
+  if(document.getElementById("selectbox").value == 99) return 0; // if user didn't select map, no height calculation
 
   // load map size for scaling lat&lng
-  var mapScale = 250 / document.getElementById("selectbox").value; 
-   
+  var mapScale = 250 / maps[document.getElementById("selectbox").value][1];
+
   // Read Heightmap values for a & b
   var ctx = document.getElementById('canvas').getContext('2d');
   var Aheight = ctx.getImageData(Math.round(a.lat*mapScale), Math.round(a.lng*mapScale), 1, 1).data;
   var Bheight = ctx.getImageData(Math.round(b.lat*mapScale), Math.round(b.lng*mapScale), 1, 1).data;
 
-  Aheight = (255 + Aheight[0] - Aheight[2])*0.153; // don't ask why 0.153, idk how it works
-  Bheight = (255 + Bheight[0] - Bheight[2])*0.153;
-  return Math.round(Bheight-Aheight);
+  Aheight = (255 + Aheight[0] - Aheight[2])*maps[document.getElementById("selectbox").value][2]; 
+  Bheight = (255 + Bheight[0] - Bheight[2])*maps[document.getElementById("selectbox").value][2];
+
+  return Bheight-Aheight;
 }
 
 /**
@@ -268,12 +285,12 @@ function shoot() {
     return 1
   }
   
+  // if in range
   console.log($("#mortar-location").val().toUpperCase() + "->" + $("#target-location").val().toUpperCase() + " = " + bearing.toFixed(1) + "° - " + elevation.toFixed(0));
   $("#settings").removeClass("toofar");
   $("#bearing").html(bearing.toFixed(1) + "°");
-  $("#elevation").html(elevation.toFixed(0) + "∡");
+  $("#elevation").html(elevation.toFixed(1) + "∡");
   $("#settings").animate({opacity: 1}, 1000);
-  
 
 }
 
