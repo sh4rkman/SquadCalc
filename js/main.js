@@ -271,37 +271,64 @@ function shoot() {
   a = getPos(a);
   b = getPos(b);
 
-  var distance = getDist(a, b);
   var height = getHeight(a, b);
+  var distance = getDist(a, b);
+
+  // If keypad is bad (1C32), distance is NaN
+  // Detect it and display wich keypad is faultive 
+  if(isNaN(distance)){
+    console.log('Invalid keypads');
+    if(isNaN(a.lat)||isNaN(a.lng)){
+      $("#mortar-location").addClass("error2");
+    }
+    else {
+      $("#target-location").addClass("error2");
+    }
+    $("#settings").addClass("error");
+    $("#bearing").html("xxx°");
+    $("#elevation").html("xxxx∡");
+    $("#settings").effect("shake");
+    return 1
+  }
+
   var elevation = getElevation(distance, height);
   var bearing = getBearing(a, b);
+
 
   // If Target too far, display it and exit function
   if(isNaN(elevation)){
     console.log("Target is too far : " + distance.toFixed(0)+"m !");
-    $("#settings").addClass("toofar");
+    $("#settings").addClass("error");
     $("#bearing").html(bearing.toFixed(1) + "°");
     $("#elevation").html("2far!");
-    $("#settings").effect( "shake" );
+    $("#settings").effect("shake");
     return 1
   }
 
   // If Target too close, display it and exit function
   if(distance<=50){
     console.log("Target is too close : " + distance.toFixed(0)+"m !");
-    $("#settings").addClass("toofar");
+    $("#settings").addClass("error");
     $("#bearing").html(bearing.toFixed(1) + "°");
     $("#elevation").html("2close!");
-    $("#settings").effect( "shake" );
+    $("#settings").effect("shake");
     return 1
   }
   
   // if in range
   console.log($("#mortar-location").val().toUpperCase() + "->" + $("#target-location").val().toUpperCase() + " = " + bearing.toFixed(1) + "° - " + elevation.toFixed(0));
-  $("#settings").removeClass("toofar");
+
+  // Remove Errors
+  $("#settings").removeClass("error");
+  $("#mortar-location").removeClass("error2");
+  $("#target-location").removeClass("error2");
+  $("#settings").animate({opacity: 1}, 1000);
+  $("#mortar-location").animate({opacity: 1}, 1000);
+  $("#target-location").animate({opacity: 1}, 1000);
+
+  // Insert Calculations
   $("#bearing").html(bearing.toFixed(1) + "°");
   $("#elevation").html(elevation.toFixed(0) + "∡");
-  $("#settings").animate({opacity: 1}, 1000);
 
 }
 

@@ -199,8 +199,12 @@ a.pure-button-primary {
     width: 100%;
 }
 
-.toofar {
+.error {
     border: 5px solid red;
+    color: red;
+}
+
+.error2 {
     color: red;
 }
 
