@@ -13,9 +13,6 @@
         <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.1/build/pure-min.css" integrity="sha384-oAOxQR6DkCoMliIh8yFnu25d7Eq/PHS21PClpwjOTeU2jRSq11vu66rf90/cZr47" crossorigin="anonymous">
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
         
-        <!--[if lte IE 8]>
-            <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.1/build/grids-responsive-old-ie-min.css">
-        <![endif]-->
         <!--[if gt IE 8]><!-->
             <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.1/build/grids-responsive-min.css">
         <!--<![endif]-->
@@ -27,7 +24,7 @@
 
     <!-- JS -->
         <script src="./js/jquery-3.4.1.min.js"></script>
-        <script src="./js/maps.js"></script>
+        <script src="./js/jquery-ui.min.js"></script>
         <script src="./js/main.js"></script>
 
 </head>
@@ -47,43 +44,42 @@
         
         <div class="splash">
 
-                <div id="mapSelector">
+            <div id="mapSelector">
+                <select id="selectbox" data-selected="" onchange="drawHeatmap();">
+                    <option value="99" selected="selected" disabled="disabled">Select a map</option>
+                    <option value="0">Al Basrah</option>
+                    <option value="1">Belaya</option>
+                    <option value="2">Chora</option>
+                    <option value="3">Fool's Road</option>
+                    <option value="4">Gorodok</option>
+                    <option value="5">Kamdesh</option>
+                    <option value="6">Kohat</option>
+                    <option value="7">Kokan</option>
+                    <option value="8">Logar</option>
+                    <option value="9">Mestia</option>
+                    <option value="10">Narva</option>
+                    <option value="11">Skorpo</option>
+                    <option value="12">Sumari</option>
+                    <option value="13">Tallil</option>
+                    <option value="14">Yehorivka</option>
+                </select>
+            </div>
 
-                        <select id="selectbox" data-selected="" onchange="drawHeatmap();">
-                            <option value="99" selected="selected" disabled="disabled">Select a map</option>
-                            <option value="0">Al Basrah</option>
-                            <option value="1">Belaya</option>
-                            <option value="2">Chora</option>
-                            <option value="3">Fool's Road</option>
-                            <option value="4">Gorodok</option>
-                            <option value="5">Kamdesh</option>
-                            <option value="6">Kohat</option>
-                            <option value="7">Kokan</option>
-                            <option value="8">Logar</option>
-                            <option value="9">Mestia</option>
-                            <option value="10">Narva</option>
-                            <option value="11">Skorpo</option>
-                            <option value="12">Sumari</option>
-                            <option value="13">Tallil</option>
-                            <option value="14">Yehorivka</option>
-                        </select>
-        
-                    </div>
             <div id="settings" class="splash-head">
-                    <div class="pure-g">
-                        <div id="bearing" class="pure-u-11-24">
-                            xxx°
-                        </div>
-        
-                        <div class="pure-u-1-24">
-                            -
-                        </div>
-        
-            
-                        <div id="elevation" class="pure-u-11-24">
-                            xxxx∡
-                        </div>      
+                <div class="pure-g">
+                    <div id="bearing" class="pure-u-11-24">
+                        xxx°
                     </div>
+    
+                    <div class="pure-u-1-24">
+                        -
+                    </div>
+    
+        
+                    <div id="elevation" class="pure-u-11-24">
+                        xxxx∡
+                    </div>      
+                </div>
             </div>
 
 

@@ -72,7 +72,6 @@ label {
 input { 
     border: 0;
     border-bottom: 3px solid white;
-    width: 100%;
     font-size: 1.8em;
     line-height: 2.188em;
     height: 60px;
@@ -301,6 +300,7 @@ a.pure-button-primary {
         width: 50%;
         height: 50%;
     }
+
 }
 
 /*

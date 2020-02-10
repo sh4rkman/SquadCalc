@@ -21,7 +21,7 @@ var maps = [
 $(document ).ready(function() {
   $("#version").html("v1.9"); // set version
   loadHeatmap();
-  console.log( "Calculator Loaded!" );
+  console.log("Calculator Loaded!");
 });
 
 /**
@@ -281,7 +281,18 @@ function shoot() {
     console.log("Target is too far : " + distance.toFixed(0)+"m !");
     $("#settings").addClass("toofar");
     $("#bearing").html(bearing.toFixed(1) + "°");
-    $("#elevation").html("toofar!");
+    $("#elevation").html("2far!");
+    $("#settings").effect( "shake" );
+    return 1
+  }
+
+  // If Target too close, display it and exit function
+  if(distance<=50){
+    console.log("Target is too close : " + distance.toFixed(0)+"m !");
+    $("#settings").addClass("toofar");
+    $("#bearing").html(bearing.toFixed(1) + "°");
+    $("#elevation").html("2close!");
+    $("#settings").effect( "shake" );
     return 1
   }
   
@@ -289,7 +300,7 @@ function shoot() {
   console.log($("#mortar-location").val().toUpperCase() + "->" + $("#target-location").val().toUpperCase() + " = " + bearing.toFixed(1) + "° - " + elevation.toFixed(0));
   $("#settings").removeClass("toofar");
   $("#bearing").html(bearing.toFixed(1) + "°");
-  $("#elevation").html(elevation.toFixed(1) + "∡");
+  $("#elevation").html(elevation.toFixed(0) + "∡");
   $("#settings").animate({opacity: 1}, 1000);
 
 }
