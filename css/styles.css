@@ -200,12 +200,12 @@ a.pure-button-primary {
 }
 
 .error {
-    border: 5px solid red;
-    color: red;
+    border: 5px solid FireBrick;
+    color: FireBrick;
 }
 
 .error2 {
-    color: red;
+    color: FireBrick;
 }
 
 .unselectable {

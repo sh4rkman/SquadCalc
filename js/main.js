@@ -262,9 +262,11 @@ function shoot() {
   a = $("#mortar-location").val();
   b = $("#target-location").val();
 
+  // If keypads are imprecises, reset calcs
   if (a.length < 3 || b.length < 3) {
-    // If keypads are imprecises, do nothing 
     console.log('keypad too short');
+    $("#bearing").html("xxx°");
+    $("#elevation").html("xxxx∡");
     return 1
   }
   
@@ -277,13 +279,22 @@ function shoot() {
   // If keypad is bad (1C32), distance is NaN
   // Detect it and display wich keypad is faultive 
   if(isNaN(distance)){
+
     console.log('Invalid keypads');
+
     if(isNaN(a.lat)||isNaN(a.lng)){
       $("#mortar-location").addClass("error2");
+    } else {
+      $("#mortar-location").removeClass("error2");
+      $("#mortar-location").animate({opacity: 1}, 1000);
     }
-    else {
+    if(isNaN(b.lat)||isNaN(b.lng)){
       $("#target-location").addClass("error2");
+    } else {
+      $("#target-location").removeClass("error2");
+      $("#target-location").animate({opacity: 1}, 1000);
     }
+
     $("#settings").addClass("error");
     $("#bearing").html("xxx°");
     $("#elevation").html("xxxx∡");
@@ -299,6 +310,7 @@ function shoot() {
   if(isNaN(elevation)){
     console.log("Target is too far : " + distance.toFixed(0)+"m !");
     $("#settings").addClass("error");
+    $("#target-location").addClass("error2");
     $("#bearing").html(bearing.toFixed(1) + "°");
     $("#elevation").html("2far!");
     $("#settings").effect("shake");
@@ -309,6 +321,7 @@ function shoot() {
   if(distance<=50){
     console.log("Target is too close : " + distance.toFixed(0)+"m !");
     $("#settings").addClass("error");
+    $("#target-location").addClass("error2");
     $("#bearing").html(bearing.toFixed(1) + "°");
     $("#elevation").html("2close!");
     $("#settings").effect("shake");
