@@ -77,6 +77,13 @@ function getPos(kp) {
       // special case, i.e. letter + number combo
       const letterCode = parts[i].charCodeAt(0);   
       const letterIndex = letterCode - 65;
+      if(parts[i].charCodeAt(0) < 65){
+        var pos = {
+          lat: NaN,
+          lng: NaN
+        };
+        return pos
+      }
       const kpNr = Number(parts[i].slice(1)) - 1;
       x += 300 * letterIndex;
       y += 300 * kpNr;
@@ -234,8 +241,7 @@ function getElevation(x, y = 0, v = 109.890938, g = 9.8) {
    * @returns {number} - relative height in meters
  */
 function getHeight(a, b) {
-  console.log(a.lat + " " + a.lng);
-  console.log(b.lat + " " + b.lng);
+
   if(document.getElementById("selectbox").value == 99) return 0; // if user didn't select map, no height calculation
 
   // load map size for scaling lat&lng
@@ -281,7 +287,7 @@ function shoot() {
     $("#bearing").html("xxx°");
     $("#elevation").html("xxxx∡");
     $("#settings").effect("shake");
-    
+
     if(isNaN(a.lng) && isNaN(b.lng)){
       // Add error on target
       $("#target-location").addClass("error2");
