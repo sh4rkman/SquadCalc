@@ -309,8 +309,13 @@ function shoot() {
   // If Target too far, display it and exit function
   if(isNaN(elevation)){
     console.log("Target is too far : " + distance.toFixed(0)+"m !");
+    // Remove any mortar error
+    $("#mortar-location").removeClass("error2");
+    $("#mortar-location").animate({opacity: 1}, 1000);
+    // Add error on target & settings
     $("#settings").addClass("error");
     $("#target-location").addClass("error2");
+    // Insert bearing and "2far"
     $("#bearing").html(bearing.toFixed(1) + "°");
     $("#elevation").html("2far!");
     $("#settings").effect("shake");
@@ -320,8 +325,13 @@ function shoot() {
   // If Target too close, display it and exit function
   if(distance<=50){
     console.log("Target is too close : " + distance.toFixed(0)+"m !");
+    // Remove any mortar error
+    $("#mortar-location").removeClass("error2");
+    $("#mortar-location").animate({opacity: 1}, 1000);
+    // Add error on target & settings
     $("#settings").addClass("error");
     $("#target-location").addClass("error2");
+    // Insert bearing and "2close"
     $("#bearing").html(bearing.toFixed(1) + "°");
     $("#elevation").html("2close!");
     $("#settings").effect("shake");
