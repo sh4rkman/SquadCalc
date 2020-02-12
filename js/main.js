@@ -343,10 +343,12 @@ function shoot() {
 
   // Remove Errors
   $("#settings").removeClass("error");
-  $("#mortar-location").removeClass("error2");
-  $("#target-location").removeClass("error2");
   $("#settings").animate({opacity: 1}, 1000);
+
+  $("#mortar-location").removeClass("error2");
   $("#mortar-location").animate({opacity: 1}, 1000);
+
+  $("#target-location").removeClass("error2");
   $("#target-location").animate({opacity: 1}, 1000);
 
   // Insert Calculations
