@@ -282,7 +282,7 @@ function shoot() {
   b = getPos(b);
 
   if(isNaN(a.lng) || isNaN(b.lng)){
-
+    console.log('Invalid keypads');
     $("#settings").addClass("error");
     $("#bearing").html("xxx°");
     $("#elevation").html("xxxx∡");
