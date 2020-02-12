@@ -60,54 +60,55 @@ function drawHeatmap(){
  * @returns {LatLng} converted coordinates
  */
 function getPos(kp) {
-    const fkp = formatKeyPad(kp);
-    if (!fkp || fkp.length < 2) {
-      console.log(`invalid keypad string: ${fkp}`);
-    }
-  
-    const parts = fkp.split("-");
-    let x = 0;
-    let y = 0;
-  
-    // "i" is is our (sub-)keypad indicator
-    let i = 0;
-    while (i < parts.length) {
-      if (i === 0) {
-        // special case, i.e. letter + number combo
-        const letterCode = parts[i].charCodeAt(0);
-        const letterIndex = letterCode - 65;
-        const kpNr = Number(parts[i].slice(1)) - 1;
-        x += 300 * letterIndex;
-        y += 300 * kpNr;
-      } else {
-        // opposite of calculations in getKP()
-        const sub = Number(parts[i]);
-        if (Number.isNaN(sub)) {
-          console.log(`invalid keypad string: ${fkp}`);
-        }
-        const subX = (sub - 1) % 3;
-        const subY = 2 - (Math.ceil(sub / 3) - 1);
-  
-        const interval = 300 / 3 ** i;
-        x += interval * subX;
-        y += interval * subY;
-        
+
+  const fkp = formatKeyPad(kp);
+  if (!fkp || fkp.length < 2) {
+    console.log(`invalid keypad string: ${fkp}`);
+  }
+
+  const parts = fkp.split("-");
+  let x = 0;
+  let y = 0;
+
+  // "i" is is our (sub-)keypad indicator
+  let i = 0;
+  while (i < parts.length) {
+    if (i === 0) {
+      // special case, i.e. letter + number combo
+      const letterCode = parts[i].charCodeAt(0);   
+      const letterIndex = letterCode - 65;
+      const kpNr = Number(parts[i].slice(1)) - 1;
+      x += 300 * letterIndex;
+      y += 300 * kpNr;
+    } else {
+      // opposite of calculations in getKP()
+      const sub = Number(parts[i]);
+      if (Number.isNaN(sub)) {
+        console.log(`invalid keypad string: ${fkp}`);
       }
-      i += 1;
-    }
+      const subX = (sub - 1) % 3;
+      const subY = 2 - (Math.ceil(sub / 3) - 1);
+
+      const interval = 300 / 3 ** i;
+      x += interval * subX;
+      y += interval * subY;
       
-    // at the end, add half of last interval, so it points to the center of the deepest sub-keypad
-    const interval = 300 / 3 ** (i - 1);
-    x += interval / 2;
-    y += interval / 2;
+    }
+    i += 1;
+  }
+    
+  // at the end, add half of last interval, so it points to the center of the deepest sub-keypad
+  const interval = 300 / 3 ** (i - 1);
+  x += interval / 2;
+  y += interval / 2;
 
-    var pos = {
-      lat: x,
-      lng: y
-    };
+  var pos = {
+    lat: x,
+    lng: y
+  };
 
-    // might throw error
-    return pos;
+  // might throw error
+  return pos;
 }
 
 /**
@@ -233,7 +234,8 @@ function getElevation(x, y = 0, v = 109.890938, g = 9.8) {
    * @returns {number} - relative height in meters
  */
 function getHeight(a, b) {
-  
+  console.log(a.lat + " " + a.lng);
+  console.log(b.lat + " " + b.lng);
   if(document.getElementById("selectbox").value == 99) return 0; // if user didn't select map, no height calculation
 
   // load map size for scaling lat&lng
@@ -244,7 +246,7 @@ function getHeight(a, b) {
   var Aheight = ctx.getImageData(Math.round(a.lat*mapScale), Math.round(a.lng*mapScale), 1, 1).data;
   var Bheight = ctx.getImageData(Math.round(b.lat*mapScale), Math.round(b.lng*mapScale), 1, 1).data;
 
-  Aheight = (255 + Aheight[0] - Aheight[2])*maps[document.getElementById("selectbox").value][2]; 
+  Aheight = (255 + Aheight[0] - Aheight[2])*maps[document.getElementById("selectbox").value][2];
   Bheight = (255 + Bheight[0] - Bheight[2])*maps[document.getElementById("selectbox").value][2];
 
   return Bheight-Aheight;
@@ -272,6 +274,33 @@ function shoot() {
   
   a = getPos(a);
   b = getPos(b);
+
+  if(isNaN(a.lng) || isNaN(b.lng)){
+
+    $("#settings").addClass("error");
+    $("#bearing").html("xxx°");
+    $("#elevation").html("xxxx∡");
+    $("#settings").effect("shake");
+    
+    if(isNaN(a.lng) && isNaN(b.lng)){
+      // Add error on target
+      $("#target-location").addClass("error2");
+      $("#mortar-location").addClass("error2");
+      return 1
+    }
+    if(isNaN(a.lng)){
+      $("#target-location").removeClass("error2");
+      $("#target-location").animate({opacity: 1}, 1000);
+      $("#mortar-location").addClass("error2");
+      return 1
+    } else {
+      $("#mortar-location").removeClass("error2");
+      $("#mortar-location").animate({opacity: 1}, 1000);
+      $("#target-location").addClass("error2");
+      return 1
+    }
+  }
+
 
   var height = getHeight(a, b);
   var distance = getDist(a, b);
@@ -344,10 +373,8 @@ function shoot() {
   // Remove Errors
   $("#settings").removeClass("error");
   $("#settings").animate({opacity: 1}, 1000);
-
   $("#mortar-location").removeClass("error2");
   $("#mortar-location").animate({opacity: 1}, 1000);
-
   $("#target-location").removeClass("error2");
   $("#target-location").animate({opacity: 1}, 1000);
 
