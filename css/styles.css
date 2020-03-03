@@ -11,13 +11,20 @@
 body {
     line-height: 1.7em;
     color: #7f8c8d;
-    font-size: 13px;
+    font-size: 10px;
+    background: #111;
 }
+
+@font-face {
+    font-family: 'JerseyM54';
+    src: url('JerseyM54.ttf'); /* IE9 Compat Modes */
+    src: url('JerseyM54.ttf')  format('truetype'), /* Safari, Android, iOS */
+  }
 
 html, button, input, select, textarea,
     .pure-g [class *= "pure-u"] {
         font-family: 'Montserrat', Times, "Times New Roman", serif;
-        letter-spacing: 0.2em;
+        letter-spacing: 0.1em;
     }
 h1,
 h2,
@@ -72,9 +79,9 @@ label {
 input { 
     border: 0;
     border-bottom: 3px solid white;
-    font-size: 1.8em;
+    font-size: 2em;
     line-height: 2.188em;
-    height: 60px;
+    height: 40px;
     text-align: center;
     text-transform: uppercase;
     padding: 0;
@@ -131,7 +138,7 @@ a.pure-button-primary {
 
 .home-menu .pure-menu-heading {
     color: white;
-    font-size: 250%;
+    font-size: 400%;
     margin: auto;
     padding: 0.3em 0;
     font-weight: bold;
@@ -180,7 +187,7 @@ a.pure-button-primary {
     width: 100%;
     height: 100%;
     margin: auto auto;
-    margin-top: 150px;
+    margin-top: 10em;
     position: absolute;
     top: 0; left: 0; bottom: 0; right: 0;
     text-align: center;
@@ -190,15 +197,16 @@ a.pure-button-primary {
 
 /* This is the main heading that appears on the blue section */
 .splash-head {
-    font-size: 20px;
+    font-size: 25px;
     color: white;
     border: 5px solid white;
-    padding: 1em 0.6em;
-    margin: 1.6em auto;
+    padding: 1.1em 0.6em;
+    margin: 2.5em auto;
     border-radius: 5px;
     line-height: 1em;
     font-weight: bold;
     width: 100%;
+
 }
 
 .error {
@@ -291,23 +299,8 @@ a.pure-button-primary {
     text-decoration: underline;
 }
 
-/*
- * -- DESKTOP (AND UP) MEDIA QUERIES --
- * On desktops and other large devices, we want to over-ride some
- * of the mobile and tablet styles.
- */
- @media (min-width: 20em) {
-    /* We increase the header font size even more */
-    .splash-head {
-        font-size: 200%;
-        max-width: 500px;
-    }
-    .splash {
-        width: 50%;
-        height: 50%;
-    }
 
-}
+
 
 /*
  * -- TABLET (AND UP) MEDIA QUERIES --
@@ -334,6 +327,15 @@ a.pure-button-primary {
     .l-box-lrg {
         border: none;
     }
+
+    .footer {
+        letter-spacing: 0.2em;
+    }
+
+    input {
+        height: 60px;
+    }
+
 
 }
 
@@ -378,8 +380,8 @@ a.pure-button-primary {
 
 #mapSelector{
     padding: 0;
-    margin: auto auto;
-
+    margin: 0;
+    height: 7em;
 }
 
 #heatmap{
@@ -393,20 +395,20 @@ a.pure-button-primary {
     height: 250px;
 }
 
-#selectbox {
+.selectbox {
     border: 0;
     border-bottom: 1px solid white;
     width: 100%;
-    font-size: 1.4em;
+    font-size: 1.7em;
     line-height: 2.188em;
-    height: 60px;
+    height: 3em;
     text-align: center;
     text-transform: uppercase;
     padding: 0;
     background: transparent;
     color: #ffffff;
     font-weight: bold;
-    width: 300px;
+    width: 15em;
     margin-bottom: 50px;
 }
 
