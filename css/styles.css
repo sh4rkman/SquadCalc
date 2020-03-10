@@ -349,7 +349,9 @@ a.pure-button-primary {
     .splash-head {
         font-size: 200%;
         max-width: 800px;
+        margin: 40px auto 40px auto;
     }
+    
 }
 
 /*
@@ -363,6 +365,16 @@ a.pure-button-primary {
         font-size: 250%;
         max-width: 800px;
     }
+    .footer {
+        letter-spacing: 0.4em;
+    }
+    
+        /* We decrease the width of the .splash, since we have more width
+    to work with */
+    .splash {
+        margin-top: 7em;
+    }
+
 }
 
 /*
@@ -378,7 +390,7 @@ a.pure-button-primary {
     }
 }
 
-#mapSelector{
+.mapSelector{
     padding: 0;
     margin: 0;
     height: 7em;
@@ -409,7 +421,6 @@ a.pure-button-primary {
     color: #ffffff;
     font-weight: bold;
     width: 15em;
-    margin-bottom: 50px;
 }
 
 

@@ -1,4 +1,5 @@
 // Each map has a different size and require scaling w, y and z when calculating height
+// Map['Name', size, z-scaling]
 var maps = [
   ['Al Basrah', 3200, 0.47],
   ['Belaya', 3904, 0.5],
@@ -19,7 +20,7 @@ var maps = [
 
 
 $(document ).ready(function() {
-  $("#version").html("v2.1"); // set version
+  $("#version").html("v2.2"); // set version
   loadHeatmap();
   console.log("Calculator Loaded!");
 });
