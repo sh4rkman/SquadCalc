@@ -83,7 +83,7 @@ input {
     background: transparent;
     color: #ffffff;
     font-weight: bold;
-    width: 230px;
+    width: 200px;
 }
 
 input:focus{
@@ -116,7 +116,7 @@ a.pure-button-primary {
 
 
 .home-menu {
-    margin-left:1em;
+    margin-left: 1em;
     padding: 0.5em;
     text-align: center;
     box-shadow: 0 1px 1px rgba(0,0,0, 0.10);
@@ -282,6 +282,7 @@ a.pure-button-primary {
     position: fixed;
     bottom: 0;
     width: 100%;
+    font-size: 90%;
 }
 
 .youtube {
@@ -292,102 +293,6 @@ a.pure-button-primary {
 .youtube:hover {
     color: brown;
     text-decoration: underline;
-}
-
-
-
-
-/*
- * -- TABLET (AND UP) MEDIA QUERIES --
- * On tablets and other medium-sized devices, we want to customize some
- * of the mobile styles.
- */
-@media (min-width: 48em) {
-    body {
-        font-size: 14px;
-    }
-    .splash {
-        width: 70%;
-        height: 50%;
-        margin-top: 7em;
-    }
-    .splash-head {
-        font-size: 250%;
-        margin: 40px auto 40px auto;
-    }
-    .footer {
-        letter-spacing: 0.3em;
-    }
-    input {
-        height: 50px;
-    }
-}
-
-/*
- * -- DESKTOP (AND UP) MEDIA QUERIES --
- * On desktops and other large devices, we want to over-ride some
- * of the mobile and tablet styles.
- */
- @media (min-width: 60em) {
-    /* We increase the header font size even more */
-    .splash-head {
-        font-size: 250%;
-        max-width: 800px;
-        margin: 40px auto 40px auto;
-    }
-    .splash {
-        width: 50%;
-    }
-    
-}
-
-/*
- * -- LAPTOP S (1024*600) 16/9 MEDIA QUERIES --
- * On desktops and other large devices, we want to over-ride some
- * of the mobile and tablet styles.
- */
-@media (min-width: 78em) {
-    /* We increase the header font size even more */
-    body {
-        font-size: 15px;
-    }
-    .splash-head {
-        font-size: 250%;
-        max-width: 800px;
-        
-    }
-    .footer {
-        letter-spacing: 0.4em;
-    }
-
-}
-
-/*
- * -- DESKTOP L (1440*800) 16/9 -MEDIA QUERIES --
- * On desktops and other large devices, we want to over-ride some
- * of the mobile and tablet styles.
- */
- @media (min-width: 90em) {
-    /* We increase the header font size even more */
-    .splash-head {
-        font-size: 300%;
-        margin: 50px auto 50px auto;
-    }
-
-}
-
-
-/*
- * -- LARGE DESKTOP 21/9 MEDIA QUERIES --
- * On desktops and other large devices, we want to over-ride some
- * of the mobile and tablet styles.
- */
-@media (min-width: 130em) {
-    /* We increase the header font size even more */
-    .splash-head {
-        font-size: 300%;
-        max-width: 800px;
-    }
 }
 
 .mapSelector{
@@ -437,4 +342,8 @@ select option {
 
 select:focus{
     outline: none;
+}
+
+.header {
+    font-size: 130%;
 }

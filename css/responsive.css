@@ -1,0 +1,107 @@
+/*
+ * -- WIDTH ADJUSTMENTS
+ *
+ */
+ 
+/* -- 768px*H -- */
+ @media (min-width: 48em) {
+    body {
+        font-size: 14px;
+    }
+    .splash {
+        width: 90%;
+    }
+    .splash-head {
+        font-size: 250%;
+    }
+    .footer {
+        letter-spacing: 0.3em;
+        font-size: 100%;
+    }
+}
+/* -- 960px*H -- */
+ @media (min-width: 60em) {
+    .splash-head {
+        font-size: 250%;
+        max-width: 800px;
+    }
+    .splash {
+        width: 70%;
+    }
+}
+/* -- 1248px*H -- */
+@media (min-width: 78em) {
+    body {
+        font-size: 15px;
+    }
+    .splash-head {
+        font-size: 250%;
+        max-width: 800px;
+    }
+    .splash {
+        width: 60%;
+    }
+    .footer {
+        letter-spacing: 0.4em;
+    }
+}
+/* -- 1440px*H -- */
+ @media (min-width: 90em) {
+    .splash-head {
+        font-size: 300%;
+    }
+    .splash {
+        width: 50%;
+    }
+}
+/* -- 2080px*H -- */
+@media (min-width: 130em) {
+    .splash-head {
+        font-size: 300%;
+        max-width: 800px;
+    }
+    .splash {
+        width: 40%;
+    }
+}
+
+
+/*
+ * -- HEIGHT ADJUSTMENTS
+ *
+ */
+ 
+/* -- L*640px -- */
+@media (min-height: 40em) {
+    .splash {
+        margin-top: 12em;
+    }
+    .splash-head {
+        margin: 70px auto 50px auto;
+        font-size: 32px;
+    }
+}
+/* -- L*730px -- */
+@media (min-height: 45em) {
+    .splash {
+        margin-top: 15em;
+    }
+}
+/* -- L*800px -- */
+@media (min-height: 50em) {
+    .splash-head {
+        font-size: 40px;
+    }
+    input {
+        height: 50px;
+    }
+}
+/* -- L*960px -- */
+@media (min-height: 60em) {
+    .splash {
+        margin-top: 15em;
+    }
+    .splash-head {
+        margin: 100px auto 50px auto;
+    }
+}
