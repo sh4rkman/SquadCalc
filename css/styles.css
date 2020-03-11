@@ -15,11 +15,6 @@ body {
     background: #111;
 }
 
-@font-face {
-    font-family: 'JerseyM54';
-    src: url('JerseyM54.ttf'); /* IE9 Compat Modes */
-    src: url('JerseyM54.ttf')  format('truetype'), /* Safari, Android, iOS */
-  }
 
 html, button, input, select, textarea,
     .pure-g [class *= "pure-u"] {
@@ -197,7 +192,7 @@ a.pure-button-primary {
 
 /* This is the main heading that appears on the blue section */
 .splash-head {
-    font-size: 25px;
+    font-size: 27px;
     color: white;
     border: 5px solid white;
     padding: 1.1em 0.6em;
@@ -205,7 +200,7 @@ a.pure-button-primary {
     border-radius: 5px;
     line-height: 1em;
     font-weight: bold;
-    width: 100%;
+    width: 90%;
 
 }
 
@@ -308,8 +303,6 @@ a.pure-button-primary {
  * of the mobile styles.
  */
 @media (min-width: 48em) {
-
-    /* We increase the body font size */
     body {
         font-size: 14px;
     }
@@ -319,18 +312,15 @@ a.pure-button-primary {
         margin-top: 7em;
     }
     .splash-head {
-        font-size: 200%;
+        font-size: 250%;
         margin: 40px auto 40px auto;
     }
     .footer {
         letter-spacing: 0.3em;
     }
-
     input {
         height: 50px;
     }
-
-
 }
 
 /*
@@ -341,7 +331,7 @@ a.pure-button-primary {
  @media (min-width: 60em) {
     /* We increase the header font size even more */
     .splash-head {
-        font-size: 200%;
+        font-size: 250%;
         max-width: 800px;
         margin: 40px auto 40px auto;
     }
@@ -358,6 +348,9 @@ a.pure-button-primary {
  */
 @media (min-width: 78em) {
     /* We increase the header font size even more */
+    body {
+        font-size: 17px;
+    }
     .splash-head {
         font-size: 250%;
         max-width: 800px;
@@ -369,18 +362,15 @@ a.pure-button-primary {
 }
 
 /*
- * -- DESKTOP L (1440*840) 16/9 -MEDIA QUERIES --
+ * -- DESKTOP L (1440*800) 16/9 -MEDIA QUERIES --
  * On desktops and other large devices, we want to over-ride some
  * of the mobile and tablet styles.
  */
- @media (min-width: 78em) {
+ @media (min-width: 90em) {
     /* We increase the header font size even more */
     .splash-head {
-        font-size: 250%;
-        max-width: 800px;
-    }
-    .footer {
-        letter-spacing: 0.4em;
+        font-size: 300%;
+        margin: 80px auto 80px auto;
     }
 
 }
