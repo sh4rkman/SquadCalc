@@ -311,29 +311,23 @@ a.pure-button-primary {
 
     /* We increase the body font size */
     body {
-        font-size: 16px;
+        font-size: 14px;
     }
-    /* We decrease the width of the .splash, since we have more width
-    to work with */
     .splash {
-        width: 50%;
+        width: 70%;
         height: 50%;
+        margin-top: 7em;
     }
     .splash-head {
         font-size: 200%;
+        margin: 40px auto 40px auto;
     }
-
-    /* We remove the border-separator assigned to .l-box-lrg */
-    .l-box-lrg {
-        border: none;
-    }
-
     .footer {
-        letter-spacing: 0.2em;
+        letter-spacing: 0.3em;
     }
 
     input {
-        height: 60px;
+        height: 50px;
     }
 
 
@@ -351,11 +345,14 @@ a.pure-button-primary {
         max-width: 800px;
         margin: 40px auto 40px auto;
     }
+    .splash {
+        width: 50%;
+    }
     
 }
 
 /*
- * -- DESKTOP 16/9 MEDIA QUERIES --
+ * -- LAPTOP S (1024*600) 16/9 MEDIA QUERIES --
  * On desktops and other large devices, we want to over-ride some
  * of the mobile and tablet styles.
  */
@@ -368,14 +365,26 @@ a.pure-button-primary {
     .footer {
         letter-spacing: 0.4em;
     }
-    
-        /* We decrease the width of the .splash, since we have more width
-    to work with */
-    .splash {
-        margin-top: 7em;
+
+}
+
+/*
+ * -- DESKTOP L (1440*840) 16/9 -MEDIA QUERIES --
+ * On desktops and other large devices, we want to over-ride some
+ * of the mobile and tablet styles.
+ */
+ @media (min-width: 78em) {
+    /* We increase the header font size even more */
+    .splash-head {
+        font-size: 250%;
+        max-width: 800px;
+    }
+    .footer {
+        letter-spacing: 0.4em;
     }
 
 }
+
 
 /*
  * -- LARGE DESKTOP 21/9 MEDIA QUERIES --
