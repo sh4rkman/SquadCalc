@@ -349,11 +349,12 @@ a.pure-button-primary {
 @media (min-width: 78em) {
     /* We increase the header font size even more */
     body {
-        font-size: 17px;
+        font-size: 15px;
     }
     .splash-head {
         font-size: 250%;
         max-width: 800px;
+        
     }
     .footer {
         letter-spacing: 0.4em;
@@ -370,7 +371,7 @@ a.pure-button-primary {
     /* We increase the header font size even more */
     .splash-head {
         font-size: 300%;
-        margin: 80px auto 80px auto;
+        margin: 50px auto 50px auto;
     }
 
 }

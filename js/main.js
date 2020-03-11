@@ -20,7 +20,7 @@ var maps = [
 
 
 $(document ).ready(function() {
-  $("#version").html("v2.2"); // set version
+  $("#version").html("v2.3"); // set version
   loadHeatmap();
   console.log("Calculator Loaded!");
 });
