@@ -11,9 +11,6 @@
     .splash {
         width: 90%;
     }
-    .splash-head {
-        font-size: 250%;
-    }
     .footer {
         letter-spacing: 0.3em;
         font-size: 100%;
@@ -22,7 +19,6 @@
 /* -- 960px*H -- */
  @media (min-width: 60em) {
     .splash-head {
-        font-size: 250%;
         max-width: 800px;
     }
     .splash {
@@ -35,7 +31,6 @@
         font-size: 15px;
     }
     .splash-head {
-        font-size: 250%;
         max-width: 800px;
     }
     .splash {
@@ -74,11 +69,11 @@
 /* -- L*640px -- */
 @media (min-height: 40em) {
     .splash {
-        margin-top: 12em;
+        margin-top: 10em;
     }
     .splash-head {
-        margin: 70px auto 50px auto;
-        font-size: 32px;
+        margin: 50px auto 30px auto;
+        font-size: 250%;
     }
 }
 /* -- L*730px -- */
@@ -86,11 +81,15 @@
     .splash {
         margin-top: 15em;
     }
+    .splash-head {
+        margin: 60px auto 50px auto;
+        font-size: 250%;
+    }
 }
 /* -- L*800px -- */
 @media (min-height: 50em) {
     .splash-head {
-        font-size: 40px;
+        font-size: 250%;
     }
     input {
         height: 50px;
