@@ -2,7 +2,13 @@
  * -- WIDTH ADJUSTMENTS
  *
  */
- 
+ @media (min-width: 28em) {
+    .footer {
+        letter-spacing: 0.3em;
+        font-size: 110%;
+    }
+}
+
 /* -- 768px*H -- */
  @media (min-width: 48em) {
     body {
@@ -13,7 +19,6 @@
     }
     .footer {
         letter-spacing: 0.3em;
-        font-size: 100%;
     }
 }
 /* -- 960px*H -- */
@@ -102,5 +107,15 @@
     }
     .splash-head {
         margin: 100px auto 50px auto;
+    }
+}
+/* -- L*960px -- */
+@media (min-height: 67em) {
+    .splash {
+        margin-top: 16em;
+    }
+    .splash-head {
+        font-size: 270%;
+        margin: 130px auto 70px auto;
     }
 }
