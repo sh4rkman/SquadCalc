@@ -88,6 +88,7 @@ function getPos(kp) {
       const kpNr = Number(parts[i].slice(1)) - 1;
       x += 300 * letterIndex;
       y += 300 * kpNr;
+
     } else {
       // opposite of calculations in getKP()
       const sub = Number(parts[i]);
@@ -100,21 +101,19 @@ function getPos(kp) {
       const interval = 300 / 3 ** i;
       x += interval * subX;
       y += interval * subY;
-      
     }
     i += 1;
   }
     
+
   // at the end, add half of last interval, so it points to the center of the deepest sub-keypad
   const interval = 300 / 3 ** (i - 1);
   x += interval / 2;
   y += interval / 2;
-
   var pos = {
     lat: x,
     lng: y
   };
-
   // might throw error
   return pos;
 }
@@ -137,15 +136,14 @@ function formatKeyPad(text = "") {
       .join("");
     const textParts = [];
   
-    textParts.push(textND.slice(0, 2));
+    textParts.push(textND.slice(0, 3));
   
     // iteration through sub-keypads
-    let i = 2;
+    let i = 3;
     while (i < textND.length) {
       textParts.push(textND.slice(i, i + 1));
       i += 1;
     }
-
     return textParts.join("-");
   }
 
