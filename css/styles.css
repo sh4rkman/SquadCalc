@@ -222,27 +222,7 @@ a.pure-button-primary {
     user-select: none;
 }
 
-/* This is the subheading that appears on the blue section */
-.splash-subhead {
-    color: white;
-    letter-spacing: 0.05em;
-    opacity: 0.8;
-}
 
-/*
- * -- CONTENT STYLES --
- * This represents the content area (everything below the blue section)
- */
-.content-wrapper {
-    /* These styles are required for the "scroll-over" effect */
-    position: absolute;
-    top: 87%;
-    width: 100%;
-    min-height: 12%;
-    z-index: 2;
-    background: white;
-
-}
 
 /* We want to give the content area some more padding */
 .content {
