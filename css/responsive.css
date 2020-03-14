@@ -17,9 +17,6 @@
     .splash {
         width: 90%;
     }
-    .footer {
-        letter-spacing: 0.3em;
-    }
 }
 /* -- 960px*H -- */
  @media (min-width: 60em) {
@@ -32,9 +29,6 @@
 }
 /* -- 1248px*H -- */
 @media (min-width: 78em) {
-    body {
-        font-size: 15px;
-    }
     .splash-head {
         max-width: 800px;
     }
@@ -56,10 +50,6 @@
 }
 /* -- 2080px*H -- */
 @media (min-width: 130em) {
-    .splash-head {
-        font-size: 300%;
-        max-width: 800px;
-    }
     .splash {
         width: 40%;
     }
@@ -78,26 +68,29 @@
     }
     .splash-head {
         margin: 50px auto 30px auto;
-        font-size: 250%;
+        font-size: 260%;
     }
 }
 /* -- L*730px -- */
 @media (min-height: 45em) {
     .splash {
-        margin-top: 15em;
+        margin-top: 13em;
     }
     .splash-head {
         margin: 60px auto 50px auto;
-        font-size: 250%;
+        font-size: 270%;
     }
 }
 /* -- L*800px -- */
 @media (min-height: 50em) {
+    .splash {
+        margin-top: 14em;
+    }
     .splash-head {
-        font-size: 250%;
+        font-size: 300%;
     }
     input {
-        height: 50px;
+        height: 60px;
     }
 }
 /* -- L*960px -- */
@@ -106,10 +99,14 @@
         margin-top: 15em;
     }
     .splash-head {
+        font-size: 260%;
         margin: 100px auto 50px auto;
     }
+    input {
+        height: 70px;
+    }
 }
-/* -- L*960px -- */
+/* -- L*1072pxpx -- */
 @media (min-height: 67em) {
     .splash {
         margin-top: 16em;
