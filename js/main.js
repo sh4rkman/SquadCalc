@@ -66,7 +66,6 @@ function getPos(kp) {
   if (!fkp || fkp.length < 2) {
     console.log(`invalid keypad string: ${fkp}`);
   }
-
   const parts = fkp.split("-");
   let x = 0;
   let y = 0;
@@ -104,7 +103,6 @@ function getPos(kp) {
     }
     i += 1;
   }
-    
 
   // at the end, add half of last interval, so it points to the center of the deepest sub-keypad
   const interval = 300 / 3 ** (i - 1);
@@ -268,6 +266,8 @@ function shoot() {
   
   a = $("#mortar-location").val();
   b = $("#target-location").val();
+  $("#mortar-location").val(formatKeyPad(a));
+  $("#target-location").val(formatKeyPad(b));
 
   // If keypads are imprecises, reset calcs
   if (a.length < 3 || b.length < 3) {
