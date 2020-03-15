@@ -312,12 +312,15 @@ a.pure-button-primary {
 select {
     text-align: center;
     text-align-last: center;
+    -webkit-appearance: none;
+}
+
+select:hover {
+    cursor: pointer;
 }
 
 select option {
     background: #111;
-    text-align: center;
-    text-align-last: center;
   }
 
 select:focus{
