@@ -19,8 +19,9 @@ var maps = [
 ];
 
 
+
 $(document ).ready(function() {
-  $("#version").html("v2.6"); // set version
+  $("#version").html("v2.7"); // set version
   loadHeatmap();
   console.log("Calculator Loaded!");
 });
@@ -125,7 +126,6 @@ function formatKeyPad(text = "") {
     // special case if people prefer to input "A2-3-4" over "A0234"
     // check if length is 3 and third letter is a dash, then just convert to padded
     if (text.length === 3 && text[2] === "-") {
-      // eslint-disable-next-line no-param-reassign
       text = text[0] + pad(text[1], 2);
     }
     const textND = text
