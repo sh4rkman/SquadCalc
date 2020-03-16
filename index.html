@@ -40,26 +40,26 @@
 
         <div class="splash">
 
-            <div id="mapSelector" class="mapSelector">
-                <select id="selectbox" class="selectbox" data-selected="" onchange="drawHeatmap();">
-                    <option value="99" selected="selected" disabled="disabled">Select a map</option>
-                    <option value="0">Al Basrah</option>
-                    <option value="1">Belaya</option>
-                    <option value="2">Chora</option>
-                    <option value="3">Fool's Road</option>
-                    <option value="4">Gorodok</option>
-                    <option value="5">Kamdesh</option>
-                    <option value="6">Kohat</option>
-                    <option value="7">Kokan</option>
-                    <option value="8">Logar</option>
-                    <option value="9">Mestia</option>
-                    <option value="10">Narva</option>
-                    <option value="11">Skorpo</option>
-                    <option value="12">Sumari</option>
-                    <option value="13">Tallil</option>
-                    <option value="14">Yehorivka</option>
-                </select>
-            </div>
+            <div id="mapSelector" class="dropdown mapSelector">
+                <button id="selectbox" value="99" onclick="myFunction();" class="dropbtn selectbox">SELECT A MAP</button>
+                <div id="myDropdown" class="dropdown-content">
+                  <li value="0">Al Basrah</li>
+                  <li value="1">Belaya</li>
+                  <li value="2">Chora</li>
+                  <li value="3">Fool's Road</li>
+                  <li value="4">Gorodok</li>
+                  <li value="5">Kamdesh</li>
+                  <li value="6">Kohat</li>
+                  <li value="7">Kokan</li>
+                  <li value="8">Logar</li>
+                  <li value="9">Mestia</li>
+                  <li value="10">Narva</li>
+                  <li value="11">Skorpo</li>
+                  <li value="12">Sumari</li>
+                  <li value="13">Tallil</li>
+                  <li value="14">Yehorivka</li>
+                </div>
+              </div>
 
             <div id="settings" class="splash-head">
                 <div class="pure-g">
@@ -69,7 +69,6 @@
     
                     <div class="pure-u-4-24"> - </div>
     
-        
                     <div id="elevation" class="pure-u-10-24">
                         xxxx∡
                     </div>      

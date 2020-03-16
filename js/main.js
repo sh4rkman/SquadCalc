@@ -18,7 +18,28 @@ var maps = [
   ['Yehorivka', 5000, 0.29]
 ];
 
+function myFunction() {
+  document.getElementById("myDropdown").classList.toggle("show");
+}
 
+window.onclick = function(event) {
+  if (!event.target.matches('.dropbtn')) {
+    var dropdowns = document.getElementsByClassName("dropdown-content");
+    var i;
+    for (i = 0; i < dropdowns.length; i++) {
+      var openDropdown = dropdowns[i];
+      if (openDropdown.classList.contains('show')) {
+        openDropdown.classList.remove('show');
+      }
+    }
+  }
+}
+
+$("li").click(function(){
+  $("#selectbox").html($(this).text());
+  $("#selectbox").val($(this).val());
+  drawHeatmap();
+  });
 
 $(document ).ready(function() {
   $("#version").html("v2.7"); // set version
@@ -42,7 +63,7 @@ function loadHeatmap() {
  */
 function drawHeatmap(){
   var img = new Image();   // Create new img element
-  var map = document.getElementById("selectbox").options[document.getElementById("selectbox").selectedIndex].text.toLowerCase()
+  var map = $("#selectbox").text().toLowerCase();
   
   img.addEventListener('load', function() { // wait for the image to load or it does crazy stuff
     var ctx = document.getElementById('canvas').getContext('2d');
@@ -123,6 +144,10 @@ function getPos(kp) {
  * @returns {string} formatted string
  */
 function formatKeyPad(text = "") {
+
+    // If empty string, return
+    if(text.length==0){return;}
+
     // special case if people prefer to input "A2-3-4" over "A0234"
     // check if length is 3 and third letter is a dash, then just convert to padded
     if (text.length === 3 && text[2] === "-") {
@@ -142,7 +167,9 @@ function formatKeyPad(text = "") {
       textParts.push(textND.slice(i, i + 1));
       i += 1;
     }
+
     return textParts.join("-");
+
   }
 
  /**
@@ -239,18 +266,18 @@ function getElevation(x, y = 0, v = 109.890938, g = 9.8) {
  */
 function getHeight(a, b) {
 
-  if(document.getElementById("selectbox").value == 99) return 0; // if user didn't select map, no height calculation
+  if($("#selectbox").val() == 99) return 0; // if user didn't select map, no height calculation
 
   // load map size for scaling lat&lng
-  var mapScale = 250 / maps[document.getElementById("selectbox").value][1];
+  var mapScale = 250 / maps[$("#selectbox").val()][1];
 
   // Read Heightmap values for a & b
   var ctx = document.getElementById('canvas').getContext('2d');
   var Aheight = ctx.getImageData(Math.round(a.lat*mapScale), Math.round(a.lng*mapScale), 1, 1).data;
   var Bheight = ctx.getImageData(Math.round(b.lat*mapScale), Math.round(b.lng*mapScale), 1, 1).data;
 
-  Aheight = (255 + Aheight[0] - Aheight[2])*maps[document.getElementById("selectbox").value][2];
-  Bheight = (255 + Bheight[0] - Bheight[2])*maps[document.getElementById("selectbox").value][2];
+  Aheight = (255 + Aheight[0] - Aheight[2])*maps[$("#selectbox").val()][2];
+  Bheight = (255 + Bheight[0] - Bheight[2])*maps[$("#selectbox").val()][2];
 
   return Bheight-Aheight;
 }
@@ -268,6 +295,8 @@ function shoot() {
   b = $("#target-location").val();
   $("#mortar-location").val(formatKeyPad(a));
   $("#target-location").val(formatKeyPad(b));
+
+
 
   // If keypads are imprecises, reset calcs
   if (a.length < 3 || b.length < 3) {
