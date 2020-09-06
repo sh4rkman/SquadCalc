@@ -296,8 +296,6 @@ function shoot() {
   $("#mortar-location").val(formatKeyPad(a));
   $("#target-location").val(formatKeyPad(b));
 
-
-
   // If keypads are imprecises, reset calcs
   if (a.length < 3 || b.length < 3) {
     console.log('keypad too short');

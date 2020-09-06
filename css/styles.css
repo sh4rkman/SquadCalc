@@ -218,16 +218,13 @@ input:focus{
     height: 250px;
 }
 
-
 .header {
     font-size: 130%;
 }
 
-
 .selectbox {
     padding: 0;
 }
-
 
 .dropbtn {
     background: transparent;
@@ -247,7 +244,6 @@ input:focus{
 .dropbtn:focus{
     outline: none;
 }
-
 
 .dropdown {
     position: relative;
