@@ -9,8 +9,10 @@ var maps = [
   ['Kamdesh', 4032, 0.2],
   ['Kohat', 4017, 0.777],
   ['Kokan', 2496, 0.01],
+  ['Lashkar', 4334, 0.13],
   ['Logar', 1761, 0.14],
   ['Mestia', 2400, 0.4],
+  ['Mutaha', 2755, 0.4],
   ['Narva', 2800, 0.057],
   ['Skorpo', 7600, 0.4],
   ['Sumari', 1300, 0.037],
@@ -42,7 +44,7 @@ $("li").click(function(){
   });
 
 $(document ).ready(function() {
-  $("#version").html("v2.7"); // set version
+  $("#version").html("v2.8"); // set version
   loadHeatmap();
   console.log("Calculator Loaded!");
 });
