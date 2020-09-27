@@ -9,7 +9,7 @@ var maps = [
   ['Kamdesh', 4032, 0.2],
   ['Kohat', 4017, 0.777],
   ['Kokan', 2496, 0.01],
-  ['Lashkar', 4334, 0.13],
+  ['Lashkar', 4334, 0.28],
   ['Logar', 1761, 0.14],
   ['Mestia', 2400, 0.4],
   ['Mutaha', 2755, 0.4],
@@ -267,7 +267,6 @@ function getElevation(x, y = 0, v = 109.890938, g = 9.8) {
    * @returns {number} - relative height in meters
  */
 function getHeight(a, b) {
-
   if($("#selectbox").val() == 99) return 0; // if user didn't select map, no height calculation
 
   // load map size for scaling lat&lng
