@@ -299,7 +299,9 @@ function getHeight(a, b) {
  * @returns {target} elevation + bearing
  */
 function shoot() {
-  
+  $("#toast").removeClass("show"); // Hide error toasts
+
+  // Get Keypads and format it
   a = $("#mortar-location").val();
   b = $("#target-location").val();
   $("#mortar-location").val(formatKeyPad(a));
@@ -357,11 +359,13 @@ function shoot() {
       $("#target-location").removeClass("error2");
       $("#target-location").animate({opacity: 1}, 1000);
       $("#mortar-location").addClass("error2");
+      toastError("Motars are out of map");
     } else {    // Target is out of map
       console.log('Target is out of map');
       $("#mortar-location").removeClass("error2");
       $("#mortar-location").animate({opacity: 1}, 1000);
       $("#target-location").addClass("error2");
+      toastError("Target is out of map");
     }
     return 1
   }
@@ -411,6 +415,7 @@ function shoot() {
     $("#bearing").html(bearing.toFixed(1) + "°");
     $("#elevation").html("2far!");
     $("#settings").effect("shake");
+    toastError("Target is out of range : " + distance.toFixed(0)+"m !");
     return 1
   }
 
@@ -427,6 +432,7 @@ function shoot() {
     $("#bearing").html(bearing.toFixed(1) + "°");
     $("#elevation").html("2close!");
     $("#settings").effect("shake");
+    toastError("Target is too close : " + distance.toFixed(0)+"m !");
     return 1
   }
   
@@ -491,3 +497,13 @@ function filterInput(a, e) {
   return false;
  }
  
+ /**
+ * ShowToast
+ *
+ * @param {string} e - error message to be displayed
+ */
+function toastError(e) {
+  $("#toast").html(e);
+  $("#toast").addClass("show");
+  setTimeout(function(){ $("#toast").removeClass("show");}, 5000);
+}
