@@ -299,7 +299,12 @@ function getHeight(a, b) {
  * @returns {target} elevation + bearing
  */
 function shoot() {
-  $("#toast").removeClass("show"); // Hide error toasts
+
+  // First, Reset any errors
+  $("#toast").removeClass("show");
+  $("#settings").removeClass("error");
+  $("#target-location").removeClass("error2");
+  $("#mortar-location").removeClass("error2");
 
   // Get Keypads and format it
   a = $("#mortar-location").val();
@@ -326,19 +331,15 @@ function shoot() {
     $("#settings").effect("shake");
 
     if(isNaN(a.lng) && isNaN(b.lng)){
-      // Add error on target
+      // Add error on target & mortar
       $("#target-location").addClass("error2");
       $("#mortar-location").addClass("error2");
       return 1
     }
     if(isNaN(a.lng)){
-      $("#target-location").removeClass("error2");
-      $("#target-location").animate({opacity: 1}, 1000);
       $("#mortar-location").addClass("error2");
       return 1
     } else {
-      $("#mortar-location").removeClass("error2");
-      $("#mortar-location").animate({opacity: 1}, 1000);
       $("#target-location").addClass("error2");
       return 1
     }
@@ -356,14 +357,10 @@ function shoot() {
 
     if(height == -1){    // Mortars are out of map
       console.log('Mortars are out of map');
-      $("#target-location").removeClass("error2");
-      $("#target-location").animate({opacity: 1}, 1000);
       $("#mortar-location").addClass("error2");
       toastError("Motars are out of map");
     } else {    // Target is out of map
       console.log('Target is out of map');
-      $("#mortar-location").removeClass("error2");
-      $("#mortar-location").animate({opacity: 1}, 1000);
       $("#target-location").addClass("error2");
       toastError("Target is out of map");
     }
@@ -381,16 +378,10 @@ function shoot() {
 
     if(isNaN(a.lat)||isNaN(a.lng)){
       $("#mortar-location").addClass("error2");
-    } else {
-      $("#mortar-location").removeClass("error2");
-      $("#mortar-location").animate({opacity: 1}, 1000);
     }
     if(isNaN(b.lat)||isNaN(b.lng)){
       $("#target-location").addClass("error2");
-    } else {
-      $("#target-location").removeClass("error2");
-      $("#target-location").animate({opacity: 1}, 1000);
-    }
+    } 
     $("#settings").addClass("error");
     $("#bearing").html("xxx°");
     $("#elevation").html("xxxx∡");
@@ -405,9 +396,6 @@ function shoot() {
   // If Target too far, display it and exit function
   if(isNaN(elevation)){
     console.log("Target is too far : " + distance.toFixed(0)+"m !");
-    // Remove any mortar error
-    $("#mortar-location").removeClass("error2");
-    $("#mortar-location").animate({opacity: 1}, 1000);
     // Add error on target & settings
     $("#settings").addClass("error");
     $("#target-location").addClass("error2");
@@ -422,9 +410,6 @@ function shoot() {
   // If Target too close, display it and exit function
   if(distance<=50){
     console.log("Target is too close : " + distance.toFixed(0)+"m !");
-    // Remove any mortar error
-    $("#mortar-location").removeClass("error2");
-    $("#mortar-location").animate({opacity: 1}, 1000);
     // Add error on target & settings
     $("#settings").addClass("error");
     $("#target-location").addClass("error2");
@@ -439,13 +424,6 @@ function shoot() {
   // if in range
   console.log($("#mortar-location").val().toUpperCase() + "->" + $("#target-location").val().toUpperCase() + " = " + bearing.toFixed(1) + "° - " + elevation.toFixed(0));
 
-  // Remove Errors
-  $("#settings").removeClass("error");
-  $("#settings").animate({opacity: 1}, 1000);
-  $("#mortar-location").removeClass("error2");
-  $("#mortar-location").animate({opacity: 1}, 1000);
-  $("#target-location").removeClass("error2");
-  $("#target-location").animate({opacity: 1}, 1000);
 
   // Insert Calculations
   $("#bearing").html(bearing.toFixed(1) + "°");
