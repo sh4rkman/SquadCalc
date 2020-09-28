@@ -20,10 +20,6 @@ var maps = [
   ['Yehorivka', 5000, 0.29]
 ];
 
-function myFunction() {
-  document.getElementById("myDropdown").classList.toggle("show");
-}
-
 window.onclick = function(event) {
   if (!event.target.matches('.dropbtn')) {
     var dropdowns = document.getElementsByClassName("dropdown-content");
@@ -44,7 +40,7 @@ $("li").click(function(){
   });
 
 $(document ).ready(function() {
-  $("#version").html("v2.8"); // set version
+  $("#version").html("v2.9"); // set version
   loadHeatmap();
   console.log("Calculator Loaded!");
 });
@@ -312,7 +308,7 @@ function shoot() {
   $("#mortar-location").val(formatKeyPad(a));
   $("#target-location").val(formatKeyPad(b));
 
-  // If keypads are imprecises, reset calcs
+  // If keypads are imprecises, do nothing
   if (a.length < 3 || b.length < 3) {
     console.log('keypad too short');
     $("#bearing").html("xxx°");
@@ -324,7 +320,6 @@ function shoot() {
   b = getPos(b);
 
   if(isNaN(a.lng) || isNaN(b.lng)){
-    console.log('Invalid keypads');
     $("#settings").addClass("error");
     $("#bearing").html("xxx°");
     $("#elevation").html("xxxx∡");
@@ -332,15 +327,21 @@ function shoot() {
 
     if(isNaN(a.lng) && isNaN(b.lng)){
       // Add error on target & mortar
+      console.log('Invalid mortars and target');
       $("#target-location").addClass("error2");
       $("#mortar-location").addClass("error2");
+      toastError("Invalid mortars and target");
       return 1
     }
     if(isNaN(a.lng)){
+      console.log('Invalid mortars');
       $("#mortar-location").addClass("error2");
+      toastError("Invalid mortars");
       return 1
     } else {
+      console.log('Invalid target');
       $("#target-location").addClass("error2");
+      toastError("Invalid target");
       return 1
     }
   }
@@ -373,14 +374,15 @@ function shoot() {
   // If keypad is bad (1C32), distance is NaN
   // Detect it and display wich keypad is faultive 
   if(isNaN(distance)){
-
-    console.log('Invalid keypads');
-
     if(isNaN(a.lat)||isNaN(a.lng)){
+      console.log('Invalid mortars keypad');
       $("#mortar-location").addClass("error2");
+      toastError("Invalid mortars");
     }
     if(isNaN(b.lat)||isNaN(b.lng)){
+      console.log('Invalid Target keypad');
       $("#target-location").addClass("error2");
+      toastError("Invalid target");
     } 
     $("#settings").addClass("error");
     $("#bearing").html("xxx°");
@@ -421,11 +423,8 @@ function shoot() {
     return 1
   }
   
-  // if in range
+  // if in range, Insert Calculations
   console.log($("#mortar-location").val().toUpperCase() + "->" + $("#target-location").val().toUpperCase() + " = " + bearing.toFixed(1) + "° - " + elevation.toFixed(0));
-
-
-  // Insert Calculations
   $("#bearing").html(bearing.toFixed(1) + "°");
   $("#elevation").html(elevation.toFixed(0) + "∡");
 
@@ -477,11 +476,18 @@ function filterInput(a, e) {
  
  /**
  * ShowToast
- *
  * @param {string} e - error message to be displayed
  */
 function toastError(e) {
   $("#toast").html(e);
   $("#toast").addClass("show");
   setTimeout(function(){ $("#toast").removeClass("show");}, 5000);
+}
+
+
+ /**
+ * Open DrowDown with map list
+ */
+function openDropdown() {
+  document.getElementById("myDropdown").classList.toggle("show");
 }

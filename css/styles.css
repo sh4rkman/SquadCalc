@@ -284,6 +284,7 @@ input:focus{
 #toast {
     visibility: hidden;
     min-width: 250px;
+    width: 400px;
     margin-left: -200px;
     background-color:brown;
     color: #fff;
