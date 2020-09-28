@@ -277,6 +277,14 @@ function getHeight(a, b) {
   var Aheight = ctx.getImageData(Math.round(a.lat*mapScale), Math.round(a.lng*mapScale), 1, 1).data;
   var Bheight = ctx.getImageData(Math.round(b.lat*mapScale), Math.round(b.lng*mapScale), 1, 1).data;
 
+  // Check if a & b arn't out of canvas
+  if(Aheight[3]==0){
+    return -1;
+  }
+  if(Bheight[3]==0){
+    return -2;
+  }
+
   Aheight = (255 + Aheight[0] - Aheight[2])*maps[$("#selectbox").val()][2];
   Bheight = (255 + Bheight[0] - Bheight[2])*maps[$("#selectbox").val()][2];
 
@@ -336,6 +344,29 @@ function shoot() {
 
 
   var height = getHeight(a, b);
+
+  // Check if mortars/target are out of map
+  if((height == -1) || (height == -2)){
+    $("#settings").addClass("error");
+    $("#bearing").html("xxx°");
+    $("#elevation").html("xxxx∡");
+    $("#settings").effect("shake");
+
+    if(height == -1){    // Mortars are out of map
+      console.log('Mortars are out of map');
+      $("#target-location").removeClass("error2");
+      $("#target-location").animate({opacity: 1}, 1000);
+      $("#mortar-location").addClass("error2");
+    } else {    // Target is out of map
+      console.log('Target is out of map');
+      $("#mortar-location").removeClass("error2");
+      $("#mortar-location").animate({opacity: 1}, 1000);
+      $("#target-location").addClass("error2");
+    }
+    return 1
+  }
+
+
   var distance = getDist(a, b);
 
   // If keypad is bad (1C32), distance is NaN
@@ -356,7 +387,6 @@ function shoot() {
       $("#target-location").removeClass("error2");
       $("#target-location").animate({opacity: 1}, 1000);
     }
-
     $("#settings").addClass("error");
     $("#bearing").html("xxx°");
     $("#elevation").html("xxxx∡");
