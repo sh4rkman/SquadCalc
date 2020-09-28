@@ -273,6 +273,6 @@ input:focus{
     display: block;
 }
 
-.dropdown a:hover {background-color: #ddd;}
+.dropdown li:hover {background-color: grey;}
 
 .show {display: block;}
