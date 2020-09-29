@@ -4,6 +4,7 @@ var maps = [
   ['Al Basrah', 3200, 0.4],
   ['Belaya', 3904, 0.5],
   ['Chora', 4064, 0.06],
+  ['Fallujah', 4081, 0.055],
   ['FoolsRoad', 1736, 0.149],
   ['Gorodok', 4340, 0.13],
   ['Kamdesh', 4032, 0.2],
@@ -22,32 +23,8 @@ var maps = [
 
 
 $(document).ready(function() {
-  $("#version").html("v2.9"); // set version
+  $("#version").html("v3.0");
   loadHeatmap();
   console.log("Calculator Loaded!");
 });
 
-/**
- *  Close the dropdown when clicking anywhere
- */
-window.onclick = function(event) {
-  if (!event.target.matches('.dropbtn')) {
-    var dropdowns = document.getElementsByClassName("dropdown-content");
-    var i;
-    for (i = 0; i < dropdowns.length; i++) {
-      var openDropdown = dropdowns[i];
-      if (openDropdown.classList.contains('show')) {
-        openDropdown.classList.remove('show');
-      }
-    }
-  }
-}
-
-/**
- * Draw the selected Heatmaps in a hidden canvas
- */
-$("li").click(function(){
-  $("#selectbox").html($(this).text());
-  $("#selectbox").val($(this).val());
-  drawHeatmap();
-  });

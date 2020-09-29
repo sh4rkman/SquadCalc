@@ -449,23 +449,23 @@ function loadHeatmap() {
   /**
   *  Close the dropdown when clicking anywhere
   */
-window.onclick = function(event) {
-    if (!event.target.matches('.dropbtn')) {
-      var dropdowns = document.getElementsByClassName("dropdown-content");
-      var i;
-      for (i = 0; i < dropdowns.length; i++) {
-        var openDropdown = dropdowns[i];
-        if (openDropdown.classList.contains('show')) {
-          openDropdown.classList.remove('show');
+    window.onclick = function(event) {
+        if (!event.target.matches('.dropbtn')) {
+        var dropdowns = document.getElementsByClassName("dropdown-content");
+        var i;
+        for (i = 0; i < dropdowns.length; i++) {
+            var openDropdown = dropdowns[i];
+            if (openDropdown.classList.contains('show')) {
+            openDropdown.classList.remove('show');
+            }
         }
-      }
+        }
     }
-  }
-  
-  /**
-   * Draw the selected Heatmaps in a hidden canvas
-   */
-  $("li").click(function(){
+    
+    /**
+     * Draw the selected Heatmaps in a hidden canvas
+     */
+    $("li").click(function(){
     $("#selectbox").html($(this).text());
     $("#selectbox").val($(this).val());
     drawHeatmap();
