@@ -70,6 +70,10 @@
         margin: 50px auto 30px auto;
         font-size: 260%;
     }
+    .dropdown-content li {
+        padding: 2px 16px;
+        line-height: 1.5em;
+    }
 }
 /* -- L*730px -- */
 @media (min-height: 45em) {
@@ -79,6 +83,9 @@
     .splash-head {
         margin: 60px auto 50px auto;
         font-size: 270%;
+    }
+    .dropdown-content li {
+        padding: 2px 16px;
     }
 }
 /* -- L*800px -- */
@@ -92,6 +99,10 @@
     input {
         height: 60px;
     }
+    .dropdown-content li {
+        padding: 3px 16px;
+        line-height: 1.7em;
+    }
 }
 /* -- L*960px -- */
 @media (min-height: 60em) {
@@ -104,6 +115,10 @@
     }
     input {
         height: 70px;
+    }
+    .dropdown-content li {
+        padding: 4px 16px;
+        line-height: 2em;
     }
 }
 /* -- L*1072pxpx -- */
