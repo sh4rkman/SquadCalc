@@ -241,7 +241,7 @@ function loadHeatmap() {
   }
   
   /**
-   * Calculates the distance between two points.
+   * Calculates the distance elevation and bearing
    *
    * @param {string} a - keypad string where mortar is
    * @param {string} b - keypad string where target is
