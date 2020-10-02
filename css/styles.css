@@ -268,7 +268,8 @@ input:focus{
 
 .dropdown-content li {
     color: black;
-    padding: 5px 16px;
+    padding: 2px 16px;
+    line-height: 1em;
     text-decoration: none;
     display: block;
 }
