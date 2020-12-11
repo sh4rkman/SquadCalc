@@ -17,7 +17,7 @@
 
 ## **Elevations Calculations**
 
-MSMC is using heightmaps from Squad SDK to calculate the height difference between mortars and targets and ajust automatically the elevation. If you target is up a hill, MSMC will make sure you don't waste 1000 ammo point 20m too close.
+MSMC is using heightmaps from Squad SDK to calculate the height difference between mortars and targets and ajust automatically the elevation. If your target is up a hill, MSMC will make sure you don't waste 1000 ammo point 20m too close.
 
 Heightmaps are hidden : simply pick your map from the list and shoot.
 
