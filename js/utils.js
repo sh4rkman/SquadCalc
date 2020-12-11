@@ -216,7 +216,8 @@ function loadHeatmap() {
      * @returns {number} - relative height in meters
    */
   function getHeight(a, b) {
-    if($("#selectbox").val() == 99) return 0; // if user didn't select map, no height calculation
+    // if user didn't select map, no height calculation
+    if($("#selectbox").val() == 99) return 0; 
   
     // load map size for scaling lat&lng
     var mapScale = 250 / maps[$("#selectbox").val()][1];
@@ -228,10 +229,10 @@ function loadHeatmap() {
   
     // Check if a & b arn't out of canvas
     if(Aheight[3]==0){
-      return -1;
+      return 998;
     }
     if(Bheight[3]==0){
-      return -2;
+      return 999;
     }
   
     Aheight = (255 + Aheight[0] - Aheight[2])*maps[$("#selectbox").val()][2];
@@ -303,7 +304,7 @@ function loadHeatmap() {
     var height = getHeight(a, b);
   
     // Check if mortars/target are out of map
-    if((height == -1) || (height == -2)){
+    if((height == 998) || (height == 999)){
       $("#settings").addClass("error");
       $("#bearing").html("xxx°");
       $("#elevation").html("xxxx∡");
@@ -377,7 +378,7 @@ function loadHeatmap() {
     }
     
     // if in range, Insert Calculations
-    console.log($("#mortar-location").val().toUpperCase() + "->" + $("#target-location").val().toUpperCase() + " = " + bearing.toFixed(1) + "° - " + elevation.toFixed(0));
+    console.log($("#mortar-location").val().toUpperCase() + "->" + $("#target-location").val().toUpperCase() + " = " + bearing.toFixed(1) + "° - " + elevation.toFixed(0) + " (height: " + height.toFixed(0) + "m)");
     $("#bearing").html(bearing.toFixed(1) + "°");
     $("#elevation").html(elevation.toFixed(0) + "∡");
   

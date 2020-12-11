@@ -15,7 +15,7 @@ var maps = [
   ['Mestia', 2400, 0.4],
   ['Mutaha', 2755, 0.4],
   ['Narva', 2800, 0.057],
-  ['Skorpo', 7600, 0.4],
+  ['Skorpo', 7600, 2.0],
   ['Sumari', 1300, 0.037],
   ['Tallil', 4680, 0.055],
   ['Yehorivka', 5000, 0.29]
@@ -23,7 +23,7 @@ var maps = [
 
 
 $(document).ready(function() {
-  $("#version").html("v3.0");
+  $("#version").html("v3.1");
   loadHeatmap();
   console.log("Calculator Loaded!");
 });
