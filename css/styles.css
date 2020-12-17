@@ -109,13 +109,18 @@ input:focus{
 }
 
 .home-menu a {
-    color: #ffffff;
+    color: #7f8c8d;
+    text-decoration: none;
 }
-.home-menu li a:hover,
+.home-menu li a:hover{
+    background: none;
+    border-bottom: 1px #7f8c8d solid;
+    color: #AECFE5; 
+}
 .home-menu li a:focus {
     background: none;
     border-bottom: 1px white solid;
-    color: #AECFE5;
+    color: #AECFE5; 
 }
 
 
@@ -324,3 +329,4 @@ input:focus{
     from {bottom: 100px; opacity: 1;}
     to {bottom: 0; opacity: 0;}
   }
+
