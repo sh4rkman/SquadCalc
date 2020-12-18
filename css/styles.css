@@ -108,10 +108,15 @@ input:focus{
     color: white;
 }
 
-.home-menu a {
+.home-menu a.version {
     color: #7f8c8d;
     text-decoration: none;
 }
+
+.home-menu a.version:hover {
+    border-bottom: 1px #7f8c8d solid;
+}
+
 .home-menu li a:hover{
     background: none;
     border-bottom: 1px #7f8c8d solid;
