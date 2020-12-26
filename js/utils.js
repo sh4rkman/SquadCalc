@@ -269,7 +269,6 @@ function loadHeatmap() {
   
     // If keypads are imprecises, do nothing
     if (a.length < 3 || b.length < 3) {
-      console.log('keypad too short');
       $("#bearing").html("xxx°");
       $("#elevation").html("xxxx∡");
       return 1
@@ -390,6 +389,7 @@ function loadHeatmap() {
     
     $("#bearing").html(bearing.toFixed(1) + "°");
     
+    // If using mortar technical, we need to be more precise (##.#)
     if($("#radio-one").is(':checked')){
       $("#elevation").html(elevation.toFixed(0) + "∡");
     }
@@ -478,11 +478,11 @@ function loadHeatmap() {
         }
     }
     
-    /**
-     * Draw the selected Heatmaps in a hidden canvas
-     */
-    $("li").click(function(){
+  /**
+   * Draw the selected Heatmaps in a hidden canvas
+   */
+  $("li").click(function(){
     $("#selectbox").html($(this).text());
     $("#selectbox").val($(this).val());
     drawHeatmap();
-    });
+  });
