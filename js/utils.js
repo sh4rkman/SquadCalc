@@ -205,7 +205,12 @@ function loadHeatmap() {
     const a1 = Math.atan((v ** 2 + p1) / (g * x));
     // const a2 = Math.atan((v ** 2 - p1) / (g * x));
     // no need to calculate, angle is always below 45°/800mil
-    return radToMil(a1);
+    if($("#radio-one").is(':checked')){
+      return radToMil(a1);
+    }
+    else {
+      return radToDeg(a1);
+    }
   }
   
   /**
@@ -264,7 +269,6 @@ function loadHeatmap() {
   
     // If keypads are imprecises, do nothing
     if (a.length < 3 || b.length < 3) {
-      console.log('keypad too short');
       $("#bearing").html("xxx°");
       $("#elevation").html("xxxx∡");
       return 1
@@ -378,10 +382,21 @@ function loadHeatmap() {
     }
     
     // if in range, Insert Calculations
-    console.log($("#mortar-location").val().toUpperCase() + "->" + $("#target-location").val().toUpperCase() + " = " + bearing.toFixed(1) + "° - " + elevation.toFixed(0) + " (height: " + height.toFixed(0) + "m)");
+    console.clear();
+    console.log($("#mortar-location").val().toUpperCase() + " -> " + $("#target-location").val().toUpperCase());
+    console.log("-> Bearing: " + bearing.toFixed(1) + "° - Elevation: " + elevation.toFixed(0) + "∡");
+    console.log("-> Distance: " + distance.toFixed(0) + "m - height: " + height.toFixed(0) + "m")
+    
     $("#bearing").html(bearing.toFixed(1) + "°");
-    $("#elevation").html(elevation.toFixed(0) + "∡");
-  
+    
+    // If using mortar technical, we need to be more precise (##.#)
+    if($("#radio-one").is(':checked')){
+      $("#elevation").html(elevation.toFixed(0) + "∡");
+    }
+    else {
+      $("#elevation").html(elevation.toFixed(3) + "∡");
+    }
+    
   }
   
   /**
@@ -463,11 +478,11 @@ function loadHeatmap() {
         }
     }
     
-    /**
-     * Draw the selected Heatmaps in a hidden canvas
-     */
-    $("li").click(function(){
+  /**
+   * Draw the selected Heatmaps in a hidden canvas
+   */
+  $("li").click(function(){
     $("#selectbox").html($(this).text());
     $("#selectbox").val($(this).val());
     drawHeatmap();
-    });
+  });

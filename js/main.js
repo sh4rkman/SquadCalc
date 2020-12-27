@@ -23,7 +23,7 @@ var maps = [
 
 
 $(document).ready(function() {
-  $("#version").html("v3.1");
+  $("#version").html("v3.2");
   loadHeatmap();
   console.log("Calculator Loaded!");
 });
