@@ -203,8 +203,8 @@ function loadHeatmap() {
   function getElevation(x, y = 0, v = 109.890938, g = 9.8) {
     const p1 = Math.sqrt(v ** 4 - g * (g * x ** 2 + 2 * y * v ** 2));
     const a1 = Math.atan((v ** 2 + p1) / (g * x));
-    // const a2 = Math.atan((v ** 2 - p1) / (g * x));
-    // no need to calculate, angle is always below 45°/800mil
+
+    // If using technical mortar, return degrees, else return NatMil
     if($("#radio-one").is(':checked')){
       return radToMil(a1);
     }
