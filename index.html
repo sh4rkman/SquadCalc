@@ -65,10 +65,10 @@
             
 
               <div class="switch-field unselectable">
-                <input type="radio" id="radio-one" name="switch-one" onchange="shoot()"  checked/>
-                <label for="radio-one">Classic</label>
+                <input type="radio" id="radio-one"  name="switch-one" onchange="shoot()"  checked/>
+                <label for="radio-one" class="mortar_selector mortar_selector_classic"></label>
                 <input type="radio" id="radio-two" name="switch-one" onchange="shoot()" />
-                <label data-tooltip="Technical Mortar (Beta)" data-flow="right" for="radio-two">Mobile</label>
+                <label data-tooltip="Beta!" data-flow="right" for="radio-two" class="mortar_selector mortar_selector_technical"></label>
             </div>
               
 
@@ -93,7 +93,7 @@
                 <div class="pure-u-2-24"><span tabindex="1" onFocus="document.querySelector('.autofocus11').focus()"></span></div>
                 
                 <div id="mortar" class="pure-u-8-24 ">
-                    <img class="unselectable" src="./img/mortar.png" alt="mortar" height="42" width="42">
+                    <img class="unselectable" src="./img/icons/mortar.png" alt="mortar" height="42" width="42">
                     <input id="mortar-location" class="pure-u-23-24 autofocus1" spellcheck="false" maxlength="8" 
                         type="text" placeholder="A01-5-7" autocomplete="off" tabindex="2"
                         oninput="shoot()" onkeypress="filterInput(this, event)" autofocus>
@@ -103,7 +103,7 @@
 
     
                 <div id="target" class="pure-u-8-24">
-                    <img class="unselectable" src="./img/target.png" alt="target" height="42" width="42">
+                    <img class="unselectable" src="./img/icons/target.png" alt="target" height="42" width="42">
                     <input id="target-location" class="pure-u-23-24 autofocus11" spellcheck="false" maxlength="8"
                          type="text" placeholder="C03-2-7" autocomplete="off" tabindex="3"
                          oninput="shoot()" onkeypress="filterInput(this, event)">

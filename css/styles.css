@@ -488,3 +488,18 @@ input:focus{
   [data-tooltip=""]::after, [data-tooltip=""]::before {
     display: none !important;
   }
+
+
+  .mortar_selector {
+    display: inline-block;
+    height: 35px;
+    width: 75px;
+  }
+
+  .mortar_selector_classic {
+    background: url("../img/icons/classic_mortar.png") no-repeat scroll 20px 4px transparent;
+  }
+
+  .mortar_selector_technical {
+    background: url("../img/icons/technical_mortar5.png") no-repeat scroll 8px 2px transparent;
+  }
