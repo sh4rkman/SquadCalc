@@ -1,3 +1,8 @@
+
+ <p align="center">
+   <img width="640" height="320" src="https://i.imgur.com/AvOk3yK.png">
+ </p>
+
 # **Introduction**
 
 ## **MSMC** : A Minimalist Squad Mortar Calculator
@@ -6,6 +11,7 @@
  It allow quick calculation without fancy map, buttons and icons.
  
  Just enter locations and shoot.
+
  
  
  <p align="center">
@@ -27,6 +33,12 @@ Heightmaps are hidden : simply pick your map from the list and shoot.
  </p>
   <p align="center"><sub><sup>Examples of Heightmaps used for caculations (Gorodok & Tallil)</sub></sup></p>
 
+
+## **Technicals Mortars Support**
+
+ <p align="center">
+   <img width="215" height="74" src="https://i.imgur.com/FYhsK2j.png">
+ </p>
 
 ## **Visual Indications**
 

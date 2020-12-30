@@ -377,8 +377,6 @@ input:focus{
   font-weight: bold;
 	line-height: 1;
 	text-align: center;
-	padding: 8px 16px;
-	margin-right: -1px;
 	transition: all 0.2s ease-in-out;
 }
 
