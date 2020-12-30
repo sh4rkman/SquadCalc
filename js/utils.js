@@ -204,13 +204,14 @@ function loadHeatmap() {
     const p1 = Math.sqrt(v ** 4 - g * (g * x ** 2 + 2 * y * v ** 2));
     const a1 = Math.atan((v ** 2 + p1) / (g * x));
 
-    // If using technical mortar, return degrees, else return NatMil
+    
     if($("#radio-one").is(':checked')){
       return radToMil(a1);
     }
-    else {
+    else { 
       return radToDeg(a1);
     }
+
   }
   
   /**
@@ -349,7 +350,30 @@ function loadHeatmap() {
       return 1
     }
   
-    var elevation = getElevation(distance, height);
+
+    // Classical calc for mortar
+    if($("#radio-one").is(':checked')){
+      var elevation = getElevation(distance, height);
+    }
+    else { // If technical mortar
+      
+      for (i = 0; i < technicals.length; i++) {
+        if(distance<technicals[i][0]){
+          var h = technicals[i-1][0];
+          var v = technicals[i-1][1];
+          var H = technicals[i][0];
+          var V = technicals[i][1];
+
+          // Ajust the velocity based on ingame-value
+          var vel = v + ((distance - h)/(H-h))*(V-v);
+          var elevation = getElevation(distance, height, vel);
+          break;
+        }
+      }
+
+    }
+
+    
     var bearing = getBearing(a, b);
   
   
@@ -384,7 +408,7 @@ function loadHeatmap() {
     // if in range, Insert Calculations
     console.clear();
     console.log($("#mortar-location").val().toUpperCase() + " -> " + $("#target-location").val().toUpperCase());
-    console.log("-> Bearing: " + bearing.toFixed(1) + "° - Elevation: " + elevation.toFixed(0) + "∡");
+    console.log("-> Bearing: " + bearing.toFixed(1) + "° - Elevation: " + elevation.toFixed(1) + "∡");
     console.log("-> Distance: " + distance.toFixed(0) + "m - height: " + height.toFixed(0) + "m")
     
     $("#bearing").html(bearing.toFixed(1) + "°");
@@ -394,7 +418,7 @@ function loadHeatmap() {
       $("#elevation").html(elevation.toFixed(0) + "∡");
     }
     else {
-      $("#elevation").html(elevation.toFixed(3) + "∡");
+      $("#elevation").html(elevation.toFixed(1) + "∡");
     }
     
   }
@@ -462,6 +486,15 @@ function loadHeatmap() {
   }
 
 
+   /**
+   * Load the maps from data.js to the menu
+   */
+  function loadMaps() {
+    for(i=0 ; i < maps.length; ++i){
+      $("#myDropdown").append('<li value="' + i + '">'+ maps[i][0] + '</li>');
+    }
+  }
+
   /**
   *  Close the dropdown when clicking anywhere
   */
@@ -486,3 +519,5 @@ function loadHeatmap() {
     $("#selectbox").val($(this).val());
     drawHeatmap();
   });
+
+  

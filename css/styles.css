@@ -338,10 +338,26 @@ input:focus{
 
   /* Mortar Selector (classic/Technicals) */
 
-  .switch-field {
-    display: flex;
-    justify-content: center;
-    margin: auto;
+
+  .mortar_selector {
+    display: inline-block;
+    height: 35px;
+    width: 75px;
+  }
+  
+  .mortar_selector_classic {
+    background: url("../img/icons/classic_mortar.png") no-repeat scroll 23px 5px transparent;
+  }
+  
+  .mortar_selector_technical {
+    background: url("../img/icons/technical_mortar3.png") no-repeat scroll 8px 2px transparent;
+  }
+
+
+.switch-field {
+  display: flex;
+  justify-content: center;
+  margin: auto;
 	overflow: hidden;
 }
 
@@ -357,15 +373,13 @@ input:focus{
 .switch-field label {
 	background-color: #464444;
 	color: rgba(0, 0, 0, 0.6);
-    font-size: 14px;
-    font-weight: bold;
+  font-size: 14px;
+  font-weight: bold;
 	line-height: 1;
 	text-align: center;
 	padding: 8px 16px;
 	margin-right: -1px;
-	border: 1px solid rgba(0, 0, 0, 0.2);
-	box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px rgba(255, 255, 255, 0.1);
-	transition: all 0.1s ease-in-out;
+	transition: all 0.2s ease-in-out;
 }
 
 .switch-field label:hover {
@@ -378,13 +392,12 @@ input:focus{
 }
 
 .switch-field label:first-of-type {
-	border-radius: 4px 0 0 4px;
+	border-radius: 3px 0 0 3px;
 }
 
 .switch-field label:last-of-type {
-	border-radius: 0 4px 4px 0;
+	border-radius: 0 3px 3px 0;
 }
-
 
 
 /* ToolTips */
@@ -490,16 +503,3 @@ input:focus{
   }
 
 
-  .mortar_selector {
-    display: inline-block;
-    height: 35px;
-    width: 75px;
-  }
-
-  .mortar_selector_classic {
-    background: url("../img/icons/classic_mortar.png") no-repeat scroll 20px 4px transparent;
-  }
-
-  .mortar_selector_technical {
-    background: url("../img/icons/technical_mortar.png") no-repeat scroll 8px 2px transparent;
-  }
