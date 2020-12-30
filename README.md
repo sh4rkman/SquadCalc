@@ -15,7 +15,7 @@
  
  
  <p align="center">
-   <img width="500" height="355" src="https://i.imgur.com/wkJ60EM.png">
+   <img width="400" height="284" src="https://i.imgur.com/wkJ60EM.png">
  </p>
  
 # **Features**
@@ -35,6 +35,8 @@ Heightmaps are hidden : simply pick your map from the list and shoot.
 
 
 ## **Technicals Mortars Support**
+
+You can calculate either classic mortars or the brand new technicals one.
 
  <p align="center">
    <img width="215" height="74" src="https://i.imgur.com/FYhsK2j.png">
