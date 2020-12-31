@@ -21,7 +21,7 @@ var maps = [
     ['Yehorivka', 5000, 0.29]
   ];
   
-  // Since technicals mortars are acting weirdly, i have to stock this values for now until i figure out of they work
+  // Since technicals mortars are acting weirdly, i have to stock this values for now until i figure out how they work
   // technicals[distance, elevation]
   var technicals = [
     [50, 47.76901552],
@@ -37,5 +37,5 @@ var maps = [
     [1000, 104.7823288],
     [1100, 106.3455911],
     [1200, 108.7830358],
-    [1250, 111.5301573]
+    [1233, 109.7640997]
   ];

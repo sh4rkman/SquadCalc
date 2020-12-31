@@ -20,6 +20,7 @@
     <!-- CSS/FONT -->
         <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.1/build/pure-min.css" integrity="sha384-oAOxQR6DkCoMliIh8yFnu25d7Eq/PHS21PClpwjOTeU2jRSq11vu66rf90/cZr47" crossorigin="anonymous">
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat"> 
+
         
         <!--[if gt IE 8]><!-->
             <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.1/build/grids-responsive-min.css">
@@ -29,6 +30,7 @@
         <!--[if gt IE 8]><!-->
             <link rel="stylesheet" href="css/styles.css ">
             <link rel="stylesheet" href="css/responsive.css">
+            <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
         <!--<![endif]-->
 
 </head>
@@ -38,7 +40,7 @@
     <div class="header unselectable">
         <div class="home-menu pure-menu pure-menu-horizontal pure-menu-fixed">
             <a class="pure-menu-heading" tabIndex=-1 href="https://mortar.sharkman.info/">MSMC</a>
-            <span><a id="version" class="version" class="pure-menu-subheading" tabIndex=-1 href="https://github.com/sh4rkman/MSMC" target="_blank">v0.0</a></span>
+            <span><a id="version" class="version" class="pure-menu-subheading" tabIndex=-1 href="" target="_blank">v0.0</a></span>
         </div>
     </div>
 
@@ -104,24 +106,36 @@
 
 
             <div id="heatmap" class="heatmap">
-                <canvas id="canvas" width="250" height="250"></canvas>
+                <canvas id="canvas"></canvas>
             </div>
 
         </div>
 
         <div id="toast"></div>
-
-        <div class="footer l-box is-center unselectable">
-            A Minimalist Squad Mortar Calculator by <b><a class="youtube" href="https://www.youtube.com/watch?v=QImxmlJzQlQ&list=PLs_W7kx2RIAkAL91Czub9hVAZ5nzp8JrS" target="_blank">sharkman</a></b>
-        </div>
+            
 
     </div>
+        <div class="footer l-box is-center unselectable">
+            A Minimalist Squad Mortar Calculator by sharkman
+        </div>
+
+        <section id="lab_social_icon_footer">
+            <div class="social2">
+                <a href="https://github.com/sh4rkman/MSMC" target="_blank"><i id="social-gh" class="fa fa-github fa-3x"></i></a>
+            </div>
+            <div class="social1">
+                <a href="https://www.youtube.com/watch?v=O-OlCej_pUo&list=PLs_W7kx2RIAkAL91Czub9hVAZ5nzp8JrS&index=8" target="_blank"><i id="social-yt" class="fa fa-youtube-play fa-3x"></i></a>
+            </div>
+
+        </section>
+
 
     <!-- JS -->
     <script src="./js/jquery-3.4.1.min.js"></script>
     <script src="./js/jquery-ui.min.js"></script>
     <script src="./js/utils.js"></script>
     <script src="./js/data.js"></script>
+    <script src="./js/test.js"></script>
     <script src="./js/main.js"></script>
     
 </body>

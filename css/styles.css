@@ -104,10 +104,6 @@ input:focus{
     margin-bottom: 0;
 }
 
-.home-menu .pure-menu-selected a {
-    color: white;
-}
-
 .home-menu a.version {
     color: #7f8c8d;
     text-decoration: none;
@@ -117,16 +113,7 @@ input:focus{
     border-bottom: 1px #7f8c8d solid;
 }
 
-.home-menu li a:hover{
-    background: none;
-    border-bottom: 1px #7f8c8d solid;
-    color: #AECFE5; 
-}
-.home-menu li a:focus {
-    background: none;
-    border-bottom: 1px white solid;
-    color: #AECFE5; 
-}
+
 
 
 /*
@@ -500,4 +487,42 @@ input:focus{
     display: none !important;
   }
 
+    
+  #lab_social_icon_footer {
+    padding: 4px 0;
+  }
 
+  .social1{
+    margin-right: 0px;
+    width: 30px;
+    height: 30px;
+    position: absolute;
+    bottom: 20px;
+    right: 30px;
+  }
+
+ .social2{
+    margin-right: 0px;
+    width: 30px;
+    height: 30px;
+    position: absolute;
+    bottom: 20px;
+    right: 80px;
+  }
+  
+  #lab_social_icon_footer a {
+    color: #333;
+  }
+  
+  
+  /*
+      Multicoloured Hover Variations
+  */
+  
+  #lab_social_icon_footer #social-gh:hover {
+    color: black;
+  }
+  
+  #lab_social_icon_footer #social-yt:hover {
+    color: red;
+  }
