@@ -7,6 +7,7 @@
         letter-spacing: 0.3em;
         font-size: 110%;
     }
+
 }
 
 /* -- 768px*H -- */
@@ -17,6 +18,19 @@
     .splash {
         width: 90%;
     }
+    .social {
+        width: 40px;
+        height: 30px;
+    }
+    .youtube{
+        bottom: 20px;
+        left: 15px;
+    }
+    .github{
+        bottom: 20px;
+        right: 20px;
+    }
+
 }
 /* -- 960px*H -- */
  @media (min-width: 60em) {
@@ -26,6 +40,7 @@
     .splash {
         width: 70%;
     }
+
 }
 /* -- 1248px*H -- */
 @media (min-width: 78em) {
