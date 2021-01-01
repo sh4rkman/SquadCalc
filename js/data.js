@@ -5,7 +5,7 @@ var maps = [
     ['Belaya', 3904, 0.5],
     ['Chora', 4064, 0.06],
     ['Fallujah', 4081, 0.055],
-    ['FoolsRoad', 1736, 0.149],
+    ['Fool\'s Road', 1736, 0.149],
     ['Gorodok', 4340, 0.13],
     ['Kamdesh', 4032, 0.2],
     ['Kohat', 4017, 0.777],
@@ -22,7 +22,7 @@ var maps = [
   ];
   
   // Since technicals mortars are acting weirdly, i have to stock this values for now until i figure out how they work
-  // technicals[distance, elevation]
+  // technicals[distance, Velocity]
   var technicals = [
     [50, 47.76901552],
     [100, 63.20591542],

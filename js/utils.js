@@ -514,7 +514,7 @@ function loadHeatmap() {
   /**
    * Draw the selected Heatmaps in a hidden canvas
    */
-  $("li").click(function(){
+  $("#myDropdown").on('click', 'li', function(){
     $("#selectbox").html($(this).text());
     $("#selectbox").val($(this).val());
     drawHeatmap();
