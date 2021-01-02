@@ -7,7 +7,6 @@
         letter-spacing: 0.3em;
         font-size: 110%;
     }
-
 }
 
 /* -- 768px*H -- */
@@ -20,14 +19,13 @@
     }
     .social {
         width: 40px;
-        height: 30px;
+        height: 40px;
+        bottom: 10px;
     }
     .youtube{
-        bottom: 20px;
         left: 15px;
     }
     .github{
-        bottom: 20px;
         right: 20px;
     }
 

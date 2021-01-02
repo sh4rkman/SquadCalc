@@ -485,29 +485,26 @@ input:focus{
   .social {
     width: 30px;
     height: 30px;
+    bottom: 10px;
     position: absolute;
-
   }
 
   .social a {
     color: #333;
-
   }
 
   .youtube{
-    bottom: 10px;
     left: 20px;
+  }
+
+  .github{
+    right: 20px;
   }
 
   #social-yt:hover {
     color: red;
   }
 
- .github{
-    bottom: 10px;
-    right: 20px;
-  }
-    
   #social-gh:hover {
     color: black;
   }
