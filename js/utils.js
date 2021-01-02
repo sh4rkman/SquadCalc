@@ -1,4 +1,13 @@
 
+
+/**
+ * Load version #
+ */
+function loadVersion() {
+  $("#version").html("v" + version);
+}
+
+
 /**
  * Load the heatmap to the canvas
  */
@@ -373,9 +382,7 @@ function loadHeatmap() {
 
     }
 
-    
     var bearing = getBearing(a, b);
-  
   
     // If Target too far, display it and exit function
     if(isNaN(elevation)){
@@ -413,7 +420,7 @@ function loadHeatmap() {
     
     $("#bearing").html(bearing.toFixed(1) + "°");
     
-    // If using mortar technical, we need to be more precise (##.#)
+    // If using technical mortars, we need to be more precise (##.#)
     if($("#radio-one").is(':checked')){
       $("#elevation").html(elevation.toFixed(0) + "∡");
     }
@@ -435,10 +442,10 @@ function loadHeatmap() {
     if (evt.charCode!=null)     chrCode = evt.charCode;
     else if (evt.which!=null)   chrCode = evt.which;
     else if (evt.keyCode!=null) chrCode = evt.keyCode;
-   
+
     if (chrCode==0) chrTyped = 'SPECIAL KEY';
     else chrTyped = String.fromCharCode(chrCode);
-   
+
     
     // If there is already a letter in the input.value, prevent the keypress
     // Disabled for now, it prevents overwritting a keypad without erasing it completly first
@@ -455,17 +462,23 @@ function loadHeatmap() {
       } 
     } 
     */
-  
+
+    // prevent underscore
+    if(evt.keyCode == 95){
+      evt.returnValue=false;
+      return false;
+    } 
+
     //Letters, Digits, special keys & backspace [\b] work as usual:
     if (chrTyped.match(/\d|[\b]|SPECIAL|[A-z]/)) return true;
     if (evt.altKey || evt.ctrlKey || chrCode<28) return true;
-   
+  
     //Any other input Prevent the default response:
     if (evt.preventDefault) evt.preventDefault();
     console.log('forbidden character');
     evt.returnValue=false;
     return false;
-   }
+  }
    
    /**
    * ShowToast
@@ -486,9 +499,9 @@ function loadHeatmap() {
   }
 
 
-   /**
-   * Load the maps from data.js to the menu
-   */
+  /**
+  * Load the maps from data.js to the menu
+  */
   function loadMaps() {
     for(i=0 ; i < maps.length; ++i){
       $("#myDropdown").append('<li value="' + i + '">'+ maps[i][0] + '</li>');
@@ -498,18 +511,18 @@ function loadHeatmap() {
   /**
   *  Close the dropdown when clicking anywhere
   */
-    window.onclick = function(event) {
-        if (!event.target.matches('.dropbtn')) {
-        var dropdowns = document.getElementsByClassName("dropdown-content");
-        var i;
-        for (i = 0; i < dropdowns.length; i++) {
-            var openDropdown = dropdowns[i];
-            if (openDropdown.classList.contains('show')) {
+  window.onclick = function(event) {
+    if (!event.target.matches('.dropbtn')) {
+      var dropdowns = document.getElementsByClassName("dropdown-content");
+      var i;
+      for (i = 0; i < dropdowns.length; i++) {
+          var openDropdown = dropdowns[i];
+          if (openDropdown.classList.contains('show')) {
             openDropdown.classList.remove('show');
-            }
-        }
-        }
+          }
+      }
     }
+  }
     
   /**
    * Draw the selected Heatmaps in a hidden canvas

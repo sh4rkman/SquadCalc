@@ -1,7 +1,7 @@
 
 
 $(document).ready(function() {
-  $("#version").html("v3.3");
+  loadVersion();
   loadMaps();
   loadHeatmap();
   console.log("Calculator Loaded!");
