@@ -1,7 +1,7 @@
 
 
 /**
- * Load version #
+ * Load version number
  */
 function loadVersion() {
   $("#version").html("v" + version);
@@ -54,13 +54,14 @@ function loadHeatmap() {
   
     // "i" is is our (sub-)keypad indicator
     let i = 0;
+    var pos;
     while (i < parts.length) {
       if (i === 0) {
         // special case, i.e. letter + number combo
         const letterCode = parts[i].charCodeAt(0);   
         const letterIndex = letterCode - 65;
         if(parts[i].charCodeAt(0) < 65){
-          var pos = {
+          pos = {
             lat: NaN,
             lng: NaN
           };
@@ -90,7 +91,7 @@ function loadHeatmap() {
     const interval = 300 / 3 ** (i - 1);
     x += interval / 2;
     y += interval / 2;
-    var pos = {
+    pos = {
       lat: x,
       lng: y
     };
@@ -324,7 +325,7 @@ function loadHeatmap() {
       $("#elevation").html("xxxx∡");
       $("#settings").effect("shake");
   
-      if(height == -1){    // Mortars are out of map
+      if(height == 998){    // Mortars are out of map
         console.log('Mortars are out of map');
         $("#mortar-location").addClass("error2");
         toastError("Motars are out of map");
@@ -359,14 +360,15 @@ function loadHeatmap() {
       return 1
     }
   
+    var elevation;
 
     // Classical calc for mortar
     if($("#radio-one").is(':checked')){
-      var elevation = getElevation(distance, height);
+      elevation = getElevation(distance, height);
     }
     else { // If technical mortar
       
-      for (i = 0; i < technicals.length; i++) {
+      for (var i = 0; i < technicals.length; i++) {
         if(distance<technicals[i][0]){
           var h = technicals[i-1][0];
           var v = technicals[i-1][1];
@@ -375,7 +377,7 @@ function loadHeatmap() {
 
           // Ajust the velocity based on ingame-value
           var vel = v + ((distance - h)/(H-h))*(V-v);
-          var elevation = getElevation(distance, height, vel);
+          elevation = getElevation(distance, height, vel);
           break;
         }
       }
@@ -463,14 +465,8 @@ function loadHeatmap() {
     } 
     */
 
-    // prevent underscore
-    if(evt.keyCode == 95){
-      evt.returnValue=false;
-      return false;
-    } 
-
     //Letters, Digits, special keys & backspace [\b] work as usual:
-    if (chrTyped.match(/\d|[\b]|SPECIAL|[A-z]/)) return true;
+    if (chrTyped.match(/\d|[\b]|SPECIAL|[A-Za-z]/)) return true;
     if (evt.altKey || evt.ctrlKey || chrCode<28) return true;
   
     //Any other input Prevent the default response:
@@ -515,7 +511,7 @@ function loadHeatmap() {
     if (!event.target.matches('.dropbtn')) {
       var dropdowns = document.getElementsByClassName("dropdown-content");
       var i;
-      for (i = 0; i < dropdowns.length; i++) {
+      for (var i = 0; i < dropdowns.length; i++) {
           var openDropdown = dropdowns[i];
           if (openDropdown.classList.contains('show')) {
             openDropdown.classList.remove('show');
