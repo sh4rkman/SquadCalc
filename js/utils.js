@@ -499,7 +499,7 @@ function loadHeatmap() {
   * Load the maps from data.js to the menu
   */
   function loadMaps() {
-    for(i=0 ; i < maps.length; ++i){
+    for(var i=0 ; i < maps.length; ++i){
       $("#myDropdown").append('<li value="' + i + '">'+ maps[i][0] + '</li>');
     }
   }
