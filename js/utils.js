@@ -317,7 +317,7 @@ function loadHeatmap() {
   
   
     var height = getHeight(a, b);
-  
+
     // Check if mortars/target are out of map
     if((height == 998) || (height == 999)){
       $("#settings").addClass("error");
@@ -339,7 +339,8 @@ function loadHeatmap() {
   
   
     var distance = getDist(a, b);
-  
+
+
     // If keypad is bad (1C32), distance is NaN
     // Detect it and display wich keypad is faultive 
     if(isNaN(distance)){
