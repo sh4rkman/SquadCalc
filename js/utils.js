@@ -1,13 +1,4 @@
 
-
-/**
- * Load version number
- */
-function loadVersion() {
-  $("#version").html("v" + version);
-}
-
-
 /**
  * Load the heatmap to the canvas
  */
@@ -24,7 +15,7 @@ function loadHeatmap() {
    */
   function drawHeatmap(){
     var img = new Image();   // Create new img element
-    var map = $("#selectbox").text().toLowerCase();
+    var map = $(".dropbtn option:selected").text().toLowerCase();
     
     img.addEventListener('load', function() { // wait for the image to load or it does crazy stuff
       var ctx = document.getElementById('canvas').getContext('2d');
@@ -232,11 +223,12 @@ function loadHeatmap() {
      * @returns {number} - relative height in meters
    */
   function getHeight(a, b) {
+
     // if user didn't select map, no height calculation
-    if($("#selectbox").val() == 99) return 0; 
+    if($(".dropbtn").val() == "") return 0; 
   
     // load map size for scaling lat&lng
-    var mapScale = 250 / maps[$("#selectbox").val()][1];
+    var mapScale = 250 / maps[$(".dropbtn").val()][1];
   
     // Read Heightmap values for a & b
     var ctx = document.getElementById('canvas').getContext('2d');
@@ -251,8 +243,8 @@ function loadHeatmap() {
       return 999;
     }
   
-    Aheight = (255 + Aheight[0] - Aheight[2])*maps[$("#selectbox").val()][2];
-    Bheight = (255 + Bheight[0] - Bheight[2])*maps[$("#selectbox").val()][2];
+    Aheight = (255 + Aheight[0] - Aheight[2])*maps[$(".dropbtn").val()][2];
+    Bheight = (255 + Bheight[0] - Bheight[2])*maps[$(".dropbtn").val()][2];
   
     return Bheight-Aheight;
   }
@@ -488,46 +480,32 @@ function loadHeatmap() {
   }
   
   
-   /**
-   * Open DrowDown with map list
-   */
-  function openDropdown() {
-    document.getElementById("myDropdown").classList.toggle("show");
-  }
-
-
   /**
   * Load the maps from data.js to the menu
   */
   function loadMaps() {
+
+    $('.dropbtn').select2({
+      placeholder: 'SELECT A MAP',
+      dropdownParent: $('#mapSelector'),
+      dropdownCssClass: 'dropbtn',
+      /* minimumResultsForSearch: -1, -> disable search*/  
+    });
+
     for(var i=0 ; i < maps.length; ++i){
-      $("#myDropdown").append('<li value="' + i + '">'+ maps[i][0] + '</li>');
+      $(".dropbtn").append('<option value="' + i + '">'+ maps[i][0] + '</option>');
     }
   }
 
-  /**
-  *  Close the dropdown when clicking anywhere
-  */
-  window.onclick = function(event) {
-    if (!event.target.matches('.dropbtn')) {
-      var dropdowns = document.getElementsByClassName("dropdown-content");
-      var i;
-      for (var i = 0; i < dropdowns.length; i++) {
-          var openDropdown = dropdowns[i];
-          if (openDropdown.classList.contains('show')) {
-            openDropdown.classList.remove('show');
-          }
-      }
-    }
-  }
-    
+   
   /**
    * Draw the selected Heatmaps in a hidden canvas
    */
-  $("#myDropdown").on('click', 'li', function(){
-    $("#selectbox").html($(this).text());
-    $("#selectbox").val($(this).val());
+  $(".dropbtn").change(function(){
     drawHeatmap();
   });
 
-  
+  $('.dropbtn').one('select2:open', function(e) {
+    $('input.select2-search__field').prop('placeholder', 'search');
+});
+

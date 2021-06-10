@@ -1,512 +1,372 @@
-* {
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
+
+.pure-g [class *= "pure-u"] {
+  text-align: center;
 }
+
 
 /*
  * -- BASE STYLES --
  * Most of these are inherited from Base, but I want to change a few.
  */
-body {
-    line-height: 1.7em;
-    color: #7f8c8d;
-    font-size: 10px;
-    background: #111;
+ body {
+  line-height: 1.7em;
+  color: white;
+  background: #111;
 }
-
 
 html, button, input, select, textarea,
     .pure-g [class *= "pure-u"] {
         font-family: 'Montserrat', Times, "Times New Roman", serif;
         letter-spacing: 0.1em;
     }
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-label {
-    color: #ffffff;
-}
-
-/*
- * -- LAYOUT STYLES --
- * These are some useful classes which I will need
- */
-.l-box {
-    padding: 1em;
-}
-
-.l-box-lrg {
-    padding: 2em;
-    border-bottom: 1px solid rgba(0,0,0,0.1);
-}
-
-.is-center {
-    text-align: center;
-}
-
 
 input { 
-    border: 0;
-    border-bottom: 3px solid white;
-    font-size: 2em;
-    line-height: 2.188em;
-    height: 40px;
-    text-align: center;
-    text-transform: uppercase;
-    padding: 0;
-    background: transparent;
-    color: #ffffff;
-    font-weight: bold;
-    width: 200px;
+  border: 0;
+  border-bottom: 3px solid white;
+  font-size: 1em;
+  line-height: 2.188em;
+  height: 40px;
+  text-align: center;
+  text-transform: uppercase;
+  padding: 0;
+  background: transparent;
+  color: #ffffff;
+  font-weight: bold;
+  width: 100%;
 }
 
 input:focus{
-    outline: none;
-}
-
-/*
- * -- MENU STYLES --
- * I want to customize how my .pure-menu looks at the top of the page
- */
-
-
-.home-menu {
-    margin-left: 1em;
-    padding: 0.5em;
-    text-align: center;
-    box-shadow: 0 1px 1px rgba(0,0,0, 0.10);
-}
-.home-menu {
-    background: #111;
-}
-.pure-menu.pure-menu-fixed {
-    /* Fixed menus normally have a border at the bottom. */
-    border-bottom: none;
-    /* I need a higher z-index here because of the scroll-over effect. */
-    z-index: 4;
-}
-
-.home-menu .pure-menu-heading {
-    color: white;
-    font-size: 400%;
-    margin: auto;
-    padding: 0.3em 0;
-    font-weight: bold;
-}
-
-.pure-menu-subheading{
-    margin: auto;
-    letter-spacing: 0.1em;
-    margin-bottom: 0;
-}
-
-.home-menu a.version {
-    color: #7f8c8d;
-    text-decoration: none;
-}
-
-.home-menu a.version:hover {
-    border-bottom: 1px #7f8c8d solid;
+  outline: none;
 }
 
 
+/***************************************
+ ************   HEADER   ***************
+ **************************************/
 
 
-/*
- * -- SPLASH STYLES --
- * This is the blue top section that appears on the page.
- */
+ /****************
+ *     Logo
+ *****************/
 
-.splash-container {
-    background: #111;
-    z-index: 1;
-    overflow: hidden;
-    /* The following styles are required for the "scroll-over" effect */
-    width: 100%;
-    height: 94%;
-    top: 0;
-    left: 0;
-    position: fixed !important;
-}
-
-.splash {
-    /* absolute center .splash within .splash-container */
-    width: 100%;
-    height: 100%;
-    margin: auto auto;
-    margin-top: 9em;
-    position: absolute;
-    top: 0; left: 0; bottom: 0; right: 0;
-    text-align: center;
-    width: 90%;
+img {
+  display:block;
+  margin:auto;
 }
 
 
-/* This is the main heading that appears on the blue section */
-.splash-head {
-    font-size: 27px;
-    color: white;
-    border: 5px solid white;
-    padding: 1.1em 0.6em;
-    margin: 2.5em auto;
-    border-radius: 5px;
-    line-height: 1em;
-    font-weight: bold;
-    width: 90%;
+ /****************
+ * Weapon Selector
+ *****************/
 
+ .weaponSelector{
+  padding: 1em 0em 0.5em 0em;
 }
 
-.error {
-    border: 5px solid FireBrick;
-    color: FireBrick;
+ .mortar_selector {
+  display: inline-block;
+  height: 35px;
+  width: 75px;
 }
 
-.error2 {
-    color: FireBrick;
+.mortar_selector_classic {
+  background: url("../img/icons/classic_mortar.png") no-repeat scroll 23px 5px transparent;
 }
 
-.unselectable {
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
+.mortar_selector_technical {
+  background: url("../img/icons/technical_mortar3.png") no-repeat scroll 8px 2px transparent;
 }
-
-
-/* This is the class used for the footer */
-.footer {
-    background: #111;
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    font-size: 90%;
-}
-
-.mapSelector{
-    padding: 0;
-    margin: 0;
-    height: 7em;
-}
-
-#heatmap{
-    padding: 0;
-    display: none;
-}
-
-#canvas {
-    margin: auto auto;
-    width: 250px;
-    height: 250px;
-}
-
-.header {
-    font-size: 130%;
-}
-
-.selectbox {
-    padding: 0;
-}
-
-.dropbtn {
-    background: transparent;
-    color: #ffffff;
-    padding: 16px;
-    font-size: 1.8em;
-    line-height: 2.188em;
-    height: 3em;
-    cursor: pointer;
-    font-weight: bold;
-    border: 0;
-    border-bottom: 1px solid white;
-    width: 12em;
-    text-transform: uppercase;
-}
-
-.dropbtn:focus{
-    outline: none;
-}
-
-.dropdown {
-    position: relative;
-    display: inline-block;
-    text-align: center;
-    text-transform: uppercase;
-    margin: auto;
-}
-
-.dropdown-content {
-    display: none;
-    position: absolute;
-    background-color: #f1f1f1;
-    min-width: 160px;
-    overflow: auto;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-    z-index: 1;
-    width: 100%;
-    cursor: pointer;
-    font-weight: bold;
-}
-
-.dropdown-content li {
-    color: black;
-    padding: 2px 16px;
-    line-height: 1.6em;
-    text-decoration: none;
-    display: block;
-}
-
-.dropdown li:hover {background-color: grey;}
-
-.show {display: block;}
-
-
-
-/* Error Toast */
-
-#toast {
-    visibility: hidden;
-    min-width: 250px;
-    width: 400px;
-    margin-left: -200px;
-    background-color:brown;
-    color: #fff;
-    text-align: center;
-    border-radius: 2px;
-    padding: 16px;
-    position: fixed;
-    z-index: 1;
-    left: 50%;
-    bottom: 100px;
-    font-size: 17px;
-  }
-  
-  #toast.show {
-    visibility: visible;
-    -webkit-animation: fadein 0.5s, fadeout 1s 4.5s;
-    animation: fadein 0.5s, fadeout 1s 4.5s;
-  }
-  
-  @-webkit-keyframes fadein {
-    from {bottom: 0; opacity: 0;} 
-    to {bottom: 100px; opacity: 1;}
-  }
-  
-  @keyframes fadein {
-    from {bottom: 0; opacity: 0;}
-    to {bottom: 100px; opacity: 1;}
-  }
-  
-  @-webkit-keyframes fadeout {
-    from {bottom: 100px; opacity: 1;} 
-    to {bottom: 0; opacity: 0;}
-  }
-  
-  @keyframes fadeout {
-    from {bottom: 100px; opacity: 1;}
-    to {bottom: 0; opacity: 0;}
-  }
-
-
-  /* Mortar Selector (classic/Technicals) */
-
-
-  .mortar_selector {
-    display: inline-block;
-    height: 35px;
-    width: 75px;
-  }
-  
-  .mortar_selector_classic {
-    background: url("../img/icons/classic_mortar.png") no-repeat scroll 23px 5px transparent;
-  }
-  
-  .mortar_selector_technical {
-    background: url("../img/icons/technical_mortar3.png") no-repeat scroll 8px 2px transparent;
-  }
-
 
 .switch-field {
   display: flex;
   justify-content: center;
   margin: auto;
-	overflow: hidden;
+  overflow: hidden;
+  z-index: 5;
 }
 
 .switch-field input {
-	position: absolute !important;
-	clip: rect(0, 0, 0, 0);
-	height: 1px;
-	width: 1px;
-	border: 0;
-	overflow: hidden;
+  position: absolute !important;
+  clip: rect(0, 0, 0, 0);
+  height: 1px;
+  width: 1px;
+  border: 0;
+  overflow: hidden;
 }
 
 .switch-field label {
-	background-color: #464444;
-	color: rgba(0, 0, 0, 0.6);
+  background-color: #464444;
+  color: rgba(0, 0, 0, 0.6);
   font-size: 14px;
   font-weight: bold;
-	line-height: 1;
-	text-align: center;
-	transition: all 0.2s ease-in-out;
+  line-height: 1;
+  text-align: center;
+  transition: all 0.2s ease-in-out;
 }
 
 .switch-field label:hover {
-	cursor: pointer;
+  cursor: pointer;
 }
 
 .switch-field input:checked + label {
-	background-color: #ffffff;
-	box-shadow: none;
+  background-color: #ffffff;
+  box-shadow: none;
 }
 
 .switch-field label:first-of-type {
-	border-radius: 3px 0 0 3px;
+  border-radius: 3px 0 0 3px;
 }
 
 .switch-field label:last-of-type {
-	border-radius: 0 3px 3px 0;
+  border-radius: 0 3px 3px 0;
 }
 
 
-/* ToolTips */
 
-[data-tooltip] {
-    position: relative;
-    cursor: pointer;
-  }
-  [data-tooltip]:before,
-  [data-tooltip]:after {
-    line-height: 1;
-    font-size: .9em;
-    pointer-events: none;
-    position: absolute;
-    box-sizing: border-box;
-    display: none;
-    opacity: 0;
-  }
-  [data-tooltip]:before {
-    content: "";
-    border: 5px solid transparent;
-    z-index: 100;
-  }
-  [data-tooltip]:after {
-    content: attr(data-tooltip);
-    text-align: center;
-    min-width: 3em;
-    max-width: 21em;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    padding: 9px 8px;
-    border-radius: 3px;
-    background: #4621FF;
-    color: #FFFFFF;
-    z-index: 99;
-  }
-  [data-tooltip]:hover:before,
-  [data-tooltip]:hover:after {
-    display: block;
-    opacity: 1;
-  }
-  [data-tooltip]:not([data-flow])::before,
-  [data-tooltip][data-flow="top"]::before {
-    bottom: 100%;
-    border-bottom-width: 0;
-    border-top-color: #4621FF;
-  }
-  [data-tooltip]:not([data-flow])::after,
-  [data-tooltip][data-flow="top"]::after {
-    bottom: calc(100% + 5px);
-  }
-  [data-tooltip]:not([data-flow])::before, [tooltip]:not([data-flow])::after,
-  [data-tooltip][data-flow="top"]::before,
-  [data-tooltip][data-flow="top"]::after {
-    left: 50%;
-    -webkit-transform: translate(-50%, -4px);
-            transform: translate(-50%, -4px);
-  }
-  [data-tooltip][data-flow="bottom"]::before {
-    top: 100%;
-    border-top-width: 0;
-    border-bottom-color: #4621FF;
-  }
-  [data-tooltip][data-flow="bottom"]::after {
-    top: calc(100% + 5px);
-  }
-  [data-tooltip][data-flow="bottom"]::before, [data-tooltip][data-flow="bottom"]::after {
-    left: 50%;
-    -webkit-transform: translate(-50%, 8px);
-            transform: translate(-50%, 8px);
-  }
-  [data-tooltip][data-flow="left"]::before {
-    top: 50%;
-    border-right-width: 0;
-    border-left-color: #4621FF;
-    left: calc(0em - 5px);
-    -webkit-transform: translate(-8px, -50%);
-            transform: translate(-8px, -50%);
-  }
-  [data-tooltip][data-flow="left"]::after {
-    top: 50%;
-    right: calc(100% + 5px);
-    -webkit-transform: translate(-8px, -50%);
-            transform: translate(-8px, -50%);
-  }
-  [data-tooltip][data-flow="right"]::before {
-    top: 50%;
-    border-left-width: 0;
-    border-right-color: #4621FF;
-    right: calc(0em - 5px);
-    -webkit-transform: translate(8px, -50%);
-            transform: translate(8px, -50%);
-  }
-  [data-tooltip][data-flow="right"]::after {
-    top: 50%;
-    left: calc(100% + 5px);
-    -webkit-transform: translate(8px, -50%);
-            transform: translate(8px, -50%);
-  }
-  [data-tooltip=""]::after, [data-tooltip=""]::before {
-    display: none !important;
-  }
+ /****************
+ *  Map Selector
+ *****************/
 
-    
-  /*
-      Social buttons
-  */
+.mapSelector{
+  padding: 1em 0em 0.5em 0em;
+}
 
-  .social {
-    width: 30px;
-    height: 30px;
-    bottom: 10px;
-    position: absolute;
-  }
+.selectbox {
+  padding: 0;
+}
 
-  .social a {
-    color: #333;
-  }
+.dropbtn {
+  color: #ffffff;
+  line-height: 2.188em;
+  font-weight: bold;
+  text-transform: uppercase;
+  background: #111!important;
+}
 
-  .youtube{
-    left: 20px;
-  }
+.dropbtn select {
+  border: none;
+  box-shadow: none;
+  background-color: transparent;
+  background-image: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
 
-  .github{
-    right: 20px;
-  }
+.select2-search {
+  background:white!important;
+  font-size: 1em!important;
+  color: rgb(161, 142, 142)!important;
+}
 
-  #social-yt:hover {
-    color: red;
-  }
 
-  #social-gh:hover {
-    color: black;
-  }
-   
+.select2-selection{
+  background: #111!important;
+  border:none!important;
+  font-size: 1em;
+  color:white!important;
+}
+
+.dropbtn:focus{
+  outline: none;
+}
+
+
+.select2-container{
+  min-width:200px;
+  color: #ffffff!important;
+  font-size: 1em;
+  line-height: 2.188em;
+  font-weight: bold;
+  padding-bottom: 0.3em;
+  border: 0;
+  border-bottom: 1px solid white!important;
+  text-transform: uppercase;
+  background-color: #111;
+  background: #111;
+  box-shadow: none!important;
+}
+
+
+.select2-results__options {
+  max-height: 350px!important;
+  line-height: 1.4em;
+}
+
+.select2-search__field {
+  color: #111!important;
+  font-size: 1em!important;
+  height: 1.4em;
+  text-transform: none!important;
+}
+
+.select2-selection__rendered {
+  color: #ffffff!important;
+}
+
+.select2-results__message{
+  padding-top: 20px!important;
+}
+
+/* Avoid the creation of an outline when pressing enter to select a map */
+span.select2-selection.select2-selection--single {
+  outline: none;
+}
+
+.show {display: block;}
+
+
+/***************************************
+ ************   CONTENT   ***************
+ **************************************/
+
+
+.results {
+  font-size: 1.5em;
+  color: white;
+  border: 5px solid white;
+  padding: 1em;
+  margin: 1.5em auto;
+  border-radius: 5px;
+  font-weight: bold;
+}
+
+
+.coord {
+  padding: 0.625em 0em;
+}
+
+#heatmap{
+  padding: 0;
+  display: none;
+}
+
+#canvas {
+  margin: auto auto;
+  width: 250px;
+  height: 250px;
+}
+
+
+/***************************************
+ ************   FOOTER   ***************
+ **************************************/
+
+/****************
+ *  Footer
+ *****************/
+
+.footer {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  font-size: 0.7em;
+  height: 3.5em;
+}
+
+/****************
+ *  Social Buttons
+ *****************/
+
+.social {
+  position: absolute;
+}
+
+.social a {
+  color: #333;
+}
+
+#social-yt:hover {
+  color: red;
+}
+
+#social-gh:hover {
+  color: black;
+}
+
+.youtube {
+  text-align: left;
+  left: 0.8em;
+}
+
+.github {
+  text-align: right;
+  right: 0.8em;
+}
+
+/***************************************
+ ************   MISC   ***************
+ **************************************/
+
+
+/* Fix to avoid https://purecss.io/grids/#applying-padding-and-borders-to-grid-units */
+.pure-g > div {
+  box-sizing: border-box;
+}
+
+.unselectable {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/****************
+ *  Error Toast
+ *****************/
+
+ .error {
+  border: 5px solid FireBrick;
+  color: FireBrick;
+}
+
+.error2 {
+  color: FireBrick;
+}
+
+#toast {
+  letter-spacing: 0.1em;
+  visibility: hidden;
+  min-width: 250px;
+  width: 400px;
+  margin-left: -200px;
+  background-color:brown;
+  color: #fff;
+  text-align: center;
+  border-radius: 2px;
+  padding: 16px;
+  position: fixed;
+  z-index: 1;
+  left: 50%;
+  bottom: 100px;
+  font-size: 17px;
+}
+
+#toast.show {
+  visibility: visible;
+  -webkit-animation: fadein 0.5s, fadeout 1s 4.5s;
+  animation: fadein 0.5s, fadeout 1s 4.5s;
+}
+
+@-webkit-keyframes fadein {
+  from {bottom: 0; opacity: 0;} 
+  to {bottom: 100px; opacity: 1;}
+}
+
+@keyframes fadein {
+  from {bottom: 0; opacity: 0;}
+  to {bottom: 100px; opacity: 1;}
+}
+
+@-webkit-keyframes fadeout {
+  from {bottom: 100px; opacity: 1;} 
+  to {bottom: 0; opacity: 0;}
+}
+
+@keyframes fadeout {
+  from {bottom: 100px; opacity: 1;}
+  to {bottom: 0; opacity: 0;}
+}
 

@@ -1,4 +1,4 @@
-var version = 3.5;
+var version = 4.0;
 
 // Each map has a different size and require scaling w, y and z when calculating height
 // maps['Name', size, z-scaling]
@@ -23,7 +23,7 @@ var maps = [
     ['Yehorivka', 5000, 0.29]
   ];
   
-  // Since technicals mortars are acting weirdly, i have to stock this empirical values for now until i figure out how they work
+  // Since technicals mortars are acting weirdly, i have to stock these empirical values for now until i figure out how they work
   // technicals[distance, Velocity]
   var technicals = [
     [50, 47.76901552],

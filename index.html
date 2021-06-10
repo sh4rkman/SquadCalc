@@ -1,14 +1,14 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <meta name="description" content="Minimalist Squad Mortar Calculator">
+    <meta name="description" content="A Minimalist Squad Mortar Calculator, enter location : shoot.">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#111"/>
     <meta charset="utf-8">
 
      <!-- SOCIAL MEDIA -->
         <meta property="og:title" content="MSMC">
-        <meta property="og:description" content="A Minimalist Squad Mortar Calculator by sharkman">
+        <meta property="og:description" content="A Minimalist Squad Mortar Calculator, enter location : shoot">
         <meta property="og:image" content="https://i.imgur.com/AvOk3yK.png">
         <meta property="og:url" content="https://mortar.sharkman.info/">
         <meta name="twitter:card" content="https://i.imgur.com/AvOk3yK.png">
@@ -19,124 +19,134 @@
         <link rel="icon" href="./img/favicon.png">
     <!-- CSS/FONT -->
         <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.1/build/pure-min.css" integrity="sha384-oAOxQR6DkCoMliIh8yFnu25d7Eq/PHS21PClpwjOTeU2jRSq11vu66rf90/cZr47" crossorigin="anonymous">
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat"> 
-
+        <link rel="stylesheet" href="https://unpkg.com/purecss@2.0.6/build/grids-responsive-min.css" />
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
+        <link rel="stylesheet" href="css/styles.css ">
+        <link rel="stylesheet" href="css/responsive.css ">
+      
         
         <!--[if gt IE 8]><!-->
-            <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.1/build/grids-responsive-min.css">
-        <!--<![endif]-->
-        
-        
-        <!--[if gt IE 8]><!-->
-            <link rel="stylesheet" href="css/styles.css ">
-            <link rel="stylesheet" href="css/responsive.css">
             <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
         <!--<![endif]-->
 
+        <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+
 </head>
 
-<body>        
+<body>       
 
-    <div class="header unselectable">
-        <div class="home-menu pure-menu pure-menu-horizontal pure-menu-fixed">
-            <a class="pure-menu-heading" tabIndex=-1 href="https://mortar.sharkman.info/">MSMC</a>
-            <span id="version" class="version" class="pure-menu-subheading" tabIndex=-1 href="" target="_blank">v0.0</span>
+    <div class="pure-g" id="header">
+        <div class="pure-u-1 pure-u-md-1 logo">
+            <img class="pure-img" src="./img/logo.png"></img>
         </div>
-    </div>
-
-    <div class="splash-container">
-
-        <div class="splash">
-
-            <div id="mapSelector" class="dropdown mapSelector unselectable">
-                <button id="selectbox" value="99" onclick="openDropdown();" class="dropbtn selectbox">SELECT A MAP</button>
-                <div id="myDropdown" class="dropdown-content"></div>
+        <div class="pure-u-1 pure-u-md-1-5 mapSelector">
+            <div id="mapSelector" class="dropdown">
+                <select class="dropbtn unselectable" name="state" tabindex="-1">
+                    <option></option>
+                </select>
             </div>
-            
-
-              <div class="switch-field unselectable">
+        </div>
+        <div class="pure-u-1 pure-u-md-1-5 weaponSelector">
+            <div class="switch-field unselectable">
                 <input type="radio" id="radio-one"  name="switch-one" onchange="shoot()" checked/>
                 <label for="radio-one" class="mortar_selector mortar_selector_classic"></label>
                 
                 <input type="radio" id="radio-two" name="switch-one" onchange="shoot()"/>
-                <label data-tooltip="Beta!" data-flow="right" for="radio-two" class="mortar_selector mortar_selector_technical"></label>
+                <label data-flow="right" for="radio-two" class="mortar_selector mortar_selector_technical"></label>
             </div>
-              
-
-
-            <div id="settings" class="splash-head">
-                <div class="pure-g">
-                    <div id="bearing" class="pure-u-10-24">
-                        xxx°
-                    </div>
-    
-                    <div class="pure-u-4-24"> - </div>
-    
-                    <div id="elevation" class="pure-u-10-24">
-                        xxxx∡
-                    </div>      
-                </div>
-            </div>
-
-
-            <div class="pure-g coord">
-
-                <div class="pure-u-2-24"><span tabindex="1" onFocus="document.querySelector('.autofocus11').focus()"></span></div>
-                
-                <div id="mortar" class="pure-u-8-24 ">
-                    <img class="unselectable" src="./img/icons/mortar.png" alt="mortar" height="42" width="42">
-                    <input id="mortar-location" class="pure-u-23-24 autofocus1" spellcheck="false" maxlength="8" 
-                        type="text" placeholder="A01-5-7" autocomplete="off" tabindex="2"
-                        oninput="shoot()" onkeypress="filterInput(this, event)" autofocus>
-                </div>
-
-                <div class="pure-u-3-24"></div>
-
-    
-                <div id="target" class="pure-u-8-24">
-                    <img class="unselectable" src="./img/icons/target.png" alt="target" height="42" width="42">
-                    <input id="target-location" class="pure-u-23-24 autofocus11" spellcheck="false" maxlength="8"
-                         type="text" placeholder="C03-2-7-9" autocomplete="off" tabindex="3"
-                         oninput="shoot()" onkeypress="filterInput(this, event)">
-                </div>
-
-                <div class="pure-u-2-24"><span tabindex="4" onFocus="document.querySelector('.autofocus1').focus()"></span></div>
-            </div>
-
-
-
-            <div id="heatmap" class="heatmap">
-                <canvas id="canvas" width="250" height="250"></canvas>
-            </div>
-
         </div>
-
-        <div id="toast"></div>
-            
 
     </div>
-        <div class="footer l-box is-center unselectable">
-            A Minimalist Squad Mortar Calculator
+
+
+    <div class="pure-g content" id="content">
+        <div class="pure-u-2-24 pure-u-md-1-5"></div>
+        <div class="pure-u-20-24 pure-u-md-3-5">
+            <div class="pure-g">
+
+                <div class="pure-u-1 pure-u-md-11-24">
+                    <div class="pure-g">
+                        <div class="pure-u-1-5 pure-u-md-8-24"><span tabindex="1" onFocus="document.querySelector('.autofocus11').focus()"></span></div>
+                        <div class="pure-u-3-5 pure-u-md-14-24">
+                            <div id="mortar" class="coord">
+                                <img class="unselectable pure-img" src="./img/icons/mortar.png" alt="mortar" height="42" width="42">
+                                <input id="mortar-location" class="autofocus1" spellcheck="false" maxlength="8" 
+                                    type="text" placeholder="A01-5-7" autocomplete="off" tabindex="2"
+                                    oninput="shoot()" onkeypress="filterInput(this, event)" autofocus>
+                            </div>
+                        </div>
+                        <div class="pure-u-1-5 pure-u-md-2-24"><span tabindex="4" onFocus="document.querySelector('.autofocus1').focus()"></span></div>
+                     </div>
+                </div>
+
+
+
+                <div class="pure-u-md-2-24"></div>
+
+                <div class="pure-u-1 pure-u-md-11-24">
+                    <div class="pure-g">
+                        <div class="pure-u-1-5 pure-u-md-2-24"></div>
+                        <div class="pure-u-3-5 pure-u-md-14-24">
+                            <div id="target" class="coord">
+                                <img class="unselectable pure-img" src="./img/icons/target.png" alt="target" height="42" width="42">
+                                <input id="target-location" class="autofocus11" spellcheck="false" maxlength="8"
+                                    type="text" placeholder="C03-2-7-9" autocomplete="off" tabindex="3"
+                                    oninput="shoot()" onkeypress="filterInput(this, event)">
+                            </div>
+                        </div>
+                        <div class="pure-u-1-5 pure-u-md-8-24"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pure-g" id="results">
+                <div class="pure-u-md-2-24 pure-u-lg-2-24"></div>
+                <div class="pure-u-1 pure-u-md-20-24 pure-u-lg-20-24">
+                    <div id="settings" class="results">
+                        <div class="pure-g">
+                            <div id="bearing" class="pure-u-10-24">xxx°</div>
+                            <div class="pure-u-4-24"> - </div>
+                            <div id="elevation" class="pure-u-10-24">xxxx∡</div>      
+                        </div>
+                    </div>
+                </div>
+                <div class="pure-u-md-2-24 pure-u-lg-2-24"></div>
+            </div>
+
+            
         </div>
+        <div class="pure-u-2-24 pure-u-md-1-5"></div>
+        
+        <div id="heatmap" class="heatmap">
+            <canvas id="canvas" width="250" height="250"></canvas>
+        </div>
+    
+        <div id="toast"></div>
+    </div>
 
-        <section id="lab_social_icon_footer">
 
-            <div class="social github" data-tooltip="View code on Github" data-flow="left">
-                <a href="https://github.com/sh4rkman/MSMC" target="_blank"><i id="social-gh" class="fa fa-github fa-3x"></i></a>
+
+    <div class="pure-g footer" id="footer">
+        <div class="pure-u-4-24 pure-u-md-2-24">
+            <div class="social youtube">
+                <a tabindex="-1" href="https://www.youtube.com/watch?v=O-OlCej_pUo&list=PLs_W7kx2RIAkAL91Czub9hVAZ5nzp8JrS&index=8" target="_blank"><i id="social-yt" class="fa fa-youtube-play fa-3x"></i></a>
             </div>
-
-            <div class="social youtube" data-tooltip="Watch me on YouTube!" data-flow="right">
-                <a href="https://www.youtube.com/watch?v=O-OlCej_pUo&list=PLs_W7kx2RIAkAL91Czub9hVAZ5nzp8JrS&index=8" target="_blank"><i id="social-yt" class="fa fa-youtube-play fa-3x"></i></a>
+        </div>
+        <div class="pure-u-16-24 pure-u-md-20-24"></div>
+        <div class="pure-u-4-24 pure-u-md-2-24">
+            <div class="social github" tabindex="-1">
+                <a tabindex="-1" href="https://github.com/sh4rkman/MSMC" target="_blank"><i id="social-gh" class="fa fa-github fa-3x"></i></a>
             </div>
-
-        </section>
-
+        </div>
+    </div>
 
     <!-- JS -->
     <script src="./js/jquery-3.4.1.min.js"></script>
     <script src="./js/jquery-ui.min.js"></script>
     <script src="./js/utils.js"></script>
     <script src="./js/data.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="./js/main.js"></script>
     
 </body>

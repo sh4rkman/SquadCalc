@@ -2,145 +2,115 @@
  * -- WIDTH ADJUSTMENTS
  *
  */
- @media (min-width: 28em) {
-    .footer {
-        letter-spacing: 0.3em;
-        font-size: 110%;
+ 
+
+/* ≥ 768px */
+@media screen and (min-width: 48em){
+
+    /* On big screen, fix map&weapon Selectors on top corners */
+    .mapSelector {position: fixed; top: 0; right:1em;}
+    .weaponSelector {position: fixed; top: 0; left:1em;}
+
+    .select2-container{
+        float: right;
+        min-width:150px;
+        font-size: 0.8em;
+        right: 0;
+    }
+
+    .switch-field {
+        float: left;
+    }
+
+    /* -- L*560px -- */
+    @media (min-height: 35em) {
+        .content {
+            font-size: 25px;
+            padding-top: 3em;
+        }
+        input { 
+            height: 60px;
+        }
+    }
+
+    /* -- L*730px -- */
+    @media (min-height: 45em) {
+        .content {
+            padding-top: 5em;
+        }
+        input { 
+            height: 70px;
+        }
+        
+    }
+    /* -- L*800px -- */
+    @media (min-height: 50em) {
+        .content {
+            font-size: 35px;
+        }
+    }
+
+  }
+
+  /* ≥ 992px */
+@media screen and (min-width: 62em){
+    .select2-container{
+        min-width:196px;
+        font-size: 1em;   
     }
 }
 
-/* -- 768px*H -- */
- @media (min-width: 48em) {
-    body {
-        font-size: 14px;
-    }
-    .splash {
-        width: 90%;
-    }
-    .social {
-        width: 40px;
-        height: 40px;
-        bottom: 10px;
-    }
-    .youtube{
-        left: 15px;
-    }
-    .github{
-        right: 20px;
-    }
+/* ≥ 1200px */
+@media screen and (min-width: 62em){
 
-}
-/* -- 960px*H -- */
- @media (min-width: 60em) {
-    .splash-head {
-        max-width: 800px;
+    .select2-container{
+        max-width:230px;
+        font-size: 1em;
     }
-    .splash {
-        width: 70%;
-    }
-
-}
-/* -- 1248px*H -- */
-@media (min-width: 78em) {
-    .splash-head {
-        max-width: 800px;
-    }
-    .splash {
-        width: 60%;
-    }
-    .footer {
-        letter-spacing: 0.3em;
-    }
-}
-/* -- 1440px*H -- */
- @media (min-width: 90em) {
-    .splash-head {
-        font-size: 300%;
-    }
-    .splash {
-        width: 50%;
-    }
-}
-/* -- 2080px*H -- */
-@media (min-width: 130em) {
-    .splash {
-        width: 40%;
-    }
+    
 }
 
+/* ≥ 1400px */
+@media screen and (min-width: 87.5em){
+
+    .select2-container{
+        min-width:220px;
+        max-width:270px;
+        font-size: 1.2em;
+    }
+
+    .select2-results__options {
+        font-size: 1em;
+    }
+}
 
 /*
  * -- HEIGHT ADJUSTMENTS
  *
  */
  
-/* -- L*640px -- */
-@media (min-height: 40em) {
-    .splash {
-        margin-top: 10em;
-    }
-    .splash-head {
-        margin: 50px auto 30px auto;
-        font-size: 260%;
-    }
-    .dropdown-content li {
-        padding: 2px 16px;
-        line-height: 1.2em;
-    }
+/* -- L*568px -- */
+@media (min-height: 35em) {
+    .select2-results__options {max-height: 370px!important;}
 }
+
 /* -- L*730px -- */
 @media (min-height: 45em) {
-    .splash {
-        margin-top: 13em;
-    }
-    .splash-head {
-        margin: 60px auto 50px auto;
-        font-size: 270%;
-    }
-    .dropdown-content li {
-        padding: 3px 16px;
+    .select2-results__options {
+        max-height: 570px!important;
+        line-height: 1em;
     }
 }
 /* -- L*800px -- */
 @media (min-height: 50em) {
-    .splash {
-        margin-top: 14em;
-    }
-    .splash-head {
-        font-size: 300%;
-    }
-    input {
-        height: 60px;
-    }
-    .dropdown-content li {
-        padding: 3px 16px;
-        line-height: 1.5em;
-    }
+    .select2-results__options {max-height: 700px!important;}
 }
+
 /* -- L*960px -- */
 @media (min-height: 60em) {
-    .splash {
-        margin-top: 15em;
-    }
-    .splash-head {
-        font-size: 260%;
-        margin: 100px auto 50px auto;
-    }
-    input {
-        height: 70px;
-    }
-    .dropdown-content li {
-        padding: 4px 16px;
-        line-height: 1.7em;
-    }
+    .select2-results__options {max-height: 700px!important;}
 }
-/* -- L*1072pxpx -- */
+/* -- L*1072px -- */
 @media (min-height: 67em) {
-    .splash {
-        margin-top: 16em;
-    }
-    .splash-head {
-        font-size: 270%;
-        margin: 130px auto 70px auto;
-    }
+
 }
