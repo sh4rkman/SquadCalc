@@ -262,6 +262,7 @@ span.select2-selection.select2-selection--single {
   width: 100%;
   font-size: 0.7em;
   height: 3.5em;
+  visibility: hidden;
 }
 
 /****************
