@@ -489,7 +489,7 @@ function loadHeatmap() {
       placeholder: 'SELECT A MAP',
       dropdownParent: $('#mapSelector'),
       dropdownCssClass: 'dropbtn',
-      /* minimumResultsForSearch: -1, -> disable search*/  
+      minimumResultsForSearch: -1, // Disable search for better Xperience for mobile users
     });
 
     for(var i=0 ; i < maps.length; ++i){
