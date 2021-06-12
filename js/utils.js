@@ -114,6 +114,7 @@ function loadHeatmap() {
         textParts.push(textND.slice(i, i + 1));
         i += 1;
       }
+  
       return textParts.join("-");
   
     }
@@ -259,15 +260,13 @@ function loadHeatmap() {
     $("#mortar-location").removeClass("error2");
   
     // Get Keypads and format it
-
-
-    a = document.getElementById("mortar-location").value;
-    console.log(a);
+    a = $("#mortar-location").val();
     b = $("#target-location").val();
+    c = formatKeyPad(a);
+    d = formatKeyPad(b)
 
-
-    $("#mortar-location").val(formatKeyPad(a));
-    $("#target-location").val(formatKeyPad(b));
+    $("#mortar-location").val(c);
+    $("#target-location").val(d);
 
  
     // If keypads are imprecises, do nothing
