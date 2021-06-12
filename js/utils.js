@@ -100,11 +100,6 @@ function loadHeatmap() {
       // If empty string, return
       if(text.length==0){return;}
   
-      // special case if people prefer to input "A2-3-4" over "A0234"
-      // check if length is 3 and third letter is a dash, then just convert to padded
-      if (text.length === 3 && text[2] === "-") {
-        text = text[0] + pad(text[1], 2);
-      }
       const textND = text
         .toUpperCase()
         .split("-")
