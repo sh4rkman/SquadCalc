@@ -262,6 +262,10 @@ function loadHeatmap() {
     // Get Keypads and format it
     a = $("#mortar-location").val();
     b = $("#target-location").val();
+    
+    $("#mortar-location").val('');
+    $("#target-location").val('');
+
     $("#mortar-location").val(formatKeyPad(a));
     $("#target-location").val(formatKeyPad(b));
   
