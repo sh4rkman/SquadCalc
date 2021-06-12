@@ -262,13 +262,13 @@ function loadHeatmap() {
     // Get Keypads and format it
     a = $("#mortar-location").val();
     b = $("#target-location").val();
-    
-    $("#mortar-location").val('');
-    $("#target-location").val('');
+    c = formatKeyPad(a);
+    d = formatKeyPad(b)
 
-    $("#mortar-location").val(formatKeyPad(a));
-    $("#target-location").val(formatKeyPad(b));
-  
+    $("#mortar-location").val(c);
+    $("#target-location").val(d);
+
+ 
     // If keypads are imprecises, do nothing
     if (a.length < 3 || b.length < 3) {
       $("#bearing").html("xxx°");
@@ -423,6 +423,8 @@ function loadHeatmap() {
     }
     
   }
+  
+
   
   /**
    * Filter invalid key pressed by the user 
