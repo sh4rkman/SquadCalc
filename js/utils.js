@@ -396,7 +396,7 @@ function loadHeatmap() {
       $("#bearing").html(bearing.toFixed(1) + "°");
       $("#elevation").html("xxxx∡");
       $("#settings").effect("shake");
-      showToastError("Target is out of range : " + distance.toFixed(0)+"m !");
+      showToastError("Target is out of range : " + distance.toFixed(0)+"m");
       return 1
     }
   
