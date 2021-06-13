@@ -8,7 +8,7 @@
  * -- BASE STYLES --
  * Most of these are inherited from Base, but I want to change a few.
  */
- body {
+body {
   line-height: 1.7em;
   color: white;
   background: #111;
@@ -20,10 +20,16 @@ html, button, input, select, textarea,
         letter-spacing: 0.1em;
     }
 
+
+img {
+  display:block;
+  margin:auto;
+}
+
 input { 
   border: 0;
   border-bottom: 3px solid white;
-  font-size: 1em;
+  font-size: 1.1em;
   line-height: 2.188em;
   height: 40px;
   text-align: center;
@@ -49,9 +55,9 @@ input:focus{
  *     Logo
  *****************/
 
-img {
-  display:block;
-  margin:auto;
+
+.logo img {
+  margin-top: 10px;
 }
 
 
@@ -74,7 +80,7 @@ img {
 }
 
 .mortar_selector_technical {
-  background: url("../img/icons/technical_mortar3.png") no-repeat scroll 8px 2px transparent;
+  background: url("../img/icons/technical_mortar.png") no-repeat scroll 8px 2px transparent;
 }
 
 .switch-field {
@@ -331,8 +337,8 @@ span.select2-selection.select2-selection--single {
   letter-spacing: 0.1em;
   visibility: hidden;
   min-width: 250px;
-  width: 400px;
-  margin-left: -200px;
+  width: 100%;
+  margin-left: 0px;
   background-color:brown;
   color: #fff;
   text-align: center;
@@ -340,34 +346,25 @@ span.select2-selection.select2-selection--single {
   padding: 16px;
   position: fixed;
   z-index: 1;
-  left: 50%;
-  bottom: 100px;
+  left: 0px;
+  bottom: 0px;
   font-size: 17px;
 }
 
 #toast.show {
   visibility: visible;
-  -webkit-animation: fadein 0.5s, fadeout 1s 4.5s;
-  animation: fadein 0.5s, fadeout 1s 4.5s;
+  -webkit-animation: fadein 0.5s;
+  animation: fadein 0.5s;
 }
 
 @-webkit-keyframes fadein {
   from {bottom: 0; opacity: 0;} 
-  to {bottom: 100px; opacity: 1;}
+  to {bottom: 0px; opacity: 1;}
 }
 
 @keyframes fadein {
   from {bottom: 0; opacity: 0;}
-  to {bottom: 100px; opacity: 1;}
+  to {bottom: 0px; opacity: 1;}
 }
 
-@-webkit-keyframes fadeout {
-  from {bottom: 100px; opacity: 1;} 
-  to {bottom: 0; opacity: 0;}
-}
-
-@keyframes fadeout {
-  from {bottom: 100px; opacity: 1;}
-  to {bottom: 0; opacity: 0;}
-}
 

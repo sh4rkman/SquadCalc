@@ -251,9 +251,6 @@ function loadHeatmap() {
   
   /**
    * Calculates the distance elevation and bearing
-   *
-   * @param {string} a - keypad string where mortar is
-   * @param {string} b - keypad string where target is
    * @returns {target} elevation + bearing
    */
   function shoot() {
@@ -263,6 +260,7 @@ function loadHeatmap() {
     $("#settings").removeClass("error");
     $("#target-location").removeClass("error2");
     $("#mortar-location").removeClass("error2");
+
   
     // Get Keypads and format it
     a = $("#mortar-location").val();
@@ -295,18 +293,18 @@ function loadHeatmap() {
         console.log('Invalid mortars and target');
         $("#target-location").addClass("error2");
         $("#mortar-location").addClass("error2");
-        toastError("Invalid mortars and target");
+        showToastError("Invalid mortars and target");
         return 1
       }
       if(isNaN(a.lng)){
         console.log('Invalid mortars');
         $("#mortar-location").addClass("error2");
-        toastError("Invalid mortars");
+        showToastError("Invalid mortars");
         return 1
       } else {
         console.log('Invalid target');
         $("#target-location").addClass("error2");
-        toastError("Invalid target");
+        showToastError("Invalid target");
         return 1
       }
     }
@@ -324,11 +322,11 @@ function loadHeatmap() {
       if(height == 998){    // Mortars are out of map
         console.log('Mortars are out of map');
         $("#mortar-location").addClass("error2");
-        toastError("Motars are out of map");
+        showToastError("Motars are out of map");
       } else {    // Target is out of map
         console.log('Target is out of map');
         $("#target-location").addClass("error2");
-        toastError("Target is out of map");
+        showToastError("Target is out of map");
       }
       return 1
     }
@@ -343,12 +341,12 @@ function loadHeatmap() {
       if(isNaN(a.lat)||isNaN(a.lng)){
         console.log('Invalid mortars keypad');
         $("#mortar-location").addClass("error2");
-        toastError("Invalid mortars");
+        showToastError("Invalid mortars");
       }
       if(isNaN(b.lat)||isNaN(b.lng)){
         console.log('Invalid Target keypad');
         $("#target-location").addClass("error2");
-        toastError("Invalid target");
+        showToastError("Invalid target");
       } 
       $("#settings").addClass("error");
       $("#bearing").html("xxx°");
@@ -391,9 +389,8 @@ function loadHeatmap() {
       $("#target-location").addClass("error2");
       // Insert bearing and "2far"
       $("#bearing").html(bearing.toFixed(1) + "°");
-      $("#elevation").html("2far!");
       $("#settings").effect("shake");
-      toastError("Target is out of range : " + distance.toFixed(0)+"m !");
+      showToastError("Target is out of range : " + distance.toFixed(0)+"m !");
       return 1
     }
   
@@ -405,9 +402,8 @@ function loadHeatmap() {
       $("#target-location").addClass("error2");
       // Insert bearing and "2close"
       $("#bearing").html(bearing.toFixed(1) + "°");
-      $("#elevation").html("2close!");
       $("#settings").effect("shake");
-      toastError("Target is too close : " + distance.toFixed(0)+"m !");
+      showToastError("Target is too close : " + distance.toFixed(0)+"m !");
       return 1
     }
     
@@ -474,14 +470,14 @@ function loadHeatmap() {
   }
    
    /**
-   * ShowToast
+   * showToastError
    * @param {string} e - error message to be displayed
    */
-  function toastError(e) {
+  function showToastError(e) {
     $("#toast").html(e);
     $("#toast").addClass("show");
-    setTimeout(function(){ $("#toast").removeClass("show");}, 5000);
   }
+    
   
   
   /**
@@ -489,6 +485,7 @@ function loadHeatmap() {
   */
   function loadMaps() {
 
+    // Initiate select2 object (https://select2.org/)
     $('.dropbtn').select2({
       placeholder: 'SELECT A MAP',
       dropdownParent: $('#mapSelector'),
@@ -496,20 +493,25 @@ function loadHeatmap() {
       minimumResultsForSearch: -1, // Disable search for better Xperience for mobile users
     });
 
+    // load maps into select2
     for(var i=0 ; i < maps.length; ++i){
       $(".dropbtn").append('<option value="' + i + '">'+ maps[i][0] + '</option>');
     }
   }
 
+  // Event to initiate a placeholder for select2
+  /*
+  $('.dropbtn').one('select2:open', function(e) {
+    $('input.select2-search__field').prop('placeholder', 'search');
+  });
+  */
    
   /**
-   * Draw the selected Heatmaps in a hidden canvas
+   * Draw the selected Heatmap in a hidden canvas
    */
   $(".dropbtn").change(function(){
     drawHeatmap();
   });
 
-  $('.dropbtn').one('select2:open', function(e) {
-    $('input.select2-search__field').prop('placeholder', 'search');
-});
+
 
