@@ -255,23 +255,28 @@ function loadHeatmap() {
    */
   function shoot() {
   
-    // First, Reset any errors
+    // First, reset any errors
     $("#toast").removeClass("show");
     $("#settings").removeClass("error");
     $("#target-location").removeClass("error2");
     $("#mortar-location").removeClass("error2");
-
   
-    // Get Keypads and format it
+    // store current cursor positions on input
+    var startA = $("#mortar-location")[0].selectionStart;
+    var startB = $("#target-location")[0].selectionStart;
+
+    // store current keypads
     a = $("#mortar-location").val();
     b = $("#target-location").val();
-    
-    $("#mortar-location").val('');
-    $("#target-location").val('');
 
+    // format keypads
     $("#mortar-location").val(formatKeyPad(a));
     $("#target-location").val(formatKeyPad(b));
   
+    // restore cursor position
+    setCursor(startA, startB, a, b);
+
+
     // If keypads are imprecises, do nothing
     if (a.length < 3 || b.length < 3) {
       $("#bearing").html("xxx°");
@@ -514,4 +519,43 @@ function loadHeatmap() {
   });
 
 
+ /**
+  * Set the cursor at the correct position after MSMC messed with the inputs by reformating its values
+  * @param {string} startA - cursor position on mortar
+  * @param {string} startB - cursor position on target
+  * @param {string} a - previous mortar coord before reformating
+  * @param {string} b - previous tardget coord before reformating
+  */
+  function setCursor(startA, startB, a, b) {
 
+    a = a.length;
+    b = b.length;
+    c = $("#mortar-location").val().length;
+    d = $("#target-location").val().length;
+
+    // if the keypads.lenght is <3, do nothing.
+    // Otherwise we guess if the user is deleting or adding something
+    // and ajust the cursor considering MSMC added/removed a '-'
+
+    if(startA >=3){
+      if(a > c) {
+        startA--;
+      }
+      else {
+        startA++; 
+      }
+    }
+
+    if(startB >=3){
+      if(b > d) {
+        startB--;
+      }
+      else {
+        startB++;    
+      }
+    }
+
+    $("#mortar-location")[0].setSelectionRange(startA, startA);
+    $("#target-location")[0].setSelectionRange(startB, startB);
+
+  }
