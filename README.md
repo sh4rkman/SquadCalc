@@ -21,7 +21,7 @@ Select a map, enter locations, shoot.
  
 <p align="center">
   <img width="400" height="284" src="https://i.imgur.com/ZkOK76O.png">
-  <img width="150" height="284" src=" https://i.imgur.com/zlG4xRs.png">
+  <img width="150" height="284" src="https://i.imgur.com/zlG4xRs.png">
 </p>
 
 # **Features**
