@@ -256,11 +256,20 @@ function loadHeatmap() {
   function shoot() {
   
     // First, reset any errors
-    $("#toast").removeClass("show");
     $("#settings").removeClass("error");
     $("#target-location").removeClass("error2");
     $("#mortar-location").removeClass("error2");
-  
+
+    $("#bearing").removeClass("hidden");
+    $("#elevation").removeClass("hidden");
+    $("#bearing").addClass("pure-u-10-24");
+    $("#elevation").addClass("pure-u-10-24");
+    $("#errorMsg").addClass("pure-u-4-24");
+    $("#errorMsg").removeClass("errorMsg");
+    $("#errorMsg").removeClass("pure-u-24-24");
+    $("#errorMsg").html("-");
+
+
     // store current cursor positions on input
     var startA = $("#mortar-location")[0].selectionStart;
     var startB = $("#target-location")[0].selectionStart;
@@ -276,7 +285,6 @@ function loadHeatmap() {
     // restore cursor position
     setCursor(startA, startB, a, b);
 
-
     // If keypads are imprecises, do nothing
     if (a.length < 3 || b.length < 3) {
       $("#bearing").html("xxx°");
@@ -288,30 +296,18 @@ function loadHeatmap() {
     b = getPos(b);
   
     if(isNaN(a.lng) || isNaN(b.lng)){
-      $("#settings").addClass("error");
-      $("#bearing").html("xxx°");
-      $("#elevation").html("xxxx∡");
-      $("#settings").effect("shake");
-  
+
       if(isNaN(a.lng) && isNaN(b.lng)){
-        // Add error on target & mortar
-        console.log('Invalid mortars and target');
-        $("#target-location").addClass("error2");
-        $("#mortar-location").addClass("error2");
-        showToastError("Invalid mortars and target");
-        return 1
-      }
-      if(isNaN(a.lng)){
-        console.log('Invalid mortars');
-        $("#mortar-location").addClass("error2");
-        showToastError("Invalid mortars");
-        return 1
+        console.log('Invalid mortar and target');
+        showError("Invalid mortar and target");
+      } else if(isNaN(a.lng)){
+        console.log('Invalid mortar');
+        showError("Invalid mortar", "mortar");
       } else {
         console.log('Invalid target');
-        $("#target-location").addClass("error2");
-        showToastError("Invalid target");
-        return 1
+        showError("Invalid target", "target");   
       }
+      return 1
     }
   
   
@@ -319,19 +315,13 @@ function loadHeatmap() {
 
     // Check if mortars/target are out of map
     if((height == 998) || (height == 999)){
-      $("#settings").addClass("error");
-      $("#bearing").html("xxx°");
-      $("#elevation").html("xxxx∡");
-      $("#settings").effect("shake");
-  
-      if(height == 998){    // Mortars are out of map
-        console.log('Mortars are out of map');
-        $("#mortar-location").addClass("error2");
-        showToastError("Motars are out of map");
-      } else {    // Target is out of map
+
+      if(height == 998){
+        console.log('Mortar are out of map');
+        showError("Mortar are out of map", "mortar");
+      } else {
         console.log('Target is out of map');
-        $("#target-location").addClass("error2");
-        showToastError("Target is out of map");
+        showError("Target is out of map", "target");
       }
       return 1
     }
@@ -339,27 +329,6 @@ function loadHeatmap() {
   
     var distance = getDist(a, b);
 
-
-    // If keypad is bad (1C32), distance is NaN
-    // Detect it and display wich keypad is faultive 
-    if(isNaN(distance)){
-      if(isNaN(a.lat)||isNaN(a.lng)){
-        console.log('Invalid mortars keypad');
-        $("#mortar-location").addClass("error2");
-        showToastError("Invalid mortars");
-      }
-      if(isNaN(b.lat)||isNaN(b.lng)){
-        console.log('Invalid Target keypad');
-        $("#target-location").addClass("error2");
-        showToastError("Invalid target");
-      } 
-      $("#settings").addClass("error");
-      $("#bearing").html("xxx°");
-      $("#elevation").html("xxxx∡");
-      $("#settings").effect("shake");
-      return 1
-    }
-  
     var elevation;
 
     // Classical calc for mortar
@@ -388,28 +357,15 @@ function loadHeatmap() {
   
     // If Target too far, display it and exit function
     if(isNaN(elevation)){
-      console.log("Target is too far : " + distance.toFixed(0)+"m !");
-      // Add error on target & settings
-      $("#settings").addClass("error");
-      $("#target-location").addClass("error2");
-      // Insert bearing and "2far"
-      $("#bearing").html(bearing.toFixed(1) + "°");
-      $("#elevation").html("xxxx∡");
-      $("#settings").effect("shake");
-      showToastError("Target is out of range : " + distance.toFixed(0)+"m");
+      console.log("Target is too far : " + distance.toFixed(0)+"m");
+      showError("Target is out of range : " + distance.toFixed(0)+"m", "target");
       return 1
     }
   
     // If Target too close, display it and exit function
     if(distance<=50){
-      console.log("Target is too close : " + distance.toFixed(0)+"m !");
-      // Add error on target & settings
-      $("#settings").addClass("error");
-      $("#target-location").addClass("error2");
-      // Insert bearing and "2close"
-      $("#bearing").html(bearing.toFixed(1) + "°");
-      $("#settings").effect("shake");
-      showToastError("Target is too close : " + distance.toFixed(0)+"m !");
+      console.log("Target is too close : " + distance.toFixed(0)+"m");
+      showError("Target is too close : " + distance.toFixed(0)+"m", "target");
       return 1
     }
     
@@ -475,13 +431,43 @@ function loadHeatmap() {
     return false;
   }
    
+
+  
    /**
-   * showToastError
-   * @param {string} e - error message to be displayed
+   * showError
+   * @param {string} msg - error message to be displayed
+   * @param {string} issue - mortar/target/both
    */
-  function showToastError(e) {
-    $("#toast").html(e);
-    $("#toast").addClass("show");
+  function showError(msg, issue) {
+
+    if(issue == 'mortar') {
+      $("#mortar-location").addClass("error2");
+    }
+    else if(issue == 'target') {
+      $("#target-location").addClass("error2");
+    }
+    else {
+      $("#target-location").addClass("error2");
+      $("#mortar-location").addClass("error2");
+    }
+
+
+    // Rework the #setting div to display a single message
+    $("#bearing").addClass("hidden");
+    $("#elevation").addClass("hidden");
+    $("#bearing").removeClass("pure-u-10-24");
+    $("#elevation").removeClass("pure-u-10-24");
+    $("#errorMsg").removeClass("pure-u-4-24");
+    $("#errorMsg").addClass("pure-u-24-24");
+    $("#errorMsg").addClass("errorMsg");
+
+    // insert error message
+    $("#errorMsg").html(msg);
+
+    // https://youtu.be/PWgvGjAhvIw?t=233
+    $("#settings").addClass("error");
+    $("#settings").effect("shake");
+
   }
     
   

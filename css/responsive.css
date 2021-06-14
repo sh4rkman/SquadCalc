@@ -70,24 +70,6 @@
         max-width:230px;
     }
     
-    #toast {
-        bottom: 100px;
-        width: 400px;
-        margin-left: -200px;
-        left: 50%;
-    }
-    
-@-webkit-keyframes fadein {
-    from {bottom: 0; opacity: 0;} 
-    to {bottom: 100px; opacity: 1;}
-  }
-  
-  @keyframes fadein {
-    from {bottom: 0; opacity: 0;}
-    to {bottom: 100px; opacity: 1;}
-  }
-  
-    
 }
 
 /* ≥ 1400px */

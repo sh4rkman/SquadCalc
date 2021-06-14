@@ -1,14 +1,14 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <meta name="description" content="A Minimalist Squad Mortar Calculator, enter location : shoot.">
+    <meta name="description" content="A Minimalist yet precise Mortar Calculator for SQUAD ! enter locations, shoot, profit.">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#111"/>
     <meta charset="utf-8">
 
      <!-- SOCIAL MEDIA -->
         <meta property="og:title" content="MSMC">
-        <meta property="og:description" content="A Minimalist Squad Mortar Calculator, enter location : shoot">
+        <meta property="og:description" content="A Minimalist yet precise Mortar Calculator for SQUAD ! enter locations, shoot, profit.">
         <meta property="og:image" content="https://i.imgur.com/AvOk3yK.png">
         <meta property="og:url" content="https://mortar.sharkman.info/">
         <meta name="twitter:card" content="https://i.imgur.com/AvOk3yK.png">
@@ -53,7 +53,7 @@
                 <label for="radio-one" class="mortar_selector mortar_selector_classic"></label>
                 
                 <input type="radio" id="radio-two" name="switch-one" onchange="shoot()"/>
-                <label data-flow="right" for="radio-two" class="mortar_selector mortar_selector_technical"></label>
+                <label for="radio-two" class="mortar_selector mortar_selector_technical"></label>
             </div>
         </div>
 
@@ -106,7 +106,7 @@
                     <div id="settings" class="results">
                         <div class="pure-g">
                             <div id="bearing" class="pure-u-10-24">xxx°</div>
-                            <div class="pure-u-4-24"> - </div>
+                            <div id="errorMsg" class="pure-u-4-24"> - </div>
                             <div id="elevation" class="pure-u-10-24">xxxx∡</div>      
                         </div>
                     </div>
@@ -121,13 +121,12 @@
         <div id="heatmap" class="heatmap">
             <canvas id="canvas" width="250" height="250"></canvas>
         </div>
-    
-        <div id="toast"></div>
+
     </div>
 
 
 
-    <div class="pure-g footer" id="footer">
+    <div id="footer" class="pure-g footer">
         <div class="pure-u-4-24 pure-u-md-2-24">
             <div class="social youtube">
                 <a tabindex="-1" href="https://www.youtube.com/watch?v=O-OlCej_pUo&list=PLs_W7kx2RIAkAL91Czub9hVAZ5nzp8JrS&index=8" target="_blank" rel="noopener"><i id="social-yt" class="fa fa-youtube-play fa-3x"></i></a>
