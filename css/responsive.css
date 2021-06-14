@@ -44,7 +44,7 @@
         input { 
             height: 70px;
         }
-        
+
     }
     /* -- L*800px -- */
     @media (min-height: 50em) {
@@ -68,7 +68,6 @@
 
     .select2-container{
         max-width:230px;
-        font-size: 1em;
     }
     
     #toast {

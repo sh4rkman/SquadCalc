@@ -1,5 +1,6 @@
 
 .pure-g [class *= "pure-u"] {
+  /* border: solid 1px white; */
   text-align: center;
 }
 
@@ -68,6 +69,7 @@ input:focus{
  .weaponSelector{
   padding: 1em 0em 0.5em 0em;
 }
+
 
  .mortar_selector {
   display: inline-block;
@@ -241,6 +243,7 @@ span.select2-selection.select2-selection--single {
 .coord {
   padding: 0.625em 0em;
 }
+
 
 #heatmap{
   padding: 0;
