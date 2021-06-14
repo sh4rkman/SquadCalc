@@ -10,7 +10,7 @@
 </br>
 
 **MSMC** is a simple, easy on the eyes mortar calculator for <a href="https://joinsquad.com/">Squad</a>.  
-It allow quick mortars calculations without fancy map, buttons and icons.
+It allows quick mortars calculations without fancy map, buttons and icons.
  
 </br>
 
