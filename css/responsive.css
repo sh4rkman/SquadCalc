@@ -3,6 +3,8 @@
  *
  */
  
+
+
 /* ≥ 768px */
 @media screen and (min-width: 48em){
 
@@ -10,6 +12,23 @@
     .mapSelector {position: fixed; top: 0; right:1em;}
     .weaponSelector {position: fixed; top: 0; left:1em;}
 
+    .mortar_selector {
+        height: 35px;
+        width: 75px;
+    }
+
+    .save {
+        padding: 5px 0px;
+    }
+      
+    .mortar_selector_classic {
+        background: url("../img/icons/classic_mortar.png") no-repeat scroll 23px 5px transparent;
+    }
+    
+    .mortar_selector_technical {
+        background: url("../img/icons/technical_mortar.png") no-repeat scroll 8px 2px transparent;
+    }
+     
     .footer {
        visibility: visible;
     }
@@ -25,6 +44,11 @@
         float: left;
     }
 
+    .coord img {
+        width: 45px;
+        height: 45px;
+      }
+
     /* -- L*560px -- */
     @media (min-height: 35em) {
         .content {
@@ -39,7 +63,7 @@
     /* -- L*730px -- */
     @media (min-height: 45em) {
         .content {
-            padding-top: 5em;
+            padding-top: 3em;
         }
         input { 
             height: 70px;
@@ -69,6 +93,7 @@
     .select2-container{
         max-width:230px;
     }
+
     
 }
 
@@ -94,6 +119,7 @@
 /* -- L*568px -- */
 @media (min-height: 35em) {
     .select2-results__options {max-height: 370px!important;}
+    
 }
 
 /* -- L*730px -- */

@@ -263,6 +263,7 @@ function loadHeatmap() {
     $("#errorMsg").removeClass("errorMsg");
     $("#errorMsg").removeClass("pure-u-24-24");
     $("#errorMsg").html("-");
+    $(".save").addClass("hidden");
 
 
     // store current cursor positions on input
@@ -371,6 +372,7 @@ function loadHeatmap() {
     console.log("-> Distance: " + distance.toFixed(0) + "m - height: " + height.toFixed(0) + "m")
     
     $("#bearing").html(bearing.toFixed(1) + "°");
+
     
     // If using technical mortars, we need to be more precise (##.#)
     if($("#radio-one").is(':checked')){
@@ -380,6 +382,9 @@ function loadHeatmap() {
       $("#elevation").html(elevation.toFixed(1) + "∡");
     }
     
+    // show save button
+    $(".save").removeClass("hidden");
+
   }
   
 
@@ -501,6 +506,42 @@ function loadHeatmap() {
   $(".dropbtn").change(function(){
     drawHeatmap();
   });
+
+  $(".save").click(function(){
+
+    $(".save").effect("bounce", 500);
+
+    if($(".saved_list p").length == 3) {
+      $(".saved_list p").first().remove();
+    }
+
+    $(".saved_list").append("<p>"
+    + $("#mortar-location").val() 
+    + " > "
+    + $("#target-location").val()
+    + " : "
+    + "<span style=\"font-weight:bold\">"
+    + $("#bearing").text()
+    + " - " 
+    + $("#elevation").text()
+    + "</span><i class=\"fa fa-times-circle fa-fw del\" aria-hidden=\"true\" onclick=\"RemoveSaves(this)\"></i></p>");
+    
+    $(".saved").removeClass("hidden");
+
+  });
+
+  /**
+   * Remove a saved keypad
+  */
+  function RemoveSaves(a) {
+
+    if($(".saved_list p").length == 1) {
+      $(".saved").addClass("hidden");
+    }
+
+    a.closest("p").remove();
+
+  }
 
 
  /**
