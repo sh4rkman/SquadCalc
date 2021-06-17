@@ -1,7 +1,6 @@
-
-.pure-g [class *= "pure-u"] {
-  /* border: solid 1px white; */
-  text-align: center;
+.pure-g [class *="pure-u"] {
+    /* border: solid 1px white; */
+    text-align: center;
 }
 
 
@@ -9,40 +8,44 @@
  * -- BASE STYLES --
  * Most of these are inherited from Base, but I want to change a few.
  */
+
 body {
-  /* line-height: 1.7em; */
-  color: white;
-  background: #111;
+    /* line-height: 1.7em; */
+    color: white;
+    background: #111;
 }
 
-html, button, input, select, textarea,
-    .pure-g [class *= "pure-u"] {
-        font-family: 'Montserrat', Times, "Times New Roman", serif;
-        letter-spacing: 0.1em;
-    }
-
+html,
+button,
+input,
+select,
+textarea,
+.pure-g [class *="pure-u"] {
+    font-family: 'Montserrat', Times, "Times New Roman", serif;
+    letter-spacing: 0.1em;
+}
 
 img {
-  display:block;
-  margin:auto;
+    display: block;
+    margin: auto;
 }
 
-input { 
-  border: 0;
-  border-bottom: 3px solid white;
-  font-size: 1.1em;
-  line-height: 2.188em;
-  height: 40px;
-  text-align: center;
-  text-transform: uppercase;
-  padding: 0;
-  background: transparent;
-  font-weight: bold;
-  width: 100%;
+input {
+    border: 0;
+    border-bottom: 3px solid white;
+    font-size: 1.1em;
+    line-height: 2.188em;
+    height: 30px;
+    text-align: center;
+    text-transform: uppercase;
+    padding: 0;
+    background: transparent;
+    font-weight: bold;
+    width: 100%;
 }
 
-input:focus{
-  outline: none;
+input:focus {
+    outline: none;
 }
 
 
@@ -51,176 +54,170 @@ input:focus{
  **************************************/
 
 
- /****************
+/****************
  *     Logo
  *****************/
 
-
 .logo img {
-  margin-top: 10px;
+    margin-top: 10px;
 }
 
 
- /****************
+/****************
  * Weapon Selector
  *****************/
 
-.weaponSelector{
-  padding: 1em 0em 0.5em 0em;
+.weaponSelector {
+    padding: 1em 0em 0.5em 0em;
 }
 
-
 .mortar_selector {
-  display: inline-block;
-  height: 35px;
-  width: 75px;
+    display: inline-block;
+    height: 27px;
+    width: 50px;
 }
 
 .mortar_selector_classic {
-  background: url("../img/icons/classic_mortar.png") no-repeat scroll 23px 5px transparent;
+    background: url("../img/icons/classic_mortar.png") no-repeat scroll 15px 2px transparent;
 }
 
 .mortar_selector_technical {
-  background: url("../img/icons/technical_mortar.png") no-repeat scroll 8px 2px transparent;
+    background: url("../img/icons/technical_mortar.png") no-repeat scroll -4px -1px transparent;
 }
 
 .switch-field {
-  display: flex;
-  justify-content: center;
-  margin: auto;
-  overflow: hidden;
-  z-index: 5;
+    display: flex;
+    justify-content: center;
+    margin: auto;
+    overflow: hidden;
+    z-index: 5;
 }
 
 .switch-field input {
-  position: absolute !important;
-  clip: rect(0, 0, 0, 0);
-  height: 1px;
-  width: 1px;
-  border: 0;
-  overflow: hidden;
+    position: absolute !important;
+    clip: rect(0, 0, 0, 0);
+    height: 1px;
+    width: 1px;
+    border: 0;
+    overflow: hidden;
 }
 
 .switch-field label {
-  background-color: #464444;
-  color: rgba(0, 0, 0, 0.6);
-  font-size: 14px;
-  font-weight: bold;
-  line-height: 1;
-  text-align: center;
-  transition: all 0.2s ease-in-out;
+    background-color: #464444;
+    color: rgba(0, 0, 0, 0.6);
+    transition: all 0.2s ease-in-out;
 }
 
 .switch-field label:hover {
-  cursor: pointer;
+    cursor: pointer;
 }
 
-.switch-field input:checked + label {
-  background-color: #ffffff;
-  box-shadow: none;
+.switch-field input:checked+label {
+    background-color: #ffffff;
+    box-shadow: none;
 }
 
 .switch-field label:first-of-type {
-  border-radius: 3px 0 0 3px;
+    border-radius: 5px 0 0 5px;
 }
 
 .switch-field label:last-of-type {
-  border-radius: 0 3px 3px 0;
+    border-radius: 0 5px 5px 0;
 }
 
 
-
- /****************
+/****************
  *  Map Selector
  *****************/
 
-.mapSelector{
-  padding: 1em 0em 0.5em 0em;
+.mapSelector {
+    padding: 1em 0em 0.5em 0em;
 }
 
 .selectbox {
-  padding: 0;
+    padding: 0;
 }
 
 .dropbtn {
-  color: #ffffff;
-  line-height: 2.188em;
-  font-weight: bold;
-  text-transform: uppercase;
-  background: #111!important;
+    color: #ffffff;
+    line-height: 2.188em;
+    font-weight: bold;
+    text-transform: uppercase;
+    background: #111!important;
 }
 
 .dropbtn select {
-  border: none;
-  box-shadow: none;
-  background-color: transparent;
-  background-image: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
+    border: none;
+    box-shadow: none;
+    background-color: transparent;
+    background-image: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
 }
 
 .select2-search {
-  background:white!important;
-  font-size: 1em!important;
-  color: rgb(161, 142, 142)!important;
+    background: white!important;
+    font-size: 1em!important;
+    color: rgb(161, 142, 142)!important;
 }
 
-
-.select2-selection{
-  background: #111!important;
-  border:none!important;
-  font-size: 1em;
-  color:white!important;
+.select2-selection {
+    background: #111!important;
+    border: none!important;
+    font-size: 1em;
+    color: white!important;
 }
 
-.dropbtn:focus{
-  outline: none;
+.dropbtn:focus {
+    outline: none;
 }
 
-
-.select2-container{
-  min-width:200px;
-  color: #ffffff!important;
-  font-size: 1em;
-  line-height: 2.188em;
-  font-weight: bold;
-  padding-bottom: 0.3em;
-  border: 0;
-  border-bottom: 1px solid white!important;
-  text-transform: uppercase;
-  background-color: #111;
-  background: #111;
-  box-shadow: none!important;
+.select2-container {
+    min-width: 200px;
+    color: #ffffff!important;
+    font-size: 1em;
+    line-height: 2.188em;
+    font-weight: bold;
+    padding-bottom: 0.3em;
+    border: 0;
+    border-bottom: 1px solid white!important;
+    text-transform: uppercase;
+    background-color: #111;
+    background: #111;
+    box-shadow: none!important;
 }
-
 
 .select2-results__options {
-  max-height: 350px!important;
-  line-height: 1.4em;
+    max-height: 350px!important;
+    line-height: 1.4em;
 }
 
 .select2-search__field {
-  color: #111!important;
-  font-size: 1em!important;
-  height: 1.4em;
-  text-transform: none!important;
+    color: #111!important;
+    font-size: 1em!important;
+    height: 1.4em;
+    text-transform: none!important;
 }
 
 .select2-selection__rendered {
-  color: #ffffff!important;
+    color: #ffffff!important;
 }
 
-.select2-results__message{
-  padding-top: 20px!important;
+.select2-results__message {
+    padding-top: 20px!important;
 }
+
 
 /* Avoid the creation of an outline when pressing enter to select a map */
+
 span.select2-selection.select2-selection--single {
-  outline: none;
+    outline: none;
 }
 
-.show {display: block;}
+.show {
+    display: block;
+}
 
 
 /***************************************
@@ -228,30 +225,80 @@ span.select2-selection.select2-selection--single {
  **************************************/
 
 
+/****************
+ *    Results
+ *****************/
+
 .results {
-  font-size: 1.5em;
-  border: 5px solid white;
-  padding: 1em;
-  margin: 1.5em auto;
-  border-radius: 5px;
-  font-weight: bold;
+    font-size: 1.5em;
+    border: 5px solid white;
+    padding: 1em;
+    margin: 0.7em auto;
+    border-radius: 5px;
+    font-weight: bold;
+    position: relative;
 }
 
+.save i {
+    font-size: 0.5em;
+    position: relative;
+}
+
+.save {
+    /* border: solid 1px red; */
+    border: none;
+    position: absolute;
+    background-color: transparent;
+    bottom: 0px;
+    right: 0px;
+    padding: 0px 5px;
+}
+
+.copy:hover {
+    cursor: pointer;
+}
 
 .coord {
-  padding: 0.625em 0em;
+    padding: 0.625em 0em;
+}
+
+.coord img {
+    width: 30px;
+    height: 30px;
 }
 
 
-#heatmap{
-  padding: 0;
-  display: none;
+/********************
+ * Canvas / Heightmaps
+ *********************/
+
+#heatmap {
+    padding: 0;
+    display: none;
 }
 
 #canvas {
-  margin: auto auto;
-  width: 250px;
-  height: 250px;
+    margin: auto auto;
+    width: 250px;
+    height: 250px;
+}
+
+
+/****************
+ *   Saved calcs
+ *****************/
+
+.saved {
+    /* border: 1px solid red; */
+    font-size: 0.6em;
+}
+
+.saved i {
+    cursor: pointer;
+}
+
+.saved_list p {
+    margin: 0.5em;
 }
 
 
@@ -259,48 +306,52 @@ span.select2-selection.select2-selection--single {
  ************   FOOTER   ***************
  **************************************/
 
+
 /****************
  *    Footer
  *****************/
 
 .footer {
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  font-size: 0.7em;
-  height: 3.5em;
-  visibility: hidden;
+    font-size: 1.2em;
+    position: fixed;
+    bottom: 0px;
+    width: 100%;
+    height: 3.5em;
+    visibility: hidden;
 }
+
 
 /****************
  *  Social Buttons
  *****************/
 
 .social {
-  position: absolute;
+    position: absolute;
+    bottom: 5px;
 }
 
 .social a {
-  color: #333;
+    color: #333;
 }
 
 #social-yt:hover {
-  color: red;
+    color: red;
 }
 
 #social-gh:hover {
-  color: black;
+    color: black;
 }
 
 .youtube {
-  text-align: left;
-  left: 0.8em;
+    text-align: left;
+    left: 0.4em;
 }
 
 .github {
-  text-align: right;
-  right: 0.8em;
+    text-align: right;
+    right: 0.4em;
 }
+
 
 /***************************************
  ************   MISC   ***************
@@ -308,38 +359,42 @@ span.select2-selection.select2-selection--single {
 
 
 /* Fix to avoid https://purecss.io/grids/#applying-padding-and-borders-to-grid-units */
-.pure-g > div {
-  box-sizing: border-box;
+
+.pure-g>div {
+    box-sizing: border-box;
 }
 
 .unselectable {
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  -khtml-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 .hidden {
-  display: none;
+    display: none;
 }
+
 
 /****************
  *  Error Toast
  *****************/
 
-
 .errorMsg {
-  font-size: 0.7em;
+    font-size: 0.7em;
 }
 
 .error {
-  border: 5px solid FireBrick;
-  color: FireBrick;
+    border: 5px solid FireBrick;
+    color: FireBrick;
 }
 
 .error2 {
-  color: FireBrick;
+    color: FireBrick;
 }
 
+.fa:hover {
+    cursor: pointer;
+}
