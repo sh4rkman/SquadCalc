@@ -254,6 +254,10 @@ span.select2-selection.select2-selection--single {
     padding: 0px 5px;
 }
 
+.save:focus {
+    outline: none;
+}
+
 .copy:hover {
     cursor: pointer;
 }
