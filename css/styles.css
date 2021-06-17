@@ -295,7 +295,6 @@ span.select2-selection.select2-selection--single {
 .saved {
     /* border: 1px solid red; */
     font-size: 0.6em;
-    z-index: 1;
 }
 
 .saved i {
@@ -317,8 +316,6 @@ span.select2-selection.select2-selection--single {
  *****************/
 
 .footer {
-    border: solid 1px red;
-    z-index: -1;
     font-size: 1.2em;
     position: fixed;
     bottom: 0px;
