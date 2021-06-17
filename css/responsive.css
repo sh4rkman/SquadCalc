@@ -3,18 +3,15 @@
  *
  */
 
-@media screen and (max-width: 48em){
-
+@media screen and (max-width: 48em) {
     /* -- L*568px -- */
     @media (min-height: 35em) {
         .results {
             margin: 1.5em auto;
-          }
-
-        .keypads { 
+        }
+        .keypads {
             margin-top: 1em;
         }
-
         input {
             height: 40px;
         }
@@ -22,22 +19,18 @@
             font-size: 0.65em;
         }
     }
-
     /* -- L*730px -- */
     @media (min-height: 45em) {
         .results {
             margin: 1.5em auto;
-          }
-
-        .keypads { 
+        }
+        .keypads {
             margin-top: 1.5em;
         }
-
         .saved {
             font-size: 0.7em;
         }
     }
-
     /* -- L*800px -- */
     @media (min-height: 50em) {
         input {
@@ -46,80 +39,75 @@
         .results {
             font-size: 1.7em;
             margin: 2em auto;
-          }
-
-        .keypads { 
+        }
+        .keypads {
             margin-top: 2em;
         }
-
         .saved {
             font-size: 0.75em;
         }
     }
-
 }
 
 
 /* ≥ 768px */
-@media screen and (min-width: 48em){
 
+@media screen and (min-width: 48em) {
     /* On big screen, fix map&weapon Selectors on top corners */
-    .mapSelector {position: fixed; top: 0; right:1em;}
-    .weaponSelector {position: fixed; top: 0; left:1em;}
-
+    .mapSelector {
+        position: fixed;
+        top: 0;
+        right: 1em;
+    }
+    .weaponSelector {
+        position: fixed;
+        top: 0;
+        left: 1em;
+    }
     .mortar_selector {
         height: 35px;
         width: 75px;
     }
-    
     .mortar_selector_classic {
         background: url("../img/icons/classic_mortar.png") no-repeat scroll 23px 5px transparent;
     }
-    
     .mortar_selector_technical {
         background: url("../img/icons/technical_mortar.png") no-repeat scroll 8px 2px transparent;
     }
-     
     .footer {
-       visibility: visible;
+        visibility: visible;
     }
-
-    .select2-container{
+    .select2-container {
         float: right;
-        min-width:150px;
+        min-width: 150px;
         font-size: 0.8em;
         right: 0;
     }
-
     .switch-field {
         float: left;
     }
-
     .coord img {
         width: 45px;
         height: 45px;
     }
-
     /* -- L*560px -- */
     @media (min-height: 35em) {
         .content {
             font-size: 25px;
             padding-top: 3em;
         }
-        input { 
+        input {
             height: 60px;
         }
     }
-
     /* -- L*730px -- */
     @media (min-height: 45em) {
         .content {
             padding-top: 3em;
         }
-        input { 
+        input {
             height: 70px;
         }
-
     }
     /* -- L*800px -- */
     @media (min-height: 50em) {
@@ -127,68 +115,85 @@
             font-size: 35px;
         }
     }
+}
 
-  }
 
-  /* ≥ 992px */
-@media screen and (min-width: 62em){
-    .select2-container{
-        min-width:196px;
-        font-size: 1em;   
+/* ≥ 992px */
+
+@media screen and (min-width: 62em) {
+    .select2-container {
+        min-width: 196px;
+        font-size: 1em;
     }
 }
+
 
 /* ≥ 1200px */
-@media screen and (min-width: 62em){
 
-    .select2-container{
-        max-width:230px;
+@media screen and (min-width: 62em) {
+    .select2-container {
+        max-width: 230px;
     }
-
-    
 }
 
-/* ≥ 1400px */
-@media screen and (min-width: 87.5em){
 
-    .select2-container{
-        min-width:220px;
-        max-width:270px;
+/* ≥ 1400px */
+
+@media screen and (min-width: 87.5em) {
+    .select2-container {
+        min-width: 220px;
+        max-width: 270px;
         font-size: 1.2em;
     }
-
     .select2-results__options {
         font-size: 1em;
     }
 }
 
+
 /*
  * -- HEIGHT ADJUSTMENTS
  *
  */
- 
+
+
 /* -- L*568px -- */
+
 @media (min-height: 35em) {
-    .select2-results__options {max-height: 370px!important;}
+    .select2-results__options {
+        max-height: 370px!important;
+    }
 }
 
+
 /* -- L*730px -- */
+
 @media (min-height: 45em) {
     .select2-results__options {
         max-height: 570px!important;
         line-height: 1em;
     }
 }
+
+
 /* -- L*800px -- */
+
 @media (min-height: 50em) {
-    .select2-results__options {max-height: 700px!important;}
+    .select2-results__options {
+        max-height: 700px!important;
+    }
 }
+
 
 /* -- L*960px -- */
-@media (min-height: 60em) {
-    .select2-results__options {max-height: 700px!important;}
-}
-/* -- L*1072px -- */
-@media (min-height: 67em) {
 
+@media (min-height: 60em) {
+    .select2-results__options {
+        max-height: 700px!important;
+    }
 }
+
+
+/* -- L*1072px -- */
+
+@media (min-height: 67em) {}

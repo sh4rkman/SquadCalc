@@ -21,11 +21,11 @@ var maps = [
     ['Sumari', 1300, 0.037],
     ['Tallil', 4680, 0.055],
     ['Yehorivka', 5000, 0.29]
-  ];
-  
-  // Since technicals mortars are acting weirdly, i have to stock these empirical values for now until i figure out how they work
-  // technicals[distance, Velocity]
-  var technicals = [
+];
+
+// Since technicals mortars are acting weirdly, i have to stock these empirical values for now until i figure out how they work
+// technicals[distance, Velocity]
+var technicals = [
     [50, 47.76901552],
     [100, 63.20591542],
     [200, 77.59023672],
@@ -40,4 +40,4 @@ var maps = [
     [1100, 106.3455911],
     [1200, 108.7830358],
     [1233, 109.7640997]
-  ];
+];
