@@ -21,8 +21,6 @@
         <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.1/build/pure-min.css" integrity="sha384-oAOxQR6DkCoMliIh8yFnu25d7Eq/PHS21PClpwjOTeU2jRSq11vu66rf90/cZr47" crossorigin="anonymous">
         <link rel="stylesheet" href="https://unpkg.com/purecss@2.0.6/build/grids-responsive-min.css" />
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
-
-        <script src="https://use.fontawesome.com/1208719ecb.js"></script>
         <link rel="stylesheet" href="css/styles.css ">
         <link rel="stylesheet" href="css/responsive.css ">
       
@@ -66,7 +64,7 @@
     <div class="pure-g content" id="content">
         <div class="pure-u-2-24 pure-u-md-1-5"></div>
         <div class="pure-u-20-24 pure-u-md-3-5">
-            <div class="pure-g">
+            <div class="pure-g keypads">
 
                 <div class="pure-u-1 pure-u-md-11-24">
                     <div class="pure-g">
@@ -107,26 +105,21 @@
                 <div class="pure-u-md-2-24 pure-u-lg-2-24"></div>
                 <div class="pure-u-1 pure-u-md-20-24 pure-u-lg-20-24">
                     <div id="settings" class="results">
-                        <div class="pure-g">
+                        <div class="pure-g copy">
                             <div id="bearing" class="pure-u-10-24">xxx°</div>
                             <div id="errorMsg" class="pure-u-4-24"> - </div>
-                            <div id="elevation" class="pure-u-10-24">xxxx∡</div> 
-
-
-                            <button class="save hidden"><i class="fa fa-bookmark"></i></button>
-    
-
+                            <div id="elevation" class="pure-u-10-24">xxxx∡</div>                          
                         </div>
+                        <button class="save hidden"><i class="fas fa-tasks"></i></button>
                     </div>
                 </div>
-                <div class="pure-u-md-2-24 pure-u-lg-2-24"></div>
-                
+                <div class="pure-u-md-2-24 pure-u-lg-2-24"></div>  
             </div>
 
             <div id="saved" class="pure-g saved hidden">
                 <div class="pure-u-md-4-24"></div>
                 <div class="pure-u-1 pure-u-md-16-24">
-                    <p style="font-weight:bold">Saved Calculations :</p>
+                    <div style="font-weight:bold;font-size: 110%;">Saved :</div>
                     <div class="saved_list">
 
                     </div>
@@ -164,6 +157,7 @@
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery-ui-dist@1.12.1/jquery-ui.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://kit.fontawesome.com/b9f6eb9757.js" crossorigin="anonymous"></script>
     <script src="./js/utils.js"></script>
     <script src="./js/data.js"></script>
     <script src="./js/main.js"></script>

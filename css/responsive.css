@@ -2,7 +2,62 @@
  * -- WIDTH ADJUSTMENTS
  *
  */
- 
+
+@media screen and (max-width: 48em){
+
+    /* -- L*568px -- */
+    @media (min-height: 35em) {
+        .results {
+            margin: 1.5em auto;
+          }
+
+        .keypads { 
+            margin-top: 1em;
+        }
+
+        input {
+            height: 40px;
+        }
+        .saved {
+            font-size: 0.65em;
+        }
+    }
+
+    /* -- L*730px -- */
+    @media (min-height: 45em) {
+        .results {
+            margin: 1.5em auto;
+          }
+
+        .keypads { 
+            margin-top: 1.5em;
+        }
+
+        .saved {
+            font-size: 0.7em;
+        }
+    }
+
+    /* -- L*800px -- */
+    @media (min-height: 50em) {
+        input {
+            font-size: 1.2;
+        }
+        .results {
+            font-size: 1.7em;
+            margin: 2em auto;
+          }
+
+        .keypads { 
+            margin-top: 2em;
+        }
+
+        .saved {
+            font-size: 0.75em;
+        }
+    }
+
+}
 
 
 /* ≥ 768px */
@@ -16,11 +71,7 @@
         height: 35px;
         width: 75px;
     }
-
-    .save {
-        padding: 5px 0px;
-    }
-      
+    
     .mortar_selector_classic {
         background: url("../img/icons/classic_mortar.png") no-repeat scroll 23px 5px transparent;
     }
@@ -47,7 +98,7 @@
     .coord img {
         width: 45px;
         height: 45px;
-      }
+    }
 
     /* -- L*560px -- */
     @media (min-height: 35em) {
@@ -119,7 +170,6 @@
 /* -- L*568px -- */
 @media (min-height: 35em) {
     .select2-results__options {max-height: 370px!important;}
-    
 }
 
 /* -- L*730px -- */

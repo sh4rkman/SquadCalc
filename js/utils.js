@@ -266,6 +266,7 @@ function loadHeatmap() {
     $(".save").addClass("hidden");
 
 
+
     // store current cursor positions on input
     var startA = $("#mortar-location")[0].selectionStart;
     var startB = $("#target-location")[0].selectionStart;
@@ -327,6 +328,13 @@ function loadHeatmap() {
 
     var elevation;
 
+    // If Target too close, display it and exit function
+    if(distance<=50){
+      console.log("Target is too close : " + distance.toFixed(0)+"m");
+      showError("Target is too close : " + distance.toFixed(0)+"m", "target");
+      return 1
+    }
+
     // Classical calc for mortar
     if($("#radio-one").is(':checked')){
       elevation = getElevation(distance, height);
@@ -358,13 +366,7 @@ function loadHeatmap() {
       return 1
     }
   
-    // If Target too close, display it and exit function
-    if(distance<=50){
-      console.log("Target is too close : " + distance.toFixed(0)+"m");
-      showError("Target is too close : " + distance.toFixed(0)+"m", "target");
-      return 1
-    }
-    
+   
     // if in range, Insert Calculations
     console.clear();
     console.log($("#mortar-location").val().toUpperCase() + " -> " + $("#target-location").val().toUpperCase());
@@ -382,7 +384,7 @@ function loadHeatmap() {
       $("#elevation").html(elevation.toFixed(1) + "∡");
     }
     
-    // show save button
+    // show actions button
     $(".save").removeClass("hidden");
 
   }
@@ -507,15 +509,36 @@ function loadHeatmap() {
     drawHeatmap();
   });
 
-  $(".save").click(function(){
 
-    $(".save").effect("bounce", 500);
+  /**
+   * Copy calcs to clipboard
+  */
+  $(".copy").click(function(){
+
+    const el = document.createElement('textarea');
+    el.value = "➜ " + $("#target-location").val() + " = " + $("#bearing").text()+ " - " + $("#elevation").text();
+    el.setAttribute('readonly', '');
+    el.style.position = 'absolute';
+    el.style.left = '-9999px';
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
+    $(".copy").effect("bounce", 500);
+
+  });
+
+
+  /**
+   * Save a keypad
+  */
+  $(".save").click(function(){
 
     if($(".saved_list p").length == 3) {
       $(".saved_list p").first().remove();
     }
 
-    $(".saved_list").append("<p>"
+    $(".saved_list").append("<p style='display:none;'>"
     + $("#mortar-location").val() 
     + " > "
     + $("#target-location").val()
@@ -527,6 +550,9 @@ function loadHeatmap() {
     + "</span><i class=\"fa fa-times-circle fa-fw del\" aria-hidden=\"true\" onclick=\"RemoveSaves(this)\"></i></p>");
     
     $(".saved").removeClass("hidden");
+    $(".save").effect("bounce", 500);
+
+    $(".saved_list p").last().show("fast");
 
   });
 
@@ -535,6 +561,7 @@ function loadHeatmap() {
   */
   function RemoveSaves(a) {
 
+    // remove list if it's empty
     if($(".saved_list p").length == 1) {
       $(".saved").addClass("hidden");
     }

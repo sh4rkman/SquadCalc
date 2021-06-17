@@ -72,7 +72,7 @@ input:focus{
 
 .mortar_selector {
   display: inline-block;
-  height: 25px;
+  height: 27px;
   width: 50px;
 }
 
@@ -81,7 +81,7 @@ input:focus{
 }
 
 .mortar_selector_technical {
-  background: url("../img/icons/technical_mortar.png") no-repeat scroll -4px -2px transparent;
+  background: url("../img/icons/technical_mortar.png") no-repeat scroll -4px -1px transparent;
 }
 
 .switch-field {
@@ -117,11 +117,11 @@ input:focus{
 }
 
 .switch-field label:first-of-type {
-  border-radius: 3px 0 0 3px;
+  border-radius: 5px 0 0 5px;
 }
 
 .switch-field label:last-of-type {
-  border-radius: 0 3px 3px 0;
+  border-radius: 0 5px 5px 0;
 }
 
 
@@ -240,20 +240,25 @@ span.select2-selection.select2-selection--single {
   position: relative;
 }
 
-.save {
-  /* border: solid 1px red; */
-  border: none;
-  position: absolute; 
-  bottom: 0px;
-  right: 0px;
-  padding: 1px 0px;
-  background-color: transparent;
-}
+
 
 .save i {
   font-size: 0.5em;
   position: relative; 
-  float:left;
+}
+
+.save {
+  /* border: solid 1px red; */
+  border: none;
+  position: absolute; 
+  background-color: transparent;
+  bottom: 0px;
+  right: 0px;
+  padding: 0px 5px;
+}
+
+.copy:hover {
+  cursor: pointer;
 }
 
 
@@ -265,7 +270,6 @@ span.select2-selection.select2-selection--single {
   width: 30px;
   height: 30px;
 }
-
 
 
  /********************
@@ -314,10 +318,10 @@ span.select2-selection.select2-selection--single {
  *****************/
 
 .footer {
+  font-size: 1.2em;
   position: fixed;
-  bottom: 0;
+  bottom: 0px;
   width: 100%;
-  font-size: 0.5em;
   height: 3.5em;
   visibility: hidden;
 }
@@ -328,6 +332,7 @@ span.select2-selection.select2-selection--single {
 
 .social {
   position: absolute;
+  bottom: 5px;
 }
 
 .social a {
@@ -344,12 +349,12 @@ span.select2-selection.select2-selection--single {
 
 .youtube {
   text-align: left;
-  left: 0.8em;
+  left: 0.4em;
 }
 
 .github {
   text-align: right;
-  right: 0.8em;
+  right: 0.4em;
 }
 
 /***************************************
