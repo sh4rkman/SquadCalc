@@ -44,7 +44,7 @@
             margin-top: 2em;
         }
         .saved {
-            font-size: 0.75em;
+            font-size: 0.5em;
         }
     }
 }
@@ -112,7 +112,7 @@
     /* -- L*800px -- */
     @media (min-height: 50em) {
         .content {
-            font-size: 35px;
+            font-size: 30px;
         }
     }
 }
