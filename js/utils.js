@@ -283,7 +283,7 @@ function shoot() {
     // If keypads are imprecises, do nothing
     if (a.length < 3 || b.length < 3) {
         $("#bearing").html("xxx°");
-        $("#elevation").html("xxxx∡");
+        $("#elevation").html("xxx↷");
         return 1
     }
 
@@ -367,7 +367,7 @@ function shoot() {
     // if in range, Insert Calculations
     console.clear();
     console.log($("#mortar-location").val().toUpperCase() + " -> " + $("#target-location").val().toUpperCase());
-    console.log("-> Bearing: " + bearing.toFixed(1) + "° - Elevation: " + elevation.toFixed(1) + "∡");
+    console.log("-> Bearing: " + bearing.toFixed(1) + "° - Elevation: " + elevation.toFixed(1) + "↷");
     console.log("-> Distance: " + distance.toFixed(0) + "m - height: " + height.toFixed(0) + "m")
 
     $("#bearing").html(bearing.toFixed(1) + "°");
@@ -375,9 +375,9 @@ function shoot() {
 
     // If using technical mortars, we need to be more precise (##.#)
     if ($("#radio-one").is(':checked')) {
-        $("#elevation").html(elevation.toFixed(0) + "∡");
+        $("#elevation").html(elevation.toFixed(0) + "↷");
     } else {
-        $("#elevation").html(elevation.toFixed(1) + "∡");
+        $("#elevation").html(elevation.toFixed(1) + "↷");
     }
 
     // show actions button
