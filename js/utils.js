@@ -283,7 +283,7 @@ function shoot() {
     // If keypads are imprecises, do nothing
     if (a.length < 3 || b.length < 3) {
         $("#bearing").html("xxx°");
-        $("#elevation").html("xxx↷");
+        $("#elevation").html("xxxx↷");
         return 1
     }
 

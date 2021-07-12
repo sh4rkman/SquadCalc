@@ -81,11 +81,15 @@ button:focus {
 }
 
 .mortar_selector_classic {
-    background: url("../img/icons/classic_mortar.png") no-repeat scroll 15px 2px transparent;
+    background: url("../img/icons/french_mortar.png") no-repeat scroll 15px 2px transparent;
 }
 
 .mortar_selector_technical {
     background: url("../img/icons/technical_mortar.png") no-repeat scroll -4px -1px transparent;
+}
+
+.mortar_selector_french {
+    background: url("../img/icons/french_mortar2.png") no-repeat scroll 30px 5px transparent;
 }
 
 .switch-field {
