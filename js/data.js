@@ -1,4 +1,4 @@
-var version = 4.0;
+var version = 5.0;
 
 // Each map has a different size and require scaling w, y and z when calculating height
 // maps['Name', size, z-scaling]
