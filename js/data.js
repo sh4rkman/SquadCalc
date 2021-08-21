@@ -3,7 +3,7 @@ var version = 4.0;
 // Each map has a different size and require scaling w, y and z when calculating height
 // maps['Name', size, z-scaling]
 var maps = [
-    ['Al Basrah', 3200, 0.4],
+    ['Al Basrah', 3200, 0.025],
     ['Anvil', 3060, 0.2],
     ['Belaya', 3904, 0.5],
     ['Chora', 4064, 0.06],
