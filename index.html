@@ -31,7 +31,7 @@
     <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.1/build/pure-min.css" integrity="sha384-oAOxQR6DkCoMliIh8yFnu25d7Eq/PHS21PClpwjOTeU2jRSq11vu66rf90/cZr47" crossorigin="anonymous">
     <link rel="stylesheet" href="https://unpkg.com/purecss@2.0.6/build/grids-responsive-min.css" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
-    <link rel="stylesheet" href="css/styles.css ">
+    <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="css/responsive.css ">
 
 
@@ -64,7 +64,10 @@
                 <label for="radio-one" class="mortar_selector mortar_selector_classic"></label>
 
                 <input type="radio" id="radio-two" name="switch-one" onchange="shoot()" />
-                <label for="radio-two" class="mortar_selector mortar_selector_technical"></label>
+                <label title="Technical mortars" for="radio-two" class="mortar_selector mortar_selector_technical"></label>
+
+                <input type="radio" id="radio-three" name="switch-one" onchange="shoot()" />
+                <label title="Long range mortars (French DLC)" for="radio-three" class="mortar_selector mortar_selector_french"></label>
             </div>
         </div>
 
@@ -116,7 +119,7 @@
                             <div id="errorMsg" class="pure-u-4-24"> - </div>
                             <div id="elevation" class="pure-u-10-24">xxxx↷</div>
                         </div>
-                        <button class="save hidden"><i class="fas fa-tasks"></i></button>
+                        <button class="save hidden"><i title="Save calculations"  class="fas fa-tasks"></i></button>
                     </div>
                 </div>
                 <div class="pure-u-md-2-24 pure-u-lg-2-24"></div>

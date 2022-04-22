@@ -533,10 +533,15 @@ $(".save").click(function() {
         $(".saved_list p").first().remove();
     }
 
+    target = $("#target-location").val()
+
+    for (var i = 0; i < 11 - target.length; ++i) {
+        target = target + "&nbsp;"
+    }
+
     $(".saved_list").append("<p style='display:none;'>" +
-        $("#mortar-location").val() +
-        " > " +
-        $("#target-location").val() +
+        " ➜ " +
+        target +
         " : " +
         "<span style=\"font-weight:bold\">" +
         $("#bearing").text() +
