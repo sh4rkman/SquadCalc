@@ -76,16 +76,20 @@ button:focus {
 
 .mortar_selector {
     display: inline-block;
-    height: 27px;
-    width: 50px;
+    height: 30px;
+    width: 70px;
 }
 
 .mortar_selector_classic {
-    background: url("../img/icons/classic_mortar.png") no-repeat scroll 15px 2px transparent;
+    background: url("../img/icons/classic_mortar.png") no-repeat scroll 25px 3px transparent;
 }
 
 .mortar_selector_technical {
-    background: url("../img/icons/technical_mortar.png") no-repeat scroll -4px -1px transparent;
+    background: url("../img/icons/technical_mortar.png") no-repeat scroll 6px 0px transparent;
+}
+
+.mortar_selector_french {
+    background: url("../img/icons/french_mortar.png") no-repeat scroll 25px 3px transparent;
 }
 
 .switch-field {

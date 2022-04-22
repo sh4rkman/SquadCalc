@@ -196,11 +196,16 @@ function getDist(a, b) {
  * @returns {number || NaN} mil if target in range, NaN otherwise
  */
 function getElevation(x, y = 0, v = 109.890938, g = 9.8) {
+
+    if ($("#radio-three").is(':checked')) {
+        // guessing what velocity the french mortars will be for now
+        v = 172;
+    }
+
     const p1 = Math.sqrt(v ** 4 - g * (g * x ** 2 + 2 * y * v ** 2));
     const a1 = Math.atan((v ** 2 + p1) / (g * x));
 
-
-    if ($("#radio-one").is(':checked')) {
+    if ($("#radio-one").is(':checked') || $("#radio-three").is(':checked')) {
         return radToMil(a1);
     } else {
         return radToDeg(a1);
@@ -334,7 +339,7 @@ function shoot() {
     }
 
     // Classical calc for mortar
-    if ($("#radio-one").is(':checked')) {
+    if ($("#radio-one").is(':checked') || $("#radio-three").is(':checked')) {
         elevation = getElevation(distance, height);
     } else { // If technical mortar
 
