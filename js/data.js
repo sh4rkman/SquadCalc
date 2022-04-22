@@ -3,17 +3,20 @@ var version = 5.0;
 // Each map has a different size and require scaling w, y and z when calculating height
 // maps['Name', size, z-scaling]
 var maps = [
-    ['Al Basrah', 3200, 0.4],
+    ['Al Basrah', 3200, 0.025],
+    ['Anvil', 3060, 0.2],
     ['Belaya', 3904, 0.5],
     ['Chora', 4064, 0.06],
     ['Fallujah', 4081, 0.055],
     ['Fool\'s Road', 1736, 0.149],
+    ['Goose Bay', 4065, 0.2],
     ['Gorodok', 4340, 0.13],
     ['Kamdesh', 4032, 0.2],
-    ['Kohat', 4017, 0.777],
+    ['Kohat', 4617, 1],
     ['Kokan', 2496, 0.01],
     ['Lashkar', 4334, 0.28],
     ['Logar', 1761, 0.14],
+    ['Manic', 4065, 0.76],
     ['Mestia', 2400, 0.4],
     ['Mutaha', 2755, 0.4],
     ['Narva', 2800, 0.057],
@@ -34,6 +37,7 @@ var weapons = [
 ];
 
 // Since technicals mortars are acting weirdly, i have to stock these empirical values for now until i figure out how they work
+// read https://github.com/Endebert/squadmc/discussions/101 for more information
 // technicals[distance, Velocity]
 var technicals = [
     [50, 47.76901552],
