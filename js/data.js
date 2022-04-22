@@ -1,4 +1,4 @@
-var version = 4.0;
+var version = 5.0;
 
 // Each map has a different size and require scaling w, y and z when calculating height
 // maps['Name', size, z-scaling]
@@ -24,6 +24,16 @@ var maps = [
     ['Sumari', 1300, 0.037],
     ['Tallil', 4680, 0.055],
     ['Yehorivka', 5000, 0.29]
+];
+
+// Each map has a different size and require scaling w, y and z when calculating height
+// maps['Name', size, z-scaling]
+var weapons = [
+    ['Classic', 109.890938],
+    ['Technical', 0],
+    ['120mm (S)', 109.890938],
+    ['120mm (M)', 143.5],
+    ['120mm (L)', 171.5],
 ];
 
 // Since technicals mortars are acting weirdly, i have to stock these empirical values for now until i figure out how they work
