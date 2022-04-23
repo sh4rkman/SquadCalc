@@ -1,4 +1,4 @@
-var version = 5.0;
+var version = 6.0;
 
 // Each map has a different size and require scaling w, y and z when calculating height
 // maps['Name', size, z-scaling]
@@ -26,16 +26,6 @@ var maps = [
     ['Yehorivka', 5000, 0.29]
 ];
 
-// Each map has a different size and require scaling w, y and z when calculating height
-// maps['Name', size, z-scaling]
-var weapons = [
-    ['Classic', 109.890938],
-    ['Technical', 0],
-    ['120mm (S)', 109.890938],
-    ['120mm (M)', 143.5],
-    ['120mm (L)', 171.5],
-];
-
 // Since technicals mortars are acting weirdly, i have to stock these empirical values for now until i figure out how they work
 // read https://github.com/Endebert/squadmc/discussions/101 for more information
 // technicals[distance, Velocity]
@@ -54,4 +44,14 @@ var technicals = [
     [1100, 106.3455911],
     [1200, 108.7830358],
     [1233, 109.7640997]
+];
+
+// Stocking those values without using it for now
+// 120mm mortars are from french DLC and using three different velocity
+var weapons = [
+    ['Classic', 109.890938],
+    ['Technical', 0],
+    ['120mm (S)', 109.890938],
+    ['120mm (M)', 143.5],
+    ['120mm (L)', 171.5],
 ];
