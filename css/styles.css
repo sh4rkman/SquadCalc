@@ -81,7 +81,7 @@ button:focus {
 }
 
 .mortar_selector_classic {
-    background: url("../img/icons/classic_mortar.png") no-repeat scroll 25px 3px transparent;
+    background: url("../img/icons/classic_mortar.png") no-repeat scroll 6px 0px transparent;
 }
 
 .mortar_selector_technical {
