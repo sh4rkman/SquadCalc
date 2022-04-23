@@ -197,9 +197,13 @@ function getDist(a, b) {
  */
 function getElevation(x, y = 0, v = 109.890938, g = 9.8) {
 
+    // if user selected french DLC 120mm mortar (MO120)
     if ($("#radio-three").is(':checked')) {
-        // guessing what velocity the french mortars will be for now
-        v = 172;
+        // MO120 from French DLC has three different charges, here we only calc for long ones
+        // since short charges are the vanilla mortar we all know, and medium has little to no use
+        // when you can just use long charges all the time.
+        // https://smf.tactical-collective.com/2021/10/03/mod-link-changed-beta-21-10-01-changelog/
+        v = 171.5;
     }
 
     const p1 = Math.sqrt(v ** 4 - g * (g * x ** 2 + 2 * y * v ** 2));
