@@ -551,7 +551,7 @@ $(".save").click(function() {
         $("#bearing").text() +
         " - " +
         $("#elevation").text() +
-        "&nbsp;&nbsp;</span><i class=\"fa fa-times-circle fa-fw del\" aria-hidden=\"true\" onclick=\"RemoveSaves(this)\"></i></p>");
+        "&nbsp;&nbsp;</span><i title=\"delete\" class=\"fa fa-times-circle fa-fw del\" aria-hidden=\"true\" onclick=\"RemoveSaves(this)\"></i></p>");
 
     $(".saved").removeClass("hidden");
     $(".save").effect("bounce", 500);
@@ -562,6 +562,7 @@ $(".save").click(function() {
 
 /**
  * Remove a saved keypad
+ *  * @param {object} a - saved calcs to remove
  */
 function RemoveSaves(a) {
 
