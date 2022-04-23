@@ -475,7 +475,6 @@ function showError(msg, issue) {
 }
 
 
-
 /**
  * Load the maps from data.js to the menu
  */
