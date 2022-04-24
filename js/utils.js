@@ -621,7 +621,9 @@ function setCursor(startA, startB, a, b) {
 
 
 /**
- * Generate random input names to avoid browser autocomplete
+ * Generate random id
+ * @param {Number} lenght - lenght of desired string to be returned
+ * @returns {String} random string
  */
 function makeid(length) {
     var result = '';
@@ -636,9 +638,10 @@ function makeid(length) {
 
 
 /**
- * Generate random input names to avoid browser autocomplete
+ * Give Inputs random name to browser autocomplete
  */
 function preventAutocomplete() {
     $("#mortar-location").attr('name', makeid(10));
     $("#target-location").attr('name', makeid(10));
+    $(".dropbtn").attr('name', makeid(10));
 }
