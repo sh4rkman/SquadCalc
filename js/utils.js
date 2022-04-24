@@ -302,13 +302,10 @@ function shoot() {
     if (isNaN(a.lng) || isNaN(b.lng)) {
 
         if (isNaN(a.lng) && isNaN(b.lng)) {
-            console.log('Invalid mortar and target');
             showError("Invalid mortar and target");
         } else if (isNaN(a.lng)) {
-            console.log('Invalid mortar');
             showError("Invalid mortar", "mortar");
         } else {
-            console.log('Invalid target');
             showError("Invalid target", "target");
         }
         return 1
@@ -321,10 +318,8 @@ function shoot() {
     if ((height == 998) || (height == 999)) {
 
         if (height == 998) {
-            console.log('Mortar is out of map');
             showError("Mortar is out of map", "mortar");
         } else {
-            console.log('Target is out of map');
             showError("Target is out of map", "target");
         }
         return 1
@@ -337,7 +332,6 @@ function shoot() {
 
     // If Target too close, display it and exit function
     if (distance <= 50) {
-        console.log("Target is too close : " + distance.toFixed(0) + "m");
         showError("Target is too close : " + distance.toFixed(0) + "m", "target");
         return 1
     }
@@ -367,7 +361,6 @@ function shoot() {
 
     // If Target too far, display it and exit function
     if (isNaN(elevation)) {
-        console.log("Target is too far : " + distance.toFixed(0) + "m");
         showError("Target is out of range : " + distance.toFixed(0) + "m", "target");
         return 1
     }
@@ -469,8 +462,9 @@ function showError(msg, issue) {
     $("#errorMsg").addClass("pure-u-24-24");
     $("#errorMsg").addClass("errorMsg");
 
-    // insert error message
+    // insert error message & log it in console
     $("#errorMsg").html(msg);
+    console.log(msg);
 
     // https://youtu.be/PWgvGjAhvIw?t=233
     $("#settings").addClass("error");
