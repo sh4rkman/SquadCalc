@@ -19,9 +19,9 @@ function drawHeatmap() {
     img.addEventListener('load', function() { // wait for the image to load or it does crazy stuff
         var ctx = document.getElementById('canvas').getContext('2d');
         ctx.drawImage(img, 0, 0, 250, 250);
-        shoot(); // just in case there is already coordinates
     }, false);
     img.src = './img/heightmaps/' + map + '.jpg'; // Set source path
+    shoot(); // just in case there is already coordinates in inputs
 }
 
 
