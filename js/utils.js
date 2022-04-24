@@ -622,8 +622,8 @@ function setCursor(startA, startB, a, b) {
 
 /**
  * Generate random id
- * @param {Number} lenght - lenght of desired string to be returned
- * @returns {String} random string
+ * @param {Number} length - length of desired string to be returned
+ * @returns {String} randomly generated string
  */
 function makeid(length) {
     var result = '';
