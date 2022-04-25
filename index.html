@@ -61,13 +61,11 @@
         <div class="pure-u-1 pure-u-md-1-5 weaponSelector">
             <div class="switch-field unselectable">
                 <input type="radio" id="radio-one" name="switch-one" onchange="shoot()" checked/>
-                <label title="Classic mortars" for="radio-one" class="mortar_selector mortar_selector_classic"></label>
-
+                <label id="classic" for="radio-one" class="mortar_selector mortar_selector_classic"></label>
                 <input type="radio" id="radio-two" name="switch-one" onchange="shoot()" />
-                <label title="Technical mortars" for="radio-two" class="mortar_selector mortar_selector_technical"></label>
-
+                <label id="technical" for="radio-two" class="mortar_selector mortar_selector_technical"></label>
                 <input type="radio" id="radio-three" name="switch-one" onchange="shoot()" />
-                <label title="Long range mortars (French DLC)" for="radio-three" class="mortar_selector mortar_selector_french"></label>
+                <label id="french" for="radio-three" class="mortar_selector mortar_selector_french "></label>
             </div>
         </div>
 
@@ -119,7 +117,7 @@
                             <div id="errorMsg" class="pure-u-4-24"> - </div>
                             <div id="elevation" class="pure-u-10-24">xxxx↷</div>
                         </div>
-                        <button class="save hidden"><i title="Save for later" class="fas fa-tasks"></i></button>
+                        <button class="save hidden"><i class="fas fa-tasks"></i></button>
                     </div>
                 </div>
                 <div class="pure-u-md-2-24 pure-u-lg-2-24"></div>
@@ -147,14 +145,13 @@
     <div id="footer" class="pure-g footer">
         <div class="pure-u-1 pure-u-md-2-24">
             <div class="social youtube">
-                <a title="Watch my videos !" tabindex="-1" href="https://www.youtube.com/watch?v=O-OlCej_pUo&list=PLs_W7kx2RIAkAL91Czub9hVAZ5nzp8JrS&index=8" target="_blank" rel="noopener"><i id="social-yt" class="fa fa-youtube-play fa-2x"></i></a>
-
+                <a tabindex="-1" href="https://www.youtube.com/watch?v=O-OlCej_pUo&list=PLs_W7kx2RIAkAL91Czub9hVAZ5nzp8JrS&index=8" target="_blank" rel="noopener"><i id="social-yt" class="fa fa-youtube-play fa-2x"></i></a>
             </div>
         </div>
         <div class="pure-u-1 pure-u-md-20-24"></div>
         <div class="pure-u-1 pure-u-md-2-24">
             <div class="social github" tabindex="-1">
-                <a title="View code on github !" tabindex="-1" href="https://github.com/sh4rkman/MSMC" target="_blank" rel="noopener"><i id="social-gh" class="fa fa-github fa-2x"></i></a>
+                <a tabindex="-1" href="https://github.com/sh4rkman/MSMC" target="_blank" rel="noopener"><i id="social-gh" class="fa fa-github fa-2x"></i></a>
             </div>
         </div>
     </div>
@@ -163,7 +160,10 @@
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery-ui-dist@1.12.1/jquery-ui.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://unpkg.com/@popperjs/core@2/dist/umd/popper.min.js"></script>
+    <script src="https://unpkg.com/tippy.js@6/dist/tippy-bundle.umd.js"></script>
     <script src="https://kit.fontawesome.com/b9f6eb9757.js" crossorigin="anonymous"></script>
+    <script src="./js/tooltips.js"></script>
     <script src="./js/utils.js"></script>
     <script src="./js/data.js"></script>
     <script src="./js/main.js"></script>

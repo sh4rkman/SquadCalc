@@ -297,7 +297,7 @@ function shoot() {
 
     // draw pointer cursor & tooltip on results
     $("#copy").addClass("copy");
-    $('#copy').prop('title', 'Click to copy !');
+    tooltip_copy.enable();
 
 
 
@@ -320,6 +320,10 @@ function shoot() {
     if (a.length < 3 || b.length < 3) {
         $("#bearing").html("xxx°");
         $("#elevation").html("xxxx↷");
+
+        // disable tooltip and copy function
+        $("#copy").removeClass("copy");
+        tooltip_copy.disable();
         return 1;
     }
 
@@ -491,7 +495,7 @@ function showError(msg, issue) {
 
     // remove the pointer cursor & tooltip 
     $("#copy").removeClass("copy");
-    $('#copy').prop('title', '');
+    tooltip_copy.disable();
 
     // insert error message & log it in console
     $("#errorMsg").html(msg);
@@ -554,6 +558,10 @@ $("#copy").click(function() {
 
     console.log("copied ! : " + el.value);
 
+    // the user understood he can click2copy, remove the tooltip
+    tooltip_copy.disable();
+    tooltip_copied.enable();
+    tooltip_copied.show();
 });
 
 
@@ -580,12 +588,15 @@ $(".save").click(function() {
         $("#bearing").text() +
         " - " +
         $("#elevation").text() +
-        "&nbsp;&nbsp;</span><i title=\"delete\" class=\"fa fa-times-circle fa-fw del\" aria-hidden=\"true\" onclick=\"RemoveSaves(this)\"></i></p>");
+        "&nbsp;&nbsp;</span><i class=\"fa fa-times-circle fa-fw del\" aria-hidden=\"true\" onclick=\"RemoveSaves(this)\"></i></p>");
 
     $(".saved").removeClass("hidden");
     $(".save").effect("bounce", 500);
 
     $(".saved_list p").last().show("fast");
+
+    // the user understood he can click2copy, remove the tooltip now
+    tooltip_save.disable();
 
 });
 
@@ -601,7 +612,6 @@ function RemoveSaves(a) {
     }
 
     a.closest("p").remove();
-
 }
 
 

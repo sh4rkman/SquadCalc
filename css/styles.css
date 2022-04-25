@@ -2,6 +2,10 @@
     text-align: center;
 }
 
+a:visited {
+    text-decoration: none;
+}
+
 
 /*
  * -- BASE STYLES --
@@ -392,7 +396,7 @@ span.select2-selection.select2-selection--single {
 
 
 /****************
- *  Error Toast
+ *  Error Message
  *****************/
 
 .errorMsg {
@@ -407,4 +411,34 @@ span.select2-selection.select2-selection--single {
 
 .error2 {
     color: FireBrick;
+}
+
+.tippy-box[data-theme~='new'] {
+    background-color: green;
+    color: white;
+    letter-spacing: .1rem;
+    font-weight: bold;
+}
+
+.tippy-content[data-theme~='new'] {}
+
+
+/****************
+ *  Tippy.js ToolTips customization
+ *****************/
+
+.tippy-box[data-theme~='new'][data-placement^='top']>.tippy-arrow::before {
+    border-top-color: green;
+}
+
+.tippy-box[data-theme~='new'][data-placement^='bottom']>.tippy-arrow::before {
+    border-bottom-color: green;
+}
+
+.tippy-box[data-theme~='new'][data-placement^='left']>.tippy-arrow::before {
+    border-left-color: green;
+}
+
+.tippy-box[data-theme~='new'][data-placement^='right']>.tippy-arrow::before {
+    border-right-color: green;
 }
