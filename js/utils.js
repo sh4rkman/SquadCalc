@@ -2,9 +2,12 @@
  * Load the heatmap to the canvas
  */
 function loadHeatmap() {
+    var ctx;
+    var img;
+
     img = new Image(); // Create new img element
     img.addEventListener('load', function() {
-        var ctx = document.getElementById('canvas').getContext('2d');
+        ctx = document.getElementById('canvas').getContext('2d');
         ctx.drawImage(img, 0, 0, 250, 250); // Draw img at good scale
     }, false);
 }
@@ -15,9 +18,10 @@ function loadHeatmap() {
 function drawHeatmap() {
     var img = new Image(); // Create new img element
     var map = $(".dropbtn option:selected").text().toLowerCase();
+    var ctx;
 
     img.addEventListener('load', function() { // wait for the image to load or it does crazy stuff
-        var ctx = document.getElementById('canvas').getContext('2d');
+        ctx = document.getElementById('canvas').getContext('2d');
         ctx.drawImage(img, 0, 0, 250, 250);
     }, false);
     img.src = './img/heightmaps/' + map + '.jpg'; // Set source path
@@ -34,6 +38,8 @@ function drawHeatmap() {
  */
 function getPos(kp) {
 
+    var pos;
+
     const fkp = formatKeyPad(kp);
     if (!fkp || fkp.length < 2) {
         console.log(`invalid keypad string: ${fkp}`);
@@ -44,7 +50,7 @@ function getPos(kp) {
 
     // "i" is is our (sub-)keypad indicator
     let i = 0;
-    var pos;
+
     while (i < parts.length) {
         if (i === 0) {
             // special case, i.e. letter + number combo
@@ -97,7 +103,7 @@ function getPos(kp) {
 function formatKeyPad(text = "") {
 
     // If empty string, return
-    if (text.length == 0) { return; }
+    if (text.length === 0) { return; }
 
     const textND = text
         .toUpperCase()
@@ -225,23 +231,27 @@ function getElevation(x, y = 0, v = 109.890938, g = 9.8) {
  * @returns {number} - relative height in meters
  */
 function getHeight(a, b) {
+    var mapScale;
+    var Aheight;
+    var Bheight;
+    var ctx;
 
     // if user didn't select map, no height calculation
-    if ($(".dropbtn").val() == "") return 0;
+    if ($(".dropbtn").val() === "") return 0;
 
     // load map size for scaling lat&lng
-    var mapScale = 250 / maps[$(".dropbtn").val()][1];
+    mapScale = 250 / maps[$(".dropbtn").val()][1];
 
     // Read Heightmap values for a & b
-    var ctx = document.getElementById('canvas').getContext('2d');
-    var Aheight = ctx.getImageData(Math.round(a.lat * mapScale), Math.round(a.lng * mapScale), 1, 1).data;
-    var Bheight = ctx.getImageData(Math.round(b.lat * mapScale), Math.round(b.lng * mapScale), 1, 1).data;
+    ctx = document.getElementById('canvas').getContext('2d');
+    Aheight = ctx.getImageData(Math.round(a.lat * mapScale), Math.round(a.lng * mapScale), 1, 1).data;
+    Bheight = ctx.getImageData(Math.round(b.lat * mapScale), Math.round(b.lng * mapScale), 1, 1).data;
 
     // Check if a & b arn't out of canvas
-    if (Aheight[3] == 0) {
+    if (Aheight[3] === 0) {
         return 998;
     }
-    if (Bheight[3] == 0) {
+    if (Bheight[3] === 0) {
         return 999;
     }
 
@@ -256,6 +266,18 @@ function getHeight(a, b) {
  * @returns {target} elevation + bearing
  */
 function shoot() {
+    var startA;
+    var startB;
+    var height;
+    var distance;
+    var elevation;
+    var i;
+    var bearing;
+    var h;
+    var v;
+    var H;
+    var V;
+    var vel;
 
     // First, reset any errors
     $("#settings").removeClass("error");
@@ -280,8 +302,8 @@ function shoot() {
 
 
     // store current cursor positions on input
-    var startA = $("#mortar-location")[0].selectionStart;
-    var startB = $("#target-location")[0].selectionStart;
+    startA = $("#mortar-location")[0].selectionStart;
+    startB = $("#target-location")[0].selectionStart;
 
     // store current keypads
     a = $("#mortar-location").val();
@@ -298,7 +320,7 @@ function shoot() {
     if (a.length < 3 || b.length < 3) {
         $("#bearing").html("xxx°");
         $("#elevation").html("xxxx↷");
-        return 1
+        return 1;
     }
 
     a = getPos(a);
@@ -313,16 +335,16 @@ function shoot() {
         } else {
             showError("Invalid target", "target");
         }
-        return 1
+        return 1;
     }
 
 
-    var height = getHeight(a, b);
+    height = getHeight(a, b);
 
     // Check if mortars/target are out of map
-    if ((height == 998) || (height == 999)) {
+    if ((height === 998) || (height === 999)) {
 
-        if (height == 998) {
+        if (height === 998) {
             showError("Mortar is out of map", "mortar");
         } else {
             showError("Target is out of map", "target");
@@ -331,14 +353,12 @@ function shoot() {
     }
 
 
-    var distance = getDist(a, b);
-
-    var elevation;
+    distance = getDist(a, b);
 
     // If Target too close, display it and exit function
     if (distance <= 50) {
         showError("Target is too close : " + distance.toFixed(0) + "m", "target");
-        return 1
+        return 1;
     }
 
     // Classical calc for mortar
@@ -346,15 +366,15 @@ function shoot() {
         elevation = getElevation(distance, height);
     } else { // If technical mortar
 
-        for (var i = 0; i < technicals.length; i++) {
+        for (i = 0; i < technicals.length; i += 1) {
             if (distance < technicals[i][0]) {
-                var h = technicals[i - 1][0];
-                var v = technicals[i - 1][1];
-                var H = technicals[i][0];
-                var V = technicals[i][1];
+                h = technicals[i - 1][0];
+                v = technicals[i - 1][1];
+                H = technicals[i][0];
+                V = technicals[i][1];
 
                 // Ajust the velocity based on ingame-value
-                var vel = v + ((distance - h) / (H - h)) * (V - v);
+                vel = v + ((distance - h) / (H - h)) * (V - v);
                 elevation = getElevation(distance, height, vel);
                 break;
             }
@@ -362,12 +382,12 @@ function shoot() {
 
     }
 
-    var bearing = getBearing(a, b);
+    bearing = getBearing(a, b);
 
     // If Target too far, display it and exit function
     if (isNaN(elevation)) {
         showError("Target is out of range : " + distance.toFixed(0) + "m", "target");
-        return 1
+        return 1;
     }
 
 
@@ -402,13 +422,15 @@ function shoot() {
  * @returns {event} - empty event if we don't want the user input
  */
 function filterInput(a, e) {
-    var chrTyped, chrCode = 0,
-        evt = e ? e : event;
+    var chrTyped;
+    var chrCode = 0;
+    var evt = e ? e : event;
+
     if (evt.charCode != null) chrCode = evt.charCode;
     else if (evt.which != null) chrCode = evt.which;
     else if (evt.keyCode != null) chrCode = evt.keyCode;
 
-    if (chrCode == 0) chrTyped = 'SPECIAL KEY';
+    if (chrCode === 0) chrTyped = 'SPECIAL KEY';
     else chrTyped = String.fromCharCode(chrCode);
 
 
@@ -448,9 +470,9 @@ function filterInput(a, e) {
  */
 function showError(msg, issue) {
 
-    if (issue == 'mortar') {
+    if (issue === 'mortar') {
         $("#mortar-location").addClass("error2");
-    } else if (issue == 'target') {
+    } else if (issue === 'target') {
         $("#target-location").addClass("error2");
     } else {
         $("#target-location").addClass("error2");
@@ -486,6 +508,7 @@ function showError(msg, issue) {
  * Load the maps from data.js to the menu
  */
 function loadMaps() {
+    var i;
 
     // Initiate select2 object (https://select2.org/)
     $('.dropbtn').select2({
@@ -496,7 +519,7 @@ function loadMaps() {
     });
 
     // load maps into select2
-    for (var i = 0; i < maps.length; ++i) {
+    for (i = 0; i < maps.length; i += 1) {
         $(".dropbtn").append('<option value="' + i + '">' + maps[i][0] + '</option>');
     }
 }
@@ -538,14 +561,14 @@ $("#copy").click(function() {
  * Save a keypad
  */
 $(".save").click(function() {
-
-    if ($(".saved_list p").length == 3) {
+    var i;
+    if ($(".saved_list p").length === 3) {
         $(".saved_list p").first().remove();
     }
 
     target = $("#target-location").val()
 
-    for (var i = 0; i < 11 - target.length; ++i) {
+    for (i = 0; i < 11 - target.length; i += 1) {
         target = target + "&nbsp;"
     }
 
@@ -573,7 +596,7 @@ $(".save").click(function() {
 function RemoveSaves(a) {
 
     // remove list if it's empty
-    if ($(".saved_list p").length == 1) {
+    if ($(".saved_list p").length === 1) {
         $(".saved").addClass("hidden");
     }
 
@@ -604,7 +627,7 @@ function setCursor(startA, startB, a, b) {
         if (a > c) {
             startA--;
         } else {
-            startA++;
+            startA += 1;
         }
     }
 
@@ -612,7 +635,7 @@ function setCursor(startA, startB, a, b) {
         if (b > d) {
             startB--;
         } else {
-            startB++;
+            startB += 1;
         }
     }
 
@@ -631,7 +654,8 @@ function makeid(length) {
     var result = '';
     var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     var charactersLength = characters.length;
-    for (var i = 0; i < length; i++) {
+
+    for (var i = 0; i < length; i += 1) {
         result += characters.charAt(Math.floor(Math.random() *
             charactersLength));
     }
