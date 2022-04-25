@@ -397,6 +397,7 @@ span.select2-selection.select2-selection--single {
 
 .errorMsg {
     font-size: 0.7em;
+    cursor: default;
 }
 
 .error {

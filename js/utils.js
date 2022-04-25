@@ -262,6 +262,7 @@ function shoot() {
     $("#target-location").removeClass("error2");
     $("#mortar-location").removeClass("error2");
 
+    // prepare result divs
     $("#bearing").removeClass("hidden");
     $("#elevation").removeClass("hidden");
     $("#bearing").addClass("pure-u-10-24");
@@ -271,6 +272,10 @@ function shoot() {
     $("#errorMsg").removeClass("pure-u-24-24");
     $("#errorMsg").html("-");
     $(".save").addClass("hidden");
+
+    // draw pointer cursor & tooltip on results
+    $("#copy").addClass("copy");
+    $('#copy').prop('title', 'Click to copy !');
 
 
 
@@ -462,6 +467,10 @@ function showError(msg, issue) {
     $("#errorMsg").addClass("pure-u-24-24");
     $("#errorMsg").addClass("errorMsg");
 
+    // remove the pointer cursor & tooltip 
+    $("#copy").removeClass("copy");
+    $('#copy').prop('title', '');
+
     // insert error message & log it in console
     $("#errorMsg").html(msg);
     console.log(msg);
@@ -483,7 +492,7 @@ function loadMaps() {
         placeholder: 'SELECT A MAP',
         dropdownParent: $('#mapSelector'),
         dropdownCssClass: 'dropbtn',
-        minimumResultsForSearch: -1, // Disable search for better Xperience for mobile users
+        minimumResultsForSearch: -1, // Disable search
     });
 
     // load maps into select2
@@ -492,12 +501,6 @@ function loadMaps() {
     }
 }
 
-// Event to initiate a placeholder for select2
-/*
-$('.dropbtn').one('select2:open', function(e) {
-  $('input.select2-search__field').prop('placeholder', 'search');
-});
-*/
 
 /**
  * Draw the selected Heatmap in a hidden canvas
@@ -510,7 +513,10 @@ $(".dropbtn").change(function() {
 /**
  * Copy calcs to clipboard
  */
-$(".copy").click(function() {
+$("#copy").click(function() {
+
+    // if there is any error, skip copying and move on
+    if (!$("#copy").hasClass('copy')) { return 1; }
 
     const el = document.createElement('textarea');
     el.value = "➜ " + $("#target-location").val() + " = " + $("#bearing").text() + " - " + $("#elevation").text();
@@ -522,6 +528,8 @@ $(".copy").click(function() {
     document.execCommand('copy');
     document.body.removeChild(el);
     $(".copy").effect("bounce", 500);
+
+    console.log("copied ! : " + el.value);
 
 });
 
