@@ -401,10 +401,10 @@ function shoot() {
 
 
     // If using technical mortars, we need to be more precise (##.#)
-    if ($("#radio-one").is(':checked')) {
-        $("#elevation").html(elevation.toFixed(0) + "↷");
-    } else {
+    if ($("#radio-two").is(':checked')) {
         $("#elevation").html(elevation.toFixed(1) + "↷");
+    } else {
+        $("#elevation").html(elevation.toFixed(0) + "↷");
     }
 
     // show actions button
