@@ -1,3 +1,7 @@
+var tooltip_save;
+var tooltip_copy;
+var tooltip_copied;
+
 function loadToolTips() {
     tippy('#classic', {
         content: "Classic",
@@ -43,7 +47,7 @@ function loadToolTips() {
         offset: [45, -20],
     });
 
-    const tooltip_copy = document.querySelector('#copy')._tippy;
+    tooltip_copy = document.querySelector('#copy')._tippy;
     tooltip_copy.disable();
 
 
@@ -61,7 +65,7 @@ function loadToolTips() {
 
         }
     });
-    const tooltip_copied = document.querySelector('#settings')._tippy;
+    tooltip_copied = document.querySelector('#settings')._tippy;
     tooltip_copied.disable();
 
     tippy('.youtube', {
@@ -80,6 +84,5 @@ function loadToolTips() {
         animation: 'fade',
         interactiveDebounce: 75,
     });
-    const tooltip_save = document.querySelector('.save i')._tippy;
-
+    tooltip_save = document.querySelector('.save i')._tippy;
 }
