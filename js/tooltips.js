@@ -1,6 +1,7 @@
 var tooltip_save;
 var tooltip_copy;
 var tooltip_copied;
+var tooltip_new;
 
 function loadToolTips() {
     tippy('#classic', {
@@ -19,7 +20,7 @@ function loadToolTips() {
         interactive: true,
         allowHTML: true,
         onShown(instance) { // Hide 'new' tooltip when user hover french mortars
-            const tooltip_new = document.querySelector('#french')._tippy;
+            tooltip_new = document.querySelector('#french')._tippy;
             tooltip_new.disable();
         },
     });
@@ -34,7 +35,7 @@ function loadToolTips() {
         showOnCreate: true,
         theme: 'new',
         onHidden(instance) {
-            instance.destroy();
+            instance.disable();
         },
     });
 
@@ -47,6 +48,7 @@ function loadToolTips() {
         offset: [45, -20],
     });
 
+    // initiate tooltip but hide it for now
     tooltip_copy = document.querySelector('#copy')._tippy;
     tooltip_copy.disable();
 
