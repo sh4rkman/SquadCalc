@@ -1,7 +1,49 @@
-/*
- * -- WIDTH ADJUSTMENTS
- *
- */
+/***************************************************
+ ************   HEIGHT ADJUSTMENTS   ***************
+ ***************************************************/
+
+
+/* -- L*568px -- */
+
+@media (min-height: 35em) {
+    .select2-results__options {
+        max-height: 370px!important;
+    }
+}
+
+
+/* -- L*730px -- */
+
+@media (min-height: 45em) {
+    .select2-results__options {
+        max-height: 570px!important;
+        line-height: 1em;
+    }
+}
+
+
+/* -- L*800px -- */
+
+@media (min-height: 50em) {
+    .select2-results__options {
+        max-height: 700px!important;
+    }
+}
+
+
+/* -- L*960px -- */
+
+@media (min-height: 60em) {}
+
+
+/* -- L*1072px -- */
+
+@media screen and (min-height: 67em) {}
+
+
+/***************************************************
+ ************   WIDTH ADJUSTMENTS  ***************
+ ***************************************************/
 
 @media screen and (max-width: 48em) {
     /* -- L*568px -- */
@@ -69,10 +111,13 @@
         width: 75px;
     }
     .mortar_selector_classic {
-        background: url("../img/icons/classic_mortar.png") no-repeat scroll 23px 5px transparent;
+        background: url("../img/icons/classic_mortar.png") no-repeat scroll 6px 3px transparent;
     }
     .mortar_selector_technical {
-        background: url("../img/icons/technical_mortar.png") no-repeat scroll 8px 2px transparent;
+        background: url("../img/icons/technical_mortar.png") no-repeat scroll 6px 3px transparent;
+    }
+    .mortar_selector_french {
+        background: url("../img/icons/french_mortar.png") no-repeat scroll 6px 3px transparent;
     }
     .footer {
         visibility: visible;
@@ -151,49 +196,35 @@
 }
 
 
-/*
- * -- HEIGHT ADJUSTMENTS
- *
- */
+/* ≥ 1980px */
 
-
-/* -- L*568px -- */
-
-@media (min-height: 35em) {
+@media screen and (min-width: 124em) {
+    .select2-container {
+        min-width: 400px;
+        font-size: 1.5em;
+    }
     .select2-results__options {
-        max-height: 370px!important;
+        font-size: 1.2em;
+        max-height: 1000px!important;
+        line-height: 1.1em;
+    }
+    .select2-selection__placeholder {
+        font-size: 1.1em;
+    }
+    .select2-selection__rendered {
+        font-size: 1.2em;
+    }
+    input {
+        font-size: 1.7em;
+    }
+    .results {
+        font-size: 3em;
+        margin: 2em auto;
+    }
+    .keypads {
+        margin-top: 2em;
+    }
+    .saved {
+        font-size: 1em;
     }
 }
-
-
-/* -- L*730px -- */
-
-@media (min-height: 45em) {
-    .select2-results__options {
-        max-height: 570px!important;
-        line-height: 1em;
-    }
-}
-
-
-/* -- L*800px -- */
-
-@media (min-height: 50em) {
-    .select2-results__options {
-        max-height: 700px!important;
-    }
-}
-
-
-/* -- L*960px -- */
-
-@media (min-height: 60em) {
-    .select2-results__options {
-        max-height: 700px!important;
-    }
-}
-
-
-/* -- L*1072px -- */
-
-@media (min-height: 67em) {}
