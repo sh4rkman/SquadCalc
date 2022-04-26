@@ -1,7 +1,6 @@
-/*
- * -- WIDTH ADJUSTMENTS
- *
- */
+/***************************************************
+ ************   WIDTH ADJUSTMENTS  ***************
+ ***************************************************/
 
 @media screen and (max-width: 48em) {
     /* -- L*568px -- */
@@ -67,15 +66,6 @@
     .mortar_selector {
         height: 35px;
         width: 75px;
-    }
-    .mortar_selector_classic {
-        background: url("../img/icons/classic_mortar.png") no-repeat scroll 8px 2px transparent;
-    }
-    .mortar_selector_technical {
-        background: url("../img/icons/technical_mortar.png") no-repeat scroll 8px 2px transparent;
-    }
-    .mortar_selector_french {
-        background: url("../img/icons/french_mortar.png") no-repeat scroll 8px 2px transparent;
     }
     .footer {
         visibility: visible;
@@ -154,10 +144,9 @@
 }
 
 
-/*
- * -- HEIGHT ADJUSTMENTS
- *
- */
+/***************************************************
+ ************   HEIGHT ADJUSTMENTS   ***************
+ ***************************************************/
 
 
 /* -- L*568px -- */
@@ -190,13 +179,9 @@
 
 /* -- L*960px -- */
 
-@media (min-height: 60em) {
-    .select2-results__options {
-        max-height: 700px!important;
-    }
-}
+@media (min-height: 60em) {}
 
 
 /* -- L*1072px -- */
 
-@media (min-height: 67em) {}
+@media screen and (min-height: 67em) {}

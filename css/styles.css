@@ -420,8 +420,6 @@ span.select2-selection.select2-selection--single {
     font-weight: bold;
 }
 
-.tippy-content[data-theme~='new'] {}
-
 
 /****************
  *  Tippy.js ToolTips customization
