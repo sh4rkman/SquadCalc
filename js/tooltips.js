@@ -21,6 +21,7 @@ function loadToolTips() {
         allowHTML: true,
         onShown(instance) { // Hide 'new' tooltip when user hover french mortars
             tooltip_new = document.querySelector('#french')._tippy;
+            tooltip_new.hide(0);
             tooltip_new.disable();
         },
     });
@@ -29,7 +30,6 @@ function loadToolTips() {
     // "NEW !" ToolTip
     tippy('#french', {
         content: "New!",
-        animation: 'fade',
         placement: 'bottom',
         allowHTML: true,
         showOnCreate: true,
@@ -39,17 +39,14 @@ function loadToolTips() {
         },
     });
 
-    tippy('#copy', {
+    tippy('#settings', {
         content: "Click to copy",
-        placement: 'right',
+        placement: 'bottom',
         animation: 'fade',
-        followCursor: true,
-        arrow: false,
-        offset: [45, -20],
     });
 
     // initiate tooltip but hide it for now
-    tooltip_copy = document.querySelector('#copy')._tippy;
+    tooltip_copy = document.querySelector('#settings')._tippy;
     tooltip_copy.disable();
 
 
