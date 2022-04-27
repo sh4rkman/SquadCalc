@@ -294,8 +294,10 @@ function shoot() {
     $(".save").addClass("hidden");
 
     // draw pointer cursor & tooltip on results
+    if (!stopInfoTooltips) {
+        tooltip_copy.enable();
+    }
     $("#copy").addClass("copy");
-    tooltip_copy.enable();
 
     // store current cursor positions on input
     startA = $("#mortar-location")[0].selectionStart;
@@ -555,6 +557,7 @@ $("#copy").click(function() {
     console.log("copied ! : " + el.value);
 
     // the user understood he can click2copy, remove the tooltip
+    stopInfoTooltips = true;
     tooltip_copy.disable();
     tooltip_copied.enable();
     tooltip_copied.show();

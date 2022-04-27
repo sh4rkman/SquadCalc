@@ -40,7 +40,7 @@ function loadToolTips() {
     });
 
     tippy('#settings', {
-        content: "Click to copy",
+        content: "Click to copy to clipboard!",
         placement: 'bottom',
         animation: 'fade',
     });
