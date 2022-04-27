@@ -17,8 +17,9 @@ function loadHeatmap() {
  */
 function drawHeatmap() {
     var img = new Image(); // Create new img element
-    var map = $(".dropbtn option:selected").text().toLowerCase();
     var ctx;
+    var map = $(".dropbtn option:selected").text().toLowerCase();
+
 
     img.addEventListener('load', function() { // wait for the image to load or it does crazy stuff
         ctx = document.getElementById('canvas').getContext('2d');
@@ -37,56 +38,53 @@ function drawHeatmap() {
  * @returns {LatLng} converted coordinates
  */
 function getPos(kp) {
-
+    const FORMATTED_KEYPAD = formatKeyPad(kp);
+    const PARTS = FORMATTED_KEYPAD.split("-");
     var pos;
+    var x = 0;
+    var y = 0;
+    var i = 0;
 
-    const fkp = formatKeyPad(kp);
-    if (!fkp || fkp.length < 2) {
-        console.log(`invalid keypad string: ${fkp}`);
+    if (!FORMATTED_KEYPAD || FORMATTED_KEYPAD.length < 2) {
+        console.log(`invalid keypad string: ${FORMATTED_KEYPAD}`);
     }
-    const parts = fkp.split("-");
-    let x = 0;
-    let y = 0;
 
-    // "i" is is our (sub-)keypad indicator
-    let i = 0;
-
-    while (i < parts.length) {
+    while (i < PARTS.length) {
         if (i === 0) {
             // special case, i.e. letter + number combo
-            const letterCode = parts[i].charCodeAt(0);
-            const letterIndex = letterCode - 65;
-            if (parts[i].charCodeAt(0) < 65) {
+            const LETTERCODE = PARTS[i].charCodeAt(0);
+            const LETTERINDEX = LETTERCODE - 65;
+            if (PARTS[i].charCodeAt(0) < 65) {
                 pos = {
                     lat: NaN,
                     lng: NaN
                 };
-                return pos
+                return pos;
             }
-            const kpNr = Number(parts[i].slice(1)) - 1;
-            x += 300 * letterIndex;
-            y += 300 * kpNr;
+            const KEYPADNB = Number(PARTS[i].slice(1)) - 1;
+            x += 300 * LETTERINDEX;
+            y += 300 * KEYPADNB;
 
         } else {
             // opposite of calculations in getKP()
-            const sub = Number(parts[i]);
-            if (Number.isNaN(sub)) {
-                console.log(`invalid keypad string: ${fkp}`);
+            const SUB = Number(PARTS[i]);
+            if (Number.isNaN(SUB)) {
+                console.log(`invalid keypad string: ${FORMATTED_KEYPAD}`);
             }
-            const subX = (sub - 1) % 3;
-            const subY = 2 - (Math.ceil(sub / 3) - 1);
+            const subX = (SUB - 1) % 3;
+            const subY = 2 - (Math.ceil(SUB / 3) - 1);
 
-            const interval = 300 / 3 ** i;
-            x += interval * subX;
-            y += interval * subY;
+            const INTERVAL = 300 / 3 ** i;
+            x += INTERVAL * subX;
+            y += INTERVAL * subY;
         }
         i += 1;
     }
 
     // at the end, add half of last interval, so it points to the center of the deepest sub-keypad
-    const interval = 300 / 3 ** (i - 1);
-    x += interval / 2;
-    y += interval / 2;
+    const INTERVAL = 300 / 3 ** (i - 1);
+    x += INTERVAL / 2;
+    y += INTERVAL / 2;
     pos = {
         lat: x,
         lng: y
@@ -105,22 +103,22 @@ function formatKeyPad(text = "") {
     // If empty string, return
     if (text.length === 0) { return; }
 
-    const textND = text
+    const TEXTND = text
         .toUpperCase()
         .split("-")
         .join("");
-    const textParts = [];
+    const TEXTPARTS = [];
 
-    textParts.push(textND.slice(0, 3));
+    TEXTPARTS.push(TEXTND.slice(0, 3));
 
     // iteration through sub-keypads
     let i = 3;
-    while (i < textND.length) {
-        textParts.push(textND.slice(i, i + 1));
+    while (i < TEXTND.length) {
+        TEXTPARTS.push(TEXTND.slice(i, i + 1));
         i += 1;
     }
 
-    return textParts.join("-");
+    return TEXTPARTS.join("-");
 
 }
 
@@ -187,9 +185,9 @@ function degToMil(deg) {
  * @returns {number} distance A and B
  */
 function getDist(a, b) {
-    const dLat = a.lat - b.lat;
-    const dLng = a.lng - b.lng;
-    return Math.sqrt(dLat * dLat + dLng * dLng);
+    const DLAT = a.lat - b.lat;
+    const DLNG = a.lng - b.lng;
+    return Math.sqrt(DLAT * DLAT + DLNG * DLNG);
 }
 
 /**
@@ -197,11 +195,11 @@ function getDist(a, b) {
  * in order to hit the target at the desired distance and vertical delta.
  * @param {number} x - distance between mortar and target from getDist()
  * @param {number} [y] - vertical delta between mortar and target from getHeight()
- * @param {number} [v] - initial mortar projectile velocity (109.890938)
+ * @param {number} [vel] - initial mortar projectile velocity (109.890938)
  * @param {number} [g] - gravity force (9.8)
  * @returns {number || NaN} mil if target in range, NaN otherwise
  */
-function getElevation(x, y = 0, v = 109.890938, g = 9.8) {
+function getElevation(x, y = 0, vel = 109.890938, g = 9.8) {
 
     // if user selected french DLC 120mm mortar (MO120)
     if ($("#radio-three").is(':checked')) {
@@ -209,16 +207,16 @@ function getElevation(x, y = 0, v = 109.890938, g = 9.8) {
         // since short charges are the vanilla mortar we all know, and medium has little to no use
         // when you can just use long charges all the time.
         // https://smf.tactical-collective.com/2021/10/03/mod-link-changed-beta-21-10-01-changelog/
-        v = 171.5;
+        vel = 171.5;
     }
 
-    const p1 = Math.sqrt(v ** 4 - g * (g * x ** 2 + 2 * y * v ** 2));
-    const a1 = Math.atan((v ** 2 + p1) / (g * x));
+    const P1 = Math.sqrt(vel ** 4 - g * (g * x ** 2 + 2 * y * vel ** 2));
+    const A1 = Math.atan((vel ** 2 + P1) / (g * x));
 
     if ($("#radio-one").is(':checked') || $("#radio-three").is(':checked')) {
-        return radToMil(a1);
+        return radToMil(A1);
     } else {
-        return radToDeg(a1);
+        return radToDeg(A1);
     }
 
 }
@@ -299,8 +297,6 @@ function shoot() {
     $("#copy").addClass("copy");
     tooltip_copy.enable();
 
-
-
     // store current cursor positions on input
     startA = $("#mortar-location")[0].selectionStart;
     startB = $("#target-location")[0].selectionStart;
@@ -353,7 +349,7 @@ function shoot() {
         } else {
             showError("Target is out of map", "target");
         }
-        return 1
+        return 1;
     }
 
 
@@ -399,7 +395,7 @@ function shoot() {
     console.clear();
     console.log($("#mortar-location").val().toUpperCase() + " -> " + $("#target-location").val().toUpperCase());
     console.log("-> Bearing: " + bearing.toFixed(1) + "° - Elevation: " + elevation.toFixed(1) + "↷");
-    console.log("-> Distance: " + distance.toFixed(0) + "m - height: " + height.toFixed(0) + "m")
+    console.log("-> Distance: " + distance.toFixed(0) + "m - height: " + height.toFixed(0) + "m");
 
     $("#bearing").html(bearing.toFixed(1) + "°");
 
@@ -419,7 +415,7 @@ function shoot() {
 
 
 /**
- * Filter invalid key pressed by the user 
+ * Filter invalid key pressed by the user
  *
  * @param {string} a - html input object from where the event is triggered
  * @param {string} e - keypress event
@@ -450,8 +446,8 @@ function filterInput(a, e) {
           return false;
         }
         return true;
-      } 
-    } 
+      }
+    }
     */
 
     //Letters, Digits, special keys & backspace [\b] work as usual:
@@ -493,7 +489,7 @@ function showError(msg, issue) {
     $("#errorMsg").addClass("pure-u-24-24");
     $("#errorMsg").addClass("errorMsg");
 
-    // remove the pointer cursor & tooltip 
+    // remove the pointer cursor & tooltip
     $("#copy").removeClass("copy");
     tooltip_copy.disable();
 
@@ -574,10 +570,10 @@ $(".save").click(function() {
         $(".saved_list p").first().remove();
     }
 
-    target = $("#target-location").val()
+    target = $("#target-location").val();
 
     for (i = 0; i < 11 - target.length; i += 1) {
-        target = target + "&nbsp;"
+        target = target + "&nbsp;";
     }
 
     $(".saved_list").append("<p style='display:none;'>" +
