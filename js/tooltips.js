@@ -19,7 +19,7 @@ function loadToolTips() {
         animation: 'fade',
         interactive: true,
         allowHTML: true,
-        onShown(instance) { // Hide 'new' tooltip when user hover french mortars
+        onShown() { // Hide 'new' tooltip when user hover french mortars
             tooltip_new = document.querySelector('#french')._tippy;
             tooltip_new.hide(0);
             tooltip_new.disable();
