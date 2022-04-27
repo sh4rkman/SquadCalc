@@ -1,4 +1,47 @@
 /***************************************************
+ ************   HEIGHT ADJUSTMENTS   ***************
+ ***************************************************/
+
+
+/* -- L*568px -- */
+
+@media (min-height: 35em) {
+    .select2-results__options {
+        max-height: 370px!important;
+    }
+}
+
+
+/* -- L*730px -- */
+
+@media (min-height: 45em) {
+    .select2-results__options {
+        max-height: 570px!important;
+        line-height: 1em;
+    }
+}
+
+
+/* -- L*800px -- */
+
+@media (min-height: 50em) {
+    .select2-results__options {
+        max-height: 700px!important;
+    }
+}
+
+
+/* -- L*960px -- */
+
+@media (min-height: 60em) {}
+
+
+/* -- L*1072px -- */
+
+@media screen and (min-height: 67em) {}
+
+
+/***************************************************
  ************   WIDTH ADJUSTMENTS  ***************
  ***************************************************/
 
@@ -66,6 +109,15 @@
     .mortar_selector {
         height: 35px;
         width: 75px;
+    }
+    .mortar_selector_classic {
+        background: url("../img/icons/classic_mortar.png") no-repeat scroll 6px 3px transparent;
+    }
+    .mortar_selector_technical {
+        background: url("../img/icons/technical_mortar.png") no-repeat scroll 6px 3px transparent;
+    }
+    .mortar_selector_french {
+        background: url("../img/icons/french_mortar.png") no-repeat scroll 6px 3px transparent;
     }
     .footer {
         visibility: visible;
@@ -144,44 +196,77 @@
 }
 
 
-/***************************************************
- ************   HEIGHT ADJUSTMENTS   ***************
- ***************************************************/
+/* ≥ 1980px */
 
-
-/* -- L*568px -- */
-
-@media (min-height: 35em) {
-    .select2-results__options {
-        max-height: 370px!important;
+@media screen and (min-width: 124em) {
+    /* ≥ 1980px & 1080*/
+    @media (min-height: 68em) {
+        .select2-container {
+            min-width: 400px;
+            font-size: 1.5em;
+        }
+        .select2-results__options {
+            font-size: 1.2em;
+            max-height: 1000px!important;
+            line-height: 1.1em;
+        }
+        .select2-selection__placeholder {
+            font-size: 1.1em;
+        }
+        .select2-selection__rendered {
+            font-size: 1.2em;
+        }
+        input {
+            font-size: 1.7em;
+        }
+        .results {
+            font-size: 3em;
+            margin: 2em auto;
+        }
+        .keypads {
+            margin-top: 2em;
+        }
+        .saved {
+            font-size: 1em;
+        }
+        .mortar_selector {
+            display: inline-block;
+            height: 45px;
+            width: 95px;
+        }
+        .mortar_selector_classic {
+            background-size: 85%;
+        }
+        .mortar_selector_technical {
+            background-size: 85%;
+        }
+        .mortar_selector_french {
+            background-size: 85%;
+        }
+        .switch-field label:first-of-type {
+            border-radius: 10px 0 0 10px;
+        }
+        .switch-field label:last-of-type {
+            border-radius: 0 10px 10px 0;
+        }
+        .logo img {
+            margin-top: 20px;
+            height: 120%;
+        }
+        .weaponSelector {
+            padding: 2em 0 0 1.5em;
+        }
+        .tippy-box {
+            font-size: 140%;
+        }
+        .mapSelector {
+            padding: 2em 1.5em 0 0;
+        }
+        .footer {
+            font-size: 2em;
+        }
+        .social {
+            bottom: 10px;
+        }
     }
 }
-
-
-/* -- L*730px -- */
-
-@media (min-height: 45em) {
-    .select2-results__options {
-        max-height: 570px!important;
-        line-height: 1em;
-    }
-}
-
-
-/* -- L*800px -- */
-
-@media (min-height: 50em) {
-    .select2-results__options {
-        max-height: 700px!important;
-    }
-}
-
-
-/* -- L*960px -- */
-
-@media (min-height: 60em) {}
-
-
-/* -- L*1072px -- */
-
-@media screen and (min-height: 67em) {}
