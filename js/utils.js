@@ -41,6 +41,7 @@ function getPos(kp) {
     const FORMATTED_KEYPAD = formatKeyPad(kp);
     const PARTS = FORMATTED_KEYPAD.split("-");
     var pos;
+    var interval;
     var x = 0;
     var y = 0;
     var i = 0;
@@ -74,17 +75,17 @@ function getPos(kp) {
             const subX = (SUB - 1) % 3;
             const subY = 2 - (Math.ceil(SUB / 3) - 1);
 
-            const INTERVAL = 300 / 3 ** i;
-            x += INTERVAL * subX;
-            y += INTERVAL * subY;
+            interval = 300 / 3 ** i;
+            x += interval * subX;
+            y += interval * subY;
         }
         i += 1;
     }
 
     // at the end, add half of last interval, so it points to the center of the deepest sub-keypad
-    const INTERVAL = 300 / 3 ** (i - 1);
-    x += INTERVAL / 2;
-    y += INTERVAL / 2;
+    interval = 300 / 3 ** (i - 1);
+    x += interval / 2;
+    y += interval / 2;
     pos = {
         lat: x,
         lng: y
@@ -99,7 +100,7 @@ function getPos(kp) {
  * @returns {string} formatted string
  */
 function formatKeyPad(text = "") {
-
+    var i = 3;
     // If empty string, return
     if (text.length === 0) { return; }
 
@@ -112,7 +113,7 @@ function formatKeyPad(text = "") {
     TEXTPARTS.push(TEXTND.slice(0, 3));
 
     // iteration through sub-keypads
-    let i = 3;
+
     while (i < TEXTND.length) {
         TEXTPARTS.push(TEXTND.slice(i, i + 1));
         i += 1;
@@ -131,13 +132,13 @@ function formatKeyPad(text = "") {
  */
 function getBearing(a, b) {
     // oh no, vector maths!
-    let bearing = Math.atan2(b.lng - a.lng, b.lat - a.lat) * 180 / Math.PI;
+    var bearing = Math.atan2(b.lng - a.lng, b.lat - a.lat) * 180 / Math.PI;
 
     // Point it north
     bearing = bearing + 90;
 
     // Avoid Negative Angle by adding a whole rotation
-    if (bearing < 0) bearing += 360;
+    if (bearing < 0) { bearing += 360; }
 
     return bearing;
 }
@@ -149,15 +150,6 @@ function getBearing(a, b) {
  */
 function radToMil(rad) {
     return degToMil(radToDeg(rad));
-}
-
-/**
- * Converts degrees into radians
- * @param {number} deg - degrees
- * @returns {number} radians
- */
-function degToRad(deg) {
-    return (deg * Math.PI) / 180;
 }
 
 /**
@@ -193,14 +185,15 @@ function getDist(a, b) {
 /**
  * Calculates the angle the mortar needs to be set,
  * in order to hit the target at the desired distance and vertical delta.
- * @param {number} x - distance between mortar and target from getDist()
+ * @param {number} [x] - distance between mortar and target from getDist()
  * @param {number} [y] - vertical delta between mortar and target from getHeight()
  * @param {number} [vel] - initial mortar projectile velocity (109.890938)
- * @param {number} [g] - gravity force (9.8)
+ * @param {number} [G] - gravity force (9.8)
  * @returns {number || NaN} mil if target in range, NaN otherwise
  */
-function getElevation(x, y = 0, vel = 109.890938, g = 9.8) {
-
+function getElevation(x, y = 0, vel = WEAPONS[0][1], G = GRAVITY) {
+    console.log(G);
+    console.log(vel);
     // if user selected french DLC 120mm mortar (MO120)
     if ($("#radio-three").is(':checked')) {
         // MO120 from French DLC has three different charges, here we only calc for long ones
@@ -210,8 +203,8 @@ function getElevation(x, y = 0, vel = 109.890938, g = 9.8) {
         vel = 171.5;
     }
 
-    const P1 = Math.sqrt(vel ** 4 - g * (g * x ** 2 + 2 * y * vel ** 2));
-    const A1 = Math.atan((vel ** 2 + P1) / (g * x));
+    const P1 = Math.sqrt(vel ** 4 - G * (G * x ** 2 + 2 * y * vel ** 2));
+    const A1 = Math.atan((vel ** 2 + P1) / (G * x));
 
     if ($("#radio-one").is(':checked') || $("#radio-three").is(':checked')) {
         return radToMil(A1);
@@ -235,10 +228,10 @@ function getHeight(a, b) {
     var ctx;
 
     // if user didn't select map, no height calculation
-    if ($(".dropbtn").val() === "") return 0;
+    if ($(".dropbtn").val() === "") { return 0; }
 
     // load map size for scaling lat&lng
-    mapScale = 250 / maps[$(".dropbtn").val()][1];
+    mapScale = 250 / MAPS[$(".dropbtn").val()][1];
 
     // Read Heightmap values for a & b
     ctx = document.getElementById('canvas').getContext('2d');
@@ -253,8 +246,8 @@ function getHeight(a, b) {
         return 999;
     }
 
-    Aheight = (255 + Aheight[0] - Aheight[2]) * maps[$(".dropbtn").val()][2];
-    Bheight = (255 + Bheight[0] - Bheight[2]) * maps[$(".dropbtn").val()][2];
+    Aheight = (255 + Aheight[0] - Aheight[2]) * MAPS[$(".dropbtn").val()][2];
+    Bheight = (255 + Bheight[0] - Bheight[2]) * MAPS[$(".dropbtn").val()][2];
 
     return Bheight - Aheight;
 }
@@ -276,6 +269,8 @@ function shoot() {
     var H;
     var V;
     var vel;
+    var a;
+    var b;
 
     // First, reset any errors
     $("#settings").removeClass("error");
@@ -328,11 +323,11 @@ function shoot() {
     a = getPos(a);
     b = getPos(b);
 
-    if (isNaN(a.lng) || isNaN(b.lng)) {
+    if (Number.isNaN(a.lng) || Number.isNaN(b.lng)) {
 
-        if (isNaN(a.lng) && isNaN(b.lng)) {
+        if (Number.isNaN(a.lng) && Number.isNaN(b.lng)) {
             showError("Invalid mortar and target");
-        } else if (isNaN(a.lng)) {
+        } else if (Number.isNaN(a.lng)) {
             showError("Invalid mortar", "mortar");
         } else {
             showError("Invalid target", "target");
@@ -368,12 +363,12 @@ function shoot() {
         elevation = getElevation(distance, height);
     } else { // If technical mortar
 
-        for (i = 0; i < technicals.length; i += 1) {
-            if (distance < technicals[i][0]) {
-                h = technicals[i - 1][0];
-                v = technicals[i - 1][1];
-                H = technicals[i][0];
-                V = technicals[i][1];
+        for (i = 0; i < TECHNICALS.length; i += 1) {
+            if (distance < TECHNICALS[i][0]) {
+                h = TECHNICALS[i - 1][0];
+                v = TECHNICALS[i - 1][1];
+                H = TECHNICALS[i][0];
+                V = TECHNICALS[i][1];
 
                 // Ajust the velocity based on ingame-value
                 vel = v + ((distance - h) / (H - h)) * (V - v);
@@ -387,7 +382,7 @@ function shoot() {
     bearing = getBearing(a, b);
 
     // If Target too far, display it and exit function
-    if (isNaN(elevation)) {
+    if (Number.isNaN(elevation)) {
         showError("Target is out of range : " + distance.toFixed(0) + "m", "target");
         return 1;
     }
@@ -428,12 +423,9 @@ function filterInput(a, e) {
     var chrCode = 0;
     var evt = e ? e : event;
 
-    if (evt.charCode != null) chrCode = evt.charCode;
-    else if (evt.which != null) chrCode = evt.which;
-    else if (evt.keyCode != null) chrCode = evt.keyCode;
+    if (evt.charCode !== null) { chrCode = evt.charCode; } else if (evt.which !== null) { chrCode = evt.which; } else if (evt.keyCode !== null) { chrCode = evt.keyCode; }
 
-    if (chrCode === 0) chrTyped = 'SPECIAL KEY';
-    else chrTyped = String.fromCharCode(chrCode);
+    if (chrCode === 0) { chrTyped = 'SPECIAL KEY'; } else { chrTyped = String.fromCharCode(chrCode); }
 
 
     // If there is already a letter in the input.value, prevent the keypress
@@ -453,11 +445,11 @@ function filterInput(a, e) {
     */
 
     //Letters, Digits, special keys & backspace [\b] work as usual:
-    if (chrTyped.match(/\d|[\b]|SPECIAL|[A-Za-z]/)) return true;
-    if (evt.altKey || evt.ctrlKey || chrCode < 28) return true;
+    if (chrTyped.match(/\d|[\b]|SPECIAL|[A-Za-z]/)) { return true; }
+    if (evt.altKey || evt.ctrlKey || chrCode < 28) { return true; }
 
     //Any other input Prevent the default response:
-    if (evt.preventDefault) evt.preventDefault();
+    if (evt.preventDefault) { evt.preventDefault(); }
     console.log('forbidden character');
     evt.returnValue = false;
     return false;
@@ -514,15 +506,15 @@ function loadMaps() {
 
     // Initiate select2 object (https://select2.org/)
     $('.dropbtn').select2({
-        placeholder: 'SELECT A MAP',
-        dropdownParent: $('#mapSelector'),
         dropdownCssClass: 'dropbtn',
+        dropdownParent: $('#mapSelector'),
         minimumResultsForSearch: -1, // Disable search
+        placeholder: 'SELECT A MAP'
     });
 
     // load maps into select2
-    for (i = 0; i < maps.length; i += 1) {
-        $(".dropbtn").append('<option value="' + i + '">' + maps[i][0] + '</option>');
+    for (i = 0; i < MAPS.length; i += 1) {
+        $(".dropbtn").append('<option value="' + i + '">' + MAPS[i][0] + '</option>');
     }
 }
 
@@ -569,6 +561,8 @@ $("#copy").click(function() {
  */
 $(".save").click(function() {
     var i;
+    var target;
+
     if ($(".saved_list p").length === 3) {
         $(".saved_list p").first().remove();
     }
@@ -622,27 +616,28 @@ function RemoveSaves(a) {
  * @param {string} b - previous tardget coord before reformating
  */
 function setCursor(startA, startB, a, b) {
+    const C = $("#mortar-location").val().length;
+    const D = $("#target-location").val().length;
 
     a = a.length;
     b = b.length;
-    c = $("#mortar-location").val().length;
-    d = $("#target-location").val().length;
+
 
     // if the keypads.lenght is <3, do nothing.
     // Otherwise we guess if the user is deleting or adding something
     // and ajust the cursor considering MSMC added/removed a '-'
 
     if (startA >= 3) {
-        if (a > c) {
-            startA--;
+        if (a > C) {
+            startA -= 1;
         } else {
             startA += 1;
         }
     }
 
     if (startB >= 3) {
-        if (b > d) {
-            startB--;
+        if (b > D) {
+            startB -= 1;
         } else {
             startB += 1;
         }
@@ -663,8 +658,9 @@ function makeid(length) {
     var result = '';
     var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     var charactersLength = characters.length;
+    var i;
 
-    for (var i = 0; i < length; i += 1) {
+    for (i = 0; i < length; i += 1) {
         result += characters.charAt(Math.floor(Math.random() *
             charactersLength));
     }
