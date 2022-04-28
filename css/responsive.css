@@ -192,7 +192,7 @@
     /* ≥ 1980px & 1080*/
     @media (min-height: 68em) {
         .select2-container {
-            min-width: 400px;
+            min-width: 350px;
             font-size: 1.5em;
         }
         .select2-results__options {
@@ -257,6 +257,14 @@
         }
         .social {
             bottom: 10px;
+        }
+        input {
+            height: 80px;
+        }
+        .coord img {
+            width: 70px;
+            height: 70px;
+            padding-bottom: 0.8em;
         }
     }
 }
