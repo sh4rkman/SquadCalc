@@ -1,15 +1,18 @@
 const VERSION = 6.0;
 const GRAVITY = 9.8;
+var frenchSelection = 0;
 var stopInfoTooltips = false;
 
 // 120mm mortars are from french DLC and using three different velocity
+// TODO: use object instead of shitty array
 const WEAPONS = [
-    ['Classic', 109.890938],
-    ['Technical', 0],
-    ['120mm (S)', 109.890938],
-    ['120mm (M)', 143.5],
-    ['120mm (L)', 171.5],
+    ['Classic', 109.890938, 1580],
+    ['Technical', 0, 83.8],
+    ['MO120_S', 109.890938, 1520],
+    ['MO120_M', 143.5, 1520],
+    ['MO120_L', 171.5, 1520],
 ];
+
 
 // Each map has a different size and require scaling w, y and z when calculating height
 // maps['Name', size, z-scaling]

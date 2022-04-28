@@ -211,7 +211,7 @@
         }
         .results {
             font-size: 3em;
-            margin: 2em auto;
+            margin: 1.5em auto;
         }
         .keypads {
             margin-top: 2em;
@@ -220,6 +220,11 @@
             font-size: 1em;
         }
         .mortar_selector {
+            display: inline-block;
+            height: 45px;
+            width: 95px;
+        }
+        .french_mortar_selector {
             display: inline-block;
             height: 45px;
             width: 95px;
@@ -233,11 +238,26 @@
         .mortar_selector_french {
             background-size: 85%;
         }
+        .french_mortar_selector_short {
+            background-size: 85%;
+        }
+        .french_mortar_selector_medium {
+            background-size: 85%;
+        }
+        .french_mortar_selector_long {
+            background-size: 85%;
+        }
         .switch-field label:first-of-type {
             border-radius: 10px 0 0 10px;
         }
         .switch-field label:last-of-type {
             border-radius: 0 10px 10px 0;
+        }
+        .switch-field2 label:first-of-type {
+            border-radius: 10px 10px 0 0;
+        }
+        .switch-field2 label:last-of-type {
+            border-radius: 0 0 10px 10px;
         }
         .logo img {
             margin-top: 20px;

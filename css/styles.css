@@ -84,6 +84,12 @@ button:focus {
     width: 70px;
 }
 
+.french_mortar_selector {
+    display: inline-block;
+    height: 30px;
+    width: 70px;
+}
+
 .mortar_selector_classic {
     background: url("../img/icons/classic_mortar.png") no-repeat scroll 6px 0 transparent;
 }
@@ -94,6 +100,18 @@ button:focus {
 
 .mortar_selector_french {
     background: url("../img/icons/french_mortar.png") no-repeat scroll 6px 0 transparent;
+}
+
+.french_mortar_selector_short {
+    background: url("../img/icons/short.png") no-repeat scroll 6px 0 transparent;
+}
+
+.french_mortar_selector_medium {
+    background: url("../img/icons/medium.png") no-repeat scroll 6px 0 transparent;
+}
+
+.french_mortar_selector_long {
+    background: url("../img/icons/long.png") no-repeat scroll 6px 0 transparent;
 }
 
 .switch-field {
@@ -133,6 +151,46 @@ button:focus {
 
 .switch-field label:last-of-type {
     border-radius: 0 5px 5px 0;
+}
+
+.switch-field2 {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: auto;
+    overflow: hidden;
+    z-index: 5;
+}
+
+.switch-field2 input {
+    position: absolute !important;
+    clip: rect(0, 0, 0, 0);
+    height: 1px;
+    width: 1px;
+    border: 0;
+    overflow: hidden;
+}
+
+.switch-field2 label {
+    background-color: #464444;
+    transition: all 0.2s ease-in-out;
+}
+
+.switch-field2 label:hover {
+    cursor: pointer;
+}
+
+.switch-field2 input:checked+label {
+    background-color: #ffffff;
+    box-shadow: none;
+}
+
+.switch-field2 label:first-of-type {
+    border-radius: 5px 5px 0 0;
+}
+
+.switch-field2 label:last-of-type {
+    border-radius: 0 0 5px 5px;
 }
 
 
@@ -417,6 +475,10 @@ span.select2-selection.select2-selection--single {
     color: white;
     letter-spacing: .1rem;
     font-weight: bold;
+}
+
+.tippy-box[data-theme~="french"] .tippy-content {
+    padding: 0;
 }
 
 

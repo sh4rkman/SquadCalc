@@ -24,9 +24,10 @@ function drawHeatmap() {
     img.addEventListener('load', function() { // wait for the image to load or it does crazy stuff
         ctx = document.getElementById('canvas').getContext('2d');
         ctx.drawImage(img, 0, 0, 250, 250);
+        shoot(); // just in case there is already coordinates in inputs
     }, false);
     img.src = './img/heightmaps/' + map + '.jpg'; // Set source path
-    shoot(); // just in case there is already coordinates in inputs
+
 }
 
 
@@ -162,6 +163,16 @@ function radToDeg(rad) {
 }
 
 /**
+ * Converts degrees into radians
+ * @param {number} deg - degrees
+ * @returns {number} radians
+ */
+function degToRad(deg) {
+    return (deg * Math.PI) / 180;
+}
+
+
+/**
  * Converts degrees into NATO mils
  * @param {number} deg - degrees
  * @returns {number} NATO mils
@@ -192,15 +203,31 @@ function getDist(a, b) {
  * @returns {number || NaN} mil if target in range, NaN otherwise
  */
 function getElevation(x, y = 0, vel = WEAPONS[0][1], G = GRAVITY) {
-    console.log(G);
-    console.log(vel);
+
     // if user selected french DLC 120mm mortar (MO120)
+    // MO120 from French DLC has three different charges
+    // https://smf.tactical-collective.com/2021/10/03/mod-link-changed-beta-21-10-01-changelog/
+    // I'm coding this drunk, this is terrible and should be changed when i get sober (but works)
     if ($("#radio-three").is(':checked')) {
-        // MO120 from French DLC has three different charges, here we only calc for long ones
-        // since short charges are the vanilla mortar we all know, and medium has little to no use
-        // when you can just use long charges all the time.
-        // https://smf.tactical-collective.com/2021/10/03/mod-link-changed-beta-21-10-01-changelog/
-        vel = 171.5;
+        if ($("#radio-four").is(':checked')) {
+            frenchSelection = 0;
+            vel = WEAPONS[2][1];
+        } else if ($("#radio-five").is(':checked')) {
+            frenchSelection = 1;
+            vel = WEAPONS[3][1];
+        } else if ($("#radio-six").is(':checked')) {
+            frenchSelection = 2;
+            vel = WEAPONS[4][1];
+        } else {
+            if (frenchSelection === 0) {
+                vel = WEAPONS[2][1];
+            } else if (frenchSelection === 1) {
+                vel = WEAPONS[3][1];
+            } else {
+                vel = WEAPONS[4][1];
+            }
+
+        }
     }
 
     const P1 = Math.sqrt(vel ** 4 - G * (G * x ** 2 + 2 * y * vel ** 2));
@@ -240,10 +267,10 @@ function getHeight(a, b) {
 
     // Check if a & b arn't out of canvas
     if (Aheight[3] === 0) {
-        return 998;
+        return "AERROR";
     }
     if (Bheight[3] === 0) {
-        return 999;
+        return "BERROR";
     }
 
     Aheight = (255 + Aheight[0] - Aheight[2]) * MAPS[$(".dropbtn").val()][2];
@@ -339,9 +366,9 @@ function shoot() {
     height = getHeight(a, b);
 
     // Check if mortars/target are out of map
-    if ((height === 998) || (height === 999)) {
+    if ((height === "AERROR") || (height === "BERROR")) {
 
-        if (height === 998) {
+        if (height === "AERROR") {
             showError("Mortar is out of map", "mortar");
         } else {
             showError("Target is out of map", "target");
@@ -349,21 +376,16 @@ function shoot() {
         return 1;
     }
 
-
     distance = getDist(a, b);
 
-    // If Target too close, display it and exit function
-    if (distance <= 50) {
-        showError("Target is too close : " + distance.toFixed(0) + "m", "target");
-        return 1;
-    }
 
     // Classical calc for mortar
     if ($("#radio-one").is(':checked') || $("#radio-three").is(':checked')) {
         elevation = getElevation(distance, height);
     } else { // If technical mortar
 
-        for (i = 0; i < TECHNICALS.length; i += 1) {
+        for (i = 1; i < TECHNICALS.length; i += 1) {
+
             if (distance < TECHNICALS[i][0]) {
                 h = TECHNICALS[i - 1][0];
                 v = TECHNICALS[i - 1][1];
@@ -372,9 +394,9 @@ function shoot() {
 
                 // Ajust the velocity based on ingame-value
                 vel = v + ((distance - h) / (H - h)) * (V - v);
-                elevation = getElevation(distance, height, vel);
-                break;
             }
+            elevation = getElevation(distance, height, vel);
+            break;
         }
 
     }
@@ -385,6 +407,26 @@ function shoot() {
     if (Number.isNaN(elevation)) {
         showError("Target is out of range : " + distance.toFixed(0) + "m", "target");
         return 1;
+    }
+
+    console.log(elevation);
+    if ($("#radio-one").is(':checked')) {
+        if (elevation > WEAPONS[0][2]) {
+            showError("Target is too close : " + distance.toFixed(0) + "m", "target");
+            return 1;
+        }
+    } else if ($("#radio-three").is(':checked')) {
+
+        if (elevation > WEAPONS[4][2]) {
+            showError("Target is too close : " + distance.toFixed(0) + "m", "target");
+            return 1;
+        }
+
+    } else { // If technical mortar
+        if (elevation > WEAPONS[1][2]) {
+            showError("Target is too close : " + distance.toFixed(0) + "m", "target");
+            return 1;
+        }
     }
 
 

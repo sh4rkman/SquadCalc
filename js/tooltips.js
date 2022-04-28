@@ -15,14 +15,26 @@ function loadToolTips() {
     });
 
     tippy('#french', {
-        content: "120mm </br> (Squad Mod France)",
+        content: "<div class=\"switch-field2 unselectable\"><input type=\"radio\" id=\"radio-four\" name=\"switch-two\" onchange=\"shoot()\" checked/><label id=\"classic\" for=\"radio-four\" class=\"french_mortar_selector french_mortar_selector_short\"></label><input type=\"radio\" id=\"radio-five\" name=\"switch-two\" onchange=\"shoot()\" /><label id=\"technical\" for=\"radio-five\" class=\"french_mortar_selector french_mortar_selector_medium\"></label><input type=\"radio\" id=\"radio-six\" name=\"switch-two\" onchange=\"shoot()\" /><label id=\"french\" for=\"radio-six\" class=\"french_mortar_selector french_mortar_selector_long \"></label> </div>",
         animation: 'fade',
         interactive: true,
         allowHTML: true,
+        arrow: false,
+        theme: 'french',
+        trigger: 'click',
         onShown() { // Hide 'new' tooltip when user hover french mortars
             tooltip_new = document.querySelector('#french')._tippy;
             tooltip_new.hide(0);
             tooltip_new.disable();
+        },
+        onHide(instance) {
+            if ($("#radio-four").is(':checked')) {
+                frenchSelection = 0;
+            } else if ($("#radio-five").is(':checked')) {
+                frenchSelection = 1;
+            } else {
+                frenchSelection = 2;
+            }
         },
     });
 
