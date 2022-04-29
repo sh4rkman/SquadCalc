@@ -195,32 +195,6 @@ function getDist(a, b) {
  * @returns {number || NaN} mil if target in range, NaN otherwise
  */
 function getElevation(x, y = 0, vel, G = GRAVITY) {
-
-    // if user selected french DLC 120mm mortar (MO120)
-    // MO120 from French DLC has three different charges
-    // https://smf.tactical-collective.com/2021/10/03/mod-link-changed-beta-21-10-01-changelog/
-    // I'm coding this drunk, this is terrible and should be changed when i get sober (but works)
-    if ($("#radio-three").is(':checked')) {
-        if ($("#radio-four").is(':checked')) {
-            frenchSelection = 0;
-            vel = WEAPONS[2][1];
-        } else if ($("#radio-five").is(':checked')) {
-            frenchSelection = 1;
-            vel = WEAPONS[3][1];
-        } else if ($("#radio-six").is(':checked')) {
-            frenchSelection = 2;
-            vel = WEAPONS[4][1];
-        } else {
-            if (frenchSelection === 0) {
-                vel = WEAPONS[2][1];
-            } else if (frenchSelection === 1) {
-                vel = WEAPONS[3][1];
-            } else {
-                vel = WEAPONS[4][1];
-            }
-        }
-    }
-
     const P1 = Math.sqrt(vel ** 4 - G * (G * x ** 2 + 2 * y * vel ** 2));
     const A1 = Math.atan((vel ** 2 + P1) / (G * x));
 
@@ -280,6 +254,11 @@ function getHeight(a, b) {
  */
 function getVelocity(distance) {
     var vel;
+    var h;
+    var H;
+    var v;
+    var V;
+    var i;
 
     if ($("#radio-one").is(':checked')) {
         vel = WEAPONS[0][1];
@@ -334,12 +313,7 @@ function shoot() {
     var height;
     var distance;
     var elevation;
-    var i;
     var bearing;
-    var h;
-    var v;
-    var H;
-    var V;
     var vel;
     var a;
     var b;
