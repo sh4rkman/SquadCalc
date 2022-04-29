@@ -24,8 +24,6 @@ function drawHeatmap() {
         ctx.drawImage(img, 0, 0, CANVAS_SIZE, CANVAS_SIZE);
         shoot(); // just in case there is already coordinates in inputs
     }, false);
-
-
 }
 
 
