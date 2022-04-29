@@ -27,7 +27,7 @@ function loadToolTips() {
             tooltip_new.hide(0);
             tooltip_new.disable();
         },
-        onHide(instance) {
+        onHide() {
             if ($("#radio-four").is(':checked')) {
                 frenchSelection = 0;
             } else if ($("#radio-five").is(':checked')) {
