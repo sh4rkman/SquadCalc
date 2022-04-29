@@ -226,7 +226,6 @@ function getElevation(x, y = 0, vel = WEAPONS[0][1], G = GRAVITY) {
             } else {
                 vel = WEAPONS[4][1];
             }
-
         }
     }
 
@@ -394,9 +393,10 @@ function shoot() {
 
                 // Ajust the velocity based on ingame-value
                 vel = v + ((distance - h) / (H - h)) * (V - v);
+                elevation = getElevation(distance, height, vel);
+                break;
             }
-            elevation = getElevation(distance, height, vel);
-            break;
+
         }
 
     }
@@ -409,7 +409,6 @@ function shoot() {
         return 1;
     }
 
-    console.log(elevation);
     if ($("#radio-one").is(':checked')) {
         if (elevation > WEAPONS[0][2]) {
             showError("Target is too close : " + distance.toFixed(0) + "m", "target");

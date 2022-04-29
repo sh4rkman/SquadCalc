@@ -87,4 +87,4 @@ I wanted a lighter alternative to this great tool, some could say this project i
 </br>
 
 # Badges
- [![DeepScan grade](https://deepscan.io/api/teams/12376/projects/15404/branches/306486/badge/grade.svg)](https://deepscan.io/dashboard#view=project&tid=12376&pid=15404&bid=306486)  [![Generic badge](https://img.shields.io/badge/W3C-Good-green.svg)](https://validator.w3.org/nu/?doc=https%3A%2F%2Fmortar.sharkman.info%2F)  
+ [![DeepScan grade](https://deepscan.io/api/teams/12376/projects/15404/branches/306486/badge/grade.svg)](https://deepscan.io/dashboard#view=project&tid=12376&pid=15404&bid=306486)  [![Generic badge](https://img.shields.io/badge/W3C-Good-green.svg)](https://validator.w3.org/nu/?doc=https%3A%2F%2Fmortar.sharkman.info%2F) [![CodeFactor](https://www.codefactor.io/repository/github/sh4rkman/msmc/badge)](https://www.codefactor.io/repository/github/sh4rkman/msmc) 
