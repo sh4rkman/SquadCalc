@@ -469,9 +469,19 @@ function filterInput(a, e) {
     var chrCode = 0;
     var evt = e ? e : event;
 
-    if (evt.charCode !== null) { chrCode = evt.charCode; } else if (evt.which !== null) { chrCode = evt.which; } else if (evt.keyCode !== null) { chrCode = evt.keyCode; }
+    if (evt.charCode !== null) {
+        chrCode = evt.charCode;
+    } else if (evt.which !== null) {
+        chrCode = evt.which;
+    } else if (evt.keyCode !== null) {
+        chrCode = evt.keyCode;
+    }
 
-    if (chrCode === 0) { chrTyped = 'SPECIAL KEY'; } else { chrTyped = String.fromCharCode(chrCode); }
+    if (chrCode === 0) {
+        chrTyped = 'SPECIAL KEY';
+    } else {
+        chrTyped = String.fromCharCode(chrCode);
+    }
 
 
     // If there is already a letter in the input.value, prevent the keypress
@@ -658,8 +668,10 @@ function RemoveSaves(a) {
  * @param {string} b - previous tardget coord before reformating
  */
 function setCursor(startA, startB, a, b) {
-    const C = $("#mortar-location").val().length;
-    const D = $("#target-location").val().length;
+    const MORTAR_LOC = $("#mortar-location");
+    const TARGET_LOC = $("#target-location");
+    const MORTAR_LENGTH = MORTAR_LOC.val().length;
+    const TARGET_LENGTH = TARGET_LOC.val().length;
 
     a = a.length;
     b = b.length;
@@ -670,7 +682,7 @@ function setCursor(startA, startB, a, b) {
     // and ajust the cursor considering MSMC added/removed a '-'
 
     if (startA >= 3) {
-        if (a > C) {
+        if (a > MORTAR_LENGTH) {
             startA -= 1;
         } else {
             startA += 1;
@@ -678,15 +690,15 @@ function setCursor(startA, startB, a, b) {
     }
 
     if (startB >= 3) {
-        if (b > D) {
+        if (b > TARGET_LENGTH) {
             startB -= 1;
         } else {
             startB += 1;
         }
     }
 
-    $("#mortar-location")[0].setSelectionRange(startA, startA);
-    $("#target-location")[0].setSelectionRange(startB, startB);
+    MORTAR_LOC[0].setSelectionRange(startA, startA);
+    TARGET_LOC[0].setSelectionRange(startB, startB);
 
 }
 
