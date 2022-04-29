@@ -45,10 +45,6 @@ function getPos(kp) {
     var y = 0;
     var i = 0;
 
-    if (!FORMATTED_KEYPAD || FORMATTED_KEYPAD.length < 2) {
-        console.log(`invalid keypad string: ${FORMATTED_KEYPAD}`);
-    }
-
     while (i < PARTS.length) {
         if (i === 0) {
             // special case, i.e. letter + number combo
@@ -200,7 +196,7 @@ function getDist(a, b) {
  * @param {number} [G] - gravity force (9.8)
  * @returns {number || NaN} mil if target in range, NaN otherwise
  */
-function getElevation(x, y = 0, vel = WEAPONS[0][1], G = GRAVITY) {
+function getElevation(x, y = 0, vel, G = GRAVITY) {
 
     // if user selected french DLC 120mm mortar (MO120)
     // MO120 from French DLC has three different charges
@@ -281,6 +277,56 @@ function getHeight(a, b) {
 }
 
 /**
+ * Return the velocity for the selected mortar
+ * @returns {velocity} 
+ */
+function getVelocity(distance) {
+    var vel;
+
+    if ($("#radio-one").is(':checked')) {
+        vel = WEAPONS[0][1];
+    } else if ($("#radio-two").is(':checked')) {
+        for (i = 1; i < TECHNICALS.length; i += 1) {
+
+            if (distance < TECHNICALS[i][0]) {
+                h = TECHNICALS[i - 1][0];
+                v = TECHNICALS[i - 1][1];
+                H = TECHNICALS[i][0];
+                V = TECHNICALS[i][1];
+
+                // Ajust the velocity based on ingame-value
+                vel = v + ((distance - h) / (H - h)) * (V - v);
+                break;
+            }
+
+        }
+    } else {
+
+        if ($("#radio-four").is(':checked')) {
+            frenchSelection = 0;
+            vel = WEAPONS[2][1];
+        } else if ($("#radio-five").is(':checked')) {
+            frenchSelection = 1;
+            vel = WEAPONS[3][1];
+        } else if ($("#radio-six").is(':checked')) {
+            frenchSelection = 2;
+            vel = WEAPONS[4][1];
+        } else {
+            if (frenchSelection === 0) {
+                vel = WEAPONS[2][1];
+            } else if (frenchSelection === 1) {
+                vel = WEAPONS[3][1];
+            } else {
+                vel = WEAPONS[4][1];
+            }
+        }
+
+    }
+
+    return vel;
+}
+
+/**
  * Calculates the distance elevation and bearing
  * @returns {target} elevation + bearing
  */
@@ -301,7 +347,6 @@ function shoot() {
     var b;
     const MORTAR_LOC = $("#mortar-location");
     const TARGET_LOC = $("#target-location");
-
 
     // First, reset any errors
     $("#settings").removeClass("error");
@@ -376,32 +421,9 @@ function shoot() {
     }
 
     distance = getDist(a, b);
+    vel = getVelocity(distance);
+    elevation = getElevation(distance, height, vel);
 
-
-    // Classical calc for mortar
-    if ($("#radio-one").is(':checked') || $("#radio-three").is(':checked')) {
-        elevation = getElevation(distance, height);
-    } else { // If technical mortar
-
-        for (i = 1; i < TECHNICALS.length; i += 1) {
-
-            if (distance < TECHNICALS[i][0]) {
-                h = TECHNICALS[i - 1][0];
-                v = TECHNICALS[i - 1][1];
-                H = TECHNICALS[i][0];
-                V = TECHNICALS[i][1];
-
-                // Ajust the velocity based on ingame-value
-                vel = v + ((distance - h) / (H - h)) * (V - v);
-                elevation = getElevation(distance, height, vel);
-                break;
-            }
-
-        }
-
-    }
-
-    bearing = getBearing(a, b);
 
     // If Target too far, display it and exit function
     if (Number.isNaN(elevation)) {
@@ -428,12 +450,14 @@ function shoot() {
         }
     }
 
+    bearing = getBearing(a, b);
 
     // if in range, Insert Calculations
     console.clear();
-    console.log($(MORTAR_LOC.val().toUpperCase() + " -> " + TARGET_LOC.val().toUpperCase()));
+    console.log(MORTAR_LOC.val().toUpperCase() + " -> " + TARGET_LOC.val().toUpperCase());
     console.log("-> Bearing: " + bearing.toFixed(1) + "° - Elevation: " + elevation.toFixed(1) + "↷");
     console.log("-> Distance: " + distance.toFixed(0) + "m - height: " + height.toFixed(0) + "m");
+    console.log("-> Velocity: " + vel.toFixed(1) + " m/s");
 
     $("#bearing").html(bearing.toFixed(1) + "°");
 
@@ -501,7 +525,6 @@ function filterInput(a, e) {
 
     //Any other input Prevent the default response:
     if (evt.preventDefault) { evt.preventDefault(); }
-    console.log('forbidden character');
     evt.returnValue = false;
     return false;
 }
@@ -534,11 +557,8 @@ function showError(msg, issue) {
     $("#copy").removeClass("copy");
     tooltip_copy.disable();
 
-
-
     // https://youtu.be/PWgvGjAhvIw?t=233
     $("#settings").addClass("error").effect("shake");
-
 
     console.log(msg);
 }
