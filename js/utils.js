@@ -616,7 +616,7 @@ $(".save").click(function() {
 
     $(".saved_list").append("<p style='display:none;'>" +
         " ➜ " +
-        target +
+        encodeURI(target) +
         " : " +
         "<span style=\"font-weight:bold\">" +
         $("#bearing").text() +
