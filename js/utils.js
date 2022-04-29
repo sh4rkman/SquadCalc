@@ -263,13 +263,8 @@ function getHeight(a, b) {
 
     // Read Heightmap values for a & b
     ctx = document.getElementById('canvas').getContext('2d');
-    console.log(a);
-    console.log(b);
     Aheight = ctx.getImageData(Math.round(a.lat * mapScale), Math.round(a.lng * mapScale), 1, 1).data;
     Bheight = ctx.getImageData(Math.round(b.lat * mapScale), Math.round(b.lng * mapScale), 1, 1).data;
-
-    console.log(Aheight);
-    console.log(Bheight);
 
     // Check if a & b arn't out of canvas
     if (Aheight[3] === 0) {
