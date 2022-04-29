@@ -20,6 +20,7 @@ function loadToolTips() {
         interactive: true,
         allowHTML: true,
         arrow: false,
+        placement: "bottom",
         theme: 'french',
         trigger: 'click',
         onShown() { // Hide 'new' tooltip when user hover french mortars
