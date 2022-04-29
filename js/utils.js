@@ -2,13 +2,11 @@
  * Load the heatmap to the canvas
  */
 function loadHeatmap() {
-    var ctx;
-    var img;
+    var ctx = document.getElementById('canvas').getContext('2d');
+    var img = new Image();
 
-    img = new Image(); // Create new img element
     img.addEventListener('load', function() {
-        ctx = document.getElementById('canvas').getContext('2d');
-        ctx.drawImage(img, 0, 0, 250, 250); // Draw img at good scale
+        ctx.drawImage(img, 0, 0, CANVAS_SIZE, CANVAS_SIZE); // Draw img at good scale
     }, false);
 }
 
@@ -17,16 +15,16 @@ function loadHeatmap() {
  */
 function drawHeatmap() {
     var img = new Image(); // Create new img element
-    var ctx;
+    var ctx = document.getElementById('canvas').getContext('2d');;
     var map = $(".dropbtn option:selected").text().toLowerCase();
 
+    img.src = './img/heightmaps/' + map + '.jpg'; // Set source path
 
     img.addEventListener('load', function() { // wait for the image to load or it does crazy stuff
-        ctx = document.getElementById('canvas').getContext('2d');
-        ctx.drawImage(img, 0, 0, 250, 250);
+        ctx.drawImage(img, 0, 0, CANVAS_SIZE, CANVAS_SIZE);
         shoot(); // just in case there is already coordinates in inputs
     }, false);
-    img.src = './img/heightmaps/' + map + '.jpg'; // Set source path
+
 
 }
 
@@ -248,21 +246,30 @@ function getElevation(x, y = 0, vel = WEAPONS[0][1], G = GRAVITY) {
  * @returns {number} - relative height in meters
  */
 function getHeight(a, b) {
-    var mapScale;
     var Aheight;
     var Bheight;
     var ctx;
+    var mapScale;
+    const DROPBTN_VAL = $(".dropbtn").val();
+
 
     // if user didn't select map, no height calculation
-    if ($(".dropbtn").val() === "") { return 0; }
+    if (DROPBTN_VAL === "") { return 0; }
+
+
 
     // load map size for scaling lat&lng
-    mapScale = 250 / MAPS[$(".dropbtn").val()][1];
+    mapScale = CANVAS_SIZE / MAPS[DROPBTN_VAL][1];
 
     // Read Heightmap values for a & b
     ctx = document.getElementById('canvas').getContext('2d');
+    console.log(a);
+    console.log(b);
     Aheight = ctx.getImageData(Math.round(a.lat * mapScale), Math.round(a.lng * mapScale), 1, 1).data;
     Bheight = ctx.getImageData(Math.round(b.lat * mapScale), Math.round(b.lng * mapScale), 1, 1).data;
+
+    console.log(Aheight);
+    console.log(Bheight);
 
     // Check if a & b arn't out of canvas
     if (Aheight[3] === 0) {
@@ -272,8 +279,8 @@ function getHeight(a, b) {
         return "BERROR";
     }
 
-    Aheight = (255 + Aheight[0] - Aheight[2]) * MAPS[$(".dropbtn").val()][2];
-    Bheight = (255 + Bheight[0] - Bheight[2]) * MAPS[$(".dropbtn").val()][2];
+    Aheight = (255 + Aheight[0] - Aheight[2]) * MAPS[DROPBTN_VAL][2];
+    Bheight = (255 + Bheight[0] - Bheight[2]) * MAPS[DROPBTN_VAL][2];
 
     return Bheight - Aheight;
 }
@@ -297,21 +304,19 @@ function shoot() {
     var vel;
     var a;
     var b;
+    const MORTAR_LOC = $("#mortar-location");
+    const TARGET_LOC = $("#target-location");
+
 
     // First, reset any errors
     $("#settings").removeClass("error");
-    $("#target-location").removeClass("error2");
-    $("#mortar-location").removeClass("error2");
+    TARGET_LOC.removeClass("error2");
+    MORTAR_LOC.removeClass("error2");
 
     // prepare result divs
-    $("#bearing").removeClass("hidden");
-    $("#elevation").removeClass("hidden");
-    $("#bearing").addClass("pure-u-10-24");
-    $("#elevation").addClass("pure-u-10-24");
-    $("#errorMsg").addClass("pure-u-4-24");
-    $("#errorMsg").removeClass("errorMsg");
-    $("#errorMsg").removeClass("pure-u-24-24");
-    $("#errorMsg").html("-");
+    $("#bearing").removeClass("hidden").addClass("pure-u-10-24");
+    $("#elevation").removeClass("hidden").addClass("pure-u-10-24");
+    $("#errorMsg").addClass("pure-u-4-24").removeClass("errorMsg").removeClass("pure-u-24-24").html("-");
     $(".save").addClass("hidden");
 
     // draw pointer cursor & tooltip on results
@@ -321,16 +326,16 @@ function shoot() {
     $("#copy").addClass("copy");
 
     // store current cursor positions on input
-    startA = $("#mortar-location")[0].selectionStart;
-    startB = $("#target-location")[0].selectionStart;
+    startA = MORTAR_LOC[0].selectionStart;
+    startB = TARGET_LOC[0].selectionStart;
 
     // store current keypads
-    a = $("#mortar-location").val();
-    b = $("#target-location").val();
+    a = MORTAR_LOC.val();
+    b = TARGET_LOC.val();
 
     // format keypads
-    $("#mortar-location").val(formatKeyPad(a));
-    $("#target-location").val(formatKeyPad(b));
+    MORTAR_LOC.val(formatKeyPad(a));
+    TARGET_LOC.val(formatKeyPad(b));
 
     // restore cursor position
     setCursor(startA, startB, a, b);
@@ -431,7 +436,7 @@ function shoot() {
 
     // if in range, Insert Calculations
     console.clear();
-    console.log($("#mortar-location").val().toUpperCase() + " -> " + $("#target-location").val().toUpperCase());
+    console.log($(MORTAR_LOC.val().toUpperCase() + " -> " + TARGET_LOC.val().toUpperCase()));
     console.log("-> Bearing: " + bearing.toFixed(1) + "° - Elevation: " + elevation.toFixed(1) + "↷");
     console.log("-> Distance: " + distance.toFixed(0) + "m - height: " + height.toFixed(0) + "m");
 
@@ -516,26 +521,21 @@ function showError(msg, issue) {
 
 
     // Rework the #setting div to display a single message
-    $("#bearing").addClass("hidden");
-    $("#elevation").addClass("hidden");
-    $("#bearing").removeClass("pure-u-10-24");
-    $("#elevation").removeClass("pure-u-10-24");
-    $("#errorMsg").removeClass("pure-u-4-24");
-    $("#errorMsg").addClass("pure-u-24-24");
-    $("#errorMsg").addClass("errorMsg");
+    $("#bearing").addClass("hidden").removeClass("pure-u-10-24");
+    $("#elevation").addClass("hidden").removeClass("pure-u-10-24");
+    $("#errorMsg").removeClass("pure-u-4-24").addClass("pure-u-24-24").addClass("errorMsg").html(msg);
 
     // remove the pointer cursor & tooltip
     $("#copy").removeClass("copy");
     tooltip_copy.disable();
 
-    // insert error message & log it in console
-    $("#errorMsg").html(msg);
-    console.log(msg);
+
 
     // https://youtu.be/PWgvGjAhvIw?t=233
-    $("#settings").addClass("error");
-    $("#settings").effect("shake");
+    $("#settings").addClass("error").effect("shake");
 
+
+    console.log(msg);
 }
 
 
@@ -544,6 +544,7 @@ function showError(msg, issue) {
  */
 function loadMaps() {
     var i;
+    const DROPBTN = $(".dropbtn");
 
     // Initiate select2 object (https://select2.org/)
     $('.dropbtn').select2({
@@ -555,7 +556,7 @@ function loadMaps() {
 
     // load maps into select2
     for (i = 0; i < MAPS.length; i += 1) {
-        $(".dropbtn").append('<option value="' + i + '">' + MAPS[i][0] + '</option>');
+        DROPBTN.append('<option value="' + i + '">' + MAPS[i][0] + '</option>');
     }
 }
 
@@ -616,7 +617,7 @@ $(".save").click(function() {
 
     $(".saved_list").append("<p style='display:none;'>" +
         " ➜ " +
-        encodeURI(target) +
+        target +
         " : " +
         "<span style=\"font-weight:bold\">" +
         $("#bearing").text() +

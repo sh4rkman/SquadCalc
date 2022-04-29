@@ -1,5 +1,6 @@
 const VERSION = 6.0;
 const GRAVITY = 9.8;
+const CANVAS_SIZE = 500;
 var frenchSelection = 0;
 var stopInfoTooltips = false;
 
