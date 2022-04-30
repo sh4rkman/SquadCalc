@@ -35,8 +35,8 @@ img {
 
 input {
     background: transparent;
-    border-bottom: 3px solid white;
     border: 0;
+    border-bottom: 3px solid white;
     font-size: 1.1em;
     font-weight: bold;
     height: 30px;
@@ -470,17 +470,21 @@ span.select2-selection.select2-selection--single {
     color: FireBrick;
 }
 
-
-/****************
- *  Tippy.js ToolTips customization
- *****************/
-
 .tippy-box[data-theme~='new'] {
     background-color: green;
     color: white;
     font-weight: bold;
     letter-spacing: .1rem;
 }
+
+.tippy-box[data-theme~="french"] .tippy-content {
+    padding: 0;
+}
+
+
+/****************
+ *  Tippy.js ToolTips customization
+ *****************/
 
 .tippy-box[data-theme~='new'][data-placement^='top']>.tippy-arrow::before {
     border-top-color: green;
@@ -496,8 +500,4 @@ span.select2-selection.select2-selection--single {
 
 .tippy-box[data-theme~='new'][data-placement^='right']>.tippy-arrow::before {
     border-right-color: green;
-}
-
-.tippy-box[data-theme~="french"] .tippy-content {
-    padding: 0;
 }

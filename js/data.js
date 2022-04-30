@@ -5,7 +5,7 @@ var frenchSelection = 0;
 var stopInfoTooltips = false;
 
 // 120mm mortars are from french DLC and using three different velocity
-// TODO: use object instead of shitty array
+// WEAPONS['Name', velocity, min-distance]
 const WEAPONS = [
     ['Classic', 109.890938, 1580],
     ['Technical', 0, 83.8],
@@ -16,7 +16,7 @@ const WEAPONS = [
 
 
 // Each map has a different size and require scaling w, y and z when calculating height
-// maps['Name', size, z-scaling]
+// MAPS['Name', size, z-scaling]
 const MAPS = [
     ['Al Basrah', 3200, 0.025],
     ['Anvil', 3060, 0.2],
@@ -43,7 +43,7 @@ const MAPS = [
 
 // Since technicals mortars are acting weirdly, i have to stock these empirical values for now until i figure out how they work
 // read https://github.com/Endebert/squadmc/discussions/101 for more information
-// technicals[distance, Velocity]
+// TECHNICALS[distance, Velocity]
 const TECHNICALS = [
     [50, 47.76901552],
     [100, 63.20591542],
