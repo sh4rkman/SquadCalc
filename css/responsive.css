@@ -16,8 +16,8 @@
 
 @media (min-height: 45em) {
     .select2-results__options {
-        max-height: 570px!important;
         line-height: 1em;
+        max-height: 570px!important;
     }
 }
 
@@ -88,13 +88,13 @@
     /* On big screen, fix map&weapon Selectors on top corners */
     .mapSelector {
         position: fixed;
-        top: 0;
         right: 1em;
+        top: 0;
     }
     .weaponSelector {
+        left: 1em;
         position: fixed;
         top: 0;
-        left: 1em;
     }
     .mortar_selector {
         height: 35px;
@@ -114,16 +114,16 @@
     }
     .select2-container {
         float: right;
-        min-width: 150px;
         font-size: 0.8em;
+        min-width: 150px;
         right: 0;
     }
     .switch-field {
         float: left;
     }
     .coord img {
-        width: 45px;
         height: 45px;
+        width: 45px;
     }
     /* -- L*560px -- */
     @media (min-height: 35em) {
@@ -157,8 +157,8 @@
 
 @media screen and (min-width: 62em) {
     .select2-container {
-        min-width: 196px;
         font-size: 1em;
+        min-width: 196px;
     }
 }
 
@@ -176,9 +176,9 @@
 
 @media screen and (min-width: 87.5em) {
     .select2-container {
-        min-width: 220px;
-        max-width: 270px;
         font-size: 1.2em;
+        max-width: 270px;
+        min-width: 220px;
     }
     .select2-results__options {
         font-size: 1em;
@@ -192,13 +192,13 @@
     /* ≥ 1980px & 1080*/
     @media (min-height: 68em) {
         .select2-container {
-            min-width: 350px;
             font-size: 1.5em;
+            min-width: 350px;
         }
         .select2-results__options {
             font-size: 1.2em;
-            max-height: 1000px!important;
             line-height: 1.1em;
+            max-height: 1000px!important;
         }
         .select2-selection__placeholder {
             font-size: 1.1em;
@@ -261,8 +261,8 @@
             border-radius: 0 0 10px 10px;
         }
         .logo img {
-            margin-top: 20px;
             height: 120%;
+            margin-top: 20px;
         }
         .weaponSelector {
             padding: 2em 0 0 1.5em;
@@ -280,9 +280,9 @@
             bottom: 10px;
         }
         .coord img {
-            width: 70px;
             height: 70px;
             padding-bottom: 0.8em;
+            width: 70px;
         }
     }
 }

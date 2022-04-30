@@ -34,16 +34,16 @@ img {
 }
 
 input {
-    border: 0;
+    background: transparent;
     border-bottom: 3px solid white;
+    border: 0;
     font-size: 1.1em;
-    line-height: 2.188em;
+    font-weight: bold;
     height: 30px;
+    line-height: 2.188em;
+    padding: 0;
     text-align: center;
     text-transform: uppercase;
-    padding: 0;
-    background: transparent;
-    font-weight: bold;
     width: 100%;
 }
 
@@ -123,12 +123,12 @@ button:focus {
 }
 
 .switch-field input {
-    position: absolute !important;
+    border: 0;
     clip: rect(0, 0, 0, 0);
     height: 1px;
-    width: 1px;
-    border: 0;
     overflow: hidden;
+    position: absolute !important;
+    width: 1px;
 }
 
 .switch-field label {
@@ -163,12 +163,12 @@ button:focus {
 }
 
 .switch-field2 input {
-    position: absolute !important;
+    border: 0;
     clip: rect(0, 0, 0, 0);
     height: 1px;
-    width: 1px;
-    border: 0;
     overflow: hidden;
+    position: absolute !important;
+    width: 1px;
 }
 
 .switch-field2 label {
@@ -207,34 +207,34 @@ button:focus {
 }
 
 .dropbtn {
-    color: #ffffff;
-    line-height: 2.188em;
-    font-weight: bold;
-    text-transform: uppercase;
     background: #111!important;
+    color: #ffffff;
+    font-weight: bold;
+    line-height: 2.188em;
+    text-transform: uppercase;
 }
 
 .dropbtn select {
-    border: none;
-    box-shadow: none;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    appearance: none;
     background-color: transparent;
     background-image: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
+    border: none;
+    box-shadow: none;
 }
 
 .select2-search {
     background: white!important;
-    font-size: 1em!important;
     color: rgb(161, 142, 142)!important;
+    font-size: 1em!important;
 }
 
 .select2-selection {
     background: #111!important;
     border: none!important;
-    font-size: 1em;
     color: white!important;
+    font-size: 1em;
 }
 
 .dropbtn:focus {
@@ -242,17 +242,17 @@ button:focus {
 }
 
 .select2-container {
-    min-width: 200px;
+    background-color: #111;
+    border-bottom: 1px solid white!important;
+    border: 0;
+    box-shadow: none!important;
     color: #ffffff!important;
     font-size: 1em;
-    line-height: 2.188em;
     font-weight: bold;
+    line-height: 2.188em;
+    min-width: 200px;
     padding-bottom: 0.3em;
-    border: 0;
-    border-bottom: 1px solid white!important;
     text-transform: uppercase;
-    background-color: #111;
-    box-shadow: none!important;
 }
 
 .select2-results__options {
@@ -297,12 +297,12 @@ span.select2-selection.select2-selection--single {
  *****************/
 
 .results {
-    font-size: 1.5em;
-    border: 5px solid white;
-    padding: 1em;
-    margin: 0.7em auto;
     border-radius: 5px;
+    border: 5px solid white;
+    font-size: 1.5em;
     font-weight: bold;
+    margin: 0.7em auto;
+    padding: 1em;
     position: relative;
 }
 
@@ -312,12 +312,12 @@ span.select2-selection.select2-selection--single {
 }
 
 .save {
-    border: none;
-    position: absolute;
     background-color: transparent;
+    border: none;
     bottom: 0;
-    right: 0;
     padding: 0 5px;
+    position: absolute;
+    right: 0;
 }
 
 .save:focus {
@@ -333,8 +333,8 @@ span.select2-selection.select2-selection--single {
 }
 
 .coord img {
-    width: 30px;
     height: 30px;
+    width: 30px;
 }
 
 
@@ -343,14 +343,14 @@ span.select2-selection.select2-selection--single {
  *********************/
 
 #heatmap {
-    padding: 0;
     display: none;
+    padding: 0;
 }
 
 #canvas {
+    height: 500px;
     margin: auto;
     width: 500px;
-    height: 500px;
 }
 
 
@@ -385,13 +385,13 @@ span.select2-selection.select2-selection--single {
  *****************/
 
 .footer {
-    z-index: -1;
-    font-size: 1.2em;
-    position: fixed;
     bottom: 0;
-    width: 100%;
+    font-size: 1.2em;
     height: 3.5em;
+    position: fixed;
     visibility: hidden;
+    width: 100%;
+    z-index: -1;
 }
 
 
@@ -400,8 +400,8 @@ span.select2-selection.select2-selection--single {
  *****************/
 
 .social {
-    position: absolute;
     bottom: 5px;
+    position: absolute;
 }
 
 .social a {
@@ -417,13 +417,13 @@ span.select2-selection.select2-selection--single {
 }
 
 .youtube {
-    text-align: left;
     left: 0.4em;
+    text-align: left;
 }
 
 .github {
-    text-align: right;
     right: 0.4em;
+    text-align: right;
 }
 
 
@@ -439,11 +439,11 @@ span.select2-selection.select2-selection--single {
 }
 
 .unselectable {
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
     -khtml-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
     user-select: none;
 }
 
@@ -457,8 +457,8 @@ span.select2-selection.select2-selection--single {
  *****************/
 
 .errorMsg {
-    font-size: 0.7em;
     cursor: default;
+    font-size: 0.7em;
 }
 
 .error {
@@ -470,21 +470,17 @@ span.select2-selection.select2-selection--single {
     color: FireBrick;
 }
 
-.tippy-box[data-theme~='new'] {
-    background-color: green;
-    color: white;
-    letter-spacing: .1rem;
-    font-weight: bold;
-}
-
-.tippy-box[data-theme~="french"] .tippy-content {
-    padding: 0;
-}
-
 
 /****************
  *  Tippy.js ToolTips customization
  *****************/
+
+.tippy-box[data-theme~='new'] {
+    background-color: green;
+    color: white;
+    font-weight: bold;
+    letter-spacing: .1rem;
+}
 
 .tippy-box[data-theme~='new'][data-placement^='top']>.tippy-arrow::before {
     border-top-color: green;
@@ -500,4 +496,8 @@ span.select2-selection.select2-selection--single {
 
 .tippy-box[data-theme~='new'][data-placement^='right']>.tippy-arrow::before {
     border-right-color: green;
+}
+
+.tippy-box[data-theme~="french"] .tippy-content {
+    padding: 0;
 }

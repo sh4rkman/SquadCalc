@@ -220,11 +220,8 @@ function getHeight(a, b) {
     var mapScale;
     const DROPBTN_VAL = $(".dropbtn").val();
 
-
     // if user didn't select map, no height calculation
     if (DROPBTN_VAL === "") { return 0; }
-
-
 
     // load map size for scaling lat&lng
     mapScale = CANVAS_SIZE / MAPS[DROPBTN_VAL][1];
@@ -253,12 +250,12 @@ function getHeight(a, b) {
  * @returns {velocity} 
  */
 function getVelocity(distance) {
-    var vel;
+    var i;
     var h;
     var H;
     var v;
     var V;
-    var i;
+    var vel;
 
     if ($("#radio-one").is(':checked')) {
         vel = WEAPONS[0][1];
@@ -315,10 +312,11 @@ function shoot() {
     var elevation;
     var bearing;
     var vel;
-    var a;
-    var b;
     const MORTAR_LOC = $("#mortar-location");
     const TARGET_LOC = $("#target-location");
+    var a = MORTAR_LOC.val();
+    var b = TARGET_LOC.val();
+
 
     // First, reset any errors
     $("#settings").removeClass("error");
@@ -340,10 +338,6 @@ function shoot() {
     // store current cursor positions on input
     startA = MORTAR_LOC[0].selectionStart;
     startB = TARGET_LOC[0].selectionStart;
-
-    // store current keypads
-    a = MORTAR_LOC.val();
-    b = TARGET_LOC.val();
 
     // format keypads
     MORTAR_LOC.val(formatKeyPad(a));
