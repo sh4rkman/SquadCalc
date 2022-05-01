@@ -557,25 +557,11 @@ $("#copy").click(function() {
     tooltip_copied.show();
 });
 
-/**
- * Copy Saved calcs to clipboard
- */
-function copySave(a) {
-
-    const COPY_ZONE = $(a);
-
-    copy(COPY_ZONE.text());
-    COPY_ZONE.parent().effect("bounce", 500);
-
-};
-
 
 /**
  * Copy Saved calcs to clipboard
  */
 function copySave(COPY_ZONE) {
-    console.log(COPY_ZONE.text());
-    console.log(COPY_ZONE.first().text());
     copy(COPY_ZONE.text());
     COPY_ZONE.parent().effect("bounce", 400);
 };
@@ -584,14 +570,10 @@ function copySave(COPY_ZONE) {
  * Save a keypad
  */
 $(".save").click(function() {
-    var i;
-    var target;
 
     if ($(".saved_list p").length === 3) {
         $(".saved_list p").first().remove();
     }
-
-    target = $("#target-location").val();
 
     $(".saved_list").append(
         "<p style='display:none;'><input maxlength=\"20\" spellcheck='false' oninput=\"resizeInput(this)\" placeholder=\'" + $("#target-location").val() + "'\ class='friendlyname'></input>" +
