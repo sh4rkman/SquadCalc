@@ -250,54 +250,32 @@ function getHeight(a, b) {
  * @returns {velocity} 
  */
 function getVelocity(distance) {
-    var i;
-    var h;
-    var H;
-    var v;
-    var V;
-    var vel;
 
     if ($("#radio-one").is(':checked')) {
-        vel = WEAPONS[0][1];
+        return ClassicMortar.getVelocity();
     } else if ($("#radio-two").is(':checked')) {
-        for (i = 1; i < TECHNICALS.length; i += 1) {
-
-            if (distance < TECHNICALS[i][0]) {
-                h = TECHNICALS[i - 1][0];
-                v = TECHNICALS[i - 1][1];
-                H = TECHNICALS[i][0];
-                V = TECHNICALS[i][1];
-
-                // Ajust the velocity based on ingame-value
-                vel = v + ((distance - h) / (H - h)) * (V - v);
-                break;
-            }
-
-        }
+        return TechnicalMortar.getVelocity(distance);
     } else {
 
         if ($("#radio-four").is(':checked')) {
             frenchSelection = 0;
-            vel = WEAPONS[2][1];
+            return MO120_SMortar.getVelocity();
         } else if ($("#radio-five").is(':checked')) {
             frenchSelection = 1;
-            vel = WEAPONS[3][1];
+            return MO120_MMortar.getVelocity();
         } else if ($("#radio-six").is(':checked')) {
             frenchSelection = 2;
-            vel = WEAPONS[4][1];
+            return MO120_LMortar.getVelocity();
         } else {
             if (frenchSelection === 0) {
-                vel = WEAPONS[2][1];
+                return MO120_SMortar.getVelocity();
             } else if (frenchSelection === 1) {
-                vel = WEAPONS[3][1];
+                return MO120_MMortar.getVelocity();
             } else {
-                vel = WEAPONS[4][1];
+                return MO120_LMortar.getVelocity();
             }
         }
-
     }
-
-    return vel;
 }
 
 /**
@@ -398,19 +376,19 @@ function shoot() {
     }
 
     if ($("#radio-one").is(':checked')) {
-        if (elevation > WEAPONS[0][2]) {
+        if (elevation > ClassicMortar.minDistance) {
             showError("Target is too close : " + distance.toFixed(0) + "m", "target");
             return 1;
         }
     } else if ($("#radio-three").is(':checked')) {
 
-        if (elevation > WEAPONS[4][2]) {
+        if (elevation > MO120_SMortar.minDistance) {
             showError("Target is too close : " + distance.toFixed(0) + "m", "target");
             return 1;
         }
 
     } else { // If technical mortar
-        if (elevation > WEAPONS[1][2]) {
+        if (elevation > TechnicalMortar.minDistance) {
             showError("Target is too close : " + distance.toFixed(0) + "m", "target");
             return 1;
         }
@@ -468,23 +446,6 @@ function filterInput(a, e) {
         chrTyped = String.fromCharCode(chrCode);
     }
 
-
-    // If there is already a letter in the input.value, prevent the keypress
-    // Disabled for now, it prevents overwritting a keypad without erasing it completly first
-    // Could be enabled if it check first if the whole input is selected
-    /*
-    if (chrTyped.match(/[A-z]/)){
-      if(a.value[0] != undefined){
-        if(a.value[0].match(/[A-z]/)){
-          console.log('there is already a letter');
-          evt.returnValue=false;
-          return false;
-        }
-        return true;
-      }
-    }
-    */
-
     //Letters, Digits, special keys & backspace [\b] work as usual:
     if (chrTyped.match(/\d|[\b]|SPECIAL|[A-Za-z]/)) { return true; }
     if (evt.altKey || evt.ctrlKey || chrCode < 28) { return true; }
@@ -498,7 +459,7 @@ function filterInput(a, e) {
 
 
 /**
- * showError
+ * Display error in html & console
  * @param {string} msg - error message to be displayed
  * @param {string} issue - mortar/target/both
  */
@@ -513,7 +474,6 @@ function showError(msg, issue) {
         $("#mortar-location").addClass("error2");
     }
 
-
     // Rework the #setting div to display a single message
     $("#bearing").addClass("hidden").removeClass("pure-u-10-24");
     $("#elevation").addClass("hidden").removeClass("pure-u-10-24");
@@ -526,6 +486,7 @@ function showError(msg, issue) {
     // https://youtu.be/PWgvGjAhvIw?t=233
     $("#settings").addClass("error").effect("shake");
 
+    console.clear();
     console.log(msg);
 }
 
@@ -535,10 +496,10 @@ function showError(msg, issue) {
  */
 function loadMaps() {
     var i;
-    const DROPBTN = $(".dropbtn");
+    const MAP_SELECTOR = $(".dropbtn");
 
     // Initiate select2 object (https://select2.org/)
-    $('.dropbtn').select2({
+    MAP_SELECTOR.select2({
         dropdownCssClass: 'dropbtn',
         dropdownParent: $('#mapSelector'),
         minimumResultsForSearch: -1, // Disable search
@@ -547,8 +508,25 @@ function loadMaps() {
 
     // load maps into select2
     for (i = 0; i < MAPS.length; i += 1) {
-        DROPBTN.append('<option value="' + i + '">' + MAPS[i][0] + '</option>');
+        MAP_SELECTOR.append('<option value="' + i + '">' + MAPS[i][0] + '</option>');
     }
+}
+
+
+/**
+ * Copy string to clipboard
+ */
+function copy(string) {
+    const el = document.createElement('textarea');
+    el.value = string;
+    el.setAttribute('readonly', '');
+    el.style.position = 'absolute';
+    el.style.left = '-9999px';
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
+    console.log("copied ! : " + el.value);
 }
 
 
@@ -565,28 +543,30 @@ $(".dropbtn").change(function() {
  */
 $("#copy").click(function() {
 
-    // if there is any error, skip copying and move on
-    if (!$("#copy").hasClass('copy')) { return 1; }
+    const COPY_ZONE = $(".copy");
 
-    const el = document.createElement('textarea');
-    el.value = "➜ " + $("#target-location").val() + " = " + $("#bearing").text() + " - " + $("#elevation").text();
-    el.setAttribute('readonly', '');
-    el.style.position = 'absolute';
-    el.style.left = '-9999px';
-    document.body.appendChild(el);
-    el.select();
-    document.execCommand('copy');
-    document.body.removeChild(el);
-    $(".copy").effect("bounce", 500);
+    if (!COPY_ZONE.hasClass('copy')) { return 1; }
 
-    console.log("copied ! : " + el.value);
-
+    copy("➜ " + $("#target-location").val() + " = " + $("#bearing").text() + " - " + $("#elevation").text());
+    COPY_ZONE.effect("bounce", 500);
     // the user understood he can click2copy, remove the tooltip
     stopInfoTooltips = true;
     tooltip_copy.disable();
     tooltip_copied.enable();
     tooltip_copied.show();
 });
+
+/**
+ * Copy calcs to clipboard
+ */
+function copySave(a) {
+
+    const COPY_ZONE = $(a);
+
+    copy("➜ " + $("#target-location").val() + " = " + $("#bearing").text() + " - " + $("#elevation").text());
+    COPY_ZONE.parent().effect("bounce", 500);
+
+};
 
 
 /**
@@ -607,10 +587,9 @@ $(".save").click(function() {
     }
 
     $(".saved_list").append("<p style='display:none;'>" +
-        " ➜ " +
+        "<span id=\"savespan\" onclick=\"copySave(this)\" style=\"font-weight:bold\"> ➜ " +
         target +
         " : " +
-        "<span style=\"font-weight:bold\">" +
         $("#bearing").text() +
         " - " +
         $("#elevation").text() +

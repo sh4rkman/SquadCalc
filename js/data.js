@@ -4,16 +4,11 @@ const CANVAS_SIZE = 500;
 var frenchSelection = 0;
 var stopInfoTooltips = false;
 
-// 120mm mortars are from french DLC and using three different velocity
-// WEAPONS['Name', velocity, min-distance]
-const WEAPONS = [
-    ['Classic', 109.890938, 1580],
-    ['Technical', 0, 83.8],
-    ['MO120_S', 109.890938, 1520],
-    ['MO120_M', 143.5, 1520],
-    ['MO120_L', 171.5, 1520],
-];
-
+const ClassicMortar = new Weapon("Classic", 109.890938, 1580);
+const TechnicalMortar = new Weapon("Technical", 0, 83.8);
+const MO120_SMortar = new Weapon("MO120_S", 109.890938, 1520);
+const MO120_MMortar = new Weapon("MO120_M", 143.5, 1520);
+const MO120_LMortar = new Weapon("MO120_L", 171.5, 1520);
 
 // Each map has a different size and require scaling w, y and z when calculating height
 // MAPS['Name', size, z-scaling]
