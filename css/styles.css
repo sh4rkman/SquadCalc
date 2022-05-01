@@ -31,6 +31,10 @@ textarea,
 img {
     display: block;
     margin: auto;
+    -webkit-user-drag: none;
+    -khtml-user-drag: none;
+    -moz-user-drag: none;
+    -o-user-drag: none;
 }
 
 input {
@@ -371,6 +375,10 @@ span.select2-selection.select2-selection--single {
 }
 
 .fa:hover {
+    cursor: pointer;
+}
+
+#savespan:hover {
     cursor: pointer;
 }
 
