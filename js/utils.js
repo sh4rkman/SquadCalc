@@ -586,10 +586,9 @@ $(".save").click(function() {
         target = target + "&nbsp;";
     }
 
-    $(".saved_list").append("<p style='display:none;'>" +
-        "<span id=\"savespan\" onclick=\"copySave(this)\" style=\"font-weight:bold\"> ➜ " +
-        target +
-        " : " +
+    $(".saved_list").append(
+        "<p style='display:none;'><input maxlength=\"20\" spellcheck='false' oninput=\"resizeInput(this)\" placeholder=\'" + $("#target-location").val() + "'\ class='friendlyname'></input>" +
+        "<span id=\"savespan\" onclick=\"copySave($(this))\" style=\"font-weight:bold\"> ➜ " +
         $("#bearing").text() +
         " - " +
         $("#elevation").text() +
@@ -689,4 +688,11 @@ function preventAutocomplete() {
     $("#mortar-location").attr('name', makeid(10));
     $("#target-location").attr('name', makeid(10));
     $(".dropbtn").attr('name', makeid(10));
+}
+
+/**
+ * Resize Saved Names according to #char
+ */
+function resizeInput(i) {
+    i.style.width = i.value.length * 1.2 + "ch";
 }
