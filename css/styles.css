@@ -400,6 +400,48 @@ span.select2-selection.select2-selection--single {
     color: FireBrick;
 }
 
-.fa:hover {
-    cursor: pointer;
+.tippy-box[data-theme~='new'] {
+    background-color: green;
+    color: white;
+    font-weight: bold;
+    letter-spacing: .1rem;
+}
+
+.tippy-box[data-theme~="french"] .tippy-content {
+    padding: 0;
+}
+
+
+/****************
+ *  Tippy.js ToolTips customization
+ *****************/
+
+.tippy-box[data-theme~='new'][data-placement^='top']>.tippy-arrow::before {
+    border-top-color: green;
+}
+
+.tippy-box[data-theme~='new'][data-placement^='bottom']>.tippy-arrow::before {
+    border-bottom-color: green;
+}
+
+.tippy-box[data-theme~='new'][data-placement^='left']>.tippy-arrow::before {
+    border-left-color: green;
+}
+
+.tippy-box[data-theme~='new'][data-placement^='right']>.tippy-arrow::before {
+    border-right-color: green;
+}
+
+.tippy-box[data-theme~="save"] .tippy-content {
+    min-width: 150px;
+}
+
+.friendlyname {
+    width: 100px;
+    border-style: none;
+    text-transform: none;
+    font-size: 1em;
+    text-align: right;
+    min-width: 100px;
+    height: auto;
 }

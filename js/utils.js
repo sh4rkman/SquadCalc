@@ -365,10 +365,12 @@ function shoot() {
 
 
     // if in range, Insert Calculations
-    console.clear();
-    console.log($("#mortar-location").val().toUpperCase() + " -> " + $("#target-location").val().toUpperCase());
-    console.log("-> Bearing: " + bearing.toFixed(1) + "° - Elevation: " + elevation.toFixed(1) + "∡");
-    console.log("-> Distance: " + distance.toFixed(0) + "m - height: " + height.toFixed(0) + "m")
+
+    // console.clear();
+    console.log(MORTAR_LOC.val().toUpperCase() + " -> " + TARGET_LOC.val().toUpperCase());
+    console.log("-> Bearing: " + bearing.toFixed(1) + "° - Elevation: " + elevation.toFixed(1) + "↷");
+    console.log("-> Distance: " + distance.toFixed(0) + "m - height: " + height.toFixed(0) + "m");
+    console.log("-> Velocity: " + vel.toFixed(1) + " m/s");
 
     $("#bearing").html(bearing.toFixed(1) + "°");
 
@@ -525,6 +527,16 @@ $(".copy").click(function() {
 
 
 /**
+ * Copy Saved calcs to clipboard
+ */
+function copySave(COPY_ZONE) {
+    console.log(COPY_ZONE.text());
+    console.log(COPY_ZONE.first().text());
+    copy(COPY_ZONE.text());
+    COPY_ZONE.parent().effect("bounce", 400);
+};
+
+/**
  * Save a keypad
  */
 $(".save").click(function() {
@@ -533,12 +545,9 @@ $(".save").click(function() {
         $(".saved_list p").first().remove();
     }
 
-    $(".saved_list").append("<p style='display:none;'>" +
-        $("#mortar-location").val() +
-        " > " +
-        $("#target-location").val() +
-        " : " +
-        "<span style=\"font-weight:bold\">" +
+    $(".saved_list").append(
+        "<p style='display:none;'><input maxlength=\"20\" spellcheck='false' oninput=\"resizeInput(this)\" placeholder=\'" + $("#target-location").val() + "'\ class='friendlyname'></input>" +
+        "<span id=\"savespan\" onclick=\"copySave($(this))\" style=\"font-weight:bold\"> ➜ " +
         $("#bearing").text() +
         " - " +
         $("#elevation").text() +
@@ -603,4 +612,40 @@ function setCursor(startA, startB, a, b) {
     $("#mortar-location")[0].setSelectionRange(startA, startA);
     $("#target-location")[0].setSelectionRange(startB, startB);
 
+}
+
+
+/**
+ * Generate random id
+ * @param {Number} length - length of desired string to be returned
+ * @returns {String} randomly generated string
+ */
+function makeid(length) {
+    var result = '';
+    var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    var charactersLength = characters.length;
+    var i;
+
+    for (i = 0; i < length; i += 1) {
+        result += characters.charAt(Math.floor(Math.random() *
+            charactersLength));
+    }
+    return result;
+}
+
+
+/**
+ * Give Inputs random name to browser autocomplete
+ */
+function preventAutocomplete() {
+    $("#mortar-location").attr('name', makeid(10));
+    $("#target-location").attr('name', makeid(10));
+    $(".dropbtn").attr('name', makeid(10));
+}
+
+/**
+ * Resize Saved Names according to #char
+ */
+function resizeInput(i) {
+    i.style.width = i.value.length * 1.2 + "ch";
 }
