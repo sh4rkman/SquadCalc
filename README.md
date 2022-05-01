@@ -20,8 +20,13 @@ Select a map, enter locations, shoot.
  
  
 <p align="center">
+<<<<<<< Updated upstream
   <img width="400" height="284" src="https://i.imgur.com/ZkOK76O.png">
   <img width="150" height="284" src=" https://i.imgur.com/zlG4xRs.png">
+=======
+  <img width="400" height="284" src="https://i.imgur.com/byY1m1P.png">
+  <img width="150" height="284" src="https://i.imgur.com/05Iszff.png">
+>>>>>>> Stashed changes
 </p>
 
 # **Features**
@@ -44,40 +49,57 @@ Heightmaps are hidden : simply pick your map from the list and shoot.
 
 </br>
 
-## **Technicals Mortars Support**
+## **Different Weapons Support**
 
 </br>
 
-You can calculate either classic mortars or the brand new technicals one.
 
- <p align="center">
-   <img width="215" height="74" src="https://i.imgur.com/FYhsK2j.png">
- </p>
+MSMC support different type of mortars :
+- Classics mortars
+- Technicals mortars
+- Long range (3000m) 120mm mortars from the <a href="https://smf.tactical-collective.com/">French Mod</a>
 
  </br>
+ <p align="center">
+   <img width="229" height="43" src="https://i.imgur.com/QVUnpec.png">
+ </p>
 
-## **Errors Alerts**
+ </br></br>
 
-MSMC prevents you from entering wrong keypads by displaying various error messages when :
-- Target too far
-- Target too close
-- Target is out of map
-  
+
+## **Calculation Saving**
+
 </br>
 
-<p align="center">
-  <img width="350" height="230" src="https://i.imgur.com/Yjysctp.png">
-</p>
-<p align="center"><sub><sup>Out of range !</sub></sup></p>
+Save up to three calcs for later :
+
+ </br>
+ <p align="center">
+   <img width="389" height="259" src="https://i.imgur.com/E38CLFh.png">
+ </p>
+
+ </br></br>
 
 
+## **One-click calculation copy**
+
+</br>
+
+Need to share
+
+ </br>
+ <p align="center">
+   <img width="389" height="259" src="https://i.imgur.com/E38CLFh.png">
+ </p>
+
+ </br></br>
 
 # Thanks
 
 this project is **largely** inspired by the work of Endebert on <a href="https://github.com/Endebert/squadmc">SquadMC</a>.  
 I wanted a lighter alternative to this great tool, some could say this project is just a new interface to squadmc calculation code.
 
-</br>
+</br></br>
 
 # Licence
 
