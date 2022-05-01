@@ -2,10 +2,11 @@
  * Load the heatmap to the canvas
  */
 function loadHeatmap() {
-    img = new Image(); // Create new img element
+    var ctx = document.getElementById('canvas').getContext('2d');
+    var img = new Image();
+
     img.addEventListener('load', function() {
-        var ctx = document.getElementById('canvas').getContext('2d');
-        ctx.drawImage(img, 0, 0, 250, 250); // Draw img at good scale
+        ctx.drawImage(img, 0, 0, CANVAS_SIZE, CANVAS_SIZE); // Draw img at good scale
     }, false);
 }
 
@@ -14,14 +15,15 @@ function loadHeatmap() {
  */
 function drawHeatmap() {
     var img = new Image(); // Create new img element
+    var ctx = document.getElementById('canvas').getContext('2d');;
     var map = $(".dropbtn option:selected").text().toLowerCase();
 
-    img.addEventListener('load', function() { // wait for the image to load or it does crazy stuff
-        var ctx = document.getElementById('canvas').getContext('2d');
-        ctx.drawImage(img, 0, 0, 250, 250);
-        shoot(); // just in case there is already coordinates
-    }, false);
     img.src = './img/heightmaps/' + map + '.jpg'; // Set source path
+
+    img.addEventListener('load', function() { // wait for the image to load or it does crazy stuff
+        ctx.drawImage(img, 0, 0, CANVAS_SIZE, CANVAS_SIZE);
+        shoot(); // just in case there is already coordinates in inputs
+    }, false);
 }
 
 
@@ -33,44 +35,40 @@ function drawHeatmap() {
  * @returns {LatLng} converted coordinates
  */
 function getPos(kp) {
-
-    const fkp = formatKeyPad(kp);
-    if (!fkp || fkp.length < 2) {
-        console.log(`invalid keypad string: ${fkp}`);
-    }
-    const parts = fkp.split("-");
-    let x = 0;
-    let y = 0;
-
-    // "i" is is our (sub-)keypad indicator
-    let i = 0;
+    const FORMATTED_KEYPAD = formatKeyPad(kp);
+    const PARTS = FORMATTED_KEYPAD.split("-");
     var pos;
-    while (i < parts.length) {
+    var interval;
+    var x = 0;
+    var y = 0;
+    var i = 0;
+
+    while (i < PARTS.length) {
         if (i === 0) {
             // special case, i.e. letter + number combo
-            const letterCode = parts[i].charCodeAt(0);
-            const letterIndex = letterCode - 65;
-            if (parts[i].charCodeAt(0) < 65) {
+            const LETTERCODE = PARTS[i].charCodeAt(0);
+            const LETTERINDEX = LETTERCODE - 65;
+            if (PARTS[i].charCodeAt(0) < 65) {
                 pos = {
                     lat: NaN,
                     lng: NaN
                 };
-                return pos
+                return pos;
             }
-            const kpNr = Number(parts[i].slice(1)) - 1;
-            x += 300 * letterIndex;
-            y += 300 * kpNr;
+            const KEYPADNB = Number(PARTS[i].slice(1)) - 1;
+            x += 300 * LETTERINDEX;
+            y += 300 * KEYPADNB;
 
         } else {
             // opposite of calculations in getKP()
-            const sub = Number(parts[i]);
-            if (Number.isNaN(sub)) {
-                console.log(`invalid keypad string: ${fkp}`);
+            const SUB = Number(PARTS[i]);
+            if (Number.isNaN(SUB)) {
+                console.log(`invalid keypad string: ${FORMATTED_KEYPAD}`);
             }
-            const subX = (sub - 1) % 3;
-            const subY = 2 - (Math.ceil(sub / 3) - 1);
+            const subX = (SUB - 1) % 3;
+            const subY = 2 - (Math.ceil(SUB / 3) - 1);
 
-            const interval = 300 / 3 ** i;
+            interval = 300 / 3 ** i;
             x += interval * subX;
             y += interval * subY;
         }
@@ -78,7 +76,7 @@ function getPos(kp) {
     }
 
     // at the end, add half of last interval, so it points to the center of the deepest sub-keypad
-    const interval = 300 / 3 ** (i - 1);
+    interval = 300 / 3 ** (i - 1);
     x += interval / 2;
     y += interval / 2;
     pos = {
@@ -95,26 +93,26 @@ function getPos(kp) {
  * @returns {string} formatted string
  */
 function formatKeyPad(text = "") {
-
+    var i = 3;
     // If empty string, return
-    if (text.length == 0) { return; }
+    if (text.length === 0) { return; }
 
-    const textND = text
+    const TEXTND = text
         .toUpperCase()
         .split("-")
         .join("");
-    const textParts = [];
+    const TEXTPARTS = [];
 
-    textParts.push(textND.slice(0, 3));
+    TEXTPARTS.push(TEXTND.slice(0, 3));
 
     // iteration through sub-keypads
-    let i = 3;
-    while (i < textND.length) {
-        textParts.push(textND.slice(i, i + 1));
+
+    while (i < TEXTND.length) {
+        TEXTPARTS.push(TEXTND.slice(i, i + 1));
         i += 1;
     }
 
-    return textParts.join("-");
+    return TEXTPARTS.join("-");
 
 }
 
@@ -127,13 +125,13 @@ function formatKeyPad(text = "") {
  */
 function getBearing(a, b) {
     // oh no, vector maths!
-    let bearing = Math.atan2(b.lng - a.lng, b.lat - a.lat) * 180 / Math.PI;
+    var bearing = Math.atan2(b.lng - a.lng, b.lat - a.lat) * 180 / Math.PI;
 
     // Point it north
     bearing = bearing + 90;
 
     // Avoid Negative Angle by adding a whole rotation
-    if (bearing < 0) bearing += 360;
+    if (bearing < 0) { bearing += 360; }
 
     return bearing;
 }
@@ -148,6 +146,15 @@ function radToMil(rad) {
 }
 
 /**
+ * Converts radians into degrees
+ * @param {number} rad - radians
+ * @returns {number} degrees
+ */
+function radToDeg(rad) {
+    return (rad * 180) / Math.PI;
+}
+
+/**
  * Converts degrees into radians
  * @param {number} deg - degrees
  * @returns {number} radians
@@ -156,14 +163,6 @@ function degToRad(deg) {
     return (deg * Math.PI) / 180;
 }
 
-/**
- * Converts radians into degrees
- * @param {number} rad - radians
- * @returns {number} degrees
- */
-function radToDeg(rad) {
-    return (rad * 180) / Math.PI;
-}
 
 /**
  * Converts degrees into NATO mils
@@ -181,29 +180,28 @@ function degToMil(deg) {
  * @returns {number} distance A and B
  */
 function getDist(a, b) {
-    const dLat = a.lat - b.lat;
-    const dLng = a.lng - b.lng;
-    return Math.sqrt(dLat * dLat + dLng * dLng);
+    const DLAT = a.lat - b.lat;
+    const DLNG = a.lng - b.lng;
+    return Math.sqrt(DLAT * DLAT + DLNG * DLNG);
 }
 
 /**
  * Calculates the angle the mortar needs to be set,
  * in order to hit the target at the desired distance and vertical delta.
- * @param {number} x - distance between mortar and target from getDist()
+ * @param {number} [x] - distance between mortar and target from getDist()
  * @param {number} [y] - vertical delta between mortar and target from getHeight()
- * @param {number} [v] - initial mortar projectile velocity (109.890938)
- * @param {number} [g] - gravity force (9.8)
+ * @param {number} [vel] - initial mortar projectile velocity (109.890938)
+ * @param {number} [G] - gravity force (9.8)
  * @returns {number || NaN} mil if target in range, NaN otherwise
  */
-function getElevation(x, y = 0, v = 109.890938, g = 9.8) {
-    const p1 = Math.sqrt(v ** 4 - g * (g * x ** 2 + 2 * y * v ** 2));
-    const a1 = Math.atan((v ** 2 + p1) / (g * x));
+function getElevation(x, y = 0, vel, G = GRAVITY) {
+    const P1 = Math.sqrt(vel ** 4 - G * (G * x ** 2 + 2 * y * vel ** 2));
+    const A1 = Math.atan((vel ** 2 + P1) / (G * x));
 
-
-    if ($("#radio-one").is(':checked')) {
-        return radToMil(a1);
+    if ($("#radio-one").is(':checked') || $("#radio-three").is(':checked')) {
+        return radToMil(A1);
     } else {
-        return radToDeg(a1);
+        return radToDeg(A1);
     }
 
 }
@@ -216,30 +214,68 @@ function getElevation(x, y = 0, v = 109.890938, g = 9.8) {
  * @returns {number} - relative height in meters
  */
 function getHeight(a, b) {
+    var Aheight;
+    var Bheight;
+    var ctx;
+    var mapScale;
+    const DROPBTN_VAL = $(".dropbtn").val();
 
     // if user didn't select map, no height calculation
-    if ($(".dropbtn").val() == "") return 0;
+    if (DROPBTN_VAL === "") { return 0; }
 
     // load map size for scaling lat&lng
-    var mapScale = 250 / maps[$(".dropbtn").val()][1];
+    mapScale = CANVAS_SIZE / MAPS[DROPBTN_VAL][1];
 
     // Read Heightmap values for a & b
-    var ctx = document.getElementById('canvas').getContext('2d');
-    var Aheight = ctx.getImageData(Math.round(a.lat * mapScale), Math.round(a.lng * mapScale), 1, 1).data;
-    var Bheight = ctx.getImageData(Math.round(b.lat * mapScale), Math.round(b.lng * mapScale), 1, 1).data;
+    ctx = document.getElementById('canvas').getContext('2d');
+    Aheight = ctx.getImageData(Math.round(a.lat * mapScale), Math.round(a.lng * mapScale), 1, 1).data;
+    Bheight = ctx.getImageData(Math.round(b.lat * mapScale), Math.round(b.lng * mapScale), 1, 1).data;
 
     // Check if a & b arn't out of canvas
-    if (Aheight[3] == 0) {
-        return 998;
+    if (Aheight[3] === 0) {
+        return "AERROR";
     }
-    if (Bheight[3] == 0) {
-        return 999;
+    if (Bheight[3] === 0) {
+        return "BERROR";
     }
 
-    Aheight = (255 + Aheight[0] - Aheight[2]) * maps[$(".dropbtn").val()][2];
-    Bheight = (255 + Bheight[0] - Bheight[2]) * maps[$(".dropbtn").val()][2];
+    Aheight = (255 + Aheight[0] - Aheight[2]) * MAPS[DROPBTN_VAL][2];
+    Bheight = (255 + Bheight[0] - Bheight[2]) * MAPS[DROPBTN_VAL][2];
 
     return Bheight - Aheight;
+}
+
+/**
+ * Return the velocity for the selected mortar
+ * @returns {velocity} 
+ */
+function getVelocity(distance) {
+
+    if ($("#radio-one").is(':checked')) {
+        return ClassicMortar.getVelocity();
+    } else if ($("#radio-two").is(':checked')) {
+        return TechnicalMortar.getVelocity(distance);
+    } else {
+
+        if ($("#radio-four").is(':checked')) {
+            frenchSelection = 0;
+            return MO120_SMortar.getVelocity();
+        } else if ($("#radio-five").is(':checked')) {
+            frenchSelection = 1;
+            return MO120_MMortar.getVelocity();
+        } else if ($("#radio-six").is(':checked')) {
+            frenchSelection = 2;
+            return MO120_LMortar.getVelocity();
+        } else {
+            if (frenchSelection === 0) {
+                return MO120_SMortar.getVelocity();
+            } else if (frenchSelection === 1) {
+                return MO120_MMortar.getVelocity();
+            } else {
+                return MO120_LMortar.getVelocity();
+            }
+        }
+    }
 }
 
 /**
@@ -247,35 +283,43 @@ function getHeight(a, b) {
  * @returns {target} elevation + bearing
  */
 function shoot() {
+    var startA;
+    var startB;
+    var height;
+    var distance;
+    var elevation;
+    var bearing;
+    var vel;
+    const MORTAR_LOC = $("#mortar-location");
+    const TARGET_LOC = $("#target-location");
+    var a = MORTAR_LOC.val();
+    var b = TARGET_LOC.val();
+
 
     // First, reset any errors
     $("#settings").removeClass("error");
-    $("#target-location").removeClass("error2");
-    $("#mortar-location").removeClass("error2");
+    TARGET_LOC.removeClass("error2");
+    MORTAR_LOC.removeClass("error2");
 
-    $("#bearing").removeClass("hidden");
-    $("#elevation").removeClass("hidden");
-    $("#bearing").addClass("pure-u-10-24");
-    $("#elevation").addClass("pure-u-10-24");
-    $("#errorMsg").addClass("pure-u-4-24");
-    $("#errorMsg").removeClass("errorMsg");
-    $("#errorMsg").removeClass("pure-u-24-24");
-    $("#errorMsg").html("-");
+    // prepare result divs
+    $("#bearing").removeClass("hidden").addClass("pure-u-10-24");
+    $("#elevation").removeClass("hidden").addClass("pure-u-10-24");
+    $("#errorMsg").addClass("pure-u-4-24").removeClass("errorMsg").removeClass("pure-u-24-24").html("-");
     $(".save").addClass("hidden");
 
-
+    // draw pointer cursor & tooltip on results
+    if (!stopInfoTooltips) {
+        tooltip_copy.enable();
+    }
+    $("#copy").addClass("copy");
 
     // store current cursor positions on input
-    var startA = $("#mortar-location")[0].selectionStart;
-    var startB = $("#target-location")[0].selectionStart;
-
-    // store current keypads
-    a = $("#mortar-location").val();
-    b = $("#target-location").val();
+    startA = MORTAR_LOC[0].selectionStart;
+    startB = TARGET_LOC[0].selectionStart;
 
     // format keypads
-    $("#mortar-location").val(formatKeyPad(a));
-    $("#target-location").val(formatKeyPad(b));
+    MORTAR_LOC.val(formatKeyPad(a));
+    TARGET_LOC.val(formatKeyPad(b));
 
     // restore cursor position
     setCursor(startA, startB, a, b);
@@ -283,90 +327,78 @@ function shoot() {
     // If keypads are imprecises, do nothing
     if (a.length < 3 || b.length < 3) {
         $("#bearing").html("xxx°");
-        $("#elevation").html("xxxx∡");
-        return 1
+        $("#elevation").html("xxxx↷");
+
+        // disable tooltip and copy function
+        $("#copy").removeClass("copy");
+        tooltip_copy.disable();
+        return 1;
     }
 
     a = getPos(a);
     b = getPos(b);
 
-    if (isNaN(a.lng) || isNaN(b.lng)) {
+    if (Number.isNaN(a.lng) || Number.isNaN(b.lng)) {
 
-        if (isNaN(a.lng) && isNaN(b.lng)) {
-            console.log('Invalid mortar and target');
+        if (Number.isNaN(a.lng) && Number.isNaN(b.lng)) {
             showError("Invalid mortar and target");
-        } else if (isNaN(a.lng)) {
-            console.log('Invalid mortar');
+        } else if (Number.isNaN(a.lng)) {
             showError("Invalid mortar", "mortar");
         } else {
-            console.log('Invalid target');
             showError("Invalid target", "target");
         }
-        return 1
+        return 1;
     }
 
 
-    var height = getHeight(a, b);
+    height = getHeight(a, b);
 
     // Check if mortars/target are out of map
-    if ((height == 998) || (height == 999)) {
+    if ((height === "AERROR") || (height === "BERROR")) {
 
-        if (height == 998) {
-            console.log('Mortar is out of map');
+        if (height === "AERROR") {
             showError("Mortar is out of map", "mortar");
         } else {
-            console.log('Target is out of map');
             showError("Target is out of map", "target");
         }
-        return 1
+        return 1;
     }
 
+    distance = getDist(a, b);
+    vel = getVelocity(distance);
+    elevation = getElevation(distance, height, vel);
 
-    var distance = getDist(a, b);
-
-    var elevation;
-
-    // If Target too close, display it and exit function
-    if (distance <= 50) {
-        console.log("Target is too close : " + distance.toFixed(0) + "m");
-        showError("Target is too close : " + distance.toFixed(0) + "m", "target");
-        return 1
-    }
-
-    // Classical calc for mortar
-    if ($("#radio-one").is(':checked')) {
-        elevation = getElevation(distance, height);
-    } else { // If technical mortar
-
-        for (var i = 0; i < technicals.length; i++) {
-            if (distance < technicals[i][0]) {
-                var h = technicals[i - 1][0];
-                var v = technicals[i - 1][1];
-                var H = technicals[i][0];
-                var V = technicals[i][1];
-
-                // Ajust the velocity based on ingame-value
-                var vel = v + ((distance - h) / (H - h)) * (V - v);
-                elevation = getElevation(distance, height, vel);
-                break;
-            }
-        }
-
-    }
-
-    var bearing = getBearing(a, b);
 
     // If Target too far, display it and exit function
-    if (isNaN(elevation)) {
-        console.log("Target is too far : " + distance.toFixed(0) + "m");
+    if (Number.isNaN(elevation)) {
         showError("Target is out of range : " + distance.toFixed(0) + "m", "target");
-        return 1
+        return 1;
     }
 
+    if ($("#radio-one").is(':checked')) {
+        if (elevation > ClassicMortar.minDistance) {
+            showError("Target is too close : " + distance.toFixed(0) + "m", "target");
+            return 1;
+        }
+    } else if ($("#radio-three").is(':checked')) {
+
+        if (elevation > MO120_SMortar.minDistance) {
+            showError("Target is too close : " + distance.toFixed(0) + "m", "target");
+            return 1;
+        }
+
+    } else { // If technical mortar
+        if (elevation > TechnicalMortar.minDistance) {
+            showError("Target is too close : " + distance.toFixed(0) + "m", "target");
+            return 1;
+        }
+    }
+
+    bearing = getBearing(a, b);
 
     // if in range, Insert Calculations
 
-    // console.clear();
+    console.clear();
     console.log(MORTAR_LOC.val().toUpperCase() + " -> " + TARGET_LOC.val().toUpperCase());
     console.log("-> Bearing: " + bearing.toFixed(1) + "° - Elevation: " + elevation.toFixed(1) + "↷");
     console.log("-> Distance: " + distance.toFixed(0) + "m - height: " + height.toFixed(0) + "m");
@@ -376,10 +408,10 @@ function shoot() {
 
 
     // If using technical mortars, we need to be more precise (##.#)
-    if ($("#radio-one").is(':checked')) {
-        $("#elevation").html(elevation.toFixed(0) + "∡");
+    if ($("#radio-two").is(':checked')) {
+        $("#elevation").html(elevation.toFixed(1) + "↷");
     } else {
-        $("#elevation").html(elevation.toFixed(1) + "∡");
+        $("#elevation").html(elevation.toFixed(0) + "↷");
     }
 
     // show actions button
@@ -390,46 +422,37 @@ function shoot() {
 
 
 /**
- * Filter invalid key pressed by the user 
+ * Filter invalid key pressed by the user
  *
  * @param {string} a - html input object from where the event is triggered
  * @param {string} e - keypress event
  * @returns {event} - empty event if we don't want the user input
  */
 function filterInput(a, e) {
-    var chrTyped, chrCode = 0,
-        evt = e ? e : event;
-    if (evt.charCode != null) chrCode = evt.charCode;
-    else if (evt.which != null) chrCode = evt.which;
-    else if (evt.keyCode != null) chrCode = evt.keyCode;
+    var chrTyped;
+    var chrCode = 0;
+    var evt = e ? e : event;
 
-    if (chrCode == 0) chrTyped = 'SPECIAL KEY';
-    else chrTyped = String.fromCharCode(chrCode);
+    if (evt.charCode !== null) {
+        chrCode = evt.charCode;
+    } else if (evt.which !== null) {
+        chrCode = evt.which;
+    } else if (evt.keyCode !== null) {
+        chrCode = evt.keyCode;
+    }
 
-
-    // If there is already a letter in the input.value, prevent the keypress
-    // Disabled for now, it prevents overwritting a keypad without erasing it completly first
-    // Could be enabled if it check first if the whole input is selected
-    /*
-    if (chrTyped.match(/[A-z]/)){
-      if(a.value[0] != undefined){
-        if(a.value[0].match(/[A-z]/)){
-          console.log('there is already a letter');
-          evt.returnValue=false;
-          return false;
-        }
-        return true;
-      } 
-    } 
-    */
+    if (chrCode === 0) {
+        chrTyped = 'SPECIAL KEY';
+    } else {
+        chrTyped = String.fromCharCode(chrCode);
+    }
 
     //Letters, Digits, special keys & backspace [\b] work as usual:
-    if (chrTyped.match(/\d|[\b]|SPECIAL|[A-Za-z]/)) return true;
-    if (evt.altKey || evt.ctrlKey || chrCode < 28) return true;
+    if (chrTyped.match(/\d|[\b]|SPECIAL|[A-Za-z]/)) { return true; }
+    if (evt.altKey || evt.ctrlKey || chrCode < 28) { return true; }
 
     //Any other input Prevent the default response:
-    if (evt.preventDefault) evt.preventDefault();
-    console.log('forbidden character');
+    if (evt.preventDefault) { evt.preventDefault(); }
     evt.returnValue = false;
     return false;
 }
@@ -437,67 +460,76 @@ function filterInput(a, e) {
 
 
 /**
- * showError
+ * Display error in html & console
  * @param {string} msg - error message to be displayed
  * @param {string} issue - mortar/target/both
  */
 function showError(msg, issue) {
 
-    if (issue == 'mortar') {
+    if (issue === 'mortar') {
         $("#mortar-location").addClass("error2");
-    } else if (issue == 'target') {
+    } else if (issue === 'target') {
         $("#target-location").addClass("error2");
     } else {
         $("#target-location").addClass("error2");
         $("#mortar-location").addClass("error2");
     }
 
-
     // Rework the #setting div to display a single message
-    $("#bearing").addClass("hidden");
-    $("#elevation").addClass("hidden");
-    $("#bearing").removeClass("pure-u-10-24");
-    $("#elevation").removeClass("pure-u-10-24");
-    $("#errorMsg").removeClass("pure-u-4-24");
-    $("#errorMsg").addClass("pure-u-24-24");
-    $("#errorMsg").addClass("errorMsg");
+    $("#bearing").addClass("hidden").removeClass("pure-u-10-24");
+    $("#elevation").addClass("hidden").removeClass("pure-u-10-24");
+    $("#errorMsg").removeClass("pure-u-4-24").addClass("pure-u-24-24").addClass("errorMsg").html(msg);
 
-    // insert error message
-    $("#errorMsg").html(msg);
+    // remove the pointer cursor & tooltip
+    $("#copy").removeClass("copy");
+    tooltip_copy.disable();
 
     // https://youtu.be/PWgvGjAhvIw?t=233
-    $("#settings").addClass("error");
-    $("#settings").effect("shake");
+    $("#settings").addClass("error").effect("shake");
 
+    console.clear();
+    console.log(msg);
 }
-
 
 
 /**
  * Load the maps from data.js to the menu
  */
 function loadMaps() {
+    var i;
+    const MAP_SELECTOR = $(".dropbtn");
 
     // Initiate select2 object (https://select2.org/)
-    $('.dropbtn').select2({
-        placeholder: 'SELECT A MAP',
-        dropdownParent: $('#mapSelector'),
+    MAP_SELECTOR.select2({
         dropdownCssClass: 'dropbtn',
-        minimumResultsForSearch: -1, // Disable search for better Xperience for mobile users
+        dropdownParent: $('#mapSelector'),
+        minimumResultsForSearch: -1, // Disable search
+        placeholder: 'SELECT A MAP'
     });
 
     // load maps into select2
-    for (var i = 0; i < maps.length; ++i) {
-        $(".dropbtn").append('<option value="' + i + '">' + maps[i][0] + '</option>');
+    for (i = 0; i < MAPS.length; i += 1) {
+        MAP_SELECTOR.append('<option value="' + i + '">' + MAPS[i][0] + '</option>');
     }
 }
 
-// Event to initiate a placeholder for select2
-/*
-$('.dropbtn').one('select2:open', function(e) {
-  $('input.select2-search__field').prop('placeholder', 'search');
-});
-*/
+
+/**
+ * Copy string to clipboard
+ */
+function copy(string) {
+    const el = document.createElement('textarea');
+    el.value = string;
+    el.setAttribute('readonly', '');
+    el.style.position = 'absolute';
+    el.style.left = '-9999px';
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
+    console.log("copied ! : " + el.value);
+}
+
 
 /**
  * Draw the selected Heatmap in a hidden canvas
@@ -510,20 +542,32 @@ $(".dropbtn").change(function() {
 /**
  * Copy calcs to clipboard
  */
-$(".copy").click(function() {
+$("#copy").click(function() {
 
-    const el = document.createElement('textarea');
-    el.value = "➜ " + $("#target-location").val() + " = " + $("#bearing").text() + " - " + $("#elevation").text();
-    el.setAttribute('readonly', '');
-    el.style.position = 'absolute';
-    el.style.left = '-9999px';
-    document.body.appendChild(el);
-    el.select();
-    document.execCommand('copy');
-    document.body.removeChild(el);
-    $(".copy").effect("bounce", 500);
+    const COPY_ZONE = $(".copy");
 
+    if (!COPY_ZONE.hasClass('copy')) { return 1; }
+
+    copy("➜ " + $("#target-location").val() + " = " + $("#bearing").text() + " - " + $("#elevation").text());
+    COPY_ZONE.effect("bounce", 500);
+    // the user understood he can click2copy, remove the tooltip
+    stopInfoTooltips = true;
+    tooltip_copy.disable();
+    tooltip_copied.enable();
+    tooltip_copied.show();
 });
+
+/**
+ * Copy calcs to clipboard
+ */
+function copySave(a) {
+
+    const COPY_ZONE = $(a);
+
+    copy("➜ " + $("#target-location").val() + " = " + $("#bearing").text() + " - " + $("#elevation").text());
+    COPY_ZONE.parent().effect("bounce", 500);
+
+};
 
 
 /**
@@ -540,14 +584,23 @@ function copySave(COPY_ZONE) {
  * Save a keypad
  */
 $(".save").click(function() {
+    var i;
+    var target;
 
-    if ($(".saved_list p").length == 3) {
+    if ($(".saved_list p").length === 3) {
         $(".saved_list p").first().remove();
     }
 
     $(".saved_list").append(
         "<p style='display:none;'><input maxlength=\"20\" spellcheck='false' oninput=\"resizeInput(this)\" placeholder=\'" + $("#target-location").val() + "'\ class='friendlyname'></input>" +
         "<span id=\"savespan\" onclick=\"copySave($(this))\" style=\"font-weight:bold\"> ➜ " +
+
+    target = $("#target-location").val();
+
+    $(".saved_list").append("<p style='display:none;'>" +
+        "<span id=\"savespan\" onclick=\"copySave(this)\" style=\"font-weight:bold\"> ➜ " +
+        target +
+        " : " +
         $("#bearing").text() +
         " - " +
         $("#elevation").text() +
@@ -558,20 +611,23 @@ $(".save").click(function() {
 
     $(".saved_list p").last().show("fast");
 
+    // the user understood he can click2copy, remove the tooltip now
+    tooltip_save.disable();
+
 });
 
 /**
  * Remove a saved keypad
+ *  * @param {object} a - saved calcs to remove
  */
 function RemoveSaves(a) {
 
     // remove list if it's empty
-    if ($(".saved_list p").length == 1) {
+    if ($(".saved_list p").length === 1) {
         $(".saved").addClass("hidden");
     }
 
     a.closest("p").remove();
-
 }
 
 
@@ -583,34 +639,37 @@ function RemoveSaves(a) {
  * @param {string} b - previous tardget coord before reformating
  */
 function setCursor(startA, startB, a, b) {
+    const MORTAR_LOC = $("#mortar-location");
+    const TARGET_LOC = $("#target-location");
+    const MORTAR_LENGTH = MORTAR_LOC.val().length;
+    const TARGET_LENGTH = TARGET_LOC.val().length;
 
     a = a.length;
     b = b.length;
-    c = $("#mortar-location").val().length;
-    d = $("#target-location").val().length;
+
 
     // if the keypads.lenght is <3, do nothing.
     // Otherwise we guess if the user is deleting or adding something
     // and ajust the cursor considering MSMC added/removed a '-'
 
     if (startA >= 3) {
-        if (a > c) {
-            startA--;
+        if (a > MORTAR_LENGTH) {
+            startA -= 1;
         } else {
-            startA++;
+            startA += 1;
         }
     }
 
     if (startB >= 3) {
-        if (b > d) {
-            startB--;
+        if (b > TARGET_LENGTH) {
+            startB -= 1;
         } else {
-            startB++;
+            startB += 1;
         }
     }
 
-    $("#mortar-location")[0].setSelectionRange(startA, startA);
-    $("#target-location")[0].setSelectionRange(startB, startB);
+    MORTAR_LOC[0].setSelectionRange(startA, startA);
+    TARGET_LOC[0].setSelectionRange(startB, startB);
 
 }
 

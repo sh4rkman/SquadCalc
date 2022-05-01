@@ -1,7 +1,39 @@
-/*
- * -- WIDTH ADJUSTMENTS
- *
- */
+/***************************************************
+ ************   HEIGHT ADJUSTMENTS   ***************
+ ***************************************************/
+
+
+/* -- L*568px -- */
+
+@media (min-height: 35em) {
+    .select2-results__options {
+        max-height: 370px!important;
+    }
+}
+
+
+/* -- L*730px -- */
+
+@media (min-height: 45em) {
+    .select2-results__options {
+        line-height: 1em;
+        max-height: 570px!important;
+    }
+}
+
+
+/* -- L*800px -- */
+
+@media (min-height: 50em) {
+    .select2-results__options {
+        max-height: 700px!important;
+    }
+}
+
+
+/***************************************************
+ ************   WIDTH ADJUSTMENTS  ***************
+ ***************************************************/
 
 @media screen and (max-width: 48em) {
     /* -- L*568px -- */
@@ -44,7 +76,7 @@
             margin-top: 2em;
         }
         .saved {
-            font-size: 0.75em;
+            font-size: 0.5em;
         }
     }
 }
@@ -56,39 +88,42 @@
     /* On big screen, fix map&weapon Selectors on top corners */
     .mapSelector {
         position: fixed;
-        top: 0;
         right: 1em;
+        top: 0;
     }
     .weaponSelector {
+        left: 1em;
         position: fixed;
         top: 0;
-        left: 1em;
     }
     .mortar_selector {
         height: 35px;
         width: 75px;
     }
     .mortar_selector_classic {
-        background: url("../img/icons/classic_mortar.png") no-repeat scroll 23px 5px transparent;
+        background: url("../img/icons/classic_mortar.png") no-repeat scroll 6px 3px transparent;
     }
     .mortar_selector_technical {
-        background: url("../img/icons/technical_mortar.png") no-repeat scroll 8px 2px transparent;
+        background: url("../img/icons/technical_mortar.png") no-repeat scroll 6px 3px transparent;
+    }
+    .mortar_selector_french {
+        background: url("../img/icons/french_mortar.png") no-repeat scroll 6px 3px transparent;
     }
     .footer {
         visibility: visible;
     }
     .select2-container {
         float: right;
-        min-width: 150px;
         font-size: 0.8em;
+        min-width: 150px;
         right: 0;
     }
     .switch-field {
         float: left;
     }
     .coord img {
-        width: 45px;
         height: 45px;
+        width: 45px;
     }
     /* -- L*560px -- */
     @media (min-height: 35em) {
@@ -112,7 +147,7 @@
     /* -- L*800px -- */
     @media (min-height: 50em) {
         .content {
-            font-size: 35px;
+            font-size: 30px;
         }
     }
 }
@@ -122,8 +157,8 @@
 
 @media screen and (min-width: 62em) {
     .select2-container {
-        min-width: 196px;
         font-size: 1em;
+        min-width: 196px;
     }
 }
 
@@ -141,9 +176,9 @@
 
 @media screen and (min-width: 87.5em) {
     .select2-container {
-        min-width: 220px;
-        max-width: 270px;
         font-size: 1.2em;
+        max-width: 270px;
+        min-width: 220px;
     }
     .select2-results__options {
         font-size: 1em;
@@ -151,49 +186,103 @@
 }
 
 
-/*
- * -- HEIGHT ADJUSTMENTS
- *
- */
+/* ≥ 1980px */
 
-
-/* -- L*568px -- */
-
-@media (min-height: 35em) {
-    .select2-results__options {
-        max-height: 370px!important;
+@media screen and (min-width: 124em) {
+    /* ≥ 1980px & 1080*/
+    @media (min-height: 68em) {
+        .select2-container {
+            font-size: 1.5em;
+            min-width: 350px;
+        }
+        .select2-results__options {
+            font-size: 1.2em;
+            line-height: 1.1em;
+            max-height: 1000px!important;
+        }
+        .select2-selection__placeholder {
+            font-size: 1.1em;
+        }
+        .select2-selection__rendered {
+            font-size: 1.2em;
+        }
+        input {
+            font-size: 1.7em;
+            height: 80px;
+        }
+        .results {
+            font-size: 3em;
+            margin: 1.5em auto;
+        }
+        .keypads {
+            margin-top: 2em;
+        }
+        .saved {
+            font-size: 1em;
+        }
+        .mortar_selector {
+            display: inline-block;
+            height: 45px;
+            width: 95px;
+        }
+        .french_mortar_selector {
+            display: inline-block;
+            height: 45px;
+            width: 95px;
+        }
+        .mortar_selector_classic {
+            background-size: 85%;
+        }
+        .mortar_selector_technical {
+            background-size: 85%;
+        }
+        .mortar_selector_french {
+            background-size: 85%;
+        }
+        .french_mortar_selector_short {
+            background-size: 85%;
+        }
+        .french_mortar_selector_medium {
+            background-size: 85%;
+        }
+        .french_mortar_selector_long {
+            background-size: 85%;
+        }
+        .switch-field label:first-of-type {
+            border-radius: 10px 0 0 10px;
+        }
+        .switch-field label:last-of-type {
+            border-radius: 0 10px 10px 0;
+        }
+        .switch-field2 label:first-of-type {
+            border-radius: 10px 10px 0 0;
+        }
+        .switch-field2 label:last-of-type {
+            border-radius: 0 0 10px 10px;
+        }
+        .logo img {
+            height: 120%;
+            margin-top: 20px;
+        }
+        .weaponSelector {
+            padding: 2em 0 0 1.5em;
+        }
+        .tippy-box {
+            font-size: 140%;
+        }
+        .mapSelector {
+            padding: 2em 1.5em 0 0;
+        }
+        .footer {
+            font-size: 2em;
+        }
+        .social {
+            bottom: 10px;
+        }
+        .coord img {
+            height: 70px;
+            padding-bottom: 0.8em;
+            width: 70px;
+        }
     }
 }
-
-
-/* -- L*730px -- */
-
-@media (min-height: 45em) {
-    .select2-results__options {
-        max-height: 570px!important;
-        line-height: 1em;
-    }
-}
-
-
-/* -- L*800px -- */
-
-@media (min-height: 50em) {
-    .select2-results__options {
-        max-height: 700px!important;
-    }
-}
-
-
-/* -- L*960px -- */
-
-@media (min-height: 60em) {
-    .select2-results__options {
-        max-height: 700px!important;
-    }
-}
-
-
-/* -- L*1072px -- */
-
-@media (min-height: 67em) {}

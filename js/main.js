@@ -1,8 +1,7 @@
-
-
 $(document).ready(function() {
-  loadMaps();
-  loadHeatmap();
-  console.log("Calculator Loaded!");
+    loadMaps();
+    loadHeatmap();
+    preventAutocomplete();
+    loadToolTips();
+    console.log("Calculator Loaded!");
 });
-

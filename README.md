@@ -10,7 +10,7 @@
 </br>
 
 **MSMC** is a simple, easy on the eyes mortar calculator for <a href="https://joinsquad.com/">Squad</a>.  
-It allow quick mortars calculations without fancy map, buttons and icons.
+It allows quick mortars calculations without fancy map, buttons and icons.
  
 </br>
 
@@ -20,13 +20,8 @@ Select a map, enter locations, shoot.
  
  
 <p align="center">
-<<<<<<< Updated upstream
   <img width="400" height="284" src="https://i.imgur.com/ZkOK76O.png">
   <img width="150" height="284" src=" https://i.imgur.com/zlG4xRs.png">
-=======
-  <img width="400" height="284" src="https://i.imgur.com/byY1m1P.png">
-  <img width="150" height="284" src="https://i.imgur.com/05Iszff.png">
->>>>>>> Stashed changes
 </p>
 
 # **Features**
@@ -109,4 +104,4 @@ I wanted a lighter alternative to this great tool, some could say this project i
 </br>
 
 # Badges
- [![DeepScan grade](https://deepscan.io/api/teams/12376/projects/15404/branches/306486/badge/grade.svg)](https://deepscan.io/dashboard#view=project&tid=12376&pid=15404&bid=306486)  [![Generic badge](https://img.shields.io/badge/W3C-Good-green.svg)](https://validator.w3.org/nu/?doc=https%3A%2F%2Fmortar.sharkman.info%2F)  
+ [![DeepScan grade](https://deepscan.io/api/teams/12376/projects/15404/branches/306486/badge/grade.svg)](https://deepscan.io/dashboard#view=project&tid=12376&pid=15404&bid=306486)  [![Generic badge](https://img.shields.io/badge/W3C-Good-green.svg)](https://validator.w3.org/nu/?doc=https%3A%2F%2Fmortar.sharkman.info%2F) [![CodeFactor](https://www.codefactor.io/repository/github/sh4rkman/msmc/badge)](https://www.codefactor.io/repository/github/sh4rkman/msmc) 

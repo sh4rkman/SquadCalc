@@ -1,9 +1,19 @@
-var version = 4.0;
+const VERSION = 6.0;
+const GRAVITY = 9.8;
+const CANVAS_SIZE = 500;
+var frenchSelection = 0;
+var stopInfoTooltips = false;
+
+const ClassicMortar = new Weapon("Classic", 109.890938, 1580);
+const TechnicalMortar = new Weapon("Technical", 0, 83.8);
+const MO120_SMortar = new Weapon("MO120_S", 109.890938, 1520);
+const MO120_MMortar = new Weapon("MO120_M", 143.5, 1520);
+const MO120_LMortar = new Weapon("MO120_L", 171.5, 1520);
 
 // Each map has a different size and require scaling w, y and z when calculating height
-// maps['Name', size, z-scaling]
-var maps = [
-    ['Al Basrah', 3200, 0.4],
+// MAPS['Name', size, z-scaling]
+const MAPS = [
+    ['Al Basrah', 3200, 0.025],
     ['Anvil', 3060, 0.2],
     ['Belaya', 3904, 0.5],
     ['Chora', 4064, 0.06],
@@ -12,7 +22,7 @@ var maps = [
     ['Goose Bay', 4065, 0.2],
     ['Gorodok', 4340, 0.13],
     ['Kamdesh', 4032, 0.2],
-    ['Kohat', 4017, 0.777],
+    ['Kohat', 4617, 1],
     ['Kokan', 2496, 0.01],
     ['Lashkar', 4334, 0.28],
     ['Logar', 1761, 0.14],
@@ -28,8 +38,8 @@ var maps = [
 
 // Since technicals mortars are acting weirdly, i have to stock these empirical values for now until i figure out how they work
 // read https://github.com/Endebert/squadmc/discussions/101 for more information
-// technicals[distance, Velocity]
-var technicals = [
+// TECHNICALS[distance, Velocity]
+const TECHNICALS = [
     [50, 47.76901552],
     [100, 63.20591542],
     [200, 77.59023672],
