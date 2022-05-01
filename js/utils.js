@@ -558,13 +558,13 @@ $("#copy").click(function() {
 });
 
 /**
- * Copy calcs to clipboard
+ * Copy Saved calcs to clipboard
  */
 function copySave(a) {
 
     const COPY_ZONE = $(a);
 
-    copy("➜ " + $("#target-location").val() + " = " + $("#bearing").text() + " - " + $("#elevation").text());
+    copy(COPY_ZONE.text());
     COPY_ZONE.parent().effect("bounce", 500);
 
 };
@@ -597,10 +597,9 @@ $(".save").click(function() {
 
     target = $("#target-location").val();
 
-    $(".saved_list").append("<p style='display:none;'>" +
-        "<span id=\"savespan\" onclick=\"copySave(this)\" style=\"font-weight:bold\"> ➜ " +
-        target +
-        " : " +
+    $(".saved_list").append(
+        "<p style='display:none;'><input maxlength=\"20\" spellcheck='false' oninput=\"resizeInput(this)\" placeholder=\'" + $("#target-location").val() + "'\ class='friendlyname'></input>" +
+        "<span id=\"savespan\" onclick=\"copySave($(this))\" style=\"font-weight:bold\"> ➜ " +
         $("#bearing").text() +
         " - " +
         $("#elevation").text() +

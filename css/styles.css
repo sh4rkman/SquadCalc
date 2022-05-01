@@ -510,10 +510,6 @@ span.select2-selection.select2-selection--single {
     border-right-color: green;
 }
 
-.tippy-box[data-theme~="save"] .tippy-content {
-    min-width: 150px;
-}
-
 .friendlyname {
     width: 100px;
     border-style: none;
