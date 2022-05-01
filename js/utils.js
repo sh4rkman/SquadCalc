@@ -591,10 +591,6 @@ $(".save").click(function() {
         $(".saved_list p").first().remove();
     }
 
-    $(".saved_list").append(
-        "<p style='display:none;'><input maxlength=\"20\" spellcheck='false' oninput=\"resizeInput(this)\" placeholder=\'" + $("#target-location").val() + "'\ class='friendlyname'></input>" +
-        "<span id=\"savespan\" onclick=\"copySave($(this))\" style=\"font-weight:bold\"> ➜ " +
-
     target = $("#target-location").val();
 
     $(".saved_list").append(
