@@ -601,7 +601,14 @@ function copy(string) {
  * Copy Saved calcs to clipboard
  */
 function copySave(COPY_ZONE) {
-    copy(COPY_ZONE.text());
+    var text2copy;
+
+    if (COPY_ZONE.prev().val().length === 0) {
+        text2copy = COPY_ZONE.prev().attr('placeholder') + " " + COPY_ZONE.text()
+    } else {
+        text2copy = COPY_ZONE.prev().val() + " " + COPY_ZONE.text()
+    }
+    copy(text2copy);
     COPY_ZONE.parent().effect("bounce", 400);
 }
 
