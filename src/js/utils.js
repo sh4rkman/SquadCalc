@@ -91,7 +91,7 @@ export function loadHeatmap() {
  */
 function drawHeatmap() {
     var img = new Image(); // Create new img element
-    var ctx = document.getElementById('canvas').getContext('2d');;
+    var ctx = document.getElementById('canvas').getContext('2d');
     var map = $(".dropbtn option:selected").text().toLowerCase();
 
     img.src = './heightmaps/' + map + '.jpg'; // Set source path
@@ -229,16 +229,6 @@ function radToMil(rad) {
 function radToDeg(rad) {
     return (rad * 180) / Math.PI;
 }
-
-/**
- * Converts degrees into radians
- * @param {number} deg - degrees
- * @returns {number} radians
- */
-function degToRad(deg) {
-    return (deg * Math.PI) / 180;
-}
-
 
 /**
  * Converts degrees into NATO mils
@@ -607,16 +597,13 @@ function copy(string) {
 }
 
 
-
-
-
 /**
  * Copy Saved calcs to clipboard
  */
 function copySave(COPY_ZONE) {
     copy(COPY_ZONE.text());
     COPY_ZONE.parent().effect("bounce", 400);
-};
+}
 
 
 /**
