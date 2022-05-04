@@ -125,6 +125,9 @@
         height: 45px;
         width: 45px;
     }
+    .friendlyname {
+        min-width: 130px;
+    }
     /* -- L*560px -- */
     @media (min-height: 35em) {
         .content {
@@ -283,6 +286,9 @@
             height: 70px;
             padding-bottom: 0.8em;
             width: 70px;
+        }
+        .friendlyname {
+            min-width: 250px;
         }
     }
 }

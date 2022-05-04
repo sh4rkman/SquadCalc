@@ -684,7 +684,7 @@ function makeid(length) {
 
 
 /**
- * Give Inputs random name to browser autocomplete
+ * Give Inputs random name to avoid browsers/mobile keyboards autocomplete
  */
 export function preventAutocomplete() {
     $("#mortar-location").attr('name', makeid(10));
