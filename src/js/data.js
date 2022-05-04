@@ -1,4 +1,3 @@
-const VERSION = 6.0;
 const GRAVITY = 9.8;
 const CANVAS_SIZE = 500;
 var frenchSelection = 0;
@@ -9,6 +8,7 @@ const TechnicalMortar = new Weapon("Technical", 0, 83.8);
 const MO120_SMortar = new Weapon("MO120_S", 109.890938, 1520);
 const MO120_MMortar = new Weapon("MO120_M", 143.5, 1520);
 const MO120_LMortar = new Weapon("MO120_L", 171.5, 1520);
+
 
 // Each map has a different size and require scaling w, y and z when calculating height
 // MAPS['Name', size, z-scaling]

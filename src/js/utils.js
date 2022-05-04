@@ -10,6 +10,7 @@ function loadHeatmap() {
     }, false);
 }
 
+
 /**
  * Draw the selected Heatmaps in a hidden canvas
  */
@@ -18,7 +19,7 @@ function drawHeatmap() {
     var ctx = document.getElementById('canvas').getContext('2d');;
     var map = $(".dropbtn option:selected").text().toLowerCase();
 
-    img.src = './img/heightmaps/' + map + '.jpg'; // Set source path
+    img.src = './heightmaps/' + map + '.jpg'; // Set source path
 
     img.addEventListener('load', function() { // wait for the image to load or it does crazy stuff
         ctx.drawImage(img, 0, 0, CANVAS_SIZE, CANVAS_SIZE);
@@ -570,7 +571,7 @@ function copySave(COPY_ZONE) {
  * Save a keypad
  */
 $(".save").click(function() {
-
+    console.log("here");
     if ($(".saved_list p").length === 3) {
         $(".saved_list p").first().remove();
     }
