@@ -23,17 +23,16 @@ import {
 // Events Listener
 $(document).on('change', '.switch-field', function() { shoot(); });
 $(document).on('change', '.switch-field2', function() { shoot(); });
+$(document).on('change', '.dropbtn', function() { drawHeatmap(); });
 $(document).on('input', '#target-location', function() { shoot(); });
 $(document).on('input', '#mortar-location', function() { shoot(); });
+$(document).on('input', '#resize', function() { resizeInput(this) });
 $(document).on('keypress', '#mortar-location', function(event) { filterInput(event); });
 $(document).on('keypress', '#target-location', function(event) { filterInput(event); });
-$(document).on('input', '#resize', function() { resizeInput(this) });
-
-/**
- * Save a keypad
- */
+$(document).on('click', '.del', function() { RemoveSaves(this); });
+$(document).on('click', '#savespan', function() { copySave($(this)) });
 $(document).on('click', '.save', function() {
-    console.log("here");
+
     if ($(".saved_list p").length === 3) {
         $(".saved_list p").first().remove();
     }
@@ -55,17 +54,6 @@ $(document).on('click', '.save', function() {
     tooltip_save.disable();
 });
 
-$(document).on('click', '.del', function() {
-    RemoveSaves(this);
-});
-
-$(document).on('click', '#savespan', function() {
-    copySave($(this))
-});
-
-$(document).on('change', '.dropbtn', function() {
-    drawHeatmap();
-});
 
 $(document).on('click', '#copy', function() {
     const COPY_ZONE = $(".copy");
@@ -74,6 +62,7 @@ $(document).on('click', '#copy', function() {
 
     copy("➜ " + $("#target-location").val() + " = " + $("#bearing").text() + " - " + $("#elevation").text());
     COPY_ZONE.effect("bounce", 500);
+
     // the user understood he can click2copy, remove the tooltip
     setStopInfoTooltips(true);
     tooltip_copy.disable();
