@@ -20,8 +20,8 @@ Select a map, enter locations, shoot.
  
  
 <p align="center">
-  <img width="400" height="284" src="https://i.imgur.com/ZkOK76O.png">
-  <img width="150" height="284" src=" https://i.imgur.com/zlG4xRs.png">
+  <img width="400" height="284" src="https://i.imgur.com/byY1m1P.png">
+  <img width="150" height="284" src="https://i.imgur.com/05Iszff.png">
 </p>
 
 # **Features**
@@ -37,8 +37,8 @@ Heightmaps are hidden : simply pick your map from the list and shoot.
 </br>
 
 <p align="center">
-  <img width="150" height="150" src="https://github.com/sh4rkman/MSMC/blob/master/img/heightmaps/gorodok.jpg?raw=true">
-  <img width="150" height="150" src="https://github.com/sh4rkman/MSMC/blob/master/img/heightmaps/tallil.jpg?raw=true">
+  <img width="150" height="150" src="https://github.com/sh4rkman/MSMC/blob/master/src/img/heightmaps/gorodok.jpg?raw=true">
+  <img width="150" height="150" src="https://github.com/sh4rkman/MSMC/blob/master/src/img/heightmaps/tallil.jpg?raw=true">
 </p>
 <p align="center"><sub><sup>Examples of Heightmaps used for caculations (Gorodok & Tallil)</sub></sup></p>
 
@@ -70,24 +70,11 @@ Save up to three calcs for later :
 
  </br>
  <p align="center">
-   <img width="389" height="259" src="https://i.imgur.com/E38CLFh.png">
+   <img width="389" height="259" src="https://i.imgur.com/24gnFal.gif">
  </p>
 
  </br></br>
 
-
-## **One-click calculation copy**
-
-</br>
-
-Need to share
-
- </br>
- <p align="center">
-   <img width="389" height="259" src="https://i.imgur.com/E38CLFh.png">
- </p>
-
- </br></br>
 
 # Thanks
 
@@ -95,6 +82,30 @@ this project is **largely** inspired by the work of Endebert on <a href="https:/
 I wanted a lighter alternative to this great tool, some could say this project is just a new interface to squadmc calculation code.
 
 </br></br>
+
+# Installation
+</br>
+
+## Clone and install
+```
+git clone https://github.com/sh4rkman/MSMC.git
+cd MSMC
+npm install
+```
+
+
+## Development
+```
+npm run start
+```
+
+## Building production bundle
+```
+npm run build
+```
+
+
+</br>
 
 # Licence
 
