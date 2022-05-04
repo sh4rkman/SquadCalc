@@ -5,6 +5,10 @@ const CopyPlugin = require("copy-webpack-plugin");
 module.exports = {
     entry: {
         app: './src/app.js',
+        utils: './src/js/utils.js',
+        tooltips: './src/js/tooltips.js',
+        weapon: './src/js/weapon.js',
+        data: './src/js/data.js',
     },
     plugins: [
         new CopyPlugin({
@@ -28,6 +32,12 @@ module.exports = {
                 loader: "html-loader",
             },
         ],
+    },
+    optimization: {
+        runtimeChunk: 'single',
+        splitChunks: {
+            chunks: 'all',
+        },
     },
 
 };

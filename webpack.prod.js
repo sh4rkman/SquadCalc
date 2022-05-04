@@ -29,7 +29,6 @@ module.exports = merge(common, {
         }, ]
     },
     optimization: {
-        runtimeChunk: 'single',
         minimizer: [
             new CssMinimizerPlugin(), //CSS
             new TerserPlugin(), //JS
