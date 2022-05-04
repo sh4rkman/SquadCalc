@@ -1,3 +1,5 @@
 mortar.code-workspace
 .vscode/
 debug.log
+node_modules/
+dist/

@@ -1,7 +1,82 @@
+import {
+    tooltip_copy,
+    tooltip_save,
+    tooltip_copied
+} from "./tooltips.js";
+
+import {
+    MAPS,
+    GRAVITY,
+    CANVAS_SIZE,
+    frenchSelection,
+    setFrenchSelection,
+    stopInfoTooltips,
+    setStopInfoTooltips,
+    ClassicMortar,
+    TechnicalMortar,
+    MO120_SMortar,
+    MO120_MMortar,
+    MO120_LMortar,
+} from "./data.js";
+
+
+// Events Listener
+$(document).on('change', '.switch-field', function() { shoot(); });
+$(document).on('change', '.switch-field2', function() { shoot(); });
+$(document).on('change', '.dropbtn', function() { drawHeatmap(); });
+$(document).on('input', '#target-location', function() { shoot(); });
+$(document).on('input', '#mortar-location', function() { shoot(); });
+$(document).on('input', '#resize', function() { resizeInput(this) });
+$(document).on('keypress', '#mortar-location', function(event) { filterInput(event); });
+$(document).on('keypress', '#target-location', function(event) { filterInput(event); });
+$(document).on('click', '.del', function() { RemoveSaves(this); });
+$(document).on('click', '#savespan', function() { copySave($(this)) });
+
+$(document).on('click', '.save', function() {
+
+    if ($(".saved_list p").length === 3) {
+        $(".saved_list p").first().remove();
+    }
+    $(".saved_list").append(
+        "<p style='display:none;'><input id=\"resize\" maxlength=\"20\" spellcheck='false' placeholder='" + $("#target-location").val() + "'\ class='friendlyname'></input>" +
+        "<span id=\"savespan\" style=\"font-weight:bold\"> ➜ " +
+        $("#bearing").text() +
+        " - " +
+        $("#elevation").text() +
+        "&nbsp;&nbsp;</span><i class=\"fa fa-times-circle fa-fw del\" aria-hidden=\"true\"></i></p>");
+
+    $(".saved").removeClass("hidden");
+    $(".save").effect("bounce", 500);
+
+    $(".saved_list p").last().show("fast");
+
+    // the user understood he can click2copy, remove the tooltip now
+    tooltip_save.disable();
+});
+
+
+$(document).on('click', '#copy', function() {
+    const COPY_ZONE = $(".copy");
+
+    if (!COPY_ZONE.hasClass('copy')) { return 1; }
+
+    copy("➜ " + $("#target-location").val() + " = " + $("#bearing").text() + " - " + $("#elevation").text());
+    COPY_ZONE.effect("bounce", 500);
+
+    // the user understood he can click2copy, remove the tooltip
+    setStopInfoTooltips(true);
+    tooltip_copy.disable();
+    tooltip_copied.enable();
+    tooltip_copied.show();
+});
+
+
+
+
 /**
  * Load the heatmap to the canvas
  */
-function loadHeatmap() {
+export function loadHeatmap() {
     var ctx = document.getElementById('canvas').getContext('2d');
     var img = new Image();
 
@@ -10,15 +85,16 @@ function loadHeatmap() {
     }, false);
 }
 
+
 /**
  * Draw the selected Heatmaps in a hidden canvas
  */
 function drawHeatmap() {
     var img = new Image(); // Create new img element
-    var ctx = document.getElementById('canvas').getContext('2d');;
+    var ctx = document.getElementById('canvas').getContext('2d');
     var map = $(".dropbtn option:selected").text().toLowerCase();
 
-    img.src = './img/heightmaps/' + map + '.jpg'; // Set source path
+    img.src = './heightmaps/' + map + '.jpg'; // Set source path
 
     img.addEventListener('load', function() { // wait for the image to load or it does crazy stuff
         ctx.drawImage(img, 0, 0, CANVAS_SIZE, CANVAS_SIZE);
@@ -155,16 +231,6 @@ function radToDeg(rad) {
 }
 
 /**
- * Converts degrees into radians
- * @param {number} deg - degrees
- * @returns {number} radians
- */
-function degToRad(deg) {
-    return (deg * Math.PI) / 180;
-}
-
-
-/**
  * Converts degrees into NATO mils
  * @param {number} deg - degrees
  * @returns {number} NATO mils
@@ -258,13 +324,13 @@ function getVelocity(distance) {
     } else {
 
         if ($("#radio-four").is(':checked')) {
-            frenchSelection = 0;
+            setFrenchSelection(0);
             return MO120_SMortar.getVelocity();
         } else if ($("#radio-five").is(':checked')) {
-            frenchSelection = 1;
+            setFrenchSelection(1);
             return MO120_MMortar.getVelocity();
         } else if ($("#radio-six").is(':checked')) {
-            frenchSelection = 2;
+            setFrenchSelection(2);
             return MO120_LMortar.getVelocity();
         } else {
             if (frenchSelection === 0) {
@@ -277,6 +343,7 @@ function getVelocity(distance) {
         }
     }
 }
+
 
 /**
  * Calculates the distance elevation and bearing
@@ -397,6 +464,7 @@ function shoot() {
     bearing = getBearing(a, b);
 
     // if in range, Insert Calculations
+
     console.clear();
     console.log(MORTAR_LOC.val().toUpperCase() + " -> " + TARGET_LOC.val().toUpperCase());
     console.log("-> Bearing: " + bearing.toFixed(1) + "° - Elevation: " + elevation.toFixed(1) + "↷");
@@ -423,11 +491,10 @@ function shoot() {
 /**
  * Filter invalid key pressed by the user
  *
- * @param {string} a - html input object from where the event is triggered
  * @param {string} e - keypress event
  * @returns {event} - empty event if we don't want the user input
  */
-function filterInput(a, e) {
+export function filterInput(e) {
     var chrTyped;
     var chrCode = 0;
     var evt = e ? e : event;
@@ -487,14 +554,14 @@ function showError(msg, issue) {
     $("#settings").addClass("error").effect("shake");
 
     console.clear();
-    console.log(msg);
+    console.error(msg);
 }
 
 
 /**
  * Load the maps from data.js to the menu
  */
-function loadMaps() {
+export function loadMaps() {
     var i;
     const MAP_SELECTOR = $(".dropbtn");
 
@@ -526,83 +593,24 @@ function copy(string) {
     el.select();
     document.execCommand('copy');
     document.body.removeChild(el);
-    console.log("copied ! : " + el.value);
 }
 
 
 /**
- * Draw the selected Heatmap in a hidden canvas
- */
-$(".dropbtn").change(function() {
-    drawHeatmap();
-});
-
-
-/**
- * Copy calcs to clipboard
- */
-$("#copy").click(function() {
-
-    const COPY_ZONE = $(".copy");
-
-    if (!COPY_ZONE.hasClass('copy')) { return 1; }
-
-    copy("➜ " + $("#target-location").val() + " = " + $("#bearing").text() + " - " + $("#elevation").text());
-    COPY_ZONE.effect("bounce", 500);
-    // the user understood he can click2copy, remove the tooltip
-    stopInfoTooltips = true;
-    tooltip_copy.disable();
-    tooltip_copied.enable();
-    tooltip_copied.show();
-});
-
-/**
  * Copy Saved calcs to clipboard
  */
-function copySave(a) {
+function copySave(COPY_ZONE) {
+    var text2copy;
 
-    const COPY_ZONE = $(a);
-
-    copy(COPY_ZONE.text());
-    COPY_ZONE.parent().effect("bounce", 500);
-
-};
-
-
-/**
- * Save a keypad
- */
-$(".save").click(function() {
-    var i;
-    var target;
-
-    if ($(".saved_list p").length === 3) {
-        $(".saved_list p").first().remove();
+    if (COPY_ZONE.prev().val().length === 0) {
+        text2copy = COPY_ZONE.prev().attr('placeholder') + " " + COPY_ZONE.text()
+    } else {
+        text2copy = COPY_ZONE.prev().val() + " " + COPY_ZONE.text()
     }
+    copy(text2copy);
+    COPY_ZONE.parent().effect("bounce", 400);
+}
 
-    target = $("#target-location").val();
-
-    for (i = 0; i < 11 - target.length; i += 1) {
-        target = target + "&nbsp;";
-    }
-
-    $(".saved_list").append(
-        "<p style='display:none;'><input maxlength=\"20\" spellcheck='false' oninput=\"resizeInput(this)\" placeholder=\'" + $("#target-location").val() + "'\ class='friendlyname'></input>" +
-        "<span id=\"savespan\" onclick=\"copySave($(this))\" style=\"font-weight:bold\"> ➜ " +
-        $("#bearing").text() +
-        " - " +
-        $("#elevation").text() +
-        "&nbsp;&nbsp;</span><i class=\"fa fa-times-circle fa-fw del\" aria-hidden=\"true\" onclick=\"RemoveSaves(this)\"></i></p>");
-
-    $(".saved").removeClass("hidden");
-    $(".save").effect("bounce", 500);
-
-    $(".saved_list p").last().show("fast");
-
-    // the user understood he can click2copy, remove the tooltip now
-    tooltip_save.disable();
-
-});
 
 /**
  * Remove a saved keypad
@@ -682,9 +690,9 @@ function makeid(length) {
 
 
 /**
- * Give Inputs random name to browser autocomplete
+ * Give Inputs random name to avoid browsers/mobile keyboards autocomplete
  */
-function preventAutocomplete() {
+export function preventAutocomplete() {
     $("#mortar-location").attr('name', makeid(10));
     $("#target-location").attr('name', makeid(10));
     $(".dropbtn").attr('name', makeid(10));

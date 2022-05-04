@@ -382,6 +382,16 @@ span.select2-selection.select2-selection--single {
     cursor: pointer;
 }
 
+.friendlyname {
+    width: 100px;
+    border-style: none;
+    text-transform: none;
+    font-size: 1em;
+    text-align: right;
+    min-width: 100px;
+    height: auto;
+}
+
 
 /***************************************
  ************   FOOTER   ***************
@@ -478,17 +488,6 @@ span.select2-selection.select2-selection--single {
     color: FireBrick;
 }
 
-.tippy-box[data-theme~='new'] {
-    background-color: green;
-    color: white;
-    font-weight: bold;
-    letter-spacing: .1rem;
-}
-
-.tippy-box[data-theme~="french"] .tippy-content {
-    padding: 0;
-}
-
 
 /****************
  *  Tippy.js ToolTips customization
@@ -510,12 +509,18 @@ span.select2-selection.select2-selection--single {
     border-right-color: green;
 }
 
-.friendlyname {
-    width: 100px;
-    border-style: none;
-    text-transform: none;
-    font-size: 1em;
-    text-align: right;
-    min-width: 100px;
-    height: auto;
+.tippy-box[data-theme~='new'] {
+    background-color: green;
+    color: white;
+    font-weight: bold;
+    letter-spacing: .1rem;
+}
+
+.tippy-box[data-theme~="french"] .tippy-content {
+    padding: 0;
+}
+
+.tippy-box[data-theme~="120mm"] .tippy-content {
+    text-align: center;
+    letter-spacing: .1rem;
 }

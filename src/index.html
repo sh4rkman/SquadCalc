@@ -10,11 +10,6 @@
     <meta name="theme-color" content="#111" />
     <meta charset="utf-8">
 
-    <!-- CACHE CONTROL -->
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <meta http-equiv="Pragma" content="no-cache">
-    <meta http-equiv="Expires" content="0">
-
     <!-- SOCIAL MEDIA -->
     <meta property="og:title" content="MSMC">
     <meta property="og:description" content="A Minimalist yet precise Mortar Calculator for SQUAD ! enter locations, shoot, profit.">
@@ -29,8 +24,7 @@
     <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.1/build/pure-min.css" integrity="sha384-oAOxQR6DkCoMliIh8yFnu25d7Eq/PHS21PClpwjOTeU2jRSq11vu66rf90/cZr47" crossorigin="anonymous">
     <link rel="stylesheet" href="https://unpkg.com/purecss@2.0.6/build/grids-responsive-min.css" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
-    <link rel="stylesheet" href="css/styles.css">
-    <link rel="stylesheet" href="css/responsive.css ">
+
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
 
@@ -51,11 +45,11 @@
         </div>
         <div class="pure-u-1 pure-u-md-1-5 weaponSelector">
             <div class="switch-field unselectable">
-                <input type="radio" id="radio-one" name="switch-one" onchange="shoot()" checked/>
+                <input type="radio" id="radio-one" name="switch-one" checked/>
                 <label id="classic" for="radio-one" class="mortar_selector mortar_selector_classic"></label>
-                <input type="radio" id="radio-two" name="switch-one" onchange="shoot()" />
+                <input type="radio" id="radio-two" name="switch-one" />
                 <label id="technical" for="radio-two" class="mortar_selector mortar_selector_technical"></label>
-                <input type="radio" id="radio-three" name="switch-one" onchange="shoot()" />
+                <input type="radio" id="radio-three" name="switch-one" />
                 <label id="french" for="radio-three" class="mortar_selector mortar_selector_french "></label>
             </div>
         </div>
@@ -74,7 +68,7 @@
                         <div class="pure-u-3-5 pure-u-md-17-24">
                             <div id="mortar" class="coord">
                                 <img class="unselectable pure-img" src="./img/icons/mortar.png" alt="mortar">
-                                <input id="mortar-location" class="autofocus1" spellcheck="false" maxlength="10" type="text" placeholder="A01-5-7" autocomplete="off" tabindex="2" oninput="shoot()" onkeypress="filterInput(this, event)" autofocus>
+                                <input id="mortar-location" class="autofocus1" spellcheck="false" maxlength="10" type="text" placeholder="A01-5-7" autocomplete="off" tabindex="2" autofocus>
                             </div>
                         </div>
                         <div class="pure-u-1-5 pure-u-md-1-24"><span tabindex="4" onFocus="document.querySelector('.autofocus1').focus()"></span></div>
@@ -91,7 +85,7 @@
                         <div class="pure-u-3-5 pure-u-md-17-24">
                             <div id="target" class="coord">
                                 <img class="unselectable pure-img" src="./img/icons/target.png" alt="target">
-                                <input id="target-location" class="autofocus11" spellcheck="false" maxlength="10" type="text" placeholder="C03-2-7-9" autocomplete="off" tabindex="3" oninput="shoot()" onkeypress="filterInput(this, event)">
+                                <input id="target-location" class="autofocus11" spellcheck="false" maxlength="10" type="text" placeholder="C03-2-7-9" autocomplete="off" tabindex="3">
                             </div>
                         </div>
                         <div class="pure-u-1-5 pure-u-md-6-24"></div>
@@ -153,11 +147,6 @@
     <script src="https://unpkg.com/@popperjs/core@2/dist/umd/popper.min.js"></script>
     <script src="https://unpkg.com/tippy.js@6/dist/tippy-bundle.umd.js"></script>
     <script src="https://kit.fontawesome.com/b9f6eb9757.js" crossorigin="anonymous"></script>
-    <script src="./js/tooltips.js"></script>
-    <script src="./js/weapon.js"></script>
-    <script src="./js/data.js"></script>
-    <script src="./js/utils.js"></script>
-    <script src="./js/main.js"></script>
 
 </body>
 

@@ -1,4 +1,6 @@
-class Weapon {
+import { TECHNICALS } from "./data.js";
+
+export class Weapon {
     constructor(name, velocity, minDistance) {
         this.name = name;
         this.velocity = velocity;
@@ -14,7 +16,6 @@ class Weapon {
                 }
             }
         }
-
         return this.velocity;
     }
 
