@@ -30,5 +30,8 @@
     "dependencies": {
         "jquery": "^3.6.0",
         "lodash": "^4.17.21"
+    },
+    "optionalDependencies": {
+        "fsevents": "^2.3.2"
     }
 }

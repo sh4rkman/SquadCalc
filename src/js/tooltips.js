@@ -1,7 +1,6 @@
 var tooltip_save;
 var tooltip_copy;
 var tooltip_copied;
-var tooltip_new;
 
 function loadToolTips() {
     tippy('#classic', {
@@ -23,11 +22,6 @@ function loadToolTips() {
         placement: "bottom",
         theme: 'french',
         trigger: 'click',
-        onShown() { // Hide 'new' tooltip when user hover french mortars
-            tooltip_new = document.querySelector('#french')._tippy;
-            tooltip_new.hide(0);
-            tooltip_new.disable();
-        },
         onHide() {
             if ($("#radio-four").is(':checked')) {
                 frenchSelection = 0;
@@ -36,19 +30,6 @@ function loadToolTips() {
             } else {
                 frenchSelection = 2;
             }
-        },
-    });
-
-
-    // "NEW !" ToolTip
-    tippy('#french', {
-        allowHTML: true,
-        content: "New!",
-        placement: 'bottom',
-        showOnCreate: true,
-        theme: 'new',
-        onHidden(instance) {
-            instance.disable();
         },
     });
 
