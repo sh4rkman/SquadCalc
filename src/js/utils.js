@@ -31,12 +31,12 @@ $(document).on('keypress', '#mortar-location', function(event) { filterInput(eve
 $(document).on('keypress', '#target-location', function(event) { filterInput(event); });
 $(document).on('click', '.del', function() { RemoveSaves(this); });
 $(document).on('click', '#savespan', function() { copySave($(this)) });
+
 $(document).on('click', '.save', function() {
 
     if ($(".saved_list p").length === 3) {
         $(".saved_list p").first().remove();
     }
-
     $(".saved_list").append(
         "<p style='display:none;'><input id=\"resize\" maxlength=\"20\" spellcheck='false' placeholder=\'" + $("#target-location").val() + "'\ class='friendlyname'></input>" +
         "<span id=\"savespan\" style=\"font-weight:bold\"> ➜ " +
@@ -593,7 +593,6 @@ function copy(string) {
     el.select();
     document.execCommand('copy');
     document.body.removeChild(el);
-    console.log("copied ! : " + el.value);
 }
 
 

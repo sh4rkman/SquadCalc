@@ -17,6 +17,13 @@ tippy('#technical', {
 tippy('#french', {
     allowHTML: true,
     animation: 'fade',
+    content: "120mm</br> (Squad MOD France)",
+    theme: '120mm',
+});
+
+tippy('#french', {
+    allowHTML: true,
+    animation: 'fade',
     arrow: false,
     content: "<div class=\"switch-field2 unselectable\"><input type=\"radio\" id=\"radio-four\" name=\"switch-two\" checked/><label id=\"classic\" for=\"radio-four\" class=\"french_mortar_selector french_mortar_selector_short\"></label><input type=\"radio\" id=\"radio-five\" name=\"switch-two\"/><label id=\"technical\" for=\"radio-five\" class=\"french_mortar_selector french_mortar_selector_medium\"></label><input type=\"radio\" id=\"radio-six\" name=\"switch-two\"/><label id=\"french\" for=\"radio-six\" class=\"french_mortar_selector french_mortar_selector_long \"></label> </div>",
     interactive: true,
