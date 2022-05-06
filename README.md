@@ -21,9 +21,8 @@
 
 </br>
 
-# **Introduction**
+# **MSMC** : A Minimalist Squad Mortar Calculator
 
-## **MSMC** : A Minimalist Squad Mortar Calculator
 
 </br>
 

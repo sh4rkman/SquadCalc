@@ -1,5 +1,5 @@
-import './css/styles.css';
-import './css/responsive.css';
+import './css/styles.scss';
+import './css/responsive.scss';
 import { loadHeatmap } from "./js/utils.js";
 import { loadMaps } from "./js/utils.js";
 import { preventAutocomplete } from "./js/utils.js";
