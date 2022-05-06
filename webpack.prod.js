@@ -9,10 +9,6 @@ module.exports = merge(common, {
     mode: 'production',
     devtool: 'inline-source-map',
     plugins: [
-        new MiniCssExtractPlugin({
-            filename: "[name].[contenthash].css",
-            //chunkFilename: "[id].css",
-        }),
         new HtmlWebpackPlugin({
             template: './src/index.html',
             minify: {
@@ -21,12 +17,18 @@ module.exports = merge(common, {
                 removeAttributeQuotes: true,
             }
         }),
+        new MiniCssExtractPlugin({
+            filename: 'src/css/[name].[contenthash].css',
+        }),
     ],
     module: {
         rules: [{
             test: /\.css$/i,
-            use: [MiniCssExtractPlugin.loader, 'css-loader'],
-        }, ]
+            use: [
+                MiniCssExtractPlugin.loader,
+                { loader: 'css-loader', options: { url: true } },
+            ],
+        }]
     },
     optimization: {
         minimizer: [

@@ -3,6 +3,24 @@
    <img width="500" height="250" src="https://i.imgur.com/AvOk3yK.png">
  </p>
 
+<p align="center">
+
+
+</p>
+
+<p align="center">
+  <a href="https://github.com/sh4rkman/MSMC/blob/master/LICENSE"><img src="https://img.shields.io/github/license/Naereen/StrapDown.js.svg" alt="Licence"></a>
+</p>
+<p align="center">
+  <a href="https://validator.w3.org/nu/?doc=https%3A%2F%2Fmortar.sharkman.info%2F"><img src="https://img.shields.io/badge/W3C-Good-green.svg" alt="W3C"></a>
+  <a href="https://deepscan.io/dashboard#view=project&tid=12376&pid=15404&bid=306486"><img src="https://deepscan.io/api/teams/12376/projects/15404/branches/306486/badge/grade.svg" alt="Deepscan"></a>
+  <a href="https://www.codefactor.io/repository/github/sh4rkman/msmc"><img src="https://www.codefactor.io/repository/github/sh4rkman/msmc/badge" alt="CodeFactor"></a>
+</p>
+
+
+
+</br>
+
 # **Introduction**
 
 ## **MSMC** : A Minimalist Squad Mortar Calculator
@@ -20,7 +38,7 @@ Select a map, enter locations, shoot.
  
  
 <p align="center">
-  <img width="400" height="284" src="https://i.imgur.com/byY1m1P.png">
+  <img width="400" height="284" src="https://i.imgur.com/icCrf1q.png">
   <img width="150" height="284" src="https://i.imgur.com/05Iszff.png">
 </p>
 
@@ -41,6 +59,7 @@ Heightmaps are hidden : simply pick your map from the list and shoot.
   <img width="150" height="150" src="https://github.com/sh4rkman/MSMC/blob/master/src/img/heightmaps/tallil.jpg?raw=true">
 </p>
 <p align="center"><sub><sup>Examples of Heightmaps used for caculations (Gorodok & Tallil)</sub></sup></p>
+
 
 </br>
 
@@ -69,30 +88,24 @@ MSMC support different type of mortars :
 Save up to three calcs for later :
 
  </br>
+
  <p align="center">
    <img width="389" height="259" src="https://i.imgur.com/24gnFal.gif">
  </p>
 
  </br></br>
 
-
-# Thanks
-
-this project is **largely** inspired by the work of Endebert on <a href="https://github.com/Endebert/squadmc">SquadMC</a>.  
-I wanted a lighter alternative to this great tool, some could say this project is just a new interface to squadmc calculation code.
-
-</br></br>
-
 # Installation
 </br>
 
+
 ## Clone and install
+
 ```
 git clone https://github.com/sh4rkman/MSMC.git
 cd MSMC
 npm install
 ```
-
 
 ## Development
 ```
@@ -104,15 +117,11 @@ npm run start
 npm run build
 ```
 
+</br></br>
 
-</br>
+# Thanks
 
-# Licence
+this project is **largely** inspired by the work of Endebert on <a href="https://github.com/Endebert/squadmc">SquadMC</a>.  
+I wanted a lighter alternative to this great tool, some could say this project is just a new interface to squadmc calculation code.
 
 
-[![GitHub license](https://img.shields.io/github/license/Naereen/StrapDown.js.svg)](https://github.com/sh4rkman/MSMC/blob/master/LICENSE)  
-  
-</br>
-
-# Badges
- [![DeepScan grade](https://deepscan.io/api/teams/12376/projects/15404/branches/306486/badge/grade.svg)](https://deepscan.io/dashboard#view=project&tid=12376&pid=15404&bid=306486)  [![Generic badge](https://img.shields.io/badge/W3C-Good-green.svg)](https://validator.w3.org/nu/?doc=https%3A%2F%2Fmortar.sharkman.info%2F) [![CodeFactor](https://www.codefactor.io/repository/github/sh4rkman/msmc/badge)](https://www.codefactor.io/repository/github/sh4rkman/msmc) 
