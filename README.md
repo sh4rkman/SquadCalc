@@ -98,6 +98,7 @@ Save up to three calcs for later :
 # Installation
 </br>
 
+
 ## Clone and install
 
 ```
@@ -122,4 +123,5 @@ npm run build
 
 this project is **largely** inspired by the work of Endebert on <a href="https://github.com/Endebert/squadmc">SquadMC</a>.  
 I wanted a lighter alternative to this great tool, some could say this project is just a new interface to squadmc calculation code.
+
 
