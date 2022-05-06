@@ -92,9 +92,9 @@ export function loadHeatmap() {
 function drawHeatmap() {
     var img = new Image(); // Create new img element
     var ctx = document.getElementById('canvas').getContext('2d');
-    var map = $(".dropbtn option:selected").text().toLowerCase();
 
-    img.src = './img/heightmaps/' + map + '.jpg';
+
+    img.src = MAPS[$(".dropbtn").val()][3];
 
     img.addEventListener('load', function() { // wait for the image to load or it does crazy stuff
         ctx.drawImage(img, 0, 0, CANVAS_SIZE, CANVAS_SIZE);

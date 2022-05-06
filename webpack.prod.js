@@ -12,9 +12,9 @@ module.exports = merge(common, {
         new HtmlWebpackPlugin({
             template: './src/index.html',
             minify: {
-                //collapseWhitespace: true,
-                //removeComments: true,
-                //removeAttributeQuotes: true,
+                collapseWhitespace: true,
+                removeComments: true,
+                removeAttributeQuotes: true,
             }
         }),
         new MiniCssExtractPlugin({

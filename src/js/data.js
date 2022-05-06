@@ -1,12 +1,38 @@
+import AlBasrahURL from "../img/heightmaps/al basrah.jpg"
+import AnvilURL from "../img/heightmaps/anvil.jpg"
+import BelayaURL from "../img/heightmaps/belaya.jpg"
+import ChoraURL from "../img/heightmaps/chora.jpg"
+import FallujahURL from "../img/heightmaps/fallujah.jpg"
+import FoolsRoadURL from "../img/heightmaps/fool\'s road.jpg"
+import GooseBayURL from "../img/heightmaps/goose bay.jpg"
+import GorodokURL from "../img/heightmaps/gorodok.jpg"
+import KamdeshURL from "../img/heightmaps/kamdesh.jpg"
+import KohatURL from "../img/heightmaps/kohat.jpg"
+import KokanURL from "../img/heightmaps/kokan.jpg"
+import LashkarURL from "../img/heightmaps/lashkar.jpg"
+import LogarURL from "../img/heightmaps/logar.jpg"
+import ManicURL from "../img/heightmaps/manic.jpg"
+import MestiaURL from "../img/heightmaps/mestia.jpg"
+import MutahaURL from "../img/heightmaps/mutaha.jpg"
+import NarvaURL from "../img/heightmaps/narva.jpg"
+import SkorpoURL from "../img/heightmaps/skorpo.jpg"
+import SumariURL from "../img/heightmaps/sumari.jpg"
+import TallilURL from "../img/heightmaps/tallil.jpg"
+import YehorivkaURL from "../img/heightmaps/yehorivka.jpg"
+
+
+
 import { Weapon } from "./weapon.js";
 
-export const GRAVITY = 9.8;
-export const CANVAS_SIZE = 500;
+
 export const ClassicMortar = new Weapon("Classic", 109.890938, 1580);
 export const TechnicalMortar = new Weapon("Technical", 0, 83.8);
 export const MO120_SMortar = new Weapon("MO120_S", 109.890938, 1520);
 export const MO120_MMortar = new Weapon("MO120_M", 143.5, 1520);
 export const MO120_LMortar = new Weapon("MO120_L", 171.5, 1520);
+
+export const GRAVITY = 9.8;
+export const CANVAS_SIZE = 500;
 
 export var frenchSelection = 0;
 export var stopInfoTooltips = false;
@@ -21,29 +47,29 @@ export function setFrenchSelection(val) {
 }
 
 // Each map has a different size and require scaling w, y and z when calculating height
-// MAPS['Name', size, z-scaling]
+// MAPS['Name', size, z-scaling, mapURL]
 export const MAPS = [
-    ['Al Basrah', 3200, 0.025],
-    ['Anvil', 3060, 0.2],
-    ['Belaya', 3904, 0.5],
-    ['Chora', 4064, 0.06],
-    ['Fallujah', 4081, 0.055],
-    ['Fool\'s Road', 1736, 0.149],
-    ['Goose Bay', 4065, 0.2],
-    ['Gorodok', 4340, 0.13],
-    ['Kamdesh', 4032, 0.2],
-    ['Kohat', 4617, 1],
-    ['Kokan', 2496, 0.01],
-    ['Lashkar', 4334, 0.28],
-    ['Logar', 1761, 0.14],
-    ['Manic', 4065, 0.76],
-    ['Mestia', 2400, 0.4],
-    ['Mutaha', 2755, 0.4],
-    ['Narva', 2800, 0.057],
-    ['Skorpo', 7600, 2.0],
-    ['Sumari', 1300, 0.037],
-    ['Tallil', 4680, 0.055],
-    ['Yehorivka', 5000, 0.29]
+    ['Al Basrah', 3200, 0.025, AlBasrahURL],
+    ['Anvil', 3060, 0.2, AnvilURL],
+    ['Belaya', 3904, 0.5, BelayaURL],
+    ['Chora', 4064, 0.06, ChoraURL],
+    ['Fallujah', 4081, 0.055, FallujahURL],
+    ['Fool\'s Road', 1736, 0.149, FoolsRoadURL],
+    ['Goose Bay', 4065, 0.2, GooseBayURL],
+    ['Gorodok', 4340, 0.13, GorodokURL],
+    ['Kamdesh', 4032, 0.2, KamdeshURL],
+    ['Kohat', 4617, 1, KohatURL],
+    ['Kokan', 2496, 0.01, KokanURL],
+    ['Lashkar', 4334, 0.28, LashkarURL],
+    ['Logar', 1761, 0.14, LogarURL],
+    ['Manic', 4065, 0.76, ManicURL],
+    ['Mestia', 2400, 0.4, MestiaURL],
+    ['Mutaha', 2755, 0.4, MutahaURL],
+    ['Narva', 2800, 0.057, NarvaURL],
+    ['Skorpo', 7600, 2.0, SkorpoURL],
+    ['Sumari', 1300, 0.037, SumariURL],
+    ['Tallil', 4680, 0.055, TallilURL],
+    ['Yehorivka', 5000, 0.29, YehorivkaURL]
 ];
 
 // Since technicals mortars are acting weirdly, i have to stock these empirical values for now until i figure out how they work

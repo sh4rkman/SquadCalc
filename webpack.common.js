@@ -1,6 +1,4 @@
 const path = require('path');
-const CopyPlugin = require("copy-webpack-plugin");
-
 
 module.exports = {
     entry: {
@@ -10,13 +8,6 @@ module.exports = {
         weapon: './src/js/weapon.js',
         data: './src/js/data.js',
     },
-    plugins: [
-        new CopyPlugin({
-            patterns: [
-                { from: "./src/img/heightmaps/", to: "./img/heightmaps/" },
-            ],
-        }),
-    ],
     output: {
         filename: './src/js/[name].[contenthash].bundle.js',
         path: path.resolve(__dirname, 'dist'),
