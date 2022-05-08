@@ -4,6 +4,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
+const FaviconsWebpackPlugin = require('favicons-webpack-plugin')
 
 module.exports = merge(common, {
     mode: 'production',
@@ -15,6 +16,17 @@ module.exports = merge(common, {
                 collapseWhitespace: true,
                 removeComments: true,
                 removeAttributeQuotes: true,
+            }
+        }),
+        new FaviconsWebpackPlugin({
+            logo: './src/img/favicon.png',
+            cache: false,
+            outputPath: 'src/img/favicons/',
+            prefix: './src/img/favicons/',
+            inject: true,
+            favicons: {
+                background: '#111',
+                theme_color: '#FFF',
             }
         }),
         new MiniCssExtractPlugin({
