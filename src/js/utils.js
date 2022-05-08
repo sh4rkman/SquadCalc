@@ -18,6 +18,8 @@ import {
     MO120_MMortar,
     MO120_LMortar,
 } from "./data.js";
+import { isNull } from "lodash";
+
 
 
 // Events Listener
@@ -31,6 +33,20 @@ $(document).on('keypress', '#mortar-location', function(event) { filterInput(eve
 $(document).on('keypress', '#target-location', function(event) { filterInput(event); });
 $(document).on('click', '.del', function() { RemoveSaves(this); });
 $(document).on('click', '#savespan', function() { copySave($(this)) });
+
+
+$(document).on('click', '.logo', function() {
+
+    if ($('body').attr('data-theme') === 'classic') {
+        changeTheme('dark');
+    } else if ($('body').attr('data-theme') === 'dark') {
+        changeTheme('blue');
+    } else if ($('body').attr('data-theme') === 'blue') {
+        changeTheme('green');
+    } else {
+        changeTheme('classic');
+    }
+});
 
 $(document).on('click', '.save', function() {
 
@@ -703,4 +719,28 @@ export function preventAutocomplete() {
  */
 function resizeInput(i) {
     i.style.width = i.value.length * 1.2 + "ch";
+}
+
+
+/**
+ * Apply theme to css
+ * @param {String} theme - theme to be applied
+ */
+function changeTheme(theme) {
+    localStorage.setItem("data-theme", theme);
+    $('body').attr('data-theme', theme);
+}
+
+/**
+ * get last theme used by user and apply it
+ */
+export function getTheme() {
+    var theme = localStorage.getItem("data-theme");
+
+    if (theme === null) {
+        theme = 'classic';
+        return 1;
+    }
+
+    changeTheme(theme);
 }
