@@ -131,18 +131,16 @@ button:focus {
         &:hover {
             cursor: pointer;
         }
-    }
-    input:checked+label {
-        background-color: #ffffff;
-        box-shadow: none;
-    }
-    label {
         &:first-of-type {
             border-radius: 5px 0 0 5px;
         }
         &:last-of-type {
             border-radius: 0 5px 5px 0;
         }
+    }
+    input:checked+label {
+        background-color: #ffffff;
+        box-shadow: none;
     }
 }
 
@@ -167,18 +165,16 @@ button:focus {
         &:hover {
             cursor: pointer;
         }
-    }
-    input:checked+label {
-        background-color: #ffffff;
-        box-shadow: none;
-    }
-    label {
         &:first-of-type {
             border-radius: 5px 5px 0 0;
         }
         &:last-of-type {
             border-radius: 0 0 5px 5px;
         }
+    }
+    input:checked+label {
+        background-color: #ffffff;
+        box-shadow: none;
     }
 }
 
