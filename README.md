@@ -103,7 +103,7 @@ Save up to three calcs for later :
 ```
 git clone https://github.com/sh4rkman/MSMC.git
 cd MSMC
-npm install
+npm ci
 ```
 
 ## Development
