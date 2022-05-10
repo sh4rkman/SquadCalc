@@ -35,12 +35,6 @@ export const GRAVITY = 9.8;
 export const CANVAS_SIZE = 500;
 
 export var frenchSelection = 0;
-export var stopInfoTooltips = false;
-
-
-export function setStopInfoTooltips(val) {
-    stopInfoTooltips = val;
-}
 
 export function setFrenchSelection(val) {
     frenchSelection = val;

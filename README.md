@@ -21,7 +21,23 @@
 
 </br>
 
-# **MSMC** : A Minimalist Squad Mortar Calculator
+
+
+- [Introduction](#introduction)
+- [Features](#le-projet)
+  - [Elevations Calculations](#le-projet)
+  - [Different Weapons Support](#les-données)
+  - [Calculation Saving](#les-technologies)
+- [Installation](#Installation)
+- [Thanks](#Thanks)  
+
+  
+
+</br>
+</br>
+
+# A Minimalist Squad Mortar Calculator
+
 
 
 </br>
@@ -106,7 +122,7 @@ cd MSMC
 npm ci
 ```
 
-## Development
+## Running a development local server
 ```
 npm run start
 ```

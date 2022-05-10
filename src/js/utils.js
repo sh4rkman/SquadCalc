@@ -10,17 +10,12 @@ import {
     CANVAS_SIZE,
     frenchSelection,
     setFrenchSelection,
-    stopInfoTooltips,
-    setStopInfoTooltips,
     ClassicMortar,
     TechnicalMortar,
     MO120_SMortar,
     MO120_MMortar,
     MO120_LMortar,
 } from "./data.js";
-import { isNull } from "lodash";
-
-
 
 // Events Listener
 $(document).on('change', '.switch-field', function() { shoot(); });
@@ -67,7 +62,10 @@ $(document).on('click', '.save', function() {
     $(".saved_list p").last().show("fast");
 
     // the user understood he can click2copy, remove the tooltip now
-    tooltip_save.disable();
+    if (localStorage.getItem("InfoToolTips_save") !== 'true') {
+        tooltip_save.disable();
+        localStorage.setItem("InfoToolTips_save", 'true');
+    }
 });
 
 
@@ -80,7 +78,7 @@ $(document).on('click', '#copy', function() {
     COPY_ZONE.effect("bounce", 500);
 
     // the user understood he can click2copy, remove the tooltip
-    setStopInfoTooltips(true);
+    localStorage.setItem("InfoToolTips_copy", true);
     tooltip_copy.disable();
     tooltip_copied.enable();
     tooltip_copied.show();
@@ -391,8 +389,9 @@ function shoot() {
     $(".save").addClass("hidden");
 
     // draw pointer cursor & tooltip on results
-    if (!stopInfoTooltips) {
+    if (localStorage.getItem("InfoToolTips_copy") !== 'true') {
         tooltip_copy.enable();
+        tooltip_copy.show();
     }
     $("#copy").addClass("copy");
 

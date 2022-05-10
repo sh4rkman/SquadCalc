@@ -43,7 +43,9 @@ tippy('#french', {
 
 tippy('#settings', {
     animation: 'fade',
-    content: "Click to copy to clipboard!",
+    content: "Click results to copy to clipboard and share it ingame!",
+    delay: [100, 10000000000],
+    hideOnClick: "toggle",
     placement: 'bottom',
 });
 
@@ -58,6 +60,7 @@ tippy('#settings', {
     content: "<i class=\"fa fa-check\"></i> Copied !",
     placement: "bottom",
     theme: 'new',
+    trigger: 'manual',
     onShow(instance) {
         setTimeout(() => {
             instance.hide();
@@ -79,13 +82,15 @@ tippy('.github', {
     content: "View code on GitHub!",
 });
 
-tippy('.save i', {
-    animation: 'fade',
-    content: "Save for later",
-    interactiveDebounce: 75,
-    placement: 'right',
-});
-tooltip_save = document.querySelector('.save i')._tippy;
+if (localStorage.getItem("InfoToolTips_save") !== 'true') {
+    tippy('.save i', {
+        animation: 'fade',
+        content: "Save for later",
+        interactiveDebounce: 75,
+        placement: 'right',
+    });
+    tooltip_save = document.querySelector('.save i')._tippy;
+}
 
 
 export function enableTooltip(tooltip) {
