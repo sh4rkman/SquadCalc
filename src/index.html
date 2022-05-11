@@ -28,6 +28,13 @@
     <meta name="msapplication-config" content="/src/img/favicons/browserconfig.xml">
     <meta name="theme-color" content="#111111">
 
+    <!-- FUCK IE, I GIVE UP -->
+    <script type="text/javascript">
+        if (navigator.appName.indexOf("Internet Explorer") != -1 || navigator.userAgent.match(/Trident.*rv[ :]*11\./)) {
+            window.location = "https://choosebrowser.com/";
+        }
+    </script>
+
     <!-- CSS/FONT -->
     <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.1/build/pure-min.css" integrity="sha384-oAOxQR6DkCoMliIh8yFnu25d7Eq/PHS21PClpwjOTeU2jRSq11vu66rf90/cZr47" crossorigin="anonymous">
     <link rel="stylesheet" href="https://unpkg.com/purecss@2.0.6/build/grids-responsive-min.css" />
