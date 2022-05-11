@@ -1,7 +1,5 @@
 import {
     tooltip_copy,
-    tooltip_save,
-    tooltip_copied
 } from "./tooltips.js";
 
 import {
@@ -671,7 +669,6 @@ export function getTheme() {
     var theme = localStorage.getItem("data-theme");
 
     if (theme === null) {
-        theme = 'classic';
         return 1;
     }
 
