@@ -26,7 +26,10 @@ module.exports = {
             {
                 test: /\.js$/,
                 exclude: /node_modules/,
-                loader: "babel-loader"
+                loader: "babel-loader",
+                options: {
+                    presets: ['@babel/preset-env'],
+                }
             },
         ]
     },
@@ -36,5 +39,4 @@ module.exports = {
             chunks: 'all',
         },
     },
-
 };
