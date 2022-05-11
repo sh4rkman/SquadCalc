@@ -20,19 +20,6 @@
 
 
 </br>
-
-
-
-- [Introduction](#introduction)
-- [Features](#le-projet)
-  - [Elevations Calculations](#le-projet)
-  - [Different Weapons Support](#les-données)
-  - [Calculation Saving](#les-technologies)
-- [Installation](#Installation)
-- [Thanks](#Thanks)  
-
-  
-
 </br>
 </br>
 

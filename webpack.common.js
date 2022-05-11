@@ -7,6 +7,7 @@ module.exports = {
         tooltips: './src/js/tooltips.js',
         weapon: './src/js/weapon.js',
         data: './src/js/data.js',
+        listeners: './src/js/listeners.js',
     },
     output: {
         filename: './src/js/[name].[contenthash].bundle.js',
@@ -22,11 +23,6 @@ module.exports = {
             {
                 test: /\.(png|svg|jpg|jpeg|gif)$/i,
                 type: 'asset/resource',
-            },
-            {
-                test: /\.js$/,
-                exclude: /node_modules/,
-                loader: "babel-loader"
             },
         ]
     },
