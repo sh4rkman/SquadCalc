@@ -659,7 +659,7 @@ export function resizeInput(i) {
  * Apply theme to css
  * @param {String} theme - theme to be applied
  */
-function changeTheme(theme) {
+export function changeTheme(theme) {
     localStorage.setItem("data-theme", theme);
     $('body').attr('data-theme', theme);
 }
