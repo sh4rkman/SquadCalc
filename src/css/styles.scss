@@ -394,8 +394,16 @@ span.select2-selection.select2-selection--single {
     bottom: 5px;
     position: absolute;
     a {
-        color: rgb(255, 255, 255);
+        color: #333;
     }
+}
+
+#social-yt:hover {
+    color: red;
+}
+
+#social-gh:hover {
+    color: black;
 }
 
 .youtube {
@@ -411,7 +419,7 @@ span.select2-selection.select2-selection--single {
 
 /***************************************
    ************   MISC   ***************
-   **************************************/
+**************************************/
 
 
 /* Fix to avoid https://purecss.io/grids/#applying-padding-and-borders-to-grid-units */
@@ -436,7 +444,7 @@ span.select2-selection.select2-selection--single {
 
 /****************
    *  Error Message
-   *****************/
+*****************/
 
 .errorMsg {
     cursor: default;
@@ -453,9 +461,9 @@ span.select2-selection.select2-selection--single {
 }
 
 
-/****************
-   *  Tippy.js ToolTips customization
-   *****************/
+/**************************************
+*  Tippy.js ToolTips customization
+***************************************/
 
 .tippy-box {
     &[data-theme~='new'] {
