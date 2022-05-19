@@ -16,7 +16,7 @@ tippy('#technical', {
 
 tippy('#hell', {
     animation: 'fade',
-    content: "Hell mortar",
+    content: "Hell Cannon",
 });
 
 tippy('#french', {

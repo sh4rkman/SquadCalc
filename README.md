@@ -73,6 +73,7 @@ Heightmaps are hidden : simply pick your map from the list and shoot.
 MSMC support different type of mortars :
 - Classics mortars
 - Technicals mortars
+- Hell Canon (Insurgents)
 - Long range (3000m) 120mm mortars from the <a href="https://smf.tactical-collective.com/">French Mod</a>
 
  </br>

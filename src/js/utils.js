@@ -382,6 +382,7 @@ export function shoot() {
 
     distance = getDist(a, b);
     vel = getVelocity(distance);
+
     elevation = getElevation(distance, height, vel);
 
 
@@ -400,6 +401,11 @@ export function shoot() {
         }
     } else if ($("#radio-two").is(':checked')) { // If technical mortar
         if (elevation > TechnicalMortar.minDistance) {
+            showError("Target is too close : " + distance.toFixed(0) + "m", "target");
+            return 1;
+        }
+    } else if ($("#radio-three").is(':checked')) { // If technical mortar
+        if (elevation > HellMortar.minDistance) {
             showError("Target is too close : " + distance.toFixed(0) + "m", "target");
             return 1;
         }
