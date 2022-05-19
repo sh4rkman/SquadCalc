@@ -7,9 +7,9 @@ import { loadHeatmap, loadMaps, preventAutocomplete, getTheme } from "./js/utils
 
 
 $(function() {
+    getTheme();
     loadMaps();
     loadHeatmap();
     preventAutocomplete();
-    getTheme();
     console.log("Calculator Loaded!");
 });
