@@ -1,0 +1,51 @@
+$blueBG: #030330;
+$blueColor: white;
+[data-theme='blue'] {
+    background-color: $blueBG;
+    color: $blueColor !important;
+    border-color: $blueColor;
+}
+
+[data-theme='blue'] .select2 {
+    background-color: $blueBG;
+    color: $blueColor !important;
+    border-color: $blueColor!important;
+}
+
+[data-theme='blue'] .select2-container {
+    background-color: $blueBG;
+    color: $blueColor !important;
+    border-color: $blueColor;
+}
+
+[data-theme='blue'] .select2-selection__rendered {
+    background-color: $blueBG;
+    color: $blueColor !important;
+    border-color: $blueColor;
+}
+
+[data-theme='blue'] .select2-results__options {
+    background-color: $blueBG;
+    color: $blueColor !important;
+    border-color: $blueColor;
+}
+
+[data-theme='blue'] input {
+    border-color: $blueColor;
+}
+
+[data-theme='blue'] .results {
+    border-color: $blueColor;
+}
+
+[data-theme='blue'] .switch-field input:checked+label {
+    background-color: $blueColor;
+}
+
+[data-theme='blue'] .switch-field label {
+    background-color: #464444;
+}
+
+[data-theme='blue'] .error {
+    border: 5px solid FireBrick;
+}

@@ -1,16 +1,7 @@
-.pure-g [class *="pure-u"] {
-    text-align: center;
-}
-
-a:visited {
-    text-decoration: none;
-}
-
-
 /*
- * -- BASE STYLES --
- * Most of these are inherited from Base, but I want to change a few.
- */
+   * -- BASE STYLES --
+   * Most of these are inherited from Base, but I want to change a few.
+   */
 
 body {
     /* line-height: 1.7em; */
@@ -23,9 +14,14 @@ button,
 input,
 select,
 textarea,
-.pure-g [class *="pure-u"] {
+.pure-g [class*="pure-u"] {
     font-family: 'Montserrat', Times, "Times New Roman", serif;
     letter-spacing: 0.1em;
+    text-align: center;
+}
+
+a:visited {
+    text-decoration: none;
 }
 
 img {
@@ -49,10 +45,9 @@ input {
     text-align: center;
     text-transform: uppercase;
     width: 100%;
-}
-
-input:focus {
-    outline: none;
+    &:focus {
+        outline: none;
+    }
 }
 
 button:focus {
@@ -61,33 +56,31 @@ button:focus {
 
 
 /***************************************
- ************   HEADER   ***************
- **************************************/
+   ************   HEADER   ***************
+   **************************************/
 
 
 /****************
- *     Logo
- *****************/
+   *     Logo
+   *****************/
 
 .logo img {
     margin-top: 10px;
+    &:hover {
+        cursor: pointer;
+    }
 }
 
 
 /****************
- * Weapon Selector
- *****************/
+   * Weapon Selector
+   *****************/
 
 .weaponSelector {
     padding: 1em 0 0.5em;
 }
 
-.mortar_selector {
-    display: inline-block;
-    height: 30px;
-    width: 70px;
-}
-
+.mortar_selector,
 .french_mortar_selector {
     display: inline-block;
     height: 30px;
@@ -124,37 +117,31 @@ button:focus {
     margin: auto;
     overflow: hidden;
     z-index: 5;
-}
-
-.switch-field input {
-    border: 0;
-    clip: rect(0, 0, 0, 0);
-    height: 1px;
-    overflow: hidden;
-    position: absolute !important;
-    width: 1px;
-}
-
-.switch-field label {
-    background-color: #464444;
-    transition: all 0.2s ease-in-out;
-}
-
-.switch-field label:hover {
-    cursor: pointer;
-}
-
-.switch-field input:checked+label {
-    background-color: #ffffff;
-    box-shadow: none;
-}
-
-.switch-field label:first-of-type {
-    border-radius: 5px 0 0 5px;
-}
-
-.switch-field label:last-of-type {
-    border-radius: 0 5px 5px 0;
+    input {
+        border: 0;
+        clip: rect(0, 0, 0, 0);
+        height: 1px;
+        overflow: hidden;
+        position: absolute !important;
+        width: 1px;
+    }
+    label {
+        background-color: #464444;
+        transition: all 0.2s ease-in-out;
+        &:hover {
+            cursor: pointer;
+        }
+        &:first-of-type {
+            border-radius: 5px 0 0 5px;
+        }
+        &:last-of-type {
+            border-radius: 0 5px 5px 0;
+        }
+    }
+    input:checked+label {
+        background-color: #ffffff;
+        box-shadow: none;
+    }
 }
 
 .switch-field2 {
@@ -164,43 +151,37 @@ button:focus {
     margin: auto;
     overflow: hidden;
     z-index: 5;
-}
-
-.switch-field2 input {
-    border: 0;
-    clip: rect(0, 0, 0, 0);
-    height: 1px;
-    overflow: hidden;
-    position: absolute !important;
-    width: 1px;
-}
-
-.switch-field2 label {
-    background-color: #464444;
-    transition: all 0.2s ease-in-out;
-}
-
-.switch-field2 label:hover {
-    cursor: pointer;
-}
-
-.switch-field2 input:checked+label {
-    background-color: #ffffff;
-    box-shadow: none;
-}
-
-.switch-field2 label:first-of-type {
-    border-radius: 5px 5px 0 0;
-}
-
-.switch-field2 label:last-of-type {
-    border-radius: 0 0 5px 5px;
+    input {
+        border: 0;
+        clip: rect(0, 0, 0, 0);
+        height: 1px;
+        overflow: hidden;
+        position: absolute !important;
+        width: 1px;
+    }
+    label {
+        background-color: #464444;
+        transition: all 0.2s ease-in-out;
+        &:hover {
+            cursor: pointer;
+        }
+        &:first-of-type {
+            border-radius: 5px 5px 0 0;
+        }
+        &:last-of-type {
+            border-radius: 0 0 5px 5px;
+        }
+    }
+    input:checked+label {
+        background-color: #ffffff;
+        box-shadow: none;
+    }
 }
 
 
 /****************
- *  Map Selector
- *****************/
+   *  Map Selector
+   *****************/
 
 .mapSelector {
     padding: 1em 0 0.5em;
@@ -211,33 +192,32 @@ button:focus {
 }
 
 .dropbtn {
-    background: #111!important;
+    background: #111 !important;
     color: #ffffff;
     font-weight: bold;
     line-height: 2.188em;
     text-transform: uppercase;
-}
-
-.dropbtn select {
-    -moz-appearance: none;
-    -webkit-appearance: none;
-    appearance: none;
-    background-color: transparent;
-    background-image: none;
-    border: none;
-    box-shadow: none;
+    select {
+        -moz-appearance: none;
+        -webkit-appearance: none;
+        appearance: none;
+        background-color: transparent;
+        background-image: none;
+        border: none;
+        box-shadow: none;
+    }
 }
 
 .select2-search {
-    background: white!important;
-    color: rgb(161, 142, 142)!important;
-    font-size: 1em!important;
+    background: white !important;
+    color: rgb(161, 142, 142) !important;
+    font-size: 1em !important;
 }
 
 .select2-selection {
-    background: #111!important;
-    border: none!important;
-    color: white!important;
+    background: #111 !important;
+    border: none !important;
+    color: white !important;
     font-size: 1em;
 }
 
@@ -247,10 +227,10 @@ button:focus {
 
 .select2-container {
     background-color: #111;
-    border-bottom: 1px solid white!important;
+    border-bottom: 1px solid white !important;
     border: 0;
-    box-shadow: none!important;
-    color: #ffffff!important;
+    box-shadow: none !important;
+    color: #ffffff !important;
     font-size: 1em;
     font-weight: bold;
     line-height: 2.188em;
@@ -260,23 +240,23 @@ button:focus {
 }
 
 .select2-results__options {
-    max-height: 350px!important;
+    max-height: 350px !important;
     line-height: 1.4em;
 }
 
 .select2-search__field {
-    color: #111!important;
-    font-size: 1em!important;
+    color: #111 !important;
+    font-size: 1em !important;
     height: 1.4em;
-    text-transform: none!important;
+    text-transform: none !important;
 }
 
 .select2-selection__rendered {
-    color: #ffffff!important;
+    color: #ffffff !important;
 }
 
 .select2-results__message {
-    padding-top: 20px!important;
+    padding-top: 20px !important;
 }
 
 
@@ -292,13 +272,13 @@ span.select2-selection.select2-selection--single {
 
 
 /***************************************
- ************   CONTENT   ***************
- **************************************/
+   ************   CONTENT   ***************
+   **************************************/
 
 
 /****************
- *    Results
- *****************/
+   *    Results
+   *****************/
 
 .results {
     border-radius: 5px;
@@ -310,22 +290,20 @@ span.select2-selection.select2-selection--single {
     position: relative;
 }
 
-.save i {
-    font-size: 0.5em;
-    position: relative;
-}
-
 .save {
+    i {
+        font-size: 0.5em;
+        position: relative;
+    }
     background-color: transparent;
     border: none;
     bottom: 0;
     padding: 0 5px;
     position: absolute;
     right: 0;
-}
-
-.save:focus {
-    outline: none;
+    &:focus {
+        outline: none;
+    }
 }
 
 .copy:hover {
@@ -334,17 +312,16 @@ span.select2-selection.select2-selection--single {
 
 .coord {
     padding: 0.625em 0;
-}
-
-.coord img {
-    height: 30px;
-    width: 30px;
+    img {
+        height: 30px;
+        width: 30px;
+    }
 }
 
 
 /********************
- * Canvas / Heightmaps
- *********************/
+   * Canvas / Heightmaps
+   *********************/
 
 #heatmap {
     display: none;
@@ -359,25 +336,21 @@ span.select2-selection.select2-selection--single {
 
 
 /****************
- *   Saved calcs
- *****************/
+   *   Saved calcs
+   *****************/
 
 .saved {
     font-size: 0.6em;
-}
-
-.saved i {
-    cursor: pointer;
+    i {
+        cursor: pointer;
+    }
 }
 
 .saved_list p {
     margin: 0.5em;
 }
 
-.fa:hover {
-    cursor: pointer;
-}
-
+.fa:hover,
 #savespan:hover {
     cursor: pointer;
 }
@@ -394,13 +367,13 @@ span.select2-selection.select2-selection--single {
 
 
 /***************************************
- ************   FOOTER   ***************
- **************************************/
+   ************   FOOTER   ***************
+   **************************************/
 
 
 /****************
- *    Footer
- *****************/
+   *    Footer
+   *****************/
 
 .footer {
     bottom: 0;
@@ -414,16 +387,15 @@ span.select2-selection.select2-selection--single {
 
 
 /****************
- *  Social Buttons
- *****************/
+   *  Social Buttons
+   *****************/
 
 .social {
     bottom: 5px;
     position: absolute;
-}
-
-.social a {
-    color: #333;
+    a {
+        color: #333;
+    }
 }
 
 #social-yt:hover {
@@ -446,8 +418,8 @@ span.select2-selection.select2-selection--single {
 
 
 /***************************************
- ************   MISC   ***************
- **************************************/
+   ************   MISC   ***************
+**************************************/
 
 
 /* Fix to avoid https://purecss.io/grids/#applying-padding-and-borders-to-grid-units */
@@ -471,8 +443,8 @@ span.select2-selection.select2-selection--single {
 
 
 /****************
- *  Error Message
- *****************/
+   *  Error Message
+*****************/
 
 .errorMsg {
     cursor: default;
@@ -489,38 +461,34 @@ span.select2-selection.select2-selection--single {
 }
 
 
-/****************
- *  Tippy.js ToolTips customization
- *****************/
+/**************************************
+*  Tippy.js ToolTips customization
+***************************************/
 
-.tippy-box[data-theme~='new'][data-placement^='top']>.tippy-arrow::before {
-    border-top-color: green;
-}
-
-.tippy-box[data-theme~='new'][data-placement^='bottom']>.tippy-arrow::before {
-    border-bottom-color: green;
-}
-
-.tippy-box[data-theme~='new'][data-placement^='left']>.tippy-arrow::before {
-    border-left-color: green;
-}
-
-.tippy-box[data-theme~='new'][data-placement^='right']>.tippy-arrow::before {
-    border-right-color: green;
-}
-
-.tippy-box[data-theme~='new'] {
-    background-color: green;
-    color: white;
-    font-weight: bold;
-    letter-spacing: .1rem;
-}
-
-.tippy-box[data-theme~="french"] .tippy-content {
-    padding: 0;
-}
-
-.tippy-box[data-theme~="120mm"] .tippy-content {
-    text-align: center;
-    letter-spacing: .1rem;
+.tippy-box {
+    &[data-theme~='new'] {
+        &[data-placement^='top']>.tippy-arrow::before {
+            border-top-color: green;
+        }
+        &[data-placement^='bottom']>.tippy-arrow::before {
+            border-bottom-color: green;
+        }
+        &[data-placement^='left']>.tippy-arrow::before {
+            border-left-color: green;
+        }
+        &[data-placement^='right']>.tippy-arrow::before {
+            border-right-color: green;
+        }
+        background-color: green;
+        color: white;
+        font-weight: bold;
+        letter-spacing: .1rem;
+    }
+    &[data-theme~="french"] .tippy-content {
+        padding: 0;
+    }
+    &[data-theme~="120mm"] .tippy-content {
+        text-align: center;
+        letter-spacing: .1rem;
+    }
 }

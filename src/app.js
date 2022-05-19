@@ -1,10 +1,13 @@
-import './css/styles.css';
-import './css/responsive.css';
-import { loadHeatmap } from "./js/utils.js";
-import { loadMaps } from "./js/utils.js";
-import { preventAutocomplete } from "./js/utils.js";
+import './css/darktheme.scss';
+import './css/bluetheme.scss';
+import './css/greentheme.scss';
+import './css/styles.scss';
+import './css/responsive.scss';
+import { loadHeatmap, loadMaps, preventAutocomplete, getTheme } from "./js/utils.js";
+
 
 $(function() {
+    getTheme();
     loadMaps();
     loadHeatmap();
     preventAutocomplete();
