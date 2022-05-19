@@ -30,6 +30,7 @@ export const TechnicalMortar = new Weapon("Technical", 0, 83.8);
 export const MO120_SMortar = new Weapon("MO120_S", 109.890938, 1520);
 export const MO120_MMortar = new Weapon("MO120_M", 143.5, 1520);
 export const MO120_LMortar = new Weapon("MO120_L", 171.5, 1520);
+export const HellMortar = new Weapon("Hell", 93.171, 90);
 
 export const GRAVITY = 9.8;
 export const CANVAS_SIZE = 500;
@@ -84,4 +85,20 @@ export const TECHNICALS = [
     [1100, 106.3455911],
     [1200, 108.7830358],
     [1233, 109.7640997]
+];
+
+
+// HELL[distance, Velocity]
+export const HELL = [
+    [150, 80.346],
+    [200, 81.644],
+    [300, 86.832],
+    [400, 90.044],
+    [500, 90.576],
+    [600, 93.171],
+    [700, 93.035],
+    [800, 94.138],
+    [875, 94.924],
+    [900, 94.387],
+    [925, 95.231],
 ];

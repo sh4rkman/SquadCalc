@@ -106,6 +106,9 @@
     .mortar_selector_technical {
         background: url("../img/icons/technical_mortar.png") no-repeat scroll 6px 3px transparent;
     }
+    .mortar_selector_hell {
+        background: url("../img/icons/hell_mortar.png") no-repeat scroll 6px 3px transparent;
+    }
     .mortar_selector_french {
         background: url("../img/icons/french_mortar.png") no-repeat scroll 6px 3px transparent;
     }
@@ -231,6 +234,7 @@
         }
         .mortar_selector_classic,
         .mortar_selector_technical,
+        .mortar_selector_hell,
         .mortar_selector_french,
         .french_mortar_selector_short,
         .french_mortar_selector_medium,
