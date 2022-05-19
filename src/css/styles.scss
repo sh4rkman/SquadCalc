@@ -64,8 +64,9 @@ button:focus {
    *     Logo
    *****************/
 
-.logo img {
+.logo {
     margin-top: 10px;
+    width: auto;
     &:hover {
         cursor: pointer;
     }
