@@ -7,6 +7,7 @@ module.exports = {
         tooltips: './src/js/tooltips.js',
         weapon: './src/js/weapon.js',
         data: './src/js/data.js',
+        listeners: './src/js/listeners.js',
     },
     output: {
         filename: './src/js/[name].[contenthash].bundle.js',

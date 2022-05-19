@@ -7,7 +7,7 @@
 
 @media (min-height: 35em) {
     .select2-results__options {
-        max-height: 370px!important;
+        max-height: 370px !important;
     }
 }
 
@@ -17,7 +17,7 @@
 @media (min-height: 45em) {
     .select2-results__options {
         line-height: 1em;
-        max-height: 570px!important;
+        max-height: 570px !important;
     }
 }
 
@@ -26,14 +26,14 @@
 
 @media (min-height: 50em) {
     .select2-results__options {
-        max-height: 700px!important;
+        max-height: 700px !important;
     }
 }
 
 
 /***************************************************
- ************   WIDTH ADJUSTMENTS  ***************
- ***************************************************/
+   ************   WIDTH ADJUSTMENTS  ***************
+   ***************************************************/
 
 @media screen and (max-width: 48em) {
     /* -- L*568px -- */
@@ -66,7 +66,7 @@
     /* -- L*800px -- */
     @media (min-height: 50em) {
         input {
-            font-size: 1.2;
+            font-size: 1.2em;
         }
         .results {
             font-size: 1.7em;
@@ -201,7 +201,7 @@
         .select2-results__options {
             font-size: 1.2em;
             line-height: 1.1em;
-            max-height: 1000px!important;
+            max-height: 1000px !important;
         }
         .select2-selection__placeholder {
             font-size: 1.1em;
@@ -223,45 +223,35 @@
         .saved {
             font-size: 1em;
         }
-        .mortar_selector {
-            display: inline-block;
-            height: 45px;
-            width: 95px;
-        }
+        .mortar_selector,
         .french_mortar_selector {
             display: inline-block;
             height: 45px;
             width: 95px;
         }
-        .mortar_selector_classic {
-            background-size: 85%;
-        }
-        .mortar_selector_technical {
-            background-size: 85%;
-        }
-        .mortar_selector_french {
-            background-size: 85%;
-        }
-        .french_mortar_selector_short {
-            background-size: 85%;
-        }
-        .french_mortar_selector_medium {
-            background-size: 85%;
-        }
+        .mortar_selector_classic,
+        .mortar_selector_technical,
+        .mortar_selector_french,
+        .french_mortar_selector_short,
+        .french_mortar_selector_medium,
         .french_mortar_selector_long {
             background-size: 85%;
         }
-        .switch-field label:first-of-type {
-            border-radius: 10px 0 0 10px;
+        .switch-field label {
+            &:first-of-type {
+                border-radius: 10px 0 0 10px;
+            }
+            &:last-of-type {
+                border-radius: 0 10px 10px 0;
+            }
         }
-        .switch-field label:last-of-type {
-            border-radius: 0 10px 10px 0;
-        }
-        .switch-field2 label:first-of-type {
-            border-radius: 10px 10px 0 0;
-        }
-        .switch-field2 label:last-of-type {
-            border-radius: 0 0 10px 10px;
+        .switch-field2 label {
+            &:first-of-type {
+                border-radius: 10px 10px 0 0;
+            }
+            &:last-of-type {
+                border-radius: 0 0 10px 10px;
+            }
         }
         .logo img {
             height: 120%;

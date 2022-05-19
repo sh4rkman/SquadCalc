@@ -23,10 +23,11 @@ module.exports = merge(common, {
     ],
     module: {
         rules: [{
-            test: /\.css$/i,
+            test: /\.scss$/i,
             use: [
                 MiniCssExtractPlugin.loader,
                 { loader: 'css-loader', options: { url: true } },
+                'sass-loader'
             ],
         }]
     },

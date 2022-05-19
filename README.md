@@ -20,10 +20,12 @@
 
 
 </br>
+</br>
+</br>
 
-# **Introduction**
+# A Minimalist Squad Mortar Calculator
 
-## **MSMC** : A Minimalist Squad Mortar Calculator
+
 
 </br>
 
@@ -90,7 +92,7 @@ Save up to three calcs for later :
  </br>
 
  <p align="center">
-   <img width="389" height="259" src="https://i.imgur.com/24gnFal.gif">
+   <img width="523" height="399" src="https://i.imgur.com/24gnFal.gif">
  </p>
 
  </br></br>
@@ -104,10 +106,10 @@ Save up to three calcs for later :
 ```
 git clone https://github.com/sh4rkman/MSMC.git
 cd MSMC
-npm install
+npm ci
 ```
 
-## Development
+## Running a development local server
 ```
 npm run start
 ```
@@ -121,7 +123,7 @@ npm run build
 
 # Thanks
 
-this project is **largely** inspired by the work of Endebert on <a href="https://github.com/Endebert/squadmc">SquadMC</a>.  
+This project is **largely** inspired by the work of Endebert on <a href="https://github.com/Endebert/squadmc">SquadMC</a>.  
 I wanted a lighter alternative to this great tool, some could say this project is just a new interface to squadmc calculation code.
 
 
