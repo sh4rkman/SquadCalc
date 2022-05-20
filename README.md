@@ -78,7 +78,7 @@ MSMC support different type of mortars :
 
  </br>
  <p align="center">
-   <img width="229" height="43" src="https://i.imgur.com/QVUnpec.png">
+   <img width="269" height="35" src="./src/img/weapons.png">
  </p>
 
  </br></br>
