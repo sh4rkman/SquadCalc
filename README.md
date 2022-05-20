@@ -1,6 +1,6 @@
 
  <p align="center">
-   <img width="500" height="250" src="https://i.imgur.com/AvOk3yK.png">
+   <img width="500" height="250" src="./src/img/github/logo.png">
  </p>
 
 <p align="center">
@@ -40,8 +40,8 @@ Select a map, enter locations, shoot.
  
  
 <p align="center">
-  <img width="400" height="284" src="https://i.imgur.com/icCrf1q.png">
-  <img width="150" height="284" src="https://i.imgur.com/05Iszff.png">
+  <img width="400" height="284" src="./src/img/github/desktop.png">
+  <img width="150" height="284" src="./src/img/github/mobile.png">
 </p>
 
 # **Features**
@@ -78,7 +78,7 @@ MSMC support different type of mortars :
 
  </br>
  <p align="center">
-   <img width="269" height="35" src="./src/img/weapons.png">
+   <img width="269" height="35" src="./src/img/github/weapons.png">
  </p>
 
  </br></br>
@@ -93,7 +93,7 @@ Save up to three calcs for later :
  </br>
 
  <p align="center">
-   <img width="523" height="399" src="https://i.imgur.com/24gnFal.gif">
+   <img width="523" height="399" src="./src/img/github/save.gif">
  </p>
 
  </br></br>
