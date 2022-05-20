@@ -13,6 +13,7 @@ import {
     MO120_SMortar,
     MO120_MMortar,
     MO120_LMortar,
+    HellMortar,
 } from "./data.js";
 
 
@@ -197,11 +198,11 @@ function getDist(a, b) {
 }
 
 /**
- * Calculates the angle the mortar needs to be set,
- * in order to hit the target at the desired distance and vertical delta.
+ * Calculates the angle the mortar needs to be set in order
+ * to hit the target at the desired distance and vertical delta.
  * @param {number} [x] - distance between mortar and target from getDist()
  * @param {number} [y] - vertical delta between mortar and target from getHeight()
- * @param {number} [vel] - initial mortar projectile velocity (109.890938)
+ * @param {number} [vel] - initial mortar projectile velocity
  * @param {number} [G] - gravity force (9.8)
  * @returns {number || NaN} mil if target in range, NaN otherwise
  */
@@ -209,7 +210,7 @@ function getElevation(x, y = 0, vel, G = GRAVITY) {
     const P1 = Math.sqrt(vel ** 4 - G * (G * x ** 2 + 2 * y * vel ** 2));
     const A1 = Math.atan((vel ** 2 + P1) / (G * x));
 
-    if ($("#radio-one").is(':checked') || $("#radio-three").is(':checked')) {
+    if ($("#radio-one").is(':checked') || $("#radio-four").is(':checked')) {
         return radToMil(A1);
     } else {
         return radToDeg(A1);
@@ -266,15 +267,16 @@ function getVelocity(distance) {
         return ClassicMortar.getVelocity();
     } else if ($("#radio-two").is(':checked')) {
         return TechnicalMortar.getVelocity(distance);
+    } else if ($("#radio-three").is(':checked')) {
+        return HellMortar.getVelocity(distance);
     } else {
-
-        if ($("#radio-four").is(':checked')) {
+        if ($("#radio-five").is(':checked')) {
             setFrenchSelection(0);
             return MO120_SMortar.getVelocity();
-        } else if ($("#radio-five").is(':checked')) {
+        } else if ($("#radio-six").is(':checked')) {
             setFrenchSelection(1);
             return MO120_MMortar.getVelocity();
-        } else if ($("#radio-six").is(':checked')) {
+        } else if ($("#radio-seven").is(':checked')) {
             setFrenchSelection(2);
             return MO120_LMortar.getVelocity();
         } else {
@@ -380,6 +382,7 @@ export function shoot() {
 
     distance = getDist(a, b);
     vel = getVelocity(distance);
+
     elevation = getElevation(distance, height, vel);
 
 
@@ -389,25 +392,45 @@ export function shoot() {
         return 1;
     }
 
+
+    // If too short, display it and exit function
     if ($("#radio-one").is(':checked')) {
         if (elevation > ClassicMortar.minDistance) {
             showError("Target is too close : " + distance.toFixed(0) + "m", "target");
             return 1;
         }
-    } else if ($("#radio-three").is(':checked')) {
-
-        if (elevation > MO120_SMortar.minDistance) {
-            showError("Target is too close : " + distance.toFixed(0) + "m", "target");
-            return 1;
-        }
-
-    } else { // If technical mortar
+    } else if ($("#radio-two").is(':checked')) { // If technical mortar
         if (elevation > TechnicalMortar.minDistance) {
             showError("Target is too close : " + distance.toFixed(0) + "m", "target");
             return 1;
         }
-    }
+    } else if ($("#radio-three").is(':checked')) { // If technical mortar
+        if (elevation > HellMortar.minDistance) {
+            showError("Target is too close : " + distance.toFixed(0) + "m", "target");
+            return 1;
+        }
+    } else if ($("#radio-four").is(':checked')) {
 
+        if ($("#radio-five").is(':checked')) {
+            if (elevation > MO120_SMortar.minDistance) {
+                showError("Target is too close : " + distance.toFixed(0) + "m", "target");
+                return 1;
+            }
+        }
+        if ($("#radio-six").is(':checked')) {
+            if (elevation > MO120_MMortar.minDistance) {
+                showError("Target is too close : " + distance.toFixed(0) + "m", "target");
+                return 1;
+            }
+        }
+        if ($("#radio-seven").is(':checked')) {
+            if (elevation > MO120_LMortar.minDistance) {
+                showError("Target is too close : " + distance.toFixed(0) + "m", "target");
+                return 1;
+            }
+        }
+
+    }
     bearing = getBearing(a, b);
 
     // if in range, Insert Calculations
@@ -421,8 +444,8 @@ export function shoot() {
     $("#bearing").html(bearing.toFixed(1) + "°");
 
 
-    // If using technical mortars, we need to be more precise (##.#)
-    if ($("#radio-two").is(':checked')) {
+    // If using technica/hell mortars, we need to be more precise (##.#)
+    if ($("#radio-two").is(':checked') || $("#radio-three").is(':checked')) {
         $("#elevation").html(elevation.toFixed(1) + "↷");
     } else {
         $("#elevation").html(elevation.toFixed(0) + "↷");
