@@ -14,6 +14,11 @@ tippy('#technical', {
     content: "Technical",
 });
 
+tippy('#hell', {
+    animation: 'fade',
+    content: "Hell Cannon",
+});
+
 tippy('#french', {
     allowHTML: true,
     animation: 'fade',
@@ -25,7 +30,7 @@ tippy('#french', {
     allowHTML: true,
     animation: 'fade',
     arrow: false,
-    content: "<div class=\"switch-field2 unselectable\"><input type=\"radio\" id=\"radio-four\" name=\"switch-two\" checked/><label id=\"classic\" for=\"radio-four\" class=\"french_mortar_selector french_mortar_selector_short\"></label><input type=\"radio\" id=\"radio-five\" name=\"switch-two\"/><label id=\"technical\" for=\"radio-five\" class=\"french_mortar_selector french_mortar_selector_medium\"></label><input type=\"radio\" id=\"radio-six\" name=\"switch-two\"/><label id=\"french\" for=\"radio-six\" class=\"french_mortar_selector french_mortar_selector_long \"></label> </div>",
+    content: "<div class=\"switch-field2 unselectable\"><input type=\"radio\" id=\"radio-five\" name=\"switch-two\" checked/><label id=\"classic\" for=\"radio-five\" class=\"french_mortar_selector french_mortar_selector_short\"></label><input type=\"radio\" id=\"radio-six\" name=\"switch-two\"/><label id=\"technical\" for=\"radio-six\" class=\"french_mortar_selector french_mortar_selector_medium\"></label><input type=\"radio\" id=\"radio-seven\" name=\"switch-two\"/><label id=\"french\" for=\"radio-seven\" class=\"french_mortar_selector french_mortar_selector_long \"></label> </div>",
     interactive: true,
     placement: "bottom",
     theme: 'french',

@@ -1,4 +1,4 @@
-import { TECHNICALS } from "./data.js";
+import { TECHNICALS, HELL } from "./data.js";
 
 export class Weapon {
     constructor(name, velocity, minDistance) {
@@ -16,6 +16,15 @@ export class Weapon {
                 }
             }
         }
+
+        if (this.name === "Hell") {
+            for (i = 1; i < HELL.length; i += 1) {
+                if (distance < HELL[i][0]) {
+                    return HELL[i - 1][1] + ((distance - HELL[i - 1][0]) / (HELL[i][0] - HELL[i - 1][0])) * (HELL[i][1] - HELL[i - 1][1]);
+                }
+            }
+        }
+
         return this.velocity;
     }
 
