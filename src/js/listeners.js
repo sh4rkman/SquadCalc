@@ -1,4 +1,4 @@
-import { shoot, changeTheme, filterInput, drawHeatmap, resizeInput, RemoveSaves, copySave } from "./utils.js";
+import { shoot, changeTheme, filterInput, drawHeatmap, resizeInput, RemoveSaves, copySave, copy } from "./utils.js";
 
 
 $(document).on('change', '.switch-field', function() { shoot(); });

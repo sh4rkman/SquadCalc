@@ -553,7 +553,7 @@ export function loadMaps() {
 /**
  * Copy string to clipboard
  */
-function copy(string) {
+export function copy(string) {
     const el = document.createElement('textarea');
     el.value = string;
     el.setAttribute('readonly', '');
