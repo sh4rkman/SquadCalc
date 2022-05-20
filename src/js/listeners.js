@@ -1,5 +1,5 @@
 import { shoot, changeTheme, filterInput, drawHeatmap, resizeInput, RemoveSaves, copySave, copy } from "./utils.js";
-
+import { tooltip_copy, tooltip_copied, tooltip_save } from "./tooltips";
 
 $(document).on('change', '.switch-field', function() { shoot(); });
 $(document).on('change', '.switch-field2', function() { shoot(); });
