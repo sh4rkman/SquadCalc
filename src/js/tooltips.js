@@ -36,9 +36,9 @@ tippy('#french', {
     theme: 'french',
     trigger: 'click',
     onHide() {
-        if ($("#radio-four").is(':checked')) {
+        if ($("#radio-five").is(':checked')) {
             setFrenchSelection(0);
-        } else if ($("#radio-five").is(':checked')) {
+        } else if ($("#radio-six").is(':checked')) {
             setFrenchSelection(1);
         } else {
             setFrenchSelection(2);

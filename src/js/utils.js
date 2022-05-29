@@ -263,13 +263,10 @@ function getHeight(a, b) {
  */
 function getVelocity(distance) {
 
-    if ($("#radio-one").is(':checked')) {
-        return ClassicMortar.getVelocity();
-    } else if ($("#radio-two").is(':checked')) {
-        return TechnicalMortar.getVelocity(distance);
-    } else if ($("#radio-three").is(':checked')) {
-        return HellMortar.getVelocity(distance);
-    } else {
+    if ($("#radio-one").is(':checked')) { return ClassicMortar.getVelocity(); }
+    if ($("#radio-two").is(':checked')) { return TechnicalMortar.getVelocity(distance); }
+    if ($("#radio-three").is(':checked')) { return HellMortar.getVelocity(distance); } else {
+
         if ($("#radio-five").is(':checked')) {
             setFrenchSelection(0);
             return MO120_SMortar.getVelocity();
@@ -280,6 +277,7 @@ function getVelocity(distance) {
             setFrenchSelection(2);
             return MO120_LMortar.getVelocity();
         } else {
+
             if (frenchSelection === 0) {
                 return MO120_SMortar.getVelocity();
             } else if (frenchSelection === 1) {
@@ -308,6 +306,7 @@ export function shoot() {
     const TARGET_LOC = $("#target-location");
     var a = MORTAR_LOC.val();
     var b = TARGET_LOC.val();
+
 
 
     // First, reset any errors

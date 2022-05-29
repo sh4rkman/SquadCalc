@@ -15,6 +15,7 @@ export class Weapon {
                     return TECHNICALS[i - 1][1] + ((distance - TECHNICALS[i - 1][0]) / (TECHNICALS[i][0] - TECHNICALS[i - 1][0])) * (TECHNICALS[i][1] - TECHNICALS[i - 1][1]);
                 }
             }
+
         }
 
         if (this.name === "Hell") {
