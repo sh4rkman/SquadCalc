@@ -46,7 +46,7 @@ export function setFrenchSelection(val) {
 export const MAPS = [
     ['Al Basrah', 3200, 0.025, AlBasrahURL],
     ['Anvil', 3060, 0.2, AnvilURL],
-    ['Belaya', 3904, 0.1, BelayaURL],
+    ['Belaya', 3904, 0.074, BelayaURL],
     ['Chora', 4064, 0.06, ChoraURL],
     ['Fallujah', 4081, 0.055, FallujahURL],
     ['Fool\'s Road', 1736, 0.149, FoolsRoadURL],
