@@ -1,6 +1,7 @@
 import AlBasrahURL from "../img/heightmaps/al basrah.jpg"
 import AnvilURL from "../img/heightmaps/anvil.jpg"
 import BelayaURL from "../img/heightmaps/belaya.jpg"
+import BlackCoastURL from "../img/heightmaps/black coast.jpg"
 import ChoraURL from "../img/heightmaps/chora.jpg"
 import FallujahURL from "../img/heightmaps/fallujah.jpg"
 import FoolsRoadURL from "../img/heightmaps/fool\'s road.jpg"
@@ -47,6 +48,7 @@ export const MAPS = [
     ['Al Basrah', 3200, 0.025, AlBasrahURL],
     ['Anvil', 3060, 0.2, AnvilURL],
     ['Belaya', 3904, 0.074, BelayaURL],
+    ['Black Coast', 4625, 0.35, BlackCoastURL],
     ['Chora', 4064, 0.06, ChoraURL],
     ['Fallujah', 4081, 0.055, FallujahURL],
     ['Fool\'s Road', 1736, 0.149, FoolsRoadURL],
