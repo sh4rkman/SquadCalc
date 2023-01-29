@@ -13,7 +13,7 @@ $(document).on('click', '.del', function() { RemoveSaves(this); });
 $(document).on('click', '#savespan', function() { copySave($(this)) });
 
 
-$(document).on('click', '.logo', function() {
+$(document).on('click', '.fab-action-2', function() {
 
     if ($('body').attr('data-theme') === 'classic') {
         changeTheme('dark');
@@ -28,11 +28,11 @@ $(document).on('click', '.logo', function() {
 
 $(document).on('click', '.save', function() {
 
-    if ($(".saved_list p").length === 3) {
+    if ($(".saved_list p").length === 4) {
         $(".saved_list p").first().remove();
     }
     $(".saved_list").append(
-        "<p style='display:none;'><input id=\"resize\" maxlength=\"20\" spellcheck='false' placeholder='" + $("#target-location").val() + "'\ class='friendlyname'></input>" +
+        "<p class='savedrow' style='display:none;'><input id=\"resize\" maxlength=\"20\" spellcheck='false' placeholder='" + $("#target-location").val() + "'\ class='friendlyname'></input>" +
         "<span id=\"savespan\" style=\"font-weight:bold\"> ➜ " +
         $("#bearing").text() +
         " - " +

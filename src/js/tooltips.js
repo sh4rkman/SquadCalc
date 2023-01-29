@@ -77,15 +77,35 @@ tippy('#settings', {
 tooltip_copied = document.querySelector('#settings')._tippy;
 tooltip_copied.disable();
 
-tippy('.youtube', {
+
+tippy('.fab-action-1', {
     animation: 'fade',
-    content: "Watch my videos!",
+    allowHTML: true,
+    content: "View code on </br>GitHub",
+    theme: 'fab',
+});
+tippy('.fab-action-2', {
+    placement: "left-start",
+    animation: 'fade',
+    content: "Change Theme",
+    theme: 'fab',
+});
+tippy('.fab-action-3', {
+    placement: "left-start",
+    animation: 'fade',
+    content: "Watch my Videos!",
+    theme: 'fab',
+});
+tippy('.fab-action-4', {
+    placement: "left",
+    animation: 'fade',
+    content: "Report a Bug",
+    theme: 'fab',
 });
 
-tippy('.github', {
-    animation: 'fade',
-    content: "View code on GitHub!",
-});
+
+
+
 
 if (localStorage.getItem("InfoToolTips_save") !== 'true') {
     tippy('.save i', {
