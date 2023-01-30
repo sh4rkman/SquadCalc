@@ -19,6 +19,9 @@
         line-height: 1em;
         max-height: 570px !important;
     }
+    .fab-wrapper {
+        display: block;
+    }
 }
 
 
@@ -76,7 +79,7 @@
             margin-top: 2em;
         }
         .saved {
-            font-size: 0.5em;
+            font-size: 0.8em;
         }
     }
 }
@@ -98,19 +101,25 @@
     }
     .mortar_selector {
         height: 35px;
-        width: 75px;
+        width: 50px;
     }
     .mortar_selector_classic {
-        background: url("../img/icons/classic_mortar.png") no-repeat scroll 6px 3px transparent;
+        background: url("../img/icons/classic_mortar.png") no-repeat scroll 0px 6px transparent;
     }
     .mortar_selector_technical {
-        background: url("../img/icons/technical_mortar.png") no-repeat scroll 6px 3px transparent;
+        background: url("../img/icons/technical_mortar.png") no-repeat scroll 0px 6px transparent;
     }
     .mortar_selector_hell {
-        background: url("../img/icons/hell_mortar.png") no-repeat scroll 6px 3px transparent;
+        background: url("../img/icons/hell_mortar.png") no-repeat scroll 0px 6px transparent;
     }
     .mortar_selector_french {
-        background: url("../img/icons/french_mortar.png") no-repeat scroll 6px 3px transparent;
+        background: url("../img/icons/french_mortar.png") no-repeat scroll 0px 6px transparent;
+    }
+    .mortar_selector_classic,
+    .mortar_selector_technical,
+    .mortar_selector_hell,
+    .mortar_selector_french {
+        background-size: 100%;
     }
     .footer {
         visibility: visible;
@@ -140,6 +149,9 @@
         input {
             height: 60px;
         }
+        .fab-wrapper {
+            display: block;
+        }
     }
     /* -- L*730px -- */
     @media (min-height: 45em) {
@@ -165,6 +177,22 @@
     .select2-container {
         font-size: 1em;
         min-width: 196px;
+    }
+    .mortar_selector {
+        height: 35px;
+        width: 75px;
+    }
+    .mortar_selector_classic {
+        background: url("../img/icons/classic_mortar.png") no-repeat scroll 6px 3px transparent;
+    }
+    .mortar_selector_technical {
+        background: url("../img/icons/technical_mortar.png") no-repeat scroll 6px 3px transparent;
+    }
+    .mortar_selector_hell {
+        background: url("../img/icons/hell_mortar.png") no-repeat scroll 6px 3px transparent;
+    }
+    .mortar_selector_french {
+        background: url("../img/icons/french_mortar.png") no-repeat scroll 6px 3px transparent;
     }
 }
 

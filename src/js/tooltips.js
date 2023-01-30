@@ -85,21 +85,23 @@ tippy('.fab-action-1', {
     theme: 'fab',
 });
 tippy('.fab-action-2', {
-    placement: "left-start",
     animation: 'fade',
-    content: "Change Theme",
+    allowHTML: true,
+    content: "Change </br>Theme",
     theme: 'fab',
 });
 tippy('.fab-action-3', {
     placement: "left-start",
     animation: 'fade',
-    content: "Watch my Videos!",
+    allowHTML: true,
+    content: "Watch my </br>Videos!",
     theme: 'fab',
 });
 tippy('.fab-action-4', {
     placement: "left",
     animation: 'fade',
-    content: "Report a Bug",
+    allowHTML: true,
+    content: "Report a </br>Bug",
     theme: 'fab',
 });
 
