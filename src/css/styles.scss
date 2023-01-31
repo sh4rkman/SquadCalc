@@ -64,12 +64,11 @@ button:focus {
    *     Logo
    *****************/
 
-.logo {
-    margin-top: 10px;
-    width: auto;
-    &:hover {
-        cursor: pointer;
-    }
+.footer {
+    bottom: 0;
+    left: 0;
+    position: fixed;
+    z-index: -1;
 }
 
 
@@ -86,6 +85,11 @@ button:focus {
     display: inline-block;
     height: 30px;
     width: 70px;
+}
+
+.mortar_selector:hover,
+.french_mortar_selector:hover {
+    transform: scale(0.95);
 }
 
 .mortar_selector_classic {
@@ -249,6 +253,10 @@ button:focus {
     line-height: 1.4em;
 }
 
+.select2-container--default .select2-results__option--highlighted[aria-selected] {
+    background-color: firebrick;
+}
+
 .select2-search__field {
     color: #111 !important;
     font-size: 1em !important;
@@ -403,6 +411,7 @@ span.select2-selection.select2-selection--single {
 .errorMsg {
     cursor: default;
     font-size: 0.7em;
+    padding: 18px;
 }
 
 .error {
@@ -443,7 +452,7 @@ span.select2-selection.select2-selection--single {
     }
     &[data-theme~="120mm"] .tippy-content {
         text-align: center;
-        letter-spacing: .1rem;
+        line-height: 1em;
     }
     &[data-theme~='fab'] {
         &[data-placement^='top']>.tippy-arrow::before {
@@ -609,6 +618,10 @@ span.select2-selection.select2-selection--single {
     color: White;
     opacity: 0;
     text-decoration: none;
+}
+
+.fab-action-2:active {
+    transform: scale(0.8);
 }
 
 .fab-checkbox:checked~.fab-wheel .fab-action {

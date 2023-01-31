@@ -22,7 +22,7 @@ tippy('#hell', {
 tippy('#french', {
     allowHTML: true,
     animation: 'fade',
-    content: "120mm</br> (Squad MOD France)",
+    content: "120mm</br> <font size=\"1em\">(Squad MOD France)</font>",
     theme: '120mm',
 });
 

@@ -121,9 +121,6 @@
     .mortar_selector_french {
         background-size: 100%;
     }
-    .footer {
-        visibility: visible;
-    }
     .select2-container {
         float: right;
         font-size: 0.8em;
@@ -140,11 +137,14 @@
     .friendlyname {
         min-width: 130px;
     }
+    .content {
+        padding-top: 3em;
+    }
     /* -- L*560px -- */
     @media (min-height: 35em) {
         .content {
             font-size: 25px;
-            padding-top: 3em;
+            padding-top: 5em;
         }
         input {
             height: 60px;
@@ -156,7 +156,7 @@
     /* -- L*730px -- */
     @media (min-height: 45em) {
         .content {
-            padding-top: 3em;
+            padding-top: 5em;
         }
         input {
             height: 70px;
@@ -285,10 +285,6 @@
                 border-radius: 0 0 10px 10px;
             }
         }
-        .logo img {
-            height: 120%;
-            margin-top: 20px;
-        }
         .weaponSelector {
             padding: 2em 0 0 1.5em;
         }
@@ -298,16 +294,10 @@
         .mapSelector {
             padding: 2em 1.5em 0 0;
         }
-        .footer {
-            font-size: 2em;
-        }
-        .social {
-            bottom: 10px;
-        }
         .coord img {
-            height: 70px;
-            padding-bottom: 0.8em;
-            width: 70px;
+            height: 75px;
+            margin-bottom: 0.8em;
+            width: 75px;
         }
         .friendlyname {
             min-width: 250px;
