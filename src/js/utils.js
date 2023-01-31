@@ -307,8 +307,6 @@ export function shoot() {
     var a = MORTAR_LOC.val();
     var b = TARGET_LOC.val();
 
-
-
     // First, reset any errors
     $("#settings").removeClass("error");
     TARGET_LOC.removeClass("error2");
@@ -695,4 +693,22 @@ export function getTheme() {
     }
 
     changeTheme(theme);
+}
+
+/**
+ * save current weapon into browser cache
+ */
+export function saveWeapon() {
+    localStorage.setItem("data-weapon", $("input:checked").attr('id'));
+}
+
+/**
+ * get last weapon used by user and apply it
+ */
+export function getWeapon() {
+    var weapon = localStorage.getItem("data-weapon");
+
+    if (weapon === null) { return 1; }
+
+    $('#' + weapon).prop("checked", true);
 }

@@ -1,14 +1,14 @@
 {
-    "name": "mortar",
-    "version": "8.0",
+    "name": "msmc",
+    "version": "8.1",
     "description": "",
-    "private": true,
+    "private": false,
     "scripts": {
         "build": "webpack --config webpack.prod.js",
         "start": "webpack serve --open --config webpack.dev.js"
     },
     "keywords": [],
-    "author": "",
+    "author": "sharkman",
     "license": "ISC",
     "devDependencies": {
         "css-loader": "^6.7.1",

@@ -1,7 +1,10 @@
-import { shoot, changeTheme, filterInput, drawHeatmap, resizeInput, RemoveSaves, copySave, copy } from "./utils.js";
+import { shoot, changeTheme, filterInput, drawHeatmap, resizeInput, RemoveSaves, copySave, copy, saveWeapon } from "./utils.js";
 import { tooltip_copy, tooltip_copied, tooltip_save } from "./tooltips";
 
-$(document).on('change', '.switch-field', function() { shoot(); });
+$(document).on('change', '.switch-field', function() {
+    shoot();
+    saveWeapon();
+});
 $(document).on('change', '.switch-field2', function() { shoot(); });
 $(document).on('change', '.dropbtn', function() { drawHeatmap(); });
 $(document).on('input', '#target-location', function() { shoot(); });
