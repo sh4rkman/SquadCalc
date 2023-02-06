@@ -99,6 +99,9 @@
 
 @media screen and (min-width: 48em) {
     /* On big screen, fix map&weapon Selectors on top corners */
+    .logo {
+        width: 350px;
+    }
     .mapSelector {
         position: fixed;
         right: 1em;
@@ -311,6 +314,9 @@
         }
         .friendlyname {
             min-width: 250px;
+        }
+        .logo {
+            width: 550px;
         }
     }
 }
