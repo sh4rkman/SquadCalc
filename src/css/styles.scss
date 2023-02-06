@@ -87,9 +87,9 @@ button:focus {
     width: 70px;
 }
 
-.mortar_selector:hover,
-.french_mortar_selector:hover {
-    transform: scale(0.95);
+.mortar_selector:active,
+.french_mortar_selector:active {
+    transform: scale(0.8);
 }
 
 .mortar_selector_classic {
@@ -369,13 +369,13 @@ span.select2-selection.select2-selection--single {
 }
 
 .friendlyname {
-    width: 100px;
     border-style: none;
-    text-transform: none;
     font-size: 1em;
-    text-align: right;
-    min-width: 100px;
     height: auto;
+    min-width: 100px;
+    text-align: right;
+    text-transform: none;
+    width: 100px;
 }
 
 
@@ -481,10 +481,10 @@ span.select2-selection.select2-selection--single {
 }
 
 .fab-wrapper {
-    position: fixed;
     bottom: 2rem;
-    right: 2rem;
     display: none;
+    position: fixed;
+    right: 2rem;
 }
 
 .fab-checkbox {
@@ -492,71 +492,71 @@ span.select2-selection.select2-selection--single {
 }
 
 .fab {
-    position: absolute;
-    bottom: -1rem;
-    right: -1rem;
-    width: 4rem;
-    height: 4rem;
-    border-radius: 50%;
     background: #333;
-    transition: all 0.3s ease;
-    z-index: 1;
-    border: 1px solid rgb(37, 37, 37);
-    font-size: 2.5em;
     border-radius: 50%;
+    border: 1px solid rgb(37, 37, 37);
+    bottom: -1rem;
+    font-size: 2.5em;
+    height: 4rem;
+    position: absolute;
+    right: -1rem;
+    transition: all 0.3s ease;
+    width: 4rem;
+    z-index: 1;
+    &:active {
+        transform: scale(0.8);
+    }
+    &:before {
+        background-color: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+        content: "";
+        height: 100%;
+        left: 0;
+        position: absolute;
+        top: 0;
+        width: 100%;
+    }
+    &:hover {
+        background: rgb(24, 24, 24);
+        cursor: pointer;
+    }
 }
 
 .fab-dots {
-    position: absolute;
-    height: 8px;
-    width: 8px;
+    animation: blink 3s ease infinite;
     background-color: white;
     border-radius: 50%;
+    height: 8px;
+    opacity: 1;
+    position: absolute;
     top: 50%;
     transform: translateX(0%) translateY(-50%) rotate(0deg);
-    opacity: 1;
-    animation: blink 3s ease infinite;
     transition: all 0.3s ease;
+    width: 8px;
 }
 
 .fab-dots-1 {
-    left: 15px;
     animation-delay: 0s;
+    left: 15px;
 }
 
 .fab-dots-2 {
+    animation-delay: 0.4s;
     left: 50%;
     transform: translateX(-50%) translateY(-50%);
-    animation-delay: 0.4s;
 }
 
 .fab-dots-3 {
-    right: 15px;
     animation-delay: 0.8s;
-}
-
-.fab:before {
-    content: "";
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    left: 0;
-    top: 0;
-    border-radius: 50%;
-    background-color: rgba(255, 255, 255, 0.1);
+    right: 15px;
 }
 
 .fab-checkbox:checked~.fab:before {
-    width: 90%;
+    background-color: rgba(255, 255, 255, 0.2);
     height: 90%;
     left: 5%;
     top: 5%;
-    background-color: rgba(255, 255, 255, 0.2);
-}
-
-.fab:hover {
-    background: rgb(24, 24, 24);
-    cursor: pointer;
+    width: 90%;
 }
 
 .fab-checkbox:checked~.fab .fab-dots {
@@ -568,17 +568,17 @@ span.select2-selection.select2-selection--single {
 }
 
 .fab-checkbox:checked~.fab .fab-dots-1 {
-    width: 32px;
     border-radius: 10px;
     left: 50%;
     transform: translateX(-50%) translateY(-50%) rotate(45deg);
+    width: 32px;
 }
 
 .fab-checkbox:checked~.fab .fab-dots-3 {
-    width: 32px;
     border-radius: 10px;
     right: 50%;
     transform: translateX(50%) translateY(-50%) rotate(-45deg);
+    width: 32px;
 }
 
 @keyframes blink {
@@ -592,14 +592,14 @@ span.select2-selection.select2-selection--single {
 }
 
 .fab-wheel {
-    position: absolute;
     bottom: 0;
-    right: 0;
-    width: 10rem;
     height: 10rem;
-    transition: all 0.3s ease;
+    position: absolute;
+    right: 0;
     transform-origin: bottom right;
     transform: scale(0);
+    transition: all 0.3s ease;
+    width: 10rem;
 }
 
 .fab-checkbox:checked~.fab-wheel {
@@ -607,31 +607,28 @@ span.select2-selection.select2-selection--single {
 }
 
 .fab-action {
-    position: absolute;
-    background: #2c2c2e;
-    width: 3rem;
-    height: 3rem;
-    border-radius: 50%;
-    display: flex;
     align-items: center;
-    justify-content: center;
+    background: #333;
+    border-radius: 50%;
     color: White;
+    display: flex;
+    height: 3rem;
+    justify-content: center;
     opacity: 0;
+    position: absolute;
     text-decoration: none;
-}
-
-.fab-action-2:active {
-    transform: scale(0.8);
+    width: 3rem;
+    &:hover {
+        background-color: FireBrick;
+        cursor: pointer;
+    }
+    &:active {
+        transform: scale(0.9);
+    }
 }
 
 .fab-checkbox:checked~.fab-wheel .fab-action {
     opacity: 1;
-}
-
-.fab-action:hover {
-    background-color: FireBrick;
-    cursor: pointer;
-    transform: scale(1.1);
 }
 
 .fabstyle {
@@ -639,14 +636,14 @@ span.select2-selection.select2-selection--single {
 }
 
 .fab-wheel {
-    position: absolute;
     bottom: 0;
-    right: 0;
-    width: 9rem;
     height: 9rem;
-    transition: all 0.1s ease;
+    position: absolute;
+    right: 0;
     transform-origin: bottom right;
     transform: scale(0);
+    transition: all 0.1s ease;
+    width: 9rem;
 }
 
 .fab-wheel .fab-action-1 {
@@ -660,11 +657,11 @@ span.select2-selection.select2-selection--single {
 }
 
 .fab-wheel .fab-action-3 {
-    left: 0.5rem;
     bottom: 2.8rem;
+    left: 0.5rem;
 }
 
 .fab-wheel .fab-action-4 {
-    left: 0;
     bottom: -1rem;
+    left: 0;
 }

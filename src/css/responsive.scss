@@ -38,8 +38,11 @@
    ************   WIDTH ADJUSTMENTS  ***************
    ***************************************************/
 
+
+/* L<768px */
+
 @media screen and (max-width: 48em) {
-    /* -- L*568px -- */
+    /* -- H < 568px -- */
     @media (min-height: 35em) {
         .results {
             margin: 1.5em auto;
@@ -54,7 +57,7 @@
             font-size: 0.65em;
         }
     }
-    /* -- L*730px -- */
+    /* -- H < 730px -- */
     @media (min-height: 45em) {
         .results {
             margin: 1.5em auto;
@@ -66,10 +69,11 @@
             font-size: 0.7em;
         }
     }
-    /* -- L*800px -- */
+    /* -- H < 800px -- */
     @media (min-height: 50em) {
         input {
-            font-size: 1.2em;
+            font-size: 1.4em;
+            height: 50px;
         }
         .results {
             font-size: 1.7em;
