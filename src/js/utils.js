@@ -568,7 +568,6 @@ export function copy(string) {
  */
 export function copySave(COPY_ZONE) {
     var text2copy;
-
     if (COPY_ZONE.prev().val().length === 0) {
         text2copy = COPY_ZONE.prev().attr('placeholder') + " " + COPY_ZONE.text()
     } else {
@@ -633,7 +632,6 @@ function setCursor(startA, startB, a, b) {
 
     MORTAR_LOC[0].setSelectionRange(startA, startA);
     TARGET_LOC[0].setSelectionRange(startB, startB);
-
 }
 
 

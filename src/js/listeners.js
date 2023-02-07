@@ -43,11 +43,12 @@ $(document).on('click', '.save', function() {
         "&nbsp;&nbsp;</span><i class=\"fa fa-times-circle fa-fw del\" aria-hidden=\"true\"></i></p>");
 
     $(".saved").removeClass("hidden");
-    $(".save").effect("bounce", 500);
+
+
 
     $(".saved_list p").last().show("fast");
 
-    // the user understood he can click2copy, remove the tooltip now
+    // the user understood he can click2save, remove the tooltip now
     if (localStorage.getItem("InfoToolTips_save") !== 'true') {
         tooltip_save.disable();
         localStorage.setItem("InfoToolTips_save", 'true');
@@ -61,7 +62,6 @@ $(document).on('click', '#copy', function() {
     if (!COPY_ZONE.hasClass('copy')) { return 1; }
 
     copy("➜ " + $("#target-location").val() + " = " + $("#bearing").text() + " - " + $("#elevation").text());
-    COPY_ZONE.effect("bounce", 500);
 
     // the user understood he can click2copy, remove the tooltip
     localStorage.setItem("InfoToolTips_copy", true);
