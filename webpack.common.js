@@ -10,7 +10,7 @@ module.exports = {
         listeners: './src/js/listeners.js',
     },
     output: {
-        filename: './src/js/[name].[contenthash].bundle.js',
+        filename: './src/js/[name].[contenthash].min.js',
         path: path.resolve(__dirname, 'dist'),
         clean: true,
         assetModuleFilename: '[path][name].[contenthash][ext]'

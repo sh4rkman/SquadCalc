@@ -1,4 +1,7 @@
 import { setFrenchSelection } from "./data.js";
+import tippy from 'tippy.js';
+import 'tippy.js/dist/tippy.css'; // optional for styling
+
 
 export var tooltip_save;
 export var tooltip_copy;

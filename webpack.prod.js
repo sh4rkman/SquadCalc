@@ -18,18 +18,21 @@ module.exports = merge(common, {
             }
         }),
         new MiniCssExtractPlugin({
-            filename: 'src/css/[name].[contenthash].css',
+            filename: 'src/css/[name].[contenthash].min.css',
         }),
     ],
     module: {
         rules: [{
-            test: /\.scss$/i,
-            use: [
-                MiniCssExtractPlugin.loader,
-                { loader: 'css-loader', options: { url: true } },
-                'sass-loader'
-            ],
-        }]
+                test: /\.(sc|sa|c)ss$/i,
+                use: [
+                    MiniCssExtractPlugin.loader,
+                    { loader: 'css-loader', options: { url: true } },
+                    'sass-loader'
+                ],
+
+            },
+
+        ]
     },
     optimization: {
         minimizer: [

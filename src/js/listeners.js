@@ -35,7 +35,7 @@ $(document).on('click', '.save', function() {
         $(".saved_list p").first().remove();
     }
     $(".saved_list").append(
-        "<p class='savedrow' style='display:none;'><input id=\"resize\" maxlength=\"20\" spellcheck='false' placeholder='" + $("#target-location").val() + "'\ class='friendlyname'></input>" +
+        "<p class='savedrow' style='display:none;'><input id=\"resize\" maxlength=\"20\" spellcheck='false' placeholder='" + $("#target-location").val() + "'class='friendlyname'></input>" +
         "<span id=\"savespan\" style=\"font-weight:bold\"> ➜ " +
         $("#bearing").text() +
         " - " +
