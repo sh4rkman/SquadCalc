@@ -1,7 +1,7 @@
 const { merge } = require('webpack-merge');
 const common = require('./webpack.common.js');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+//const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 
 module.exports = merge(common, {
@@ -9,14 +9,9 @@ module.exports = merge(common, {
     devtool: 'inline-source-map',
     module: {
         rules: [{
-                test: /\.s[ac]ss$/i,
-                use: ['style-loader', 'css-loader', 'sass-loader'],
-            },
-            {
-                test: /\.css$/i,
-                use: ["style-loader", "css-loader"],
-            },
-        ]
+            test: /\.(sc|sa|c)ss$/i,
+            use: ['style-loader', 'css-loader', 'sass-loader'],
+        }, ]
     },
     plugins: [
         new HtmlWebpackPlugin({
