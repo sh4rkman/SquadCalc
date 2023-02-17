@@ -1,25 +1,25 @@
-import AlBasrahURL from "../img/heightmaps/al basrah.jpg"
-import AnvilURL from "../img/heightmaps/anvil.jpg"
-import BelayaURL from "../img/heightmaps/belaya.jpg"
-import BlackCoastURL from "../img/heightmaps/black coast.jpg"
-import ChoraURL from "../img/heightmaps/chora.jpg"
-import FallujahURL from "../img/heightmaps/fallujah.jpg"
-import FoolsRoadURL from "../img/heightmaps/fool's road.jpg"
-import GooseBayURL from "../img/heightmaps/goose bay.jpg"
-import GorodokURL from "../img/heightmaps/gorodok.jpg"
-import KamdeshURL from "../img/heightmaps/kamdesh.jpg"
-import KohatURL from "../img/heightmaps/kohat.jpg"
-import KokanURL from "../img/heightmaps/kokan.jpg"
-import LashkarURL from "../img/heightmaps/lashkar.jpg"
-import LogarURL from "../img/heightmaps/logar.jpg"
-import ManicURL from "../img/heightmaps/manic.jpg"
-import MestiaURL from "../img/heightmaps/mestia.jpg"
-import MutahaURL from "../img/heightmaps/mutaha.jpg"
-import NarvaURL from "../img/heightmaps/narva.jpg"
-import SkorpoURL from "../img/heightmaps/skorpo.jpg"
-import SumariURL from "../img/heightmaps/sumari.jpg"
-import TallilURL from "../img/heightmaps/tallil.jpg"
-import YehorivkaURL from "../img/heightmaps/yehorivka.jpg"
+import AlBasrahURL from "../img/heightmaps/al basrah.jpg";
+import AnvilURL from "../img/heightmaps/anvil.jpg";
+import BelayaURL from "../img/heightmaps/belaya.jpg";
+import BlackCoastURL from "../img/heightmaps/black coast.jpg";
+import ChoraURL from "../img/heightmaps/chora.jpg";
+import FallujahURL from "../img/heightmaps/fallujah.jpg";
+import FoolsRoadURL from "../img/heightmaps/fool's road.jpg";
+import GooseBayURL from "../img/heightmaps/goose bay.jpg";
+import GorodokURL from "../img/heightmaps/gorodok.jpg";
+import KamdeshURL from "../img/heightmaps/kamdesh.jpg";
+import KohatURL from "../img/heightmaps/kohat.jpg";
+import KokanURL from "../img/heightmaps/kokan.jpg";
+import LashkarURL from "../img/heightmaps/lashkar.jpg";
+import LogarURL from "../img/heightmaps/logar.jpg";
+import ManicURL from "../img/heightmaps/manic.jpg";
+import MestiaURL from "../img/heightmaps/mestia.jpg";
+import MutahaURL from "../img/heightmaps/mutaha.jpg";
+import NarvaURL from "../img/heightmaps/narva.jpg";
+import SkorpoURL from "../img/heightmaps/skorpo.jpg";
+import SumariURL from "../img/heightmaps/sumari.jpg";
+import TallilURL from "../img/heightmaps/tallil.jpg";
+import YehorivkaURL from "../img/heightmaps/yehorivka.jpg";
 
 
 

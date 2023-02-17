@@ -342,7 +342,7 @@ export function shoot() {
         $("#copy").removeClass("copy");
         tooltip_copy.disable();
 
-        return 1
+        return 1;
     }
 
     // restore cursor position
@@ -569,9 +569,9 @@ export function copy(string) {
 export function copySave(COPY_ZONE) {
     var text2copy;
     if (COPY_ZONE.prev().val().length === 0) {
-        text2copy = COPY_ZONE.prev().attr("placeholder") + " " + COPY_ZONE.text()
+        text2copy = COPY_ZONE.prev().attr("placeholder") + " " + COPY_ZONE.text();
     } else {
-        text2copy = COPY_ZONE.prev().val() + " " + COPY_ZONE.text()
+        text2copy = COPY_ZONE.prev().val() + " " + COPY_ZONE.text();
     }
     copy(text2copy);
     COPY_ZONE.parent().effect("bounce", 400);

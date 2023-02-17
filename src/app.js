@@ -1,4 +1,4 @@
-import "webpack-jquery-ui/effects"
+import "webpack-jquery-ui/effects";
 
 import "purecss/build/pure-min.css";
 import "purecss/build/grids-responsive-min.css";

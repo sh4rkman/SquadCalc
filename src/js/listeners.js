@@ -9,11 +9,11 @@ $(document).on("change", ".switch-field2", function() { shoot(); });
 $(document).on("change", ".dropbtn", function() { drawHeatmap(); });
 $(document).on("input", "#target-location", function() { shoot(); });
 $(document).on("input", "#mortar-location", function() { shoot(); });
-$(document).on("input", "#resize", function() { resizeInput(this) });
+$(document).on("input", "#resize", function() { resizeInput(this); });
 $(document).on("keypress", "#mortar-location", function(event) { filterInput(event); });
 $(document).on("keypress", "#target-location", function(event) { filterInput(event); });
 $(document).on("click", ".del", function() { RemoveSaves(this); });
-$(document).on("click", "#savespan", function() { copySave($(this)) });
+$(document).on("click", "#savespan", function() { copySave($(this)); });
 
 
 $(document).on("click", ".fab-action-2", function() {

@@ -14,6 +14,10 @@
             "error",
             4
         ],
+        "keyword-spacing": [
+            "error",
+            { "before": true }
+        ],
         "linebreak-style": [
             "error",
             "windows"
@@ -21,6 +25,19 @@
         "quotes": [
             "error",
             "double"
+        ]
+        ,
+        "semi": [
+            "error",
+            "always"
+        ],
+        "semi-spacing": [
+            "error",
+            {"before": false, "after": true}
+        ],
+        "space-unary-ops": [
+            2,
+            {"words": true, "nonwords": false}
         ]
     }
 }
