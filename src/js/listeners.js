@@ -1,35 +1,35 @@
 import { shoot, changeTheme, filterInput, drawHeatmap, resizeInput, RemoveSaves, copySave, copy, saveWeapon } from "./utils.js";
 import { tooltip_copy, tooltip_copied, tooltip_save } from "./tooltips";
 
-$(document).on('change', '.switch-field', function() {
+$(document).on("change", ".switch-field", function() {
     shoot();
     saveWeapon();
 });
-$(document).on('change', '.switch-field2', function() { shoot(); });
-$(document).on('change', '.dropbtn', function() { drawHeatmap(); });
-$(document).on('input', '#target-location', function() { shoot(); });
-$(document).on('input', '#mortar-location', function() { shoot(); });
-$(document).on('input', '#resize', function() { resizeInput(this) });
-$(document).on('keypress', '#mortar-location', function(event) { filterInput(event); });
-$(document).on('keypress', '#target-location', function(event) { filterInput(event); });
-$(document).on('click', '.del', function() { RemoveSaves(this); });
-$(document).on('click', '#savespan', function() { copySave($(this)) });
+$(document).on("change", ".switch-field2", function() { shoot(); });
+$(document).on("change", ".dropbtn", function() { drawHeatmap(); });
+$(document).on("input", "#target-location", function() { shoot(); });
+$(document).on("input", "#mortar-location", function() { shoot(); });
+$(document).on("input", "#resize", function() { resizeInput(this) });
+$(document).on("keypress", "#mortar-location", function(event) { filterInput(event); });
+$(document).on("keypress", "#target-location", function(event) { filterInput(event); });
+$(document).on("click", ".del", function() { RemoveSaves(this); });
+$(document).on("click", "#savespan", function() { copySave($(this)) });
 
 
-$(document).on('click', '.fab-action-2', function() {
+$(document).on("click", ".fab-action-2", function() {
 
-    if ($('body').attr('data-theme') === 'classic') {
-        changeTheme('dark');
-    } else if ($('body').attr('data-theme') === 'dark') {
-        changeTheme('blue');
-    } else if ($('body').attr('data-theme') === 'blue') {
-        changeTheme('green');
+    if ($("body").attr("data-theme") === "classic") {
+        changeTheme("dark");
+    } else if ($("body").attr("data-theme") === "dark") {
+        changeTheme("blue");
+    } else if ($("body").attr("data-theme") === "blue") {
+        changeTheme("green");
     } else {
-        changeTheme('classic');
+        changeTheme("classic");
     }
 });
 
-$(document).on('click', '.save', function() {
+$(document).on("click", ".save", function() {
 
     if ($(".saved_list p").length === 4) {
         $(".saved_list p").first().remove();
@@ -49,17 +49,17 @@ $(document).on('click', '.save', function() {
     $(".saved_list p").last().show("fast");
 
     // the user understood he can click2save, remove the tooltip now
-    if (localStorage.getItem("InfoToolTips_save") !== 'true') {
+    if (localStorage.getItem("InfoToolTips_save") !== "true") {
         tooltip_save.disable();
-        localStorage.setItem("InfoToolTips_save", 'true');
+        localStorage.setItem("InfoToolTips_save", "true");
     }
 });
 
 
-$(document).on('click', '#copy', function() {
+$(document).on("click", "#copy", function() {
     const COPY_ZONE = $(".copy");
 
-    if (!COPY_ZONE.hasClass('copy')) { return 1; }
+    if (!COPY_ZONE.hasClass("copy")) { return 1; }
 
     copy("➜ " + $("#target-location").val() + " = " + $("#bearing").text() + " - " + $("#elevation").text());
 

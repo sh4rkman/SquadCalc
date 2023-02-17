@@ -23,10 +23,10 @@ import {
  * Load the heatmap to the canvas
  */
 export function loadHeatmap() {
-    var ctx = document.getElementById('canvas').getContext('2d');
+    var ctx = document.getElementById("canvas").getContext("2d");
     var img = new Image();
 
-    img.addEventListener('load', function() {
+    img.addEventListener("load", function() {
         ctx.drawImage(img, 0, 0, CANVAS_SIZE, CANVAS_SIZE); // Draw img at good scale
     }, false);
 }
@@ -37,12 +37,12 @@ export function loadHeatmap() {
  */
 export function drawHeatmap() {
     var img = new Image(); // Create new img element
-    var ctx = document.getElementById('canvas').getContext('2d');
+    var ctx = document.getElementById("canvas").getContext("2d");
 
 
     img.src = MAPS[$(".dropbtn").val()][3];
 
-    img.addEventListener('load', function() { // wait for the image to load or it does crazy stuff
+    img.addEventListener("load", function() { // wait for the image to load or it does crazy stuff
         ctx.drawImage(img, 0, 0, CANVAS_SIZE, CANVAS_SIZE);
         shoot(); // just in case there is already coordinates in inputs
     }, false);
@@ -210,7 +210,7 @@ function getElevation(x, y = 0, vel, G = GRAVITY) {
     const P1 = Math.sqrt(vel ** 4 - G * (G * x ** 2 + 2 * y * vel ** 2));
     const A1 = Math.atan((vel ** 2 + P1) / (G * x));
 
-    if ($("#radio-one").is(':checked') || $("#radio-four").is(':checked')) {
+    if ($("#radio-one").is(":checked") || $("#radio-four").is(":checked")) {
         return radToMil(A1);
     } else {
         return radToDeg(A1);
@@ -239,7 +239,7 @@ function getHeight(a, b) {
     mapScale = CANVAS_SIZE / MAPS[DROPBTN_VAL][1];
 
     // Read Heightmap values for a & b
-    ctx = document.getElementById('canvas').getContext('2d');
+    ctx = document.getElementById("canvas").getContext("2d");
     Aheight = ctx.getImageData(Math.round(a.lat * mapScale), Math.round(a.lng * mapScale), 1, 1).data;
     Bheight = ctx.getImageData(Math.round(b.lat * mapScale), Math.round(b.lng * mapScale), 1, 1).data;
 
@@ -263,17 +263,17 @@ function getHeight(a, b) {
  */
 function getVelocity(distance) {
 
-    if ($("#radio-one").is(':checked')) { return ClassicMortar.getVelocity(); }
-    if ($("#radio-two").is(':checked')) { return TechnicalMortar.getVelocity(distance); }
-    if ($("#radio-three").is(':checked')) { return HellMortar.getVelocity(distance); } else {
+    if ($("#radio-one").is(":checked")) { return ClassicMortar.getVelocity(); }
+    if ($("#radio-two").is(":checked")) { return TechnicalMortar.getVelocity(distance); }
+    if ($("#radio-three").is(":checked")) { return HellMortar.getVelocity(distance); } else {
 
-        if ($("#radio-five").is(':checked')) {
+        if ($("#radio-five").is(":checked")) {
             setFrenchSelection(0);
             return MO120_SMortar.getVelocity();
-        } else if ($("#radio-six").is(':checked')) {
+        } else if ($("#radio-six").is(":checked")) {
             setFrenchSelection(1);
             return MO120_MMortar.getVelocity();
-        } else if ($("#radio-seven").is(':checked')) {
+        } else if ($("#radio-seven").is(":checked")) {
             setFrenchSelection(2);
             return MO120_LMortar.getVelocity();
         } else {
@@ -319,7 +319,7 @@ export function shoot() {
     $(".save").addClass("hidden");
 
     // draw pointer cursor & tooltip on results
-    if (localStorage.getItem("InfoToolTips_copy") !== 'true') {
+    if (localStorage.getItem("InfoToolTips_copy") !== "true") {
         tooltip_copy.enable();
         tooltip_copy.show();
     }
@@ -391,36 +391,36 @@ export function shoot() {
 
 
     // If too short, display it and exit function
-    if ($("#radio-one").is(':checked')) {
+    if ($("#radio-one").is(":checked")) {
         if (elevation > ClassicMortar.minDistance) {
             showError("Target is too close : " + distance.toFixed(0) + "m", "target");
             return 1;
         }
-    } else if ($("#radio-two").is(':checked')) { // If technical mortar
+    } else if ($("#radio-two").is(":checked")) { // If technical mortar
         if (elevation > TechnicalMortar.minDistance) {
             showError("Target is too close : " + distance.toFixed(0) + "m", "target");
             return 1;
         }
-    } else if ($("#radio-three").is(':checked')) { // If technical mortar
+    } else if ($("#radio-three").is(":checked")) { // If technical mortar
         if (elevation > HellMortar.minDistance) {
             showError("Target is too close : " + distance.toFixed(0) + "m", "target");
             return 1;
         }
-    } else if ($("#radio-four").is(':checked')) {
+    } else if ($("#radio-four").is(":checked")) {
 
-        if ($("#radio-five").is(':checked')) {
+        if ($("#radio-five").is(":checked")) {
             if (elevation > MO120_SMortar.minDistance) {
                 showError("Target is too close : " + distance.toFixed(0) + "m", "target");
                 return 1;
             }
         }
-        if ($("#radio-six").is(':checked')) {
+        if ($("#radio-six").is(":checked")) {
             if (elevation > MO120_MMortar.minDistance) {
                 showError("Target is too close : " + distance.toFixed(0) + "m", "target");
                 return 1;
             }
         }
-        if ($("#radio-seven").is(':checked')) {
+        if ($("#radio-seven").is(":checked")) {
             if (elevation > MO120_LMortar.minDistance) {
                 showError("Target is too close : " + distance.toFixed(0) + "m", "target");
                 return 1;
@@ -442,7 +442,7 @@ export function shoot() {
 
 
     // If using technica/hell mortars, we need to be more precise (##.#)
-    if ($("#radio-two").is(':checked') || $("#radio-three").is(':checked')) {
+    if ($("#radio-two").is(":checked") || $("#radio-three").is(":checked")) {
         $("#elevation").html(elevation.toFixed(1) + "↷");
     } else {
         $("#elevation").html(elevation.toFixed(0) + "↷");
@@ -475,7 +475,7 @@ export function filterInput(e) {
     }
 
     if (chrCode === 0) {
-        chrTyped = 'SPECIAL KEY';
+        chrTyped = "SPECIAL KEY";
     } else {
         chrTyped = String.fromCharCode(chrCode);
     }
@@ -499,9 +499,9 @@ export function filterInput(e) {
  */
 function showError(msg, issue) {
 
-    if (issue === 'mortar') {
+    if (issue === "mortar") {
         $("#mortar-location").addClass("error2");
-    } else if (issue === 'target') {
+    } else if (issue === "target") {
         $("#target-location").addClass("error2");
     } else {
         $("#target-location").addClass("error2");
@@ -534,15 +534,15 @@ export function loadMaps() {
 
     // Initiate select2 object (https://select2.org/)
     MAP_SELECTOR.select2({
-        dropdownCssClass: 'dropbtn',
-        dropdownParent: $('#mapSelector'),
+        dropdownCssClass: "dropbtn",
+        dropdownParent: $("#mapSelector"),
         minimumResultsForSearch: -1, // Disable search
-        placeholder: 'SELECT A MAP'
+        placeholder: "SELECT A MAP"
     });
 
     // load maps into select2
     for (i = 0; i < MAPS.length; i += 1) {
-        MAP_SELECTOR.append('<option value="' + i + '">' + MAPS[i][0] + '</option>');
+        MAP_SELECTOR.append("<option value=\"" + i + "\">" + MAPS[i][0] + "</option>");
     }
 }
 
@@ -551,14 +551,14 @@ export function loadMaps() {
  * Copy string to clipboard
  */
 export function copy(string) {
-    const el = document.createElement('textarea');
+    const el = document.createElement("textarea");
     el.value = string;
-    el.setAttribute('readonly', '');
-    el.style.position = 'absolute';
-    el.style.left = '-9999px';
+    el.setAttribute("readonly", "");
+    el.style.position = "absolute";
+    el.style.left = "-9999px";
     document.body.appendChild(el);
     el.select();
-    document.execCommand('copy');
+    document.execCommand("copy");
     document.body.removeChild(el);
 }
 
@@ -569,7 +569,7 @@ export function copy(string) {
 export function copySave(COPY_ZONE) {
     var text2copy;
     if (COPY_ZONE.prev().val().length === 0) {
-        text2copy = COPY_ZONE.prev().attr('placeholder') + " " + COPY_ZONE.text()
+        text2copy = COPY_ZONE.prev().attr("placeholder") + " " + COPY_ZONE.text()
     } else {
         text2copy = COPY_ZONE.prev().val() + " " + COPY_ZONE.text()
     }
@@ -641,8 +641,8 @@ function setCursor(startA, startB, a, b) {
  * @returns {String} randomly generated string
  */
 function makeid(length) {
-    var result = '';
-    var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    var result = "";
+    var characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     var charactersLength = characters.length;
     var i;
 
@@ -658,9 +658,9 @@ function makeid(length) {
  * Give Inputs random name to avoid browsers/mobile keyboards autocomplete
  */
 export function preventAutocomplete() {
-    $("#mortar-location").attr('name', makeid(10));
-    $("#target-location").attr('name', makeid(10));
-    $(".dropbtn").attr('name', makeid(10));
+    $("#mortar-location").attr("name", makeid(10));
+    $("#target-location").attr("name", makeid(10));
+    $(".dropbtn").attr("name", makeid(10));
 }
 
 /**
@@ -677,7 +677,7 @@ export function resizeInput(i) {
  */
 export function changeTheme(theme) {
     localStorage.setItem("data-theme", theme);
-    $('body').attr('data-theme', theme);
+    $("body").attr("data-theme", theme);
 }
 
 /**
@@ -697,7 +697,7 @@ export function getTheme() {
  * save current weapon into browser cache
  */
 export function saveWeapon() {
-    localStorage.setItem("data-weapon", $("input:checked").attr('id'));
+    localStorage.setItem("data-weapon", $("input:checked").attr("id"));
 }
 
 /**
@@ -708,5 +708,5 @@ export function getWeapon() {
 
     if (weapon === null) { return 1; }
 
-    $('#' + weapon).prop("checked", true);
+    $("#" + weapon).prop("checked", true);
 }
