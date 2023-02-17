@@ -12,8 +12,6 @@ import "./css/bluetheme.scss";
 import "./css/greentheme.scss";
 import "./css/responsive.scss";
 
-
-
 import { loadHeatmap, loadMaps, preventAutocomplete, getTheme, getWeapon } from "./js/utils.js";
 
 

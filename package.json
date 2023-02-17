@@ -18,7 +18,6 @@
     "bugs": {
         "url": "https://github.com/sh4rkman/MSMC/issues"
     },
-
     "private": false,
     "scripts": {
         "lint": "eslint ./src/",
@@ -26,7 +25,6 @@
         "start": "webpack serve --open --config webpack.dev.js",
         "build": "webpack --config webpack.prod.js"
     },
-
     "devDependencies": {
         "css-loader": "^6.7.3",
         "css-minimizer-webpack-plugin": "^3.4.1",
@@ -46,8 +44,5 @@
         "webpack-dev-server": "^4.8.1",
         "webpack-jquery-ui": "^2.0.1",
         "webpack-merge": "^5.8.0"
-    },
-    "dependencies": {
-
     }
 }

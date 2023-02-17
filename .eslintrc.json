@@ -36,8 +36,12 @@
             {"before": false, "after": true}
         ],
         "space-unary-ops": [
-            2,
+            "error",
             {"words": true, "nonwords": false}
+        ],
+        "vars-on-top": [
+            "error"
         ]
+
     }
 }
