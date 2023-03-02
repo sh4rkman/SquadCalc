@@ -40,8 +40,8 @@ Select a map, enter locations, shoot.
  
  
 <p align="center">
-  <img width="400" height="284" src="./src/img/github/desktop.png">
-  <img width="150" height="284" src="./src/img/github/mobile.png">
+  <img width="300" height="213" src="./src/img/github/desktop.png">
+  <img width="112" height="213" src="./src/img/github/mobile.png">
 </p>
 
 # **Features**
@@ -88,12 +88,12 @@ MSMC support different type of mortars :
 
 </br>
 
-Save up to three calcs for later :
+Save up to four calcs for later :
 
  </br>
 
  <p align="center">
-   <img width="523" height="399" src="./src/img/github/save.gif">
+   <img width="261" height="200" src="./src/img/github/save.gif">
  </p>
 
  </br></br>
