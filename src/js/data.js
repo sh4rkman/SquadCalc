@@ -7,6 +7,7 @@ import FallujahURL from "../img/heightmaps/fallujah.jpg";
 import FoolsRoadURL from "../img/heightmaps/fool's road.jpg";
 import GooseBayURL from "../img/heightmaps/goose bay.jpg";
 import GorodokURL from "../img/heightmaps/gorodok.jpg";
+import HarjuURL from "../img/heightmaps/harju.jpg";
 import KamdeshURL from "../img/heightmaps/kamdesh.jpg";
 import KohatURL from "../img/heightmaps/kohat.jpg";
 import KokanURL from "../img/heightmaps/kokan.jpg";
@@ -55,6 +56,7 @@ export const MAPS = [
     ["Fool's Road", 1736, 0.149, FoolsRoadURL],
     ["Goose Bay", 4065, 0.2, GooseBayURL],
     ["Gorodok", 4340, 0.13, GorodokURL],
+    ["Harju", 4065, 0.1, HarjuURL],
     ["Kamdesh", 4032, 0.2, KamdeshURL],
     ["Kohat", 4617, 1, KohatURL],
     ["Kokan", 2496, 0.01, KokanURL],
