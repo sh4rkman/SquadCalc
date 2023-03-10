@@ -9,11 +9,12 @@ import {
     frenchSelection,
     setFrenchSelection,
     ClassicMortar,
+    HellMortar,
     TechnicalMortar,
+    BM21Grad,
     MO120_SMortar,
     MO120_MMortar,
     MO120_LMortar,
-    HellMortar,
 } from "./data.js";
 
 
@@ -206,7 +207,7 @@ function getDist(a, b) {
  * @param {number} [G] - gravity force (9.8)
  * @returns {number || NaN} mil if target in range, NaN otherwise
  */
-function getElevation(x, y = 0, vel, G = GRAVITY) {
+function getElevation(x = 0, y = 0, vel = 0, G = GRAVITY) {
     const P1 = Math.sqrt(vel ** 4 - G * (G * x ** 2 + 2 * y * vel ** 2));
     const A1 = Math.atan((vel ** 2 + P1) / (G * x));
 
@@ -265,7 +266,8 @@ function getVelocity(distance) {
 
     if ($("#radio-one").is(":checked")) { return ClassicMortar.getVelocity(); }
     if ($("#radio-two").is(":checked")) { return TechnicalMortar.getVelocity(distance); }
-    if ($("#radio-three").is(":checked")) { return HellMortar.getVelocity(distance); } else {
+    if ($("#radio-three").is(":checked")) { return HellMortar.getVelocity(distance); }
+    if ($("#radio-eight").is(":checked")) { return BM21Grad.getVelocity(); } else {
 
         if ($("#radio-five").is(":checked")) {
             setFrenchSelection(0);

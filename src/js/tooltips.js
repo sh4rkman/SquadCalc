@@ -6,10 +6,16 @@ import "tippy.js/dist/tippy.css"; // optional for styling
 export var tooltip_save;
 export var tooltip_copy;
 export var tooltip_copied;
+export var tooltip_mlrs;
 
 tippy("#classic", {
     animation: "fade",
     content: "Classic",
+});
+
+tippy("#hell", {
+    animation: "fade",
+    content: "Hell Cannon",
 });
 
 tippy("#technical", {
@@ -17,9 +23,29 @@ tippy("#technical", {
     content: "Technical",
 });
 
-tippy("#hell", {
+if (localStorage.getItem("MLRS") !== "true") {
+    tippy("#mlrs", {
+        animation: "fade",
+        content: "new!",
+        theme: "new",
+        onShow() {
+            localStorage.setItem("MLRS", true);
+        },
+    });
+    tooltip_mlrs = document.querySelector("#mlrs")._tippy;
+    tooltip_mlrs.show();
+}
+
+tippy("#mlrs", {
     animation: "fade",
-    content: "Hell Cannon",
+    content: "MLRS",
+    onShow() {
+        if (tooltip_mlrs) {
+            console.log(tooltip_mlrs);
+            tooltip_mlrs.hide();
+            tooltip_mlrs.disable();
+        }
+    },
 });
 
 tippy("#french", {
@@ -74,7 +100,6 @@ tippy("#settings", {
             instance.hide();
             instance.disable();
         }, 1500);
-
     }
 });
 tooltip_copied = document.querySelector("#settings")._tippy;
@@ -121,6 +146,7 @@ if (localStorage.getItem("InfoToolTips_save") !== "true") {
     });
     tooltip_save = document.querySelector(".save i")._tippy;
 }
+
 
 
 export function enableTooltip(tooltip) {

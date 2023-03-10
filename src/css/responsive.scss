@@ -128,10 +128,14 @@
     .mortar_selector_french {
         background: url("../img/icons/french_mortar.png") no-repeat scroll 0px 6px transparent;
     }
+    .mortar_selector_mlrs {
+        background: url("../img/icons/mlrs.png") no-repeat scroll 0px 6px transparent;
+    }
     .mortar_selector_classic,
     .mortar_selector_technical,
     .mortar_selector_hell,
-    .mortar_selector_french {
+    .mortar_selector_french,
+    .mortar_selector_mlrs {
         background-size: 100%;
     }
     .select2-container {
@@ -207,6 +211,9 @@
     .mortar_selector_french {
         background: url("../img/icons/french_mortar.png") no-repeat scroll 6px 3px transparent;
     }
+    .mortar_selector_mlrs {
+        background: url("../img/icons/mlrs.png") no-repeat scroll 6px 3px transparent;
+    }
 }
 
 
@@ -277,6 +284,7 @@
         .mortar_selector_technical,
         .mortar_selector_hell,
         .mortar_selector_french,
+        .mortar_selector_mlrs,
         .french_mortar_selector_short,
         .french_mortar_selector_medium,
         .french_mortar_selector_long {

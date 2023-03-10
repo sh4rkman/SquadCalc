@@ -7,6 +7,13 @@ export class Weapon {
         this.minDistance = minDistance;
     }
 
+    /**
+     * Return the weapon velocity
+     * Since Hellmortars and Technical mounted mortars are not following the classic
+     * projectile motion, i have to estimate velocity based on ingame values
+     * @param {number} [distance] - distance between mortar and target from getDist()
+     * @returns {number} - Velocity of the weapon for said distance
+     */
     getVelocity(distance) {
         var i;
         if (this.name === "Technical") {
@@ -15,7 +22,6 @@ export class Weapon {
                     return TECHNICALS[i - 1][1] + ((distance - TECHNICALS[i - 1][0]) / (TECHNICALS[i][0] - TECHNICALS[i - 1][0])) * (TECHNICALS[i][1] - TECHNICALS[i - 1][1]);
                 }
             }
-
         }
 
         if (this.name === "Hell") {

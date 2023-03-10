@@ -1,7 +1,7 @@
 {
     "name": "msmc",
-    "version": "8.3",
-    "description": "",
+    "version": "9.0.0",
+    "description": "A Minimalist Mortar Calculator for Squad",
     "author": "sharkman",
     "license": "ISC",
     "keywords": [
@@ -19,12 +19,17 @@
         "url": "https://github.com/sh4rkman/MSMC/issues"
     },
     "private": false,
+    "jshintConfig": {
+        "esversion": 7
+    },
     "scripts": {
-        "lint": "eslint ./src/",
-        "lint:fix": "eslint --fix ./src/",
-        "jshint": "jshint ./src/",
         "start": "webpack serve --open --config webpack.dev.js",
-        "build": "webpack --config webpack.prod.js"
+        "build": "webpack --config webpack.prod.js",
+        "test:all": "npm-run-all test:lint test:jshint test:htmlhint test:w3c",
+        "test:lint": "eslint ./src/",
+        "test:jshint": "jshint ./src/",
+        "test:htmlhint": "htmlhint ./src/",
+        "test:w3c": "html-validator ./src/"
     },
     "devDependencies": {
         "css-loader": "^6.7.3",
@@ -33,15 +38,18 @@
         "glob-parent": ">=5.1.2",
         "html-loader": "^3.1.0",
         "html-webpack-plugin": "^5.5.0",
+        "htmlhint": "^1.1.4",
         "jshint": "^2.13.6",
         "mini-css-extract-plugin": "^2.6.0",
         "node-sass": "^7.0.3",
+        "npm-run-all": "^4.1.5",
         "postcss": ">=7.0.36",
         "purecss": "^3.0.0",
         "sass-loader": "^12.6.0",
         "select2": "^4.1.0-rc.0",
         "style-loader": "^3.3.1",
         "tippy.js": "^6.3.7",
+        "w3c-html-validator": "^1.3.2",
         "webpack": "^5.72.0",
         "webpack-bundle-analyzer": "^4.5.0",
         "webpack-cli": "^4.9.2",

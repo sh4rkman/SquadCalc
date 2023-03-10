@@ -7,7 +7,7 @@
 
     <meta name="description" content="A Minimalist yet precise Mortar Calculator for SQUAD ! enter locations, shoot, profit.">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#111" />
+    <meta name="theme-color" content="#111">
     <meta charset="utf-8">
 
     <!-- SOCIAL MEDIA -->
@@ -28,7 +28,7 @@
     <meta name="theme-color" content="#111111">
 
     <!-- FUCK IE, I GIVE UP -->
-    <script type="text/javascript">
+    <script>
         if (navigator.appName.indexOf("Internet Explorer") != -1 || navigator.userAgent.match(/Trident.*rv[ :]*11\./)) {
             window.location = "https://choosebrowser.com/";
         }
@@ -48,17 +48,23 @@
         </div>
         <div class="pure-u-1 pure-u-md-1-5 weaponSelector">
             <div class="switch-field unselectable">
-                <input type="radio" id="radio-one" name="switch-one" checked/>
+
+                <input type="radio" id="radio-one" name="switch-one" checked>
                 <label id="classic" for="radio-one" class="mortar_selector mortar_selector_classic"></label>
 
-                <input type="radio" id="radio-two" name="switch-one" />
+                <input type="radio" id="radio-three" name="switch-one">
+                <label id="hell" for="radio-three" class="mortar_selector mortar_selector_hell"></label>
+
+                <input type="radio" id="radio-two" name="switch-one">
                 <label id="technical" for="radio-two" class="mortar_selector mortar_selector_technical"></label>
 
-                <input type="radio" id="radio-three" name="switch-one" />
-                <label id="hell" for="radio-three" class="mortar_selector mortar_selector_hell "></label>
+                <input type="radio" id="radio-eight" name="switch-one">
+                <label id="mlrs" for="radio-eight" class="mortar_selector mortar_selector_mlrs"></label>
 
-                <input type="radio" id="radio-four" name="switch-one" />
-                <label id="french" for="radio-four" class="mortar_selector mortar_selector_french "></label>
+                <input type="radio" id="radio-four" name="switch-one">
+                <label id="french" for="radio-four" class="mortar_selector mortar_selector_french"></label>
+
+
             </div>
         </div>
 
@@ -134,7 +140,7 @@
 
     <div class="fab-wrapper">
 
-        <input id="fabCheckbox" type="checkbox" class="fab-checkbox" />
+        <input id="fabCheckbox" type="checkbox" class="fab-checkbox">
 
         <label class="fab" for="fabCheckbox">
             <span class="fab-dots fab-dots-1"></span>
@@ -160,7 +166,7 @@
     </div>
 
     <div class="pure-u-1 pure-u-md-1 pure-u-lg-1 footer">
-        <img class="pure-img logo unselectable" src="./img/logo.png" alt="logo" />
+        <img class="pure-img logo unselectable" src="./img/logo.png" alt="logo">
     </div>
 
     <!-- JS -->
