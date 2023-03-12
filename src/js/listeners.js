@@ -24,8 +24,10 @@ $(document).on("click", ".fab-action-2", function() {
         changeTheme("blue");
     } else if ($("body").attr("data-theme") === "blue") {
         changeTheme("green");
-    } else {
+    } else if ($("body").attr("data-theme") === "green") {
         changeTheme("classic");
+    } else { // we are in classic but don't know it
+        changeTheme("dark");
     }
 });
 
