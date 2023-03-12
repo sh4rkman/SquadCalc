@@ -3,11 +3,18 @@ import {
 } from "./tooltips.js";
 
 import {
-    MAPS,
+    DEBUGMODE,
     GRAVITY,
     CANVAS_SIZE,
     frenchSelection,
     setFrenchSelection,
+} from "./data.js";
+
+import {
+    MAPS,
+} from "./map.js";
+
+import {
     ClassicMortar,
     HellMortar,
     TechnicalMortar,
@@ -15,10 +22,7 @@ import {
     MO120_SMortar,
     MO120_MMortar,
     MO120_LMortar,
-} from "./data.js";
-
-
-
+} from "./weapon.js";
 
 /**
  * Load the heatmap to the canvas
@@ -30,6 +34,12 @@ export function loadHeatmap() {
     img.addEventListener("load", function() {
         ctx.drawImage(img, 0, 0, CANVAS_SIZE, CANVAS_SIZE); // Draw img at good scale
     }, false);
+
+    if (DEBUGMODE) {
+        $("#heatmap").css("display", "block");
+        $("#bearing").html("Debug");
+        $("#elevation").html("Mode");
+    }
 }
 
 
@@ -41,7 +51,7 @@ export function drawHeatmap() {
     var ctx = document.getElementById("canvas").getContext("2d");
 
 
-    img.src = MAPS[$(".dropbtn").val()][3];
+    img.src = MAPS[$(".dropbtn").val()][5];
 
     img.addEventListener("load", function() { // wait for the image to load or it does crazy stuff
         ctx.drawImage(img, 0, 0, CANVAS_SIZE, CANVAS_SIZE);
@@ -229,7 +239,9 @@ function getElevation(x = 0, y = 0, vel = 0, G = GRAVITY) {
 function getHeight(a, b) {
     var Aheight;
     var Bheight;
-    var ctx;
+    var AOffset = { lat: 0, lng: 0 };
+    var BOffset = { lat: 0, lng: 0 };
+    var ctx = document.getElementById("canvas").getContext("2d");
     var mapScale;
     const DROPBTN_VAL = $(".dropbtn").val();
 
@@ -239,21 +251,48 @@ function getHeight(a, b) {
     // load map size for scaling lat&lng
     mapScale = CANVAS_SIZE / MAPS[DROPBTN_VAL][1];
 
-    // Read Heightmap values for a & b
-    ctx = document.getElementById("canvas").getContext("2d");
-    Aheight = ctx.getImageData(Math.round(a.lat * mapScale), Math.round(a.lng * mapScale), 1, 1).data;
-    Bheight = ctx.getImageData(Math.round(b.lat * mapScale), Math.round(b.lng * mapScale), 1, 1).data;
+    // Apply offset & scaling
+    // Heightmaps & maps doesn't always start at A01, they sometimes need to be offset manually
+    AOffset.lat = (a.lat + MAPS[DROPBTN_VAL][2] * mapScale) * mapScale;
+    AOffset.lng = (a.lng + MAPS[DROPBTN_VAL][3] * mapScale) * mapScale;
+    BOffset.lat = (b.lat + MAPS[DROPBTN_VAL][2] * mapScale) * mapScale;
+    BOffset.lng = (b.lng + MAPS[DROPBTN_VAL][3] * mapScale) * mapScale;
 
-    // Check if a & b arn't out of canvas
-    if (Aheight[3] === 0) {
+
+    // Read Heightmap values for a & b
+    Aheight = ctx.getImageData(Math.round(AOffset.lat), Math.round(AOffset.lng), 1, 1).data;
+    Bheight = ctx.getImageData(Math.round(BOffset.lat), Math.round(BOffset.lng), 1, 1).data;
+
+    // Debug purpose
+    if (DEBUGMODE) {
+        console.log("------------------------------");
+        console.log("HEIGHTMAP");
+        console.log(" -> map: " + MAPS[DROPBTN_VAL][0]);
+        console.log(" -> mapScale: " + mapScale);
+        console.log("------------------------------");
+        console.log("A {lat: " + a.lat.toFixed(2) + "; " + "lng: " + a.lng.toFixed(2) + "}");
+        console.log("    -> Offset {lat: " + AOffset.lat.toFixed(2) + "; lng: " + AOffset.lng.toFixed(2) + "}");
+        console.log("    -> " + Aheight + " (RGBa)");
+        console.log("B {lat: " + b.lat.toFixed(2) + "; " + "lng: " + b.lng.toFixed(2) + "}");
+        console.log("    -> Offset {lat: " + BOffset.lat.toFixed(2) + "; lng: " + BOffset.lng.toFixed(2) + "}");
+        console.log("    -> " + Bheight + " (RGBa)");
+
+        // place visual green marker on the canvas
+        ctx.fillStyle = "green";
+        ctx.fillRect(AOffset.lat, AOffset.lng, 5, 5);
+        ctx.fillRect(BOffset.lat, BOffset.lng, 5, 5);
+    }
+
+    // Check if a & b aren't out of canvas
+    if (Aheight[2] === 0 && Aheight[1] === 0) {
         return "AERROR";
     }
-    if (Bheight[3] === 0) {
+    if (Bheight[2] === 0 && Bheight[1] === 0) {
         return "BERROR";
     }
 
-    Aheight = (255 + Aheight[0] - Aheight[2]) * MAPS[DROPBTN_VAL][2];
-    Bheight = (255 + Bheight[0] - Bheight[2]) * MAPS[DROPBTN_VAL][2];
+    Aheight = (255 + Aheight[0] - Aheight[2]) * MAPS[DROPBTN_VAL][4];
+    Bheight = (255 + Bheight[0] - Bheight[2]) * MAPS[DROPBTN_VAL][4];
 
     return Bheight - Aheight;
 }
@@ -308,6 +347,8 @@ export function shoot() {
     const TARGET_LOC = $("#target-location");
     var a = MORTAR_LOC.val();
     var b = TARGET_LOC.val();
+
+    if (DEBUGMODE) { console.clear(); }
 
     // First, reset any errors
     $("#settings").removeClass("error");
@@ -381,7 +422,6 @@ export function shoot() {
 
     distance = getDist(a, b);
     vel = getVelocity(distance);
-
     elevation = getElevation(distance, height, vel);
 
 
@@ -433,8 +473,13 @@ export function shoot() {
     bearing = getBearing(a, b);
 
     // if in range, Insert Calculations
-
-    console.clear();
+    if (!DEBUGMODE) {
+        console.clear();
+    } else {
+        console.log("------------------------------");
+        console.log(" FINAL CALC");
+        console.log("------------------------------");
+    }
     console.log(MORTAR_LOC.val().toUpperCase() + " -> " + TARGET_LOC.val().toUpperCase());
     console.log("-> Bearing: " + bearing.toFixed(1) + "° - Elevation: " + elevation.toFixed(1) + "↷");
     console.log("-> Distance: " + distance.toFixed(0) + "m - height: " + height.toFixed(0) + "m");
@@ -522,7 +567,7 @@ function showError(msg, issue) {
     // https://youtu.be/PWgvGjAhvIw?t=233
     $("#settings").addClass("error").effect("shake");
 
-    console.clear();
+    if (!DEBUGMODE) { console.clear(); }
     console.error(msg);
 }
 

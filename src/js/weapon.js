@@ -1,5 +1,3 @@
-import { TECHNICALS, HELL } from "./data.js";
-
 export class Weapon {
     constructor(name, velocity, minDistance) {
         this.name = name;
@@ -36,3 +34,48 @@ export class Weapon {
     }
 
 }
+
+export const ClassicMortar = new Weapon("Classic", 109.890938, 1580);
+export const TechnicalMortar = new Weapon("Technical", 0, 83.8);
+export const MO120_SMortar = new Weapon("MO120_S", 109.890938, 1520);
+export const MO120_MMortar = new Weapon("MO120_M", 143.5, 1520);
+export const MO120_LMortar = new Weapon("MO120_L", 171.5, 1520);
+export const HellMortar = new Weapon("Hell", 0, 88);
+export const BM21Grad = new Weapon("BM21Grad", 0, 900);
+
+// Since technicals mortars are acting weirdly, i have to stock these empirical values for now until i figure out how they work
+// read https://github.com/Endebert/squadmc/discussions/101 for more information
+// TECHNICALS[distance, Velocity]
+export const TECHNICALS = [
+    [50, 47.76901552],
+    [100, 63.20591542],
+    [200, 77.59023672],
+    [300, 85.01920022],
+    [400, 90.49300565],
+    [500, 94.09830025],
+    [600, 96.66132881],
+    [700, 99.37483515],
+    [800, 101.1651775],
+    [900, 103.1447638],
+    [1000, 104.7823288],
+    [1100, 106.3455911],
+    [1200, 108.7830358],
+    [1233, 109.7640997]
+];
+
+
+// HELL[distance, Velocity]
+export const HELL = [
+    [50, 83.807],
+    [150, 92.007],
+    [200, 93.342],
+    [300, 95.028],
+    [400, 94.563],
+    [500, 94.852],
+    [600, 95.643],
+    [700, 94.632],
+    [800, 95.147],
+    [875, 95.527],
+    [900, 94.636],
+    [925, 95.210],
+];
