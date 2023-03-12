@@ -229,11 +229,6 @@
 /* ≥ 1400px */
 
 @media screen and (min-width: 87.5em) {
-    .select2-container {
-        font-size: 1.2em;
-        max-width: 270px;
-        min-width: 220px;
-    }
     .select2-results__options {
         font-size: 1em;
     }
@@ -246,7 +241,7 @@
     /* ≥ 1980px & 1080*/
     @media (min-height: 68em) {
         .select2-container {
-            font-size: 1.5em;
+            font-size: 1.4em;
             min-width: 350px;
         }
         .select2-results__options {
