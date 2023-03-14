@@ -40,8 +40,6 @@ export function loadHeatmap() {
 
     if (DEBUGMODE) {
         $("#heatmap").css("display", "block");
-        $("#bearing").html("Debug");
-        $("#elevation").html("Mode");
         $("#mortar-location").val("B03-4-5");
         $("#target-location").val("C07-9-5");
     }
@@ -585,35 +583,27 @@ export function loadMaps() {
     const MAP_SELECTOR = $(".dropbtn");
 
     // Initiate select2 object (https://select2.org/)
-    MAP_SELECTOR.select2({
-        dropdownCssClass: "dropbtn",
-        dropdownParent: $("#mapSelector"),
-        minimumResultsForSearch: -1, // Disable search
-        placeholder: "SELECT A MAP"
-    });
+    if (DEBUGMODE) {
+        MAP_SELECTOR.select2({
+            dropdownCssClass: "dropbtn",
+            dropdownParent: $("#mapSelector"),
+            minimumResultsForSearch: -1, // Disable search
+            placeholder: "DEBUG MODE"
+        });
+    } else {
+        MAP_SELECTOR.select2({
+            dropdownCssClass: "dropbtn",
+            dropdownParent: $("#mapSelector"),
+            minimumResultsForSearch: -1, // Disable search
+            placeholder: "SELECT A MAP"
+        });
+    }
 
     // load maps into select2
     for (i = 0; i < MAPSLENGTH; i += 1) {
         MAP_SELECTOR.append("<option value=\"" + i + "\">" + MAPS[i][0] + "</option>");
     }
 }
-
-
-/**
- * Copy string to clipboard
- */
-export function copy(string) {
-    const el = document.createElement("textarea");
-    el.value = string;
-    el.setAttribute("readonly", "");
-    el.style.position = "absolute";
-    el.style.left = "-9999px";
-    document.body.appendChild(el);
-    el.select();
-    document.execCommand("copy");
-    document.body.removeChild(el);
-}
-
 
 /**
  * Copy Saved calcs to clipboard
@@ -625,7 +615,8 @@ export function copySave(COPY_ZONE) {
     } else {
         text2copy = COPY_ZONE.prev().val() + " " + COPY_ZONE.text();
     }
-    copy(text2copy);
+
+    navigator.clipboard.writeText(text2copy);
     COPY_ZONE.parent().effect("bounce", 400);
 }
 

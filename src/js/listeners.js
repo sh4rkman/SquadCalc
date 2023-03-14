@@ -1,4 +1,4 @@
-import { shoot, changeTheme, filterInput, drawHeatmap, resizeInput, RemoveSaves, copySave, copy, } from "./utils.js";
+import { shoot, changeTheme, filterInput, drawHeatmap, resizeInput, RemoveSaves, copySave, } from "./utils.js";
 import { saveWeapon } from "./weapons.js";
 import { tooltip_copy, tooltip_copied, tooltip_save } from "./tooltips";
 
@@ -10,7 +10,7 @@ $(document).on("change", ".switch-field2", function() { shoot(); });
 $(document).on("change", ".dropbtn", function() { drawHeatmap(); });
 $(document).on("input", "#target-location", function() { shoot(); });
 $(document).on("input", "#mortar-location", function() { shoot(); });
-$(document).on("input", "#resize", function() { resizeInput(this); });
+$(document).on("input", ".resize", function() { resizeInput(this); });
 $(document).on("keypress", "#mortar-location", function(event) { filterInput(event); });
 $(document).on("keypress", "#target-location", function(event) { filterInput(event); });
 $(document).on("click", ".del", function() { RemoveSaves(this); });
@@ -36,7 +36,7 @@ $(document).on("click", ".save", function() {
         $(".saved_list p").first().remove();
     }
     $(".saved_list").append(
-        "<p class='savedrow' style='display:none;'><input id=\"resize\" maxlength=\"20\" spellcheck='false' placeholder='" + $("#target-location").val() + "'class='friendlyname'></input>" +
+        "<p class='savedrow' style='display:none;'><input maxlength=\"20\" spellcheck='false' placeholder='" + $("#target-location").val() + "'class='friendlyname resize'></input>" +
         "<span id=\"savespan\" style=\"font-weight:bold\"> ➜ " +
         $("#bearing").text() +
         " - " +
@@ -62,7 +62,7 @@ $(document).on("click", "#copy", function() {
 
     if (!COPY_ZONE.hasClass("copy")) { return 1; }
 
-    copy("➜ " + $("#target-location").val() + " = " + $("#bearing").text() + " - " + $("#elevation").text());
+    navigator.clipboard.writeText("➜ " + $("#target-location").val() + " = " + $("#bearing").text() + " - " + $("#elevation").text());
 
     // the user understood he can click2copy, remove the tooltip
     localStorage.setItem("InfoToolTips_copy", true);
