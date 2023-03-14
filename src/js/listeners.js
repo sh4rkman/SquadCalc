@@ -1,4 +1,5 @@
-import { shoot, changeTheme, filterInput, drawHeatmap, resizeInput, RemoveSaves, copySave, copy, saveWeapon } from "./utils.js";
+import { shoot, changeTheme, filterInput, drawHeatmap, resizeInput, RemoveSaves, copySave, copy, } from "./utils.js";
+import { saveWeapon } from "./weapons.js";
 import { tooltip_copy, tooltip_copied, tooltip_save } from "./tooltips";
 
 $(document).on("change", ".switch-field", function() {

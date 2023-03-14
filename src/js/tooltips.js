@@ -1,7 +1,7 @@
-import { setFrenchSelection } from "./conf.js";
+/* eslint-disable no-unused-vars */
+import { setFrenchSelection } from "./utils";
 import tippy from "tippy.js";
 import "tippy.js/dist/tippy.css";
-
 
 export var tooltip_save;
 export var tooltip_copy;
@@ -41,7 +41,6 @@ tippy("#mlrs", {
     content: "MLRS",
     onShow() {
         if (tooltip_mlrs) {
-            console.log(tooltip_mlrs);
             tooltip_mlrs.hide();
             tooltip_mlrs.disable();
         }

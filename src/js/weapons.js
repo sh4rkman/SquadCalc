@@ -43,6 +43,9 @@ export const MO120_LMortar = new Weapon("MO120_L", 171.5, 1520);
 export const HellMortar = new Weapon("Hell", 0, 88);
 export const BM21Grad = new Weapon("BM21Grad", 0, 900);
 
+
+
+
 // Since technicals mortars are acting weirdly, i have to stock these empirical values for now until i figure out how they work
 // read https://github.com/Endebert/squadmc/discussions/101 for more information
 // TECHNICALS[distance, Velocity]
@@ -79,3 +82,20 @@ export const HELL = [
     [900, 94.636],
     [925, 95.210],
 ];
+
+
+/**
+ * save current weapon into browser cache
+ */
+export function saveWeapon() {
+    localStorage.setItem("data-weapon", $("input:checked").attr("id"));
+}
+
+/**
+ * get last weapon from user cache and apply it
+ */
+export function getWeapon() {
+    var weapon = localStorage.getItem("data-weapon");
+    if (weapon === null) { return 1; }
+    $("#" + weapon).prop("checked", true);
+}

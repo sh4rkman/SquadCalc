@@ -1,9 +1,10 @@
+@import url("https://fonts.googleapis.com/css?family=Montserrat");
+
 /*
    * -- BASE STYLES --
    * Most of these are inherited from Base, but I want to change a few.
-   */
+*/
 
-@import url("https://fonts.googleapis.com/css?family=Montserrat");
 body {
     color: white;
     background: #111;
@@ -449,7 +450,7 @@ span.select2-selection.select2-selection--single {
 }
 
 .error2 {
-    color: FireBrick;
+    border-bottom: 3px solid FireBrick;
 }
 
 

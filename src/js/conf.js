@@ -1,7 +1,11 @@
-export const DEBUGMODE = true;
-export const CANVAS_SIZE = 500;
-export var frenchSelection = 0;
+/**
+ * Activate Debug Mode (True/False)
+ * Display canevas/Mortar/Target in plain html, 
+ * Browser console is more chatty
+ */
+export const DEBUGMODE = false;
 
-export function setFrenchSelection(val) {
-    frenchSelection = val;
-}
+/**
+ * Canvas Size (in pixel)
+ */
+export const CANVAS_SIZE = 500;

@@ -5,13 +5,11 @@ import {
 import {
     DEBUGMODE,
     CANVAS_SIZE,
-    frenchSelection,
-    setFrenchSelection,
 } from "./conf.js";
 
 import {
     MAPS,
-} from "./map.js";
+} from "./maps.js";
 
 import {
     ClassicMortar,
@@ -21,7 +19,13 @@ import {
     MO120_SMortar,
     MO120_MMortar,
     MO120_LMortar,
-} from "./weapon.js";
+} from "./weapons.js";
+
+/**
+ * var used to stock what french DLC mortar was previously selected
+ * (since le weapon selector is hidden, we can't read the selected value)
+ */
+export var frenchSelection = 0;
 
 /**
  * Load the heatmap to the canvas
@@ -95,7 +99,7 @@ function getPos(kp) {
         } else {
             // opposite of calculations in getKP()
             const SUB = Number(PARTS[i]);
-            if (Number.isNaN(SUB)) {
+            if (!DEBUGMODE || Number.isNaN(SUB)) {
                 console.log(`invalid keypad string: ${FORMATTED_KEYPAD}`);
             }
             const subX = (SUB - 1) % 3;
@@ -309,13 +313,13 @@ function getVelocity(distance) {
     if ($("#radio-eight").is(":checked")) { return BM21Grad.getVelocity(); } else {
 
         if ($("#radio-five").is(":checked")) {
-            setFrenchSelection(0);
+            frenchSelection = 0;
             return MO120_SMortar.getVelocity();
         } else if ($("#radio-six").is(":checked")) {
-            setFrenchSelection(1);
+            frenchSelection = 1;
             return MO120_MMortar.getVelocity();
         } else if ($("#radio-seven").is(":checked")) {
-            setFrenchSelection(2);
+            frenchSelection = 2;
             return MO120_LMortar.getVelocity();
         } else {
 
@@ -348,7 +352,7 @@ export function shoot() {
     var a = MORTAR_LOC.val();
     var b = TARGET_LOC.val();
 
-    if (DEBUGMODE) { console.clear(); }
+    if (!DEBUGMODE) { console.clear(); }
 
     // First, reset any errors
     $("#settings").removeClass("error");
@@ -733,28 +737,13 @@ export function changeTheme(theme) {
  */
 export function getTheme() {
     var theme = localStorage.getItem("data-theme");
-
-    if (theme === null) {
-        return 1;
-    }
-
-    changeTheme(theme);
+    if (theme === null) { return 1; }
+    $("body").attr("data-theme", theme);
 }
 
 /**
- * save current weapon into browser cache
+ * Stock last french mortar used for later
  */
-export function saveWeapon() {
-    localStorage.setItem("data-weapon", $("input:checked").attr("id"));
-}
-
-/**
- * get last weapon used by user and apply it
- */
-export function getWeapon() {
-    var weapon = localStorage.getItem("data-weapon");
-
-    if (weapon === null) { return 1; }
-
-    $("#" + weapon).prop("checked", true);
+export function setFrenchSelection(val) {
+    frenchSelection = val;
 }
