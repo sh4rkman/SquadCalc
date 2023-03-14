@@ -16,7 +16,6 @@ $(document).on("click", ".del", function() { RemoveSaves(this); });
 $(document).on("click", "#savespan", function() { copySave($(this)); });
 
 $(document).on("click", ".fab-action-2", function() {
-
     if ($("body").attr("data-theme") === "classic") {
         changeTheme("dark");
     } else if ($("body").attr("data-theme") === "dark") {
@@ -45,8 +44,6 @@ $(document).on("click", ".save", function() {
 
     $(".saved").removeClass("hidden");
 
-
-
     $(".saved_list p").last().show("fast");
 
     // the user understood he can click2save, remove the tooltip now
@@ -54,7 +51,9 @@ $(document).on("click", ".save", function() {
         tooltip_save.disable();
         localStorage.setItem("InfoToolTips_save", "true");
     }
+
 });
+
 
 
 $(document).on("click", "#copy", function() {
@@ -69,4 +68,5 @@ $(document).on("click", "#copy", function() {
     tooltip_copy.disable();
     tooltip_copied.enable();
     tooltip_copied.show();
+
 });

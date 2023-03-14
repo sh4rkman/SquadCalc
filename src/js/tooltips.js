@@ -1,6 +1,6 @@
-import { setFrenchSelection } from "./data.js";
+import { setFrenchSelection } from "./conf.js";
 import tippy from "tippy.js";
-import "tippy.js/dist/tippy.css"; // optional for styling
+import "tippy.js/dist/tippy.css";
 
 
 export var tooltip_save;
@@ -134,9 +134,6 @@ tippy(".fab-action-4", {
 });
 
 
-
-
-
 if (localStorage.getItem("InfoToolTips_save") !== "true") {
     tippy(".save i", {
         animation: "fade",
@@ -145,10 +142,4 @@ if (localStorage.getItem("InfoToolTips_save") !== "true") {
         placement: "right",
     });
     tooltip_save = document.querySelector(".save i")._tippy;
-}
-
-
-
-export function enableTooltip(tooltip) {
-    tooltip.enable();
 }

@@ -7,7 +7,8 @@ module.exports = {
         utils: './src/js/utils.js',
         tooltips: './src/js/tooltips.js',
         weapon: './src/js/weapon.js',
-        data: './src/js/data.js',
+        map: './src/js/map.js',
+        data: './src/js/conf.js',
         listeners: './src/js/listeners.js',
     },
     output: {

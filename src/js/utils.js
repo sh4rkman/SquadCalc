@@ -4,11 +4,10 @@ import {
 
 import {
     DEBUGMODE,
-    GRAVITY,
     CANVAS_SIZE,
     frenchSelection,
     setFrenchSelection,
-} from "./data.js";
+} from "./conf.js";
 
 import {
     MAPS,
@@ -39,6 +38,8 @@ export function loadHeatmap() {
         $("#heatmap").css("display", "block");
         $("#bearing").html("Debug");
         $("#elevation").html("Mode");
+        $("#mortar-location").val("B03-4-5");
+        $("#target-location").val("C07-9-5");
     }
 }
 
@@ -49,7 +50,6 @@ export function loadHeatmap() {
 export function drawHeatmap() {
     var img = new Image(); // Create new img element
     var ctx = document.getElementById("canvas").getContext("2d");
-
 
     img.src = MAPS[$(".dropbtn").val()][5];
 
@@ -217,7 +217,7 @@ function getDist(a, b) {
  * @param {number} [G] - gravity force (9.8)
  * @returns {number || NaN} mil if target in range, NaN otherwise
  */
-function getElevation(x = 0, y = 0, vel = 0, G = GRAVITY) {
+function getElevation(x = 0, y = 0, vel = 0, G = 9.8) {
     const P1 = Math.sqrt(vel ** 4 - G * (G * x ** 2 + 2 * y * vel ** 2));
     const A1 = Math.atan((vel ** 2 + P1) / (G * x));
 
@@ -268,7 +268,7 @@ function getHeight(a, b) {
         console.log("------------------------------");
         console.log("HEIGHTMAP");
         console.log(" -> map: " + MAPS[DROPBTN_VAL][0]);
-        console.log(" -> mapScale: " + mapScale);
+        console.log(" -> z-mapScale: " + mapScale);
         console.log("------------------------------");
         console.log("A {lat: " + a.lat.toFixed(2) + "; " + "lng: " + a.lng.toFixed(2) + "}");
         console.log("    -> Offset {lat: " + AOffset.lat.toFixed(2) + "; lng: " + AOffset.lng.toFixed(2) + "}");
@@ -284,10 +284,10 @@ function getHeight(a, b) {
     }
 
     // Check if a & b aren't out of canvas
-    if (Aheight[2] === 0 && Aheight[1] === 0) {
+    if (Aheight[2] === 0 && Aheight[0] === 0) {
         return "AERROR";
     }
-    if (Bheight[2] === 0 && Bheight[1] === 0) {
+    if (Bheight[2] === 0 && Bheight[0] === 0) {
         return "BERROR";
     }
 
@@ -577,6 +577,7 @@ function showError(msg, issue) {
  */
 export function loadMaps() {
     var i;
+    const MAPSLENGTH = MAPS.length;
     const MAP_SELECTOR = $(".dropbtn");
 
     // Initiate select2 object (https://select2.org/)
@@ -588,7 +589,7 @@ export function loadMaps() {
     });
 
     // load maps into select2
-    for (i = 0; i < MAPS.length; i += 1) {
+    for (i = 0; i < MAPSLENGTH; i += 1) {
         MAP_SELECTOR.append("<option value=\"" + i + "\">" + MAPS[i][0] + "</option>");
     }
 }

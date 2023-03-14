@@ -1,5 +1,4 @@
-export const DEBUGMODE = false;
-export const GRAVITY = 9.8;
+export const DEBUGMODE = true;
 export const CANVAS_SIZE = 500;
 export var frenchSelection = 0;
 
