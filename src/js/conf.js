@@ -3,7 +3,7 @@
  * Display canevas/Mortar/Target in plain html, 
  * Browser console is more chatty
  */
-export const DEBUGMODE = false;
+export const DEBUGMODE = true;
 
 /**
  * Canvas Size (in pixel)
