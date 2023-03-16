@@ -42,7 +42,7 @@ export function loadHeatmap() {
         // when in debug mode, display the heightmap and prepare keypads
         $("#canvas").css("display", "flex");
         $("#mortar-location").val("D04-4-7");
-        $("#target-location").val("F06-5-2-6-9");
+        $("#target-location").val("F03-5-2-6-9");
         shoot();
     }
 }
@@ -391,8 +391,8 @@ export function shoot() {
 
     // If keypads are imprecises, do nothing
     if (a.length < 3 || b.length < 3) {
-        $("#bearing").html("xxx°");
-        $("#elevation").html("xxxx↷");
+        $("#bearing").html("xxx<i class=\"fas fa-drafting-compass fa-rotate-180 resultIcons\"></i>");
+        $("#elevation").html("xxxx<i class=\"fas fa-sort-amount-up resultIcons\"></i>");
 
         // disable tooltip and copy function
         $("#copy").removeClass("copy");
@@ -443,8 +443,8 @@ export function shoot() {
         return 1;
     }
 
-
-    // If too short, display it and exit function
+    console.log(elevation)
+        // If too short, display it and exit function
     if ($("#radio-one").is(":checked")) {
         if (elevation > ClassicMortar.minDistance) {
             showError("Target is too close : " + distance.toFixed(0) + "m", "target");
@@ -461,7 +461,7 @@ export function shoot() {
             return 1;
         }
     } else if ($("#radio-eight").is(":checked")) { // If MLRS 
-        if (elevation > BM21Grad.minDistance) {
+        if (elevation < BM21Grad.minDistance) {
             showError("Target is too close : " + distance.toFixed(0) + "m", "target");
             return 1;
         }
@@ -502,13 +502,13 @@ export function shoot() {
     console.log("-> Distance: " + distance.toFixed(0) + "m - height: " + height.toFixed(0) + "m");
     console.log("-> Velocity: " + vel.toFixed(1) + " m/s");
 
-    $("#bearing").html(bearing.toFixed(1) + "<i class=\"fas fa-drafting-compass fa-rotate-180 compass\"></i>");
+    $("#bearing").html(bearing.toFixed(1) + "<i class=\"fas fa-drafting-compass fa-rotate-180 resultIcons\"></i>");
 
     // If using technica/hell mortars, we need to be more precise (##.#)
     if ($("#radio-two").is(":checked") || $("#radio-three").is(":checked") || $("#radio-eight").is(":checked")) {
-        $("#elevation").html(elevation.toFixed(1) + "°↷");
+        $("#elevation").html(elevation.toFixed(1) + "°<i class=\"fas fa-sort-amount-up resultIcons\"></i>");
     } else {
-        $("#elevation").html(elevation.toFixed(0) + "↷");
+        $("#elevation").html(elevation.toFixed(0) + "<i class=\"fas fa-sort-amount-up resultIcons\"></i>");
     }
 
     // show actions button

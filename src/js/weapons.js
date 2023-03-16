@@ -49,7 +49,7 @@ export const MO120_SMortar = new Weapon("MO120_S", 109.890938, 1520);
 export const MO120_MMortar = new Weapon("MO120_M", 143.5, 1520);
 export const MO120_LMortar = new Weapon("MO120_L", 171.5, 1520);
 export const HellMortar = new Weapon("Hell", 0, 88);
-export const BM21Grad = new Weapon("BM21Grad", 0, 900);
+export const BM21Grad = new Weapon("BM21Grad", 0, 14.2);
 
 
 
