@@ -12,9 +12,9 @@
   <a href="https://github.com/sh4rkman/MSMC/blob/master/LICENSE"><img src="https://img.shields.io/github/license/Naereen/StrapDown.js.svg" alt="Licence"></a>
 </p>
 <p align="center">
-  <a href="https://validator.w3.org/nu/?doc=https%3A%2F%2Fmortar.sharkman.info%2F"><img src="https://img.shields.io/badge/W3C-Good-green.svg" alt="W3C"></a>
+  <a href="https://validator.w3.org/nu/?doc=https%3A%2F%2Fsquadcalc.app%2F"><img src="https://img.shields.io/badge/W3C-Good-green.svg" alt="W3C"></a>
   <a href="https://deepscan.io/dashboard#view=project&tid=12376&pid=15404&bid=306486"><img src="https://deepscan.io/api/teams/12376/projects/15404/branches/306486/badge/grade.svg" alt="Deepscan"></a>
-  <a href="https://www.codefactor.io/repository/github/sh4rkman/msmc"><img src="https://www.codefactor.io/repository/github/sh4rkman/msmc/badge" alt="CodeFactor"></a>
+  <a href="https://www.codefactor.io/repository/github/sh4rkman/squadcalc"><img src="https://www.codefactor.io/repository/github/sh4rkman/msmc/badge" alt="CodeFactor"></a>
 </p>
 
 
@@ -23,8 +23,7 @@
 </br>
 </br>
 
-# A Minimalist Squad Mortar Calculator
-
+# SquadCalc
 
 
 </br>
@@ -74,6 +73,7 @@ MSMC support different type of mortars :
 - Classics mortars
 - Technicals mortars
 - Hell Canon (Insurgents)
+- BM21 Grad
 - Long range (3000m) 120mm mortars from the <a href="https://smf.tactical-collective.com/">French Mod</a>
 
  </br>
