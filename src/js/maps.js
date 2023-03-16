@@ -13,7 +13,7 @@ import KohatURL from "../img/heightmaps/kohat.jpg";
 import KokanURL from "../img/heightmaps/kokan.jpg";
 import LashkarURL from "../img/heightmaps/lashkar.jpg";
 import LogarURL from "../img/heightmaps/logar.jpg";
-import ManicURL from "../img/heightmaps/manic.jpg";
+import ManicouaganURL from "../img/heightmaps/manicouagan.jpg";
 import MestiaURL from "../img/heightmaps/mestia.jpg";
 import MutahaURL from "../img/heightmaps/mutaha.jpg";
 import NarvaURL from "../img/heightmaps/narva.jpg";
@@ -40,7 +40,7 @@ export const MAPS = [
     ["Kokan", 2496, 0, 0, 0.0164, KokanURL],
     ["Lashkar", 4334, 0, 0, 0.28215, LashkarURL],
     ["Logar", 1761, 0, 0, 0.13575, LogarURL],
-    ["Manic", 4065, 0, 0, 0.76, ManicURL],
+    ["Manicouagan", 4065, 0, 0, 0.3564, ManicouaganURL],
     ["Mestia", 2400, 0, 0, 0.41028, MestiaURL],
     ["Mutaha", 2755, -70, -100, 0.07071, MutahaURL],
     ["Narva", 2800, -100, -100, 0.0583, NarvaURL],

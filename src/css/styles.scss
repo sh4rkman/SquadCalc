@@ -364,18 +364,18 @@ span.select2-selection.select2-selection--single {
 }
 
 
-/********************
+/************************
    * Canvas / Heightmaps
    *********************/
 
-#heatmap {
-    display: none;
-    padding: 0;
-}
-
 #canvas {
+    display: none;
     height: 350px;
     width: 350px;
+}
+
+.compass {
+    font-size: 60%;
 }
 
 

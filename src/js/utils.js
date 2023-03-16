@@ -39,9 +39,11 @@ export function loadHeatmap() {
     }, false);
 
     if (DEBUGMODE) {
-        $("#heatmap").css("display", "block");
-        $("#mortar-location").val("B03-4-5");
-        $("#target-location").val("C07-9-5");
+        // when in debug mode, display the heightmap and prepare keypads
+        $("#canvas").css("display", "flex");
+        $("#mortar-location").val("D04-4-7");
+        $("#target-location").val("F06-5-2-6-9");
+        shoot();
     }
 }
 
@@ -118,7 +120,7 @@ function getPos(kp) {
         lat: x,
         lng: y
     };
-    // might throw error
+
     return pos;
 }
 
@@ -217,15 +219,24 @@ function getDist(a, b) {
  * @param {number} [y] - vertical delta between mortar and target from getHeight()
  * @param {number} [vel] - initial mortar projectile velocity
  * @param {number} [G] - gravity force (9.8)
- * @returns {number || NaN} mil if target in range, NaN otherwise
+ * @returns {number || NaN} mil/deg if target in range, NaN otherwise
  */
 function getElevation(x = 0, y = 0, vel = 0, G = 9.8) {
+    var A1;
     const P1 = Math.sqrt(vel ** 4 - G * (G * x ** 2 + 2 * y * vel ** 2));
-    const A1 = Math.atan((vel ** 2 + P1) / (G * x));
+
+    // MLRS use 0-45°
+    if ($("#radio-eight").is(":checked")) {
+        A1 = Math.atan((vel ** 2 - P1) / (G * x));
+    }
+    // Others use 45-90°
+    else {
+        A1 = Math.atan((vel ** 2 + P1) / (G * x));
+    }
 
     if ($("#radio-one").is(":checked") || $("#radio-four").is(":checked")) {
         return radToMil(A1);
-    } else {
+    } else { // if weapon is using degres
         return radToDeg(A1);
     }
 
@@ -308,7 +319,7 @@ function getVelocity(distance) {
     if ($("#radio-one").is(":checked")) { return ClassicMortar.getVelocity(); }
     if ($("#radio-two").is(":checked")) { return TechnicalMortar.getVelocity(distance); }
     if ($("#radio-three").is(":checked")) { return HellMortar.getVelocity(distance); }
-    if ($("#radio-eight").is(":checked")) { return BM21Grad.getVelocity(); } else {
+    if ($("#radio-eight").is(":checked")) { return BM21Grad.getVelocity(distance); } else {
 
         if ($("#radio-five").is(":checked")) {
             frenchSelection = 0;
@@ -426,7 +437,6 @@ export function shoot() {
     vel = getVelocity(distance);
     elevation = getElevation(distance, height, vel);
 
-
     // If Target too far, display it and exit function
     if (Number.isNaN(elevation)) {
         showError("Target is out of range : " + distance.toFixed(0) + "m", "target");
@@ -445,8 +455,13 @@ export function shoot() {
             showError("Target is too close : " + distance.toFixed(0) + "m", "target");
             return 1;
         }
-    } else if ($("#radio-three").is(":checked")) { // If technical mortar
+    } else if ($("#radio-three").is(":checked")) { // If Hell mortar
         if (elevation > HellMortar.minDistance) {
+            showError("Target is too close : " + distance.toFixed(0) + "m", "target");
+            return 1;
+        }
+    } else if ($("#radio-eight").is(":checked")) { // If MLRS 
+        if (elevation > BM21Grad.minDistance) {
             showError("Target is too close : " + distance.toFixed(0) + "m", "target");
             return 1;
         }
@@ -487,12 +502,11 @@ export function shoot() {
     console.log("-> Distance: " + distance.toFixed(0) + "m - height: " + height.toFixed(0) + "m");
     console.log("-> Velocity: " + vel.toFixed(1) + " m/s");
 
-    $("#bearing").html(bearing.toFixed(1) + "°");
-
+    $("#bearing").html(bearing.toFixed(1) + "<i class=\"fas fa-drafting-compass fa-rotate-180 compass\"></i>");
 
     // If using technica/hell mortars, we need to be more precise (##.#)
-    if ($("#radio-two").is(":checked") || $("#radio-three").is(":checked")) {
-        $("#elevation").html(elevation.toFixed(1) + "↷");
+    if ($("#radio-two").is(":checked") || $("#radio-three").is(":checked") || $("#radio-eight").is(":checked")) {
+        $("#elevation").html(elevation.toFixed(1) + "°↷");
     } else {
         $("#elevation").html(elevation.toFixed(0) + "↷");
     }

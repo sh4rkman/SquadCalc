@@ -30,6 +30,14 @@ export class Weapon {
             }
         }
 
+        if (this.name === "BM21Grad") {
+            for (i = 1; i < MLRS.length; i += 1) {
+                if (distance < MLRS[i][0]) {
+                    return MLRS[i - 1][1] + ((distance - MLRS[i - 1][0]) / (MLRS[i][0] - MLRS[i - 1][0])) * (MLRS[i][1] - MLRS[i - 1][1]);
+                }
+            }
+        }
+
         return this.velocity;
     }
 
@@ -82,6 +90,20 @@ export const HELL = [
     [900, 94.636],
     [925, 95.210],
 ];
+
+// HELL[distance, Velocity]
+export const MLRS = [
+    [900, 136.176547],
+    [1000, 132.382998],
+    [1100, 133.837516],
+    [1200, 130.112201],
+    [1300, 130.932658],
+    [1400, 129.418033],
+    [1500, 126.850910],
+    [1600, 127.718030],
+    [1650, 127.161315],
+];
+
 
 
 /**
