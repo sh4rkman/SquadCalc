@@ -443,8 +443,7 @@ export function shoot() {
         return 1;
     }
 
-    console.log(elevation)
-        // If too short, display it and exit function
+    // If too short, display it and exit function
     if ($("#radio-one").is(":checked")) {
         if (elevation > ClassicMortar.minDistance) {
             showError("Target is too close : " + distance.toFixed(0) + "m", "target");
