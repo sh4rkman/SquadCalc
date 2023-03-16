@@ -1,22 +1,23 @@
 {
-    "name": "msmc",
+    "name": "squadcalc",
     "version": "9.0.0",
     "description": "A Minimalist Mortar Calculator for Squad",
     "author": "sharkman",
-    "license": "ISC",
+    "license": "MIT",
     "keywords": [
         "squad",
+        "squadcalc",
         "mortar",
         "calculator",
         "minimalist"
     ],
     "repository": {
         "type": "git",
-        "url": "git://github.com/sh4rkman/MSMC.git"
+        "url": "git:/github.com/sh4rkman/SquadCalc"
     },
-    "homepage": "https://mortar.sharkman.info",
+    "homepage": "https://squadcalc.app/",
     "bugs": {
-        "url": "https://github.com/sh4rkman/MSMC/issues"
+        "url": "https://github.com/sh4rkman/SquadCalc/issues"
     },
     "private": false,
     "jshintConfig": {
