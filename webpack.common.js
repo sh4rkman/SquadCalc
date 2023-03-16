@@ -6,8 +6,9 @@ module.exports = {
         app: './src/app.js',
         utils: './src/js/utils.js',
         tooltips: './src/js/tooltips.js',
-        weapon: './src/js/weapon.js',
-        data: './src/js/data.js',
+        weapon: './src/js/weapons.js',
+        map: './src/js/maps.js',
+        data: './src/js/conf.js',
         listeners: './src/js/listeners.js',
     },
     output: {

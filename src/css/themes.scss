@@ -1,0 +1,55 @@
+/******************/
+
+$blueBG:#00003a;
+$greenBG:#021000;
+$blackBG:#000000;
+
+/******************/
+
+[data-theme='blue'] {
+    background-color: $blueBG;
+    .select2 {
+        background-color: $blueBG;
+    }
+    .select2-container {
+        background-color: $blueBG;
+    }
+    .select2-selection__rendered {
+        background-color: $blueBG;
+    }
+    .select2-results__options {
+        background-color: $blueBG;
+    }
+}
+
+[data-theme='green'] {
+    background-color: $greenBG;
+    .select2 {
+        background-color: $greenBG;
+    }
+    .select2-container {
+        background-color: $greenBG;
+    }
+    .select2-selection__rendered {
+        background-color: $greenBG;
+    }
+    .select2-results__options {
+        background-color: $greenBG;
+    }
+}
+
+[data-theme='dark'] {
+    background-color: $blackBG;
+    .select2 {
+        background-color: $blackBG;
+    }
+    .select2-container {
+        background-color: $blackBG;
+    }
+    .select2-selection__rendered {
+        background-color: $blackBG;
+    }
+    .select2-results__options {
+        background-color: $blackBG;
+    }
+}

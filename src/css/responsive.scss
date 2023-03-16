@@ -128,10 +128,14 @@
     .mortar_selector_french {
         background: url("../img/icons/french_mortar.png") no-repeat scroll 0px 6px transparent;
     }
+    .mortar_selector_mlrs {
+        background: url("../img/icons/mlrs.png") no-repeat scroll 0px 6px transparent;
+    }
     .mortar_selector_classic,
     .mortar_selector_technical,
     .mortar_selector_hell,
-    .mortar_selector_french {
+    .mortar_selector_french,
+    .mortar_selector_mlrs {
         background-size: 100%;
     }
     .select2-container {
@@ -193,19 +197,22 @@
     }
     .mortar_selector {
         height: 35px;
-        width: 75px;
+        width: 65px;
     }
     .mortar_selector_classic {
-        background: url("../img/icons/classic_mortar.png") no-repeat scroll 6px 3px transparent;
+        background: url("../img/icons/classic_mortar.png") no-repeat scroll 3px 3px transparent;
     }
     .mortar_selector_technical {
-        background: url("../img/icons/technical_mortar.png") no-repeat scroll 6px 3px transparent;
+        background: url("../img/icons/technical_mortar.png") no-repeat scroll 3px 3px transparent;
     }
     .mortar_selector_hell {
-        background: url("../img/icons/hell_mortar.png") no-repeat scroll 6px 3px transparent;
+        background: url("../img/icons/hell_mortar.png") no-repeat scroll 3px 3px transparent;
     }
     .mortar_selector_french {
-        background: url("../img/icons/french_mortar.png") no-repeat scroll 6px 3px transparent;
+        background: url("../img/icons/french_mortar.png") no-repeat scroll 3px 3px transparent;
+    }
+    .mortar_selector_mlrs {
+        background: url("../img/icons/mlrs.png") no-repeat scroll 3px 3px transparent;
     }
 }
 
@@ -222,24 +229,19 @@
 /* ≥ 1400px */
 
 @media screen and (min-width: 87.5em) {
-    .select2-container {
-        font-size: 1.2em;
-        max-width: 270px;
-        min-width: 220px;
-    }
     .select2-results__options {
         font-size: 1em;
     }
 }
 
 
-/* ≥ 1980px */
+/* ≥ 1920px */
 
 @media screen and (min-width: 124em) {
-    /* ≥ 1980px & 1080*/
+    /* ≥ 1920px & 1080*/
     @media (min-height: 68em) {
         .select2-container {
-            font-size: 1.5em;
+            font-size: 1.4em;
             min-width: 350px;
         }
         .select2-results__options {
@@ -277,6 +279,7 @@
         .mortar_selector_technical,
         .mortar_selector_hell,
         .mortar_selector_french,
+        .mortar_selector_mlrs,
         .french_mortar_selector_short,
         .french_mortar_selector_medium,
         .french_mortar_selector_long {

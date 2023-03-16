@@ -3,21 +3,29 @@ import {
 } from "./tooltips.js";
 
 import {
-    MAPS,
-    GRAVITY,
+    DEBUGMODE,
     CANVAS_SIZE,
-    frenchSelection,
-    setFrenchSelection,
+} from "./conf.js";
+
+import {
+    MAPS,
+} from "./maps.js";
+
+import {
     ClassicMortar,
+    HellMortar,
     TechnicalMortar,
+    BM21Grad,
     MO120_SMortar,
     MO120_MMortar,
     MO120_LMortar,
-    HellMortar,
-} from "./data.js";
+} from "./weapons.js";
 
-
-
+/**
+ * var used to stock what french DLC mortar was previously selected
+ * (since le weapon selector is hidden, we can't read the selected value)
+ */
+export var frenchSelection = 0;
 
 /**
  * Load the heatmap to the canvas
@@ -29,6 +37,14 @@ export function loadHeatmap() {
     img.addEventListener("load", function() {
         ctx.drawImage(img, 0, 0, CANVAS_SIZE, CANVAS_SIZE); // Draw img at good scale
     }, false);
+
+    if (DEBUGMODE) {
+        // when in debug mode, display the heightmap and prepare keypads
+        $("#canvas").css("display", "flex");
+        $("#mortar-location").val("D04-4-7");
+        $("#target-location").val("F03-5-2-6-9");
+        shoot();
+    }
 }
 
 
@@ -39,8 +55,7 @@ export function drawHeatmap() {
     var img = new Image(); // Create new img element
     var ctx = document.getElementById("canvas").getContext("2d");
 
-
-    img.src = MAPS[$(".dropbtn").val()][3];
+    img.src = MAPS[$(".dropbtn").val()][5];
 
     img.addEventListener("load", function() { // wait for the image to load or it does crazy stuff
         ctx.drawImage(img, 0, 0, CANVAS_SIZE, CANVAS_SIZE);
@@ -84,7 +99,7 @@ function getPos(kp) {
         } else {
             // opposite of calculations in getKP()
             const SUB = Number(PARTS[i]);
-            if (Number.isNaN(SUB)) {
+            if (!DEBUGMODE || Number.isNaN(SUB)) {
                 console.log(`invalid keypad string: ${FORMATTED_KEYPAD}`);
             }
             const subX = (SUB - 1) % 3;
@@ -105,7 +120,7 @@ function getPos(kp) {
         lat: x,
         lng: y
     };
-    // might throw error
+
     return pos;
 }
 
@@ -204,15 +219,24 @@ function getDist(a, b) {
  * @param {number} [y] - vertical delta between mortar and target from getHeight()
  * @param {number} [vel] - initial mortar projectile velocity
  * @param {number} [G] - gravity force (9.8)
- * @returns {number || NaN} mil if target in range, NaN otherwise
+ * @returns {number || NaN} mil/deg if target in range, NaN otherwise
  */
-function getElevation(x, y = 0, vel, G = GRAVITY) {
+function getElevation(x = 0, y = 0, vel = 0, G = 9.8) {
+    var A1;
     const P1 = Math.sqrt(vel ** 4 - G * (G * x ** 2 + 2 * y * vel ** 2));
-    const A1 = Math.atan((vel ** 2 + P1) / (G * x));
+
+    // MLRS use 0-45°
+    if ($("#radio-eight").is(":checked")) {
+        A1 = Math.atan((vel ** 2 - P1) / (G * x));
+    }
+    // Others use 45-90°
+    else {
+        A1 = Math.atan((vel ** 2 + P1) / (G * x));
+    }
 
     if ($("#radio-one").is(":checked") || $("#radio-four").is(":checked")) {
         return radToMil(A1);
-    } else {
+    } else { // if weapon is using degres
         return radToDeg(A1);
     }
 
@@ -228,7 +252,9 @@ function getElevation(x, y = 0, vel, G = GRAVITY) {
 function getHeight(a, b) {
     var Aheight;
     var Bheight;
-    var ctx;
+    var AOffset = { lat: 0, lng: 0 };
+    var BOffset = { lat: 0, lng: 0 };
+    var ctx = document.getElementById("canvas").getContext("2d");
     var mapScale;
     const DROPBTN_VAL = $(".dropbtn").val();
 
@@ -238,21 +264,48 @@ function getHeight(a, b) {
     // load map size for scaling lat&lng
     mapScale = CANVAS_SIZE / MAPS[DROPBTN_VAL][1];
 
-    // Read Heightmap values for a & b
-    ctx = document.getElementById("canvas").getContext("2d");
-    Aheight = ctx.getImageData(Math.round(a.lat * mapScale), Math.round(a.lng * mapScale), 1, 1).data;
-    Bheight = ctx.getImageData(Math.round(b.lat * mapScale), Math.round(b.lng * mapScale), 1, 1).data;
+    // Apply offset & scaling
+    // Heightmaps & maps doesn't always start at A01, they sometimes need to be offset manually
+    AOffset.lat = (a.lat + MAPS[DROPBTN_VAL][2] * mapScale) * mapScale;
+    AOffset.lng = (a.lng + MAPS[DROPBTN_VAL][3] * mapScale) * mapScale;
+    BOffset.lat = (b.lat + MAPS[DROPBTN_VAL][2] * mapScale) * mapScale;
+    BOffset.lng = (b.lng + MAPS[DROPBTN_VAL][3] * mapScale) * mapScale;
 
-    // Check if a & b arn't out of canvas
-    if (Aheight[3] === 0) {
+
+    // Read Heightmap values for a & b
+    Aheight = ctx.getImageData(Math.round(AOffset.lat), Math.round(AOffset.lng), 1, 1).data;
+    Bheight = ctx.getImageData(Math.round(BOffset.lat), Math.round(BOffset.lng), 1, 1).data;
+
+    // Debug purpose
+    if (DEBUGMODE) {
+        console.log("------------------------------");
+        console.log("HEIGHTMAP");
+        console.log(" -> map: " + MAPS[DROPBTN_VAL][0]);
+        console.log(" -> z-mapScale: " + mapScale);
+        console.log("------------------------------");
+        console.log("A {lat: " + a.lat.toFixed(2) + "; " + "lng: " + a.lng.toFixed(2) + "}");
+        console.log("    -> Offset {lat: " + AOffset.lat.toFixed(2) + "; lng: " + AOffset.lng.toFixed(2) + "}");
+        console.log("    -> " + Aheight + " (RGBa)");
+        console.log("B {lat: " + b.lat.toFixed(2) + "; " + "lng: " + b.lng.toFixed(2) + "}");
+        console.log("    -> Offset {lat: " + BOffset.lat.toFixed(2) + "; lng: " + BOffset.lng.toFixed(2) + "}");
+        console.log("    -> " + Bheight + " (RGBa)");
+
+        // place visual green marker on the canvas
+        ctx.fillStyle = "green";
+        ctx.fillRect(AOffset.lat, AOffset.lng, 5, 5);
+        ctx.fillRect(BOffset.lat, BOffset.lng, 5, 5);
+    }
+
+    // Check if a & b aren't out of canvas
+    if (Aheight[2] === 0 && Aheight[0] === 0) {
         return "AERROR";
     }
-    if (Bheight[3] === 0) {
+    if (Bheight[2] === 0 && Bheight[0] === 0) {
         return "BERROR";
     }
 
-    Aheight = (255 + Aheight[0] - Aheight[2]) * MAPS[DROPBTN_VAL][2];
-    Bheight = (255 + Bheight[0] - Bheight[2]) * MAPS[DROPBTN_VAL][2];
+    Aheight = (255 + Aheight[0] - Aheight[2]) * MAPS[DROPBTN_VAL][4];
+    Bheight = (255 + Bheight[0] - Bheight[2]) * MAPS[DROPBTN_VAL][4];
 
     return Bheight - Aheight;
 }
@@ -265,16 +318,17 @@ function getVelocity(distance) {
 
     if ($("#radio-one").is(":checked")) { return ClassicMortar.getVelocity(); }
     if ($("#radio-two").is(":checked")) { return TechnicalMortar.getVelocity(distance); }
-    if ($("#radio-three").is(":checked")) { return HellMortar.getVelocity(distance); } else {
+    if ($("#radio-three").is(":checked")) { return HellMortar.getVelocity(distance); }
+    if ($("#radio-eight").is(":checked")) { return BM21Grad.getVelocity(distance); } else {
 
         if ($("#radio-five").is(":checked")) {
-            setFrenchSelection(0);
+            frenchSelection = 0;
             return MO120_SMortar.getVelocity();
         } else if ($("#radio-six").is(":checked")) {
-            setFrenchSelection(1);
+            frenchSelection = 1;
             return MO120_MMortar.getVelocity();
         } else if ($("#radio-seven").is(":checked")) {
-            setFrenchSelection(2);
+            frenchSelection = 2;
             return MO120_LMortar.getVelocity();
         } else {
 
@@ -307,6 +361,8 @@ export function shoot() {
     var a = MORTAR_LOC.val();
     var b = TARGET_LOC.val();
 
+    if (!DEBUGMODE) { console.clear(); }
+
     // First, reset any errors
     $("#settings").removeClass("error");
     TARGET_LOC.removeClass("error2");
@@ -335,8 +391,8 @@ export function shoot() {
 
     // If keypads are imprecises, do nothing
     if (a.length < 3 || b.length < 3) {
-        $("#bearing").html("xxx°");
-        $("#elevation").html("xxxx↷");
+        $("#bearing").html("xxx<i class=\"fas fa-drafting-compass fa-rotate-180 resultIcons\"></i>");
+        $("#elevation").html("xxxx<i class=\"fas fa-sort-amount-up resultIcons\"></i>");
 
         // disable tooltip and copy function
         $("#copy").removeClass("copy");
@@ -379,16 +435,13 @@ export function shoot() {
 
     distance = getDist(a, b);
     vel = getVelocity(distance);
-
     elevation = getElevation(distance, height, vel);
-
 
     // If Target too far, display it and exit function
     if (Number.isNaN(elevation)) {
         showError("Target is out of range : " + distance.toFixed(0) + "m", "target");
         return 1;
     }
-
 
     // If too short, display it and exit function
     if ($("#radio-one").is(":checked")) {
@@ -401,8 +454,13 @@ export function shoot() {
             showError("Target is too close : " + distance.toFixed(0) + "m", "target");
             return 1;
         }
-    } else if ($("#radio-three").is(":checked")) { // If technical mortar
+    } else if ($("#radio-three").is(":checked")) { // If Hell mortar
         if (elevation > HellMortar.minDistance) {
+            showError("Target is too close : " + distance.toFixed(0) + "m", "target");
+            return 1;
+        }
+    } else if ($("#radio-eight").is(":checked")) { // If MLRS 
+        if (elevation < BM21Grad.minDistance) {
             showError("Target is too close : " + distance.toFixed(0) + "m", "target");
             return 1;
         }
@@ -431,21 +489,25 @@ export function shoot() {
     bearing = getBearing(a, b);
 
     // if in range, Insert Calculations
-
-    console.clear();
+    if (!DEBUGMODE) {
+        console.clear();
+    } else {
+        console.log("------------------------------");
+        console.log(" FINAL CALC");
+        console.log("------------------------------");
+    }
     console.log(MORTAR_LOC.val().toUpperCase() + " -> " + TARGET_LOC.val().toUpperCase());
     console.log("-> Bearing: " + bearing.toFixed(1) + "° - Elevation: " + elevation.toFixed(1) + "↷");
     console.log("-> Distance: " + distance.toFixed(0) + "m - height: " + height.toFixed(0) + "m");
     console.log("-> Velocity: " + vel.toFixed(1) + " m/s");
 
-    $("#bearing").html(bearing.toFixed(1) + "°");
-
+    $("#bearing").html(bearing.toFixed(1) + "<i class=\"fas fa-drafting-compass fa-rotate-180 resultIcons\"></i>");
 
     // If using technica/hell mortars, we need to be more precise (##.#)
-    if ($("#radio-two").is(":checked") || $("#radio-three").is(":checked")) {
-        $("#elevation").html(elevation.toFixed(1) + "↷");
+    if ($("#radio-two").is(":checked") || $("#radio-three").is(":checked") || $("#radio-eight").is(":checked")) {
+        $("#elevation").html(elevation.toFixed(1) + "°<i class=\"fas fa-sort-amount-up resultIcons\"></i>");
     } else {
-        $("#elevation").html(elevation.toFixed(0) + "↷");
+        $("#elevation").html(elevation.toFixed(0) + "<i class=\"fas fa-sort-amount-up resultIcons\"></i>");
     }
 
     // show actions button
@@ -520,7 +582,7 @@ function showError(msg, issue) {
     // https://youtu.be/PWgvGjAhvIw?t=233
     $("#settings").addClass("error").effect("shake");
 
-    console.clear();
+    if (!DEBUGMODE) { console.clear(); }
     console.error(msg);
 }
 
@@ -530,38 +592,31 @@ function showError(msg, issue) {
  */
 export function loadMaps() {
     var i;
+    const MAPSLENGTH = MAPS.length;
     const MAP_SELECTOR = $(".dropbtn");
 
     // Initiate select2 object (https://select2.org/)
-    MAP_SELECTOR.select2({
-        dropdownCssClass: "dropbtn",
-        dropdownParent: $("#mapSelector"),
-        minimumResultsForSearch: -1, // Disable search
-        placeholder: "SELECT A MAP"
-    });
+    if (DEBUGMODE) {
+        MAP_SELECTOR.select2({
+            dropdownCssClass: "dropbtn",
+            dropdownParent: $("#mapSelector"),
+            minimumResultsForSearch: -1, // Disable search
+            placeholder: "DEBUG MODE"
+        });
+    } else {
+        MAP_SELECTOR.select2({
+            dropdownCssClass: "dropbtn",
+            dropdownParent: $("#mapSelector"),
+            minimumResultsForSearch: -1, // Disable search
+            placeholder: "SELECT A MAP"
+        });
+    }
 
     // load maps into select2
-    for (i = 0; i < MAPS.length; i += 1) {
+    for (i = 0; i < MAPSLENGTH; i += 1) {
         MAP_SELECTOR.append("<option value=\"" + i + "\">" + MAPS[i][0] + "</option>");
     }
 }
-
-
-/**
- * Copy string to clipboard
- */
-export function copy(string) {
-    const el = document.createElement("textarea");
-    el.value = string;
-    el.setAttribute("readonly", "");
-    el.style.position = "absolute";
-    el.style.left = "-9999px";
-    document.body.appendChild(el);
-    el.select();
-    document.execCommand("copy");
-    document.body.removeChild(el);
-}
-
 
 /**
  * Copy Saved calcs to clipboard
@@ -573,7 +628,8 @@ export function copySave(COPY_ZONE) {
     } else {
         text2copy = COPY_ZONE.prev().val() + " " + COPY_ZONE.text();
     }
-    copy(text2copy);
+
+    navigator.clipboard.writeText(text2copy);
     COPY_ZONE.parent().effect("bounce", 400);
 }
 
@@ -685,28 +741,13 @@ export function changeTheme(theme) {
  */
 export function getTheme() {
     var theme = localStorage.getItem("data-theme");
-
-    if (theme === null) {
-        return 1;
-    }
-
-    changeTheme(theme);
+    if (theme === null) { return 1; }
+    $("body").attr("data-theme", theme);
 }
 
 /**
- * save current weapon into browser cache
+ * Stock last french mortar used for later
  */
-export function saveWeapon() {
-    localStorage.setItem("data-weapon", $("input:checked").attr("id"));
-}
-
-/**
- * get last weapon used by user and apply it
- */
-export function getWeapon() {
-    var weapon = localStorage.getItem("data-weapon");
-
-    if (weapon === null) { return 1; }
-
-    $("#" + weapon).prop("checked", true);
+export function setFrenchSelection(val) {
+    frenchSelection = val;
 }

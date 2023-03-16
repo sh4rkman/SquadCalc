@@ -25,8 +25,7 @@
         "quotes": [
             "error",
             "double"
-        ]
-        ,
+        ],
         "semi": [
             "error",
             "always"
@@ -42,6 +41,5 @@
         "vars-on-top": [
             "error"
         ]
-
     }
 }

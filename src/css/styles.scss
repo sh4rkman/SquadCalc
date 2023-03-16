@@ -1,12 +1,15 @@
+@import url("https://fonts.googleapis.com/css?family=Montserrat");
+$mainColor:firebrick;
+$mainBGColor:#111;
+
 /*
    * -- BASE STYLES --
    * Most of these are inherited from Base, but I want to change a few.
-   */
+*/
 
-@import url("https://fonts.googleapis.com/css?family=Montserrat");
 body {
     color: white;
-    background: #111;
+    background: $mainBGColor;
 }
 
 html,
@@ -22,7 +25,7 @@ textarea,
 
 #mortar-location,
 #target-location,
-#resize {
+.resize {
     color: white;
     caret-color: white;
 }
@@ -113,6 +116,10 @@ button:focus {
 
 .mortar_selector_hell {
     background: url("../img/icons/hell_mortar.png") no-repeat scroll 6px 0 transparent;
+}
+
+.mortar_selector_mlrs {
+    background: url("../img/icons/mlrs.png") no-repeat scroll 6px 0 transparent;
 }
 
 .mortar_selector_french {
@@ -212,7 +219,7 @@ button:focus {
 }
 
 .dropbtn {
-    background: #111 !important;
+    background: $mainBGColor !important;
     color: #ffffff;
     font-weight: bold;
     line-height: 2.188em;
@@ -235,7 +242,7 @@ button:focus {
 }
 
 .select2-selection {
-    background: #111 !important;
+    background: $mainBGColor !important;
     border: none !important;
     color: white !important;
     font-size: 1em;
@@ -246,7 +253,7 @@ button:focus {
 }
 
 .select2-container {
-    background-color: #111;
+    background-color: $mainBGColor;
     border-bottom: 1px solid white !important;
     border: 0;
     box-shadow: none !important;
@@ -265,11 +272,11 @@ button:focus {
 }
 
 .select2-container--default .select2-results__option--highlighted[aria-selected] {
-    background-color: firebrick;
+    background-color: $mainColor;
 }
 
 .select2-search__field {
-    color: #111 !important;
+    color: $mainBGColor !important;
     font-size: 1em !important;
     height: 1.4em;
     text-transform: none !important;
@@ -357,19 +364,18 @@ span.select2-selection.select2-selection--single {
 }
 
 
-/********************
+/************************
    * Canvas / Heightmaps
    *********************/
 
-#heatmap {
+#canvas {
     display: none;
-    padding: 0;
+    height: 350px;
+    width: 350px;
 }
 
-#canvas {
-    height: 500px;
-    margin: auto;
-    width: 500px;
+.resultIcons {
+    font-size: 50%;
 }
 
 
@@ -381,6 +387,11 @@ span.select2-selection.select2-selection--single {
     font-size: 0.6em;
     i {
         cursor: pointer;
+        transition: all 0.2s ease;
+        &:hover {
+            color: $mainColor;
+            transform: scale(1.1);
+        }
     }
 }
 
@@ -388,7 +399,6 @@ span.select2-selection.select2-selection--single {
     margin: 0em;
 }
 
-.fa:hover,
 #savespan:hover {
     cursor: pointer;
 }
@@ -440,12 +450,12 @@ span.select2-selection.select2-selection--single {
 }
 
 .error {
-    border: 5px solid FireBrick;
-    color: FireBrick;
+    border: 5px solid $mainColor;
+    color: $mainColor;
 }
 
 .error2 {
-    color: FireBrick;
+    border-bottom: 3px solid $mainColor;
 }
 
 
@@ -481,18 +491,18 @@ span.select2-selection.select2-selection--single {
     }
     &[data-theme~='fab'] {
         &[data-placement^='top']>.tippy-arrow::before {
-            border-top-color: firebrick;
+            border-top-color: $mainColor;
         }
         &[data-placement^='bottom']>.tippy-arrow::before {
-            border-bottom-color: firebrick;
+            border-bottom-color: $mainColor;
         }
         &[data-placement^='left']>.tippy-arrow::before {
-            border-left-color: firebrick;
+            border-left-color: $mainColor;
         }
         &[data-placement^='right']>.tippy-arrow::before {
-            border-right-color: firebrick;
+            border-right-color: $mainColor;
         }
-        background-color: firebrick;
+        background-color: $mainColor;
     }
 }
 
@@ -629,7 +639,7 @@ span.select2-selection.select2-selection--single {
     transition: all 0.1s ease;
     width: 3rem;
     &:hover {
-        background-color: FireBrick;
+        background-color: $mainColor;
         cursor: pointer;
     }
     &:active {
@@ -638,7 +648,7 @@ span.select2-selection.select2-selection--single {
 }
 
 .fabstyle {
-    background-color: FireBrick;
+    background-color: $mainColor;
 }
 
 .fab-wheel {
