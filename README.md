@@ -14,7 +14,7 @@
 <p align="center">
   <a href="https://validator.w3.org/nu/?doc=https%3A%2F%2Fsquadcalc.app%2F"><img src="https://img.shields.io/badge/W3C-Good-green.svg" alt="W3C"></a>
   <a href="https://deepscan.io/dashboard#view=project&tid=12376&pid=15404&bid=306486"><img src="https://deepscan.io/api/teams/12376/projects/15404/branches/306486/badge/grade.svg" alt="Deepscan"></a>
-  <a href="https://www.codefactor.io/repository/github/sh4rkman/squadcalc"><img src="https://www.codefactor.io/repository/github/sh4rkman/msmc/badge" alt="CodeFactor"></a>
+  <a href="https://www.codefactor.io/repository/github/sh4rkman/squadcalc"><img src="https://www.codefactor.io/repository/github/sh4rkman/squadcalc/badge" alt="CodeFactor"></a>
 </p>
 
 
