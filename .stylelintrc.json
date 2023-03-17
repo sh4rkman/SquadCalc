@@ -1,0 +1,21 @@
+{
+    "extends": "stylelint-config-standard-scss",
+    "rules": {
+        "rule-empty-line-before": [
+            "always",
+            {
+                "except": ["inside-block"]
+            }
+        ],
+        "comment-empty-line-before": null,
+        "selector-class-pattern": null,
+        "scss/dollar-variable-pattern": null,
+        "scss/dollar-variable-colon-space-before": "never",
+        "no-descending-specificity": null,
+        "alpha-value-notation": "number",
+        "property-no-vendor-prefix": null,
+        "declaration-empty-line-before": "never",
+        "color-function-notation": "legacy",
+        "import-notation": "url"
+    }
+}

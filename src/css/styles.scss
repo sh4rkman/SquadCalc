@@ -1,6 +1,11 @@
 @import url("https://fonts.googleapis.com/css?family=Montserrat");
-$mainColor:firebrick;
-$mainBGColor:#111;
+
+/*
+   * -- BASE COLOR --
+*/
+
+$mainColor: firebrick;
+$mainBGColor: #111;
 
 /*
    * -- BASE STYLES --
@@ -18,7 +23,7 @@ input,
 select,
 textarea,
 .pure-g [class*="pure-u"] {
-    font-family: 'Montserrat', Times, "Times New Roman", serif;
+    font-family: Montserrat, Times, "Times New Roman", serif;
     letter-spacing: 0.1em;
     text-align: center;
 }
@@ -166,7 +171,7 @@ button:focus {
         }
     }
     input:checked+label {
-        background-color: #ffffff;
+        background-color: #fff;
         box-shadow: none;
     }
 }
@@ -200,7 +205,7 @@ button:focus {
         }
     }
     input:checked+label {
-        background-color: #ffffff;
+        background-color: #fff;
         box-shadow: none;
     }
 }
@@ -220,7 +225,7 @@ button:focus {
 
 .dropbtn {
     background: $mainBGColor !important;
-    color: #ffffff;
+    color: #fff;
     font-weight: bold;
     line-height: 2.188em;
     text-transform: uppercase;
@@ -257,7 +262,7 @@ button:focus {
     border-bottom: 1px solid white !important;
     border: 0;
     box-shadow: none !important;
-    color: #ffffff !important;
+    color: #fff !important;
     font-size: 1em;
     font-weight: bold;
     line-height: 2.188em;
@@ -283,7 +288,7 @@ button:focus {
 }
 
 .select2-selection__rendered {
-    color: #ffffff !important;
+    color: #fff !important;
 }
 
 .select2-results__message {
@@ -396,7 +401,7 @@ span.select2-selection.select2-selection--single {
 }
 
 .saved_list p {
-    margin: 0em;
+    margin: 0;
 }
 
 #savespan:hover {
@@ -537,7 +542,7 @@ span.select2-selection.select2-selection--single {
     &:active {
         transform: scale(0.8);
     }
-    &:before {
+    &::before {
         background-color: rgba(255, 255, 255, 0.1);
         border-radius: 50%;
         content: "";
@@ -583,8 +588,8 @@ span.select2-selection.select2-selection--single {
     display: none;
     &:checked {
         &~.fab {
-            &:before {
-                background-color: rgba(255, 255, 255, 0.2);
+            &::before {
+                background-color: rgba(255, 255, 255, .2);
                 height: 90%;
                 left: 5%;
                 top: 5%;
@@ -629,7 +634,7 @@ span.select2-selection.select2-selection--single {
     align-items: center;
     background: #333;
     border-radius: 50%;
-    color: White;
+    color: white;
     display: flex;
     height: 3rem;
     justify-content: center;

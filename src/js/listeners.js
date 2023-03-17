@@ -36,11 +36,11 @@ $(document).on("click", ".save", function() {
         $(".saved_list p").first().remove();
     }
     $(".saved_list").append(
-        "<p class='savedrow' style='display:none;'><input maxlength=\"20\" spellcheck='false' placeholder='" + $("#target-location").val() + "'class='friendlyname resize'></input>" +
+        "<p class='savedrow' style='display:none;'><input maxlength=\"20\" spellcheck='false' placeholder='" + encodeURI($("#target-location").val()) + "'class='friendlyname resize'></input>" +
         "<span id=\"savespan\" style=\"font-weight:bold\"> ➜ " +
-        $("#bearing").text() +
+        encodeURI($("#bearing").text()) +
         " - " +
-        $("#elevation").text() +
+        encodeURI($("#elevation").text()) +
         "&nbsp;&nbsp;</span><i class=\"fa fa-times-circle fa-fw del\" aria-hidden=\"true\"></i></p>");
 
     $(".saved").removeClass("hidden");
