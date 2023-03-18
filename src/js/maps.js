@@ -47,5 +47,5 @@ export const MAPS = [
     ["Skorpo", 7600, 0, 0, 2.14515, SkorpoURL],
     ["Sumari", 1300, 0, 0, 0.035925, SumariURL],
     ["Tallil", 4680, -200, -200, 0.05275, TallilURL],
-    ["Yehorivka", 5000, -300, -300, 0.2732, YehorivkaURL]
+    ["Yehorivka", 5000, -8300, -8300, 0.2732, YehorivkaURL]
 ];
