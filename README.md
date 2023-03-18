@@ -17,7 +17,12 @@
   <a href="https://www.codefactor.io/repository/github/sh4rkman/squadcalc"><img src="https://www.codefactor.io/repository/github/sh4rkman/squadcalc/badge" alt="CodeFactor"></a>
 </p>
 
-
+</br>
+</br>
+</br>
+<p align="center">
+    <img src="https://skillicons.dev/icons?i=html,js,sass,webpack" />
+</p>
 
 </br>
 </br>
@@ -121,6 +126,8 @@ npm run build
 ```
 
 </br></br>
+
+
 
 # Thanks
 

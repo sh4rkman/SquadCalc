@@ -38,9 +38,9 @@ $(document).on("click", ".save", function() {
     $(".saved_list").append(
         "<p class='savedrow' style='display:none;'><input maxlength=\"20\" spellcheck='false' placeholder='" + encodeURI($("#target-location").val()) + "'class='friendlyname resize'></input>" +
         "<span id=\"savespan\" style=\"font-weight:bold\"> ➜ " +
-        encodeURI($("#bearing").text()) +
+        $("#bearing").text() +
         " - " +
-        encodeURI($("#elevation").text()) +
+        $("#elevation").text() +
         "&nbsp;&nbsp;</span><i class=\"fa fa-times-circle fa-fw del\" aria-hidden=\"true\"></i></p>");
 
     $(".saved").removeClass("hidden");

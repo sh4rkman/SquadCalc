@@ -4,6 +4,8 @@ import {
 
 import {
     DEBUGMODE,
+    DEBUG_MORTAR_COORD,
+    DEBUG_TARGET_COORD,
     CANVAS_SIZE,
 } from "./conf.js";
 
@@ -41,8 +43,8 @@ export function loadHeatmap() {
     if (DEBUGMODE) {
         // when in debug mode, display the heightmap and prepare keypads
         $("#canvas").css("display", "flex");
-        $("#mortar-location").val("D04-4-7");
-        $("#target-location").val("F03-5-2-6-9");
+        $("#mortar-location").val(DEBUG_MORTAR_COORD);
+        $("#target-location").val(DEBUG_TARGET_COORD);
         shoot();
     }
 }
@@ -204,7 +206,7 @@ function degToMil(deg) {
  * Calculates the distance between two points.
  * @param {LatLng} a - point A
  * @param {LatLng} b - point B
- * @returns {number} distance A and B
+ * @returns {number} distance A <-> B
  */
 function getDist(a, b) {
     const DLAT = a.lat - b.lat;
