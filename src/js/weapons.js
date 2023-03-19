@@ -1,8 +1,13 @@
+import { globalData } from "./conf";
+import { shoot } from "./utils";
+
 export class Weapon {
-    constructor(name, velocity, minDistance) {
+    constructor(name, velocity, minDistance, table, unit) {
         this.name = name;
         this.velocity = velocity;
         this.minDistance = minDistance;
+        this.table = table;
+        this.unit = unit;
     }
 
     /**
@@ -14,44 +19,16 @@ export class Weapon {
      */
     getVelocity(distance) {
         var i;
-        if (this.name === "Technical") {
-            for (i = 1; i < TECHNICALS.length; i += 1) {
-                if (distance < TECHNICALS[i][0]) {
-                    return TECHNICALS[i - 1][1] + ((distance - TECHNICALS[i - 1][0]) / (TECHNICALS[i][0] - TECHNICALS[i - 1][0])) * (TECHNICALS[i][1] - TECHNICALS[i - 1][1]);
+        if (this.table) {
+            for (i = 1; i < this.table.length; i += 1) {
+                if (distance < this.table[i][0]) {
+                    return this.table[i - 1][1] + ((distance - this.table[i - 1][0]) / (this.table[i][0] - this.table[i - 1][0])) * (this.table[i][1] - this.table[i - 1][1]);
                 }
             }
-        }
-
-        if (this.name === "Hell") {
-            for (i = 1; i < HELL.length; i += 1) {
-                if (distance < HELL[i][0]) {
-                    return HELL[i - 1][1] + ((distance - HELL[i - 1][0]) / (HELL[i][0] - HELL[i - 1][0])) * (HELL[i][1] - HELL[i - 1][1]);
-                }
-            }
-        }
-
-        if (this.name === "BM21Grad") {
-            for (i = 1; i < MLRS.length; i += 1) {
-                if (distance < MLRS[i][0]) {
-                    return MLRS[i - 1][1] + ((distance - MLRS[i - 1][0]) / (MLRS[i][0] - MLRS[i - 1][0])) * (MLRS[i][1] - MLRS[i - 1][1]);
-                }
-            }
-        }
-
-        return this.velocity;
+        } else return this.velocity;
     }
 
 }
-
-export const ClassicMortar = new Weapon("Classic", 109.890938, 1580);
-export const TechnicalMortar = new Weapon("Technical", 0, 83.8);
-export const MO120_SMortar = new Weapon("MO120_S", 109.890938, 1520);
-export const MO120_MMortar = new Weapon("MO120_M", 143.5, 1520);
-export const MO120_LMortar = new Weapon("MO120_L", 171.5, 1520);
-export const HellMortar = new Weapon("Hell", 0, 88);
-export const BM21Grad = new Weapon("BM21Grad", 0, 14.2);
-
-
 
 
 // Since technicals mortars are acting weirdly, i have to stock these empirical values for now until i figure out how they work
@@ -106,11 +83,42 @@ export const MLRS = [
 
 
 
+export const ClassicMortar = new Weapon("Classic", 109.890938, 1580, undefined, "mil");
+export const TechnicalMortar = new Weapon("Technical", 0, 83.8, TECHNICALS, "deg");
+export const MO120_SMortar = new Weapon("MO120_S", 109.890938, 1520, undefined, "mil");
+export const MO120_MMortar = new Weapon("MO120_M", 143.5, 1520, undefined, "mil");
+export const MO120_LMortar = new Weapon("MO120_L", 171.5, 1520, undefined, "mil");
+export const HellMortar = new Weapon("Hell", 0, 88, HELL, "deg");
+export const BM21Grad = new Weapon("BM21Grad", 0, 14.2, MLRS, "deg");
+
+export const WEAPONS = [
+    ClassicMortar,
+    TechnicalMortar,
+    HellMortar,
+    MO120_SMortar,
+    MO120_SMortar,
+    MO120_MMortar,
+    MO120_LMortar,
+    BM21Grad,
+];
+
 /**
  * save current weapon into browser cache
  */
 export function saveWeapon() {
-    localStorage.setItem("data-weapon", $("input:checked").attr("id"));
+    var weapon;
+
+    if ($(".switch-field > input:checked").attr("id") === "3") {
+        weapon = $(".switch-field2 > input:checked").attr("id");
+    } else {
+        weapon = $(".switch-field > input:checked").attr("id");
+    }
+
+    // save new weapon in user browser & globaldata
+    localStorage.setItem("data-weapon", weapon);
+    globalData.activeWeapon = WEAPONS[weapon];
+
+    shoot();
 }
 
 /**
@@ -118,6 +126,19 @@ export function saveWeapon() {
  */
 export function getWeapon() {
     var weapon = localStorage.getItem("data-weapon");
-    if (weapon === null) { return 1; }
-    $("#" + weapon).prop("checked", true);
+    if (weapon === null || isNaN(weapon)) {
+        localStorage.setItem("data-weapon", 0);
+        globalData.activeWeapon = WEAPONS[0];
+        return 1;
+    }
+    globalData.activeWeapon = WEAPONS[weapon];
+
+    if (weapon > 2 && weapon < 7) {
+        $("#3").prop("checked", true);
+        localStorage.setItem("data-weapon", 3);
+        globalData.activeWeapon = WEAPONS[3];
+    } else {
+        $("#" + weapon).prop("checked", true);
+    }
+
 }

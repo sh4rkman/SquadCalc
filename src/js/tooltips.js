@@ -1,7 +1,11 @@
 /* eslint-disable no-unused-vars */
 import { setFrenchSelection } from "./utils";
+import { globalData } from "./conf";
+import { WEAPONS } from "./weapons";
+
 import tippy from "tippy.js";
 import "tippy.js/dist/tippy.css";
+
 
 export var tooltip_save;
 export var tooltip_copy;
@@ -11,16 +15,19 @@ export var tooltip_mlrs;
 tippy("#classic", {
     animation: "fade",
     content: "Classic",
+    theme: "weaponsTooltip",
 });
 
 tippy("#hell", {
     animation: "fade",
     content: "Hell Cannon",
+    theme: "weaponsTooltip",
 });
 
 tippy("#technical", {
     animation: "fade",
     content: "Technical",
+    theme: "weaponsTooltip",
 });
 
 if (localStorage.getItem("MLRS") !== "true") {
@@ -39,6 +46,7 @@ if (localStorage.getItem("MLRS") !== "true") {
 tippy("#mlrs", {
     animation: "fade",
     content: "MLRS",
+    theme: "weaponsTooltip",
     onShow() {
         if (tooltip_mlrs) {
             tooltip_mlrs.hide();
@@ -58,19 +66,14 @@ tippy("#french", {
     allowHTML: true,
     animation: "fade",
     arrow: false,
-    content: "<div class=\"switch-field2 unselectable\"><input type=\"radio\" id=\"radio-five\" name=\"switch-two\" checked/><label id=\"classic\" for=\"radio-five\" class=\"french_mortar_selector french_mortar_selector_short\"></label><input type=\"radio\" id=\"radio-six\" name=\"switch-two\"/><label id=\"technical\" for=\"radio-six\" class=\"french_mortar_selector french_mortar_selector_medium\"></label><input type=\"radio\" id=\"radio-seven\" name=\"switch-two\"/><label id=\"french\" for=\"radio-seven\" class=\"french_mortar_selector french_mortar_selector_long \"></label> </div>",
+    content: "<div class=\"switch-field2 unselectable\"><input type=\"radio\" id=\"4\" name=\"switch-two\" checked/><label id=\"classic\" for=\"4\" class=\"french_mortar_selector french_mortar_selector_short\"></label><input type=\"radio\" id=\"5\" name=\"switch-two\"/><label id=\"technical\" for=\"5\" class=\"french_mortar_selector french_mortar_selector_medium\"></label><input type=\"radio\" id=\"6\" name=\"switch-two\"/><label id=\"french\" for=\"6\" class=\"french_mortar_selector french_mortar_selector_long \"></label> </div>",
     interactive: true,
     placement: "bottom",
     theme: "french",
     trigger: "click",
     onHide() {
-        if ($("#radio-five").is(":checked")) {
-            setFrenchSelection(0);
-        } else if ($("#radio-six").is(":checked")) {
-            setFrenchSelection(1);
-        } else {
-            setFrenchSelection(2);
-        }
+        globalData.activeWeapon = WEAPONS[$(".switch-field2 > input:checked").attr("id")];
+        localStorage.setItem("data-weapon", $(".switch-field2 > input:checked").attr("id"));
     },
 });
 
@@ -104,6 +107,21 @@ tippy("#settings", {
 tooltip_copied = document.querySelector("#settings")._tippy;
 tooltip_copied.disable();
 
+tippy("#bearing", {
+    animation: "fade",
+    placement: "bottom",
+    allowHTML: true,
+    content: "Bearing </br> <span class=\"tooltipsubtext\">(where to aim)</span>",
+    theme: "results",
+});
+
+tippy("#elevation", {
+    animation: "fade",
+    placement: "bottom",
+    allowHTML: true,
+    content: "Elevation </br> <span class=\"tooltipsubtext\">(how far it will shoot)</span>",
+    theme: "results",
+});
 
 tippy(".fab-action-1", {
     animation: "fade",
@@ -133,12 +151,13 @@ tippy(".fab-action-4", {
 });
 
 
-if (localStorage.getItem("InfoToolTips_save") !== "true") {
-    tippy(".save i", {
-        animation: "fade",
-        content: "Save for later",
-        interactiveDebounce: 75,
-        placement: "right",
-    });
-    tooltip_save = document.querySelector(".save i")._tippy;
-}
+
+tippy(".save i", {
+    animation: "fade",
+    allowHTML: true,
+    content: "Save </br> <span class=\"tooltipsubtext\"> (the results for later)</span> ",
+    interactiveDebounce: 75,
+    placement: "bottom",
+    theme: "results"
+});
+tooltip_save = document.querySelector(".save i")._tippy;

@@ -2,11 +2,7 @@ import { shoot, changeTheme, filterInput, drawHeatmap, resizeInput, RemoveSaves,
 import { saveWeapon } from "./weapons.js";
 import { tooltip_copy, tooltip_copied, tooltip_save } from "./tooltips";
 
-$(document).on("change", ".switch-field", function() {
-    shoot();
-    saveWeapon();
-});
-$(document).on("change", ".switch-field2", function() { shoot(); });
+$(document).on("change", ".switch-field", function() { saveWeapon(); });
 $(document).on("change", ".dropbtn", function() { drawHeatmap(); });
 $(document).on("input", "#target-location", function() { shoot(); });
 $(document).on("input", "#mortar-location", function() { shoot(); });
@@ -47,11 +43,8 @@ $(document).on("click", ".save", function() {
 
     $(".saved_list p").last().show("fast");
 
-    // the user understood he can click2save, remove the tooltip now
-    if (localStorage.getItem("InfoToolTips_save") !== "true") {
-        tooltip_save.disable();
-        localStorage.setItem("InfoToolTips_save", "true");
-    }
+
+    tooltip_save.disable();
 
 });
 

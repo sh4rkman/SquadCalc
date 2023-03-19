@@ -485,7 +485,7 @@ span.select2-selection.select2-selection--single {
         background-color: green;
         color: white;
         font-weight: bold;
-        letter-spacing: .1rem;
+        letter-spacing: 0.1rem;
     }
     &[data-theme~="french"] .tippy-content {
         padding: 0;
@@ -493,6 +493,16 @@ span.select2-selection.select2-selection--single {
     &[data-theme~="120mm"] .tippy-content {
         text-align: center;
         line-height: 1em;
+    }
+    &[data-theme~="results"] .tippy-content {
+        font-size: 1.4em;
+        padding: 0.5em;
+        line-height: 0.9em;
+        font-weight: bold;
+    }
+    &[data-theme~="weaponsTooltip"] .tippy-content {
+        line-height: 0.9em;
+        letter-spacing: 0.05rem;
     }
     &[data-theme~='fab'] {
         &[data-placement^='top']>.tippy-arrow::before {
@@ -509,6 +519,22 @@ span.select2-selection.select2-selection--single {
         }
         background-color: $mainColor;
     }
+}
+
+.tippy-arrow {
+    transform: scale(1.5);
+}
+
+.tooltipsubtext {
+    font-size: 0.6em;
+    letter-spacing: 0.05rem;
+    font-weight: normal;
+}
+
+.weaponTooltip {
+    font-size: 0.6em;
+    letter-spacing: 0.05rem;
+    font-weight: normal;
 }
 
 
