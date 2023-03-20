@@ -1,11 +1,15 @@
 
 
 
-# <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff"> **9.0.3** *(2023-03-19)*
+# <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff"> **9.0.3** *(2023-03-20)*
 
 <img src="https://img.shields.io/badge/-new-green"> Added informative tooltips on results
 
 <img src="https://img.shields.io/badge/-%20fix%20-orange"> Removed an unecessary space when saving calcs to clipboard 
+
+<img src="https://img.shields.io/badge/-%20fix%20-orange"> Copy to clipboard now working again on Steam Browser
+
+<img src="https://img.shields.io/badge/-%20fix%20-orange"> Saved calcs should now be correctly centered on all devices
 
 <img src="https://img.shields.io/badge/-dev-grey"> Code refactoring
 
@@ -37,8 +41,4 @@
 <img src="https://img.shields.io/badge/-new-green"> Added new weapon : BM-21 "Grad"
 
 <img src="https://img.shields.io/badge/-dev-grey"> Added a "Debug mode" that can be activated in conf.js to make debugging easier
-
-</br>
-
-</br></br><!-- CHANGELOG SPLIT MARKER -->
 

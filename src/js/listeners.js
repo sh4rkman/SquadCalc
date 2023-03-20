@@ -1,4 +1,4 @@
-import { shoot, changeTheme, filterInput, drawHeatmap, resizeInput, RemoveSaves, copySave, } from "./utils.js";
+import { shoot, changeTheme, filterInput, drawHeatmap, resizeInput, RemoveSaves, copySave, copy } from "./utils.js";
 import { saveWeapon } from "./weapons.js";
 import { tooltip_copy, tooltip_copied, tooltip_save } from "./tooltips";
 
@@ -33,17 +33,18 @@ $(document).on("click", ".save", function() {
     }
     $(".saved_list").append(
         "<p class='savedrow' style='display:none;'><input maxlength=\"20\" spellcheck='false' placeholder='" + encodeURI($("#target-location").val()) + "'class='friendlyname resize'></input>" +
-        "<span id=\"savespan\" style=\"font-weight:bold\"> ➜ " +
+        "<span id=\"savespan\"> ➜ " +
         $("#bearing").text() +
         " - " +
         $("#elevation").text() +
         "&nbsp;&nbsp;</span><i class=\"fa fa-times-circle fa-fw del\" aria-hidden=\"true\"></i></p>");
 
+    // resize the inserted input according the the placeholder lengtH 
+    $(".saved_list p").find("input").last().width($("#target-location").val().length * 1.2 + "ch")
+
+    // display it
     $(".saved").removeClass("hidden");
-
     $(".saved_list p").last().show("fast");
-
-
     tooltip_save.disable();
 
 });
@@ -55,7 +56,8 @@ $(document).on("click", "#copy", function() {
 
     if (!COPY_ZONE.hasClass("copy")) { return 1; }
 
-    navigator.clipboard.writeText("➜ " + $("#target-location").val() + " = " + $("#bearing").text() + " - " + $("#elevation").text());
+    copy($("#target-location").val() + " ➜ " + $("#bearing").text() + " - " + $("#elevation").text());
+
 
     // the user understood he can click2copy, remove the tooltip
     localStorage.setItem("InfoToolTips_copy", true);

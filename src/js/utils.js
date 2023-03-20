@@ -556,10 +556,25 @@ export function copySave(COPY_ZONE) {
         text2copy = COPY_ZONE.prev().val() + COPY_ZONE.text();
     }
 
-    navigator.clipboard.writeText(text2copy);
+    copy(text2copy);
     COPY_ZONE.parent().effect("bounce", 400);
 }
 
+
+/**
+ * Copy string to clipboard
+ */
+export function copy(string) {
+    const el = document.createElement("textarea");
+    el.value = string;
+    el.setAttribute("readonly", "");
+    el.style.position = "absolute";
+    el.style.left = "-9999px";
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand("copy");
+    document.body.removeChild(el);
+}
 
 /**
  * Remove a saved keypad

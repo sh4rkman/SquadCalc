@@ -1,5 +1,3 @@
-/* eslint-disable no-unused-vars */
-import { setFrenchSelection } from "./utils";
 import { globalData } from "./conf";
 import { WEAPONS } from "./weapons";
 
@@ -158,6 +156,6 @@ tippy(".save i", {
     content: "Save </br> <span class=\"tooltipsubtext\"> (the results for later)</span> ",
     interactiveDebounce: 75,
     placement: "bottom",
-    theme: "results"
+    theme: "results",
 });
 tooltip_save = document.querySelector(".save i")._tippy;
