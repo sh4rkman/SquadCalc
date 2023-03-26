@@ -109,6 +109,7 @@ tippy("#bearing", {
     animation: "fade",
     placement: "bottom",
     allowHTML: true,
+    touch: false,
     content: "Bearing </br> <span class=\"tooltipsubtext\">(where to aim)</span>",
     theme: "results",
 });
@@ -117,6 +118,7 @@ tippy("#elevation", {
     animation: "fade",
     placement: "bottom",
     allowHTML: true,
+    touch: false,
     content: "Elevation </br> <span class=\"tooltipsubtext\">(how far it will shoot)</span>",
     theme: "results",
 });
@@ -157,5 +159,6 @@ tippy(".save i", {
     interactiveDebounce: 75,
     placement: "bottom",
     theme: "results",
+    touch: false,
 });
 tooltip_save = document.querySelector(".save i")._tippy;

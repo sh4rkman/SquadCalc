@@ -416,6 +416,7 @@ span.select2-selection.select2-selection--single {
     border-style: none;
     font-size: 1em;
     height: auto;
+    min-width: 20px;
     text-align: right;
     text-transform: none;
     width: 100px;
@@ -454,7 +455,6 @@ span.select2-selection.select2-selection--single {
 .errorMsg {
     cursor: default;
     font-size: 0.7em;
-    padding: 18px;
 }
 
 .error {

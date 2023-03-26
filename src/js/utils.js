@@ -1,22 +1,18 @@
 import {
     tooltip_copy,
-} from "./tooltips.js";
+} from "./tooltips";
 
 import {
-    CANVAS_SIZE,
     globalData
-} from "./conf.js";
+} from "./conf";
 
 import {
     MAPS,
-} from "./maps.js";
+} from "./maps";
 
-
-/**
- * var used to stock what french DLC mortar was previously selected
- * (since weapon selector is hidden, we can't read the selected value)
- */
-export var frenchSelection = 0;
+import {
+    THEMES,
+} from "./themes";
 
 /**
  * Load the heatmap to the canvas
@@ -26,7 +22,7 @@ export function loadHeatmap() {
     const IMG = new Image();
 
     IMG.addEventListener("load", function() {
-        globalData.canvas.drawImage(IMG, 0, 0, CANVAS_SIZE, CANVAS_SIZE); // Draw img at good scale
+        globalData.canvas.drawImage(IMG, 0, 0, globalData.CANVAS_SIZE, globalData.CANVAS_SIZE); // Draw img at good scale
     }, false);
 
     if (globalData.debug.active) {
@@ -49,7 +45,7 @@ export function drawHeatmap() {
     IMG.src = MAPS[globalData.activeMap][5];
 
     IMG.addEventListener("load", function() { // wait for the image to load or it does crazy stuff
-        globalData.canvas.drawImage(IMG, 0, 0, CANVAS_SIZE, CANVAS_SIZE);
+        globalData.canvas.drawImage(IMG, 0, 0, globalData.CANVAS_SIZE, globalData.CANVAS_SIZE);
         shoot(); // just in case there is already coordinates in inputs
     }, false);
 }
@@ -90,7 +86,7 @@ function getPos(kp) {
         } else {
             // opposite of calculations in getKP()
             const SUB = Number(PARTS[i]);
-            if (!globalData.debug.active || Number.isNaN(SUB)) {
+            if (!globalData.debug.active && Number.isNaN(SUB)) {
                 console.log(`invalid keypad string: ${FORMATTED_KEYPAD}`);
             }
             const subX = (SUB - 1) % 3;
@@ -139,7 +135,6 @@ function formatKeyPad(text = "") {
     }
 
     return TEXTPARTS.join("-");
-
 }
 
 /**
@@ -244,7 +239,7 @@ function getHeight(a, b) {
     if (!globalData.activeMap) { return 0; }
 
     // load map size for scaling lat&lng
-    mapScale = CANVAS_SIZE / MAPS[globalData.activeMap][1];
+    mapScale = globalData.CANVAS_SIZE / MAPS[globalData.activeMap][1];
 
     // Apply offset & scaling
     // Heightmaps & maps doesn't always start at A01, they sometimes need to be offset manually
@@ -252,7 +247,6 @@ function getHeight(a, b) {
     AOffset.lng = (a.lng + MAPS[globalData.activeMap][3] * mapScale) * mapScale;
     BOffset.lat = (b.lat + MAPS[globalData.activeMap][2] * mapScale) * mapScale;
     BOffset.lng = (b.lng + MAPS[globalData.activeMap][3] * mapScale) * mapScale;
-
 
     // Read Heightmap values for a & b
     Aheight = ctx.getImageData(Math.round(AOffset.lat), Math.round(AOffset.lng), 1, 1).data;
@@ -291,19 +285,6 @@ function getHeight(a, b) {
 
     return Bheight - Aheight;
 }
-
-/**
- * Return the velocity for the selected mortar
- * @returns {velocity} 
- */
-function getVelocity(distance) {
-    if (globalData.activeWeapon.table === "undefined") {
-        return globalData.activeWeapon.getVelocity(distance);
-    } else {
-        return globalData.activeWeapon.getVelocity(distance);
-    }
-}
-
 
 /**
  * Calculates the distance elevation and bearing
@@ -394,7 +375,7 @@ export function shoot() {
     }
 
     distance = getDist(a, b);
-    vel = getVelocity(distance);
+    vel = globalData.activeWeapon.getVelocity(distance);
     elevation = getElevation(distance, height, vel);
 
     // If Target too far, display it and exit function
@@ -433,7 +414,7 @@ export function shoot() {
 
     // If using technica/hell mortars/mlrs, we need to be more precise (##.#)
     if (globalData.activeWeapon.unit === "deg") {
-        $("#elevation").html(elevation.toFixed(1) + "°<i class=\"fas fa-sort-amount-up resultIcons\"></i>");
+        $("#elevation").html(elevation.toFixed(1) + "<i class=\"fas fa-sort-amount-up resultIcons\"></i>");
     } else {
         $("#elevation").html(elevation.toFixed(0) + "<i class=\"fas fa-sort-amount-up resultIcons\"></i>");
     }
@@ -665,7 +646,14 @@ export function preventAutocomplete() {
  * Resize Saved Names according to #char
  */
 export function resizeInput(i) {
-    i.style.width = i.value.length * 1.2 + "ch";
+    var numUpper = i.value.length - i.value.replace(/[A-Z]/g, "").length;
+    var numLower = i.value.length - numUpper;
+
+    if (i.value.length === 0) {
+        i.style.width = i.placeholder.length * 1.2 + "ch";
+    } else {
+        i.style.width = (numLower * 1.2) + (numUpper * 1.3) + "ch";
+    }
 }
 
 
@@ -683,13 +671,11 @@ export function changeTheme(theme) {
  */
 export function getTheme() {
     var theme = localStorage.getItem("data-theme");
-    if (theme === null) { return 1; }
-    $("body").attr("data-theme", theme);
-}
 
-/**
- * Stock last french mortar used for later
- */
-export function setFrenchSelection(val) {
-    frenchSelection = val;
+    if (theme === null) {
+        changeTheme(THEMES[0]);
+        return 1;
+    }
+
+    $("body").attr("data-theme", theme);
 }

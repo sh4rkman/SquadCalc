@@ -41,4 +41,3 @@
 <img src="https://img.shields.io/badge/-new-green"> Added new weapon : BM-21 "Grad"
 
 <img src="https://img.shields.io/badge/-dev-grey"> Added a "Debug mode" that can be activated in conf.js to make debugging easier
-
