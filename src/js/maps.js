@@ -1,3 +1,11 @@
+import {
+    globalData
+} from "./conf";
+
+import {
+    shoot
+} from "./utils";
+
 import AlBasrahURL from "../img/heightmaps/al basrah.jpg";
 import AnvilURL from "../img/heightmaps/anvil.jpg";
 import BelayaURL from "../img/heightmaps/belaya.jpg";
@@ -49,3 +57,70 @@ export const MAPS = [
     ["Tallil", 4680, -200, -200, 0.05275, TallilURL],
     ["Yehorivka", 5000, -8300, -8300, 0.2732, YehorivkaURL]
 ];
+
+/**
+ * Load the maps from data.js to the menu
+ */
+export function loadMaps() {
+    var i;
+    const MAPSLENGTH = MAPS.length;
+    const MAP_SELECTOR = $(".dropbtn");
+
+    // Initiate select2 object (https://select2.org/)
+    if (globalData.debug.active) {
+        MAP_SELECTOR.select2({
+            dropdownCssClass: "dropbtn",
+            dropdownParent: $("#mapSelector"),
+            minimumResultsForSearch: -1, // Disable search
+            placeholder: "DEBUG MODE"
+        });
+    } else {
+        MAP_SELECTOR.select2({
+            dropdownCssClass: "dropbtn",
+            dropdownParent: $("#mapSelector"),
+            minimumResultsForSearch: -1, // Disable search
+            placeholder: "SELECT A MAP"
+        });
+    }
+
+    // load maps into select2
+    for (i = 0; i < MAPSLENGTH; i += 1) {
+        MAP_SELECTOR.append("<option value=\"" + i + "\">" + MAPS[i][0] + "</option>");
+    }
+}
+
+/**
+ * Draw the selected Heatmaps in a hidden canvas
+ */
+export function drawHeatmap() {
+    const IMG = new Image(); // Create new img element
+
+    globalData.activeMap = $(".dropbtn").val();
+    IMG.src = MAPS[globalData.activeMap][5];
+
+    IMG.addEventListener("load", function() { // wait for the image to load or it does crazy stuff
+        globalData.canvas.drawImage(IMG, 0, 0, globalData.CANVAS_SIZE, globalData.CANVAS_SIZE);
+        shoot(); // just in case there is already coordinates in inputs
+    }, false);
+}
+
+
+/**
+ * Load the heatmap to the canvas
+ */
+export function loadHeatmap() {
+    globalData.canvas = document.getElementById("canvas").getContext("2d");
+    const IMG = new Image();
+
+    IMG.addEventListener("load", function() {
+        globalData.canvas.drawImage(IMG, 0, 0, globalData.CANVAS_SIZE, globalData.CANVAS_SIZE); // Draw img at good scale
+    }, false);
+
+    if (globalData.debug.active) {
+        // when in debug mode, display the heightmap and prepare keypads
+        $("#canvas").css("display", "flex");
+        $("#mortar-location").val(globalData.debug.DEBUG_MORTAR_COORD);
+        $("#target-location").val(globalData.debug.DEBUG_TARGET_COORD);
+        shoot();
+    }
+}

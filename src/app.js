@@ -7,8 +7,10 @@ import "./css/styles.scss";
 import "./css/themes.scss";
 import "./css/responsive.scss";
 
-import { loadHeatmap, loadMaps, preventAutocomplete, getTheme } from "./js/utils.js";
-import { getWeapon } from "./js/weapons.js";
+import { preventAutocomplete } from "./js/utils";
+import { loadHeatmap, loadMaps } from "./js/maps";
+import { getTheme } from "./js/themes";
+import { getWeapon } from "./js/weapons";
 
 $(function() {
     getTheme();
