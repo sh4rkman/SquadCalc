@@ -544,6 +544,7 @@ export function copySave(COPY_ZONE) {
 
 /**
  * Copy string to clipboard
+ * execCommand is deprecated but navigator.clipboard doesn't work in steam browser
  */
 export function copy(string) {
     const el = document.createElement("textarea");
@@ -642,18 +643,19 @@ export function preventAutocomplete() {
     $(".dropbtn").attr("name", makeid(10));
 }
 
+
 /**
- * Resize Saved Names according to #char
+ * Resize Saved Names according to their content
+ * using a hidden <span> as a ruler
  */
 export function resizeInput(i) {
-    var numUpper = i.value.length - i.value.replace(/[A-Z]/g, "").length;
-    var numLower = i.value.length - numUpper;
 
     if (i.value.length === 0) {
-        i.style.width = i.placeholder.length * 1.2 + "ch";
+        $("#ruler").html(i.placeholder);
     } else {
-        i.style.width = (numLower * 1.2) + (numUpper * 1.3) + "ch";
+        $("#ruler").html(i.value);
     }
+    i.style.width = $("#ruler").width() * 1.05 + "px";
 }
 
 
