@@ -1,15 +1,6 @@
-import {
-    tooltip_copy,
-} from "./tooltips";
-
-import {
-    globalData
-} from "./conf";
-
-import {
-    MAPS,
-    loadHeatmap
-} from "./maps";
+import { tooltip_copy, tooltip_save, tooltip_copied } from "./tooltips";
+import { globalData } from "./conf";
+import { MAPS } from "./maps";
 
 
 
@@ -264,6 +255,8 @@ export function shoot() {
     const TARGET_LOC = $("#target-location");
     var a = MORTAR_LOC.val();
     var b = TARGET_LOC.val();
+    var aPos;
+    var bPos;
 
     if (!globalData.debug.active) { console.clear(); }
 
@@ -308,12 +301,12 @@ export function shoot() {
     // restore cursor position
     setCursor(startA, startB, a, b);
 
-    a = getPos(a);
-    b = getPos(b);
+    aPos = getPos(a);
+    bPos = getPos(b);
 
-    if (Number.isNaN(a.lng) || Number.isNaN(b.lng)) {
+    if (Number.isNaN(aPos.lng) || Number.isNaN(bPos.lng)) {
 
-        if (Number.isNaN(a.lng) && Number.isNaN(b.lng)) {
+        if (Number.isNaN(aPos.lng) && Number.isNaN(bPos.lng)) {
             showError("Invalid mortar and target");
         } else if (Number.isNaN(a.lng)) {
             showError("Invalid mortar", "mortar");
@@ -323,7 +316,7 @@ export function shoot() {
         return 1;
     }
 
-    height = getHeight(a, b);
+    height = getHeight(aPos, bPos);
 
     // Check if mortars/target are out of map
     if ((height === "AERROR") || (height === "BERROR")) {
@@ -336,7 +329,7 @@ export function shoot() {
         return 1;
     }
 
-    distance = getDist(a, b);
+    distance = getDist(aPos, bPos);
     vel = globalData.activeWeapon.getVelocity(distance);
     elevation = getElevation(distance, height, vel);
 
@@ -357,7 +350,7 @@ export function shoot() {
             return 1;
         }
     }
-    bearing = getBearing(a, b);
+    bearing = getBearing(aPos, bPos);
 
     // if in range, Insert Calculations
     if (!globalData.debug.active) {
@@ -578,6 +571,7 @@ export function preventAutocomplete() {
 /**
  * Resize Saved Names according to their content
  * using a hidden <span> as a ruler
+ * @param {input} i - input to resize
  */
 export function resizeInput(i) {
 
@@ -587,4 +581,48 @@ export function resizeInput(i) {
         $("#ruler").html(i.value);
     }
     i.style.width = $("#ruler").width() * 1.05 + "px";
+}
+
+
+/**
+ * Save current calc to save list
+ */
+export function saveCalc() {
+    if ($(".saved_list p").length === 4) {
+        $(".saved_list p").first().remove();
+    }
+    $(".saved_list").append(
+        "<p class='savedrow' style='display:none;'>" +
+        "<input maxlength=\"20\" spellcheck='false' placeholder='" + encodeURI($("#target-location").val()) + "'class='friendlyname resize'></input>" +
+        "<span id=\"savespan\"> ➜ " +
+        $("#bearing").text() +
+        " - " +
+        $("#elevation").text() +
+        "&nbsp;&nbsp;" +
+        "</span><i class=\"fa fa-times-circle fa-fw del\" aria-hidden=\"true\"></i></p>");
+
+    // resize the inserted input according the the placeholder lengtH 
+    $(".saved_list p").find("input").last().width($("#target-location").val().length * 1.2 + "ch");
+
+    // display it
+    $(".saved").removeClass("hidden");
+    $(".saved_list p").last().show("fast");
+    tooltip_save.disable();
+}
+
+/**
+ * Copy current calc to clipboard
+ */
+export function copyCalc() {
+    const COPY_ZONE = $(".copy");
+
+    if (!COPY_ZONE.hasClass("copy")) { return 1; }
+
+    copy($("#target-location").val() + " ➜ " + $("#bearing").text() + " - " + $("#elevation").text());
+
+    // the user understood he can click2copy, remove the tooltip
+    localStorage.setItem("InfoToolTips_copy", true);
+    tooltip_copy.disable();
+    tooltip_copied.enable();
+    tooltip_copied.show();
 }
