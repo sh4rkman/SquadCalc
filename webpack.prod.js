@@ -20,11 +20,13 @@ module.exports = merge(common, {
             }
         }),
         new WebpackPwaManifest({
+            filename: "manifest.json",
             name: 'SquadCalc.app',
             short_name: 'squadcalc',
             description: 'My awesome Progressive Web App!',
             background_color: '#111111',
             inject: true,
+            includeDirectory: true,
             crossorigin: 'use-credentials', //can be null, use-credentials or anonymous
             icons: [{
                 src: path.resolve('src/img/favicons/android-chrome.png'),

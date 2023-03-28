@@ -14,6 +14,7 @@ module.exports = {
     output: {
         filename: './src/js/[name].[contenthash].min.js',
         path: path.resolve(__dirname, 'dist'),
+        publicPath: '',
         clean: true,
         assetModuleFilename: '[path][name].[contenthash][ext]'
     },
