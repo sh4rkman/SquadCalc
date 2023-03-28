@@ -1,8 +1,0 @@
-{
-    "name": "Squad Calc",
-    "short_name": "Squad Calc",
-    "theme_color": "#111111",
-    "background_color": "#111111",
-    "start_url": "https://squadcalc.app/",
-    "display": "standalone"
-}

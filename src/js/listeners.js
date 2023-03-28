@@ -17,5 +17,5 @@ $(document).on("keypress", "#target-location", function(event) { filterInput(eve
 $(document).on("click", ".del", function() { RemoveSaves(this); });
 $(document).on("click", "#savespan", function() { copySave($(this)); });
 $(document).on("click", ".fab-action-2", function() { switchTheme(); });
-$(document).on("click", ".save", function() { saveCalc() });
-$(document).on("click", "#copy", function() { copyCalc() });
+$(document).on("click", ".save", function() { saveCalc(); });
+$(document).on("click", "#copy", function() { copyCalc(); });

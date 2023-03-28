@@ -126,18 +126,16 @@ export function saveWeapon() {
  */
 export function getWeapon() {
     var weapon = localStorage.getItem("data-weapon");
-
-    // if no weapon was ever used, set default mortar
     if (weapon === null || isNaN(weapon)) {
         localStorage.setItem("data-weapon", 0);
         globalData.activeWeapon = WEAPONS[0];
         $("#0").prop("checked", true);
-        return 1;
+        return 0;
     }
 
     globalData.activeWeapon = WEAPONS[weapon];
 
-    if (weapon > 2 && weapon < 7) { //todo change this horror
+    if (weapon > 2 && weapon < 7) {
         $("#3").prop("checked", true);
         localStorage.setItem("data-weapon", 3);
         globalData.activeWeapon = WEAPONS[3];
