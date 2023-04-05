@@ -1,5 +1,19 @@
 
+# <img src="https://img.shields.io/badge/-major%20release-blue?style=flat-square"> **10.0.0** *(2023-04-20)*
 
+<img src="https://img.shields.io/badge/-new-green"> Active weapon icon is now displayed in the keypads section
+
+<img src="https://img.shields.io/badge/-new-green"> Weapons selector is now a classic dropdown selector, displaying weapons in category : mortars, vehicules, frenchdlc
+
+<img src="https://img.shields.io/badge/-new-green"> Dropdown list now shows current selected in a light red color
+
+<img src="https://img.shields.io/badge/-new-green"> Added fancy animations on first page load
+
+<img src="https://img.shields.io/badge/-dev-grey"> HTML/CSS refactoring
+
+</br>
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
 
 # <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff"> **9.0.3** *(2023-03-20)*
 

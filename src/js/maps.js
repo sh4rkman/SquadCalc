@@ -66,6 +66,7 @@ export function loadMaps() {
     const MAPSLENGTH = MAPS.length;
     const MAP_SELECTOR = $(".dropbtn");
 
+
     // Initiate select2 object (https://select2.org/)
     if (globalData.debug.active) {
         MAP_SELECTOR.select2({
@@ -87,6 +88,7 @@ export function loadMaps() {
     for (i = 0; i < MAPSLENGTH; i += 1) {
         MAP_SELECTOR.append("<option value=\"" + i + "\">" + MAPS[i][0] + "</option>");
     }
+    loadHeatmap();
 }
 
 /**

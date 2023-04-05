@@ -6,8 +6,10 @@
 /* -- L*568px -- */
 
 @media (min-height: 35em) {
-    .select2-results__options {
-        max-height: 370px !important;
+    header {
+        .select2-results__options {
+            max-height: 370px !important;
+        }
     }
 }
 
@@ -15,9 +17,11 @@
 /* -- L*730px -- */
 
 @media (min-height: 45em) {
-    .select2-results__options {
-        line-height: 1em;
-        max-height: 570px !important;
+    header {
+        .select2-results__options {
+            line-height: 1em;
+            max-height: 570px !important;
+        }
     }
     .fab-wrapper {
         display: block;
@@ -28,8 +32,10 @@
 /* -- L*800px -- */
 
 @media (min-height: 50em) {
-    .select2-results__options {
-        max-height: 700px !important;
+    header {
+        .select2-results__options {
+            max-height: 700px !important;
+        }
     }
 }
 
@@ -44,52 +50,34 @@
 @media screen and (max-width: 48em) {
     /* -- H < 568px -- */
     @media (min-height: 35em) {
-        .results {
-            margin: 1.5em auto;
-        }
-        .keypads {
-            margin-top: 1em;
-        }
-        input {
-            height: 40px;
-        }
-        .saved {
-            font-size: 0.65em;
-        }
-    }
-    /* -- H < 730px -- */
-    @media (min-height: 45em) {
-        .results {
-            margin: 1.5em auto;
-        }
-        .keypads {
-            margin-top: 1.5em;
-        }
-        .saved {
-            font-size: 0.7em;
+        main {
+            input {
+                height: 40px;
+            }
+            #saved {
+                font-size: 0.65em;
+            }
+            .results {
+                margin: 1.5em auto;
+            }
         }
     }
     /* -- H < 800px -- */
     @media (min-height: 50em) {
-        input {
-            font-size: 1.4em;
-            height: 50px;
+        header {
+            .mapSelector {
+                margin-top: 2em;
+            }
         }
-        .content {
+        main {
             padding-top: 1em;
-        }
-        .mapSelector {
-            margin-top: 2em;
-        }
-        .results {
-            font-size: 1.7em;
-            margin: 2em auto;
-        }
-        .keypads {
-            margin-top: 2em;
-        }
-        .saved {
-            font-size: 0.8em;
+            .results {
+                font-size: 1.7em;
+                margin: 2em auto;
+            }
+            #saved {
+                font-size: 0.8em;
+            }
         }
     }
 }
@@ -99,69 +87,47 @@
 
 @media screen and (min-width: 48em) {
     /* On big screen, fix map&weapon Selectors on top corners */
-    .logo {
-        width: 350px;
+    header {
+        .weaponSelector {
+            left: 1em;
+            position: fixed;
+            top: 0;
+            .select2-container {
+                float: left;
+                font-size: 1em;
+                min-width: 200px;
+            }
+        }
+        .mapSelector {
+            position: fixed;
+            right: 1em;
+            top: 0;
+            .select2-container {
+                float: right;
+                font-size: 1em;
+                min-width: 200px;
+            }
+        }
     }
-    .mapSelector {
-        position: fixed;
-        right: 1em;
-        top: 0;
-    }
-    .weaponSelector {
-        left: 1em;
-        position: fixed;
-        top: 0;
-    }
-    .mortar_selector {
-        height: 35px;
-        width: 50px;
-    }
-    .mortar_selector_classic {
-        background: url("../img/icons/classic_mortar.png") no-repeat scroll 0 6px transparent;
-    }
-    .mortar_selector_technical {
-        background: url("../img/icons/technical_mortar.png") no-repeat scroll 0 6px transparent;
-    }
-    .mortar_selector_hell {
-        background: url("../img/icons/hell_mortar.png") no-repeat scroll 0 6px transparent;
-    }
-    .mortar_selector_french {
-        background: url("../img/icons/french_mortar.png") no-repeat scroll 0 6px transparent;
-    }
-    .mortar_selector_mlrs {
-        background: url("../img/icons/mlrs.png") no-repeat scroll 0 6px transparent;
-    }
-    .mortar_selector_classic,
-    .mortar_selector_technical,
-    .mortar_selector_hell,
-    .mortar_selector_french,
-    .mortar_selector_mlrs {
-        background-size: 100%;
-    }
-    .select2-container {
-        float: right;
-        font-size: 0.8em;
-        min-width: 150px;
-        right: 0;
-    }
-    .switch-field {
-        float: left;
-    }
-    .coord img {
-        height: 45px;
-        width: 45px;
-    }
-    .content {
+    main {
         padding-top: 3em;
+        .coord img {
+            height: 45px;
+        }
+    }
+    footer {
+        .logo {
+            width: 350px;
+        }
     }
     /* -- L*560px -- */
     @media (min-height: 35em) {
-        .content {
+        main {
             font-size: 25px;
             padding-top: 5em;
-        }
-        input {
-            height: 60px;
+            input {
+                height: 60px;
+            }
         }
         .fab-wrapper {
             display: block;
@@ -169,16 +135,16 @@
     }
     /* -- L*730px -- */
     @media (min-height: 45em) {
-        .content {
+        main {
             padding-top: 5em;
-        }
-        input {
-            height: 70px;
+            input {
+                height: 70px;
+            }
         }
     }
     /* -- L*800px -- */
     @media (min-height: 50em) {
-        .content {
+        main {
             font-size: 30px;
         }
     }
@@ -188,28 +154,11 @@
 /* ≥ 992px */
 
 @media screen and (min-width: 62em) {
-    .select2-container {
-        font-size: 1em;
-        min-width: 196px;
-    }
-    .mortar_selector {
-        height: 35px;
-        width: 65px;
-    }
-    .mortar_selector_classic {
-        background: url("../img/icons/classic_mortar.png") no-repeat scroll 3px 3px transparent;
-    }
-    .mortar_selector_technical {
-        background: url("../img/icons/technical_mortar.png") no-repeat scroll 3px 3px transparent;
-    }
-    .mortar_selector_hell {
-        background: url("../img/icons/hell_mortar.png") no-repeat scroll 3px 3px transparent;
-    }
-    .mortar_selector_french {
-        background: url("../img/icons/french_mortar.png") no-repeat scroll 3px 3px transparent;
-    }
-    .mortar_selector_mlrs {
-        background: url("../img/icons/mlrs.png") no-repeat scroll 3px 3px transparent;
+    header {
+        .select2-container {
+            font-size: 1em;
+            min-width: 196px;
+        }
     }
 }
 
@@ -217,8 +166,10 @@
 /* ≥ 1200px */
 
 @media screen and (min-width: 62em) {
-    .select2-container {
-        max-width: 230px;
+    header {
+        .select2-container {
+            max-width: 230px;
+        }
     }
 }
 
@@ -226,8 +177,10 @@
 /* ≥ 1400px */
 
 @media screen and (min-width: 87.5em) {
-    .select2-results__options {
-        font-size: 1em;
+    header {
+        .select2-results__options {
+            font-size: 1em;
+        }
     }
 }
 
@@ -237,83 +190,53 @@
 @media screen and (min-width: 124em) {
     /* ≥ 1920px & 1080 */
     @media (min-height: 68em) {
-        .select2-container {
-            font-size: 1.4em;
-            min-width: 350px;
-        }
-        .select2-results__options {
-            font-size: 1.2em;
-            line-height: 1.1em;
-            max-height: 1000px !important;
-        }
-        .select2-selection__placeholder {
-            font-size: 1.1em;
-        }
-        .select2-selection__rendered {
-            font-size: 1.2em;
-        }
-        input {
-            font-size: 1.7em;
-            height: 80px;
-        }
-        .results {
-            font-size: 3em;
-            margin: 1.5em auto;
-        }
-        .keypads {
-            margin-top: 2em;
-        }
-        .saved {
-            font-size: 1em;
-        }
-        .mortar_selector,
-        .french_mortar_selector {
-            display: inline-block;
-            height: 45px;
-            width: 95px;
-        }
-        .mortar_selector_classic,
-        .mortar_selector_technical,
-        .mortar_selector_hell,
-        .mortar_selector_french,
-        .mortar_selector_mlrs,
-        .french_mortar_selector_short,
-        .french_mortar_selector_medium,
-        .french_mortar_selector_long {
-            background-size: 85%;
-        }
-        .switch-field label {
-            &:first-of-type {
-                border-radius: 10px 0 0 10px;
+        header {
+            .select2-container {
+                font-size: 1.4em;
+                min-width: 350px;
             }
-            &:last-of-type {
-                border-radius: 0 10px 10px 0;
+            .select2-results__options {
+                font-size: 1.2em;
+                line-height: 1.1em;
+                max-height: 1000px !important;
+            }
+            .select2-selection__placeholder {
+                font-size: 1.1em;
+            }
+            .select2-selection__rendered {
+                font-size: 1.2em;
+            }
+            .weaponSelector {
+                padding: 2em 0 0 1.5em;
+            }
+            .mapSelector {
+                padding: 2em 1.5em 0 0;
             }
         }
-        .switch-field2 label {
-            &:first-of-type {
-                border-radius: 10px 10px 0 0;
+        main {
+            input {
+                font-size: 1.7em;
+                height: 80px;
             }
-            &:last-of-type {
-                border-radius: 0 0 10px 10px;
+            .results {
+                font-size: 3em;
+                margin: 1.5em auto;
+            }
+            #saved {
+                font-size: 1em;
+            }
+            .coord img {
+                height: 75px;
+                margin-bottom: 0.8em;
             }
         }
-        .weaponSelector {
-            padding: 2em 0 0 1.5em;
+        footer {
+            .logo {
+                width: 550px;
+            }
         }
         .tippy-box {
             font-size: 140%;
-        }
-        .mapSelector {
-            padding: 2em 1.5em 0 0;
-        }
-        .coord img {
-            height: 75px;
-            margin-bottom: 0.8em;
-            width: 75px;
-        }
-        .logo {
-            width: 550px;
         }
     }
 }

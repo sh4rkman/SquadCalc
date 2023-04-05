@@ -3,7 +3,6 @@ import { globalData } from "./conf";
 import { MAPS } from "./maps";
 
 
-
 /**
  * Returns the latlng coordinates based on the given keypad string.
  * Supports unlimited amount of sub-keypads.
@@ -69,19 +68,15 @@ function getPos(kp) {
  */
 function formatKeyPad(text = "") {
     var i = 3;
+    const TEXTPARTS = [];
+
     // If empty string, return
     if (text.length === 0) { return; }
 
-    const TEXTND = text
-        .toUpperCase()
-        .split("-")
-        .join("");
-    const TEXTPARTS = [];
-
+    const TEXTND = text.toUpperCase().split("-").join("");
     TEXTPARTS.push(TEXTND.slice(0, 3));
 
     // iteration through sub-keypads
-
     while (i < TEXTND.length) {
         TEXTPARTS.push(TEXTND.slice(i, i + 1));
         i += 1;
@@ -158,7 +153,7 @@ function getElevation(x = 0, y = 0, vel = 0, G = 9.8) {
     const P1 = Math.sqrt(vel ** 4 - G * (G * x ** 2 + 2 * y * vel ** 2));
 
     // MLRS use 0-45°
-    if (globalData.activeWeapon.name === "BM21Grad") {
+    if (globalData.activeWeapon.name === "BM-21 Grad") {
         A1 = Math.atan((vel ** 2 - P1) / (G * x));
     }
     // Others use 45-90°
@@ -261,15 +256,16 @@ export function shoot() {
     if (!globalData.debug.active) { console.clear(); }
 
     // First, reset any errors
-    $("#settings").removeClass("error");
+    //$("#settings").removeClass("error");
+    $("#settings").css({ "border-color": "#fff" });
     TARGET_LOC.removeClass("error2");
     MORTAR_LOC.removeClass("error2");
 
     // prepare result divs
     $("#bearing").removeClass("hidden").addClass("pure-u-10-24");
     $("#elevation").removeClass("hidden").addClass("pure-u-10-24");
-    $("#errorMsg").addClass("pure-u-4-24").removeClass("errorMsg").removeClass("pure-u-24-24").html("-");
-    $(".save").addClass("hidden");
+    $("#errorMsg").addClass("pure-u-4-24").removeClass("errorMsg").removeClass("pure-u-1").html("-");
+    $("#savebutton").addClass("hidden");
 
     // draw pointer cursor & tooltip on results
     if (localStorage.getItem("InfoToolTips_copy") !== "true") {
@@ -308,7 +304,7 @@ export function shoot() {
 
         if (Number.isNaN(aPos.lng) && Number.isNaN(bPos.lng)) {
             showError("Invalid mortar and target");
-        } else if (Number.isNaN(a.lng)) {
+        } else if (Number.isNaN(aPos.lng)) {
             showError("Invalid mortar", "mortar");
         } else {
             showError("Invalid target", "target");
@@ -339,7 +335,7 @@ export function shoot() {
         return 1;
     }
 
-    if (globalData.activeWeapon.name === "BM21Grad") {
+    if (globalData.activeWeapon.name === "BM-21 Grad") {
         if (elevation < globalData.activeWeapon.minDistance) {
             showError("Target is too close : " + distance.toFixed(0) + "m", "target");
             return 1;
@@ -375,7 +371,7 @@ export function shoot() {
     }
 
     // show actions button
-    $(".save").removeClass("hidden");
+    $("#savebutton").removeClass("hidden");
 
 }
 
@@ -436,14 +432,13 @@ function showError(msg, issue) {
     // Rework the #setting div to display a single message
     $("#bearing").addClass("hidden").removeClass("pure-u-10-24");
     $("#elevation").addClass("hidden").removeClass("pure-u-10-24");
-    $("#errorMsg").removeClass("pure-u-4-24").addClass("pure-u-24-24").addClass("errorMsg").html(msg);
+    $("#errorMsg").removeClass("pure-u-4-24").addClass("pure-u-1").addClass("errorMsg").html(msg);
 
     // remove the pointer cursor & tooltip
     $("#copy").removeClass("copy");
     tooltip_copy.disable();
 
-    // https://youtu.be/PWgvGjAhvIw?t=233
-    $("#settings").addClass("error").effect("shake");
+    $("#settings").css({ "border-color": "firebrick" });
 
     if (!globalData.debug.active) { console.clear(); }
     console.error(msg);
@@ -490,7 +485,7 @@ export function RemoveSaves(a) {
 
     // remove list if it's empty
     if ($(".saved_list p").length === 1) {
-        $(".saved").addClass("hidden");
+        $("#saved").addClass("hidden");
     }
 
     a.closest("p").remove();
@@ -593,8 +588,8 @@ export function saveCalc() {
     }
     $(".saved_list").append(
         "<p class='savedrow' style='display:none;'>" +
-        "<input maxlength=\"20\" spellcheck='false' placeholder='" + encodeURI($("#target-location").val()) + "'class='friendlyname resize'></input>" +
-        "<span id=\"savespan\"> ➜ " +
+        "<input maxlength=\"20\" spellcheck='false' placeholder='" + encodeURI($("#target-location").val()) + "'class='friendlyname'></input>" +
+        "<span class=\"savespan\"> ➜ " +
         $("#bearing").text() +
         " - " +
         $("#elevation").text() +
@@ -605,7 +600,7 @@ export function saveCalc() {
     $(".saved_list p").find("input").last().width($("#target-location").val().length * 1.2 + "ch");
 
     // display it
-    $(".saved").removeClass("hidden");
+    $("#saved").removeClass("hidden");
     $(".saved_list p").last().show("fast");
     tooltip_save.disable();
 }

@@ -1,6 +1,3 @@
-import { globalData } from "./conf";
-import { WEAPONS } from "./weapons";
-
 import tippy from "tippy.js";
 import "tippy.js/dist/tippy.css";
 
@@ -10,70 +7,6 @@ export var tooltip_copy;
 export var tooltip_copied;
 export var tooltip_mlrs;
 
-tippy("#classic", {
-    animation: "fade",
-    content: "Classic",
-    theme: "weaponsTooltip",
-});
-
-tippy("#hell", {
-    animation: "fade",
-    content: "Hell Cannon",
-    theme: "weaponsTooltip",
-});
-
-tippy("#technical", {
-    animation: "fade",
-    content: "Technical",
-    theme: "weaponsTooltip",
-});
-
-if (localStorage.getItem("MLRS") !== "true") {
-    tippy("#mlrs", {
-        animation: "fade",
-        content: "new!",
-        theme: "new",
-        onShow() {
-            localStorage.setItem("MLRS", true);
-        },
-    });
-    tooltip_mlrs = document.querySelector("#mlrs")._tippy;
-    tooltip_mlrs.show();
-}
-
-tippy("#mlrs", {
-    animation: "fade",
-    content: "MLRS",
-    theme: "weaponsTooltip",
-    onShow() {
-        if (tooltip_mlrs) {
-            tooltip_mlrs.hide();
-            tooltip_mlrs.disable();
-        }
-    },
-});
-
-tippy("#french", {
-    allowHTML: true,
-    animation: "fade",
-    content: "120mm</br> <font size=\"1em\">(Squad MOD France)</font>",
-    theme: "120mm",
-});
-
-tippy("#french", {
-    allowHTML: true,
-    animation: "fade",
-    arrow: false,
-    content: "<div class=\"switch-field2 unselectable\"><input type=\"radio\" id=\"4\" name=\"switch-two\" checked/><label id=\"classic\" for=\"4\" class=\"french_mortar_selector french_mortar_selector_short\"></label><input type=\"radio\" id=\"5\" name=\"switch-two\"/><label id=\"technical\" for=\"5\" class=\"french_mortar_selector french_mortar_selector_medium\"></label><input type=\"radio\" id=\"6\" name=\"switch-two\"/><label id=\"french\" for=\"6\" class=\"french_mortar_selector french_mortar_selector_long \"></label> </div>",
-    interactive: true,
-    placement: "bottom",
-    theme: "french",
-    trigger: "click",
-    onHide() {
-        globalData.activeWeapon = WEAPONS[$(".switch-field2 > input:checked").attr("id")];
-        localStorage.setItem("data-weapon", $(".switch-field2 > input:checked").attr("id"));
-    },
-});
 
 tippy("#settings", {
     animation: "fade",
@@ -152,7 +85,7 @@ tippy(".fab-action-4", {
 
 
 
-tippy(".save i", {
+tippy("#savebutton i", {
     animation: "fade",
     allowHTML: true,
     content: "Save </br> <span class=\"tooltipsubtext\"> (the results for later)</span> ",
@@ -161,4 +94,4 @@ tippy(".save i", {
     theme: "results",
     touch: false,
 });
-tooltip_save = document.querySelector(".save i")._tippy;
+tooltip_save = document.querySelector("#savebutton i")._tippy;

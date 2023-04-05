@@ -1,13 +1,29 @@
 import { globalData } from "./conf";
 import { shoot } from "./utils";
 
+import classicLogo from "../img/icons/mortar.png";
+import hellcannonLogo from "../img/icons/hellcannon_white.png";
+import technicalLogo from "../img/icons/technical_mortar_white.png";
+import mlrsLogo from "../img/icons/mlrs_white.png";
+import frenchLogo from "../img/icons/120mm_white.png";
+//import ub32Logo from "../img/icons/ub32_white.png";
+
+/* eslint no-unused-vars: "off" */
+import mainLogo from "../img/logo.png";
+import target from "../img/icons/target.png";
+
+
+
+
 export class Weapon {
-    constructor(name, velocity, minDistance, table, unit) {
+    constructor(name, velocity, minDistance, table, unit, logo, type) {
         this.name = name;
         this.velocity = velocity;
         this.minDistance = minDistance;
         this.table = table;
         this.unit = unit;
+        this.logo = logo;
+        this.type = type;
     }
 
     /**
@@ -31,10 +47,12 @@ export class Weapon {
 }
 
 
+export const weaponTypes = ["mortars", "vehicules", "frenchDLC"];
+
 // Since technicals mortars are acting weirdly, i have to stock these empirical values for now until i figure out how they work
 // read https://github.com/Endebert/squadmc/discussions/101 for more information
 // TECHNICALS[distance, Velocity]
-export const TECHNICALS = [
+const TECHNICALS = [
     [50, 47.76901552],
     [100, 63.20591542],
     [200, 77.59023672],
@@ -53,7 +71,7 @@ export const TECHNICALS = [
 
 
 // HELL[distance, Velocity]
-export const HELL = [
+const HELL = [
     [50, 83.807],
     [150, 92.007],
     [200, 93.342],
@@ -69,7 +87,7 @@ export const HELL = [
 ];
 
 // HELL[distance, Velocity]
-export const MLRS = [
+const MLRS = [
     [900, 136.176547],
     [1000, 132.382998],
     [1100, 133.837516],
@@ -81,66 +99,107 @@ export const MLRS = [
     [1650, 127.161315],
 ];
 
+// const UB32_table = [
+//     [550, 5],
+//     [700, 7.5],
+//     [800, 8.8],
+//     [900, 10],
+//     [1000, 12],
+//     [1100, 13.5],
+//     [1200, 15.5],
+//     [1300, 16.3],
+//     [1400, 18],
+//     [1500, 22.5],
+//     [1600, 18],
+//     [1700, 25],
+//     [1800, 27.5],
+//     [1900, 29.8],
+//     [1900, 29.8],
+//     [2000, 32],
+// ];
 
 
-export const ClassicMortar = new Weapon("Classic", 109.890938, 1580, undefined, "mil");
-export const TechnicalMortar = new Weapon("Technical", 0, 83.8, TECHNICALS, "deg");
-export const MO120_SMortar = new Weapon("MO120_S", 109.890938, 1520, undefined, "mil");
-export const MO120_MMortar = new Weapon("MO120_M", 143.5, 1520, undefined, "mil");
-export const MO120_LMortar = new Weapon("MO120_L", 171.5, 1520, undefined, "mil");
-export const HellMortar = new Weapon("Hell", 0, 88, HELL, "deg");
-export const BM21Grad = new Weapon("BM21Grad", 0, 14.2, MLRS, "deg");
+
+
+
+export const ClassicMortar = new Weapon("Default", 109.890938, 1580, undefined, "mil", classicLogo, "mortars");
+export const TechnicalMortar = new Weapon("Technical", 0, 83.8, TECHNICALS, "deg", technicalLogo, "vehicules");
+export const MO120_SMortar = new Weapon("Short", 109.890938, 1520, undefined, "mil", frenchLogo, "frenchDLC");
+export const MO120_MMortar = new Weapon("Medium", 143.5, 1520, undefined, "mil", frenchLogo, "frenchDLC");
+export const MO120_LMortar = new Weapon("Long", 171.5, 1520, undefined, "mil", frenchLogo, "frenchDLC");
+export const HellMortar = new Weapon("Hell Cannon", 0, 88, HELL, "deg", hellcannonLogo, "mortars");
+export const BM21Grad = new Weapon("BM-21 Grad", 0, 14.2, MLRS, "deg", mlrsLogo, "vehicules");
+//export const UB32 = new Weapon("BM-21 Grad", 0, 14.2, UB32_table, "deg", ub32Logo, "vehicule");
 
 export const WEAPONS = [
     ClassicMortar,
     TechnicalMortar,
     HellMortar,
     MO120_SMortar,
-    MO120_SMortar,
     MO120_MMortar,
     MO120_LMortar,
     BM21Grad,
+    //UB32,
 ];
 
 /**
  * save current weapon into browser cache
  */
-export function saveWeapon() {
-    var weapon;
-
-    if ($(".switch-field > input:checked").attr("id") === "3") {
-        weapon = $(".switch-field2 > input:checked").attr("id");
-    } else {
-        weapon = $(".switch-field > input:checked").attr("id");
-    }
-
-    // save new weapon in user browser & globaldata
+export function changeWeapon() {
+    const weapon = $(".dropbtn2").val();
     localStorage.setItem("data-weapon", weapon);
     globalData.activeWeapon = WEAPONS[weapon];
-
+    $("#mortar > img").attr("src", globalData.activeWeapon.logo);
     shoot();
 }
+
 
 /**
  * get last selected weapon from user cache and apply it
  */
 export function getWeapon() {
-    var weapon = localStorage.getItem("data-weapon");
+    const weapon = localStorage.getItem("data-weapon");
+
+    // first time user connect, initiate classic mortars
     if (weapon === null || isNaN(weapon)) {
-        localStorage.setItem("data-weapon", 0);
-        globalData.activeWeapon = WEAPONS[0];
-        $("#0").prop("checked", true);
+        $(".dropbtn2").val(0);
+        $(".dropbtn2").trigger("change");
         return 0;
     }
 
-    globalData.activeWeapon = WEAPONS[weapon];
+    $(".dropbtn2").val(weapon);
+    $(".dropbtn2").trigger("change");
+}
 
-    if (weapon > 2 && weapon < 7) {
-        $("#3").prop("checked", true);
-        localStorage.setItem("data-weapon", 3);
-        globalData.activeWeapon = WEAPONS[3];
-    } else {
-        $("#" + weapon).prop("checked", true);
+
+export function loadWeapons() {
+    var i;
+    var y;
+    const WEAPONSLENGTH = WEAPONS.length;
+    const WEAPON_SELECTOR = $(".dropbtn2");
+
+    WEAPON_SELECTOR.select2({
+        dropdownCssClass: "dropbtn2",
+        dropdownParent: $("#weaponSelector"),
+        minimumResultsForSearch: -1, // Disable search
+        placeholder: "SELECT A WEAPON"
+    });
+
+
+    for (i = 0; i < weaponTypes.length; i += 1) {
+        WEAPON_SELECTOR.append("<optgroup label=\"" + weaponTypes[i] + "\">");
+
+        for (y = 0; y < WEAPONSLENGTH; y += 1) {
+            if (WEAPONS[y].type === weaponTypes[i]) {
+
+                WEAPON_SELECTOR.append("<option value=\"" + y + "\">" + WEAPONS[y].name + "</option>");
+            }
+        }
+
+        WEAPON_SELECTOR.append("</optgroup>");
+
     }
+
+    getWeapon();
 
 }

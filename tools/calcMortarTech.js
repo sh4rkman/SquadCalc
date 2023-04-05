@@ -4,17 +4,26 @@
 
 // technical mortar table
 const table = [
-    [150, 85],
-    [200, 83.5],
-    [300, 80.5],
-    [400, 77],
-    [500, 73.5],
-    [600, 70],
-    [700, 65],
-    [800, 60],
-    [875, 55],
-    [900, 50],
-    [925, 45],
+    [550, 5],
+    [700, 7.5],
+    [800, 8.8],
+    [900, 10],
+    [1000, 12],
+    [1100, 13.5],
+    [1200, 15.5],
+    [1300, 16.3],
+    [1400, 18],
+    [1500, 22.5],
+    [1600, 18],
+    [1700, 25],
+    [1800, 27.5],
+    [1900, 29.8],
+    [1900, 29.8],
+    [2000, 32],
+];
+
+const UB32_table = [
+
 ];
 
 // gravity
@@ -95,7 +104,7 @@ function getAngle(x, v) {
 // get angle to hit target at distance x and height y with velocity v
 function findAngle(x, y, v) {
     const p1 = Math.sqrt(v ** 4 - g * (g * x ** 2 + 2 * y * v ** 2));
-    const a1 = Math.atan((v ** 2 + p1) / (g * x));
+    const a1 = Math.atan((v ** 2 - p1) / (g * x));
 
     // a2 is always below 800 mil -> can't be used in the game
     // const a2 = Math.atan((v ** 2 - p1) / (g * x));

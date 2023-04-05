@@ -6,33 +6,33 @@
 
 $mainColor: firebrick;
 $mainBGColor: #111;
+$mainTxtColor: #fff;
+$newColor: green;
 
 /*
    * -- BASE STYLES --
    * Most of these are inherited from Base, but I want to change a few.
 */
 
-body {
-    color: white;
-    background: $mainBGColor;
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font: inherit;
 }
 
+body,
 html,
 button,
 input,
 select,
 textarea,
 .pure-g [class*="pure-u"] {
+    color: $mainTxtColor;
     font-family: Montserrat, Times, "Times New Roman", serif;
     letter-spacing: 0.1em;
     text-align: center;
-}
-
-#mortar-location,
-#target-location,
-.resize {
-    color: white;
-    caret-color: white;
 }
 
 a:visited {
@@ -51,7 +51,7 @@ img {
 input {
     background: transparent;
     border: 0;
-    border-bottom: 3px solid white;
+    border-bottom: 3px solid $mainTxtColor;
     font-size: 1.1em;
     font-weight: bold;
     height: 30px;
@@ -62,6 +62,9 @@ input {
     width: 100%;
     &:focus {
         outline: none;
+    }
+    &::selection {
+        background-color: $mainColor;
     }
 }
 
@@ -76,234 +79,98 @@ button:focus {
 
 
 /****************
-   *     Logo
-   *****************/
-
-.footer {
-    bottom: 0;
-    left: 0;
-    position: fixed;
-    z-index: -1;
-}
-
-.logo {
-    width: 250px;
-}
-
-
-/****************
    * Weapon Selector
    *****************/
 
-.weaponSelector {
-    padding: 1em 0 0.5em;
-}
-
-.mortar_selector,
-.french_mortar_selector {
-    display: inline-block;
-    height: 30px;
-    width: 70px;
-}
-
-.mortar_selector:active,
-.french_mortar_selector:active {
-    transform: scale(0.8);
-}
-
-.mortar_selector_classic {
-    background: url("../img/icons/classic_mortar.png") no-repeat scroll 6px 0 transparent;
-}
-
-.mortar_selector_technical {
-    background: url("../img/icons/technical_mortar.png") no-repeat scroll 6px 0 transparent;
-}
-
-.mortar_selector_hell {
-    background: url("../img/icons/hell_mortar.png") no-repeat scroll 6px 0 transparent;
-}
-
-.mortar_selector_mlrs {
-    background: url("../img/icons/mlrs.png") no-repeat scroll 6px 0 transparent;
-}
-
-.mortar_selector_french {
-    background: url("../img/icons/french_mortar.png") no-repeat scroll 6px 0 transparent;
-}
-
-.french_mortar_selector_short {
-    background: url("../img/icons/short.png") no-repeat scroll 6px 0 transparent;
-}
-
-.french_mortar_selector_medium {
-    background: url("../img/icons/medium.png") no-repeat scroll 6px 0 transparent;
-}
-
-.french_mortar_selector_long {
-    background: url("../img/icons/long.png") no-repeat scroll 6px 0 transparent;
-}
-
-.switch-field {
-    display: flex;
-    justify-content: center;
-    margin: auto;
-    overflow: hidden;
-    z-index: 5;
-    input {
-        border: 0;
-        clip: rect(0, 0, 0, 0);
-        height: 1px;
-        overflow: hidden;
-        position: absolute !important;
-        width: 1px;
-    }
-    label {
-        background-color: #464444;
-        transition: all 0.2s ease-in-out;
-        &:hover {
-            cursor: pointer;
+header {
+    .weaponSelector {
+        opacity: 0;
+        animation: taadaa 0.75s 0.75s ease-out forwards;
+        transform: translateY(-30px);
+        padding-top: 1em;
+        z-index: 2;
+        .select2-results__options {
+            font-weight: 600;
+            line-height: 1.4em;
         }
-        &:first-of-type {
-            border-radius: 5px 0 0 5px;
-        }
-        &:last-of-type {
-            border-radius: 0 5px 5px 0;
+        .select2-results__group {
+            color: rgba(255, 255, 255, .7);
+            padding-top: 10px;
+            font-weight: 900;
+            text-align: left;
+            padding-left: 15px;
+            font-size: 1em;
         }
     }
-    input:checked+label {
-        background-color: #fff;
-        box-shadow: none;
-    }
-}
-
-.switch-field2 {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    margin: auto;
-    overflow: hidden;
-    z-index: 5;
-    input {
-        border: 0;
-        clip: rect(0, 0, 0, 0);
-        height: 1px;
-        overflow: hidden;
-        position: absolute !important;
-        width: 1px;
-    }
-    label {
-        background-color: #464444;
-        transition: all 0.2s ease-in-out;
-        &:hover {
-            cursor: pointer;
-        }
-        &:first-of-type {
-            border-radius: 5px 5px 0 0;
-        }
-        &:last-of-type {
-            border-radius: 0 0 5px 5px;
-        }
-    }
-    input:checked+label {
-        background-color: #fff;
-        box-shadow: none;
-    }
-}
-
-
-/****************
+    /****************
    *  Map Selector
    *****************/
-
-.mapSelector {
-    padding: 1em 0 0.5em;
-}
-
-.selectbox {
-    padding: 0;
-}
-
-.dropbtn {
-    background: $mainBGColor !important;
-    color: #fff;
-    font-weight: bold;
-    line-height: 2.188em;
-    text-transform: uppercase;
-    select {
-        -moz-appearance: none;
-        -webkit-appearance: none;
-        appearance: none;
-        background-color: transparent;
-        background-image: none;
-        border: none;
-        box-shadow: none;
+    .mapSelector {
+        opacity: 0;
+        animation: taadaa 0.5s 0.75s ease-out forwards;
+        transform: translateY(-30px);
+        padding: 1em 0 0.5em;
+        z-index: 1;
     }
-}
-
-.select2-search {
-    background: white !important;
-    color: rgb(161, 142, 142) !important;
-    font-size: 1em !important;
-}
-
-.select2-selection {
-    background: $mainBGColor !important;
-    border: none !important;
-    color: white !important;
-    font-size: 1em;
-}
-
-.dropbtn:focus {
-    outline: none;
-}
-
-.select2-container {
-    background-color: $mainBGColor;
-    border-bottom: 1px solid white !important;
-    border: 0;
-    box-shadow: none !important;
-    color: #fff !important;
-    font-size: 1em;
-    font-weight: bold;
-    line-height: 2.188em;
-    min-width: 200px;
-    padding-bottom: 0.3em;
-    text-transform: uppercase;
-}
-
-.select2-results__options {
-    max-height: 350px !important;
-    line-height: 1.4em;
-}
-
-.select2-container--default .select2-results__option--highlighted[aria-selected] {
-    background-color: $mainColor;
-}
-
-.select2-search__field {
-    color: $mainBGColor !important;
-    font-size: 1em !important;
-    height: 1.4em;
-    text-transform: none !important;
-}
-
-.select2-selection__rendered {
-    color: #fff !important;
-}
-
-.select2-results__message {
-    padding-top: 20px !important;
-}
-
-
-/* Avoid the creation of an outline when pressing enter to select a map */
-
-span.select2-selection.select2-selection--single {
-    outline: none;
-}
-
-.show {
-    display: block;
+    .selectbox {
+        padding: 0;
+    }
+    .dropbtn,
+    .dropbtn2 {
+        background: $mainBGColor !important;
+        color: #fff;
+        font-weight: bold;
+        line-height: 2.188em;
+        text-transform: uppercase;
+        select {
+            -moz-appearance: none;
+            -webkit-appearance: none;
+            appearance: none;
+            background-color: transparent;
+            background-image: none;
+            border: none;
+            box-shadow: none;
+        }
+        &:focus {
+            outline: none;
+        }
+    }
+    .select2-selection {
+        background: $mainBGColor !important;
+        border: none !important;
+        color: $mainTxtColor !important;
+    }
+    .select2-container {
+        background-color: $mainBGColor;
+        border-bottom: 1px solid $mainTxtColor !important;
+        border: 0;
+        box-shadow: none !important;
+        color: #fff !important;
+        font-weight: bold;
+        line-height: 2.188em;
+        min-width: 200px;
+        padding-bottom: 0.3em;
+        text-transform: uppercase;
+    }
+    .select2-container--default .select2-results__option--highlighted[aria-selected] {
+        background-color: $mainColor;
+    }
+    .select2-results__option--selected {
+        background-color: $mainColor!important;
+        opacity: 0.5;
+        &:hover {
+            background-color: $mainColor!important;
+        }
+    }
+    .select2-selection__rendered {
+        color: #fff !important;
+    }
+    .select2-results__message {
+        padding-top: 20px !important;
+    }
+    span.select2-selection.select2-selection--single {
+        outline: none;
+    }
 }
 
 
@@ -316,130 +183,293 @@ span.select2-selection.select2-selection--single {
    *    Results
    *****************/
 
-.results {
-    border-radius: 5px;
-    border: 5px solid white;
-    font-size: 1.5em;
-    font-weight: bold;
-    margin: 0.7em auto;
-    padding: 1em;
-    position: relative;
-}
-
-.save {
-    i {
-        font-size: 0.5em;
+main {
+    opacity: 0;
+    animation: taadaa 2s forwards;
+    .errorMsg {
+        cursor: default;
+        font-size: 0.7em;
+        line-height: 2em;
+        color: $mainColor!important;
+    }
+    #settings {
+        border-radius: 5px;
+        border: 5px solid $mainTxtColor;
+        font-size: 1.5em;
+        font-weight: bold;
+        margin: 0.7em auto;
+        padding: 1em;
         position: relative;
+        i {
+            font-size: 50%;
+        }
+        #savebutton {
+            background-color: transparent;
+            border: none;
+            bottom: 0;
+            color: $mainTxtColor;
+            padding: 0 5px;
+            position: absolute;
+            right: 0;
+            transition: all 0.1s ease-out;
+            i {
+                font-size: 0.5em;
+                position: relative;
+            }
+            &:active {
+                transform: scale(0.7);
+            }
+            &:hover {
+                cursor: pointer;
+            }
+            &:focus {
+                outline: none;
+            }
+        }
     }
-    background-color: transparent;
-    border: none;
-    bottom: 0;
-    color:white;
-    padding: 0 5px;
-    position: absolute;
-    right: 0;
-    transition: all 0.1s ease-out;
-    &:active {
-        transform: scale(0.7);
+    .copy {
+        transition: all 0.1s ease-out;
+        &:active {
+            transform: scale(0.95);
+        }
+        &:hover {
+            cursor: pointer;
+        }
     }
-    &:hover {
-        cursor: pointer;
+    .coord {
+        padding: 0.625em 0;
+        img {
+            height: 30px;
+        }
     }
-    &:focus {
-        outline: none;
+    .error2 {
+        border-bottom: 3px solid $mainColor;
     }
-}
-
-.copy {
-    transition: all 0.1s ease-out;
-    &:active {
-        transform: scale(0.95);
-    }
-    &:hover {
-        cursor: pointer;
-    }
-}
-
-.coord {
-    padding: 0.625em 0;
-    img {
-        height: 30px;
-        width: 30px;
-    }
-}
-
-
-/************************
+    /************************
    * Canvas / Heightmaps
    *********************/
-
-#canvas {
-    display: none;
-    height: 350px;
-    width: 350px;
+    #canvas {
+        display: none;
+        position: absolute;
+        bottom: 0;
+        height: 350px;
+        width: 350px;
+    }
+    /****************
+   *   Saved calcs
+   *****************/
+    #saved {
+        font-size: 0.6em;
+        .friendlyname {
+            border-style: none;
+            font-size: 1em;
+            height: auto;
+            min-width: 20px;
+            text-align: right;
+            text-transform: none;
+            width: 100px;
+        }
+        .savespan {
+            font-weight: bold;
+            &:hover {
+                cursor: pointer;
+            }
+        }
+        i {
+            cursor: pointer;
+            transition: all 0.2s ease;
+            &:hover {
+                color: $mainColor;
+                transform: scale(1.1);
+            }
+        }
+    }
+    #ruler {
+        white-space: nowrap;
+        visibility: hidden;
+        font-size: 0.6em;
+        font-weight: bold;
+    }
 }
 
-.resultIcons {
-    font-size: 50%;
+
+/***************************************
+   ************   FOOTER   ***************
+   **************************************/
+
+footer {
+    bottom: 0;
+    left: 0;
+    position: fixed;
+    z-index: -1;
+    opacity: 0;
+    transform: translateY(30px);
+    animation: taadaa 0.5s 0.75s ease-out forwards;
+    .logo {
+        width: 250px;
+    }
 }
 
 
 /****************
-   *   Saved calcs
-   *****************/
+     *     Fab
+    *****************/
 
-.saved {
-    font-size: 0.6em;
-    i {
-        cursor: pointer;
-        transition: all 0.2s ease;
+.fab-wrapper {
+    bottom: 2rem;
+    display: none;
+    position: fixed;
+    right: 2rem;
+    .fab {
+        background: #333;
+        border-radius: 50%;
+        border: 1px solid rgb(37, 37, 37);
+        bottom: -1rem;
+        font-size: 2.5em;
+        height: 4rem;
+        position: absolute;
+        right: -1rem;
+        transition: all 0.3s ease;
+        width: 4rem;
+        z-index: 1;
+        &:active {
+            transform: scale(0.8);
+        }
+        &::before {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            content: "";
+            height: 100%;
+            left: 0;
+            position: absolute;
+            top: 0;
+            width: 100%;
+        }
         &:hover {
-            color: $mainColor;
-            transform: scale(1.1);
+            background: rgb(24, 24, 24);
+            cursor: pointer;
         }
     }
-}
-
-.saved_list p {
-    margin: 0;
-}
-
-#savespan {
-    font-weight: bold;
-}
-
-#savespan:hover {
-    cursor: pointer;
-}
-
-.friendlyname {
-    border-style: none;
-    font-size: 1em;
-    height: auto;
-    min-width: 20px;
-    text-align: right;
-    text-transform: none;
-    width: 100px;
-}
-
-#ruler {
-    white-space: nowrap;
-    visibility: hidden;
-    font-size: 0.6em;
-    font-weight: bold;
+    .fab-dots {
+        animation: blink 3s ease infinite;
+        background-color: $mainTxtColor;
+        border-radius: 50%;
+        height: 8px;
+        opacity: 1;
+        position: absolute;
+        top: 50%;
+        transform: translateX(0%) translateY(-50%) rotate(0deg);
+        transition: all 0.3s ease;
+        width: 8px;
+        &.fab-dots-1 {
+            animation-delay: 0s;
+            left: 15px;
+        }
+        &.fab-dots-2 {
+            animation-delay: 0.4s;
+            left: 50%;
+            transform: translateX(-50%) translateY(-50%);
+        }
+        &.fab-dots-3 {
+            animation-delay: 0.8s;
+            right: 15px;
+        }
+    }
+    .fab-checkbox {
+        display: none;
+        &:checked {
+            &~.fab {
+                &::before {
+                    background-color: rgba(255, 255, 255, .2);
+                    height: 90%;
+                    left: 5%;
+                    top: 5%;
+                    width: 90%;
+                }
+                .fab-dots {
+                    height: 6px;
+                    animation: none;
+                }
+                .fab-dots-2 {
+                    transform: translateX(-50%) translateY(-50%) rotate(0deg);
+                }
+                .fab-dots-1 {
+                    border-radius: 10px;
+                    left: 50%;
+                    transform: translateX(-50%) translateY(-50%) rotate(45deg);
+                    width: 32px;
+                }
+                .fab-dots-3 {
+                    border-radius: 10px;
+                    right: 50%;
+                    transform: translateX(50%) translateY(-50%) rotate(-45deg);
+                    width: 32px;
+                }
+            }
+            &~.fab-wheel {
+                transform: scale(1);
+                .fab-action {
+                    opacity: 1;
+                }
+            }
+        }
+    }
+    .fab-action {
+        align-items: center;
+        background: #333;
+        border-radius: 50%;
+        color: $mainTxtColor;
+        display: flex;
+        height: 3rem;
+        justify-content: center;
+        opacity: 0;
+        position: absolute;
+        text-decoration: none;
+        transition: all 0.1s ease;
+        width: 3rem;
+        &:hover {
+            background-color: $mainColor;
+            cursor: pointer;
+        }
+        &:active {
+            transform: scale(0.9);
+        }
+    }
+    .fabstyle {
+        background-color: $mainColor;
+    }
+    .fab-wheel {
+        bottom: 0;
+        height: 9rem;
+        position: absolute;
+        right: 0;
+        transform-origin: bottom right;
+        transform: scale(0);
+        transition: all 0.1s ease;
+        width: 9rem;
+        .fab-action-1 {
+            right: -1rem;
+            top: 0;
+        }
+        .fab-action-2 {
+            right: 2.8rem;
+            top: 0.5rem;
+        }
+        .fab-action-3 {
+            bottom: 2.8rem;
+            left: 0.5rem;
+        }
+        .fab-action-4 {
+            bottom: -1rem;
+            left: 0;
+        }
+    }
 }
 
 
 /***************************************
    ************   MISC   ***************
 **************************************/
-
-
-/* Fix to avoid https://purecss.io/grids/#applying-padding-and-borders-to-grid-units */
-
-.pure-g>div {
-    box-sizing: border-box;
-}
 
 .unselectable {
     -khtml-user-select: none;
@@ -454,23 +484,17 @@ span.select2-selection.select2-selection--single {
     display: none;
 }
 
-
-/****************
-*  Error Message
-*****************/
-
-.errorMsg {
-    cursor: default;
-    font-size: 0.7em;
+@keyframes blink {
+    50% {
+        opacity: 0.25;
+    }
 }
 
-.error {
-    border: 5px solid $mainColor;
-    color: $mainColor;
-}
-
-.error2 {
-    border-bottom: 3px solid $mainColor;
+@keyframes taadaa {
+    100% {
+        opacity: 1;
+        transform: none;
+    }
 }
 
 
@@ -481,38 +505,27 @@ span.select2-selection.select2-selection--single {
 .tippy-box {
     &[data-theme~='new'] {
         &[data-placement^='top']>.tippy-arrow::before {
-            border-top-color: green;
+            border-top-color: $newColor;
         }
         &[data-placement^='bottom']>.tippy-arrow::before {
-            border-bottom-color: green;
+            border-bottom-color: $newColor;
         }
         &[data-placement^='left']>.tippy-arrow::before {
-            border-left-color: green;
+            border-left-color: $newColor;
         }
         &[data-placement^='right']>.tippy-arrow::before {
-            border-right-color: green;
+            border-right-color: $newColor;
         }
-        background-color: green;
-        color: white;
+        background-color: $newColor;
+        color: $mainTxtColor;
         font-weight: bold;
         letter-spacing: 0.1rem;
-    }
-    &[data-theme~="french"] .tippy-content {
-        padding: 0;
-    }
-    &[data-theme~="120mm"] .tippy-content {
-        text-align: center;
-        line-height: 1em;
     }
     &[data-theme~="results"] .tippy-content {
         font-size: 1.4em;
         padding: 0.5em;
         line-height: 0.9em;
         font-weight: bold;
-    }
-    &[data-theme~="weaponsTooltip"] .tippy-content {
-        line-height: 0.9em;
-        letter-spacing: 0.05rem;
     }
     &[data-theme~='fab'] {
         &[data-placement^='top']>.tippy-arrow::before {
@@ -539,182 +552,4 @@ span.select2-selection.select2-selection--single {
     font-size: 0.6em;
     letter-spacing: 0.05rem;
     font-weight: normal;
-}
-
-.weaponTooltip {
-    font-size: 0.6em;
-    letter-spacing: 0.05rem;
-    font-weight: normal;
-}
-
-
-/**************************************
-*  FAB
-***************************************/
-
-* {
-    box-sizing: border-box;
-}
-
-.fab-wrapper {
-    bottom: 2rem;
-    display: none;
-    position: fixed;
-    right: 2rem;
-}
-
-.fab {
-    background: #333;
-    border-radius: 50%;
-    border: 1px solid rgb(37, 37, 37);
-    bottom: -1rem;
-    font-size: 2.5em;
-    height: 4rem;
-    position: absolute;
-    right: -1rem;
-    transition: all 0.3s ease;
-    width: 4rem;
-    z-index: 1;
-    &:active {
-        transform: scale(0.8);
-    }
-    &::before {
-        background-color: rgba(255, 255, 255, 0.1);
-        border-radius: 50%;
-        content: "";
-        height: 100%;
-        left: 0;
-        position: absolute;
-        top: 0;
-        width: 100%;
-    }
-    &:hover {
-        background: rgb(24, 24, 24);
-        cursor: pointer;
-    }
-}
-
-.fab-dots {
-    animation: blink 3s ease infinite;
-    background-color: white;
-    border-radius: 50%;
-    height: 8px;
-    opacity: 1;
-    position: absolute;
-    top: 50%;
-    transform: translateX(0%) translateY(-50%) rotate(0deg);
-    transition: all 0.3s ease;
-    width: 8px;
-    &.fab-dots-1 {
-        animation-delay: 0s;
-        left: 15px;
-    }
-    &.fab-dots-2 {
-        animation-delay: 0.4s;
-        left: 50%;
-        transform: translateX(-50%) translateY(-50%);
-    }
-    &.fab-dots-3 {
-        animation-delay: 0.8s;
-        right: 15px;
-    }
-}
-
-.fab-checkbox {
-    display: none;
-    &:checked {
-        &~.fab {
-            &::before {
-                background-color: rgba(255, 255, 255, .2);
-                height: 90%;
-                left: 5%;
-                top: 5%;
-                width: 90%;
-            }
-            .fab-dots {
-                height: 6px;
-                animation: none;
-            }
-            .fab-dots-2 {
-                transform: translateX(-50%) translateY(-50%) rotate(0deg);
-            }
-            .fab-dots-1 {
-                border-radius: 10px;
-                left: 50%;
-                transform: translateX(-50%) translateY(-50%) rotate(45deg);
-                width: 32px;
-            }
-            .fab-dots-3 {
-                border-radius: 10px;
-                right: 50%;
-                transform: translateX(50%) translateY(-50%) rotate(-45deg);
-                width: 32px;
-            }
-        }
-        &~.fab-wheel {
-            transform: scale(1);
-            .fab-action {
-                opacity: 1;
-            }
-        }
-    }
-}
-
-@keyframes blink {
-    50% {
-        opacity: 0.25;
-    }
-}
-
-.fab-action {
-    align-items: center;
-    background: #333;
-    border-radius: 50%;
-    color: white;
-    display: flex;
-    height: 3rem;
-    justify-content: center;
-    opacity: 0;
-    position: absolute;
-    text-decoration: none;
-    transition: all 0.1s ease;
-    width: 3rem;
-    &:hover {
-        background-color: $mainColor;
-        cursor: pointer;
-    }
-    &:active {
-        transform: scale(0.9);
-    }
-}
-
-.fabstyle {
-    background-color: $mainColor;
-}
-
-.fab-wheel {
-    bottom: 0;
-    height: 9rem;
-    position: absolute;
-    right: 0;
-    transform-origin: bottom right;
-    transform: scale(0);
-    transition: all 0.1s ease;
-    width: 9rem;
-    .fab-action-1 {
-        right: -1rem;
-        top: 0;
-    }
-    .fab-action-2 {
-        right: 2.8rem;
-        top: 0.5rem;
-    }
-    .fab-action-3 {
-        bottom: 2.8rem;
-        left: 0.5rem;
-    }
-    .fab-action-4 {
-        bottom: -1rem;
-        left: 0;
-    }
 }

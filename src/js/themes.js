@@ -8,7 +8,7 @@ export const THEMES = [
 /**
  * get last theme used by user and apply it
  */
-export function getTheme() {
+export function loadTheme() {
     var theme = localStorage.getItem("data-theme");
 
     if (theme === null) {

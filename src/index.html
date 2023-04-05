@@ -19,16 +19,14 @@
 
     <!-- FAVICON -->
     <link rel="apple-touch-icon" sizes="180x180" href="/src/img/favicons/apple-touch-icon.png">
+    <link rel="mask-icon" href="/src/img/favicons/safari-pinned-tab.svg" color="#111111">
+    <link rel="shortcut icon" href="/src/favicon.ico">
     <link rel="icon" type="image/png" sizes="16x16" href="/src/img/favicons/favicon-16x16.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/src/img/favicons/favicon-32x32.png">
-    <!--<link rel="icon" type="image/png" href="/src/img/favicons/android-chrome-192x192.png" sizes="192x192">
-    <link rel="icon" type="image/png" href="/src/img/favicons/android-chrome-512x512.png" sizes="512x512">
-    <link rel="manifest" href="/src/img/favicons/site.webmanifest">-->
-    <link rel="mask-icon" href="/src/img/favicons/safari-pinned-tab.svg" color="#111111">
-    <link rel="shortcut icon" href="/src/img/favicons/favicon.ico">
+    <link rel="icon" type="image/png" sizes="83x83" href="/src/img/favicons/favicon.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/src/img/favicons/android-chrome-192x192.png">
+
     <meta name="msapplication-TileColor" content="#111111">
-    <meta name="msapplication-config" content="/src/img/favicons/browserconfig.xml">
-    <meta name="msapplication-TileImage" content="/src/img/favicons/mstile-150x150.png">
     <meta name="theme-color" content="#111111">
 
     <!-- FUCK IE, I GIVE UP -->
@@ -42,7 +40,14 @@
 
 <body>
 
-    <div class="pure-g" id="header">
+    <header class="pure-g">
+        <div class="pure-u-1 pure-u-md-1-5 weaponSelector">
+            <div id="weaponSelector" class="dropdown">
+                <select class="dropbtn2 unselectable" tabindex="-1">
+                    <option label="SELECT A WEAPON"></option>
+                </select>
+            </div>
+        </div>
         <div class="pure-u-1 pure-u-md-1-5 mapSelector">
             <div id="mapSelector" class="dropdown">
                 <select class="dropbtn unselectable" tabindex="-1">
@@ -50,34 +55,14 @@
                 </select>
             </div>
         </div>
-        <div class="pure-u-1 pure-u-md-1-5 weaponSelector">
-            <div class="switch-field unselectable">
-
-                <input type="radio" id="0" name="switch-one">
-                <label id="classic" for="0" class="mortar_selector mortar_selector_classic"></label>
-
-                <input type="radio" id="2" name="switch-one">
-                <label id="hell" for="2" class="mortar_selector mortar_selector_hell"></label>
-
-                <input type="radio" id="1" name="switch-one">
-                <label id="technical" for="1" class="mortar_selector mortar_selector_technical"></label>
-
-                <input type="radio" id="7" name="switch-one">
-                <label id="mlrs" for="7" class="mortar_selector mortar_selector_mlrs"></label>
-
-                <input type="radio" id="3" name="switch-one">
-                <label id="french" for="3" class="mortar_selector mortar_selector_french"></label>
-
-            </div>
-        </div>
-
-    </div>
 
 
-    <div class="pure-g content" id="content">
+    </header>
+
+    <main class="pure-g">
         <div class="pure-u-2-24 pure-u-md-1-8 pure-u-lg-1-5 pure-u-xxl-7-24"></div>
         <div class="pure-u-20-24 pure-u-md-3-4 pure-u-lg-3-5 pure-u-xxl-10-24">
-            <div class="pure-g keypads">
+            <div class="pure-g">
 
                 <div class="pure-u-1 pure-u-md-11-24">
                     <div class="pure-g">
@@ -88,7 +73,7 @@
                                 <input id="mortar-location" class="autofocus1" spellcheck="false" maxlength="10" type="text" placeholder="A01-5-7" autocomplete="off" tabindex="2" autofocus>
                             </div>
                         </div>
-                        <div class="pure-u-1-5 pure-u-md-1-24"><span tabindex="4" onFocus="document.querySelector('.autofocus1').focus()"></span></div>
+                        <div class="pure-u-1-5 pure-u-md-1-24"><span tabindex="4" onFocus="document.querySelector( '.autofocus1').focus()"></span></div>
                     </div>
                 </div>
 
@@ -103,30 +88,31 @@
                                 <input id="target-location" class="autofocus11" spellcheck="false" maxlength="10" type="text" placeholder="C03-2-7-9" autocomplete="off" tabindex="3">
                             </div>
                         </div>
-                        <div class="pure-u-1-5 pure-u-md-6-24"></div>
+                        <div class="pure-u-1-5 pure-u-md-6-24 "></div>
                     </div>
                 </div>
             </div>
 
-            <div class="pure-g" id="results">
+            <div id="results" class="pure-g">
                 <div class="pure-u-md-2-24 pure-u-lg-2-24"></div>
                 <div class="pure-u-1 pure-u-md-20-24 pure-u-lg-20-24">
-                    <div id="settings" class="results">
+                    <div id="settings">
                         <div id="copy" class="pure-g unselectable">
-                            <div id="bearing" class="pure-u-10-24">xxx<i class="fas fa-drafting-compass fa-rotate-180 resultIcons"></i></div>
+                            <div id="bearing" class="pure-u-10-24">xxx<i class="fas fa-drafting-compass fa-rotate-180"></i></div>
                             <div id="errorMsg" class="pure-u-4-24"> - </div>
-                            <div id="elevation" class="pure-u-10-24">xxxx<i class="fas fa-sort-amount-up resultIcons"></i></div>
+                            <div id="elevation" class="pure-u-10-24">xxxx<i class="fas fa-sort-amount-up"></i></div>
                         </div>
-                        <button class="save hidden"><i class="fas fa-tasks"></i></button>
+                        <button id="savebutton" class="hidden"><i class="fas fa-tasks"></i></button>
                     </div>
                 </div>
                 <div class="pure-u-md-2-24 pure-u-lg-2-24"></div>
             </div>
 
-            <div id="saved" class="pure-g saved hidden unselectable">
+            <div id="saved" class="pure-g hidden unselectable">
                 <div class="pure-u-1">
                     <div class="saved_list"></div>
                 </div>
+
             </div>
 
         </div>
@@ -136,40 +122,34 @@
         <canvas id="canvas" width="500" height="500"></canvas>
 
 
-    </div>
+    </main>
 
-
-
-    <div class="fab-wrapper">
-
-        <input id="fabCheckbox" type="checkbox" class="fab-checkbox">
-
-        <label class="fab" for="fabCheckbox">
-            <span class="fab-dots fab-dots-1"></span>
-            <span class="fab-dots fab-dots-2"></span>
-            <span class="fab-dots fab-dots-3"></span>
-        </label>
-
-        <div class="fab-wheel">
-            <a class="fab-action fab-action-1" href="https://github.com/sh4rkman/SquadCalc" target="_blank" rel="noopener noreferrer">
-                <i class="fa fa-github"></i>
-            </a>
-            <a class="fab-action fab-action-2">
-                <i class="fa fa-palette"></i>
-            </a>
-            <a class="fab-action fab-action-3" href="https://www.youtube.com/@sh4rkman" target="_blank" rel="noopener noreferrer">
-                <i class="fa fa-youtube"></i>
-            </a>
-
-            <a class="fab-action fab-action-4" href="https://github.com/sh4rkman/SquadCalc/issues" target="_blank" rel="noopener noreferrer">
-                <i class="fas fa-bug"></i>
-            </a>
-        </div>
-    </div>
-
-    <div class="pure-u-1 pure-u-md-1 pure-u-lg-1 footer">
+    <footer class="pure-u-1 pure-u-md-1 pure-u-lg-1">
         <img class="pure-img logo unselectable" src="./img/logo.png" alt="logo">
-    </div>
+
+        <div class="fab-wrapper">
+            <input id="fabCheckbox" type="checkbox" class="fab-checkbox">
+            <label class="fab" for="fabCheckbox">
+                <span class="fab-dots fab-dots-1"></span>
+                <span class="fab-dots fab-dots-2"></span>
+                <span class="fab-dots fab-dots-3"></span>
+            </label>
+            <div class="fab-wheel">
+                <a class="fab-action fab-action-1" href="https://github.com/sh4rkman/SquadCalc" target="_blank" rel="noopener noreferrer">
+                    <i class="fa fa-github"></i>
+                </a>
+                <a class="fab-action fab-action-2">
+                    <i class="fa fa-palette"></i>
+                </a>
+                <a class="fab-action fab-action-3" href="https://www.youtube.com/@sh4rkman" target="_blank" rel="noopener noreferrer">
+                    <i class="fa fa-youtube"></i>
+                </a>
+                <a class="fab-action fab-action-4" href="https://github.com/sh4rkman/SquadCalc/issues" target="_blank" rel="noopener noreferrer">
+                    <i class="fas fa-bug"></i>
+                </a>
+            </div>
+        </div>
+    </footer>
 
     <!-- JS -->
     <script src="https://kit.fontawesome.com/b9f6eb9757.js" crossorigin="anonymous"></script>
