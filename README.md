@@ -9,7 +9,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/sh4rkman/MSMC/blob/master/LICENSE"><img src="https://img.shields.io/github/license/Naereen/StrapDown.js.svg" alt="Licence"></a>
+  <a href="https://github.com/sh4rkman/SquadCalc/blob/master/LICENSE"><img src="https://img.shields.io/github/license/Naereen/StrapDown.js.svg" alt="Licence"></a>
 </p>
 <p align="center">
   <a href="https://validator.w3.org/nu/?doc=https%3A%2F%2Fsquadcalc.app%2F"><img src="https://img.shields.io/badge/W3C-Good-green.svg" alt="W3C"></a>
@@ -33,7 +33,7 @@
 
 </br>
 
-**MSMC** is a simple, easy on the eyes mortar calculator for <a href="https://joinsquad.com/">Squad</a>.  
+**SquadCalc** is a simple, easy on the eyes mortar calculator for <a href="https://joinsquad.com/">Squad</a>.  
 It allows quick mortars calculations without fancy map, buttons and icons.
  
 </br>
@@ -53,19 +53,18 @@ Select a map, enter locations, shoot.
 
 ## **Elevations Calculations**
 
-MSMC is using heightmaps from Squad SDK to calculate the height difference between mortars and targets and ajust automatically the elevation.  
-If your target is up a hill, MSMC will make sure you don't waste 1000 ammo points 20 meters off that enemy HAB.
+SquadCalc is using heightmaps from Squad SDK to calculate the height difference between mortars and targets and ajust automatically the elevation.  
+If your target is up a hill, SquadCalc will make sure you don't waste 1000 ammo points 20 meters off that enemy HAB.
 
 Heightmaps are hidden : simply pick your map from the list and shoot.
 
 </br>
 
 <p align="center">
-  <img width="150" height="150" src="https://github.com/sh4rkman/MSMC/blob/master/src/img/heightmaps/gorodok.jpg?raw=true">
-  <img width="150" height="150" src="https://github.com/sh4rkman/MSMC/blob/master/src/img/heightmaps/tallil.jpg?raw=true">
+  <img width="150" height="150" src="https://github.com/sh4rkman/SquadCalc/blob/master/src/img/heightmaps/gorodok.jpg?raw=true">
+  <img width="150" height="150" src="https://github.com/sh4rkman/SquadCalc/blob/master/src/img/heightmaps/tallil.jpg?raw=true">
 </p>
 <p align="center"><sub><sup>Examples of Heightmaps used for caculations (Gorodok & Tallil)</sub></sup></p>
-
 
 </br>
 
@@ -74,19 +73,16 @@ Heightmaps are hidden : simply pick your map from the list and shoot.
 </br>
 
 
-MSMC support different type of mortars :
+SquadCalc support different type of mortars :
 - Classics mortars
 - Technicals mortars
 - Hell Canon (Insurgents)
-- BM21 Grad
+- BM-21 Grad (Milice)
 - Long range (3000m) 120mm mortars from the <a href="https://smf.tactical-collective.com/">French Mod</a>
 
- </br>
- <p align="center">
-   <img width="269" height="35" src="./src/img/github/weapons.png">
- </p>
+</br>
 
- </br></br>
+</br></br>
 
 
 ## **Calculation Saving**
@@ -110,8 +106,8 @@ Save up to four calcs for later :
 ## Clone and install
 
 ```
-git clone https://github.com/sh4rkman/MSMC.git
-cd MSMC
+git clone https://github.com/sh4rkman/SquadCalc.git
+cd SquadCalc
 npm ci
 ```
 

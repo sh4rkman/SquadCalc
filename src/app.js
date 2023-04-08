@@ -1,3 +1,4 @@
+import "webpack-jquery-ui/effects";
 import "purecss/build/pure-min.css";
 import "purecss/build/grids-responsive-min.css";
 import "select2/dist/css/select2.min.css";
@@ -13,8 +14,8 @@ import { loadWeapons } from "./js/weapons";
 
 $(function() {
     loadTheme();
-    loadMaps();
     loadWeapons();
+    loadMaps();
     preventAutocomplete();
     console.log("Calculator Loaded!");
 });

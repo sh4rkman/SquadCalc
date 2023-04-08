@@ -1,5 +1,23 @@
 
-# <img src="https://img.shields.io/badge/-major%20release-blue?style=flat-square"> **10.0.0** *(2023-04-20)*
+
+# <img src="https://img.shields.io/badge/-major%20release-blue?style=flat-square"> **10.1.0** *(2023-04-08)*
+
+<img src="https://img.shields.io/badge/-new-green"> updated hellcannon icon
+
+<img src="https://img.shields.io/badge/-new-green"> added color on save button hover
+
+<img src="https://img.shields.io/badge/-%20fix%20-orange"> fixed saved calc being misplaced when resizing window
+
+<img src="https://img.shields.io/badge/-%20fix%20-orange"> updated readme still mentioning 'MSMC'
+
+<img src="https://img.shields.io/badge/-dev-grey"> JS refactoring
+
+
+</br>
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
+# <img src="https://img.shields.io/badge/-major%20release-blue?style=flat-square"> **10.0.0** *(2023-04-06)*
 
 <img src="https://img.shields.io/badge/-new-green"> Active weapon icon is now displayed in the keypads section
 

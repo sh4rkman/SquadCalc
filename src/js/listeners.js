@@ -1,4 +1,4 @@
-import { shoot, filterInput, resizeInput, RemoveSaves, copySave, copyCalc, saveCalc } from "./utils";
+import { shoot, filterInput, resizeInput, resizeInputsOnResize, RemoveSaves, copySave, copyCalc, saveCalc } from "./utils";
 import { changeWeapon } from "./weapons";
 import { drawHeatmap } from "./maps";
 import { switchTheme } from "./themes";
@@ -19,3 +19,5 @@ $(document).on("click", ".savespan", function() { copySave($(this)); });
 $(document).on("click", ".fab-action-2", function() { switchTheme(); });
 $(document).on("click", "#savebutton", function() { saveCalc(); });
 $(document).on("click", "#copy", function() { copyCalc(); });
+
+$(window).on("resize", function() { resizeInputsOnResize(); });

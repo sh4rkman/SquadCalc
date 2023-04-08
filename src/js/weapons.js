@@ -34,20 +34,18 @@ export class Weapon {
      * @returns {number} - Velocity of the weapon for said distance
      */
     getVelocity(distance) {
-        var i;
-        if (this.table) {
-            for (i = 1; i < this.table.length; i += 1) {
-                if (distance < this.table[i][0]) {
-                    return this.table[i - 1][1] + ((distance - this.table[i - 1][0]) / (this.table[i][0] - this.table[i - 1][0])) * (this.table[i][1] - this.table[i - 1][1]);
-                }
+        if (!this.table) { return this.velocity; }
+        for (let i = 1; i < this.table.length; i += 1) {
+            if (distance < this.table[i][0]) {
+                return this.table[i - 1][1] + ((distance - this.table[i - 1][0]) / (this.table[i][0] - this.table[i - 1][0])) * (this.table[i][1] - this.table[i - 1][1]);
             }
-        } else return this.velocity;
+        }
     }
 
 }
 
 
-export const weaponTypes = ["mortars", "vehicules", "frenchDLC"];
+const weaponTypes = ["mortars", "vehicules", "frenchDLC"];
 
 // Since technicals mortars are acting weirdly, i have to stock these empirical values for now until i figure out how they work
 // read https://github.com/Endebert/squadmc/discussions/101 for more information
@@ -157,24 +155,15 @@ export function changeWeapon() {
 /**
  * get last selected weapon from user cache and apply it
  */
-export function getWeapon() {
-    const weapon = localStorage.getItem("data-weapon");
-
-    // first time user connect, initiate classic mortars
-    if (weapon === null || isNaN(weapon)) {
-        $(".dropbtn2").val(0);
-        $(".dropbtn2").trigger("change");
-        return 0;
-    }
-
+function getWeapon() {
+    var weapon = localStorage.getItem("data-weapon");
+    if (weapon === null || isNaN(weapon)) { weapon = 0; }
     $(".dropbtn2").val(weapon);
-    $(".dropbtn2").trigger("change");
+    changeWeapon();
 }
 
 
 export function loadWeapons() {
-    var i;
-    var y;
     const WEAPONSLENGTH = WEAPONS.length;
     const WEAPON_SELECTOR = $(".dropbtn2");
 
@@ -185,21 +174,15 @@ export function loadWeapons() {
         placeholder: "SELECT A WEAPON"
     });
 
-
-    for (i = 0; i < weaponTypes.length; i += 1) {
+    for (let i = 0; i < weaponTypes.length; i += 1) {
         WEAPON_SELECTOR.append("<optgroup label=\"" + weaponTypes[i] + "\">");
-
-        for (y = 0; y < WEAPONSLENGTH; y += 1) {
+        for (let y = 0; y < WEAPONSLENGTH; y += 1) {
             if (WEAPONS[y].type === weaponTypes[i]) {
-
                 WEAPON_SELECTOR.append("<option value=\"" + y + "\">" + WEAPONS[y].name + "</option>");
             }
         }
-
         WEAPON_SELECTOR.append("</optgroup>");
-
     }
 
     getWeapon();
-
 }

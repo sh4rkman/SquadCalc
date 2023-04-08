@@ -13,10 +13,9 @@ import { MAPS } from "./maps";
 function getPos(kp) {
     const FORMATTED_KEYPAD = formatKeyPad(kp);
     const PARTS = FORMATTED_KEYPAD.split("-");
-    var pos;
     var interval;
-    var x = 0;
-    var y = 0;
+    var lat = 0;
+    var lng = 0;
     var i = 0;
 
     while (i < PARTS.length) {
@@ -24,16 +23,10 @@ function getPos(kp) {
             // special case, i.e. letter + number combo
             const LETTERCODE = PARTS[i].charCodeAt(0);
             const LETTERINDEX = LETTERCODE - 65;
-            if (PARTS[i].charCodeAt(0) < 65) {
-                pos = {
-                    lat: NaN,
-                    lng: NaN
-                };
-                return pos;
-            }
+            if (PARTS[i].charCodeAt(0) < 65) { return { lat: NaN, lng: NaN }; }
             const KEYPADNB = Number(PARTS[i].slice(1)) - 1;
-            x += 300 * LETTERINDEX;
-            y += 300 * KEYPADNB;
+            lat += 300 * LETTERINDEX;
+            lng += 300 * KEYPADNB;
 
         } else {
             // opposite of calculations in getKP()
@@ -45,20 +38,18 @@ function getPos(kp) {
             const subY = 2 - (Math.ceil(SUB / 3) - 1);
 
             interval = 300 / 3 ** i;
-            x += interval * subX;
-            y += interval * subY;
+            lat += interval * subX;
+            lng += interval * subY;
         }
         i += 1;
     }
 
     // at the end, add half of last interval, so it points to the center of the deepest sub-keypad
     interval = 300 / 3 ** (i - 1);
-    x += interval / 2;
-    y += interval / 2;
+    lat += interval / 2;
+    lng += interval / 2;
 
-    pos = { lat: x, lng: y };
-
-    return pos;
+    return { lat: lat, lng: lng };
 }
 
 /**
@@ -142,23 +133,23 @@ function getDist(a, b) {
 /**
  * Calculates the angle the mortar needs to be set in order
  * to hit the target at the desired distance and vertical delta.
- * @param {number} [x] - distance between mortar and target from getDist()
- * @param {number} [y] - vertical delta between mortar and target from getHeight()
+ * @param {number} [dist] - distance between mortar and target from getDist()
+ * @param {number} [vDelta] - vertical delta between mortar and target from getHeight()
  * @param {number} [vel] - initial mortar projectile velocity
  * @param {number} [G] - gravity force (9.8)
  * @returns {number || NaN} mil/deg if target in range, NaN otherwise
  */
-function getElevation(x = 0, y = 0, vel = 0, G = 9.8) {
+function getElevation(dist = 0, vDelta = 0, vel = 0, G = 9.8) {
     var A1;
-    const P1 = Math.sqrt(vel ** 4 - G * (G * x ** 2 + 2 * y * vel ** 2));
+    const P1 = Math.sqrt(vel ** 4 - G * (G * dist ** 2 + 2 * vDelta * vel ** 2));
 
     // MLRS use 0-45°
     if (globalData.activeWeapon.name === "BM-21 Grad") {
-        A1 = Math.atan((vel ** 2 - P1) / (G * x));
+        A1 = Math.atan((vel ** 2 - P1) / (G * dist));
     }
     // Others use 45-90°
     else {
-        A1 = Math.atan((vel ** 2 + P1) / (G * x));
+        A1 = Math.atan((vel ** 2 + P1) / (G * dist));
     }
 
     if (globalData.activeWeapon.unit === "mil") {
@@ -166,6 +157,19 @@ function getElevation(x = 0, y = 0, vel = 0, G = 9.8) {
     } else { // if weapon is using degres
         return radToDeg(A1);
     }
+}
+/**
+ * Apply current map offset to given position
+ *
+ * @param {lat;lng} pos - position
+ * @returns {lat;lng} - offset position
+ */
+function getOffsetLatLng(pos) {
+    const mapScale = globalData.canvas.size / MAPS[globalData.activeMap][1];
+    return {
+        lat: (pos.lat + MAPS[globalData.activeMap][2] * mapScale) * mapScale,
+        lng: (pos.lng + MAPS[globalData.activeMap][3] * mapScale) * mapScale
+    };
 }
 
 /**
@@ -181,22 +185,17 @@ function getHeight(a, b) {
     var AOffset = { lat: 0, lng: 0 };
     var BOffset = { lat: 0, lng: 0 };
     var ctx = document.getElementById("canvas").getContext("2d");
-    var mapScale;
 
     // if user didn't select map, no height calculation
     if (!globalData.activeMap) { return 0; }
 
-    // load map size for scaling lat&lng
-    mapScale = globalData.CANVAS_SIZE / MAPS[globalData.activeMap][1];
-
     // Apply offset & scaling
     // Heightmaps & maps doesn't always start at A01, they sometimes need to be offset manually
-    AOffset.lat = (a.lat + MAPS[globalData.activeMap][2] * mapScale) * mapScale;
-    AOffset.lng = (a.lng + MAPS[globalData.activeMap][3] * mapScale) * mapScale;
-    BOffset.lat = (b.lat + MAPS[globalData.activeMap][2] * mapScale) * mapScale;
-    BOffset.lng = (b.lng + MAPS[globalData.activeMap][3] * mapScale) * mapScale;
 
-    // Read Heightmap values for a & b
+    AOffset = getOffsetLatLng(a);
+    BOffset = getOffsetLatLng(b);
+
+    // Read Heightmap color values for a & b
     Aheight = ctx.getImageData(Math.round(AOffset.lat), Math.round(AOffset.lng), 1, 1).data;
     Bheight = ctx.getImageData(Math.round(BOffset.lat), Math.round(BOffset.lng), 1, 1).data;
 
@@ -205,7 +204,6 @@ function getHeight(a, b) {
         console.log("------------------------------");
         console.log("HEIGHTMAP");
         console.log(" -> map: " + MAPS[globalData.activeMap][0]);
-        console.log(" -> z-mapScale: " + mapScale);
         console.log("------------------------------");
         console.log("A {lat: " + a.lat.toFixed(2) + "; " + "lng: " + a.lng.toFixed(2) + "}");
         console.log("    -> Offset {lat: " + AOffset.lat.toFixed(2) + "; lng: " + AOffset.lng.toFixed(2) + "}");
@@ -235,6 +233,33 @@ function getHeight(a, b) {
 }
 
 /**
+ * Reset UI to default
+ */
+function resetCalc() {
+    if (!globalData.debug.active) { console.clear(); }
+
+    // First, reset any errors
+    $("#settings").css({ "border-color": "#fff" });
+    $("#target-location").removeClass("error2");
+    $("#mortar-location").removeClass("error2");
+
+    // prepare result divs
+    $("#bearing").removeClass("hidden").addClass("pure-u-10-24");
+    $("#elevation").removeClass("hidden").addClass("pure-u-10-24");
+    $("#errorMsg").addClass("pure-u-4-24").removeClass("errorMsg").removeClass("pure-u-1").html("-");
+    $("#savebutton").addClass("hidden");
+    $("#bearing").html("xxx<i class=\"fas fa-drafting-compass fa-rotate-180 resultIcons\"></i>");
+    $("#elevation").html("xxxx<i class=\"fas fa-sort-amount-up resultIcons\"></i>");
+
+    // draw pointer cursor & tooltip on results
+    if (localStorage.getItem("InfoToolTips_copy") !== "true") {
+        tooltip_copy.enable();
+        tooltip_copy.show();
+    }
+    $("#copy").addClass("copy");
+}
+
+/**
  * Calculates the distance elevation and bearing
  * @returns {target} elevation + bearing
  */
@@ -253,26 +278,7 @@ export function shoot() {
     var aPos;
     var bPos;
 
-    if (!globalData.debug.active) { console.clear(); }
-
-    // First, reset any errors
-    //$("#settings").removeClass("error");
-    $("#settings").css({ "border-color": "#fff" });
-    TARGET_LOC.removeClass("error2");
-    MORTAR_LOC.removeClass("error2");
-
-    // prepare result divs
-    $("#bearing").removeClass("hidden").addClass("pure-u-10-24");
-    $("#elevation").removeClass("hidden").addClass("pure-u-10-24");
-    $("#errorMsg").addClass("pure-u-4-24").removeClass("errorMsg").removeClass("pure-u-1").html("-");
-    $("#savebutton").addClass("hidden");
-
-    // draw pointer cursor & tooltip on results
-    if (localStorage.getItem("InfoToolTips_copy") !== "true") {
-        tooltip_copy.enable();
-        tooltip_copy.show();
-    }
-    $("#copy").addClass("copy");
+    resetCalc();
 
     // store current cursor positions on input
     startA = MORTAR_LOC[0].selectionStart;
@@ -284,13 +290,9 @@ export function shoot() {
 
     // If keypads are imprecises, do nothing
     if (a.length < 3 || b.length < 3) {
-        $("#bearing").html("xxx<i class=\"fas fa-drafting-compass fa-rotate-180 resultIcons\"></i>");
-        $("#elevation").html("xxxx<i class=\"fas fa-sort-amount-up resultIcons\"></i>");
-
         // disable tooltip and copy function
         $("#copy").removeClass("copy");
         tooltip_copy.disable();
-
         return 1;
     }
 
@@ -326,6 +328,7 @@ export function shoot() {
     }
 
     distance = getDist(aPos, bPos);
+    console.dir(globalData.activeWeapon)
     vel = globalData.activeWeapon.getVelocity(distance);
     elevation = getElevation(distance, height, vel);
 
@@ -348,22 +351,37 @@ export function shoot() {
     }
     bearing = getBearing(aPos, bPos);
 
+    insertCalc(bearing, elevation, distance, vel, height);
+
+}
+
+/**
+ * Insert Calculations into html
+ *
+ * @param {number} bearing 
+ * @param {number} elevation 
+ * @param {number} distance 
+ * @param {number} vel 
+ * @param {number} height 
+ */
+function insertCalc(bearing, elevation, distance, vel, height) {
     // if in range, Insert Calculations
     if (!globalData.debug.active) {
         console.clear();
     } else {
         console.log("------------------------------");
-        console.log(" FINAL CALC");
+        console.log("         FINAL CALC");
         console.log("------------------------------");
     }
-    console.log(MORTAR_LOC.val().toUpperCase() + " -> " + TARGET_LOC.val().toUpperCase());
+    console.log($("#mortar-location").val().toUpperCase() + " -> " + $("#target-location").val().toUpperCase());
     console.log("-> Bearing: " + bearing.toFixed(1) + "° - Elevation: " + elevation.toFixed(1) + "↷");
     console.log("-> Distance: " + distance.toFixed(0) + "m - height: " + height.toFixed(0) + "m");
     console.log("-> Velocity: " + vel.toFixed(1) + " m/s");
 
     $("#bearing").html(bearing.toFixed(1) + "<i class=\"fas fa-drafting-compass fa-rotate-180 resultIcons\"></i>");
 
-    // If using technica/hell mortars/mlrs, we need to be more precise (##.#)
+
+    //If using technica/hell mortars/mlrs, we need to be more precise (##.#)
     if (globalData.activeWeapon.unit === "deg") {
         $("#elevation").html(elevation.toFixed(1) + "<i class=\"fas fa-sort-amount-up resultIcons\"></i>");
     } else {
@@ -372,9 +390,7 @@ export function shoot() {
 
     // show actions button
     $("#savebutton").removeClass("hidden");
-
 }
-
 
 
 /**
@@ -450,6 +466,7 @@ function showError(msg, issue) {
  */
 export function copySave(COPY_ZONE) {
     var text2copy;
+
     if (COPY_ZONE.prev().val().length === 0) {
         text2copy = COPY_ZONE.prev().attr("placeholder") + COPY_ZONE.text();
     } else {
@@ -465,7 +482,7 @@ export function copySave(COPY_ZONE) {
  * Copy string to clipboard
  * execCommand is deprecated but navigator.clipboard doesn't work in steam browser
  */
-export function copy(string) {
+function copy(string) {
     const el = document.createElement("textarea");
     el.value = string;
     el.setAttribute("readonly", "");
@@ -482,12 +499,7 @@ export function copy(string) {
  *  * @param {object} a - saved calcs to remove
  */
 export function RemoveSaves(a) {
-
-    // remove list if it's empty
-    if ($(".saved_list p").length === 1) {
-        $("#saved").addClass("hidden");
-    }
-
+    if ($(".saved_list p").length === 1) { $("#saved").addClass("hidden"); }
     a.closest("p").remove();
 }
 
@@ -543,9 +555,8 @@ function makeid(length) {
     var result = "";
     var characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     var charactersLength = characters.length;
-    var i;
 
-    for (i = 0; i < length; i += 1) {
+    for (let i = 0; i < length; i += 1) {
         result += characters.charAt(Math.floor(Math.random() *
             charactersLength));
     }
@@ -578,6 +589,15 @@ export function resizeInput(i) {
     i.style.width = $("#ruler").width() * 1.05 + "px";
 }
 
+/**
+ * Resize every saved name
+ */
+export function resizeInputsOnResize() {
+    $(".saved_list :input").each(function() {
+        resizeInput($(this)[0]);
+    });
+}
+
 
 /**
  * Save current calc to save list
@@ -596,7 +616,7 @@ export function saveCalc() {
         "&nbsp;&nbsp;" +
         "</span><i class=\"fa fa-times-circle fa-fw del\" aria-hidden=\"true\"></i></p>");
 
-    // resize the inserted input according the the placeholder lengtH 
+    // resize the inserted input according the the placeholder length 
     $(".saved_list p").find("input").last().width($("#target-location").val().length * 1.2 + "ch");
 
     // display it

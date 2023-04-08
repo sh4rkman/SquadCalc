@@ -59,13 +59,12 @@ export const MAPS = [
 ];
 
 /**
- * Load the maps from data.js to the menu
+ * Load the maps to the menu
  */
 export function loadMaps() {
     var i;
     const MAPSLENGTH = MAPS.length;
     const MAP_SELECTOR = $(".dropbtn");
-
 
     // Initiate select2 object (https://select2.org/)
     if (globalData.debug.active) {
@@ -101,7 +100,7 @@ export function drawHeatmap() {
     IMG.src = MAPS[globalData.activeMap][5];
 
     IMG.addEventListener("load", function() { // wait for the image to load or it does crazy stuff
-        globalData.canvas.drawImage(IMG, 0, 0, globalData.CANVAS_SIZE, globalData.CANVAS_SIZE);
+        globalData.canvas.obj.drawImage(IMG, 0, 0, globalData.canvas.size, globalData.canvas.size);
         shoot(); // just in case there is already coordinates in inputs
     }, false);
 }
@@ -110,12 +109,12 @@ export function drawHeatmap() {
 /**
  * Load the heatmap to the canvas
  */
-export function loadHeatmap() {
-    globalData.canvas = document.getElementById("canvas").getContext("2d");
+function loadHeatmap() {
     const IMG = new Image();
+    globalData.canvas.obj = document.getElementById("canvas").getContext("2d");
 
     IMG.addEventListener("load", function() {
-        globalData.canvas.drawImage(IMG, 0, 0, globalData.CANVAS_SIZE, globalData.CANVAS_SIZE); // Draw img at good scale
+        globalData.canvas.obj.drawImage(IMG, 0, 0, globalData.canvas.size, globalData.canvas.size); // Draw img at good scale
     }, false);
 
     if (globalData.debug.active) {
