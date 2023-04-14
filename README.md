@@ -3,30 +3,16 @@
    <img width="500" height="250" src="./src/img/github/logo.png">
  </p>
 
-<p align="center">
-
-
-</p>
 
 <p align="center">
-  <a href="https://github.com/sh4rkman/SquadCalc/blob/master/LICENSE"><img src="https://img.shields.io/github/license/Naereen/StrapDown.js.svg" alt="Licence"></a>
-</p>
-<p align="center">
+ <a href="https://github.com/sh4rkman/SquadCalc/blob/master/LICENSE"><img src="https://img.shields.io/github/license/Naereen/StrapDown.js.svg" alt="Licence"></a>
   <a href="https://validator.w3.org/nu/?doc=https%3A%2F%2Fsquadcalc.app%2F"><img src="https://img.shields.io/badge/W3C-Good-green.svg" alt="W3C"></a>
   <a href="https://deepscan.io/dashboard#view=project&tid=12376&pid=15404&bid=306486"><img src="https://deepscan.io/api/teams/12376/projects/15404/branches/306486/badge/grade.svg" alt="Deepscan"></a>
   <a href="https://www.codefactor.io/repository/github/sh4rkman/squadcalc"><img src="https://www.codefactor.io/repository/github/sh4rkman/squadcalc/badge" alt="CodeFactor"></a>
 </p>
+</br>
+</br>
 
-</br>
-</br>
-</br>
-<p align="center">
-    <img src="https://skillicons.dev/icons?i=html,js,sass,webpack" />
-</p>
-
-</br>
-</br>
-</br>
 
 # SquadCalc
 
@@ -117,8 +103,17 @@ npm run start
 ```
 
 ## Building production bundle
+</br>
+
+for a preprod environnement (robots.txt disallow all):
 ```
-npm run build
+npm run build:dev
+```
+</br>
+
+for a final production environnement :
+```
+npm run build:prod
 ```
 
 </br></br>
@@ -129,5 +124,3 @@ npm run build
 
 This project is **largely** inspired by the work of Endebert on <a href="https://github.com/Endebert/squadmc">SquadMC</a>.  
 I wanted a lighter alternative to this great tool, some could say this project is just a new interface to squadmc calculation code.
-
-

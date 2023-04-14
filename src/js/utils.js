@@ -338,12 +338,12 @@ export function shoot() {
     }
 
     if (globalData.activeWeapon.name === "BM-21 Grad") {
-        if (elevation < globalData.activeWeapon.minDistance) {
+        if (elevation < globalData.activeWeapon.minElevation) {
             showError("Target is too close : " + distance.toFixed(0) + "m", "target");
             return 1;
         }
     } else {
-        if ((elevation > globalData.activeWeapon.minDistance)) {
+        if ((elevation > globalData.activeWeapon.minElevation)) {
             showError("Target is too close : " + distance.toFixed(0) + "m", "target");
             return 1;
         }
@@ -364,7 +364,6 @@ export function shoot() {
  * @param {number} height 
  */
 function insertCalc(bearing, elevation, distance, vel, height) {
-    // if in range, Insert Calculations
     if (!globalData.debug.active) {
         console.clear();
     } else {

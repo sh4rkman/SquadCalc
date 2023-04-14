@@ -1,5 +1,12 @@
 
 
+# <img src="https://img.shields.io/badge/-major%20release-blue?style=flat-square"> **10.2.0** *(2023-04-14)*
+
+<img src="https://img.shields.io/badge/-new-green"> now auto-generating robots.txt in prod/dev building scripts
+
+<img src="https://img.shields.io/badge/-%20fix%20-orange"> fixed weapon selector list being offset
+
+
 # <img src="https://img.shields.io/badge/-major%20release-blue?style=flat-square"> **10.1.0** *(2023-04-08)*
 
 <img src="https://img.shields.io/badge/-new-green"> updated hellcannon icon

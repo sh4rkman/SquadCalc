@@ -16,10 +16,10 @@ import target from "../img/icons/target.png";
 
 
 export class Weapon {
-    constructor(name, velocity, minDistance, table, unit, logo, type) {
+    constructor(name, velocity, minElevation, table, unit, logo, type) {
         this.name = name;
         this.velocity = velocity;
-        this.minDistance = minDistance;
+        this.minElevation = minElevation;
         this.table = table;
         this.unit = unit;
         this.logo = logo;
@@ -118,26 +118,15 @@ const MLRS = [
 
 
 
-
-
-export const ClassicMortar = new Weapon("Default", 109.890938, 1580, undefined, "mil", classicLogo, "mortars");
-export const TechnicalMortar = new Weapon("Technical", 0, 83.8, TECHNICALS, "deg", technicalLogo, "vehicules");
-export const MO120_SMortar = new Weapon("Short", 109.890938, 1520, undefined, "mil", frenchLogo, "frenchDLC");
-export const MO120_MMortar = new Weapon("Medium", 143.5, 1520, undefined, "mil", frenchLogo, "frenchDLC");
-export const MO120_LMortar = new Weapon("Long", 171.5, 1520, undefined, "mil", frenchLogo, "frenchDLC");
-export const HellMortar = new Weapon("Hell Cannon", 0, 88, HELL, "deg", hellcannonLogo, "mortars");
-export const BM21Grad = new Weapon("BM-21 Grad", 0, 14.2, MLRS, "deg", mlrsLogo, "vehicules");
-//export const UB32 = new Weapon("BM-21 Grad", 0, 14.2, UB32_table, "deg", ub32Logo, "vehicule");
-
 export const WEAPONS = [
-    ClassicMortar,
-    TechnicalMortar,
-    HellMortar,
-    MO120_SMortar,
-    MO120_MMortar,
-    MO120_LMortar,
-    BM21Grad,
-    //UB32,
+    new Weapon("Default", 109.890938, 1580, undefined, "mil", classicLogo, "mortars"),
+    new Weapon("Hell Cannon", undefined, 88, HELL, "deg", hellcannonLogo, "mortars"),
+    new Weapon("Technical", undefined, 83.8, TECHNICALS, "deg", technicalLogo, "vehicules"),
+    new Weapon("BM-21 Grad", undefined, 14.2, MLRS, "deg", mlrsLogo, "vehicules"),
+    new Weapon("Short", 109.890938, 1520, undefined, "mil", frenchLogo, "frenchDLC"),
+    new Weapon("Medium", 143.5, 1520, undefined, "mil", frenchLogo, "frenchDLC"),
+    new Weapon("Long", 171.5, 1520, undefined, "mil", frenchLogo, "frenchDLC"),
+    //UB32 = new Weapon("BM-21 Grad", 0, 14.2, UB32_table, "deg", ub32Logo, "vehicule"),
 ];
 
 /**
@@ -157,7 +146,7 @@ export function changeWeapon() {
  */
 function getWeapon() {
     var weapon = localStorage.getItem("data-weapon");
-    if (weapon === null || isNaN(weapon)) { weapon = 0; }
+    if (weapon === null || isNaN(weapon) || weapon === "") { weapon = 0; }
     $(".dropbtn2").val(weapon);
     changeWeapon();
 }
