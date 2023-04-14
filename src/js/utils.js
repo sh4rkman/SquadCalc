@@ -328,7 +328,6 @@ export function shoot() {
     }
 
     distance = getDist(aPos, bPos);
-    console.dir(globalData.activeWeapon)
     vel = globalData.activeWeapon.getVelocity(distance);
     elevation = getElevation(distance, height, vel);
 

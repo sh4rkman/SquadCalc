@@ -84,9 +84,6 @@ button:focus {
 
 header {
     .weaponSelector {
-        opacity: 0;
-        animation: appear 0.5s 0.75s ease-out forwards;
-        transform: translateY(-30px);
         padding-top: 1em;
         z-index: 2;
         .select2-results__options {
@@ -102,14 +99,8 @@ header {
             font-size: 1em;
         }
     }
-    /****************
-   *  Map Selector
-   *****************/
     .mapSelector {
-        opacity: 0;
-        animation: appear 0.5s 0.75s ease-out forwards;
-        transform: translateY(-30px);
-        padding: 1em 0 0.5em;
+        padding: 1em 0;
         z-index: 1;
     }
     .selectbox {
@@ -143,7 +134,7 @@ header {
     .select2-container {
         background-color: $mainBGColor;
         border-bottom: 1px solid $mainTxtColor !important;
-        border: 0;
+        // border: 0;
         box-shadow: none !important;
         color: #fff !important;
         font-weight: bold;
@@ -165,9 +156,9 @@ header {
     .select2-selection__rendered {
         color: #fff !important;
     }
-    .select2-results__message {
-        padding-top: 20px !important;
-    }
+    // .select2-results__message {
+    //     padding-top: 20px !important;
+    // }
     span.select2-selection.select2-selection--single {
         outline: none;
     }
@@ -184,8 +175,7 @@ header {
    *****************/
 
 main {
-    opacity: 0;
-    animation: appear 2s forwards;
+    padding-top: 1em;
     .errorMsg {
         cursor: default;
         font-size: 0.7em;
@@ -303,9 +293,6 @@ footer {
     left: 0;
     position: fixed;
     z-index: -1;
-    opacity: 0;
-    transform: translateY(30px);
-    animation: appear 0.5s 0.75s ease-out forwards;
     .logo {
         width: 250px;
     }

@@ -4,7 +4,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
-const path = require('path');
+const RobotstxtPlugin = require("robotstxt-webpack-plugin");
 
 module.exports = merge(common, {
     mode: 'production',
@@ -21,6 +21,7 @@ module.exports = merge(common, {
         new MiniCssExtractPlugin({
             filename: 'src/css/[name].[contenthash].min.css',
         }),
+        new RobotstxtPlugin({ policy: [{ userAgent: "*", allow: "/", }] }),
     ],
     module: {
         rules: [{

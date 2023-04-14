@@ -89,33 +89,47 @@
     /* On big screen, fix map&weapon Selectors on top corners */
     header {
         .weaponSelector {
+            // Animation
+            opacity: 0;
+            transform: translateY(-30px);
+            animation: appear 0.5s 0.75s ease-out forwards;
+            // fix to top left corner
             left: 1em;
             position: fixed;
             top: 0;
             .select2-container {
                 float: left;
                 font-size: 1em;
-                min-width: 200px;
             }
         }
         .mapSelector {
+            // Animation
+            opacity: 0;
+            transform: translateY(-30px);
+            animation: appear 0.5s 0.75s ease-out forwards;
+            // fix to top right corner
             position: fixed;
             right: 1em;
             top: 0;
+            margin-top: 0;
             .select2-container {
                 float: right;
                 font-size: 1em;
-                min-width: 200px;
             }
         }
     }
     main {
         padding-top: 3em;
+        opacity: 0;
+        animation: appear 2s forwards;
         .coord img {
             height: 45px;
         }
     }
     footer {
+        opacity: 0;
+        transform: translateY(30px);
+        animation: appear 0.5s 0.75s ease-out forwards;
         .logo {
             width: 350px;
         }
@@ -191,9 +205,12 @@
     /* ≥ 1920px & 1080 */
     @media (min-height: 68em) {
         header {
-            .select2-container {
-                font-size: 1.4em;
-                min-width: 350px;
+            .weaponSelector, .mapSelector {
+                .select2-container {
+                    min-width: 350px;
+                    padding-bottom: 1em;
+                    font-size: 1.4em;
+                }
             }
             .select2-results__options {
                 font-size: 1.2em;
@@ -214,13 +231,13 @@
             }
         }
         main {
+            padding-top: 7em;
             input {
                 font-size: 1.7em;
-                height: 80px;
+                height: 100px;
             }
-            .results {
-                font-size: 3em;
-                margin: 1.5em auto;
+            #results {
+                font-size: 1.5em;
             }
             #saved {
                 font-size: 1em;
@@ -232,11 +249,11 @@
         }
         footer {
             .logo {
-                width: 550px;
+                width: 600px;
             }
         }
         .tippy-box {
-            font-size: 140%;
+            font-size: 200%;
         }
     }
 }

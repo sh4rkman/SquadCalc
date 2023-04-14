@@ -1,6 +1,6 @@
 {
     "name": "squadcalc",
-    "version": "10.1.0",
+    "version": "10.2.0",
     "description": "A Minimalist Mortar Calculator for Squad",
     "author": "Maxime 'sharkman' Boussard ",
     "license": "MIT",
@@ -24,8 +24,9 @@
         "esversion": 7
     },
     "scripts": {
-        "start": "webpack serve --open --config webpack.dev.js",
-        "build": "webpack --config webpack.prod.js",
+        "start": "webpack serve --open --config webpack.test.js",
+        "build:prod": "webpack --config webpack.prod.js",
+        "build:dev": "webpack --config webpack.dev.js",
         "test:all": "npm-run-all test:lint test:jshint test:htmlhint test:stylelint test:w3c",
         "test:lint": "eslint ./src/",
         "test:jshint": "jshint ./src/",
@@ -47,6 +48,7 @@
         "npm-run-all": "^4.1.5",
         "postcss": ">=7.0.36",
         "purecss": "^3.0.0",
+        "robotstxt-webpack-plugin": "^8.0.0",
         "sass-loader": "^12.6.0",
         "select2": "^4.1.0-rc.0",
         "style-loader": "^3.3.1",
