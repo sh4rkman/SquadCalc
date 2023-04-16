@@ -1,3 +1,4 @@
+/* jshint ignore:start */
 // TABLES
 const squadTable = [
     [50, 1579],

@@ -24,21 +24,20 @@
         "esversion": 7
     },
     "scripts": {
-        "start": "webpack serve --open --config webpack.test.js",
-        "build:prod": "webpack --config webpack.prod.js",
-        "build:dev": "webpack --config webpack.dev.js",
-        "test:all": "npm-run-all test:lint test:jshint test:htmlhint test:stylelint test:w3c",
-        "test:lint": "eslint ./src/",
+        "start": "webpack serve --open --config ./config/webpack.test.js",
+        "build:prod": "webpack --config ./config/webpack.prod.js",
+        "build:dev": "webpack --config ./config/webpack.dev.js",
+        "test:all": "npm-run-all test:eslint test:jshint test:stylelint test:htmlhint test:w3c",
+        "test:eslint": "eslint -c ./config/.eslintrc.json ./src/",
         "test:jshint": "jshint ./src/",
-        "test:stylelint": "stylelint ./src/css/*.scss",
-        "test:htmlhint": "htmlhint ./src/",
-        "test:w3c": "html-validator ./src/"
+        "test:stylelint": "stylelint -c ./config/.stylelintrc.json ./src/css/*.scss",
+        "test:htmlhint": "htmlhint --nocolor ./src/",
+        "test:w3c": "html-validator --quiet --continue ./src/"
     },
     "devDependencies": {
         "css-loader": "^6.7.3",
         "css-minimizer-webpack-plugin": "^3.4.1",
         "eslint": "^8.34.0",
-        "glob-parent": ">=5.1.2",
         "html-loader": "^3.1.0",
         "html-webpack-plugin": "^5.5.0",
         "htmlhint": "^1.1.4",

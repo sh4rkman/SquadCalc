@@ -9,6 +9,7 @@
         "ecmaVersion": "latest",
         "sourceType": "module"
     },
+    "ignorePatterns": ["**/tests/*.js"],
     "rules": {
         "indent": [
             "error",

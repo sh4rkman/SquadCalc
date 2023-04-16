@@ -1,3 +1,4 @@
+/* jshint ignore:start */
 // Define the parameters
 const v0 = 95; // m/s
 const g = 9.81; // m/s^2

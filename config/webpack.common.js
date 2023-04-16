@@ -1,19 +1,12 @@
 const path = require('path');
 const webpack = require('webpack');
+//const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 module.exports = {
-    entry: {
-        app: './src/app.js',
-        utils: './src/js/utils.js',
-        tooltips: './src/js/tooltips.js',
-        weapon: './src/js/weapons.js',
-        map: './src/js/maps.js',
-        data: './src/js/conf.js',
-        listeners: './src/js/listeners.js',
-    },
+    entry: './src/app.js',
     output: {
         filename: './src/js/[name].[contenthash].min.js',
-        path: path.resolve(__dirname, 'dist'),
+        path: path.join(process.cwd(), 'dist'),
         publicPath: '',
         clean: true,
         assetModuleFilename: '[path][name].[contenthash][ext]'
@@ -30,8 +23,8 @@ module.exports = {
         ]
     },
     optimization: {
-        runtimeChunk: 'single',
         splitChunks: {
+            // include all types of chunks
             chunks: 'all',
         },
     },
@@ -42,6 +35,7 @@ module.exports = {
             jQuery: "jquery",
             "window.jQuery": "jquery'",
             "window.$": "jquery"
-        })
+        }),
+        //new BundleAnalyzerPlugin(),
     ]
 };
