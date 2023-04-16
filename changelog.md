@@ -1,4 +1,11 @@
 
+# <img src="https://img.shields.io/badge/-major%20release-blue?style=flat-square"> **10.3.0** *(2023-04-16)*
+
+<img src="https://img.shields.io/badge/-dev-grey"> Reworked project structure
+
+</br>
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
 
 # <img src="https://img.shields.io/badge/-major%20release-blue?style=flat-square"> **10.2.0** *(2023-04-14)*
 
@@ -6,7 +13,9 @@
 
 <img src="https://img.shields.io/badge/-%20fix%20-orange"> fixed weapon selector list being offset
 
+</br>
 
+</br></br><!-- CHANGELOG SPLIT MARKER -->
 # <img src="https://img.shields.io/badge/-major%20release-blue?style=flat-square"> **10.1.0** *(2023-04-08)*
 
 <img src="https://img.shields.io/badge/-new-green"> updated hellcannon icon
