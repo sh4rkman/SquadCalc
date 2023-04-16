@@ -203,14 +203,14 @@ function getHeight(a, b) {
     if (globalData.debug.active) {
         console.log("------------------------------");
         console.log("HEIGHTMAP");
-        console.log(" -> map: " + MAPS[globalData.activeMap][0]);
+        console.log(` -> map: ${MAPS[globalData.activeMap][0]}`);
         console.log("------------------------------");
-        console.log("A {lat: " + a.lat.toFixed(2) + "; " + "lng: " + a.lng.toFixed(2) + "}");
-        console.log("    -> Offset {lat: " + AOffset.lat.toFixed(2) + "; lng: " + AOffset.lng.toFixed(2) + "}");
-        console.log("    -> " + Aheight + " (RGBa)");
-        console.log("B {lat: " + b.lat.toFixed(2) + "; " + "lng: " + b.lng.toFixed(2) + "}");
-        console.log("    -> Offset {lat: " + BOffset.lat.toFixed(2) + "; lng: " + BOffset.lng.toFixed(2) + "}");
-        console.log("    -> " + Bheight + " (RGBa)");
+        console.log(`A {lat:${ a.lat.toFixed(2)}; lng: ${a.lng.toFixed(2)}}`);
+        console.log(`    -> Offset {lat: ${AOffset.lat.toFixed(2)}; lng: ${AOffset.lng.toFixed(2)}}`);
+        console.log(`    -> ${Aheight} (RGBa)`);
+        console.log(`B {lat: ${b.lat.toFixed(2)}; lng: ${b.lng.toFixed(2)}}`);
+        console.log(`    -> Offset {lat: ${BOffset.lat.toFixed(2)}; lng: ${BOffset.lng.toFixed(2)}}`);
+        console.log(`    -> ${Bheight} (RGBa)`);
 
         // place visual green marker on the canvas
         ctx.fillStyle = "green";
@@ -371,10 +371,10 @@ function insertCalc(bearing, elevation, distance, vel, height) {
         console.log("         FINAL CALC");
         console.log("------------------------------");
     }
-    console.log($("#mortar-location").val().toUpperCase() + " -> " + $("#target-location").val().toUpperCase());
-    console.log("-> Bearing: " + bearing.toFixed(1) + "° - Elevation: " + elevation.toFixed(1) + "↷");
-    console.log("-> Distance: " + distance.toFixed(0) + "m - height: " + height.toFixed(0) + "m");
-    console.log("-> Velocity: " + vel.toFixed(1) + " m/s");
+    console.log(`${$("#mortar-location").val()} -> ${$("#target-location").val()}`);
+    console.log(`-> Bearing: ${bearing.toFixed(1)}° - Elevation: ${elevation.toFixed(1)}↷`);
+    console.log(`-> Distance: ${distance.toFixed(0)}m - height: ${height.toFixed(0)}m`);
+    console.log(`-> Velocity: ${vel.toFixed(1)}m/s`);
 
     $("#bearing").html(bearing.toFixed(1) + "<i class=\"fas fa-drafting-compass fa-rotate-180 resultIcons\"></i>");
 
