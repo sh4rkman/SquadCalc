@@ -2,86 +2,48 @@
 
 $classicBG: #111;
 $blueBG: #00003a;
-$greenBG: #021000;
+$greenBG: #031a00;
 $blackBG: #000;
+$redBG: #3f0000;
 
 /* **************** */
 
 [data-theme='classic'] {
     background-color: $classicBG;
-    .select2 {
+    .dropbtn,
+    .dropbtn2 {
         background-color: $classicBG;
-        .select2-container {
-            background-color: $classicBG;
-        }
-        .select2-selection__rendered {
-            background-color: $classicBG;
-        }
-        .select2-results__options {
-            background-color: $classicBG;
-        }
-    }
-}
-
-[data-theme='blue'] {
-    background-color: $blueBG;
-    .select2 {
-        background-color: $blueBG;
-        .select2-container {
-            background-color: $blueBG;
-        }
-        .select2-selection__rendered {
-            background-color: $blueBG;
-        }
-        .select2-results__options {
-            background-color: $blueBG;
-        }
-        .select2-dropdown {
-            background-color: $blueBG;
-        }
-    }
-    .dropbtn,
-    .dropbtn2 {
-        background-color: $blueBG!important;
-    }
-}
-
-[data-theme='green'] {
-    background-color: $greenBG;
-    .select2 {
-        background-color: $greenBG;
-        .select2-container {
-            background-color: $greenBG;
-        }
-        .select2-selection__rendered {
-            background-color: $greenBG;
-        }
-        .select2-results__options {
-            background-color: $greenBG;
-        }
-    }
-    .dropbtn,
-    .dropbtn2 {
-        background-color: $greenBG!important;
     }
 }
 
 [data-theme='dark'] {
     background-color: $blackBG;
-    .select2 {
-        background-color: $blackBG;
-        .select2-container {
-            background-color: $blackBG;
-        }
-        .select2-selection__rendered {
-            background-color: $blackBG;
-        }
-        .select2-results__options {
-            background-color: $blackBG;
-        }
-    }
     .dropbtn,
     .dropbtn2 {
-        background-color: $blackBG!important;
+        background-color: $blackBG;
+    }
+}
+
+[data-theme='blue'] {
+    background-color: $blueBG;
+    .dropbtn,
+    .dropbtn2 {
+        background-color: $blueBG;
+    }
+}
+
+[data-theme='green'] {
+    background-color: $greenBG;
+    .dropbtn,
+    .dropbtn2 {
+        background-color: $greenBG;
+    }
+}
+
+[data-theme='red'] {
+    background-color: $redBG;
+    .dropbtn,
+    .dropbtn2 {
+        background-color: $redBG;
     }
 }

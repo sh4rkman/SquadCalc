@@ -16,9 +16,10 @@ import target from "../img/icons/target.png";
 
 
 export class Weapon {
-    constructor(name, velocity, minElevation, table, unit, logo, type) {
+    constructor(name, velocity, gravityScale, minElevation, table, unit, logo, type) {
         this.name = name;
         this.velocity = velocity;
+        this.gravityScale = gravityScale;
         this.minElevation = minElevation;
         this.table = table;
         this.unit = unit;
@@ -84,19 +85,6 @@ const HELL = [
     [925, 95.210],
 ];
 
-// HELL[distance, Velocity]
-const MLRS = [
-    [900, 136.176547],
-    [1000, 132.382998],
-    [1100, 133.837516],
-    [1200, 130.112201],
-    [1300, 130.932658],
-    [1400, 129.418033],
-    [1500, 126.850910],
-    [1600, 127.718030],
-    [1650, 127.161315],
-];
-
 // const UB32_table = [
 //     [550, 5],
 //     [700, 7.5],
@@ -119,13 +107,13 @@ const MLRS = [
 
 
 export const WEAPONS = [
-    new Weapon("Default", 109.890938, 1580, undefined, "mil", classicLogo, "mortars"),
-    new Weapon("Hell Cannon", undefined, 88, HELL, "deg", hellcannonLogo, "mortars"),
-    new Weapon("Technical", undefined, 83.8, TECHNICALS, "deg", technicalLogo, "vehicules"),
-    new Weapon("BM-21 Grad", undefined, 14.2, MLRS, "deg", mlrsLogo, "vehicules"),
-    new Weapon("Short", 109.890938, 1520, undefined, "mil", frenchLogo, "frenchDLC"),
-    new Weapon("Medium", 143.5, 1520, undefined, "mil", frenchLogo, "frenchDLC"),
-    new Weapon("Long", 171.5, 1520, undefined, "mil", frenchLogo, "frenchDLC"),
+    new Weapon("Default", 109.890938, 1, 1580, undefined, "mil", classicLogo, "mortars"),
+    new Weapon("Hell Cannon", undefined, 1, 88, HELL, "deg", hellcannonLogo, "mortars"),
+    new Weapon("Technical", undefined, 1, 83.8, TECHNICALS, "deg", technicalLogo, "vehicules"),
+    new Weapon("BM-21 Grad", 200.05799, 2, 0, undefined, "deg", mlrsLogo, "vehicules"),
+    new Weapon("Short", 109.890938, 1, 1520, undefined, "mil", frenchLogo, "frenchDLC"),
+    new Weapon("Medium", 143.5, 1, 1520, undefined, "mil", frenchLogo, "frenchDLC"),
+    new Weapon("Long", 171.5, 1, 1520, undefined, "mil", frenchLogo, "frenchDLC"),
     //UB32 = new Weapon("BM-21 Grad", 0, 14.2, UB32_table, "deg", ub32Logo, "vehicule"),
 ];
 

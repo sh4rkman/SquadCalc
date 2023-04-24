@@ -12,9 +12,9 @@ const maxDistance = rangeFunction(Math.PI / 4.0).toFixed(0);
 
 const HELLMORTAR = {
     v0: 95,
-    m: 7,
+    m: 7, //40kg from sdk
     minDistance: 150,
-    radius: 0.016,
+    radius: 0.016, //32 from sdk
     dragCoef: 0.04,
 }
 

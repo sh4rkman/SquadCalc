@@ -57,7 +57,6 @@ input {
     height: 30px;
     line-height: 2.188em;
     padding: 0;
-    text-align: center;
     text-transform: uppercase;
     width: 100%;
     &:focus {
@@ -108,7 +107,6 @@ header {
     }
     .dropbtn,
     .dropbtn2 {
-        background: $mainBGColor !important;
         color: #fff;
         font-weight: bold;
         line-height: 2.188em;
@@ -126,39 +124,31 @@ header {
             outline: none;
         }
     }
-    .select2-selection {
-        background: $mainBGColor !important;
-        border: none !important;
-        color: $mainTxtColor !important;
+    .select2 {
+        background-color: transparent;
     }
     .select2-container {
-        background-color: $mainBGColor;
-        border-bottom: 1px solid $mainTxtColor !important;
-        // border: 0;
-        box-shadow: none !important;
-        color: #fff !important;
+        background-color: transparent;
+        border-bottom: 1px solid $mainTxtColor;
+        box-shadow: none;
         font-weight: bold;
         line-height: 2.188em;
         min-width: 200px;
         padding-bottom: 0.3em;
         text-transform: uppercase;
     }
-    .select2-container--default .select2-results__option--highlighted[aria-selected] {
-        background-color: $mainColor;
-    }
-    .select2-results__option--selected {
-        background-color: $mainColor!important;
-        opacity: 0.5;
-        &:hover {
-            background-color: $mainColor!important;
+    .select2-container--default {
+        .select2-results__option--highlighted[aria-selected] {
+            background-color: $mainColor;
+        }
+        .select2-results__option--selected {
+            background-color: $mainColor;
+            opacity: 0.5;
+        }
+        .select2-selection--single .select2-selection__rendered {
+            color: #fff;
         }
     }
-    .select2-selection__rendered {
-        color: #fff !important;
-    }
-    // .select2-results__message {
-    //     padding-top: 20px !important;
-    // }
     span.select2-selection.select2-selection--single {
         outline: none;
     }
@@ -175,13 +165,6 @@ header {
    *****************/
 
 main {
-    padding-top: 1em;
-    .errorMsg {
-        cursor: default;
-        font-size: 0.7em;
-        line-height: 2em;
-        color: $mainColor!important;
-    }
     #settings {
         border-radius: 5px;
         border: 5px solid $mainTxtColor;
@@ -232,6 +215,12 @@ main {
         img {
             height: 30px;
         }
+    }
+    .pure-g [class*="pure-u"] .errorMsg {
+        cursor: default;
+        font-size: 0.7em;
+        line-height: 2em;
+        color: $mainColor;
     }
     .error2 {
         border-bottom: 3px solid $mainColor;
@@ -545,4 +534,10 @@ footer {
     font-size: 0.6em;
     letter-spacing: 0.05rem;
     font-weight: normal;
+}
+
+.select2-container--default .select2-selection--single {
+    background-color: transparent;
+    border: none;
+    color: $mainTxtColor;
 }

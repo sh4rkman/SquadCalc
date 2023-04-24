@@ -139,9 +139,12 @@ function getDist(a, b) {
  * @param {number} [G] - gravity force (9.8)
  * @returns {number || NaN} mil/deg if target in range, NaN otherwise
  */
-function getElevation(dist = 0, vDelta = 0, vel = 0, G = 9.8) {
+function getElevation(dist = 0, vDelta = 0, vel = 0, gravityScale = 1, G = 9.8) {
     var A1;
+    G = G * gravityScale;
     const P1 = Math.sqrt(vel ** 4 - G * (G * dist ** 2 + 2 * vDelta * vel ** 2));
+
+
 
     // MLRS use 0-45°
     if (globalData.activeWeapon.name === "BM-21 Grad") {
@@ -329,7 +332,7 @@ export function shoot() {
 
     distance = getDist(aPos, bPos);
     vel = globalData.activeWeapon.getVelocity(distance);
-    elevation = getElevation(distance, height, vel);
+    elevation = getElevation(distance, height, vel, globalData.activeWeapon.gravityScale);
 
     // If Target too far, display it and exit function
     if (Number.isNaN(elevation)) {

@@ -1,22 +1,34 @@
 
-# <img src="https://img.shields.io/badge/-major%20release-blue?style=flat-square"> **10.3.0** *(2023-04-16)*
+# <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff"> **10.4.0** *(2023-04-24)*
 
-<img src="https://img.shields.io/badge/-dev-grey"> Reworked project structure
+<img src="https://img.shields.io/badge/-new-green"> updated BM-21 to V4.4  
+* new min & max ranges.  
+* Reworked weapon to work with a fixed velocity instead of working with the ingame table.  
+* BM-21 is now using x2 gravity scale  
+* removed min angle
 
-</br>
+<img src="https://img.shields.io/badge/-new-green"> added a new red theme
+
+
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
 
-# <img src="https://img.shields.io/badge/-major%20release-blue?style=flat-square"> **10.2.0** *(2023-04-14)*
+# <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff"> **10.3.0** *(2023-04-16)*
+
+<img src="https://img.shields.io/badge/-dev-grey"> Reworked project structure
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
+# <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff"> **10.2.0** *(2023-04-14)*
 
 <img src="https://img.shields.io/badge/-new-green"> now auto-generating robots.txt in prod/dev building scripts
 
 <img src="https://img.shields.io/badge/-%20fix%20-orange"> fixed weapon selector list being offset
 
-</br>
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
-# <img src="https://img.shields.io/badge/-major%20release-blue?style=flat-square"> **10.1.0** *(2023-04-08)*
+
+# <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff"> **10.1.0** *(2023-04-08)*
 
 <img src="https://img.shields.io/badge/-new-green"> updated hellcannon icon
 
@@ -28,8 +40,6 @@
 
 <img src="https://img.shields.io/badge/-dev-grey"> JS refactoring
 
-
-</br>
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
 
@@ -45,8 +55,6 @@
 
 <img src="https://img.shields.io/badge/-dev-grey"> HTML/CSS refactoring
 
-</br>
-
 </br></br><!-- CHANGELOG SPLIT MARKER -->
 
 # <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff"> **9.0.3** *(2023-03-20)*
@@ -60,8 +68,6 @@
 <img src="https://img.shields.io/badge/-%20fix%20-orange"> Saved calcs should now be correctly centered on all devices
 
 <img src="https://img.shields.io/badge/-dev-grey"> Code refactoring
-
-</br>
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
 

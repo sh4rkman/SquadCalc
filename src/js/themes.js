@@ -3,6 +3,7 @@ export const THEMES = [
     "dark",
     "blue",
     "green",
+    "red",
 ];
 
 /**

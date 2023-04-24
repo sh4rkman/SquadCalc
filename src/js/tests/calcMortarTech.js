@@ -3,32 +3,87 @@
  * CONSTANTS
  */
 
-// technical mortar table
+
 const table = [
-    [550, 5],
-    [700, 7.5],
-    [800, 8.8],
-    [900, 10],
+    [1000, 14.7],
+    [1050, 15.5],
+    [1100, 16.3],
+    [1150, 17.2],
+    [1200, 18.0],
+    [1250, 18.9],
+    [1300, 19.8],
+    [1350, 20.7],
+    [1400, 21.7],
+    [1450, 22.7],
+    [1500, 23.7],
+    [1550, 24.7],
+    [1600, 25.9],
+    [1650, 25.9],
+    [1700, 28.2],
+    [1750, 29.6],
+    [1800, 31.0],
+    [1850, 32.6],
+    [1900, 34.4],
+    [1950, 36.5],
+    [2000, 39.4],
+    [2050, 45],
+];
+
+// V4.4 ingame table
+const gradTable = [
+    [1000, 14.7],
+    [1050, 15.5],
+    [1100, 16.3],
+    [1150, 17.2],
+    [1200, 18.0],
+    [1250, 18.9],
+    [1300, 19.8],
+    [1350, 20.7],
+    [1400, 21.7],
+    [1450, 22.7],
+    [1500, 23.7],
+    [1550, 24.7],
+    [1600, 25.9],
+    [1650, 25.9],
+    [1700, 28.2],
+    [1750, 29.6],
+    [1800, 31.0],
+    [1850, 32.6],
+    [1900, 34.4],
+    [1950, 36.5],
+    [2000, 39.4],
+    [2050, 45],
+];
+
+// V4.3 ingame table
+const oldGrad_table = [
+    [900, 14.2],
+    [1000, 17],
+    [1100, 18.5],
+    [1200, 22],
+    [1300, 24],
+    [1400, 27.5],
+    [1500, 33],
+    [1600, 37],
+    [1650, 45],
+]
+
+const UB32_table = [
     [1000, 12],
     [1100, 13.5],
     [1200, 15.5],
     [1300, 16.3],
-    [1400, 18],
-    [1500, 22.5],
-    [1600, 18],
+    [1400, 18.0],
+    [1500, 20],
+    [1600, 22.5],
     [1700, 25],
     [1800, 27.5],
     [1900, 29.8],
-    [1900, 29.8],
-    [2000, 32],
-];
-
-const UB32_table = [
-
+    [1700, 25],
 ];
 
 // gravity
-const g = 9.8;
+const g = 9.8 * 2;
 
 // deg to mil factor
 // "1mil = 1/6400 of a circle in NATO countries."
@@ -65,16 +120,6 @@ function getTime(x, rad) {
     return Math.sqrt((2 * x * Math.tan(rad)) / g);
 }
 
-// my own attempt. same result, but requires two calculations
-// 1. calculate time for shell to reach target
-// 2. calculate velocity using time
-// eslint-disable-next-line no-unused-vars
-function getVelOld(x, rad) {
-    const t = getTime(x, rad);
-    const r = x / (Math.cos(rad) * t);
-
-    return r;
-}
 
 // following functions taken from wikipedia
 // https://en.wikipedia.org/wiki/Projectile_motion
@@ -91,16 +136,6 @@ function getVel(x, rad) {
     return vel;
 }
 
-// get angle needed to hit target at distance x with velocity v
-// eslint-disable-next-line no-unused-vars
-function getAngle(x, v) {
-    const a = 0.5 * Math.asin((g * x) / (v * v));
-    return a;
-}
-
-// function getAngle2(x, v) {
-//   return Math.atan(v * v - (Math.sqrt(v * v * v * v - g * g * x * x) / g) * x);
-// }
 
 // get angle to hit target at distance x and height y with velocity v
 function findAngle(x, y, v) {
@@ -127,20 +162,19 @@ table.forEach((entry) => {
     const tAngle = entry[1];
     const v = getVel(tDistance, degToRad(tAngle));
     velocities.push(v);
-
     console.log(`${tDistance}m\t${tAngle.toFixed(1)}° => ${v}`);
 });
 
 // cut off first and last entries, might result in more accurate average
-const slicedVelocities = velocities.slice(1, velocities.length - 2);
-
+//const slicedVelocities = velocities.slice(1, velocities.length - 2);
+const slicedVelocities = velocities;
 // calculate average velocity
-//let avgVel = slicedVelocities.reduce((acc, sum) => acc + sum) / slicedVelocities.length;
-avgVel = 95
+let avgVel = slicedVelocities.reduce((acc, sum) => acc + sum) / slicedVelocities.length;
+//let avgVel = 141.74
 
 console.log(`===============================================`);
 console.log(`average velocity: ${avgVel}`);
-console.log(`maximum distance: ${getDist(avgVel, degToRad(40)).toFixed(2)}`);
+console.log(`maximum distance: ${getDist(avgVel, degToRad(45)).toFixed(2)}`);
 console.log(`===============================================`);
 console.log(`Generating overview...`);
 console.log(`===============================================`);
