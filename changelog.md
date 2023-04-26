@@ -1,3 +1,13 @@
+# <img src="https://img.shields.io/badge/-major%20release-blue?style=flat-square">  **11.0.0** *(2023-04-26)*
+
+<img src="https://img.shields.io/badge/-new-green"> aded UB-32 suport
+
+<img src="https://img.shields.io/badge/-%20Inprovement%20-orange"> HellCannon and technical mortar are now using the standard projectile motion formula instead of estimated calculations on ingame table
+
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
+
 
 # <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff"> **10.4.0** *(2023-04-24)*
 

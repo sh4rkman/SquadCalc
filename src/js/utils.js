@@ -136,31 +136,15 @@ function getDist(a, b) {
  * @param {number} [dist] - distance between mortar and target from getDist()
  * @param {number} [vDelta] - vertical delta between mortar and target from getHeight()
  * @param {number} [vel] - initial mortar projectile velocity
- * @param {number} [G] - gravity force (9.8)
- * @returns {number || NaN} mil/deg if target in range, NaN otherwise
+ * @returns {number || NaN} radian angle if target in range, NaN otherwise
  */
-function getElevation(dist = 0, vDelta = 0, vel = 0, gravityScale = 1, G = 9.8) {
-    var A1;
-    G = G * gravityScale;
-    const P1 = Math.sqrt(vel ** 4 - G * (G * dist ** 2 + 2 * vDelta * vel ** 2));
-
-
-
-    // MLRS use 0-45°
-    if (globalData.activeWeapon.name === "BM-21 Grad") {
-        A1 = Math.atan((vel ** 2 - P1) / (G * dist));
-    }
-    // Others use 45-90°
-    else {
-        A1 = Math.atan((vel ** 2 + P1) / (G * dist));
-    }
-
-    if (globalData.activeWeapon.unit === "mil") {
-        return radToMil(A1);
-    } else { // if weapon is using degres
-        return radToDeg(A1);
-    }
+function getElevation(dist = 0, vDelta = 0, vel = 0) {
+    var gravity = globalData.gravity * globalData.activeWeapon.gravityScale;
+    const P1 = Math.sqrt(vel ** 4 - gravity * (gravity * dist ** 2 + 2 * vDelta * vel ** 2));
+    return Math.atan((vel ** 2 - (P1 * globalData.activeWeapon.getAngleType())) / (gravity * dist));
 }
+
+
 /**
  * Apply current map offset to given position
  *
@@ -331,8 +315,20 @@ export function shoot() {
     }
 
     distance = getDist(aPos, bPos);
+    bearing = getBearing(aPos, bPos);
     vel = globalData.activeWeapon.getVelocity(distance);
-    elevation = getElevation(distance, height, vel, globalData.activeWeapon.gravityScale);
+    elevation = getElevation(distance, height, vel);
+
+    if (globalData.activeWeapon.unit === "mil") {
+        elevation = radToMil(elevation);
+    } else {
+        elevation = radToDeg(elevation);
+        // The technical mortar is bugged : the ingame range metter is off by 5°
+        // Ugly fix until OWI correct it
+        if (globalData.activeWeapon.name === "Technical") { elevation = elevation - 5; }
+    }
+
+
 
     // If Target too far, display it and exit function
     if (Number.isNaN(elevation)) {
@@ -351,7 +347,6 @@ export function shoot() {
             return 1;
         }
     }
-    bearing = getBearing(aPos, bPos);
 
     insertCalc(bearing, elevation, distance, vel, height);
 
@@ -367,6 +362,7 @@ export function shoot() {
  * @param {number} height 
  */
 function insertCalc(bearing, elevation, distance, vel, height) {
+
     if (!globalData.debug.active) {
         console.clear();
     } else {
@@ -380,14 +376,7 @@ function insertCalc(bearing, elevation, distance, vel, height) {
     console.log(`-> Velocity: ${vel.toFixed(1)}m/s`);
 
     $("#bearing").html(bearing.toFixed(1) + "<i class=\"fas fa-drafting-compass fa-rotate-180 resultIcons\"></i>");
-
-
-    //If using technica/hell mortars/mlrs, we need to be more precise (##.#)
-    if (globalData.activeWeapon.unit === "deg") {
-        $("#elevation").html(elevation.toFixed(1) + "<i class=\"fas fa-sort-amount-up resultIcons\"></i>");
-    } else {
-        $("#elevation").html(elevation.toFixed(0) + "<i class=\"fas fa-sort-amount-up resultIcons\"></i>");
-    }
+    $("#elevation").html(elevation.toFixed(globalData.activeWeapon.elevationPrecision) + "<i class=\"fas fa-sort-amount-up resultIcons\"></i>");
 
     // show actions button
     $("#savebutton").removeClass("hidden");

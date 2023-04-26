@@ -6,7 +6,7 @@ import hellcannonLogo from "../img/icons/hellcannon_white.png";
 import technicalLogo from "../img/icons/technical_mortar_white.png";
 import mlrsLogo from "../img/icons/mlrs_white.png";
 import frenchLogo from "../img/icons/120mm_white.png";
-//import ub32Logo from "../img/icons/ub32_white.png";
+import ub32Logo from "../img/icons/ub32_white.png";
 
 /* eslint no-unused-vars: "off" */
 import mainLogo from "../img/logo.png";
@@ -16,7 +16,7 @@ import target from "../img/icons/target.png";
 
 
 export class Weapon {
-    constructor(name, velocity, gravityScale, minElevation, table, unit, logo, type) {
+    constructor(name, velocity, gravityScale, minElevation, table, unit, logo, type, angleType, elevationPrecision) {
         this.name = name;
         this.velocity = velocity;
         this.gravityScale = gravityScale;
@@ -25,6 +25,8 @@ export class Weapon {
         this.unit = unit;
         this.logo = logo;
         this.type = type;
+        this.angleType = angleType;
+        this.elevationPrecision = elevationPrecision;
     }
 
     /**
@@ -36,6 +38,7 @@ export class Weapon {
      */
     getVelocity(distance) {
         if (!this.table) { return this.velocity; }
+
         for (let i = 1; i < this.table.length; i += 1) {
             if (distance < this.table[i][0]) {
                 return this.table[i - 1][1] + ((distance - this.table[i - 1][0]) / (this.table[i][0] - this.table[i - 1][0])) * (this.table[i][1] - this.table[i - 1][1]);
@@ -43,78 +46,57 @@ export class Weapon {
         }
     }
 
+    /**
+     * Return the angle factor from 45°
+     * @returns {1/-1} -1 = 0-45° / 1 = 45-90°
+     */
+    getAngleType() {
+        if (this.angleType === "high") { return -1; }
+        return 1;
+    }
+
 }
 
 
 const weaponTypes = ["mortars", "vehicules", "frenchDLC"];
 
-// Since technicals mortars are acting weirdly, i have to stock these empirical values for now until i figure out how they work
-// read https://github.com/Endebert/squadmc/discussions/101 for more information
-// TECHNICALS[distance, Velocity]
-const TECHNICALS = [
-    [50, 47.76901552],
-    [100, 63.20591542],
-    [200, 77.59023672],
-    [300, 85.01920022],
-    [400, 90.49300565],
-    [500, 94.09830025],
-    [600, 96.66132881],
-    [700, 99.37483515],
-    [800, 101.1651775],
-    [900, 103.1447638],
-    [1000, 104.7823288],
-    [1100, 106.3455911],
-    [1200, 108.7830358],
-    [1233, 109.7640997]
+const UB32_table = [
+    [100, 335.1200224653227],
+    [200, 305.9582960205495],
+    [300, 283.34779711713827],
+    [400, 269.43092929304714],
+    [500, 256.00067568689457],
+    [600, 246.0597855795005],
+    [700, 230.23902655011395],
+    [800, 227.72135414063865],
+    [900, 227.10330164679877],
+    [1000, 219.51863104815288],
+    [1100, 217.92195975729098],
+    [1200, 213.69727817913733],
+    [1300, 217.46916795849413],
+    [1400, 216.06414872060554],
+    [1500, 203.90654411707584],
+    [1600, 230.9822908792792],
+    [1700, 208.55735633285997],
+    [1800, 207.5305459239776],
+    [1900, 207.7886602381275],
+    [2000, 208.8396419902778],
+    [2050, 206.39437348683896],
+    [2100, 205.87235893665985],
+    [2143, 205.08642659737743],
 ];
-
-
-// HELL[distance, Velocity]
-const HELL = [
-    [50, 83.807],
-    [150, 92.007],
-    [200, 93.342],
-    [300, 95.028],
-    [400, 94.563],
-    [500, 94.852],
-    [600, 95.643],
-    [700, 94.632],
-    [800, 95.147],
-    [875, 95.527],
-    [900, 94.636],
-    [925, 95.210],
-];
-
-// const UB32_table = [
-//     [550, 5],
-//     [700, 7.5],
-//     [800, 8.8],
-//     [900, 10],
-//     [1000, 12],
-//     [1100, 13.5],
-//     [1200, 15.5],
-//     [1300, 16.3],
-//     [1400, 18],
-//     [1500, 22.5],
-//     [1600, 18],
-//     [1700, 25],
-//     [1800, 27.5],
-//     [1900, 29.8],
-//     [1900, 29.8],
-//     [2000, 32],
-// ];
 
 
 
 export const WEAPONS = [
-    new Weapon("Default", 109.890938, 1, 1580, undefined, "mil", classicLogo, "mortars"),
-    new Weapon("Hell Cannon", undefined, 1, 88, HELL, "deg", hellcannonLogo, "mortars"),
-    new Weapon("Technical", undefined, 1, 83.8, TECHNICALS, "deg", technicalLogo, "vehicules"),
-    new Weapon("BM-21 Grad", 200.05799, 2, 0, undefined, "deg", mlrsLogo, "vehicules"),
-    new Weapon("Short", 109.890938, 1, 1520, undefined, "mil", frenchLogo, "frenchDLC"),
-    new Weapon("Medium", 143.5, 1, 1520, undefined, "mil", frenchLogo, "frenchDLC"),
-    new Weapon("Long", 171.5, 1, 1520, undefined, "mil", frenchLogo, "frenchDLC"),
-    //UB32 = new Weapon("BM-21 Grad", 0, 14.2, UB32_table, "deg", ub32Logo, "vehicule"),
+    new Weapon("Default", 109.890938, 1, 1580, undefined, "mil", classicLogo, "mortars", "high", 0),
+    new Weapon("Hell Cannon", 95, 1, 90, undefined, "deg", hellcannonLogo, "mortars", "high", 1),
+    new Weapon("Technical", 110, 1, 90, undefined, "deg", technicalLogo, "vehicules", "high", 1),
+    new Weapon("BM-21 Grad", 200, 2, 0, undefined, "deg", mlrsLogo, "vehicules", "low", 1),
+    new Weapon("Short", 109.890938, 1, 1520, undefined, "mil", frenchLogo, "frenchDLC", "high", 0),
+    new Weapon("Medium", 143.5, 1, 1520, undefined, "mil", frenchLogo, "frenchDLC", "high", 0),
+    new Weapon("Long", 171.5, 1, 1520, undefined, "mil", frenchLogo, "frenchDLC", "high", 0),
+    new Weapon("UB-32", 0, 2, 999, UB32_table, "deg", ub32Logo, "vehicules", "low", 1),
 ];
 
 /**

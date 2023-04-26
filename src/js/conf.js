@@ -1,8 +1,5 @@
 /**
- * Activate Debug Mode (True/False)
- *    - Display canevas/Mortar/Target in plain html, 
- *    - Console is more chatty
- *    - Auto-enter coordinates
+ * Global object holding current application state
  */
 export var globalData = {
     activeWeapon: "",
@@ -13,8 +10,9 @@ export var globalData = {
     },
     debug: {
         active: false,
-        DEBUG_MORTAR_COORD: "A01-6",
-        DEBUG_TARGET_COORD: "D01-4",
+        DEBUG_MORTAR_COORD: "D07-5-5",
+        DEBUG_TARGET_COORD: "D03-5-5",
     },
+    gravity: 9.8,
     theme: "classic",
 };

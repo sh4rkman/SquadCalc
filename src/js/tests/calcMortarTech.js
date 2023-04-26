@@ -5,28 +5,29 @@
 
 
 const table = [
-    [1000, 14.7],
-    [1050, 15.5],
-    [1100, 16.3],
-    [1150, 17.2],
-    [1200, 18.0],
-    [1250, 18.9],
-    [1300, 19.8],
-    [1350, 20.7],
-    [1400, 21.7],
-    [1450, 22.7],
-    [1500, 23.7],
-    [1550, 24.7],
-    [1600, 25.9],
-    [1650, 25.9],
-    [1700, 28.2],
-    [1750, 29.6],
-    [1800, 31.0],
-    [1850, 32.6],
-    [1900, 34.4],
-    [1950, 36.5],
-    [2000, 39.4],
-    [2050, 45],
+    [100, 0.5],
+    [200, 1.2],
+    [300, 2.1],
+    [400, 3.1],
+    [500, 3.9],
+    [600, 5.8],
+    [700, 7.2],
+    [800, 8.6],
+    [900, 9.9],
+    [1000, 11.5],
+    [1100, 13.1],
+    [1200, 14.7],
+    [1300, 16.5],
+    [1400, 18.3],
+    [1500, 20.1],
+    [1600, 22.1],
+    [1700, 24.4],
+    [1800, 26.8],
+    [1900, 29.3],
+    [2000, 32.6],
+    [2050, 35.3],
+    [2100, 38.1],
+    [2143, 43.5],
 ];
 
 // V4.4 ingame table
@@ -69,6 +70,9 @@ const oldGrad_table = [
 ]
 
 const UB32_table = [
+    [700, 7.5],
+    [800, 8.8],
+    [900, 10],
     [1000, 12],
     [1100, 13.5],
     [1200, 15.5],
@@ -79,7 +83,37 @@ const UB32_table = [
     [1700, 25],
     [1800, 27.5],
     [1900, 29.8],
-    [1700, 25],
+    [2000, 32],
+];
+
+const hell_table = [
+    [150, 85],
+    [200, 83.5],
+    [300, 80.5],
+    [400, 77],
+    [500, 73.5],
+    [600, 70],
+    [700, 65],
+    [800, 60],
+    [875, 55],
+    [900, 50],
+    [925, 45],
+];
+
+const tech_table = [
+    [50, 83.8],
+    [100, 82.9],
+    [200, 80.5],
+    [300, 78],
+    [400, 75.7],
+    [500, 73.2],
+    [600, 70.5],
+    [700, 68],
+    [800, 65],
+    [900, 62],
+    [1000, 58.4],
+    [1100, 53.8],
+    [1200, 48.2],
 ];
 
 // gravity
@@ -132,18 +166,23 @@ function getDist(v, rad) {
 
 // get velocity needed to hit target at distance x with angle a
 function getVel(x, rad) {
-    const vel = Math.sqrt((x * x * g) / (x * Math.sin(2 * rad)));
+    var vel = Math.sqrt((x * x * g) / (x * Math.sin(2 * rad)));
+    //vel = vel + 0.5 * 2 * -20
     return vel;
 }
 
+function getVelS5(x, rad) {
+    var test = getTime(x, rad)
+    test = test * 300 + 0.5 * 2 * -50
+    return getVel(test, rad)
+}
 
 // get angle to hit target at distance x and height y with velocity v
 function findAngle(x, y, v) {
     const p1 = Math.sqrt(v ** 4 - g * (g * x ** 2 + 2 * y * v ** 2));
-    const a1 = Math.atan((v ** 2 - p1) / (g * x));
 
-    // a2 is always below 800 mil -> can't be used in the game
-    // const a2 = Math.atan((v ** 2 - p1) / (g * x));
+    const a1 = Math.atan((v ** 2 - p1) / (g * x));
+    // const a1 = Math.atan((v ** 2 + p1) / (g * x));
 
     return a1;
 }
@@ -157,6 +196,8 @@ console.log(`===============================================`);
 
 // get velocity per table row
 const velocities = [];
+const deviations = [];
+
 table.forEach((entry) => {
     const tDistance = entry[0];
     const tAngle = entry[1];
@@ -166,11 +207,13 @@ table.forEach((entry) => {
 });
 
 // cut off first and last entries, might result in more accurate average
-//const slicedVelocities = velocities.slice(1, velocities.length - 2);
-const slicedVelocities = velocities;
+const slicedVelocities = velocities.slice(1, velocities.length - 2);
+//const slicedVelocities = velocities
+
+//const slicedVelocities = velocities;
 // calculate average velocity
 let avgVel = slicedVelocities.reduce((acc, sum) => acc + sum) / slicedVelocities.length;
-//let avgVel = 141.74
+//let avgVel = 217.94743980332834
 
 console.log(`===============================================`);
 console.log(`average velocity: ${avgVel}`);
@@ -189,9 +232,13 @@ table.forEach((entry) => {
     const elevation = radToDeg(findAngle(tDistance, 0, avgVel));
     const elFormatted = isNaN(elevation) ? 'XX.X' : elevation.toFixed(1);
     const deviation = tAngle - elevation;
+    deviations.push(deviation)
     const dFormatted = (deviation < 0 ? "-" : "+") + (isNaN(deviation) ? 'X.XX' : Math.abs(deviation).toFixed(2));
 
     console.log(
         `${tDistance}m\t${tAngle.toFixed(1)}° | ${elFormatted}° | ${dFormatted}°`,
     );
 });
+var slicedDeviations = deviations.slice(1, deviations.length - 2);
+var avgDev = slicedDeviations.reduce((acc, sum) => acc + sum) / slicedDeviations.length;
+console.log(`average deviation: ${avgDev}`);

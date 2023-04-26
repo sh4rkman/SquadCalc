@@ -61,10 +61,11 @@ Heightmaps are hidden : simply pick your map from the list and shoot.
 
 SquadCalc support different type of mortars :
 - Classics mortars
-- Technicals mortars
 - Hell Canon (Insurgents)
+- Technicals mortars
+- UB-32
 - BM-21 Grad (Milice)
-- Long range (3000m) 120mm mortars from the <a href="https://smf.tactical-collective.com/">French Mod</a>
+- Long range 120mm mortars from the <a href="https://smf.tactical-collective.com/">French Mod</a>
 
 </br>
 
