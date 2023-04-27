@@ -7,8 +7,15 @@
 
 @media (min-height: 35em) {
     header {
-        .select2-results__options {
-            max-height: 370px !important;
+        #mapSelector {
+            .select2-results__options {
+                max-height: 370px;
+            }
+        }
+        #weaponSelector {
+            .select2-results__options {
+                max-height: 390px;
+            }
         }
     }
 }
@@ -20,7 +27,7 @@
     header {
         .select2-results__options {
             line-height: 1em;
-            max-height: 570px !important;
+            max-height: 570px;
         }
     }
     .fab-wrapper {
@@ -34,7 +41,7 @@
 @media (min-height: 50em) {
     header {
         .select2-results__options {
-            max-height: 700px !important;
+            max-height: 700px;
         }
     }
 }
@@ -205,29 +212,30 @@
     /* ≥ 1920px & 1080 */
     @media (min-height: 68em) {
         header {
-            .weaponSelector, .mapSelector {
-                .select2-container {
-                    min-width: 350px;
-                    padding-bottom: 1em;
-                    font-size: 1.4em;
-                }
-            }
-            .select2-results__options {
-                font-size: 1.2em;
-                line-height: 1.1em;
-                max-height: 1000px !important;
-            }
-            .select2-selection__placeholder {
-                font-size: 1.1em;
-            }
-            .select2-selection__rendered {
-                font-size: 1.2em;
-            }
             .weaponSelector {
                 padding: 2em 0 0 1.5em;
             }
             .mapSelector {
                 padding: 2em 1.5em 0 0;
+            }
+            #weaponSelector,
+            #mapSelector {
+                .select2-container {
+                    min-width: 350px;
+                    padding-bottom: 1em;
+                    font-size: 1.4em;
+                }
+                .select2-results__options {
+                    font-size: 1.2em;
+                    line-height: 1.1em;
+                    max-height: 1000px;
+                }
+                .select2-selection__placeholder {
+                    font-size: 1.1em;
+                }
+                .select2-selection__rendered {
+                    font-size: 1.2em;
+                }
             }
         }
         main {
