@@ -17,6 +17,7 @@
         "declaration-empty-line-before": "never",
         "color-function-notation": "legacy",
         "import-notation": "url",
-        "scss/double-slash-comment-empty-line-before": "never"
+        "scss/double-slash-comment-empty-line-before": "never",
+        "selector-id-pattern": null
     }
 }

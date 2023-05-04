@@ -15,4 +15,5 @@ export var globalData = {
     },
     gravity: 9.8,
     theme: "classic",
+    line: "",
 };

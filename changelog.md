@@ -1,3 +1,13 @@
+# <img src="https://img.shields.io/badge/-major%20release-blue?style=flat-square">  **12.0.0** *(2023-05-04)*
+
+<img src="https://img.shields.io/badge/-new-green"> Added a new fancy shooting animation
+
+<img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed weapon list so it doesn't need scrolling on mobile
+
+<img src="https://img.shields.io/badge/-%20fix%20-orange"> Reduced classic mortar icon size
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
 # <img src="https://img.shields.io/badge/-major%20release-blue?style=flat-square">  **11.0.0** *(2023-04-26)*
 
 <img src="https://img.shields.io/badge/-new-green"> aded UB-32 suport

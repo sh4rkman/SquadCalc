@@ -25,9 +25,11 @@
 
 @media (min-height: 45em) {
     header {
-        .select2-results__options {
-            line-height: 1em;
-            max-height: 570px;
+        #mapSelector {
+            .select2-results__options {
+                line-height: 1em;
+                max-height: 570px;
+            }
         }
     }
     .fab-wrapper {
@@ -40,8 +42,10 @@
 
 @media (min-height: 50em) {
     header {
-        .select2-results__options {
-            max-height: 700px;
+        #mapSelector {
+            .select2-results__options {
+                max-height: 700px;
+            }
         }
     }
 }
@@ -129,8 +133,12 @@
         padding-top: 3em;
         opacity: 0;
         animation: appear 2s forwards;
-        .coord img {
-            height: 45px;
+        .coord {
+            img,
+            #mortarImgContainer {
+                height: 45px;
+                width: fit-content;
+            }
         }
     }
     footer {
@@ -227,8 +235,8 @@
                 }
                 .select2-results__options {
                     font-size: 1.2em;
-                    line-height: 1.1em;
-                    max-height: 1000px;
+                    line-height: 1.3em;
+                    max-height: 1100px;
                 }
                 .select2-selection__placeholder {
                     font-size: 1.1em;
@@ -252,7 +260,11 @@
             }
             .coord img {
                 height: 75px;
-                margin-bottom: 0.8em;
+                width: fit-content;
+            }
+            .coord #mortarImgContainer {
+                height: 75px;
+                width: fit-content;
             }
         }
         footer {

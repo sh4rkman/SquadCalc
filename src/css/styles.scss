@@ -202,10 +202,6 @@ main {
         }
     }
     .copy {
-        transition: all 0.1s ease-out;
-        &:active {
-            transform: scale(0.95);
-        }
         &:hover {
             cursor: pointer;
         }
@@ -477,6 +473,18 @@ footer {
         opacity: 1;
         transform: none;
     }
+}
+
+.animate__animated.animate__fadeInDown {
+    --animate-duration: 0.2s;
+}
+
+.animate__animated.animate__shakeX {
+    --animate-duration: 0.5s;
+}
+
+.animate__animated.animate__headShake {
+    --animate-duration: 0.5s;
 }
 
 

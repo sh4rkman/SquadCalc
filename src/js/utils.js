@@ -3,6 +3,7 @@ import { globalData } from "./conf";
 import { MAPS } from "./maps";
 
 
+
 /**
  * Returns the latlng coordinates based on the given keypad string.
  * Supports unlimited amount of sub-keypads.
@@ -443,8 +444,8 @@ function showError(msg, issue) {
     // remove the pointer cursor & tooltip
     $("#copy").removeClass("copy");
     tooltip_copy.disable();
-
     $("#settings").css({ "border-color": "firebrick" });
+    animateCSS("#settings", "shakeX");
 
     if (!globalData.debug.active) { console.clear(); }
     console.error(msg);
@@ -597,7 +598,7 @@ export function saveCalc() {
         $(".saved_list p").first().remove();
     }
     $(".saved_list").append(
-        "<p class='savedrow' style='display:none;'>" +
+        "<p class='savedrow'>" +
         "<input maxlength=\"20\" spellcheck='false' placeholder='" + encodeURI($("#target-location").val()) + "'class='friendlyname'></input>" +
         "<span class=\"savespan\"> ➜ " +
         $("#bearing").text() +
@@ -611,7 +612,7 @@ export function saveCalc() {
 
     // display it
     $("#saved").removeClass("hidden");
-    $(".saved_list p").last().show("fast");
+    $(".saved_list p").last().addClass("animate__animated animate__fadeInDown");
     tooltip_save.disable();
 }
 
@@ -619,9 +620,10 @@ export function saveCalc() {
  * Copy current calc to clipboard
  */
 export function copyCalc() {
-    const COPY_ZONE = $(".copy");
 
-    if (!COPY_ZONE.hasClass("copy")) { return 1; }
+    if (!$(".copy").hasClass("copy")) { return 1; }
+
+    animateCSS(".copy", "headShake");
 
     copy($("#target-location").val() + " ➜ " + $("#bearing").text() + " - " + $("#elevation").text());
 
@@ -630,4 +632,25 @@ export function copyCalc() {
     tooltip_copy.disable();
     tooltip_copied.enable();
     tooltip_copied.show();
+}
+
+
+
+export function animateCSS(element, animation, prefix = "animate__") {
+    // We create a Promise and return it
+    new Promise((resolve) => {
+        const animationName = `${prefix}${animation}`;
+        const node = document.querySelector(element);
+
+        node.classList.add(`${prefix}animated`, animationName);
+
+        // When the animation ends, we clean the classes and resolve the Promise
+        function handleAnimationEnd(event) {
+            event.stopPropagation();
+            node.classList.remove(`${prefix}animated`, animationName);
+            resolve("Animation ended");
+        }
+
+        node.addEventListener("animationend", handleAnimationEnd, { once: true });
+    });
 }
