@@ -1,4 +1,4 @@
-# <img src="https://img.shields.io/badge/-major%20release-blue?style=flat-square">  **12.0.0** *(2023-05-04)*
+# <img src="https://img.shields.io/badge/-major%20release-blue?style=flat-square">  **11.1.0** *(2023-05-04)*
 
 <img src="https://img.shields.io/badge/-new-green"> Added a new fancy shooting animation
 
