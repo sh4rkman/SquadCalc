@@ -1,3 +1,13 @@
+# <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">  **11.1.1** *(2023-05-11)*
+
+<img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed weapon image width for Steam Browser 
+
+<img src="https://img.shields.io/badge/-%20fix%20-orange"> Shooting animation is now hidden when screen size is too small
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
+
+
 # <img src="https://img.shields.io/badge/-major%20release-blue?style=flat-square">  **11.1.0** *(2023-05-04)*
 
 <img src="https://img.shields.io/badge/-new-green"> Added a new fancy shooting animation
@@ -7,6 +17,8 @@
 <img src="https://img.shields.io/badge/-%20fix%20-orange"> Reduced classic mortar icon size
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
+
+
 
 # <img src="https://img.shields.io/badge/-major%20release-blue?style=flat-square">  **11.0.0** *(2023-04-26)*
 

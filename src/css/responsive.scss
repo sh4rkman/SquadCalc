@@ -134,10 +134,8 @@
         opacity: 0;
         animation: appear 2s forwards;
         .coord {
-            img,
-            #mortarImgContainer {
+            img {
                 height: 45px;
-                width: fit-content;
             }
         }
     }
@@ -260,11 +258,6 @@
             }
             .coord img {
                 height: 75px;
-                width: fit-content;
-            }
-            .coord #mortarImgContainer {
-                height: 75px;
-                width: fit-content;
             }
         }
         footer {

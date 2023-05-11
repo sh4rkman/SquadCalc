@@ -1,7 +1,6 @@
 import { globalData } from "./conf";
 import { shoot } from "./utils";
-
-import LeaderLine from "leader-line-new";
+import { drawLine } from "./animations";
 
 import classicLogo from "../img/icons/mortar.png";
 import hellcannonLogo from "../img/icons/hellcannon_white.png";
@@ -34,14 +33,13 @@ export class Weapon {
 
     /**
      * Return the weapon velocity
-     * Since Hellmortars and Technical mounted mortars are not following the classic
-     * projectile motion, i have to estimate velocity based on ingame values
      * @param {number} [distance] - distance between mortar and target from getDist()
      * @returns {number} - Velocity of the weapon for said distance
      */
     getVelocity(distance) {
         if (!this.table) { return this.velocity; }
 
+        // UB-32 estimations
         for (let i = 1; i < this.table.length; i += 1) {
             if (distance < this.table[i][0]) {
                 return this.table[i - 1][1] + ((distance - this.table[i - 1][0]) / (this.table[i][0] - this.table[i - 1][0])) * (this.table[i][1] - this.table[i - 1][1]);
@@ -102,6 +100,7 @@ export const WEAPONS = [
     new Weapon("UB-32", 0, 2, 999, UB32_table, "deg", ub32Logo, "55%", "vehicules", "low", 1),
 ];
 
+
 /**
  * save current weapon into browser cache
  */
@@ -110,21 +109,8 @@ export function changeWeapon() {
     const weapon = $(".dropbtn2").val();
     localStorage.setItem("data-weapon", weapon);
     globalData.activeWeapon = WEAPONS[weapon];
-
     $("#mortarImg").attr("src", globalData.activeWeapon.logo);
-
-    if ($(window).width() > 768) {
-        // wait for the new image to load before drawing line again
-        $("#mortarImg").on("load", function() {
-            setTimeout(function() {
-                globalData.line.start = LeaderLine.pointAnchor(document.getElementById("mortarImg"), { x: globalData.activeWeapon.logoCannonPos, y: "-30%" });
-                globalData.line.show("draw", { duration: 2000 });
-                explode($(".leader-line").position().left, $(".leader-line").position().top);
-            }, 1000);
-
-        });
-    }
-
+    drawLine();
     shoot();
 }
 
@@ -165,100 +151,4 @@ export function loadWeapons() {
     }
 
     getWeapon();
-
-}
-
-
-
-export function createLine() {
-
-    const lineOptions = {
-        color: "rgba(255, 255, 255, 0.7)",
-        path: "arc",
-        startSocket: "top",
-        endSocket: "top",
-        slash: true,
-        endPlug: "behind",
-        size: 1,
-        dash: { len: 10, gap: 8 },
-    };
-
-    globalData.line = new LeaderLine(
-        LeaderLine.pointAnchor(
-            document.getElementById("mortarImg"), { x: globalData.activeWeapon.logoCannonPos, y: "-30%" }
-        ),
-        LeaderLine.pointAnchor(
-            document.getElementById("targetImg"), { x: "-30%", y: "-30%" }
-        ),
-        lineOptions
-    ).hide("none");
-}
-
-
-
-
-
-function explode(x, y) {
-    const colors = ["rgba(255, 255, 255, 0.1)"];
-    const bubbles = 10;
-    const r = (a, b, c) => parseFloat((Math.random() * ((a ? a : 1) - (b ? b : 0)) + (b ? b : 0)).toFixed(c ? c : 0));
-    let particles = [];
-    let ratio = window.devicePixelRatio;
-    let c = document.createElement("canvas");
-    let ctx = c.getContext("2d");
-
-    c.style.position = "absolute";
-    c.style.left = (x - 100) + "px";
-    c.style.top = (y - 100) + "px";
-    c.style.pointerEvents = "none";
-    c.style.width = 200 + "px";
-    c.style.height = 200 + "px";
-    c.style.zIndex = 100;
-    c.width = 200 * ratio;
-    c.height = 200 * ratio;
-    document.body.appendChild(c);
-
-    for (let i = 0; i < bubbles; i++) {
-        particles.push({
-            x: c.width / 2,
-            y: c.height / 2,
-            radius: r(10, 15),
-            color: colors[Math.floor(Math.random() * colors.length)],
-            rotation: r(-135, 45, true),
-            speed: r(2, 3),
-            friction: 0.9,
-            opacity: r(0, 0.1, true),
-            yVel: 0,
-            gravity: 0
-        });
-    }
-
-    render(particles, ctx, c.width, c.height);
-    setTimeout(() => document.body.removeChild(c), 1000);
-}
-
-function render(particles, ctx, width, height) {
-    requestAnimationFrame(() => render(particles, ctx, width, height));
-    ctx.clearRect(0, 0, width, height);
-
-    particles.forEach((p, i) => {
-        p.x += p.speed * Math.cos(p.rotation * Math.PI / 180);
-        p.y += p.speed * Math.sin(p.rotation * Math.PI / 180);
-
-        p.opacity -= 0.01;
-        p.speed *= p.friction;
-        p.radius *= p.friction;
-        p.yVel += p.gravity;
-        p.y += p.yVel;
-
-        if (p.opacity < 0 || p.radius < 0) return;
-
-        ctx.beginPath();
-        ctx.globalAlpha = p.opacity;
-        ctx.fillStyle = p.color;
-        ctx.arc(p.x, p.y, p.radius, 0, 2 * Math.PI, false);
-        ctx.fill();
-    });
-
-    return ctx;
 }

@@ -15,7 +15,8 @@ import "./css/responsive.scss";
 import { preventAutocomplete } from "./js/utils";
 import { loadMaps } from "./js/maps";
 import { loadTheme } from "./js/themes";
-import { loadWeapons, createLine } from "./js/weapons";
+import { loadWeapons } from "./js/weapons";
+import { createLine } from "./js/animations";
 
 $(function() {
     createLine();

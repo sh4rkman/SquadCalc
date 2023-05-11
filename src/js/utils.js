@@ -1,7 +1,7 @@
 import { tooltip_copy, tooltip_save, tooltip_copied } from "./tooltips";
 import { globalData } from "./conf";
 import { MAPS } from "./maps";
-
+import { animateCSS } from "./animations";
 
 
 /**
@@ -584,9 +584,15 @@ export function resizeInput(i) {
  * Resize every saved name
  */
 export function resizeInputsOnResize() {
+    const mobileWidth = 767;
+
     $(".saved_list :input").each(function() {
         resizeInput($(this)[0]);
     });
+
+    if ($(window).width() <= mobileWidth) {
+        globalData.line.hide("none");
+    }
 }
 
 
@@ -632,25 +638,4 @@ export function copyCalc() {
     tooltip_copy.disable();
     tooltip_copied.enable();
     tooltip_copied.show();
-}
-
-
-
-export function animateCSS(element, animation, prefix = "animate__") {
-    // We create a Promise and return it
-    new Promise((resolve) => {
-        const animationName = `${prefix}${animation}`;
-        const node = document.querySelector(element);
-
-        node.classList.add(`${prefix}animated`, animationName);
-
-        // When the animation ends, we clean the classes and resolve the Promise
-        function handleAnimationEnd(event) {
-            event.stopPropagation();
-            node.classList.remove(`${prefix}animated`, animationName);
-            resolve("Animation ended");
-        }
-
-        node.addEventListener("animationend", handleAnimationEnd, { once: true });
-    });
 }
