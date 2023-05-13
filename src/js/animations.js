@@ -3,8 +3,8 @@ import LeaderLine from "leader-line-new";
 
 
 /**
- * Give a anime.css class to a given element
- * @param {text} [element] - element id to animated
+ * Give a animate.css class to a given element (https://animate.style/)
+ * @param {text} [element] - element id to animate
  * @param {text} [animation] - animation name to apply
  */
 export function animateCSS(element, animation, prefix = "animate__") {
