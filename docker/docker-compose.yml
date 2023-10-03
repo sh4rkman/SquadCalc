@@ -1,0 +1,21 @@
+version: "3.3"
+
+services:
+  build-mortarcalc:
+    build: .
+    image: build-mortarcalc
+    container_name: build-mortarcalc
+    volumes:
+      - ./dist:/SquadCalc/dist
+    environment:
+      TZ: America/Chicago
+  
+  serve-mortarcalc:
+    image: nginx:latest
+    container_name: serve-mortarcalc
+    restart: always
+    ports:
+      - 80:80
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./dist:/serveme
