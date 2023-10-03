@@ -7,8 +7,6 @@ services:
     container_name: build-mortarcalc
     volumes:
       - ./dist:/SquadCalc/dist
-    environment:
-      TZ: America/Chicago
   
   serve-mortarcalc:
     image: nginx:latest
