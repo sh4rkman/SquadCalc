@@ -65,7 +65,7 @@ SquadCalc support different type of mortars :
 - Technicals mortars
 - UB-32
 - BM-21 Grad (Milice)
-- Long range 120mm mortars from the <a href="https://smf.tactical-collective.com/">French Mod</a>
+
 
 </br>
 
@@ -105,6 +105,8 @@ npm run start
 
 ## Building production bundle
 </br>
+
+The ```npm run build``` command will compile HTML/SASS/JS files into a ```/dist/``` folder at project's root. You will then need to feed this folder to your favorite webserver (NGINX/Appach).
 
 for a preprod environnement (robots.txt disallow all):
 ```

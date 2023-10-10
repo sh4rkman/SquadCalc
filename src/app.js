@@ -5,6 +5,11 @@ import "select2/dist/css/select2.min.css";
 import "select2/dist/js/select2.min.js";
 import "animate.css";
 
+// Local CSS
+import "./css/fontawesome/fontawesome.scss";
+import "./css/fontawesome/solid.scss";
+import "./css/fontawesome/brands.scss";
+
 // Local JS
 import "./js/listeners.js";
 import "./css/styles.scss";

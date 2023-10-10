@@ -1,3 +1,13 @@
+# <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">  **11.1.2** *(2023-10-10)*
+
+<img src="https://img.shields.io/badge/-%20Inprovement%20-orange"> Now selfthosting fontawesome icons
+
+<img src="https://img.shields.io/badge/-%20Inprovement%20-orange"> Disabled French DLC mortars for now
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
+
+
 # <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">  **11.1.1** *(2023-05-11)*
 
 <img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed weapon image width for Steam Browser 

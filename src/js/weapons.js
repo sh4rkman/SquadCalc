@@ -59,7 +59,7 @@ export class Weapon {
 }
 
 
-const weaponTypes = ["mortars", "vehicules", "frenchDLC"];
+const weaponTypes = ["mortars", "vehicules"/*,"frenchDLC"*/];
 
 const UB32_table = [
     [100, 335.1200224653227],
@@ -94,9 +94,9 @@ export const WEAPONS = [
     new Weapon("Hell Cannon", 95, 1, 90, undefined, "deg", hellcannonLogo, "130%", "mortars", "high", 1),
     new Weapon("Technical", 110, 1, 90, undefined, "deg", technicalLogo, "50%", "vehicules", "high", 1),
     new Weapon("BM-21 Grad", 200, 2, 0, undefined, "deg", mlrsLogo, "60%", "vehicules", "low", 1),
-    new Weapon("Short", 109.890938, 1, 1520, undefined, "mil", frenchLogo, "135%", "frenchDLC", "high", 0),
-    new Weapon("Medium", 143.5, 1, 1520, undefined, "mil", frenchLogo, "135%", "frenchDLC", "high", 0),
-    new Weapon("Long", 171.5, 1, 1520, undefined, "mil", frenchLogo, "135%", "frenchDLC", "high", 0),
+    //new Weapon("Short", 109.890938, 1, 1520, undefined, "mil", frenchLogo, "135%", "frenchDLC", "high", 0),
+    //new Weapon("Medium", 143.5, 1, 1520, undefined, "mil", frenchLogo, "135%", "frenchDLC", "high", 0),
+   // new Weapon("Long", 171.5, 1, 1520, undefined, "mil", frenchLogo, "135%", "frenchDLC", "high", 0),
     new Weapon("UB-32", 0, 2, 999, UB32_table, "deg", ub32Logo, "55%", "vehicules", "low", 1),
 ];
 
