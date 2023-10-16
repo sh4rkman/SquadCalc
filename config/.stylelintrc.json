@@ -16,7 +16,7 @@
         "property-no-vendor-prefix": null,
         "declaration-empty-line-before": "never",
         "color-function-notation": "legacy",
-        "import-notation": "url",
+        "import-notation": "string",
         "scss/double-slash-comment-empty-line-before": "never",
         "selector-id-pattern": null
     }
