@@ -11,7 +11,7 @@ import "./css/styles.scss";
 import "./css/themes.scss";
 import "./css/responsive.scss";
 
-
+// JS Functions
 import { preventAutocomplete } from "./js/utils";
 import { loadMaps } from "./js/maps";
 import { loadTheme } from "./js/themes";

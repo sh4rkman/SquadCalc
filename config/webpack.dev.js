@@ -25,16 +25,7 @@ module.exports = merge(common, {
             policy: [{ userAgent: "*", disallow: "/", }]
         }),
     ],
-    module: {
-        rules: [{
-            test: /\.(sc|sa|c)ss$/i,
-            use: [
-                MiniCssExtractPlugin.loader,
-                { loader: 'css-loader', options: { url: true } },
-                'sass-loader'
-            ],
-        }, ]
-    },
+    module: {},
     optimization: {
         minimizer: [
             new CssMinimizerPlugin(), //CSS

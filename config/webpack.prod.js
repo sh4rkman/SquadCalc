@@ -60,37 +60,9 @@ module.exports = merge(common, {
                 }
             ]
         }),
-        // new FaviconsWebpackPlugin({
-        //     logo: 'src/img/favicons/favicon.png',
-        //     logoMaskable: 'src/img/favicons/safari-icon.svg',
-        //     outputPath: 'src/img/favicons',
-        //     favicons: {
-        //         appName: 'SquadCalc',
-        //         appDescription: 'A Minimalist Squad Mortar Calculator',
-        //         developerName: 'Maxime "sharkman" Boussard',
-        //         background: '#111111',
-        //         start_url: "https://squadcalc.app",
-        //         icons: {
-        //             android: true,
-        //             appleIcon: true,
-        //             appleStartup: true,
-        //             favicons: true,
-        //             windows: true,
-        //             yandex: true,
-        //         },
-        //     }
-        // })
+
     ],
-    module: {
-        rules: [{
-            test: /\.(sc|sa|c)ss$/i,
-            use: [
-                MiniCssExtractPlugin.loader,
-                { loader: 'css-loader', options: { url: true } },
-                'sass-loader'
-            ],
-        }, ]
-    },
+    module: {},
     optimization: {
         minimizer: [
             new CssMinimizerPlugin(), //CSS

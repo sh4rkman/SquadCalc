@@ -12,15 +12,11 @@ module.exports = {
         assetModuleFilename: '[path][name].[contenthash][ext]'
     },
     module: {
-        rules: [{
-                test: /\.html$/i,
-                loader: "html-loader",
-            },
-            {
-                test: /\.(png|svg|jpg|jpeg|gif)$/i,
-                type: 'asset/resource',
-            },
-        ]
+        rules: [
+            { test: /\.html$/i, loader: "html-loader", },
+            { test: /\.(png|svg|jpg|jpeg|gif)$/i, type: 'asset/resource', },
+            { test: /\.(sc|sa|c)ss$/i, use: ['style-loader', 'css-loader', 'sass-loader'],},
+        ],
     },
     optimization: {
         splitChunks: {
