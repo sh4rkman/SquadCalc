@@ -2,12 +2,10 @@ const path = require('path');
 const { merge } = require('webpack-merge');
 const common = require('./webpack.common.js');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 const RobotstxtPlugin = require("robotstxt-webpack-plugin");
 const WebpackPwaManifest = require('webpack-pwa-manifest')
-const FaviconsWebpackPlugin = require('favicons-webpack-plugin')
 
 module.exports = merge(common, {
     mode: 'production',
@@ -20,9 +18,6 @@ module.exports = merge(common, {
                 removeComments: true,
                 removeAttributeQuotes: true,
             }
-        }),
-        new MiniCssExtractPlugin({
-            filename: 'src/css/[name].[contenthash].min.css',
         }),
         new RobotstxtPlugin({ policy: [{ userAgent: "*", allow: "/", }] }),
         new WebpackPwaManifest({

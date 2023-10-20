@@ -1,6 +1,5 @@
 const path = require('path');
 const webpack = require('webpack');
-//const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 module.exports = {
     entry: './src/app.js',
@@ -25,13 +24,18 @@ module.exports = {
         },
     },
     plugins: [
-        /* Use the ProvidePlugin constructor to inject jquery implicit globals */
+        // Use the ProvidePlugin constructor to inject jquery implicit globals
         new webpack.ProvidePlugin({
             $: "jquery",
             jQuery: "jquery",
             "window.jQuery": "jquery'",
             "window.$": "jquery"
         }),
-        //new BundleAnalyzerPlugin(),
-    ]
+    ],
+    // Disable warning message for big chuncks
+    performance: {
+        hints: false,
+        maxEntrypointSize: 512000,
+        maxAssetSize: 512000
+    }
 };
