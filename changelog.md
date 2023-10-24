@@ -1,3 +1,23 @@
+# <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">  **11.2.0** *(2023-10-24)*
+
+<img src="https://img.shields.io/badge/-new-green"> You can know switch between high/low angle with BM-21 Grad by clicking the elevation icon next to elevation number.
+
+<img src="https://img.shields.io/badge/-%20fix%20-orange"> Disabling French DLC mortar for now
+
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
+
+
+# <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">  **11.1.2** *(2023-10-16)*
+
+<img src="https://img.shields.io/badge/-%20fix%20-orange"> Fontawesome Icons are now selfhosted
+
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
+
+
 # <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">  **11.1.1** *(2023-05-11)*
 
 <img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed weapon image width for Steam Browser 

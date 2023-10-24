@@ -4,6 +4,7 @@
 export var globalData = {
     activeWeapon: "",
     activeMap: "",
+    angleTypePref: "",
     canvas: {
         obj: "",
         size: 500, //canvas size defined in plain html (not the css resize)

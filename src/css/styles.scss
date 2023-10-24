@@ -182,6 +182,18 @@ main {
         i {
             font-size: 50%;
         }
+        #highlow {
+            background-color: transparent;
+            cursor: pointer;
+            .active {
+                &:active {
+                    transform: scale(0.7);
+                }
+                &:hover {
+                    color: $mainColor;
+                }
+            }
+        }
         #savebutton {
             background-color: transparent;
             border: none;
@@ -200,7 +212,6 @@ main {
             }
             &:hover {
                 color: $mainColor;
-                cursor: pointer;
             }
             &:focus {
                 outline: none;
