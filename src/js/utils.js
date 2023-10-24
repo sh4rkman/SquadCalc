@@ -237,7 +237,7 @@ function resetCalc() {
     $("#errorMsg").addClass("pure-u-4-24").removeClass("errorMsg").removeClass("pure-u-1").html("-");
     $("#savebutton").addClass("hidden");
     $("#bearing").html("xxx<i class=\"fas fa-drafting-compass fa-rotate-180 resultIcons\"></i>");
-    $("#elevation").html("xxxx<i class=\"fas fa-sort-amount-up resultIcons\"></i>");
+    $("#elevation").html("xxxx<button id=\"highlow\"><i class=\"fas fa-sort-amount-up resultIcons\"></i></button>");
 
     // draw pointer cursor & tooltip on results
     if (localStorage.getItem("InfoToolTips_copy") !== "true") {
@@ -377,8 +377,16 @@ function insertCalc(bearing, elevation, distance, vel, height) {
     console.log(`-> Velocity: ${vel.toFixed(1)}m/s`);
 
     $("#bearing").html(bearing.toFixed(1) + "<i class=\"fas fa-drafting-compass fa-rotate-180 resultIcons\"></i>");
-    $("#elevation").html(elevation.toFixed(globalData.activeWeapon.elevationPrecision) + "<i class=\"fas fa-sort-amount-up resultIcons\"></i>");
 
+    if (globalData.activeWeapon.getAngleType() === -1) {
+        $("#elevation").html(elevation.toFixed(globalData.activeWeapon.elevationPrecision) +
+         "<button id=\"highlow\"><i class=\"fas fa-sort-amount-up resultIcons\"></i></button>");
+    }
+    else {
+        $("#elevation").html(elevation.toFixed(globalData.activeWeapon.elevationPrecision) +
+         "<button id=\"highlow\"><i class=\"fas fa-sort-amount-down resultIcons\"></i></button>");
+    }
+    
     // show actions button
     $("#savebutton").removeClass("hidden");
 }
@@ -625,9 +633,17 @@ export function saveCalc() {
 /**
  * Copy current calc to clipboard
  */
-export function copyCalc() {
-
+export function copyCalc(e) {
+    
+    // If calcs aren't ready, do nothing
     if (!$(".copy").hasClass("copy")) { return 1; }
+
+    // When using BM-21, and the target icon is clicked, do nothing
+    if (globalData.activeWeapon.name === "BM-21 Grad") {
+        if ($(e.target).hasClass("fa-sort-amount-down") || $(e.target).hasClass("fa-sort-amount-up") ) {
+            return 1;
+        }
+    }
 
     animateCSS(".copy", "headShake");
 
@@ -638,4 +654,23 @@ export function copyCalc() {
     tooltip_copy.disable();
     tooltip_copied.enable();
     tooltip_copied.show();
+}
+
+
+export function changeHighLow(){
+
+    if (globalData.activeWeapon.name != "BM-21 Grad") {return 1;}
+
+    if ($("#highlow").find(".fa-sort-amount-up").length > 0) {
+        //$('#highlow').find(".fa-sort-amount-up").removeClass("fa-sort-amount-up").addClass("fa-sort-amount-down")
+        globalData.angleTypePref = "low";
+        localStorage.setItem("data-weaponAnglePref", "low");
+    }
+    else {
+        //$('#highlow').find(".fa-sort-amount-down").removeClass("fa-sort-amount-down").addClass("fa-sort-amount-up")
+        globalData.angleTypePref = "high";
+        localStorage.setItem("data-weaponAnglePref", "high");
+    }
+
+    shoot();
 }

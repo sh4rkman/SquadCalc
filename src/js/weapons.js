@@ -52,6 +52,12 @@ export class Weapon {
      * @returns {1/-1} -1 = 0-45° / 1 = 45-90°
      */
     getAngleType() {
+  
+        if (this.name === "BM-21 Grad"){
+            if (globalData.angleTypePref === "high") {return -1;}
+            return 1;
+        }
+
         if (this.angleType === "high") { return -1; }
         return 1;
     }
@@ -120,6 +126,11 @@ export function changeWeapon() {
  */
 function getWeapon() {
     var weapon = localStorage.getItem("data-weapon");
+    var weaponPref = localStorage.getItem("data-weaponAnglePref");
+
+    if (weaponPref === null || isNaN(weapon) || weapon === "") {weaponPref = "low";} 
+    globalData.angleTypePref = weaponPref;
+
     if (weapon === null || isNaN(weapon) || weapon === "") { weapon = 0; }
     $(".dropbtn2").val(weapon);
     changeWeapon();
