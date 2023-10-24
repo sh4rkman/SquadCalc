@@ -191,7 +191,6 @@ main {
                 }
                 &:hover {
                     color: $mainColor;
-                    cursor: pointer;
                 }
             }
         }
@@ -213,7 +212,6 @@ main {
             }
             &:hover {
                 color: $mainColor;
-                cursor: pointer;
             }
             &:focus {
                 outline: none;
