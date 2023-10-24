@@ -49,6 +49,7 @@
         "postcss": ">=8.4.31",
         "purecss": "^3.0.0",
         "robotstxt-webpack-plugin": "^8.0.0",
+        "sass": "^1.69.4",
         "sass-loader": "^12.6.0",
         "select2": "^4.1.0-rc.0",
         "style-loader": "^3.3.1",
