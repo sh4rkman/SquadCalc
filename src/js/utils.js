@@ -237,7 +237,7 @@ function resetCalc() {
     $("#errorMsg").addClass("pure-u-4-24").removeClass("errorMsg").removeClass("pure-u-1").html("-");
     $("#savebutton").addClass("hidden");
     $("#bearing").html("xxx<i class=\"fas fa-drafting-compass fa-rotate-180 resultIcons\"></i>");
-    $("#elevation").html("xxxx<button id=\"highlow\"><i class=\"fas fa-sort-amount-up resultIcons\"></i></button>");
+    $("#elevation").html("xxxx<i class=\"fas fa-sort-amount-up resultIcons\"></i>");
 
     // draw pointer cursor & tooltip on results
     if (localStorage.getItem("InfoToolTips_copy") !== "true") {
@@ -386,6 +386,8 @@ function insertCalc(bearing, elevation, distance, vel, height) {
         $("#elevation").html(elevation.toFixed(globalData.activeWeapon.elevationPrecision) +
          "<button id=\"highlow\"><i class=\"fas fa-sort-amount-down resultIcons\"></i></button>");
     }
+    
+    if (globalData.activeWeapon.name === "BM-21 Grad") {$("#highlow i").addClass("active");}
     
     // show actions button
     $("#savebutton").removeClass("hidden");
@@ -662,12 +664,10 @@ export function changeHighLow(){
     if (globalData.activeWeapon.name != "BM-21 Grad") {return 1;}
 
     if ($("#highlow").find(".fa-sort-amount-up").length > 0) {
-        //$('#highlow').find(".fa-sort-amount-up").removeClass("fa-sort-amount-up").addClass("fa-sort-amount-down")
         globalData.angleTypePref = "low";
         localStorage.setItem("data-weaponAnglePref", "low");
     }
     else {
-        //$('#highlow').find(".fa-sort-amount-down").removeClass("fa-sort-amount-down").addClass("fa-sort-amount-up")
         globalData.angleTypePref = "high";
         localStorage.setItem("data-weaponAnglePref", "high");
     }

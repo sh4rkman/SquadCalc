@@ -111,8 +111,9 @@ export const WEAPONS = [
  * save current weapon into browser cache
  */
 export function changeWeapon() {
-    globalData.line.hide("none");
     const weapon = $(".dropbtn2").val();
+
+    globalData.line.hide("none");
     localStorage.setItem("data-weapon", weapon);
     globalData.activeWeapon = WEAPONS[weapon];
     $("#mortarImg").attr("src", globalData.activeWeapon.logo);
