@@ -181,7 +181,7 @@ main {
         position: relative;
         i {
             font-size: 50%;
-            margin: -15px; // ugly hack
+            margin: -10px; // ugly hack
         }
         #highlow {
             background-color: transparent;
@@ -276,7 +276,7 @@ main {
             transition: all 0.2s ease;
             &:hover {
                 color: $mainColor;
-                transform: scale(1.1);
+                transform: scale(1.2);
             }
         }
         #ruler {

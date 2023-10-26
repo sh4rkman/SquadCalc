@@ -4,28 +4,30 @@ import LeaderLine from "leader-line-new";
 
 /**
  * Give a animate.css class to a given element (https://animate.style/)
- * @param {text} [element] - element id to animate
+ * @param {text} [element] - jQuery Object to animate
  * @param {text} [animation] - animation name to apply
  */
-export function animateCSS(element, animation, prefix = "animate__") {
-    // We create a Promise and return it
-    new Promise((resolve) => {
+export function animateCSS($element, animation, prefix = "animate__") {
+    return new Promise((resolve) => {
         const animationName = `${prefix}${animation}`;
-        const node = document.querySelector(element);
 
-        node.classList.add(`${prefix}animated`, animationName);
+        // Assuming $element is a jQuery object, you can add and remove classes like this
+        $element.addClass(`${prefix}animated ${animationName}`);
 
-        // When the animation ends, we clean the classes and resolve the Promise
         function handleAnimationEnd(event) {
             event.stopPropagation();
-            node.classList.remove(`${prefix}animated`, animationName);
+
+            // Remove the classes from the jQuery object
+            $element.removeClass(`${prefix}animated ${animationName}`);
             resolve("Animation ended");
         }
 
-        node.addEventListener("animationend", handleAnimationEnd, { once: true });
+        // Use the on() method to attach the event handler
+        $element.on("animationend", handleAnimationEnd);
+
+        // Make sure to specify { once: true } in the on() method if you want it to run only once.
     });
 }
-
 
 /**
  * Initiate a animated line between weapon and target images
@@ -98,9 +100,9 @@ function explode(x, y) {
             radius: r(10, 15),
             color: colors[Math.floor(Math.random() * colors.length)],
             rotation: r(-135, 45, true),
-            speed: r(2, 3),
-            friction: 0.9,
-            opacity: r(0, 0.1, true),
+            speed: r(1,1),
+            friction: 0.98,
+            opacity: r(0, 0.9, true),
             yVel: 0,
             gravity: 0
         });

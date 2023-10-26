@@ -1,3 +1,19 @@
+
+# <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">  **12.0.1** *(2023-10-26)*
+
+<img src="https://img.shields.io/badge/-new-green"> Added new UB32 deployables (same calc than technical UB32, but fancy icon)
+
+<img src="https://img.shields.io/badge/-new-green"> Reworked weapons in two categories : Deployables/Vehicules
+
+<img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed [#83](https://github.com/sh4rkman/SquadCalc/issues/83)
+
+<img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed [#84](https://github.com/sh4rkman/SquadCalc/issues/84)
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
+
+
+
 # <img src="https://img.shields.io/badge/-major%20release-blue?style=flat-square">  **12.0.0** *(2023-10-26)*
 
 <img src="https://img.shields.io/badge/-new-green"> New "counting" animation when updating calc numbers
@@ -27,7 +43,7 @@
 
 # <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">  **11.1.1** *(2023-05-11)*
 
-<img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed weapon image width for Steam Browser 
+<img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed weapon image width for Steam Browser ([#71](https://github.com/sh4rkman/SquadCalc/issues/66))
 
 <img src="https://img.shields.io/badge/-%20fix%20-orange"> Shooting animation is now hidden when screen size is too small
 
@@ -83,6 +99,8 @@
 <img src="https://img.shields.io/badge/-new-green"> now auto-generating robots.txt in prod/dev building scripts
 
 <img src="https://img.shields.io/badge/-%20fix%20-orange"> fixed weapon selector list being offset
+
+<img src="https://img.shields.io/badge/-%20fix%20-orange"> fixed [#66](https://github.com/sh4rkman/SquadCalc/issues/66)
 
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->

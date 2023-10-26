@@ -1,7 +1,7 @@
 import { tooltip_copy, tooltip_save, tooltip_copied } from "./tooltips";
 import { globalData } from "./conf";
 import { MAPS } from "./maps";
-import { animateCSS, animateCalc } from "./animations";
+import { animateCSS, animateCalc} from "./animations";
 
 
 /**
@@ -350,7 +350,6 @@ export function shoot() {
     }
 
     insertCalc(bearing, elevation, distance, vel, height);
-
 }
 
 /**
@@ -456,7 +455,7 @@ function showError(msg, issue) {
     $("#copy").removeClass("copy");
     tooltip_copy.disable();
     $("#settings").css({ "border-color": "firebrick" });
-    animateCSS("#settings", "shakeX");
+    animateCSS($("#settings"), "shakeX");
 
     if (!globalData.debug.active) { console.clear(); }
     console.error(msg);
@@ -476,7 +475,7 @@ export function copySave(COPY_ZONE) {
     }
 
     copy(text2copy);
-    COPY_ZONE.parent().effect("bounce", 400);
+    animateCSS(COPY_ZONE.parent(), "headShake");
 }
 
 
@@ -629,7 +628,7 @@ export function saveCalc() {
 
     // display it
     $("#saved").removeClass("hidden");
-    $(".saved_list p").last().addClass("animate__animated animate__fadeInDown");
+    animateCSS($(".saved_list p").last(), "fadeInDown");
     tooltip_save.disable();
 }
 
@@ -648,7 +647,7 @@ export function copyCalc(e) {
         }
     }
 
-    animateCSS(".copy", "headShake");
+    animateCSS($(".copy"), "headShake");
 
     copy($("#target-location").val() + " ➜ " + $("#bearing").text() + " - " + $("#elevation").text());
 
