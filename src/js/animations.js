@@ -144,3 +144,29 @@ function render(particles, ctx, width, height) {
 
     return ctx;
 }
+
+
+export function animateCalc(target, goal, duration, destination) {
+    // Ensure target is a number
+    const element = $(`#${destination}`);
+    target = element.html();
+    target = isNaN(element.html()) ? 0 : Number(element.html());
+
+    const increment = Math.abs(goal - target) / (duration / 16);
+
+    // If goal is an integer, intermediate values will be integers too
+    const decimalPlaces = Number.isInteger(Number(goal)) ? 0 : 1;
+
+    function updateCount(current) {
+        element.text(current.toFixed(decimalPlaces));
+
+        // Determine the animation direction
+        if ((target < goal && current < goal) || (target > goal && current > goal)) {
+            requestAnimationFrame(() => updateCount(target < goal ? current + increment : current - increment));
+        } else {
+            element.text(goal);
+        }
+    }
+
+    updateCount(target);
+}

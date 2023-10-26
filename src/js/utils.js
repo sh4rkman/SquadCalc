@@ -1,7 +1,7 @@
 import { tooltip_copy, tooltip_save, tooltip_copied } from "./tooltips";
 import { globalData } from "./conf";
 import { MAPS } from "./maps";
-import { animateCSS } from "./animations";
+import { animateCSS, animateCalc } from "./animations";
 
 
 /**
@@ -236,8 +236,6 @@ function resetCalc() {
     $("#elevation").removeClass("hidden").addClass("pure-u-10-24");
     $("#errorMsg").addClass("pure-u-4-24").removeClass("errorMsg").removeClass("pure-u-1").html("-");
     $("#savebutton").addClass("hidden");
-    $("#bearing").html("xxx<i class=\"fas fa-drafting-compass fa-rotate-180 resultIcons\"></i>");
-    $("#elevation").html("xxxx<i class=\"fas fa-sort-amount-up resultIcons\"></i>");
 
     // draw pointer cursor & tooltip on results
     if (localStorage.getItem("InfoToolTips_copy") !== "true") {
@@ -281,6 +279,8 @@ export function shoot() {
         // disable tooltip and copy function
         $("#copy").removeClass("copy");
         tooltip_copy.disable();
+        $("#bearingNum").html("xxx");
+        $("#elevationNum").html("xxxx");
         return 1;
     }
 
@@ -376,15 +376,16 @@ function insertCalc(bearing, elevation, distance, vel, height) {
     console.log(`-> Distance: ${distance.toFixed(0)}m - height: ${height.toFixed(0)}m`);
     console.log(`-> Velocity: ${vel.toFixed(1)}m/s`);
 
-    $("#bearing").html(bearing.toFixed(1) + "<i class=\"fas fa-drafting-compass fa-rotate-180 resultIcons\"></i>");
+    animateCalc($("#bearingNum").html(),bearing.toFixed(1),500,"bearingNum");
+    animateCalc($("#elevationNum").html(),elevation.toFixed(globalData.activeWeapon.elevationPrecision),500,"elevationNum");
 
+    $("elevation").html($("<i class=\"fas fa-drafting-compass fa-rotate-180 resultIcons\"></i>"));
+     
     if (globalData.activeWeapon.getAngleType() === -1) {
-        $("#elevation").html(elevation.toFixed(globalData.activeWeapon.elevationPrecision) +
-         "<button id=\"highlow\"><i class=\"fas fa-sort-amount-up resultIcons\"></i></button>");
+        $("#highlow").html($("<i class=\"fa-solid fa-sort-amount-up resultIcons\"></i>"));
     }
     else {
-        $("#elevation").html(elevation.toFixed(globalData.activeWeapon.elevationPrecision) +
-         "<button id=\"highlow\"><i class=\"fas fa-sort-amount-down resultIcons\"></i></button>");
+        $("#highlow").html($("<i class=\"fa-solid fa-sort-amount-down resultIcons\"></i>"));
     }
     
     if (globalData.activeWeapon.name === "BM-21 Grad") {$("#highlow i").addClass("active");}
@@ -674,3 +675,5 @@ export function changeHighLow(){
 
     shoot();
 }
+
+
