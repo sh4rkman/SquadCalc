@@ -170,8 +170,8 @@ function getOffsetLatLng(pos) {
 function getHeight(a, b) {
     var Aheight;
     var Bheight;
-    var AOffset = { lat: 0, lng: 0 };
-    var BOffset = { lat: 0, lng: 0 };
+    var AOffset;
+    var BOffset;
     var ctx = document.getElementById("canvas").getContext("2d");
 
     // if user didn't select map, no height calculation
