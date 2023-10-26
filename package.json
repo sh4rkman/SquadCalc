@@ -1,6 +1,6 @@
 {
     "name": "squadcalc",
-    "version": "11.2.0",
+    "version": "12.0.0",
     "description": "A Minimalist Mortar Calculator for Squad",
     "author": "Maxime 'sharkman' Boussard",
     "license": "MIT",
@@ -66,5 +66,6 @@
         "webpack-pwa-manifest": "^4.3.0"
     },
     "dependencies": {
+        "mini-css-extract-plugin": "^2.7.6"
     }
 }

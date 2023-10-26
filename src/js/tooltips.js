@@ -38,7 +38,7 @@ tippy("#settings", {
 tooltip_copied = document.querySelector("#settings")._tippy;
 tooltip_copied.disable();
 
-tippy("#bearing", {
+tippy("#bearingNum", {
     animation: "fade",
     placement: "bottom",
     allowHTML: true,
@@ -47,7 +47,7 @@ tippy("#bearing", {
     theme: "results",
 });
 
-tippy("#elevation", {
+tippy("#elevationNum", {
     animation: "fade",
     placement: "bottom",
     allowHTML: true,

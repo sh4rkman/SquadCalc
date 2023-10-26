@@ -181,6 +181,7 @@ main {
         position: relative;
         i {
             font-size: 50%;
+            margin: -15px; // ugly hack
         }
         #highlow {
             background-color: transparent;
@@ -204,8 +205,10 @@ main {
             right: 0;
             transition: all 0.1s ease-out;
             i {
+                cursor:pointer;
                 font-size: 0.5em;
                 position: relative;
+                margin: 0;
             }
             &:active {
                 transform: scale(0.7);
