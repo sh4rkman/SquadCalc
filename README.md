@@ -1,15 +1,16 @@
 
- <p align="center">
-   <img width="500" height="250" src="./src/img/github/logo.png">
- </p>
+<p align="center">
+  <img width="500" height="250" src="./src/img/github/logo.png">
+</p>
 
 
 <p align="center">
- <a href="https://github.com/sh4rkman/SquadCalc/blob/master/LICENSE"><img src="https://img.shields.io/github/license/Naereen/StrapDown.js.svg" alt="Licence"></a>
+  <a href="https://github.com/sh4rkman/SquadCalc/blob/master/LICENSE"><img src="https://img.shields.io/github/license/Naereen/StrapDown.js.svg" alt="Licence"></a>
   <a href="https://validator.w3.org/nu/?doc=https%3A%2F%2Fsquadcalc.app%2F"><img src="https://img.shields.io/badge/W3C-Good-green.svg" alt="W3C"></a>
   <a href="https://deepscan.io/dashboard#view=project&tid=12376&pid=25781&bid=811276"><img src="https://deepscan.io/api/teams/12376/projects/25781/branches/811276/badge/grade.svg" alt="DeepScan grade"></a>
   <a href="https://www.codefactor.io/repository/github/sh4rkman/squadcalc"><img src="https://www.codefactor.io/repository/github/sh4rkman/squadcalc/badge" alt="CodeFactor"></a>
 </p>
+
 </br>
 </br>
 
@@ -58,14 +59,17 @@ Heightmaps are hidden : simply pick your map from the list and shoot.
 
 </br>
 
+SquadCalc support different type of weapons :
 
-SquadCalc support different type of mortars :
-- Classics mortars
-- Hell Canon (Insurgents)
-- Technicals mortars
+**Deployables :**
+- mortars
 - UB-32
-- BM-21 Grad (Milice)
-- Long range 120mm mortars from the <a href="https://smf.tactical-collective.com/">French Mod</a>
+- Hell Canon (Ins)  
+
+**Vehicules :**
+- Technicals mortars
+- Technicals/BRDM UB-32
+- BM-21 Grad  
 
 </br>
 
@@ -78,13 +82,13 @@ SquadCalc support different type of mortars :
 
 Save up to four calcs for later :
 
- </br>
+</br>
 
- <p align="center">
-   <img width="261" height="200" src="./src/img/github/save.gif">
- </p>
+<p align="center">
+  <img width="261" height="200" src="./src/img/github/save.gif">
+</p>
 
- </br></br>
+</br></br>
 
 # Installation
 </br>
