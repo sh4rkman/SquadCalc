@@ -18,12 +18,11 @@ import target from "../img/icons/target.png";
 
 
 export class Weapon {
-    constructor(name, velocity, gravityScale, minElevation, table, unit, logo, logoCannonPos, type, angleType, elevationPrecision) {
+    constructor(name, velocity, gravityScale, minElevation, unit, logo, logoCannonPos, type, angleType, elevationPrecision) {
         this.name = name;
         this.velocity = velocity;
         this.gravityScale = gravityScale;
         this.minElevation = minElevation;
-        this.table = table;
         this.unit = unit;
         this.logo = logo;
         this.logoCannonPos = logoCannonPos;
@@ -34,16 +33,15 @@ export class Weapon {
 
     /**
      * Return the weapon velocity
-     * @param {number} [distance] - distance between mortar and target from getDist()
+     * @param {number} } [distance] - distance between mortar and target from getDist()
      * @returns {number} - Velocity of the weapon for said distance
      */
     getVelocity(distance) {
-        if (!this.table) { return this.velocity; }
+        if (this.velocity.constructor != Array) { return this.velocity; }
 
-        // UB-32 estimations
-        for (let i = 1; i < this.table.length; i += 1) {
-            if (distance < this.table[i][0]) {
-                return this.table[i - 1][1] + ((distance - this.table[i - 1][0]) / (this.table[i][0] - this.table[i - 1][0])) * (this.table[i][1] - this.table[i - 1][1]);
+        for (let i = 1; i < this.velocity.length; i += 1) {
+            if (distance < this.velocity[i][0]) {
+                return this.velocity[i - 1][1] + ((distance - this.velocity[i - 1][0]) / (this.velocity[i][0] - this.velocity[i - 1][0])) * (this.velocity[i][1] - this.velocity[i - 1][1]);
             }
         }
     }
@@ -53,12 +51,6 @@ export class Weapon {
      * @returns {1/-1} -1 = 0-45° / 1 = 45-90°
      */
     getAngleType() {
-  
-        if (this.name === "BM-21 Grad"){
-            if (globalData.angleTypePref === "high") {return -1;}
-            return 1;
-        }
-
         if (this.angleType === "high") { return -1; }
         return 1;
     }
@@ -66,7 +58,7 @@ export class Weapon {
 }
 
 
-const weaponTypes = ["deployables", "vehicules"/*, "frenchDLC"*/];
+const weaponTypes = ["deployables", "vehicles"/*, "frenchDLC"*/];
 
 const UB32_table = [
     [100, 335.1200224653227],
@@ -95,15 +87,14 @@ const UB32_table = [
 ];
 
 
-
 export const WEAPONS = [
-    new Weapon("mortars", 109.890938, 1, 1580, undefined, "mil", classicLogo, "130%", "deployables", "high", 0),
-    new Weapon("UB-32", 0, 2, 999, UB32_table, "deg", ub322Logo, "110%", "deployables", "low", 1),
-    new Weapon("Hell Cannon", 95, 1, 90, undefined, "deg", hellcannonLogo, "130%", "deployables", "high", 1),
+    new Weapon("mortar", 109.890938, 1, [800, 1579], "mil", classicLogo, "130%", "deployables", "high", 0),
+    new Weapon("UB-32", UB32_table, 2, [-25, 35], "deg", ub322Logo, "110%", "deployables", "low", 1),
+    new Weapon("Hell Cannon", 95, 1, [10, 90], "deg", hellcannonLogo, "130%", "deployables", "high", 1),
 
-    new Weapon("Technical", 110, 1, 90, undefined, "deg", technicalLogo, "50%", "vehicules", "high", 1),
-    new Weapon("Tech. UB-32", 0, 2, 999, UB32_table, "deg", ub32Logo, "55%", "vehicules", "low", 1),
-    new Weapon("BM-21 Grad", 200, 2, 0, undefined, "deg", mlrsLogo, "60%", "vehicules", "low", 1),
+    new Weapon("Technical", 110, 1, [-45, 135], "deg", technicalLogo, "50%", "vehicles", "high", 1),
+    new Weapon("Tech. UB-32", UB32_table, 2, [-45, 135], "deg", ub32Logo, "55%", "vehicles", "low", 1),
+    new Weapon("BM-21 Grad", 200, 2, [-45, 135], "deg", mlrsLogo, "60%", "vehicles", "low", 1),
 
     //new Weapon("Short", 109.890938, 1, 1520, undefined, "mil", frenchLogo, "135%", "frenchDLC", "high", 0),
     //new Weapon("Medium", 143.5, 1, 1520, undefined, "mil", frenchLogo, "135%", "frenchDLC", "high", 0),
@@ -130,11 +121,6 @@ export function changeWeapon() {
  */
 function getWeapon() {
     var weapon = localStorage.getItem("data-weapon");
-    var weaponPref = localStorage.getItem("data-weaponAnglePref");
-
-    if (weaponPref === null || isNaN(weapon) || weapon === "") {weaponPref = "low";} 
-    globalData.angleTypePref = weaponPref;
-
     if (weapon === null || isNaN(weapon) || weapon === "") { weapon = 0; }
     $(".dropbtn2").val(weapon);
     changeWeapon();

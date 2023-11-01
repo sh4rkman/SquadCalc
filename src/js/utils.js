@@ -224,7 +224,7 @@ function getHeight(a, b) {
  * Reset UI to default
  */
 function resetCalc() {
-    if (!globalData.debug.active) { console.clear(); }
+    if (!globalData.debug.active) {console.clear();}
 
     // First, reset any errors
     $("#settings").css({ "border-color": "#fff" });
@@ -236,11 +236,15 @@ function resetCalc() {
     $("#elevation").removeClass("hidden").addClass("pure-u-10-24");
     $("#errorMsg").addClass("pure-u-4-24").removeClass("errorMsg").removeClass("pure-u-1").html("-");
     $("#savebutton").addClass("hidden");
+    $("#highlow i").removeClass("active");
 
-    // draw pointer cursor & tooltip on results
+    // draw pointer cursor & tooltip on results, desktop only
     if (localStorage.getItem("InfoToolTips_copy") !== "true") {
-        tooltip_copy.enable();
-        tooltip_copy.show();
+        const mobileWidth = 767;
+        if ($(window).width() > mobileWidth) {
+            tooltip_copy.enable();
+            tooltip_copy.show();
+        }
     }
     $("#copy").addClass("copy");
 }
@@ -249,7 +253,7 @@ function resetCalc() {
  * Calculates the distance elevation and bearing
  * @returns {target} elevation + bearing
  */
-export function shoot() {
+export function shoot(inputChanged = "") {
     var startA;
     var startB;
     var height;
@@ -278,14 +282,14 @@ export function shoot() {
     if (a.length < 3 || b.length < 3) {
         // disable tooltip and copy function
         $("#copy").removeClass("copy");
-        tooltip_copy.disable();
         $("#bearingNum").html("xxx");
         $("#elevationNum").html("xxxx");
+        tooltip_copy.disable();
         return 1;
     }
 
     // restore cursor position
-    setCursor(startA, startB, a, b);
+    setCursor(startA, startB, a, b, inputChanged);
 
     aPos = getPos(a);
     bPos = getPos(b);
@@ -337,17 +341,12 @@ export function shoot() {
         return 1;
     }
 
-    if (globalData.activeWeapon.name === "BM-21 Grad") {
-        if (elevation < globalData.activeWeapon.minElevation) {
-            showError("Target is too close : " + distance.toFixed(0) + "m", "target");
-            return 1;
-        }
-    } else {
-        if ((elevation > globalData.activeWeapon.minElevation)) {
-            showError("Target is too close : " + distance.toFixed(0) + "m", "target");
-            return 1;
-        }
+   
+    if ((elevation < globalData.activeWeapon.minElevation[0])) {
+        showError("Target is too close : " + distance.toFixed(0) + "m", "target");
+        return 1;
     }
+    
 
     insertCalc(bearing, elevation, distance, vel, height);
 }
@@ -387,7 +386,9 @@ function insertCalc(bearing, elevation, distance, vel, height) {
         $("#highlow").html($("<i class=\"fa-solid fa-sort-amount-down resultIcons\"></i>"));
     }
     
-    if (globalData.activeWeapon.name === "BM-21 Grad") {$("#highlow i").addClass("active");}
+    if (globalData.activeWeapon.name != "mortar" && globalData.activeWeapon.name != "UB-32") {
+        $("#highlow i").addClass("active");
+    }
     
     // show actions button
     $("#savebutton").removeClass("hidden");
@@ -512,7 +513,7 @@ export function RemoveSaves(a) {
  * @param {string} a - previous mortar coord before reformating
  * @param {string} b - previous tardget coord before reformating
  */
-function setCursor(startA, startB, a, b) {
+function setCursor(startA, startB, a, b, inputChanged) {
     const MORTAR_LOC = $("#mortar-location");
     const TARGET_LOC = $("#target-location");
     const MORTAR_LENGTH = MORTAR_LOC.val().length;
@@ -541,9 +542,17 @@ function setCursor(startA, startB, a, b) {
             startB += 1;
         }
     }
-
-    MORTAR_LOC[0].setSelectionRange(startA, startA);
-    TARGET_LOC[0].setSelectionRange(startB, startB);
+    
+    if (inputChanged === "weapon") {
+        MORTAR_LOC[0].setSelectionRange(startA, startA);
+    }
+    else if (inputChanged === "target"){
+        TARGET_LOC[0].setSelectionRange(startB, startB);
+    }
+    else {
+        MORTAR_LOC[0].setSelectionRange(startA, startA);
+        TARGET_LOC[0].setSelectionRange(startB, startB);
+    }
 }
 
 
@@ -634,6 +643,7 @@ export function saveCalc() {
 
 /**
  * Copy current calc to clipboard
+ * @param {event} e - click event that triggered copy
  */
 export function copyCalc(e) {
     
@@ -641,7 +651,7 @@ export function copyCalc(e) {
     if (!$(".copy").hasClass("copy")) { return 1; }
 
     // When using BM-21, and the target icon is clicked, do nothing
-    if (globalData.activeWeapon.name === "BM-21 Grad") {
+    if (globalData.activeWeapon.name != "mortar" || globalData.activeWeapon.name != "B-32") {
         if ($(e.target).hasClass("fa-sort-amount-down") || $(e.target).hasClass("fa-sort-amount-up") ) {
             return 1;
         }
@@ -658,20 +668,15 @@ export function copyCalc(e) {
     tooltip_copied.show();
 }
 
-
+/**
+ * Toggle high/low angles
+ */
 export function changeHighLow(){
+    // If mortar/deplayable UB32, deny changing
+    if (globalData.activeWeapon.name == "mortar" || globalData.activeWeapon.name == "UB-32") {return 1;}
 
-    if (globalData.activeWeapon.name != "BM-21 Grad") {return 1;}
-
-    if ($("#highlow").find(".fa-sort-amount-up").length > 0) {
-        globalData.angleTypePref = "low";
-        localStorage.setItem("data-weaponAnglePref", "low");
-    }
-    else {
-        globalData.angleTypePref = "high";
-        localStorage.setItem("data-weaponAnglePref", "high");
-    }
-
+    const isLowAngle = $("#highlow").find(".fa-sort-amount-up").length > 0;
+    globalData.activeWeapon.angleType = isLowAngle ? "low" : "high";
     shoot();
 }
 

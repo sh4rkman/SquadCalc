@@ -66,7 +66,7 @@ SquadCalc support different type of weapons :
 - UB-32
 - Hell Canon (Ins)  
 
-**Vehicules :**
+**Vehicles :**
 - Technicals mortars
 - Technicals/BRDM UB-32
 - BM-21 Grad  

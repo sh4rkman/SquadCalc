@@ -25,7 +25,7 @@ $newColor: green;
     margin: 0;
     padding: 0;
     border: 0;
-    font: inherit;
+  
 }
 
 body,
@@ -39,6 +39,10 @@ textarea,
     font-family: Montserrat, Times, "Times New Roman", serif;
     letter-spacing: 0.1em;
     text-align: center;
+}
+
+body {
+    background-color: var(--themecolor, $mainBGColor);
 }
 
 a:visited {
@@ -117,6 +121,7 @@ header {
         font-weight: bold;
         line-height: 2.188em;
         text-transform: uppercase;
+        background-color: var(--themecolor, $mainBGColor);
         select {
             -moz-appearance: none;
             -webkit-appearance: none;
@@ -185,8 +190,8 @@ main {
         }
         #highlow {
             background-color: transparent;
-            cursor: pointer;
             .active {
+                cursor: pointer;
                 &:active {
                     transform: scale(0.7);
                 }
@@ -250,6 +255,7 @@ main {
         bottom: 0;
         height: 350px;
         width: 350px;
+        z-index: -1;
     }
     /****************
    *   Saved calcs

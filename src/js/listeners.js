@@ -6,8 +6,8 @@ import { switchTheme } from "./themes";
 $(document).on("change", ".dropbtn2", function() { changeWeapon(); });
 $(document).on("change", ".dropbtn", function() { drawHeatmap(); });
 
-$(document).on("input", "#target-location", function() { shoot(); });
-$(document).on("input", "#mortar-location", function() { shoot(); });
+$(document).on("input", "#mortar-location", function() { shoot("weapon"); });
+$(document).on("input", "#target-location", function() { shoot("target"); });
 $(document).on("input", ".friendlyname", function() { resizeInput(this); });
 
 $(document).on("keypress", "#mortar-location", function(event) { filterInput(event); });
@@ -21,3 +21,5 @@ $(document).on("click", "#copy", function(e) { copyCalc(e); });
 $(document).on("click", "#highlow", function() { changeHighLow(); });
 
 $(window).on("resize", function() { resizeInputsOnResize(); });
+
+// TODO: when fab is open, a click elsewhere close it

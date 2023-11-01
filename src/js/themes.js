@@ -1,10 +1,12 @@
 export const THEMES = [
-    "classic",
-    "dark",
-    "blue",
-    "green",
-    "red",
+    "#111111", // classic
+    "#000000", // dark
+    "#000031", // blue
+    "#031a00", // green
+    "#3f0000", // red
 ];
+
+
 
 /**
  * get last theme used by user and apply it
@@ -12,28 +14,20 @@ export const THEMES = [
 export function loadTheme() {
     var theme = localStorage.getItem("data-theme");
 
-    if (theme === null) {
-        changeTheme(THEMES[0]);
-        return 0;
+    if (!CSS.supports("color", theme) ){
+        localStorage.setItem("data-theme", "#111111");
+        theme = "#111111";
     }
 
-    $("body").attr("data-theme", theme);
+    document.documentElement.style.setProperty("--themecolor", theme);
 }
 
-/**
- * Apply theme to css
- * @param {String} theme - theme to be applied
- */
-export function changeTheme(theme) {
-    localStorage.setItem("data-theme", theme);
-    $("body").attr("data-theme", theme);
-}
 
 /**
  * get last theme used by user and apply it
  */
 export function switchTheme() {
-    var theme = $("body").attr("data-theme");
+    var theme = localStorage.getItem("data-theme");
 
     for (let i = 0; i < THEMES.length - 1; i++) {
         if (THEMES[i] === theme) {
@@ -43,4 +37,14 @@ export function switchTheme() {
         // we are in classic but don't know it
         changeTheme(THEMES[0]);
     }
+}
+
+
+/**
+ * Apply theme to css
+ * @param {String} theme - theme to be applied
+ */
+export function changeTheme(theme) {
+    localStorage.setItem("data-theme", theme);
+    document.documentElement.style.setProperty("--themecolor", theme);
 }

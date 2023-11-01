@@ -1,9 +1,31 @@
 
+# <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">  **12.1.0** *(2023-11-01)*
+
+<img src="https://img.shields.io/badge/-new-green"> You are now able to choose high/low angle for every vehicles and Hell cannon by clicking the icon next to elevation
+
+<img src="https://img.shields.io/badge/-new-green"> You are now able to get negative elevation results for vehicles, it should cover situation where you can tilt a vehicle on a slope to hit a target under you.
+
+<img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed an issue on Safari/Webkit where focus was skipping from target to weapon input when editing weapon coordinates ([#69](https://github.com/sh4rkman/SquadCalc/issues/69) - thanks to TheGrimReaper13/Phir)
+
+<img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed an issue on Safari Mobile where keyboard is blinking when editing weapon coordinates (Thanks to Phir)
+
+<img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed an issue where the tooltip encouraging clicking the results to copy them was covering the target input on mobile with on-screen keyboard open. Tooltip is now hidden on mobile
+
+<img src="https://img.shields.io/badge/-%20Improv%20-orange"> Implementated an automated testing tool to detect issues and test on various browswers
+
+<img src="https://img.shields.io/badge/-%20Improv%20-orange"> Various code refactor & rework
+
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
+
+
+
 # <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">  **12.0.1** *(2023-10-26)*
 
 <img src="https://img.shields.io/badge/-new-green"> Added new UB32 deployables (same calc than technical UB32, but fancy icon)
 
-<img src="https://img.shields.io/badge/-new-green"> Reworked weapons in two categories : Deployables/Vehicules
+<img src="https://img.shields.io/badge/-new-green"> Reworked weapons in two categories : Deployables/Vehicles
 
 <img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed [#83](https://github.com/sh4rkman/SquadCalc/issues/83)
 
@@ -67,7 +89,7 @@
 
 <img src="https://img.shields.io/badge/-new-green"> aded UB-32 suport
 
-<img src="https://img.shields.io/badge/-%20Inprovement%20-orange"> HellCannon and technical mortar are now using the standard projectile motion formula instead of estimated calculations on ingame table
+<img src="https://img.shields.io/badge/-%20Improv%20-orange"> HellCannon and technical mortar are now using the standard projectile motion formula instead of estimated calculations on ingame table
 
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
@@ -124,7 +146,7 @@
 
 <img src="https://img.shields.io/badge/-new-green"> Active weapon icon is now displayed in the keypads section
 
-<img src="https://img.shields.io/badge/-new-green"> Weapons selector is now a classic dropdown selector, displaying weapons in category : mortars, vehicules, frenchdlc
+<img src="https://img.shields.io/badge/-new-green"> Weapons selector is now a classic dropdown selector, displaying weapons in category : mortars, vehicles, frenchdlc
 
 <img src="https://img.shields.io/badge/-new-green"> Dropdown list now shows current selected in a light red color
 

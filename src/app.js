@@ -5,10 +5,8 @@ import "select2/dist/css/select2.min.css";
 import "select2/dist/js/select2.min.js";
 import "animate.css";
 
-// Local JS
-import "./js/listeners.js";
+// Local styles
 import "./css/styles.scss";
-import "./css/themes.scss";
 import "./css/responsive.scss";
 
 // JS Functions
@@ -17,6 +15,7 @@ import { loadMaps } from "./js/maps";
 import { loadTheme } from "./js/themes";
 import { loadWeapons } from "./js/weapons";
 import { createLine } from "./js/animations";
+import "./js/listeners.js";
 
 $(function() {
     createLine();

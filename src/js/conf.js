@@ -11,8 +11,8 @@ export var globalData = {
     },
     debug: {
         active: false,
-        DEBUG_MORTAR_COORD: "A01-2-3",
-        DEBUG_TARGET_COORD: "C03-4-3",
+        DEBUG_MORTAR_COORD: "B03-4-5-3",
+        DEBUG_TARGET_COORD: "C04-3",
     },
     gravity: 9.8,
     theme: "classic",

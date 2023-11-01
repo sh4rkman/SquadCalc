@@ -3,3 +3,8 @@ mortar.code-workspace
 debug.log
 node_modules/
 dist/
+config/test-results/
+config/playwright-report/
+config/blob-report/
+config/playwright/.cache/
+playwright-report/
