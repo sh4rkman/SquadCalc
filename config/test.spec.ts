@@ -58,9 +58,9 @@ test('Basic calcs + map', async ({ page }) => {
 
   // pressSequentially coordonates
   await page.locator('#mortar-location').click();
-  await page.locator('#mortar-location').pressSequentially('B02-34');
+  await page.locator('#mortar-location').pressSequentially('B0234');
   await page.locator('#target-location').click();
-  await page.locator('#target-location').pressSequentially('C01-2-45');
+  await page.locator('#target-location').pressSequentially('C01245');
 
   // Select a map
   await page.getByRole('textbox', { name: 'SELECT A MAP' }).click();
@@ -75,9 +75,9 @@ test('Advanced calc', async ({ page }) => {
 
   // pressSequentially coordonates
   await page.locator('#mortar-location').click();
-  await page.locator('#mortar-location').pressSequentially('B02-34');
+  await page.locator('#mortar-location').pressSequentially('B0234');
   await page.locator('#target-location').click();
-  await page.locator('#target-location').pressSequentially('C01-2-45');
+  await page.locator('#target-location').pressSequentially('C01245');
 
   // Select a map
   await page.getByRole('textbox', { name: 'SELECT A MAP' }).click();
@@ -90,11 +90,6 @@ test('Advanced calc', async ({ page }) => {
   // Select BM21 Grad
   await page.getByRole('textbox', { name: 'mortar' }).click();
   await page.getByRole('option', { name: 'BM-21 Grad' }).click();
-
-  //await page.getByRole('textbox', { name: 'Kohat' }).click();
-  //await page.getByRole('option', { name: 'Anvil' }).click();
-  //await page.getByRole('textbox', { name: 'Anvil' }).click();
-  //await page.getByRole('option', { name: 'Kohat' }).click();
 
   // Check calcs
   await expect(page.locator('#bearingNum')).toContainText("33.7");

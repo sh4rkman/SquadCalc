@@ -1,13 +1,23 @@
 
+
+# <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">  **12.1.1** *(2023-11-02)*
+
+<img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed an issue on Chrome/Edge where calcs on heightmaps were slightly off  ([#69](https://github.com/sh4rkman/SquadCalc/issues/69) - thanks to TheGrimReaper13/PhiR)
+
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
+
+
 # <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">  **12.1.0** *(2023-11-01)*
 
 <img src="https://img.shields.io/badge/-new-green"> You are now able to choose high/low angle for every vehicles and Hell cannon by clicking the icon next to elevation
 
 <img src="https://img.shields.io/badge/-new-green"> You are now able to get negative elevation results for vehicles, it should cover situation where you can tilt a vehicle on a slope to hit a target under you.
 
-<img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed an issue on Safari/Webkit where focus was skipping from target to weapon input when editing weapon coordinates ([#69](https://github.com/sh4rkman/SquadCalc/issues/69) - thanks to TheGrimReaper13/Phir)
+<img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed an issue on Safari/Webkit where focus was skipping from target to weapon input when editing weapon coordinates ([#69](https://github.com/sh4rkman/SquadCalc/issues/69) - thanks to TheGrimReaper13/PhiR)
 
-<img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed an issue on Safari Mobile where keyboard is blinking when editing weapon coordinates (Thanks to Phir)
+<img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed an issue on Safari Mobile where keyboard is blinking when editing weapon coordinates (Thanks to PhiR)
 
 <img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed an issue where the tooltip encouraging clicking the results to copy them was covering the target input on mobile with on-screen keyboard open. Tooltip is now hidden on mobile
 
