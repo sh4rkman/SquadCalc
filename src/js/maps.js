@@ -99,7 +99,7 @@ export function drawHeatmap() {
     globalData.activeMap = $(".dropbtn").val();
     IMG.src = MAPS[globalData.activeMap][5];
 
-    $(IMG).on("load", function() { // wait for the image to load or it does crazy stuff
+    IMG.addEventListener("load", function() { // wait for the image to load or it does crazy stuff
         globalData.canvas.obj.drawImage(IMG, 0, 0, globalData.canvas.size, globalData.canvas.size);
         shoot(); // just in case there is already coordinates in inputs
     }, false);
