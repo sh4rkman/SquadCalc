@@ -19,7 +19,6 @@ $(document).on("click", ".fab-action-2", function() { switchTheme(); });
 $(document).on("click", "#savebutton", function() { saveCalc(); });
 $(document).on("click", "#copy", function(e) { copyCalc(e); });
 $(document).on("click", "#highlow", function() { changeHighLow(); });
+$(document).on("click", function(event) {if (!$(event.target).closest(".fab-wrapper").length) {$("#fabCheckbox").prop("checked", false);}});
 
 $(window).on("resize", function() { resizeInputsOnResize(); });
-
-// TODO: when fab is open, a click elsewhere close it

@@ -1,8 +1,15 @@
 
+# <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">  **12.1.2** *(2023-11-04)*
+
+<img src="https://img.shields.io/badge/-%20Improv%20-orange"> Bottom-right menu now autoclose when clicking elsewhere in the window
+
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
 
 # <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">  **12.1.1** *(2023-11-02)*
 
-<img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed an issue on Chrome/Edge where calcs on heightmaps were slightly off  ([#88](https://github.com/sh4rkman/SquadCalc/issues/88)) 
+<img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed an issue on Chrome/Edge where calcs on heightmaps were slightly off ([#88](https://github.com/sh4rkman/SquadCalc/issues/88)) 
 
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
