@@ -153,10 +153,10 @@ function getElevation(dist = 0, vDelta = 0, vel = 0) {
  * @returns {lat;lng} - offset position
  */
 function getOffsetLatLng(pos) {
-    const mapScale = globalData.canvas.size / MAPS[globalData.activeMap][1];
+    const mapScale = globalData.canvas.size / MAPS.find((elem, index) => index == globalData.activeMap).size;
     return {
-        lat: (pos.lat + MAPS[globalData.activeMap][2] * mapScale) * mapScale,
-        lng: (pos.lng + MAPS[globalData.activeMap][3] * mapScale) * mapScale
+        lat: (pos.lat + MAPS.find((elem, index) => index == globalData.activeMap).offset[0] * mapScale) * mapScale,
+        lng: (pos.lng + MAPS.find((elem, index) => index == globalData.activeMap).offset[1] * mapScale) * mapScale
     };
 }
 
@@ -214,8 +214,8 @@ function getHeight(a, b) {
         return "BERROR";
     }
 
-    Aheight = (255 + Aheight[0] - Aheight[2]) * MAPS[globalData.activeMap][4];
-    Bheight = (255 + Bheight[0] - Bheight[2]) * MAPS[globalData.activeMap][4];
+    Aheight = (255 + Aheight[0] - Aheight[2]) * MAPS.find((elem, index) => index == globalData.activeMap).scaling;
+    Bheight = (255 + Bheight[0] - Bheight[2]) * MAPS.find((elem, index) => index == globalData.activeMap).scaling;
 
     return Bheight - Aheight;
 }
