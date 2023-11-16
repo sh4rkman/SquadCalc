@@ -13,9 +13,9 @@ export var globalData = {
     },
     ui: true,
     debug: {
-        active: true,
-        DEBUG_MORTAR_COORD: "K0432",
-        DEBUG_TARGET_COORD: "E1076",
+        active: false,
+        DEBUG_MORTAR_COORD: "G0551",
+        DEBUG_TARGET_COORD: "L1757",
     },
     gravity: 9.8,
     theme: "classic",

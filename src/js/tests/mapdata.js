@@ -26,10 +26,10 @@ const MAPDATA = [
     },
     {
       name: "Harju",
-      url: "/maps/albasrah/{z}_{x}_{y}.jpg",
+      url: "/maps/Harju/{z}_{x}_{y}.jpg",
       heightmap: {
-        url: "/heightmaps/sanxianIslands.jpg",
-        tile: "/heightmaps/albasrah/{z}_{x}_{y}.jpg",
+        url: "/heightmaps/Harju.jpg",
+        tile: "/heightmaps/Harju/{z}_{x}_{y}.jpg",
       },
       locations: [
       ],
@@ -38,11 +38,11 @@ const MAPDATA = [
         scale: [1, 1, 1], // x, y & z scale from SquadSDK (in meters)
         levels: [939, 2249],
         minimap: [ // taken from blueprints in SquadSDK
-          [126, 126],
-          [4032, 4032],
+          [-2016, -2016],
+          [2016, 2016],
         ],
         hDim: [3907, 3907], // dimensions of exported heightmap
-        lOrigin: [0, 0], // origin of landscape in SquadSDK (sometimes extracted by placing actor in corner)
+        lOrigin: [-2016, -2016], // origin of landscape in SquadSDK (sometimes extracted by placing actor in corner)
       },
     },
     {
@@ -110,7 +110,7 @@ const MAPDATA = [
       extra: { // extra information taken from SquadSDK and exported heightmap, used to scale + crop heightmaps
         // check printMapExtras() function for more information
         scale: [1, 1, 0.1], // x, y & z scale from SquadSDK (in meters)
-        levels: [2123, 4417],
+        levels: [2793, 4087],
         minimap: [ // taken from blueprints in SquadSDK
           [-1520, -1520],
           [1520, 1520],
@@ -258,6 +258,27 @@ const MAPDATA = [
       },
     },
     {
+      name: "Goose Bay",
+      url: "/maps/goosebay/{z}_{x}_{y}.jpg",
+      heightmap: {
+        url: "/heightmaps/goosebay.jpg",
+        tile: "/heightmaps/goosebay/{z}_{x}_{y}.jpg",
+      },
+      locations: [
+      ],
+      extra: {
+        scale: [1, 1, 40],
+        levels: [781, 900],
+        minimap: [
+          [-2016, -2016],
+          [2015, 2015],
+        ],
+        hDim: [4033, 4033],
+        lOrigin: [-2032, -2032],
+      },
+  
+    },
+    {
       name: "Gorodok",
       url: "/maps/gorodok/{z}_{x}_{y}.jpg",
       heightmap: {
@@ -278,11 +299,11 @@ const MAPDATA = [
         scale: [1, 1, 10],
         levels: [781, 900],
         minimap: [
-          [-2070, -2070],
-          [2270, 2270],
+          [-2032, -2032],
+          [2032, 2032],
         ],
         hDim: [4033, 4033],
-        lOrigin: [-2016, -2016],
+        lOrigin: [-2032, -2032],
       },
   
     },
@@ -460,6 +481,26 @@ const MAPDATA = [
         ],
         hDim: [2773, 1891],
         lOrigin: [-1386, -1260],
+      },
+    },
+    {
+      name: "Manicouagan",
+      url: "/maps/Manicouagan/{z}_{x}_{y}.jpg",
+      heightmap: {
+        url: "/heightmaps/Manicouagan.jpg",
+        tile: "/heightmaps/Manicouagan/{z}_{x}_{y}.jpg",
+      },
+      locations: [
+      ],
+      extra: {
+        scale: [1, 1, 3],
+        levels: [2479, 5898],
+        minimap: [
+          [-2016, -2016],
+          [2015, 2015],
+        ],
+        hDim: [4081, 4081],
+        lOrigin: [-2032, -2032],
       },
     },
     {
@@ -655,8 +696,8 @@ const MAPDATA = [
         scale: [1, 1, 4],
         levels: [70, 753],
         minimap: [
-          [-2500, -2500],
-          [2500, 2500],
+          [-3002, -3002],
+          [3048, 3048],
         ],
         hDim: [8129, 8129],
         lOrigin: [-4064, -4064],

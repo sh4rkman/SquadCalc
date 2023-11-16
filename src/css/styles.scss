@@ -602,11 +602,12 @@ footer {
 }
 
 #canvas {
+    display: none;
     position: absolute;
     bottom: 0;
     height: 350px;
     width: 350px;
-    background-color: red;
+    //background-color: red;
 }
 
 
