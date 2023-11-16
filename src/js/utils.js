@@ -1,7 +1,8 @@
 import { tooltip_copy, tooltip_save, tooltip_copied } from "./tooltips";
 import { globalData } from "./conf";
-import { MAPS } from "./maps";
+import { MAPS, insertMarkers } from "./maps";
 import { animateCSS, animateCalc} from "./animations";
+import { canvas } from "leaflet";
 
 
 /**
@@ -153,10 +154,10 @@ function getElevation(dist = 0, vDelta = 0, vel = 0) {
  * @returns {lat;lng} - offset position
  */
 function getOffsetLatLng(pos) {
-    const mapScale = globalData.canvas.size / MAPS[globalData.activeMap][1];
+    const mapScale = globalData.canvas.size / MAPS.find((elem, index) => index == globalData.activeMap).size;
     return {
-        lat: (pos.lat + MAPS[globalData.activeMap][2] * mapScale) * mapScale,
-        lng: (pos.lng + MAPS[globalData.activeMap][3] * mapScale) * mapScale
+        lat: (pos.lat + MAPS.find((elem, index) => index == globalData.activeMap).offset[0] * mapScale) * mapScale,
+        lng: (pos.lng + MAPS.find((elem, index) => index == globalData.activeMap).offset[1] * mapScale) * mapScale
     };
 }
 
@@ -177,21 +178,26 @@ function getHeight(a, b) {
     // if user didn't select map, no height calculation
     if (!globalData.activeMap) { return 0; }
 
+    insertMarkers(a, b)
+
     // Apply offset & scaling
     // Heightmaps & maps doesn't always start at A01, they sometimes need to be offset manually
 
     AOffset = getOffsetLatLng(a);
     BOffset = getOffsetLatLng(b);
 
+    console.log(a.lat + " " + a.lng)
+    console.log(AOffset.lat + " " + AOffset.lng)
+
     // Read Heightmap color values for a & b
     Aheight = ctx.getImageData(Math.round(AOffset.lat), Math.round(AOffset.lng), 1, 1).data;
     Bheight = ctx.getImageData(Math.round(BOffset.lat), Math.round(BOffset.lng), 1, 1).data;
+
 
     // Debug purpose
     if (globalData.debug.active) {
         console.log("------------------------------");
         console.log("HEIGHTMAP");
-        console.log(` -> map: ${MAPS[globalData.activeMap][0]}`);
         console.log("------------------------------");
         console.log(`A {lat:${ a.lat.toFixed(2)}; lng: ${a.lng.toFixed(2)}}`);
         console.log(`    -> Offset {lat: ${AOffset.lat.toFixed(2)}; lng: ${AOffset.lng.toFixed(2)}}`);
@@ -202,8 +208,8 @@ function getHeight(a, b) {
 
         // place visual green marker on the canvas
         ctx.fillStyle = "green";
-        ctx.fillRect(AOffset.lat, AOffset.lng, 5, 5);
-        ctx.fillRect(BOffset.lat, BOffset.lng, 5, 5);
+        ctx.fillRect(AOffset.lat, AOffset.lng, 2, 2);
+        ctx.fillRect(BOffset.lat, BOffset.lng, 2, 2);
     }
 
     // Check if a & b aren't out of canvas
@@ -214,8 +220,8 @@ function getHeight(a, b) {
         return "BERROR";
     }
 
-    Aheight = (255 + Aheight[0] - Aheight[2]) * MAPS[globalData.activeMap][4];
-    Bheight = (255 + Bheight[0] - Bheight[2]) * MAPS[globalData.activeMap][4];
+    Aheight = (255 + Aheight[0] - Aheight[2]) * MAPS.find((elem, index) => index == globalData.activeMap).scaling;
+    Bheight = (255 + Bheight[0] - Bheight[2]) * MAPS.find((elem, index) => index == globalData.activeMap).scaling;
 
     return Bheight - Aheight;
 }
@@ -225,6 +231,8 @@ function getHeight(a, b) {
  */
 function resetCalc() {
     if (!globalData.debug.active) {console.clear();}
+
+    globalData.markersGroup.clearLayers();
 
     // First, reset any errors
     $("#settings").css({ "border-color": "#fff" });
@@ -294,6 +302,8 @@ export function shoot(inputChanged = "") {
     aPos = getPos(a);
     bPos = getPos(b);
 
+
+
     if (Number.isNaN(aPos.lng) || Number.isNaN(bPos.lng)) {
 
         if (Number.isNaN(aPos.lng) && Number.isNaN(bPos.lng)) {
@@ -334,7 +344,6 @@ export function shoot(inputChanged = "") {
     }
 
 
-
     // If Target too far, display it and exit function
     if (Number.isNaN(elevation)) {
         showError("Target is out of range : " + distance.toFixed(0) + "m", "target");
@@ -347,8 +356,8 @@ export function shoot(inputChanged = "") {
         return 1;
     }
     
-
     insertCalc(bearing, elevation, distance, vel, height);
+
 }
 
 /**

@@ -1,4 +1,14 @@
 
+
+# <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">  **12.2** *(2023-11-07)*
+
+<img src="https://img.shields.io/badge/-new-green"> Added Sanxian Island (beta)
+
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
+
+
 # <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">  **12.1.2** *(2023-11-04)*
 
 <img src="https://img.shields.io/badge/-%20Improv%20-orange"> Bottom-right menu now autoclose when clicking elsewhere in the window

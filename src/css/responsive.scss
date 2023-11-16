@@ -32,7 +32,7 @@
             }
         }
     }
-    .fab-wrapper {
+    .fab-wrapper, .fab-wrapper2 {
         display: block;
     }
 }
@@ -156,9 +156,10 @@
                 height: 60px;
             }
         }
-        .fab-wrapper {
+        .fab-wrapper, .fab-wrapper2 {
             display: block;
         }
+
     }
     /* -- L*730px -- */
     @media (min-height: 45em) {
