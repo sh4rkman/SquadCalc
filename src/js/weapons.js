@@ -1,6 +1,7 @@
 import { globalData } from "./conf";
 import { shoot } from "./utils";
 import { drawLine } from "./animations";
+import { MAPS } from "./maps"
 
 import classicLogo from "../img/icons/mortar.png";
 import hellcannonLogo from "../img/icons/hellcannon_white.png";
@@ -55,6 +56,20 @@ export class Weapon {
         return 1;
     }
 
+    
+    /**
+     * Return maximum distance for 45°
+     * @returns {number} [distance]
+     */
+    getMaxDistance() {
+        if (this.velocity.constructor != Array) { 
+            return (this.velocity ** 2) / globalData.gravity / this.gravityScale; 
+        }
+
+        // When using UB32, return last value from UB32_table
+        return this.velocity.slice(-1)[0][0];
+    }
+
 }
 
 
@@ -92,7 +107,7 @@ export const WEAPONS = [
     new Weapon("UB-32", UB32_table, 2, [-25, 35], "deg", ub322Logo, "110%", "deployables", "low", 1),
     new Weapon("Hell Cannon", 95, 1, [10, 90], "deg", hellcannonLogo, "130%", "deployables", "high", 1),
 
-    new Weapon("Technical", 110, 1, [-45, 135], "deg", technicalLogo, "50%", "vehicles", "high", 1),
+    new Weapon("Technical", 109.890938, 1, [-45, 135], "deg", technicalLogo, "50%", "vehicles", "high", 1),
     new Weapon("Tech. UB-32", UB32_table, 2, [-45, 135], "deg", ub32Logo, "55%", "vehicles", "low", 1),
     new Weapon("BM-21 Grad", 200, 2, [-45, 135], "deg", mlrsLogo, "60%", "vehicles", "low", 1),
 
@@ -111,8 +126,18 @@ export function changeWeapon() {
     localStorage.setItem("data-weapon", weapon);
     globalData.activeWeapon = WEAPONS[weapon];
     $("#mortarImg").attr("src", globalData.activeWeapon.logo);
-    drawLine();
+    if(globalData.ui){drawLine();}
     shoot();
+    
+    if(globalData.activeWeaponMarker){
+        var radius = globalData.activeWeapon.getMaxDistance() * (256 / MAPS.find((elem, index) => index == globalData.activeMap).size)
+        globalData.activeWeaponMarker.options.rangeMarker.setRadius(radius)
+    }
+
+    globalData.activeWeaponMarkers.eachLayer(function (layer) {
+        layer.updateCalc(layer.latlng);
+    });
+
 }
 
 

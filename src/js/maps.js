@@ -1,5 +1,8 @@
 import { globalData } from "./conf";
-import { shoot } from "./utils";
+import { shoot, getKP } from "./utils";
+import { mortarIcon, targetIcon, squadWeaponMarker,squadTargetMarker } from "./marker";
+import SquadGrid from "./SquadGrid";
+
 import L from "leaflet";
 
 import AlBasrahURL from "../img/heightmaps/al basrah.jpg";
@@ -268,6 +271,7 @@ export function drawHeatmap() {
         globalData.canvas.obj.drawImage(IMG, 0, 0, globalData.canvas.size, globalData.canvas.size);
         shoot()
     }, false);
+
 }
 
 
@@ -299,28 +303,64 @@ export function loadMap(){
         crs: L.CRS.Simple,
         minZoom: 1,
         maxZoom: 6,
-        cursor: true
+        zoomControl: false,
+        doubleClickZoom: false,
     });
 
     globalData.map = map;
     globalData.map.setView([-128, 128], 2);
     globalData.markersGroup = L.layerGroup().addTo(globalData.map);
     globalData.layerGroup = L.layerGroup().addTo(globalData.map);
-    globalData.controlGroup = L.layerGroup().addTo(globalData.map);
+    globalData.weaponGroup = L.layerGroup().addTo(globalData.map);
+    globalData.activeWeaponMarkers = L.layerGroup().addTo(globalData.map);
 
-    globalData.map.on("click", function(e){
-        console.log("lat: " + e.latlng.lat + "lng: " + e.latlng.lng + "zoom: " + map.getZoom());
+
+    var mouseLocationPopup = L.popup({
+        closeButton: false,
+        className: 'kpPopup',
+        autoClose: false,
+        closeOnClick: false,
+        closeOnEscapeKey: false,
+        offset: [0, 75],
+        autoPan: false,
+        interactive: false,
     });
+
+
+    globalData.map.on("mousemove", function(e){
+        const mapScale = MAPS.find((elem, index) => index == globalData.activeMap).size / 256;
+
+        // If no map has been loaded
+        if(globalData.layerGroup.getLayers().length === 0) {return 1}
+
+        // If out of bounds
+        if(e.latlng.lat > 0 ||  e.latlng.lat < -256 || e.latlng.lng < 0 || e.latlng.lng > 256) {
+             mouseLocationPopup.close()
+             return;
+        }
+
+        mouseLocationPopup.setLatLng(e.latlng).openOn(globalData.map);
+        mouseLocationPopup.setContent('<p>'+ getKP(-e.latlng.lat * mapScale, e.latlng.lng * mapScale) + '</p>')
+    });    
+
+    globalData.map.on("dblclick", function(e){
+        new squadTargetMarker(L.latLng(e.latlng), {icon: targetIcon}).addTo(globalData.markersGroup);
+    });
+
 }
 
+
+
 export function drawMap(){
-    var imageBounds = [[0, 0], [-255, 255]];
+
+	var imageBounds = L.latLngBounds(L.latLng(0, 0), L.latLng(-255, 255));
     var mapName = MAPS.find((elem, index) => index == globalData.activeMap).name
     var mapURL = MAPS.find((elem, index) => index == globalData.activeMap).mapURL
 
     globalData.layerGroup.clearLayers();
-    globalData.controlGroup.clearLayers();
-
+    globalData.markersGroup.clearLayers();
+    globalData.weaponGroup.clearLayers();
+   
     // Remove any layers already drawn
     globalData.layerGroup.eachLayer(function(layer){
         globalData.layerGroup.removeLayer(layer)
@@ -333,52 +373,49 @@ export function drawMap(){
         bounds: imageBounds,
     }).addTo(globalData.layerGroup);
 
+    // create weapon
+    globalData.activeWeaponMarker = new squadWeaponMarker(L.latLng([-128, 128]), {icon: mortarIcon, draggable: true}).addTo(globalData.markersGroup).addTo(globalData.weaponGroup);
 
-    var imageUrl = "src/img/heightmaps/" + mapName.toLowerCase() + ".jpg";
-    var heightmaplayer = L.imageOverlay(imageUrl, imageBounds, {
-        opacity: 0.5,
-    }).addTo(globalData.layerGroup);
+    var grid = new SquadGrid
+    grid.setBounds(imageBounds)
+    grid.addTo(globalData.layerGroup)
 
 
-    //BaseLayer
-    const Map_BaseLayer = {
-        //'MIERUNE Color': maplayer,
-        //'MIERUNE MONO': heightmaplayer,
-    };
+    if(globalData.debug.active){
+        var imageUrl = "src/img/heightmaps/" + mapName.toLowerCase() + ".jpg";
+        var heightmaplayer = L.imageOverlay(imageUrl, imageBounds, {
+            opacity: 0.5,
+        }).addTo(globalData.layerGroup);
 
-    //AddLayer
-    const Map_AddLayer = {
-        'Heightmap': heightmaplayer,
-    };
+        //BaseLayer
+        const Map_BaseLayer = {
+            //'MIERUNE Color': maplayer,
+            //'MIERUNE MONO': heightmaplayer,
+        };
 
-    //LayerControl
-    L.control.layers(Map_BaseLayer, Map_AddLayer, {
-        collapsed: false,
-    }).addTo(globalData.map);
+        //AddLayer
+        const Map_AddLayer = {
+            'Heightmap': heightmaplayer,
+        };
 
+        //LayerControl
+        L.control.layers(Map_BaseLayer, Map_AddLayer, {
+            collapsed: false,
+        }).addTo(globalData.map);
+    }
 
 }
-
 
 
 export function insertMarkers(a, b){
 
     const mapScale = 256 / MAPS.find((elem, index) => index == globalData.activeMap).size;
 
-    var aScaled = {
-        lat: a.lat * mapScale,
-        lng: a.lng * mapScale
-    }
+    var aScaled = L.latLng(a.lat * mapScale, a.lng * -mapScale)
+    var bScaled = L.latLng(b.lat * mapScale, b.lng * -mapScale)
 
-    var bScaled = {
-        lat: b.lat * mapScale,
-        lng: b.lng * mapScale
-    }
-
-    L.marker([-aScaled.lng, aScaled.lat]).addTo(globalData.markersGroup);
-    L.marker([-bScaled.lng, bScaled.lat]).addTo(globalData.markersGroup);
-    //L.marker([bScaled.lat, -bScaled.lng]).addTo(globalData.markersGroup);
-
+    globalData.activeWeaponMarker = new squadWeaponMarker(aScaled, {icon: mortarIcon, draggable: true}).addTo(globalData.markersGroup).addTo(globalData.weaponGroup);
+    new squadTargetMarker(bScaled, {icon: targetIcon, draggable: true}).addTo(globalData.markersGroup);
 
 }
 

@@ -1,8 +1,7 @@
-import { shoot, filterInput, resizeInput, resizeInputsOnResize, RemoveSaves, copySave, copyCalc, saveCalc, changeHighLow } from "./utils";
+import { shoot, filterInput, resizeInput, resizeInputsOnResize, RemoveSaves, copySave, copyCalc, saveCalc, changeHighLow, switchUI } from "./utils";
 import { changeWeapon } from "./weapons";
 import { drawHeatmap, drawMap } from "./maps";
 import { switchTheme } from "./themes";
-import { globalData } from "./conf";
 
 $(document).on("change", ".dropbtn2", function() { changeWeapon(); });
 $(document).on("change", ".dropbtn", function() { drawHeatmap(); drawMap(); shoot();});
@@ -27,31 +26,3 @@ $(window).on("resize", function() { resizeInputsOnResize(); });
 
 
 
-export function loadUI(){
-    var ui = localStorage.getItem("data-ui");
-    if(ui == 0){
-        switchUI();
-    }
-}
-
-
-function switchUI(){
-    if(globalData.ui){
-        $("main").addClass("hidden")
-        $("main2").removeClass("hidden")
-        $(".fab-dots-2 i").removeClass("fa-map").addClass("fa-xmarks-lines")
-        globalData.ui = false;
-        //globalData.line.hide("none");   
-        localStorage.setItem("data-ui", 0);
-        globalData.map.invalidateSize()
-    }
-    else {
-        $("main").removeClass("hidden")
-        $("main2").addClass("hidden")
-        $(".fab-dots-2 i").removeClass("fa-xmarks-lines").addClass("fa-map")
-        globalData.ui = true;
-        //drawLine();
-        localStorage.setItem("data-ui", 1);
-    }
-
-}

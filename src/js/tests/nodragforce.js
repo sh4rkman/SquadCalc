@@ -338,6 +338,5 @@ tables.forEach((t) => {
 
 
     });
-    console.log();
 });
 console.log(`done after ${Date.now() - startTime}ms`);

@@ -3,6 +3,8 @@
  */
 export var globalData = {
     activeWeapon: "",
+    activeWeaponMarker: "",
+    activeWeaponMarkers: "",
     activeMap: "",
     angleTypePref: "",
     map: "",
@@ -14,8 +16,8 @@ export var globalData = {
     ui: true,
     debug: {
         active: false,
-        DEBUG_MORTAR_COORD: "G0551",
-        DEBUG_TARGET_COORD: "L1757",
+        DEBUG_MORTAR_COORD: "E0432",
+        DEBUG_TARGET_COORD: "E0535",
     },
     gravity: 9.8,
     theme: "classic",

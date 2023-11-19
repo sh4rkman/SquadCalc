@@ -3,6 +3,7 @@ import { globalData } from "./conf";
 import { MAPS, insertMarkers } from "./maps";
 import { animateCSS, animateCalc} from "./animations";
 import { canvas } from "leaflet";
+import { mortarIcon, targetIcon, squadWeaponMarker, squadTargetMarker } from "./marker";
 
 
 /**
@@ -178,21 +179,15 @@ function getHeight(a, b) {
     // if user didn't select map, no height calculation
     if (!globalData.activeMap) { return 0; }
 
-    insertMarkers(a, b)
-
     // Apply offset & scaling
     // Heightmaps & maps doesn't always start at A01, they sometimes need to be offset manually
-
     AOffset = getOffsetLatLng(a);
     BOffset = getOffsetLatLng(b);
 
-    console.log(a.lat + " " + a.lng)
-    console.log(AOffset.lat + " " + AOffset.lng)
 
     // Read Heightmap color values for a & b
     Aheight = ctx.getImageData(Math.round(AOffset.lat), Math.round(AOffset.lng), 1, 1).data;
     Bheight = ctx.getImageData(Math.round(BOffset.lat), Math.round(BOffset.lng), 1, 1).data;
-
 
     // Debug purpose
     if (globalData.debug.active) {
@@ -232,7 +227,7 @@ function getHeight(a, b) {
 function resetCalc() {
     if (!globalData.debug.active) {console.clear();}
 
-    globalData.markersGroup.clearLayers();
+    //globalData.markersGroup.clearLayers();
 
     // First, reset any errors
     $("#settings").css({ "border-color": "#fff" });
@@ -690,3 +685,191 @@ export function changeHighLow(){
 }
 
 
+/**
+ * Returns true if 'a' is a multiple of 'b' with a precision up to 4 decimals
+ *
+ * @param a
+ * @param b
+ * @returns {boolean} true if 'a' is a multiple of 'b' with a precision up to 4 decimals,
+ *                    false otherwise
+ */
+export function isMultiple(a, b) {
+    const t = b / a;
+    const r = Math.round(t);
+    const d = t >= r ? t - r : r - t;
+    return d < 0.0001;
+  }
+
+
+/**
+ * Calculates the keypad coordinates for a given latlng coordinate, e.g. "A5-3-7"
+ * @param lat - latitude coordinate
+ * @param lng - longitude coordinate
+ * @returns {string} keypad coordinates as string
+ */
+export function getKP(lat, lng) {
+    // to minimize confusion
+    const x = lng;
+    const y = lat;
+
+    if (x < 0 || y < 0) {
+        return "XXX-X-X"; // when outside of min bounds
+    }
+
+
+    
+    const kp = 300 / 3 ** 0; // interval of main keypad, e.g "A5"
+    const s1 = 300 / 3 ** 1; // interval of first sub keypad
+    const s2 = 300 / 3 ** 2; // interval of second sub keypad
+    const s3 = 300 / 3 ** 3; // interval of third sub keypad
+    const s4 = 300 / 3 ** 4; // interval of third sub keypad
+
+    // basic grid, e.g. B5
+    const kpCharCode = 65 + Math.floor(x / kp);
+    let kpLetter;
+    // PostScriptum Arnhem Lane A->Z and then a->b letters fix
+    if (kpCharCode > 90) {
+        kpLetter = String.fromCharCode(kpCharCode + 6);
+    } else {
+        kpLetter = String.fromCharCode(kpCharCode);
+    }
+
+    const kpNumber = Math.floor(y / kp) + 1;
+
+    // sub keypad 1, e.g. B5 - 5
+    // ok when we go down, we have 3x3 pads and start with the left most column, i.e. 7,4,1
+    // so we check which index y is in, either 1st (7), 2nd (4), or 3rd (1)
+    const subY = Math.floor(y / s1) % 3;
+
+    // now we substract the index times 3 from 10
+    // 1st = 10 - 1*3 = 7
+    // 1st = 10 - 2*3 = 4
+    // 1st = 10 - 3*3 = 1
+    let subNumber = 10 - (subY + 1) * 3;
+
+    // now all we need to do is add the index for of x, but starting from 0
+    subNumber += Math.floor(x / s1) % 3;
+
+    // sub keypad 2, e.g. B5 - 5 - 3;
+    // same as above for sub keypad 1
+    const sub2Y = Math.floor(y / s2) % 3;
+    let sub2Number = 10 - (sub2Y + 1) * 3;
+    sub2Number += Math.floor(x / s2) % 3;
+
+
+    // sub keypad 3, e.g. B5 - 5 - 3 - 2;
+    // same as above for sub keypad 2
+    const sub3Y = Math.floor(y / s3) % 3;
+    let sub3Number = 10 - (sub3Y + 1) * 3;
+    sub3Number += Math.floor(x / s3) % 3;
+
+    // sub keypad 3, e.g. B5 - 5 - 3 - 2;
+    // same as above for sub keypad 2
+    const sub4Y = Math.floor(y / s4) % 3;
+    let sub4Number = 10 - (sub4Y + 1) * 3;
+    sub4Number += Math.floor(x / s4) % 3;
+
+    // The more the user zoom in, the more precise we display coords under mouse
+    switch (globalData.map.getZoom()){
+        case 1:
+            return `${kpLetter}${pad(kpNumber, 2)}`;
+        case 2:
+            return `${kpLetter}${pad(kpNumber, 2)}`;
+        case 3:
+            return `${kpLetter}${pad(kpNumber, 2)}-${subNumber}`;
+        case 4:
+            return `${kpLetter}${pad(kpNumber, 2)}-${subNumber}-${sub2Number}`;
+        case 5:
+            return `${kpLetter}${pad(kpNumber, 2)}-${subNumber}-${sub2Number}-${sub3Number}`;
+        case 6:
+            return `${kpLetter}${pad(kpNumber, 2)}-${subNumber}-${sub2Number}-${sub3Number}-${sub4Number}`;
+    }
+}  
+
+/**
+ * 0-padding for numbers.
+ * @param num - number to be padded
+ * @param size - size of target string length, e.g. size == 4 == 4 digits
+ * @returns {string} padded number as string
+ */
+export function pad(num, size) {
+    return `0000${num}`.substr(-size);
+  }
+
+
+export function loadUI(){
+    var ui = localStorage.getItem("data-ui");
+    if(ui == 0){
+        switchUI();
+    }
+}
+
+
+export function switchUI(){
+    if(globalData.ui){
+        $("main").addClass("hidden")
+        $("main2").removeClass("hidden")
+        $(".fab-dots-2 i").removeClass("fa-map").addClass("fa-xmarks-lines")
+        globalData.ui = false;
+        //globalData.line.hide("none");   
+        localStorage.setItem("data-ui", 0);
+        globalData.map.invalidateSize()
+        switchToUIcalc()
+    }
+    else {
+        $("main").removeClass("hidden")
+        $("main2").addClass("hidden")
+        $(".fab-dots-2 i").removeClass("fa-xmarks-lines").addClass("fa-map")
+        globalData.ui = true;
+        localStorage.setItem("data-ui", 1);
+    }
+}
+
+/**
+ * Function called when switching from number mode to UI
+ * @returns {1} if errors
+ */
+function switchToUIcalc(){
+    var a = $("#mortar-location").val();
+    var b = $("#target-location").val();
+
+    // If no map has been loaded
+    if(globalData.layerGroup.getLayers().length === 0) {return 1}
+
+    // if no valid calcs are ready
+    if (a.length < 3 || b.length < 3) { 
+        if(globalData.weaponGroup.getLayers().length === 0) {
+            globalData.activeWeaponMarker = new squadWeaponMarker(L.latLng([-128, 128]), {icon: mortarIcon, draggable: true}).addTo(globalData.markersGroup).addTo(globalData.weaponGroup);
+        }
+    }
+
+    // If already a weapon on the map
+    if(globalData.weaponGroup.getLayers().length === 0) {
+        insertMarkers(getPos(a), getPos(b))
+    }
+
+}
+
+export function getCalcFromUI(a, b) {
+    const mapScale = MAPS.find((elem, index) => index == globalData.activeMap).size / 256;
+
+    a = L.latLng([a.lat * -mapScale, a.lng * mapScale])
+    b = L.latLng([b.lat * -mapScale, b.lng * mapScale])
+
+    var height = getHeight(a, b);
+    var distance = getDist(a, b);
+    var bearing = getBearing(a, b);
+    var vel = globalData.activeWeapon.getVelocity(distance);
+    var elevation = getElevation(distance, height, vel);
+
+    if (globalData.activeWeapon.unit === "mil") {
+        elevation = radToMil(elevation);
+    } else {
+        elevation = radToDeg(elevation);
+        // The technical mortar is bugged : the ingame range metter is off by 5°
+        // Ugly fix until OWI correct it
+        if (globalData.activeWeapon.name === "Technical") { elevation = elevation - 5; }
+    }
+
+    return [bearing, elevation]
+}

@@ -10,7 +10,7 @@ $fa-font-path: '../img/fontawesome/webfonts';
    * -- BASE COLOR --
 */
 
-$mainColor: firebrick;
+$mainColor: #b22222;
 $mainBGColor: #111;
 $mainTxtColor: #fff;
 $newColor: green;
@@ -71,6 +71,7 @@ input {
     width: 100%;
     &:focus {
         outline: none;
+        border-bottom: 3px solid $mainColor;
     }
     &::selection {
         background-color: $mainColor;
@@ -141,7 +142,16 @@ header {
     .select2-container {
         background-color: transparent;
         border-bottom: 1px solid $mainTxtColor;
-        box-shadow: none;
+        color: #FFFFFF;
+        text-shadow: 
+        1px 1px 0 black,
+        1px -1px 0 black,
+        -1px 1px 0 black,
+        -1px -1px 0 black,
+        2px 0px 0 black,
+        0px 2px 0 black,
+        -2px 0px 0 black,
+        0px -2px 0 black;
         font-weight: bold;
         line-height: 2.188em;
         min-width: 200px;
@@ -295,6 +305,8 @@ footer {
     position: fixed;
     z-index: 1;
     .logo {
+        position: relative;
+        z-index: -1;
         width: 250px;
     }
 }
@@ -585,11 +597,11 @@ main {
 main2 {
     position: relative;
     //border: green 1px solid;
-    height: 84vh; 
-    width: 80vw; 
-    margin: 8vh 10vw 8vh 10vw;
+    height: 100vh; 
+    width: 100vw; 
+    margin: 0;
     #map {
-        border: solid rgb(151, 144, 144) 1px;
+        //border: solid rgb(151, 144, 144) 1px;
         border-radius: 5px;
         height: 100%;
         width: 100%;
@@ -613,8 +625,105 @@ footer {
 
 .leaflet-container {
     background: var(--themecolor, $mainBGColor);
-    z-index: 3;
+    z-index: 0;
     outline: 0;
+}
+
+.leader-line {
+    z-index: -1;
+}
+
+.kpPopup {
+    background: transparent;
+    .leaflet-popup-tip,
+    .leaflet-popup-content-wrapper {
+        user-select: none; 
+        font-family: Montserrat, Times, "Times New Roman", serif;
+        font-weight: bold;
+        font-size: 1.2em;
+        background: transparent;
+        box-shadow: none;
+        color: white;
+        height: 2em;
+        padding: 0;
+        text-align: center;
+        text-shadow: 1px 1px 0 #000,
+        -1px 1px 0 #000,
+        1px -1px 0 #000,
+        -1px -1px 0 #000,
+        0px 1px 0 #000,
+        0px -1px 0 #000,
+        -1px 0px 0 #000,
+        1px 0px 0 #000,
+        2px 2px 0 #000,
+        -2px 2px 0 #000,
+        2px -2px 0 #000,
+        -2px -2px 0 #000,
+        0px 2px 0 #000,
+        0px -2px 0 #000,
+        -2px 0px 0 #000,
+        2px 0px 0 #000,
+        1px 2px 0 #000,
+        -1px 2px 0 #000,
+        1px -2px 0 #000,
+        -1px -2px 0 #000,
+        2px 1px 0 #000,
+        -2px 1px 0 #000,
+        2px -1px 0 #000,
+        -2px -1px 0 #000;
+    }
+}
+
+.calcPopup {
+    p {
+        //background: firebrick;
+        //padding: 4px;
+        text-align: center;
+    }
+
+    .leaflet-popup-tip,
+    .leaflet-popup-content-wrapper {
+        user-select: none; 
+        font-family: Montserrat, Times, "Times New Roman", serif;
+        font-weight: bold;
+        font-size: 0.9em;
+        background: transparent;
+        box-shadow: none;
+        color: white;
+        height: 2em;
+        padding: 0;
+        text-shadow: 1px 1px 0 #000,
+        -1px 1px 0 #000,
+        1px -1px 0 #000,
+        -1px -1px 0 #000,
+        0px 1px 0 #000,
+        0px -1px 0 #000,
+        -1px 0px 0 #000,
+        1px 0px 0 #000,
+        2px 2px 0 #000,
+        -2px 2px 0 #000,
+        2px -2px 0 #000,
+        -2px -2px 0 #000,
+        0px 2px 0 #000,
+        0px -2px 0 #000,
+        -2px 0px 0 #000,
+        2px 0px 0 #000,
+        1px 2px 0 #000,
+        -1px 2px 0 #000,
+        1px -2px 0 #000,
+        -1px -2px 0 #000,
+        2px 1px 0 #000,
+        -2px 1px 0 #000,
+        2px -1px 0 #000,
+        -2px -1px 0 #000;
+    }
+}
+
+
+
+
+.leaflet-fade-anim .leaflet-popup {
+    transition: none;
 }
 
 
@@ -630,6 +739,7 @@ footer {
         padding-top: 0.55em;
     }
     .fab2 {
+        transition: opacity 1s ease-out;
         background: #333;
         border-radius: 50%;
         border: 1px solid rgb(37, 37, 37);
@@ -658,6 +768,10 @@ footer {
             background: rgb(24, 24, 24);
             cursor: pointer;
         }
+
+    }
+    .disabled {
+        background: red;
     }
 
     .fab-checkbox2 {
