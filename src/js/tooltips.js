@@ -6,7 +6,7 @@ export var tooltip_save;
 export var tooltip_copy;
 export var tooltip_copied;
 export var tooltip_mlrs;
-
+export var tooltip_newUI;
 
 tippy("#settings", {
     animation: "fade",
@@ -83,12 +83,23 @@ tippy(".fab-action-4", {
     theme: "fab",
 });
 
+if(!localStorage.getItem("InfoToolTips_uimode")) {
+    tippy(".fab2", {
+        placement: "right",
+        animation: "fade",
+        allowHTML: true,
+        content: "Map Mode </br> (beta)",
+        theme: "fab",
+    });
+    tooltip_newUI = document.querySelector(".fab2")._tippy
+    tooltip_newUI.show()
+}
 
 
 tippy("#savebutton i", {
     animation: "fade",
     allowHTML: true,
-    content: "Save </br> <span class=\"tooltipsubtext\"> (the results for later)</span> ",
+    content: "Save </br> <span class=\"tooltipsubtext\"> (the results for later)</span>",
     interactiveDebounce: 75,
     placement: "bottom",
     theme: "results",

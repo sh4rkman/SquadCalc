@@ -1,4 +1,4 @@
-import { tooltip_copy, tooltip_save, tooltip_copied } from "./tooltips";
+import { tooltip_copy, tooltip_save, tooltip_copied, tooltip_newUI } from "./tooltips";
 import { globalData } from "./conf";
 import { MAPS, insertMarkers } from "./maps";
 import { animateCSS, animateCalc} from "./animations";
@@ -329,6 +329,8 @@ export function shoot(inputChanged = "") {
     vel = globalData.activeWeapon.getVelocity(distance);
     elevation = getElevation(distance, height, vel);
 
+
+
     if (globalData.activeWeapon.unit === "mil") {
         elevation = radToMil(elevation);
     } else {
@@ -345,8 +347,8 @@ export function shoot(inputChanged = "") {
         return 1;
     }
 
-   
-    if ((elevation < globalData.activeWeapon.minElevation[0])) {
+
+    if ((elevation > globalData.activeWeapon.minElevation[1])) {
         showError("Target is too close : " + distance.toFixed(0) + "m", "target");
         return 1;
     }
@@ -814,7 +816,9 @@ export function switchUI(){
         //globalData.line.hide("none");   
         localStorage.setItem("data-ui", 0);
         globalData.map.invalidateSize()
-        switchToUIcalc()
+        $('.logo').hide()
+        localStorage.setItem("InfoToolTips_uimode", true);
+        if(tooltip_newUI){tooltip_newUI.destroy()}
     }
     else {
         $("main").removeClass("hidden")
@@ -822,32 +826,8 @@ export function switchUI(){
         $(".fab-dots-2 i").removeClass("fa-xmarks-lines").addClass("fa-map")
         globalData.ui = true;
         localStorage.setItem("data-ui", 1);
+        $('.logo').show()
     }
-}
-
-/**
- * Function called when switching from number mode to UI
- * @returns {1} if errors
- */
-function switchToUIcalc(){
-    var a = $("#mortar-location").val();
-    var b = $("#target-location").val();
-
-    // If no map has been loaded
-    if(globalData.layerGroup.getLayers().length === 0) {return 1}
-
-    // if no valid calcs are ready
-    if (a.length < 3 || b.length < 3) { 
-        if(globalData.weaponGroup.getLayers().length === 0) {
-            globalData.activeWeaponMarker = new squadWeaponMarker(L.latLng([-128, 128]), {icon: mortarIcon, draggable: true}).addTo(globalData.markersGroup).addTo(globalData.weaponGroup);
-        }
-    }
-
-    // If already a weapon on the map
-    if(globalData.weaponGroup.getLayers().length === 0) {
-        insertMarkers(getPos(a), getPos(b))
-    }
-
 }
 
 export function getCalcFromUI(a, b) {
@@ -861,15 +841,20 @@ export function getCalcFromUI(a, b) {
     var bearing = getBearing(a, b);
     var vel = globalData.activeWeapon.getVelocity(distance);
     var elevation = getElevation(distance, height, vel);
+    console.log(distance, height, vel)
 
     if (globalData.activeWeapon.unit === "mil") {
         elevation = radToMil(elevation);
     } else {
         elevation = radToDeg(elevation);
-        // The technical mortar is bugged : the ingame range metter is off by 5°
-        // Ugly fix until OWI correct it
         if (globalData.activeWeapon.name === "Technical") { elevation = elevation - 5; }
     }
 
-    return [bearing, elevation]
+    if(isNaN(elevation) || elevation > globalData.activeWeapon.minElevation[1]){
+        elevation = "---";
+    }
+    else {
+        elevation = elevation.toFixed(globalData.activeWeapon.elevationPrecision)
+    }
+    return [bearing.toFixed(1), elevation]
 }

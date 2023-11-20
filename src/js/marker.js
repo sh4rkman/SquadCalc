@@ -24,6 +24,7 @@ export var squadMarker = L.Marker.extend({
 export var squadWeaponMarker = squadMarker.extend({
     options: {
         rangeMarker: null,
+        minRangeMarker: null,
         autoPan: false,
     },
 
@@ -34,18 +35,29 @@ export var squadWeaponMarker = squadMarker.extend({
             radius: globalData.activeWeapon.getMaxDistance() * (256 / MAPS.find((elem, index) => index == globalData.activeMap).size),
             opacity: 1,
             color: "#01d401",
-            fillOpacity: 0.05,
+            fillOpacity: 0,
             weight: 2,
             autoPan: false,
         }
 
+        var circleOptions2 = {
+            radius: globalData.activeWeapon.minDistance * (256 / MAPS.find((elem, index) => index == globalData.activeMap).size),
+            opacity: 0.5,
+            color: "red",
+            fillOpacity: 0.1,
+            weight: 1,
+            autoPan: false,
+        }
+
         // create the range marker
+        this.options.minRangeMarker = L.circle(latlng, circleOptions2).addTo(globalData.markersGroup);
         this.options.rangeMarker = L.circle(latlng, circleOptions).addTo(globalData.markersGroup);
         this.on('drag', this._handleDrag, this);
     },
 
     _handleDrag: function (e) {
         this.options.rangeMarker.setLatLng(e.latlng)
+        this.options.minRangeMarker.setLatLng(e.latlng)
         globalData.activeWeaponMarkers.eachLayer(function (layer) {
             layer.updateCalc(layer.latlng);
         });
@@ -69,13 +81,13 @@ export var squadTargetMarker = squadMarker.extend({
             closeOnEscapeKey: false,
             autoPan: false,
             interactive: false,
-            offset: [0, 45],
+            offset: [45, 0],
         };
 
         this.addTo(globalData.activeWeaponMarkers)
         this.options.calcMarker = L.popup(popUpOptions).setLatLng(latlng).openOn(globalData.map).addTo(globalData.markersGroup);
         var calc = getCalcFromUI(globalData.activeWeaponMarker.getLatLng(), latlng);
-        var content = "<p>" + calc[0].toFixed(1) + " - " +  calc[1].toFixed(globalData.activeWeapon.elevationPrecision) + "</p>";
+        var content = "<span>" + calc[1] + "</span></br><span class='bearingUiCalc'>" +  calc[0] + "°</span>";
         this.options.calcMarker.setContent(content);
 
         this.on('click', this._handleClick, this);
@@ -86,7 +98,7 @@ export var squadTargetMarker = squadMarker.extend({
 
     updateCalc: function(e){
         var calc = getCalcFromUI(globalData.activeWeaponMarker.getLatLng(), this.getLatLng());
-        var content = "<p>" + calc[0].toFixed(1) + " - " +  calc[1].toFixed(globalData.activeWeapon.elevationPrecision) + "</p>";
+        var content = "<span>" + calc[1] + "</span></br><span class='bearingUiCalc'>" +  calc[0] + "°</span>";
         this.options.calcMarker.setContent(content);
     },
 
@@ -98,7 +110,7 @@ export var squadTargetMarker = squadMarker.extend({
     _handleDrag: function (e) {
         this.options.calcMarker.setLatLng(e.latlng)
         var calc = getCalcFromUI(globalData.activeWeaponMarker.getLatLng(), e.target.getLatLng());
-        var content = "<p>" + calc[0].toFixed(1) + " - " +  calc[1].toFixed(globalData.activeWeapon.elevationPrecision) + "</p>";
+        var content = "<span>" + calc[1] + "</span></br><span class='bearingUiCalc'>" +  calc[0] + "°</span>";
         this.options.calcMarker.setContent(content);
     },
 

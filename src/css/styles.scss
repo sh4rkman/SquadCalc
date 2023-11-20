@@ -71,7 +71,6 @@ input {
     width: 100%;
     &:focus {
         outline: none;
-        border-bottom: 3px solid $mainColor;
     }
     &::selection {
         background-color: $mainColor;
@@ -143,15 +142,30 @@ header {
         background-color: transparent;
         border-bottom: 1px solid $mainTxtColor;
         color: #FFFFFF;
-        text-shadow: 
-        1px 1px 0 black,
-        1px -1px 0 black,
-        -1px 1px 0 black,
-        -1px -1px 0 black,
-        2px 0px 0 black,
-        0px 2px 0 black,
-        -2px 0px 0 black,
-        0px -2px 0 black;
+        text-shadow: 1px 1px 0 #111,
+        -1px 1px 0 #111,
+        1px -1px 0 #111,
+        -1px -1px 0 #111,
+        0px 1px 0 #111,
+        0px -1px 0 #111,
+        -1px 0px 0 #111,
+        1px 0px 0 #111,
+        2px 2px 0 #111,
+        -2px 2px 0 #111,
+        2px -2px 0 #111,
+        -2px -2px 0 #111,
+        0px 2px 0 #111,
+        0px -2px 0 #111,
+        -2px 0px 0 #111,
+        2px 0px 0 #111,
+        1px 2px 0 #111,
+        -1px 2px 0 #111,
+        1px -2px 0 #111,
+        -1px -2px 0 #111,
+        2px 1px 0 #111,
+        -2px 1px 0 #111,
+        2px -1px 0 #111,
+        -2px -1px 0 #111;
         font-weight: bold;
         line-height: 2.188em;
         min-width: 200px;
@@ -647,42 +661,49 @@ footer {
         height: 2em;
         padding: 0;
         text-align: center;
-        text-shadow: 1px 1px 0 #000,
-        -1px 1px 0 #000,
-        1px -1px 0 #000,
-        -1px -1px 0 #000,
-        0px 1px 0 #000,
-        0px -1px 0 #000,
-        -1px 0px 0 #000,
-        1px 0px 0 #000,
-        2px 2px 0 #000,
-        -2px 2px 0 #000,
-        2px -2px 0 #000,
-        -2px -2px 0 #000,
-        0px 2px 0 #000,
-        0px -2px 0 #000,
-        -2px 0px 0 #000,
-        2px 0px 0 #000,
-        1px 2px 0 #000,
-        -1px 2px 0 #000,
-        1px -2px 0 #000,
-        -1px -2px 0 #000,
-        2px 1px 0 #000,
-        -2px 1px 0 #000,
-        2px -1px 0 #000,
-        -2px -1px 0 #000;
+        text-shadow: 1px 1px 0 #111,
+        -1px 1px 0 #111,
+        1px -1px 0 #111,
+        -1px -1px 0 #111,
+        0px 1px 0 #111,
+        0px -1px 0 #111,
+        -1px 0px 0 #111,
+        1px 0px 0 #111,
+        2px 2px 0 #111,
+        -2px 2px 0 #111,
+        2px -2px 0 #111,
+        -2px -2px 0 #111,
+        0px 2px 0 #111,
+        0px -2px 0 #111,
+        -2px 0px 0 #111,
+        2px 0px 0 #111,
+        1px 2px 0 #111,
+        -1px 2px 0 #111,
+        1px -2px 0 #111,
+        -1px -2px 0 #111,
+        2px 1px 0 #111,
+        -2px 1px 0 #111,
+        2px -1px 0 #111,
+        -2px -1px 0 #111;
     }
 }
 
-.calcPopup {
-    p {
-        //background: firebrick;
-        //padding: 4px;
-        text-align: center;
-    }
+.leaflet-container, .leaflet-overlay-pane .leaflet-interactive {
+    cursor:crosshair;
+}
 
+.leaflet-pane .leaflet-marker-pane .leaflet-marker-icon {
+    cursor:grab;
+}
+
+.calcPopup {
+    .bearingUiCalc {
+        padding-top: 5px;
+        font-size: 0.7em;
+    }
     .leaflet-popup-tip,
     .leaflet-popup-content-wrapper {
+        
         user-select: none; 
         font-family: Montserrat, Times, "Times New Roman", serif;
         font-weight: bold;
@@ -716,6 +737,10 @@ footer {
         -2px 1px 0 #000,
         2px -1px 0 #000,
         -2px -1px 0 #000;
+    }
+    .leaflet-popup-content{
+        margin:  0;
+        line-height: 1;
     }
 }
 
