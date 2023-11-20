@@ -1,7 +1,7 @@
 import { globalData } from "./conf";
-import { shoot, getDistance } from "./utils";
 import { drawLine } from "./animations";
-import { MAPS } from "./maps"
+import { MAPS } from "./maps";
+import { shoot } from "./utils";
 
 import classicLogo from "../img/icons/mortar.png";
 import hellcannonLogo from "../img/icons/hellcannon_white.png";
@@ -121,17 +121,19 @@ export const WEAPONS = [
  * save current weapon into browser cache
  */
 export function changeWeapon() {
+    var radiusMax;
+    var radiusMin;
     const weapon = $(".dropbtn2").val();
     globalData.line.hide("none");
     localStorage.setItem("data-weapon", weapon);
     globalData.activeWeapon = WEAPONS[weapon];
     $("#mortarImg").attr("src", globalData.activeWeapon.logo);
-    if(globalData.ui){drawLine();}
+    if (globalData.ui){drawLine();}
     shoot();
     
-    if(globalData.activeWeaponMarker){
-        var radiusMax = globalData.activeWeapon.getMaxDistance() * (256 / MAPS.find((elem, index) => index == globalData.activeMap).size)
-        var radiusMin = globalData.activeWeapon.minDistance * (256 / MAPS.find((elem, index) => index == globalData.activeMap).size)
+    if (globalData.activeWeaponMarker){
+        radiusMax = globalData.activeWeapon.getMaxDistance() * (256 / MAPS.find((elem, index) => index == globalData.activeMap).size);
+        radiusMin = globalData.activeWeapon.minDistance * (256 / MAPS.find((elem, index) => index == globalData.activeMap).size);
         globalData.activeWeaponMarker.options.rangeMarker.setRadius(radiusMax);
         globalData.activeWeaponMarker.options.minRangeMarker.setRadius(radiusMin);
     }

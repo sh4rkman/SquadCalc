@@ -1,10 +1,7 @@
 import { tooltip_copy, tooltip_save, tooltip_copied, tooltip_newUI } from "./tooltips";
 import { globalData } from "./conf";
-import { MAPS, insertMarkers } from "./maps";
+import { MAPS } from "./maps";
 import { animateCSS, animateCalc} from "./animations";
-import { canvas } from "leaflet";
-import { mortarIcon, targetIcon, squadWeaponMarker, squadTargetMarker } from "./marker";
-
 
 /**
  * Returns the latlng coordinates based on the given keypad string.
@@ -700,7 +697,7 @@ export function isMultiple(a, b) {
     const r = Math.round(t);
     const d = t >= r ? t - r : r - t;
     return d < 0.0001;
-  }
+}
 
 
 /**
@@ -773,18 +770,18 @@ export function getKP(lat, lng) {
 
     // The more the user zoom in, the more precise we display coords under mouse
     switch (globalData.map.getZoom()){
-        case 1:
-            return `${kpLetter}${pad(kpNumber, 2)}`;
-        case 2:
-            return `${kpLetter}${pad(kpNumber, 2)}`;
-        case 3:
-            return `${kpLetter}${pad(kpNumber, 2)}-${subNumber}`;
-        case 4:
-            return `${kpLetter}${pad(kpNumber, 2)}-${subNumber}-${sub2Number}`;
-        case 5:
-            return `${kpLetter}${pad(kpNumber, 2)}-${subNumber}-${sub2Number}-${sub3Number}`;
-        case 6:
-            return `${kpLetter}${pad(kpNumber, 2)}-${subNumber}-${sub2Number}-${sub3Number}-${sub4Number}`;
+    case 1:
+        return `${kpLetter}${pad(kpNumber, 2)}`;
+    case 2:
+        return `${kpLetter}${pad(kpNumber, 2)}`;
+    case 3:
+        return `${kpLetter}${pad(kpNumber, 2)}-${subNumber}`;
+    case 4:
+        return `${kpLetter}${pad(kpNumber, 2)}-${subNumber}-${sub2Number}`;
+    case 5:
+        return `${kpLetter}${pad(kpNumber, 2)}-${subNumber}-${sub2Number}-${sub3Number}`;
+    case 6:
+        return `${kpLetter}${pad(kpNumber, 2)}-${subNumber}-${sub2Number}-${sub3Number}-${sub4Number}`;
     }
 }  
 
@@ -796,45 +793,45 @@ export function getKP(lat, lng) {
  */
 export function pad(num, size) {
     return `0000${num}`.substr(-size);
-  }
+}
 
 
 export function loadUI(){
     var ui = localStorage.getItem("data-ui");
-    if(ui == 0){
+    if (ui == 0){
         switchUI();
     }
 }
 
 
 export function switchUI(){
-    if(globalData.ui){
-        $("main").addClass("hidden")
-        $("main2").removeClass("hidden")
-        $(".fab-dots-2 i").removeClass("fa-map").addClass("fa-xmarks-lines")
+    if (globalData.ui){
+        $("main").addClass("hidden");
+        $("main2").removeClass("hidden");
+        $(".fab-dots-2 i").removeClass("fa-map").addClass("fa-xmarks-lines");
         globalData.ui = false;
         //globalData.line.hide("none");   
         localStorage.setItem("data-ui", 0);
-        globalData.map.invalidateSize()
-        $('.logo').hide()
+        globalData.map.invalidateSize();
+        $(".logo").hide();
         localStorage.setItem("InfoToolTips_uimode", true);
         if(tooltip_newUI){tooltip_newUI.destroy()}
     }
     else {
-        $("main").removeClass("hidden")
-        $("main2").addClass("hidden")
-        $(".fab-dots-2 i").removeClass("fa-xmarks-lines").addClass("fa-map")
+        $("main").removeClass("hidden");
+        $("main2").addClass("hidden");
+        $(".fab-dots-2 i").removeClass("fa-xmarks-lines").addClass("fa-map");
         globalData.ui = true;
         localStorage.setItem("data-ui", 1);
-        $('.logo').show()
+        $('.logo').show();
     }
 }
 
 export function getCalcFromUI(a, b) {
     const mapScale = MAPS.find((elem, index) => index == globalData.activeMap).size / 256;
 
-    a = L.latLng([a.lat * -mapScale, a.lng * mapScale])
-    b = L.latLng([b.lat * -mapScale, b.lng * mapScale])
+    a = L.latLng([a.lng * mapScale, a.lat * -mapScale])
+    b = L.latLng([b.lng * mapScale, b.lat * -mapScale])
 
     var height = getHeight(a, b);
     var distance = getDist(a, b);
