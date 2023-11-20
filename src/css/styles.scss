@@ -141,23 +141,23 @@ header {
     .select2-container {
         background-color: transparent;
         border-bottom: 1px solid $mainTxtColor;
-        color: #FFFFFF;
+        color: #FFF;
         text-shadow: 1px 1px 0 #111,
         -1px 1px 0 #111,
         1px -1px 0 #111,
         -1px -1px 0 #111,
-        0px 1px 0 #111,
-        0px -1px 0 #111,
-        -1px 0px 0 #111,
-        1px 0px 0 #111,
+        0 1px 0 #111,
+        0 -1px 0 #111,
+        -1px 0 0 #111,
+        1px 0 0 #111,
         2px 2px 0 #111,
         -2px 2px 0 #111,
         2px -2px 0 #111,
         -2px -2px 0 #111,
-        0px 2px 0 #111,
-        0px -2px 0 #111,
-        -2px 0px 0 #111,
-        2px 0px 0 #111,
+        0 2px 0 #111,
+        0 -2px 0 #111,
+        -2px 0 0 #111,
+        2px 0 0 #111,
         1px 2px 0 #111,
         -1px 2px 0 #111,
         1px -2px 0 #111,
@@ -200,6 +200,7 @@ header {
    *****************/
 
 main {
+    height: 40vh;
     #settings {
         border-radius: 5px;
         border: 5px solid $mainTxtColor;
@@ -318,6 +319,7 @@ footer {
     left: 0;
     position: fixed;
     z-index: 1;
+    height: 5vh;
     .logo {
         position: relative;
         z-index: -1;
@@ -496,7 +498,7 @@ footer {
 }
 
 .hidden {
-    opacity: 0;
+    opacity: 0 !important;
 }
 
 
@@ -599,32 +601,16 @@ footer {
     border: none;
 }
 
-.hidden {
-    opacity: 0 !important;
-}
-
-main {
-    //border: red 1px solid;
-    height: 40vh;
-}
-
 main2 {
     position: relative;
-    //border: green 1px solid;
     height: 100vh; 
     width: 100vw; 
     margin: 0;
     #map {
-        //border: solid rgb(151, 144, 144) 1px;
         border-radius: 5px;
         height: 100%;
         width: 100%;
     }
-}
-
-footer {
-    //border: blue 1px solid;
-    height: 5vh;
 }
 
 #canvas {
@@ -633,9 +619,7 @@ footer {
     bottom: 0;
     height: 350px;
     width: 350px;
-    //background-color: red;
 }
-
 
 .leaflet-container {
     background: var(--themecolor, $mainBGColor);
@@ -665,18 +649,18 @@ footer {
         -1px 1px 0 #111,
         1px -1px 0 #111,
         -1px -1px 0 #111,
-        0px 1px 0 #111,
-        0px -1px 0 #111,
-        -1px 0px 0 #111,
-        1px 0px 0 #111,
+       0 1px 0 #111,
+        0 -1px 0 #111,
+        -1px 0 0 #111,
+        1px 0 0 #111,
         2px 2px 0 #111,
         -2px 2px 0 #111,
         2px -2px 0 #111,
         -2px -2px 0 #111,
-        0px 2px 0 #111,
-        0px -2px 0 #111,
-        -2px 0px 0 #111,
-        2px 0px 0 #111,
+        0 2px 0 #111,
+        0 -2px 0 #111,
+        -2px 0 0 #111,
+        2px 0 0 #111,
         1px 2px 0 #111,
         -1px 2px 0 #111,
         1px -2px 0 #111,
@@ -703,7 +687,6 @@ footer {
     }
     .leaflet-popup-tip,
     .leaflet-popup-content-wrapper {
-        
         user-select: none; 
         font-family: Montserrat, Times, "Times New Roman", serif;
         font-weight: bold;
@@ -717,18 +700,18 @@ footer {
         -1px 1px 0 #000,
         1px -1px 0 #000,
         -1px -1px 0 #000,
-        0px 1px 0 #000,
-        0px -1px 0 #000,
-        -1px 0px 0 #000,
-        1px 0px 0 #000,
+        0 1px 0 #000,
+        0 -1px 0 #000,
+        -1px 0 0 #000,
+        1px 0 0 #000,
         2px 2px 0 #000,
         -2px 2px 0 #000,
         2px -2px 0 #000,
         -2px -2px 0 #000,
-        0px 2px 0 #000,
-        0px -2px 0 #000,
-        -2px 0px 0 #000,
-        2px 0px 0 #000,
+        0 2px 0 #000,
+        0 -2px 0 #000,
+        -2px 0 0 #000,
+        2px 0 0 #000,
         1px 2px 0 #000,
         -1px 2px 0 #000,
         1px -2px 0 #000,
@@ -756,7 +739,6 @@ footer {
 .fab-wrapper2 {
     bottom: 2rem;
     display: none;
-    position: fixed;
     left: 4rem;
     z-index: 1;
     position:absolute;
@@ -764,7 +746,6 @@ footer {
         padding-top: 0.55em;
     }
     .fab2 {
-        transition: opacity 1s ease-out;
         background: #333;
         border-radius: 50%;
         border: 1px solid rgb(37, 37, 37);
@@ -798,7 +779,6 @@ footer {
     .disabled {
         background: red;
     }
-
     .fab-checkbox2 {
         display: none;
     }

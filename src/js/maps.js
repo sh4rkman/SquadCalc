@@ -64,7 +64,7 @@ export const MAPS = [
         scaling: 0.35, 
         heightmapURL: BlackCoastURL,
         mapURL: "/blackcoast/{z}_{x}_{y}.jpg",
-     },
+    },
     { 
         name: "Chora", 
         size: 4064, // OK
@@ -269,7 +269,7 @@ export function drawHeatmap() {
 
     IMG.addEventListener("load", function() { // wait for the image to load or it does crazy stuff
         globalData.canvas.obj.drawImage(IMG, 0, 0, globalData.canvas.size, globalData.canvas.size);
-        shoot()
+        shoot();
     }, false);
 
 }
@@ -297,7 +297,7 @@ function loadHeatmap() {
 
 export function loadMap(){
 
-    var map = L.map('map', {
+    var map = L.map("map", {
         center: [700, 700],
         attributionControl: false,
         crs: L.CRS.Simple,
@@ -305,6 +305,17 @@ export function loadMap(){
         maxZoom: 6,
         zoomControl: false,
         doubleClickZoom: false,
+    });
+
+    var mouseLocationPopup = L.popup({
+        closeButton: false,
+        className: "kpPopup",
+        autoClose: false,
+        closeOnClick: false,
+        closeOnEscapeKey: false,
+        offset: [0, 75],
+        autoPan: false,
+        interactive: false,
     });
 
     globalData.map = map;
@@ -315,32 +326,22 @@ export function loadMap(){
     globalData.activeWeaponMarkers = L.layerGroup().addTo(globalData.map);
 
 
-    var mouseLocationPopup = L.popup({
-        closeButton: false,
-        className: 'kpPopup',
-        autoClose: false,
-        closeOnClick: false,
-        closeOnEscapeKey: false,
-        offset: [0, 75],
-        autoPan: false,
-        interactive: false,
-    });
 
 
     globalData.map.on("mousemove", function(e){
         const mapScale = MAPS.find((elem, index) => index == globalData.activeMap).size / 256;
 
         // If no map has been loaded
-        if(globalData.layerGroup.getLayers().length === 0) {return 1}
+        if (globalData.layerGroup.getLayers().length === 0) {return 1;}
 
         // If out of bounds
-        if(e.latlng.lat > 0 ||  e.latlng.lat < -256 || e.latlng.lng < 0 || e.latlng.lng > 256) {
-             mouseLocationPopup.close()
-             return;
+        if (e.latlng.lat > 0 ||  e.latlng.lat < -256 || e.latlng.lng < 0 || e.latlng.lng > 256) {
+            mouseLocationPopup.close();
+            return;
         }
 
         mouseLocationPopup.setLatLng(e.latlng).openOn(globalData.map);
-        mouseLocationPopup.setContent('<p>'+ getKP(-e.latlng.lat * mapScale, e.latlng.lng * mapScale) + '</p>')
+        mouseLocationPopup.setContent("<p>"+ getKP(-e.latlng.lat * mapScale, e.latlng.lng * mapScale) + "</p>");
     });    
 
     globalData.map.on("dblclick", function(e){
@@ -353,9 +354,12 @@ export function loadMap(){
 
 export function drawMap(){
 
-	var imageBounds = L.latLngBounds(L.latLng(0, 0), L.latLng(-255, 255));
-    var mapName = MAPS.find((elem, index) => index == globalData.activeMap).name
-    var mapURL = MAPS.find((elem, index) => index == globalData.activeMap).mapURL
+    var imageBounds = L.latLngBounds(L.latLng(0, 0), L.latLng(-255, 255));
+    var mapName = MAPS.find((elem, index) => index == globalData.activeMap).name;
+    var mapURL = MAPS.find((elem, index) => index == globalData.activeMap).mapURL;
+    var grid;
+    var imageUrl;
+    var heightmaplayer;
 
     globalData.layerGroup.clearLayers();
     globalData.markersGroup.clearLayers();
@@ -363,11 +367,11 @@ export function drawMap(){
    
     // Remove any layers already drawn
     globalData.layerGroup.eachLayer(function(layer){
-        globalData.layerGroup.removeLayer(layer)
+        globalData.layerGroup.removeLayer(layer);
     });
 
     // Draw the current layer
-    var maplayer = L.tileLayer("src/img/maps" + mapURL, {
+    L.tileLayer("src/img/maps" + mapURL, {
         maxNativeZoom: 4,
         noWrap: true,
         bounds: imageBounds,
@@ -376,14 +380,14 @@ export function drawMap(){
     // create weapon
     globalData.activeWeaponMarker = new squadWeaponMarker(L.latLng([-128, 128]), {icon: mortarIcon, draggable: true}).addTo(globalData.markersGroup).addTo(globalData.weaponGroup);
 
-    var grid = new SquadGrid
-    grid.setBounds(imageBounds)
-    grid.addTo(globalData.layerGroup)
+    grid = new SquadGrid();
+    grid.setBounds(imageBounds);
+    grid.addTo(globalData.layerGroup);
 
 
-    if(globalData.debug.active){
-        var imageUrl = "src/img/heightmaps/" + mapName.toLowerCase() + ".jpg";
-        var heightmaplayer = L.imageOverlay(imageUrl, imageBounds, {
+    if (globalData.debug.active){
+        imageUrl = "src/img/heightmaps/" + mapName.toLowerCase() + ".jpg";
+        heightmaplayer = L.imageOverlay(imageUrl, imageBounds, {
             opacity: 0.5,
         }).addTo(globalData.layerGroup);
 
@@ -395,7 +399,7 @@ export function drawMap(){
 
         //AddLayer
         const Map_AddLayer = {
-            'Heightmap': heightmaplayer,
+            "Heightmap": heightmaplayer,
         };
 
         //LayerControl
@@ -410,13 +414,11 @@ export function drawMap(){
 export function insertMarkers(a, b){
 
     const mapScale = 256 / MAPS.find((elem, index) => index == globalData.activeMap).size;
-
-    var aScaled = L.latLng(a.lat * mapScale, a.lng * -mapScale)
-    var bScaled = L.latLng(b.lat * mapScale, b.lng * -mapScale)
+    var aScaled = L.latLng(a.lat * mapScale, a.lng * -mapScale);
+    var bScaled = L.latLng(b.lat * mapScale, b.lng * -mapScale);
 
     globalData.activeWeaponMarker = new squadWeaponMarker(aScaled, {icon: mortarIcon, draggable: true}).addTo(globalData.markersGroup).addTo(globalData.weaponGroup);
     new squadTargetMarker(bScaled, {icon: targetIcon, draggable: true}).addTo(globalData.markersGroup);
-
 }
 
 

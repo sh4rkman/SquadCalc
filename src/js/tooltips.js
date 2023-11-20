@@ -71,7 +71,7 @@ tippy(".fab-action-4", {
 
 
 if ($(window).width() > 767) {
-    if(!localStorage.getItem("InfoToolTips_uimode")) {
+    if (!localStorage.getItem("InfoToolTips_uimode")) {
         tippy(".fab2", {
             placement: "right",
             animation: "fade",
@@ -79,8 +79,8 @@ if ($(window).width() > 767) {
             content: "Map Mode </br> (beta)",
             theme: "fab",
         });
-        tooltip_newUI = document.querySelector(".fab2")._tippy
-        tooltip_newUI.show()
+        tooltip_newUI = document.querySelector(".fab2")._tippy;
+        tooltip_newUI.show();
     }
 }
 

@@ -19,7 +19,7 @@ import { loadTheme } from "./js/themes";
 import { loadWeapons } from "./js/weapons";
 import { createLine } from "./js/animations";
 import "./js/listeners.js";
-import 'leaflet.control.opacity';
+import "leaflet.control.opacity";
 
 
 $(function() {
@@ -27,7 +27,6 @@ $(function() {
     loadMap();
     loadUI();
     loadWeapons();
-
     loadTheme();
     loadMapSelector();
     preventAutocomplete();

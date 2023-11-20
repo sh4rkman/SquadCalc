@@ -2,6 +2,7 @@ import { tooltip_save, tooltip_copied, tooltip_newUI } from "./tooltips";
 import { globalData } from "./conf";
 import { MAPS } from "./maps";
 import { animateCSS, animateCalc, drawLine} from "./animations";
+import L from "leaflet";
 
 /**
  * Returns the latlng coordinates based on the given keypad string.
@@ -806,7 +807,7 @@ export function switchUI(){
         globalData.map.invalidateSize();
         $(".logo").hide();
         localStorage.setItem("InfoToolTips_uimode", true);
-        if(tooltip_newUI){tooltip_newUI.destroy()}
+        if (tooltip_newUI){tooltip_newUI.destroy();}
     }
     else {
         $("main").removeClass("hidden");
@@ -814,23 +815,27 @@ export function switchUI(){
         $(".fab-dots-2 i").removeClass("fa-xmarks-lines").addClass("fa-map");
         globalData.ui = true;
         localStorage.setItem("data-ui", 1);
-        $('.logo').show();
+        $(".logo").show();
         drawLine();
     }
 }
 
 export function getCalcFromUI(a, b) {
+    var height;
+    var distance;
+    var bearing;
+    var vel;
+    var elevation;
     const mapScale = MAPS.find((elem, index) => index == globalData.activeMap).size / 256;
 
-    a = L.latLng([a.lng * mapScale, a.lat * -mapScale])
-    b = L.latLng([b.lng * mapScale, b.lat * -mapScale])
+    a = L.latLng([a.lng * mapScale, a.lat * -mapScale]);
+    b = L.latLng([b.lng * mapScale, b.lat * -mapScale]);
 
-    var height = getHeight(a, b);
-    var distance = getDist(a, b);
-    var bearing = getBearing(a, b);
-    var vel = globalData.activeWeapon.getVelocity(distance);
-    var elevation = getElevation(distance, height, vel);
-    console.log(distance, height, vel)
+    height = getHeight(a, b);
+    distance = getDist(a, b);
+    bearing = getBearing(a, b);
+    vel = globalData.activeWeapon.getVelocity(distance);
+    elevation = getElevation(distance, height, vel);
 
     if (globalData.activeWeapon.unit === "mil") {
         elevation = radToMil(elevation);
@@ -839,11 +844,11 @@ export function getCalcFromUI(a, b) {
         if (globalData.activeWeapon.name === "Technical") { elevation = elevation - 5; }
     }
 
-    if(isNaN(elevation) || elevation > globalData.activeWeapon.minElevation[1]){
+    if (isNaN(elevation) || elevation > globalData.activeWeapon.minElevation[1]){
         elevation = "---";
     }
     else {
-        elevation = elevation.toFixed(globalData.activeWeapon.elevationPrecision)
+        elevation = elevation.toFixed(globalData.activeWeapon.elevationPrecision);
     }
-    return [bearing.toFixed(1), elevation]
+    return [bearing.toFixed(1), elevation];
 }
