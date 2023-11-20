@@ -23,12 +23,13 @@ import 'leaflet.control.opacity';
 
 
 $(function() {
-    loadMap()
     createLine();
-    loadTheme();
-    loadWeapons();
-    loadMapSelector();
+    loadMap();
     loadUI();
+    loadWeapons();
+
+    loadTheme();
+    loadMapSelector();
     preventAutocomplete();
     console.log("Calculator Loaded!");
 });

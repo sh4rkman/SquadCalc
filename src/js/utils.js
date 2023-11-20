@@ -1,7 +1,7 @@
-import { tooltip_copy, tooltip_save, tooltip_copied, tooltip_newUI } from "./tooltips";
+import { tooltip_save, tooltip_copied, tooltip_newUI } from "./tooltips";
 import { globalData } from "./conf";
 import { MAPS } from "./maps";
-import { animateCSS, animateCalc} from "./animations";
+import { animateCSS, animateCalc, drawLine} from "./animations";
 
 /**
  * Returns the latlng coordinates based on the given keypad string.
@@ -238,14 +238,7 @@ function resetCalc() {
     $("#savebutton").addClass("hidden");
     $("#highlow i").removeClass("active");
 
-    // draw pointer cursor & tooltip on results, desktop only
-    if (localStorage.getItem("InfoToolTips_copy") !== "true") {
-        const mobileWidth = 767;
-        if ($(window).width() > mobileWidth) {
-            tooltip_copy.enable();
-            tooltip_copy.show();
-        }
-    }
+    // draw pointer cursor on results
     $("#copy").addClass("copy");
 }
 
@@ -284,7 +277,6 @@ export function shoot(inputChanged = "") {
         $("#copy").removeClass("copy");
         $("#bearingNum").html("xxx");
         $("#elevationNum").html("xxxx");
-        tooltip_copy.disable();
         return 1;
     }
 
@@ -457,7 +449,6 @@ function showError(msg, issue) {
 
     // remove the pointer cursor & tooltip
     $("#copy").removeClass("copy");
-    tooltip_copy.disable();
     $("#settings").css({ "border-color": "firebrick" });
     animateCSS($("#settings"), "shakeX");
 
@@ -666,7 +657,6 @@ export function copyCalc(e) {
 
     // the user understood he can click2copy, remove the tooltip
     localStorage.setItem("InfoToolTips_copy", true);
-    tooltip_copy.disable();
     tooltip_copied.enable();
     tooltip_copied.show();
 }
@@ -797,8 +787,9 @@ export function pad(num, size) {
 
 
 export function loadUI(){
-    var ui = localStorage.getItem("data-ui");
-    if (ui == 0){
+    globalData.ui = localStorage.getItem("data-ui");
+    if (globalData.ui === null || isNaN(globalData.ui) || globalData.ui === "") { globalData.ui = 0; }
+    if (globalData.ui == 0){
         switchUI();
     }
 }
@@ -824,6 +815,7 @@ export function switchUI(){
         globalData.ui = true;
         localStorage.setItem("data-ui", 1);
         $('.logo').show();
+        drawLine();
     }
 }
 
