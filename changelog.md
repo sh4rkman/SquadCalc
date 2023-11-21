@@ -1,4 +1,5 @@
 
+
 # <img src="https://img.shields.io/badge/-major%20release-blue?style=flat-square">  **13.0.0** *(2023-11-21)*
 
 <img src="https://img.shields.io/badge/-new-green"> New interactive map mode ! You can know switch UI mode with the bottom right button to display a map where you can place and drag markers.
@@ -9,15 +10,12 @@
 </br></br><!-- CHANGELOG SPLIT MARKER -->
 
 
-
-
 # <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">  **12.2** *(2023-11-07)*
 
 <img src="https://img.shields.io/badge/-new-green"> Added Sanxian Island (beta)
 
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
-
 
 
 # <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">  **12.1.2** *(2023-11-04)*

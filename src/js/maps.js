@@ -5,6 +5,7 @@ import SquadGrid from "./SquadGrid";
 
 import L from "leaflet";
 
+
 import AlBasrahURL from "../img/heightmaps/al basrah.jpg";
 import AnvilURL from "../img/heightmaps/anvil.jpg";
 import BelayaURL from "../img/heightmaps/belaya.jpg";
@@ -255,6 +256,7 @@ export function loadMapSelector() {
     MAPS.forEach(function(map, i) {
         MAP_SELECTOR.append("<option value=\"" + i + "\">" + map.name + "</option>");
     });
+
     loadHeatmap();
 }
 
@@ -265,6 +267,7 @@ export function drawHeatmap() {
     const IMG = new Image(); // Create new img element
 
     globalData.activeMap = $(".dropbtn").val();
+  
     IMG.src = MAPS.find((elem, index) => index == globalData.activeMap).heightmapURL;
 
     IMG.addEventListener("load", function() { // wait for the image to load or it does crazy stuff
@@ -286,6 +289,9 @@ function loadHeatmap() {
         globalData.canvas.obj.drawImage(IMG, 0, 0, globalData.canvas.size, globalData.canvas.size); // Draw img at good scale
     }, false);
 
+    globalData.canvas.obj.fillStyle = "blue";
+    globalData.canvas.obj.fillRect(0, 0, globalData.canvas.size, globalData.canvas.size);
+    
     if (globalData.debug.active) {
         // when in debug mode, display the heightmap and prepare keypads
         $("#canvas").css("display", "flex");

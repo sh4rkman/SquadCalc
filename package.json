@@ -27,6 +27,7 @@
     "start": "webpack serve --open --config ./config/webpack.test.js",
     "build:prod": "webpack --config ./config/webpack.prod.js",
     "build:dev": "webpack --config ./config/webpack.dev.js",
+    "mapinfo": "node src/js/tests/mapdata.js info",
     "test:all": "npm-run-all test:eslint test:jshint test:stylelint test:htmlhint test:w3c",
     "test:eslint": "eslint -c ./config/.eslintrc.json ./src/",
     "test:jshint": "jshint ./src/",

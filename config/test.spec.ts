@@ -24,6 +24,7 @@ test('Wrong calcs', async ({ page }) => {
   await page.locator('#mortar-location').fill('');
   await page.locator('#mortar-location').pressSequentially('b0234');
   await page.locator('#target-location').click();
+  await page.locator('#target-location').fill('');
   await page.locator('#target-location').pressSequentially('C0f1245');
   await expect(page.locator('#errorMsg')).toContainText("Invalid target");
 
