@@ -107,10 +107,18 @@ header {
             padding-left: 15px;
             font-size: 1em;
         }
+        &.ui {
+            position: fixed;
+            top: 0em;
+        }
     }
     .mapSelector {
         padding: 1em 0;
         z-index: 1;
+        &.ui {
+            position: fixed;
+            top: 3em;
+        }
     }
     .selectbox {
         padding: 0;
@@ -726,8 +734,6 @@ main2 {
         line-height: 1;
     }
 }
-
-
 
 
 .leaflet-fade-anim .leaflet-popup {

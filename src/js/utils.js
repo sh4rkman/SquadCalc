@@ -800,9 +800,11 @@ export function switchUI(){
     if (globalData.ui){
         $("main").addClass("hidden");
         $("main2").removeClass("hidden");
+        $(".weaponSelector").addClass("ui");
+        $(".mapSelector").addClass("ui");
         $(".fab-dots-2 i").removeClass("fa-map").addClass("fa-xmarks-lines");
         globalData.ui = false;
-        //globalData.line.hide("none");   
+        globalData.line.hide("none");   
         localStorage.setItem("data-ui", 0);
         globalData.map.invalidateSize();
         $(".logo").hide();
@@ -812,6 +814,8 @@ export function switchUI(){
     else {
         $("main").removeClass("hidden");
         $("main2").addClass("hidden");
+        $(".weaponSelector").removeClass("ui");
+        $(".mapSelector").removeClass("ui");
         $(".fab-dots-2 i").removeClass("fa-xmarks-lines").addClass("fa-map");
         globalData.ui = true;
         localStorage.setItem("data-ui", 1);

@@ -75,11 +75,6 @@
     }
     /* -- H < 800px -- */
     @media (min-height: 50em) {
-        header {
-            .mapSelector {
-                margin-top: 2em;
-            }
-        }
         main {
             padding-top: 1em;
             .results {
@@ -112,6 +107,9 @@
                 float: left;
                 font-size: 1em;
             }
+            &.ui {
+                top: 0em;
+            }
         }
         .mapSelector {
             // Animation
@@ -127,12 +125,13 @@
                 float: right;
                 font-size: 1em;
             }
+            &.ui {
+                top: 0em;
+            }
         }
     }
     main {
         padding-top: 3em;
-        opacity: 0;
-        animation: appear 2s forwards;
         .coord {
             img {
                 height: 45px;
