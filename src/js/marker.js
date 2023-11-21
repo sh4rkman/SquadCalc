@@ -15,7 +15,18 @@ export var squadMarker = L.Marker.extend({
     // Initialize method
     initialize: function (latlng, options) {
         L.Marker.prototype.initialize.call(this, latlng, options);
+        this.on("dragstart", this._handleDragStart, this);
+        this.on("dragend", this._handleDragEnd, this);
     },
+
+    _handleDragStart: function (e) {
+        $(".leaflet-marker-icon").css('cursor', 'grabbing');
+    },
+    
+    _handleDragEnd: function (e) {
+        $(".leaflet-marker-icon").css('cursor', 'grab');
+    }
+
 });
 
 
@@ -53,6 +64,7 @@ export var squadWeaponMarker = squadMarker.extend({
         
         // custom events handlers
         this.on("drag", this._handleDrag, this);
+
     },
 
     _handleDrag: function (e) {
@@ -61,7 +73,10 @@ export var squadWeaponMarker = squadMarker.extend({
         globalData.activeWeaponMarkers.eachLayer(function (layer) {
             layer.updateCalc(layer.latlng);
         });
-    }
+    },
+
+
+
 });
 
 
