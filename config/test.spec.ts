@@ -144,15 +144,15 @@ test('Change theme', async ({ page, isMobile }) => {
   if(!isMobile){
     
     // Open FAB wheel
-    await page.locator('label').click();
+    await page.locator('label').nth(1).click();
     await expect(page.getByRole('contentinfo').locator('i').nth(1)).toBeVisible()
 
     // Change theme to dark
-    await page.getByRole('contentinfo').locator('i').nth(1).click();
+    await page.locator('.fab-action-2').click();
     await expect(page.locator('html')).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
 
     // Close FAB wheel
-    await page.locator('label').click();
+    await page.locator('span').nth(2).click();
     await expect(page.getByRole('contentinfo').locator('i').nth(1)).toBeHidden()
   }
 });

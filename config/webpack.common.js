@@ -1,14 +1,15 @@
 const path = require('path');
 const webpack = require('webpack');
+const CopyPlugin = require("copy-webpack-plugin");
 
 module.exports = {
     entry: './src/app.js',
     output: {
         filename: './src/js/[name].[contenthash].min.js',
         path: path.join(process.cwd(), 'dist'),
-        publicPath: '',
+        publicPath: 'auto',
         clean: true,
-        assetModuleFilename: '[path][name].[contenthash][ext]'
+        assetModuleFilename: '[path][name][ext]'
     },
     module: {
         rules: [
@@ -18,19 +19,28 @@ module.exports = {
         ],
     },
     optimization: {
-        splitChunks: {
-            // include all types of chunks
-            chunks: 'all',
-        },
-    },
+        moduleIds: 'deterministic',
+         runtimeChunk: 'single',
+         splitChunks: {
+           cacheGroups: {
+             vendor: {
+               test: /[\\/]node_modules[\\/]/,
+               name: 'vendors',
+               chunks: 'all',
+             },
+           },
+         },
+       },
     plugins: [
         // Use the ProvidePlugin constructor to inject jquery implicit globals
         new webpack.ProvidePlugin({
-            $: "jquery",
-            jQuery: "jquery",
-            "window.jQuery": "jquery'",
-            "window.$": "jquery"
+            $: "jquery", jQuery: "jquery", "window.jQuery": "jquery'", "window.$": "jquery"
         }),
+        new CopyPlugin({
+            patterns: [
+              { from: "./src/img/maps/", to: "./src/img/maps/" },
+            ],
+          }),
     ],
     // Disable warning message for big chuncks
     performance: {

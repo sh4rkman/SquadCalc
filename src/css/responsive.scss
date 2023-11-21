@@ -32,7 +32,7 @@
             }
         }
     }
-    .fab-wrapper {
+    .fab-wrapper, .fab-wrapper2 {
         display: block;
     }
 }
@@ -61,7 +61,7 @@
 @media screen and (max-width: 48em) {
     /* -- H < 568px -- */
     @media (min-height: 35em) {
-        main {
+        #classic_ui {
             input {
                 height: 40px;
             }
@@ -75,12 +75,7 @@
     }
     /* -- H < 800px -- */
     @media (min-height: 50em) {
-        header {
-            .mapSelector {
-                margin-top: 2em;
-            }
-        }
-        main {
+        #classic_ui {
             padding-top: 1em;
             .results {
                 font-size: 1.7em;
@@ -112,6 +107,9 @@
                 float: left;
                 font-size: 1em;
             }
+            &.ui {
+                top: 0;
+            }
         }
         .mapSelector {
             // Animation
@@ -127,42 +125,36 @@
                 float: right;
                 font-size: 1em;
             }
+            &.ui {
+                top: 0;
+            }
         }
     }
-    main {
+    #classic_ui {
         padding-top: 3em;
-        opacity: 0;
-        animation: appear 2s forwards;
         .coord {
             img {
                 height: 45px;
             }
         }
     }
-    footer {
-        opacity: 0;
-        transform: translateY(30px);
-        animation: appear 0.5s 0.75s ease-out forwards;
-        .logo {
-            width: 350px;
-        }
-    }
     /* -- L*560px -- */
     @media (min-height: 35em) {
-        main {
+        #classic_ui {
             font-size: 25px;
             padding-top: 5em;
             input {
                 height: 60px;
             }
         }
-        .fab-wrapper {
+        .fab-wrapper, .fab-wrapper2 {
             display: block;
         }
+
     }
     /* -- L*730px -- */
     @media (min-height: 45em) {
-        main {
+        #classic_ui {
             padding-top: 5em;
             input {
                 height: 70px;
@@ -171,7 +163,7 @@
     }
     /* -- L*800px -- */
     @media (min-height: 50em) {
-        main {
+        #classic_ui {
             font-size: 30px;
         }
     }
@@ -244,7 +236,7 @@
                 }
             }
         }
-        main {
+        #classic_ui {
             padding-top: 7em;
             input {
                 font-size: 1.7em;
@@ -258,11 +250,6 @@
             }
             .coord img {
                 height: 75px;
-            }
-        }
-        footer {
-            .logo {
-                width: 600px;
             }
         }
         .tippy-box {

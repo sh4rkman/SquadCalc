@@ -3,23 +3,9 @@ import "tippy.js/dist/tippy.css";
 
 
 export var tooltip_save;
-export var tooltip_copy;
 export var tooltip_copied;
 export var tooltip_mlrs;
-
-
-tippy("#settings", {
-    animation: "fade",
-    content: "Click results to copy to clipboard and share it ingame!",
-    delay: [100, 10000000000],
-    hideOnClick: "toggle",
-    placement: "bottom",
-});
-
-// initiate tooltip but hide it for now
-tooltip_copy = document.querySelector("#settings")._tippy;
-tooltip_copy.disable();
-
+export var tooltip_newUI;
 
 tippy("#settings", {
     allowHTML: true,
@@ -84,11 +70,26 @@ tippy(".fab-action-4", {
 });
 
 
+if ($(window).width() > 767) {
+    if (!localStorage.getItem("InfoToolTips_uimode")) {
+        tippy(".fab2", {
+            placement: "right",
+            animation: "fade",
+            allowHTML: true,
+            content: "Map Mode </br> (beta)",
+            theme: "fab",
+        });
+        tooltip_newUI = document.querySelector(".fab2")._tippy;
+        tooltip_newUI.show();
+    }
+}
+
+
 
 tippy("#savebutton i", {
     animation: "fade",
     allowHTML: true,
-    content: "Save </br> <span class=\"tooltipsubtext\"> (the results for later)</span> ",
+    content: "Save </br> <span class=\"tooltipsubtext\"> (the results for later)</span>",
     interactiveDebounce: 75,
     placement: "bottom",
     theme: "results",

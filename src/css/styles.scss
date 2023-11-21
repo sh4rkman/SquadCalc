@@ -10,7 +10,7 @@ $fa-font-path: '../img/fontawesome/webfonts';
    * -- BASE COLOR --
 */
 
-$mainColor: firebrick;
+$mainColor: #b22222;
 $mainBGColor: #111;
 $mainTxtColor: #fff;
 $newColor: green;
@@ -107,10 +107,18 @@ header {
             padding-left: 15px;
             font-size: 1em;
         }
+        &.ui {
+            position: fixed;
+            top: 0;
+        }
     }
     .mapSelector {
         padding: 1em 0;
         z-index: 1;
+        &.ui {
+            position: fixed;
+            top: 3em;
+        }
     }
     .selectbox {
         padding: 0;
@@ -141,7 +149,30 @@ header {
     .select2-container {
         background-color: transparent;
         border-bottom: 1px solid $mainTxtColor;
-        box-shadow: none;
+        text-shadow: 1px 1px 0 #111,
+        -1px 1px 0 #111,
+        1px -1px 0 #111,
+        -1px -1px 0 #111,
+        0 1px 0 #111,
+        0 -1px 0 #111,
+        -1px 0 0 #111,
+        1px 0 0 #111,
+        2px 2px 0 #111,
+        -2px 2px 0 #111,
+        2px -2px 0 #111,
+        -2px -2px 0 #111,
+        0 2px 0 #111,
+        0 -2px 0 #111,
+        -2px 0 0 #111,
+        2px 0 0 #111,
+        1px 2px 0 #111,
+        -1px 2px 0 #111,
+        1px -2px 0 #111,
+        -1px -2px 0 #111,
+        2px 1px 0 #111,
+        -2px 1px 0 #111,
+        2px -1px 0 #111,
+        -2px -1px 0 #111;
         font-weight: bold;
         line-height: 2.188em;
         min-width: 200px;
@@ -175,7 +206,8 @@ header {
    *    Results
    *****************/
 
-main {
+#classic_ui {
+    height: 40vh;
     #settings {
         border-radius: 5px;
         border: 5px solid $mainTxtColor;
@@ -246,17 +278,7 @@ main {
     .error2 {
         border-bottom: 3px solid $mainColor;
     }
-    /************************
-   * Canvas / Heightmaps
-   *********************/
-    #canvas {
-        display: none;
-        position: absolute;
-        bottom: 0;
-        height: 350px;
-        width: 350px;
-        z-index: -1;
-    }
+
     /****************
    *   Saved calcs
    *****************/
@@ -303,10 +325,8 @@ footer {
     bottom: 0;
     left: 0;
     position: fixed;
-    z-index: -1;
-    .logo {
-        width: 250px;
-    }
+    z-index: 1;
+    height: 5vh;
 }
 
 
@@ -480,7 +500,7 @@ footer {
 }
 
 .hidden {
-    display: none;
+    opacity: 0 !important;
 }
 
 
@@ -575,3 +595,237 @@ footer {
     border: none;
     color: $mainTxtColor;
 }
+
+
+.leaflet-tile { 
+    border: none;
+}
+
+#map_ui {
+    position: relative;
+    height: 100vh; 
+    width: 100vw; 
+    margin: 0;
+    #map {
+        height: 100%;
+        width: 100%;
+    }
+}
+
+#canvas {
+    display: none;
+    position: absolute;
+    bottom: 0;
+    height: 350px;
+    width: 350px;
+}
+
+.leaflet-container {
+    background: var(--themecolor, $mainBGColor);
+    z-index: 0;
+    outline: 0;
+}
+
+.leader-line {
+    z-index: -1;
+}
+
+.kpPopup {
+    background: transparent;
+    .leaflet-popup-tip,
+    .leaflet-popup-content-wrapper {
+        user-select: none; 
+        font-family: Montserrat, Times, "Times New Roman", serif;
+        font-weight: bold;
+        font-size: 1.2em;
+        background: transparent;
+        box-shadow: none;
+        color: white;
+        height: 2em;
+        padding: 0;
+        text-align: center;
+        text-shadow: 1px 1px 0 #111,
+        -1px 1px 0 #111,
+        1px -1px 0 #111,
+        -1px -1px 0 #111,
+       0 1px 0 #111,
+        0 -1px 0 #111,
+        -1px 0 0 #111,
+        1px 0 0 #111,
+        2px 2px 0 #111,
+        -2px 2px 0 #111,
+        2px -2px 0 #111,
+        -2px -2px 0 #111,
+        0 2px 0 #111,
+        0 -2px 0 #111,
+        -2px 0 0 #111,
+        2px 0 0 #111,
+        1px 2px 0 #111,
+        -1px 2px 0 #111,
+        1px -2px 0 #111,
+        -1px -2px 0 #111,
+        2px 1px 0 #111,
+        -2px 1px 0 #111,
+        2px -1px 0 #111,
+        -2px -1px 0 #111;
+    }
+}
+
+.leaflet-container, .leaflet-overlay-pane .leaflet-interactive {
+    cursor:crosshair;
+}
+
+.leaflet-pane .leaflet-marker-pane .leaflet-marker-icon {
+    cursor:grab;
+}
+
+.calcPopup {
+    .bearingUiCalc {
+        padding-top: 5px;
+        font-size: 0.7em;
+    }
+    .leaflet-popup-tip,
+    .leaflet-popup-content-wrapper {
+        user-select: none; 
+        font-family: Montserrat, Times, "Times New Roman", serif;
+        font-weight: bold;
+        font-size: 0.9em;
+        background: transparent;
+        box-shadow: none;
+        color: white;
+        height: 2em;
+        padding: 0;
+        text-shadow: 1px 1px 0 #000,
+        -1px 1px 0 #000,
+        1px -1px 0 #000,
+        -1px -1px 0 #000,
+        0 1px 0 #000,
+        0 -1px 0 #000,
+        -1px 0 0 #000,
+        1px 0 0 #000,
+        2px 2px 0 #000,
+        -2px 2px 0 #000,
+        2px -2px 0 #000,
+        -2px -2px 0 #000,
+        0 2px 0 #000,
+        0 -2px 0 #000,
+        -2px 0 0 #000,
+        2px 0 0 #000,
+        1px 2px 0 #000,
+        -1px 2px 0 #000,
+        1px -2px 0 #000,
+        -1px -2px 0 #000,
+        2px 1px 0 #000,
+        -2px 1px 0 #000,
+        2px -1px 0 #000,
+        -2px -1px 0 #000;
+    }
+    .leaflet-popup-content{
+        margin:  0;
+        line-height: 1;
+    }
+}
+
+
+.leaflet-fade-anim .leaflet-popup {
+    transition: none;
+}
+
+.fab-wrapper2 {
+    bottom: 2rem;
+    display: none;
+    left: 4rem;
+    z-index: 1;
+    position:absolute;
+    .fab-dots-2 {
+        padding-top: 0.55em;
+    }
+    .fab2 {
+        background: #333;
+        border-radius: 50%;
+        border: 1px solid rgb(37, 37, 37);
+        bottom: -1rem;
+        font-size: 1.7em;
+        height: 4rem;
+        position: absolute;
+        right: -1rem;
+        transition: all 0.3s ease;
+        width: 4rem;
+        z-index: 1;
+        &:active {
+            transform: scale(0.8);
+        }
+        &::before {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            content: "";
+            height: 100%;
+            left: 0;
+            position: absolute;
+            top: 0;
+            width: 100%;
+        }
+        &:hover {
+            background: rgb(24, 24, 24);
+            cursor: pointer;
+        }
+
+    }
+    .disabled {
+        background: red;
+    }
+    .fab-checkbox2 {
+        display: none;
+    }
+    .fab-action {
+        align-items: center;
+        background: #333;
+        border-radius: 50%;
+        color: $mainTxtColor;
+        display: flex;
+        height: 3rem;
+        justify-content: center;
+        opacity: 0;
+        position: absolute;
+        text-decoration: none;
+        transition: all 0.1s ease;
+        width: 3rem;
+        &:hover {
+            background-color: $mainColor;
+            cursor: pointer;
+        }
+        &:active {
+            transform: scale(0.9);
+        }
+    }
+    .fabstyle2 {
+        background-color: $mainColor;
+    }
+    .fab-wheel2 {
+        bottom: 0;
+        height: 9rem;
+        position: absolute;
+        right: 0;
+        transform-origin: bottom right;
+        transform: scale(0);
+        transition: all 0.1s ease;
+        width: 9rem;
+        .fab-action-1 {
+            right: -1rem;
+            top: 0;
+        }
+        .fab-action-2 {
+            right: 2.8rem;
+            top: 0.5rem;
+        }
+        .fab-action-3 {
+            bottom: 2.8rem;
+            left: 0.5rem;
+        }
+        .fab-action-4 {
+            bottom: -1rem;
+            left: 0;
+        }
+    }
+}
+

@@ -51,7 +51,7 @@
 
     </header>
 
-    <main class="pure-g">
+    <div id="classic_ui" class="pure-g">
         <div class="pure-u-2-24 pure-u-md-1-8 pure-u-lg-1-5 pure-u-xxl-7-24"></div>
         <div class="pure-u-20-24 pure-u-md-3-4 pure-u-lg-3-5 pure-u-xxl-10-24">
             <div class="pure-g">
@@ -117,15 +117,25 @@
 
         <div class="pure-u-2-24 pure-u-md-1-8 pure-u-lg-1-5 pure-u-xxl-7-24"></div>
 
-        <canvas id="canvas" width="500" height="500"></canvas>
 
+    </div>
+    
+    <canvas id="canvas" width="500" height="500"></canvas>
 
-    </main>
+    <div id="map_ui" class="pure-g hidden">
+        <div id="map"></div>
+    </div>
 
     <footer class="pure-u-1 pure-u-md-1 pure-u-lg-1">
-        <img class="pure-img logo unselectable" src="./img/logo.png" alt="logo">
 
-        <div class="fab-wrapper">
+        <div class="fab-wrapper2">
+            <input id="fabCheckbox2" type="checkbox" class="fab-checkbox2">
+            <label class="fab2" for="fabCheckbox2">
+                    <i id="switchUIbutton" class="fab-dots-2 fa-solid fa-map"></i>
+            </label>
+        </div>
+
+       <div class="fab-wrapper">
             <input id="fabCheckbox" type="checkbox" class="fab-checkbox">
             <label class="fab" for="fabCheckbox">
                 <span class="fab-dots fab-dots-1"></span>

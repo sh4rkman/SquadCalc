@@ -1,8 +1,8 @@
-import { tooltip_copy, tooltip_save, tooltip_copied } from "./tooltips";
+import { tooltip_save, tooltip_copied, tooltip_newUI } from "./tooltips";
 import { globalData } from "./conf";
 import { MAPS } from "./maps";
-import { animateCSS, animateCalc} from "./animations";
-
+import { animateCSS, animateCalc, drawLine} from "./animations";
+import L from "leaflet";
 
 /**
  * Returns the latlng coordinates based on the given keypad string.
@@ -179,9 +179,9 @@ function getHeight(a, b) {
 
     // Apply offset & scaling
     // Heightmaps & maps doesn't always start at A01, they sometimes need to be offset manually
-
     AOffset = getOffsetLatLng(a);
     BOffset = getOffsetLatLng(b);
+
 
     // Read Heightmap color values for a & b
     Aheight = ctx.getImageData(Math.round(AOffset.lat), Math.round(AOffset.lng), 1, 1).data;
@@ -191,7 +191,6 @@ function getHeight(a, b) {
     if (globalData.debug.active) {
         console.log("------------------------------");
         console.log("HEIGHTMAP");
-        console.log(` -> map: ${MAPS[globalData.activeMap][0]}`);
         console.log("------------------------------");
         console.log(`A {lat:${ a.lat.toFixed(2)}; lng: ${a.lng.toFixed(2)}}`);
         console.log(`    -> Offset {lat: ${AOffset.lat.toFixed(2)}; lng: ${AOffset.lng.toFixed(2)}}`);
@@ -202,8 +201,8 @@ function getHeight(a, b) {
 
         // place visual green marker on the canvas
         ctx.fillStyle = "green";
-        ctx.fillRect(AOffset.lat, AOffset.lng, 5, 5);
-        ctx.fillRect(BOffset.lat, BOffset.lng, 5, 5);
+        ctx.fillRect(AOffset.lat, AOffset.lng, 2, 2);
+        ctx.fillRect(BOffset.lat, BOffset.lng, 2, 2);
     }
 
     // Check if a & b aren't out of canvas
@@ -226,6 +225,8 @@ function getHeight(a, b) {
 function resetCalc() {
     if (!globalData.debug.active) {console.clear();}
 
+    //globalData.markersGroup.clearLayers();
+
     // First, reset any errors
     $("#settings").css({ "border-color": "#fff" });
     $("#target-location").removeClass("error2");
@@ -238,14 +239,7 @@ function resetCalc() {
     $("#savebutton").addClass("hidden");
     $("#highlow i").removeClass("active");
 
-    // draw pointer cursor & tooltip on results, desktop only
-    if (localStorage.getItem("InfoToolTips_copy") !== "true") {
-        const mobileWidth = 767;
-        if ($(window).width() > mobileWidth) {
-            tooltip_copy.enable();
-            tooltip_copy.show();
-        }
-    }
+    // draw pointer cursor on results
     $("#copy").addClass("copy");
 }
 
@@ -284,7 +278,6 @@ export function shoot(inputChanged = "") {
         $("#copy").removeClass("copy");
         $("#bearingNum").html("xxx");
         $("#elevationNum").html("xxxx");
-        tooltip_copy.disable();
         return 1;
     }
 
@@ -293,6 +286,8 @@ export function shoot(inputChanged = "") {
 
     aPos = getPos(a);
     bPos = getPos(b);
+
+
 
     if (Number.isNaN(aPos.lng) || Number.isNaN(bPos.lng)) {
 
@@ -324,6 +319,8 @@ export function shoot(inputChanged = "") {
     vel = globalData.activeWeapon.getVelocity(distance);
     elevation = getElevation(distance, height, vel);
 
+
+
     if (globalData.activeWeapon.unit === "mil") {
         elevation = radToMil(elevation);
     } else {
@@ -334,21 +331,20 @@ export function shoot(inputChanged = "") {
     }
 
 
-
     // If Target too far, display it and exit function
     if (Number.isNaN(elevation)) {
         showError("Target is out of range : " + distance.toFixed(0) + "m", "target");
         return 1;
     }
 
-   
-    if ((elevation < globalData.activeWeapon.minElevation[0])) {
+
+    if ((elevation > globalData.activeWeapon.minElevation[1])) {
         showError("Target is too close : " + distance.toFixed(0) + "m", "target");
         return 1;
     }
     
-
     insertCalc(bearing, elevation, distance, vel, height);
+
 }
 
 /**
@@ -454,7 +450,6 @@ function showError(msg, issue) {
 
     // remove the pointer cursor & tooltip
     $("#copy").removeClass("copy");
-    tooltip_copy.disable();
     $("#settings").css({ "border-color": "firebrick" });
     animateCSS($("#settings"), "shakeX");
 
@@ -663,7 +658,6 @@ export function copyCalc(e) {
 
     // the user understood he can click2copy, remove the tooltip
     localStorage.setItem("InfoToolTips_copy", true);
-    tooltip_copy.disable();
     tooltip_copied.enable();
     tooltip_copied.show();
 }
@@ -681,3 +675,188 @@ export function changeHighLow(){
 }
 
 
+/**
+ * Returns true if 'a' is a multiple of 'b' with a precision up to 4 decimals
+ *
+ * @param a
+ * @param b
+ * @returns {boolean} true if 'a' is a multiple of 'b' with a precision up to 4 decimals,
+ *                    false otherwise
+ */
+export function isMultiple(a, b) {
+    const t = b / a;
+    const r = Math.round(t);
+    const d = t >= r ? t - r : r - t;
+    return d < 0.0001;
+}
+
+
+/**
+ * Calculates the keypad coordinates for a given latlng coordinate, e.g. "A5-3-7"
+ * @param lat - latitude coordinate
+ * @param lng - longitude coordinate
+ * @returns {string} keypad coordinates as string
+ */
+export function getKP(lat, lng) {
+    // to minimize confusion
+    const x = lng;
+    const y = lat;
+
+    if (x < 0 || y < 0) {
+        return "XXX-X-X"; // when outside of min bounds
+    }
+
+
+    
+    const kp = 300 / 3 ** 0; // interval of main keypad, e.g "A5"
+    const s1 = 300 / 3 ** 1; // interval of first sub keypad
+    const s2 = 300 / 3 ** 2; // interval of second sub keypad
+    const s3 = 300 / 3 ** 3; // interval of third sub keypad
+    const s4 = 300 / 3 ** 4; // interval of third sub keypad
+
+    // basic grid, e.g. B5
+    const kpCharCode = 65 + Math.floor(x / kp);
+    let kpLetter;
+    // PostScriptum Arnhem Lane A->Z and then a->b letters fix
+    if (kpCharCode > 90) {
+        kpLetter = String.fromCharCode(kpCharCode + 6);
+    } else {
+        kpLetter = String.fromCharCode(kpCharCode);
+    }
+
+    const kpNumber = Math.floor(y / kp) + 1;
+
+    // sub keypad 1, e.g. B5 - 5
+    // ok when we go down, we have 3x3 pads and start with the left most column, i.e. 7,4,1
+    // so we check which index y is in, either 1st (7), 2nd (4), or 3rd (1)
+    const subY = Math.floor(y / s1) % 3;
+
+    // now we substract the index times 3 from 10
+    // 1st = 10 - 1*3 = 7
+    // 1st = 10 - 2*3 = 4
+    // 1st = 10 - 3*3 = 1
+    let subNumber = 10 - (subY + 1) * 3;
+
+    // now all we need to do is add the index for of x, but starting from 0
+    subNumber += Math.floor(x / s1) % 3;
+
+    // sub keypad 2, e.g. B5 - 5 - 3;
+    // same as above for sub keypad 1
+    const sub2Y = Math.floor(y / s2) % 3;
+    let sub2Number = 10 - (sub2Y + 1) * 3;
+    sub2Number += Math.floor(x / s2) % 3;
+
+
+    // sub keypad 3, e.g. B5 - 5 - 3 - 2;
+    // same as above for sub keypad 2
+    const sub3Y = Math.floor(y / s3) % 3;
+    let sub3Number = 10 - (sub3Y + 1) * 3;
+    sub3Number += Math.floor(x / s3) % 3;
+
+    // sub keypad 3, e.g. B5 - 5 - 3 - 2;
+    // same as above for sub keypad 2
+    const sub4Y = Math.floor(y / s4) % 3;
+    let sub4Number = 10 - (sub4Y + 1) * 3;
+    sub4Number += Math.floor(x / s4) % 3;
+
+    // The more the user zoom in, the more precise we display coords under mouse
+    switch (globalData.map.getZoom()){
+    case 1:
+        return `${kpLetter}${pad(kpNumber, 2)}`;
+    case 2:
+        return `${kpLetter}${pad(kpNumber, 2)}`;
+    case 3:
+        return `${kpLetter}${pad(kpNumber, 2)}-${subNumber}`;
+    case 4:
+        return `${kpLetter}${pad(kpNumber, 2)}-${subNumber}-${sub2Number}`;
+    case 5:
+        return `${kpLetter}${pad(kpNumber, 2)}-${subNumber}-${sub2Number}-${sub3Number}`;
+    case 6:
+        return `${kpLetter}${pad(kpNumber, 2)}-${subNumber}-${sub2Number}-${sub3Number}-${sub4Number}`;
+    }
+}  
+
+/**
+ * 0-padding for numbers.
+ * @param num - number to be padded
+ * @param size - size of target string length, e.g. size == 4 == 4 digits
+ * @returns {string} padded number as string
+ */
+export function pad(num, size) {
+    return `0000${num}`.substr(-size);
+}
+
+
+export function loadUI(){
+    globalData.ui = localStorage.getItem("data-ui");
+    if (globalData.ui === null || isNaN(globalData.ui) || globalData.ui === "") { globalData.ui = 0; }
+    if (globalData.ui == 0){
+        switchUI();
+    }
+}
+
+
+export function switchUI(){
+    if (globalData.ui){
+        $("#classic_ui").addClass("hidden");
+        $("#map_ui").removeClass("hidden");
+        $(".weaponSelector").addClass("ui");
+        $(".mapSelector").addClass("ui");
+        $("#switchUIbutton").removeClass("fa-map").addClass("fa-xmarks-lines");
+        globalData.ui = false;
+        globalData.line.hide("none");   
+        localStorage.setItem("data-ui", 0);
+        globalData.map.invalidateSize();
+        localStorage.setItem("InfoToolTips_uimode", true);
+        if (tooltip_newUI){tooltip_newUI.destroy();}
+    }
+    else {
+        $("#classic_ui").removeClass("hidden");
+        $("#map_ui").addClass("hidden");
+        $(".weaponSelector").removeClass("ui");
+        $(".mapSelector").removeClass("ui");
+        $("#switchUIbutton").removeClass("fa-xmarks-lines").addClass("fa-map");
+        globalData.ui = true;
+        localStorage.setItem("data-ui", 1);
+        drawLine();
+    }
+}
+
+export function getCalcFromUI(a, b) {
+    var height;
+    var distance;
+    var bearing;
+    var vel;
+    var elevation;
+    const mapScale = MAPS.find((elem, index) => index == globalData.activeMap).size / 256;
+
+    a = L.latLng([a.lng * mapScale, a.lat * -mapScale]);
+    b = L.latLng([b.lng * mapScale, b.lat * -mapScale]);
+
+    height = getHeight(a, b);
+    distance = getDist(a, b);
+    bearing = getBearing(a, b);
+    vel = globalData.activeWeapon.getVelocity(distance);
+    elevation = getElevation(distance, height, vel);
+
+    if (globalData.activeWeapon.unit === "mil") {
+        elevation = radToMil(elevation);
+    } else {
+        elevation = radToDeg(elevation);
+        if (globalData.activeWeapon.name === "Technical") { elevation = elevation - 5; }
+    }
+
+    if (isNaN(elevation) || elevation > globalData.activeWeapon.minElevation[1]){
+        elevation = "---";
+    }
+    else {
+        elevation = elevation.toFixed(globalData.activeWeapon.elevationPrecision);
+    }
+    return [bearing.toFixed(1), elevation];
+}
+
+export function isTouchDevice() {
+    return (("ontouchstart" in window) ||
+       (navigator.maxTouchPoints > 0) ||
+       (navigator.msMaxTouchPoints > 0));
+}
