@@ -361,7 +361,6 @@ export function loadMap(){
 }
 
 
-
 export function drawMap(){
 
     var imageBounds = L.latLngBounds(L.latLng(0, 0), L.latLng(-255, 255));
