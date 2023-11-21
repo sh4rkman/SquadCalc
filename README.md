@@ -15,78 +15,91 @@
 </br>
 
 
-# SquadCalc
+# Introduction
 
 
 </br>
 
-**SquadCalc** is a simple, easy on the eyes mortar calculator for <a href="https://joinsquad.com/">Squad</a>.  
-It allows quick mortars calculations without fancy map, buttons and icons.
+
+Squadcalc.app is a mortar calculator designed specifically for the game <a href="https://joinsquad.com/">Squad</a>.  
+This tool facilitates rapid mortar calculations through two distinct modes:
+1. **Interactive Map Mode:** This mode enables users to intuitively add visual targets by double-clicking on the map, allowing easy manipulation of weapons and targets through drag-and-drop functionality.
+
+2. **Simple Legacy Mode:** For a straightforward approach, the legacy mode allows users to swiftly enter keypad inputs without the complexity of maps, buttons, or icons.
  
-</br>
 
-Select a map, enter locations, shoot.
 
 </br>
  
+# **Screenshots**
+
+</br>
+
+ <p align="center">
+  <img width="600" height="426" src="./src/img/github/desktop_ui.png">
+  <img width="224" height="426" src="./src/img/github/mobile_ui.png">
+</p>
  
 <p align="center">
-  <img width="300" height="213" src="./src/img/github/desktop.png">
-  <img width="112" height="213" src="./src/img/github/mobile.png">
+  <img width="600" height="426" src="./src/img/github/desktop.png">
+  <img width="224" height="426" src="./src/img/github/mobile.png">
 </p>
+
+
+</br></br>
 
 # **Features**
 
 
-## **Elevations Calculations**
+### **Elevations Calculations**
 
-SquadCalc is using heightmaps from Squad SDK to calculate the height difference between mortars and targets and ajust automatically the elevation.  
-If your target is up a hill, SquadCalc will make sure you don't waste 1000 ammo points 20 meters off that enemy HAB.
-
-Heightmaps are hidden : simply pick your map from the list and shoot.
-
-</br>
-
-<p align="center">
-  <img width="150" height="150" src="https://github.com/sh4rkman/SquadCalc/blob/master/src/img/heightmaps/gorodok.jpg?raw=true">
-  <img width="150" height="150" src="https://github.com/sh4rkman/SquadCalc/blob/master/src/img/heightmaps/tallil.jpg?raw=true">
-</p>
-<p align="center"><sub><sup>Examples of Heightmaps used for caculations (Gorodok & Tallil)</sub></sup></p>
-
-</br>
-
-## **Different Weapons Support**
-
-</br>
-
-SquadCalc support different type of weapons :
-
-**Deployables :**
-- mortars
-- UB-32
-- Hell Canon (Ins)  
-
-**Vehicles :**
-- Technicals mortars
-- Technicals/BRDM UB-32
-- BM-21 Grad  
-
-</br>
-
-</br></br>
+SquadCalc utilizes heightmaps extracted from the Squad SDK to precisely compute the elevation difference between mortars and targets, automatically adjusting the elevation settings. 
 
 
-## **Calculation Saving**
 
-</br>
+### **Map & Weapons Support**
 
-Save up to four calcs for later :
 
-</br>
+| **Weapons**      |           |
+|-----------------------|--------------------|
+| Mortars               |        ✅          |
+| UB-32                 |          ✅        |
+| Hell Canon            |           ✅       |
+| Technicals mortars    |        ✅            |
+| Technicals/BRDM UB-32 |      ✅              |
+| BM-21 Grad            |      ✅             |
 
-<p align="center">
-  <img width="261" height="200" src="./src/img/github/save.gif">
-</p>
+
+
+| **Maps**                     |                |
+|-----------------------------|----------------|
+| Al Basrah                   |        ✅           |
+| Anvil                       |        ✅           |
+| Belaya                      |       ✅               |
+| Black Coast                 |        ✅           |
+| Chora                       |       ✅            |
+| Fallujah                    |      ✅             |
+| Fool's Road                 |       ✅            |
+| Goose Bay                   |       ✅            |
+| Gorodok                     |        ✅           |
+| Harju                       |         ✅          |
+| Jensen's Range              |            ❌       |
+| Kamdesh Highlands           |         ✅          |
+| Kohat Toi                   |         ✅          |
+| Kokan                       |        ✅           |
+| Lashkar Valley              |         ✅          |
+| Logar Valley                |        ✅           |
+| Manicouagan                 |        ✅           |
+| Mestia                      |         ✅          |
+| Mutaha                      |        ✅           |
+| Narva                       |          ✅         |
+| Pacific Proving Grounds     |         ❌          |
+| Sanxian Islands             |      WIP             |
+| Skorpo                      |        ✅           |
+| Sumari Bala                 |      ✅             |
+| Tallil Outskirts            |       ✅            |
+| Yehorivka                   |       ✅            |
+
 
 </br></br>
 

@@ -138,14 +138,6 @@
             }
         }
     }
-    footer {
-        // opacity: 0;
-        // transform: translateY(30px);
-        // animation: appear 0s 0.25s ease-out forwards;
-        .logo {
-            width: 350px;
-        }
-    }
     /* -- L*560px -- */
     @media (min-height: 35em) {
         #classic_ui {
@@ -258,11 +250,6 @@
             }
             .coord img {
                 height: 75px;
-            }
-        }
-        footer {
-            .logo {
-                width: 600px;
             }
         }
         .tippy-box {

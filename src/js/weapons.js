@@ -12,7 +12,6 @@ import ub32Logo from "../img/icons/ub32_white.png";
 import ub322Logo from "../img/icons/ub32_deployable.png";
 
 /* eslint no-unused-vars: "off" */
-import mainLogo from "../img/logo.png";
 import target from "../img/icons/target.png";
 
 

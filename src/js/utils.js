@@ -802,12 +802,11 @@ export function switchUI(){
         $("#map_ui").removeClass("hidden");
         $(".weaponSelector").addClass("ui");
         $(".mapSelector").addClass("ui");
-        $(".fab-dots-2 i").removeClass("fa-map").addClass("fa-xmarks-lines");
+        $("#switchUIbutton").removeClass("fa-map").addClass("fa-xmarks-lines");
         globalData.ui = false;
         globalData.line.hide("none");   
         localStorage.setItem("data-ui", 0);
         globalData.map.invalidateSize();
-        $(".logo").hide();
         localStorage.setItem("InfoToolTips_uimode", true);
         if (tooltip_newUI){tooltip_newUI.destroy();}
     }
@@ -816,10 +815,9 @@ export function switchUI(){
         $("#map_ui").addClass("hidden");
         $(".weaponSelector").removeClass("ui");
         $(".mapSelector").removeClass("ui");
-        $(".fab-dots-2 i").removeClass("fa-xmarks-lines").addClass("fa-map");
+        $("#switchUIbutton").removeClass("fa-xmarks-lines").addClass("fa-map");
         globalData.ui = true;
         localStorage.setItem("data-ui", 1);
-        $(".logo").show();
         drawLine();
     }
 }
