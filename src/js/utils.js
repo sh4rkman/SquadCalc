@@ -798,8 +798,8 @@ export function loadUI(){
 
 export function switchUI(){
     if (globalData.ui){
-        $("main").addClass("hidden");
-        $("main2").removeClass("hidden");
+        $("#classic_ui").addClass("hidden");
+        $("#map_ui").removeClass("hidden");
         $(".weaponSelector").addClass("ui");
         $(".mapSelector").addClass("ui");
         $(".fab-dots-2 i").removeClass("fa-map").addClass("fa-xmarks-lines");
@@ -812,8 +812,8 @@ export function switchUI(){
         if (tooltip_newUI){tooltip_newUI.destroy();}
     }
     else {
-        $("main").removeClass("hidden");
-        $("main2").addClass("hidden");
+        $("#classic_ui").removeClass("hidden");
+        $("#map_ui").addClass("hidden");
         $(".weaponSelector").removeClass("ui");
         $(".mapSelector").removeClass("ui");
         $(".fab-dots-2 i").removeClass("fa-xmarks-lines").addClass("fa-map");

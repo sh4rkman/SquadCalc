@@ -61,7 +61,7 @@
 @media screen and (max-width: 48em) {
     /* -- H < 568px -- */
     @media (min-height: 35em) {
-        main {
+        #classic_ui {
             input {
                 height: 40px;
             }
@@ -75,7 +75,7 @@
     }
     /* -- H < 800px -- */
     @media (min-height: 50em) {
-        main {
+        #classic_ui {
             padding-top: 1em;
             .results {
                 font-size: 1.7em;
@@ -108,7 +108,7 @@
                 font-size: 1em;
             }
             &.ui {
-                top: 0em;
+                top: 0;
             }
         }
         .mapSelector {
@@ -130,7 +130,7 @@
             }
         }
     }
-    main {
+    #classic_ui {
         padding-top: 3em;
         .coord {
             img {
@@ -148,7 +148,7 @@
     }
     /* -- L*560px -- */
     @media (min-height: 35em) {
-        main {
+        #classic_ui {
             font-size: 25px;
             padding-top: 5em;
             input {
@@ -162,7 +162,7 @@
     }
     /* -- L*730px -- */
     @media (min-height: 45em) {
-        main {
+        #classic_ui {
             padding-top: 5em;
             input {
                 height: 70px;
@@ -171,7 +171,7 @@
     }
     /* -- L*800px -- */
     @media (min-height: 50em) {
-        main {
+        #classic_ui {
             font-size: 30px;
         }
     }
@@ -244,7 +244,7 @@
                 }
             }
         }
-        main {
+        #classic_ui {
             padding-top: 7em;
             input {
                 font-size: 1.7em;
