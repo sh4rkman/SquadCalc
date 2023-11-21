@@ -856,3 +856,9 @@ export function getCalcFromUI(a, b) {
     }
     return [bearing.toFixed(1), elevation];
 }
+
+export function isTouchDevice() {
+    return (("ontouchstart" in window) ||
+       (navigator.maxTouchPoints > 0) ||
+       (navigator.msMaxTouchPoints > 0));
+}

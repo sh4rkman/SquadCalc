@@ -1,5 +1,5 @@
 import { globalData } from "./conf";
-import { shoot, getKP } from "./utils";
+import { shoot, getKP,isTouchDevice } from "./utils";
 import { mortarIcon, targetIcon, squadWeaponMarker,squadTargetMarker } from "./marker";
 import SquadGrid from "./SquadGrid";
 
@@ -326,22 +326,28 @@ export function loadMap(){
     globalData.activeWeaponMarkers = L.layerGroup().addTo(globalData.map);
 
 
+    $(document).on("mouseleave", function () {
+        mouseLocationPopup.close();
+    });
 
 
     globalData.map.on("mousemove", function(e){
-        const mapScale = MAPS.find((elem, index) => index == globalData.activeMap).size / 256;
+        if (!isTouchDevice()){
+            const mapScale = MAPS.find((elem, index) => index == globalData.activeMap).size / 256;
 
-        // If no map has been loaded
-        if (globalData.layerGroup.getLayers().length === 0) {return 1;}
-
-        // If out of bounds
-        if (e.latlng.lat > 0 ||  e.latlng.lat < -256 || e.latlng.lng < 0 || e.latlng.lng > 256) {
-            mouseLocationPopup.close();
-            return;
+            // If no map has been loaded
+            if (globalData.layerGroup.getLayers().length === 0) {return 1;}
+    
+            // If out of bounds
+            if (e.latlng.lat > 0 ||  e.latlng.lat < -256 || e.latlng.lng < 0 || e.latlng.lng > 256) {
+                mouseLocationPopup.close();
+                return;
+            }
+    
+            mouseLocationPopup.setLatLng(e.latlng).openOn(globalData.map);
+            mouseLocationPopup.setContent("<p>"+ getKP(-e.latlng.lat * mapScale, e.latlng.lng * mapScale) + "</p>");
         }
-
-        mouseLocationPopup.setLatLng(e.latlng).openOn(globalData.map);
-        mouseLocationPopup.setContent("<p>"+ getKP(-e.latlng.lat * mapScale, e.latlng.lng * mapScale) + "</p>");
+        
     });    
 
     globalData.map.on("dblclick", function(e){
@@ -378,7 +384,7 @@ export function drawMap(){
     }).addTo(globalData.layerGroup);
 
     // create weapon
-    globalData.activeWeaponMarker = new squadWeaponMarker(L.latLng([-128, 128]), {icon: mortarIcon, draggable: true}).addTo(globalData.markersGroup).addTo(globalData.weaponGroup);
+    globalData.activeWeaponMarker = new squadWeaponMarker(L.latLng([-128, 128]), {icon: mortarIcon, draggable: true}).addTo(globalData.markersGroup);
 
     grid = new SquadGrid();
     grid.setBounds(imageBounds);
@@ -417,7 +423,7 @@ export function insertMarkers(a, b){
     var aScaled = L.latLng(a.lat * mapScale, a.lng * -mapScale);
     var bScaled = L.latLng(b.lat * mapScale, b.lng * -mapScale);
 
-    globalData.activeWeaponMarker = new squadWeaponMarker(aScaled, {icon: mortarIcon, draggable: true}).addTo(globalData.markersGroup).addTo(globalData.weaponGroup);
+    globalData.activeWeaponMarker = new squadWeaponMarker(aScaled, {icon: mortarIcon, draggable: true}).addTo(globalData.markersGroup);
     new squadTargetMarker(bScaled, {icon: targetIcon, draggable: true}).addTo(globalData.markersGroup);
 }
 

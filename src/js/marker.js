@@ -2,6 +2,7 @@ import L from "leaflet";
 import mortarIconImg from "../img/icons/marker_mortar.png";
 import targetIconImg from "../img/icons/marker_target.png";
 import shadowIconImg from "../img/icons/marker_shadow.png";
+
 import { globalData } from "./conf";
 import { MAPS } from  "./maps";
 import { getCalcFromUI } from "./utils";
@@ -19,13 +20,14 @@ export var squadMarker = L.Marker.extend({
         this.on("dragend", this._handleDragEnd, this);
     },
 
-    _handleDragStart: function (e) {
-        $(".leaflet-marker-icon").css('cursor', 'grabbing');
+    _handleDragStart: function () {
+        $(".leaflet-marker-icon").css("cursor", "grabbing");
     },
     
-    _handleDragEnd: function (e) {
-        $(".leaflet-marker-icon").css('cursor', 'grab');
-    }
+    _handleDragEnd: function () {
+        $(".leaflet-marker-icon").css("cursor", "grab");
+    },
+
 
 });
 
@@ -64,6 +66,7 @@ export var squadWeaponMarker = squadMarker.extend({
         
         // custom events handlers
         this.on("drag", this._handleDrag, this);
+        this.on("dblclick", this._handleDblclick, this);
 
     },
 
@@ -75,7 +78,9 @@ export var squadWeaponMarker = squadMarker.extend({
         });
     },
 
-
+    // Handle double click event to prevent placing target marker underneath weapon marker
+    _handleDblclick: function () {
+    },
 
 });
 
@@ -122,6 +127,7 @@ export var squadTargetMarker = squadMarker.extend({
     _handleClick: function() {
         this.remove();
         this.options.calcMarker.remove();
+
     },
 
     _handleDrag: function (e) {
