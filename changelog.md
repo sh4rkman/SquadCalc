@@ -1,5 +1,13 @@
 
 
+# <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">  **13.0.1** *(2023-11-22)*
+
+<img src="https://img.shields.io/badge/-%20Improv%20-orange"> Markers now cannot be placed/dragged outside of map ([#93](https://github.com/sh4rkman/SquadCalc/issues/93))
+
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
+
 # <img src="https://img.shields.io/badge/-major%20release-blue?style=flat-square">  **13.0.0** *(2023-11-21)*
 
 <img src="https://img.shields.io/badge/-new-green"> New interactive map mode ! You can know switch UI mode with the bottom right button to display a map where you can place and drag markers.

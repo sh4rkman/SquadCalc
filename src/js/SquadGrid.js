@@ -167,7 +167,6 @@ export default LayerGroup.extend({
         // opacity based on zoom level
         const interval = s2;
 
-    
         // clearing arrays
         this.kpLines = [];
         this.s1Lines = [];
@@ -175,11 +174,12 @@ export default LayerGroup.extend({
 
         // vertical keypad lines
         // doing some magic against floating point imprecision
-        const startX = Math.ceil(this.bounds.getWest() / interval) * interval;
-        const endX = Math.floor(this.bounds.getEast() / interval) * interval;
+        const startX = this.bounds.getWest();
+        const endX = this.bounds.getEast();
+
 
         for (let x = startX; x <= endX; x += interval) {
-            const bot = new LatLng(this.bounds.getSouth(), x);
+            const bot = new LatLng(this.bounds.getSouth()-1, x);
             const top = new LatLng(this.bounds.getNorth(), x);
 
             // checking which style to use for the current line
@@ -201,9 +201,13 @@ export default LayerGroup.extend({
         // horizontal keypad lines, almost the same as for vertical lines
         const startY = Math.ceil(this.bounds.getSouth() / interval) * interval;
         const endY = Math.floor(this.bounds.getNorth() / interval) * interval;
+
+        //const startY = -255;
+        //const endY = 0;
+
         for (let y = startY; y <= endY; y += interval) {
             const left = new LatLng(y, this.bounds.getWest());
-            const right = new LatLng(y, this.bounds.getEast());
+            const right = new LatLng(y, this.bounds.getEast()+1);
 
             if (isMultiple(kp, y)) {
                 this.kpLines.push(new Polyline([left, right], this.lineStyleKP));
