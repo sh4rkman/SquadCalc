@@ -336,7 +336,6 @@ footer {
 
 .fab-wrapper {
     bottom: 2rem;
-    display: none;
     position: fixed;
     right: 2rem;
     .fab {
@@ -733,8 +732,8 @@ footer {
 
 .fab-wrapper2 {
     bottom: 2rem;
-    display: none;
     left: 4rem;
+    display: block;
     z-index: 1;
     position:absolute;
     .fab-dots-2 {
