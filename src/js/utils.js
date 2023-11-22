@@ -1,6 +1,6 @@
 import { tooltip_save, tooltip_copied, tooltip_newUI } from "./tooltips";
 import { globalData } from "./conf";
-import { MAPS } from "./maps";
+import { MAPS, drawMap  } from "./maps";
 import { animateCSS, animateCalc, drawLine} from "./animations";
 import L from "leaflet";
 
@@ -789,7 +789,7 @@ export function pad(num, size) {
 
 export function loadUI(){
     globalData.ui = localStorage.getItem("data-ui");
-    if (globalData.ui === null || isNaN(globalData.ui) || globalData.ui === "") { globalData.ui = 0; }
+    if (globalData.ui === null || isNaN(globalData.ui) || globalData.ui === "") { globalData.ui = 1; }
     if (globalData.ui == 0){
         switchUI();
     }
@@ -797,6 +797,7 @@ export function loadUI(){
 
 
 export function switchUI(){
+
     if (globalData.ui){
         $("#classic_ui").addClass("hidden");
         $("#map_ui").removeClass("hidden");
@@ -809,6 +810,7 @@ export function switchUI(){
         globalData.map.invalidateSize();
         localStorage.setItem("InfoToolTips_uimode", true);
         if (tooltip_newUI){tooltip_newUI.destroy();}
+        drawMap();
     }
     else {
         $("#classic_ui").removeClass("hidden");

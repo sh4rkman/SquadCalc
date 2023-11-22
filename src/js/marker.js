@@ -9,9 +9,7 @@ import { getCalcFromUI } from "./utils";
 
 // Define your custom marker class
 export var squadMarker = L.Marker.extend({
-    options: {
-
-    },
+    options: {},
 
     // Initialize method
     initialize: function (latlng, options) {
@@ -129,7 +127,6 @@ export var squadTargetMarker = squadMarker.extend({
     _handleClick: function() {
         this.remove();
         this.options.calcMarker.remove();
-
     },
 
     _handleDrag: function (e) {

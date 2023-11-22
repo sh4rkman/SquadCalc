@@ -255,6 +255,8 @@ export function loadMapSelector() {
     MAPS.forEach(function(map, i) {
         MAP_SELECTOR.append("<option value=\"" + i + "\">" + map.name + "</option>");
     });
+
+    $(".dropbtn").val("0")
     loadHeatmap();
 }
 

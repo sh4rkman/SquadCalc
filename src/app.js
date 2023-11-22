@@ -25,8 +25,8 @@ import "leaflet.control.opacity";
 $(function() {
     createLine();
     loadMap();
-    loadUI();
     loadWeapons();
+    loadUI();
     loadTheme();
     loadMapSelector();
     preventAutocomplete();
