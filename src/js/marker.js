@@ -66,10 +66,11 @@ export var squadWeaponMarker = squadMarker.extend({
 
     _handleDrag: function (e) {
         // When dragging marker out of bounds, block it at the edge
-        if(e.latlng.lng > 256) {e.latlng.lng = 257}
-        if(e.latlng.lng < 0) {e.latlng.lng = -1}
-        if(e.latlng.lat > 0) {e.latlng.lat = 1}
-        if(e.latlng.lat < -256 ) {e.latlng.lat = -257 }
+        if (e.latlng.lng > 256) {e.latlng.lng = 257;}
+        if (e.latlng.lat < -256 ) {e.latlng.lat = -257;}
+        if (e.latlng.lng < 0) {e.latlng.lng = -1;}
+        if (e.latlng.lat > 0) {e.latlng.lat = 1;}
+
 
         this.setLatLng(e.latlng);
         this.options.rangeMarker.setLatLng(e.latlng);
@@ -136,13 +137,13 @@ export var squadTargetMarker = squadMarker.extend({
         var content;
 
         // When dragging marker out of bounds, block it at the edge
-        if(e.latlng.lng > 256) {e.latlng.lng = 256}
-        if(e.latlng.lng < 0) {e.latlng.lng = 0}
-        if(e.latlng.lat > 0) {e.latlng.lat = 0}
-        if(e.latlng.lat < -256 ) {e.latlng.lat = -256 }
+        if (e.latlng.lng > 256) {e.latlng.lng = 257;}
+        if (e.latlng.lat < -256 ) {e.latlng.lat = -257;}
+        if (e.latlng.lng < 0) {e.latlng.lng = -1;}
+        if (e.latlng.lat > 0) {e.latlng.lat = 1;}
 
+        this.setLatLng(e.latlng);
         this.options.calcMarker.setLatLng(e.latlng);
-        this.setLatLng(e.latlng)
         calc = getCalcFromUI(globalData.activeWeaponMarker.getLatLng(), e.target.getLatLng());
         content = "<span>" + calc[1] + "</span></br><span class='bearingUiCalc'>" +  calc[0] + "°</span>";
         this.options.calcMarker.setContent(content);

@@ -4,6 +4,11 @@
 
 <img src="https://img.shields.io/badge/-%20Improv%20-orange"> Markers now cannot be placed/dragged outside of map ([#93](https://github.com/sh4rkman/SquadCalc/issues/93))
 
+<img src="https://img.shields.io/badge/-%20fix%20-orange"> Grid is now fully covering the map ([#92](https://github.com/sh4rkman/SquadCalc/issues/92))
+
+<img src="https://img.shields.io/badge/-%20fix%20-orange"> Updated Kokan map
+
+
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
 
