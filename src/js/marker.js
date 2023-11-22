@@ -73,7 +73,7 @@ export var squadWeaponMarker = squadMarker.extend({
         this.setLatLng(e.latlng);
         this.options.rangeMarker.setLatLng(e.latlng);
         this.options.minRangeMarker.setLatLng(e.latlng);
-        globalData.activeWeaponMarkers.eachLayer(function (layer) {
+        globalData.activeTargetsMarkers.eachLayer(function (layer) {
             layer.updateCalc(layer.latlng);
         });
     },
@@ -107,9 +107,9 @@ export var squadTargetMarker = squadMarker.extend({
 
         squadMarker.prototype.initialize.call(this, latlng, options);
 
-        this.addTo(globalData.activeWeaponMarkers);
+        this.addTo(globalData.activeTargetsMarkers);
         this.options.calcMarker = L.popup(popUpOptions).setLatLng(latlng).openOn(globalData.map).addTo(globalData.markersGroup);
-        calc = getCalcFromUI(globalData.activeWeaponMarker.getLatLng(), latlng);
+        calc = getCalcFromUI(globalData.weaponGroup.getLatLng(), latlng);
         content = "<span>" + calc[1] + "</span></br><span class='bearingUiCalc'>" +  calc[0] + "°</span>";
         this.options.calcMarker.setContent(content);
 
@@ -119,7 +119,7 @@ export var squadTargetMarker = squadMarker.extend({
     },
 
     updateCalc: function(){
-        var calc = getCalcFromUI(globalData.activeWeaponMarker.getLatLng(), this.getLatLng());
+        var calc = getCalcFromUI(globalData.weaponGroup.getLatLng(), this.getLatLng());
         var content = "<span>" + calc[1] + "</span></br><span class='bearingUiCalc'>" +  calc[0] + "°</span>";
         this.options.calcMarker.setContent(content);
     },
@@ -141,7 +141,7 @@ export var squadTargetMarker = squadMarker.extend({
 
         this.setLatLng(e.latlng);
         this.options.calcMarker.setLatLng(e.latlng);
-        calc = getCalcFromUI(globalData.activeWeaponMarker.getLatLng(), e.target.getLatLng());
+        calc = getCalcFromUI(globalData.weaponGroup.getLatLng(), e.target.getLatLng());
         content = "<span>" + calc[1] + "</span></br><span class='bearingUiCalc'>" +  calc[0] + "°</span>";
         this.options.calcMarker.setContent(content);
     },

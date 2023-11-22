@@ -1,6 +1,6 @@
 import { globalData } from "./conf";
 import { shoot, getKP,isTouchDevice } from "./utils";
-import { mortarIcon, targetIcon, squadWeaponMarker,squadTargetMarker } from "./marker";
+import { mortarIcon, targetIcon, squadWeaponMarker, squadTargetMarker } from "./marker";
 import SquadGrid from "./SquadGrid";
 
 import L from "leaflet";
@@ -256,7 +256,7 @@ export function loadMapSelector() {
         MAP_SELECTOR.append("<option value=\"" + i + "\">" + map.name + "</option>");
     });
 
-    $(".dropbtn").val("0")
+    $(".dropbtn").val("0");
     loadHeatmap();
 }
 
@@ -274,8 +274,20 @@ export function drawHeatmap() {
         shoot();
     }, false);
 
+
+
 }
 
+
+/**
+ * Clear Interactive map from markers
+ */
+export function clearMap() {
+    globalData.layerGroup.clearLayers();
+    globalData.markersGroup.clearLayers();
+    globalData.activeWeaponMarker.clearLayers();
+    globalData.weaponGroup = "";
+}
 
 /**
  * Load the heatmap to the canvas
@@ -325,7 +337,8 @@ export function loadMap(){
     globalData.markersGroup = L.layerGroup().addTo(globalData.map);
     globalData.layerGroup = L.layerGroup().addTo(globalData.map);
     globalData.weaponGroup = L.layerGroup().addTo(globalData.map);
-    globalData.activeWeaponMarkers = L.layerGroup().addTo(globalData.map);
+    globalData.activeTargetsMarkers = L.layerGroup().addTo(globalData.map);
+    globalData.activeWeaponMarker = L.layerGroup().addTo(globalData.map);
 
 
     $(document).on("mouseleave", function () {
@@ -357,6 +370,13 @@ export function loadMap(){
         if (e.latlng.lat > 0 ||  e.latlng.lat < -256 || e.latlng.lng < 0 || e.latlng.lng > 256) {
             return 1;
         }
+
+        if (globalData.activeWeaponMarker.getLayers().length === 0) {
+            globalData.weaponGroup = new squadWeaponMarker(e.latlng, {icon: mortarIcon, draggable: true});
+            globalData.weaponGroup.addTo(globalData.markersGroup).addTo(globalData.activeWeaponMarker);
+            return 0;
+        }
+        
         new squadTargetMarker(L.latLng(e.latlng), {icon: targetIcon}).addTo(globalData.markersGroup);
     });
 
@@ -372,10 +392,8 @@ export function drawMap(){
     var imageUrl;
     var heightmaplayer;
 
-    globalData.layerGroup.clearLayers();
-    globalData.markersGroup.clearLayers();
-    globalData.weaponGroup.clearLayers();
-   
+
+ 
     // Remove any layers already drawn
     globalData.layerGroup.eachLayer(function(layer){
         globalData.layerGroup.removeLayer(layer);
@@ -388,8 +406,7 @@ export function drawMap(){
         bounds: imageBounds,
     }).addTo(globalData.layerGroup);
 
-    // create weapon
-    globalData.activeWeaponMarker = new squadWeaponMarker(L.latLng([-128, 128]), {icon: mortarIcon, draggable: true}).addTo(globalData.markersGroup);
+    
 
     grid = new SquadGrid();
     grid.setBounds(imageBounds);

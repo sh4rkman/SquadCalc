@@ -1,10 +1,10 @@
 import { shoot, filterInput, resizeInput, resizeInputsOnResize, RemoveSaves, copySave, copyCalc, saveCalc, changeHighLow, switchUI } from "./utils";
 import { changeWeapon } from "./weapons";
-import { drawHeatmap, drawMap } from "./maps";
+import { drawHeatmap, drawMap, clearMap } from "./maps";
 import { switchTheme } from "./themes";
 
 $(document).on("change", ".dropbtn2", function() { changeWeapon(); });
-$(document).on("change", ".dropbtn", function() { drawHeatmap(); drawMap(); shoot();});
+$(document).on("change", ".dropbtn", function() { drawHeatmap(); clearMap(); drawMap(); shoot();});
 
 $(document).on("input", "#mortar-location", function() { shoot("weapon"); });
 $(document).on("input", "#target-location", function() { shoot("target"); });

@@ -225,8 +225,6 @@ function getHeight(a, b) {
 function resetCalc() {
     if (!globalData.debug.active) {console.clear();}
 
-    //globalData.markersGroup.clearLayers();
-
     // First, reset any errors
     $("#settings").css({ "border-color": "#fff" });
     $("#target-location").removeClass("error2");
@@ -811,6 +809,7 @@ export function switchUI(){
         localStorage.setItem("InfoToolTips_uimode", true);
         if (tooltip_newUI){tooltip_newUI.destroy();}
         drawMap();
+
     }
     else {
         $("#classic_ui").removeClass("hidden");

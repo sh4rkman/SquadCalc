@@ -130,14 +130,14 @@ export function changeWeapon() {
     if (globalData.ui){drawLine();}
     shoot();
     
-    if (globalData.activeWeaponMarker){
+    if (globalData.activeWeaponMarker.getLayers().length){
         radiusMax = globalData.activeWeapon.getMaxDistance() * (256 / MAPS.find((elem, index) => index == globalData.activeMap).size);
         radiusMin = globalData.activeWeapon.minDistance * (256 / MAPS.find((elem, index) => index == globalData.activeMap).size);
-        globalData.activeWeaponMarker.options.rangeMarker.setRadius(radiusMax);
-        globalData.activeWeaponMarker.options.minRangeMarker.setRadius(radiusMin);
+        globalData.weaponGroup.options.rangeMarker.setRadius(radiusMax);
+        globalData.weaponGroup.options.minRangeMarker.setRadius(radiusMin);
     }
 
-    globalData.activeWeaponMarkers.eachLayer(function (layer) {
+    globalData.activeTargetsMarkers.eachLayer(function (layer) {
         layer.updateCalc(layer.latlng);
     });
 

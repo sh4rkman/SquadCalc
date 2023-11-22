@@ -3,7 +3,7 @@
  */
 export var globalData = {
     activeWeapon: "",
-    activeWeaponMarkers: "",
+    activeTargetsMarkers: "",
     activeMap: "",
     angleTypePref: "",
     map: "",
