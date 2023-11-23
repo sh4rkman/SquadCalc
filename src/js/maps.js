@@ -309,6 +309,8 @@ function loadHeatmap() {
     }
 }
 
+
+// todo: create a proper "squadmap" class so any developer reading this doesn't instantly commit suicide
 export function loadMap(){
 
     var map = L.map("map", {

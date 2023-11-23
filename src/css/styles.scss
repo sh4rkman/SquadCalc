@@ -735,10 +735,7 @@ footer {
     left: 4rem;
     display: block;
     z-index: 1;
-    position:absolute;
-    .fab-dots-2 {
-        padding-top: 0.55em;
-    }
+    position: absolute;
     .fab2 {
         background: #333;
         border-radius: 50%;
@@ -768,63 +765,10 @@ footer {
             background: rgb(24, 24, 24);
             cursor: pointer;
         }
+        .fab-dots-2 {
+            padding-top: 0.64em;
+        }
+    }
 
-    }
-    .disabled {
-        background: red;
-    }
-    .fab-checkbox2 {
-        display: none;
-    }
-    .fab-action {
-        align-items: center;
-        background: #333;
-        border-radius: 50%;
-        color: $mainTxtColor;
-        display: flex;
-        height: 3rem;
-        justify-content: center;
-        opacity: 0;
-        position: absolute;
-        text-decoration: none;
-        transition: all 0.1s ease;
-        width: 3rem;
-        &:hover {
-            background-color: $mainColor;
-            cursor: pointer;
-        }
-        &:active {
-            transform: scale(0.9);
-        }
-    }
-    .fabstyle2 {
-        background-color: $mainColor;
-    }
-    .fab-wheel2 {
-        bottom: 0;
-        height: 9rem;
-        position: absolute;
-        right: 0;
-        transform-origin: bottom right;
-        transform: scale(0);
-        transition: all 0.1s ease;
-        width: 9rem;
-        .fab-action-1 {
-            right: -1rem;
-            top: 0;
-        }
-        .fab-action-2 {
-            right: 2.8rem;
-            top: 0.5rem;
-        }
-        .fab-action-3 {
-            bottom: 2.8rem;
-            left: 0.5rem;
-        }
-        .fab-action-4 {
-            bottom: -1rem;
-            left: 0;
-        }
-    }
 }
 
