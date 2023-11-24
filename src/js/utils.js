@@ -826,6 +826,7 @@ export function switchUI(){
 export function getCalcFromUI(a, b) {
     var height;
     var distance;
+    var results;
     var bearing;
     var vel;
     var elevation;
@@ -838,7 +839,8 @@ export function getCalcFromUI(a, b) {
     distance = getDist(a, b);
     bearing = getBearing(a, b);
     vel = globalData.activeWeapon.getVelocity(distance);
-    elevation = getElevation(distance, height, vel);
+    results = getElevationWithEllipseParams(distance, height, vel);
+    elevation = results.elevationAngle;
 
     if (globalData.activeWeapon.unit === "mil") {
         elevation = radToMil(elevation);
@@ -853,11 +855,62 @@ export function getCalcFromUI(a, b) {
     else {
         elevation = elevation.toFixed(globalData.activeWeapon.elevationPrecision);
     }
-    return [bearing.toFixed(1), elevation];
+
+    return {
+        bearing: bearing.toFixed(1),
+        elevation: elevation,
+        ellipseParams: results.ellipseParams,
+    };
 }
+
+
+
 
 export function isTouchDevice() {
     return (("ontouchstart" in window) ||
        (navigator.maxTouchPoints > 0) ||
        (navigator.msMaxTouchPoints > 0));
+}
+
+
+/**
+ * Calculates the angle the mortar needs to be set in order
+ * to hit the target at the desired distance and vertical delta.
+ * @param {number} [dist] - distance between mortar and target from getDist()
+ * @param {number} [vDelta] - vertical delta between mortar and target from getHeight()
+ * @param {number} [vel] - initial mortar projectile velocity
+ * @returns {object} - An object containing the elevation angle and ellipse parameters
+ */
+function getElevationWithEllipseParams(dist = 0, vDelta = 0, vel = 0) {
+    var ellipseParams;
+
+    var gravity = globalData.gravity * globalData.activeWeapon.gravityScale;
+    const P1 = Math.sqrt(vel ** 4 - gravity * (gravity * dist ** 2 + 2 * vDelta * vel ** 2));
+
+    // Calculate the mortar elevation angle
+    const angle = Math.atan((vel ** 2 - (P1 * globalData.activeWeapon.getAngleType())) / (gravity * dist));
+
+    // Calculate ellipse parameters
+
+    if (globalData.activeWeapon.moa != 0){
+        const moa = globalData.activeWeapon.moa / 2;
+        ellipseParams = {
+            semiMajorAxis: moa + (dist/100),
+            semiMinorAxis: moa - (dist/100),
+            ellipseAngle: (angle * (180 / Math.PI))
+        };
+    }
+    else {
+        ellipseParams = {
+            semiMajorAxis: 0,
+            semiMinorAxis: 0,
+            ellipseAngle: 0
+        };
+    }
+
+    // Return object containing elevation angle and ellipse parameters
+    return {
+        elevationAngle: angle,
+        ellipseParams: ellipseParams,
+    };
 }

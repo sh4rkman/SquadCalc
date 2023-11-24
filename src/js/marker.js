@@ -1,4 +1,6 @@
 import L from "leaflet";
+import  "./ellipse";
+
 import mortarIconImg from "../img/icons/marker_mortar.png";
 import targetIconImg from "../img/icons/marker_target.png";
 import shadowIconImg from "../img/icons/marker_shadow.png";
@@ -35,7 +37,7 @@ export var squadWeaponMarker = squadMarker.extend({
     initialize: function (latlng, options) {
         var circleOptions = {
             radius: globalData.activeWeapon.getMaxDistance() * (256 / MAPS.find((elem, index) => index == globalData.activeMap).size),
-            opacity: 1,
+            opacity: 0.7,
             color: "#01d401",
             fillOpacity: 0,
             weight: 2,
@@ -44,7 +46,7 @@ export var squadWeaponMarker = squadMarker.extend({
         var circleOptions2 = {
             radius: globalData.activeWeapon.minDistance * (256 / MAPS.find((elem, index) => index == globalData.activeMap).size),
             opacity: 0.5,
-            color: "red",
+            color: "#b22222",
             fillOpacity: 0.1,
             weight: 1,
             autoPan: false,
@@ -79,8 +81,7 @@ export var squadWeaponMarker = squadMarker.extend({
     },
 
     // Handle double click event to prevent placing target marker underneath weapon marker
-    _handleDblclick: function () {
-    },
+    _handleDblclick: function () {},
 
 });
 
@@ -89,11 +90,16 @@ export var squadTargetMarker = squadMarker.extend({
     options: {
         draggable: true,
         calcMarker: null,
+        spreadMarker: null,
     },
 
     initialize: function (latlng, options) {
-        var calc;
+        var radiiElipse;
+        var angleElipse;
+        var results;
         var content;
+        const mapScale = 256 / MAPS.find((elem, index) => index == globalData.activeMap).size;
+
         var popUpOptions = {
             closeButton: false,
             className: "calcPopup",
@@ -105,13 +111,33 @@ export var squadTargetMarker = squadMarker.extend({
             offset: [45, 0],
         };
 
+        var spreadOptions = {
+            opacity: 0.5,
+            color: "#b22222",
+            weight: 1
+        };
+
         squadMarker.prototype.initialize.call(this, latlng, options);
+
+        results = getCalcFromUI(globalData.weaponGroup.getLatLng(), latlng);
+        radiiElipse = [(results.ellipseParams.semiMajorAxis * mapScale)/2, (results.ellipseParams.semiMinorAxis * mapScale)/2];
+        angleElipse = results.bearing;
+
+        content = "<span>" + results.elevation + "</span></br><span class='bearingUiCalc'>" +  results.bearing + "°</span>";
 
         this.addTo(globalData.activeTargetsMarkers);
         this.options.calcMarker = L.popup(popUpOptions).setLatLng(latlng).openOn(globalData.map).addTo(globalData.markersGroup);
-        calc = getCalcFromUI(globalData.weaponGroup.getLatLng(), latlng);
-        content = "<span>" + calc[1] + "</span></br><span class='bearingUiCalc'>" +  calc[0] + "°</span>";
         this.options.calcMarker.setContent(content);
+        
+        // Initiate Spread Ellipse Marker
+        this.options.spreadMarker = L.ellipse(latlng, radiiElipse, angleElipse, spreadOptions).addTo(globalData.markersGroup);
+        if (results.elevation === "---" || results.ellipseParams.semiMajorAxis === 0) {
+            this.options.spreadMarker.setStyle({opacity: 0, fillOpacity: 0});
+        }
+        else {
+            this.options.spreadMarker.setRadius([(results.ellipseParams.semiMajorAxis * mapScale)/2, (results.ellipseParams.semiMinorAxis * mapScale)/2]);
+            this.options.spreadMarker.setStyle({opacity: 0.2, fillOpacity: 0.2});
+        }
 
         // Custom events handlers
         this.on("click", this._handleClick, this);
@@ -119,19 +145,35 @@ export var squadTargetMarker = squadMarker.extend({
     },
 
     updateCalc: function(){
-        var calc = getCalcFromUI(globalData.weaponGroup.getLatLng(), this.getLatLng());
-        var content = "<span>" + calc[1] + "</span></br><span class='bearingUiCalc'>" +  calc[0] + "°</span>";
+        const mapScale = 256 / MAPS.find((elem, index) => index == globalData.activeMap).size;
+        var results = getCalcFromUI(globalData.weaponGroup.getLatLng(), this.getLatLng());
+        var content = "<span>" + results.elevation + "</span></br><span class='bearingUiCalc'>" +  results.bearing + "°</span>";
+        
+        // Update calcs and spread marker
         this.options.calcMarker.setContent(content);
+        this.options.spreadMarker.setTilt(results.bearing);
+        if (results.elevation === "---" || results.ellipseParams.semiMajorAxis === 0) {
+            this.options.spreadMarker.setStyle({opacity: 0, fillOpacity: 0});
+        }
+        else {
+            this.options.spreadMarker.setRadius([(results.ellipseParams.semiMajorAxis * mapScale)/2, (results.ellipseParams.semiMinorAxis * mapScale)/2]);
+            this.options.spreadMarker.setStyle({opacity: 0.2, fillOpacity: 0.2});
+        }
+
+
+
     },
 
     _handleClick: function() {
         this.remove();
         this.options.calcMarker.remove();
+        this.options.spreadMarker.remove();
     },
 
     _handleDrag: function (e) {
-        var calc;
+        const mapScale = 256 / MAPS.find((elem, index) => index == globalData.activeMap).size;
         var content;
+        var results = getCalcFromUI(globalData.weaponGroup.getLatLng(), this.getLatLng());
 
         // When dragging marker out of bounds, block it at the edge
         if (e.latlng.lng > 256) {e.latlng.lng = 257;}
@@ -139,10 +181,22 @@ export var squadTargetMarker = squadMarker.extend({
         if (e.latlng.lng < 0) {e.latlng.lng = -1;}
         if (e.latlng.lat > 0) {e.latlng.lat = 1;}
 
+
+        // Update marker, calc marker, spread marker
         this.setLatLng(e.latlng);
         this.options.calcMarker.setLatLng(e.latlng);
-        calc = getCalcFromUI(globalData.weaponGroup.getLatLng(), e.target.getLatLng());
-        content = "<span>" + calc[1] + "</span></br><span class='bearingUiCalc'>" +  calc[0] + "°</span>";
+        this.options.spreadMarker.setLatLng(e.latlng);
+        this.options.spreadMarker.setTilt(results.bearing);
+
+        if (results.elevation === "---" || results.ellipseParams.semiMajorAxis === 0) {
+            this.options.spreadMarker.setStyle({opacity: 0, fillOpacity: 0});
+        }
+        else {
+            this.options.spreadMarker.setRadius([(results.ellipseParams.semiMajorAxis * mapScale)/2, (results.ellipseParams.semiMinorAxis * mapScale)/2]);
+            this.options.spreadMarker.setStyle({opacity: 0.2, fillOpacity: 0.2});
+        }
+        
+        content = "<span>" + results.elevation + "</span></br><span class='bearingUiCalc'>" +  results.bearing + "°</span>";
         this.options.calcMarker.setContent(content);
     },
 });
