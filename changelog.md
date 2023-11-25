@@ -1,5 +1,18 @@
 
 
+# <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">  **13.0.2** *(2023-11-25)*
+
+<img src="https://img.shields.io/badge/-new-green"> A new spread circle has been added on targets to show the spread possibility of rounds (mortar, hellcanon, technicals only)
+
+<img src="https://img.shields.io/badge/-%20fix%20-orange"> The switchmode icon is now correctly centered
+
+<img src="https://img.shields.io/badge/-%20fix%20-orange"> Page now waits to be fully loaded before displaying content, avoiding flash of unstyled content.
+
+
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
+
 # <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">  **13.0.1** *(2023-11-22)*
 
 <img src="https://img.shields.io/badge/-%20Improv%20-orange"> Markers now cannot be placed/dragged outside of map ([#93](https://github.com/sh4rkman/SquadCalc/issues/93))
