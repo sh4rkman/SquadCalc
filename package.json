@@ -45,10 +45,12 @@
     "eslint": "^8.34.0",
     "favicons": "^7.1.2",
     "html-loader": "^3.1.0",
-    "html-webpack-plugin": "^5.5.0",
+    "html-webpack-plugin": "^5.5.3",
     "htmlhint": "^1.1.4",
     "jshint": "^2.13.6",
     "leader-line-new": "^1.1.9",
+    "leaflet": "^1.9.4",
+    "leaflet.control.opacity": "^1.6.0",
     "mini-css-extract-plugin": "^2.7.6",
     "npm-run-all": "^4.1.5",
     "postcss": ">=8.4.31",
@@ -69,9 +71,5 @@
     "webpack-jquery-ui": "^2.0.1",
     "webpack-merge": "^5.8.0",
     "webpack-pwa-manifest": "^4.3.0"
-  },
-  "dependencies": {
-    "leaflet": "^1.9.4",
-    "leaflet.control.opacity": "^1.6.0"
   }
 }

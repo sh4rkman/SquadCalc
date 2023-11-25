@@ -30,5 +30,7 @@ $(function() {
     loadTheme();
     loadMapSelector();
     preventAutocomplete();
+    document.body.style.visibility = "visible";
     console.log("Calculator Loaded!");
 });
+

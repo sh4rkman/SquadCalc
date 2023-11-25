@@ -883,7 +883,6 @@ export function isTouchDevice() {
  */
 function getElevationWithEllipseParams(dist = 0, vDelta = 0, vel = 0) {
     var ellipseParams;
-
     var gravity = globalData.gravity * globalData.activeWeapon.gravityScale;
     const P1 = Math.sqrt(vel ** 4 - gravity * (gravity * dist ** 2 + 2 * vDelta * vel ** 2));
 
@@ -893,10 +892,10 @@ function getElevationWithEllipseParams(dist = 0, vDelta = 0, vel = 0) {
     // Calculate ellipse parameters
 
     if (globalData.activeWeapon.moa != 0){
-        const moa = globalData.activeWeapon.moa / 2;
+        const moa = globalData.activeWeapon.moa;
         ellipseParams = {
-            semiMajorAxis: moa + (dist/100),
-            semiMinorAxis: moa - (dist/100),
+            semiMajorAxis: moa,
+            semiMinorAxis: moa - ((moa) * (dist/globalData.activeWeapon.getMaxDistance())) + 10,
             ellipseAngle: (angle * (180 / Math.PI))
         };
     }

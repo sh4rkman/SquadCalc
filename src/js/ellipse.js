@@ -13,15 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+import L from "leaflet";
 
 L.SVG.include ({
     _updateEllipse: function (layer) {
-        var c = layer._point,
-            rx = layer._radiusX,
-            ry = layer._radiusY,
-            phi = layer._tiltDeg,
-            endPoint = layer._endPointParams;
+        var rx = layer._radiusX;
+        var ry = layer._radiusY;
+        var phi = layer._tiltDeg;
+        var endPoint = layer._endPointParams;
 
         var d = "M" + endPoint.x0 + "," + endPoint.y0 +
             "A" + rx + "," + ry + "," + phi + "," +
@@ -33,12 +32,17 @@ L.SVG.include ({
 
 L.Canvas.include ({
     _updateEllipse: function (layer) {
+        var p;
+        var ctx;
+        var r;
+        var s;
+
         if (layer._empty()) { return; }
 
-        var p = layer._point,
-            ctx = this._ctx,
-            r = layer._radiusX,
-            s = (layer._radiusY || r) / r;
+        p = layer._point;
+        ctx = this._ctx;
+        r = layer._radiusX;
+        s = (layer._radiusY || r) / r;
 
         this._drawnLayers[layer._leaflet_id] = layer;
 
