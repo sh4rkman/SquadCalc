@@ -69,23 +69,6 @@ tippy(".fab-action-4", {
     theme: "fab",
 });
 
-
-if ($(window).width() > 767) {
-    if (!localStorage.getItem("InfoToolTips_uimode")) {
-        tippy(".fab2", {
-            placement: "right",
-            animation: "fade",
-            allowHTML: true,
-            content: "Map Mode </br> (beta)",
-            theme: "fab",
-        });
-        tooltip_newUI = document.querySelector(".fab2")._tippy;
-        tooltip_newUI.show();
-    }
-}
-
-
-
 tippy("#savebutton i", {
     animation: "fade",
     allowHTML: true,
