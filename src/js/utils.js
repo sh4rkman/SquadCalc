@@ -1,4 +1,4 @@
-import { tooltip_save, tooltip_copied, tooltip_newUI } from "./tooltips";
+import { tooltip_save, tooltip_copied } from "./tooltips";
 import { globalData } from "./conf";
 import { MAPS, drawMap  } from "./maps";
 import { animateCSS, animateCalc, drawLine} from "./animations";
@@ -787,38 +787,45 @@ export function pad(num, size) {
 
 export function loadUI(){
     globalData.ui = localStorage.getItem("data-ui");
-    if (globalData.ui === null || isNaN(globalData.ui) || globalData.ui === "") { globalData.ui = 1; }
-    if (globalData.ui == 0){
-        switchUI();
+
+    if (globalData.ui === null || isNaN(globalData.ui) || globalData.ui === ""){
+        globalData.ui = 1; 
+        localStorage.setItem("data-ui", 1);  
     }
+
+    if (globalData.ui == 1){
+        loadMapUIMode();
+    }
+
 }
 
 
+function loadMapUIMode(){
+    $("#classic_ui").addClass("hidden");
+    $("#map_ui").removeClass("hidden");
+    $(".weaponSelector").addClass("ui");
+    $(".mapSelector").addClass("ui");
+    $("#switchUIbutton").removeClass("fa-map").addClass("fa-xmarks-lines");
+    globalData.ui = 1;
+    globalData.line.hide("none");
+    localStorage.setItem("data-ui", 1);
+    globalData.map.invalidateSize();
+    drawMap();
+}
+
 export function switchUI(){
 
-    if (globalData.ui){
-        $("#classic_ui").addClass("hidden");
-        $("#map_ui").removeClass("hidden");
-        $(".weaponSelector").addClass("ui");
-        $(".mapSelector").addClass("ui");
-        $("#switchUIbutton").removeClass("fa-map").addClass("fa-xmarks-lines");
-        globalData.ui = false;
-        globalData.line.hide("none");   
-        localStorage.setItem("data-ui", 0);
-        globalData.map.invalidateSize();
-        localStorage.setItem("InfoToolTips_uimode", true);
-        if (tooltip_newUI){tooltip_newUI.destroy();}
-        drawMap();
-
+    if (globalData.ui == 0){
+        loadMapUIMode();
     }
     else {
-        $("#classic_ui").removeClass("hidden");
         $("#map_ui").addClass("hidden");
+        $("#classic_ui").removeClass("hidden");
         $(".weaponSelector").removeClass("ui");
         $(".mapSelector").removeClass("ui");
         $("#switchUIbutton").removeClass("fa-xmarks-lines").addClass("fa-map");
-        globalData.ui = true;
-        localStorage.setItem("data-ui", 1);
+        globalData.ui = 0;
+        localStorage.setItem("data-ui", 0);
         drawLine();
     }
 }
@@ -893,13 +900,17 @@ function getElevationWithEllipseParams(dist = 0, vDelta = 0, vel = 0) {
 
     if (globalData.activeWeapon.moa != 0){
         const moa = globalData.activeWeapon.moa;
+
+        // trying to emulate very approximately Squad spread zone until i figure out what OWI did
+        // Looks like they applied MOA deviation only on elevation angle, not on bearing
         ellipseParams = {
-            semiMajorAxis: moa,
+            semiMajorAxis: moa - dist/100,
             semiMinorAxis: moa - ((moa) * (dist/globalData.activeWeapon.getMaxDistance())) + 10,
             ellipseAngle: (angle * (180 / Math.PI))
         };
     }
     else {
+        
         ellipseParams = {
             semiMajorAxis: 0,
             semiMinorAxis: 0,

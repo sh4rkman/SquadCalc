@@ -24,8 +24,6 @@ export function animateCSS($element, animation, prefix = "animate__") {
 
         // Use the on() method to attach the event handler
         $element.on("animationend", handleAnimationEnd);
-
-        // Make sure to specify { once: true } in the on() method if you want it to run only once.
     });
 }
 
@@ -64,7 +62,7 @@ export function drawLine() {
             globalData.line.start = LeaderLine.pointAnchor(document.getElementById("mortarImg"), { x: globalData.activeWeapon.logoCannonPos, y: "-30%" });
             globalData.line.show("draw", { duration: 2000 });
             explode($(".leader-line").position().left, $(".leader-line").position().top);
-        }, 1000);
+        }, 1200);
     }
 }
 

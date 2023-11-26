@@ -176,7 +176,7 @@ L.Ellipse = L.Path.extend({
     },
 
     _getLngRadius: function () {
-        return ((this._mRadiusX));
+        return (this._mRadiusX);
     },
 
     _centerPointToEndPoint: function () {

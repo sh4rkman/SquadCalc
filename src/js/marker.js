@@ -1,9 +1,11 @@
 import L from "leaflet";
 import  "./ellipse";
 
-import mortarIconImg from "../img/icons/marker_mortar.png";
-import targetIconImg from "../img/icons/marker_target.png";
 import shadowIconImg from "../img/icons/marker_shadow.png";
+import mortarIconImg from "../img/icons/marker_mortar.png";
+import ub32IconImg from "../img/icons/marker_ub32.png";
+import targetIconImg from "../img/icons/marker_target.png";
+
 
 import { globalData } from "./conf";
 import { MAPS } from  "./maps";
@@ -58,11 +60,30 @@ export var squadWeaponMarker = squadMarker.extend({
         this.options.minRangeMarker = L.circle(latlng, circleOptions2).addTo(globalData.markersGroup);
         this.options.rangeMarker = L.circle(latlng, circleOptions).addTo(globalData.markersGroup);
         
+        if (this.options.minRangeMarker.getRadius() == 0) {
+            this.options.minRangeMarker.setStyle({opacity: 0, fillOpacity: 0});
+        }
+
         // custom events handlers
         this.on("drag", this._handleDrag, this);
         this.on("dblclick", this._handleDblclick, this);
 
     },
+
+    updateWeapon: function(){
+
+        // Update MinRange circle opacity
+        if (this.options.minRangeMarker.getRadius() != 0) {
+            this.options.minRangeMarker.setStyle({opacity: 0.5, fillOpacity: 0.1});
+        }
+        else {
+            this.options.minRangeMarker.setStyle({opacity: 0, fillOpacity: 0});
+        }
+
+        //this.setIcon(ub32Icon);
+
+    },
+
 
     _handleDrag: function (e) {
         // When dragging marker out of bounds, block it at the edge
@@ -107,8 +128,8 @@ export var squadTargetMarker = squadMarker.extend({
             closeOnClick: false,
             closeOnEscapeKey: false,
             autoPan: false,
-            interactive: false,
-            offset: [45, 0],
+            minWidth: 0,
+            offset: [32, 10],
         };
 
         var spreadOptions = {
@@ -126,6 +147,9 @@ export var squadTargetMarker = squadMarker.extend({
         content = "<span>" + results.elevation + "</span></br><span class='bearingUiCalc'>" +  results.bearing + "°</span>";
 
         this.addTo(globalData.activeTargetsMarkers);
+
+
+        // Initiate calcPopup holding calcs
         this.options.calcMarker = L.popup(popUpOptions).setLatLng(latlng).openOn(globalData.map).addTo(globalData.markersGroup);
         this.options.calcMarker.setContent(content);
         
@@ -159,9 +183,6 @@ export var squadTargetMarker = squadMarker.extend({
             this.options.spreadMarker.setRadius([(results.ellipseParams.semiMajorAxis * mapScale)/2, (results.ellipseParams.semiMinorAxis * mapScale)/2]);
             this.options.spreadMarker.setStyle({opacity: 0.2, fillOpacity: 0.2});
         }
-
-
-
     },
 
     _handleClick: function() {
@@ -211,12 +232,22 @@ export var mortarIcon = L.icon({
     shadowAnchor: [10, 47],  
 });
 
-export var targetIcon = L.icon({
-    iconUrl: targetIconImg,
+
+export var ub32Icon = L.icon({
+    iconUrl: ub32IconImg,
     shadowUrl: shadowIconImg,
     iconSize:     [38, 47], 
     shadowSize:   [38, 47], 
     iconAnchor:   [19, 47],
-    shadowAnchor: [10, 47], 
+    shadowAnchor: [10, 47],  
+});
+
+export var targetIcon = L.icon({
+    iconUrl: targetIconImg,
+    shadowUrl: shadowIconImg,
+    iconSize:     [28, 35], 
+    shadowSize:   [28, 35],
+    iconAnchor:   [14, 35],
+    shadowAnchor: [7.5, 35], 
 });
 

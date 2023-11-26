@@ -108,7 +108,7 @@ export const WEAPONS = [
     new Weapon("Hell Cannon", 95, 1, [10, 85], "deg", hellcannonLogo, "130%", "deployables", "high", 1, 160, 100),
 
     new Weapon("Technical", 109.890938, 1, [-45, 135], "deg", technicalLogo, "50%", "vehicles", "high", 1, 51, 50),
-    new Weapon("Tech. UB-32", UB32_table, 2, [-45, 135], "deg", ub32Logo, "55%", "vehicles", "low", 1, 0),
+    new Weapon("Tech. UB-32", UB32_table, 2, [-45, 135], "deg", ub32Logo, "55%", "vehicles", "low", 1, 0, 0),
     new Weapon("BM-21 Grad", 200, 2, [-45, 135], "deg", mlrsLogo, "60%", "vehicles", "low", 1, 0, 0),
 
     //new Weapon("Short", 109.890938, 1, 1520, undefined, "mil", frenchLogo, "135%", "frenchDLC", "high", 0),
@@ -124,12 +124,14 @@ export function changeWeapon() {
     var radiusMax;
     var radiusMin;
     const weapon = $(".dropbtn2").val();
+
     globalData.line.hide("none");
     localStorage.setItem("data-weapon", weapon);
     globalData.activeWeapon = WEAPONS[weapon];
     $("#mortarImg").attr("src", globalData.activeWeapon.logo);
-    if (globalData.ui){drawLine();}
     shoot();
+
+    if (globalData.ui === 0){drawLine();}
     
     if (globalData.activeWeaponMarker.getLayers().length){
         radiusMax = globalData.activeWeapon.getMaxDistance() * (256 / MAPS.find((elem, index) => index == globalData.activeMap).size);
@@ -140,6 +142,10 @@ export function changeWeapon() {
 
     globalData.activeTargetsMarkers.eachLayer(function (layer) {
         layer.updateCalc(layer.latlng);
+    });
+
+    globalData.activeWeaponMarker.eachLayer(function (layer) {
+        layer.updateWeapon();
     });
 
 }

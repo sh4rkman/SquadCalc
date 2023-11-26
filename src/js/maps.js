@@ -409,7 +409,6 @@ export function drawMap(){
     }).addTo(globalData.layerGroup);
 
     
-
     grid = new SquadGrid();
     grid.setBounds(imageBounds);
     grid.addTo(globalData.layerGroup);

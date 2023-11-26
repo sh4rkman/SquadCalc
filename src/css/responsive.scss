@@ -92,10 +92,6 @@
     /* On big screen, fix map&weapon Selectors on top corners */
     header {
         .weaponSelector {
-            // Animation
-            opacity: 0;
-            transform: translateY(-30px);
-            animation: appear 0.5s 0.75s ease-out forwards;
             // fix to top left corner
             left: 1em;
             position: fixed;
@@ -109,10 +105,6 @@
             }
         }
         .mapSelector {
-            // Animation
-            opacity: 0;
-            transform: translateY(-30px);
-            animation: appear 0.5s 0.75s ease-out forwards;
             // fix to top right corner
             position: fixed;
             right: 1em;
