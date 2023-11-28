@@ -4,6 +4,7 @@ test.beforeEach(async ({ page }) => {
   // Go to the starting url before each test.
   await page.goto('http://localhost:8080/');
   await expect(page).toHaveTitle(/SquadCalc/);
+  await page.locator('label').first().click();
 });
 
 test.afterAll(async ({ page }) => {

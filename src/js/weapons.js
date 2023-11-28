@@ -132,20 +132,15 @@ export function changeWeapon() {
     shoot();
 
     if (globalData.ui === 0){drawLine();}
-    
-    if (globalData.activeWeaponMarker.getLayers().length){
-        radiusMax = globalData.activeWeapon.getMaxDistance() * (256 / MAPS.find((elem, index) => index == globalData.activeMap).size);
-        radiusMin = globalData.activeWeapon.minDistance * (256 / MAPS.find((elem, index) => index == globalData.activeMap).size);
-        globalData.weaponGroup.options.rangeMarker.setRadius(radiusMax);
-        globalData.weaponGroup.options.minRangeMarker.setRadius(radiusMin);
-    }
+
+    // If there is weapon marker on the map, update them
+    globalData.activeWeaponMarker.eachLayer(function (layer) {
+        layer.updateWeapon();
+    });
+
 
     globalData.activeTargetsMarkers.eachLayer(function (layer) {
         layer.updateCalc(layer.latlng);
-    });
-
-    globalData.activeWeaponMarker.eachLayer(function (layer) {
-        layer.updateWeapon();
     });
 
 }

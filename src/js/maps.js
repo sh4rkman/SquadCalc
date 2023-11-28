@@ -1,6 +1,6 @@
 import { globalData } from "./conf";
 import { shoot, getKP,isTouchDevice } from "./utils";
-import { mortarIcon, targetIcon, squadWeaponMarker, squadTargetMarker } from "./marker";
+import { mortarIcon, mortarIcon1, mortarIcon2, targetIcon, squadWeaponMarker, squadTargetMarker } from "./marker";
 import SquadGrid from "./SquadGrid";
 
 import L from "leaflet";
@@ -189,7 +189,7 @@ export const MAPS = [
     { 
         name: "Sanxian (beta)",
         size: 3571, 
-        offset: [-9600, -9600], 
+        offset: [0, 0], 
         scaling: 0.1892, 
         heightmapURL: SanxianURL,
         mapURL: "/sanxian/{z}_{x}_{y}.jpg",
@@ -274,8 +274,6 @@ export function drawHeatmap() {
         shoot();
     }, false);
 
-
-
 }
 
 
@@ -283,11 +281,12 @@ export function drawHeatmap() {
  * Clear Interactive map from markers
  */
 export function clearMap() {
-    globalData.layerGroup.clearLayers();
     globalData.markersGroup.clearLayers();
+    globalData.layerGroup.clearLayers();
     globalData.activeWeaponMarker.clearLayers();
-    globalData.weaponGroup = "";
+    globalData.activeTargetsMarkers.clearLayers();
 }
+
 
 /**
  * Load the heatmap to the canvas
@@ -335,10 +334,10 @@ export function loadMap(){
     });
 
     globalData.map = map;
-    globalData.map.setView([-128, 128], 2);
+
+
     globalData.markersGroup = L.layerGroup().addTo(globalData.map);
     globalData.layerGroup = L.layerGroup().addTo(globalData.map);
-    globalData.weaponGroup = L.layerGroup().addTo(globalData.map);
     globalData.activeTargetsMarkers = L.layerGroup().addTo(globalData.map);
     globalData.activeWeaponMarker = L.layerGroup().addTo(globalData.map);
 
@@ -367,15 +366,37 @@ export function loadMap(){
         
     });    
 
+
     globalData.map.on("dblclick", function(e){
+        var secondMortar;
+
         // If out of bounds
         if (e.latlng.lat > 0 ||  e.latlng.lat < -256 || e.latlng.lng < 0 || e.latlng.lng > 256) {
             return 1;
         }
 
+        // Check if the control key is pressed
+        if (e.originalEvent.ctrlKey) {
+
+            // Only add a second weapon if there is only one existent weapon
+            if (globalData.activeWeaponMarker.getLayers().length === 1) {
+                secondMortar = new squadWeaponMarker(e.latlng, {icon: mortarIcon2, draggable: true});
+                secondMortar.addTo(globalData.markersGroup).addTo(globalData.activeWeaponMarker);
+
+                // Update first weapon icon
+                globalData.activeWeaponMarker.getLayers()[0].setIcon(mortarIcon1);
+
+                // Update existent targets
+                globalData.activeTargetsMarkers.eachLayer(function (layer) {
+                    layer.updateCalc(layer.latlng);
+                });
+
+                return 0;
+            }
+        }
+
         if (globalData.activeWeaponMarker.getLayers().length === 0) {
-            globalData.weaponGroup = new squadWeaponMarker(e.latlng, {icon: mortarIcon, draggable: true});
-            globalData.weaponGroup.addTo(globalData.markersGroup).addTo(globalData.activeWeaponMarker);
+            new squadWeaponMarker(e.latlng, {icon: mortarIcon, draggable: true}).addTo(globalData.markersGroup).addTo(globalData.activeWeaponMarker);
             return 0;
         }
         
@@ -394,8 +415,8 @@ export function drawMap(){
     var imageUrl;
     var heightmaplayer;
 
+    globalData.map.setView([-128, 128], 2);
 
- 
     // Remove any layers already drawn
     globalData.layerGroup.eachLayer(function(layer){
         globalData.layerGroup.removeLayer(layer);
@@ -446,7 +467,7 @@ export function insertMarkers(a, b){
     var aScaled = L.latLng(a.lat * mapScale, a.lng * -mapScale);
     var bScaled = L.latLng(b.lat * mapScale, b.lng * -mapScale);
 
-    globalData.activeWeaponMarker = new squadWeaponMarker(aScaled, {icon: mortarIcon, draggable: true}).addTo(globalData.markersGroup);
+    new squadWeaponMarker(aScaled, {icon: mortarIcon, draggable: true}).addTo(globalData.markersGroup);
     new squadTargetMarker(bScaled, {icon: targetIcon, draggable: true}).addTo(globalData.markersGroup);
 }
 

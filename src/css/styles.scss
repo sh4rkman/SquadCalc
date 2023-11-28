@@ -677,14 +677,76 @@ footer {
     cursor:grab;
 }
 
-.calcPopup {
+.calcPopup2 {
+    pointer-events: none;
+    margin: 0;
+    padding: 0;
+    //border: solid black 1px;
+    font-family: Montserrat, Times, "Times New Roman", serif;
+
     .bearingUiCalc {
         font-size: 0.7em;
     }
     .leaflet-popup-tip,
     .leaflet-popup-content-wrapper {
-        user-select: none; 
-        font-family: Montserrat, Times, "Times New Roman", serif;
+        text-align: left;
+        pointer-events: none;
+        font-weight: bold;
+        font-size: 0.9em;
+        background: transparent;
+        box-shadow: none;
+        color: white;
+        height: 2em;
+        padding: 0;
+        text-shadow: 1px 1px 0 #000,
+        -1px 1px 0 #000,
+        1px -1px 0 #000,
+        -1px -1px 0 #000,
+        0 1px 0 #000,
+        0 -1px 0 #000,
+        -1px 0 0 #000,
+        1px 0 0 #000,
+        2px 2px 0 #000,
+        -2px 2px 0 #000,
+        2px -2px 0 #000,
+        -2px -2px 0 #000,
+        0 2px 0 #000,
+        0 -2px 0 #000,
+        -2px 0 0 #000,
+        2px 0 0 #000,
+        1px 2px 0 #000,
+        -1px 2px 0 #000,
+        1px -2px 0 #000,
+        -1px -2px 0 #000,
+        2px 1px 0 #000,
+        -2px 1px 0 #000,
+        2px -1px 0 #000,
+        -2px -1px 0 #000;
+    }
+    .leaflet-popup-content{
+        margin: 0;
+        line-height: 1;
+    }
+}
+
+.calcNumber {
+    font-size: 0.7em;
+}
+
+.calcPopup {
+    pointer-events: none;
+    margin: 0;
+    padding: 0;
+    //border: solid black 1px;
+    font-family: Montserrat, Times, "Times New Roman", serif;
+
+    .bearingUiCalc {
+        font-size: 0.7em;
+    }
+    .leaflet-popup-tip,
+    .leaflet-popup-content-wrapper {
+        text-align: right;
+        pointer-events: none;
         font-weight: bold;
         font-size: 0.9em;
         background: transparent;

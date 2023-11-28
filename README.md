@@ -1,15 +1,13 @@
 
-<p align="center">
-  <img width="500" height="250" src="./src/img/github/logo.png">
-</p>
+
+![image](./src/img/github/logo.png)
 
 
-<p align="center">
-  <a href="https://github.com/sh4rkman/SquadCalc/blob/master/LICENSE"><img src="https://img.shields.io/github/license/Naereen/StrapDown.js.svg" alt="Licence"></a>
-  <a href="https://validator.w3.org/nu/?doc=https%3A%2F%2Fsquadcalc.app%2F"><img src="https://img.shields.io/badge/W3C-Good-green.svg" alt="W3C"></a>
-  <a href="https://deepscan.io/dashboard#view=project&tid=12376&pid=25781&bid=811276"><img src="https://deepscan.io/api/teams/12376/projects/25781/branches/811276/badge/grade.svg" alt="DeepScan grade"></a>
-  <a href="https://www.codefactor.io/repository/github/sh4rkman/squadcalc"><img src="https://www.codefactor.io/repository/github/sh4rkman/squadcalc/badge" alt="CodeFactor"></a>
-</p>
+ <a href="https://github.com/sh4rkman/SquadCalc/blob/master/LICENSE"><img src="https://img.shields.io/github/license/Naereen/StrapDown.js.svg" alt="Licence"></a>
+<a href="https://validator.w3.org/nu/?doc=https%3A%2F%2Fsquadcalc.app%2F"><img src="https://img.shields.io/badge/W3C-Good-green.svg" alt="W3C"></a>
+<a href="https://deepscan.io/dashboard#view=project&tid=12376&pid=25781&bid=811276"><img src="https://deepscan.io/api/teams/12376/projects/25781/branches/811276/badge/grade.svg" alt="DeepScan grade"></a>
+<a href="https://www.codefactor.io/repository/github/sh4rkman/squadcalc"><img src="https://www.codefactor.io/repository/github/sh4rkman/squadcalc/badge" alt="CodeFactor"></a>
+
 
 </br>
 </br>
@@ -35,15 +33,10 @@ This tool facilitates rapid mortar calculations through two distinct modes:
 
 </br>
 
- <p align="center">
-  <img width="600" height="426" src="./src/img/github/desktop_ui.png">
-  <img width="224" height="426" src="./src/img/github/mobile_ui.png">
-</p>
- 
-<p align="center">
-  <img width="600" height="426" src="./src/img/github/desktop.png">
-  <img width="224" height="426" src="./src/img/github/mobile.png">
-</p>
+
+![image](./src/img/github/desktop_ui.png)<img width="224" height="426" src="./src/img/github/mobile_ui.png">
+![image](./src/img/github/desktop.png)<img width="224" height="426" src="./src/img/github/mobile.png">
+
 
 
 </br></br>
@@ -54,8 +47,6 @@ This tool facilitates rapid mortar calculations through two distinct modes:
 ### **Elevations Calculations**
 
 SquadCalc utilizes heightmaps extracted from the Squad SDK to precisely compute the elevation difference between mortars and targets, automatically adjusting the elevation settings. 
-
-
 
 ### **Map & Weapons Support**
 

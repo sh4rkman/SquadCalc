@@ -1,8 +1,10 @@
 
 
-# <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">  **13.0.2** *(2023-11-26)*
+# <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">  **13.1.0** *(2023-11-26)*
 
 <img src="https://img.shields.io/badge/-new-green"> A new spread circle has been added on targets to show the spread possibility of rounds (mortar, hellcanon, technicals only)
+
+<img src="https://img.shields.io/badge/-new-green"> You can now place up to two weapon on the map (CTRL+doubleclick)
 
 <img src="https://img.shields.io/badge/-%20Improv%20-orange"> Reduced target marker size
 
