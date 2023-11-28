@@ -828,6 +828,48 @@ footer {
             padding-top: 0.64em;
         }
     }
-
 }
 
+
+#helpDialog {
+    width: 50vw;
+    margin: auto;
+    background-color: $mainBGColor;
+    //border: solid $mainTxtColor 1px;
+    color: $mainTxtColor;
+    overflow: visible;
+    text-align: left;
+    padding: 30px;
+    border-radius: 20px;
+    font-size: 0.8em;
+    list-style: none;
+    max-width: 500px;
+    #closeModal {
+        position: absolute;
+        font-size: 1.7em;
+        right: 8px;
+        top: 8px;
+        //color: red;
+        z-index: 999;
+        background-color: transparent;
+        transition: all 0.3s ease;
+        &:hover {
+            cursor: pointer;
+            color: $mainColor;
+        }
+        &:active {
+            transform: scale(0.8);
+        }
+    }
+}
+
+dialog::backdrop {
+    backdrop-filter: blur(5px);
+}
+
+
+.AttributionClass {
+    font-size: 0.8em;
+    background: transparent;
+    letter-spacing: 1px;
+}

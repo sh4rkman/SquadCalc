@@ -73,5 +73,6 @@
     "webpack-pwa-manifest": "^4.3.0"
   },
   "dependencies": {
+    "leaflet-edgebuffer": "^1.0.6"
   }
 }

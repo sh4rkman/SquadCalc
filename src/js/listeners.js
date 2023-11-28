@@ -15,7 +15,7 @@ $(document).on("keypress", "#target-location", function(event) { filterInput(eve
 
 $(document).on("click", ".del", function() { RemoveSaves(this); });
 $(document).on("click", ".savespan", function() { copySave($(this)); });
-$(document).on("click", ".fab-action-2", function() { switchTheme(); });
+
 $(document).on("click", "#savebutton", function() { saveCalc(); });
 $(document).on("click", "#copy", function(e) { copyCalc(e); });
 $(document).on("click", "#highlow", function() { changeHighLow(); });
@@ -25,4 +25,12 @@ $(document).on("click", ".fab2", function() {switchUI();});
 $(window).on("resize", function() { resizeInputsOnResize(); });
 
 
+const dialog = document.querySelector("dialog");
+$(document).on("click", ".fab-action-2", function() {
+    dialog.showModal();
+});
 
+const closeButton = document.querySelector("dialog button");
+closeButton.addEventListener("click", () => {
+    dialog.close();
+});

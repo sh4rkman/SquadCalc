@@ -3,8 +3,8 @@
  *  Desc: A graticule for Leaflet maps in the L.CRS.Simple coordinate system.
  *  Auth: Andrew Blakey (ablakey@gmail.com)
  * 
- *  Adapted to Squad by Robert "Endebert" Ende, slighty
- *  https://github.com/Endebert/squadmc
+ *  Adapted to Squad by Robert "Endebert" Ende (https://github.com/Endebert/squadmc)
+ *  slighty edited by Maxime "sharkman" Boussard for squadcalc
  */
 
 import {
@@ -28,14 +28,15 @@ export default LayerGroup.extend({
     s1Lines: [],
     s2Lines: [],
 
-    // keypad line styles
+    // Polyline styles & options
     lineStyleKP: {
         stroke: true,
         color: "#000",
         opacity: 0.5,
         weight: 3,
         interactive: false,
-        clickable: false, // legacy support
+        clickable: false,
+        renderer: L.canvas({padding: 3}), // https://leafletjs.com/reference.html#path-clip_padding
     },
 
     lineStyleSUB1: {
@@ -44,16 +45,18 @@ export default LayerGroup.extend({
         opacity: 0.5,
         weight: 2,
         interactive: false,
-        clickable: false, // legacy support
+        clickable: false,
+        renderer: L.canvas({padding: 3}),
     },
 
     lineStyleSUB2: {
         stroke: true,
         color: "#fff",
-        opacity: 0.3,
+        opacity: 0,
         weight: 1,
         interactive: false,
-        clickable: false, // legacy support
+        clickable: false,
+        renderer: L.canvas({padding: 3}),
     },
 
     initialize(options) {
@@ -111,15 +114,31 @@ export default LayerGroup.extend({
         const currentZoom = Math.round(this.map.getZoom());
         console.debug("updateLineOpacity with zoom:", currentZoom);
 
-        if (currentZoom >= 4) {
-            this.setLinesOpacity(this.s2Lines, this.lineStyleSUB2.opacity);
-            this.setLinesOpacity(this.s1Lines, this.lineStyleSUB1.opacity);
-        } else if (currentZoom >= 3) {
+        if (currentZoom >= 6) {
+            this.setLinesOpacity(this.s2Lines, 0.8);
+        } else if (currentZoom >= 5) {
+            this.setLinesOpacity(this.s1Lines, 0.5);
+            this.setLinesOpacity(this.s2Lines, 0.7);
+        }
+        else if (currentZoom >= 4) {
+            this.setLinesOpacity(this.s2Lines, 0);
+            this.setLinesOpacity(this.s1Lines, 0.5);
+            this.setLinesOpacity(this.kpLines, 1);
+            this.setLinesWeight(this.kpLines, 3);
+        }else if (currentZoom >= 3) {
             this.setLinesOpacity(this.s2Lines, 0.0);
-            this.setLinesOpacity(this.s1Lines, this.lineStyleSUB1.opacity);
+            this.setLinesOpacity(this.s1Lines, 0.0);
+            this.setLinesOpacity(this.kpLines, 1);
+            this.setLinesWeight(this.kpLines, 2);
+        } else if (currentZoom >= 2) {
+            this.setLinesOpacity(this.s2Lines, 0.0);
+            this.setLinesOpacity(this.s1Lines, 0.0);
+            this.setLinesOpacity(this.kpLines, 0.7);
+            this.setLinesWeight(this.kpLines, 2);
         } else {
             this.setLinesOpacity(this.s2Lines, 0.0);
             this.setLinesOpacity(this.s1Lines, 0.0);
+            this.setLinesWeight(this.kpLines, 1);
         }
     },
 
@@ -143,12 +162,32 @@ export default LayerGroup.extend({
         }
     },
 
+
+    /**
+   * Updates the weight for all lines in the lines array to the desired weight value.
+   * @param {Array} lines - array of lines to update
+   * @param {Number} weight - desired weight value
+   */
+        setLinesWeight(lines, weight = 1) {
+            // we check only the first object as we are updating all at the same time
+            // and this one check might save us iterating through the whole array
+                if (lines.length === 0) {
+                    // //console.debug("nothing to do");
+                } else {
+                    console.debug("setLinesWeight:", [lines, weight]);
+                    lines.forEach((l) => {
+                        l.setStyle({
+                            weight,
+                        });
+                    });
+                }
+            },
+
     /**
    * Redraws the grid inside the current view bounds.
    */
     redraw() {
-    //console.log("redraw");
-
+        
         if (!this.bounds) {
             console.debug("no viewbounds, skipping draw");
             return;
@@ -176,7 +215,6 @@ export default LayerGroup.extend({
         // doing some magic against floating point imprecision
         const startX = this.bounds.getWest();
         const endX = this.bounds.getEast();
-
 
         for (let x = startX; x <= endX; x += interval) {
             const bot = new LatLng(this.bounds.getSouth()-1, x);

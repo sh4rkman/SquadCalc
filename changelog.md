@@ -4,13 +4,15 @@
 
 <img src="https://img.shields.io/badge/-new-green"> A new spread circle has been added on targets to show the spread possibility of rounds (mortar, hellcanon, technicals only)
 
-<img src="https://img.shields.io/badge/-new-green"> You can now place up to two weapon on the map (CTRL+doubleclick)
+<img src="https://img.shields.io/badge/-new-green"> You can now place up to two weapons on the map (CTRL+doubleclick)
 
 <img src="https://img.shields.io/badge/-%20Improv%20-orange"> Reduced target marker size
 
-<img src="https://img.shields.io/badge/-%20fix%20-orange">  The switchmode icon is now correctly centered
+<img src="https://img.shields.io/badge/-%20fix%20-orange"> The switchmode icon is now correctly centered ([#101](https://github.com/sh4rkman/SquadCalc/issues/101))
 
-<img src="https://img.shields.io/badge/-%20fix%20-orange"> Page now waits to be fully loaded before displaying content, avoiding flash of unstyled content.
+<img src="https://img.shields.io/badge/-%20fix%20-orange"> Page now waits to be fully loaded before displaying content, avoiding flash of unstyled content. ([#99](https://github.com/sh4rkman/SquadCalc/issues/99))
+
+<img src="https://img.shields.io/badge/-%20fix%20-orange"> On mapmode, calculations doesn't avoid mouse-grabbing the map anymore ([#97](https://github.com/sh4rkman/SquadCalc/issues/97))
 
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
@@ -18,7 +20,9 @@
 
 # <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">  **13.0.1** *(2023-11-22)*
 
-<img src="https://img.shields.io/badge/-%20Improv%20-orange"> Markers now cannot be placed/dragged outside of map ([#93](https://github.com/sh4rkman/SquadCalc/issues/93))
+<img src="https://img.shields.io/badge/-%20Improv%20-orange"> Markers now cannot be placed/dragged outside of map ([#98](https://github.com/sh4rkman/SquadCalc/issues/98))
+
+<img src="https://img.shields.io/badge/-%20Improv%20-orange">A map (al basrah) is selected by default (legacy/mapmode) ([#93](https://github.com/sh4rkman/SquadCalc/issues/93))
 
 <img src="https://img.shields.io/badge/-%20fix%20-orange"> Grid is now fully covering the map ([#92](https://github.com/sh4rkman/SquadCalc/issues/92))
 

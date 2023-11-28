@@ -1,6 +1,5 @@
 import { globalData } from "./conf";
 import { drawLine } from "./animations";
-import { MAPS } from "./maps";
 import { shoot } from "./utils";
 
 import classicLogo from "../img/icons/mortar.png";

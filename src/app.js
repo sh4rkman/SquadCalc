@@ -20,6 +20,7 @@ import { loadWeapons } from "./js/weapons";
 import { createLine } from "./js/animations";
 import "./js/listeners.js";
 import "leaflet.control.opacity";
+import "leaflet-edgebuffer/src/leaflet.edgebuffer.js"
 
 
 $(function() {

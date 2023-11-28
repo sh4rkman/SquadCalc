@@ -312,7 +312,7 @@ function loadHeatmap() {
 // todo: create a proper "squadmap" class so any developer reading this doesn't instantly commit suicide
 export function loadMap(){
 
-    var map = L.map("map", {
+    globalData.map = L.map("map", {
         center: [700, 700],
         attributionControl: false,
         crs: L.CRS.Simple,
@@ -320,6 +320,9 @@ export function loadMap(){
         maxZoom: 6,
         zoomControl: false,
         doubleClickZoom: false,
+        fadeAnimation: false,
+        inertia: false,
+        edgeBufferTiles: 3,
     });
 
     var mouseLocationPopup = L.popup({
@@ -333,19 +336,14 @@ export function loadMap(){
         interactive: false,
     });
 
-    globalData.map = map;
-
-
     globalData.markersGroup = L.layerGroup().addTo(globalData.map);
     globalData.layerGroup = L.layerGroup().addTo(globalData.map);
     globalData.activeTargetsMarkers = L.layerGroup().addTo(globalData.map);
     globalData.activeWeaponMarker = L.layerGroup().addTo(globalData.map);
 
-
     $(document).on("mouseleave", function () {
         mouseLocationPopup.close();
     });
-
 
     globalData.map.on("mousemove", function(e){
         if (!isTouchDevice()){
@@ -364,8 +362,7 @@ export function loadMap(){
             mouseLocationPopup.setContent("<p>"+ getKP(-e.latlng.lat * mapScale, e.latlng.lng * mapScale) + "</p>");
         }
         
-    });    
-
+    });
 
     globalData.map.on("dblclick", function(e){
         var secondMortar;
