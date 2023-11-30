@@ -1,9 +1,9 @@
+import L from "leaflet";
 import { globalData } from "./conf";
 import { shoot, getKP,isTouchDevice } from "./utils";
-import { mortarIcon, mortarIcon1, mortarIcon2, targetIcon, squadWeaponMarker, squadTargetMarker } from "./marker";
+import { mortarIcon, mortarIcon1, mortarIcon2, targetIcon, squadWeaponMarker, squadTargetMarker, targetIconAnimated } from "./marker";
 import SquadGrid from "./SquadGrid";
 
-import L from "leaflet";
 
 import AlBasrahURL from "../img/heightmaps/al basrah.jpg";
 import AnvilURL from "../img/heightmaps/anvil.jpg";
@@ -320,12 +320,16 @@ export function loadMap(){
         maxZoom: 6,
         zoomControl: false,
         doubleClickZoom: false,
-        fadeAnimation: false,
-        inertia: false,
-        edgeBufferTiles: 3,
+        edgeBufferTiles:3,
+        //maxBounds:[[500, -500], [-800, 800]],
     });
 
-    var mouseLocationPopup = L.popup({
+    var bounds = [[0, 0], [-256, 256]];
+
+    // Hack for KPPopUp smoothness
+    L.rectangle(bounds, {opacity: 0, fillOpacity: 0, weight: 0,}).addTo(globalData.map);
+
+    globalData.mouseLocationPopup = L.popup({
         closeButton: false,
         className: "kpPopup",
         autoClose: false,
@@ -342,25 +346,25 @@ export function loadMap(){
     globalData.activeWeaponMarker = L.layerGroup().addTo(globalData.map);
 
     $(document).on("mouseleave", function () {
-        mouseLocationPopup.close();
+        globalData.mouseLocationPopup.close();
     });
 
     globalData.map.on("mousemove", function(e){
-        if (!isTouchDevice()){
-            const mapScale = MAPS.find((elem, index) => index == globalData.activeMap).size / 256;
+        const mapScale = MAPS.find((elem, index) => index == globalData.activeMap).size / 256;
 
-            // If no map has been loaded
-            if (globalData.layerGroup.getLayers().length === 0) {return 1;}
-    
-            // If out of bounds
-            if (e.latlng.lat > 0 ||  e.latlng.lat < -256 || e.latlng.lng < 0 || e.latlng.lng > 256) {
-                mouseLocationPopup.close();
-                return;
-            }
-    
-            mouseLocationPopup.setLatLng(e.latlng).openOn(globalData.map);
-            mouseLocationPopup.setContent("<p>"+ getKP(-e.latlng.lat * mapScale, e.latlng.lng * mapScale) + "</p>");
+        if (globalData.userSettings.keypadUnderCursor == 0){ 
+            return 1;
         }
+        if (isTouchDevice()){ return 1;} // Mobile
+
+        // If out of bounds
+        if (e.latlng.lat > 0 ||  e.latlng.lat < -256 || e.latlng.lng < 0 || e.latlng.lng > 256) {
+            globalData.mouseLocationPopup.close();
+            return;
+        }
+
+        globalData.mouseLocationPopup.setLatLng(e.latlng).openOn(globalData.map);
+        globalData.mouseLocationPopup.setContent("<p>"+ getKP(-e.latlng.lat * mapScale, e.latlng.lng * mapScale) + "</p>");
         
     });
 
@@ -397,21 +401,27 @@ export function loadMap(){
             return 0;
         }
         
-        new squadTargetMarker(L.latLng(e.latlng), {icon: targetIcon}).addTo(globalData.markersGroup);
+        if(globalData.userSettings.targetAnimation == 0) {
+            new squadTargetMarker(L.latLng(e.latlng), {icon: targetIcon}).addTo(globalData.markersGroup);
+        } else {
+            new squadTargetMarker(L.latLng(e.latlng), {icon: targetIconAnimated}).addTo(globalData.markersGroup);
+        }
+
+
+
     });
 
 }
 
 
 export function drawMap(){
-
+    var map = MAPS.find((elem, index) => index == globalData.activeMap);
     var imageBounds = L.latLngBounds(L.latLng(0, 0), L.latLng(-255, 255));
-    var mapName = MAPS.find((elem, index) => index == globalData.activeMap).name;
-    var mapURL = MAPS.find((elem, index) => index == globalData.activeMap).mapURL;
     var grid;
     var imageUrl;
     var heightmaplayer;
 
+    globalData.mapScale = 256 / map.size;
     globalData.map.setView([-128, 128], 2);
 
     // Remove any layers already drawn
@@ -420,7 +430,7 @@ export function drawMap(){
     });
 
     // Draw the current layer
-    L.tileLayer("src/img/maps" + mapURL, {
+    L.tileLayer("src/img/maps" + map.mapURL, {
         maxNativeZoom: 4,
         noWrap: true,
         bounds: imageBounds,
@@ -433,7 +443,7 @@ export function drawMap(){
 
 
     if (globalData.debug.active){
-        imageUrl = "src/img/heightmaps/" + mapName.toLowerCase() + ".jpg";
+        imageUrl = "src/img/heightmaps/" + map.name.toLowerCase() + ".jpg";
         heightmaplayer = L.imageOverlay(imageUrl, imageBounds, {
             opacity: 0.5,
         }).addTo(globalData.layerGroup);

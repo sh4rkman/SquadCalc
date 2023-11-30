@@ -1,11 +1,10 @@
-export const THEMES = [
+const THEMES = [
     "#111111", // classic
     "#000000", // dark
     "#000031", // blue
     "#031a00", // green
     "#3f0000", // red
 ];
-
 
 
 /**

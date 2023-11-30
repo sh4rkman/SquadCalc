@@ -349,6 +349,7 @@ footer {
         transition: all 0.3s ease;
         width: 4rem;
         z-index: 1;
+        font-size: 1.8em;
         &:active {
             transform: scale(0.8);
         }
@@ -366,30 +367,8 @@ footer {
             background: rgb(24, 24, 24);
             cursor: pointer;
         }
-    }
-    .fab-dots {
-        animation: blink 3s ease infinite;
-        background-color: $mainTxtColor;
-        border-radius: 50%;
-        height: 8px;
-        opacity: 1;
-        position: absolute;
-        top: 50%;
-        transform: translateX(0%) translateY(-50%) rotate(0deg);
-        transition: all 0.3s ease;
-        width: 8px;
-        &.fab-dots-1 {
-            animation-delay: 0s;
-            left: 15px;
-        }
-        &.fab-dots-2 {
-            animation-delay: 0.4s;
-            left: 50%;
-            transform: translateX(-50%) translateY(-50%);
-        }
-        &.fab-dots-3 {
-            animation-delay: 0.8s;
-            right: 15px;
+        .fab-dots-2 {
+            padding-top: 0.64em;
         }
     }
     .fab-checkbox {
@@ -403,24 +382,8 @@ footer {
                     top: 5%;
                     width: 90%;
                 }
-                .fab-dots {
-                    height: 6px;
-                    animation: none;
-                }
                 .fab-dots-2 {
                     transform: translateX(-50%) translateY(-50%) rotate(0deg);
-                }
-                .fab-dots-1 {
-                    border-radius: 10px;
-                    left: 50%;
-                    transform: translateX(-50%) translateY(-50%) rotate(45deg);
-                    width: 32px;
-                }
-                .fab-dots-3 {
-                    border-radius: 10px;
-                    right: 50%;
-                    transform: translateX(50%) translateY(-50%) rotate(-45deg);
-                    width: 32px;
                 }
             }
             &~.fab-wheel {
@@ -455,32 +418,7 @@ footer {
     .fabstyle {
         background-color: $mainColor;
     }
-    .fab-wheel {
-        bottom: 0;
-        height: 9rem;
-        position: absolute;
-        right: 0;
-        transform-origin: bottom right;
-        transform: scale(0);
-        transition: all 0.1s ease;
-        width: 9rem;
-        .fab-action-1 {
-            right: -1rem;
-            top: 0;
-        }
-        .fab-action-2 {
-            right: 2.8rem;
-            top: 0.5rem;
-        }
-        .fab-action-3 {
-            bottom: 2.8rem;
-            left: 0.5rem;
-        }
-        .fab-action-4 {
-            bottom: -1rem;
-            left: 0;
-        }
-    }
+
 }
 
 
@@ -596,7 +534,7 @@ footer {
 
 
 .leaflet-tile { 
-    border: none;
+    border: transparent;
 }
 
 #map_ui {
@@ -638,7 +576,7 @@ footer {
         font-size: 1.2em;
         background: transparent;
         box-shadow: none;
-        color: white;
+        color:$mainTxtColor;
         height: 2em;
         padding: 0;
         text-align: center;
@@ -677,6 +615,15 @@ footer {
     cursor:grab;
 }
 
+.leaflet-container img.leaflet-tile {
+    mix-blend-mode: normal;
+}
+
+
+.leaflet-fade-anim .leaflet-popup {
+    transition: none;
+}
+
 .calcPopup2 {
     pointer-events: none;
     margin: 0;
@@ -695,7 +642,7 @@ footer {
         font-size: 0.9em;
         background: transparent;
         box-shadow: none;
-        color: white;
+        color: $mainTxtColor;
         height: 2em;
         padding: 0;
         text-shadow: 1px 1px 0 #000,
@@ -751,7 +698,7 @@ footer {
         font-size: 0.9em;
         background: transparent;
         box-shadow: none;
-        color: white;
+        color: $mainTxtColor;
         height: 2em;
         padding: 0;
         text-shadow: 1px 1px 0 #000,
@@ -786,9 +733,6 @@ footer {
 }
 
 
-.leaflet-fade-anim .leaflet-popup {
-    transition: none;
-}
 
 .fab-wrapper2 {
     bottom: 2rem;
@@ -830,46 +774,181 @@ footer {
     }
 }
 
-
 #helpDialog {
-    width: 50vw;
     margin: auto;
     background-color: $mainBGColor;
-    //border: solid $mainTxtColor 1px;
     color: $mainTxtColor;
-    overflow: visible;
     text-align: left;
-    padding: 30px;
-    border-radius: 20px;
+    padding: 30px 5px 5px 30px;
+    border-radius: 10px;
     font-size: 0.8em;
-    list-style: none;
-    max-width: 500px;
+    max-width: 95vw;
+    letter-spacing: 1px;
+    #settings {
+        border: none;
+        line-height: 1em;
+        td {
+            padding-top: 0em;
+            padding-bottom: 0.2em;
+            padding-left: 0.8em;
+            border: none;
+            &:nth-child(1) {  
+                padding-left: 0;
+                padding-right: 0;
+            }
+        }
+        .settingsSubtext {
+            font-size: 0.7em;
+            letter-spacing: 1px;
+        }
+    }
+    #socials {
+        margin: 2em 0 0.3em auto;
+        width: auto;
+        font-size: 1.4em;
+        border: none;
+        td {
+            border: none;
+            padding: 0 0.5em 0 0.5em ;
+        }
+        i:hover {
+            cursor: pointer;
+            color: $mainColor
+        }
+        a:visited {
+            color: $mainTxtColor
+        }
+    }
     #closeModal {
         position: absolute;
         font-size: 1.7em;
         right: 8px;
         top: 8px;
-        //color: red;
-        z-index: 999;
         background-color: transparent;
         transition: all 0.3s ease;
         &:hover {
             cursor: pointer;
             color: $mainColor;
-        }
-        &:active {
-            transform: scale(0.8);
+            transform: scale(0.9);
         }
     }
 }
 
-dialog::backdrop {
-    backdrop-filter: blur(5px);
+$main: firebrick; //#008cff;
+$grey: #8d9aa9;
+$bezier: cubic-bezier(0.65, 0.25, 0.56, 0.96);
+
+.mcui-checkbox,
+.mcui-radio {
+    display: flex;
+    align-items: center;
+    user-select: none;
+    padding: 0.6em 0;
+    box-sizing: border-box;
+    input[type="checkbox"],
+    input[type="radio"] {
+        position: absolute !important;
+        height: 1px;
+        width: 1px;
+        overflow: hidden;
+        clip: rect(1px, 1px, 1px, 1px);
+    }
+    input[type="checkbox"] + div,
+    input[type="radio"] + div {
+        border: 2px solid $grey;
+        height: 1.5em;
+        width: 1.5em;
+        box-sizing: border-box;
+        border-radius: 2px;
+        position: relative;
+        background-color: white;
+    }
+
+
+    input[type="checkbox"]:checked + div {
+        border-color: $main;
+        transition: border-color 107ms $bezier;
+        .mcui-check {
+            opacity: 1;
+            transition: opacity 107ms $bezier;
+
+            polyline {
+            animation: dash-check 107ms $bezier forwards;
+            }
+        }
+    }
+
 }
 
 
-.AttributionClass {
-    font-size: 0.8em;
-    background: transparent;
-    letter-spacing: 1px;
+.mcui-check {
+    height: 100%;
+    width: 100%;
+    transform: scale(1);
+    color: $main;
+    opacity: 0;
+    &:hover {
+        cursor: pointer;
+    }
+    polyline {
+      fill: none;
+      transform-origin: 50% 50%;
+      stroke-width: 5px;
+      stroke-dasharray: 22.771367900227325;
+      stroke: currentcolor;
+    }
+}
+  
+@supports (display: grid) {
+    .mcui-check {
+        polyline {
+            stroke-dashoffset: 22.771367900227325;
+        }
+    }
+}
+  
+@keyframes dash-check {
+    to {
+        stroke-dashoffset: 0;
+    }
+}
+  
+
+dialog::backdrop {
+    backdrop-filter: blur(3px);
+}
+
+
+.animatedTargetMarker {
+    opacity: 0; 
+    animation: targetAppear 0.25s ease-in-out forwards;
+    animation-delay: 0s;
+}
+
+.animatedWeaponMarker{
+    opacity: 0; 
+    animation: weaponAppear 0.25s ease-in-out forwards;
+    animation-delay: 0s;
+}
+
+@keyframes targetAppear {
+    0% {
+        top: -600px;
+        opacity: 0;
+    }
+    100% {
+        top: 0;
+        opacity: 1;
+    }
+}
+
+@keyframes weaponAppear {
+    0% {
+        top: -10px;
+        opacity: 0;
+    }
+    100% {
+        top: 0;
+        opacity: 1;
+    }
 }

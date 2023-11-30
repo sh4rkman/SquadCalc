@@ -18,12 +18,15 @@ import { loadMapSelector, loadMap } from "./js/maps";
 import { loadTheme } from "./js/themes";
 import { loadWeapons } from "./js/weapons";
 import { createLine } from "./js/animations";
+import { loadSettings } from "./js/settings.js";
+
 import "./js/listeners.js";
 import "leaflet.control.opacity";
 import "leaflet-edgebuffer/src/leaflet.edgebuffer.js"
 
 
 $(function() {
+    loadSettings();
     createLine();
     loadMap();
     loadWeapons();

@@ -3,10 +3,12 @@
  */
 export var globalData = {
     activeWeapon: "",
+    activeWeaponMarker: "",
     activeTargetsMarkers: "",
     activeMap: "",
     angleTypePref: "",
     map: "",
+    mapScale: "",
     markersGroup: "",
     canvas: {
         obj: "",
@@ -21,4 +23,10 @@ export var globalData = {
     gravity: 9.8,
     theme: "classic",
     line: "",
+    userSettings: {
+        keypadUnderCursor: true,
+        spreadRadius: true,
+        LowSpecMode: false,
+        targetAnimation: true,
+    }
 };

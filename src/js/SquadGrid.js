@@ -115,7 +115,7 @@ export default LayerGroup.extend({
         console.debug("updateLineOpacity with zoom:", currentZoom);
 
         if (currentZoom >= 6) {
-            this.setLinesOpacity(this.s2Lines, 0.8);
+            this.setLinesOpacity(this.s2Lines, 0.6);
         } else if (currentZoom >= 5) {
             this.setLinesOpacity(this.s1Lines, 0.5);
             this.setLinesOpacity(this.s2Lines, 0.7);

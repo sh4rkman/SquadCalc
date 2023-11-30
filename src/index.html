@@ -127,14 +127,99 @@
             <i class="fa-regular fa-circle-xmark"></i>
         </button>
 
-        <h2>Shortcuts :</h2>
+        <h2>Settings :</h2>
         </br>
-        <ul>
-            <li>Fist doubleclick : add a Weapon Marker</li>
-            <li>Next Double-Clicks : add a Target Marker</li>
-            <li>CTRL+Double-Click : add a second Weapon Marker</li>
-        </ul>
+        <table id="settings" class="pure-table">
+            <tbody>
+                <tr>
+                    <td>
+                        <label class="mcui-checkbox">
+                            <input id="keypadUnderCursorSetting" type="checkbox">
+                            <div>
+                              <svg class="mcui-check" viewBox="-2 -2 35 35" aria-hidden="true">
+                                <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
+                              </svg>
+                            </div>
+                            <div></div>
+                          </label>
+                    </td>
+                    <td>Show Keypads under cursor
+                        </br>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label class="mcui-checkbox">
+                            <input id="spreadRadiusSetting" type="checkbox">
+                            <div>
+                              <svg class="mcui-check" viewBox="-2 -2 35 35" aria-hidden="true">
+                                <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
+                              </svg>
+                            </div>
+                            <div></div>
+                          </label>
+                    </td>
+                    <td>Show Spread Radius on targets</td>
+                </tr>
+                <tr>
+                    <td>
+                        <label class="mcui-checkbox">
+                            <input id="targetAnimationSettings" type="checkbox">
+                            <div>
+                              <svg class="mcui-check" viewBox="-2 -2 35 35" aria-hidden="true">
+                                <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
+                              </svg>
+                            </div>
+                            <div></div>
+                          </label>
+                    </td>
+                    <td>Show Targets Markers Animations
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label class="mcui-checkbox">
+                            <input id="LowSpecModeSetting" type="checkbox">
+                            <div>
+                              <svg class="mcui-check" viewBox="-2 -2 35 35" aria-hidden="true">
+                                <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
+                              </svg>
+                            </div>
+                            <div></div>
+                          </label>
+                    </td>
+                    <td>Update calculations while dragging 
+                        </br>
+                        <span class="settingsSubtext">
+                            (Disable to save performance)
+                        </span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
 
+
+        <table id="socials" class="pure-table">
+            <tbody>
+                <tr>
+                    <td>
+                        <a class="fab-action fab-action-1" href="https://github.com/sh4rkman/SquadCalc" target="_blank" rel="noopener noreferrer" aria-label="github" title="View code on Github">
+                           <i class="fa-brands fa-github"></i>
+                        </a>
+                    </td>
+                    <td>
+                        <a class="fab-action fab-action-3" href="https://www.youtube.com/@sh4rkman" target="_blank" rel="noopener noreferrer" aria-label="Youtube" title="Watch my videos!">
+                            <i class="fa-brands fa-youtube"></i>
+                        </a>
+                    </td>
+                    <td> 
+                        <a class="fab-action fab-action-4" href="https://github.com/sh4rkman/SquadCalc/issues" target="_blank" rel="noopener noreferrer" aria-label="Bugs" title="Report a bug">
+                            <i class="fa-solid fa-bug"></i>
+                        </a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </dialog>
 
     <div id="map_ui" class="pure-g hidden">
@@ -151,27 +236,12 @@
         </div>
 
        <div class="fab-wrapper">
-            <input id="fabCheckbox" type="checkbox" class="fab-checkbox">
-            <label class="fab" for="fabCheckbox">
-                <span class="fab-dots fab-dots-1"></span>
-                <span class="fab-dots fab-dots-2"></span>
-                <span class="fab-dots fab-dots-3"></span>
-            </label>
-            <div class="fab-wheel">
-                <a class="fab-action fab-action-1" href="https://github.com/sh4rkman/SquadCalc" target="_blank" rel="noopener noreferrer" aria-label="github">
-                    <i class="fa-brands fa-github"></i>
-                </a>
-                <span class="fab-action fab-action-2">
-                    <i class="fa-regular fa-circle-question"></i>
-                </span>
-                <a class="fab-action fab-action-3" href="https://www.youtube.com/@sh4rkman" target="_blank" rel="noopener noreferrer" aria-label="Youtube">
-                    <i class="fa-brands fa-youtube"></i>
-                </a>
-                <a class="fab-action fab-action-4" href="https://github.com/sh4rkman/SquadCalc/issues" target="_blank" rel="noopener noreferrer" aria-label="Bugs">
-                    <i class="fa-solid fa-bug"></i>
-                </a>
-            </div>
+        <input id="fabCheckbox" type="checkbox" class="fab-checkbox2">
+        <label class="fab" for="fabCheckbox2">
+                <i id="switchUIbutton" class="fab-dots-2 fa-solid fa-cog"></i>
+        </label>
         </div>
+
     </footer>
 </body>
 

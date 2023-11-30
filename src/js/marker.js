@@ -9,7 +9,7 @@ import mortarIconImg2 from "../img/icons/marker_mortar_2.png";
 import ub32IconImg from "../img/icons/marker_ub32.png";
 import targetIconImg from "../img/icons/marker_target.png";
 
-
+import { animateCSS } from "./animations";
 import { globalData } from "./conf";
 import { MAPS } from  "./maps";
 import { getCalcFromUI } from "./utils";
@@ -79,6 +79,8 @@ export var squadWeaponMarker = squadMarker.extend({
         // Custom events handlers
         this.on("click", this._handleClick, this);
         this.on("drag", this._handleDrag, this);
+        this.on("dragStart", this._handleDragStart, this);
+        this.on("dragEnd", this._handleDragEnd, this);
         this.on("dblclick", this._handleDblclick, this);
 
     },
@@ -126,9 +128,30 @@ export var squadWeaponMarker = squadMarker.extend({
         this.setLatLng(e.latlng);
         this.options.rangeMarker.setLatLng(e.latlng);
         this.options.minRangeMarker.setLatLng(e.latlng);
-        globalData.activeTargetsMarkers.eachLayer(function (layer) {
-            layer.updateCalc(layer.latlng);
-        });
+        if(!globalData.userSettings.LowSpecMode) {
+            globalData.activeTargetsMarkers.eachLayer(function (layer) {
+                layer.updateCalc(layer.latlng);
+            });
+        }
+    },
+
+    _handleDragStart: function (e) {
+        if(globalData.userSettings.LowSpecMode) {
+            globalData.activeTargetsMarkers.eachLayer(function (layer) {
+                layer.options.calcMarker1.setContent(" ")
+                layer.options.calcMarker2.setContent(" ")
+                layer.options.spreadMarker1.setStyle({opacity: 0, fillOpacity: 0});
+                layer.options.spreadMarker2.setStyle({opacity: 0, fillOpacity: 0});
+            }); 
+        }
+    },
+
+    _handleDragEnd: function (e) {
+        if(globalData.userSettings.LowSpecMode) {
+            globalData.activeTargetsMarkers.eachLayer(function (layer) {
+                layer.updateCalc(layer.latlng);
+            });
+        }
     },
 
     // Handle double click event to prevent placing target marker underneath weapon marker
@@ -182,7 +205,8 @@ export var squadTargetMarker = squadMarker.extend({
         };
 
         var spreadOptions = {
-            opacity: 0.5,
+            opacity: 0.2,
+            fillOpacity: 0.1,
             color: "#b22222",
             weight: 1
         };
@@ -206,7 +230,14 @@ export var squadTargetMarker = squadMarker.extend({
 
         this.options.spreadMarker1 = L.ellipse(latlng, radiiElipse, angleElipse, spreadOptions).addTo(globalData.markersGroup);
         this.options.spreadMarker2 = L.ellipse(latlng, radiiElipse, angleElipse, spreadOptions).addTo(globalData.markersGroup);
-        
+
+        if(globalData.userSettings.spreadRadius == 0) {
+            this.options.spreadMarker1.setStyle({opacity: 0, fillOpacity: 0});
+        }
+        else {
+            
+        }
+
         this.options.spreadMarker2.setStyle({opacity: 0, fillOpacity: 0});
 
         // If two weapons already on the map
@@ -225,8 +256,13 @@ export var squadTargetMarker = squadMarker.extend({
             }
             else {
                 this.options.spreadMarker2.setRadius([(results2.ellipseParams.semiMajorAxis * mapScale)/2, (results2.ellipseParams.semiMinorAxis * mapScale)/2]);
-                this.options.spreadMarker2.setStyle({opacity: 0.2, fillOpacity: 0.1});
                 this.options.spreadMarker2.setTilt(results2.bearing);
+                if(globalData.userSettings.spreadRadius == 1) {
+                    this.options.spreadMarker2.setStyle({opacity: 0.2, fillOpacity: 0.1});
+                }
+                else {
+                    this.options.spreadMarker2.setStyle({opacity: 0, fillOpacity: 0});
+                }
             }
         }
 
@@ -239,12 +275,17 @@ export var squadTargetMarker = squadMarker.extend({
         }
         else {
             this.options.spreadMarker1.setRadius([(results.ellipseParams.semiMajorAxis * mapScale)/2, (results.ellipseParams.semiMinorAxis * mapScale)/2]);
-            this.options.spreadMarker1.setStyle({opacity: 0.2, fillOpacity: 0.1}); 
+            if (this.options.spreadMarker1.setStyle == 1) {
+                this.options.spreadMarker1.setStyle({opacity: 0.2, fillOpacity: 0.1}); 
+            }
+
         }
 
         // Custom events handlers
         this.on("click", this._handleClick, this);
         this.on("drag", this._handleDrag, this);
+        this.on("dragStart", this._handleDragStart, this);
+        this.on("dragEnd", this._handleDragEnd, this);
     },
 
     updateCalc: function(){
@@ -258,7 +299,12 @@ export var squadTargetMarker = squadMarker.extend({
         }
         else {
             this.options.spreadMarker1.setRadius([(results.ellipseParams.semiMajorAxis * mapScale)/2, (results.ellipseParams.semiMinorAxis * mapScale)/2]);
-            this.options.spreadMarker1.setStyle({opacity: 0.2, fillOpacity: 0.1});
+            if(globalData.userSettings.spreadRadius == 1) {
+                this.options.spreadMarker1.setStyle({opacity: 0.2, fillOpacity: 0.1});
+            }
+            else {
+                this.options.spreadMarker1.setStyle({opacity: 0, fillOpacity: 0});
+            }
             this.options.spreadMarker1.setTilt(results.bearing);
         }
 
@@ -275,8 +321,13 @@ export var squadTargetMarker = squadMarker.extend({
             }
             else {
                 this.options.spreadMarker2.setRadius([(results2.ellipseParams.semiMajorAxis * mapScale)/2, (results2.ellipseParams.semiMinorAxis * mapScale)/2]);
-                this.options.spreadMarker2.setStyle({opacity: 0.2, fillOpacity: 0.1});
                 this.options.spreadMarker2.setTilt(results2.bearing);
+                if(globalData.userSettings.spreadRadius == 1) {
+                    this.options.spreadMarker2.setStyle({opacity: 0.2, fillOpacity: 0.1});
+                }
+                else {
+                    this.options.spreadMarker2.setStyle({opacity: 0, fillOpacity: 0});
+                }
             }
             this.options.calcMarker2.openOn(globalData.map);
             this.options.calcMarker2.setContent(content2);
@@ -310,7 +361,25 @@ export var squadTargetMarker = squadMarker.extend({
         this.options.spreadMarker2.setLatLng(e.latlng);
 
         // Update bearing/elevation/spread marker
-        this.updateCalc();
+        if(globalData.userSettings.LowSpecMode == 0) {
+            this.updateCalc();
+        }
+    },
+
+    // When in low spec mode, hide calcs/spread at drag start
+    _handleDragStart: function (e) {
+        if(globalData.userSettings.LowSpecMode == 1) {
+            this.options.calcMarker1.setContent(" ")
+            this.options.calcMarker2.setContent(" ")
+            this.options.spreadMarker1.setStyle({opacity: 0, fillOpacity: 0});
+            this.options.spreadMarker2.setStyle({opacity: 0, fillOpacity: 0});
+        }
+    },
+
+    _handleDragEnd: function (e) {
+        if(globalData.userSettings.LowSpecMode == 1) {
+            this.updateCalc();
+        }
     },
 });
 
@@ -321,7 +390,8 @@ export var mortarIcon = L.icon({
     iconSize:     [38, 47], 
     shadowSize:   [38, 47], 
     iconAnchor:   [19, 47],
-    shadowAnchor: [10, 47],  
+    shadowAnchor: [10, 47],
+    className: "animatedWeaponMarker"
 });
 
 export var mortarIcon1 = L.icon({
@@ -330,7 +400,8 @@ export var mortarIcon1 = L.icon({
     iconSize:     [38, 47], 
     shadowSize:   [38, 47], 
     iconAnchor:   [19, 47],
-    shadowAnchor: [10, 47],  
+    shadowAnchor: [10, 47],
+    className: "animatedWeaponMarker"
 });
 
 export var mortarIcon2 = L.icon({
@@ -339,7 +410,8 @@ export var mortarIcon2 = L.icon({
     iconSize:     [38, 47], 
     shadowSize:   [38, 47], 
     iconAnchor:   [19, 47],
-    shadowAnchor: [10, 47],  
+    shadowAnchor: [10, 47],
+    className: "animatedWeaponMarker" 
 });
 
 export var ub32Icon = L.icon({
@@ -351,12 +423,22 @@ export var ub32Icon = L.icon({
     shadowAnchor: [10, 47],  
 });
 
+export var targetIconAnimated = L.icon({
+    iconUrl: targetIconImg,
+    shadowUrl: shadowIconImg,
+    iconSize:     [28, 34], 
+    shadowSize:   [38, 34],
+    iconAnchor:   [14, 34],
+    shadowAnchor: [12, 34], 
+    className: "animatedTargetMarker"
+});
+
 export var targetIcon = L.icon({
     iconUrl: targetIconImg,
     shadowUrl: shadowIconImg,
-    iconSize:     [28, 35], 
-    shadowSize:   [28, 35],
-    iconAnchor:   [14, 35],
-    shadowAnchor: [7.5, 35], 
+    iconSize:     [28, 34], 
+    shadowSize:   [38, 34],
+    iconAnchor:   [14, 34],
+    shadowAnchor: [12, 34], 
 });
 

@@ -42,33 +42,6 @@ tippy("#elevationNum", {
     theme: "results",
 });
 
-tippy(".fab-action-1", {
-    animation: "fade",
-    allowHTML: true,
-    content: "View code on </br>GitHub",
-    theme: "fab",
-});
-tippy(".fab-action-2", {
-    animation: "fade",
-    allowHTML: true,
-    content: "Change </br>Theme",
-    theme: "fab",
-});
-tippy(".fab-action-3", {
-    placement: "left-start",
-    animation: "fade",
-    allowHTML: true,
-    content: "Watch my </br>Videos!",
-    theme: "fab",
-});
-tippy(".fab-action-4", {
-    placement: "left",
-    animation: "fade",
-    allowHTML: true,
-    content: "Report a </br>Bug",
-    theme: "fab",
-});
-
 tippy("#savebutton i", {
     animation: "fade",
     allowHTML: true,
