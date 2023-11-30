@@ -1,4 +1,25 @@
 
+# <img src="https://img.shields.io/badge/-major%20release-blue?style=flat-square">  **14.0.0** *(2023-12-01)*
+
+<img src="https://img.shields.io/badge/-new-green"> New settings menu on bottom right corner to customize map/marker behaviour (external links have been moved here aswell in a more compact way)
+
+<img src="https://img.shields.io/badge/-new-green"> New animations for weapons & targets markers when created (can be desactivated in settings)
+
+<img src="https://img.shields.io/badge/-new-green"> New icon for targets markers
+
+<img src="https://img.shields.io/badge/-%20Improv%20-orange"> Grid have been reworked to be less blurry at every zoom level
+
+<img src="https://img.shields.io/badge/-%20Improv%20-orange"> now buffering grid outside of view to avoid entire parts of maps without grid while panning
+
+<img src="https://img.shields.io/badge/-%20Improv%20-orange"> now buffering map tiles outside of view to avoid appearing tiles while panning
+
+<img src="https://img.shields.io/badge/-%20removed%20-red"> Themes have been removed for now, maybe to return later in another form.
+
+
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
+
 
 # <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">  **13.1.0** *(2023-11-26)*
 

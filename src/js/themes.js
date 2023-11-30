@@ -11,13 +11,12 @@ const THEMES = [
  * get last theme used by user and apply it
  */
 export function loadTheme() {
-    var theme = localStorage.getItem("data-theme");
-
-    if (!CSS.supports("color", theme) ){
-        localStorage.setItem("data-theme", "#111111");
-        theme = "#111111";
-    }
-
+    //var theme = localStorage.getItem("data-theme");
+    // if (!CSS.supports("color", theme) ){
+    //     localStorage.setItem("data-theme", "#111111");
+    //     theme = "#111111";
+    // }
+    var theme = "#111111";
     document.documentElement.style.setProperty("--themecolor", theme);
 }
 

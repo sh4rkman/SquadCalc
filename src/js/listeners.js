@@ -34,12 +34,12 @@ document.querySelector("dialog button").addEventListener("click", () => {
     $("#helpDialog")[0].close();
 });
 
-$("#helpDialog").on('click', function(event) {
-  var rect = dialog.getBoundingClientRect();
-  var isInDialog = (rect.top <= event.clientY && event.clientY <= rect.top + rect.height &&
+$("#helpDialog").on("click", function(event) {
+    var rect = dialog.getBoundingClientRect();
+    var isInDialog = (rect.top <= event.clientY && event.clientY <= rect.top + rect.height &&
     rect.left <= event.clientX && event.clientX <= rect.left + rect.width);
-  if (!isInDialog) {
-    dialog.close();
-  }
+    if (!isInDialog) {
+        dialog.close();
+    }
 });
 

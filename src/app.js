@@ -22,7 +22,7 @@ import { loadSettings } from "./js/settings.js";
 
 import "./js/listeners.js";
 import "leaflet.control.opacity";
-import "leaflet-edgebuffer/src/leaflet.edgebuffer.js"
+import "leaflet-edgebuffer/src/leaflet.edgebuffer.js";
 
 
 $(function() {

@@ -11,6 +11,8 @@ import {
     LayerGroup, Util, LatLng, Polyline,
 } from "leaflet";
 
+import L from "leaflet";
+
 import { isMultiple } from "./utils";
 import { MAPS } from "./maps";
 import { globalData } from "./conf";
@@ -125,7 +127,7 @@ export default LayerGroup.extend({
             this.setLinesOpacity(this.s1Lines, 0.5);
             this.setLinesOpacity(this.kpLines, 1);
             this.setLinesWeight(this.kpLines, 3);
-        }else if (currentZoom >= 3) {
+        } else if (currentZoom >= 3) {
             this.setLinesOpacity(this.s2Lines, 0.0);
             this.setLinesOpacity(this.s1Lines, 0.0);
             this.setLinesOpacity(this.kpLines, 1);
@@ -168,20 +170,20 @@ export default LayerGroup.extend({
    * @param {Array} lines - array of lines to update
    * @param {Number} weight - desired weight value
    */
-        setLinesWeight(lines, weight = 1) {
-            // we check only the first object as we are updating all at the same time
-            // and this one check might save us iterating through the whole array
-                if (lines.length === 0) {
-                    // //console.debug("nothing to do");
-                } else {
-                    console.debug("setLinesWeight:", [lines, weight]);
-                    lines.forEach((l) => {
-                        l.setStyle({
-                            weight,
-                        });
-                    });
-                }
-            },
+    setLinesWeight(lines, weight = 1) {
+        // we check only the first object as we are updating all at the same time
+        // and this one check might save us iterating through the whole array
+        if (lines.length === 0) {
+            // //console.debug("nothing to do");
+        } else {
+            console.debug("setLinesWeight:", [lines, weight]);
+            lines.forEach((l) => {
+                l.setStyle({
+                    weight,
+                });
+            });
+        }
+    },
 
     /**
    * Redraws the grid inside the current view bounds.

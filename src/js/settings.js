@@ -11,57 +11,57 @@ export function loadSettings(){
     globalData.userSettings.LowSpecMode = localStorage.getItem("settings-low-spec");
     globalData.userSettings.targetAnimation = localStorage.getItem("settings-target-animation");
 
-    if (globalData.userSettings.keypadUnderCursor === null 
-        || isNaN(globalData.userSettings.keypadUnderCursor) 
-        || globalData.userSettings.keypadUnderCursor === ""){
+    if (globalData.userSettings.keypadUnderCursor === null || 
+        isNaN(globalData.userSettings.keypadUnderCursor) || 
+        globalData.userSettings.keypadUnderCursor === ""){
         globalData.userSettings.keypadUnderCursor = 1; 
         localStorage.setItem("settings-keypad-cursor", 1);  
     }
 
-    if (globalData.userSettings.spreadRadius === null 
-        || isNaN(globalData.userSettings.spreadRadius) 
-        || globalData.userSettings.spreadRadius === ""){
+    if (globalData.userSettings.spreadRadius === null|| 
+        isNaN(globalData.userSettings.spreadRadius) || 
+        globalData.userSettings.spreadRadius === ""){
         globalData.userSettings.spreadRadius = 1; 
         localStorage.setItem("settings-spread-radius", 1);  
     }
 
-    if (globalData.userSettings.LowSpecMode === null 
-        || isNaN(globalData.userSettings.LowSpecMode) 
-        || globalData.userSettings.LowSpecMode === ""){
+    if (globalData.userSettings.LowSpecMode === null || 
+        isNaN(globalData.userSettings.LowSpecMode) || 
+        globalData.userSettings.LowSpecMode === ""){
         globalData.userSettings.LowSpecMode = 1; 
         localStorage.setItem("settings-low-spec", 1);  
     }
 
     
-    if (globalData.userSettings.targetAnimation === null 
-        || isNaN(globalData.userSettings.targetAnimation) 
-        || globalData.userSettings.targetAnimation === ""){
+    if (globalData.userSettings.targetAnimation === null || 
+        isNaN(globalData.userSettings.targetAnimation) || 
+        globalData.userSettings.targetAnimation === ""){
         globalData.userSettings.targetAnimation = 1; 
         localStorage.setItem("settings-target-animation", 1);  
     }
 
-    if(globalData.userSettings.spreadRadius == 1) {
+    if (globalData.userSettings.spreadRadius == 1) {
         val = true;
     } else {
         val = false;
     }
     $("#spreadRadiusSetting").prop("checked", val);
 
-    if(globalData.userSettings.keypadUnderCursor == 1) {
+    if (globalData.userSettings.keypadUnderCursor == 1) {
         val = true;
     } else {
         val = false;
     }
     $("#keypadUnderCursorSetting").prop("checked", val);
 
-    if(globalData.userSettings.LowSpecMode == 0) {
+    if (globalData.userSettings.LowSpecMode == 1) {
         val = true;
     } else {
         val = false;
     }
     $("#LowSpecModeSetting").prop("checked", val);
 
-    if(globalData.userSettings.targetAnimation == 1) {
+    if (globalData.userSettings.targetAnimation == 1) {
         val = true;
     } else {
         val = false;
@@ -71,32 +71,31 @@ export function loadSettings(){
 }
 
 $("#keypadUnderCursorSetting").on("change", function() {
-    if($("#keypadUnderCursorSetting").is(':checked')) {
+    if ($("#keypadUnderCursorSetting").is(":checked")) {
         globalData.userSettings.keypadUnderCursor = 1;
         localStorage.setItem("settings-keypad-cursor", 1);
-        globalData.mouseLocationPopup.close()
+        globalData.mouseLocationPopup.close();
     }
     else {
         globalData.userSettings.keypadUnderCursor = 0;
         localStorage.setItem("settings-keypad-cursor", 0);
-        globalData.mouseLocationPopup.close()
+        globalData.mouseLocationPopup.close();
     }
 });
 
 $("#LowSpecModeSetting").on("change", function() {
-    if($("#LowSpecModeSetting").is(':checked')) {
-        globalData.userSettings.LowSpecMode = 0;
-        localStorage.setItem("settings-low-spec", 0);
-    }
-    else {
+    if ($("#LowSpecModeSetting").is(":checked")) {
         globalData.userSettings.LowSpecMode = 1;
         localStorage.setItem("settings-low-spec", 1);
+    }
+    else {
+        globalData.userSettings.LowSpecMode = 0;
+        localStorage.setItem("settings-low-spec", 0);
     }
 });
 
 $("#spreadRadiusSetting").on("change", function() {
-
-    if($("#spreadRadiusSetting").is(':checked')) {
+    if ($("#spreadRadiusSetting").is(":checked")) {
         globalData.userSettings.spreadRadius = 1;
         localStorage.setItem("settings-spread-radius", 1);
     }
@@ -112,8 +111,7 @@ $("#spreadRadiusSetting").on("change", function() {
 });
 
 $("#targetAnimationSettings").on("change", function() {
-
-    if($("#targetAnimationSettings").is(':checked')) {
+    if ($("#targetAnimationSettings").is(":checked")) {
         globalData.userSettings.targetAnimation = 1;
         localStorage.setItem("settings-target-animation", 1);
     }
@@ -121,6 +119,5 @@ $("#targetAnimationSettings").on("change", function() {
         globalData.userSettings.targetAnimation = 0;
         localStorage.setItem("settings-target-animation", 0);
     }
-
 });
 

@@ -342,7 +342,6 @@ footer {
         background: #333;
         border-radius: 50%;
         bottom: -1rem;
-        font-size: 2.5em;
         height: 4rem;
         position: absolute;
         right: -1rem;
@@ -628,9 +627,7 @@ footer {
     pointer-events: none;
     margin: 0;
     padding: 0;
-    //border: solid black 1px;
     font-family: Montserrat, Times, "Times New Roman", serif;
-
     .bearingUiCalc {
         font-size: 0.7em;
     }
@@ -684,9 +681,7 @@ footer {
     pointer-events: none;
     margin: 0;
     padding: 0;
-    //border: solid black 1px;
     font-family: Montserrat, Times, "Times New Roman", serif;
-
     .bearingUiCalc {
         font-size: 0.7em;
     }
@@ -782,13 +777,13 @@ footer {
     padding: 30px 5px 5px 30px;
     border-radius: 10px;
     font-size: 0.8em;
-    max-width: 95vw;
+    width: 450px;
     letter-spacing: 1px;
-    #settings {
+    #userSettings {
         border: none;
         line-height: 1em;
         td {
-            padding-top: 0em;
+            padding-top: 0;
             padding-bottom: 0.2em;
             padding-left: 0.8em;
             border: none;
@@ -809,7 +804,7 @@ footer {
         border: none;
         td {
             border: none;
-            padding: 0 0.5em 0 0.5em ;
+            padding: 0 0.5em;
         }
         i:hover {
             cursor: pointer;
@@ -834,7 +829,7 @@ footer {
     }
 }
 
-$main: firebrick; //#008cff;
+$main: firebrick; // #008cff
 $grey: #8d9aa9;
 $bezier: cubic-bezier(0.65, 0.25, 0.56, 0.96);
 
@@ -863,15 +858,12 @@ $bezier: cubic-bezier(0.65, 0.25, 0.56, 0.96);
         position: relative;
         background-color: white;
     }
-
-
     input[type="checkbox"]:checked + div {
         border-color: $main;
         transition: border-color 107ms $bezier;
         .mcui-check {
             opacity: 1;
             transition: opacity 107ms $bezier;
-
             polyline {
             animation: dash-check 107ms $bezier forwards;
             }
@@ -894,7 +886,7 @@ $bezier: cubic-bezier(0.65, 0.25, 0.56, 0.96);
       fill: none;
       transform-origin: 50% 50%;
       stroke-width: 5px;
-      stroke-dasharray: 22.771367900227325;
+      stroke-dasharray: 22.7714;
       stroke: currentcolor;
     }
 }
@@ -902,7 +894,7 @@ $bezier: cubic-bezier(0.65, 0.25, 0.56, 0.96);
 @supports (display: grid) {
     .mcui-check {
         polyline {
-            stroke-dashoffset: 22.771367900227325;
+            stroke-dashoffset: 22.7714;
         }
     }
 }
@@ -921,17 +913,17 @@ dialog::backdrop {
 
 .animatedTargetMarker {
     opacity: 0; 
-    animation: targetAppear 0.25s ease-in-out forwards;
+    animation: target-appear 0.25s ease-in-out forwards;
     animation-delay: 0s;
 }
 
 .animatedWeaponMarker{
     opacity: 0; 
-    animation: weaponAppear 0.25s ease-in-out forwards;
+    animation: weapon-appear 0.25s ease-in-out forwards;
     animation-delay: 0s;
 }
 
-@keyframes targetAppear {
+@keyframes target-appear {
     0% {
         top: -600px;
         opacity: 0;
@@ -942,7 +934,7 @@ dialog::backdrop {
     }
 }
 
-@keyframes weaponAppear {
+@keyframes weapon-appear {
     0% {
         top: -10px;
         opacity: 0;

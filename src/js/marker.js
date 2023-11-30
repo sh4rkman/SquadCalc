@@ -9,7 +9,6 @@ import mortarIconImg2 from "../img/icons/marker_mortar_2.png";
 import ub32IconImg from "../img/icons/marker_ub32.png";
 import targetIconImg from "../img/icons/marker_target.png";
 
-import { animateCSS } from "./animations";
 import { globalData } from "./conf";
 import { MAPS } from  "./maps";
 import { getCalcFromUI } from "./utils";
@@ -128,26 +127,26 @@ export var squadWeaponMarker = squadMarker.extend({
         this.setLatLng(e.latlng);
         this.options.rangeMarker.setLatLng(e.latlng);
         this.options.minRangeMarker.setLatLng(e.latlng);
-        if(!globalData.userSettings.LowSpecMode) {
+        if (globalData.userSettings.LowSpecMode == 1) {
             globalData.activeTargetsMarkers.eachLayer(function (layer) {
                 layer.updateCalc(layer.latlng);
             });
         }
     },
 
-    _handleDragStart: function (e) {
-        if(globalData.userSettings.LowSpecMode) {
+    _handleDragStart: function () {
+        if (globalData.userSettings.LowSpecMode == 0) {
             globalData.activeTargetsMarkers.eachLayer(function (layer) {
-                layer.options.calcMarker1.setContent(" ")
-                layer.options.calcMarker2.setContent(" ")
+                layer.options.calcMarker1.setContent(" ");
+                layer.options.calcMarker2.setContent(" ");
                 layer.options.spreadMarker1.setStyle({opacity: 0, fillOpacity: 0});
                 layer.options.spreadMarker2.setStyle({opacity: 0, fillOpacity: 0});
             }); 
         }
     },
 
-    _handleDragEnd: function (e) {
-        if(globalData.userSettings.LowSpecMode) {
+    _handleDragEnd: function () {
+        if (globalData.userSettings.LowSpecMode == 0) {
             globalData.activeTargetsMarkers.eachLayer(function (layer) {
                 layer.updateCalc(layer.latlng);
             });
@@ -231,11 +230,8 @@ export var squadTargetMarker = squadMarker.extend({
         this.options.spreadMarker1 = L.ellipse(latlng, radiiElipse, angleElipse, spreadOptions).addTo(globalData.markersGroup);
         this.options.spreadMarker2 = L.ellipse(latlng, radiiElipse, angleElipse, spreadOptions).addTo(globalData.markersGroup);
 
-        if(globalData.userSettings.spreadRadius == 0) {
+        if (globalData.userSettings.spreadRadius == 0) {
             this.options.spreadMarker1.setStyle({opacity: 0, fillOpacity: 0});
-        }
-        else {
-            
         }
 
         this.options.spreadMarker2.setStyle({opacity: 0, fillOpacity: 0});
@@ -257,7 +253,7 @@ export var squadTargetMarker = squadMarker.extend({
             else {
                 this.options.spreadMarker2.setRadius([(results2.ellipseParams.semiMajorAxis * mapScale)/2, (results2.ellipseParams.semiMinorAxis * mapScale)/2]);
                 this.options.spreadMarker2.setTilt(results2.bearing);
-                if(globalData.userSettings.spreadRadius == 1) {
+                if (globalData.userSettings.spreadRadius == 1) {
                     this.options.spreadMarker2.setStyle({opacity: 0.2, fillOpacity: 0.1});
                 }
                 else {
@@ -293,13 +289,16 @@ export var squadTargetMarker = squadMarker.extend({
 
         var results = getCalcFromUI(globalData.activeWeaponMarker.getLayers()[0].getLatLng(), this.getLatLng());
         var content = "<span class='calcNumber'></span></br><span>" + results.elevation + "</span></br><span class='bearingUiCalc'>" +  results.bearing + "°</span>";
+        var results2;
+        var content2;
+
 
         if (results.elevation === "---" || results.ellipseParams.semiMajorAxis === 0) {
             this.options.spreadMarker1.setStyle({opacity: 0, fillOpacity: 0});
         }
         else {
             this.options.spreadMarker1.setRadius([(results.ellipseParams.semiMajorAxis * mapScale)/2, (results.ellipseParams.semiMinorAxis * mapScale)/2]);
-            if(globalData.userSettings.spreadRadius == 1) {
+            if (globalData.userSettings.spreadRadius == 1) {
                 this.options.spreadMarker1.setStyle({opacity: 0.2, fillOpacity: 0.1});
             }
             else {
@@ -312,9 +311,9 @@ export var squadTargetMarker = squadMarker.extend({
         this.options.spreadMarker2.setStyle({opacity: 0, fillOpacity: 0});
 
         if (globalData.activeWeaponMarker.getLayers().length === 2) {
-            var results2 = getCalcFromUI(globalData.activeWeaponMarker.getLayers()[1].getLatLng(), this.getLatLng());
+            results2 = getCalcFromUI(globalData.activeWeaponMarker.getLayers()[1].getLatLng(), this.getLatLng());
             content = "<span class='calcNumber'>(1)</span></br><span>" + results.elevation + "</span></br><span class='bearingUiCalc'>" +  results.bearing + "°</span>";
-            var content2 = "<span class='calcNumber'>(2)</span></br><span>" + results2.elevation + "</span></br><span class='bearingUiCalc'>" +  results2.bearing + "°</span>";
+            content2 = "<span class='calcNumber'>(2)</span></br><span>" + results2.elevation + "</span></br><span class='bearingUiCalc'>" +  results2.bearing + "°</span>";
 
             if (results2.elevation === "---" || results2.ellipseParams.semiMajorAxis === 0) {
                 this.options.spreadMarker2.setStyle({opacity: 0, fillOpacity: 0});
@@ -322,7 +321,7 @@ export var squadTargetMarker = squadMarker.extend({
             else {
                 this.options.spreadMarker2.setRadius([(results2.ellipseParams.semiMajorAxis * mapScale)/2, (results2.ellipseParams.semiMinorAxis * mapScale)/2]);
                 this.options.spreadMarker2.setTilt(results2.bearing);
-                if(globalData.userSettings.spreadRadius == 1) {
+                if (globalData.userSettings.spreadRadius == 1) {
                     this.options.spreadMarker2.setStyle({opacity: 0.2, fillOpacity: 0.1});
                 }
                 else {
@@ -361,23 +360,23 @@ export var squadTargetMarker = squadMarker.extend({
         this.options.spreadMarker2.setLatLng(e.latlng);
 
         // Update bearing/elevation/spread marker
-        if(globalData.userSettings.LowSpecMode == 0) {
+        if (globalData.userSettings.LowSpecMode == 1) {
             this.updateCalc();
         }
     },
 
     // When in low spec mode, hide calcs/spread at drag start
-    _handleDragStart: function (e) {
-        if(globalData.userSettings.LowSpecMode == 1) {
-            this.options.calcMarker1.setContent(" ")
-            this.options.calcMarker2.setContent(" ")
+    _handleDragStart: function () {
+        if (globalData.userSettings.LowSpecMode == 0) {
+            this.options.calcMarker1.setContent(" ");
+            this.options.calcMarker2.setContent(" ");
             this.options.spreadMarker1.setStyle({opacity: 0, fillOpacity: 0});
             this.options.spreadMarker2.setStyle({opacity: 0, fillOpacity: 0});
         }
     },
 
-    _handleDragEnd: function (e) {
-        if(globalData.userSettings.LowSpecMode == 1) {
+    _handleDragEnd: function () {
+        if (globalData.userSettings.LowSpecMode == 0) {
             this.updateCalc();
         }
     },

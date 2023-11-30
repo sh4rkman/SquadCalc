@@ -26,7 +26,7 @@ export var globalData = {
     userSettings: {
         keypadUnderCursor: true,
         spreadRadius: true,
-        LowSpecMode: false,
+        LowSpecMode: true,
         targetAnimation: true,
     }
 };

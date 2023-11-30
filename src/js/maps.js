@@ -324,10 +324,8 @@ export function loadMap(){
         //maxBounds:[[500, -500], [-800, 800]],
     });
 
-    var bounds = [[0, 0], [-256, 256]];
-
     // Hack for KPPopUp smoothness
-    L.rectangle(bounds, {opacity: 0, fillOpacity: 0, weight: 0,}).addTo(globalData.map);
+    L.rectangle([[0, 0], [-256, 256]], {opacity: 0, fillOpacity: 0, weight: 0,}).addTo(globalData.map);
 
     globalData.mouseLocationPopup = L.popup({
         closeButton: false,
@@ -401,7 +399,7 @@ export function loadMap(){
             return 0;
         }
         
-        if(globalData.userSettings.targetAnimation == 0) {
+        if (globalData.userSettings.targetAnimation == 0) {
             new squadTargetMarker(L.latLng(e.latlng), {icon: targetIcon}).addTo(globalData.markersGroup);
         } else {
             new squadTargetMarker(L.latLng(e.latlng), {icon: targetIconAnimated}).addTo(globalData.markersGroup);
