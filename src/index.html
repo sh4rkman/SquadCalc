@@ -127,9 +127,12 @@
             <i class="fa-regular fa-circle-xmark"></i>
         </button>
 
-        <h2>Settings :</h2>
+        <h2>Settings</h2>
         <br>
-        <table id="userSettings" class="pure-table">
+        <br>
+        <h3>Map Options</h3>
+        <br>
+        <table class="userSettings pure-table">
             <tbody>
                 <tr>
                     <td>
@@ -144,7 +147,7 @@
                           </label>
                     </td>
                     <td>
-                        Show Keypads under cursor
+                        Show Keypads under Cursor
                     </td>
                 </tr>
                 <tr>
@@ -159,7 +162,7 @@
                             <div></div>
                           </label>
                     </td>
-                    <td>Show Spread Radius on targets</td>
+                    <td>Show Spread Radius on Targets</td>
                 </tr>
                 <tr>
                     <td>
@@ -176,6 +179,29 @@
                     <td>Show Targets Markers Animations
                     </td>
                 </tr>
+                <tr>
+                    <td>
+                        <label class="mcui-checkbox">
+                            <input id="weaponRangeSettings" type="checkbox">
+                            <div>
+                              <svg class="mcui-check" viewBox="-2 -2 35 35" aria-hidden="true">
+                                <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
+                              </svg>
+                            </div>
+                            <div></div>
+                          </label>
+                    </td>
+                    <td>Show Weapon Min/Max Range
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <br>
+        <br>
+        <h3>Performance</h3>
+        <br>
+        <table class="userSettings pure-table">
+            <tbody>
                 <tr>
                     <td>
                         <label class="mcui-checkbox">
@@ -198,7 +224,6 @@
             </tbody>
         </table>
 
-
         <table id="socials" class="pure-table">
             <tbody>
                 <tr>
@@ -220,6 +245,7 @@
                 </tr>
             </tbody>
         </table>
+
     </dialog>
 
     <div id="map_ui" class="pure-g hidden">

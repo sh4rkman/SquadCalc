@@ -47,32 +47,44 @@ export var squadWeaponMarker = squadMarker.extend({
     },
 
     initialize: function (latlng, options) {
-        var circleOptions = {
+
+        var maxDistCircleOn = {
             radius: globalData.activeWeapon.getMaxDistance() * (256 / MAPS.find((elem, index) => index == globalData.activeMap).size),
             opacity: 0.7,
-            color: "#01d401",
+            color: "#00137f",
             fillOpacity: 0,
             weight: 2,
             autoPan: false,
+            renderer: L.svg({padding: 3}),
         };
-        var circleOptions2 = {
+
+        var minDistCircleOn = {
             radius: globalData.activeWeapon.minDistance * (256 / MAPS.find((elem, index) => index == globalData.activeMap).size),
             opacity: 0.5,
-            color: "#b22222",
+            color: "#00137f",
             fillOpacity: 0.1,
             weight: 1,
             autoPan: false,
         };
 
+        var minMaxDistCircleOff = {
+            opacity: 0,
+            fillOpacity: 0,
+        };
+
         squadMarker.prototype.initialize.call(this, latlng, options);
 
         // Create the min/max range markers
-        this.options.minRangeMarker = L.circle(latlng, circleOptions2).addTo(globalData.markersGroup);
-        this.options.rangeMarker = L.circle(latlng, circleOptions).addTo(globalData.markersGroup);
+        this.options.minRangeMarker = L.circle(latlng, minDistCircleOn).addTo(globalData.markersGroup);
+        this.options.rangeMarker = L.circle(latlng, maxDistCircleOn).addTo(globalData.markersGroup);
         
+        if (globalData.userSettings.weaponMinMaxRange == 0) {
+            this.options.minRangeMarker.setStyle(minMaxDistCircleOff);
+            this.options.rangeMarker.setStyle(minMaxDistCircleOff);
+        }
         // Hide minRangeMarker if weapon doesn't have minimum range
         if (this.options.minRangeMarker.getRadius() == 0) {
-            this.options.minRangeMarker.setStyle({opacity: 0, fillOpacity: 0});
+            this.options.minRangeMarker.setStyle(minMaxDistCircleOff);
         }
 
         // Custom events handlers
@@ -85,18 +97,51 @@ export var squadWeaponMarker = squadMarker.extend({
     },
 
     updateWeapon: function(){
+
+        var maxDistCircleOn = {
+            radius: globalData.activeWeapon.getMaxDistance() * (256 / MAPS.find((elem, index) => index == globalData.activeMap).size),
+            opacity: 0.7,
+            color: "#00137f",
+            fillOpacity: 0,
+            weight: 2,
+            autoPan: false,
+        };
+
+        var minDistCircleOn = {
+            radius: globalData.activeWeapon.minDistance * (256 / MAPS.find((elem, index) => index == globalData.activeMap).size),
+            opacity: 0.5,
+            color: "#00137f",
+            fillOpacity: 0.1,
+            weight: 1,
+            autoPan: false,
+        };
+
+        var minMaxDistCircleOff = {
+            opacity: 0,
+            fillOpacity: 0,
+        };
+
         var radiusMax = globalData.activeWeapon.getMaxDistance() * (256 / MAPS.find((elem, index) => index == globalData.activeMap).size);
         var radiusMin = globalData.activeWeapon.minDistance * (256 / MAPS.find((elem, index) => index == globalData.activeMap).size);
         
         this.options.minRangeMarker.setRadius(radiusMin);
         this.options.rangeMarker.setRadius(radiusMax);
 
-        // Update MinRange circle opacity
-        if (this.options.minRangeMarker.getRadius() != 0) {
-            this.options.minRangeMarker.setStyle({opacity: 0.5, fillOpacity: 0.1});
+
+
+        if (globalData.userSettings.weaponMinMaxRange == 0) {
+            this.options.minRangeMarker.setStyle(minMaxDistCircleOff);
+            this.options.rangeMarker.setStyle(minMaxDistCircleOff);
         }
         else {
-            this.options.minRangeMarker.setStyle({opacity: 0, fillOpacity: 0});
+            // Update MinRange circle opacity
+            if (this.options.minRangeMarker.getRadius() != 0) {
+                this.options.minRangeMarker.setStyle(minDistCircleOn);
+            }
+            else {
+                this.options.minRangeMarker.setStyle(minMaxDistCircleOff);
+            }
+            this.options.rangeMarker.setStyle(maxDistCircleOn);
         }
     },
 
@@ -166,6 +211,16 @@ export var squadTargetMarker = squadMarker.extend({
         calcMarker2: null,
         spreadMarker1: null,
         spreadMarker2: null,
+        spreadOptionsOn : {
+            opacity: 1,
+            fillOpacity: 0.1,
+            color: "#b22222",
+            weight: 1,
+        },
+        spreadOptionsOff : {
+            opacity: 0,
+            fillOpacity: 0,
+        },
     },
 
     initialize: function (latlng, options) {
@@ -203,12 +258,7 @@ export var squadTargetMarker = squadMarker.extend({
             offset: [32, -20],
         };
 
-        var spreadOptions = {
-            opacity: 0.2,
-            fillOpacity: 0.1,
-            color: "#b22222",
-            weight: 1
-        };
+
 
         // Create marker
         squadMarker.prototype.initialize.call(this, latlng, options);
@@ -227,14 +277,12 @@ export var squadTargetMarker = squadMarker.extend({
         // Calc PopUp for weapon 2 (not displayed yet)
         this.options.calcMarker2 = L.popup(popUpOptions_weapon2).setLatLng(latlng).addTo(globalData.markersGroup);
 
-        this.options.spreadMarker1 = L.ellipse(latlng, radiiElipse, angleElipse, spreadOptions).addTo(globalData.markersGroup);
-        this.options.spreadMarker2 = L.ellipse(latlng, radiiElipse, angleElipse, spreadOptions).addTo(globalData.markersGroup);
+        this.options.spreadMarker1 = L.ellipse(latlng, radiiElipse, angleElipse, this.options.spreadOptionsOn).addTo(globalData.markersGroup);
+        this.options.spreadMarker2 = L.ellipse(latlng, radiiElipse, angleElipse, this.options.spreadOptionsOff).addTo(globalData.markersGroup);
 
         if (globalData.userSettings.spreadRadius == 0) {
-            this.options.spreadMarker1.setStyle({opacity: 0, fillOpacity: 0});
+            this.options.spreadMarker1.setStyle(this.spreadOptionsOff);
         }
-
-        this.options.spreadMarker2.setStyle({opacity: 0, fillOpacity: 0});
 
         // If two weapons already on the map
         if (globalData.activeWeaponMarker.getLayers().length === 2) {
@@ -254,10 +302,10 @@ export var squadTargetMarker = squadMarker.extend({
                 this.options.spreadMarker2.setRadius([(results2.ellipseParams.semiMajorAxis * mapScale)/2, (results2.ellipseParams.semiMinorAxis * mapScale)/2]);
                 this.options.spreadMarker2.setTilt(results2.bearing);
                 if (globalData.userSettings.spreadRadius == 1) {
-                    this.options.spreadMarker2.setStyle({opacity: 0.2, fillOpacity: 0.1});
+                    this.options.spreadMarker2.setStyle(this.options.spreadOptionsOn);
                 }
                 else {
-                    this.options.spreadMarker2.setStyle({opacity: 0, fillOpacity: 0});
+                    this.options.spreadMarker2.setStyle(this.options.spreadOptionsOff);
                 }
             }
         }
@@ -267,12 +315,15 @@ export var squadTargetMarker = squadMarker.extend({
         // Initiate Spread Ellipse Marker
        
         if (results.elevation === "---" || results.ellipseParams.semiMajorAxis === 0) {
-            this.options.spreadMarker1.setStyle({opacity: 0, fillOpacity: 0});
+            this.options.spreadMarker1.setStyle(this.options.spreadOptionsOff);
         }
         else {
             this.options.spreadMarker1.setRadius([(results.ellipseParams.semiMajorAxis * mapScale)/2, (results.ellipseParams.semiMinorAxis * mapScale)/2]);
-            if (this.options.spreadMarker1.setStyle == 1) {
-                this.options.spreadMarker1.setStyle({opacity: 0.2, fillOpacity: 0.1}); 
+            if (globalData.userSettings.spreadRadius == 1) {
+                this.options.spreadMarker1.setStyle(this.options.spreadOptionsOn); 
+            }
+            else {
+                this.options.spreadMarker1.setStyle(this.options.spreadOptionsOff); 
             }
 
         }
@@ -299,16 +350,16 @@ export var squadTargetMarker = squadMarker.extend({
         else {
             this.options.spreadMarker1.setRadius([(results.ellipseParams.semiMajorAxis * mapScale)/2, (results.ellipseParams.semiMinorAxis * mapScale)/2]);
             if (globalData.userSettings.spreadRadius == 1) {
-                this.options.spreadMarker1.setStyle({opacity: 0.2, fillOpacity: 0.1});
+                this.options.spreadMarker1.setStyle(this.options.spreadOptionsOn);
             }
             else {
-                this.options.spreadMarker1.setStyle({opacity: 0, fillOpacity: 0});
+                this.options.spreadMarker1.setStyle(this.options.spreadOptionsOff);
             }
             this.options.spreadMarker1.setTilt(results.bearing);
         }
 
         this.options.calcMarker2.close();
-        this.options.spreadMarker2.setStyle({opacity: 0, fillOpacity: 0});
+        this.options.spreadMarker2.setStyle(this.options.spreadOptionsOff);
 
         if (globalData.activeWeaponMarker.getLayers().length === 2) {
             results2 = getCalcFromUI(globalData.activeWeaponMarker.getLayers()[1].getLatLng(), this.getLatLng());
@@ -322,10 +373,10 @@ export var squadTargetMarker = squadMarker.extend({
                 this.options.spreadMarker2.setRadius([(results2.ellipseParams.semiMajorAxis * mapScale)/2, (results2.ellipseParams.semiMinorAxis * mapScale)/2]);
                 this.options.spreadMarker2.setTilt(results2.bearing);
                 if (globalData.userSettings.spreadRadius == 1) {
-                    this.options.spreadMarker2.setStyle({opacity: 0.2, fillOpacity: 0.1});
+                    this.options.spreadMarker2.setStyle(this.options.spreadOptionsOn);
                 }
                 else {
-                    this.options.spreadMarker2.setStyle({opacity: 0, fillOpacity: 0});
+                    this.options.spreadMarker2.setStyle(this.options.spreadOptionsOff);
                 }
             }
             this.options.calcMarker2.openOn(globalData.map);
@@ -370,8 +421,8 @@ export var squadTargetMarker = squadMarker.extend({
         if (globalData.userSettings.LowSpecMode == 0) {
             this.options.calcMarker1.setContent(" ");
             this.options.calcMarker2.setContent(" ");
-            this.options.spreadMarker1.setStyle({opacity: 0, fillOpacity: 0});
-            this.options.spreadMarker2.setStyle({opacity: 0, fillOpacity: 0});
+            this.options.spreadMarker1.setStyle(this.options.spreadOptionsOff);
+            this.options.spreadMarker2.setStyle(this.options.spreadOptionsOff);
         }
     },
 

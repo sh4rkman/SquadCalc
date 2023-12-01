@@ -320,7 +320,7 @@ export function loadMap(){
         maxZoom: 6,
         zoomControl: false,
         doubleClickZoom: false,
-        edgeBufferTiles:3,
+        edgeBufferTiles:1,
         //maxBounds:[[500, -500], [-800, 800]],
     });
 
@@ -408,7 +408,7 @@ export function loadMap(){
 
 
     });
-
+    drawMap();
 }
 
 

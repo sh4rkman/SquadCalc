@@ -28,5 +28,6 @@ export var globalData = {
         spreadRadius: true,
         LowSpecMode: true,
         targetAnimation: true,
+        weaponMinMaxRange: true,
     }
 };

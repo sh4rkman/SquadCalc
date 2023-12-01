@@ -10,6 +10,7 @@ export function loadSettings(){
     globalData.userSettings.spreadRadius = localStorage.getItem("settings-spread-radius");
     globalData.userSettings.LowSpecMode = localStorage.getItem("settings-low-spec");
     globalData.userSettings.targetAnimation = localStorage.getItem("settings-target-animation");
+    globalData.userSettings.weaponMinMaxRange = localStorage.getItem("settings-weapon-range");
 
     if (globalData.userSettings.keypadUnderCursor === null || 
         isNaN(globalData.userSettings.keypadUnderCursor) || 
@@ -32,12 +33,18 @@ export function loadSettings(){
         localStorage.setItem("settings-low-spec", 1);  
     }
 
-    
     if (globalData.userSettings.targetAnimation === null || 
         isNaN(globalData.userSettings.targetAnimation) || 
         globalData.userSettings.targetAnimation === ""){
         globalData.userSettings.targetAnimation = 1; 
         localStorage.setItem("settings-target-animation", 1);  
+    }
+
+    if (globalData.userSettings.weaponMinMaxRange === null || 
+        isNaN(globalData.userSettings.weaponMinMaxRange) || 
+        globalData.userSettings.weaponMinMaxRange === ""){
+        globalData.userSettings.weaponMinMaxRange = 1; 
+        localStorage.setItem("settings-weapon-range", 1);  
     }
 
     if (globalData.userSettings.spreadRadius == 1) {
@@ -68,6 +75,12 @@ export function loadSettings(){
     }
     $("#targetAnimationSettings").prop("checked", val);
 
+    if (globalData.userSettings.weaponMinMaxRange == 1) {
+        val = true;
+    } else {
+        val = false;
+    }
+    $("#weaponRangeSettings").prop("checked", val);
 }
 
 $("#keypadUnderCursorSetting").on("change", function() {
@@ -107,6 +120,20 @@ $("#spreadRadiusSetting").on("change", function() {
     // Update every targets to add/remove spread radius
     globalData.activeTargetsMarkers.eachLayer(function (layer) {
         layer.updateCalc(layer.latlng);
+    });
+});
+
+$("#weaponRangeSettings").on("change", function() {
+    if ($("#weaponRangeSettings").is(":checked")) {
+        globalData.userSettings.weaponMinMaxRange = 1;
+        localStorage.setItem("settings-weapon-range", 1);
+    }
+    else {
+        globalData.userSettings.weaponMinMaxRange = 0;
+        localStorage.setItem("settings-weapon-range", 0);
+    }
+    globalData.activeWeaponMarker.eachLayer(function (layer) {
+        layer.updateWeapon();
     });
 });
 

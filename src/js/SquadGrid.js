@@ -34,11 +34,13 @@ export default LayerGroup.extend({
     lineStyleKP: {
         stroke: true,
         color: "#000",
-        opacity: 0.5,
-        weight: 3,
+        opacity: 1,
+        weight: 1,
         interactive: false,
         clickable: false,
-        renderer: L.canvas({padding: 3}), // https://leafletjs.com/reference.html#path-clip_padding
+        // Set padding so the svg is rendered outside of view, avoiding grid "appearing" while panning map
+        // https://leafletjs.com/reference.html#path-clip_padding
+        renderer: L.svg({padding: 3}),
     },
 
     lineStyleSUB1: {
@@ -48,7 +50,7 @@ export default LayerGroup.extend({
         weight: 2,
         interactive: false,
         clickable: false,
-        renderer: L.canvas({padding: 3}),
+        renderer: L.svg({padding: 3}),
     },
 
     lineStyleSUB2: {
@@ -58,12 +60,11 @@ export default LayerGroup.extend({
         weight: 1,
         interactive: false,
         clickable: false,
-        renderer: L.canvas({padding: 3}),
+        renderer: L.svg({padding: 3}),
     },
 
     initialize(options) {
         console.debug("initialize");
-
         LayerGroup.prototype.initialize.call(this);
         Util.setOptions(this, options);
     },
@@ -119,7 +120,7 @@ export default LayerGroup.extend({
         if (currentZoom >= 6) {
             this.setLinesOpacity(this.s2Lines, 0.6);
         } else if (currentZoom >= 5) {
-            this.setLinesOpacity(this.s1Lines, 0.5);
+            this.setLinesOpacity(this.s1Lines, 0.7);
             this.setLinesOpacity(this.s2Lines, 0.7);
         }
         else if (currentZoom >= 4) {
@@ -131,15 +132,16 @@ export default LayerGroup.extend({
             this.setLinesOpacity(this.s2Lines, 0.0);
             this.setLinesOpacity(this.s1Lines, 0.0);
             this.setLinesOpacity(this.kpLines, 1);
-            this.setLinesWeight(this.kpLines, 2);
+            this.setLinesWeight(this.kpLines, 1);
         } else if (currentZoom >= 2) {
             this.setLinesOpacity(this.s2Lines, 0.0);
             this.setLinesOpacity(this.s1Lines, 0.0);
-            this.setLinesOpacity(this.kpLines, 0.7);
-            this.setLinesWeight(this.kpLines, 2);
+            this.setLinesOpacity(this.kpLines, 1);
+            this.setLinesWeight(this.kpLines, 1);
         } else {
             this.setLinesOpacity(this.s2Lines, 0.0);
             this.setLinesOpacity(this.s1Lines, 0.0);
+            this.setLinesOpacity(this.kpLines, 1);
             this.setLinesWeight(this.kpLines, 1);
         }
     },

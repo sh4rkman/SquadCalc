@@ -1,6 +1,6 @@
 import { tooltip_save, tooltip_copied } from "./tooltips";
 import { globalData } from "./conf";
-import { MAPS, drawMap  } from "./maps";
+import { MAPS } from "./maps";
 import { animateCSS, animateCalc, drawLine} from "./animations";
 import L from "leaflet";
 
@@ -810,7 +810,6 @@ function loadMapUIMode(){
     globalData.line.hide("none");
     localStorage.setItem("data-ui", 1);
     globalData.map.invalidateSize();
-    drawMap();
 }
 
 export function switchUI(){
@@ -899,7 +898,7 @@ function getElevationWithEllipseParams(dist = 0, vDelta = 0, vel = 0) {
     // Calculate ellipse parameters
 
     if (globalData.activeWeapon.moa != 0){
-        const moa = globalData.activeWeapon.moa;
+        const moa = globalData.activeWeapon.moa / 2;
 
         // trying to emulate very approximately Squad spread zone until i figure out what OWI did
         // Looks like they applied MOA deviation only on elevation angle, not on bearing
@@ -910,7 +909,6 @@ function getElevationWithEllipseParams(dist = 0, vDelta = 0, vel = 0) {
         };
     }
     else {
-        
         ellipseParams = {
             semiMajorAxis: 0,
             semiMinorAxis: 0,
