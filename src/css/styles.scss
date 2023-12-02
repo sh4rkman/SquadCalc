@@ -610,10 +610,6 @@ footer {
 }
 
 
-
-
-
-
 #helpDialog {
     margin: auto;
     background-color: $mainBGColor;
@@ -674,8 +670,7 @@ footer {
     }
 }
 
-$main: firebrick; // #008cff
-$grey: #8d9aa9;
+$grey: #5d6670;
 $bezier: cubic-bezier(0.65, 0.25, 0.56, 0.96);
 
 .mcui-checkbox,
@@ -704,7 +699,7 @@ $bezier: cubic-bezier(0.65, 0.25, 0.56, 0.96);
         background-color: white;
     }
     input[type="checkbox"]:checked + span {
-        border-color: $main;
+        border-color: $mainColor;
         transition: border-color 107ms $bezier;
         .mcui-check {
             opacity: 1;
@@ -714,7 +709,9 @@ $bezier: cubic-bezier(0.65, 0.25, 0.56, 0.96);
             }
         }
     }
-
+    input[type="checkbox"]:disabled + span {
+        background-color: $grey;
+    }
 }
 
 
@@ -722,7 +719,7 @@ $bezier: cubic-bezier(0.65, 0.25, 0.56, 0.96);
     height: 100%;
     width: 100%;
     transform: scale(1);
-    color: $main;
+    color: $mainColor;
     opacity: 0;
     &:hover {
         cursor: pointer;
@@ -752,7 +749,7 @@ $bezier: cubic-bezier(0.65, 0.25, 0.56, 0.96);
   
 
 dialog::backdrop {
-    backdrop-filter: blur(3px);
+    backdrop-filter: blur(3px) brightness(90%);
 }
 
 

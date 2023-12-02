@@ -68,7 +68,16 @@ export function loadSettings(){
     } else {
         val = false;
     }
-    $("#keypadUnderCursorSetting").prop("checked", val);
+
+    if (matchMedia('(pointer:fine)').matches) {
+        $("#keypadUnderCursorSetting").prop("checked", val);
+    }
+    else {
+        $("#keypadUnderCursorSetting").attr("disabled", true);
+        $("#KPSettingSubText").text("(Disabled: no mouse detected!)");
+        globalData.userSettings.keypadUnderCursor = 0;
+    }
+
 
     if (globalData.userSettings.LowSpecMode == 1) {
         val = true;
@@ -100,6 +109,12 @@ export function loadSettings(){
 }
 
 $("#keypadUnderCursorSetting").on("change", function() {
+
+    if (!matchMedia('(pointer:fine)').matches) {
+        globalData.userSettings.keypadUnderCursor = 0;
+        return;
+    }
+
     if ($("#keypadUnderCursorSetting").is(":checked")) {
         globalData.userSettings.keypadUnderCursor = 1;
         localStorage.setItem("settings-keypad-cursor", 1);

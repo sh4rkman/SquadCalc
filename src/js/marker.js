@@ -14,7 +14,10 @@ import { getCalcFromUI } from "./utils";
 
 // Define your custom marker class
 export var squadMarker = L.Marker.extend({
-    options: {},
+    options: {
+        draggable: true,
+        riseOnHover: true,
+    },
 
     // Initialize method
     initialize: function (latlng, options) {
@@ -202,7 +205,6 @@ export var squadWeaponMarker = squadMarker.extend({
 
 export var squadTargetMarker = squadMarker.extend({
     options: {
-        draggable: true,
         calcMarker1: null,
         calcMarker2: null,
         spreadMarker1: null,
@@ -274,7 +276,6 @@ export var squadTargetMarker = squadMarker.extend({
 
         // Calc PopUp for weapon 1
         this.options.calcMarker1 = L.popup(popUpOptions_weapon1).setLatLng(latlng).openOn(globalData.map).addTo(globalData.markersGroup);
-        //this.options.calcMarker1.setContent(content);
 
         // Calc PopUp for weapon 2 (not displayed yet)
         this.options.calcMarker2 = L.popup(popUpOptions_weapon2).setLatLng(latlng).addTo(globalData.markersGroup);

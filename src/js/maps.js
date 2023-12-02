@@ -321,7 +321,7 @@ export function loadMap(){
         zoomControl: false,
         doubleClickZoom: false,
         edgeBufferTiles:1,
-        //maxBounds:[[500, -500], [-800, 800]],
+        // maxBounds:[[500, -500], [-800, 800]],
     });
 
     // Hack for KPPopUp smoothness
@@ -350,10 +350,10 @@ export function loadMap(){
     globalData.map.on("mousemove", function(e){
         const mapScale = MAPS.find((elem, index) => index == globalData.activeMap).size / 256;
 
-        if (globalData.userSettings.keypadUnderCursor == 0){ 
-            return 1;
-        }
-        if (isTouchDevice()){ return 1;} // Mobile
+        if (globalData.userSettings.keypadUnderCursor == 0){ return 1; }
+    
+        // if no mouse support
+        if (!matchMedia('(pointer:fine)').matches) { return 1; }
 
         // If out of bounds
         if (e.latlng.lat > 0 ||  e.latlng.lat < -256 || e.latlng.lng < 0 || e.latlng.lng > 256) {
@@ -379,7 +379,7 @@ export function loadMap(){
 
             // Only add a second weapon if there is only one existent weapon
             if (globalData.activeWeaponMarker.getLayers().length === 1) {
-                secondMortar = new squadWeaponMarker(e.latlng, {icon: mortarIcon2, draggable: true});
+                secondMortar = new squadWeaponMarker(e.latlng, {icon: mortarIcon2});
                 secondMortar.addTo(globalData.markersGroup).addTo(globalData.activeWeaponMarker);
 
                 // Update first weapon icon
@@ -395,7 +395,7 @@ export function loadMap(){
         }
 
         if (globalData.activeWeaponMarker.getLayers().length === 0) {
-            new squadWeaponMarker(e.latlng, {icon: mortarIcon, draggable: true}).addTo(globalData.markersGroup).addTo(globalData.activeWeaponMarker);
+            new squadWeaponMarker(e.latlng, {icon: mortarIcon}).addTo(globalData.markersGroup).addTo(globalData.activeWeaponMarker);
             return 0;
         }
         
@@ -472,8 +472,8 @@ export function insertMarkers(a, b){
     var aScaled = L.latLng(a.lat * mapScale, a.lng * -mapScale);
     var bScaled = L.latLng(b.lat * mapScale, b.lng * -mapScale);
 
-    new squadWeaponMarker(aScaled, {icon: mortarIcon, draggable: true}).addTo(globalData.markersGroup);
-    new squadTargetMarker(bScaled, {icon: targetIcon, draggable: true}).addTo(globalData.markersGroup);
+    new squadWeaponMarker(aScaled, {icon: mortarIcon}).addTo(globalData.markersGroup);
+    new squadTargetMarker(bScaled, {icon: targetIcon}).addTo(globalData.markersGroup);
 }
 
 

@@ -1,4 +1,28 @@
 
+# <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">  **14.1.0** *(2023-12-02)*
+
+<img src="https://img.shields.io/badge/-new-green"> Added a new setting to replace bearing (°) with distance to target (m) on map mode's targets.
+
+<img src="https://img.shields.io/badge/-%20Improv%20-orange"> Settings background is now more constrasted, specially in classic mode.
+
+<img src="https://img.shields.io/badge/-%20Improv%20-orange"> Moved "show markers animations" to the Performance category in settings
+
+<img src="https://img.shields.io/badge/-%20Improv%20-orange"> Reduced switchmode/settings buttons on mobile
+
+<img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed UB32 being inaccurate between 1500-1600m, thanks @Butterhead98 ([#102](https://github.com/sh4rkman/SquadCalc/issues/102))
+
+<img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed social media buttons being blue in settings menu
+
+
+
+
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
+
+
+
+
 # <img src="https://img.shields.io/badge/-major%20release-blue?style=flat-square">  **14.0.0** *(2023-12-01)*
 
 <img src="https://img.shields.io/badge/-new-green"> New settings menu on bottom right corner to customize map/marker behaviour (external links have been moved here aswell in a more compact way)
@@ -14,7 +38,6 @@
 <img src="https://img.shields.io/badge/-%20Improv%20-orange"> now buffering map tiles outside of view to avoid appearing tiles while panning
 
 <img src="https://img.shields.io/badge/-%20removed%20-red"> Themes have been removed for now, maybe to return later in another form.
-
 
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
