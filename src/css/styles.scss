@@ -585,61 +585,12 @@ footer {
     transition: none;
 }
 
-.calcPopup2 {
-    pointer-events: none;
-    margin: 0;
-    padding: 0;
-    font-family: Montserrat, Times, "Times New Roman", serif;
-    .bearingUiCalc {
-        font-size: 0.7em;
-    }
-    .leaflet-popup-tip,
-    .leaflet-popup-content-wrapper {
-        text-align: left;
-        pointer-events: none;
-        font-weight: bold;
-        font-size: 0.9em;
-        background: transparent;
-        box-shadow: none;
-        color: $mainTxtColor;
-        height: 2em;
-        padding: 0;
-        text-shadow: 1px 1px 0 #000,
-        -1px 1px 0 #000,
-        1px -1px 0 #000,
-        -1px -1px 0 #000,
-        0 1px 0 #000,
-        0 -1px 0 #000,
-        -1px 0 0 #000,
-        1px 0 0 #000,
-        2px 2px 0 #000,
-        -2px 2px 0 #000,
-        2px -2px 0 #000,
-        -2px -2px 0 #000,
-        0 2px 0 #000,
-        0 -2px 0 #000,
-        -2px 0 0 #000,
-        2px 0 0 #000,
-        1px 2px 0 #000,
-        -1px 2px 0 #000,
-        1px -2px 0 #000,
-        -1px -2px 0 #000,
-        2px 1px 0 #000,
-        -2px 1px 0 #000,
-        2px -1px 0 #000,
-        -2px -1px 0 #000;
-    }
-    .leaflet-popup-content{
-        margin: 0;
-        line-height: 1;
-    }
-}
 
 .calcNumber {
     font-size: 0.7em;
 }
 
-.calcPopup {
+.calcPopup, .calcPopup2 {
     pointer-events: none;
     margin: 0;
     padding: 0;
@@ -649,7 +600,6 @@ footer {
     }
     .leaflet-popup-tip,
     .leaflet-popup-content-wrapper {
-        text-align: right;
         pointer-events: none;
         font-weight: bold;
         font-size: 0.9em;
@@ -688,6 +638,19 @@ footer {
         line-height: 1;
     }
 }
+
+.calcPopup {
+    .leaflet-popup-content-wrapper {
+        text-align: right;
+    }
+}
+
+.calcPopup2 {
+    .leaflet-popup-content-wrapper {
+        text-align: left;
+    }
+}
+
 
 
 
@@ -772,8 +735,8 @@ $bezier: cubic-bezier(0.65, 0.25, 0.56, 0.96);
         overflow: hidden;
         clip: rect(1px, 1px, 1px, 1px);
     }
-    input[type="checkbox"] + div,
-    input[type="radio"] + div {
+    input[type="checkbox"] + span,
+    input[type="radio"] + span {
         border: 2px solid $grey;
         height: 1.5em;
         width: 1.5em;
@@ -782,7 +745,7 @@ $bezier: cubic-bezier(0.65, 0.25, 0.56, 0.96);
         position: relative;
         background-color: white;
     }
-    input[type="checkbox"]:checked + div {
+    input[type="checkbox"]:checked + span {
         border-color: $main;
         transition: border-color 107ms $bezier;
         .mcui-check {

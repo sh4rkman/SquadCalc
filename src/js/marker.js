@@ -6,7 +6,6 @@ import shadowIconImg from "../img/icons/marker_shadow.png";
 import mortarIconImg from "../img/icons/marker_mortar_0.png";
 import mortarIconImg1 from "../img/icons/marker_mortar_1.png";
 import mortarIconImg2 from "../img/icons/marker_mortar_2.png";
-import ub32IconImg from "../img/icons/marker_ub32.png";
 import targetIconImg from "../img/icons/marker_target.png";
 
 import { globalData } from "./conf";
@@ -36,8 +35,6 @@ export var squadMarker = L.Marker.extend({
     _handleDragEnd: function () {$(".leaflet-marker-icon").css("cursor", "grab");},
 
 });
-
-
 
 export var squadWeaponMarker = squadMarker.extend({
     options: {
@@ -268,7 +265,7 @@ export var squadTargetMarker = squadMarker.extend({
         radiiElipse = [(results.ellipseParams.semiMajorAxis * mapScale)/2, (results.ellipseParams.semiMinorAxis * mapScale)/2];
         angleElipse = results.bearing;
 
-        if(globalData.userSettings.bearingOverDistance == 1) {
+        if (globalData.userSettings.bearingOverDistance == 1) {
             content = "<span class='calcNumber'></span></br><span>" + results.elevation + "</span></br><span class='bearingUiCalc'>" +  results.distance + "m</span>";
         } 
         else {
@@ -295,7 +292,7 @@ export var squadTargetMarker = squadMarker.extend({
             results2 = getCalcFromUI(globalData.activeWeaponMarker.getLayers()[1].getLatLng(), latlng);
 
             // Show calcs
-            if(globalData.userSettings.bearingOverDistance == 1) {
+            if (globalData.userSettings.bearingOverDistance == 1) {
                 content = "<span class='calcNumber'>(1)</span></br><span>" + results.elevation + "</span></br><span class='bearingUiCalc'>" +  results.distance + "m</span>";
                 content2 = "<span class='calcNumber'>(2)</span></br><span>" + results2.elevation + "</span></br><span class='bearingUiCalc'>" +  results2.distance + "m</span></br>";
             }
@@ -487,15 +484,6 @@ export var mortarIcon2 = L.icon({
     iconAnchor:   [19, 47],
     shadowAnchor: [10, 47],
     className: "animatedWeaponMarker" 
-});
-
-export var ub32Icon = L.icon({
-    iconUrl: ub32IconImg,
-    shadowUrl: shadowIconImg,
-    iconSize:     [38, 47], 
-    shadowSize:   [38, 47], 
-    iconAnchor:   [19, 47],
-    shadowAnchor: [10, 47],  
 });
 
 export var targetIconAnimated = L.icon({
