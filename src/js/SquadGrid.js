@@ -128,12 +128,8 @@ export default LayerGroup.extend({
             this.setLinesOpacity(this.s1Lines, 0.5);
             this.setLinesOpacity(this.kpLines, 1);
             this.setLinesWeight(this.kpLines, 3);
-        } else if (currentZoom >= 2) {
-            this.setLinesOpacity(this.s2Lines, 0.0);
-            this.setLinesOpacity(this.s1Lines, 0.0);
-            this.setLinesOpacity(this.kpLines, 1);
-            this.setLinesWeight(this.kpLines, 1);
-        } else {
+        } 
+        else {
             this.setLinesOpacity(this.s2Lines, 0.0);
             this.setLinesOpacity(this.s1Lines, 0.0);
             this.setLinesOpacity(this.kpLines, 1);
