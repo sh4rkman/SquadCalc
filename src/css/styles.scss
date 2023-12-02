@@ -327,6 +327,48 @@ footer {
     position: fixed;
     z-index: 1;
     height: 5vh;
+    .fabs {
+        bottom: 1.2rem;
+        position: fixed;
+        .fab {
+            background: #333;
+            border-radius: 50%;
+            bottom: -0.5rem;
+            font-size: 1.1rem;
+            height: 2.5rem;
+            position: absolute;
+            right: -0.7rem;
+            transition: all 0.3s ease;
+            width: 2.5rem;
+            z-index: 1;
+            &:active {
+                transform: scale(0.8);
+            }
+            &::before {
+                background-color: rgba(255, 255, 255, 0.1);
+                border-radius: 50%;
+                content: "";
+                height: 100%;
+                left: 0;
+                position: absolute;
+                top: 0;
+                width: 100%;
+            }
+            &:hover {
+                background: rgb(24, 24, 24);
+                cursor: pointer;
+            }
+            .fab-dots-2 {
+                padding-top: 0.7rem;
+            }
+        }
+    }
+    .fab-wrapper {
+        right: 1.3rem;
+    }
+    .fab-wrapper2 {
+        left: 1.8rem;
+    }
 }
 
 
@@ -334,91 +376,11 @@ footer {
      *     Fab
     *****************/
 
-.fab-wrapper {
-    bottom: 2rem;
-    position: fixed;
-    right: 2rem;
-    .fab {
-        background: #333;
-        border-radius: 50%;
-        bottom: -1rem;
-        height: 4rem;
-        position: absolute;
-        right: -1rem;
-        transition: all 0.3s ease;
-        width: 4rem;
-        z-index: 1;
-        font-size: 1.8em;
-        &:active {
-            transform: scale(0.8);
-        }
-        &::before {
-            background-color: rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-            content: "";
-            height: 100%;
-            left: 0;
-            position: absolute;
-            top: 0;
-            width: 100%;
-        }
-        &:hover {
-            background: rgb(24, 24, 24);
-            cursor: pointer;
-        }
-        .fab-dots-2 {
-            padding-top: 0.64em;
-        }
-    }
-    .fab-checkbox {
-        display: none;
-        &:checked {
-            &~.fab {
-                &::before {
-                    background-color: rgba(255, 255, 255, .2);
-                    height: 90%;
-                    left: 5%;
-                    top: 5%;
-                    width: 90%;
-                }
-                .fab-dots-2 {
-                    transform: translateX(-50%) translateY(-50%) rotate(0deg);
-                }
-            }
-            &~.fab-wheel {
-                transform: scale(1);
-                .fab-action {
-                    opacity: 1;
-                }
-            }
-        }
-    }
-    .fab-action {
-        align-items: center;
-        background: #333;
-        border-radius: 50%;
-        color: $mainTxtColor;
-        display: flex;
-        height: 3rem;
-        justify-content: center;
-        opacity: 0;
-        position: absolute;
-        text-decoration: none;
-        transition: all 0.1s ease;
-        width: 3rem;
-        &:hover {
-            background-color: $mainColor;
-            cursor: pointer;
-        }
-        &:active {
-            transform: scale(0.9);
-        }
-    }
-    .fabstyle {
-        background-color: $mainColor;
-    }
 
-}
+
+
+
+
 
 
 /***************************************
@@ -729,45 +691,7 @@ footer {
 
 
 
-.fab-wrapper2 {
-    bottom: 2rem;
-    left: 4rem;
-    display: block;
-    z-index: 1;
-    position: absolute;
-    .fab2 {
-        background: #333;
-        border-radius: 50%;
-        bottom: -1rem;
-        font-size: 1.7em;
-        height: 4rem;
-        position: absolute;
-        right: -1rem;
-        transition: all 0.3s ease;
-        width: 4rem;
-        z-index: 1;
-        &:active {
-            transform: scale(0.8);
-        }
-        &::before {
-            background-color: rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-            content: "";
-            height: 100%;
-            left: 0;
-            position: absolute;
-            top: 0;
-            width: 100%;
-        }
-        &:hover {
-            background: rgb(24, 24, 24);
-            cursor: pointer;
-        }
-        .fab-dots-2 {
-            padding-top: 0.64em;
-        }
-    }
-}
+
 
 #helpDialog {
     margin: auto;
@@ -787,7 +711,7 @@ footer {
             padding-bottom: 0.2em;
             padding-left: 0.8em;
             border: none;
-            &:nth-child(1) {  
+            &:nth-child(1) {  // Fist column
                 padding-left: 0;
                 padding-right: 0;
             }
@@ -806,12 +730,12 @@ footer {
             border: none;
             padding: 0 0.5em;
         }
-        i:hover {
+        a, a:visited {
+            color: $mainTxtColor
+        }
+        a:hover {
             cursor: pointer;
             color: $mainColor
-        }
-        a:visited {
-            color: $mainTxtColor
         }
     }
     #closeModal {

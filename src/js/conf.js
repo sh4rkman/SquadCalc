@@ -29,5 +29,6 @@ export var globalData = {
         LowSpecMode: true,
         targetAnimation: true,
         weaponMinMaxRange: true,
+        bearingOverDistance: false,
     }
 };

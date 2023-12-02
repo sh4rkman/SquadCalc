@@ -19,15 +19,12 @@ $(document).on("click", "#savebutton", function() { saveCalc(); });
 $(document).on("click", "#copy", function(e) { copyCalc(e); });
 $(document).on("click", "#highlow", function() { changeHighLow(); });
 $(document).on("click", function(event) {if (!$(event.target).closest(".fab-wrapper").length) {$("#fabCheckbox").prop("checked", false);}});
-$(document).on("click", ".fab2", function() {switchUI();});
-$(document).on("click", ".fab", function() {$("#helpDialog")[0].showModal();});
+$(document).on("click", "#fabCheckbox2", function() {switchUI();});
+$(document).on("click", "#fabCheckbox", function() {$("#helpDialog")[0].showModal();});
 $(window).on("resize", function() { resizeInputsOnResize(); });
 
 
 const dialog = document.querySelector("dialog");
-$(document).on("click", ".fab-action-2", function() {
-    
-});
 
 
 document.querySelector("dialog button").addEventListener("click", () => {

@@ -11,6 +11,7 @@ export function loadSettings(){
     globalData.userSettings.LowSpecMode = localStorage.getItem("settings-low-spec");
     globalData.userSettings.targetAnimation = localStorage.getItem("settings-target-animation");
     globalData.userSettings.weaponMinMaxRange = localStorage.getItem("settings-weapon-range");
+    globalData.userSettings.bearingOverDistance = localStorage.getItem("settings-bearing-distance");
 
     if (globalData.userSettings.keypadUnderCursor === null || 
         isNaN(globalData.userSettings.keypadUnderCursor) || 
@@ -47,6 +48,14 @@ export function loadSettings(){
         localStorage.setItem("settings-weapon-range", 1);  
     }
 
+    if (globalData.userSettings.bearingOverDistance === null || 
+        isNaN(globalData.userSettings.bearingOverDistance) || 
+        globalData.userSettings.bearingOverDistance === ""){
+        globalData.userSettings.bearingOverDistance = 0; 
+        localStorage.setItem("settings-bearing-distance", 0);  
+    }
+
+
     if (globalData.userSettings.spreadRadius == 1) {
         val = true;
     } else {
@@ -81,6 +90,13 @@ export function loadSettings(){
         val = false;
     }
     $("#weaponRangeSettings").prop("checked", val);
+
+    if (globalData.userSettings.bearingOverDistance == 1) {
+        val = true;
+    } else {
+        val = false;
+    }
+    $("#bearingOverDistanceSettings").prop("checked", val);
 }
 
 $("#keypadUnderCursorSetting").on("change", function() {
@@ -147,4 +163,21 @@ $("#targetAnimationSettings").on("change", function() {
         localStorage.setItem("settings-target-animation", 0);
     }
 });
+
+$("#bearingOverDistanceSettings").on("change", function() {
+    if ($("#bearingOverDistanceSettings").is(":checked")) {
+        globalData.userSettings.bearingOverDistance = 1;
+        localStorage.setItem("settings-bearing-distance", 1);
+    }
+    else {
+        globalData.userSettings.bearingOverDistance = 0;
+        localStorage.setItem("settings-bearing-distance", 0);
+    }
+
+    // Update every targets to add/remove distance
+    globalData.activeTargetsMarkers.eachLayer(function (layer) {
+        layer.updateCalc(layer.latlng);
+    });
+});
+
 

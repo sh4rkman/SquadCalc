@@ -864,6 +864,7 @@ export function getCalcFromUI(a, b) {
 
     return {
         bearing: bearing.toFixed(1),
+        distance: distance.toFixed(0),
         elevation: elevation,
         ellipseParams: results.ellipseParams,
     };

@@ -60,9 +60,9 @@ export var squadWeaponMarker = squadMarker.extend({
 
         var minDistCircleOn = {
             radius: globalData.activeWeapon.minDistance * (256 / MAPS.find((elem, index) => index == globalData.activeMap).size),
-            opacity: 0.5,
+            opacity: 0.7,
             color: "#00137f",
-            fillOpacity: 0.1,
+            fillOpacity: 0.2,
             weight: 1,
             autoPan: false,
         };
@@ -144,7 +144,6 @@ export var squadWeaponMarker = squadMarker.extend({
             this.options.rangeMarker.setStyle(maxDistCircleOn);
         }
     },
-
 
     _handleClick: function() {
 
@@ -268,11 +267,17 @@ export var squadTargetMarker = squadMarker.extend({
         results = getCalcFromUI(globalData.activeWeaponMarker.getLayers()[0].getLatLng(), latlng);
         radiiElipse = [(results.ellipseParams.semiMajorAxis * mapScale)/2, (results.ellipseParams.semiMinorAxis * mapScale)/2];
         angleElipse = results.bearing;
-        content = "<span class='calcNumber'></span></br><span>" + results.elevation + "</span></br><span class='bearingUiCalc'>" +  results.bearing + "°</span>";
-        
+
+        if(globalData.userSettings.bearingOverDistance == 1) {
+            content = "<span class='calcNumber'></span></br><span>" + results.elevation + "</span></br><span class='bearingUiCalc'>" +  results.distance + "m</span>";
+        } 
+        else {
+            content = "<span class='calcNumber'></span></br><span>" + results.elevation + "</span></br><span class='bearingUiCalc'>" +  results.bearing + "°</span>";
+        }
+
         // Calc PopUp for weapon 1
         this.options.calcMarker1 = L.popup(popUpOptions_weapon1).setLatLng(latlng).openOn(globalData.map).addTo(globalData.markersGroup);
-        this.options.calcMarker1.setContent(content);
+        //this.options.calcMarker1.setContent(content);
 
         // Calc PopUp for weapon 2 (not displayed yet)
         this.options.calcMarker2 = L.popup(popUpOptions_weapon2).setLatLng(latlng).addTo(globalData.markersGroup);
@@ -290,8 +295,15 @@ export var squadTargetMarker = squadMarker.extend({
             results2 = getCalcFromUI(globalData.activeWeaponMarker.getLayers()[1].getLatLng(), latlng);
 
             // Show calcs
-            content = "<span class='calcNumber'>(1)</span></br><span>" + results.elevation + "</span></br><span class='bearingUiCalc'>" +  results.bearing + "°</span>";
-            content2 = "<span class='calcNumber'>(2)</span></br><span>" + results2.elevation + "</span></br><span class='bearingUiCalc'>" +  results2.bearing + "°</span></br>";
+            if(globalData.userSettings.bearingOverDistance == 1) {
+                content = "<span class='calcNumber'>(1)</span></br><span>" + results.elevation + "</span></br><span class='bearingUiCalc'>" +  results.distance + "m</span>";
+                content2 = "<span class='calcNumber'>(2)</span></br><span>" + results2.elevation + "</span></br><span class='bearingUiCalc'>" +  results2.distance + "m</span></br>";
+            }
+            else {
+                content = "<span class='calcNumber'>(1)</span></br><span>" + results.elevation + "</span></br><span class='bearingUiCalc'>" +  results.bearing + "°</span>";
+                content2 = "<span class='calcNumber'>(2)</span></br><span>" + results2.elevation + "</span></br><span class='bearingUiCalc'>" +  results2.bearing + "°</span></br>";
+            }
+
             this.options.calcMarker2.setContent(content2).openOn(globalData.map);
 
             // Initiate Spread Ellipse Marker
@@ -339,10 +351,16 @@ export var squadTargetMarker = squadMarker.extend({
         const mapScale = 256 / MAPS.find((elem, index) => index == globalData.activeMap).size;
 
         var results = getCalcFromUI(globalData.activeWeaponMarker.getLayers()[0].getLatLng(), this.getLatLng());
-        var content = "<span class='calcNumber'></span></br><span>" + results.elevation + "</span></br><span class='bearingUiCalc'>" +  results.bearing + "°</span>";
+        var content;
         var results2;
         var content2;
 
+        if (globalData.userSettings.bearingOverDistance == 1) {
+            content = "<span class='calcNumber'></span></br><span>" + results.elevation + "</span></br><span class='bearingUiCalc'>" +  results.distance + "m</span>";
+        }
+        else {
+            content = "<span class='calcNumber'></span></br><span>" + results.elevation + "</span></br><span class='bearingUiCalc'>" +  results.bearing + "°</span>";
+        }
 
         if (results.elevation === "---" || results.ellipseParams.semiMajorAxis === 0) {
             this.options.spreadMarker1.setStyle({opacity: 0, fillOpacity: 0});
@@ -363,8 +381,15 @@ export var squadTargetMarker = squadMarker.extend({
 
         if (globalData.activeWeaponMarker.getLayers().length === 2) {
             results2 = getCalcFromUI(globalData.activeWeaponMarker.getLayers()[1].getLatLng(), this.getLatLng());
-            content = "<span class='calcNumber'>(1)</span></br><span>" + results.elevation + "</span></br><span class='bearingUiCalc'>" +  results.bearing + "°</span>";
-            content2 = "<span class='calcNumber'>(2)</span></br><span>" + results2.elevation + "</span></br><span class='bearingUiCalc'>" +  results2.bearing + "°</span>";
+
+            if (globalData.userSettings.bearingOverDistance == 1) {
+                content = "<span class='calcNumber'>(1)</span></br><span>" + results.elevation + "</span></br><span class='bearingUiCalc'>" +  results.distance + "m</span>";
+                content2 = "<span class='calcNumber'>(2)</span></br><span>" + results2.elevation + "</span></br><span class='bearingUiCalc'>" +  results2.distance + "m</span>";
+            }
+            else {
+                content = "<span class='calcNumber'>(1)</span></br><span>" + results.elevation + "</span></br><span class='bearingUiCalc'>" +  results.bearing + "°</span>";
+                content2 = "<span class='calcNumber'>(2)</span></br><span>" + results2.elevation + "</span></br><span class='bearingUiCalc'>" +  results2.bearing + "°</span>";
+            }
 
             if (results2.elevation === "---" || results2.ellipseParams.semiMajorAxis === 0) {
                 this.options.spreadMarker2.setStyle({opacity: 0, fillOpacity: 0});
