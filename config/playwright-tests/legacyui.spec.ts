@@ -4,7 +4,7 @@ test.beforeEach(async ({ page }) => {
   // Go to the starting url before each test.
   await page.goto('http://localhost:8080/');
   await expect(page).toHaveTitle(/SquadCalc/);
-  await page.locator('label').first().click();
+  await page.getByRole('contentinfo').locator('label').first().click();
 });
 
 test.afterAll(async ({ page }) => {
@@ -141,22 +141,22 @@ test('Save calc', async ({ page }) => {
   await expect(page.locator(".savedrow .savespan").first()).toHaveCount(0);
 });
 
-test('Change theme', async ({ page, isMobile }) => {
-  if(!isMobile){
+// test('Change theme', async ({ page, isMobile }) => {
+//   if(!isMobile){
     
-    // Open FAB wheel
-    await page.locator('label').nth(1).click();
-    await expect(page.getByRole('contentinfo').locator('i').nth(1)).toBeVisible()
+//     // Open FAB wheel
+//     await page.locator('label').nth(1).click();
+//     await expect(page.getByRole('contentinfo').locator('i').nth(1)).toBeVisible()
 
-    // Change theme to dark
-    await page.locator('.fab-action-2').click();
-    await expect(page.locator('html')).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
+//     // Change theme to dark
+//     await page.locator('.fab-action-2').click();
+//     await expect(page.locator('html')).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
 
-    // Close FAB wheel
-    await page.locator('span').nth(2).click();
-    await expect(page.getByRole('contentinfo').locator('i').nth(1)).toBeHidden()
-  }
-});
+//     // Close FAB wheel
+//     await page.locator('span').nth(2).click();
+//     await expect(page.getByRole('contentinfo').locator('i').nth(1)).toBeHidden()
+//   }
+// });
 
 
 

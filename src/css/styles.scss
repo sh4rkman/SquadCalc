@@ -154,7 +154,8 @@ header {
         min-width: 200px;
         padding-bottom: 0.3em;
         text-transform: uppercase;
-        @extend .textOutline;
+
+        @extend %text-outline;
     }
     .select2-container--default {
         .select2-results__option--highlighted[aria-selected] {
@@ -471,9 +472,7 @@ footer {
 }
 
 
-.leaflet-tile { 
-    border: transparent;
-}
+
 
 #map_ui {
     position: relative;
@@ -494,11 +493,6 @@ footer {
     width: 350px;
 }
 
-.leaflet-container {
-    background: var(--themecolor, $mainBGColor);
-    z-index: 0;
-    outline: 0;
-}
 
 .leader-line {
     z-index: -1;
@@ -518,11 +512,12 @@ footer {
         height: 2em;
         padding: 0;
         text-align: center;
-        @extend .textOutline;
+
+        @extend %text-outline;
     }
 }
 
-.textOutline {
+%text-outline {
     text-shadow: 1px 1px 0 #111,
     -1px 1px 0 #111,
     1px -1px 0 #111,
@@ -549,6 +544,12 @@ footer {
     -2px -1px 0 #111;
 }
 
+.leaflet-container {
+    background: var(--themecolor, $mainBGColor);
+    z-index: 0;
+    outline: 0;
+}
+
 .leaflet-container, .leaflet-overlay-pane .leaflet-interactive {
     cursor:crosshair;
 }
@@ -567,15 +568,14 @@ footer {
 }
 
 
-.calcNumber {
-    font-size: 0.7em;
-}
-
 .calcPopup, .calcPopup2 {
     pointer-events: none;
     margin: 0;
     padding: 0;
     font-family: Montserrat, Times, "Times New Roman", serif;
+    .calcNumber {
+        font-size: 0.7em;
+    }
     .bearingUiCalc {
         font-size: 0.7em;
     }
@@ -589,7 +589,8 @@ footer {
         color: $mainTxtColor;
         height: 2em;
         padding: 0;
-        @extend .textOutline;
+
+        @extend %text-outline;
     }
     .leaflet-popup-content{
         margin: 0;
@@ -609,7 +610,6 @@ footer {
     }
 }
 
-
 #helpDialog {
     margin: auto;
     background-color: $mainBGColor;
@@ -617,42 +617,53 @@ footer {
     text-align: left;
     padding: 30px 5px 5px 30px;
     border-radius: 10px;
-    font-size: 0.8em;
+    font-size: 0.75em;
     width: 450px;
     letter-spacing: 1px;
-    .userSettings {
-        border: none;
-        line-height: 1em;
-        td {
-            padding-top: 0;
-            padding-bottom: 0.2em;
-            padding-left: 0.8em;
+    table {
+        &.userSettings {
             border: none;
-            &:nth-child(1) {  // Fist column
-                padding-left: 0;
-                padding-right: 0;
+            line-height: 1em;
+            td {
+                padding: 0;
+                border: none;
+                &:nth-child(1) {  // Fist column
+                    padding-left: 0;
+                    padding-right: 1em;
+                }
+            }
+            .settingsSubtext {
+                font-size: 0.7em;
+                letter-spacing: 1px;
             }
         }
-        .settingsSubtext {
-            font-size: 0.7em;
-            letter-spacing: 1px;
-        }
-    }
-    #socials {
-        margin: 2em 0 0.3em auto;
-        width: auto;
-        font-size: 1.4em;
-        border: none;
-        td {
+        &#socials {
+            margin: 2em 0 0.3em auto;
+            width: auto;
+            font-size: 1.4em;
             border: none;
-            padding: 0 0.5em;
+            td {
+                border: none;
+                padding: 0 0.5em;
+            }
+            a, a:visited {
+                color: $mainTxtColor
+            }
+            a:hover {
+                cursor: pointer;
+                color: $mainColor
+            }
         }
-        a, a:visited {
-            color: $mainTxtColor
-        }
-        a:hover {
-            cursor: pointer;
-            color: $mainColor
+        &#tips {
+            th {
+                font-size: 1.1em;
+                text-align: center;
+            }
+            tr {
+                height: 2.5em;
+                font-size: 0.9em;
+                border: white 1px solid;
+            }            
         }
     }
     #closeModal {
@@ -678,7 +689,7 @@ $bezier: cubic-bezier(0.65, 0.25, 0.56, 0.96);
     display: flex;
     align-items: center;
     user-select: none;
-    padding: 0.6em 0;
+    padding: 0.4em 0;
     box-sizing: border-box;
     input[type="checkbox"],
     input[type="radio"] {
@@ -749,9 +760,8 @@ $bezier: cubic-bezier(0.65, 0.25, 0.56, 0.96);
   
 
 dialog::backdrop {
-    backdrop-filter: blur(3px) brightness(90%);
+    backdrop-filter: blur(3px) brightness(120%) grayscale(20%) contrast(90%);
 }
-
 
 .animatedTargetMarker {
     opacity: 0; 

@@ -1,9 +1,5 @@
-import L from "leaflet";
 import { globalData } from "./conf";
-import { shoot, getKP,isTouchDevice } from "./utils";
-import { mortarIcon, mortarIcon1, mortarIcon2, targetIcon, squadWeaponMarker, squadTargetMarker, targetIconAnimated } from "./marker";
-import SquadGrid from "./SquadGrid";
-
+import { shoot } from "./utils";
 
 import AlBasrahURL from "../img/heightmaps/al basrah.jpg";
 import AnvilURL from "../img/heightmaps/anvil.jpg";
@@ -29,6 +25,7 @@ import SkorpoURL from "../img/heightmaps/skorpo.jpg";
 import SumariURL from "../img/heightmaps/sumari.jpg";
 import TallilURL from "../img/heightmaps/tallil.jpg";
 import YehorivkaURL from "../img/heightmaps/yehorivka.jpg";
+import { squadMinimap } from "./squadMinimap";
 
 
 // Each map has a different size and require scaling w, y and z when calculating height
@@ -278,17 +275,6 @@ export function drawHeatmap() {
 
 
 /**
- * Clear Interactive map from markers
- */
-export function clearMap() {
-    globalData.markersGroup.clearLayers();
-    globalData.layerGroup.clearLayers();
-    globalData.activeWeaponMarker.clearLayers();
-    globalData.activeTargetsMarkers.clearLayers();
-}
-
-
-/**
  * Load the heatmap to the canvas
  */
 function loadHeatmap() {
@@ -308,174 +294,7 @@ function loadHeatmap() {
     }
 }
 
-
-// todo: create a proper "squadmap" class so any developer reading this doesn't instantly commit suicide
-export function loadMap(){
-
-    globalData.map = L.map("map", {
-        center: [700, 700],
-        attributionControl: false,
-        crs: L.CRS.Simple,
-        minZoom: 1,
-        maxZoom: 6,
-        zoomControl: false,
-        doubleClickZoom: false,
-        edgeBufferTiles:1,
-        // maxBounds:[[500, -500], [-800, 800]],
-    });
-
-    // Hack for KPPopUp smoothness
-    L.rectangle([[0, 0], [-256, 256]], {opacity: 0, fillOpacity: 0, weight: 0,}).addTo(globalData.map);
-
-    globalData.mouseLocationPopup = L.popup({
-        closeButton: false,
-        className: "kpPopup",
-        autoClose: false,
-        closeOnClick: false,
-        closeOnEscapeKey: false,
-        offset: [0, 75],
-        autoPan: false,
-        interactive: false,
-    });
-
-    globalData.markersGroup = L.layerGroup().addTo(globalData.map);
-    globalData.layerGroup = L.layerGroup().addTo(globalData.map);
-    globalData.activeTargetsMarkers = L.layerGroup().addTo(globalData.map);
-    globalData.activeWeaponMarker = L.layerGroup().addTo(globalData.map);
-
-    $(document).on("mouseleave", function () {
-        globalData.mouseLocationPopup.close();
-    });
-
-    globalData.map.on("mousemove", function(e){
-        const mapScale = MAPS.find((elem, index) => index == globalData.activeMap).size / 256;
-
-        if (globalData.userSettings.keypadUnderCursor == 0){ return 1; }
-    
-        // if no mouse support
-        if (!matchMedia('(pointer:fine)').matches) { return 1; }
-
-        // If out of bounds
-        if (e.latlng.lat > 0 ||  e.latlng.lat < -256 || e.latlng.lng < 0 || e.latlng.lng > 256) {
-            globalData.mouseLocationPopup.close();
-            return;
-        }
-
-        globalData.mouseLocationPopup.setLatLng(e.latlng).openOn(globalData.map);
-        globalData.mouseLocationPopup.setContent("<p>"+ getKP(-e.latlng.lat * mapScale, e.latlng.lng * mapScale) + "</p>");
-        
-    });
-
-    globalData.map.on("dblclick", function(e){
-        var secondMortar;
-
-        // If out of bounds
-        if (e.latlng.lat > 0 ||  e.latlng.lat < -256 || e.latlng.lng < 0 || e.latlng.lng > 256) {
-            return 1;
-        }
-
-        // Check if the control key is pressed
-        if (e.originalEvent.ctrlKey) {
-
-            // Only add a second weapon if there is only one existent weapon
-            if (globalData.activeWeaponMarker.getLayers().length === 1) {
-                secondMortar = new squadWeaponMarker(e.latlng, {icon: mortarIcon2});
-                secondMortar.addTo(globalData.markersGroup).addTo(globalData.activeWeaponMarker);
-
-                // Update first weapon icon
-                globalData.activeWeaponMarker.getLayers()[0].setIcon(mortarIcon1);
-
-                // Update existent targets
-                globalData.activeTargetsMarkers.eachLayer(function (layer) {
-                    layer.updateCalc(layer.latlng);
-                });
-
-                return 0;
-            }
-        }
-
-        if (globalData.activeWeaponMarker.getLayers().length === 0) {
-            new squadWeaponMarker(e.latlng, {icon: mortarIcon}).addTo(globalData.markersGroup).addTo(globalData.activeWeaponMarker);
-            return 0;
-        }
-        
-        if (globalData.userSettings.targetAnimation == 0) {
-            new squadTargetMarker(L.latLng(e.latlng), {icon: targetIcon}).addTo(globalData.markersGroup);
-        } else {
-            new squadTargetMarker(L.latLng(e.latlng), {icon: targetIconAnimated}).addTo(globalData.markersGroup);
-        }
-
-
-
-    });
-    drawMap();
+export function loadMinimap(){
+    globalData.minimap = new squadMinimap("map");
+    globalData.minimap.draw();
 }
-
-
-export function drawMap(){
-    var map = MAPS.find((elem, index) => index == globalData.activeMap);
-    var imageBounds = L.latLngBounds(L.latLng(0, 0), L.latLng(-255, 255));
-    var grid;
-    var imageUrl;
-    var heightmaplayer;
-
-    globalData.mapScale = 256 / map.size;
-    globalData.map.setView([-128, 128], 2);
-
-    // Remove any layers already drawn
-    globalData.layerGroup.eachLayer(function(layer){
-        globalData.layerGroup.removeLayer(layer);
-    });
-
-    // Draw the current layer
-    L.tileLayer("src/img/maps" + map.mapURL, {
-        maxNativeZoom: 4,
-        noWrap: true,
-        bounds: imageBounds,
-    }).addTo(globalData.layerGroup);
-
-    
-    grid = new SquadGrid();
-    grid.setBounds(imageBounds);
-    grid.addTo(globalData.layerGroup);
-
-
-    if (globalData.debug.active){
-        imageUrl = "src/img/heightmaps/" + map.name.toLowerCase() + ".jpg";
-        heightmaplayer = L.imageOverlay(imageUrl, imageBounds, {
-            opacity: 0.5,
-        }).addTo(globalData.layerGroup);
-
-        //BaseLayer
-        const Map_BaseLayer = {
-            //'MIERUNE Color': maplayer,
-            //'MIERUNE MONO': heightmaplayer,
-        };
-
-        //AddLayer
-        const Map_AddLayer = {
-            "Heightmap": heightmaplayer,
-        };
-
-        //LayerControl
-        L.control.layers(Map_BaseLayer, Map_AddLayer, {
-            collapsed: false,
-        }).addTo(globalData.map);
-    }
-
-}
-
-
-export function insertMarkers(a, b){
-
-    const mapScale = 256 / MAPS.find((elem, index) => index == globalData.activeMap).size;
-    var aScaled = L.latLng(a.lat * mapScale, a.lng * -mapScale);
-    var bScaled = L.latLng(b.lat * mapScale, b.lng * -mapScale);
-
-    new squadWeaponMarker(aScaled, {icon: mortarIcon}).addTo(globalData.markersGroup);
-    new squadTargetMarker(bScaled, {icon: targetIcon}).addTo(globalData.markersGroup);
-}
-
-
-
-

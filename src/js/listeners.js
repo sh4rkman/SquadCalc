@@ -1,9 +1,15 @@
 import { shoot, filterInput, resizeInput, resizeInputsOnResize, RemoveSaves, copySave, copyCalc, saveCalc, changeHighLow, switchUI } from "./utils";
 import { changeWeapon } from "./weapons";
-import { drawHeatmap, drawMap, clearMap } from "./maps";
+import { drawHeatmap } from "./maps";
+import { globalData } from "./conf";
 
 $(document).on("change", ".dropbtn2", function() { changeWeapon(); });
-$(document).on("change", ".dropbtn", function() { drawHeatmap(); clearMap(); drawMap(); shoot();});
+$(document).on("change", ".dropbtn", function() { 
+    drawHeatmap(); 
+    globalData.minimap.clear(); 
+    globalData.minimap.draw(); 
+    shoot();
+});
 
 $(document).on("input", "#mortar-location", function() { shoot("weapon"); });
 $(document).on("input", "#target-location", function() { shoot("target"); });
@@ -22,7 +28,6 @@ $(document).on("click", function(event) {if (!$(event.target).closest(".fab-wrap
 $(document).on("click", "#fabCheckbox2", function() {switchUI();});
 $(document).on("click", "#fabCheckbox", function() {$("#helpDialog")[0].showModal();});
 $(window).on("resize", function() { resizeInputsOnResize(); });
-
 
 const dialog = document.querySelector("dialog");
 

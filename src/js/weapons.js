@@ -108,7 +108,7 @@ export const WEAPONS = [
 
     new Weapon("Technical", 109.890938, 1, [-45, 135], "deg", technicalLogo, "50%", "vehicles", "high", 1, 51, 50),
     new Weapon("Tech. UB-32", UB32_table, 2, [-45, 135], "deg", ub32Logo, "55%", "vehicles", "low", 1, 0, 0),
-    new Weapon("BM-21 Grad", 200, 2, [-45, 135], "deg", mlrsLogo, "60%", "vehicles", "low", 1, 0, 0),
+    new Weapon("BM-21 Grad", 200, 2, [-45, 135], "deg", mlrsLogo, "60%", "vehicles", "low", 1, 0, 200),
 
     //new Weapon("Short", 109.890938, 1, 1520, undefined, "mil", frenchLogo, "135%", "frenchDLC", "high", 0),
     //new Weapon("Medium", 143.5, 1, 1520, undefined, "mil", frenchLogo, "135%", "frenchDLC", "high", 0),
@@ -120,8 +120,6 @@ export const WEAPONS = [
  * save current weapon into browser cache
  */
 export function changeWeapon() {
-    var radiusMax;
-    var radiusMin;
     const weapon = $(".dropbtn2").val();
 
     globalData.line.hide("none");
@@ -132,16 +130,9 @@ export function changeWeapon() {
 
     if (globalData.ui === 0){drawLine();}
 
-    // If there is weapon marker on the map, update them
-    globalData.activeWeaponMarker.eachLayer(function (layer) {
-        layer.updateWeapon();
-    });
-
-
-    globalData.activeTargetsMarkers.eachLayer(function (layer) {
-        layer.updateCalc(layer.latlng);
-    });
-
+    // Update Minimap marker
+    globalData.minimap.updateWeapons();
+    globalData.minimap.updateTargets();
 }
 
 

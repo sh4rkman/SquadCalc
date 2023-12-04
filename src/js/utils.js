@@ -758,7 +758,7 @@ export function getKP(lat, lng) {
     sub4Number += Math.floor(x / s4) % 3;
 
     // The more the user zoom in, the more precise we display coords under mouse
-    switch (globalData.map.getZoom()){
+    switch (globalData.minimap.getZoom()){
     case 1:
         return `${kpLetter}${pad(kpNumber, 2)}`;
     case 2:
@@ -809,7 +809,7 @@ function loadMapUIMode(){
     globalData.ui = 1;
     globalData.line.hide("none");
     localStorage.setItem("data-ui", 1);
-    globalData.map.invalidateSize();
+    globalData.minimap.invalidateSize();
 }
 
 export function switchUI(){
@@ -904,8 +904,8 @@ function getElevationWithEllipseParams(dist = 0, vDelta = 0, vel = 0) {
         // trying to emulate very approximately Squad spread zone until i figure out what OWI did
         // Looks like they applied MOA deviation only on elevation angle, not on bearing
         ellipseParams = {
-            semiMajorAxis: moa - dist/100,
-            semiMinorAxis: moa - ((moa) * (dist/globalData.activeWeapon.getMaxDistance())) + 10,
+            semiMajorAxis: moa,
+            semiMinorAxis: moa - ((moa) * (dist/globalData.activeWeapon.getMaxDistance())) + moa/3,
             ellipseAngle: (angle * (180 / Math.PI))
         };
     }

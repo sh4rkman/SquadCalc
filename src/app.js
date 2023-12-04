@@ -14,7 +14,7 @@ import "leaflet.control.opacity/dist/L.Control.Opacity.css";
 
 // JS Functions
 import { preventAutocomplete, loadUI} from "./js/utils";
-import { loadMapSelector, loadMap } from "./js/maps";
+import { loadMapSelector, loadMinimap } from "./js/maps";
 import { loadTheme } from "./js/themes";
 import { loadWeapons } from "./js/weapons";
 import { createLine } from "./js/animations";
@@ -28,7 +28,7 @@ import "leaflet-edgebuffer/src/leaflet.edgebuffer.js";
 $(function() {
     loadSettings();
     createLine();
-    loadMap();
+    loadMinimap();
     loadWeapons();
     loadUI();
     loadTheme();

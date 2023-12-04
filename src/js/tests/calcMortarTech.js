@@ -181,8 +181,8 @@ function getVel(x, rad) {
 }
 
 function getVelS5(x, rad) {
-    var test = getTime(x, rad)
-    test = test * 300 + 0.5 * 2 * -50
+    var time = getTime(x, rad)
+    time = time * 200 + 0.5 * 2 * -50
     return getVel(test, rad)
 }
 
@@ -192,9 +192,10 @@ function findAngle(x, y, v) {
 
     const a1 = Math.atan((v ** 2 - p1) / (g * x));
     // const a1 = Math.atan((v ** 2 + p1) / (g * x));
-
     return a1;
 }
+
+
 
 /**
  * LOGIC
@@ -222,7 +223,7 @@ const slicedVelocities = velocities.slice(1, velocities.length - 2);
 //const slicedVelocities = velocities;
 // calculate average velocity
 let avgVel = slicedVelocities.reduce((acc, sum) => acc + sum) / slicedVelocities.length;
-//let avgVel = 217.94743980332834
+//let avgVel = 300;
 
 console.log(`===============================================`);
 console.log(`average velocity: ${avgVel}`);

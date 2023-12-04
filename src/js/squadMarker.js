@@ -12,7 +12,9 @@ import { globalData } from "./conf";
 import { MAPS } from  "./maps";
 import { getCalcFromUI } from "./utils";
 
-// Define your custom marker class
+/*
+ * Global Squad Marker Class 
+*/
 export var squadMarker = L.Marker.extend({
     options: {
         draggable: true,
@@ -26,6 +28,11 @@ export var squadMarker = L.Marker.extend({
         this.on("dragend", this._handleDragEnd, this);
     },
 
+    /**
+     * Force a given event to stay inside the map bounds
+     * @param {e} [event] - event
+     * @returns {e} - same event with latlng corrected
+     */
     keepOnMap: function(e){
         if (e.latlng.lng > 256) {e.latlng.lng = 257;}
         if (e.latlng.lat < -256 ) {e.latlng.lat = -257;}
@@ -41,14 +48,12 @@ export var squadMarker = L.Marker.extend({
 
 export var squadWeaponMarker = squadMarker.extend({
     options: {
-        rangeMarker: null,
-        minRangeMarker: null,
         autoPan: false,
     },
 
     initialize: function (latlng, options) {
 
-        var maxDistCircleOn = {
+        this.maxDistCircleOn = {
             radius: globalData.activeWeapon.getMaxDistance() * (256 / MAPS.find((elem, index) => index == globalData.activeMap).size),
             opacity: 0.7,
             color: "#00137f",
@@ -58,16 +63,17 @@ export var squadWeaponMarker = squadMarker.extend({
             renderer: L.svg({padding: 3}),
         };
 
-        var minDistCircleOn = {
+        this.minDistCircleOn = {
             radius: globalData.activeWeapon.minDistance * (256 / MAPS.find((elem, index) => index == globalData.activeMap).size),
             opacity: 0.7,
             color: "#00137f",
             fillOpacity: 0.2,
             weight: 1,
             autoPan: false,
+            renderer: L.svg({padding: 3}),
         };
 
-        var minMaxDistCircleOff = {
+        this.minMaxDistCircleOff = {
             opacity: 0,
             fillOpacity: 0,
         };
@@ -75,16 +81,16 @@ export var squadWeaponMarker = squadMarker.extend({
         squadMarker.prototype.initialize.call(this, latlng, options);
 
         // Create the min/max range markers
-        this.options.minRangeMarker = L.circle(latlng, minDistCircleOn).addTo(globalData.markersGroup);
-        this.options.rangeMarker = L.circle(latlng, maxDistCircleOn).addTo(globalData.markersGroup);
+        this.minRangeMarker = L.circle(latlng, this.minDistCircleOn).addTo(globalData.minimap.markersGroup);
+        this.rangeMarker = L.circle(latlng, this.maxDistCircleOn).addTo(globalData.minimap.markersGroup);
         
         if (globalData.userSettings.weaponMinMaxRange == 0) {
-            this.options.minRangeMarker.setStyle(minMaxDistCircleOff);
-            this.options.rangeMarker.setStyle(minMaxDistCircleOff);
+            this.minRangeMarker.setStyle(this.minMaxDistCircleOff);
+            this.rangeMarker.setStyle(this.minMaxDistCircleOff);
         }
         // Hide minRangeMarker if weapon doesn't have minimum range
-        if (this.options.minRangeMarker.getRadius() == 0) {
-            this.options.minRangeMarker.setStyle(minMaxDistCircleOff);
+        if (this.minRangeMarker.getRadius() == 0) {
+            this.minRangeMarker.setStyle(this.minMaxDistCircleOff);
         }
 
         // Custom events handlers
@@ -93,112 +99,101 @@ export var squadWeaponMarker = squadMarker.extend({
         this.on("dragStart", this._handleDragStart, this);
         this.on("dragEnd", this._handleDragEnd, this);
         this.on("dblclick", this._handleDblclick, this);
+        this.on("contextmenu", this._handleContextMenu, this);
+        
 
     },
 
+    /**
+     * Remove the Weapon marker and every object tied
+     * @param {this}
+     */
+    delete: function(){
+
+        if (globalData.minimap.activeWeaponsMarkers.getLayers().length === 1) { 
+            globalData.minimap.deleteTargets();
+        }
+        else {
+            // Set default icon on remaining weapon
+            globalData.minimap.activeWeaponsMarkers.getLayers()[0].setIcon(mortarIcon);
+        }
+
+        // Delete everthing tied to the marker
+        this.remove();
+        this.removeFrom(globalData.minimap.activeWeaponsMarkers);
+        this.minRangeMarker.remove();
+        this.rangeMarker.remove();
+
+        // Update remaining targets if they exists
+        globalData.minimap.updateTargets();
+    },
+
+
+    /**
+     * update calcs, spread markers
+     */
     updateWeapon: function(){
-
-        var maxDistCircleOn = {
-            radius: globalData.activeWeapon.getMaxDistance() * (256 / MAPS.find((elem, index) => index == globalData.activeMap).size),
-            opacity: 0.7,
-            color: "#00137f",
-            fillOpacity: 0,
-            weight: 2,
-            autoPan: false,
-        };
-
-        var minDistCircleOn = {
-            radius: globalData.activeWeapon.minDistance * (256 / MAPS.find((elem, index) => index == globalData.activeMap).size),
-            opacity: 0.5,
-            color: "#00137f",
-            fillOpacity: 0.1,
-            weight: 1,
-            autoPan: false,
-        };
-
-        var minMaxDistCircleOff = {
-            opacity: 0,
-            fillOpacity: 0,
-        };
 
         var radiusMax = globalData.activeWeapon.getMaxDistance() * (256 / MAPS.find((elem, index) => index == globalData.activeMap).size);
         var radiusMin = globalData.activeWeapon.minDistance * (256 / MAPS.find((elem, index) => index == globalData.activeMap).size);
         
-        this.options.minRangeMarker.setRadius(radiusMin);
-        this.options.rangeMarker.setRadius(radiusMax);
-
-
+        this.minRangeMarker.setRadius(radiusMin);
+        this.rangeMarker.setRadius(radiusMax);
 
         if (globalData.userSettings.weaponMinMaxRange == 0) {
-            this.options.minRangeMarker.setStyle(minMaxDistCircleOff);
-            this.options.rangeMarker.setStyle(minMaxDistCircleOff);
+            this.minRangeMarker.setStyle(this.minMaxDistCircleOff);
+            this.rangeMarker.setStyle(this.minMaxDistCircleOff);
         }
         else {
             // Update MinRange circle opacity
-            if (this.options.minRangeMarker.getRadius() != 0) {
-                this.options.minRangeMarker.setStyle(minDistCircleOn);
+            if (this.minRangeMarker.getRadius() != 0) {
+                this.minRangeMarker.setStyle(this.minDistCircleOn);
             }
             else {
-                this.options.minRangeMarker.setStyle(minMaxDistCircleOff);
+                this.minRangeMarker.setStyle(this.minMaxDistCircleOff);
             }
-            this.options.rangeMarker.setStyle(maxDistCircleOn);
+            this.rangeMarker.setStyle(this.maxDistCircleOn);
         }
     },
 
-    _handleClick: function() {
-
-        // Only allow weapon suppression if at least two weapons are on the map
-        if (globalData.activeWeaponMarker.getLayers().length === 1) { return 0;}
-
-        this.remove();
-        this.removeFrom(globalData.activeWeaponMarker);
-        this.options.minRangeMarker.remove();
-        this.options.rangeMarker.remove();
-
-        // Set default icon on remaining weapon
-        globalData.activeWeaponMarker.getLayers()[0].setIcon(mortarIcon);
-
-        // Update every targets
-        globalData.activeTargetsMarkers.eachLayer(function (layer) {
-            layer.updateCalc(layer.latlng);
-        });
+    _handleClick: function(e) {
+        this.delete(e);
     },
 
     _handleDrag: function (e) {
         // When dragging marker out of bounds, block it at the edge
         e = this.keepOnMap(e);
-
         this.setLatLng(e.latlng);
-        this.options.rangeMarker.setLatLng(e.latlng);
-        this.options.minRangeMarker.setLatLng(e.latlng);
+        this.rangeMarker.setLatLng(e.latlng);
+        this.minRangeMarker.setLatLng(e.latlng);
+
         if (globalData.userSettings.LowSpecMode == 1) {
-            globalData.activeTargetsMarkers.eachLayer(function (layer) {
-                layer.updateCalc(layer.latlng);
-            });
+            globalData.minimap.updateTargets();
         }
     },
 
+    // Catch this events so user can't place a target by mistake while trying to delete weapon
+    _handleContextMenu: function(){},
+    _handleDblclick: function(){},
+
     _handleDragStart: function () {
         if (globalData.userSettings.LowSpecMode == 0) {
-            globalData.activeTargetsMarkers.eachLayer(function (layer) {
-                layer.options.calcMarker1.setContent(" ");
-                layer.options.calcMarker2.setContent(" ");
-                layer.options.spreadMarker1.setStyle({opacity: 0, fillOpacity: 0});
-                layer.options.spreadMarker2.setStyle({opacity: 0, fillOpacity: 0});
+            globalData.minimap.activeTargetsMarkers.eachLayer(function (layer) {
+                layer.calcMarker1.setContent(" ");
+                layer.calcMarker2.setContent(" ");
+                layer.spreadMarker1.setStyle({opacity: 0, fillOpacity: 0});
+                layer.spreadMarker2.setStyle({opacity: 0, fillOpacity: 0});
             }); 
         }
     },
 
     _handleDragEnd: function () {
         if (globalData.userSettings.LowSpecMode == 0) {
-            globalData.activeTargetsMarkers.eachLayer(function (layer) {
-                layer.updateCalc(layer.latlng);
-            });
+            globalData.minimap.updateTargets();
         }
     },
 
-    // Handle double click event to prevent placing target marker underneath weapon marker
-    _handleDblclick: function () {},
+
 
 });
 
@@ -209,16 +204,7 @@ export var squadTargetMarker = squadMarker.extend({
         calcMarker2: null,
         spreadMarker1: null,
         spreadMarker2: null,
-        spreadOptionsOn : {
-            opacity: 1,
-            fillOpacity: 0.1,
-            color: "#b22222",
-            weight: 1,
-        },
-        spreadOptionsOff : {
-            opacity: 0,
-            fillOpacity: 0,
-        },
+
     },
 
     initialize: function (latlng, options) {
@@ -256,14 +242,24 @@ export var squadTargetMarker = squadMarker.extend({
             offset: [32, -20],
         };
 
+        this.spreadOptionsOn = {
+            opacity: 1,
+            fillOpacity: 0.1,
+            color: "#b22222",
+            weight: 1,
+        };
 
+        this.spreadOptionsOff = {
+            opacity: 0,
+            fillOpacity: 0,
+        };
 
         // Create marker
         squadMarker.prototype.initialize.call(this, latlng, options);
-        this.addTo(globalData.activeTargetsMarkers);
+        this.addTo(globalData.minimap.activeTargetsMarkers);
 
         // Create Calc&Spread radius for 1st weapon
-        results = getCalcFromUI(globalData.activeWeaponMarker.getLayers()[0].getLatLng(), latlng);
+        results = getCalcFromUI(globalData.minimap.activeWeaponsMarkers.getLayers()[0].getLatLng(), latlng);
         radiiElipse = [(results.ellipseParams.semiMajorAxis * mapScale)/2, (results.ellipseParams.semiMinorAxis * mapScale)/2];
         angleElipse = results.bearing;
 
@@ -275,22 +271,22 @@ export var squadTargetMarker = squadMarker.extend({
         }
 
         // Calc PopUp for weapon 1
-        this.options.calcMarker1 = L.popup(popUpOptions_weapon1).setLatLng(latlng).openOn(globalData.map).addTo(globalData.markersGroup);
+        this.calcMarker1 = L.popup(popUpOptions_weapon1).setLatLng(latlng).openOn(globalData.minimap).addTo(globalData.minimap.markersGroup);
 
         // Calc PopUp for weapon 2 (not displayed yet)
-        this.options.calcMarker2 = L.popup(popUpOptions_weapon2).setLatLng(latlng).addTo(globalData.markersGroup);
+        this.calcMarker2 = L.popup(popUpOptions_weapon2).setLatLng(latlng).addTo(globalData.minimap.markersGroup);
 
-        this.options.spreadMarker1 = L.ellipse(latlng, radiiElipse, angleElipse, this.options.spreadOptionsOn).addTo(globalData.markersGroup);
-        this.options.spreadMarker2 = L.ellipse(latlng, radiiElipse, angleElipse, this.options.spreadOptionsOff).addTo(globalData.markersGroup);
+        this.spreadMarker1 = L.ellipse(latlng, radiiElipse, angleElipse, this.spreadOptionsOn).addTo(globalData.minimap.markersGroup);
+        this.spreadMarker2 = L.ellipse(latlng, radiiElipse, angleElipse, this.spreadOptionsOff).addTo(globalData.minimap.markersGroup);
 
         if (globalData.userSettings.spreadRadius == 0) {
-            this.options.spreadMarker1.setStyle(this.spreadOptionsOff);
+            this.spreadMarker1.setStyle(this.spreadOptionsOff);
         }
 
         // If two weapons already on the map
-        if (globalData.activeWeaponMarker.getLayers().length === 2) {
+        if (globalData.minimap.activeWeaponsMarkers.getLayers().length === 2) {
             // Calcs for second weapon
-            results2 = getCalcFromUI(globalData.activeWeaponMarker.getLayers()[1].getLatLng(), latlng);
+            results2 = getCalcFromUI(globalData.minimap.activeWeaponsMarkers.getLayers()[1].getLatLng(), latlng);
 
             // Show calcs
             if (globalData.userSettings.bearingOverDistance == 1) {
@@ -302,40 +298,39 @@ export var squadTargetMarker = squadMarker.extend({
                 content2 = "<span class='calcNumber'>(2)</span></br><span>" + results2.elevation + "</span></br><span class='bearingUiCalc'>" +  results2.bearing + "°</span></br>";
             }
 
-            this.options.calcMarker2.setContent(content2).openOn(globalData.map);
+            this.calcMarker2.setContent(content2).openOn(globalData.minimap);
 
             // Initiate Spread Ellipse Marker
             if (results2.elevation === "---" || results2.ellipseParams.semiMajorAxis === 0) {
-                this.options.spreadMarker2.setStyle({opacity: 0, fillOpacity: 0});
+                this.spreadMarker2.setStyle({opacity: 0, fillOpacity: 0});
             }
             else {
-                this.options.spreadMarker2.setRadius([(results2.ellipseParams.semiMajorAxis * mapScale)/2, (results2.ellipseParams.semiMinorAxis * mapScale)/2]);
-                this.options.spreadMarker2.setTilt(results2.bearing);
+                this.spreadMarker2.setRadius([(results2.ellipseParams.semiMajorAxis * mapScale)/2, (results2.ellipseParams.semiMinorAxis * mapScale)/2]);
+                this.spreadMarker2.setTilt(results2.bearing);
                 if (globalData.userSettings.spreadRadius == 1) {
-                    this.options.spreadMarker2.setStyle(this.options.spreadOptionsOn);
+                    this.spreadMarker2.setStyle(this.spreadOptionsOn);
                 }
                 else {
-                    this.options.spreadMarker2.setStyle(this.options.spreadOptionsOff);
+                    this.spreadMarker2.setStyle(this.spreadOptionsOff);
                 }
             }
         }
 
-        this.options.calcMarker1.setContent(content);
+        this.calcMarker1.setContent(content);
         
         // Initiate Spread Ellipse Marker
        
         if (results.elevation === "---" || results.ellipseParams.semiMajorAxis === 0) {
-            this.options.spreadMarker1.setStyle(this.options.spreadOptionsOff);
+            this.spreadMarker1.setStyle(this.spreadOptionsOff);
         }
         else {
-            this.options.spreadMarker1.setRadius([(results.ellipseParams.semiMajorAxis * mapScale)/2, (results.ellipseParams.semiMinorAxis * mapScale)/2]);
+            this.spreadMarker1.setRadius([(results.ellipseParams.semiMajorAxis * mapScale)/2, (results.ellipseParams.semiMinorAxis * mapScale)/2]);
             if (globalData.userSettings.spreadRadius == 1) {
-                this.options.spreadMarker1.setStyle(this.options.spreadOptionsOn); 
+                this.spreadMarker1.setStyle(this.spreadOptionsOn); 
             }
             else {
-                this.options.spreadMarker1.setStyle(this.options.spreadOptionsOff); 
+                this.spreadMarker1.setStyle(this.spreadOptionsOff); 
             }
-
         }
 
         // Custom events handlers
@@ -343,12 +338,35 @@ export var squadTargetMarker = squadMarker.extend({
         this.on("drag", this._handleDrag, this);
         this.on("dragStart", this._handleDragStart, this);
         this.on("dragEnd", this._handleDragEnd, this);
+        this.on("contextmenu", this._handleContextMenu, this);
     },
+
+
+    _handleContextMenu: function(){
+        this.delete();
+    },
+
+    /**
+     * Remove the target marker and every object tied
+     * @param {this}
+     */
+    delete: function(){
+        this.spreadMarker1.removeFrom(globalData.minimap.markersGroup);
+        this.spreadMarker2.removeFrom(globalData.minimap.markersGroup);
+
+        this.calcMarker1.removeFrom(globalData.minimap.markersGroup);
+        this.calcMarker2.removeFrom(globalData.minimap.markersGroup);
+
+        this.removeFrom(globalData.minimap.activeTargetsMarkers);
+        this.removeFrom(globalData.minimap.markersGroup);
+        this.remove();
+    },
+
 
     updateCalc: function(){
         const mapScale = 256 / MAPS.find((elem, index) => index == globalData.activeMap).size;
 
-        var results = getCalcFromUI(globalData.activeWeaponMarker.getLayers()[0].getLatLng(), this.getLatLng());
+        var results = getCalcFromUI(globalData.minimap.activeWeaponsMarkers.getLayers()[0].getLatLng(), this.getLatLng());
         var content;
         var results2;
         var content2;
@@ -361,24 +379,24 @@ export var squadTargetMarker = squadMarker.extend({
         }
 
         if (results.elevation === "---" || results.ellipseParams.semiMajorAxis === 0) {
-            this.options.spreadMarker1.setStyle({opacity: 0, fillOpacity: 0});
+            this.spreadMarker1.setStyle({opacity: 0, fillOpacity: 0});
         }
         else {
-            this.options.spreadMarker1.setRadius([(results.ellipseParams.semiMajorAxis * mapScale)/2, (results.ellipseParams.semiMinorAxis * mapScale)/2]);
+            this.spreadMarker1.setRadius([(results.ellipseParams.semiMajorAxis * mapScale)/2, (results.ellipseParams.semiMinorAxis * mapScale)/2]);
             if (globalData.userSettings.spreadRadius == 1) {
-                this.options.spreadMarker1.setStyle(this.options.spreadOptionsOn);
+                this.spreadMarker1.setStyle(this.spreadOptionsOn);
             }
             else {
-                this.options.spreadMarker1.setStyle(this.options.spreadOptionsOff);
+                this.spreadMarker1.setStyle(this.spreadOptionsOff);
             }
-            this.options.spreadMarker1.setTilt(results.bearing);
+            this.spreadMarker1.setTilt(results.bearing);
         }
 
-        this.options.calcMarker2.close();
-        this.options.spreadMarker2.setStyle(this.options.spreadOptionsOff);
+        this.calcMarker2.close();
+        this.spreadMarker2.setStyle(this.spreadOptionsOff);
 
-        if (globalData.activeWeaponMarker.getLayers().length === 2) {
-            results2 = getCalcFromUI(globalData.activeWeaponMarker.getLayers()[1].getLatLng(), this.getLatLng());
+        if (globalData.minimap.activeWeaponsMarkers.getLayers().length === 2) {
+            results2 = getCalcFromUI(globalData.minimap.activeWeaponsMarkers.getLayers()[1].getLatLng(), this.getLatLng());
 
             if (globalData.userSettings.bearingOverDistance == 1) {
                 content = "<span class='calcNumber'>(1)</span></br><span>" + results.elevation + "</span></br><span class='bearingUiCalc'>" +  results.distance + "m</span>";
@@ -390,36 +408,26 @@ export var squadTargetMarker = squadMarker.extend({
             }
 
             if (results2.elevation === "---" || results2.ellipseParams.semiMajorAxis === 0) {
-                this.options.spreadMarker2.setStyle({opacity: 0, fillOpacity: 0});
+                this.spreadMarker2.setStyle({opacity: 0, fillOpacity: 0});
             }
             else {
-                this.options.spreadMarker2.setRadius([(results2.ellipseParams.semiMajorAxis * mapScale)/2, (results2.ellipseParams.semiMinorAxis * mapScale)/2]);
-                this.options.spreadMarker2.setTilt(results2.bearing);
+                this.spreadMarker2.setRadius([(results2.ellipseParams.semiMajorAxis * mapScale)/2, (results2.ellipseParams.semiMinorAxis * mapScale)/2]);
+                this.spreadMarker2.setTilt(results2.bearing);
                 if (globalData.userSettings.spreadRadius == 1) {
-                    this.options.spreadMarker2.setStyle(this.options.spreadOptionsOn);
+                    this.spreadMarker2.setStyle(this.spreadOptionsOn);
                 }
                 else {
-                    this.options.spreadMarker2.setStyle(this.options.spreadOptionsOff);
+                    this.spreadMarker2.setStyle(this.spreadOptionsOff);
                 }
             }
-            this.options.calcMarker2.openOn(globalData.map);
-            this.options.calcMarker2.setContent(content2);
+            this.calcMarker2.openOn(globalData.minimap);
+            this.calcMarker2.setContent(content2);
         }
-        this.options.calcMarker1.setContent(content);
+        this.calcMarker1.setContent(content);
     },
 
     _handleClick: function() {
-        this.options.spreadMarker1.removeFrom(globalData.markersGroup);
-        this.options.spreadMarker2.removeFrom(globalData.markersGroup);
-
-        this.options.calcMarker1.removeFrom(globalData.markersGroup);
-        this.options.calcMarker2.openOn(globalData.map);
-        this.options.calcMarker2.removeFrom(globalData.markersGroup);
-        this.options.calcMarker2.removeFrom(globalData.map); // fix for a curious behaviour
-
-        this.removeFrom(globalData.activeTargetsMarkers);
-        this.removeFrom(globalData.markersGroup);
-        this.remove();
+        this.delete();
     },
 
     _handleDrag: function (e) {
@@ -428,10 +436,10 @@ export var squadTargetMarker = squadMarker.extend({
 
         // Update Position
         this.setLatLng(e.latlng);
-        this.options.calcMarker1.setLatLng(e.latlng);
-        this.options.spreadMarker1.setLatLng(e.latlng);
-        this.options.calcMarker2.setLatLng(e.latlng);
-        this.options.spreadMarker2.setLatLng(e.latlng);
+        this.calcMarker1.setLatLng(e.latlng);
+        this.spreadMarker1.setLatLng(e.latlng);
+        this.calcMarker2.setLatLng(e.latlng);
+        this.spreadMarker2.setLatLng(e.latlng);
 
         // Update bearing/elevation/spread marker
         if (globalData.userSettings.LowSpecMode == 1) {
@@ -442,10 +450,10 @@ export var squadTargetMarker = squadMarker.extend({
     // When in low spec mode, hide calcs/spread at drag start
     _handleDragStart: function () {
         if (globalData.userSettings.LowSpecMode == 0) {
-            this.options.calcMarker1.setContent(" ");
-            this.options.calcMarker2.setContent(" ");
-            this.options.spreadMarker1.setStyle(this.options.spreadOptionsOff);
-            this.options.spreadMarker2.setStyle(this.options.spreadOptionsOff);
+            this.calcMarker1.setContent(" ");
+            this.calcMarker2.setContent(" ");
+            this.spreadMarker1.setStyle(this.spreadOptionsOff);
+            this.spreadMarker2.setStyle(this.spreadOptionsOff);
         }
     },
 

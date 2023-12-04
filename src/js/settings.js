@@ -12,6 +12,7 @@ export function loadSettings(){
     globalData.userSettings.targetAnimation = localStorage.getItem("settings-target-animation");
     globalData.userSettings.weaponMinMaxRange = localStorage.getItem("settings-weapon-range");
     globalData.userSettings.bearingOverDistance = localStorage.getItem("settings-bearing-distance");
+    globalData.userSettings.grid = localStorage.getItem("settings-grid");
 
     if (globalData.userSettings.keypadUnderCursor === null || 
         isNaN(globalData.userSettings.keypadUnderCursor) || 
@@ -55,6 +56,20 @@ export function loadSettings(){
         localStorage.setItem("settings-bearing-distance", 0);  
     }
 
+    if (globalData.userSettings.grid === null || 
+        isNaN(globalData.userSettings.grid) || 
+        globalData.userSettings.grid === ""){
+        globalData.userSettings.grid = 1; 
+        localStorage.setItem("settings-grid", 1);  
+    }
+
+
+    if (globalData.userSettings.grid == 1) {
+        val = true;
+    } else {
+        val = false;
+    }
+    $("#gridSetting").prop("checked", val);
 
     if (globalData.userSettings.spreadRadius == 1) {
         val = true;
@@ -69,7 +84,7 @@ export function loadSettings(){
         val = false;
     }
 
-    if (matchMedia('(pointer:fine)').matches) {
+    if (matchMedia("(pointer:fine)").matches) {
         $("#keypadUnderCursorSetting").prop("checked", val);
     }
     else {
@@ -109,8 +124,8 @@ export function loadSettings(){
 }
 
 $("#keypadUnderCursorSetting").on("change", function() {
-
-    if (!matchMedia('(pointer:fine)').matches) {
+    // if no mouse support detected, disable the fonctionality
+    if (!matchMedia("(pointer:fine)").matches) {
         globalData.userSettings.keypadUnderCursor = 0;
         return;
     }
@@ -118,12 +133,12 @@ $("#keypadUnderCursorSetting").on("change", function() {
     if ($("#keypadUnderCursorSetting").is(":checked")) {
         globalData.userSettings.keypadUnderCursor = 1;
         localStorage.setItem("settings-keypad-cursor", 1);
-        globalData.mouseLocationPopup.close();
+        globalData.minimap.mouseLocationPopup.close();
     }
     else {
         globalData.userSettings.keypadUnderCursor = 0;
         localStorage.setItem("settings-keypad-cursor", 0);
-        globalData.mouseLocationPopup.close();
+        globalData.minimap.mouseLocationPopup.close();
     }
 });
 
@@ -138,6 +153,22 @@ $("#LowSpecModeSetting").on("change", function() {
     }
 });
 
+
+
+$("#gridSetting").on("change", function() {
+    if ($("#gridSetting").is(":checked")) {
+        globalData.userSettings.grid = 1;
+        localStorage.setItem("settings-grid", 1);
+        globalData.minimap.showGrid();
+    }
+    else {
+        globalData.userSettings.grid = 0;
+        localStorage.setItem("settings-grid", 0);
+        globalData.minimap.hideGrid();
+    }
+});
+
+
 $("#spreadRadiusSetting").on("change", function() {
     if ($("#spreadRadiusSetting").is(":checked")) {
         globalData.userSettings.spreadRadius = 1;
@@ -149,9 +180,7 @@ $("#spreadRadiusSetting").on("change", function() {
     }
 
     // Update every targets to add/remove spread radius
-    globalData.activeTargetsMarkers.eachLayer(function (layer) {
-        layer.updateCalc(layer.latlng);
-    });
+    globalData.minimap.updateTargets();
 });
 
 $("#weaponRangeSettings").on("change", function() {
@@ -163,9 +192,7 @@ $("#weaponRangeSettings").on("change", function() {
         globalData.userSettings.weaponMinMaxRange = 0;
         localStorage.setItem("settings-weapon-range", 0);
     }
-    globalData.activeWeaponMarker.eachLayer(function (layer) {
-        layer.updateWeapon();
-    });
+    globalData.minimap.updateWeapons();
 });
 
 $("#targetAnimationSettings").on("change", function() {
@@ -190,9 +217,7 @@ $("#bearingOverDistanceSettings").on("change", function() {
     }
 
     // Update every targets to add/remove distance
-    globalData.activeTargetsMarkers.eachLayer(function (layer) {
-        layer.updateCalc(layer.latlng);
-    });
+    globalData.minimap.updateTargets();
 });
 
 
