@@ -10,7 +10,6 @@ import "leaflet/dist/images/marker-shadow.png"; // fix
 // Local styles
 import "./css/styles.scss";
 import "./css/responsive.scss";
-import "leaflet.control.opacity/dist/L.Control.Opacity.css";
 
 // JS Functions
 import { preventAutocomplete, loadUI} from "./js/utils";
