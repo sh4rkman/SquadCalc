@@ -1,5 +1,5 @@
 import L from "leaflet";
-import SquadGrid from "./squadGrid";
+import squadGrid from "./squadGrid";
 import { globalData } from "./conf";
 import { MAPS } from "./maps";
 import { squadWeaponMarker, squadTargetMarker } from "./squadMarker";
@@ -15,7 +15,7 @@ export var squadMinimap = L.Map.extend({
         maxZoom: 6,
         zoomControl: false,
         doubleClickZoom: false,
-        edgeBufferTiles:1,
+        edgeBufferTiles: 1,
         // maxBounds:[[500, -500], [-800, 800]],
     },
 
@@ -68,7 +68,7 @@ export var squadMinimap = L.Map.extend({
             bounds: imageBounds,
         }).addTo(this.layerGroup);
     
-        this.grid = new SquadGrid();
+        this.grid = new squadGrid();
         this.grid.setBounds(imageBounds);
 
         if (globalData.userSettings.grid == 1) {
