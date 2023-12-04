@@ -1,4 +1,24 @@
 
+# <img src="https://img.shields.io/badge/-major%20release-blue?style=flat-square">  **15.0.0** *(2023-12-04)*
+
+<img src="https://img.shields.io/badge/-new-green"> Simplified interractions with markers : double-click - new targets (or weapon if no weapon have been placed), right-clic - new weapon. Left clicking any markers delete it
+
+<img src="https://img.shields.io/badge/-new-green"> Weapons Marker can now be deleted even if there is only one left. In this case every target markers are also deleted
+
+<img src="https://img.shields.io/badge/-new-green"> Added a new setting to show/hide grid
+
+<img src="https://img.shields.io/badge/-new-green"> Added a new "Shortcuts" in the settings dialog to display how to use the map mode
+
+<img src="https://img.shields.io/badge/-%20Improv%20-orange"> Added a slight shadow outline on target markers so they are easier to see on red-ish background or on top of another marker
+
+<img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed image being cached improperly
+
+
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
+
+
 # <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">  **14.1.0** *(2023-12-02)*
 
 <img src="https://img.shields.io/badge/-new-green"> Added a new setting to replace bearing (°) with distance to target (m) on map mode's targets.
@@ -12,8 +32,6 @@
 <img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed UB32 being inaccurate between 1500-1600m, thanks @Butterhead98 ([#102](https://github.com/sh4rkman/SquadCalc/issues/102))
 
 <img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed social media buttons being blue in settings menu
-
-
 
 
 
