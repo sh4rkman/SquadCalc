@@ -477,9 +477,6 @@ footer {
     color: $mainTxtColor;
 }
 
-
-
-
 #map_ui {
     position: relative;
     height: 100vh; 
@@ -506,6 +503,7 @@ footer {
 
 .kpPopup {
     background: transparent;
+
     .leaflet-popup-tip,
     .leaflet-popup-content-wrapper {
         user-select: none; 
@@ -521,7 +519,15 @@ footer {
 
         @extend %text-outline;
     }
+    &.leaflet-popup {
+        transition: none;
+    }
 }
+
+
+
+
+
 
 %text-outline {
     text-shadow: 1px 1px 0 #111,
@@ -569,7 +575,6 @@ footer {
 }
 
 .calcPopup, .calcPopup2 {
-    pointer-events: none;
     margin: 0;
     padding: 0;
     font-family: Montserrat, Times, "Times New Roman", serif;
@@ -579,13 +584,10 @@ footer {
     pointer-events: none;
     font-weight: bold;
     font-size: 0.9em;
-    background: transparent;
-    box-shadow: none;
     color: $mainTxtColor;
     height: fit-content;
-    padding: 0;
     line-height: 1em;
-    //border: solid black 1px;
+
     @extend %text-outline;
     .calcNumber {
         font-size: 0.7em;
@@ -638,9 +640,6 @@ footer {
     width: 450px;
     letter-spacing: 1px;
     line-height: 1em;
-    position: relative;
-    top: 50%;
-    transform: translateY(-50%);
     table {
         &.userSettings {
             border: none;

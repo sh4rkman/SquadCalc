@@ -1,4 +1,23 @@
 
+
+
+# <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">  **15.0.1** *(2023-12-07)*
+
+<img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed Weapons being able to be placed outside of map with right click ([#104](https://github.com/sh4rkman/SquadCalc/issues/104))
+
+<img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed Map/Settings buttons being offcentered on Safari/SteamBrowsers ([#105](https://github.com/sh4rkman/SquadCalc/issues/105))
+
+<img src="https://img.shields.io/badge/-%20fix%20-orange"> Enable calc text zoomanimation so it doesn't "jump" on the map while zooming/unzooming
+
+<img src="https://img.shields.io/badge/-%20Improv%20-orange"> Map can now be unzoom further away, allowing to see whole map on mobile/small device
+
+<img src="https://img.shields.io/badge/-%20Improv%20-orange"> Re-enabled map-tile buffering : when idle on the map, tiles ouside of view are loading in background to avoid tiles appearing while panning
+
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
+
+
 # <img src="https://img.shields.io/badge/-major%20release-blue?style=flat-square">  **15.0.0** *(2023-12-04)*
 
 <img src="https://img.shields.io/badge/-new-green"> Simplified interractions with markers : double-click - new targets (or weapon if no weapon have been placed), right-clic - new weapon. Left clicking any markers delete it
