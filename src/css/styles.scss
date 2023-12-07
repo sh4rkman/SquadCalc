@@ -568,15 +568,6 @@ footer {
     mix-blend-mode: normal;
 }
 
-
-.leaflet-fade-anim .leaflet-popup {
-    //transition: none;
-}
-
-.leaflet-tile-container img {
-    box-shadow: 0 0 1px rgba(0, 0, 0, 0.05);
-}
-
 .calcPopup, .calcPopup2 {
     pointer-events: none;
     margin: 0;
@@ -647,6 +638,9 @@ footer {
     width: 450px;
     letter-spacing: 1px;
     line-height: 1em;
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
     table {
         &.userSettings {
             border: none;
