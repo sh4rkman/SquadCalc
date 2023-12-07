@@ -308,14 +308,24 @@ footer {
     .fabs {
         bottom: 1.2rem;
         position: fixed;
+        height: 2.5rem;
+        width: 2.5rem;
+        &.fab-wrapper {
+            right: 1rem;
+        }
+        &.fab-wrapper2 {
+            left: 1rem;
+        }
+        input {
+            display: none;
+        }
         .fab {
             background: #333;
             border-radius: 50%;
-            bottom: -0.5rem;
             font-size: 1.1rem;
             height: 2.5rem;
-            position: absolute;
-            right: -0.7rem;
+            position: relative;
+            margin: auto;
             transition: all 0.3s ease;
             width: 2.5rem;
             z-index: 1;
@@ -340,14 +350,10 @@ footer {
                 padding-top: 0.7rem;
             }
         }
-    }
-    .fab-wrapper {
-        right: 1.3rem;
-    }
-    .fab-wrapper2 {
-        left: 1.8rem;
+
     }
 }
+
 
 
 /****************
@@ -564,15 +570,32 @@ footer {
 
 
 .leaflet-fade-anim .leaflet-popup {
-    transition: none;
+    //transition: none;
 }
 
+.leaflet-tile-container img {
+    box-shadow: 0 0 1px rgba(0, 0, 0, 0.05);
+}
 
 .calcPopup, .calcPopup2 {
     pointer-events: none;
     margin: 0;
     padding: 0;
     font-family: Montserrat, Times, "Times New Roman", serif;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    pointer-events: none;
+    font-weight: bold;
+    font-size: 0.9em;
+    background: transparent;
+    box-shadow: none;
+    color: $mainTxtColor;
+    height: fit-content;
+    padding: 0;
+    line-height: 1em;
+    //border: solid black 1px;
+    @extend %text-outline;
     .calcNumber {
         font-size: 0.7em;
     }
@@ -596,6 +619,9 @@ footer {
         margin: 0;
         line-height: 1;
     }
+    .leaflet-popup-tip-container {
+        display: none;
+    } 
 }
 
 .calcPopup {
@@ -617,13 +643,13 @@ footer {
     text-align: left;
     padding: 30px 5px 5px 30px;
     border-radius: 10px;
-    font-size: 0.75em;
+    font-size: 0.7em;
     width: 450px;
     letter-spacing: 1px;
+    line-height: 1em;
     table {
         &.userSettings {
             border: none;
-            line-height: 1em;
             td {
                 padding: 0;
                 border: none;

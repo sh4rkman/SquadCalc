@@ -32,6 +32,9 @@
             }
         }
     }
+    #helpDialog {
+        font-size: 0.75em;
+    }
 }
 
 
@@ -44,6 +47,10 @@
                 max-height: 700px;
             }
         }
+    }
+    #helpDialog {
+        font-size: 0.8em;
+        line-height: 1.1em;
     }
 }
 
@@ -130,6 +137,14 @@
     footer {
         .fabs {
             bottom: 1.5rem;
+            height: 3.5rem;
+            width: 3.5rem;
+            &.fab-wrapper {
+                right: 1.5rem;
+            }
+            &.fab-wrapper2 {
+                left: 1.5rem;
+            }
             .fab {
                 font-size: 1.5rem;
                 height: 3.5rem;
@@ -139,12 +154,7 @@
                 }
             }
         }
-        .fab-wrapper {
-            right: 1.8rem;
-        }
-        .fab-wrapper2 {
-            left: 3.4rem;
-        }
+
     }
 
     /* -- L*560px -- */

@@ -2,208 +2,108 @@
 import { globalData } from "./conf";
 
 
+function loadLocalSetting(item, default_value = 1) {
+
+    var setting = localStorage.getItem(item);
+
+    if (setting === null || isNaN(setting) || setting === ""){
+        localStorage.setItem(item, default_value);
+        setting = default_value;
+    }
+
+    // convert a 0/1 string to false/true boolean
+    return Boolean(Number(setting));
+}
+
 
 export function loadSettings(){
-    var val;
 
-    globalData.userSettings.keypadUnderCursor = localStorage.getItem("settings-keypad-cursor");
-    globalData.userSettings.spreadRadius = localStorage.getItem("settings-spread-radius");
-    globalData.userSettings.LowSpecMode = localStorage.getItem("settings-low-spec");
-    globalData.userSettings.targetAnimation = localStorage.getItem("settings-target-animation");
-    globalData.userSettings.weaponMinMaxRange = localStorage.getItem("settings-weapon-range");
-    globalData.userSettings.bearingOverDistance = localStorage.getItem("settings-bearing-distance");
-    globalData.userSettings.grid = localStorage.getItem("settings-grid");
-
-    if (globalData.userSettings.keypadUnderCursor === null || 
-        isNaN(globalData.userSettings.keypadUnderCursor) || 
-        globalData.userSettings.keypadUnderCursor === ""){
-        globalData.userSettings.keypadUnderCursor = 1; 
-        localStorage.setItem("settings-keypad-cursor", 1);  
-    }
-
-    if (globalData.userSettings.spreadRadius === null|| 
-        isNaN(globalData.userSettings.spreadRadius) || 
-        globalData.userSettings.spreadRadius === ""){
-        globalData.userSettings.spreadRadius = 1; 
-        localStorage.setItem("settings-spread-radius", 1);  
-    }
-
-    if (globalData.userSettings.LowSpecMode === null || 
-        isNaN(globalData.userSettings.LowSpecMode) || 
-        globalData.userSettings.LowSpecMode === ""){
-        globalData.userSettings.LowSpecMode = 1; 
-        localStorage.setItem("settings-low-spec", 1);  
-    }
-
-    if (globalData.userSettings.targetAnimation === null || 
-        isNaN(globalData.userSettings.targetAnimation) || 
-        globalData.userSettings.targetAnimation === ""){
-        globalData.userSettings.targetAnimation = 1; 
-        localStorage.setItem("settings-target-animation", 1);  
-    }
-
-    if (globalData.userSettings.weaponMinMaxRange === null || 
-        isNaN(globalData.userSettings.weaponMinMaxRange) || 
-        globalData.userSettings.weaponMinMaxRange === ""){
-        globalData.userSettings.weaponMinMaxRange = 1; 
-        localStorage.setItem("settings-weapon-range", 1);  
-    }
-
-    if (globalData.userSettings.bearingOverDistance === null || 
-        isNaN(globalData.userSettings.bearingOverDistance) || 
-        globalData.userSettings.bearingOverDistance === ""){
-        globalData.userSettings.bearingOverDistance = 0; 
-        localStorage.setItem("settings-bearing-distance", 0);  
-    }
-
-    if (globalData.userSettings.grid === null || 
-        isNaN(globalData.userSettings.grid) || 
-        globalData.userSettings.grid === ""){
-        globalData.userSettings.grid = 1; 
-        localStorage.setItem("settings-grid", 1);  
-    }
-
-
-    if (globalData.userSettings.grid == 1) {
-        val = true;
-    } else {
-        val = false;
-    }
-    $("#gridSetting").prop("checked", val);
-
-    if (globalData.userSettings.spreadRadius == 1) {
-        val = true;
-    } else {
-        val = false;
-    }
-    $("#spreadRadiusSetting").prop("checked", val);
-
-    if (globalData.userSettings.keypadUnderCursor == 1) {
-        val = true;
-    } else {
-        val = false;
-    }
-
+    globalData.userSettings.keypadUnderCursor = loadLocalSetting("settings-keypad-cursor");
     if (matchMedia("(pointer:fine)").matches) {
-        $("#keypadUnderCursorSetting").prop("checked", val);
+        $("#keypadUnderCursorSetting").prop("checked", globalData.userSettings.keypadUnderCursor);
     }
     else {
         $("#keypadUnderCursorSetting").attr("disabled", true);
         $("#KPSettingSubText").text("(Disabled: no mouse detected!)");
-        globalData.userSettings.keypadUnderCursor = 0;
+        globalData.userSettings.keypadUnderCursor = false;
     }
 
+    globalData.userSettings.spreadRadius = loadLocalSetting("settings-spread-radius");
+    $("#spreadRadiusSetting").prop("checked", globalData.userSettings.spreadRadius);
 
-    if (globalData.userSettings.LowSpecMode == 1) {
-        val = true;
-    } else {
-        val = false;
-    }
-    $("#LowSpecModeSetting").prop("checked", val);
+    globalData.userSettings.LowSpecMode = loadLocalSetting("settings-low-spec");
+    $("#LowSpecModeSetting").prop("checked", globalData.userSettings.LowSpecMode);
 
-    if (globalData.userSettings.targetAnimation == 1) {
-        val = true;
-    } else {
-        val = false;
-    }
-    $("#targetAnimationSettings").prop("checked", val);
+    globalData.userSettings.targetAnimation = loadLocalSetting("settings-target-animation");
+    $("#targetAnimationSettings").prop("checked", globalData.userSettings.targetAnimation);
 
-    if (globalData.userSettings.weaponMinMaxRange == 1) {
-        val = true;
-    } else {
-        val = false;
-    }
-    $("#weaponRangeSettings").prop("checked", val);
+    globalData.userSettings.grid = loadLocalSetting("settings-grid");
+    $("#gridSetting").prop("checked", globalData.userSettings.grid);
+    
+    globalData.userSettings.weaponMinMaxRange = loadLocalSetting("settings-weapon-range");
+    $("#weaponRangeSettings").prop("checked", globalData.userSettings.weaponMinMaxRange);
 
-    if (globalData.userSettings.bearingOverDistance == 1) {
-        val = true;
-    } else {
-        val = false;
-    }
-    $("#bearingOverDistanceSettings").prop("checked", val);
+    globalData.userSettings.bearingOverDistance = loadLocalSetting("settings-bearing-distance");
+    $("#bearingOverDistanceSettings").prop("checked", globalData.userSettings.bearingOverDistance);
+
 }
 
 $("#keypadUnderCursorSetting").on("change", function() {
+    var val;
+
     // if no mouse support detected, disable the fonctionality
     if (!matchMedia("(pointer:fine)").matches) {
-        globalData.userSettings.keypadUnderCursor = 0;
+        globalData.userSettings.keypadUnderCursor = false;
         return;
     }
 
-    if ($("#keypadUnderCursorSetting").is(":checked")) {
-        globalData.userSettings.keypadUnderCursor = 1;
-        localStorage.setItem("settings-keypad-cursor", 1);
-        globalData.minimap.mouseLocationPopup.close();
-    }
-    else {
-        globalData.userSettings.keypadUnderCursor = 0;
-        localStorage.setItem("settings-keypad-cursor", 0);
-        globalData.minimap.mouseLocationPopup.close();
-    }
+    val = $("#keypadUnderCursorSetting").is(":checked");
+    globalData.userSettings.keypadUnderCursor = val;
+    localStorage.setItem("settings-keypad-cursor", +val);
+    globalData.minimap.mouseLocationPopup.close();
+
 });
 
 $("#LowSpecModeSetting").on("change", function() {
-    if ($("#LowSpecModeSetting").is(":checked")) {
-        globalData.userSettings.LowSpecMode = 1;
-        localStorage.setItem("settings-low-spec", 1);
-    }
-    else {
-        globalData.userSettings.LowSpecMode = 0;
-        localStorage.setItem("settings-low-spec", 0);
-    }
+    var val = $("#LowSpecModeSetting").is(":checked");
+    globalData.userSettings.LowSpecMode = val;
+    localStorage.setItem("settings-low-spec", +val);
 });
 
 
 
 $("#gridSetting").on("change", function() {
-    if ($("#gridSetting").is(":checked")) {
-        globalData.userSettings.grid = 1;
-        localStorage.setItem("settings-grid", 1);
+    var val = $("#gridSetting").is(":checked");
+    if (val) {
+        globalData.userSettings.grid = val;
+        localStorage.setItem("settings-grid", +val);
         globalData.minimap.showGrid();
     }
     else {
-        globalData.userSettings.grid = 0;
-        localStorage.setItem("settings-grid", 0);
+        globalData.userSettings.grid = val;
+        localStorage.setItem("settings-grid", +val);
         globalData.minimap.hideGrid();
     }
 });
 
-
 $("#spreadRadiusSetting").on("change", function() {
-    if ($("#spreadRadiusSetting").is(":checked")) {
-        globalData.userSettings.spreadRadius = 1;
-        localStorage.setItem("settings-spread-radius", 1);
-    }
-    else {
-        globalData.userSettings.spreadRadius = 0;
-        localStorage.setItem("settings-spread-radius", 0);
-    }
-
-    // Update every targets to add/remove spread radius
-    globalData.minimap.updateTargets();
+    var val = $("#spreadRadiusSetting").is(":checked");
+    globalData.userSettings.spreadRadius = val;
+    localStorage.setItem("settings-spread-radius", +val);
+    globalData.minimap.updateTargets(); // Update every targets to add/remove spread radius
 });
 
 $("#weaponRangeSettings").on("change", function() {
-    if ($("#weaponRangeSettings").is(":checked")) {
-        globalData.userSettings.weaponMinMaxRange = 1;
-        localStorage.setItem("settings-weapon-range", 1);
-    }
-    else {
-        globalData.userSettings.weaponMinMaxRange = 0;
-        localStorage.setItem("settings-weapon-range", 0);
-    }
+    var val =  $("#weaponRangeSettings").is(":checked");
+    globalData.userSettings.weaponMinMaxRange = val;
+    localStorage.setItem("settings-weapon-range", +val);
     globalData.minimap.updateWeapons();
 });
 
 $("#targetAnimationSettings").on("change", function() {
-    if ($("#targetAnimationSettings").is(":checked")) {
-        globalData.userSettings.targetAnimation = 1;
-        localStorage.setItem("settings-target-animation", 1);
-    }
-    else {
-        globalData.userSettings.targetAnimation = 0;
-        localStorage.setItem("settings-target-animation", 0);
-    }
+    var val = $("#targetAnimationSettings").is(":checked");
+    globalData.userSettings.targetAnimation = val;
+    localStorage.setItem("settings-target-animation", +val);
 });
 
 $("#bearingOverDistanceSettings").on("change", function() {

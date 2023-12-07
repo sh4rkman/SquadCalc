@@ -223,7 +223,7 @@ function getHeight(a, b) {
  * Reset UI to default
  */
 function resetCalc() {
-    if (!globalData.debug.active) {console.clear();}
+    //if (!globalData.debug.active) {console.clear();}
 
     // First, reset any errors
     $("#settings").css({ "border-color": "#fff" });
@@ -759,6 +759,8 @@ export function getKP(lat, lng) {
 
     // The more the user zoom in, the more precise we display coords under mouse
     switch (globalData.minimap.getZoom()){
+    case 0:
+        return `${kpLetter}${pad(kpNumber, 2)}`; 
     case 1:
         return `${kpLetter}${pad(kpNumber, 2)}`;
     case 2:

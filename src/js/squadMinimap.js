@@ -2,8 +2,7 @@ import L from "leaflet";
 import squadGrid from "./squadGrid";
 import { globalData } from "./conf";
 import { MAPS } from "./maps";
-import { squadWeaponMarker, squadTargetMarker } from "./squadMarker";
-import { mortarIcon, mortarIcon1, mortarIcon2, targetIconAnimated, targetIcon } from "./squadMarker";
+import { squadWeaponMarker, squadTargetMarker, mortarIcon, mortarIcon1, mortarIcon2 } from "./squadMarker";
 import { getKP } from "./utils";
 
 export var squadMinimap = L.Map.extend({
@@ -11,11 +10,11 @@ export var squadMinimap = L.Map.extend({
         center: [700, 700],
         attributionControl: false,
         crs: L.CRS.Simple,
-        minZoom: 1,
+        minZoom: 0,
         maxZoom: 6,
         zoomControl: false,
         doubleClickZoom: false,
-        edgeBufferTiles: 1,
+        edgeBufferTiles: 3,
         // maxBounds:[[500, -500], [-800, 800]],
     },
 
@@ -71,7 +70,7 @@ export var squadMinimap = L.Map.extend({
         this.grid = new squadGrid();
         this.grid.setBounds(imageBounds);
 
-        if (globalData.userSettings.grid == 1) {
+        if (globalData.userSettings.grid) {
             this.grid.addTo(this.layerGroup);
         }
 
@@ -135,15 +134,18 @@ export var squadMinimap = L.Map.extend({
      * Place a new WeaponMarker on the minimap
      */
     _handleContextMenu: function(e) {
-        var secondMortar;
+
+        // If out of bounds
+        if (e.latlng.lat > 0 ||  e.latlng.lat < -256 || e.latlng.lng < 0 || e.latlng.lng > 256) {
+            return 1;
+        }
 
         if (this.activeWeaponsMarkers.getLayers().length === 0) {
             new squadWeaponMarker(e.latlng, {icon: mortarIcon}).addTo(this.markersGroup).addTo(this.activeWeaponsMarkers);
             return 0;
         } else {
             if (this.activeWeaponsMarkers.getLayers().length === 1) {
-                secondMortar = new squadWeaponMarker(e.latlng, {icon: mortarIcon2});
-                secondMortar.addTo(this.markersGroup).addTo(this.activeWeaponsMarkers);
+                new squadWeaponMarker(e.latlng, {icon: mortarIcon2}).addTo(this.markersGroup).addTo(this.activeWeaponsMarkers);
                 this.activeWeaponsMarkers.getLayers()[0].setIcon(mortarIcon1);
                 this.updateTargets();
             }
@@ -157,7 +159,7 @@ export var squadMinimap = L.Map.extend({
     _handleMouseMove: function (e) {
         const mapScale = MAPS.find((elem, index) => index == globalData.activeMap).size / 256;
 
-        if (globalData.userSettings.keypadUnderCursor == 0){ return 1; }
+        if (!globalData.userSettings.keypadUnderCursor){ return 1; }
     
         // if no mouse support
         if (!matchMedia("(pointer:fine)").matches) { return 1; }
@@ -188,11 +190,8 @@ export var squadMinimap = L.Map.extend({
             return 0;
         }
         
-        if (globalData.userSettings.targetAnimation == 0) {
-            new squadTargetMarker(L.latLng(e.latlng), {icon: targetIcon}).addTo(this.markersGroup);
-        } else {
-            new squadTargetMarker(L.latLng(e.latlng), {icon: targetIconAnimated}).addTo(this.markersGroup);
-        }
+        new squadTargetMarker(L.latLng(e.latlng), {animate: globalData.userSettings.targetAnimation}).addTo(this.markersGroup);
+
     },
 
     /**

@@ -19,10 +19,12 @@ export var squadMarker = L.Marker.extend({
     options: {
         draggable: true,
         riseOnHover: true,
+        animate: true,
     },
 
     // Initialize method
     initialize: function (latlng, options) {
+
         L.Marker.prototype.initialize.call(this, latlng, options);
         this.on("dragstart", this._handleDragStart, this);
         this.on("dragend", this._handleDragEnd, this);
@@ -84,7 +86,7 @@ export var squadWeaponMarker = squadMarker.extend({
         this.minRangeMarker = L.circle(latlng, this.minDistCircleOn).addTo(globalData.minimap.markersGroup);
         this.rangeMarker = L.circle(latlng, this.maxDistCircleOn).addTo(globalData.minimap.markersGroup);
         
-        if (globalData.userSettings.weaponMinMaxRange == 0) {
+        if (!globalData.userSettings.weaponMinMaxRange) {
             this.minRangeMarker.setStyle(this.minMaxDistCircleOff);
             this.rangeMarker.setStyle(this.minMaxDistCircleOff);
         }
@@ -140,7 +142,7 @@ export var squadWeaponMarker = squadMarker.extend({
         this.minRangeMarker.setRadius(radiusMin);
         this.rangeMarker.setRadius(radiusMax);
 
-        if (globalData.userSettings.weaponMinMaxRange == 0) {
+        if (!globalData.userSettings.weaponMinMaxRange) {
             this.minRangeMarker.setStyle(this.minMaxDistCircleOff);
             this.rangeMarker.setStyle(this.minMaxDistCircleOff);
         }
@@ -167,7 +169,7 @@ export var squadWeaponMarker = squadMarker.extend({
         this.rangeMarker.setLatLng(e.latlng);
         this.minRangeMarker.setLatLng(e.latlng);
 
-        if (globalData.userSettings.LowSpecMode == 1) {
+        if (globalData.userSettings.LowSpecMode) {
             globalData.minimap.updateTargets();
         }
     },
@@ -177,7 +179,7 @@ export var squadWeaponMarker = squadMarker.extend({
     _handleDblclick: function(){},
 
     _handleDragStart: function () {
-        if (globalData.userSettings.LowSpecMode == 0) {
+        if (!globalData.userSettings.LowSpecMode) {
             globalData.minimap.activeTargetsMarkers.eachLayer(function (layer) {
                 layer.calcMarker1.setContent(" ");
                 layer.calcMarker2.setContent(" ");
@@ -188,7 +190,7 @@ export var squadWeaponMarker = squadMarker.extend({
     },
 
     _handleDragEnd: function () {
-        if (globalData.userSettings.LowSpecMode == 0) {
+        if (!globalData.userSettings.LowSpecMode) {
             globalData.minimap.updateTargets();
         }
     },
@@ -204,10 +206,10 @@ export var squadTargetMarker = squadMarker.extend({
         calcMarker2: null,
         spreadMarker1: null,
         spreadMarker2: null,
-
     },
 
     initialize: function (latlng, options) {
+
         var radiiElipse;
         var angleElipse;
         var results;
@@ -215,6 +217,9 @@ export var squadTargetMarker = squadMarker.extend({
         var content;
         var content2;
         const mapScale = 256 / MAPS.find((elem, index) => index == globalData.activeMap).size;
+
+
+
 
         var popUpOptions_weapon1 = {
             closeButton: false,
@@ -242,6 +247,7 @@ export var squadTargetMarker = squadMarker.extend({
             offset: [32, -20],
         };
 
+
         this.spreadOptionsOn = {
             opacity: 1,
             fillOpacity: 0.1,
@@ -256,6 +262,14 @@ export var squadTargetMarker = squadMarker.extend({
 
         // Create marker
         squadMarker.prototype.initialize.call(this, latlng, options);
+
+        if (this.options.animate){
+            this.setIcon(targetIconAnimated);
+        }
+        else {
+            this.setIcon(targetIcon);
+        }
+
         this.addTo(globalData.minimap.activeTargetsMarkers);
 
         // Create Calc&Spread radius for 1st weapon
@@ -279,7 +293,7 @@ export var squadTargetMarker = squadMarker.extend({
         this.spreadMarker1 = L.ellipse(latlng, radiiElipse, angleElipse, this.spreadOptionsOn).addTo(globalData.minimap.markersGroup);
         this.spreadMarker2 = L.ellipse(latlng, radiiElipse, angleElipse, this.spreadOptionsOff).addTo(globalData.minimap.markersGroup);
 
-        if (globalData.userSettings.spreadRadius == 0) {
+        if (globalData.userSettings.spreadRadius) {
             this.spreadMarker1.setStyle(this.spreadOptionsOff);
         }
 
@@ -307,7 +321,7 @@ export var squadTargetMarker = squadMarker.extend({
             else {
                 this.spreadMarker2.setRadius([(results2.ellipseParams.semiMajorAxis * mapScale)/2, (results2.ellipseParams.semiMinorAxis * mapScale)/2]);
                 this.spreadMarker2.setTilt(results2.bearing);
-                if (globalData.userSettings.spreadRadius == 1) {
+                if (globalData.userSettings.spreadRadius) {
                     this.spreadMarker2.setStyle(this.spreadOptionsOn);
                 }
                 else {
@@ -325,7 +339,7 @@ export var squadTargetMarker = squadMarker.extend({
         }
         else {
             this.spreadMarker1.setRadius([(results.ellipseParams.semiMajorAxis * mapScale)/2, (results.ellipseParams.semiMinorAxis * mapScale)/2]);
-            if (globalData.userSettings.spreadRadius == 1) {
+            if (globalData.userSettings.spreadRadius) {
                 this.spreadMarker1.setStyle(this.spreadOptionsOn); 
             }
             else {
@@ -383,7 +397,7 @@ export var squadTargetMarker = squadMarker.extend({
         }
         else {
             this.spreadMarker1.setRadius([(results.ellipseParams.semiMajorAxis * mapScale)/2, (results.ellipseParams.semiMinorAxis * mapScale)/2]);
-            if (globalData.userSettings.spreadRadius == 1) {
+            if (globalData.userSettings.spreadRadius) {
                 this.spreadMarker1.setStyle(this.spreadOptionsOn);
             }
             else {
@@ -392,13 +406,13 @@ export var squadTargetMarker = squadMarker.extend({
             this.spreadMarker1.setTilt(results.bearing);
         }
 
-        this.calcMarker2.close();
+        
         this.spreadMarker2.setStyle(this.spreadOptionsOff);
 
         if (globalData.minimap.activeWeaponsMarkers.getLayers().length === 2) {
             results2 = getCalcFromUI(globalData.minimap.activeWeaponsMarkers.getLayers()[1].getLatLng(), this.getLatLng());
 
-            if (globalData.userSettings.bearingOverDistance == 1) {
+            if (globalData.userSettings.bearingOverDistance) {
                 content = "<span class='calcNumber'>(1)</span></br><span>" + results.elevation + "</span></br><span class='bearingUiCalc'>" +  results.distance + "m</span>";
                 content2 = "<span class='calcNumber'>(2)</span></br><span>" + results2.elevation + "</span></br><span class='bearingUiCalc'>" +  results2.distance + "m</span>";
             }
@@ -413,7 +427,7 @@ export var squadTargetMarker = squadMarker.extend({
             else {
                 this.spreadMarker2.setRadius([(results2.ellipseParams.semiMajorAxis * mapScale)/2, (results2.ellipseParams.semiMinorAxis * mapScale)/2]);
                 this.spreadMarker2.setTilt(results2.bearing);
-                if (globalData.userSettings.spreadRadius == 1) {
+                if (globalData.userSettings.spreadRadius) {
                     this.spreadMarker2.setStyle(this.spreadOptionsOn);
                 }
                 else {
@@ -422,6 +436,9 @@ export var squadTargetMarker = squadMarker.extend({
             }
             this.calcMarker2.openOn(globalData.minimap);
             this.calcMarker2.setContent(content2);
+        }
+        else {
+            this.calcMarker2.close();
         }
         this.calcMarker1.setContent(content);
     },
@@ -442,14 +459,14 @@ export var squadTargetMarker = squadMarker.extend({
         this.spreadMarker2.setLatLng(e.latlng);
 
         // Update bearing/elevation/spread marker
-        if (globalData.userSettings.LowSpecMode == 1) {
+        if (globalData.userSettings.LowSpecMode) {
             this.updateCalc();
         }
     },
 
     // When in low spec mode, hide calcs/spread at drag start
     _handleDragStart: function () {
-        if (globalData.userSettings.LowSpecMode == 0) {
+        if (!globalData.userSettings.LowSpecMode) {
             this.calcMarker1.setContent(" ");
             this.calcMarker2.setContent(" ");
             this.spreadMarker1.setStyle(this.spreadOptionsOff);
@@ -458,7 +475,7 @@ export var squadTargetMarker = squadMarker.extend({
     },
 
     _handleDragEnd: function () {
-        if (globalData.userSettings.LowSpecMode == 0) {
+        if (!globalData.userSettings.LowSpecMode) {
             this.updateCalc();
         }
     },
