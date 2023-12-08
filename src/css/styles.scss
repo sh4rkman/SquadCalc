@@ -503,7 +503,6 @@ footer {
 
 .kpPopup {
     background: transparent;
-
     .leaflet-popup-tip,
     .leaflet-popup-content-wrapper {
         user-select: none; 
@@ -519,15 +518,7 @@ footer {
 
         @extend %text-outline;
     }
-    &.leaflet-popup {
-        transition: none;
-    }
 }
-
-
-
-
-
 
 %text-outline {
     text-shadow: 1px 1px 0 #111,
@@ -656,7 +647,7 @@ footer {
                 letter-spacing: 1px;
             }
         }
-        &#socials {
+        &#links {
             margin: 2em 0 0.3em auto;
             width: auto;
             font-size: 1.4em;
