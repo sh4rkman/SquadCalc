@@ -68,7 +68,6 @@ export class Weapon {
         // When using UB32, return last value from UB32_table
         return this.velocity.slice(-1)[0][0];
     }
-
 }
 
 

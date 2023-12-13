@@ -168,11 +168,17 @@ header {
         .select2-selection--single .select2-selection__rendered {
             color: #fff;
         }
+        .select2-selection--single {
+            background-color: transparent;
+            border: none;
+            color: $mainTxtColor;
+        }
     }
     span.select2-selection.select2-selection--single {
         outline: none;
     }
 }
+
 
 
 /***************************************
@@ -183,6 +189,112 @@ header {
 /****************
    *    Results
    *****************/
+
+
+#map_ui {
+    position: relative;
+    height: 100vh; 
+    width: 100vw; 
+    margin: 0;
+    #map {
+        height: 100%;
+        width: 100%;
+        background: var(--themecolor, $mainBGColor);
+        z-index: 0;
+        // outline: 0;
+        &, .leaflet-overlay-pane .leaflet-interactive {
+            cursor: crosshair;
+        }
+        img.leaflet-tile {
+            mix-blend-mode: normal;
+        }
+        .leaflet-pane .leaflet-marker-pane .leaflet-marker-icon {
+            cursor: grab;
+        }
+        .kpPopup {
+            background: transparent;
+            .leaflet-popup-tip,
+            .leaflet-popup-content-wrapper {
+                user-select: none; 
+                font-family: Montserrat, Times, "Times New Roman", serif;
+                font-weight: bold;
+                font-size: 1.2em;
+                background: transparent;
+                box-shadow: none;
+                color:$mainTxtColor;
+                height: 2em;
+                padding: 0;
+                text-align: center;
+        
+                @extend %text-outline;
+            }
+            &.leaflet-popup {
+                transition: none;
+            }
+        }
+        .calcPopup, .calcPopup2 {
+            margin: 0;
+            padding: 0;
+            font-family: Montserrat, Times, "Times New Roman", serif;
+            background: transparent;
+            border: none;
+            box-shadow: none;
+            pointer-events: none;
+            font-weight: bold;
+            font-size: 0.9em;
+            color: $mainTxtColor;
+            height: fit-content;
+            line-height: 1em;
+        
+            @extend %text-outline;
+            .calcNumber {
+                font-size: 0.7em;
+            }
+            .bearingUiCalc {
+                font-size: 0.7em;
+            }
+            .leaflet-popup-tip,
+            .leaflet-popup-content-wrapper {
+                pointer-events: none;
+                font-weight: bold;
+                font-size: 0.9em;
+                background: transparent;
+                box-shadow: none;
+                color: $mainTxtColor;
+                height: 2em;
+                padding: 0;
+        
+                @extend %text-outline;
+        
+            }
+            .leaflet-popup-content{
+                margin: 0;
+                line-height: 1;
+            }
+            .leaflet-popup-tip-container {
+                display: none;
+            } 
+            &.calcPopup {
+                .leaflet-popup-content-wrapper {
+                    text-align: right;
+                }
+            }
+            &.calcPopup2 {
+                .leaflet-popup-content-wrapper {
+                    text-align: left;
+                }
+            }
+        }
+        .animatedWeaponMarker{
+            opacity: 0; 
+            animation: weapon-appear 0.25s ease-in-out forwards 0s;
+        }
+        .animatedTargetMarker {
+            opacity: 0; 
+            animation: target-appear 0.25s ease-in-out forwards 0s;
+        }
+    }
+}
 
 #classic_ui {
     height: 40vh;
@@ -256,10 +368,6 @@ header {
     .error2 {
         border-bottom: 3px solid $mainColor;
     }
-
-    /****************
-   *   Saved calcs
-   *****************/
     #saved {
         font-size: 0.6em;
         .friendlyname {
@@ -471,22 +579,8 @@ footer {
     font-weight: normal;
 }
 
-.select2-container--default .select2-selection--single {
-    background-color: transparent;
-    border: none;
-    color: $mainTxtColor;
-}
 
-#map_ui {
-    position: relative;
-    height: 100vh; 
-    width: 100vw; 
-    margin: 0;
-    #map {
-        height: 100%;
-        width: 100%;
-    }
-}
+
 
 #canvas {
     display: none;
@@ -496,129 +590,12 @@ footer {
     width: 350px;
 }
 
-
 .leader-line {
     z-index: -1;
 }
 
-.kpPopup {
-    background: transparent;
-    .leaflet-popup-tip,
-    .leaflet-popup-content-wrapper {
-        user-select: none; 
-        font-family: Montserrat, Times, "Times New Roman", serif;
-        font-weight: bold;
-        font-size: 1.2em;
-        background: transparent;
-        box-shadow: none;
-        color:$mainTxtColor;
-        height: 2em;
-        padding: 0;
-        text-align: center;
 
-        @extend %text-outline;
-    }
-}
 
-%text-outline {
-    text-shadow: 1px 1px 0 #111,
-    -1px 1px 0 #111,
-    1px -1px 0 #111,
-    -1px -1px 0 #111,
-   0 1px 0 #111,
-    0 -1px 0 #111,
-    -1px 0 0 #111,
-    1px 0 0 #111,
-    2px 2px 0 #111,
-    -2px 2px 0 #111,
-    2px -2px 0 #111,
-    -2px -2px 0 #111,
-    0 2px 0 #111,
-    0 -2px 0 #111,
-    -2px 0 0 #111,
-    2px 0 0 #111,
-    1px 2px 0 #111,
-    -1px 2px 0 #111,
-    1px -2px 0 #111,
-    -1px -2px 0 #111,
-    2px 1px 0 #111,
-    -2px 1px 0 #111,
-    2px -1px 0 #111,
-    -2px -1px 0 #111;
-}
-
-.leaflet-container {
-    background: var(--themecolor, $mainBGColor);
-    z-index: 0;
-    outline: 0;
-}
-
-.leaflet-container, .leaflet-overlay-pane .leaflet-interactive {
-    cursor:crosshair;
-}
-
-.leaflet-pane .leaflet-marker-pane .leaflet-marker-icon {
-    cursor:grab;
-}
-
-.leaflet-container img.leaflet-tile {
-    mix-blend-mode: normal;
-}
-
-.calcPopup, .calcPopup2 {
-    margin: 0;
-    padding: 0;
-    font-family: Montserrat, Times, "Times New Roman", serif;
-    background: transparent;
-    border: none;
-    box-shadow: none;
-    pointer-events: none;
-    font-weight: bold;
-    font-size: 0.9em;
-    color: $mainTxtColor;
-    height: fit-content;
-    line-height: 1em;
-
-    @extend %text-outline;
-    .calcNumber {
-        font-size: 0.7em;
-    }
-    .bearingUiCalc {
-        font-size: 0.7em;
-    }
-    .leaflet-popup-tip,
-    .leaflet-popup-content-wrapper {
-        pointer-events: none;
-        font-weight: bold;
-        font-size: 0.9em;
-        background: transparent;
-        box-shadow: none;
-        color: $mainTxtColor;
-        height: 2em;
-        padding: 0;
-
-        @extend %text-outline;
-    }
-    .leaflet-popup-content{
-        margin: 0;
-        line-height: 1;
-    }
-    .leaflet-popup-tip-container {
-        display: none;
-    } 
-}
-
-.calcPopup {
-    .leaflet-popup-content-wrapper {
-        text-align: right;
-    }
-}
-
-.calcPopup2 {
-    .leaflet-popup-content-wrapper {
-        text-align: left;
-    }
-}
 
 #helpDialog {
     margin: auto;
@@ -628,16 +605,19 @@ footer {
     padding: 30px 5px 5px 30px;
     border-radius: 10px;
     font-size: 0.7em;
-    width: 450px;
+    width: 400px;
     letter-spacing: 1px;
     line-height: 1em;
+    &::backdrop {
+        backdrop-filter: blur(3px) brightness(120%) grayscale(20%) contrast(90%);
+    }
     table {
         &.userSettings {
             border: none;
             td {
                 padding: 0;
                 border: none;
-                &:nth-child(1) {  // Fist column
+                &:nth-child(1) {
                     padding-left: 0;
                     padding-right: 1em;
                 }
@@ -657,11 +637,15 @@ footer {
                 padding: 0 0.5em;
             }
             a, a:visited {
-                color: $mainTxtColor
+                color: $mainTxtColor;
             }
             a:hover {
                 cursor: pointer;
-                color: $mainColor
+                color: $mainColor;
+                i {
+                    transition: all 0.2s ease;
+                    transform: scale(0.9);
+                }
             }
         }
         &#tips {
@@ -682,7 +666,7 @@ footer {
         right: 8px;
         top: 8px;
         background-color: transparent;
-        transition: all 0.3s ease;
+        transition: all 0.2s ease;
         &:hover {
             cursor: pointer;
             color: $mainColor;
@@ -767,23 +751,6 @@ $bezier: cubic-bezier(0.65, 0.25, 0.56, 0.96);
         stroke-dashoffset: 0;
     }
 }
-  
-
-dialog::backdrop {
-    backdrop-filter: blur(3px) brightness(120%) grayscale(20%) contrast(90%);
-}
-
-.animatedTargetMarker {
-    opacity: 0; 
-    animation: target-appear 0.25s ease-in-out forwards;
-    animation-delay: 0s;
-}
-
-.animatedWeaponMarker{
-    opacity: 0; 
-    animation: weapon-appear 0.25s ease-in-out forwards;
-    animation-delay: 0s;
-}
 
 @keyframes target-appear {
     0% {
@@ -796,6 +763,18 @@ dialog::backdrop {
     }
 }
 
+@keyframes spread-appear {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+
+
+
 @keyframes weapon-appear {
     0% {
         top: -10px;
@@ -805,4 +784,31 @@ dialog::backdrop {
         top: 0;
         opacity: 1;
     }
+}
+
+%text-outline {
+    text-shadow: 1px 1px 0 #111,
+    -1px 1px 0 #111,
+    1px -1px 0 #111,
+    -1px -1px 0 #111,
+   0 1px 0 #111,
+    0 -1px 0 #111,
+    -1px 0 0 #111,
+    1px 0 0 #111,
+    2px 2px 0 #111,
+    -2px 2px 0 #111,
+    2px -2px 0 #111,
+    -2px -2px 0 #111,
+    0 2px 0 #111,
+    0 -2px 0 #111,
+    -2px 0 0 #111,
+    2px 0 0 #111,
+    1px 2px 0 #111,
+    -1px 2px 0 #111,
+    1px -2px 0 #111,
+    -1px -2px 0 #111,
+    2px 1px 0 #111,
+    -2px 1px 0 #111,
+    2px -1px 0 #111,
+    -2px -1px 0 #111;
 }

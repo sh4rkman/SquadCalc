@@ -1,5 +1,4 @@
 import { globalData } from "./conf";
-import { shoot } from "./utils";
 
 import AlBasrahURL from "../img/heightmaps/al basrah.jpg";
 import AnvilURL from "../img/heightmaps/anvil.jpg";
@@ -32,11 +31,12 @@ import { squadMinimap } from "./squadMinimap";
 export const MAPS = [
     { 
         name: "Al Basrah", 
-        size: 3040, // OK but heightmap is off
+        size: 3040, // OK
         offset: [0, 0],
-        scaling: 0.01294, //0.02294, anciennement
+        scaling: 0.01294, // OK
         heightmapURL: AlBasrahURL,
         mapURL: "/albasrah/{z}_{x}_{y}.jpg",
+        maxZoomLevel: 4,
     },
     { 
         name: "Anvil", 
@@ -45,6 +45,7 @@ export const MAPS = [
         scaling: 0.216675, 
         heightmapURL: AnvilURL,
         mapURL: "/anvil/{z}_{x}_{y}.jpg",
+        maxZoomLevel: 4,
     },
     { 
         name: "Belaya", 
@@ -53,6 +54,7 @@ export const MAPS = [
         scaling: 0.0726, 
         heightmapURL: BelayaURL,
         mapURL: "/belaya/{z}_{x}_{y}.jpg",
+        maxZoomLevel: 4,
     },
     { 
         name: "Black Coast", 
@@ -61,6 +63,7 @@ export const MAPS = [
         scaling: 0.35, 
         heightmapURL: BlackCoastURL,
         mapURL: "/blackcoast/{z}_{x}_{y}.jpg",
+        maxZoomLevel: 4,
     },
     { 
         name: "Chora", 
@@ -69,46 +72,52 @@ export const MAPS = [
         scaling: 0.064, 
         heightmapURL: ChoraURL,
         mapURL: "/chora/{z}_{x}_{y}.jpg",
+        maxZoomLevel: 4,
     },
     { 
         name: "Fallujah", 
         size: 3005, // OK
-        offset: [-200, 0], 
-        scaling: 0.0401, 
+        offset: [0, 0], 
+        scaling: 0.0401, // OK
         heightmapURL: FallujahURL,
         mapURL: "/fallujah/{z}_{x}_{y}.jpg",
+        maxZoomLevel: 5,
     },
     { 
         name: "Fool's Road",
         size: 1774, // OK
-        offset: [-150, 0], 
-        scaling: 0.15744, 
+        offset: [0, 0], 
+        scaling: 0.15744, // OK
         heightmapURL: FoolsRoadURL,
         mapURL: "/foolsroad/{z}_{x}_{y}.jpg",
+        maxZoomLevel: 4,
     },
     { 
         name: "Goose Bay", 
         size: 4031, // OK
         offset: [0, 0], 
-        scaling: 0.2, 
+        scaling: 0.22064, // OK
         heightmapURL: GooseBayURL,
         mapURL: "/goosebay/{z}_{x}_{y}.jpg",
+        maxZoomLevel: 4,
     },
     { 
         name: "Gorodok", 
-        size: 4064, 
+        size: 4064, // OK
         offset: [200, 200], 
-        scaling: 0.119, 
+        scaling: 0.11900000000000001, // OK
         heightmapURL: GorodokURL,
         mapURL: "/gorodok/{z}_{x}_{y}.jpg",
+        maxZoomLevel: 5,
     },
     { 
         name: "Harju", 
         size: 4032, // OK
         offset: [0, 0], 
-        scaling: 0.1, 
+        scaling: 0.131, // OK
         heightmapURL: HarjuURL,
         mapURL: "/harju/{z}_{x}_{y}.jpg",
+        maxZoomLevel: 4,
     },
     { 
         name: "Kamdesh", 
@@ -117,23 +126,25 @@ export const MAPS = [
         scaling: 0.190215, 
         heightmapURL: KamdeshURL,
         mapURL: "/kamdesh/{z}_{x}_{y}.jpg",
+        maxZoomLevel: 4,
     },
     { 
         name: "Kohat", 
         size: 4617, // OK
-        offset: [-1000, 0], 
-        scaling: 1, 
+        offset: [0, 0], 
+        scaling: 0.733125, // OK
         heightmapURL: KohatURL,
         mapURL: "/kohat/{z}_{x}_{y}.jpg",
+        maxZoomLevel: 4,
     },
     { 
         name: "Kokan",
         size: 2496, // OK
         offset: [0, 0], 
         scaling: 0.0164, 
-        heightmapURL: 
-        KokanURL,
+        heightmapURL: KokanURL,
         mapURL: "/kokan/{z}_{x}_{y}.jpg",
+        maxZoomLevel: 4,
     },
     { 
         name: "Lashkar", 
@@ -142,6 +153,7 @@ export const MAPS = [
         scaling: 0.28215, 
         heightmapURL: LashkarURL,
         mapURL: "/lashkar/{z}_{x}_{y}.jpg",
+        maxZoomLevel: 4,
     },
     { 
         name: "Logar", 
@@ -150,6 +162,7 @@ export const MAPS = [
         scaling: 0.13575, 
         heightmapURL: LogarURL,
         mapURL: "/logar/{z}_{x}_{y}.jpg",
+        maxZoomLevel: 4,
     },
     { 
         name: "Manicouagan", 
@@ -158,14 +171,16 @@ export const MAPS = [
         scaling: 0.3564, 
         heightmapURL: ManicouaganURL,
         mapURL: "/manicouagan/{z}_{x}_{y}.jpg",
+        maxZoomLevel: 4,
     },
     { 
         name: "Mestia", 
-        size: 2400, // OK mais minimap à refaire
+        size: 2400,
         offset: [0, 0], 
         scaling: 0.41028, 
         heightmapURL: MestiaURL,
         mapURL: "/mestia/{z}_{x}_{y}.jpg",
+        maxZoomLevel: 4,
     },
     { 
         name: "Mutaha", 
@@ -174,6 +189,7 @@ export const MAPS = [
         scaling: 0.07071, 
         heightmapURL: MutahaURL,
         mapURL: "/mutaha/{z}_{x}_{y}.jpg",
+        maxZoomLevel: 5,
     },
     { 
         name: "Narva", 
@@ -182,6 +198,7 @@ export const MAPS = [
         scaling: 0.0583, 
         heightmapURL: NarvaURL,
         mapURL: "/narva/{z}_{x}_{y}.jpg",
+        maxZoomLevel: 4,
     },
     { 
         name: "Sanxian (beta)",
@@ -190,6 +207,7 @@ export const MAPS = [
         scaling: 0.1892, 
         heightmapURL: SanxianURL,
         mapURL: "/sanxian/{z}_{x}_{y}.jpg",
+        maxZoomLevel: 4,
     },
     { 
         name: "Skorpo", 
@@ -198,6 +216,7 @@ export const MAPS = [
         scaling: 2.14515, 
         heightmapURL: SkorpoURL,
         mapURL: "/skorpo/{z}_{x}_{y}.jpg",
+        maxZoomLevel: 4,
     },
     { 
         name: "Sumari", 
@@ -206,6 +225,7 @@ export const MAPS = [
         scaling: 0.035925, 
         heightmapURL: SumariURL,
         mapURL: "/sumari/{z}_{x}_{y}.jpg",
+        maxZoomLevel: 4,
     },
     { 
         name: "Tallil", 
@@ -214,6 +234,7 @@ export const MAPS = [
         scaling: 0.05275, 
         heightmapURL: TallilURL,
         mapURL: "/tallil/{z}_{x}_{y}.jpg",
+        maxZoomLevel: 4,
     },
     { 
         name: "Yehorivka", 
@@ -222,6 +243,7 @@ export const MAPS = [
         scaling: 0.2732, 
         heightmapURL: YehorivkaURL,
         mapURL: "/yehorivka/{z}_{x}_{y}.jpg", 
+        maxZoomLevel: 4,
     }
 ];
 
@@ -254,44 +276,7 @@ export function loadMapSelector() {
     });
 
     $(".dropbtn").val("0");
-    loadHeatmap();
-}
-
-/**
- * Draw the selected Heatmaps in a hidden canvas
- */
-export function drawHeatmap() {
-    const IMG = new Image(); // Create new img element
-
-    globalData.activeMap = $(".dropbtn").val();
-    IMG.src = MAPS.find((elem, index) => index == globalData.activeMap).heightmapURL;
-
-    IMG.addEventListener("load", function() { // wait for the image to load or it does crazy stuff
-        globalData.canvas.obj.drawImage(IMG, 0, 0, globalData.canvas.size, globalData.canvas.size);
-        shoot();
-    }, false);
-
-}
-
-
-/**
- * Load the heatmap to the canvas
- */
-function loadHeatmap() {
-    const IMG = new Image();
-    globalData.canvas.obj = document.getElementById("canvas").getContext("2d", {willReadFrequently: true});
-
-    IMG.addEventListener("load", function() {
-        globalData.canvas.obj.drawImage(IMG, 0, 0, globalData.canvas.size, globalData.canvas.size); // Draw img at good scale
-    }, false);
-
-    if (globalData.debug.active) {
-        // when in debug mode, display the heightmap and prepare keypads
-        $("#canvas").css("display", "flex");
-        $("#mortar-location").val(globalData.debug.DEBUG_MORTAR_COORD);
-        $("#target-location").val(globalData.debug.DEBUG_TARGET_COORD);
-        shoot();
-    }
+    globalData.minimap.loadHeatmap();
 }
 
 export function loadMinimap(){

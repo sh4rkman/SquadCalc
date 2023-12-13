@@ -771,7 +771,7 @@ export function getKP(lat, lng) {
         return `${kpLetter}${pad(kpNumber, 2)}-${subNumber}-${sub2Number}`;
     case 5:
         return `${kpLetter}${pad(kpNumber, 2)}-${subNumber}-${sub2Number}-${sub3Number}`;
-    case 6:
+    default:
         return `${kpLetter}${pad(kpNumber, 2)}-${subNumber}-${sub2Number}-${sub3Number}-${sub4Number}`;
     }
 }  

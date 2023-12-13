@@ -31,9 +31,6 @@ export function loadSettings(){
     globalData.userSettings.spreadRadius = loadLocalSetting("settings-spread-radius");
     $("#spreadRadiusSetting").prop("checked", globalData.userSettings.spreadRadius);
 
-    globalData.userSettings.LowSpecMode = loadLocalSetting("settings-low-spec");
-    $("#LowSpecModeSetting").prop("checked", globalData.userSettings.LowSpecMode);
-
     globalData.userSettings.targetAnimation = loadLocalSetting("settings-target-animation");
     $("#targetAnimationSettings").prop("checked", globalData.userSettings.targetAnimation);
 
@@ -43,9 +40,8 @@ export function loadSettings(){
     globalData.userSettings.weaponMinMaxRange = loadLocalSetting("settings-weapon-range");
     $("#weaponRangeSettings").prop("checked", globalData.userSettings.weaponMinMaxRange);
 
-    globalData.userSettings.bearingOverDistance = loadLocalSetting("settings-bearing-distance");
+    globalData.userSettings.bearingOverDistance = loadLocalSetting("settings-bearing-distance", false);
     $("#bearingOverDistanceSettings").prop("checked", globalData.userSettings.bearingOverDistance);
-
 }
 
 $("#keypadUnderCursorSetting").on("change", function() {
@@ -58,19 +54,17 @@ $("#keypadUnderCursorSetting").on("change", function() {
     }
 
     val = $("#keypadUnderCursorSetting").is(":checked");
+
+    if (val){
+        globalData.minimap.on("mousemove", globalData.minimap._handleMouseMove);
+    }
+    else {
+        globalData.minimap.off("mousemove", globalData.minimap._handleMouseMove);
+        globalData.minimap.mouseLocationPopup.close();
+    }
     globalData.userSettings.keypadUnderCursor = val;
     localStorage.setItem("settings-keypad-cursor", +val);
-    globalData.minimap.mouseLocationPopup.close();
-
 });
-
-$("#LowSpecModeSetting").on("change", function() {
-    var val = $("#LowSpecModeSetting").is(":checked");
-    globalData.userSettings.LowSpecMode = val;
-    localStorage.setItem("settings-low-spec", +val);
-});
-
-
 
 $("#gridSetting").on("change", function() {
     var val = $("#gridSetting").is(":checked");

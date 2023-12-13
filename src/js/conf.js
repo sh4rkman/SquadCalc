@@ -15,8 +15,8 @@ export var globalData = {
     ui: true,
     debug: {
         active: false,
-        DEBUG_MORTAR_COORD: "E0432",
-        DEBUG_TARGET_COORD: "E0535",
+        DEBUG_MORTAR_COORD: "o136655",
+        DEBUG_TARGET_COORD: "N167985",
     },
     gravity: 9.8,
     theme: "classic",
@@ -24,7 +24,6 @@ export var globalData = {
     userSettings: {
         keypadUnderCursor: true,
         spreadRadius: true,
-        LowSpecMode: true,
         targetAnimation: true,
         weaponMinMaxRange: true,
         bearingOverDistance: false,

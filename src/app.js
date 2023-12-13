@@ -13,7 +13,7 @@ import "./css/styles.scss";
 import "./css/responsive.scss";
 
 // JS Functions
-import { preventAutocomplete, loadUI} from "./js/utils";
+import { preventAutocomplete, loadUI } from "./js/utils";
 import { loadMapSelector, loadMinimap } from "./js/maps";
 import { loadTheme } from "./js/themes";
 import { loadWeapons } from "./js/weapons";

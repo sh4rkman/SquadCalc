@@ -3,7 +3,7 @@ import squadGrid from "./squadGrid";
 import { globalData } from "./conf";
 import { MAPS } from "./maps";
 import { squadWeaponMarker, squadTargetMarker, mortarIcon, mortarIcon1, mortarIcon2 } from "./squadMarker";
-import { getKP } from "./utils";
+import { getKP, shoot } from "./utils";
 
 export var squadMinimap = L.Map.extend({
     options: {
@@ -11,7 +11,7 @@ export var squadMinimap = L.Map.extend({
         attributionControl: false,
         crs: L.CRS.Simple,
         minZoom: 0,
-        maxZoom: 6,
+        maxZoom: 8,
         zoomControl: false,
         doubleClickZoom: false,
         edgeBufferTiles: 3,
@@ -21,7 +21,6 @@ export var squadMinimap = L.Map.extend({
 
     initialize: function (latlng, options) {
         L.Map.prototype.initialize.call(this, latlng, options);
-
         this.markersGroup = L.layerGroup().addTo(this);
         this.layerGroup = L.layerGroup().addTo(this);
         this.activeTargetsMarkers = L.layerGroup().addTo(this);
@@ -40,18 +39,25 @@ export var squadMinimap = L.Map.extend({
 
         // Custom events handlers
         this.on("dblclick", this._handleDoubleCkick, this);
-        this.on("mousemove", this._handleMouseMove, this);
         this.on("contextmenu", this._handleContextMenu, this);
         this.on("mouseout", this._handleMouseOut, this);
+        if (globalData.userSettings.keypadUnderCursor){
+            this.on("mousemove", this._handleMouseMove, this);
+        }
+
     },
 
     /**
      * Draw the map+grid inside the map container
      */
     draw: function(){
-        var map = MAPS.find((elem, index) => index == globalData.activeMap);
+
+        var mapVal = $(".dropbtn").val();
+        var map = MAPS.find((elem, index) => index == mapVal);
         var imageBounds = L.latLngBounds(L.latLng(0, 0), L.latLng(-255, 255));
-    
+        
+        this.mapScale = map.size / 256;
+        globalData.activeMap = mapVal;
         globalData.mapScale = 256 / map.size;
         globalData.minimap.setView([-128, 128], 2);
     
@@ -62,7 +68,7 @@ export var squadMinimap = L.Map.extend({
     
         // Draw the current layer
         L.tileLayer("src/img/maps" + map.mapURL, {
-            maxNativeZoom: 4,
+            maxNativeZoom: map.maxZoomLevel,
             noWrap: true,
             bounds: imageBounds,
         }).addTo(this.layerGroup);
@@ -73,6 +79,8 @@ export var squadMinimap = L.Map.extend({
         if (globalData.userSettings.grid) {
             this.grid.addTo(this.layerGroup);
         }
+
+        this.drawHeatmap();
 
     },
 
@@ -130,6 +138,40 @@ export var squadMinimap = L.Map.extend({
     },
 
     /**
+     * Draw the selected Heatmaps in a hidden canvas
+     */
+    drawHeatmap: function() {
+        const IMG = new Image(); // Create new img element
+        IMG.src = MAPS.find((elem, index) => index == globalData.activeMap).heightmapURL;
+
+        IMG.addEventListener("load", function() { // wait for the image to load or it does crazy stuff
+            globalData.canvas.obj.drawImage(IMG, 0, 0, globalData.canvas.size, globalData.canvas.size);
+            shoot();
+        }, false);
+    },
+
+    /**
+     * Load the heatmap to the canvas
+     */
+    loadHeatmap: function() {
+        const IMG = new Image();
+        globalData.canvas.obj = document.getElementById("canvas").getContext("2d", {willReadFrequently: true});
+
+        IMG.addEventListener("load", function() {
+            globalData.canvas.obj.drawImage(IMG, 0, 0, globalData.canvas.size, globalData.canvas.size); // Draw img at good scale
+        }, false);
+
+        if (globalData.debug.active) {
+            // when in debug mode, display the heightmap and prepare keypads
+            $("#canvas").css("display", "flex");
+            $("#mortar-location").val(globalData.debug.DEBUG_MORTAR_COORD);
+            $("#target-location").val(globalData.debug.DEBUG_TARGET_COORD);
+            shoot();
+        }
+    },
+
+
+    /**
      * Right-Click
      * Place a new WeaponMarker on the minimap
      */
@@ -156,11 +198,8 @@ export var squadMinimap = L.Map.extend({
      * Mouse-Over
      * Display and update hovered keypad under cursor
      */
-    _handleMouseMove: function (e) {
-        const mapScale = MAPS.find((elem, index) => index == globalData.activeMap).size / 256;
+    _handleMouseMove: function (e) { 
 
-        if (!globalData.userSettings.keypadUnderCursor){ return 1; }
-    
         // if no mouse support
         if (!matchMedia("(pointer:fine)").matches) { return 1; }
 
@@ -171,7 +210,7 @@ export var squadMinimap = L.Map.extend({
         }
 
         this.mouseLocationPopup.setLatLng(e.latlng).openOn(globalData.minimap);
-        this.mouseLocationPopup.setContent("<p>"+ getKP(-e.latlng.lat * mapScale, e.latlng.lng * mapScale) + "</p>");
+        this.mouseLocationPopup.setContent("<p>"+ getKP(-e.latlng.lat * this.mapScale, e.latlng.lng * this.mapScale) + "</p>");
     },
 
 
@@ -191,7 +230,6 @@ export var squadMinimap = L.Map.extend({
         }
         
         new squadTargetMarker(L.latLng(e.latlng), {animate: globalData.userSettings.targetAnimation}).addTo(this.markersGroup);
-
     },
 
     /**

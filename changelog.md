@@ -1,5 +1,31 @@
 
 
+# <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">  **15.1.0** *(2023-12-13)*
+
+<img src="https://img.shields.io/badge/-new-green"> Added AI-upscaled map for Gorodok, Fallujah and Mutaha (beta testing for now)
+
+<img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed Al Basrah heightmap not loading when first loading the page
+
+<img src="https://img.shields.io/badge/-%20fix%20-orange"> Gorodok's heightmap is now more precise (thanks xuvvy [#107](https://github.com/sh4rkman/SquadCalc/issues/107))
+
+<img src="https://img.shields.io/badge/-%20fix%20-orange"> Corrected GooseBay, FoolsRoad, Fallujah, Kohat and Skorpo heightmaps
+
+<img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed Github/Youtube button being blocked by adblock-list ([#106](https://github.com/sh4rkman/SquadCalc/issues/106))
+
+<img src="https://img.shields.io/badge/-%20Improv%20-orange"> performance optimisation : dragging a weapon now disable targets calculations update. Despite my try to optimise, dragging a weapon while several markers are placed on the map result in a very laggy experience. I'm shutting down the update-while-dragging setting for now. Dragging a single target still updates it's calcs.
+
+<img src="https://img.shields.io/badge/-%20Improv%20-orange"> performance optimisation : dragging a marker (target/weapon) now disable the display of keypad undermouse. It means better performance while dragging, and avoid confusion about what the displayed keypad means (it's where the mouse is, not where the dragged marker is)
+
+<img src="https://img.shields.io/badge/-%20Improv%20-orange"> Pushed maxzoomlevel to 8, allowing to zoom further on the map
+
+
+
+
+
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
+
 
 # <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">  **15.0.1** *(2023-12-07)*
 

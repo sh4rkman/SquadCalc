@@ -181,7 +181,24 @@
                             <span></span>
                           </label>
                     </td>
-                    <td>Show Spread Radius on Targets</td>
+                    <td>Show Targets Spread Radius</td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <label class="mcui-checkbox">
+                            <input id="targetAnimationSettings" type="checkbox">
+                            <span>
+                              <svg class="mcui-check" viewBox="-2 -2 35 35" aria-hidden="true">
+                                <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
+                              </svg>
+                            </span>
+                            <span></span>
+                          </label>
+                    </td>
+                    <td>
+                        Show Targets Markers Animations
+                    </td>
                 </tr>
 
                 <tr>
@@ -214,51 +231,6 @@
                     <td>Replace Bearing with Distance</td>
                 </tr>
                 
-            </tbody>
-        </table>
-
-
-        <br><br><h3>Performance</h3><br>
-        
-        <table class="userSettings pure-table">
-            <tbody>
-
-                <tr>
-                    <td>
-                        <label class="mcui-checkbox">
-                            <input id="targetAnimationSettings" type="checkbox">
-                            <span>
-                              <svg class="mcui-check" viewBox="-2 -2 35 35" aria-hidden="true">
-                                <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
-                              </svg>
-                            </span>
-                            <span></span>
-                          </label>
-                    </td>
-                    <td>
-                        Show Targets Markers Animations
-                    </td>
-                </tr>
-
-                <tr>
-                    <td>
-                        <label class="mcui-checkbox">
-                            <input id="LowSpecModeSetting" type="checkbox">
-                            <span>
-                              <svg class="mcui-check" viewBox="-2 -2 35 35" aria-hidden="true">
-                                <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
-                              </svg>
-                            </span>
-                            <span></span>
-                          </label>
-                    </td>
-                    <td>Update calculations while dragging 
-                        <br>
-                        <span class="settingsSubtext">
-                            (Disable to save performance)
-                        </span>
-                    </td>
-                </tr>
             </tbody>
         </table>
 
@@ -322,14 +294,15 @@
             </label>
         </div>
 
-       <div class="fabs fab-wrapper">
-        <input id="fabCheckbox" type="checkbox" class="fab-checkbox2">
-        <label class="fab" for="fabCheckbox">
+        <div class="fabs fab-wrapper">
+            <input id="fabCheckbox" type="checkbox" class="fab-checkbox2">
+            <label class="fab" for="fabCheckbox">
                 <i class="fab-dots-2 fa-solid fa-cog"></i>
-        </label>
+            </label>
         </div>
 
     </footer>
+
 </body>
 
 </html>

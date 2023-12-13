@@ -43,9 +43,6 @@ export var squadMarker = L.Marker.extend({
         return e;
     },
 
-    _handleDragStart: function () { $(".leaflet-marker-icon").css("cursor", "grabbing");},
-    _handleDragEnd: function () {$(".leaflet-marker-icon").css("cursor", "grab");},
-
 });
 
 export var squadWeaponMarker = squadMarker.extend({
@@ -102,8 +99,6 @@ export var squadWeaponMarker = squadMarker.extend({
         this.on("dragEnd", this._handleDragEnd, this);
         this.on("dblclick", this._handleDblclick, this);
         this.on("contextmenu", this._handleContextMenu, this);
-        
-
     },
 
     /**
@@ -168,10 +163,6 @@ export var squadWeaponMarker = squadMarker.extend({
         this.setLatLng(e.latlng);
         this.rangeMarker.setLatLng(e.latlng);
         this.minRangeMarker.setLatLng(e.latlng);
-
-        if (globalData.userSettings.LowSpecMode) {
-            globalData.minimap.updateTargets();
-        }
     },
 
     // Catch this events so user can't place a target by mistake while trying to delete weapon
@@ -179,24 +170,29 @@ export var squadWeaponMarker = squadMarker.extend({
     _handleDblclick: function(){},
 
     _handleDragStart: function () {
-        if (!globalData.userSettings.LowSpecMode) {
-            globalData.minimap.activeTargetsMarkers.eachLayer(function (layer) {
-                layer.calcMarker1.setContent(" ");
-                layer.calcMarker2.setContent(" ");
-                layer.spreadMarker1.setStyle({opacity: 0, fillOpacity: 0});
-                layer.spreadMarker2.setStyle({opacity: 0, fillOpacity: 0});
-            }); 
-        }
+
+        $(".leaflet-marker-icon").css("cursor", "grabbing");
+        globalData.minimap.mouseLocationPopup.close();
+        globalData.minimap.off("mousemove", globalData.minimap._handleMouseMove);
+
+        globalData.minimap.activeTargetsMarkers.eachLayer(function (layer) {
+            layer.calcMarker1.setContent("  ");
+            layer.calcMarker2.setContent("  ");
+            layer.spreadMarker1.setStyle({opacity: 0, fillOpacity: 0});
+            layer.spreadMarker2.setStyle({opacity: 0, fillOpacity: 0});
+        }); 
+    
     },
 
     _handleDragEnd: function () {
-        if (!globalData.userSettings.LowSpecMode) {
-            globalData.minimap.updateTargets();
+        if (globalData.userSettings.keypadUnderCursor){
+            globalData.minimap.on("mousemove", globalData.minimap._handleMouseMove);
         }
+        $(".leaflet-marker-icon").css("cursor", "grab");
+
+        globalData.minimap.updateTargets();
+    
     },
-
-
-
 });
 
 
@@ -216,10 +212,6 @@ export var squadTargetMarker = squadMarker.extend({
         var results2;
         var content;
         var content2;
-        const mapScale = 256 / MAPS.find((elem, index) => index == globalData.activeMap).size;
-
-
-
 
         var popUpOptions_weapon1 = {
             closeButton: false,
@@ -274,7 +266,7 @@ export var squadTargetMarker = squadMarker.extend({
 
         // Create Calc&Spread radius for 1st weapon
         results = getCalcFromUI(globalData.minimap.activeWeaponsMarkers.getLayers()[0].getLatLng(), latlng);
-        radiiElipse = [(results.ellipseParams.semiMajorAxis * mapScale)/2, (results.ellipseParams.semiMinorAxis * mapScale)/2];
+        radiiElipse = [(results.ellipseParams.semiMajorAxis * globalData.mapScale)/2, (results.ellipseParams.semiMinorAxis * globalData.mapScale)/2];
         angleElipse = results.bearing;
 
         if (globalData.userSettings.bearingOverDistance == 1) {
@@ -319,7 +311,7 @@ export var squadTargetMarker = squadMarker.extend({
                 this.spreadMarker2.setStyle({opacity: 0, fillOpacity: 0});
             }
             else {
-                this.spreadMarker2.setRadius([(results2.ellipseParams.semiMajorAxis * mapScale)/2, (results2.ellipseParams.semiMinorAxis * mapScale)/2]);
+                this.spreadMarker2.setRadius([(results2.ellipseParams.semiMajorAxis * globalData.mapScale)/2, (results2.ellipseParams.semiMinorAxis * globalData.mapScale)/2]);
                 this.spreadMarker2.setTilt(results2.bearing);
                 if (globalData.userSettings.spreadRadius) {
                     this.spreadMarker2.setStyle(this.spreadOptionsOn);
@@ -338,7 +330,7 @@ export var squadTargetMarker = squadMarker.extend({
             this.spreadMarker1.setStyle(this.spreadOptionsOff);
         }
         else {
-            this.spreadMarker1.setRadius([(results.ellipseParams.semiMajorAxis * mapScale)/2, (results.ellipseParams.semiMinorAxis * mapScale)/2]);
+            this.spreadMarker1.setRadius([(results.ellipseParams.semiMajorAxis * globalData.mapScale)/2, (results.ellipseParams.semiMinorAxis * globalData.mapScale)/2]);
             if (globalData.userSettings.spreadRadius) {
                 this.spreadMarker1.setStyle(this.spreadOptionsOn); 
             }
@@ -378,7 +370,6 @@ export var squadTargetMarker = squadMarker.extend({
 
 
     updateCalc: function(){
-        const mapScale = 256 / MAPS.find((elem, index) => index == globalData.activeMap).size;
 
         var results = getCalcFromUI(globalData.minimap.activeWeaponsMarkers.getLayers()[0].getLatLng(), this.getLatLng());
         var content;
@@ -396,7 +387,7 @@ export var squadTargetMarker = squadMarker.extend({
             this.spreadMarker1.setStyle({opacity: 0, fillOpacity: 0});
         }
         else {
-            this.spreadMarker1.setRadius([(results.ellipseParams.semiMajorAxis * mapScale)/2, (results.ellipseParams.semiMinorAxis * mapScale)/2]);
+            this.spreadMarker1.setRadius([(results.ellipseParams.semiMajorAxis * globalData.mapScale)/2, (results.ellipseParams.semiMinorAxis * globalData.mapScale)/2]);
             if (globalData.userSettings.spreadRadius) {
                 this.spreadMarker1.setStyle(this.spreadOptionsOn);
             }
@@ -425,7 +416,7 @@ export var squadTargetMarker = squadMarker.extend({
                 this.spreadMarker2.setStyle({opacity: 0, fillOpacity: 0});
             }
             else {
-                this.spreadMarker2.setRadius([(results2.ellipseParams.semiMajorAxis * mapScale)/2, (results2.ellipseParams.semiMinorAxis * mapScale)/2]);
+                this.spreadMarker2.setRadius([(results2.ellipseParams.semiMajorAxis * globalData.mapScale)/2, (results2.ellipseParams.semiMinorAxis * globalData.mapScale)/2]);
                 this.spreadMarker2.setTilt(results2.bearing);
                 if (globalData.userSettings.spreadRadius) {
                     this.spreadMarker2.setStyle(this.spreadOptionsOn);
@@ -448,6 +439,7 @@ export var squadTargetMarker = squadMarker.extend({
     },
 
     _handleDrag: function (e) {
+
         // When dragging marker out of bounds, block it at the edge
         e = this.keepOnMap(e);
 
@@ -459,25 +451,23 @@ export var squadTargetMarker = squadMarker.extend({
         this.spreadMarker2.setLatLng(e.latlng);
 
         // Update bearing/elevation/spread marker
-        if (globalData.userSettings.LowSpecMode) {
-            this.updateCalc();
-        }
+        this.updateCalc();
     },
 
-    // When in low spec mode, hide calcs/spread at drag start
+
     _handleDragStart: function () {
-        if (!globalData.userSettings.LowSpecMode) {
-            this.calcMarker1.setContent(" ");
-            this.calcMarker2.setContent(" ");
-            this.spreadMarker1.setStyle(this.spreadOptionsOff);
-            this.spreadMarker2.setStyle(this.spreadOptionsOff);
-        }
+        $(".leaflet-marker-icon").css("cursor", "grabbing");
+        globalData.minimap.mouseLocationPopup.close();
+        globalData.minimap.off("mousemove", globalData.minimap._handleMouseMove);
     },
 
     _handleDragEnd: function () {
-        if (!globalData.userSettings.LowSpecMode) {
-            this.updateCalc();
+
+        if (globalData.userSettings.keypadUnderCursor){
+            globalData.minimap.on("mousemove", globalData.minimap._handleMouseMove);
         }
+
+        $(".leaflet-marker-icon").css("cursor", "grab");
     },
 });
 

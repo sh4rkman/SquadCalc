@@ -1,11 +1,9 @@
 import { shoot, filterInput, resizeInput, resizeInputsOnResize, RemoveSaves, copySave, copyCalc, saveCalc, changeHighLow, switchUI } from "./utils";
 import { changeWeapon } from "./weapons";
-import { drawHeatmap } from "./maps";
 import { globalData } from "./conf";
 
 $(document).on("change", ".dropbtn2", function() { changeWeapon(); });
 $(document).on("change", ".dropbtn", function() { 
-    drawHeatmap(); 
     globalData.minimap.clear(); 
     globalData.minimap.draw(); 
     shoot();
