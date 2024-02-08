@@ -10,7 +10,7 @@ import targetIconImg from "../img/icons/marker_target.png";
 
 import { globalData } from "./conf";
 import { MAPS } from  "./maps";
-import { getCalcFromUI, getKP } from "./utils";
+import { getCalcFromUI } from "./utils";
 
 /*
  * Global Squad Marker Class 
@@ -228,7 +228,6 @@ export var squadTargetMarker = squadMarker.extend({
             autoClose: false,
             closeOnEscapeKey: false,
             autoPan: false,
-            minWidth: 0,
             bubblingMouseEvents: false,
             interactive: false,
             minWidth: 100,
@@ -265,7 +264,7 @@ export var squadTargetMarker = squadMarker.extend({
         radiiElipse = [(results.ellipseParams.semiMajorAxis * globalData.mapScale)/2, (results.ellipseParams.semiMinorAxis * globalData.mapScale)/2];
         angleElipse = results.bearing;
 
-        content = this.getContent(results)
+        content = this.getContent(results);
 
         // Calc PopUp for weapon 1
         this.calcMarker1 = L.popup(popUpOptions_weapon1).setLatLng(latlng).openOn(globalData.minimap).addTo(globalData.minimap.markersGroup);
@@ -356,7 +355,7 @@ export var squadTargetMarker = squadMarker.extend({
         var content = "<span class='calcNumber'></span></br><span>" + results.elevation + "</span>";
 
         if (globalData.userSettings.bearingOverDistance) {
-            return content = content + "<br><span class='bearingUiCalc'>" +  results.distance + "m</span>";
+            return content + "<br><span class='bearingUiCalc'>" +  results.distance + "m</span>";
         }
         else {
             return content + "<br><span class='bearingUiCalc'>" +  results.bearing + "°</span>";
@@ -371,7 +370,7 @@ export var squadTargetMarker = squadMarker.extend({
         var results2;
         var content2;
 
-        content = this.getContent(results)
+        content = this.getContent(results);
 
         if (results.elevation === "---" || results.ellipseParams.semiMajorAxis === 0) {
             this.spreadMarker1.setStyle({opacity: 0, fillOpacity: 0});

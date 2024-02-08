@@ -756,7 +756,7 @@ export function getKP(lat, lng, precision) {
     let sub4Number = 10 - (sub4Y + 1) * 3;
     sub4Number += Math.floor(x / s4) % 3;
 
-    if(!precision){
+    if (!precision){
         precision = globalData.minimap.getZoom();
     }
 

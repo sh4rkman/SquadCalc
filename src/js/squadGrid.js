@@ -11,8 +11,6 @@ import {
     LayerGroup, Util, LatLng, Polyline,
 } from "leaflet";
 
-import L from "leaflet";
-
 import { isMultiple } from "./utils";
 import { MAPS } from "./maps";
 import { globalData } from "./conf";
