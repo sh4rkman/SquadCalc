@@ -596,8 +596,9 @@ footer {
     width: 400px;
     letter-spacing: 1px;
     line-height: 1em;
-    #dialogTitle{
+    #dialogTitle {
         margin-left: 20px;
+
         @extend .unselectable;
     }
     &::backdrop {
@@ -671,6 +672,55 @@ footer {
             transform: scale(0.9);
         }
     }
+    ul {
+        padding-left: 0;
+        margin-top: 0;
+        
+        @extend .unselectable;
+        li {
+            float: left;
+            list-style-type: none;
+            width: 30%;
+            margin-left: 7%;
+            margin-right: 7%;
+            font-size: 1.1em;
+            button {
+                display: inline-block;
+                font-weight: bold;
+                width: 100%;
+                line-height: 3;
+                background-color: transparent;
+                text-align: center;
+                transition: all 0.4s ease;
+                cursor: pointer;
+                &.active {
+                    border-bottom: solid $mainColor 1px;
+                }
+                &:hover {
+                    transform: scale(1.1);
+                }
+            }
+        }
+    }
+    .panels {
+        height: 360px;
+        position: relative;
+        clear: both;
+    }
+    article {
+        position: absolute;
+        top: 15px;
+        left: 0;
+        height: 100%;
+        width: 100%;
+        padding-left: 30px;
+        padding-top: 10px;
+        color: white;
+        background-color: $mainBGColor;
+    }
+    .active-panel {
+        z-index: 1;
+    }  
 }
 
 $bezier: cubic-bezier(0.65, 0.25, 0.56, 0.96);
@@ -682,7 +732,6 @@ $bezier: cubic-bezier(0.65, 0.25, 0.56, 0.96);
     user-select: none;
     padding: 0.4em 0;
     box-sizing: border-box;
-
     input[type="checkbox"],
     input[type="radio"] {
         position: absolute !important;
@@ -812,53 +861,3 @@ $bezier: cubic-bezier(0.65, 0.25, 0.56, 0.96);
     -2px -1px 0 #111;
 }
 
-#helpDialog {
-    ul {
-        padding-left: 0;
-        margin-top: 0;
-        @extend .unselectable;
-        li {
-            float: left;
-            list-style-type: none;
-            width: 30%;
-            margin-left: 7%;
-            margin-right: 7%;
-            font-size: 1.1em;
-            button {
-                display: inline-block;
-                font-weight: bold;
-                width: 100%;
-                line-height: 3;
-                background-color: transparent;
-                text-align: center;
-                transition: all 0.4s ease;
-                cursor: pointer;
-                &.active {
-                    border-bottom: solid $mainColor 1px;
-                }
-                &:hover{
-                    transform: scale(1.1);
-                }
-            }
-        }
-    }
-    .panels {
-        height: 360px;
-        position: relative;
-        clear: both;
-    }
-    article {
-        position: absolute;
-        top: 15px;
-        left: 0;
-        height: 100%;
-        width: 100%;
-        padding-left: 30px;
-        padding-top: 10px;
-        color: white;
-        background-color: $mainBGColor;
-    }
-    .active-panel {
-        z-index: 1;
-    }  
-}

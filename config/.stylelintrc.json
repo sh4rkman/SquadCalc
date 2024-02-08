@@ -18,6 +18,7 @@
         "color-function-notation": "legacy",
         "import-notation": "string",
         "scss/double-slash-comment-empty-line-before": "never",
-        "selector-id-pattern": null
+        "selector-id-pattern": null,
+        "scss/at-extend-no-missing-placeholder": null
     }
 }

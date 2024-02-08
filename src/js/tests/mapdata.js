@@ -6,10 +6,10 @@ const MAPDATA = [
 
     {
       name: "sanxianIslands",
-      url: "/maps/albasrah/{z}_{x}_{y}.jpg",
+      url: "/maps/sanxianIslands/{z}_{x}_{y}.jpg",
       heightmap: {
         url: "/heightmaps/sanxianIslands.jpg",
-        tile: "/heightmaps/albasrah/{z}_{x}_{y}.jpg",
+        tile: "/heightmaps/sanxianIslands/{z}_{x}_{y}.jpg",
       },
       locations: [
       ],
@@ -22,7 +22,7 @@ const MAPDATA = [
           [2300, 2550],
         ],
         hDim: [3571, 3571], // dimensions of exported heightmap
-        lOrigin: [0, 0], // origin of landscape in SquadSDK (sometimes extracted by placing actor in corner)
+        lOrigin: [-2040, -2040], // origin of landscape in SquadSDK (sometimes extracted by placing actor in corner)
       },
     },
     {
