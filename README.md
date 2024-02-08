@@ -85,7 +85,7 @@ SquadCalc utilizes heightmaps extracted from the Squad SDK to precisely compute 
 | Mutaha                      |        ✅           |
 | Narva                       |          ✅         |
 | Pacific Proving Grounds     |         ❌          |
-| Sanxian Islands             |      WIP             |
+| Sanxian Islands             |      ✅              |
 | Skorpo                      |        ✅           |
 | Sumari Bala                 |      ✅             |
 | Tallil Outskirts            |       ✅            |
