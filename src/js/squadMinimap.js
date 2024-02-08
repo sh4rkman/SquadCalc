@@ -15,6 +15,10 @@ export var squadMinimap = L.Map.extend({
         zoomControl: false,
         doubleClickZoom: false,
         edgeBufferTiles: 3,
+        renderer: L.svg({padding: 3}),
+        closePopupOnClick: false,
+        wheelPxPerZoomLevel: 100,
+        boxZoom: true,
         // maxBounds:[[500, -500], [-800, 800]],
     },
 
@@ -30,13 +34,13 @@ export var squadMinimap = L.Map.extend({
             closeButton: false,
             className: "kpPopup",
             autoClose: false,
-            closeOnClick: false,
             closeOnEscapeKey: false,
             offset: [0, 75],
             autoPan: false,
             interactive: false,
         });
 
+       
         // Custom events handlers
         this.on("dblclick", this._handleDoubleCkick, this);
         this.on("contextmenu", this._handleContextMenu, this);
@@ -44,7 +48,6 @@ export var squadMinimap = L.Map.extend({
         if (globalData.userSettings.keypadUnderCursor){
             this.on("mousemove", this._handleMouseMove, this);
         }
-
     },
 
     /**
@@ -61,6 +64,7 @@ export var squadMinimap = L.Map.extend({
         globalData.mapScale = 256 / map.size;
         globalData.minimap.setView([-128, 128], 2);
     
+
         // Remove any layers already drawn
         this.layerGroup.eachLayer(function(layer){
             this.layerGroup.removeLayer(layer);
@@ -81,7 +85,6 @@ export var squadMinimap = L.Map.extend({
         }
 
         this.drawHeatmap();
-
     },
 
     /**

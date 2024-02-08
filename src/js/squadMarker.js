@@ -10,7 +10,7 @@ import targetIconImg from "../img/icons/marker_target.png";
 
 import { globalData } from "./conf";
 import { MAPS } from  "./maps";
-import { getCalcFromUI } from "./utils";
+import { getCalcFromUI, getKP } from "./utils";
 
 /*
  * Global Squad Marker Class 
@@ -19,12 +19,12 @@ export var squadMarker = L.Marker.extend({
     options: {
         draggable: true,
         riseOnHover: true,
+        keyboard: false,
         animate: true,
     },
 
     // Initialize method
     initialize: function (latlng, options) {
-
         L.Marker.prototype.initialize.call(this, latlng, options);
         this.on("dragstart", this._handleDragStart, this);
         this.on("dragend", this._handleDragEnd, this);
@@ -59,7 +59,6 @@ export var squadWeaponMarker = squadMarker.extend({
             fillOpacity: 0,
             weight: 2,
             autoPan: false,
-            renderer: L.svg({padding: 3}),
         };
 
         this.minDistCircleOn = {
@@ -69,7 +68,6 @@ export var squadWeaponMarker = squadMarker.extend({
             fillOpacity: 0.2,
             weight: 1,
             autoPan: false,
-            renderer: L.svg({padding: 3}),
         };
 
         this.minMaxDistCircleOff = {
@@ -158,7 +156,6 @@ export var squadWeaponMarker = squadMarker.extend({
     },
 
     _handleDrag: function (e) {
-        // When dragging marker out of bounds, block it at the edge
         e = this.keepOnMap(e);
         this.setLatLng(e.latlng);
         this.rangeMarker.setLatLng(e.latlng);
@@ -185,13 +182,13 @@ export var squadWeaponMarker = squadMarker.extend({
     },
 
     _handleDragEnd: function () {
+
         if (globalData.userSettings.keypadUnderCursor){
             globalData.minimap.on("mousemove", globalData.minimap._handleMouseMove);
         }
         $(".leaflet-marker-icon").css("cursor", "grab");
 
         globalData.minimap.updateTargets();
-    
     },
 });
 
@@ -214,29 +211,28 @@ export var squadTargetMarker = squadMarker.extend({
         var content2;
 
         var popUpOptions_weapon1 = {
-            closeButton: false,
-            className: "calcPopup",
-            autoClose: false,
-            closeOnClick: false,
-            closeOnEscapeKey: false,
             autoPan: false,
-            minWidth: 0,
+            autoClose: false,
+            closeButton: false,
+            closeOnEscapeKey: false,
             bubblingMouseEvents: false,
             interactive: false,
-            offset: [-32, -20],
+            className: "calcPopup",
+            minWidth: 100,
+            offset: [-65, 0],
         };
 
         var popUpOptions_weapon2 = {
             closeButton: false,
             className: "calcPopup2",
             autoClose: false,
-            closeOnClick: false,
             closeOnEscapeKey: false,
             autoPan: false,
             minWidth: 0,
             bubblingMouseEvents: false,
             interactive: false,
-            offset: [32, -20],
+            minWidth: 100,
+            offset: [65, 0],
         };
 
 
@@ -269,12 +265,7 @@ export var squadTargetMarker = squadMarker.extend({
         radiiElipse = [(results.ellipseParams.semiMajorAxis * globalData.mapScale)/2, (results.ellipseParams.semiMinorAxis * globalData.mapScale)/2];
         angleElipse = results.bearing;
 
-        if (globalData.userSettings.bearingOverDistance == 1) {
-            content = "<span class='calcNumber'></span></br><span>" + results.elevation + "</span></br><span class='bearingUiCalc'>" +  results.distance + "m</span>";
-        } 
-        else {
-            content = "<span class='calcNumber'></span></br><span>" + results.elevation + "</span></br><span class='bearingUiCalc'>" +  results.bearing + "°</span>";
-        }
+        content = this.getContent(results)
 
         // Calc PopUp for weapon 1
         this.calcMarker1 = L.popup(popUpOptions_weapon1).setLatLng(latlng).openOn(globalData.minimap).addTo(globalData.minimap.markersGroup);
@@ -294,15 +285,8 @@ export var squadTargetMarker = squadMarker.extend({
             // Calcs for second weapon
             results2 = getCalcFromUI(globalData.minimap.activeWeaponsMarkers.getLayers()[1].getLatLng(), latlng);
 
-            // Show calcs
-            if (globalData.userSettings.bearingOverDistance == 1) {
-                content = "<span class='calcNumber'>(1)</span></br><span>" + results.elevation + "</span></br><span class='bearingUiCalc'>" +  results.distance + "m</span>";
-                content2 = "<span class='calcNumber'>(2)</span></br><span>" + results2.elevation + "</span></br><span class='bearingUiCalc'>" +  results2.distance + "m</span></br>";
-            }
-            else {
-                content = "<span class='calcNumber'>(1)</span></br><span>" + results.elevation + "</span></br><span class='bearingUiCalc'>" +  results.bearing + "°</span>";
-                content2 = "<span class='calcNumber'>(2)</span></br><span>" + results2.elevation + "</span></br><span class='bearingUiCalc'>" +  results2.bearing + "°</span></br>";
-            }
+            content = this.getContent(results);
+            content2 = this.getContent(results2);
 
             this.calcMarker2.setContent(content2).openOn(globalData.minimap);
 
@@ -368,6 +352,17 @@ export var squadTargetMarker = squadMarker.extend({
         this.remove();
     },
 
+    getContent: function(results){
+        var content = "<span class='calcNumber'></span></br><span>" + results.elevation + "</span>";
+
+        if (globalData.userSettings.bearingOverDistance) {
+            return content = content + "<br><span class='bearingUiCalc'>" +  results.distance + "m</span>";
+        }
+        else {
+            return content + "<br><span class='bearingUiCalc'>" +  results.bearing + "°</span>";
+        }  
+    },
+
 
     updateCalc: function(){
 
@@ -376,12 +371,7 @@ export var squadTargetMarker = squadMarker.extend({
         var results2;
         var content2;
 
-        if (globalData.userSettings.bearingOverDistance == 1) {
-            content = "<span class='calcNumber'></span></br><span>" + results.elevation + "</span></br><span class='bearingUiCalc'>" +  results.distance + "m</span>";
-        }
-        else {
-            content = "<span class='calcNumber'></span></br><span>" + results.elevation + "</span></br><span class='bearingUiCalc'>" +  results.bearing + "°</span>";
-        }
+        content = this.getContent(results)
 
         if (results.elevation === "---" || results.ellipseParams.semiMajorAxis === 0) {
             this.spreadMarker1.setStyle({opacity: 0, fillOpacity: 0});
@@ -403,14 +393,8 @@ export var squadTargetMarker = squadMarker.extend({
         if (globalData.minimap.activeWeaponsMarkers.getLayers().length === 2) {
             results2 = getCalcFromUI(globalData.minimap.activeWeaponsMarkers.getLayers()[1].getLatLng(), this.getLatLng());
 
-            if (globalData.userSettings.bearingOverDistance) {
-                content = "<span class='calcNumber'>(1)</span></br><span>" + results.elevation + "</span></br><span class='bearingUiCalc'>" +  results.distance + "m</span>";
-                content2 = "<span class='calcNumber'>(2)</span></br><span>" + results2.elevation + "</span></br><span class='bearingUiCalc'>" +  results2.distance + "m</span>";
-            }
-            else {
-                content = "<span class='calcNumber'>(1)</span></br><span>" + results.elevation + "</span></br><span class='bearingUiCalc'>" +  results.bearing + "°</span>";
-                content2 = "<span class='calcNumber'>(2)</span></br><span>" + results2.elevation + "</span></br><span class='bearingUiCalc'>" +  results2.bearing + "°</span>";
-            }
+            content = this.getContent(results);
+            content2 = this.getContent(results2);
 
             if (results2.elevation === "---" || results2.ellipseParams.semiMajorAxis === 0) {
                 this.spreadMarker2.setStyle({opacity: 0, fillOpacity: 0});
@@ -439,7 +423,7 @@ export var squadTargetMarker = squadMarker.extend({
     },
 
     _handleDrag: function (e) {
-
+        
         // When dragging marker out of bounds, block it at the edge
         e = this.keepOnMap(e);
 

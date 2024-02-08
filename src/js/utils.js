@@ -664,7 +664,7 @@ export function copyCalc(e) {
  * Toggle high/low angles
  */
 export function changeHighLow(){
-    // If mortar/deplayable UB32, deny changing
+    // If mortar/deployable UB32, deny changing
     if (globalData.activeWeapon.name == "mortar" || globalData.activeWeapon.name == "UB-32") {return 1;}
 
     const isLowAngle = $("#highlow").find(".fa-sort-amount-up").length > 0;
@@ -693,9 +693,10 @@ export function isMultiple(a, b) {
  * Calculates the keypad coordinates for a given latlng coordinate, e.g. "A5-3-7"
  * @param lat - latitude coordinate
  * @param lng - longitude coordinate
+ * @param precision - wanted precision (optionnal)
  * @returns {string} keypad coordinates as string
  */
-export function getKP(lat, lng) {
+export function getKP(lat, lng, precision) {
     // to minimize confusion
     const x = lng;
     const y = lat;
@@ -704,8 +705,6 @@ export function getKP(lat, lng) {
         return "XXX-X-X"; // when outside of min bounds
     }
 
-
-    
     const kp = 300 / 3 ** 0; // interval of main keypad, e.g "A5"
     const s1 = 300 / 3 ** 1; // interval of first sub keypad
     const s2 = 300 / 3 ** 2; // interval of second sub keypad
@@ -757,8 +756,12 @@ export function getKP(lat, lng) {
     let sub4Number = 10 - (sub4Y + 1) * 3;
     sub4Number += Math.floor(x / s4) % 3;
 
+    if(!precision){
+        precision = globalData.minimap.getZoom();
+    }
+
     // The more the user zoom in, the more precise we display coords under mouse
-    switch (globalData.minimap.getZoom()){
+    switch (precision){
     case 0:
         return `${kpLetter}${pad(kpNumber, 2)}`; 
     case 1:

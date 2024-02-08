@@ -18,8 +18,8 @@ const MAPDATA = [
         scale: [1, 1, 1], // x, y & z scale from SquadSDK (in meters)
         levels: [1349, 3241],
         minimap: [ // taken from blueprints in SquadSDK
-          [510, 510],
-          [4080, 4080],
+          [-2300, -2050],
+          [2300, 2550],
         ],
         hDim: [3571, 3571], // dimensions of exported heightmap
         lOrigin: [0, 0], // origin of landscape in SquadSDK (sometimes extracted by placing actor in corner)
@@ -50,7 +50,7 @@ const MAPDATA = [
       name: "Anvil",
       url: "/maps/albasrah/{z}_{x}_{y}.jpg",
       heightmap: {
-        url: "/heightmaps/sanxianIslands.jpg",
+        url: "/heightmaps/Anvil.jpg",
         tile: "/heightmaps/albasrah/{z}_{x}_{y}.jpg",
       },
       locations: [
@@ -595,6 +595,24 @@ const MAPDATA = [
           [3800, 3800],
         ],
         hDim: [7367, 5081],
+        lOrigin: [-4811, -3947],
+      },
+    },
+    {
+      name: "Skorpo Town",
+      url: "/maps/skorpotown/{z}_{x}_{y}.jpg",
+      heightmap: {
+        url: "/heightmaps/skorpotown.jpg",
+        tile: "/heightmaps/skorpotown/{z}_{x}_{y}.jpg",
+      },
+      extra: {
+        scale: [1.2, 1.2, 3.5],
+        levels: [952, 4074],
+        minimap: [
+          [-1300, -2200],
+          [3400, 2500],
+        ],
+        hDim: [7113, 5081],
         lOrigin: [-4811, -3947],
       },
     },

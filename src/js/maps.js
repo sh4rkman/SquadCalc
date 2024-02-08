@@ -19,7 +19,7 @@ import ManicouaganURL from "../img/heightmaps/manicouagan.jpg";
 import MestiaURL from "../img/heightmaps/mestia.jpg";
 import MutahaURL from "../img/heightmaps/mutaha.jpg";
 import NarvaURL from "../img/heightmaps/narva.jpg";
-import SanxianURL from "../img/heightmaps/sanxian (beta).jpg";
+import SanxianURL from "../img/heightmaps/sanxian.jpg";
 import SkorpoURL from "../img/heightmaps/skorpo.jpg";
 import SumariURL from "../img/heightmaps/sumari.jpg";
 import TallilURL from "../img/heightmaps/tallil.jpg";
@@ -201,13 +201,13 @@ export const MAPS = [
         maxZoomLevel: 4,
     },
     { 
-        name: "Sanxian (beta)",
-        size: 3571, 
+        name: "Sanxian",
+        size: 4600, 
         offset: [0, 0], 
         scaling: 0.1892, 
         heightmapURL: SanxianURL,
         mapURL: "/sanxian/{z}_{x}_{y}.jpg",
-        maxZoomLevel: 4,
+        maxZoomLevel: 5,
     },
     { 
         name: "Skorpo", 

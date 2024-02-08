@@ -40,7 +40,6 @@ export default LayerGroup.extend({
         clickable: false,
         // Set padding so the svg is rendered outside of view, avoiding grid "appearing" while panning map
         // https://leafletjs.com/reference.html#path-clip_padding
-        renderer: L.svg({padding: 3}),
     },
 
     lineStyleSUB1: {
@@ -50,7 +49,6 @@ export default LayerGroup.extend({
         weight: 2,
         interactive: false,
         clickable: false,
-        renderer: L.svg({padding: 3}),
     },
 
     lineStyleSUB2: {
@@ -60,7 +58,6 @@ export default LayerGroup.extend({
         weight: 1,
         interactive: false,
         clickable: false,
-        renderer: L.svg({padding: 3}),
     },
 
     initialize(options) {

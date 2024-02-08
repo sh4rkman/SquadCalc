@@ -66,11 +66,11 @@ test('Basic calcs + map', async ({ page }) => {
 
   // Select a map
   await page.getByRole('textbox', { name: 'Al basrah' }).click();
-  await page.getByRole('option', { name: 'Kohat' }).click();
+  await page.getByRole('option', { name: 'BLACK COAST' }).click();
 
   // Check calcs
   await expect(page.locator('#bearingNum')).toContainText("33.7");
-  await expect(page.locator('#elevationNum')).toContainText("1442");
+  await expect(page.locator('#elevationNum')).toContainText("1450");
 });
 
 test('Advanced calc', async ({ page }) => {
@@ -87,7 +87,7 @@ test('Advanced calc', async ({ page }) => {
 
   // Check calcs
   await expect(page.locator('#bearingNum')).toContainText("33.7");
-  await expect(page.locator('#elevationNum')).toContainText("1442");
+  await expect(page.locator('#elevationNum')).toContainText("1449");
 
   // Select BM21 Grad
   await page.getByRole('textbox', { name: 'mortar' }).click();
@@ -124,12 +124,12 @@ test('Save calc', async ({ page }) => {
 
   // Check calcs
   await expect(page.locator('#bearingNum')).toContainText("33.7");
-  await expect(page.locator('#elevationNum')).toContainText("1442");
+  await expect(page.locator('#elevationNum')).toContainText("1449");
   
   // Save
   await page.locator('#copy').click();
   await page.locator('#savebutton').click();
-  await expect(page.locator(".savedrow .savespan").first()).toContainText("➜ 33.7 - 1442")
+  await expect(page.locator(".savedrow .savespan").first()).toContainText("➜ 33.7 - 1449")
 
   
   await page.locator(".savedrow .friendlyname").first().click();
