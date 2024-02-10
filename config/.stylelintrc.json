@@ -9,6 +9,8 @@
         ],
         "comment-empty-line-before": null,
         "selector-class-pattern": null,
+        "scss/at-extend-no-missing-placeholder": null,
+        "scss/double-slash-comment-empty-line-before": "never",
         "scss/dollar-variable-pattern": null,
         "scss/dollar-variable-colon-space-before": "never",
         "no-descending-specificity": null,
@@ -17,8 +19,6 @@
         "declaration-empty-line-before": "never",
         "color-function-notation": "legacy",
         "import-notation": "string",
-        "scss/double-slash-comment-empty-line-before": "never",
-        "selector-id-pattern": null,
-        "scss/at-extend-no-missing-placeholder": null
+        "selector-id-pattern": null
     }
 }
