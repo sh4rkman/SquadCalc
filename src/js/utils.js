@@ -928,7 +928,7 @@ function getVerticalSpread(angle, vel){
  */
 function getProjectilePathDistance(angle, velocity, gravity){
     const p1 = velocity**2 / gravity;
-    const p2 = Math.sin(angle) + Math.cos(angle)**2 * Math.atanh(Math.sin(angle))
+    const p2 = Math.sin(angle) + Math.cos(angle)**2 * Math.atanh(Math.sin(angle));
     return Math.abs(p1 * p2);
 }
 
@@ -943,7 +943,7 @@ function getProjectilePathDistance(angle, velocity, gravity){
 function getHorizontalSpread(angle, velocity, gravity){
     var MOA = globalData.activeWeapon.moa / 60;
     var p1 = 2 * Math.PI * getProjectilePathDistance(angle, velocity, gravity);
-    var p2 = (MOA / 360) * p1
+    var p2 = (MOA / 360) * p1;
 
     if (isNaN(p2)) {
         return 0;
@@ -969,10 +969,10 @@ function getElevationWithEllipseParams(dist = 0, vDelta = 0, vel = 0) {
     var P1 = Math.sqrt(vel ** 4 - gravity * (gravity * dist ** 2 + 2 * vDelta * vel ** 2));
     var angle = Math.atan((vel ** 2 - (P1 * globalData.activeWeapon.getAngleType())) / (gravity * dist));
     
-    console.debug("H: " + getHorizontalSpread(angle, vel, gravity))
-    console.debug("V: " + getVerticalSpread(angle, vel))
-    console.debug("Gravity : " + gravity)
-    console.debug("MOA : " + globalData.activeWeapon.moa)
+    console.debug("H: " + getHorizontalSpread(angle, vel, gravity));
+    console.debug("V: " + getVerticalSpread(angle, vel));
+    console.debug("Gravity : " + gravity);
+    console.debug("MOA : " + globalData.activeWeapon.moa);
 
     // Calculate spread ellipse parameters
     if (globalData.activeWeapon.moa != 0){
