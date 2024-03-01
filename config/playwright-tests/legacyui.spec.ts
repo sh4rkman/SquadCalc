@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 
 test.beforeEach(async ({ page }) => {
   // Go to the starting url before each test.
-  await page.goto('http://localhost:8080/');
+  await page.goto('https://squadcalc.app/');
   await expect(page).toHaveTitle(/SquadCalc/);
   await page.getByRole('contentinfo').locator('label').first().click();
 });
@@ -83,11 +83,11 @@ test('Advanced calc', async ({ page }) => {
 
   // Select a map
   await page.getByRole('textbox', { name: 'Al basrah' }).click();
-  await page.getByRole('option', { name: 'Kohat' }).click();
+  await page.getByRole('option', { name: 'BLACK COAST' }).click();
 
   // Check calcs
   await expect(page.locator('#bearingNum')).toContainText("33.7");
-  await expect(page.locator('#elevationNum')).toContainText("1449");
+  await expect(page.locator('#elevationNum')).toContainText("1450");
 
   // Select BM21 Grad
   await page.getByRole('textbox', { name: 'mortar' }).click();
@@ -95,14 +95,14 @@ test('Advanced calc', async ({ page }) => {
 
   // Check calcs
   await expect(page.locator('#bearingNum')).toContainText("33.7");
-  await expect(page.locator('#elevationNum')).toContainText("20.4");
+  await expect(page.locator('#elevationNum')).toContainText("2.8");
 
   // Change high/low calc
   await page.locator('#highlow i').click();
   
   // Check calcs
   await expect(page.locator('#bearingNum')).toContainText("33.7");
-  await expect(page.locator('#elevationNum')).toContainText("84.8");
+  await expect(page.locator('#elevationNum')).toContainText("84.9");
 
 });
 
@@ -120,16 +120,16 @@ test('Save calc', async ({ page }) => {
 
   // Select a map
   await page.getByRole('textbox', { name: 'Al basrah' }).click();
-  await page.getByRole('option', { name: 'Kohat' }).click();
+  await page.getByRole('option', { name: 'BLACK COAST' }).click();
 
   // Check calcs
   await expect(page.locator('#bearingNum')).toContainText("33.7");
-  await expect(page.locator('#elevationNum')).toContainText("1449");
+  await expect(page.locator('#elevationNum')).toContainText("1450");
   
   // Save
   await page.locator('#copy').click();
   await page.locator('#savebutton').click();
-  await expect(page.locator(".savedrow .savespan").first()).toContainText("➜ 33.7 - 1449")
+  await expect(page.locator(".savedrow .savespan").first()).toContainText("➜ 33.7 - 1450")
 
   
   await page.locator(".savedrow .friendlyname").first().click();
@@ -140,23 +140,6 @@ test('Save calc', async ({ page }) => {
   await page.locator('#saved i').first().click();
   await expect(page.locator(".savedrow .savespan").first()).toHaveCount(0);
 });
-
-// test('Change theme', async ({ page, isMobile }) => {
-//   if(!isMobile){
-    
-//     // Open FAB wheel
-//     await page.locator('label').nth(1).click();
-//     await expect(page.getByRole('contentinfo').locator('i').nth(1)).toBeVisible()
-
-//     // Change theme to dark
-//     await page.locator('.fab-action-2').click();
-//     await expect(page.locator('html')).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
-
-//     // Close FAB wheel
-//     await page.locator('span').nth(2).click();
-//     await expect(page.getByRole('contentinfo').locator('i').nth(1)).toBeHidden()
-//   }
-// });
 
 
 

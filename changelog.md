@@ -1,9 +1,15 @@
 
 
 
-# <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">  **16.0.1** *(2024-02-10)*
+# <img src="https://img.shields.io/badge/-major%20release-blue?style=flat-square">  **17.0.0** *(2024-03-01)*
+
+<img src="https://img.shields.io/badge/-%20Improv%20-orange"> Dispersion calculations are now calculated according to ingame/real life physics and not just estimated. They should be more accurate. Thanks to Moleman for his help understanding the formulas, check [his guide](https://steamcommunity.com/sharedfiles/filedetails/?l=english&id=3118256939&searchtext=Cerca+tra+le+guide+di+Squad) on mortars btw.
+
+<img src="https://img.shields.io/badge/-new-green"> Now displaying dispersion for UB32 weapon/deployable
 
 <img src="https://img.shields.io/badge/-%20fix%20-orange"> Corrected dead pixels on Sanxian heightmap + resized the file
+
+<img src="https://img.shields.io/badge/-%20fix%20-orange"> Corrected dead pixels on Skorpo (thanks Phir)
 
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->

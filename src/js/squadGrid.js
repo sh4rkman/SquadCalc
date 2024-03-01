@@ -53,7 +53,7 @@ export default LayerGroup.extend({
         stroke: true,
         color: "#fff",
         opacity: 0,
-        weight: 1,
+        weight: 0.8,
         interactive: false,
         clickable: false,
     },
@@ -116,19 +116,19 @@ export default LayerGroup.extend({
             this.setLinesOpacity(this.s2Lines, 0.6);
         } else if (currentZoom >= 5) {
             this.setLinesOpacity(this.s1Lines, 0.7);
-            this.setLinesOpacity(this.s2Lines, 0.7);
+            this.setLinesOpacity(this.s2Lines, 0.6);
         }
         else if (currentZoom >= 4) {
-            this.setLinesOpacity(this.s2Lines, 0);
-            this.setLinesOpacity(this.s1Lines, 0.5);
-            this.setLinesOpacity(this.kpLines, 1);
             this.setLinesWeight(this.kpLines, 3);
+            this.setLinesOpacity(this.kpLines, 1);
+            this.setLinesOpacity(this.s1Lines, 0.5);
+            this.setLinesOpacity(this.s2Lines, 0);
         } 
         else {
-            this.setLinesOpacity(this.s2Lines, 0.0);
-            this.setLinesOpacity(this.s1Lines, 0.0);
-            this.setLinesOpacity(this.kpLines, 1);
             this.setLinesWeight(this.kpLines, 1);
+            this.setLinesOpacity(this.kpLines, 1);
+            this.setLinesOpacity(this.s1Lines, 0);
+            this.setLinesOpacity(this.s2Lines, 0);
         }
     },
 

@@ -104,6 +104,15 @@ function radToMil(rad) {
 }
 
 /**
+ * Converts degrees to radians
+ * @param {number} deg - degrees
+ * @returns {number} radians
+ */
+function degToRad(deg) {
+    return (deg * Math.PI) / 180;
+}
+
+/**
  * Converts radians into degrees
  * @param {number} rad - radians
  * @returns {number} degrees
@@ -884,6 +893,65 @@ export function isTouchDevice() {
        (navigator.msMaxTouchPoints > 0));
 }
 
+/**
+ * Calculates the vertical spread of a projectile
+ * to hit the target at the desired distance and vertical delta.
+ * @param {number} [angle] - angle of the initial shot
+ * @param {number} [vel] - initial mortar projectile velocity in m/s
+ * @returns {number} - vertical spread in meter
+ */
+function getVerticalSpread(angle, vel){
+
+    const moa = degToRad((globalData.activeWeapon.moa / 2) / 60);
+    const gravity = globalData.gravity * globalData.activeWeapon.gravityScale;
+
+    // Apply MOA to found Angle and deduce the spread distance
+    // https://en.wikipedia.org/wiki/Projectile_motion#Maximum_distance_of_projectile
+    const verticalSpread1 = (vel ** 2 * Math.sin(2*(angle + moa))) / gravity;
+    const verticalSpread2  = (vel ** 2 * Math.sin(2*(angle - moa))) / gravity;
+    const totalSpread = Math.abs(verticalSpread2 - verticalSpread1);
+
+    if (isNaN(totalSpread)) {
+        return 0;
+    } else {
+        return totalSpread;
+    }
+}
+
+/**
+ * Calculates the length of the projectile path in air, neglecting heights difference
+ * https://en.wikipedia.org/wiki/Projectile_motion#Total_Path_Length_of_the_Trajectory
+ * @param {number} [angle] - angle of the initial shot in radian
+ * @param {number} [vel] - initial mortar projectile velocity in m/s
+ * @param {number} [gravity] - gravity applied to the projectile
+ * @returns {number} - projectile path length in meters
+ */
+function getProjectilePathDistance(angle, velocity, gravity){
+    const p1 = velocity**2 / gravity;
+    const p2 = Math.sin(angle) + Math.cos(angle)**2 * Math.atanh(Math.sin(angle))
+    return Math.abs(p1 * p2);
+}
+
+
+/**
+ * Calculates the horizontal spread for a given trajectory path length 
+ * @param {number} [angle] - angle of the initial shot in radian
+ * @param {number} [vel] - initial mortar projectile velocity in m/s
+ * @param {number} [gravity] - gravity applied to the projectile
+ * @returns {number} - Length of horizontal spread in meters
+ */
+function getHorizontalSpread(angle, velocity, gravity){
+    var MOA = globalData.activeWeapon.moa / 60;
+    var p1 = 2 * Math.PI * getProjectilePathDistance(angle, velocity, gravity);
+    var p2 = (MOA / 360) * p1
+
+    if (isNaN(p2)) {
+        return 0;
+    } else {
+        return p2;
+    }
+}
+
 
 /**
  * Calculates the angle the mortar needs to be set in order
@@ -894,23 +962,23 @@ export function isTouchDevice() {
  * @returns {object} - An object containing the elevation angle and ellipse parameters
  */
 function getElevationWithEllipseParams(dist = 0, vDelta = 0, vel = 0) {
+    const gravity = globalData.gravity * globalData.activeWeapon.gravityScale;
     var ellipseParams;
-    var gravity = globalData.gravity * globalData.activeWeapon.gravityScale;
-    const P1 = Math.sqrt(vel ** 4 - gravity * (gravity * dist ** 2 + 2 * vDelta * vel ** 2));
 
     // Calculate the mortar elevation angle
-    const angle = Math.atan((vel ** 2 - (P1 * globalData.activeWeapon.getAngleType())) / (gravity * dist));
+    var P1 = Math.sqrt(vel ** 4 - gravity * (gravity * dist ** 2 + 2 * vDelta * vel ** 2));
+    var angle = Math.atan((vel ** 2 - (P1 * globalData.activeWeapon.getAngleType())) / (gravity * dist));
+    
+    console.debug("H: " + getHorizontalSpread(angle, vel, gravity))
+    console.debug("V: " + getVerticalSpread(angle, vel))
+    console.debug("Gravity : " + gravity)
+    console.debug("MOA : " + globalData.activeWeapon.moa)
 
-    // Calculate ellipse parameters
-
+    // Calculate spread ellipse parameters
     if (globalData.activeWeapon.moa != 0){
-        const moa = globalData.activeWeapon.moa / 2;
-
-        // trying to emulate very approximately Squad spread zone until i figure out what OWI did
-        // Looks like they applied MOA deviation only on elevation angle, not on bearing
         ellipseParams = {
-            semiMajorAxis: moa,
-            semiMinorAxis: moa - ((moa) * (dist/globalData.activeWeapon.getMaxDistance())) + moa/3,
+            semiMajorAxis: getHorizontalSpread(angle, vel, gravity),
+            semiMinorAxis: getVerticalSpread(angle, vel),
             ellipseAngle: (angle * (180 / Math.PI))
         };
     }

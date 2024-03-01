@@ -58,6 +58,7 @@ export class Weapon {
     
     /**
      * Return maximum distance for 45°
+     * https://en.wikipedia.org/wiki/Projectile_motion#Maximum_distance_of_projectile
      * @returns {number} [distance]
      */
     getMaxDistance() {
@@ -102,11 +103,11 @@ const UB32_table = [
 
 export const WEAPONS = [
     new Weapon("mortar", 109.890938, 1, [800, 1579], "mil", classicLogo, "130%", "deployables", "high", 0, 51, 50),
-    new Weapon("UB-32", UB32_table, 2, [-25, 35], "deg", ub322Logo, "110%", "deployables", "low", 1, 0, 0),
+    new Weapon("UB-32", UB32_table, 2, [-25, 35], "deg", ub322Logo, "110%", "deployables", "low", 1, 0, 300),
     new Weapon("Hell Cannon", 95, 1, [10, 85], "deg", hellcannonLogo, "130%", "deployables", "high", 1, 160, 100),
 
     new Weapon("Technical", 109.890938, 1, [-45, 135], "deg", technicalLogo, "50%", "vehicles", "high", 1, 51, 50),
-    new Weapon("Tech. UB-32", UB32_table, 2, [-45, 135], "deg", ub32Logo, "55%", "vehicles", "low", 1, 0, 0),
+    new Weapon("Tech. UB-32", UB32_table, 2, [-45, 135], "deg", ub32Logo, "55%", "vehicles", "low", 1, 0, 300),
     new Weapon("BM-21 Grad", 200, 2, [-45, 135], "deg", mlrsLogo, "60%", "vehicles", "low", 1, 0, 200),
 
     //new Weapon("Short", 109.890938, 1, 1520, undefined, "mil", frenchLogo, "135%", "frenchDLC", "high", 0),
