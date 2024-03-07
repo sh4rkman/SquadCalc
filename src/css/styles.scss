@@ -25,7 +25,6 @@ $newColor: green;
     margin: 0;
     padding: 0;
     border: 0;
-  
 }
 
 body,
@@ -201,12 +200,8 @@ header {
         width: 100%;
         background: var(--themecolor, $mainBGColor);
         z-index: 0;
-        // outline: 0;
         .leaflet-pane .leaflet-marker-pane .leaflet-marker-icon {
             cursor: grab;
-        }
-        &, .leaflet-overlay-pane .leaflet-interactive {
-            cursor: crosshair;
         }
         img.leaflet-tile {
             mix-blend-mode: normal;
@@ -298,6 +293,52 @@ header {
         }
     }
 }
+
+
+#preview {
+    outline: solid firebrick 3px;
+    width: 150px;
+    height: 150px;
+    margin-top: 5em;
+    margin-left: 7em;
+    background-image: url("../img/maps/albasrah/3_3_5.jpg");
+    cursor: crosshair;
+    #center {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 150px;
+        height: 150px;
+        #markerPreview {
+            position: absolute;
+            width: 30px;
+        }
+        #gridPreview {
+            position: absolute;
+            opacity: 1;
+            width: 150px;
+        }
+        #maxRangePreview {
+            position: absolute;
+            width: 147px;
+            margin-right: 3px;
+            margin-top: 3px;
+        }
+    }
+    #textPreview{
+        margin-top: 45px;
+        margin-left: 25px;
+        position: absolute;
+        font-weight: bold;
+
+        @extend %text-outline;
+        #bearingPreview {
+            font-size: 0.7em;
+            text-align: right;
+        }
+    }
+}
+
 
 #classic_ui {
     height: 40vh;
@@ -558,6 +599,18 @@ footer {
         }
         background-color: $mainColor;
     }
+    &[data-theme~='preview'] {
+        &[data-placement^='bottom']>.tippy-arrow::before {
+            border-bottom-color: transparent;
+        }
+        background-color: transparent;
+        color: $mainTxtColor;
+        font-weight: bold;
+        letter-spacing: 0.1rem;
+        margin-top: 5px;
+
+        @extend %text-outline;
+    }
 }
 
 .tippy-arrow {
@@ -616,7 +669,7 @@ footer {
                 }
             }
             tr {
-                height: 2rem;
+                height: 1rem;
             }
             .settingsText {
                 font-weight: bold;
@@ -739,7 +792,6 @@ $bezier: cubic-bezier(0.65, 0.25, 0.56, 0.96);
         width: 1px;
         overflow: hidden;
         clip: rect(1px, 1px, 1px, 1px);
-
     }
     input[type="checkbox"] + span,
     input[type="radio"] + span {
@@ -764,6 +816,9 @@ $bezier: cubic-bezier(0.65, 0.25, 0.56, 0.96);
     }
     input[type="checkbox"]:disabled + span {
         background-color: $mainColor;
+    }
+    &:active {
+        transform: scale(0.9);
     }
 }
 
@@ -861,3 +916,32 @@ $bezier: cubic-bezier(0.65, 0.25, 0.56, 0.96);
     -2px -1px 0 #111;
 }
 
+
+#cursorChoiceSettings {
+    height: auto;
+    width: 250px;
+    margin-top: 1em;
+    margin-bottom: 1em;
+    input {
+        height: 15px;
+        accent-color: $mainColor;
+        &:active {
+            transform: scale(0.7);
+        }
+        &:hover {
+            cursor: pointer;
+        }
+    }
+    label {
+        float:right;
+        text-align: center;
+    }
+}
+
+.crosshair {
+    cursor: crosshair;
+}
+
+.default {
+    cursor: default;
+}

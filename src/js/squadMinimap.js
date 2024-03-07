@@ -2,7 +2,8 @@ import L from "leaflet";
 import squadGrid from "./squadGrid";
 import { globalData } from "./conf";
 import { MAPS } from "./maps";
-import { squadWeaponMarker, squadTargetMarker, mortarIcon, mortarIcon1, mortarIcon2 } from "./squadMarker";
+import { squadWeaponMarker, squadTargetMarker } from "./squadMarker";
+import { mortarIcon, mortarIcon1, mortarIcon2 } from "./squadIcon";
 import { getKP, shoot } from "./utils";
 
 export var squadMinimap = L.Map.extend({

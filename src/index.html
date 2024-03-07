@@ -127,7 +127,7 @@
             <i class="fa-regular fa-circle-xmark"></i>
         </button>
 
-        <h2>Settings</h2><br><br>
+        <h2>Settings</h2><br><br><br>
 
         <h3>Map Options</h3>
         <br>
@@ -172,6 +172,32 @@
                 <tr>
                     <td>
                         <label class="mcui-checkbox">
+                            <input id="weaponRangeSettings" type="checkbox">
+                            <span>
+                              <svg class="mcui-check" viewBox="-2 -2 35 35" aria-hidden="true">
+                                <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
+                              </svg>
+                            </span>
+                            <span></span>
+                          </label>
+                    </td>
+                    <td>Show Weapon Min/Max Range</td>
+                </tr>
+
+            </tbody>
+        </table>
+
+
+
+        <br><br>
+        <h3>Target Options</h3>
+        <br>
+        <table class="userSettings pure-table">
+            <tbody>
+
+                <tr>
+                    <td>
+                        <label class="mcui-checkbox">
                             <input id="spreadRadiusSetting" type="checkbox">
                             <span>
                               <svg class="mcui-check" viewBox="-2 -2 35 35" aria-hidden="true">
@@ -204,21 +230,6 @@
                 <tr>
                     <td>
                         <label class="mcui-checkbox">
-                            <input id="weaponRangeSettings" type="checkbox">
-                            <span>
-                              <svg class="mcui-check" viewBox="-2 -2 35 35" aria-hidden="true">
-                                <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
-                              </svg>
-                            </span>
-                            <span></span>
-                          </label>
-                    </td>
-                    <td>Show Weapon Min/Max Range</td>
-                </tr>
-
-                <tr>
-                    <td>
-                        <label class="mcui-checkbox">
                             <input id="bearingOverDistanceSettings" type="checkbox">
                             <span>
                               <svg class="mcui-check" viewBox="-2 -2 35 35" aria-hidden="true">
@@ -230,48 +241,55 @@
                     </td>
                     <td>Replace Bearing with Distance</td>
                 </tr>
-                
             </tbody>
         </table>
 
-        <br><br><br><h2>Shortcuts</h2><br><br>
-       
-        <table id="tips" class="pure-table">
-            <tbody>
-                <tr>
-                    <th>Action</th>
-                    <th>Shortcut</th>
-                </tr>
-                <tr>
-                    <td>Place a <b>Weapon</b></td>
-                    <td>Right Click</td>
-                </tr>
-                <tr>
-                    <td>Place a <b>Target</b></td>
-                    <td>Double Left Click</td>
-                </tr>
-                <tr>
-                    <td><b>Delete</b> a Marker</td>
-                    <td>Single Left Click</td>
-                </tr>
-            </tbody>
-        </table>
+        <br>
+        <div id="cursorChoiceSettings">
+            <b style="font-size: 1.2em;">Cursor</b>
+            <label for="cursorChoice2">
+                <input type="radio" id="cursorChoice2" name="cursorChoice" value="pointer">
+                Pointer
+            </label>
+            <label for="cursorChoice1">
+                <input type="radio" id="cursorChoice1" name="cursorChoice" value="crosshair" checked="checked">
+                Crosshair
+            </label>
+        </div>
+
+        <div id="preview" class="unselectable">
+            <div id="textPreview">
+                <span>1345</span><br>
+                <span id="bearingPreview">241.5°</span>
+            </div>  
+            <div id="center">
+                <img id="spreadPreview" src="./img/icons/spread.png" alt="spreadPreview">
+                <img id="gridPreview" src="./img/icons/grid.png" alt="gridPreview">
+                <img id="markerPreview" src="./img/icons/marker_target1.png" alt="markerPreview">
+                <img id="maxRangePreview" src="./img/icons/maxrange.png" alt="maxRangePreview">
+            </div>
+        </div> 
 
         <table id="links" class="pure-table">
             <tbody>
                 <tr>
                     <td>
-                        <a class="fab-action fab-action-1" href="https://github.com/sh4rkman/SquadCalc" target="_blank" rel="noopener noreferrer" aria-label="github" title="View code on Github">
+                        <a class="fab-action" href="https://github.com/sh4rkman/SquadCalc/blob/master/changelog.md" target="_blank" rel="noopener noreferrer" aria-label="github" title="Change Log">
+                           <i class="fa-solid fa-book-open"></i>
+                        </a>
+                    </td>
+                    <td>
+                        <a class="fab-action" href="https://github.com/sh4rkman/SquadCalc" target="_blank" rel="noopener noreferrer" aria-label="github" title="View code on Github">
                            <i class="fa-brands fa-github"></i>
                         </a>
                     </td>
                     <td>
-                        <a class="fab-action fab-action-3" href="https://www.youtube.com/@sh4rkman" target="_blank" rel="noopener noreferrer" aria-label="Youtube" title="Watch my videos!">
+                        <a class="fab-action" href="https://www.youtube.com/@sh4rkman" target="_blank" rel="noopener noreferrer" aria-label="Youtube" title="Watch my videos!">
                             <i class="fa-brands fa-youtube"></i>
                         </a>
                     </td>
                     <td> 
-                        <a class="fab-action fab-action-4" href="https://github.com/sh4rkman/SquadCalc/issues" target="_blank" rel="noopener noreferrer" aria-label="Bugs" title="Report a bug">
+                        <a class="fab-action" href="https://github.com/sh4rkman/SquadCalc/issues" target="_blank" rel="noopener noreferrer" aria-label="Bugs" title="Report a bug">
                             <i class="fa-solid fa-bug"></i>
                         </a>
                     </td>

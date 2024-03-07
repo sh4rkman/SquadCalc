@@ -275,6 +275,8 @@ export function loadMapSelector() {
         MAP_SELECTOR.append("<option value=\"" + i + "\">" + map.name + "</option>");
     });
 
+
+
     $(".dropbtn").val("0");
     globalData.minimap.loadHeatmap();
 }

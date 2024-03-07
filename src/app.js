@@ -15,7 +15,6 @@ import "./css/responsive.scss";
 // JS Functions
 import { preventAutocomplete, loadUI } from "./js/utils";
 import { loadMapSelector, loadMinimap } from "./js/maps";
-import { loadTheme } from "./js/themes";
 import { loadWeapons } from "./js/weapons";
 import { createLine } from "./js/animations";
 import { loadSettings } from "./js/settings.js";
@@ -28,7 +27,6 @@ $(function() {
     loadMinimap();
     loadWeapons();
     loadUI();
-    loadTheme();
     loadMapSelector();
     preventAutocomplete();
     document.body.style.visibility = "visible";

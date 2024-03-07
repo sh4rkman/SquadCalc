@@ -1,4 +1,14 @@
 
+# <img src="https://img.shields.io/badge/-major%20release-blue?style=flat-square">  **18.0.0** *(2024-03-07)*
+
+<img src="https://img.shields.io/badge/-new-green"> You can know choose between classic cursor and crosshair
+
+<img src="https://img.shields.io/badge/-new-green"> Added a preview in settings popup to help visualizing how settings impact the map
+
+<img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed an issue with second weapon icons not being renamed correctly after deleting the first weapon
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
 
 
 # <img src="https://img.shields.io/badge/-major%20release-blue?style=flat-square">  **17.0.0** *(2024-03-01)*
@@ -9,8 +19,9 @@
 
 <img src="https://img.shields.io/badge/-%20fix%20-orange"> Corrected dead pixels on Sanxian heightmap + resized the file
 
-<img src="https://img.shields.io/badge/-%20fix%20-orange"> Corrected dead pixels on Skorpo (thanks Phir)
+<img src="https://img.shields.io/badge/-%20fix%20-orange"> Corrected dead pixels on Skorpo
 
+<img src="https://img.shields.io/badge/-%20fix%20-orange"> Corrected dead pixels on Gorodok (thanks Phir)
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
 

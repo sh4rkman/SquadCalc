@@ -1,6 +1,15 @@
-
 import { globalData } from "./conf";
+import { tooltip_coordPreview } from "./tooltips.js";
 
+/* eslint no-unused-vars: "off" */
+import speadIcon from "../img/icons/spread.png";
+import gridIcon from "../img/icons/grid.png";
+import maxRangeIcon from "../img/icons/maxrange.png";
+
+import { 
+    targetIcon1,
+    targetIconAnimated1,
+} from "./squadIcon";
 
 function loadLocalSetting(item, default_value = 1) {
 
@@ -42,7 +51,60 @@ export function loadSettings(){
 
     globalData.userSettings.bearingOverDistance = loadLocalSetting("settings-bearing-distance", false);
     $("#bearingOverDistanceSettings").prop("checked", globalData.userSettings.bearingOverDistance);
+
+    globalData.userSettings.cursor = loadLocalSetting("settings-cursor", true);
+
+    if (globalData.userSettings.cursor) {
+        $("#preview").css("cursor", "crosshair");
+        $("#map").css("cursor", "crosshair");
+        $(".leaflet-overlay-pane, .leaflet-interactive").css("cursor", "crosshair");
+    }
+    else {
+        $("#preview").css("cursor", "default");
+        $("#map").css("cursor", "default");
+        $(".leaflet-overlay-pane, .leaflet-interactive").css("cursor", "default");
+    }
+
+    $("#cursorChoice1").prop("checked", globalData.userSettings.cursor);
+    $("#cursorChoice2").prop("checked", !globalData.userSettings.cursor);
+
+    updatePreview();
 }
+
+
+function updatePreview(){
+    if (globalData.userSettings.spreadRadius){
+        $("#spreadPreview").show();
+    } else {
+        $("#spreadPreview").hide();
+    }
+
+    if (globalData.userSettings.weaponMinMaxRange){
+        $("#maxRangePreview").show();
+    } else {
+        $("#maxRangePreview").hide();
+    }
+
+    if (globalData.userSettings.bearingOverDistance){
+        $("#bearingPreview").text("1145m");
+    } else {
+        $("#bearingPreview").text("241.5°");
+    }
+
+    if (globalData.userSettings.grid){
+        $("#gridPreview").show();
+    } else {
+        $("#gridPreview").hide();
+    }
+
+    if (globalData.userSettings.keypadUnderCursor){
+        tooltip_coordPreview.enable();
+    } else {
+        tooltip_coordPreview.disable();
+    }
+}
+
+
 
 $("#keypadUnderCursorSetting").on("change", function() {
     var val;
@@ -64,6 +126,7 @@ $("#keypadUnderCursorSetting").on("change", function() {
     }
     globalData.userSettings.keypadUnderCursor = val;
     localStorage.setItem("settings-keypad-cursor", +val);
+    updatePreview();
 });
 
 $("#gridSetting").on("change", function() {
@@ -78,6 +141,7 @@ $("#gridSetting").on("change", function() {
         localStorage.setItem("settings-grid", +val);
         globalData.minimap.hideGrid();
     }
+    updatePreview();
 });
 
 $("#spreadRadiusSetting").on("change", function() {
@@ -85,6 +149,7 @@ $("#spreadRadiusSetting").on("change", function() {
     globalData.userSettings.spreadRadius = val;
     localStorage.setItem("settings-spread-radius", +val);
     globalData.minimap.updateTargets(); // Update every targets to add/remove spread radius
+    updatePreview();
 });
 
 $("#weaponRangeSettings").on("change", function() {
@@ -92,12 +157,45 @@ $("#weaponRangeSettings").on("change", function() {
     globalData.userSettings.weaponMinMaxRange = val;
     localStorage.setItem("settings-weapon-range", +val);
     globalData.minimap.updateWeapons();
+    updatePreview();
+});
+
+$("input[type=radio][name=cursorChoice]").on("change", function() {
+    var val = this.value;
+
+    if (this.value === "crosshair") {
+        val = 1;
+        $("#preview").css("cursor", "crosshair");
+        $("#map").css("cursor", "crosshair");
+        $(".default").css("cursor", "crosshair");
+        $(".crosshair").css("cursor", "crosshair");
+    }
+    else {
+        val = 0;
+        $("#preview").css("cursor", "default");
+        $("#map").css("cursor", "default");
+        $(".crosshair").css("cursor", "default");
+        $(".default").css("cursor", "default");
+    }
+
+    globalData.userSettings.cursor = val;
+    localStorage.setItem("settings-cursor", val);
+
 });
 
 $("#targetAnimationSettings").on("change", function() {
     var val = $("#targetAnimationSettings").is(":checked");
     globalData.userSettings.targetAnimation = val;
     localStorage.setItem("settings-target-animation", +val);
+
+    globalData.minimap.activeTargetsMarkers.eachLayer(function (layer) {
+        if (val) {
+            layer.setIcon(targetIconAnimated1);
+        }
+        else {
+            layer.setIcon(targetIcon1);
+        }
+    });
 });
 
 $("#bearingOverDistanceSettings").on("change", function() {
@@ -112,6 +210,7 @@ $("#bearingOverDistanceSettings").on("change", function() {
 
     // Update every targets to add/remove distance
     globalData.minimap.updateTargets();
+    updatePreview();
 });
 
 

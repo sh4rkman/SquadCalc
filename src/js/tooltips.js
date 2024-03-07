@@ -1,4 +1,4 @@
-import tippy from "tippy.js";
+import tippy, {followCursor} from "tippy.js";
 import "tippy.js/dist/tippy.css";
 
 
@@ -6,6 +6,7 @@ export var tooltip_save;
 export var tooltip_copied;
 export var tooltip_mlrs;
 export var tooltip_newUI;
+export var tooltip_coordPreview;
 
 tippy("#settings", {
     allowHTML: true,
@@ -52,3 +53,15 @@ tippy("#savebutton i", {
     touch: false,
 });
 tooltip_save = document.querySelector("#savebutton i")._tippy;
+
+tippy("#preview", {
+    animation: false,
+    content: "B03-4-5",
+    followCursor: true,
+    plugins: [followCursor],
+    touch: false,
+    placement: "bottom",
+    appendTo: document.querySelector("#preview"),
+    theme: "preview",
+});
+tooltip_coordPreview = document.querySelector("#preview")._tippy;

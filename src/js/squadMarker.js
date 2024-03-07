@@ -1,16 +1,10 @@
 import L from "leaflet";
 import "./ellipse";
 
-
-import shadowIconImg from "../img/icons/marker_shadow.png";
-import mortarIconImg from "../img/icons/marker_mortar_0.png";
-import mortarIconImg1 from "../img/icons/marker_mortar_1.png";
-import mortarIconImg2 from "../img/icons/marker_mortar_2.png";
-import targetIconImg from "../img/icons/marker_target.png";
-
 import { globalData } from "./conf";
 import { MAPS } from  "./maps";
 import { getCalcFromUI } from "./utils";
+import { mortarIcon, targetIcon1, targetIconAnimated1 } from "./squadIcon";
 
 /*
  * Global Squad Marker Class 
@@ -51,6 +45,15 @@ export var squadWeaponMarker = squadMarker.extend({
     },
 
     initialize: function (latlng, options) {
+        
+        var cursorClass;
+
+        if (globalData.userSettings.cursor) {
+            cursorClass = "crosshair";
+        }
+        else {
+            cursorClass = "default";
+        }
 
         this.maxDistCircleOn = {
             radius: globalData.activeWeapon.getMaxDistance() * (256 / MAPS.find((elem, index) => index == globalData.activeMap).size),
@@ -59,6 +62,7 @@ export var squadWeaponMarker = squadMarker.extend({
             fillOpacity: 0,
             weight: 2,
             autoPan: false,
+            className: cursorClass,
         };
 
         this.minDistCircleOn = {
@@ -68,9 +72,11 @@ export var squadWeaponMarker = squadMarker.extend({
             fillOpacity: 0.2,
             weight: 1,
             autoPan: false,
+            className: cursorClass,
         };
 
         this.minMaxDistCircleOff = {
+            radius: 0,
             opacity: 0,
             fillOpacity: 0,
         };
@@ -105,7 +111,9 @@ export var squadWeaponMarker = squadMarker.extend({
      */
     delete: function(){
 
-        if (globalData.minimap.activeWeaponsMarkers.getLayers().length === 1) { 
+        this.removeFrom(globalData.minimap.activeWeaponsMarkers);
+
+        if (globalData.minimap.activeWeaponsMarkers.getLayers().length === 0) { 
             globalData.minimap.deleteTargets();
         }
         else {
@@ -113,7 +121,7 @@ export var squadWeaponMarker = squadMarker.extend({
             globalData.minimap.activeWeaponsMarkers.getLayers()[0].setIcon(mortarIcon);
         }
 
-        // Delete everthing tied to the marker
+        // Delete the weapon marker and everthing tied to it
         this.remove();
         this.removeFrom(globalData.minimap.activeWeaponsMarkers);
         this.minRangeMarker.remove();
@@ -209,8 +217,19 @@ export var squadTargetMarker = squadMarker.extend({
         var results2;
         var content;
         var content2;
+        var cursorClass;
+        var popUpOptions_weapon1;
+        var popUpOptions_weapon2;
 
-        var popUpOptions_weapon1 = {
+        if (globalData.userSettings.cursor) {
+            cursorClass = "crosshair";
+        }
+        else {
+            cursorClass = "default";
+        }
+
+        
+        popUpOptions_weapon1 = {
             autoPan: false,
             autoClose: false,
             closeButton: false,
@@ -222,7 +241,7 @@ export var squadTargetMarker = squadMarker.extend({
             offset: [-65, 0],
         };
 
-        var popUpOptions_weapon2 = {
+        popUpOptions_weapon2 = {
             closeButton: false,
             className: "calcPopup2",
             autoClose: false,
@@ -240,21 +259,23 @@ export var squadTargetMarker = squadMarker.extend({
             fillOpacity: 0.1,
             color: "#b22222",
             weight: 1,
+            className: cursorClass,
         };
 
         this.spreadOptionsOff = {
             opacity: 0,
             fillOpacity: 0,
+            className: cursorClass,
         };
 
         // Create marker
         squadMarker.prototype.initialize.call(this, latlng, options);
 
         if (this.options.animate){
-            this.setIcon(targetIconAnimated);
+            this.setIcon(targetIconAnimated1);
         }
         else {
-            this.setIcon(targetIcon);
+            this.setIcon(targetIcon1);
         }
 
         this.addTo(globalData.minimap.activeTargetsMarkers);
@@ -348,6 +369,7 @@ export var squadTargetMarker = squadMarker.extend({
 
         this.removeFrom(globalData.minimap.activeTargetsMarkers);
         this.removeFrom(globalData.minimap.markersGroup);
+
         this.remove();
     },
 
@@ -454,53 +476,4 @@ export var squadTargetMarker = squadMarker.extend({
     },
 });
 
-
-export var mortarIcon = L.icon({
-    iconUrl: mortarIconImg,
-    shadowUrl: shadowIconImg,
-    iconSize:     [38, 47], 
-    shadowSize:   [38, 47], 
-    iconAnchor:   [19, 47],
-    shadowAnchor: [10, 47],
-    className: "animatedWeaponMarker"
-});
-
-export var mortarIcon1 = L.icon({
-    iconUrl: mortarIconImg1,
-    shadowUrl: shadowIconImg,
-    iconSize:     [38, 47], 
-    shadowSize:   [38, 47], 
-    iconAnchor:   [19, 47],
-    shadowAnchor: [10, 47],
-    className: "animatedWeaponMarker"
-});
-
-export var mortarIcon2 = L.icon({
-    iconUrl: mortarIconImg2,
-    shadowUrl: shadowIconImg,
-    iconSize:     [38, 47], 
-    shadowSize:   [38, 47], 
-    iconAnchor:   [19, 47],
-    shadowAnchor: [10, 47],
-    className: "animatedWeaponMarker" 
-});
-
-export var targetIconAnimated = L.icon({
-    iconUrl: targetIconImg,
-    shadowUrl: shadowIconImg,
-    iconSize:     [28, 34], 
-    shadowSize:   [38, 34],
-    iconAnchor:   [14, 34],
-    shadowAnchor: [12, 34], 
-    className: "animatedTargetMarker"
-});
-
-export var targetIcon = L.icon({
-    iconUrl: targetIconImg,
-    shadowUrl: shadowIconImg,
-    iconSize:     [28, 34], 
-    shadowSize:   [38, 34],
-    iconAnchor:   [14, 34],
-    shadowAnchor: [12, 34], 
-});
 
