@@ -1,4 +1,15 @@
 
+
+# <img src="https://img.shields.io/badge/-major%20release-blue?style=flat-square">  **19.0.0** *(2024-03-07)*
+
+<img src="https://img.shields.io/badge/-new-green"> Updated AlBasrah, Belaya and Kokan maps according to Squad 7.2 update
+
+<img src="https://img.shields.io/badge/-%20Improv%20-orange"> Disabled cursor choice on mobile
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
+
+
 # <img src="https://img.shields.io/badge/-major%20release-blue?style=flat-square">  **18.0.0** *(2024-03-07)*
 
 <img src="https://img.shields.io/badge/-new-green"> You can know choose between classic cursor and crosshair

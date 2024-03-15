@@ -81,7 +81,7 @@ export const MAPS = [
         scaling: 0.0401, // OK
         heightmapURL: FallujahURL,
         mapURL: "/fallujah/{z}_{x}_{y}.jpg",
-        maxZoomLevel: 5,
+        maxZoomLevel: 4,
     },
     { 
         name: "Fool's Road",
@@ -108,7 +108,7 @@ export const MAPS = [
         scaling: 0.11900000000000001, // OK
         heightmapURL: GorodokURL,
         mapURL: "/gorodok/{z}_{x}_{y}.jpg",
-        maxZoomLevel: 5,
+        maxZoomLevel: 4,
     },
     { 
         name: "Harju", 
@@ -189,7 +189,7 @@ export const MAPS = [
         scaling: 0.07071, 
         heightmapURL: MutahaURL,
         mapURL: "/mutaha/{z}_{x}_{y}.jpg",
-        maxZoomLevel: 5,
+        maxZoomLevel: 4,
     },
     { 
         name: "Narva", 

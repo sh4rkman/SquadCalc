@@ -182,7 +182,7 @@ header {
 
 /***************************************
    ************   CONTENT   ***************
-   **************************************/
+   **************************************/            
 
 
 /****************
@@ -302,7 +302,6 @@ header {
     margin-top: 5em;
     margin-left: 7em;
     background-image: url("../img/maps/albasrah/3_3_5.jpg");
-    cursor: crosshair;
     #center {
         display: flex;
         align-items: center;
@@ -817,7 +816,7 @@ $bezier: cubic-bezier(0.65, 0.25, 0.56, 0.96);
     input[type="checkbox"]:disabled + span {
         background-color: $mainColor;
     }
-    &:active {
+    &:active:not([disabled]) {
         transform: scale(0.9);
     }
 }
@@ -829,7 +828,7 @@ $bezier: cubic-bezier(0.65, 0.25, 0.56, 0.96);
     transform: scale(1);
     color: $mainColor;
     opacity: 0;
-    &:hover {
+    &:hover:not([disabled]){
         cursor: pointer;
     }
     polyline {
@@ -838,6 +837,27 @@ $bezier: cubic-bezier(0.65, 0.25, 0.56, 0.96);
       stroke-width: 5px;
       stroke-dasharray: 22.7714;
       stroke: currentcolor;
+    }
+}
+
+#cursorChoiceSettings {
+    height: auto;
+    width: 250px;
+    margin-top: 1em;
+    margin-bottom: 1em;
+    input {
+        height: 15px;
+        accent-color: $mainColor;
+        &:active:not([disabled]) {
+            transform: scale(0.7);
+        }
+        &:hover:not([disabled]) {
+            cursor: pointer;
+        }
+    }
+    label {
+        float:right;
+        text-align: center;
     }
 }
   
@@ -917,26 +937,7 @@ $bezier: cubic-bezier(0.65, 0.25, 0.56, 0.96);
 }
 
 
-#cursorChoiceSettings {
-    height: auto;
-    width: 250px;
-    margin-top: 1em;
-    margin-bottom: 1em;
-    input {
-        height: 15px;
-        accent-color: $mainColor;
-        &:active {
-            transform: scale(0.7);
-        }
-        &:hover {
-            cursor: pointer;
-        }
-    }
-    label {
-        float:right;
-        text-align: center;
-    }
-}
+
 
 .crosshair {
     cursor: crosshair;

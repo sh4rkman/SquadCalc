@@ -33,6 +33,8 @@ export function loadSettings(){
     }
     else {
         $("#keypadUnderCursorSetting").attr("disabled", true);
+        $("#cursorChoice1").attr("disabled", true);
+        $("#cursorChoice2").attr("disabled", true);
         $("#KPSettingSubText").text("(Disabled: no mouse detected!)");
         globalData.userSettings.keypadUnderCursor = false;
     }

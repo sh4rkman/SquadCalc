@@ -20,7 +20,8 @@ export var squadMinimap = L.Map.extend({
         closePopupOnClick: false,
         wheelPxPerZoomLevel: 100,
         boxZoom: true,
-        // maxBounds:[[500, -500], [-800, 800]],
+        //maxBoundsViscosity: 0,
+        //maxBounds:[[500, -500], [-800, 800]],
     },
 
 
@@ -63,8 +64,8 @@ export var squadMinimap = L.Map.extend({
         this.mapScale = map.size / 256;
         globalData.activeMap = mapVal;
         globalData.mapScale = 256 / map.size;
-        globalData.minimap.setView([-128, 128], 2);
-    
+        this.setView([-128, 128], 2);
+        //this.setMaxBounds(imageBounds)
 
         // Remove any layers already drawn
         this.layerGroup.eachLayer(function(layer){
@@ -85,7 +86,7 @@ export var squadMinimap = L.Map.extend({
             this.grid.addTo(this.layerGroup);
         }
 
-        this.drawHeatmap();
+        this.drawHeightmap();
     },
 
     /**
@@ -103,8 +104,8 @@ export var squadMinimap = L.Map.extend({
      */
     updateTargets: function(){
         // Update existent targets
-        this.activeTargetsMarkers.eachLayer(function (layer) {
-            layer.updateCalc(layer.latlng);
+        this.activeTargetsMarkers.eachLayer(function (target) {
+            target.updateCalc(target.latlng);
         });
     },
 
@@ -112,8 +113,8 @@ export var squadMinimap = L.Map.extend({
      * Recalc and update every target marker on the minimap
      */
     deleteTargets: function(){
-        this.activeTargetsMarkers.eachLayer(function (layer) {
-            layer.delete();
+        this.activeTargetsMarkers.eachLayer(function (target) {
+            target.delete();
         });
     },
 
@@ -122,8 +123,8 @@ export var squadMinimap = L.Map.extend({
      */
     updateWeapons: function(){
         // Update existent targets
-        this.activeWeaponsMarkers.eachLayer(function (layer) {
-            layer.updateWeapon();
+        this.activeWeaponsMarkers.eachLayer(function (weapon) {
+            weapon.updateWeapon();
         });
     },
 
@@ -142,9 +143,9 @@ export var squadMinimap = L.Map.extend({
     },
 
     /**
-     * Draw the selected Heatmaps in a hidden canvas
+     * Draw the selected map's heightmap in a hidden canvas
      */
-    drawHeatmap: function() {
+    drawHeightmap: function() {
         const IMG = new Image(); // Create new img element
         IMG.src = MAPS.find((elem, index) => index == globalData.activeMap).heightmapURL;
 
@@ -242,6 +243,7 @@ export var squadMinimap = L.Map.extend({
      */
     _handleMouseOut: function() {
         this.mouseLocationPopup.close();
-    }
+    },
 
 });
+
