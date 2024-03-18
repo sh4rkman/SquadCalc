@@ -1,10 +1,10 @@
 import L from "leaflet";
 
-import shadowIconImg from "../img/icons/marker_shadow.png";
-import mortarIconImg from "../img/icons/marker_mortar_0.png";
-import mortarIconImg1 from "../img/icons/marker_mortar_1.png";
-import mortarIconImg2 from "../img/icons/marker_mortar_2.png";
-import targetIconImg1 from "../img/icons/marker_target1.png";
+import shadowIconImg from "../img/icons/marker_shadow.webp";
+import mortarIconImg from "../img/icons/marker_mortar_0.webp";
+import mortarIconImg1 from "../img/icons/marker_mortar_1.webp";
+import mortarIconImg2 from "../img/icons/marker_mortar_2.webp";
+import targetIconImg1 from "../img/icons/marker_target1.webp";
 
 
 export var mortarIcon = L.icon({
