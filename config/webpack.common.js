@@ -14,7 +14,7 @@ module.exports = {
     module: {
         rules: [
             { test: /\.html$/i, loader: "html-loader", },
-            { test: /\.(png|svg|jpg|jpeg|gif)$/i, type: 'asset/resource', },
+            { test: /\.(png|svg|jpg|jpeg|gif|webp)$/i, type: 'asset/resource', },
             { test: /\.(sc|sa|c)ss$/i, use: ['style-loader', 'css-loader', 'sass-loader'],},
         ],
     },
