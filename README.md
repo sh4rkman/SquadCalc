@@ -62,11 +62,11 @@ SquadCalc utilizes heightmaps extracted from the Squad SDK to precisely compute 
 
 
 
-| **Maps**                     |                |
-|-----------------------------|----------------|
+| **Maps**                    |                     |
+|-----------------------------|---------------------|
 | Al Basrah                   |        ✅           |
 | Anvil                       |        ✅           |
-| Belaya                      |       ✅               |
+| Belaya                      |        ✅           |
 | Black Coast                 |        ✅           |
 | Chora                       |       ✅            |
 | Fallujah                    |      ✅             |
@@ -84,8 +84,9 @@ SquadCalc utilizes heightmaps extracted from the Squad SDK to precisely compute 
 | Mestia                      |         ✅          |
 | Mutaha                      |        ✅           |
 | Narva                       |          ✅         |
+| Narva (flooded)             |          ❌         |
 | Pacific Proving Grounds     |         ❌          |
-| Sanxian Islands             |      ✅              |
+| Sanxian Islands             |      ✅             |
 | Skorpo                      |        ✅           |
 | Sumari Bala                 |      ✅             |
 | Tallil Outskirts            |       ✅            |

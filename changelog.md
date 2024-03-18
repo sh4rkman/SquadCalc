@@ -1,4 +1,19 @@
 
+# <img src="https://img.shields.io/badge/-major%20release-blue?style=flat-square">  **20.0.0** *(2024-03-18)*
+
+<img src="https://img.shields.io/badge/-new-green"> Updated Narva, Tallil, Logar anf Yehorivka maps
+
+<img src="https://img.shields.io/badge/-new-green"> Now using 512px*512px .WEBP images for tiles, instead of 256px*256px .JPG, thus only using 8% more bandwitch on average.
+
+<img src="https://img.shields.io/badge/-%20Improv%20-orange"> Reduced grid thickness at lower zoom level
+
+<img src="https://img.shields.io/badge/-%20Improv%20-orange"> Default map is now Chora (new Basrah is ugly af)
+
+<img src="https://img.shields.io/badge/-%20Improv%20-orange"> Reduced Javascript bundles size for faster load
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
+
 
 # <img src="https://img.shields.io/badge/-major%20release-blue?style=flat-square">  **19.0.0** *(2024-03-07)*
 

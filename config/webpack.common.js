@@ -22,12 +22,13 @@ module.exports = {
         moduleIds: 'deterministic',
          runtimeChunk: 'single',
          splitChunks: {
-           cacheGroups: {
-             vendor: {
-               test: /[\\/]node_modules[\\/]/,
-               name: 'vendors',
-               chunks: 'all',
-             },
+            cacheGroups: {
+              vendor: {
+                test: /[\\/]node_modules[\\/]/,
+                name: 'vendors',
+                chunks: 'all',
+                maxSize: 500000,
+              },
            },
          },
        },
@@ -44,8 +45,8 @@ module.exports = {
     ],
     // Disable warning message for big chuncks
     performance: {
-        hints: false,
+        //hints: false,
         maxEntrypointSize: 512000,
         maxAssetSize: 512000
-    }
+    },
 };

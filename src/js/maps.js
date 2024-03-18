@@ -35,7 +35,7 @@ export const MAPS = [
         offset: [0, 0],
         scaling: 0.01294, // OK
         heightmapURL: AlBasrahURL,
-        mapURL: "/albasrah/{z}_{x}_{y}.jpg",
+        mapURL: "/albasrah/{z}_{x}_{y}.webp",
         maxZoomLevel: 4,
     },
     { 
@@ -44,7 +44,7 @@ export const MAPS = [
         offset: [0, 0], 
         scaling: 0.216675, 
         heightmapURL: AnvilURL,
-        mapURL: "/anvil/{z}_{x}_{y}.jpg",
+        mapURL: "/anvil/{z}_{x}_{y}.webp",
         maxZoomLevel: 4,
     },
     { 
@@ -53,7 +53,7 @@ export const MAPS = [
         offset: [0, 0], 
         scaling: 0.0726, 
         heightmapURL: BelayaURL,
-        mapURL: "/belaya/{z}_{x}_{y}.jpg",
+        mapURL: "/belaya/{z}_{x}_{y}.webp",
         maxZoomLevel: 4,
     },
     { 
@@ -62,7 +62,7 @@ export const MAPS = [
         offset: [0, 0], 
         scaling: 0.35, 
         heightmapURL: BlackCoastURL,
-        mapURL: "/blackcoast/{z}_{x}_{y}.jpg",
+        mapURL: "/blackcoast/{z}_{x}_{y}.webp",
         maxZoomLevel: 4,
     },
     { 
@@ -71,7 +71,7 @@ export const MAPS = [
         offset: [0, 0], 
         scaling: 0.064, 
         heightmapURL: ChoraURL,
-        mapURL: "/chora/{z}_{x}_{y}.jpg",
+        mapURL: "/chora/{z}_{x}_{y}.webp",
         maxZoomLevel: 4,
     },
     { 
@@ -80,7 +80,7 @@ export const MAPS = [
         offset: [0, 0], 
         scaling: 0.0401, // OK
         heightmapURL: FallujahURL,
-        mapURL: "/fallujah/{z}_{x}_{y}.jpg",
+        mapURL: "/fallujah/{z}_{x}_{y}.webp",
         maxZoomLevel: 4,
     },
     { 
@@ -89,7 +89,7 @@ export const MAPS = [
         offset: [0, 0], 
         scaling: 0.15744, // OK
         heightmapURL: FoolsRoadURL,
-        mapURL: "/foolsroad/{z}_{x}_{y}.jpg",
+        mapURL: "/foolsroad/{z}_{x}_{y}.webp",
         maxZoomLevel: 4,
     },
     { 
@@ -98,7 +98,7 @@ export const MAPS = [
         offset: [0, 0], 
         scaling: 0.22064, // OK
         heightmapURL: GooseBayURL,
-        mapURL: "/goosebay/{z}_{x}_{y}.jpg",
+        mapURL: "/goosebay/{z}_{x}_{y}.webp",
         maxZoomLevel: 4,
     },
     { 
@@ -107,7 +107,7 @@ export const MAPS = [
         offset: [200, 200], 
         scaling: 0.11900000000000001, // OK
         heightmapURL: GorodokURL,
-        mapURL: "/gorodok/{z}_{x}_{y}.jpg",
+        mapURL: "/gorodok/{z}_{x}_{y}.webp",
         maxZoomLevel: 4,
     },
     { 
@@ -116,7 +116,7 @@ export const MAPS = [
         offset: [0, 0], 
         scaling: 0.131, // OK
         heightmapURL: HarjuURL,
-        mapURL: "/harju/{z}_{x}_{y}.jpg",
+        mapURL: "/harju/{z}_{x}_{y}.webp",
         maxZoomLevel: 4,
     },
     { 
@@ -125,7 +125,7 @@ export const MAPS = [
         offset: [0, 0], 
         scaling: 0.190215, 
         heightmapURL: KamdeshURL,
-        mapURL: "/kamdesh/{z}_{x}_{y}.jpg",
+        mapURL: "/kamdesh/{z}_{x}_{y}.webp",
         maxZoomLevel: 4,
     },
     { 
@@ -134,7 +134,7 @@ export const MAPS = [
         offset: [0, 0], 
         scaling: 0.733125, // OK
         heightmapURL: KohatURL,
-        mapURL: "/kohat/{z}_{x}_{y}.jpg",
+        mapURL: "/kohat/{z}_{x}_{y}.webp",
         maxZoomLevel: 4,
     },
     { 
@@ -143,7 +143,7 @@ export const MAPS = [
         offset: [0, 0], 
         scaling: 0.0164, 
         heightmapURL: KokanURL,
-        mapURL: "/kokan/{z}_{x}_{y}.jpg",
+        mapURL: "/kokan/{z}_{x}_{y}.webp",
         maxZoomLevel: 4,
     },
     { 
@@ -152,7 +152,7 @@ export const MAPS = [
         offset: [0, 0], 
         scaling: 0.28215, 
         heightmapURL: LashkarURL,
-        mapURL: "/lashkar/{z}_{x}_{y}.jpg",
+        mapURL: "/lashkar/{z}_{x}_{y}.webp",
         maxZoomLevel: 4,
     },
     { 
@@ -161,7 +161,7 @@ export const MAPS = [
         offset: [0, 0], 
         scaling: 0.13575, 
         heightmapURL: LogarURL,
-        mapURL: "/logar/{z}_{x}_{y}.jpg",
+        mapURL: "/logar/{z}_{x}_{y}.webp",
         maxZoomLevel: 4,
     },
     { 
@@ -170,7 +170,7 @@ export const MAPS = [
         offset: [0, 0], 
         scaling: 0.3564, 
         heightmapURL: ManicouaganURL,
-        mapURL: "/manicouagan/{z}_{x}_{y}.jpg",
+        mapURL: "/manicouagan/{z}_{x}_{y}.webp",
         maxZoomLevel: 4,
     },
     { 
@@ -179,7 +179,7 @@ export const MAPS = [
         offset: [0, 0], 
         scaling: 0.41028, 
         heightmapURL: MestiaURL,
-        mapURL: "/mestia/{z}_{x}_{y}.jpg",
+        mapURL: "/mestia/{z}_{x}_{y}.webp",
         maxZoomLevel: 4,
     },
     { 
@@ -188,7 +188,7 @@ export const MAPS = [
         offset: [-70, -100], 
         scaling: 0.07071, 
         heightmapURL: MutahaURL,
-        mapURL: "/mutaha/{z}_{x}_{y}.jpg",
+        mapURL: "/mutaha/{z}_{x}_{y}.webp",
         maxZoomLevel: 4,
     },
     { 
@@ -197,7 +197,7 @@ export const MAPS = [
         offset: [-100, -100], 
         scaling: 0.0583, 
         heightmapURL: NarvaURL,
-        mapURL: "/narva/{z}_{x}_{y}.jpg",
+        mapURL: "/narva/{z}_{x}_{y}.webp",
         maxZoomLevel: 4,
     },
     { 
@@ -206,7 +206,7 @@ export const MAPS = [
         offset: [0, 0], 
         scaling: 0.1892, 
         heightmapURL: SanxianURL,
-        mapURL: "/sanxian/{z}_{x}_{y}.jpg",
+        mapURL: "/sanxian/{z}_{x}_{y}.webp",
         maxZoomLevel: 5,
     },
     { 
@@ -215,7 +215,7 @@ export const MAPS = [
         offset: [0, 0], 
         scaling: 2.14515, 
         heightmapURL: SkorpoURL,
-        mapURL: "/skorpo/{z}_{x}_{y}.jpg",
+        mapURL: "/skorpo/{z}_{x}_{y}.webp",
         maxZoomLevel: 4,
     },
     { 
@@ -224,7 +224,7 @@ export const MAPS = [
         offset: [0, 0], 
         scaling: 0.035925, 
         heightmapURL: SumariURL,
-        mapURL: "/sumari/{z}_{x}_{y}.jpg",
+        mapURL: "/sumari/{z}_{x}_{y}.webp",
         maxZoomLevel: 4,
     },
     { 
@@ -233,7 +233,7 @@ export const MAPS = [
         offset: [-200, -200], 
         scaling: 0.05275, 
         heightmapURL: TallilURL,
-        mapURL: "/tallil/{z}_{x}_{y}.jpg",
+        mapURL: "/tallil/{z}_{x}_{y}.webp",
         maxZoomLevel: 4,
     },
     { 
@@ -242,7 +242,7 @@ export const MAPS = [
         offset: [-8300, -8300], 
         scaling: 0.2732, 
         heightmapURL: YehorivkaURL,
-        mapURL: "/yehorivka/{z}_{x}_{y}.jpg", 
+        mapURL: "/yehorivka/{z}_{x}_{y}.webp", 
         maxZoomLevel: 4,
     }
 ];
@@ -258,7 +258,7 @@ export function loadMapSelector() {
         MAP_SELECTOR.select2({
             dropdownCssClass: "dropbtn",
             dropdownParent: $("#mapSelector"),
-            minimumResultsForSearch: -1, // Disable search
+            minimumResultsForSearch: -1,
             placeholder: "DEBUG MODE"
         });
     } else {
@@ -275,9 +275,7 @@ export function loadMapSelector() {
         MAP_SELECTOR.append("<option value=\"" + i + "\">" + map.name + "</option>");
     });
 
-
-
-    $(".dropbtn").val("0");
+    $(".dropbtn").val(4);
     globalData.minimap.loadHeatmap();
 }
 

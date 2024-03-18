@@ -9,7 +9,6 @@ const WebpackPwaManifest = require('webpack-pwa-manifest')
 
 module.exports = merge(common, {
     mode: 'production',
-    devtool: 'inline-source-map',
     plugins: [
         new HtmlWebpackPlugin({
             template: './src/index.html',
@@ -61,7 +60,14 @@ module.exports = merge(common, {
     optimization: {
         minimizer: [
             new CssMinimizerPlugin(), //CSS
-            new TerserPlugin(), //JS
+            new TerserPlugin({ //JS
+                extractComments: false,
+                terserOptions: {
+                  format: {
+                    comments: false, // remove *.LICENCE.txt
+                  },
+                },
+              }), 
         ],
     },
 });

@@ -16,7 +16,7 @@ export var squadMinimap = L.Map.extend({
         zoomControl: false,
         doubleClickZoom: false,
         edgeBufferTiles: 3,
-        renderer: L.svg({padding: 3}),
+        renderer: L.svg({padding: 3}), // https://leafletjs.com/reference.html#path-clip_padding
         closePopupOnClick: false,
         wheelPxPerZoomLevel: 100,
         boxZoom: true,
@@ -56,11 +56,14 @@ export var squadMinimap = L.Map.extend({
      * Draw the map+grid inside the map container
      */
     draw: function(){
+        var mapVal;
+        var map;
+        var imageBounds;
 
-        var mapVal = $(".dropbtn").val();
-        var map = MAPS.find((elem, index) => index == mapVal);
-        var imageBounds = L.latLngBounds(L.latLng(0, 0), L.latLng(-255, 255));
-        
+        mapVal = $(".dropbtn").val();
+        if (mapVal == "") {mapVal = 4;} // default map is Chora
+        map = MAPS.find((elem, index) => index == mapVal);
+        imageBounds = L.latLngBounds(L.latLng(0, 0), L.latLng(-255, 255));
         this.mapScale = map.size / 256;
         globalData.activeMap = mapVal;
         globalData.mapScale = 256 / map.size;

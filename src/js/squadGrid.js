@@ -36,8 +36,6 @@ export default LayerGroup.extend({
         weight: 1,
         interactive: false,
         clickable: false,
-        // Set padding so the svg is rendered outside of view, avoiding grid "appearing" while panning map
-        // https://leafletjs.com/reference.html#path-clip_padding
     },
 
     lineStyleSUB1: {
@@ -119,13 +117,19 @@ export default LayerGroup.extend({
             this.setLinesOpacity(this.s2Lines, 0.6);
         }
         else if (currentZoom >= 4) {
-            this.setLinesWeight(this.kpLines, 3);
+            this.setLinesWeight(this.kpLines, 2);
             this.setLinesOpacity(this.kpLines, 1);
             this.setLinesOpacity(this.s1Lines, 0.5);
             this.setLinesOpacity(this.s2Lines, 0);
         } 
-        else {
+        else if (currentZoom >= 2){
             this.setLinesWeight(this.kpLines, 1);
+            this.setLinesOpacity(this.kpLines, 1);
+            this.setLinesOpacity(this.s1Lines, 0);
+            this.setLinesOpacity(this.s2Lines, 0);
+        }
+        else {
+            this.setLinesWeight(this.kpLines, 0.7);
             this.setLinesOpacity(this.kpLines, 1);
             this.setLinesOpacity(this.s1Lines, 0);
             this.setLinesOpacity(this.s2Lines, 0);
