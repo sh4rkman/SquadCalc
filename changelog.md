@@ -1,3 +1,15 @@
+# <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">   **20.1.0** *(2024-03-19)*
+
+<img src="https://img.shields.io/badge/-%20Improv%20-orange"> Converted markers to .webp format
+
+<img src="https://img.shields.io/badge/-%20Improv%20-orange"> Converted heightmaps to .webp format
+
+<img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed -again- slight borders appearing between tiles when moving map on chromium (still visible but barely)
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
+
+
 
 # <img src="https://img.shields.io/badge/-major%20release-blue?style=flat-square">  **20.0.0** *(2024-03-18)*
 
