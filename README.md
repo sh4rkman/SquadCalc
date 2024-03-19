@@ -51,46 +51,46 @@ SquadCalc utilizes heightmaps extracted from the Squad SDK to precisely compute 
 ### **Map & Weapons Support**
 
 
-| **Weapons**      |           |
+| **Weapons**           |                    |
 |-----------------------|--------------------|
 | Mortars               |        ✅          |
-| UB-32                 |          ✅        |
-| Hell Canon            |           ✅       |
-| Technicals mortars    |        ✅            |
-| Technicals/BRDM UB-32 |      ✅              |
-| BM-21 Grad            |      ✅             |
+| UB-32                 |        ✅          |
+| Hell Canon            |        ✅          |
+| Technicals mortars    |        ✅          |
+| Technicals/BRDM UB-32 |        ✅          |
+| BM-21 Grad            |        ✅          |
 
 
 
 | **Maps**                    |                     |
 |-----------------------------|---------------------|
-| Al Basrah                   |        ✅           |
-| Anvil                       |        ✅           |
-| Belaya                      |        ✅           |
-| Black Coast                 |        ✅           |
-| Chora                       |       ✅            |
-| Fallujah                    |      ✅             |
-| Fool's Road                 |       ✅            |
-| Goose Bay                   |       ✅            |
-| Gorodok                     |        ✅           |
+| Al Basrah                   |         ✅          |
+| Anvil                       |         ✅          |
+| Belaya                      |         ✅          |
+| Black Coast                 |         ✅          |
+| Chora                       |         ✅          |
+| Fallujah                    |         ✅          |
+| Fool's Road                 |         ✅          |
+| Goose Bay                   |         ✅          |
+| Gorodok                     |         ✅          |
 | Harju                       |         ✅          |
-| Jensen's Range              |            ❌       |
+| Jensen's Range              |         ✅          |
 | Kamdesh Highlands           |         ✅          |
 | Kohat Toi                   |         ✅          |
-| Kokan                       |        ✅           |
+| Kokan                       |         ✅          |
 | Lashkar Valley              |         ✅          |
-| Logar Valley                |        ✅           |
-| Manicouagan                 |        ✅           |
+| Logar Valley                |         ✅          |
+| Manicouagan                 |         ✅          |
 | Mestia                      |         ✅          |
-| Mutaha                      |        ✅           |
-| Narva                       |          ✅         |
-| Narva (flooded)             |          ❌         |
+| Mutaha                      |         ✅          |
+| Narva                       |         ✅          |
+| Narva (flooded)             |         ❌          |
 | Pacific Proving Grounds     |         ❌          |
-| Sanxian Islands             |      ✅             |
-| Skorpo                      |        ✅           |
-| Sumari Bala                 |      ✅             |
-| Tallil Outskirts            |       ✅            |
-| Yehorivka                   |       ✅            |
+| Sanxian Islands             |         ✅          |
+| Skorpo                      |         ✅          |
+| Sumari Bala                 |         ✅          |
+| Tallil Outskirts            |         ✅          |
+| Yehorivka                   |         ✅          |
 
 
 </br></br>

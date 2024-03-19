@@ -10,6 +10,7 @@ import FoolsRoadURL from "../img/heightmaps/fool's road.webp";
 import GooseBayURL from "../img/heightmaps/goose bay.webp";
 import GorodokURL from "../img/heightmaps/gorodok.webp";
 import HarjuURL from "../img/heightmaps/harju.webp";
+import JensenURL from "../img/heightmaps/jensen.webp"
 import KamdeshURL from "../img/heightmaps/kamdesh.webp";
 import KohatURL from "../img/heightmaps/kohat.webp";
 import KokanURL from "../img/heightmaps/kokan.webp";
@@ -108,6 +109,15 @@ export const MAPS = [
         scaling: 0.11900000000000001, // OK
         heightmapURL: GorodokURL,
         mapURL: "/gorodok/{z}_{x}_{y}.webp",
+        maxZoomLevel: 4,
+    },
+    { 
+        name: "Jensen's Range", 
+        size: 4008, // OK
+        offset: [0, 0], 
+        scaling: 0.0859, // OK
+        heightmapURL: JensenURL,
+        mapURL: "/jensen/{z}_{x}_{y}.webp",
         maxZoomLevel: 4,
     },
     { 
