@@ -57,7 +57,7 @@ export default LayerGroup.extend({
     },
 
     initialize(options) {
-        console.debug("initialize");
+        //console.debug("initialize");
         LayerGroup.prototype.initialize.call(this);
         Util.setOptions(this, options);
     },
@@ -108,18 +108,18 @@ export default LayerGroup.extend({
             return;
         }
         const currentZoom = Math.round(this.map.getZoom());
-        console.debug("updateLineOpacity with zoom:", currentZoom);
+        //console.debug("updateLineOpacity with zoom:", currentZoom);
 
         if (currentZoom >= 6) {
             this.setLinesOpacity(this.s2Lines, 0.6);
         } else if (currentZoom >= 5) {
-            this.setLinesOpacity(this.s1Lines, 0.7);
+            this.setLinesOpacity(this.s1Lines, 0.3);
             this.setLinesOpacity(this.s2Lines, 0.6);
         }
         else if (currentZoom >= 4) {
             this.setLinesWeight(this.kpLines, 2);
             this.setLinesOpacity(this.kpLines, 1);
-            this.setLinesOpacity(this.s1Lines, 0.5);
+            this.setLinesOpacity(this.s1Lines, 0.3);
             this.setLinesOpacity(this.s2Lines, 0);
         } 
         else if (currentZoom >= 2){
@@ -147,7 +147,7 @@ export default LayerGroup.extend({
         if (lines.length === 0 || lines[0].options.opacity === opacity) {
             // //console.debug("nothing to do");
         } else {
-            console.debug("setLinesOpacity:", [lines, opacity]);
+            //console.debug("setLinesOpacity:", [lines, opacity]);
             lines.forEach((l) => {
                 l.setStyle({
                     opacity,
@@ -168,7 +168,7 @@ export default LayerGroup.extend({
         if (lines.length === 0) {
             // //console.debug("nothing to do");
         } else {
-            console.debug("setLinesWeight:", [lines, weight]);
+            //console.debug("setLinesWeight:", [lines, weight]);
             lines.forEach((l) => {
                 l.setStyle({
                     weight,
@@ -189,7 +189,7 @@ export default LayerGroup.extend({
         // clear old grid lines
         this.clearLines();
 
-        const mapScale = 256 / MAPS.find((elem, index) => index == globalData.activeMap).size;
+        const mapScale = globalData.mapSize / MAPS.find((elem, index) => index == globalData.activeMap).size;
 
         const kp = (300 / 3 ** 0) * mapScale;
         const s1 = (300 / 3 ** 1) * mapScale;
@@ -233,9 +233,6 @@ export default LayerGroup.extend({
         // horizontal keypad lines, almost the same as for vertical lines
         const startY = Math.ceil(this.bounds.getSouth() / interval) * interval;
         const endY = Math.floor(this.bounds.getNorth() / interval) * interval;
-
-        //const startY = -255;
-        //const endY = 0;
 
         for (let y = startY; y <= endY; y += interval) {
             const left = new LatLng(y, this.bounds.getWest());

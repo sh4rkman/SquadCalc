@@ -63,11 +63,11 @@ export var squadMinimap = L.Map.extend({
         mapVal = $(".dropbtn").val();
         if (mapVal == "") {mapVal = 4;} // default map is Chora
         map = MAPS.find((elem, index) => index == mapVal);
-        imageBounds = L.latLngBounds(L.latLng(0, 0), L.latLng(-255, 255));
-        this.mapScale = map.size / 256;
+        imageBounds = L.latLngBounds(L.latLng(0, 0), L.latLng(-globalData.mapSize+1, globalData.mapSize-1));
+        this.mapScale = map.size / globalData.mapSize;
         globalData.activeMap = mapVal;
-        globalData.mapScale = 256 / map.size;
-        this.setView([-128, 128], 2);
+        globalData.mapScale = globalData.mapSize / map.size;
+        this.setView([-globalData.mapSize/2, globalData.mapSize/2], 1);
         //this.setMaxBounds(imageBounds)
 
         // Remove any layers already drawn
@@ -80,6 +80,7 @@ export var squadMinimap = L.Map.extend({
             maxNativeZoom: map.maxZoomLevel,
             noWrap: true,
             bounds: imageBounds,
+            tileSize: globalData.mapSize,
         }).addTo(this.layerGroup);
     
         this.grid = new squadGrid();
@@ -186,7 +187,7 @@ export var squadMinimap = L.Map.extend({
     _handleContextMenu: function(e) {
 
         // If out of bounds
-        if (e.latlng.lat > 0 ||  e.latlng.lat < -256 || e.latlng.lng < 0 || e.latlng.lng > 256) {
+        if (e.latlng.lat > 0 ||  e.latlng.lat < -globalData.mapSize || e.latlng.lng < 0 || e.latlng.lng > globalData.mapSize) {
             return 1;
         }
 
@@ -212,7 +213,7 @@ export var squadMinimap = L.Map.extend({
         if (!matchMedia("(pointer:fine)").matches) { return 1; }
 
         // If out of bounds
-        if (e.latlng.lat > 0 ||  e.latlng.lat < -256 || e.latlng.lng < 0 || e.latlng.lng > 256) {
+        if (e.latlng.lat > 0 ||  e.latlng.lat < -globalData.mapSize || e.latlng.lng < 0 || e.latlng.lng > globalData.mapSize) {
             this.mouseLocationPopup.close();
             return;
         }
@@ -228,7 +229,7 @@ export var squadMinimap = L.Map.extend({
      */
     _handleDoubleCkick: function (e) {
         // If out of bounds
-        if (e.latlng.lat > 0 ||  e.latlng.lat < -256 || e.latlng.lng < 0 || e.latlng.lng > 256) {
+        if (e.latlng.lat > 0 ||  e.latlng.lat < -globalData.mapSize || e.latlng.lng < 0 || e.latlng.lng > globalData.mapSize) {
             return 1;
         }
 
