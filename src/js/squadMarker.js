@@ -30,10 +30,10 @@ export var squadMarker = L.Marker.extend({
      * @returns {e} - same event with latlng corrected
      */
     keepOnMap: function(e){
-        if (e.latlng.lng > 256) {e.latlng.lng = 257;}
-        if (e.latlng.lat < -256 ) {e.latlng.lat = -257;}
-        if (e.latlng.lng < 0) {e.latlng.lng = -1;}
-        if (e.latlng.lat > 0) {e.latlng.lat = 1;}
+        if (e.latlng.lng > globalData.mapSize) {e.latlng.lng = globalData.mapSize;}
+        if (e.latlng.lat < -globalData.mapSize ) {e.latlng.lat = -globalData.mapSize;}
+        if (e.latlng.lng < 0) {e.latlng.lng = 0;}
+        if (e.latlng.lat > 0) {e.latlng.lat = 0;}
         return e;
     },
 
@@ -56,7 +56,7 @@ export var squadWeaponMarker = squadMarker.extend({
         }
 
         this.maxDistCircleOn = {
-            radius: globalData.activeWeapon.getMaxDistance() * (256 / MAPS.find((elem, index) => index == globalData.activeMap).size),
+            radius: globalData.activeWeapon.getMaxDistance() * (globalData.mapSize / MAPS.find((elem, index) => index == globalData.activeMap).size),
             opacity: 0.7,
             color: "#00137f",
             fillOpacity: 0,
@@ -66,7 +66,7 @@ export var squadWeaponMarker = squadMarker.extend({
         };
 
         this.minDistCircleOn = {
-            radius: globalData.activeWeapon.minDistance * (256 / MAPS.find((elem, index) => index == globalData.activeMap).size),
+            radius: globalData.activeWeapon.minDistance * (globalData.mapSize / MAPS.find((elem, index) => index == globalData.activeMap).size),
             opacity: 0.7,
             color: "#00137f",
             fillOpacity: 0.2,
@@ -137,8 +137,8 @@ export var squadWeaponMarker = squadMarker.extend({
      */
     updateWeapon: function(){
 
-        var radiusMax = globalData.activeWeapon.getMaxDistance() * (256 / MAPS.find((elem, index) => index == globalData.activeMap).size);
-        var radiusMin = globalData.activeWeapon.minDistance * (256 / MAPS.find((elem, index) => index == globalData.activeMap).size);
+        var radiusMax = globalData.activeWeapon.getMaxDistance() * (globalData.mapSize / MAPS.find((elem, index) => index == globalData.activeMap).size);
+        var radiusMin = globalData.activeWeapon.minDistance * (globalData.mapSize / MAPS.find((elem, index) => index == globalData.activeMap).size);
         
         this.minRangeMarker.setRadius(radiusMin);
         this.rangeMarker.setRadius(radiusMax);

@@ -1,3 +1,13 @@
+
+# <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">   **20.2.0** *(2024-03-19)*
+
+<img src="https://img.shields.io/badge/-%20Improv%20-orange"> Now serving 512*512px tiles natively
+
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
+
+
 # <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">   **20.1.0** *(2024-03-19)*
 
 <img src="https://img.shields.io/badge/-%20Improv%20-orange"> Converted markers to .webp format

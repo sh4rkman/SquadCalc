@@ -850,7 +850,7 @@ export function getCalcFromUI(a, b) {
     var bearing;
     var vel;
     var elevation;
-    const mapScale = MAPS.find((elem, index) => index == globalData.activeMap).size / 256;
+    const mapScale = MAPS.find((elem, index) => index == globalData.activeMap).size / globalData.mapSize;
 
     a = L.latLng([a.lng * mapScale, a.lat * -mapScale]);
     b = L.latLng([b.lng * mapScale, b.lat * -mapScale]);
