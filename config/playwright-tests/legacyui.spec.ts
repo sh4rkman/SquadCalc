@@ -33,17 +33,18 @@ test('Wrong calcs', async ({ page }) => {
   await page.locator('#target-location').click();
   await page.locator('#target-location').fill('');
   await page.locator('#target-location').pressSequentially('G01245');
-  await expect(page.locator('#errorMsg')).toContainText("Target is out of range");
+  await expect(page.locator('#errorMsg')).toContainText("Mortar is out of map");
 
   // weapon out of map
-  await page.getByRole('textbox', { name: 'Al basrah' }).click();
-  await page.getByRole('option', { name: 'Yehorivka' }).click();
-  await expect(page.locator('#errorMsg')).toContainText("Mortar is out of map");
+  await page.getByRole('textbox', { name: 'Chora' }).click();
+  await page.getByRole('option', { name: 'Al basrah' }).click();
+  await expect(page.locator('#errorMsg')).toContainText("Target is out of range");
 
 });
 
 test('Basic calcs', async ({ page }) => {
-
+  await page.getByRole('textbox', { name: 'Chora' }).click();
+  await page.getByRole('option', { name: 'Al basrah' }).click();
   // pressSequentially coordonates
   await page.locator('#mortar-location').click();
   await page.locator('#mortar-location').pressSequentially('B02-34');
@@ -57,7 +58,8 @@ test('Basic calcs', async ({ page }) => {
 
 
 test('Basic calcs + map', async ({ page }) => {
-
+  await page.getByRole('textbox', { name: 'Chora' }).click();
+  await page.getByRole('option', { name: 'Al basrah' }).click();
   // pressSequentially coordonates
   await page.locator('#mortar-location').click();
   await page.locator('#mortar-location').pressSequentially('B0234');
@@ -74,7 +76,8 @@ test('Basic calcs + map', async ({ page }) => {
 });
 
 test('Advanced calc', async ({ page }) => {
-
+  await page.getByRole('textbox', { name: 'Chora' }).click();
+  await page.getByRole('option', { name: 'Al basrah' }).click();
   // pressSequentially coordonates
   await page.locator('#mortar-location').click();
   await page.locator('#mortar-location').pressSequentially('B0234');
@@ -107,7 +110,8 @@ test('Advanced calc', async ({ page }) => {
 });
 
 test('Save calc', async ({ page }) => {
-
+  await page.getByRole('textbox', { name: 'Chora' }).click();
+  await page.getByRole('option', { name: 'Al basrah' }).click();
   // pressSequentially coordonates
   await page.locator('#mortar-location').click();
   await page.locator('#mortar-location').pressSequentially('B0234');
