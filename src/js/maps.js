@@ -73,7 +73,7 @@ export const MAPS = [
         scaling: 0.064, 
         heightmapURL: ChoraURL,
         mapURL: "/chora/{z}_{x}_{y}.webp",
-        maxZoomLevel: 4,
+        maxZoomLevel: 5,
     },
     { 
         name: "Fallujah", 
@@ -109,17 +109,17 @@ export const MAPS = [
         scaling: 0.11900000000000001, // OK
         heightmapURL: GorodokURL,
         mapURL: "/gorodok/{z}_{x}_{y}.webp",
-        maxZoomLevel: 4,
+        maxZoomLevel: 5,
     },
-    { 
-        name: "Jensen's Range", 
-        size: 4008, // OK
-        offset: [0, 0], 
-        scaling: 0.0859, // OK
-        heightmapURL: JensenURL,
-        mapURL: "/jensen/{z}_{x}_{y}.webp",
-        maxZoomLevel: 4,
-    },
+    // { 
+    //     name: "Jensen's", 
+    //     size: 4008, // OK
+    //     offset: [0, 0], 
+    //     scaling: 0.0859, // OK
+    //     heightmapURL: JensenURL,
+    //     mapURL: "/jensen/{z}_{x}_{y}.webp",
+    //     maxZoomLevel: 4,
+    // },
     { 
         name: "Harju", 
         size: 4032, // OK
@@ -154,7 +154,7 @@ export const MAPS = [
         scaling: 0.0164, 
         heightmapURL: KokanURL,
         mapURL: "/kokan/{z}_{x}_{y}.webp",
-        maxZoomLevel: 4,
+        maxZoomLevel: 5,
     },
     { 
         name: "Lashkar", 
@@ -210,6 +210,15 @@ export const MAPS = [
         mapURL: "/narva/{z}_{x}_{y}.webp",
         maxZoomLevel: 4,
     },
+/*     { 
+        name: "Narva (f)", 
+        size: 2800, // OK
+        offset: [-100, -100], 
+        scaling: 0.0583, 
+        heightmapURL: NarvaURL,
+        mapURL: "/narva-flooded/{z}_{x}_{y}.webp",
+        maxZoomLevel: 4,
+    }, */
     { 
         name: "Sanxian",
         size: 4600, 
@@ -253,7 +262,7 @@ export const MAPS = [
         scaling: 0.2732, 
         heightmapURL: YehorivkaURL,
         mapURL: "/yehorivka/{z}_{x}_{y}.webp", 
-        maxZoomLevel: 4,
+        maxZoomLevel: 5,
     }
 ];
 
