@@ -16,3 +16,4 @@ jobs:
         script: |
          cd ${{ secrets.DEV_DIST }}
          ls
+         git pull origin dev
