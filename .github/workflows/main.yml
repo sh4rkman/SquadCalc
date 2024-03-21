@@ -1,5 +1,10 @@
 name: remote ssh command
-on: [push]
+on:
+  push:
+    branches: [ dev ]
+    
+  workflow_dispatch:
+  
 jobs:
 
   build:
