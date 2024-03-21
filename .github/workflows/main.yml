@@ -16,6 +16,6 @@ jobs:
         script: |
          cd ${{ secrets.DEV_DIST }}
     - name: pull code from github
-      run: ssh ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} "cd ${{ secrets.DEV_DIST }} && git checkout dev && git pull && exit"
+      run: git checkout dev && git pull && exit"
 
 
