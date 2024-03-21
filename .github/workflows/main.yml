@@ -13,4 +13,6 @@ jobs:
         username: ${{ secrets.USERNAME }}
         password: ${{ secrets.PASSWORD }}
         port: ${{ secrets.PORT }}
-        script: ls
+        script: |
+         cd ${{ secrets.DEV_DIST }}
+         ls
