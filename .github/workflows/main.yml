@@ -14,7 +14,10 @@ jobs:
         password: ${{ secrets.PASSWORD }}
         port: ${{ secrets.PORT }}
         script: |
+         ls
          cd ${{ secrets.DEV_DIST }}
+         ls
+         whoami
          git pull origin dev
 
       
