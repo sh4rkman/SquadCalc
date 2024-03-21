@@ -19,7 +19,7 @@ jobs:
          cd ${{ secrets.DEV_DIST }}
          ls
          whoami
-         git pull origin dev
+         git pull
 
       
 
