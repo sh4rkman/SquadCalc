@@ -6,9 +6,15 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     steps:
-    - name: executing remote ssh commands using password
-      uses: appleboy/ssh-action@v1.0.3
-      with:
+     - name: Setup SSH Keys and known_hosts
+       env:
+        SSH_AUTH_SOCK: /tmp/ssh_agent.sock
+       run: |
+        ssh-agent -a $SSH_AUTH_SOCK > /dev/null
+        ssh-add - <<< "${{ secrets.PASSWORD }}"
+     - name: executing remote ssh commands using password
+       uses: appleboy/ssh-action@v1.0.3
+       with:
         host: ${{ secrets.HOST }}
         username: ${{ secrets.USERNAME }}
         password: ${{ secrets.PASSWORD }}
