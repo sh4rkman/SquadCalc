@@ -15,7 +15,7 @@ jobs:
         port: ${{ secrets.PORT }}
         script: |
          cd ${{ secrets.DEV_DIST }}
-         whoami
+         git pull origin dev
 
       
 
