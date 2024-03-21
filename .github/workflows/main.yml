@@ -15,8 +15,8 @@ jobs:
         port: ${{ secrets.PORT }}
         script: |
          cd ${{ secrets.DEV_DIST }}
-    - name: pull code from github
-      run: whoami
+         whoami
+
       
 
 
