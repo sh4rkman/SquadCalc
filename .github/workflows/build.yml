@@ -1,23 +1,15 @@
-on:
-  push:
-    branches:
-      - main
-  workflow_dispatch:
-  
-jobs:
-  run_pull:
-    name: run pull
-    runs-on: ubuntu-latest
-    
-    steps:
-    - name: install ssh keys
-      # check this thread to understand why its needed:
-      # https://stackoverflow.com/a/70447517
-      run: |
-        install -m 600 -D /dev/null ~/.ssh/id_rsa
-        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-        ssh-keyscan -H ${{ secrets.HOST }} > ~/.ssh/known_hosts
-    - name: connect and pull
-      run: ssh ${{ secrets.USERNAME }}@${{ secrets.HOST }} -p ${{ secrets.PORT }} "cd ${{ secrets.DEV_DIST }} && git checkout dev && git pull && exit"
-    - name: cleanup
-      run: rm -rf ~/.ssh
+- name: Deploy to Staging server
+   uses: easingthemes/ssh-deploy@main
+   with:
+      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+      ARGS: "-rlgoDzvc -i"
+      SOURCE: "dist/"
+      REMOTE_HOST: ${{ secrets.HOST }}
+      REMOTE_USER: ${{ secrets.USER }}
+      SCRIPT_BEFORE: |
+        whoami
+        ls -al
+      SCRIPT_AFTER: |
+        whoami
+        ls -al
+        echo $RSYNC_STDOUT
