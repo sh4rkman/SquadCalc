@@ -14,7 +14,8 @@ jobs:
         password: ${{ secrets.PASSWORD }}
         port: ${{ secrets.PORT }}
         script: |
-         ls
+         eval `ssh-agent -s`
+         ssh-add ~/.ssh/id_rsa
          cd ${{ secrets.DEV_DIST }}
          ls
          whoami
