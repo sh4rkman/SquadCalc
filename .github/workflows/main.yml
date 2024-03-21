@@ -16,6 +16,7 @@ jobs:
         script: |
          cd ${{ secrets.DEV_DIST }}
     - name: pull code from github
-      run: git checkout dev && git pull && exit"
+      run: git checkout dev && git pull && ls
+      
 
 
