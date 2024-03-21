@@ -15,5 +15,10 @@ jobs:
         port: ${{ secrets.PORT }}
         script: |
          cd ${{ secrets.DEV_DIST }}
-         ls
          git pull origin dev
+    - name: pull code from github
+      uses: actions/checkout@v4
+      with:
+        repository: ${{ github.repository }}
+        ref: dev
+        token: ${{ github.token }}
