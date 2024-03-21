@@ -1,15 +1,16 @@
-- name: Deploy to Staging server
-   uses: easingthemes/ssh-deploy@main
-   with:
-      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-      ARGS: "-rlgoDzvc -i"
-      SOURCE: "dist/"
-      REMOTE_HOST: ${{ secrets.HOST }}
-      REMOTE_USER: ${{ secrets.USER }}
-      SCRIPT_BEFORE: |
-        whoami
-        ls -al
-      SCRIPT_AFTER: |
-        whoami
-        ls -al
-        echo $RSYNC_STDOUT
+name: remote ssh command
+on: [push]
+jobs:
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+    - name: executing remote ssh commands using password
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        password: ${{ secrets.PASSWORD }}
+        port: ${{ secrets.PORT }}
+        script: whoami
