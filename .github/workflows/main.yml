@@ -1,21 +1,16 @@
-on:
-  push:
-    branches:
-      - dev
-  workflow_dispatch:
-  
+name: remote ssh command
+on: [push]
 jobs:
-  run_pull:
-    name: run pull
+
+  build:
+    name: Build
     runs-on: ubuntu-latest
-    
     steps:
-    - name: install ssh keys
-      run: |
-        install -m 600 -D /dev/null ~/.ssh/id_rsa
-        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-        ssh-keyscan -H ${{ secrets.HOST }} > ~/.ssh/known_hosts
-    - name: connect and pull
-      run: ssh ${{ secrets.USER }}@${{ secrets.HOST }} -p ${{ secrets.PORT }} "cd ${{ secrets.DIST }} && git checkout dev && git pull && exit"
-    - name: cleanup
-      run: rm -rf ~/.ssh
+    - name: executing remote ssh commands using password
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USER }}
+        password: ${{ secrets.PASSWORD }}
+        port: ${{ secrets.PORT }}
+        script: whoami
