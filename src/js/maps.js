@@ -10,7 +10,7 @@ import FoolsRoadURL from "../img/heightmaps/fool's road.webp";
 import GooseBayURL from "../img/heightmaps/goose bay.webp";
 import GorodokURL from "../img/heightmaps/gorodok.webp";
 import HarjuURL from "../img/heightmaps/harju.webp";
-import JensenURL from "../img/heightmaps/jensen.webp"
+//import JensenURL from "../img/heightmaps/jensen.webp"
 import KamdeshURL from "../img/heightmaps/kamdesh.webp";
 import KohatURL from "../img/heightmaps/kohat.webp";
 import KokanURL from "../img/heightmaps/kokan.webp";
@@ -73,7 +73,7 @@ export const MAPS = [
         scaling: 0.064, 
         heightmapURL: ChoraURL,
         mapURL: "/chora/{z}_{x}_{y}.webp",
-        maxZoomLevel: 5,
+        maxZoomLevel: 4,
     },
     { 
         name: "Fallujah", 
@@ -109,7 +109,7 @@ export const MAPS = [
         scaling: 0.11900000000000001, // OK
         heightmapURL: GorodokURL,
         mapURL: "/gorodok/{z}_{x}_{y}.webp",
-        maxZoomLevel: 5,
+        maxZoomLevel: 4,
     },
     // { 
     //     name: "Jensen's", 
@@ -154,7 +154,7 @@ export const MAPS = [
         scaling: 0.0164, 
         heightmapURL: KokanURL,
         mapURL: "/kokan/{z}_{x}_{y}.webp",
-        maxZoomLevel: 5,
+        maxZoomLevel: 4,
     },
     { 
         name: "Lashkar", 
@@ -210,7 +210,7 @@ export const MAPS = [
         mapURL: "/narva/{z}_{x}_{y}.webp",
         maxZoomLevel: 4,
     },
-/*     { 
+    /*{ 
         name: "Narva (f)", 
         size: 2800, // OK
         offset: [-100, -100], 
@@ -226,7 +226,7 @@ export const MAPS = [
         scaling: 0.1892, 
         heightmapURL: SanxianURL,
         mapURL: "/sanxian/{z}_{x}_{y}.webp",
-        maxZoomLevel: 5,
+        maxZoomLevel: 4,
     },
     { 
         name: "Skorpo", 
@@ -262,7 +262,7 @@ export const MAPS = [
         scaling: 0.2732, 
         heightmapURL: YehorivkaURL,
         mapURL: "/yehorivka/{z}_{x}_{y}.webp", 
-        maxZoomLevel: 5,
+        maxZoomLevel: 4,
     }
 ];
 

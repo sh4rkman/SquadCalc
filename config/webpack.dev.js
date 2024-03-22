@@ -1,41 +1,25 @@
 const { merge } = require('webpack-merge');
 const common = require('./webpack.common.js');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
-const TerserPlugin = require("terser-webpack-plugin");
 const RobotstxtPlugin = require("robotstxt-webpack-plugin");
+
+const path = require('path');
 
 module.exports = merge(common, {
     mode: 'production',
     plugins: [
         new HtmlWebpackPlugin({
             template: './src/index.html',
+            favicon: './src/img/favicons/favicon.ico',
             minify: {
                 collapseWhitespace: true,
                 removeComments: true,
                 removeAttributeQuotes: true,
             }
-        }),
-        new MiniCssExtractPlugin({
-            filename: 'src/css/[name].[contenthash].min.css',
-        }),
+          }),
         new RobotstxtPlugin({
             policy: [{ userAgent: "*", disallow: "/", }]
         }),
+        
     ],
-    module: {},
-    optimization: {
-        minimizer: [
-            new CssMinimizerPlugin(), //CSS
-            new TerserPlugin({ //JS
-                extractComments: false,
-                terserOptions: {
-                  format: {
-                    comments: false, // remove *.LICENCE.txt
-                  },
-                },
-              }), 
-        ],
-    },
 });

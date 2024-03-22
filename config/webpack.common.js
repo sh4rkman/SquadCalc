@@ -1,6 +1,9 @@
 const path = require('path');
 const webpack = require('webpack');
 const CopyPlugin = require("copy-webpack-plugin");
+const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
+const TerserPlugin = require("terser-webpack-plugin");
+var WebpackPwaManifest = require('webpack-pwa-manifest')
 
 module.exports = {
     entry: './src/app.js',
@@ -16,7 +19,7 @@ module.exports = {
             { test: /\.html$/i, loader: "html-loader", },
             { test: /\.(png|svg|jpg|jpeg|gif|webp)$/i, type: 'asset/resource', },
             { test: /\.(sc|sa|c)ss$/i, use: ['style-loader', 'css-loader', 'sass-loader'],},
-        ],
+        ],  
     },
     optimization: {
         moduleIds: 'deterministic',
@@ -27,7 +30,7 @@ module.exports = {
                 test: /[\\/]node_modules[\\/]/,
                 name: 'vendors',
                 chunks: 'all',
-                maxSize: 500000,
+                maxSize: 50000,
               },
            },
          },
@@ -65,6 +68,35 @@ module.exports = {
               { from: "./src/img/maps/yehorivka/", to: "./src/img/maps/yehorivka/" },
             ],
           }),
+          new WebpackPwaManifest({
+            name: 'SquadCalc',
+            short_name: 'SquadCalc',
+            description: 'A Minimalist Mortar Calculator',
+            background_color: '#111111',
+            publicPath : './',
+            fingerprints: false,
+            theme_color: '#FFFFFF',
+            inject: true,
+            ios: true,
+            crossorigin: 'use-credentials', //can be null, use-credentials or anonymous
+            icons: [
+              {
+                src: path.resolve('./src/img/favicons/favicon.png'),
+                sizes: [96, 128, 192, 256, 384, 512], // multiple sizes
+                destination: path.join('src', 'img', 'favicons'),
+              },
+              {
+                src: path.resolve('./src/img/favicons/favicon.png'),
+                size: '1024x1024' // you can also use the specifications pattern
+              },
+              {
+                src: path.resolve('./src/img/favicons/favicon.png'),
+                size: '1024x1024',
+                ios: true,
+                purpose: 'maskable'
+              }
+            ]
+          })
     ],
     // Disable warning message for big chuncks
     performance: {
@@ -72,4 +104,17 @@ module.exports = {
         maxEntrypointSize: 512000,
         maxAssetSize: 512000
     },
+    optimization: {
+      minimizer: [
+          new CssMinimizerPlugin(), //CSS
+          new TerserPlugin({ //JS
+              extractComments: false,
+              terserOptions: {
+                format: {
+                  comments: false, // remove *.LICENCE.txt
+                },
+              },
+            }), 
+      ],
+  },
 };
