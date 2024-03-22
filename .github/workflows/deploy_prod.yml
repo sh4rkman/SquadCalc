@@ -20,7 +20,7 @@ jobs:
          eval `ssh-agent -s`
          ssh-add ~/.ssh/${{ secrets.SSH_PUBLIC_KEY_NAME }}
          cd ${{ secrets.DIST }}
-         git pull origin main
+         git pull origin master
          npm ci
          npm run build:prod
 

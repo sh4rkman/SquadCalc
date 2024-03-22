@@ -1,10 +1,18 @@
 
-# <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">   **20.2.0** *(2024-03-19)*
+# <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">   **20.3.0** *(2024-03-22)*
 
-<img src="https://img.shields.io/badge/-%20Improv%20-orange"> Now serving 512*512px tiles natively
+<img src="https://img.shields.io/badge/-%20Improv%20-orange"> Falling back to 256px tiles
+
+<img src="https://img.shields.io/badge/-%20Improv%20-orange"> Updated Kokan minimap
+
+<img src="https://img.shields.io/badge/-%20Improv%20-orange"> Updated AlBasrah Heightmap
+
+<img src="https://img.shields.io/badge/-%20Improv%20-orange"> Reworked FavIcons/PWA Manifest
 
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
+
+
 
 
 
