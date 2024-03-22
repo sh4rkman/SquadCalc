@@ -1,14 +1,12 @@
-name: remote ssh command
+name: Deploy pre-prod
 on:
   push:
     branches: [ dev ]
-    
-  workflow_dispatch:
   
 jobs:
 
   build:
-    name: Build
+    name: ssh/pull/build
     runs-on: ubuntu-latest
     steps:
     - name: executing remote ssh commands using password

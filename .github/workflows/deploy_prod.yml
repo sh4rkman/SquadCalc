@@ -1,0 +1,29 @@
+name: Deploy pre-prod
+on:
+  push:
+    branches: [ main ]
+  
+jobs:
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+    - name: ssh/pull/build
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        password: ${{ secrets.PASSWORD }}
+        port: ${{ secrets.PORT }}
+        script: |
+         eval `ssh-agent -s`
+         ssh-add ~/.ssh/${{ secrets.SSH_PUBLIC_KEY_NAME }}
+         cd ${{ secrets.DIST }}
+         git pull origin main
+         npm ci
+         npm run build:prod
+
+      
+
+
