@@ -969,11 +969,6 @@ function getElevationWithEllipseParams(dist = 0, vDelta = 0, vel = 0) {
     var P1 = Math.sqrt(vel ** 4 - gravity * (gravity * dist ** 2 + 2 * vDelta * vel ** 2));
     var angle = Math.atan((vel ** 2 - (P1 * globalData.activeWeapon.getAngleType())) / (gravity * dist));
     
-    console.debug("H: " + getHorizontalSpread(angle, vel, gravity));
-    console.debug("V: " + getVerticalSpread(angle, vel));
-    console.debug("Gravity : " + gravity);
-    console.debug("MOA : " + globalData.activeWeapon.moa);
-
     // Calculate spread ellipse parameters
     if (globalData.activeWeapon.moa != 0){
         ellipseParams = {

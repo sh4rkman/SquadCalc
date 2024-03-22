@@ -7,7 +7,7 @@ export var globalData = {
     angleTypePref: "",
     minimap: "",
     mapScale: "",
-    mapSize: 512,
+    mapSize: 256,
     markersGroup: "",
     canvas: {
         obj: "",

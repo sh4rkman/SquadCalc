@@ -202,6 +202,25 @@ const MAPDATA = [
       },
     },
     {
+      name: "Jensen's Range",
+      url: "/maps/jensens/{z}_{x}_{y}.jpg",
+      heightmap: {
+        url: "/heightmaps/jensen.jpg",
+        tile: "/heightmaps/jensen/{z}_{x}_{y}.jpg",
+      },
+      locations: [],
+      extra: {
+        scale: [1, 1, 1],
+        levels: [4683, 5542],
+        minimap: [
+          [-2004,  -2004],
+          [2004, 2004],
+        ],
+        hDim: [4081, 4081],
+        lOrigin: [-2040, -2040],
+      },
+    },
+    {
       name: "Fool's Road",
       url: "/maps/foolsroad/{z}_{x}_{y}.jpg",
       heightmap: {

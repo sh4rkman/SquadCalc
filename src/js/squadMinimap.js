@@ -11,14 +11,14 @@ export var squadMinimap = L.Map.extend({
         center: [700, 700],
         attributionControl: false,
         crs: L.CRS.Simple,
-        minZoom: 0,
+        minZoom: 1,
         maxZoom: 8,
         zoomControl: false,
         doubleClickZoom: false,
         edgeBufferTiles: 3,
         renderer: L.svg({padding: 3}), // https://leafletjs.com/reference.html#path-clip_padding
         closePopupOnClick: false,
-        wheelPxPerZoomLevel: 100,
+        wheelPxPerZoomLevel: 75,
         boxZoom: true,
         //maxBoundsViscosity: 0,
         //maxBounds:[[500, -500], [-800, 800]],
@@ -67,7 +67,7 @@ export var squadMinimap = L.Map.extend({
         this.mapScale = map.size / globalData.mapSize;
         globalData.activeMap = mapVal;
         globalData.mapScale = globalData.mapSize / map.size;
-        this.setView([-globalData.mapSize/2, globalData.mapSize/2], 1);
+        this.setView([-globalData.mapSize/2, globalData.mapSize/2], 2);
         //this.setMaxBounds(imageBounds)
 
         // Remove any layers already drawn
