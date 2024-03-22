@@ -21,7 +21,6 @@ jobs:
          ssh-add ~/.ssh/${{ secrets.SSH_PUBLIC_KEY_NAME }}
          cd ${{ secrets.DEV_DIST }}
          git pull origin dev
-         whoami
          npm ci
          npm run build:dev
 
