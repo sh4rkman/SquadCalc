@@ -9,7 +9,7 @@ jobs:
     name: ssh/pull/build
     runs-on: ubuntu-latest
     steps:
-    - name: executing remote ssh commands using password
+    - name: ssh/pull/build
       uses: appleboy/ssh-action@v1.0.3
       with:
         host: ${{ secrets.HOST }}
