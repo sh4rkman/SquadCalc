@@ -210,7 +210,7 @@ export const MAPS = [
         mapURL: "/narva/{z}_{x}_{y}.webp",
         maxZoomLevel: 4,
     },
-/*     { 
+    /*{ 
         name: "Narva (f)", 
         size: 2800, // OK
         offset: [-100, -100], 
