@@ -6,6 +6,9 @@ const TerserPlugin = require("terser-webpack-plugin");
 
 module.exports = {
     entry: './src/app.js',
+    infrastructureLogging: {
+      level: 'verbose',
+    },
     output: {
         filename: './src/js/[name].[contenthash].min.js',
         path: path.join(process.cwd(), 'dist'),
