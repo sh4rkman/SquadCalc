@@ -21,7 +21,7 @@ module.exports = merge(common, {
             policy: [{ userAgent: "*", disallow: "/", }]
         }),
         new WebpackPwaManifest({
-          name: 'quadCalc',
+          name: 'SquadCalc',
           short_name: 'SquadCalc',
           description: 'A Minimalist Mortar Calculator',
           background_color: '#111111',
