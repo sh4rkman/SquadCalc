@@ -20,16 +20,16 @@ module.exports = merge(common, {
             { userAgent: "*", allow: "/", }] 
         }),
         new FaviconsWebpackPlugin({
-            logo: './src/img/favicons/favicon.png',
-            publicPath: '/dist',
-            prefix: './src/img/favicons/',
-            inject: true,
-            start_url: "https://squadcalc.app/",
-            favicons: {
-              appName: 'SquadCalc',
-              appDescription: 'A Minimalist Squad Mortar Calculator',
-              manifestMaskable: true,
-            }
-          }),
+          logo: './src/img/favicons/favicon.png',
+          publicPath: '/dist',
+          prefix: './src/img/favicons/',
+          inject: true,
+          start_url: "https://squadcalc.app/",
+          favicons: {
+            appName: 'SquadCalc',
+            appDescription: 'A Minimalist Squad Mortar Calculator',
+            manifestMaskable: true,
+          }
+        }),
     ],
 });
