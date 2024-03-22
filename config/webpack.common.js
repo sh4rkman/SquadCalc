@@ -1,6 +1,7 @@
 const path = require('path');
 const webpack = require('webpack');
 const CopyPlugin = require("copy-webpack-plugin");
+const FaviconsWebpackPlugin = require('favicons-webpack-plugin');
 
 module.exports = {
     entry: './src/app.js',
@@ -42,6 +43,18 @@ module.exports = {
               { from: "./src/img/maps/", to: "./src/img/maps/" },
             ],
           }),
+        new FaviconsWebpackPlugin({
+          logo: './src/img/favicons/favicon.png', // svg works too!
+          publicPath: '/dist',
+          prefix: './src/img/favicons/',
+          inject: true,
+          start_url: "https://squadcalc.app/",
+          favicons: {
+            appName: 'SquadCalc',
+            appDescription: 'A Minimalist Squad Mortar Calculator',
+            manifestMaskable: true,
+          }
+        }),  
     ],
     // Disable warning message for big chuncks
     performance: {
