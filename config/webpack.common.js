@@ -1,8 +1,11 @@
 const path = require('path');
 const webpack = require('webpack');
 const CopyPlugin = require("copy-webpack-plugin");
+const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
+const TerserPlugin = require("terser-webpack-plugin");
 
 module.exports = {
+    stats: 'verbose',
     entry: './src/app.js',
     output: {
         filename: './src/js/[name].[contenthash].min.js',
@@ -16,7 +19,7 @@ module.exports = {
             { test: /\.html$/i, loader: "html-loader", },
             { test: /\.(png|svg|jpg|jpeg|gif|webp)$/i, type: 'asset/resource', },
             { test: /\.(sc|sa|c)ss$/i, use: ['style-loader', 'css-loader', 'sass-loader'],},
-        ],
+        ],  
     },
     optimization: {
         moduleIds: 'deterministic',
@@ -27,7 +30,7 @@ module.exports = {
                 test: /[\\/]node_modules[\\/]/,
                 name: 'vendors',
                 chunks: 'all',
-                maxSize: 500000,
+                maxSize: 50000,
               },
            },
          },
@@ -72,4 +75,17 @@ module.exports = {
         maxEntrypointSize: 512000,
         maxAssetSize: 512000
     },
+    optimization: {
+      minimizer: [
+          new CssMinimizerPlugin(), //CSS
+          new TerserPlugin({ //JS
+              extractComments: false,
+              terserOptions: {
+                format: {
+                  comments: false, // remove *.LICENCE.txt
+                },
+              },
+            }), 
+      ],
+  },
 };
