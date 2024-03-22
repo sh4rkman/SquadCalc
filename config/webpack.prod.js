@@ -20,7 +20,7 @@ module.exports = merge(common, {
         }),
         new RobotstxtPlugin({ policy: [{ userAgent: "*", allow: "/", }] }),
         new FaviconsWebpackPlugin({
-            logo: './src/img/favicons/favicon.png', // svg works too!
+            logo: './src/img/favicons/favicon.png',
             publicPath: '/dist',
             prefix: './src/img/favicons/',
             inject: true,
