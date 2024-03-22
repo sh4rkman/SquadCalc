@@ -5,7 +5,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 const RobotstxtPlugin = require("robotstxt-webpack-plugin");
-
+const FaviconsWebpackPlugin = require('favicons-webpack-plugin');
 
 module.exports = merge(common, {
     mode: 'production',
@@ -19,6 +19,18 @@ module.exports = merge(common, {
             }
         }),
         new RobotstxtPlugin({ policy: [{ userAgent: "*", allow: "/", }] }),
+        new FaviconsWebpackPlugin({
+            logo: './src/img/favicons/favicon.png', // svg works too!
+            publicPath: '/dist',
+            prefix: './src/img/favicons/',
+            inject: true,
+            start_url: "https://squadcalc.app/",
+            favicons: {
+              appName: 'SquadCalc',
+              appDescription: 'A Minimalist Squad Mortar Calculator',
+              manifestMaskable: true,
+            }
+          }),
     ],
     module: {},
     optimization: {
