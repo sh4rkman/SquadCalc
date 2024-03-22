@@ -1,4 +1,4 @@
-name: Deploy pre-prod
+name: Deploy prod
 on:
   push:
     branches: [ master ]
