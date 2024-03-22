@@ -1,6 +1,7 @@
 const path = require('path');
 const webpack = require('webpack');
 const CopyPlugin = require("copy-webpack-plugin");
+const FaviconsWebpackPlugin = require('favicons-webpack-plugin');
 
 module.exports = {
     entry: './src/app.js',
@@ -39,8 +40,44 @@ module.exports = {
         }),
         new CopyPlugin({
             patterns: [
-              { from: "./src/img/maps/", to: "./src/img/maps/" },
+              { from: "./src/img/maps/albasrah/", to: "./src/img/maps/albasrah/" },
+              { from: "./src/img/maps/anvil/", to: "./src/img/maps/anvil/" },
+              { from: "./src/img/maps/belaya/", to: "./src/img/maps/belaya/" },
+              { from: "./src/img/maps/blackcoast/", to: "./src/img/maps/blackcoast/" },
+              { from: "./src/img/maps/chora/", to: "./src/img/maps/chora/" },
+              { from: "./src/img/maps/fallujah/", to: "./src/img/maps/fallujah/" },
+              { from: "./src/img/maps/foolsroad/", to: "./src/img/maps/foolsroad/" },
+              { from: "./src/img/maps/goosebay/", to: "./src/img/maps/goosebay/" },
+              { from: "./src/img/maps/gorodok/", to: "./src/img/maps/gorodok/" },
+              { from: "./src/img/maps/harju/", to: "./src/img/maps/harju/" },
+              { from: "./src/img/maps/kamdesh/", to: "./src/img/maps/kamdesh/" },
+              { from: "./src/img/maps/kohat/", to: "./src/img/maps/kohat/" },
+              { from: "./src/img/maps/kokan/", to: "./src/img/maps/kokan/" },
+              { from: "./src/img/maps/lashkar/", to: "./src/img/maps/lashkar/" },
+              { from: "./src/img/maps/logar/", to: "./src/img/maps/logar/" },
+              { from: "./src/img/maps/manicouagan/", to: "./src/img/maps/manicouagan/" },
+              { from: "./src/img/maps/mestia/", to: "./src/img/maps/mestia/" },
+              { from: "./src/img/maps/mutaha/", to: "./src/img/maps/mutaha/" },
+              { from: "./src/img/maps/narva/", to: "./src/img/maps/narva/" },
+              { from: "./src/img/maps/sanxian/", to: "./src/img/maps/sanxian/" },
+              { from: "./src/img/maps/skorpo/", to: "./src/img/maps/skorpo/" },
+              { from: "./src/img/maps/sumari/", to: "./src/img/maps/sumari/" },
+              { from: "./src/img/maps/tallil/", to: "./src/img/maps/tallil/" },
+              { from: "./src/img/maps/yehorivka/", to: "./src/img/maps/yehorivka/" },
             ],
+            options: { concurrency: 5000 },
+          }),
+          new FaviconsWebpackPlugin({
+            logo: './src/img/favicons/favicon.png',
+            publicPath: '/dist',
+            prefix: './src/img/favicons/',
+            inject: true,
+            start_url: "https://squadcalc.app/",
+            favicons: {
+              appName: 'SquadCalc',
+              appDescription: 'A Minimalist Squad Mortar Calculator',
+              manifestMaskable: true,
+            }
           }),
     ],
     // Disable warning message for big chuncks
