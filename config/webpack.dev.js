@@ -2,6 +2,7 @@ const { merge } = require('webpack-merge');
 const common = require('./webpack.common.js');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const RobotstxtPlugin = require("robotstxt-webpack-plugin");
+const FaviconsWebpackPlugin = require('favicons-webpack-plugin');
 
 module.exports = merge(common, {
     mode: 'production',
@@ -17,7 +18,7 @@ module.exports = merge(common, {
         new RobotstxtPlugin({
             policy: [{ userAgent: "*", disallow: "/", }]
         }),
-        /*new FaviconsWebpackPlugin({
+        new FaviconsWebpackPlugin({
             logo: './src/img/favicons/favicon.png',
             publicPath: '/dist',
             prefix: './src/img/favicons/',
@@ -28,6 +29,6 @@ module.exports = merge(common, {
               appDescription: 'A Minimalist Squad Mortar Calculator',
               manifestMaskable: true,
             }
-          }),*/
+          }),
     ],
 });
