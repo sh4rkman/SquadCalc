@@ -23,6 +23,7 @@
     <!-- PRECONNECT FOR FASTER LOAD -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;1,246&family=Oswald:wght@200..700&display=swap" rel="stylesheet">
 
     <!-- FUCK IE, I GIVE UP -->
     <script>
@@ -34,6 +35,14 @@
 </head>
 
 <body style="visibility: hidden;">
+
+
+    <div id="loader" class="pure-g">
+        <span id="loaderLogo">
+            <span>SQUAD</span>
+            <span>CALC</span>
+        </span>
+    </div>
 
     <header class="pure-g">
         <div class="pure-u-1 pure-u-md-1-5 weaponSelector">
@@ -50,7 +59,6 @@
                 </select>
             </div>
         </div>
-
     </header>
 
     <div id="classic_ui" class="pure-g">
@@ -121,7 +129,7 @@
 
 
     </div>
-    
+
     <canvas id="canvas" width="500" height="500"></canvas>
 
     <dialog id="helpDialog">
@@ -152,7 +160,7 @@
                     <td>Show Grid</td>
                 </tr>
 
-                <tr id="keypadUnderCursorSetting2">
+                <tr id="keypadUnderCursorSettingRow">
                     <td >
                         <label  class="mcui-checkbox" >
                             <input id="keypadUnderCursorSetting" type="checkbox">
@@ -302,9 +310,11 @@
 
     </dialog>
 
+
     <div id="map_ui" class="pure-g hidden">
         <div id="map"></div>
     </div>
+
 
     <footer class="pure-u-1 pure-u-md-1 pure-u-lg-1">
 

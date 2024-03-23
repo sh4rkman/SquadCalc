@@ -991,3 +991,12 @@ function getElevationWithEllipseParams(dist = 0, vDelta = 0, vel = 0) {
         ellipseParams: ellipseParams,
     };
 }
+
+export function showPage(){
+    document.body.style.visibility = "visible";
+    setTimeout(function() {
+        $("#loaderLogo").fadeOut("slow", function() {
+            $("#loader").fadeOut("slow");
+        });
+    }, 1000);
+}

@@ -13,7 +13,7 @@ import "./css/styles.scss";
 import "./css/responsive.scss";
 
 // JS Functions
-import { preventAutocomplete, loadUI } from "./js/utils";
+import { preventAutocomplete, loadUI, showPage } from "./js/utils";
 import { loadMapSelector, loadMinimap } from "./js/maps";
 import { loadWeapons } from "./js/weapons";
 import { createLine } from "./js/animations";
@@ -29,7 +29,7 @@ $(function() {
     loadUI();
     loadMapSelector();
     preventAutocomplete();
-    document.body.style.visibility = "visible";
+    showPage();
     console.log("Calculator Loaded!");
 });
 
