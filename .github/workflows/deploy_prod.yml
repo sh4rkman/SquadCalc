@@ -1,4 +1,4 @@
-name: Deploy prod
+name: Deploy Prod
 on:
   push:
     branches: [ master ]
@@ -9,7 +9,7 @@ jobs:
     name: ssh/pull/build
     runs-on: ubuntu-latest
     steps:
-    - name: ssh/pull/build
+    - name: Pull code from GitHub
       uses: appleboy/ssh-action@v1.0.3
       with:
         host: ${{ secrets.HOST }}
@@ -20,10 +20,20 @@ jobs:
          eval `ssh-agent -s`
          ssh-add ~/.ssh/${{ secrets.SSH_PUBLIC_KEY_NAME }}
          cd ${{ secrets.DIST }}
-         git pull origin master
-         npm ci
-         npm run build:prod
-
+         git pull origin dev
+    - name: Clean Install & Build
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        password: ${{ secrets.PASSWORD }}
+        port: ${{ secrets.PORT }}
+        script: |
+          eval `ssh-agent -s`
+          ssh-add ~/.ssh/${{ secrets.SSH_PUBLIC_KEY_NAME }}
+          cd ${{ secrets.DIST }}
+          npm ci
+          npm run build:prod
       
 
 

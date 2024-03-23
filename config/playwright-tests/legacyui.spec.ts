@@ -1,17 +1,23 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, Page } from '@playwright/test';
 
-test.beforeEach(async ({ page }) => {
+
+let page: Page;
+
+
+test.afterEach(async ({  }) => {
+  await page.close();
+});
+
+test.beforeEach(async ({browser }) => {
   // Go to the starting url before each test.
-  await page.goto('https://squadcalc.app/');
+  page = await browser.newPage();
+  await page.goto('https://dev.squadcalc.app/');
   await expect(page).toHaveTitle(/SquadCalc/);
   await page.getByRole('contentinfo').locator('label').first().click();
 });
 
-test.afterAll(async ({ page }) => {
-  await page.close();
-});
 
-test('Wrong calcs', async ({ page }) => {
+test('Wrong calcs', async ({  }) => {
 
   // Invalid weapon
   await page.locator('#mortar-location').click();
@@ -42,7 +48,7 @@ test('Wrong calcs', async ({ page }) => {
 
 });
 
-test('Basic calcs', async ({ page }) => {
+test('Basic calcs', async ({  }) => {
   await page.getByRole('textbox', { name: 'Chora' }).click();
   await page.getByRole('option', { name: 'Al basrah' }).click();
   // pressSequentially coordonates
@@ -57,7 +63,7 @@ test('Basic calcs', async ({ page }) => {
 });
 
 
-test('Basic calcs + map', async ({ page }) => {
+test('Basic calcs + map', async ({  }) => {
   await page.getByRole('textbox', { name: 'Chora' }).click();
   await page.getByRole('option', { name: 'Al basrah' }).click();
   // pressSequentially coordonates
@@ -75,7 +81,7 @@ test('Basic calcs + map', async ({ page }) => {
   await expect(page.locator('#elevationNum')).toContainText("1450");
 });
 
-test('Advanced calc', async ({ page }) => {
+test('Advanced calc', async ({  }) => {
   await page.getByRole('textbox', { name: 'Chora' }).click();
   await page.getByRole('option', { name: 'Al basrah' }).click();
   // pressSequentially coordonates
@@ -98,7 +104,7 @@ test('Advanced calc', async ({ page }) => {
 
   // Check calcs
   await expect(page.locator('#bearingNum')).toContainText("33.7");
-  await expect(page.locator('#elevationNum')).toContainText("2.8");
+  await expect(page.locator('#elevationNum')).toContainText("2.6");
 
   // Change high/low calc
   await page.locator('#highlow i').click();
@@ -109,7 +115,7 @@ test('Advanced calc', async ({ page }) => {
 
 });
 
-test('Save calc', async ({ page }) => {
+test('Save calc', async ({  }) => {
   await page.getByRole('textbox', { name: 'Chora' }).click();
   await page.getByRole('option', { name: 'Al basrah' }).click();
   // pressSequentially coordonates

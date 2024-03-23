@@ -82,12 +82,8 @@ module.exports = {
             icons: [
               {
                 src: path.resolve('./src/img/favicons/favicon.png'),
-                sizes: [96, 128, 192, 256, 384, 512], // multiple sizes
+                sizes: [96, 192, 256, 384, 512], // multiple sizes
                 destination: path.join('src', 'img', 'favicons'),
-              },
-              {
-                src: path.resolve('./src/img/favicons/favicon.png'),
-                size: '1024x1024' // you can also use the specifications pattern
               },
               {
                 src: path.resolve('./src/img/favicons/favicon.png'),

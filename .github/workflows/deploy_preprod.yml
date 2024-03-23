@@ -7,9 +7,10 @@ jobs:
 
   build:
     name: ssh/pull/build
+    timeout-minutes: 60
     runs-on: ubuntu-latest
     steps:
-    - name: ssh/pull/build
+    - name: Pull code from GitHub
       uses: appleboy/ssh-action@v1.0.3
       with:
         host: ${{ secrets.HOST }}
@@ -21,9 +22,31 @@ jobs:
          ssh-add ~/.ssh/${{ secrets.SSH_PUBLIC_KEY_NAME }}
          cd ${{ secrets.DEV_DIST }}
          git pull origin dev
-         npm ci
-         npm run build:dev
-
+    - name: Clean Install & Build
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        password: ${{ secrets.PASSWORD }}
+        port: ${{ secrets.PORT }}
+        script: |
+          eval `ssh-agent -s`
+          ssh-add ~/.ssh/${{ secrets.SSH_PUBLIC_KEY_NAME }}
+          cd ${{ secrets.DEV_DIST }}
+          npm ci
+          npm run build:dev
+    - name: Playwright test
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        password: ${{ secrets.PASSWORD }}
+        port: ${{ secrets.PORT }}
+        script: |
+          eval `ssh-agent -s`
+          ssh-add ~/.ssh/${{ secrets.SSH_PUBLIC_KEY_NAME }}
+          cd ${{ secrets.DEV_DIST }}
+          npx playwright test
       
 
 
