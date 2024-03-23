@@ -7,6 +7,7 @@ jobs:
 
   build:
     name: ssh/pull/build
+    timeout-minutes: 60
     runs-on: ubuntu-latest
     steps:
     - name: ssh/pull/build
@@ -23,6 +24,7 @@ jobs:
          git pull origin dev
          npm ci
          npm run build:dev
+         npx playwright test
 
       
 

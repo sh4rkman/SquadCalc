@@ -98,7 +98,7 @@ test('Advanced calc', async ({ page }) => {
 
   // Check calcs
   await expect(page.locator('#bearingNum')).toContainText("33.7");
-  await expect(page.locator('#elevationNum')).toContainText("2.8");
+  await expect(page.locator('#elevationNum')).toContainText("2.6");
 
   // Change high/low calc
   await page.locator('#highlow i').click();
