@@ -20,7 +20,7 @@ jobs:
          eval `ssh-agent -s`
          ssh-add ~/.ssh/${{ secrets.SSH_PUBLIC_KEY_NAME }}
          cd ${{ secrets.DIST }}
-         git pull origin dev
+         git pull origin master
     - name: Clean Install & Build
       uses: appleboy/ssh-action@v1.0.3
       with:
