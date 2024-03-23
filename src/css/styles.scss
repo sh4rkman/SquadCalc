@@ -1,27 +1,5 @@
-@import "https://fonts.googleapis.com/css?family=Montserrat&display=swap";
-@import "https://fonts.googleapis.com/css2?family=Anton&display=swap";
-@import url('https://fonts.googleapis.com/css2?family=Anton&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Anton&family=Oswald:wght@200..700&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
 
-
-
-$fa-font-path: '../img/fontawesome/webfonts'; 
-
-@import '../img/fontawesome/scss/fontawesome';
-@import '../img/fontawesome/scss/solid';
-@import '../img/fontawesome/scss/brands';
-
-/*
-   * -- BASE COLOR --
-*/
-
-$mainColor: #b22222;
-$mainBGColor: #111;
-$mainTxtColor: #fff;
-$newColor: green;
-
-$mainFont: Montserrat;
-$logoFont: Oswald;
+@import 'variables';
 
 /*
    * -- BASE STYLES --
@@ -469,15 +447,15 @@ header {
         font-size: 6em;
         font-weight: bolder;
         line-height : 1.3em;
-        letter-spacing: 0px;
+        letter-spacing: 0;
         span:nth-child(1) {
             display: inline-block;
-            padding: 0px 0px 10px 15px;
+            padding: 0 0 10px 15px;
         }
         span:nth-child(2) {
             background: $mainColor;
             display: inline-block;
-            padding: 0px 15px 10px 15px;
+            padding: 0 15px 10px;
         }
     }
 }

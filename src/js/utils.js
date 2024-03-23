@@ -996,7 +996,7 @@ export function showPage(){
     document.body.style.visibility = "visible";
     setTimeout(function() {
         $("#loaderLogo").fadeOut("slow", function() {
-                $("#loader").fadeOut("slow");
+            $("#loader").fadeOut("slow");
         });
     }, 1000);
 }

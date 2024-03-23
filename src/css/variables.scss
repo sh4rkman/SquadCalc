@@ -1,0 +1,14 @@
+// Colors
+$mainColor: #b22222;
+$mainBGColor: #111;
+$mainTxtColor: #fff;
+$newColor: green;
+// Fonts
+$mainFont: montserrat;
+$logoFont: oswald;
+// Fontawesome
+$fa-font-path: '../img/fontawesome/webfonts';
+
+@import '../img/fontawesome/scss/fontawesome';
+@import '../img/fontawesome/scss/solid';
+@import '../img/fontawesome/scss/brands';
