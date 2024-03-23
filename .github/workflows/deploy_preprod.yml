@@ -51,7 +51,7 @@ jobs:
       env:
         DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
         DISCORD_USERNAME: "Github Monitoring"
-        DISCORD_AVATAR: "../src/img/favicons/favicon.png"
+        DISCORD_AVATAR: "https://i.imgur.com/lPRYnJx.png"
       uses: Ilshidur/action-discord@master
       with:
         args: 'The project {{ EVENT_PAYLOAD.repository.full_name }} has been deployed successfully on https://dev.squadcalc.app'
