@@ -1,4 +1,19 @@
 
+
+
+# <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">   **20.4.0** *(2024-03-23)*
+
+<img src="https://img.shields.io/badge/-new-green"> New logo/favicons
+
+<img src="https://img.shields.io/badge/-new-green"> new loading page
+
+<img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed "Show keypads under cursor" setting appearing on mobile/touch screen
+
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
+
+
 # <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">   **20.3.0** *(2024-03-22)*
 
 <img src="https://img.shields.io/badge/-%20Improv%20-orange"> Falling back to 256px tiles
