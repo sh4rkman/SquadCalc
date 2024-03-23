@@ -24,7 +24,6 @@ jobs:
          git pull origin master
          npm ci
          npm run build:prod
-         npx playwright test
 
       
 

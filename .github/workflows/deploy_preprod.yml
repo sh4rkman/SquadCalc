@@ -24,6 +24,7 @@ jobs:
          git pull origin dev
          npm ci
          npm run build:dev
+         npx playwright install --with-deps
          npx playwright test
 
       
