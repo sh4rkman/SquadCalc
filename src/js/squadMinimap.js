@@ -41,8 +41,7 @@ export var squadMinimap = L.Map.extend({
             autoPan: false,
             interactive: false,
         });
-
-       
+      
         // Custom events handlers
         this.on("dblclick", this._handleDoubleCkick, this);
         this.on("contextmenu", this._handleContextMenu, this);
@@ -56,9 +55,11 @@ export var squadMinimap = L.Map.extend({
      * Draw the map+grid inside the map container
      */
     draw: function(){
+
         var mapVal;
         var map;
         var imageBounds;
+        var previousLayers;
 
         mapVal = $(".dropbtn").val();
         if (mapVal == "") {mapVal = 4;} // default map is Chora
@@ -68,13 +69,8 @@ export var squadMinimap = L.Map.extend({
         globalData.activeMap = mapVal;
         globalData.mapScale = globalData.mapSize / map.size;
         this.setView([-globalData.mapSize/2, globalData.mapSize/2], 2);
-        //this.setMaxBounds(imageBounds)
+        previousLayers = this.layerGroup.getLayers();
 
-        // Remove any layers already drawn
-        this.layerGroup.eachLayer(function(layer){
-            this.layerGroup.removeLayer(layer);
-        });
-    
         // Draw the current layer
         L.tileLayer("src/img/maps" + map.mapURL, {
             maxNativeZoom: map.maxZoomLevel,
@@ -82,15 +78,31 @@ export var squadMinimap = L.Map.extend({
             bounds: imageBounds,
             tileSize: globalData.mapSize,
         }).addTo(this.layerGroup);
-    
+
+        if (this.grid){this.grid.remove();}
         this.grid = new squadGrid();
         this.grid.setBounds(imageBounds);
 
         if (globalData.userSettings.grid) {
-            this.grid.addTo(this.layerGroup);
+            this.showGrid();
         }
 
+        // wait for the load animation to finish before removing previous tiles
+        // Ugly hack to avoid logo flashing when switching map
+        setTimeout(() => {
+            globalData.minimap.layerGroup.eachLayer((layer) => {
+                for (let index = 0; index < previousLayers.length; index++) {
+                    if (previousLayers[index] === layer) {
+                        globalData.minimap.layerGroup.removeLayer(layer);
+                    }
+                }
+            });
+        }, 1000);
+
+
         this.drawHeightmap();
+
+
     },
 
     /**
@@ -98,7 +110,7 @@ export var squadMinimap = L.Map.extend({
      */
     clear: function(){
         this.markersGroup.clearLayers();
-        this.layerGroup.clearLayers();
+        //this.layerGroup.clearLayers();
         this.activeWeaponsMarkers.clearLayers();
         this.activeTargetsMarkers.clearLayers();
     },

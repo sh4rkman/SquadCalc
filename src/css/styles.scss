@@ -432,15 +432,16 @@ header {
     }
 }
 
-
 #loader {
     position: fixed;
     height: 100vh; 
     width: 100vw; 
     display:table;
     background-color: $mainBGColor;
-    z-index: 999;
+    z-index: 99;
     font-family: $logoFont;
+
+    @extend .unselectable;
     #loaderLogo {
         display:table-cell;
         vertical-align:middle;
@@ -450,7 +451,7 @@ header {
         letter-spacing: 0;
         span:nth-child(1) {
             display: inline-block;
-            padding: 0 0 10px 15px;
+            padding: 0 0 15px 15px;
         }
         span:nth-child(2) {
             background: $mainColor;
@@ -459,6 +460,34 @@ header {
         }
     }
 }
+
+#background {
+    position: fixed;
+    height: 100vh; 
+    width: 100vw; 
+    display: table;
+    font-family: $logoFont;
+
+    @extend .unselectable;
+    #backgroundLogo {
+        display:table-cell;
+        vertical-align:middle;
+        font-size: 8em;
+        font-weight: bolder;
+        line-height : 1.3em;
+        letter-spacing: 0;
+        span:nth-child(1) {
+            display: inline-block;
+            padding: 0 0 15px 15px;
+        }
+        span:nth-child(2) {
+            background: $mainColor;
+            display: inline-block;
+            padding: 0 15px 10px;
+        }
+    }
+}
+
 
 /***************************************
    ************   FOOTER   ***************
