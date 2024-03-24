@@ -5,6 +5,8 @@
 <img src="https://img.shields.io/badge/-new-green"> Logo is now displayed under map tiles
 
 
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
 # <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">   **20.4.0** *(2024-03-23)*
 
 <img src="https://img.shields.io/badge/-new-green"> New logo/favicons

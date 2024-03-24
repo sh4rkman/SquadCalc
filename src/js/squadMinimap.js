@@ -97,7 +97,7 @@ export var squadMinimap = L.Map.extend({
                     }
                 }
             });
-        }, 200);
+        }, 1000);
 
 
         this.drawHeightmap();
