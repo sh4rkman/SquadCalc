@@ -1,5 +1,14 @@
 
 
+
+# <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">   **20.5.1** *(2024-03-25)*
+
+<img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed changelog link
+
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
+
 # <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">   **20.5.0** *(2024-03-24)*
 
 <img src="https://img.shields.io/badge/-new-green"> Logo is now displayed under map tiles
