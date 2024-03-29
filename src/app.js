@@ -18,6 +18,7 @@ import { loadMapSelector, loadMinimap } from "./js/maps";
 import { loadWeapons } from "./js/weapons";
 import { createLine } from "./js/animations";
 import { loadSettings } from "./js/settings.js";
+import { registerServiceWorkers } from "./js/serviceWorkers.js";
 
 import "./js/listeners.js";
 
@@ -30,6 +31,6 @@ $(function() {
     loadMapSelector();
     preventAutocomplete();
     showPage();
+    registerServiceWorkers();
     console.log("Calculator Loaded!");
 });
-

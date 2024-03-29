@@ -4,6 +4,7 @@ const CopyPlugin = require("copy-webpack-plugin");
 const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 var WebpackPwaManifest = require('webpack-pwa-manifest')
+const workbox = require("workbox-webpack-plugin")
 
 module.exports = {
     entry: './src/app.js',
@@ -92,6 +93,18 @@ module.exports = {
                 purpose: 'maskable'
               }
             ]
+          }),
+          new workbox.GenerateSW({
+            swDest: "sw.js",
+            skipWaiting: true,
+            clientsClaim: true,
+            maximumFileSizeToCacheInBytes: 10000000,
+            exclude: [
+              /manifest\.json$/,
+              /\.map$/,
+              ///\/maps\/[^\/]+\/[3-4]/, // exclude low level zoom tiles
+              ///\/heightmaps\//,
+            ],
           })
     ],
     // Disable warning message for big chuncks
