@@ -1,5 +1,12 @@
 
 
+# <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">   **20.6.0** *(2024-03-29)*
+
+<img src="https://img.shields.io/badge/-%20Improv%20-orange"> SquadCalc is now using [ServiceWorker](https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API) to load maps faster, and store itself offline
+
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
 
 # <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">   **20.5.1** *(2024-03-25)*
 
