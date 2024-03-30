@@ -102,8 +102,8 @@ module.exports = {
             exclude: [
               /manifest\.json$/,
               /\.map$/,
-              ///\/maps\/[^\/]+\/[3-4]/, // exclude low level zoom tiles
-              ///\/heightmaps\//,
+              /\/maps\/[^\/]+\/[3-4]/, // exclude low level zoom tiles
+              /\/heightmaps\//,
             ],
           })
     ],
