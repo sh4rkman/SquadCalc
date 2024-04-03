@@ -28,6 +28,7 @@ textarea,
 
 body {
     background-color: var(--themecolor, $mainBGColor);
+    overflow: hidden;
 }
 
 a:visited {

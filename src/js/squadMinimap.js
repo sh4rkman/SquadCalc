@@ -5,6 +5,7 @@ import { MAPS } from "./maps";
 import { squadWeaponMarker, squadTargetMarker } from "./squadMarker";
 import { mortarIcon, mortarIcon1, mortarIcon2 } from "./squadIcon";
 import { getKP, shoot } from "./utils";
+import { explode } from "./animations";
 
 export var squadMinimap = L.Map.extend({
     options: {
@@ -251,6 +252,11 @@ export var squadMinimap = L.Map.extend({
         }
         
         new squadTargetMarker(L.latLng(e.latlng), {animate: globalData.userSettings.targetAnimation}).addTo(this.markersGroup);
+        if (globalData.userSettings.targetAnimation){
+            setTimeout(function() {
+                explode(e.containerPoint.x, e.containerPoint.y, -190, 10);
+            }, 250);
+        }
     },
 
     /**

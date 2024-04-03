@@ -43,35 +43,14 @@ module.exports = {
         }),
         new CopyPlugin({
             patterns: [
-              { from: "./src/img/maps/albasrah/", to: "./src/img/maps/albasrah/" },
-              { from: "./src/img/maps/anvil/", to: "./src/img/maps/anvil/" },
-              { from: "./src/img/maps/belaya/", to: "./src/img/maps/belaya/" },
-              { from: "./src/img/maps/blackcoast/", to: "./src/img/maps/blackcoast/" },
-              { from: "./src/img/maps/chora/", to: "./src/img/maps/chora/" },
-              { from: "./src/img/maps/fallujah/", to: "./src/img/maps/fallujah/" },
-              { from: "./src/img/maps/foolsroad/", to: "./src/img/maps/foolsroad/" },
-              { from: "./src/img/maps/goosebay/", to: "./src/img/maps/goosebay/" },
-              { from: "./src/img/maps/gorodok/", to: "./src/img/maps/gorodok/" },
-              { from: "./src/img/maps/harju/", to: "./src/img/maps/harju/" },
-              { from: "./src/img/maps/kamdesh/", to: "./src/img/maps/kamdesh/" },
-              { from: "./src/img/maps/kohat/", to: "./src/img/maps/kohat/" },
-              { from: "./src/img/maps/kokan/", to: "./src/img/maps/kokan/" },
-              { from: "./src/img/maps/lashkar/", to: "./src/img/maps/lashkar/" },
-              { from: "./src/img/maps/logar/", to: "./src/img/maps/logar/" },
-              { from: "./src/img/maps/manicouagan/", to: "./src/img/maps/manicouagan/" },
-              { from: "./src/img/maps/mestia/", to: "./src/img/maps/mestia/" },
-              { from: "./src/img/maps/mutaha/", to: "./src/img/maps/mutaha/" },
-              { from: "./src/img/maps/narva/", to: "./src/img/maps/narva/" },
-              { from: "./src/img/maps/sanxian/", to: "./src/img/maps/sanxian/" },
-              { from: "./src/img/maps/skorpo/", to: "./src/img/maps/skorpo/" },
-              { from: "./src/img/maps/sumari/", to: "./src/img/maps/sumari/" },
-              { from: "./src/img/maps/tallil/", to: "./src/img/maps/tallil/" },
-              { from: "./src/img/maps/yehorivka/", to: "./src/img/maps/yehorivka/" },
+              { from: "./src/img/maps/", to: "./src/img/maps/" },
+              { from: "./src/img/github/", to: "./src/img/github/" },
             ],
           }),
           new WebpackPwaManifest({
             name: 'SquadCalc',
             short_name: 'SquadCalc',
+            start_url: "/",
             description: 'A Minimalist Mortar Calculator',
             background_color: '#111111',
             publicPath : './',
@@ -79,19 +58,36 @@ module.exports = {
             theme_color: '#FFFFFF',
             inject: true,
             ios: true,
-            crossorigin: 'use-credentials', //can be null, use-credentials or anonymous
+            crossorigin: 'use-credentials',
             icons: [
               {
-                src: path.resolve('./src/img/favicons/favicon.png'),
-                sizes: [96, 192, 256, 384, 512], // multiple sizes
+                src: path.resolve('./src/img/favicons/maskable_icon_x512.png'),
+                sizes: [96, 192, 256, 384, 512],
                 destination: path.join('src', 'img', 'favicons'),
               },
               {
-                src: path.resolve('./src/img/favicons/favicon.png'),
+                src: path.resolve('./src/img/favicons/maskable_icon_x512.png'),
                 size: '1024x1024',
+                destination: path.join('src', 'img', 'favicons'),
                 ios: true,
                 purpose: 'maskable'
               }
+            ],
+            screenshots : [
+              {
+                "src": "./src/img/github/mobile_ui.png",
+                "sizes": "748x1568",
+                "type": "image/webp",
+                "form_factor": "narrow",
+                "label": "Map View"
+              },
+              {
+                "src": "./src/img/github/desktop_ui.png",
+                "sizes": "601x426",
+                "type": "image/webp",
+                "form_factor": "wide",
+                "label": "Map View"
+              },
             ]
           }),
           new workbox.GenerateSW({
@@ -101,6 +97,7 @@ module.exports = {
             maximumFileSizeToCacheInBytes: 10000000,
             exclude: [
               /manifest\.json$/,
+              /robots\.txt$/,
               /\.map$/,
               /\/maps\/[^\/]+\/[3-4]/, // exclude low level zoom tiles
               /\/heightmaps\//,

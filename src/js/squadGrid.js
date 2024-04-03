@@ -57,13 +57,11 @@ export default LayerGroup.extend({
     },
 
     initialize(options) {
-        //console.debug("initialize");
         LayerGroup.prototype.initialize.call(this);
         Util.setOptions(this, options);
     },
 
     clearLines() {
-        console.debug("clearLines");
         this.eachLayer(this.removeLayer, this);
     },
 
@@ -81,13 +79,8 @@ export default LayerGroup.extend({
     },
 
     onAdd(map) {
-        console.debug("onAdd");
-
         this.map = map;
-        // add listener for view change, so that  we can show (sub-)keypads based on zoom level
         map.on("zoomend", this.updateLineOpacity, this);
-        // this.map.on("baselayerchange", this.onBaseLayerChange, this);
-
         this.redraw();
         this.updateLineOpacity();
     },
@@ -108,7 +101,6 @@ export default LayerGroup.extend({
             return;
         }
         const currentZoom = Math.round(this.map.getZoom());
-        //console.debug("updateLineOpacity with zoom:", currentZoom);
 
         if (currentZoom >= 6) {
             this.setLinesOpacity(this.s2Lines, 0.6);
@@ -145,9 +137,9 @@ export default LayerGroup.extend({
     // we check only the first object as we are updating all at the same time
     // and this one check might save us iterating through the whole array
         if (lines.length === 0 || lines[0].options.opacity === opacity) {
-            // //console.debug("nothing to do");
-        } else {
-            //console.debug("setLinesOpacity:", [lines, opacity]);
+            return;
+        } 
+        else {
             lines.forEach((l) => {
                 l.setStyle({
                     opacity,
@@ -166,9 +158,9 @@ export default LayerGroup.extend({
         // we check only the first object as we are updating all at the same time
         // and this one check might save us iterating through the whole array
         if (lines.length === 0) {
-            // //console.debug("nothing to do");
-        } else {
-            //console.debug("setLinesWeight:", [lines, weight]);
+            return;
+        } 
+        else {
             lines.forEach((l) => {
                 l.setStyle({
                     weight,
