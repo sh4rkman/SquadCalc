@@ -94,7 +94,7 @@ module.exports = {
             swDest: "sw.js",
             skipWaiting: true,
             clientsClaim: true,
-            //maximumFileSizeToCacheInBytes: 10000000,
+            maximumFileSizeToCacheInBytes: 10000000,
             exclude: [
               /manifest\.json$/,
               /robots\.txt$/,

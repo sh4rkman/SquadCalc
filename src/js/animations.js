@@ -61,7 +61,7 @@ export function drawLine() {
         setTimeout(function() {
             globalData.line.start = LeaderLine.pointAnchor(document.getElementById("mortarImg"), { x: globalData.activeWeapon.logoCannonPos, y: "-30%" });
             globalData.line.show("draw", { duration: 2000 });
-            explode($(".leader-line").position().left, $(".leader-line").position().top);
+            explode($(".leader-line").position().left, $(".leader-line").position().top, -135, 45);
         }, 1200);
     }
 }
@@ -71,9 +71,9 @@ export function drawLine() {
  * @param {number} [x] - horizontal coordinates in pixel
  * @param {number} [y] - vertical coordinates in pixel
  */
-function explode(x, y) {
+export function explode(x, y, startAngle, endAngle) {
     const colors = ["rgba(255, 255, 255, 0.1)"];
-    const bubbles = 10;
+    const bubbles = 30;
     const r = (a, b, c) => parseFloat((Math.random() * ((a ? a : 1) - (b ? b : 0)) + (b ? b : 0)).toFixed(c ? c : 0));
     let particles = [];
     let ratio = window.devicePixelRatio;
@@ -95,12 +95,12 @@ function explode(x, y) {
         particles.push({
             x: c.width / 2,
             y: c.height / 2,
-            radius: r(10, 15),
+            radius: r(5, 20),
             color: colors[Math.floor(Math.random() * colors.length)],
-            rotation: r(-135, 45, true),
-            speed: r(1,1),
-            friction: 0.98,
-            opacity: r(0, 0.9, true),
+            rotation: r(startAngle, endAngle, true),
+            speed: r(0.5,1),
+            friction: 0.97,
+            opacity: r(0.9, 0.9, true),
             yVel: 0,
             gravity: 0
         });
