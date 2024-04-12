@@ -1,4 +1,5 @@
 import { globalData } from "./conf";
+import { squadMinimap } from "./squadMinimap";
 
 import AlBasrahURL from "../img/heightmaps/al basrah.webp";
 import AnvilURL from "../img/heightmaps/anvil.webp";
@@ -25,7 +26,7 @@ import SkorpoURL from "../img/heightmaps/skorpo.webp";
 import SumariURL from "../img/heightmaps/sumari.webp";
 import TallilURL from "../img/heightmaps/tallil.webp";
 import YehorivkaURL from "../img/heightmaps/yehorivka.webp";
-import { squadMinimap } from "./squadMinimap";
+
 
 
 // Each map has a different size and require scaling w, y and z when calculating height
@@ -230,9 +231,9 @@ export const MAPS = [
     },
     { 
         name: "Skorpo", 
-        size: 7600, // OK
+        size: 6869, // OK but owi fuckedup again, X and Y sizes are not the same..
         offset: [0, 0], 
-        scaling: 2.14515, 
+        scaling: 1.0927, 
         heightmapURL: SkorpoURL,
         mapURL: "/skorpo/{z}_{x}_{y}.webp",
         maxZoomLevel: 4,

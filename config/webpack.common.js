@@ -100,7 +100,6 @@ module.exports = {
               /robots\.txt$/,
               /\.map$/,
               /\/maps\/[^\/]+\/[3-4]/, // exclude low level zoom tiles
-              /\/heightmaps\//,
             ],
           })
     ],
