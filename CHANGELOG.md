@@ -1,4 +1,11 @@
 
+
+# <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">  **20.7.2** *(2024-04-15)*
+
+<img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed maps/tiles caching for better performance/fix caching problems when updating maps
+
+
+
 # <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">  **20.7.1** *(2024-04-13)*
 
 <img src="https://img.shields.io/badge/-%20fix%20-orange"> Updated Skorpo map & heightmap (thanks peter5he1by! [#130](https://github.com/sh4rkman/SquadCalc/issues/130))

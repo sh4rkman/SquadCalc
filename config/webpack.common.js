@@ -96,16 +96,24 @@ module.exports = {
             clientsClaim: true,
             maximumFileSizeToCacheInBytes: 10000000,
             exclude: [
-              /manifest\.json$/,
-              /robots\.txt$/,
-              /\.map$/,
-              /\/maps\/[^\/]+\/[3-4]/, // exclude low level zoom tiles
+              /manifest\.json$/, // web app manifest
+              /\.map$/, // source maps
+              /\/favicons\//, // favicon
+              /robots\.txt/, // robots.txt
+              /\/maps\/[^\/]+\/[3-5]/, // exclude low level zoom tiles
             ],
+            runtimeCaching: [{
+              urlPattern: new RegExp(/\/maps\/[^\/]+\/[3-5]/),
+              handler: 'StaleWhileRevalidate',
+              options: {
+                cacheName: 'squadcalc-tiles',
+              },
+            }],
           })
     ],
     // Disable warning message for big chuncks
     performance: {
-        //hints: false,
+        hints: false,
         maxEntrypointSize: 512000,
         maxAssetSize: 512000
     },
