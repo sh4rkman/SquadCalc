@@ -21,7 +21,7 @@ export var squadMinimap = L.Map.extend({
         closePopupOnClick: false,
         wheelPxPerZoomLevel: 75,
         boxZoom: true,
-        fadeAnimation: false,
+        fadeAnimation: true,
         //maxBoundsViscosity: 0,
         //maxBounds:[[500, -500], [-800, 800]],
     },
