@@ -109,6 +109,22 @@ module.exports = {
                 cacheName: 'squadcalc-tiles',
               },
             }],
+            runtimeCaching: [
+              {
+                urlPattern: /^https:\/\/fonts\.googleapis\.com/,
+                handler: 'StaleWhileRevalidate',
+                options: {
+                  cacheName: 'google-fonts'
+                }
+              },
+              {
+                urlPattern: /^https:\/\/fonts\.gstatic\.com/,
+                handler: 'CacheFirst',
+                options: {
+                  cacheName: 'google-fonts'
+                }
+              }
+            ]
           })
     ],
     // Disable warning message for big chuncks
