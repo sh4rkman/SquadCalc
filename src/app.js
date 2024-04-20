@@ -24,8 +24,8 @@ import "./js/listeners.js";
 
 $(function() {
     loadSettings();
-    createLine();
     loadMinimap();
+    createLine();
     loadWeapons();
     loadUI();
     loadMapSelector();
