@@ -282,6 +282,29 @@ header {
     }
 }
 
+#actionMenu {
+    position: absolute;
+    bottom: 2%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    .btn {
+        width: 40px;
+        height: 40px;
+        line-height: 10px;
+        font-size: 1em;
+        background-color: white;
+        color: $mainBGColor;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.2s ease-out;
+        -webkit-box-shadow: 0 0 18px 6px rgba(17,17,17,0.38); 
+        box-shadow: 0 0 18px 6px rgba(17,17,17,0.38);
+        &:hover{
+            background-color: $mainColor;
+            color: $mainTxtColor;
+        }
+    }
+}
 
 #preview {
     outline: solid firebrick 3px;
@@ -434,72 +457,47 @@ header {
 }
 
 #loader {
-    position: fixed;
-    height: 100vh; 
-    width: 100vw; 
-    display:table;
+    @extend .logo;
     background-color: $mainBGColor;
     z-index: 99;
-    font-family: $logoFont;
-
-    @extend .unselectable;
-    #loaderLogo {
-        display:table-cell;
-        vertical-align:middle;
-        font-size: 6em;
-        font-weight: bolder;
-        line-height : 1.3em;
-        letter-spacing: 0;
-        span:nth-child(1) {
-            display: inline-block;
-            padding: 0 0 15px 15px;
-        }
-        span:nth-child(2) {
-            background: $mainColor;
-            display: inline-block;
-            padding: 0 15px 10px;
-        }
-    }
 }
 
 #background {
+    @extend .logo;
+}
+
+.logo {
+    @extend .unselectable;
     position: fixed;
     height: 100vh; 
     width: 100vw; 
     display: table;
     font-family: $logoFont;
-
-    @extend .unselectable;
-    #backgroundLogo {
-        display:table-cell;
-        vertical-align:middle;
-        font-size: 7em;
+    font-size: 7em;
+    span:first-child {
+        display: table-cell;
+        vertical-align: middle;
         font-weight: bolder;
         line-height : 1.3em;
         letter-spacing: 0;
-        span:nth-child(1) {
+        span {
             display: inline-block;
+        }
+        span:nth-child(1) {
             padding: 0 0 15px 15px;
         }
         span:nth-child(2) {
             background: $mainColor;
-            display: inline-block;
             padding: 0 15px 10px;
         }
     }
 }
-
 
 /***************************************
    ************   FOOTER   ***************
    **************************************/
 
 footer {
-    bottom: 0;
-    left: 0;
-    position: fixed;
-    z-index: 1;
-    height: 5vh;
     .fabs {
         bottom: 1.2rem;
         position: fixed;

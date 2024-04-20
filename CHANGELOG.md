@@ -1,5 +1,15 @@
 
 
+# <img src="https://img.shields.io/badge/-major%20release-blue?style=flat-square">  **21.0.0** *(2024-04-20)*
+
+<img src="https://img.shields.io/badge/-new-green"> Added a button to clear all target markers
+
+<img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed a bug that prevented from placing markers near the bottom of the page
+
+<img src="https://img.shields.io/badge/-%20Improv%20-orange"> improved font caching/loading for faster experience (Largest Contentuful Paint went from 1.1s to 0.8s, and First Contentful Paint from 0.7s to 0.3s !)
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
 # <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">  **20.7.2** *(2024-04-15)*
 
 <img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed maps/tiles caching for better performance/fix caching problems when updating maps

@@ -34,6 +34,14 @@ tippy("#bearingNum", {
     theme: "results",
 });
 
+tippy(".btn-delete", {
+    animation: "fade",
+    placement: "top",
+    touch: false,
+    content: "Delete all targets",
+});
+
+
 tippy("#elevationNum", {
     animation: "fade",
     placement: "bottom",

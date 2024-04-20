@@ -25,7 +25,14 @@ $(document).on("click", "#highlow", function() { changeHighLow(); });
 $(document).on("click", function(event) {if (!$(event.target).closest(".fab-wrapper").length) {$("#fabCheckbox").prop("checked", false);}});
 $(document).on("click", "#fabCheckbox2", function() {switchUI();});
 $(document).on("click", "#fabCheckbox", function() {$("#helpDialog")[0].showModal();});
+$(document).on("click", ".btn-delete", function() { globalData.minimap.deleteTargets();});
+
 $(window).on("resize", function() { resizeInputsOnResize(); });
+
+
+
+
+
 
 const dialog = document.querySelector("dialog");
 

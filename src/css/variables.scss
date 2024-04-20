@@ -3,11 +3,9 @@ $mainColor: #b22222;
 $mainBGColor: #111;
 $mainTxtColor: #fff;
 $newColor: green;
-
 // Fonts
 $mainFont: montserrat;
 $logoFont: oswald;
-
 // Fontawesome
 $fa-font-path: '../fonts/webfonts';
 
@@ -18,7 +16,7 @@ $fa-font-path: '../fonts/webfonts';
 
 @font-face {
     font-display: swap; 
-    font-family: 'Montserrat';
+    font-family: Montserrat;
     font-style: normal;
     font-weight: 400;
     src: url('../fonts/webfonts/montserrat-v26-latin-regular.woff2') format('woff2'); 
@@ -26,7 +24,7 @@ $fa-font-path: '../fonts/webfonts';
 
 @font-face {
     font-display: swap;
-    font-family: 'Oswald';
+    font-family: Oswald;
     font-style: normal;
     font-weight: 700;
     src: url('../fonts/webfonts/oswald-v53-latin-700.woff2') format('woff2');

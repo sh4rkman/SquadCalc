@@ -1,15 +1,14 @@
 {
   "name": "squadcalc",
-  "version": "20.7.2",
-  "description": "A Minimalist Mortar Calculator for Squad",
+  "version": "21.0.0",
+  "description": "A Complete Mortar Calculator for Squad",
   "author": "Maxime 'sharkman' Boussard",
   "license": "MIT",
   "keywords": [
     "squad",
     "squadcalc",
     "mortar",
-    "calculator",
-    "minimalist"
+    "calculator"
   ],
   "repository": {
     "type": "git",
