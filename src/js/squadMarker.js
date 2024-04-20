@@ -371,6 +371,10 @@ export var squadTargetMarker = squadMarker.extend({
         this.removeFrom(globalData.minimap.markersGroup);
 
         this.remove();
+
+        if (globalData.minimap.activeTargetsMarkers.getLayers().length === 0) {
+            $(".btn-delete").hide();
+        }
     },
 
     getContent: function(results){

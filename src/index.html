@@ -21,9 +21,10 @@
     <link rel="shortcut icon" type="image/x-icon" href="./img/favicons/favicon.ico">
 
     <!-- PRECONNECT FOR FASTER LOAD -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;1,246&family=Oswald:wght@200..700&display=swap" rel="stylesheet">
+    <link rel="preload" href="./fonts/webfonts/montserrat-v26-latin-regular.woff2" as="font" crossorigin>
+    <link rel="preload" href="./fonts/webfonts/oswald-v53-latin-700.woff2" as="font" crossorigin>
+    <link rel="preload" href="./fonts/webfonts/fa-brands-400.woff2" as="font" crossorigin>
+    <link rel="preload" href="./fonts/webfonts/fa-solid-900.woff2" as="font" crossorigin>
 
     <!-- FUCK IE, I GIVE UP -->
     <script>
@@ -71,7 +72,7 @@
                         <div class="pure-u-1-5 pure-u-md-6-24"><span tabindex="1" onFocus="document.querySelector('.autofocus11').focus()"></span></div>
                         <div class="pure-u-3-5 pure-u-md-17-24">
                             <div id="mortar" class="coord">
-                                <img id="mortarImg" class="unselectable pure-img" src="./img/icons/mortar.png" alt="mortar">
+                                <img id="mortarImg" class="unselectable pure-img" loading="lazy" src="./img/icons/mortar.png" alt="mortar">
                                 <input id="mortar-location" class="autofocus1" spellcheck="false" maxlength="10" type="text" placeholder="A01-5-7" autocomplete="off" tabindex="2" autofocus>
                             </div>
                         </div>
@@ -86,7 +87,7 @@
                         <div class="pure-u-1-5 pure-u-md-1-24"></div>
                         <div class="pure-u-3-5 pure-u-md-17-24">
                             <div id="target" class="coord">
-                                <img id="targetImg" class="unselectable pure-img" src="./img/icons/target.png" alt="target">
+                                <img id="targetImg" class="unselectable pure-img" loading="lazy" src="./img/icons/target.png" alt="target">
                                 <input id="target-location" class="autofocus11" spellcheck="false" maxlength="10" type="text" placeholder="C03-2-7-9" autocomplete="off" tabindex="3">
                             </div>
                         </div>
@@ -274,10 +275,10 @@
                 <span id="bearingPreview">241.5°</span>
             </div>  
             <div id="center">
-                <img id="spreadPreview" src="./img/icons/spread.png" alt="spreadPreview">
-                <img id="gridPreview" src="./img/icons/grid.png" alt="gridPreview">
-                <img id="markerPreview" src="./img/icons/marker_target1.webp" alt="markerPreview">
-                <img id="maxRangePreview" src="./img/icons/maxrange.png" alt="maxRangePreview">
+                <img id="spreadPreview" loading="lazy" src="./img/icons/spread.png" alt="spreadPreview">
+                <img id="gridPreview" loading="lazy" src="./img/icons/grid.png" alt="gridPreview">
+                <img id="markerPreview" loading="lazy" src="./img/icons/marker_target1.webp" alt="markerPreview">
+                <img id="maxRangePreview" loading="lazy" src="./img/icons/maxrange.png" alt="maxRangePreview">
             </div>
         </div> 
 
@@ -320,9 +321,16 @@
                     <span>CALC</span>
                 </span>
             </div>
+
         </div>
+
     </div>
 
+    <div id="actionMenu">
+        <button type="button" class="btn btn-delete">
+            <i class="fa-solid fa-trash"></i>
+        </button>
+    </div>
 
     <footer class="pure-u-1 pure-u-md-1 pure-u-lg-1">
 

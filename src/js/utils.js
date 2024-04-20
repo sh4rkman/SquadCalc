@@ -800,6 +800,7 @@ export function pad(num, size) {
 
 
 export function loadUI(){
+    $(".btn-delete").hide();
     globalData.ui = localStorage.getItem("data-ui");
 
     if (globalData.ui === null || isNaN(globalData.ui) || globalData.ui === ""){
@@ -830,6 +831,9 @@ export function switchUI(){
 
     if (globalData.ui == 0){
         loadMapUIMode();
+        if (globalData.minimap.activeTargetsMarkers.getLayers().length > 0) {
+            $(".btn-delete").show();
+        }
     }
     else {
         $("#map_ui").addClass("hidden");
@@ -837,6 +841,7 @@ export function switchUI(){
         $(".weaponSelector").removeClass("ui");
         $(".mapSelector").removeClass("ui");
         $("#switchUIbutton").removeClass("fa-xmarks-lines").addClass("fa-map");
+        $(".btn-delete").hide();
         globalData.ui = 0;
         localStorage.setItem("data-ui", 0);
         drawLine();

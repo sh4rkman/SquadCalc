@@ -63,6 +63,7 @@ export var squadMinimap = L.Map.extend({
         var imageBounds;
         var previousLayers;
 
+        $(".btn-delete").hide();
         mapVal = $(".dropbtn").val();
         if (mapVal == "") {mapVal = 4;} // default map is Chora
         map = MAPS.find((elem, index) => index == mapVal);
@@ -104,7 +105,6 @@ export var squadMinimap = L.Map.extend({
 
         this.drawHeightmap();
 
-
     },
 
     /**
@@ -128,7 +128,7 @@ export var squadMinimap = L.Map.extend({
     },
 
     /**
-     * Recalc and update every target marker on the minimap
+     * Delete every target markers on the map
      */
     deleteTargets: function(){
         this.activeTargetsMarkers.eachLayer(function (target) {
@@ -253,6 +253,8 @@ export var squadMinimap = L.Map.extend({
         }
         
         new squadTargetMarker(L.latLng(e.latlng), {animate: globalData.userSettings.targetAnimation}).addTo(this.markersGroup);
+        $(".btn-delete").show();
+
         if (globalData.userSettings.targetAnimation){
             setTimeout(function() {
                 explode(e.containerPoint.x, e.containerPoint.y, -190, 10);
