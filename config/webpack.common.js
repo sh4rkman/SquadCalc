@@ -13,7 +13,7 @@ module.exports = {
         path: path.join(process.cwd(), 'dist'),
         publicPath: 'auto',
         clean: true,
-        assetModuleFilename: '[path][name][ext]'
+        assetModuleFilename: '[path][name].[contenthash][ext]'
     },
     module: {
         rules: [
