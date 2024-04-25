@@ -821,6 +821,7 @@ function loadMapUIMode(){
     $(".weaponSelector").addClass("ui");
     $(".mapSelector").addClass("ui");
     $("#switchUIbutton").removeClass("fa-map").addClass("fa-xmarks-lines");
+    $(".btn-topo").show();
     globalData.ui = 1;
     globalData.line.hide("none");
     localStorage.setItem("data-ui", 1);
@@ -833,6 +834,7 @@ export function switchUI(){
         loadMapUIMode();
         if (globalData.minimap.activeTargetsMarkers.getLayers().length > 0) {
             $(".btn-delete").show();
+            $(".btn-topo").show();
         }
     }
     else {
@@ -842,6 +844,7 @@ export function switchUI(){
         $(".mapSelector").removeClass("ui");
         $("#switchUIbutton").removeClass("fa-xmarks-lines").addClass("fa-map");
         $(".btn-delete").hide();
+        $(".btn-topo").hide();
         globalData.ui = 0;
         localStorage.setItem("data-ui", 0);
         drawLine();

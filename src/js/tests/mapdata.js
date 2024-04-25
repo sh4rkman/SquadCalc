@@ -46,6 +46,26 @@ const MAPDATA = [
         lOrigin: [-2016, -2016], // origin of landscape in SquadSDK (sometimes extracted by placing actor in corner)
       },
     },
+    
+    {
+      name: "Al Basrah",
+      url: "/maps/albasrah/{z}_{x}_{y}.jpg",
+      heightmap: {
+        url: "/heightmaps/albasrah.jpg",
+        tile: "/heightmaps/albasrah/{z}_{x}_{y}.jpg",
+      },
+      extra: { // extra information taken from SquadSDK and exported heightmap, used to scale + crop heightmaps
+        // check printMapExtras() function for more information
+        scale: [1, 1, 0.1], // x, y & z scale from SquadSDK (in meters)
+        levels: [2793, 4087],
+        minimap: [ // taken from blueprints in SquadSDK
+          [-1520, -1520],
+          [1520, 1520],
+        ],
+        hDim: [3049, 3049], // dimensions of exported heightmap
+        lOrigin: [-2032, -2032], // origin of landscape in SquadSDK (sometimes extracted by placing actor in corner)
+      },
+    },
     {
       name: "Anvil",
       url: "/maps/albasrah/{z}_{x}_{y}.jpg",
@@ -63,61 +83,8 @@ const MAPDATA = [
           [-2040, -2040],
           [1020, 1020],
         ],
-        hDim: [3826, 3826], // dimensions of exported heightmap
+        hDim: [4081, 4081], // dimensions of exported heightmap
         lOrigin: [-2040, -2040], // origin of landscape in SquadSDK (sometimes extracted by placing actor in corner)
-      },
-    },
-    {
-      name: "BlackCoast",
-      url: "/maps/albasrah/{z}_{x}_{y}.jpg",
-      heightmap: {
-        url: "/heightmaps/sanxianIslands.jpg",
-        tile: "/heightmaps/albasrah/{z}_{x}_{y}.jpg",
-      },
-      locations: [
-      ],
-      extra: { // extra information taken from SquadSDK and exported heightmap, used to scale + crop heightmaps
-        // check printMapExtras() function for more information
-        scale: [1.003937, 1.003937, 0.8], // x, y & z scale from SquadSDK (in meters)
-        levels: [2593, 7712],
-        minimap: [ // taken from blueprints in SquadSDK
-          [-2299, -2127],
-          [2299, 2472],
-        ],
-        hDim: [3811, 3811], // dimensions of exported heightmap
-        lOrigin: [-2040, -2142], // origin of landscape in SquadSDK (sometimes extracted by placing actor in corner)
-      },
-    },
-    {
-      name: "Al Basrah",
-      url: "/maps/albasrah/{z}_{x}_{y}.jpg",
-      heightmap: {
-        url: "/heightmaps/albasrah.jpg",
-        tile: "/heightmaps/albasrah/{z}_{x}_{y}.jpg",
-      },
-      locations: [
-        ["Village", [2000, 760]],
-        ["US Airfield", [770, 1070]],
-        ["US Checkpoint", [1550, 1530]],
-        ["Outskirts", [2050, 1600]],
-        ["Refinery", [1939, 2070]],
-        ["Mosque", [2107, 1882]],
-        ["Oasis", [2448, 1575]],
-        ["Suburbs", [2307, 1941]],
-        ["Alleys", [2238, 2243]],
-        ["Fringe", [2713, 1541]],
-        ["Estates", [2705, 2087]],
-      ],
-      extra: { // extra information taken from SquadSDK and exported heightmap, used to scale + crop heightmaps
-        // check printMapExtras() function for more information
-        scale: [1, 1, 0.1], // x, y & z scale from SquadSDK (in meters)
-        levels: [2793, 4087],
-        minimap: [ // taken from blueprints in SquadSDK
-          [-1520, -1520],
-          [1520, 1520],
-        ],
-        hDim: [3049, 3049], // dimensions of exported heightmap
-        lOrigin: [-2032, -2032], // origin of landscape in SquadSDK (sometimes extracted by placing actor in corner)
       },
     },
     {
@@ -144,6 +111,26 @@ const MAPDATA = [
         ],
         hDim: [4033, 4033],
         lOrigin: [-2016, -2142],
+      },
+    },
+    {
+      name: "BlackCoast",
+      url: "/maps/albasrah/{z}_{x}_{y}.jpg",
+      heightmap: {
+        url: "/heightmaps/sanxianIslands.jpg",
+        tile: "/heightmaps/albasrah/{z}_{x}_{y}.jpg",
+      },
+      locations: [
+      ],
+      extra: { 
+        scale: [1.003937, 1.003937, 0.8], // x, y & z scale from SquadSDK (in meters)
+        levels: [2593, 7712],
+        minimap: [ // taken from blueprints in SquadSDK
+          [-2299, -2127],
+          [2299, 2472],
+        ],
+        hDim: [4065, 4065], // dimensions of exported heightmap
+        lOrigin: [-2040, -2142], // origin of landscape in SquadSDK (sometimes extracted by placing actor in corner)
       },
     },
     {
@@ -177,7 +164,7 @@ const MAPDATA = [
           [-2464, -2664],
           [1600, 1400],
         ],
-        hDim: [8129, 8129],
+        hDim: [8129, 4827],
         lOrigin: [-2464, -2664],
       },
   
@@ -197,7 +184,7 @@ const MAPDATA = [
           [-1315,  -1545],
           [1690, 1460],
         ],
-        hDim: [2806, 2806],
+        hDim: [4081, 4081],
         lOrigin: [-2040, -2040],
       },
     },
@@ -293,7 +280,7 @@ const MAPDATA = [
           [-2016, -2016],
           [2015, 2015],
         ],
-        hDim: [4033, 4033],
+        hDim: [4065, 4065],
         lOrigin: [-2032, -2032],
       },
   
@@ -305,16 +292,6 @@ const MAPDATA = [
         url: "/heightmaps/gorodok.jpg",
         tile: "/heightmaps/gorodok/{z}_{x}_{y}.jpg",
       },
-      locations: [
-        ["Militia Camp", [3608, 775]],
-        ["Desna", [3264, 1405]],
-        ["Bunker", [2017, 1645]],
-        ["Shipping Yard", [666, 1840]],
-        ["Akim", [1219, 3295]],
-        ["The Mound", [2289, 3449]],
-        ["Industrial Park", [3205, 3413]],
-        ["Russian Main", [3681, 3626]],
-      ],
       extra: {
         scale: [1, 1, 10],
         levels: [780, 899],
@@ -322,7 +299,7 @@ const MAPDATA = [
           [-2032, -2032],
           [2032, 2032],
         ],
-        hDim: [4033, 4033],
+        hDim: [4065, 4065],
         lOrigin: [-2032, -2032],
       },
   
@@ -425,7 +402,7 @@ const MAPDATA = [
           [-1076, -1076],
           [1420, 1420],
         ],
-        hDim: [3049, 3684],
+        hDim: [6097, 7367],
         lOrigin: [-1333, -1714],
       },
     },

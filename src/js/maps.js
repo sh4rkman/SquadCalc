@@ -1,34 +1,6 @@
 import { globalData } from "./conf";
 import { squadMinimap } from "./squadMinimap";
 
-import AlBasrahURL from "../img/heightmaps/al basrah.webp";
-import AnvilURL from "../img/heightmaps/anvil.webp";
-import BelayaURL from "../img/heightmaps/belaya.webp";
-import BlackCoastURL from "../img/heightmaps/black coast.webp";
-import ChoraURL from "../img/heightmaps/chora.webp";
-import FallujahURL from "../img/heightmaps/fallujah.webp";
-import FoolsRoadURL from "../img/heightmaps/fool's road.webp";
-import GooseBayURL from "../img/heightmaps/goose bay.webp";
-import GorodokURL from "../img/heightmaps/gorodok.webp";
-import HarjuURL from "../img/heightmaps/harju.webp";
-//import JensenURL from "../img/heightmaps/jensen.webp"
-import KamdeshURL from "../img/heightmaps/kamdesh.webp";
-import KohatURL from "../img/heightmaps/kohat.webp";
-import KokanURL from "../img/heightmaps/kokan.webp";
-import LashkarURL from "../img/heightmaps/lashkar.webp";
-import LogarURL from "../img/heightmaps/logar.webp";
-import ManicouaganURL from "../img/heightmaps/manicouagan.webp";
-import MestiaURL from "../img/heightmaps/mestia.webp";
-import MutahaURL from "../img/heightmaps/mutaha.webp";
-import NarvaURL from "../img/heightmaps/narva.webp";
-import SanxianURL from "../img/heightmaps/sanxian.webp";
-import SkorpoURL from "../img/heightmaps/skorpo.webp";
-import SumariURL from "../img/heightmaps/sumari.webp";
-import TallilURL from "../img/heightmaps/tallil.webp";
-import YehorivkaURL from "../img/heightmaps/yehorivka.webp";
-
-
-
 // Each map has a different size and require scaling w, y and z when calculating height
 export const MAPS = [
     { 
@@ -36,8 +8,7 @@ export const MAPS = [
         size: 3040, // OK
         offset: [0, 0],
         scaling: 0.01294, // OK
-        heightmapURL: AlBasrahURL,
-        mapURL: "/albasrah/{z}_{x}_{y}.webp",
+        mapURL: "/albasrah/",
         maxZoomLevel: 4,
     },
     { 
@@ -45,8 +16,7 @@ export const MAPS = [
         size: 3060, //OK
         offset: [0, 0], 
         scaling: 0.216675, 
-        heightmapURL: AnvilURL,
-        mapURL: "/anvil/{z}_{x}_{y}.webp",
+        mapURL: "/anvil/",
         maxZoomLevel: 4,
     },
     { 
@@ -54,8 +24,7 @@ export const MAPS = [
         size: 3904, //OK
         offset: [0, 0], 
         scaling: 0.0726, 
-        heightmapURL: BelayaURL,
-        mapURL: "/belaya/{z}_{x}_{y}.webp",
+        mapURL: "/belaya/",
         maxZoomLevel: 4,
     },
     { 
@@ -63,8 +32,7 @@ export const MAPS = [
         size: 4600, // OK but not what mapdata gave us. Maybe because of x scaling?
         offset: [0, 0], 
         scaling: 0.35, 
-        heightmapURL: BlackCoastURL,
-        mapURL: "/blackcoast/{z}_{x}_{y}.webp",
+        mapURL: "/blackcoast/",
         maxZoomLevel: 4,
     },
     { 
@@ -72,8 +40,7 @@ export const MAPS = [
         size: 4064, // OK
         offset: [0, 0], 
         scaling: 0.064, 
-        heightmapURL: ChoraURL,
-        mapURL: "/chora/{z}_{x}_{y}.webp",
+        mapURL: "/chora/",
         maxZoomLevel: 4,
     },
     { 
@@ -81,8 +48,7 @@ export const MAPS = [
         size: 3005, // OK
         offset: [0, 0], 
         scaling: 0.0401, // OK
-        heightmapURL: FallujahURL,
-        mapURL: "/fallujah/{z}_{x}_{y}.webp",
+        mapURL: "/fallujah/",
         maxZoomLevel: 4,
     },
     { 
@@ -90,8 +56,7 @@ export const MAPS = [
         size: 1774, // OK
         offset: [0, 0], 
         scaling: 0.15744, // OK
-        heightmapURL: FoolsRoadURL,
-        mapURL: "/foolsroad/{z}_{x}_{y}.webp",
+        mapURL: "/foolsroad/",
         maxZoomLevel: 4,
     },
     { 
@@ -99,8 +64,7 @@ export const MAPS = [
         size: 4031, // OK
         offset: [0, 0], 
         scaling: 0.22064, // OK
-        heightmapURL: GooseBayURL,
-        mapURL: "/goosebay/{z}_{x}_{y}.webp",
+        mapURL: "/goosebay/",
         maxZoomLevel: 4,
     },
     { 
@@ -108,8 +72,7 @@ export const MAPS = [
         size: 4064, // OK
         offset: [200, 200], 
         scaling: 0.11900000000000001, // OK
-        heightmapURL: GorodokURL,
-        mapURL: "/gorodok/{z}_{x}_{y}.webp",
+        mapURL: "/gorodok/",
         maxZoomLevel: 4,
     },
     // { 
@@ -126,8 +89,7 @@ export const MAPS = [
         size: 4032, // OK
         offset: [0, 0], 
         scaling: 0.131, // OK
-        heightmapURL: HarjuURL,
-        mapURL: "/harju/{z}_{x}_{y}.webp",
+        mapURL: "/harju/",
         maxZoomLevel: 4,
     },
     { 
@@ -135,8 +97,7 @@ export const MAPS = [
         size: 4032, // OK
         offset: [0, 0], 
         scaling: 0.190215, 
-        heightmapURL: KamdeshURL,
-        mapURL: "/kamdesh/{z}_{x}_{y}.webp",
+        mapURL: "/kamdesh/",
         maxZoomLevel: 4,
     },
     { 
@@ -144,8 +105,7 @@ export const MAPS = [
         size: 4617, // OK
         offset: [0, 0], 
         scaling: 0.733125, // OK
-        heightmapURL: KohatURL,
-        mapURL: "/kohat/{z}_{x}_{y}.webp",
+        mapURL: "/kohat/",
         maxZoomLevel: 4,
     },
     { 
@@ -153,8 +113,7 @@ export const MAPS = [
         size: 2496, // OK
         offset: [0, 0], 
         scaling: 0.0164, 
-        heightmapURL: KokanURL,
-        mapURL: "/kokan/{z}_{x}_{y}.webp",
+        mapURL: "/kokan/",
         maxZoomLevel: 4,
     },
     { 
@@ -162,8 +121,7 @@ export const MAPS = [
         size: 4334, // OK
         offset: [0, 0], 
         scaling: 0.28215, 
-        heightmapURL: LashkarURL,
-        mapURL: "/lashkar/{z}_{x}_{y}.webp",
+        mapURL: "/lashkar/",
         maxZoomLevel: 4,
     },
     { 
@@ -171,8 +129,7 @@ export const MAPS = [
         size: 1761, // OK
         offset: [0, 0], 
         scaling: 0.13575, 
-        heightmapURL: LogarURL,
-        mapURL: "/logar/{z}_{x}_{y}.webp",
+        mapURL: "/logar/",
         maxZoomLevel: 4,
     },
     { 
@@ -180,8 +137,7 @@ export const MAPS = [
         size: 4031, // OK
         offset: [0, 0], 
         scaling: 0.3564, 
-        heightmapURL: ManicouaganURL,
-        mapURL: "/manicouagan/{z}_{x}_{y}.webp",
+        mapURL: "/manicouagan/",
         maxZoomLevel: 4,
     },
     { 
@@ -189,8 +145,7 @@ export const MAPS = [
         size: 2400,
         offset: [0, 0], 
         scaling: 0.41028, 
-        heightmapURL: MestiaURL,
-        mapURL: "/mestia/{z}_{x}_{y}.webp",
+        mapURL: "/mestia/",
         maxZoomLevel: 4,
     },
     { 
@@ -198,8 +153,7 @@ export const MAPS = [
         size: 2755, // OK
         offset: [-70, -100], 
         scaling: 0.07071, 
-        heightmapURL: MutahaURL,
-        mapURL: "/mutaha/{z}_{x}_{y}.webp",
+        mapURL: "/mutaha/",
         maxZoomLevel: 4,
     },
     { 
@@ -207,8 +161,7 @@ export const MAPS = [
         size: 2800, // OK
         offset: [-100, -100], 
         scaling: 0.0583, 
-        heightmapURL: NarvaURL,
-        mapURL: "/narva/{z}_{x}_{y}.webp",
+        mapURL: "/narva/",
         maxZoomLevel: 4,
     },
     /*{ 
@@ -225,8 +178,7 @@ export const MAPS = [
         size: 4600, 
         offset: [0, 0], 
         scaling: 0.1892, 
-        heightmapURL: SanxianURL,
-        mapURL: "/sanxian/{z}_{x}_{y}.webp",
+        mapURL: "/sanxian/",
         maxZoomLevel: 4,
     },
     { 
@@ -234,8 +186,7 @@ export const MAPS = [
         size: 6869, // OK but owi fuckedup again, X and Y sizes are not the same..
         offset: [0, 0], 
         scaling: 1.0927, 
-        heightmapURL: SkorpoURL,
-        mapURL: "/skorpo/{z}_{x}_{y}.webp",
+        mapURL: "/skorpo/",
         maxZoomLevel: 4,
     },
     { 
@@ -243,8 +194,7 @@ export const MAPS = [
         size: 1300, // OK
         offset: [0, 0], 
         scaling: 0.035925, 
-        heightmapURL: SumariURL,
-        mapURL: "/sumari/{z}_{x}_{y}.webp",
+        mapURL: "/sumari/",
         maxZoomLevel: 4,
     },
     { 
@@ -252,8 +202,7 @@ export const MAPS = [
         size: 4680, // OK
         offset: [-200, -200], 
         scaling: 0.05275, 
-        heightmapURL: TallilURL,
-        mapURL: "/tallil/{z}_{x}_{y}.webp",
+        mapURL: "/tallil/",
         maxZoomLevel: 4,
     },
     { 
@@ -261,8 +210,7 @@ export const MAPS = [
         size: 6350, // Not the SDK values weirdly
         offset: [-8300, -8300], 
         scaling: 0.2732, 
-        heightmapURL: YehorivkaURL,
-        mapURL: "/yehorivka/{z}_{x}_{y}.webp", 
+        mapURL: "/yehorivka/", 
         maxZoomLevel: 4,
     }
 ];
@@ -295,11 +243,11 @@ export function loadMapSelector() {
         MAP_SELECTOR.append("<option value=\"" + i + "\">" + map.name + "</option>");
     });
 
-    $(".dropbtn").val(4);
+    $(".dropbtn").val(11);
     globalData.minimap.loadHeatmap();
 }
 
 export function loadMinimap(){
     globalData.minimap = new squadMinimap("map");
-    globalData.minimap.draw();
+    globalData.minimap.draw(true);
 }

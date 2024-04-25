@@ -37,6 +37,14 @@ export function loadSettings(){
         globalData.userSettings.keypadUnderCursor = false;
     }
 
+    globalData.userSettings.terrainMode = loadLocalSetting("settings-terrain-mode");
+    if (globalData.userSettings.terrainMode){
+        $(".btn-topo").addClass("active");
+    }
+    else {
+        $(".btn-topo").removeClass("active");
+    }
+
     globalData.userSettings.spreadRadius = loadLocalSetting("settings-spread-radius");
     $("#spreadRadiusSetting").prop("checked", globalData.userSettings.spreadRadius);
 

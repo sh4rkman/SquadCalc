@@ -10,9 +10,13 @@
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
 
+
+
 # <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">  **20.7.2** *(2024-04-15)*
 
 <img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed maps/tiles caching for better performance/fix caching problems when updating maps
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
 
 
 
@@ -27,6 +31,7 @@
 # <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">  **20.7.0** *(2024-04-03)*
 
 <img src="https://img.shields.io/badge/-new-green"> New explosion animation when a target is created (can be disabled in settings)
+
 
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->

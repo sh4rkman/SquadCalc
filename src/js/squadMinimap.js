@@ -9,7 +9,7 @@ import { explode } from "./animations";
 
 export var squadMinimap = L.Map.extend({
     options: {
-        center: [700, 700],
+        center: [-globalData.mapSize/2, globalData.mapSize/2],
         attributionControl: false,
         crs: L.CRS.Simple,
         minZoom: 1,
@@ -22,6 +22,7 @@ export var squadMinimap = L.Map.extend({
         wheelPxPerZoomLevel: 75,
         boxZoom: true,
         fadeAnimation: true,
+        zoom: 2,
         //maxBoundsViscosity: 0,
         //maxBounds:[[500, -500], [-800, 800]],
     },
@@ -31,6 +32,7 @@ export var squadMinimap = L.Map.extend({
         L.Map.prototype.initialize.call(this, latlng, options);
         this.markersGroup = L.layerGroup().addTo(this);
         this.layerGroup = L.layerGroup().addTo(this);
+        this.topo = L.layerGroup().addTo(this);
         this.activeTargetsMarkers = L.layerGroup().addTo(this);
         this.activeWeaponsMarkers = L.layerGroup().addTo(this);
         this.grid = "";
@@ -56,35 +58,46 @@ export var squadMinimap = L.Map.extend({
     /**
      * Draw the map+grid inside the map container
      */
-    draw: function(){
+    draw: function(reset){
 
         var mapVal;
         var map;
         var imageBounds;
         var previousLayers;
 
-        $(".btn-delete").hide();
+
         mapVal = $(".dropbtn").val();
-        if (mapVal == "") {mapVal = 4;} // default map is Chora
+        if (mapVal == "") {mapVal = 11;} // default map is Kohat
         map = MAPS.find((elem, index) => index == mapVal);
-        imageBounds = L.latLngBounds(L.latLng(0, 0), L.latLng(-globalData.mapSize+1, globalData.mapSize-1));
+        imageBounds = L.latLngBounds(L.latLng(0, 0), L.latLng(-globalData.mapSize, globalData.mapSize));
         this.mapScale = map.size / globalData.mapSize;
         globalData.activeMap = mapVal;
         globalData.mapScale = globalData.mapSize / map.size;
-        this.setView([-globalData.mapSize/2, globalData.mapSize/2], 2);
         previousLayers = this.layerGroup.getLayers();
 
-        // Draw the current layer
-        L.tileLayer("src/img/maps" + map.mapURL, {
-            maxNativeZoom: map.maxZoomLevel,
-            noWrap: true,
-            bounds: imageBounds,
-            tileSize: globalData.mapSize,
-        }).addTo(this.layerGroup);
+
+
+        if (globalData.userSettings.terrainMode) {
+            L.tileLayer("../static/maps" + map.mapURL + "terrainmap/{z}_{x}_{y}.webp", {
+                maxNativeZoom: map.maxZoomLevel,
+                noWrap: true,
+                bounds: imageBounds,
+                tileSize: globalData.mapSize,
+            }).addTo(this.layerGroup);
+        }
+        else {
+            // Draw the current layer
+            L.tileLayer("../static/maps" + map.mapURL + "minimap/{z}_{x}_{y}.webp", {
+                maxNativeZoom: map.maxZoomLevel,
+                noWrap: true,
+                bounds: imageBounds,
+                tileSize: globalData.mapSize,
+            }).addTo(this.layerGroup);
+        }
 
         if (this.grid){this.grid.remove();}
         this.grid = new squadGrid();
-        this.grid.setBounds(imageBounds);
+        this.grid.setBounds(L.latLngBounds(L.latLng(0, 0), L.latLng(-globalData.mapSize+1, globalData.mapSize-1)));
 
         if (globalData.userSettings.grid) {
             this.showGrid();
@@ -102,6 +115,10 @@ export var squadMinimap = L.Map.extend({
             });
         }, 1000);
 
+        if (reset){
+            this.setView([-globalData.mapSize/2, globalData.mapSize/2], 2);
+            $(".btn-delete").hide();
+        }
 
         this.drawHeightmap();
 
@@ -112,7 +129,6 @@ export var squadMinimap = L.Map.extend({
      */
     clear: function(){
         this.markersGroup.clearLayers();
-        //this.layerGroup.clearLayers();
         this.activeWeaponsMarkers.clearLayers();
         this.activeTargetsMarkers.clearLayers();
     },
@@ -165,8 +181,9 @@ export var squadMinimap = L.Map.extend({
      */
     drawHeightmap: function() {
         const IMG = new Image(); // Create new img element
-        IMG.src = MAPS.find((elem, index) => index == globalData.activeMap).heightmapURL;
-
+        const mapName = MAPS.find((elem, index) => index == globalData.activeMap).name.toLowerCase();
+        IMG.src = "../static/heightmaps/"+ mapName + ".webp"
+        
         IMG.addEventListener("load", function() { // wait for the image to load or it does crazy stuff
             globalData.canvas.obj.drawImage(IMG, 0, 0, globalData.canvas.size, globalData.canvas.size);
             shoot();

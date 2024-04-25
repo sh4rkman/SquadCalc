@@ -41,6 +41,13 @@ tippy(".btn-delete", {
     content: "Delete all targets",
 });
 
+tippy(".btn-topo", {
+    animation: "fade",
+    placement: "top",
+    touch: false,
+    content: "Toggle Terrain",
+});
+
 
 tippy("#elevationNum", {
     animation: "fade",

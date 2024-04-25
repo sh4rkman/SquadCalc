@@ -10,8 +10,8 @@ module.exports = {
     entry: './src/app.js',
     output: {
         filename: './src/js/[name].[contenthash].min.js',
-        path: path.join(process.cwd(), 'dist'),
-        publicPath: 'auto',
+        path: path.join(process.cwd(), 'public/dist'),
+        publicPath: "auto",
         clean: true,
         assetModuleFilename: '[path][name].[contenthash][ext]'
     },
@@ -43,7 +43,6 @@ module.exports = {
         }),
         new CopyPlugin({
             patterns: [
-              { from: "./src/img/maps/", to: "./src/img/maps/" },
               { from: "./src/img/github/", to: "./src/img/github/" },
             ],
           }),
@@ -75,14 +74,28 @@ module.exports = {
             ],
             screenshots : [
               {
-                "src": "./src/img/github/mobile_ui.png",
+                "src": "./src/img/github/mobile_ui.webp",
                 "sizes": "748x1568",
                 "type": "image/webp",
                 "form_factor": "narrow",
                 "label": "Map View"
               },
               {
-                "src": "./src/img/github/desktop_ui.png",
+                "src": "./src/img/github/mobile.webp",
+                "sizes": "748x1568",
+                "type": "image/webp",
+                "form_factor": "narrow",
+                "label": "Map View"
+              },
+              {
+                "src": "./src/img/github/desktop_ui.webp",
+                "sizes": "601x426",
+                "type": "image/webp",
+                "form_factor": "wide",
+                "label": "Map View"
+              },
+              {
+                "src": "./src/img/github/desktop.webp",
                 "sizes": "601x426",
                 "type": "image/webp",
                 "form_factor": "wide",

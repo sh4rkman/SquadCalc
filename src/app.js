@@ -31,6 +31,6 @@ $(function() {
     loadMapSelector();
     preventAutocomplete();
     showPage();
-    registerServiceWorkers();
+    //registerServiceWorkers();
     console.log("Calculator Loaded!");
 });
