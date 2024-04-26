@@ -11,7 +11,7 @@ module.exports = {
     output: {
         filename: './src/js/[name].[contenthash].min.js',
         path: path.join(process.cwd(), 'dist'),
-        publicPath: 'auto',
+        publicPath: '',
         clean: true,
         assetModuleFilename: '[path][name].[contenthash][ext]'
     },
@@ -43,8 +43,8 @@ module.exports = {
         }),
         new CopyPlugin({
             patterns: [
-              { from: "./src/img/maps/", to: "./src/img/maps/" },
               { from: "./src/img/github/", to: "./src/img/github/" },
+              //{ from: "./src/img/maps/kohat/", to: "./src/img/maps/kohat/" },
             ],
           }),
           new WebpackPwaManifest({
@@ -75,14 +75,28 @@ module.exports = {
             ],
             screenshots : [
               {
-                "src": "./src/img/github/mobile_ui.png",
+                "src": "./src/img/github/mobile_ui.webp",
                 "sizes": "748x1568",
                 "type": "image/webp",
                 "form_factor": "narrow",
                 "label": "Map View"
               },
               {
-                "src": "./src/img/github/desktop_ui.png",
+                "src": "./src/img/github/mobile.webp",
+                "sizes": "748x1568",
+                "type": "image/webp",
+                "form_factor": "narrow",
+                "label": "Map View"
+              },
+              {
+                "src": "./src/img/github/desktop_ui.webp",
+                "sizes": "601x426",
+                "type": "image/webp",
+                "form_factor": "wide",
+                "label": "Map View"
+              },
+              {
+                "src": "./src/img/github/desktop.webp",
                 "sizes": "601x426",
                 "type": "image/webp",
                 "form_factor": "wide",
@@ -91,7 +105,7 @@ module.exports = {
             ]
           }),
           new workbox.GenerateSW({
-            swDest: "sw.js",
+            swDest: "./sw.js",
             skipWaiting: true,
             clientsClaim: true,
             maximumFileSizeToCacheInBytes: 10000000,
@@ -100,10 +114,9 @@ module.exports = {
               /\.map$/, // source maps
               /\/favicons\//, // favicon
               /robots\.txt/, // robots.txt
-              /\/maps\/[^\/]+\/[3-5]/, // exclude low level zoom tiles
             ],
             runtimeCaching: [{
-              urlPattern: new RegExp(/\/maps\/[^\/]+\/[3-5]/),
+              urlPattern: new RegExp(/\/maps\/[^\/]+\/[^\/]+\/[1-5]/),
               handler: 'StaleWhileRevalidate',
               options: {
                 cacheName: 'squadcalc-tiles',

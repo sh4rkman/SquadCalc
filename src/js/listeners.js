@@ -5,7 +5,7 @@ import { globalData } from "./conf";
 $(document).on("change", ".dropbtn2", function() { changeWeapon(); });
 $(document).on("change", ".dropbtn", function() { 
     globalData.minimap.clear(); 
-    globalData.minimap.draw(); 
+    globalData.minimap.draw(true); 
     shoot();
 });
 
@@ -30,7 +30,20 @@ $(document).on("click", ".btn-delete", function() { globalData.minimap.deleteTar
 $(window).on("resize", function() { resizeInputsOnResize(); });
 
 
-
+$(document).on("click", ".btn-topo", function() { 
+    var btn = $(".btn-topo");
+    if (btn.hasClass("active")){
+        btn.removeClass("active");
+        globalData.userSettings.terrainMode = false;
+        localStorage.setItem("settings-terrain-mode", 0);
+    }
+    else {
+        btn.addClass("active");
+        globalData.userSettings.terrainMode = true;
+        localStorage.setItem("settings-terrain-mode", 1);
+    }
+    globalData.minimap.draw(false);
+});
 
 
 

@@ -303,6 +303,11 @@ header {
             background-color: $mainColor;
             color: $mainTxtColor;
         }
+
+    }
+    .active {
+        background-color: $mainColor;
+        color: $mainTxtColor;
     }
 }
 
@@ -312,7 +317,8 @@ header {
     height: 150px;
     margin-top: 5em;
     margin-left: 7em;
-    background-image: url("../img/maps/albasrah/3_3_5.webp");
+    background-image: url("../../public/maps/chora/minimap/4_6_7.webp");
+    background-size: contain;
     #center {
         display: flex;
         align-items: center;

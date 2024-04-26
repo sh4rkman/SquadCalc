@@ -1,6 +1,6 @@
 
 
-![image](./src/img/github/logo.png)
+![image](./src/img/github/logo.webp)
 
 
  <a href="https://github.com/sh4rkman/SquadCalc/blob/master/LICENSE"><img src="https://img.shields.io/github/license/Naereen/StrapDown.js.svg" alt="Licence"></a>
@@ -34,8 +34,8 @@ This tool facilitates rapid mortar calculations through two distinct modes:
 </br>
 
 
-![image](./src/img/github/desktop_ui.png)<img width="224" height="426" src="./src/img/github/mobile_ui.png">
-![image](./src/img/github/desktop.png)<img width="224" height="426" src="./src/img/github/mobile.png">
+![image](./src/img/github/desktop_ui.webp)<img width="224" height="426" src="./src/img/github/mobile_ui.webp">
+![image](./src/img/github/desktop.webp)<img width="224" height="426" src="./src/img/github/mobile.webp">
 
 
 

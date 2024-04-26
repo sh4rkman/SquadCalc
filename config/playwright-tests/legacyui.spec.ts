@@ -42,14 +42,14 @@ test('Wrong calcs', async ({  }) => {
   await expect(page.locator('#errorMsg')).toContainText("Mortar is out of map");
 
   // weapon out of map
-  await page.getByRole('textbox', { name: 'Chora' }).click();
+  await page.getByRole('textbox', { name: 'kohat' }).click();
   await page.getByRole('option', { name: 'Al basrah' }).click();
   await expect(page.locator('#errorMsg')).toContainText("Target is out of range");
 
 });
 
 test('Basic calcs', async ({  }) => {
-  await page.getByRole('textbox', { name: 'Chora' }).click();
+  await page.getByRole('textbox', { name: 'kohat' }).click();
   await page.getByRole('option', { name: 'Al basrah' }).click();
   // pressSequentially coordonates
   await page.locator('#mortar-location').click();
@@ -64,7 +64,7 @@ test('Basic calcs', async ({  }) => {
 
 
 test('Basic calcs + map', async ({  }) => {
-  await page.getByRole('textbox', { name: 'Chora' }).click();
+  await page.getByRole('textbox', { name: 'kohat' }).click();
   await page.getByRole('option', { name: 'Al basrah' }).click();
   // pressSequentially coordonates
   await page.locator('#mortar-location').click();
@@ -82,7 +82,7 @@ test('Basic calcs + map', async ({  }) => {
 });
 
 test('Advanced calc', async ({  }) => {
-  await page.getByRole('textbox', { name: 'Chora' }).click();
+  await page.getByRole('textbox', { name: 'kohat' }).click();
   await page.getByRole('option', { name: 'Al basrah' }).click();
   // pressSequentially coordonates
   await page.locator('#mortar-location').click();
@@ -116,7 +116,7 @@ test('Advanced calc', async ({  }) => {
 });
 
 test('Save calc', async ({  }) => {
-  await page.getByRole('textbox', { name: 'Chora' }).click();
+  await page.getByRole('textbox', { name: 'kohat' }).click();
   await page.getByRole('option', { name: 'Al basrah' }).click();
   // pressSequentially coordonates
   await page.locator('#mortar-location').click();
