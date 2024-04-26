@@ -1,4 +1,13 @@
 
+# <img src="https://img.shields.io/badge/-major%20release-blue?style=flat-square">  **22.0.0** *(2024-04-25)*
+
+<img src="https://img.shields.io/badge/-new-green"> **Terrain maps** ! You can know switch to a "terrain" mode with better understanding of elevation. Straight from the SDK, makes you wondering how the fuck you can't have decent minimap ingame right.
+
+
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
+
 
 # <img src="https://img.shields.io/badge/-major%20release-blue?style=flat-square">  **21.0.0** *(2024-04-20)*
 

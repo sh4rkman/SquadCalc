@@ -10,8 +10,8 @@ module.exports = {
     entry: './src/app.js',
     output: {
         filename: './src/js/[name].[contenthash].min.js',
-        path: path.join(process.cwd(), 'public/dist'),
-        publicPath: "auto",
+        path: path.join(process.cwd(), 'dist'),
+        publicPath: '',
         clean: true,
         assetModuleFilename: '[path][name].[contenthash][ext]'
     },
@@ -44,6 +44,7 @@ module.exports = {
         new CopyPlugin({
             patterns: [
               { from: "./src/img/github/", to: "./src/img/github/" },
+              //{ from: "./src/img/maps/kohat/", to: "./src/img/maps/kohat/" },
             ],
           }),
           new WebpackPwaManifest({
@@ -103,26 +104,26 @@ module.exports = {
               },
             ]
           }),
-          new workbox.GenerateSW({
-            swDest: "sw.js",
-            skipWaiting: true,
-            clientsClaim: true,
-            maximumFileSizeToCacheInBytes: 10000000,
-            exclude: [
-              /manifest\.json$/, // web app manifest
-              /\.map$/, // source maps
-              /\/favicons\//, // favicon
-              /robots\.txt/, // robots.txt
-              /\/maps\/[^\/]+\/[3-5]/, // exclude low level zoom tiles
-            ],
-            runtimeCaching: [{
-              urlPattern: new RegExp(/\/maps\/[^\/]+\/[3-5]/),
-              handler: 'StaleWhileRevalidate',
-              options: {
-                cacheName: 'squadcalc-tiles',
-              },
-            }],
-          })
+          // new workbox.GenerateSW({
+          //   swDest: "./sw.js",
+          //   skipWaiting: true,
+          //   clientsClaim: true,
+          //   maximumFileSizeToCacheInBytes: 10000000,
+          //   exclude: [
+          //     /manifest\.json$/, // web app manifest
+          //     /\.map$/, // source maps
+          //     /\/favicons\//, // favicon
+          //     /robots\.txt/, // robots.txt
+          //     /\/maps\/[^\/]+\/[^\/]+\/[3-5]/, // exclude low level zoom tiles
+          //   ],
+          //   runtimeCaching: [{
+          //     urlPattern: new RegExp(/\/maps\/[^\/]+\/[^\/]+\/[3-5]/),
+          //     handler: 'StaleWhileRevalidate',
+          //     options: {
+          //       cacheName: 'squadcalc-tiles',
+          //     },
+          //   }],
+          // })
     ],
     // Disable warning message for big chuncks
     performance: {

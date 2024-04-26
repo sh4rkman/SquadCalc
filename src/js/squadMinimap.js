@@ -78,7 +78,7 @@ export var squadMinimap = L.Map.extend({
 
 
         if (globalData.userSettings.terrainMode) {
-            L.tileLayer("../static/maps" + map.mapURL + "terrainmap/{z}_{x}_{y}.webp", {
+            L.tileLayer("maps" + map.mapURL + "terrainmap/{z}_{x}_{y}.webp", {
                 maxNativeZoom: map.maxZoomLevel,
                 noWrap: true,
                 bounds: imageBounds,
@@ -87,7 +87,7 @@ export var squadMinimap = L.Map.extend({
         }
         else {
             // Draw the current layer
-            L.tileLayer("../static/maps" + map.mapURL + "minimap/{z}_{x}_{y}.webp", {
+            L.tileLayer("maps" + map.mapURL + "minimap/{z}_{x}_{y}.webp", {
                 maxNativeZoom: map.maxZoomLevel,
                 noWrap: true,
                 bounds: imageBounds,
@@ -181,9 +181,9 @@ export var squadMinimap = L.Map.extend({
      */
     drawHeightmap: function() {
         const IMG = new Image(); // Create new img element
-        const mapName = MAPS.find((elem, index) => index == globalData.activeMap).name.toLowerCase();
-        IMG.src = "../static/heightmaps/"+ mapName + ".webp"
-        
+        const map = MAPS.find((elem, index) => index == globalData.activeMap);
+        IMG.src = "maps"+ map.mapURL + map.name.toLowerCase() + ".webp";
+
         IMG.addEventListener("load", function() { // wait for the image to load or it does crazy stuff
             globalData.canvas.obj.drawImage(IMG, 0, 0, globalData.canvas.size, globalData.canvas.size);
             shoot();
