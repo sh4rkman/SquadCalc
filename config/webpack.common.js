@@ -114,10 +114,9 @@ module.exports = {
               /\.map$/, // source maps
               /\/favicons\//, // favicon
               /robots\.txt/, // robots.txt
-              /\/maps\/[^\/]+\/[^\/]+\/[3-5]/, // exclude low level zoom tiles
             ],
             runtimeCaching: [{
-              urlPattern: new RegExp(/\/maps\/[^\/]+\/[^\/]+\/[3-5]/),
+              urlPattern: new RegExp(/\/maps\/[^\/]+\/[^\/]+\/[1-5]/),
               handler: 'StaleWhileRevalidate',
               options: {
                 cacheName: 'squadcalc-tiles',
