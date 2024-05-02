@@ -15,6 +15,11 @@ export default L.ImageOverlay.extend({
     initialize: function (url, options) {
         //L.setOptions(this, options); uncomment if custom options are needed
         L.ImageOverlay.prototype.initialize.call(this, url, options);
+
+        this.on("load", function(){
+            this.getHeight({lng: 0, lat: 0}); // call it once to speed up next uses
+        });
+
     },
 
     /**
@@ -29,6 +34,7 @@ export default L.ImageOverlay.extend({
         var color;
         canvas.width = 1;
         canvas.height = 1;
+        console.log(this._image);
         context.drawImage(this._image, -latlng.lng, latlng.lat, globalData.mapSize+1, globalData.mapSize+1);
         color = context.getImageData(0, 0, 1, 1).data;
         return (255 + color[0] - color[2]) * ZSCALING;
@@ -48,7 +54,7 @@ export default L.ImageOverlay.extend({
         var lngDiff =  end.lng - start.lng;
         
         for (let i=0; i < STEP; i++){
-            heightPath.push(globalData.minimap.heightmap.getHeight(start));
+            heightPath.push(this.getHeight(start));
             start.lat += latDiff/STEP;
             start.lng += lngDiff/STEP;
         }

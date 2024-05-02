@@ -10,6 +10,7 @@ jobs:
     timeout-minutes: 60
     runs-on: ubuntu-latest
     steps:
+
     - name: Pull code from GitHub
       uses: appleboy/ssh-action@v1.0.3
       with:
@@ -22,6 +23,7 @@ jobs:
          ssh-add ~/.ssh/${{ secrets.SSH_PUBLIC_KEY_NAME }}
          cd ${{ secrets.DEV_DIST }}
          git pull origin dev
+
     - name: Clean Install & Build
       uses: appleboy/ssh-action@v1.0.3
       with:
@@ -35,6 +37,7 @@ jobs:
           cd ${{ secrets.DEV_DIST }}
           npm ci
           npm run build:dev
+
     - name: Discord notification
       env:
         DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
@@ -44,5 +47,24 @@ jobs:
       with:
         args: 'The project {{ EVENT_PAYLOAD.repository.full_name }} has been deployed successfully on https://dev.squadcalc.app'
       
-
+  test:
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 18
+    - name: Install dependencies
+      run: npm ci
+    - name: Install Playwright Browsers
+      run: npx playwright install --with-deps
+    - name: Run Playwright tests
+      run: npx playwright test
+    - uses: actions/upload-artifact@v4
+      if: ${{ !cancelled() }}
+      with:
+        name: playwright-report
+        path: playwright-report/
+        retention-days: 30
 

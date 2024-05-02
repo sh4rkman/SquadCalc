@@ -740,14 +740,38 @@ footer {
     background-color: $mainBGColor;
     color: $mainTxtColor;
     text-align: left;
-    padding: 30px 5px 5px 30px;
+    padding: 30px 0px 0px 30px;
     border-radius: 10px;
     font-size: 0.7em;
-    width: 700px;
+    max-width: 800px;
+    overflow: hidden;
+    table {
+        border-collapse: collapse;
+        margin-left: auto;
+        margin-right: auto;
+        width: 50%;
+        margin-bottom: 2em;
+        td {
+            height: 2em;
+            border-bottom: lightgrey 1px solid;
+            &:nth-child(1){
+                font-weight: bold;
+                text-transform: uppercase;
+                font-size: 0.9em;
+            }
+            &:nth-child(2){
+                text-align: right;
+            }
+        }
+
+
+    }
     #heightGraph {
-        background-color: white;;
-        width: 500px;
-        transform: rotate(180deg) scaleX(-1); 
+        background-color: white;
+        margin-left: -30px;
+        margin-bottom: -5px;
+        width: calc(100% + 30px);
+        transform: rotate(180deg) scaleX(-1);
     }
     #closeCalcInformation{
         position: absolute;
