@@ -160,7 +160,7 @@ $("#spreadRadiusSetting").on("change", function() {
     var val = $("#spreadRadiusSetting").is(":checked");
     globalData.userSettings.spreadRadius = val;
     localStorage.setItem("settings-spread-radius", +val);
-    globalData.minimap.updateTargets(); // Update every targets to add/remove spread radius
+    globalData.minimap.updateTargetsSpreads(); // Update every targets to add/remove spread radius
     updatePreview();
 });
 

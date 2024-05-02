@@ -239,6 +239,7 @@ export var squadTargetMarker = squadMarker.extend({
         var dist;
         var velocity;
         var elevation;
+        this.fired = 0;
 
         L.setOptions(this, options);
 
@@ -457,6 +458,26 @@ export var squadTargetMarker = squadMarker.extend({
     },
 
 
+    updateSpread: function(){
+        
+        if (globalData.userSettings.spreadRadius) {
+            this.spreadMarker1.setStyle(this.spreadOptionsOn);
+        }
+        else {
+            this.spreadMarker1.setStyle(this.spreadOptionsOff);
+        }
+
+        if (globalData.minimap.activeWeaponsMarkers.getLayers().length === 2) {
+            if (globalData.userSettings.spreadRadius) {
+                this.spreadMarker2.setStyle(this.spreadOptionsOn);
+            }
+            else {
+                this.spreadMarker2.setStyle(this.spreadOptionsOff);
+            }
+        }
+    },
+
+
     updateCalc: function(){
         const mapScale = MAPS.find((elem, index) => index == globalData.activeMap).size / globalData.mapSize;
         var weaponPos = globalData.minimap.activeWeaponsMarkers.getLayers()[0].getLatLng();
@@ -624,10 +645,10 @@ export var squadTargetMarker = squadMarker.extend({
         new SquadSimulation(canvas, this.options.results, heightPath);
 
     },
-
     // Keep the marker on map & update calc while dragging
     _handleDrag: function (e) {
-        
+        this.fired++;
+
         // When dragging marker out of bounds, block it at the edge
         e = this.keepOnMap(e);
 
@@ -639,7 +660,8 @@ export var squadTargetMarker = squadMarker.extend({
         this.spreadMarker2.setLatLng(e.latlng);
 
         // Update bearing/elevation/spread marker
-        this.updateCalc();
+        // update only every 10 mousemove events for performance
+        if(!(this.fired % 10) || this.fired == 1) this.updateCalc();
     },
 
     // set "grabbing" cursor on grab start
@@ -655,6 +677,9 @@ export var squadTargetMarker = squadMarker.extend({
             globalData.minimap.on("mousemove", globalData.minimap._handleMouseMove);
         }
         $(".leaflet-marker-icon").css("cursor", "grab");
+
+        // update one last time when drag end
+        this.updateCalc();
     },
 
     // Delete targetMarker on right clic

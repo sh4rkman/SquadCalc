@@ -184,6 +184,16 @@ export var squadMinimap = L.Map.extend({
     },
 
     /**
+    * TODO
+    */
+    updateTargetsSpreads: function(){
+        // Update existent targets
+        this.activeTargetsMarkers.eachLayer(function (target) {
+            target.updateSpread();
+        });
+    },
+
+    /**
      * Delete every target markers on the map
      */
     deleteTargets: function(){
