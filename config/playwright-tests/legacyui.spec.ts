@@ -39,7 +39,7 @@ test('Wrong calcs', async ({  }) => {
   await page.locator('#target-location').click();
   await page.locator('#target-location').fill('');
   await page.locator('#target-location').pressSequentially('G01245');
-  await expect(page.locator('#errorMsg')).toContainText("Mortar is out of map");
+  await expect(page.locator('#errorMsg')).toContainText("Target is out of map");
 
   // weapon out of map
   await page.getByRole('textbox', { name: 'kohat' }).click();
