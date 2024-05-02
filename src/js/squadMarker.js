@@ -4,6 +4,7 @@ import "./ellipse";
 import { globalData } from "./conf";
 import { MAPS } from  "./maps";
 import SquadSimulation from "./squadSimulation";
+import { isTouchDevice } from "./utils";
 //import SquadFiringSolution from "./squadFiringSolution";
 
 import { 
@@ -459,7 +460,7 @@ export var squadTargetMarker = squadMarker.extend({
 
 
     updateSpread: function(){
-        
+
         if (globalData.userSettings.spreadRadius) {
             this.spreadMarker1.setStyle(this.spreadOptionsOn);
         }
@@ -660,8 +661,11 @@ export var squadTargetMarker = squadMarker.extend({
         this.spreadMarker2.setLatLng(e.latlng);
 
         // Update bearing/elevation/spread marker
-        // update only every 10 mousemove events for performance
-        if(!(this.fired % 10) || this.fired == 1) this.updateCalc();
+        // update only every 5 mousemove events for performance
+        if(!isTouchDevice()){
+            if(!(this.fired % 5) || this.fired == 1) this.updateCalc();
+        }
+
     },
 
     // set "grabbing" cursor on grab start
@@ -669,6 +673,13 @@ export var squadTargetMarker = squadMarker.extend({
         $(".leaflet-marker-icon").css("cursor", "grabbing");
         globalData.minimap.mouseLocationPopup.close();
         globalData.minimap.off("mousemove", globalData.minimap._handleMouseMove);
+
+        if(isTouchDevice()){
+            this.calcMarker1.setContent("  ");
+            this.calcMarker2.setContent("  ");
+            this.spreadMarker1.setStyle({opacity: 0, fillOpacity: 0});
+            this.spreadMarker2.setStyle({opacity: 0, fillOpacity: 0});
+        }
     },
 
     // Reset cursor on drag end
