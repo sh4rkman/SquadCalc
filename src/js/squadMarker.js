@@ -465,29 +465,27 @@ export var squadTargetMarker = squadMarker.extend({
         var weaponHeight = globalData.minimap.heightmap.getHeight(weaponPos);
         var targetHeight = globalData.minimap.heightmap.getHeight(this.getLatLng());
         var dist = getDist(a, b);
-        var elevation;
-        var velocity;
+        var elevation = getElevation(dist, targetHeight - weaponHeight, globalData.activeWeapon.getVelocity(dist));
+        var velocity = globalData.activeWeapon.getVelocity(dist);
 
         this.options.results = {
-            elevation: getElevation(dist, targetHeight - weaponHeight, globalData.activeWeapon.getVelocity(dist)),
+            elevation: elevation,
             bearing: getBearing(a, b),
             distance: dist,
-            velocity: globalData.activeWeapon.getVelocity(dist),
+            velocity: velocity,
             gravityScale: globalData.activeWeapon.gravityScale,
             weaponHeight: weaponHeight,
             targetHeight: targetHeight,
             diffHeight: targetHeight - weaponHeight,
             spreadParameters: getSpreadParameter(elevation, velocity),
         };
-
-        console.log(this.options.results);
-       
+              
         if (this.options.results.elevation === "---" || this.options.results.spreadParameters.semiMajorAxis === 0) {
             this.spreadMarker1.setStyle({opacity: 0, fillOpacity: 0});
-            console.log("ici");
+
         }
         else {
-            console.log("ka");
+
             this.spreadMarker1.setRadius([(this.options.results.spreadParameters.semiMajorAxis * globalData.mapScale)/2, (this.options.results.spreadParameters.semiMinorAxis * globalData.mapScale)/2]);
             if (globalData.userSettings.spreadRadius) {
                 this.spreadMarker1.setStyle(this.spreadOptionsOn);
@@ -495,7 +493,7 @@ export var squadTargetMarker = squadMarker.extend({
             else {
                 this.spreadMarker1.setStyle(this.spreadOptionsOff);
             }
-            this.spreadMarker1.setTilt(this.options.bearing);
+            this.spreadMarker1.setTilt(this.options.results.bearing);
         }
 
         

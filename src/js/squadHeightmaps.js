@@ -34,7 +34,6 @@ export default L.ImageOverlay.extend({
         var color;
         canvas.width = 1;
         canvas.height = 1;
-        console.log(this._image);
         context.drawImage(this._image, -latlng.lng, latlng.lat, globalData.mapSize+1, globalData.mapSize+1);
         color = context.getImageData(0, 0, 1, 1).data;
         return (255 + color[0] - color[2]) * ZSCALING;
