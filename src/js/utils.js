@@ -84,7 +84,7 @@ function formatKeyPad(text = "") {
  * @param {LatLng} b - target point B
  * @returns {number} - bearing required to see B from A
  */
-function getBearing(a, b) {
+export function getBearing(a, b) {
     // oh no, vector maths!
     var bearing = Math.atan2(b.lng - a.lng, b.lat - a.lat) * 180 / Math.PI + 90;
 
@@ -99,7 +99,7 @@ function getBearing(a, b) {
  * @param {number} rad - radians
  * @returns {number} NATO mils
  */
-function radToMil(rad) {
+export function radToMil(rad) {
     return degToMil(radToDeg(rad));
 }
 
@@ -117,7 +117,7 @@ function degToRad(deg) {
  * @param {number} rad - radians
  * @returns {number} degrees
  */
-function radToDeg(rad) {
+export function radToDeg(rad) {
     return (rad * 180) / Math.PI;
 }
 
@@ -136,7 +136,7 @@ function degToMil(deg) {
  * @param {LatLng} b - point B
  * @returns {number} distance A <-> B
  */
-function getDist(a, b) {
+export function getDist(a, b) {
     return Math.hypot(a.lat - b.lat, a.lng - b.lng);
 }
 
@@ -148,10 +148,20 @@ function getDist(a, b) {
  * @param {number} [vel] - initial mortar projectile velocity
  * @returns {number || NaN} radian angle if target in range, NaN otherwise
  */
-function getElevation(dist = 0, vDelta = 0, vel = 0) {
-    var gravity = globalData.gravity * globalData.activeWeapon.gravityScale;
-    const P1 = Math.sqrt(vel ** 4 - gravity * (gravity * dist ** 2 + 2 * vDelta * vel ** 2));
-    return Math.atan((vel ** 2 - (P1 * globalData.activeWeapon.getAngleType())) / (gravity * dist));
+export function getElevation(dist = 0, vDelta = 0, vel = 0) {
+    const GRAVITY = globalData.gravity * globalData.activeWeapon.gravityScale;
+    const P1 = Math.sqrt(vel ** 4 - GRAVITY * (GRAVITY * dist ** 2 + 2 * vDelta * vel ** 2));
+    return Math.atan((vel ** 2 - (P1 * globalData.activeWeapon.getAngleType())) / (GRAVITY * dist));
+}
+
+export function getSpreadParameter(elevation, vel){
+    const gravity = globalData.gravity * globalData.activeWeapon.gravityScale;
+
+    return  {
+        semiMajorAxis: getHorizontalSpread(elevation, vel, gravity),
+        semiMinorAxis: getVerticalSpread(elevation, vel),
+        ellipseAngle: (elevation * (180 / Math.PI))
+    };
 }
 
 
@@ -161,7 +171,7 @@ function getElevation(dist = 0, vDelta = 0, vel = 0) {
  * @param {lat;lng} pos - position
  * @returns {lat;lng} - offset position
  */
-function getOffsetLatLng(pos) {
+export function getOffsetLatLng(pos) {
     const mapScale = globalData.canvas.size / MAPS.find((elem, index) => index == globalData.activeMap).size;
     return {
         lat: (pos.lat + MAPS.find((elem, index) => index == globalData.activeMap).offset[0] * mapScale) * mapScale,
@@ -176,7 +186,7 @@ function getOffsetLatLng(pos) {
  * @param {Number} b - {lat;lng} where target is
  * @returns {number} - relative height in meters
  */
-function getHeight(a, b) {
+export function getHeight(a, b) {
     var Aheight;
     var Bheight;
     var AOffset;
@@ -195,6 +205,7 @@ function getHeight(a, b) {
     // Read Heightmap color values for a & b
     Aheight = ctx.getImageData(Math.round(AOffset.lat), Math.round(AOffset.lng), 1, 1).data;
     Bheight = ctx.getImageData(Math.round(BOffset.lat), Math.round(BOffset.lng), 1, 1).data;
+
 
     // Debug purpose
     if (globalData.debug.active) {
@@ -821,7 +832,7 @@ function loadMapUIMode(){
     $(".weaponSelector").addClass("ui");
     $(".mapSelector").addClass("ui");
     $("#switchUIbutton").removeClass("fa-map").addClass("fa-xmarks-lines");
-    $(".btn-topo").show();
+    $("#mapLayerMenu").show();
     globalData.ui = 1;
     globalData.line.hide("none");
     localStorage.setItem("data-ui", 1);
@@ -834,7 +845,7 @@ export function switchUI(){
         loadMapUIMode();
         if (globalData.minimap.activeTargetsMarkers.getLayers().length > 0) {
             $(".btn-delete").show();
-            $(".btn-topo").show();
+            $("#mapLayerMenu").show();
         }
     }
     else {
@@ -844,7 +855,7 @@ export function switchUI(){
         $(".mapSelector").removeClass("ui");
         $("#switchUIbutton").removeClass("fa-xmarks-lines").addClass("fa-map");
         $(".btn-delete").hide();
-        $(".btn-topo").hide();
+        $("#mapLayerMenu").hide();
         globalData.ui = 0;
         localStorage.setItem("data-ui", 0);
         drawLine();

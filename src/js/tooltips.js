@@ -41,11 +41,25 @@ tippy(".btn-delete", {
     content: "Delete all targets",
 });
 
-tippy(".btn-topo", {
+tippy(".btn-basemap", {
     animation: "fade",
-    placement: "top",
+    placement: "left",
     touch: false,
-    content: "Toggle Terrain",
+    content: "BaseMap",
+});
+
+tippy(".btn-terrainmap", {
+    animation: "fade",
+    placement: "left",
+    touch: false,
+    content: "TerrainMap",
+});
+
+tippy(".btn-heightmap", {
+    animation: "fade",
+    placement: "left",
+    touch: false,
+    content: "Heightmap",
 });
 
 

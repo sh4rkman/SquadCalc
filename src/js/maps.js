@@ -55,7 +55,7 @@ export const MAPS = [
         name: "Fool's Road",
         size: 1774, // OK
         offset: [0, 0], 
-        scaling: 0.15744, // OK
+        scaling: 0.21600000000000003,
         mapURL: "/foolsroad/",
         maxZoomLevel: 4,
     },
@@ -71,7 +71,7 @@ export const MAPS = [
         name: "Gorodok", 
         size: 4064, // OK
         offset: [200, 200], 
-        scaling: 0.11900000000000001, // OK
+        scaling: 0.236,
         mapURL: "/gorodok/",
         maxZoomLevel: 4,
     },
