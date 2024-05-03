@@ -13,7 +13,8 @@ import {
     radToMil,
     radToDeg,
     getBearing,
-    getSpreadParameter
+    getSpreadParameter,
+    getTimeOfFlight
 } from "./utils";
 
 import { mortarIcon, targetIcon1, targetIconAnimated1 } from "./squadIcon";
@@ -240,7 +241,6 @@ export var squadTargetMarker = squadMarker.extend({
         var dist;
         var velocity;
         var elevation;
-        this.fired = 0;
 
         L.setOptions(this, options);
 
@@ -311,7 +311,7 @@ export var squadTargetMarker = squadMarker.extend({
         dist = getDist(a, b);
         velocity = globalData.activeWeapon.getVelocity(dist);
         elevation = getElevation(dist, targetHeight - weaponHeight, velocity);
-
+        
 
         this.options.results = {
             distance: dist,
@@ -322,7 +322,8 @@ export var squadTargetMarker = squadMarker.extend({
             weaponHeight: weaponHeight,
             targetHeight: targetHeight,
             diffHeight: targetHeight - weaponHeight,
-            spreadParameters: getSpreadParameter(elevation, velocity)
+            spreadParameters: getSpreadParameter(elevation, velocity),
+            timeOfFlight: getTimeOfFlight(elevation, velocity),
         };
 
 
@@ -500,6 +501,7 @@ export var squadTargetMarker = squadMarker.extend({
             targetHeight: targetHeight,
             diffHeight: targetHeight - weaponHeight,
             spreadParameters: getSpreadParameter(elevation, velocity),
+            timeOfFlight: getTimeOfFlight(elevation, velocity),
         };
               
         if (this.options.results.elevation === "---" || this.options.results.spreadParameters.semiMajorAxis === 0) {
@@ -625,7 +627,7 @@ export var squadTargetMarker = squadMarker.extend({
 
         $("#infBearing").text(this.options.results.bearing.toFixed(1)+"°");
         $("#infDistance").text(this.options.results.distance.toFixed(1)+"m");
-        $("#infVelocity").text(this.options.results.velocity.toFixed(2)+" m/s");
+
         $("#infWHeight").text(this.options.results.weaponHeight.toFixed(1)+"m");
         $("#infTHeight").text(this.options.results.targetHeight.toFixed(1)+"m");
         $("#infDHeight").text(this.options.results.diffHeight.toFixed(1)+"m");
@@ -633,7 +635,9 @@ export var squadTargetMarker = squadMarker.extend({
 
         if (isNaN(this.options.results.elevation)) {
             $("#infElevation").text("---");
+            $("#infTimeOfFlight").text("---");
         } else {
+            $("#infTimeOfFlight").text(this.options.results.timeOfFlight.toFixed(1)+"s");
             if (globalData.activeWeapon.unit === "mil"){
                 $("#infElevation").text(radToMil(this.options.results.elevation).toFixed(1)+"mil");
             } else {
@@ -648,7 +652,6 @@ export var squadTargetMarker = squadMarker.extend({
     },
     // Keep the marker on map & update calc while dragging
     _handleDrag: function (e) {
-        this.fired++;
 
         // When dragging marker out of bounds, block it at the edge
         e = this.keepOnMap(e);
@@ -662,10 +665,10 @@ export var squadTargetMarker = squadMarker.extend({
 
         // Update bearing/elevation/spread marker
         // update only every 5 mousemove events for performance
-        if(!isTouchDevice()){
-            if(!(this.fired % 5) || this.fired == 1) this.updateCalc();
+        if (!isTouchDevice()){
+            this.updateCalc();
         }
-
+ 
     },
 
     // set "grabbing" cursor on grab start
@@ -674,7 +677,7 @@ export var squadTargetMarker = squadMarker.extend({
         globalData.minimap.mouseLocationPopup.close();
         globalData.minimap.off("mousemove", globalData.minimap._handleMouseMove);
 
-        if(isTouchDevice()){
+        if (isTouchDevice()){
             this.calcMarker1.setContent("  ");
             this.calcMarker2.setContent("  ");
             this.spreadMarker1.setStyle({opacity: 0, fillOpacity: 0});

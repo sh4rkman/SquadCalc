@@ -108,7 +108,7 @@ export function radToMil(rad) {
  * @param {number} deg - degrees
  * @returns {number} radians
  */
-function degToRad(deg) {
+export function degToRad(deg) {
     return (deg * Math.PI) / 180;
 }
 
@@ -969,6 +969,18 @@ function getHorizontalSpread(angle, velocity, gravity){
     } else {
         return p2;
     }
+}
+
+
+/**
+ * TODO
+ * @param {number} [angle] - angle of the initial shot in radian
+ * @param {number} [vel] - initial mortar projectile velocity in m/s
+ * @returns {number} - time of flight in seconds
+ */
+export function getTimeOfFlight(angle, vel){
+    const gravity = globalData.gravity * globalData.activeWeapon.gravityScale;
+    return ( 2 * vel * Math.sin(angle) ) / gravity;
 }
 
 

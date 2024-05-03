@@ -46,26 +46,26 @@ $("#mapLayerMenu").find("button").on("click", function () {
 
 
 
-
-
-
-
-
-
-
-const dialog = document.querySelector("dialog");
-
-
 document.querySelector("dialog button").addEventListener("click", () => {
     $("#helpDialog")[0].close();
 });
 
+const helpDialog = document.querySelector("#helpDialog");
 $("#helpDialog").on("click", function(event) {
-    var rect = dialog.getBoundingClientRect();
+    var rect = helpDialog.getBoundingClientRect();
     var isInDialog = (rect.top <= event.clientY && event.clientY <= rect.top + rect.height &&
     rect.left <= event.clientX && event.clientX <= rect.left + rect.width);
     if (!isInDialog) {
-        dialog.close();
+        helpDialog.close();
     }
 });
 
+const calcInformation = document.querySelector("#calcInformation");
+$("#calcInformation").on("click", function(event) {
+    var rect = calcInformation.getBoundingClientRect();
+    var isInDialog = (rect.top <= event.clientY && event.clientY <= rect.top + rect.height &&
+    rect.left <= event.clientX && event.clientX <= rect.left + rect.width);
+    if (!isInDialog) {
+        calcInformation.close();
+    }
+});
