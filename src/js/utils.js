@@ -141,6 +141,17 @@ export function getDist(a, b) {
 }
 
 /**
+ * Calculates the distance between two points.
+ * @param {number} vel -
+ * @param {number} g 
+ * @returns {number} distance
+ */
+export function getMaxDist(vel, g) {
+    return vel**2/g;
+}
+
+
+/**
  * Calculates the angle the mortar needs to be set in order
  * to hit the target at the desired distance and vertical delta.
  * @param {number} [dist] - distance between mortar and target from getDist()
