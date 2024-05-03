@@ -106,8 +106,7 @@ export default class Simulation {
 
         ctx.fillStyle = groundColor;
         ctx.fill(ground);
-        
-        ctx.fillStyle = "#e6e1e1";
+        ctx.fillStyle = "#f2f2f2";
         ctx.fillRect(0, 0, this.padding, this.canvas.height);
         ctx.fillRect(this.canvas.width, 0, -this.padding, this.canvas.height);
 
@@ -120,7 +119,7 @@ export default class Simulation {
      * @param {TODO} [TODO] - TODO
      * @returns {TODO} - TODO
      */
-    drawCanvasIcons(PADDING){
+    drawCanvasIcons(){
         const ctx = this.canvas.getContext("2d");
         const yScaling = this.canvas.width/this.results.distance;
         const IMG_WIDTH = 52;
@@ -134,7 +133,7 @@ export default class Simulation {
         image.src = targetIcon;
         ctx.drawImage(
             image,
-            this.canvas.width - (PADDING * this.canvas.width) - (IMG_WIDTH/2),
+            this.canvas.width - this.padding - (IMG_WIDTH/2),
             this.canvas.height - (this.heightPath.at(-1) * yScaling) - IMG_HEIGHT - this.yOffset,
             IMG_WIDTH,
             IMG_HEIGHT);
@@ -191,7 +190,7 @@ export default class Simulation {
             ctx.lineWidth = 5;
             ctx.beginPath();
             ctx.moveTo(oldX,oldY);
-            ctx.strokeStyle = "green";
+            ctx.strokeStyle = "#b22222";
             ctx.lineTo(x,y);
             ctx.stroke();
             oldX = x;
@@ -200,15 +199,11 @@ export default class Simulation {
             if (y < 0 || x > (this.canvas.width - this2.padding)) {
                 clearInterval(projectile);
                 ctx.closePath();
-                ctx.fillStyle = "lightgrey";
-                ctx.fillRect(0, 0, this.padding, this.canvas.height);
-                ctx.fillRect(this.canvas.width, 0, -this.padding, this.canvas.height);
-                this2.drawCanvasIcons(PADDING); // redraw to overide path
+                this2.drawCanvasIcons(this.padding); // redraw to overide path
             }
     
         });
         
-
 
     }
 
