@@ -86,7 +86,7 @@ export default LayerGroup.extend({
     },
 
     onRemove(map) {
-        console.debug("onRemove");
+        //console.debug("onRemove");
 
         // remove listener for view change
         map.off("zoomend", this.updateLineOpacity, this);

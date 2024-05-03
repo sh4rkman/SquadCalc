@@ -26,7 +26,8 @@ function loadLocalSetting(item, default_value = 1) {
 
 
 export function loadSettings(){
-
+    var setting = localStorage.getItem("settings-terrain-mode");
+    
     globalData.userSettings.keypadUnderCursor = loadLocalSetting("settings-keypad-cursor");
     if (matchMedia("(pointer:fine)").matches) {
         $("#keypadUnderCursorSetting").prop("checked", globalData.userSettings.keypadUnderCursor);
@@ -37,13 +38,16 @@ export function loadSettings(){
         globalData.userSettings.keypadUnderCursor = false;
     }
 
-    globalData.userSettings.terrainMode = loadLocalSetting("settings-terrain-mode");
-    if (globalData.userSettings.terrainMode){
-        $(".btn-topo").addClass("active");
+
+
+    if (setting === null || setting === ""){
+        setting = "basemap";
+        localStorage.setItem("settings-terrain-mode", setting);
     }
-    else {
-        $(".btn-topo").removeClass("active");
-    }
+
+    globalData.userSettings.terrainMode = setting;
+    $(".btn-"+setting).addClass("active");
+
 
     globalData.userSettings.spreadRadius = loadLocalSetting("settings-spread-radius");
     $("#spreadRadiusSetting").prop("checked", globalData.userSettings.spreadRadius);
@@ -156,7 +160,7 @@ $("#spreadRadiusSetting").on("change", function() {
     var val = $("#spreadRadiusSetting").is(":checked");
     globalData.userSettings.spreadRadius = val;
     localStorage.setItem("settings-spread-radius", +val);
-    globalData.minimap.updateTargets(); // Update every targets to add/remove spread radius
+    globalData.minimap.updateTargetsSpreads(); // Update every targets to add/remove spread radius
     updatePreview();
 });
 
@@ -217,7 +221,7 @@ $("#bearingOverDistanceSettings").on("change", function() {
     }
 
     // Update every targets to add/remove distance
-    globalData.minimap.updateTargets();
+    globalData.minimap.updateTargets(); // TODO, don't update everything, just the marker content
     updatePreview();
 });
 

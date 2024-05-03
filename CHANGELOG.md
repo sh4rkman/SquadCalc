@@ -1,4 +1,25 @@
 
+
+# <img src="https://img.shields.io/badge/-major%20release-blue?style=flat-square">  **23.0.0** *(2024-04-25)*
+
+<img src="https://img.shields.io/badge/-new-green"> **Heightmaps** ! You can know switch to a "heightmaps" mode with better understanding of elevation.
+
+<img src="https://img.shields.io/badge/-new-green"> **Calc Information** ! You can know clic a target to see advanced informations and previsualize the terrain between weapon and target, and if the projectile is going to hit terrain.
+
+<img src="https://img.shields.io/badge/-%20Improv%20-orange"> Reworked the layer picking buttons
+
+<img src="https://img.shields.io/badge/-%20Improv%20-orange"> Disabled target updating while dragging on mobile to avoid sluttering
+
+<img src="https://img.shields.io/badge/-%20Improv%20-orange"> Lot of code rewriting
+
+
+
+
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
+
+
 # <img src="https://img.shields.io/badge/-major%20release-blue?style=flat-square">  **22.0.0** *(2024-04-25)*
 
 <img src="https://img.shields.io/badge/-new-green"> **Terrain maps** ! You can know switch to a "terrain" mode with better understanding of elevation. Straight from the SDK, makes you wondering how the fuck you can't have decent minimap ingame right.

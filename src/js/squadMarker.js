@@ -3,8 +3,22 @@ import "./ellipse";
 
 import { globalData } from "./conf";
 import { MAPS } from  "./maps";
-import { getCalcFromUI } from "./utils";
+import SquadSimulation from "./squadSimulation";
+import { isTouchDevice } from "./utils";
+//import SquadFiringSolution from "./squadFiringSolution";
+
+import { 
+    getDist,
+    getElevation,
+    radToMil,
+    radToDeg,
+    getBearing,
+    getSpreadParameter,
+    getTimeOfFlight
+} from "./utils";
+
 import { mortarIcon, targetIcon1, targetIconAnimated1 } from "./squadIcon";
+
 
 /*
  * Global Squad Marker Class 
@@ -27,7 +41,7 @@ export var squadMarker = L.Marker.extend({
     /**
      * Force a given event to stay inside the map bounds
      * @param {e} [event] - event
-     * @returns {e} - same event with latlng corrected
+     * @returns {e} - same event with corrected Latlng 
      */
     keepOnMap: function(e){
         if (e.latlng.lng > globalData.mapSize) {e.latlng.lng = globalData.mapSize;}
@@ -207,19 +221,28 @@ export var squadTargetMarker = squadMarker.extend({
         calcMarker2: null,
         spreadMarker1: null,
         spreadMarker2: null,
+        results: {
+
+        }
     },
 
     initialize: function (latlng, options) {
-
+        const mapScale = MAPS.find((elem, index) => index == globalData.activeMap).size / globalData.mapSize;
         var radiiElipse;
         var angleElipse;
-        var results;
-        var results2;
-        var content;
-        var content2;
         var cursorClass;
         var popUpOptions_weapon1;
         var popUpOptions_weapon2;
+        var weaponPos;
+        var a;
+        var b;
+        var weaponHeight;
+        var targetHeight;
+        var dist;
+        var velocity;
+        var elevation;
+
+        L.setOptions(this, options);
 
         if (globalData.userSettings.cursor) {
             cursorClass = "crosshair";
@@ -270,6 +293,7 @@ export var squadTargetMarker = squadMarker.extend({
 
         // Create marker
         squadMarker.prototype.initialize.call(this, latlng, options);
+        this.addTo(globalData.minimap.activeTargetsMarkers);
 
         if (this.options.animate){
             this.setIcon(targetIconAnimated1);
@@ -278,14 +302,33 @@ export var squadTargetMarker = squadMarker.extend({
             this.setIcon(targetIcon1);
         }
 
-        this.addTo(globalData.minimap.activeTargetsMarkers);
 
-        // Create Calc&Spread radius for 1st weapon
-        results = getCalcFromUI(globalData.minimap.activeWeaponsMarkers.getLayers()[0].getLatLng(), latlng);
-        radiiElipse = [(results.ellipseParams.semiMajorAxis * globalData.mapScale)/2, (results.ellipseParams.semiMinorAxis * globalData.mapScale)/2];
-        angleElipse = results.bearing;
+        weaponPos = globalData.minimap.activeWeaponsMarkers.getLayers()[0].getLatLng();
+        a = L.latLng([weaponPos.lng * mapScale, weaponPos.lat * -mapScale]);
+        b = L.latLng([latlng.lng * mapScale, latlng.lat * -mapScale]);
+        weaponHeight = this._map.heightmap.getHeight(weaponPos);
+        targetHeight = this._map.heightmap.getHeight(latlng);
+        dist = getDist(a, b);
+        velocity = globalData.activeWeapon.getVelocity(dist);
+        elevation = getElevation(dist, targetHeight - weaponHeight, velocity);
+        
 
-        content = this.getContent(results);
+        this.options.results = {
+            distance: dist,
+            elevation: getElevation(dist, targetHeight - weaponHeight, velocity),
+            bearing: getBearing(a, b),
+            velocity: velocity,
+            gravityScale: globalData.activeWeapon.gravityScale,
+            weaponHeight: weaponHeight,
+            targetHeight: targetHeight,
+            diffHeight: targetHeight - weaponHeight,
+            spreadParameters: getSpreadParameter(elevation, velocity),
+            timeOfFlight: getTimeOfFlight(elevation, velocity),
+        };
+
+
+        radiiElipse = [(this.options.results.spreadParameters.semiMajorAxis * globalData.mapScale)/2, (this.options.results.spreadParameters.semiMinorAxis * globalData.mapScale)/2];
+        angleElipse = this.options.results.spreadParameters.elevation;
 
         // Calc PopUp for weapon 1
         this.calcMarker1 = L.popup(popUpOptions_weapon1).setLatLng(latlng).openOn(globalData.minimap).addTo(globalData.minimap.markersGroup);
@@ -293,7 +336,7 @@ export var squadTargetMarker = squadMarker.extend({
         // Calc PopUp for weapon 2 (not displayed yet)
         this.calcMarker2 = L.popup(popUpOptions_weapon2).setLatLng(latlng).addTo(globalData.minimap.markersGroup);
 
-        this.spreadMarker1 = L.ellipse(latlng, radiiElipse, angleElipse, this.spreadOptionsOn).addTo(globalData.minimap.markersGroup);
+        this.spreadMarker1 = L.ellipse(latlng, radiiElipse, this.options.results.bearing, this.spreadOptionsOn).addTo(globalData.minimap.markersGroup);
         this.spreadMarker2 = L.ellipse(latlng, radiiElipse, angleElipse, this.spreadOptionsOff).addTo(globalData.minimap.markersGroup);
 
         if (globalData.userSettings.spreadRadius) {
@@ -302,21 +345,35 @@ export var squadTargetMarker = squadMarker.extend({
 
         // If two weapons already on the map
         if (globalData.minimap.activeWeaponsMarkers.getLayers().length === 2) {
-            // Calcs for second weapon
-            results2 = getCalcFromUI(globalData.minimap.activeWeaponsMarkers.getLayers()[1].getLatLng(), latlng);
 
-            content = this.getContent(results);
-            content2 = this.getContent(results2);
+            weaponPos = globalData.minimap.activeWeaponsMarkers.getLayers()[1].getLatLng();
+            a = L.latLng([weaponPos.lng * mapScale, weaponPos.lat * -mapScale]);        
+            weaponHeight = this._map.heightmap.getHeight(weaponPos);
+            targetHeight = this._map.heightmap.getHeight(latlng);
+            dist = getDist(a, b);
+            velocity = globalData.activeWeapon.getVelocity(dist);
+            elevation = getElevation(dist, targetHeight - weaponHeight, velocity);
+    
+            this.options.results2 = {
+                elevation: elevation,
+                bearing: getBearing(a, b),
+                distance: dist,
+                velocity: velocity,
+                gravityScale: globalData.activeWeapon.gravityScale,
+                weaponHeight: weaponHeight,
+                targetHeight: targetHeight,
+                diffHeight: targetHeight - weaponHeight,
+                spreadParameters: getSpreadParameter(elevation, velocity)
+            };
 
-            this.calcMarker2.setContent(content2).openOn(globalData.minimap);
-
+        
             // Initiate Spread Ellipse Marker
-            if (results2.elevation === "---" || results2.ellipseParams.semiMajorAxis === 0) {
+            if (this.options.results2.elevation === "---" || this.options.results2.spreadParameters.semiMajorAxis === 0) {
                 this.spreadMarker2.setStyle({opacity: 0, fillOpacity: 0});
             }
             else {
-                this.spreadMarker2.setRadius([(results2.ellipseParams.semiMajorAxis * globalData.mapScale)/2, (results2.ellipseParams.semiMinorAxis * globalData.mapScale)/2]);
-                this.spreadMarker2.setTilt(results2.bearing);
+                this.spreadMarker2.setRadius([(this.options.results2.spreadParameters.semiMajorAxis * globalData.mapScale)/2, (this.options.results2.spreadParameters.semiMinorAxis * globalData.mapScale)/2]);
+                this.spreadMarker2.setTilt(this.options.results2.bearing);
                 if (globalData.userSettings.spreadRadius) {
                     this.spreadMarker2.setStyle(this.spreadOptionsOn);
                 }
@@ -324,17 +381,18 @@ export var squadTargetMarker = squadMarker.extend({
                     this.spreadMarker2.setStyle(this.spreadOptionsOff);
                 }
             }
+            this.calcMarker2.setContent(this.getContent(this.options.results2)).openOn(globalData.minimap);
         }
 
-        this.calcMarker1.setContent(content);
+        
         
         // Initiate Spread Ellipse Marker
        
-        if (results.elevation === "---" || results.ellipseParams.semiMajorAxis === 0) {
+        if (this.options.results.elevation === "---" || this.options.results.spreadParameters.semiMajorAxis === 0) {
             this.spreadMarker1.setStyle(this.spreadOptionsOff);
         }
         else {
-            this.spreadMarker1.setRadius([(results.ellipseParams.semiMajorAxis * globalData.mapScale)/2, (results.ellipseParams.semiMinorAxis * globalData.mapScale)/2]);
+            this.spreadMarker1.setRadius([(this.options.results.spreadParameters.semiMajorAxis * globalData.mapScale)/2, (this.options.results.spreadParameters.semiMinorAxis * globalData.mapScale)/2]);
             if (globalData.userSettings.spreadRadius) {
                 this.spreadMarker1.setStyle(this.spreadOptionsOn); 
             }
@@ -342,6 +400,8 @@ export var squadTargetMarker = squadMarker.extend({
                 this.spreadMarker1.setStyle(this.spreadOptionsOff); 
             }
         }
+
+        this.calcMarker1.setContent(this.getContent(this.options.results));
 
         // Custom events handlers
         this.on("click", this._handleClick, this);
@@ -352,9 +412,6 @@ export var squadTargetMarker = squadMarker.extend({
     },
 
 
-    _handleContextMenu: function(){
-        this.delete();
-    },
 
     /**
      * Remove the target marker and every object tied
@@ -378,55 +435,123 @@ export var squadTargetMarker = squadMarker.extend({
     },
 
     getContent: function(results){
-        var content = "<span class='calcNumber'></span></br><span>" + results.elevation + "</span>";
+        const DIST = results.distance;
+        const BEARING = results.bearing;
+        var text = results.elevation;
+        var content;
+
+        if (isNaN(text)) {
+            text = "---";
+        } else {
+            if (globalData.activeWeapon.unit === "mil"){
+                text = radToMil(text).toFixed(0);
+            } else {
+                text = radToDeg(text).toFixed(1);
+            }
+        }
+        content = "<span class='calcNumber'></span></br><span>" + text + "</span>";
 
         if (globalData.userSettings.bearingOverDistance) {
-            return content + "<br><span class='bearingUiCalc'>" +  results.distance + "m</span>";
+            return content + "<br><span class='bearingUiCalc'>" +  DIST.toFixed(0) + "m</s    pan>";
         }
         else {
-            return content + "<br><span class='bearingUiCalc'>" +  results.bearing + "°</span>";
+            return content + "<br><span class='bearingUiCalc'>" +  BEARING.toFixed(0) + "°</span>";
         }  
     },
 
 
-    updateCalc: function(){
+    updateSpread: function(){
 
-        var results = getCalcFromUI(globalData.minimap.activeWeaponsMarkers.getLayers()[0].getLatLng(), this.getLatLng());
-        var content;
-        var results2;
-        var content2;
-
-        content = this.getContent(results);
-
-        if (results.elevation === "---" || results.ellipseParams.semiMajorAxis === 0) {
-            this.spreadMarker1.setStyle({opacity: 0, fillOpacity: 0});
+        if (globalData.userSettings.spreadRadius) {
+            this.spreadMarker1.setStyle(this.spreadOptionsOn);
         }
         else {
-            this.spreadMarker1.setRadius([(results.ellipseParams.semiMajorAxis * globalData.mapScale)/2, (results.ellipseParams.semiMinorAxis * globalData.mapScale)/2]);
+            this.spreadMarker1.setStyle(this.spreadOptionsOff);
+        }
+
+        if (globalData.minimap.activeWeaponsMarkers.getLayers().length === 2) {
+            if (globalData.userSettings.spreadRadius) {
+                this.spreadMarker2.setStyle(this.spreadOptionsOn);
+            }
+            else {
+                this.spreadMarker2.setStyle(this.spreadOptionsOff);
+            }
+        }
+    },
+
+
+    updateCalc: function(){
+        const mapScale = MAPS.find((elem, index) => index == globalData.activeMap).size / globalData.mapSize;
+        var weaponPos = globalData.minimap.activeWeaponsMarkers.getLayers()[0].getLatLng();
+        var a = L.latLng([weaponPos.lng * mapScale, weaponPos.lat * -mapScale]);
+        var b = L.latLng([this.getLatLng().lng * mapScale, this.getLatLng().lat * -mapScale]);
+        var weaponHeight = globalData.minimap.heightmap.getHeight(weaponPos);
+        var targetHeight = globalData.minimap.heightmap.getHeight(this.getLatLng());
+        var dist = getDist(a, b);
+        var elevation = getElevation(dist, targetHeight - weaponHeight, globalData.activeWeapon.getVelocity(dist));
+        var velocity = globalData.activeWeapon.getVelocity(dist);
+
+        this.options.results = {
+            elevation: elevation,
+            bearing: getBearing(a, b),
+            distance: dist,
+            velocity: velocity,
+            gravityScale: globalData.activeWeapon.gravityScale,
+            weaponHeight: weaponHeight,
+            targetHeight: targetHeight,
+            diffHeight: targetHeight - weaponHeight,
+            spreadParameters: getSpreadParameter(elevation, velocity),
+            timeOfFlight: getTimeOfFlight(elevation, velocity),
+        };
+              
+        if (this.options.results.elevation === "---" || this.options.results.spreadParameters.semiMajorAxis === 0) {
+            this.spreadMarker1.setStyle({opacity: 0, fillOpacity: 0});
+
+        }
+        else {
+
+            this.spreadMarker1.setRadius([(this.options.results.spreadParameters.semiMajorAxis * globalData.mapScale)/2, (this.options.results.spreadParameters.semiMinorAxis * globalData.mapScale)/2]);
             if (globalData.userSettings.spreadRadius) {
                 this.spreadMarker1.setStyle(this.spreadOptionsOn);
             }
             else {
                 this.spreadMarker1.setStyle(this.spreadOptionsOff);
             }
-            this.spreadMarker1.setTilt(results.bearing);
+            this.spreadMarker1.setTilt(this.options.results.bearing);
         }
 
         
         this.spreadMarker2.setStyle(this.spreadOptionsOff);
 
         if (globalData.minimap.activeWeaponsMarkers.getLayers().length === 2) {
-            results2 = getCalcFromUI(globalData.minimap.activeWeaponsMarkers.getLayers()[1].getLatLng(), this.getLatLng());
 
-            content = this.getContent(results);
-            content2 = this.getContent(results2);
+            weaponPos = globalData.minimap.activeWeaponsMarkers.getLayers()[1].getLatLng();
+            a = L.latLng([weaponPos.lng * mapScale, weaponPos.lat * -mapScale]);    
+            weaponHeight = this._map.heightmap.getHeight(weaponPos);
+            targetHeight = this._map.heightmap.getHeight(this.getLatLng());
+            dist = getDist(a, b);
+            velocity = globalData.activeWeapon.getVelocity(dist);
+    
+            this.options.results2 = {
+                elevation: getElevation(dist, targetHeight - weaponHeight, velocity),
+                bearing: getBearing(a, b),
+                distance: dist,
+                velocity: velocity,
+                gravityScale: globalData.activeWeapon.gravityScale,
+                weaponHeight: weaponHeight,
+                targetHeight: targetHeight,
+                diffHeight: targetHeight - weaponHeight,
+                spreadParameters: getSpreadParameter(elevation, velocity)
+            };
 
-            if (results2.elevation === "---" || results2.ellipseParams.semiMajorAxis === 0) {
+
+            if (this.options.results2.elevation === "---" || this.options.results2.spreadParameters.semiMajorAxis === 0) {
                 this.spreadMarker2.setStyle({opacity: 0, fillOpacity: 0});
             }
             else {
-                this.spreadMarker2.setRadius([(results2.ellipseParams.semiMajorAxis * globalData.mapScale)/2, (results2.ellipseParams.semiMinorAxis * globalData.mapScale)/2]);
-                this.spreadMarker2.setTilt(results2.bearing);
+                this.spreadMarker2.setRadius([(this.options.results2.spreadParameters.semiMajorAxis * globalData.mapScale)/2, (this.options.results2.spreadParameters.semiMinorAxis * globalData.mapScale)/2]);
+                this.spreadMarker2.setTilt(this.options.results2.bearing);
+
                 if (globalData.userSettings.spreadRadius) {
                     this.spreadMarker2.setStyle(this.spreadOptionsOn);
                 }
@@ -434,21 +559,100 @@ export var squadTargetMarker = squadMarker.extend({
                     this.spreadMarker2.setStyle(this.spreadOptionsOff);
                 }
             }
-            this.calcMarker2.openOn(globalData.minimap);
-            this.calcMarker2.setContent(content2);
+            this.calcMarker2.setContent(this.getContent(this.options.results2)).openOn(globalData.minimap);
         }
         else {
             this.calcMarker2.close();
         }
-        this.calcMarker1.setContent(content);
+        this.calcMarker1.setContent(this.getContent(this.options.results));
+    },
+
+    /**
+     * TODO
+     * @param {TODO} [TODO] - TODO
+     * @returns {TODO} - TODO
+     */
+    drawTrajectory: function(canvas, heightPath, ground, groundOffset, distance, angle, vel, gScale){
+        const ctx = canvas.getContext("2d");
+        const maxGround = Math.max(...heightPath);
+        const PADDING = 0.1;
+        //const xScaling = (canvas.width) / distance
+        const xScaling = ( canvas.width - (2 * PADDING * canvas.width) ) / ( distance );
+        const yScaling = canvas.height/(maxGround * 4);
+        const G = 9.8 * gScale * yScaling;
+        const FREQ = 20;
+        
+        var x = canvas.width * PADDING;
+        var oldX = canvas.width * PADDING;
+        var y = heightPath[0] * yScaling;
+        var oldY = heightPath[0] * yScaling;
+    
+        var xVel = Math.cos(angle) * vel * xScaling;
+        var yVel = Math.sin(angle) * vel * yScaling;
+
+
+
+        var myInterval = setInterval(function () {
+            x += xVel / FREQ;
+            y += yVel / FREQ;
+            yVel -= G / FREQ;
+    
+            ctx.lineWidth = 5;
+            ctx.beginPath();
+            ctx.moveTo(oldX,oldY);
+            ctx.strokeStyle = "green";
+            ctx.lineTo(x,y);
+            ctx.stroke();
+            oldX = x;
+            oldY = y;
+    
+            if (y < 0 || x - ( PADDING * canvas.width ) > (canvas.width - (PADDING*2*canvas.width))) {
+                clearInterval(myInterval);
+                ctx.closePath();
+                //thisRef.drawCanvasIcons(canvas, heightPath, PADDING); // redraw to overide path
+            }
+    
+        });        
+
+   
     },
 
     _handleClick: function() {
-        this.delete();
-    },
+        const dialog = document.getElementById("calcInformation");
+        const canvas = document.getElementById("heightGraph");
+        var weapon1Pos;
+        var heightPath;
 
+        dialog.showModal();
+
+        $("#infBearing").text(this.options.results.bearing.toFixed(1)+"°");
+        $("#infDistance").text(this.options.results.distance.toFixed(1)+"m");
+
+        $("#infWHeight").text(this.options.results.weaponHeight.toFixed(1)+"m");
+        $("#infTHeight").text(this.options.results.targetHeight.toFixed(1)+"m");
+        $("#infDHeight").text(this.options.results.diffHeight.toFixed(1)+"m");
+        $("#infGravity").text(9.8 + " (x" + this.options.results.gravityScale + ")");
+
+        if (isNaN(this.options.results.elevation)) {
+            $("#infElevation").text("---");
+            $("#infTimeOfFlight").text("---");
+        } else {
+            $("#infTimeOfFlight").text(this.options.results.timeOfFlight.toFixed(1)+"s");
+            if (globalData.activeWeapon.unit === "mil"){
+                $("#infElevation").text(radToMil(this.options.results.elevation).toFixed(1)+"mil");
+            } else {
+                $("#infElevation").text(radToDeg(this.options.results.elevation).toFixed(1)+"°");
+            }
+        }
+
+        weapon1Pos = globalData.minimap.activeWeaponsMarkers.getLayers()[0].getLatLng();
+        heightPath = this._map.heightmap.getHeightPath(weapon1Pos, this.getLatLng());
+        new SquadSimulation(canvas, this.options.results, heightPath);
+
+    },
+    // Keep the marker on map & update calc while dragging
     _handleDrag: function (e) {
-        
+
         // When dragging marker out of bounds, block it at the edge
         e = this.keepOnMap(e);
 
@@ -460,24 +664,43 @@ export var squadTargetMarker = squadMarker.extend({
         this.spreadMarker2.setLatLng(e.latlng);
 
         // Update bearing/elevation/spread marker
-        this.updateCalc();
+        // update only every 5 mousemove events for performance
+        if (!isTouchDevice()){
+            this.updateCalc();
+        }
+ 
     },
 
-
+    // set "grabbing" cursor on grab start
     _handleDragStart: function () {
         $(".leaflet-marker-icon").css("cursor", "grabbing");
         globalData.minimap.mouseLocationPopup.close();
         globalData.minimap.off("mousemove", globalData.minimap._handleMouseMove);
+
+        if (isTouchDevice()){
+            this.calcMarker1.setContent("  ");
+            this.calcMarker2.setContent("  ");
+            this.spreadMarker1.setStyle({opacity: 0, fillOpacity: 0});
+            this.spreadMarker2.setStyle({opacity: 0, fillOpacity: 0});
+        }
     },
 
+    // Reset cursor on drag end
     _handleDragEnd: function () {
-
         if (globalData.userSettings.keypadUnderCursor){
             globalData.minimap.on("mousemove", globalData.minimap._handleMouseMove);
         }
-
         $(".leaflet-marker-icon").css("cursor", "grab");
+
+        // update one last time when drag end
+        this.updateCalc();
     },
+
+    // Delete targetMarker on right clic
+    _handleContextMenu: function(){
+        this.delete();
+    },
+
 });
 
 

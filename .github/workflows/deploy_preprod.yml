@@ -10,6 +10,10 @@ jobs:
     timeout-minutes: 60
     runs-on: ubuntu-latest
     steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 18
     - name: Pull code from GitHub
       uses: appleboy/ssh-action@v1.0.3
       with:
@@ -22,6 +26,7 @@ jobs:
          ssh-add ~/.ssh/${{ secrets.SSH_PUBLIC_KEY_NAME }}
          cd ${{ secrets.DEV_DIST }}
          git pull origin dev
+
     - name: Clean Install & Build
       uses: appleboy/ssh-action@v1.0.3
       with:
@@ -35,6 +40,7 @@ jobs:
           cd ${{ secrets.DEV_DIST }}
           npm ci
           npm run build:dev
+
     - name: Discord notification
       env:
         DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
@@ -43,6 +49,17 @@ jobs:
       uses: Ilshidur/action-discord@master
       with:
         args: 'The project {{ EVENT_PAYLOAD.repository.full_name }} has been deployed successfully on https://dev.squadcalc.app'
-      
+    - name: Playwright test
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        password: ${{ secrets.PASSWORD }}
+        port: ${{ secrets.PORT }}
+        script: |
+          eval `ssh-agent -s`
+          ssh-add ~/.ssh/${{ secrets.SSH_PUBLIC_KEY_NAME }}
+          cd ${{ secrets.DEV_DIST }}
+          npx playwright test
 
 

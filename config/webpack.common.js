@@ -44,7 +44,6 @@ module.exports = {
         new CopyPlugin({
             patterns: [
               { from: "./src/img/github/", to: "./src/img/github/" },
-              //{ from: "./src/img/maps/kohat/", to: "./src/img/maps/kohat/" },
             ],
           }),
           new WebpackPwaManifest({

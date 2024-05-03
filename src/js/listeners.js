@@ -30,36 +30,42 @@ $(document).on("click", ".btn-delete", function() { globalData.minimap.deleteTar
 $(window).on("resize", function() { resizeInputsOnResize(); });
 
 
-$(document).on("click", ".btn-topo", function() { 
-    var btn = $(".btn-topo");
-    if (btn.hasClass("active")){
-        btn.removeClass("active");
-        globalData.userSettings.terrainMode = false;
-        localStorage.setItem("settings-terrain-mode", 0);
-    }
-    else {
-        btn.addClass("active");
-        globalData.userSettings.terrainMode = true;
-        localStorage.setItem("settings-terrain-mode", 1);
-    }
-    globalData.minimap.draw(false);
+document.querySelector("#calcInformation").addEventListener("close", () => {
+    var canvas = document.querySelector("#heightGraph");
+    const ctx = canvas.getContext("2d");
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+});
+
+
+$("#mapLayerMenu").find("button").on("click", function () {
+    globalData.minimap.reDraw($(this).attr("value"));
 });
 
 
 
-const dialog = document.querySelector("dialog");
+
 
 
 document.querySelector("dialog button").addEventListener("click", () => {
     $("#helpDialog")[0].close();
 });
 
+const helpDialog = document.querySelector("#helpDialog");
 $("#helpDialog").on("click", function(event) {
-    var rect = dialog.getBoundingClientRect();
+    var rect = helpDialog.getBoundingClientRect();
     var isInDialog = (rect.top <= event.clientY && event.clientY <= rect.top + rect.height &&
     rect.left <= event.clientX && event.clientX <= rect.left + rect.width);
     if (!isInDialog) {
-        dialog.close();
+        helpDialog.close();
     }
 });
 
+const calcInformation = document.querySelector("#calcInformation");
+$("#calcInformation").on("click", function(event) {
+    var rect = calcInformation.getBoundingClientRect();
+    var isInDialog = (rect.top <= event.clientY && event.clientY <= rect.top + rect.height &&
+    rect.left <= event.clientX && event.clientX <= rect.left + rect.width);
+    if (!isInDialog) {
+        calcInformation.close();
+    }
+});

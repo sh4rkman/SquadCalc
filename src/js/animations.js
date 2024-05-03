@@ -107,7 +107,7 @@ export function explode(x, y, startAngle, endAngle) {
     }
 
     render(particles, ctx, c.width, c.height);
-    setTimeout(() => document.body.removeChild(c), 1000);
+    setTimeout(() => document.body.removeChild(c), 200);
 }
 
 

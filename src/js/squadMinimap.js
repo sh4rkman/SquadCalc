@@ -1,5 +1,6 @@
 import L from "leaflet";
 import squadGrid from "./squadGrid";
+import squadHeightmap from "./squadHeightmaps";
 import { globalData } from "./conf";
 import { MAPS } from "./maps";
 import { squadWeaponMarker, squadTargetMarker } from "./squadMarker";
@@ -16,7 +17,7 @@ export var squadMinimap = L.Map.extend({
         maxZoom: 8,
         zoomControl: false,
         doubleClickZoom: false,
-        edgeBufferTiles: 3,
+        edgeBufferTiles: 5,
         renderer: L.svg({padding: 3}), // https://leafletjs.com/reference.html#path-clip_padding
         closePopupOnClick: false,
         wheelPxPerZoomLevel: 75,
@@ -30,9 +31,13 @@ export var squadMinimap = L.Map.extend({
 
     initialize: function (latlng, options) {
         L.Map.prototype.initialize.call(this, latlng, options);
-        this.markersGroup = L.layerGroup().addTo(this);
+
+        this.heightmapGroup = L.layerGroup().addTo(this);
         this.layerGroup = L.layerGroup().addTo(this);
-        this.topo = L.layerGroup().addTo(this);
+
+        this.markersGroup = L.layerGroup().addTo(this);
+
+
         this.activeTargetsMarkers = L.layerGroup().addTo(this);
         this.activeWeaponsMarkers = L.layerGroup().addTo(this);
         this.grid = "";
@@ -59,40 +64,61 @@ export var squadMinimap = L.Map.extend({
      * Draw the map+grid inside the map container
      */
     draw: function(reset){
-
+        // everything is a mess, rewrite this shit asap
+        const layerMode = $("#mapLayerMenu .active").attr("value");
         var mapVal;
         var map;
         var imageBounds;
         var previousLayers;
 
-
+        // what map are we using
         mapVal = $(".dropbtn").val();
         if (mapVal == "") {mapVal = 11;} // default map is Kohat
         map = MAPS.find((elem, index) => index == mapVal);
-        imageBounds = L.latLngBounds(L.latLng(0, 0), L.latLng(-globalData.mapSize, globalData.mapSize));
-        this.mapScale = map.size / globalData.mapSize;
         globalData.activeMap = mapVal;
         globalData.mapScale = globalData.mapSize / map.size;
+
+        imageBounds = L.latLngBounds(L.latLng(0, 0), L.latLng(-globalData.mapSize, globalData.mapSize));
+        this.mapScale = map.size / globalData.mapSize;
+
         previousLayers = this.layerGroup.getLayers();
 
 
+        // Always add the heightmap
+        if (reset){
+            if (this.heightmap) {
+                this.heightmapGroup.removeLayer(this.heightmap);
+            }
 
-        if (globalData.userSettings.terrainMode) {
-            L.tileLayer("maps" + map.mapURL + "terrainmap/{z}_{x}_{y}.webp", {
-                maxNativeZoom: map.maxZoomLevel,
-                noWrap: true,
-                bounds: imageBounds,
-                tileSize: globalData.mapSize,
-            }).addTo(this.layerGroup);
+            this.heightmap = new squadHeightmap("maps"+ map.mapURL + map.name.toLowerCase() + ".webp", imageBounds ).addTo(this.heightmapGroup);
+            this.heightmap.bringToBack();
         }
-        else {
-            // Draw the current layer
-            L.tileLayer("maps" + map.mapURL + "minimap/{z}_{x}_{y}.webp", {
+
+        if (layerMode == "basemap") {
+            this.basemap = L.tileLayer("maps" + map.mapURL + "minimap/{z}_{x}_{y}.webp", {
                 maxNativeZoom: map.maxZoomLevel,
                 noWrap: true,
                 bounds: imageBounds,
                 tileSize: globalData.mapSize,
             }).addTo(this.layerGroup);
+            this.basemap.bringToFront();
+            this.heightmap.setOpacity(0);
+        }
+        else if ( layerMode == "terrainmap") {
+            this.terrainmap = L.tileLayer("maps" + map.mapURL + "terrainmap/{z}_{x}_{y}.webp", {
+                maxNativeZoom: map.maxZoomLevel,
+                noWrap: true,
+                bounds: imageBounds,
+                tileSize: globalData.mapSize,
+            }).addTo(this.layerGroup);
+            this.terrainmap.bringToFront();
+            this.heightmap.setOpacity(0);
+        }
+        
+
+        if (layerMode === "heightmap"){
+            this.heightmap.setOpacity(1);
+            this.heightmap.bringToFront();
         }
 
         if (this.grid){this.grid.remove();}
@@ -120,9 +146,23 @@ export var squadMinimap = L.Map.extend({
             $(".btn-delete").hide();
         }
 
-        this.drawHeightmap();
+        this.drawHeightmap(imageBounds);
 
     },
+
+
+
+    reDraw: function(val){
+     
+        $("#mapLayerMenu").find("button").removeClass("active");
+        $(".btn-"+val).addClass("active");
+
+        globalData.userSettings.layerMode = val;
+        localStorage.setItem("settings-terrain-mode", val);
+       
+        this.draw(false);
+    },
+
 
     /**
      * Reset map by clearing every Markers/Layers
@@ -140,6 +180,16 @@ export var squadMinimap = L.Map.extend({
         // Update existent targets
         this.activeTargetsMarkers.eachLayer(function (target) {
             target.updateCalc(target.latlng);
+        });
+    },
+
+    /**
+    * TODO
+    */
+    updateTargetsSpreads: function(){
+        // Update existent targets
+        this.activeTargetsMarkers.eachLayer(function (target) {
+            target.updateSpread();
         });
     },
 
@@ -188,6 +238,7 @@ export var squadMinimap = L.Map.extend({
             globalData.canvas.obj.drawImage(IMG, 0, 0, globalData.canvas.size, globalData.canvas.size);
             shoot();
         }, false);
+   
     },
 
     /**

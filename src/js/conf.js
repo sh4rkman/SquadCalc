@@ -7,17 +7,17 @@ export var globalData = {
     angleTypePref: "",
     minimap: "",
     mapScale: "",
-    mapSize: 256,
+    mapSize: 255,
     markersGroup: "",
     canvas: {
         obj: "",
-        size: 500, //canvas size defined in plain html (not the css resize)
+        size: 1000, //canvas size defined in plain html (not the css resize)
     },
     ui: true,
     debug: {
         active: false,
-        DEBUG_MORTAR_COORD: "d048533",
-        DEBUG_TARGET_COORD: "K059546",
+        DEBUG_MORTAR_COORD: "",
+        DEBUG_TARGET_COORD: "",
     },
     gravity: 9.8,
     theme: "classic",
@@ -28,5 +28,6 @@ export var globalData = {
         targetAnimation: true,
         weaponMinMaxRange: true,
         bearingOverDistance: false,
+        heightmapMode: false,
     }
 };
