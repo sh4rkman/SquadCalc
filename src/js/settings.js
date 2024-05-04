@@ -40,7 +40,7 @@ export function loadSettings(){
 
 
 
-    if (setting === null || setting === ""){
+    if (setting === null || setting === "" || isNaN(setting)){
         setting = "basemap";
         localStorage.setItem("settings-terrain-mode", setting);
     }

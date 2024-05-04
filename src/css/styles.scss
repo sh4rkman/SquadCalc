@@ -221,6 +221,7 @@ header {
             }
         }
         .calcPopup, .calcPopup2 {
+            @extend %text-outline;
             margin: 0;
             padding: 0;
             font-family: $mainFont, Times, "Times New Roman", serif;
@@ -231,28 +232,15 @@ header {
             font-weight: bold;
             font-size: 0.9em;
             color: $mainTxtColor;
-            height: 40px;
-            line-height: 1em;
-
-            @extend %text-outline;
-            .calcNumber {
-                font-size: 0.7em;
-            }
+            height: 45px;
             .bearingUiCalc {
-                font-size: 0.75em;
+                font-size: 0.7em;
             }
             .leaflet-popup-tip,
             .leaflet-popup-content-wrapper {
-                font-weight: bold;
-                font-size: 0.9em;
                 background: transparent;
                 box-shadow: none;
                 color: $mainTxtColor;
-                height: 2em;
-                padding: 0;
-        
-                @extend %text-outline;
-        
             }
             .leaflet-popup-content{
                 margin: 0;
@@ -780,19 +768,8 @@ footer {
                 padding: 0;
                 border: none;
                 &:nth-child(1) {
-                    padding-left: 0;
-                    padding-right: 1em;
+                    padding-right: 0.75em;
                 }
-            }
-            tr {
-                height: 1rem;
-            }
-            .settingsText {
-                font-weight: bold;
-            }
-            .settingsSubtext {
-                font-size: 0.8em;
-                font-style: italic;
             }
         }
         &#links {
@@ -815,17 +792,6 @@ footer {
                     transform: scale(0.9);
                 }
             }
-        }
-        &#tips {
-            th {
-                font-size: 1.1em;
-                text-align: center;
-            }
-            tr {
-                height: 2.5em;
-                font-size: 0.9em;
-                border: white 1px solid;
-            }            
         }
     }
     #cursorChoiceSettings {
@@ -903,37 +869,6 @@ footer {
             }
         }
     }
-    ul {
-        padding-left: 0;
-        margin-top: 0;
-        
-        @extend .unselectable;
-        li {
-            float: left;
-            list-style-type: none;
-            width: 30%;
-            margin-left: 7%;
-            margin-right: 7%;
-            font-size: 1.1em;
-            button {
-                display: inline-block;
-                font-weight: bold;
-                width: 100%;
-                line-height: 3;
-                background-color: transparent;
-                text-align: center;
-                transition: all 0.4s ease;
-                cursor: pointer;
-                &.active {
-                    border-bottom: solid $mainColor 1px;
-                }
-                &:hover {
-                    transform: scale(1.1);
-                }
-            }
-        }
-    }
-
 }
 
 $bezier: cubic-bezier(0.65, 0.25, 0.56, 0.96);
@@ -943,7 +878,7 @@ $bezier: cubic-bezier(0.65, 0.25, 0.56, 0.96);
     display: flex;
     align-items: center;
     user-select: none;
-    padding: 0.4em 0;
+    padding: 0.313em 0;
     box-sizing: border-box;
     input[type="checkbox"],
     input[type="radio"] {

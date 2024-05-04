@@ -290,7 +290,7 @@ export var squadTargetMarker = squadMarker.extend({
             bubblingMouseEvents: false,
             interactive: false,
             minWidth: 100,
-            offset: [65, 0],
+            offset: [68, 0],
         };
 
 
@@ -671,7 +671,7 @@ export var squadTargetMarker = squadMarker.extend({
         $("#infWHeight").text(this.options.results.weaponHeight.toFixed(1)+"m");
         $("#infTHeight").text(this.options.results.targetHeight.toFixed(1)+"m");
         $("#infDHeight").text(this.options.results.diffHeight.toFixed(1)+"m");
-        $("#infGravity").text(9.8 + " (x" + this.options.results.gravityScale + ")");
+        $("#infSpread").text("H:"+this.options.results.spreadParameters.semiMajorAxis.toFixed(1)+"m V:"+this.options.results.spreadParameters.semiMinorAxis.toFixed(1)+"m");
 
         if (isNaN(this.options.results.elevation)) {
             $("#infElevation").text("---");
