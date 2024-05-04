@@ -61,10 +61,16 @@ export function loadSettings(){
     globalData.userSettings.weaponMinMaxRange = loadLocalSetting("settings-weapon-range");
     $("#weaponRangeSettings").prop("checked", globalData.userSettings.weaponMinMaxRange);
 
-    globalData.userSettings.bearingOverDistance = loadLocalSetting("settings-bearing-distance", false);
-    $("#bearingOverDistanceSettings").prop("checked", globalData.userSettings.bearingOverDistance);
+    globalData.userSettings.showBearing = loadLocalSetting("settings-show-bearing", 1);
+    $("#bearingSetting").prop("checked", globalData.userSettings.showBearing);
 
-    globalData.userSettings.cursor = loadLocalSetting("settings-cursor", true);
+    globalData.userSettings.showDistance = loadLocalSetting("settings-show-distance", 0);
+    $("#distanceSetting").prop("checked", globalData.userSettings.showDistance);
+
+    globalData.userSettings.showTimeOfFlight = loadLocalSetting("settings-show-timeofflight", 0);
+    $("#timeOfFlightSetting").prop("checked", globalData.userSettings.showTimeOfFlight);
+
+    globalData.userSettings.cursor = loadLocalSetting("settings-cursor", 1);
 
     if (globalData.userSettings.cursor) {
         $("#preview").css("cursor", "crosshair");
@@ -85,6 +91,8 @@ export function loadSettings(){
 
 
 function updatePreview(){
+    var subtextContent;
+
     if (globalData.userSettings.spreadRadius){
         $("#spreadPreview").show();
     } else {
@@ -97,11 +105,19 @@ function updatePreview(){
         $("#maxRangePreview").hide();
     }
 
-    if (globalData.userSettings.bearingOverDistance){
-        $("#bearingPreview").text("1145m");
-    } else {
-        $("#bearingPreview").text("241.5°");
-    }
+    subtextContent = "<span>1345</span><br>";
+
+    if (globalData.userSettings.showBearing){ 
+        subtextContent += "<span class=\"bearingPreview\">241.5°</span><br>";
+    } 
+    if (globalData.userSettings.showTimeOfFlight){
+        subtextContent += "<span class=\"bearingPreview\">20s</span><br>";
+    } 
+    if (globalData.userSettings.showDistance){ 
+        subtextContent += "<span class=\"bearingPreview\">1145m</span><br>";
+    } 
+
+    $("#textPreview").html(subtextContent);
 
     if (globalData.userSettings.grid){
         $("#gridPreview").show();
@@ -225,4 +241,46 @@ $("#bearingOverDistanceSettings").on("change", function() {
     updatePreview();
 });
 
+$("#bearingSetting").on("change", function() {
+    if ($("#bearingSetting").is(":checked")) {
+        globalData.userSettings.showBearing = 1;
+        localStorage.setItem("settings-show-bearing", 1);
+    }
+    else {
+        globalData.userSettings.showBearing = 0;
+        localStorage.setItem("settings-show-bearing", 0);
+    }
+
+    globalData.minimap.updateTargets();
+    updatePreview();
+});
+
+$("#distanceSetting").on("change", function() {
+    if ($("#distanceSetting").is(":checked")) {
+        globalData.userSettings.showDistance = 1;
+        localStorage.setItem("settings-show-distance", 1);
+    }
+    else {
+        globalData.userSettings.showDistance = 0;
+        localStorage.setItem("settings-show-distance", 0);
+    }
+
+    globalData.minimap.updateTargets();
+    updatePreview();
+});
+
+
+$("#timeOfFlightSetting").on("change", function() {
+    if ($("#timeOfFlightSetting").is(":checked")) {
+        globalData.userSettings.showTimeOfFlight = 1;
+        localStorage.setItem("settings-show-timeofflight", 1);
+    }
+    else {
+        globalData.userSettings.showTimeOfFlight = 0;
+        localStorage.setItem("settings-show-timeofflight", 0);
+    }
+
+    globalData.minimap.updateTargets();
+    updatePreview();
+});
 

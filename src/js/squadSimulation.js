@@ -159,7 +159,6 @@ export default class Simulation {
      */
     drawTrajectory(){
         const ctx = this.canvas.getContext("2d");
-        const PADDING = 0.1;
         const G = 9.8 * this.results.gravityScale * this.yScaling;
         const FREQ = 25;
         var elevation = this.results.elevation;

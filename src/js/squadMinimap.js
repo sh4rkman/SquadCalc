@@ -146,7 +146,7 @@ export var squadMinimap = L.Map.extend({
             $(".btn-delete").hide();
         }
 
-        this.drawHeightmap(imageBounds);
+        //this.drawHeightmap(imageBounds);
 
     },
 

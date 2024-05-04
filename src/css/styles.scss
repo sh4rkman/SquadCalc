@@ -239,7 +239,7 @@ header {
                 font-size: 0.7em;
             }
             .bearingUiCalc {
-                font-size: 0.8em;
+                font-size: 0.75em;
             }
             .leaflet-popup-tip,
             .leaflet-popup-content-wrapper {
@@ -363,49 +363,7 @@ header {
     }
 }
 
-#preview {
-    outline: solid firebrick 3px;
-    width: 150px;
-    height: 150px;
-    margin-top: 5em;
-    margin-left: 7em;
-    background-image: url("../../public/maps/chora/minimap/4_6_7.webp");
-    background-size: contain;
-    #center {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 150px;
-        height: 150px;
-        #markerPreview {
-            position: absolute;
-            width: 30px;
-        }
-        #gridPreview {
-            position: absolute;
-            opacity: 1;
-            width: 150px;
-        }
-        #maxRangePreview {
-            position: absolute;
-            width: 147px;
-            margin-right: 3px;
-            margin-top: 3px;
-        }
-    }
-    #textPreview{
-        margin-top: 45px;
-        margin-left: 25px;
-        position: absolute;
-        font-weight: bold;
 
-        @extend %text-outline;
-        #bearingPreview {
-            font-size: 0.7em;
-            text-align: right;
-        }
-    }
-}
 
 
 #classic_ui {
@@ -740,17 +698,19 @@ footer {
     background-color: $mainBGColor;
     color: $mainTxtColor;
     text-align: left;
-    padding: 30px 0 0 30px;
     border-radius: 10px;
     font-size: 0.7em;
     max-width: 700px;
-    width: calc(100% - 3em);
+    width: calc(100% - 10%);
     overflow: hidden;
+    h2 {
+        padding: 1.25em 0 0 1.25em;
+    }
     table {
         float: left;
         border-collapse: collapse;
-        width: 40%;
-        margin-left: 5%;
+        width: 44%;
+        margin-left: 4%;
         margin-bottom: 2em;
         font-size: 0.7em;
         td {
@@ -772,9 +732,8 @@ footer {
     }
     #heightGraph {
         background-color: white;
-        margin-left: -30px;
+        width: 100%;
         margin-bottom: -5px;
-        width: calc(100% + 30px);
         transform: rotate(180deg) scaleX(-1);
     }
     #closeCalcInformation{
@@ -800,20 +759,21 @@ footer {
     background-color: $mainBGColor;
     color: $mainTxtColor;
     text-align: left;
-    padding: 30px 5px 5px 30px;
     border-radius: 10px;
     font-size: 0.7em;
-    width: 400px;
     letter-spacing: 1px;
     line-height: 1em;
-    #dialogTitle {
-        @extend .unselectable;
-        margin-left: 20px;
-    }
     &::backdrop {
         backdrop-filter: blur(3px) brightness(120%) grayscale(20%) contrast(90%);
     }
+    h2{
+        margin: 25px 20px 30px;
+    }
+    h3 {
+        margin: 25px 20px 0;
+    }
     table {
+        margin: 10px 30px 20px;
         &.userSettings {
             border: none;
             td {
@@ -868,6 +828,25 @@ footer {
             }            
         }
     }
+    #cursorChoiceSettings {
+        height: auto;
+        width: 220px;
+        margin: 25px 20px 20px;
+        input {
+            height: 15px;
+            accent-color: $mainColor;
+            &:active:not([disabled]) {
+                transform: scale(0.7);
+            }
+            &:hover:not([disabled]) {
+                cursor: pointer;
+            }
+        }
+        label {
+            float:right;
+            text-align: center;
+        }
+    }
     #closeModal {
         position: absolute;
         font-size: 1.7em;
@@ -879,6 +858,49 @@ footer {
             cursor: pointer;
             color: $mainColor;
             transform: scale(0.9);
+        }
+    }
+    #preview {
+        outline: solid firebrick 3px;
+        width: 150px;
+        height: 150px;
+        margin:auto;
+        background-image: url("../../public/maps/chora/minimap/4_6_7.webp");
+        background-size: contain;
+        #center {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 150px;
+            height: 150px;
+            #markerPreview {
+                position: absolute;
+                width: 30px;
+            }
+            #gridPreview {
+                position: absolute;
+                opacity: 1;
+                width: 150px;
+            }
+            #maxRangePreview {
+                position: absolute;
+                width: 147px;
+                margin-right: 3px;
+                margin-top: 3px;
+            }
+        }
+        #textPreview{
+            @extend %text-outline;
+            margin-top: 55px;
+            margin-left: 25px;
+            position: absolute;
+            font-weight: bold;
+            z-index: 1;
+            .bearingPreview {
+                font-size: 0.6em;
+                text-align: right;
+                float: right;
+            }
         }
     }
     ul {
@@ -911,25 +933,7 @@ footer {
             }
         }
     }
-    .panels {
-        height: 360px;
-        position: relative;
-        clear: both;
-    }
-    article {
-        position: absolute;
-        top: 15px;
-        left: 0;
-        height: 100%;
-        width: 100%;
-        padding-left: 30px;
-        padding-top: 10px;
-        color: white;
-        background-color: $mainBGColor;
-    }
-    .active-panel {
-        z-index: 1;
-    }  
+
 }
 
 $bezier: cubic-bezier(0.65, 0.25, 0.56, 0.96);
@@ -994,27 +998,6 @@ $bezier: cubic-bezier(0.65, 0.25, 0.56, 0.96);
       stroke-width: 5px;
       stroke-dasharray: 22.7714;
       stroke: currentcolor;
-    }
-}
-
-#cursorChoiceSettings {
-    height: auto;
-    width: 250px;
-    margin-top: 1em;
-    margin-bottom: 1em;
-    input {
-        height: 15px;
-        accent-color: $mainColor;
-        &:active:not([disabled]) {
-            transform: scale(0.7);
-        }
-        &:hover:not([disabled]) {
-            cursor: pointer;
-        }
-    }
-    label {
-        float:right;
-        text-align: center;
     }
 }
   
