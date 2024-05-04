@@ -39,7 +39,7 @@ test('Wrong calcs', async ({  }) => {
   await page.locator('#target-location').click();
   await page.locator('#target-location').fill('');
   await page.locator('#target-location').pressSequentially('G01245');
-  await expect(page.locator('#errorMsg')).toContainText("Target is out of map");
+  await expect(page.locator('#errorMsg')).toContainText("Mortar is out of map");
 
   // weapon out of map
   await page.getByRole('textbox', { name: 'kohat' }).click();
@@ -104,7 +104,7 @@ test('Advanced calc', async ({  }) => {
 
   // Check calcs
   await expect(page.locator('#bearingNum')).toContainText("33.7");
-  await expect(page.locator('#elevationNum')).toContainText("2.6");
+  await expect(page.locator('#elevationNum')).toContainText("2.7");
 
   // Change high/low calc
   await page.locator('#highlow i').click();

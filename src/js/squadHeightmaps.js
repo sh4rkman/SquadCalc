@@ -12,12 +12,17 @@ export default L.ImageOverlay.extend({
      * @param {url} [url] - image URL to display
      * @param {options} [options]
      */
-    initialize: function (url, options) {
+    initialize: function (url, bounds) {
         //L.setOptions(this, options); uncomment if custom options are needed
-        L.ImageOverlay.prototype.initialize.call(this, url, options);
+        L.ImageOverlay.prototype.initialize.call(this, url, bounds);
+        this.canvas = document.getElementById("canvas");
+        this.ctx = this.canvas.getContext("2d", {willReadFrequently: true});
+        this.canvas.height = 1000;
+        this.canvas.width = 1000;
 
         this.on("load", function(){
-            this.getHeight({lng: 0, lat: 0}); // call it once to speed up next uses
+            this.heightmapScaling = this.canvas.height / globalData.mapSize;
+            this.ctx.drawImage(this._image, 0, 0, this.canvas.width, this.canvas.height);
         });
 
     },
@@ -29,13 +34,8 @@ export default L.ImageOverlay.extend({
      */
     getHeight: function(latlng){
         const ZSCALING = MAPS.find((elem, index) => index == globalData.activeMap).scaling;
-        var canvas = document.createElement("canvas");
-        var context = canvas.getContext("2d");
         var color;
-        canvas.width = 1;
-        canvas.height = 1;
-        context.drawImage(this._image, -latlng.lng, latlng.lat, globalData.mapSize+1, globalData.mapSize+1);
-        color = context.getImageData(0, 0, 1, 1).data;
+        color = this.ctx.getImageData(latlng.lng * this.heightmapScaling, latlng.lat * -this.heightmapScaling, 1, 1).data;
         return (255 + color[0] - color[2]) * ZSCALING;
     },
 

@@ -12,11 +12,15 @@ export default class Simulation {
         this.xScaling = ( canvas.width - ( 2 * this.padding ) ) / results.distance;
         this.yScaling = canvas.width/ results.distance;
         this.yOffset = this.getMinGround();
+        this.animationFrame = "";
     
         this.clear();
         this.drawGrid();
         this.drawGroundLevel();
-        this.drawTrajectory();
+        this.drawTrajectory(function(this2) {
+            this2.drawCanvasIcons();
+        });
+        
     }
 
     getMinGround(){
@@ -39,10 +43,9 @@ export default class Simulation {
             step = 300;
         }
 
-        ctx.fillStyle = "lightgrey";
-
 
         // One grey line every 100m on x
+        ctx.fillStyle = "lightgrey";
         for (let i= this.padding; i <this.canvas.width; i = i + 100 * this.xScaling){
             ctx.fillRect(i, 0, 1, this.canvas.height);
         }
@@ -66,7 +69,6 @@ export default class Simulation {
         // One black line every 300m on x
         ctx.fillStyle = "#111";
         ctx.font = "14px Montserrat";
-
         for (let i= this.padding; i <this.canvas.width; i = i + step * this.xScaling){
             ctx.fillText( ( (i - this.padding ) / this.xScaling ).toFixed(0) + "m", i+5, 20);
         }
@@ -157,56 +159,54 @@ export default class Simulation {
      * @param {TODO} [TODO] - TODO
      * @returns {TODO} - TODO
      */
-    drawTrajectory(){
+    drawTrajectory(callback) {
         const ctx = this.canvas.getContext("2d");
-        const PADDING = 0.1;
         const G = 9.8 * this.results.gravityScale * this.yScaling;
-        const FREQ = 25;
-        var elevation = this.results.elevation;
-        var this2 = this; // https://stackoverflow.com/questions/10944004/how-to-pass-this-to-window-setinterval
-        var x = this.padding;
-        var oldX = this.padding;
-        var y = this.heightPath[0] * this.yScaling + this.yOffset;
-        var oldY = this.heightPath[0] * this.yScaling + this.yOffset;
-        var xVel;
-        var yVel;
-        var projectile;
+        const FREQ = 10;
+        var elevation = isNaN(this.results.elevation) ? degToRad(45) : this.results.elevation;
+        var xVel = Math.cos(elevation) * this.results.velocity * this.xScaling;
+        var yVel = Math.sin(elevation) * this.results.velocity * this.yScaling;
+        let x = this.padding;
+        let oldX = this.padding;
+        let y = this.heightPath[0] * this.yScaling + this.yOffset;
+        let oldY = this.heightPath[0] * this.yScaling + this.yOffset;
+        var this2 = this;
 
-        // if out of range, shoot at 45deg
-        if (isNaN(elevation)) {
-            elevation = degToRad(45);
-        }
+        if (isNaN(this.results.velocity)) return;
+
+        ctx.lineWidth = 5;
+        ctx.strokeStyle = "#b22222";
+        ctx.beginPath();
+        ctx.moveTo(oldX, oldY);
 
 
-        xVel = Math.cos(elevation) * this.results.velocity * this.xScaling;
-        yVel = Math.sin(elevation) * this.results.velocity * this.yScaling;
+        function drawProjectile() {
 
-        projectile = setInterval(function () {
             x += xVel / FREQ;
             y += yVel / FREQ;
             yVel -= G / FREQ;
-    
-
-            ctx.lineWidth = 5;
-            ctx.beginPath();
-            ctx.moveTo(oldX,oldY);
-            ctx.strokeStyle = "#b22222";
-            ctx.lineTo(x,y);
-            ctx.stroke();
-            oldX = x;
-            oldY = y;
-
-            if (y < 0 || x > (this.canvas.width - this2.padding)) {
-                clearInterval(projectile);
-                ctx.closePath();
-                this2.drawCanvasIcons(this.padding); // redraw to overide path
+            
+            if (y < 0 || x > (this2.canvas.width - this2.padding)) {
+                if (x > (this2.canvas.width - this2.padding)) {
+                    x = (this2.canvas.width - this2.padding);
+                }
+                ctx.lineTo(x, y);
+                ctx.stroke();
+                callback(this2);
+            } else {
+                ctx.lineTo(x, y);
+                ctx.stroke();
+                oldX = x;
+                oldY = y;
+                this2.animationFrame = requestAnimationFrame(drawProjectile);
             }
+            
+        }
     
-        });
-        
-
+        this.animationFrame = requestAnimationFrame(drawProjectile.bind(this));
     }
 
+        
     /**
      * TODO
      * @param {TODO} [TODO] - TODO

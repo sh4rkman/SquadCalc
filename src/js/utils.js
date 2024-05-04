@@ -984,16 +984,17 @@ function getHorizontalSpread(angle, velocity, gravity){
 
 
 /**
- * TODO
+ * Calculate the time of flight of the projectile
  * @param {number} [angle] - angle of the initial shot in radian
  * @param {number} [vel] - initial mortar projectile velocity in m/s
+ *  * @param {number} [heightDiff] - difference between weapon and target in meters
  * @returns {number} - time of flight in seconds
  */
-export function getTimeOfFlight(angle, vel){
+export function getTimeOfFlight(angle, vel, heightDiff){
     const gravity = globalData.gravity * globalData.activeWeapon.gravityScale;
-    return ( 2 * vel * Math.sin(angle) ) / gravity;
+    const t = vel * Math.sin(angle) + Math.sqrt( (Math.pow(vel, 2) * Math.pow(Math.sin(angle), 2)) + (2 * gravity * -heightDiff));
+    return t / gravity;
 }
-
 
 /**
  * Calculates the angle the mortar needs to be set in order

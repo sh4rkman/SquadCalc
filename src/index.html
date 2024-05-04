@@ -135,14 +135,14 @@
 
     <dialog id="helpDialog">
 
-        <button id="closeModal">
-            <i class="fa-regular fa-circle-xmark"></i>
-        </button>
+        <form method="dialog">
+            <button id="closeModal">
+                <i class="fa-regular fa-circle-xmark"></i>
+            </button>
+        </form>
 
-        <h2>Settings</h2><br><br><br>
-
+        <h2>Settings</h2>
         <h3>Map Options</h3>
-        <br>
         <table class="userSettings pure-table">
             <tbody>
 
@@ -199,14 +199,9 @@
             </tbody>
         </table>
 
-
-
-        <br><br>
         <h3>Target Options</h3>
-        <br>
         <table class="userSettings pure-table">
             <tbody>
-
                 <tr>
                     <td>
                         <label class="mcui-checkbox">
@@ -219,7 +214,7 @@
                             <span></span>
                           </label>
                     </td>
-                    <td>Show Targets Spread Radius</td>
+                    <td>Show Spread Radius</td>
                 </tr>
 
                 <tr>
@@ -235,14 +230,14 @@
                           </label>
                     </td>
                     <td>
-                        Show Targets Markers Animations
+                        Show Animations
                     </td>
                 </tr>
 
                 <tr>
                     <td>
                         <label class="mcui-checkbox">
-                            <input id="bearingOverDistanceSettings" type="checkbox">
+                            <input id="bearingSetting" type="checkbox">
                             <span>
                               <svg class="mcui-check" viewBox="-2 -2 35 35" aria-hidden="true">
                                 <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
@@ -251,12 +246,41 @@
                             <span></span>
                           </label>
                     </td>
-                    <td>Replace Bearing with Distance</td>
+                    <td>Show Bearing</td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <label class="mcui-checkbox">
+                            <input id="distanceSetting" type="checkbox">
+                            <span>
+                              <svg class="mcui-check" viewBox="-2 -2 35 35" aria-hidden="true">
+                                <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
+                              </svg>
+                            </span>
+                            <span></span>
+                          </label>
+                    </td>
+                    <td>Show Distance</td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <label class="mcui-checkbox">
+                            <input id="timeOfFlightSetting" type="checkbox">
+                            <span>
+                              <svg class="mcui-check" viewBox="-2 -2 35 35" aria-hidden="true">
+                                <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
+                              </svg>
+                            </span>
+                            <span></span>
+                          </label>
+                    </td>
+                    <td>Show Time of Flight</td>
                 </tr>
             </tbody>
         </table>
 
-        <br>
         <div id="cursorChoiceSettings">
             <b style="font-size: 1.2em;">Cursor</b>
             <label for="cursorChoice2">
@@ -268,12 +292,12 @@
                 Crosshair
             </label>
         </div>
-
+        <br><br>
         <div id="preview" class="unselectable">
             <div id="textPreview">
                 <span>1345</span><br>
-                <span id="bearingPreview">241.5°</span>
-            </div>  
+                <span class="bearingPreview">241.5°</span>
+            </div>
             <div id="center">
                 <img id="spreadPreview" loading="lazy" src="./img/icons/spread.png" alt="spreadPreview">
                 <img id="gridPreview" loading="lazy" src="./img/icons/grid.png" alt="gridPreview">
@@ -330,24 +354,23 @@
                     <i class="fa-regular fa-circle-xmark"></i>
                 </button>
             </form>
-            <h2>Calculation Informations</h2><br><br><br>
+
+            <h2>Calculation Informations</h2>
+            <br><br><br>
+
             <table>
                 <tbody>
                     <tr>
-                        <td>Bearing</td>
-                        <td id="infBearing"></td>
+                        <td>Bearing</td><td id="infBearing"></td>
                     </tr>
                     <tr>
-                        <td>Elevation</td>
-                        <td id="infElevation"></td>
+                        <td>Elevation</td><td id="infElevation"></td>
                     </tr>
                     <tr>
-                        <td>Distance</td>
-                        <td id="infDistance"></td>
+                        <td>Distance</td><td id="infDistance"></td>
                     </tr>
                     <tr>
-                        <td>Time of Flight</td>
-                        <td id="infTimeOfFlight"></td>
+                        <td>Time of Flight</td><td id="infTimeOfFlight"></td>
                     </tr>
                 </tbody>
             </table>
@@ -355,20 +378,16 @@
             <table>
                 <tbody>
                     <tr>
-                        <td>Gravity</td>
-                        <td id="infGravity"></td>
+                        <td>Spread</td><td id="infSpread"></td>
                     </tr>
                     <tr>
-                        <td>Weapon Height</td>
-                        <td id="infWHeight"></td>
+                        <td>Weapon Height</td><td id="infWHeight"></td>
                     </tr>
                     <tr>
-                        <td>Target Height</td>
-                        <td id="infTHeight"></td>
+                        <td>Target Height</td><td id="infTHeight"></td>
                     </tr>
                     <tr>
-                        <td>Height Difference</td>
-                        <td id="infDHeight"></td>
+                        <td>Height Difference</td><td id="infDHeight"></td>
                     </tr>
                 </tbody>
             </table>

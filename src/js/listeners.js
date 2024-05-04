@@ -30,25 +30,10 @@ $(document).on("click", ".btn-delete", function() { globalData.minimap.deleteTar
 $(window).on("resize", function() { resizeInputsOnResize(); });
 
 
-document.querySelector("#calcInformation").addEventListener("close", () => {
-    var canvas = document.querySelector("#heightGraph");
-    const ctx = canvas.getContext("2d");
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-});
-
-
 $("#mapLayerMenu").find("button").on("click", function () {
     globalData.minimap.reDraw($(this).attr("value"));
 });
 
-
-
-
-
-
-document.querySelector("dialog button").addEventListener("click", () => {
-    $("#helpDialog")[0].close();
-});
 
 const helpDialog = document.querySelector("#helpDialog");
 $("#helpDialog").on("click", function(event) {

@@ -59,6 +59,16 @@
    ************   WIDTH ADJUSTMENTS  ***************
    ***************************************************/
 
+/* L<544px */
+@media screen and (max-width: 34em) {
+    #calcInformation {
+        table {
+            width: 90%;
+            margin: 0 5% 5%;
+        }
+    }
+}
+
 
 /* L<768px */
 
