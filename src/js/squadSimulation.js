@@ -12,6 +12,7 @@ export default class Simulation {
         this.xScaling = ( canvas.width - ( 2 * this.padding ) ) / results.distance;
         this.yScaling = canvas.width/ results.distance;
         this.yOffset = this.getMinGround();
+        this.animationFrame = "";
     
         this.clear();
         this.drawGrid();
@@ -42,10 +43,9 @@ export default class Simulation {
             step = 300;
         }
 
-        ctx.fillStyle = "lightgrey";
-
 
         // One grey line every 100m on x
+        ctx.fillStyle = "lightgrey";
         for (let i= this.padding; i <this.canvas.width; i = i + 100 * this.xScaling){
             ctx.fillRect(i, 0, 1, this.canvas.height);
         }
@@ -69,7 +69,6 @@ export default class Simulation {
         // One black line every 300m on x
         ctx.fillStyle = "#111";
         ctx.font = "14px Montserrat";
-
         for (let i= this.padding; i <this.canvas.width; i = i + step * this.xScaling){
             ctx.fillText( ( (i - this.padding ) / this.xScaling ).toFixed(0) + "m", i+5, 20);
         }
@@ -174,7 +173,7 @@ export default class Simulation {
         var this2 = this;
 
         if (isNaN(this.results.velocity)) return;
-        
+
         ctx.lineWidth = 5;
         ctx.strokeStyle = "#b22222";
         ctx.beginPath();
@@ -199,12 +198,12 @@ export default class Simulation {
                 ctx.stroke();
                 oldX = x;
                 oldY = y;
-                requestAnimationFrame(drawProjectile);
+                this2.animationFrame = requestAnimationFrame(drawProjectile);
             }
             
         }
     
-        requestAnimationFrame(drawProjectile.bind(this));
+        this.animationFrame = requestAnimationFrame(drawProjectile.bind(this));
     }
 
         

@@ -660,9 +660,10 @@ export var squadTargetMarker = squadMarker.extend({
     _handleClick: function() {
         const dialog = document.getElementById("calcInformation");
         const canvas = document.getElementById("heightGraph");
+        var simulation;
         var weapon1Pos;
         var heightPath;
-
+              
         dialog.showModal();
 
         $("#infBearing").text(this.options.results.bearing.toFixed(1)+"°");
@@ -687,7 +688,13 @@ export var squadTargetMarker = squadMarker.extend({
 
         weapon1Pos = globalData.minimap.activeWeaponsMarkers.getLayers()[0].getLatLng();
         heightPath = this._map.heightmap.getHeightPath(weapon1Pos, this.getLatLng());
-        new SquadSimulation(canvas, this.options.results, heightPath);
+        simulation = new SquadSimulation(canvas, this.options.results, heightPath);
+
+        // If the user close the modal, stop the animation
+        // ...or it does crazy stuff if he reopen it before the animation runs out
+        dialog.addEventListener("close", function(){
+            cancelAnimationFrame(simulation.animationFrame);
+        });
 
     },
     // Keep the marker on map & update calc while dragging
