@@ -672,13 +672,14 @@ export var squadTargetMarker = squadMarker.extend({
         $("#infWHeight").text(this.options.results.weaponHeight.toFixed(1)+"m");
         $("#infTHeight").text(this.options.results.targetHeight.toFixed(1)+"m");
         $("#infDHeight").text(this.options.results.diffHeight.toFixed(1)+"m");
-        $("#infSpread").text("H:"+this.options.results.spreadParameters.semiMajorAxis.toFixed(1)+"m V:"+this.options.results.spreadParameters.semiMinorAxis.toFixed(1)+"m");
-
+        
         if (isNaN(this.options.results.elevation)) {
             $("#infElevation").text("---");
             $("#infTimeOfFlight").text("---");
+            $("#infSpread").text("---");
         } else {
             $("#infTimeOfFlight").text(this.options.results.timeOfFlight.toFixed(1)+"s");
+            $("#infSpread").text("H:"+this.options.results.spreadParameters.semiMajorAxis.toFixed(1)+"m V:"+this.options.results.spreadParameters.semiMinorAxis.toFixed(1)+"m");
             if (globalData.activeWeapon.unit === "mil"){
                 $("#infElevation").text(radToMil(this.options.results.elevation).toFixed(1)+"mil");
             } else {
