@@ -6,7 +6,6 @@ $(document).on("change", ".dropbtn2", function() { changeWeapon(); });
 $(document).on("change", ".dropbtn", function() { 
     globalData.minimap.clear(); 
     globalData.minimap.draw(true); 
-    shoot();
 });
 
 $(document).on("input", "#mortar-location", function() { shoot("weapon"); });

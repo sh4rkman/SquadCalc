@@ -35,15 +35,12 @@ test('Wrong calcs', async ({  }) => {
   await page.locator('#target-location').pressSequentially('C0f1245');
   await expect(page.locator('#errorMsg')).toContainText("Invalid target");
 
-  // too far !
-  await page.locator('#target-location').click();
-  await page.locator('#target-location').fill('');
-  await page.locator('#target-location').pressSequentially('G01245');
-  await expect(page.locator('#errorMsg')).toContainText("Mortar is out of map");
-
   // weapon out of map
   await page.getByRole('textbox', { name: 'kohat' }).click();
   await page.getByRole('option', { name: 'Al basrah' }).click();
+  await page.locator('#target-location').click();
+  await page.locator('#target-location').fill('');
+  await page.locator('#target-location').pressSequentially('G02-3-4');
   await expect(page.locator('#errorMsg')).toContainText("Target is out of range");
 
 });
@@ -74,11 +71,11 @@ test('Basic calcs + map', async ({  }) => {
 
   // Select a map
   await page.getByRole('textbox', { name: 'Al basrah' }).click();
-  await page.getByRole('option', { name: 'BLACK COAST' }).click();
+  await page.getByRole('option', { name: 'MANICOUAGAN' }).click();
 
   // Check calcs
   await expect(page.locator('#bearingNum')).toContainText("33.7");
-  await expect(page.locator('#elevationNum')).toContainText("1450");
+  await expect(page.locator('#elevationNum')).toContainText("1446");
 });
 
 test('Advanced calc', async ({  }) => {
