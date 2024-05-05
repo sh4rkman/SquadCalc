@@ -164,10 +164,10 @@ export function getElevation(dist = 0, vDelta = 0, vel = 0) {
     const GRAVITY = globalData.gravity * globalData.activeWeapon.gravityScale;
     const P1 = Math.sqrt(vel ** 4 - GRAVITY * (GRAVITY * dist ** 2 + 2 * vDelta * vel ** 2));
 
-    if(globalData.activeWeapon.name==="Technical"){
+    if (globalData.activeWeapon.name === "Technical"){
         // The technical mortar is bugged : the ingame range metter is off by 5°
         // Ugly fix until OWI correct it
-        padding = -0.0872665
+        padding = -0.0872665;
     }
 
     return padding + Math.atan((vel ** 2 - (P1 * globalData.activeWeapon.getAngleType())) / (GRAVITY * dist));
@@ -300,7 +300,7 @@ export function shoot(inputChanged = "") {
     var b = TARGET_LOC.val();
     var aPos;
     var bPos;
-    const mapScale = globalData.mapSize / MAPS.find((elem, index) => index == globalData.activeMap).size
+    const mapScale = globalData.mapSize / MAPS.find((elem, index) => index == globalData.activeMap).size;
 
     resetCalc();
 

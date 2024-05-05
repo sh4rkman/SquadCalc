@@ -681,6 +681,30 @@ footer {
     z-index: -1;
 }
 
+#canvasControls{
+    margin: 0 auto 1em;
+    text-align: center;
+    width: 100%;
+    display: none;
+    button {
+        height: 20px;
+        color: $mainBGColor;
+        width: 45%;
+        cursor: pointer;
+        &.active {
+            background-color: $mainColor;
+            color: white;
+        }
+    }
+}
+
+.sim {
+    display: none;
+    &.active {
+        display: block;
+    }
+}
+
 #calcInformation {
     margin: auto;
     background-color: $mainBGColor;
@@ -718,7 +742,7 @@ footer {
 
 
     }
-    #heightGraph {
+    .heightGraph {
         background-color: white;
         width: 100%;
         margin-bottom: -5px;

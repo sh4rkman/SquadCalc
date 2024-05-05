@@ -34,17 +34,8 @@ export default L.ImageOverlay.extend({
      * @returns {integer} - height in meters
      */
     getHeight: function(latlng){
-        console.log(latlng)
-        console.log(this.heightmapScaling)
         const ZSCALING = MAPS.find((elem, index) => index == globalData.activeMap).scaling;
-        var color;
-        color = this.ctx.getImageData(Math.round(latlng.lng * this.heightmapScaling), Math.round(latlng.lat * -this.heightmapScaling), 1, 1).data;
-        
-        if(globalData.debug.active) {
-            this.ctx.fillRect(Math.round(latlng.lat * this.heightmapScaling), Math.round(latlng.lng * -this.heightmapScaling), 10, 10);
-        }
-
-        
+        var color = this.ctx.getImageData(Math.round(latlng.lng * this.heightmapScaling), Math.round(latlng.lat * -this.heightmapScaling), 1, 1).data;
         return (255 + color[0] - color[2]) * ZSCALING;
     },
 

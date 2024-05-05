@@ -607,94 +607,61 @@ export var squadTargetMarker = squadMarker.extend({
         this.calcMarker1.setContent(this.getContent(this.options.results));
     },
 
-    /**
-     * TODO
-     * @param {TODO} [TODO] - TODO
-     * @returns {TODO} - TODO
-     */
-    drawTrajectory: function(canvas, heightPath, ground, groundOffset, distance, angle, vel, gScale){
-        const ctx = canvas.getContext("2d");
-        const maxGround = Math.max(...heightPath);
-        const PADDING = 0.1;
-        //const xScaling = (canvas.width) / distance
-        const xScaling = ( canvas.width - (2 * PADDING * canvas.width) ) / ( distance );
-        const yScaling = canvas.height/(maxGround * 4);
-        const G = 9.8 * gScale * yScaling;
-        const FREQ = 20;
-        
-        var x = canvas.width * PADDING;
-        var oldX = canvas.width * PADDING;
-        var y = heightPath[0] * yScaling;
-        var oldY = heightPath[0] * yScaling;
-    
-        var xVel = Math.cos(angle) * vel * xScaling;
-        var yVel = Math.sin(angle) * vel * yScaling;
-
-
-
-        var myInterval = setInterval(function () {
-            x += xVel / FREQ;
-            y += yVel / FREQ;
-            yVel -= G / FREQ;
-    
-            ctx.lineWidth = 5;
-            ctx.beginPath();
-            ctx.moveTo(oldX,oldY);
-            ctx.strokeStyle = "green";
-            ctx.lineTo(x,y);
-            ctx.stroke();
-            oldX = x;
-            oldY = y;
-    
-            if (y < 0 || x - ( PADDING * canvas.width ) > (canvas.width - (PADDING*2*canvas.width))) {
-                clearInterval(myInterval);
-                ctx.closePath();
-                //thisRef.drawCanvasIcons(canvas, heightPath, PADDING); // redraw to overide path
-            }
-    
-        });        
-
-   
-    },
 
     _handleClick: function() {
         const dialog = document.getElementById("calcInformation");
-        const canvas = document.getElementById("heightGraph");
-        var simulation;
-        var weapon1Pos;
-        var heightPath;
+        var simulation1;
+        var simulation2;
+        var weaponPos1;
+        var weaponPos2;
+        var heightPath1;
+        var heightPath2;
               
         dialog.showModal();
+        $("#sim1").addClass("active");
+        $("#sim2").removeClass("active");
+        $("#canvasControls > .active").first().removeClass("active");
 
-        $("#infBearing").text(this.options.results.bearing.toFixed(1)+"°");
-        $("#infDistance").text(this.options.results.distance.toFixed(1)+"m");
+        $("#canvasControls > button").first().addClass("active");
 
-        $("#infWHeight").text(this.options.results.weaponHeight.toFixed(1)+"m");
-        $("#infTHeight").text(this.options.results.targetHeight.toFixed(1)+"m");
-        $("#infDHeight").text(this.options.results.diffHeight.toFixed(1)+"m");
+        // $("#infBearing").text(this.options.results.bearing.toFixed(1)+"°");
+        // $("#infDistance").text(this.options.results.distance.toFixed(1)+"m");
+
+        // $("#infWHeight").text(this.options.results.weaponHeight.toFixed(1)+"m");
+        // $("#infTHeight").text(this.options.results.targetHeight.toFixed(1)+"m");
+        // $("#infDHeight").text(this.options.results.diffHeight.toFixed(1)+"m");
         
-        if (isNaN(this.options.results.elevation)) {
-            $("#infElevation").text("---");
-            $("#infTimeOfFlight").text("---");
-            $("#infSpread").text("---");
-        } else {
-            $("#infTimeOfFlight").text(this.options.results.timeOfFlight.toFixed(1)+"s");
-            $("#infSpread").text("H:"+this.options.results.spreadParameters.semiMajorAxis.toFixed(1)+"m V:"+this.options.results.spreadParameters.semiMinorAxis.toFixed(1)+"m");
-            if (globalData.activeWeapon.unit === "mil"){
-                $("#infElevation").text(radToMil(this.options.results.elevation).toFixed(1)+"mil");
-            } else {
-                $("#infElevation").text(radToDeg(this.options.results.elevation).toFixed(1)+"°");
-            }
-        }
+        // if (isNaN(this.options.results.elevation)) {
+        //     $("#infElevation").text("---");
+        //     $("#infTimeOfFlight").text("---");
+        //     $("#infSpread").text("---");
+        // } else {
+        //     $("#infTimeOfFlight").text(this.options.results.timeOfFlight.toFixed(1)+"s");
+        //     $("#infSpread").text("H:"+this.options.results.spreadParameters.semiMajorAxis.toFixed(1)+"m V:"+this.options.results.spreadParameters.semiMinorAxis.toFixed(1)+"m");
+        //     if (globalData.activeWeapon.unit === "mil"){
+        //         $("#infElevation").text(radToMil(this.options.results.elevation).toFixed(1)+"mil");
+        //     } else {
+        //         $("#infElevation").text(radToDeg(this.options.results.elevation).toFixed(1)+"°");
+        //     }
+        // }
 
-        weapon1Pos = globalData.minimap.activeWeaponsMarkers.getLayers()[0].getLatLng();
-        heightPath = this._map.heightmap.getHeightPath(weapon1Pos, this.getLatLng());
-        simulation = new SquadSimulation(canvas, this.options.results, heightPath);
+        weaponPos1 = globalData.minimap.activeWeaponsMarkers.getLayers()[0].getLatLng();
+        heightPath1 = this._map.heightmap.getHeightPath(weaponPos1, this.getLatLng());
+        simulation1 = new SquadSimulation("#sim1", this.options.results, heightPath1);
+        $("#canvasControls").css("display", "none");
+
+        if (globalData.minimap.activeWeaponsMarkers.getLayers().length === 2){
+            $("#canvasControls").css("display", "block");
+            weaponPos2 = globalData.minimap.activeWeaponsMarkers.getLayers()[1].getLatLng();
+            heightPath2 = this._map.heightmap.getHeightPath(weaponPos2, this.getLatLng());
+            simulation2 = new SquadSimulation("#sim2", this.options.results2, heightPath2);
+        }
 
         // If the user close the modal, stop the animation
         // ...or it does crazy stuff if he reopen it before the animation runs out
         dialog.addEventListener("close", function(){
-            cancelAnimationFrame(simulation.animationFrame);
+            cancelAnimationFrame(simulation1.animationFrame);
+            if (simulation2){ cancelAnimationFrame(simulation2.animationFrame);}
         });
 
     },
@@ -713,7 +680,7 @@ export var squadTargetMarker = squadMarker.extend({
         this.miniCircle.setLatLng(e.latlng);
 
         // Update bearing/elevation/spread marker
-        // update only every 5 mousemove events for performance
+        // On mobile, save performance
         if (!isTouchDevice()){
             this.updateCalc();
         }

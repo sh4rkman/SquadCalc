@@ -1,19 +1,22 @@
 import targetIcon from "../img/icons/marker_target1.webp";
 //import weaponIcon from "../img/icons/marker_mortar_0.webp";
-import { degToRad } from "../js/utils.js";
+import { degToRad, radToDeg, radToMil } from "../js/utils.js";
+import { globalData } from "./conf.js";
 
 export default class Simulation {
 
-    constructor(canvas, results, heightPath, padding = 0.1) {
-        this.canvas = canvas;
+    constructor(div, results, heightPath, padding = 0.1) {
+        this.div = $(div);
+        this.canvas = this.div.find("canvas").get(0);
         this.results = results;
         this.heightPath = heightPath;
-        this.padding = padding * canvas.width;
-        this.xScaling = ( canvas.width - ( 2 * this.padding ) ) / results.distance;
-        this.yScaling = canvas.width/ results.distance;
+        this.padding = padding * this.canvas.width;
+        this.xScaling = ( this.canvas.width - ( 2 * this.padding ) ) / this.results.distance;
+        this.yScaling = this.canvas.width/ this.results.distance;
         this.yOffset = this.getMinGround();
         this.animationFrame = "";
-    
+        
+        this.buildTables();
         this.clear();
         this.drawGrid();
         this.drawGroundLevel();
@@ -23,10 +26,31 @@ export default class Simulation {
         
     }
 
+    buildTables(){
+        this.div.find(".infBearing").first().text(this.results.bearing.toFixed(1)+"°");
+        this.div.find(".infDistance").first().text(this.results.distance.toFixed(1)+"m");
+        this.div.find(".infWHeight").first().text(this.results.weaponHeight.toFixed(1)+"m");
+        this.div.find(".infTHeight").first().text(this.results.targetHeight.toFixed(1)+"m");
+        this.div.find(".infDHeight").first().text(this.results.diffHeight.toFixed(1)+"m");
+
+        if (isNaN(this.results.elevation)) {
+            this.div.find(".infElevation").first().text("---");
+            this.div.find(".infTimeOfFlight").first().text("---");
+            this.div.find(".infSpread").first().text("---");
+        } else {
+            this.div.find(".infTimeOfFlight").first().text(this.results.timeOfFlight.toFixed(1)+"s");
+            this.div.find(".infSpread").first().text("H:"+this.results.spreadParameters.semiMajorAxis.toFixed(1)+"m V:"+this.results.spreadParameters.semiMinorAxis.toFixed(1)+"m");
+            if (globalData.activeWeapon.unit === "mil"){
+                this.div.find(".infElevation").first().text(radToMil(this.results.elevation).toFixed(1)+"mil");
+            } else {
+                this.div.find(".infElevation").first().text(radToDeg(this.results.elevation).toFixed(1)+"°");
+            }
+        }
+
+    }
+
     getMinGround(){
-        if (Math.min(...this.heightPath)<10) return 50 * this.yScaling;
-        if (Math.min(...this.heightPath)>50) return -50 * this.yScaling;
-        else return 0;
+        return ( 30 - Math.min(...this.heightPath) ) * this.yScaling;
     }
 
     /**
@@ -162,15 +186,26 @@ export default class Simulation {
     drawTrajectory(callback) {
         const ctx = this.canvas.getContext("2d");
         const G = 9.8 * this.results.gravityScale * this.yScaling;
-        const FREQ = 10;
-        var elevation = isNaN(this.results.elevation) ? degToRad(45) : this.results.elevation;
-        var xVel = Math.cos(elevation) * this.results.velocity * this.xScaling;
-        var yVel = Math.sin(elevation) * this.results.velocity * this.yScaling;
+        const FREQ = 20;
+        var elevation;
+        var xVel;
+        var yVel;
         let x = this.padding;
         let oldX = this.padding;
         let y = this.heightPath[0] * this.yScaling + this.yOffset;
         let oldY = this.heightPath[0] * this.yScaling + this.yOffset;
         var this2 = this;
+
+        if (isNaN(this.results.elevation)) {
+            elevation = degToRad(45);
+        } else {
+            elevation = this.results.elevation;
+        }
+
+        xVel = Math.cos(elevation) * this.results.velocity * this.xScaling;
+        yVel = Math.sin(elevation) * this.results.velocity * this.yScaling;
+
+
 
         if (isNaN(this.results.velocity)) return;
 
@@ -188,7 +223,7 @@ export default class Simulation {
             
             if (y < 0 || x > (this2.canvas.width - this2.padding)) {
                 if (x > (this2.canvas.width - this2.padding)) {
-                    x = (this2.canvas.width - this2.padding);
+                    x = this2.canvas.width - this2.padding;
                 }
                 ctx.lineTo(x, y);
                 ctx.stroke();
