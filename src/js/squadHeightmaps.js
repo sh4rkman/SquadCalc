@@ -1,6 +1,7 @@
 import L from "leaflet";
 import { MAPS } from "./maps";
 import { globalData } from "./conf";
+import { shoot } from "./utils";
 
 export default L.ImageOverlay.extend({
     options: {
@@ -19,10 +20,10 @@ export default L.ImageOverlay.extend({
         this.ctx = this.canvas.getContext("2d", {willReadFrequently: true});
         this.canvas.height = 1000;
         this.canvas.width = 1000;
-
+        this.heightmapScaling = this.canvas.height / globalData.mapSize;
         this.on("load", function(){
-            this.heightmapScaling = this.canvas.height / globalData.mapSize;
             this.ctx.drawImage(this._image, 0, 0, this.canvas.width, this.canvas.height);
+            shoot();
         });
 
     },
@@ -34,8 +35,7 @@ export default L.ImageOverlay.extend({
      */
     getHeight: function(latlng){
         const ZSCALING = MAPS.find((elem, index) => index == globalData.activeMap).scaling;
-        var color;
-        color = this.ctx.getImageData(latlng.lng * this.heightmapScaling, latlng.lat * -this.heightmapScaling, 1, 1).data;
+        var color = this.ctx.getImageData(Math.round(latlng.lng * this.heightmapScaling), Math.round(latlng.lat * -this.heightmapScaling), 1, 1).data;
         return (255 + color[0] - color[2]) * ZSCALING;
     },
 

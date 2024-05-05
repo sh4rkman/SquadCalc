@@ -6,7 +6,6 @@ $(document).on("change", ".dropbtn2", function() { changeWeapon(); });
 $(document).on("change", ".dropbtn", function() { 
     globalData.minimap.clear(); 
     globalData.minimap.draw(true); 
-    shoot();
 });
 
 $(document).on("input", "#mortar-location", function() { shoot("weapon"); });
@@ -29,6 +28,13 @@ $(document).on("click", ".btn-delete", function() { globalData.minimap.deleteTar
 
 $(window).on("resize", function() { resizeInputsOnResize(); });
 
+$("#canvasControls button").on("click", function(){
+    if ($(this).hasClass("active")){ return;}
+    $("#canvasControls > .active").first().removeClass("active");
+    $(this).addClass("active");
+    $(".sim.active").removeClass("active");
+    $("#"+$(this).val()).addClass("active");
+});
 
 $("#mapLayerMenu").find("button").on("click", function () {
     globalData.minimap.reDraw($(this).attr("value"));

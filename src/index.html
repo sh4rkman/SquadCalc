@@ -5,17 +5,17 @@
 
     <title>SquadCalc</title>
 
-    <meta name="description" content="A Minimalist yet precise Mortar Calculator for SQUAD ! enter locations, shoot, profit.">
+    <meta name="description" content="A Complete Mortar Calculator for SQUAD !">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1">
     <meta name="theme-color" content="#111">
     <meta charset="utf-8">
 
     <!-- SOCIAL MEDIA -->
     <meta property="og:title" content="SquadCalc">
-    <meta property="og:description" content="A Minimalist yet precise Mortar Calculator for SQUAD ! enter locations, shoot, profit.">
-    <meta property="og:image" content="https://i.imgur.com/l7Ym3Xr.png">
+    <meta property="og:description" content="A Complete Mortar Calculator for SQUAD !">
+    <meta property="og:image" content="https://i.imgur.com/MIYQv6D.png">
     <meta property="og:url" content="https://squadcalc.app">
-    <meta name="twitter:card" content="https://i.imgur.com/l7Ym3Xr.png">
+    <meta name="twitter:card" content="https://i.imgur.com/MIYQv6D.png">
 
     <!-- FAVICON -->
     <link rel="shortcut icon" type="image/x-icon" href="./img/favicons/favicon.ico">
@@ -358,43 +358,90 @@
             <h2>Calculation Informations</h2>
             <br><br><br>
 
-            <table>
-                <tbody>
-                    <tr>
-                        <td>Bearing</td><td id="infBearing"></td>
-                    </tr>
-                    <tr>
-                        <td>Elevation</td><td id="infElevation"></td>
-                    </tr>
-                    <tr>
-                        <td>Distance</td><td id="infDistance"></td>
-                    </tr>
-                    <tr>
-                        <td>Time of Flight</td><td id="infTimeOfFlight"></td>
-                    </tr>
-                </tbody>
-            </table>
 
-            <table>
-                <tbody>
-                    <tr>
-                        <td>Spread</td><td id="infSpread"></td>
-                    </tr>
-                    <tr>
-                        <td>Weapon Height</td><td id="infWHeight"></td>
-                    </tr>
-                    <tr>
-                        <td>Target Height</td><td id="infTHeight"></td>
-                    </tr>
-                    <tr>
-                        <td>Height Difference</td><td id="infDHeight"></td>
-                    </tr>
-                </tbody>
-            </table>
-
+            <div id="canvasControls">
+                <button type="button" class="active" value="sim1" aria-label="Weapon 1">
+                    Weapon 1
+                </button>
+                <button type="button" class="" value ="sim2" aria-label="Weapon 2">
+                    Weapon 2
+                </button>
+            </div>
             
-            <div id="player">
-                <canvas id="heightGraph" width="1000" height="600"></canvas>
+            <div id="sim1" class="sim active">
+                <table>
+                    <tbody>
+                        <tr>
+                            <td>Bearing</td><td class="infBearing"></td>
+                        </tr>
+                        <tr>
+                            <td>Elevation</td><td class="infElevation"></td>
+                        </tr>
+                        <tr>
+                            <td>Distance</td><td class="infDistance"></td>
+                        </tr>
+                        <tr>
+                            <td>Time of Flight</td><td class="infTimeOfFlight"></td>
+                        </tr>
+                    </tbody>
+                </table>
+    
+                <table>
+                    <tbody>
+                        <tr>
+                            <td>Spread</td><td class="infSpread"></td>
+                        </tr>
+                        <tr>
+                            <td>Weapon Height</td><td class="infWHeight"></td>
+                        </tr>
+                        <tr>
+                            <td>Target Height</td><td class="infTHeight"></td>
+                        </tr>
+                        <tr>
+                            <td>Height Difference</td><td class="infDHeight"></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <canvas class="heightGraph" width="1000" height="600"></canvas>
+
+            </div>
+
+            <div id="sim2" class="sim">
+                <table>
+                    <tbody>
+                        <tr>
+                            <td>Bearing</td><td class="infBearing"></td>
+                        </tr>
+                        <tr>
+                            <td>Elevation</td><td class="infElevation"></td>
+                        </tr>
+                        <tr>
+                            <td>Distance</td><td class="infDistance"></td>
+                        </tr>
+                        <tr>
+                            <td>Time of Flight</td><td class="infTimeOfFlight"></td>
+                        </tr>
+                    </tbody>
+                </table>
+    
+                <table>
+                    <tbody>
+                        <tr>
+                            <td>Spread</td><td class="infSpread"></td>
+                        </tr>
+                        <tr>
+                            <td>Weapon Height</td><td class="infWHeight"></td>
+                        </tr>
+                        <tr>
+                            <td>Target Height</td><td class="infTHeight"></td>
+                        </tr>
+                        <tr>
+                            <td>Height Difference</td><td class="infDHeight"></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <canvas class="heightGraph" width="1000" height="600"></canvas>
             </div>
 
         </dialog>
@@ -402,7 +449,7 @@
     </div>
 
     <div id="actionMenu">
-        <button type="button" class="btn btn-delete">
+        <button type="button" class="btn btn-delete" aria-label="delete all targets">
             <i class="fa-solid fa-trash"></i>
         </button>
 
@@ -410,13 +457,13 @@
     </div>
 
     <div id="mapLayerMenu">
-        <button type="button" class="btn btn-basemap" value="basemap">
+        <button type="button" class="btn btn-basemap" value="basemap" aria-label="switch to basemap">
             <i class="fa-solid fa-map"></i>
         </button>
-        <button type="button" class="btn btn-terrainmap" value="terrainmap">
+        <button type="button" class="btn btn-terrainmap" value="terrainmap" aria-label="Switch to terrainmap">
             <i class="fa-solid fa-mountain-sun"></i>
         </button>
-        <button type="button" class="btn btn-heightmap" value="heightmap">
+        <button type="button" class="btn btn-heightmap" value="heightmap" aria-label="Switch to heightmap">
             <i class="fa-solid fa-mound"></i>
         </button>
     </div>

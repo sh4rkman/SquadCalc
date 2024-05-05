@@ -1,6 +1,19 @@
 
+# <img src="https://img.shields.io/badge/-major%20release-blue?style=flat-square">  **23.1.0** *(2024-05-05)*
 
-# <img src="https://img.shields.io/badge/-major%20release-blue?style=flat-square">  **23.0.0** *(2024-04-25)*
+<img src="https://img.shields.io/badge/-new-green"> You can now preview calc informations for a second weapon if it's placed
+
+<img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed layer button appearing sometime in legacy mode
+
+<img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed calculation not taking heights in account in legacy mode when switching map on existing calcs
+
+
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
+
+
+# <img src="https://img.shields.io/badge/-major%20release-blue?style=flat-square">  **23.0.0** *(2024-05-01)*
 
 <img src="https://img.shields.io/badge/-new-green"> **Heightmaps** ! You can know switch to a "heightmaps" mode with better understanding of elevation.
 

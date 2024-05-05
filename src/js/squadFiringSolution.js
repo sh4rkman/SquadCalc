@@ -27,10 +27,18 @@ export default class SquadFiringSolution {
      * @param {number} [vel] - initial mortar projectile velocity
      * @returns {number || NaN} radian angle if target in range, NaN otherwise
     */
-    getElevation(vDelta = 0, vel = 0) {
-        const GRAVITY = globalData.gravity * this.activeWeapon.gravityScale;
-        const P1 = Math.sqrt(vel ** 4 - GRAVITY * (GRAVITY * this.distance ** 2 + 2 * vDelta * vel ** 2));
-        return Math.atan((vel ** 2 - (P1 * globalData.activeWeapon.getAngleType())) / (GRAVITY * this.distance));
+    getElevation(dist = 0, vDelta = 0, vel = 0) {
+        var padding = 0;
+        const GRAVITY = globalData.gravity * globalData.activeWeapon.gravityScale;
+        const P1 = Math.sqrt(vel ** 4 - GRAVITY * (GRAVITY * dist ** 2 + 2 * vDelta * vel ** 2));
+    
+        if (globalData.activeWeapon.name==="Technical"){
+            // The technical mortar is bugged : the ingame range metter is off by 5°
+            // Ugly fix until OWI correct it
+            padding = -0.0872665;
+        }
+    
+        return padding + Math.atan((vel ** 2 - (P1 * globalData.activeWeapon.getAngleType())) / (GRAVITY * dist));
     }
 
 }

@@ -160,9 +160,17 @@ export function getMaxDist(vel, g) {
  * @returns {number || NaN} radian angle if target in range, NaN otherwise
  */
 export function getElevation(dist = 0, vDelta = 0, vel = 0) {
+    var padding = 0;
     const GRAVITY = globalData.gravity * globalData.activeWeapon.gravityScale;
     const P1 = Math.sqrt(vel ** 4 - GRAVITY * (GRAVITY * dist ** 2 + 2 * vDelta * vel ** 2));
-    return Math.atan((vel ** 2 - (P1 * globalData.activeWeapon.getAngleType())) / (GRAVITY * dist));
+
+    if (globalData.activeWeapon.name === "Technical"){
+        // The technical mortar is bugged : the ingame range metter is off by 5°
+        // Ugly fix until OWI correct it
+        padding = -0.0872665;
+    }
+
+    return padding + Math.atan((vel ** 2 - (P1 * globalData.activeWeapon.getAngleType())) / (GRAVITY * dist));
 }
 
 export function getSpreadParameter(elevation, vel){
@@ -232,8 +240,8 @@ export function getHeight(a, b) {
 
         // place visual green marker on the canvas
         ctx.fillStyle = "green";
-        ctx.fillRect(AOffset.lat, AOffset.lng, 2, 2);
-        ctx.fillRect(BOffset.lat, BOffset.lng, 2, 2);
+        //ctx.fillRect(AOffset.lat, AOffset.lng, 10, 10);
+        //ctx.fillRect(BOffset.lat, BOffset.lng, 10, 10);
     }
 
     // Check if a & b aren't out of canvas
@@ -280,6 +288,8 @@ export function shoot(inputChanged = "") {
     var startA;
     var startB;
     var height;
+    var heightB;
+    var heightA;
     var distance;
     var elevation;
     var bearing;
@@ -290,6 +300,7 @@ export function shoot(inputChanged = "") {
     var b = TARGET_LOC.val();
     var aPos;
     var bPos;
+    const mapScale = globalData.mapSize / MAPS.find((elem, index) => index == globalData.activeMap).size;
 
     resetCalc();
 
@@ -330,24 +341,14 @@ export function shoot(inputChanged = "") {
         return 1;
     }
 
-    height = getHeight(aPos, bPos);
-
-    // Check if mortars/target are out of map
-    if ((height === "AERROR") || (height === "BERROR")) {
-
-        if (height === "AERROR") {
-            showError("Mortar is out of map", "mortar");
-        } else {
-            showError("Target is out of map", "target");
-        }
-        return 1;
-    }
+    heightA = globalData.minimap.heightmap.getHeight(L.latLng([aPos.lng * -mapScale, aPos.lat * mapScale]));
+    heightB = globalData.minimap.heightmap.getHeight( L.latLng([bPos.lng * -mapScale, bPos.lat * mapScale]));
+    height = heightB - heightA;
 
     distance = getDist(aPos, bPos);
     bearing = getBearing(aPos, bPos);
     vel = globalData.activeWeapon.getVelocity(distance);
     elevation = getElevation(distance, height, vel);
-
 
 
     if (globalData.activeWeapon.unit === "mil") {
@@ -823,6 +824,7 @@ export function pad(num, size) {
 
 export function loadUI(){
     $(".btn-delete").hide();
+    $("#mapLayerMenu").hide();
     globalData.ui = localStorage.getItem("data-ui");
 
     if (globalData.ui === null || isNaN(globalData.ui) || globalData.ui === ""){
