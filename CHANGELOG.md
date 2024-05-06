@@ -1,5 +1,22 @@
 
-# <img src="https://img.shields.io/badge/-major%20release-blue?style=flat-square">  **23.1.0** *(2024-05-05)*
+
+# <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">  **23.2.0** *(2024-05-06)*
+
+
+<img src="https://img.shields.io/badge/-%20fix%20-orange"> Layer preference is now properly restored when loading the page again
+
+<img src="https://img.shields.io/badge/-%20fix%20-orange"> Bearing is displayed again with 1 digit after the decimal point (thanks ThaViking4 [#140](https://github.com/sh4rkman/SquadCalc/issues/140))
+
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
+
+
+
+
+
+
+# <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff"> **23.1.0** *(2024-05-05)*
 
 <img src="https://img.shields.io/badge/-new-green"> You can now preview calc informations for a second weapon if it's placed
 

@@ -483,7 +483,7 @@ export var squadTargetMarker = squadMarker.extend({
         content = "<span class='calcNumber'></span></br><span>" + ELEV + "</span>";
 
         if (globalData.userSettings.showBearing) {
-            content += "<br><span class='bearingUiCalc'>" +  BEARING.toFixed(0) + "° </span>";
+            content += "<br><span class='bearingUiCalc'>" +  BEARING.toFixed(1) + "° </span>";
         }
 
         if (globalData.userSettings.showTimeOfFlight) {
