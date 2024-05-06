@@ -1,13 +1,13 @@
-import { globalData } from "./conf";
+import { App } from "./conf";
 
 export default class SquadFiringSolution {
 
     constructor(targetLatLng, weaponLatLng) {
         this.weaponLatLng = weaponLatLng;
         this.targetLatLng = targetLatLng;
-        this.activeWeapon = globalData.activeWeapon;
+        this.activeWeapon = App.activeWeapon;
         this.distance = this.getDist();
-        this.elevation = this.getElevation(0, 110);
+        this.elevation = this.getElevation(this.distance, this.vel);
     }
 
 
@@ -29,16 +29,16 @@ export default class SquadFiringSolution {
     */
     getElevation(dist = 0, vDelta = 0, vel = 0) {
         var padding = 0;
-        const GRAVITY = globalData.gravity * globalData.activeWeapon.gravityScale;
+        const GRAVITY = App.gravity * App.activeWeapon.gravityScale;
         const P1 = Math.sqrt(vel ** 4 - GRAVITY * (GRAVITY * dist ** 2 + 2 * vDelta * vel ** 2));
     
-        if (globalData.activeWeapon.name==="Technical"){
+        if (App.activeWeapon.name==="Technical"){
             // The technical mortar is bugged : the ingame range metter is off by 5°
             // Ugly fix until OWI correct it
             padding = -0.0872665;
         }
     
-        return padding + Math.atan((vel ** 2 - (P1 * globalData.activeWeapon.getAngleType())) / (GRAVITY * dist));
+        return padding + Math.atan((vel ** 2 - (P1 * App.activeWeapon.getAngleType())) / (GRAVITY * dist));
     }
 
 }

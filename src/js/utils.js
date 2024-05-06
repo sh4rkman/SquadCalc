@@ -1,5 +1,5 @@
 import { tooltip_save, tooltip_copied } from "./tooltips";
-import { globalData } from "./conf";
+import { App } from "./conf";
 import { MAPS } from "./maps";
 import { animateCSS, animateCalc, drawLine} from "./animations";
 import L from "leaflet";
@@ -32,7 +32,7 @@ function getPos(kp) {
         } else {
             // opposite of calculations in getKP()
             const SUB = Number(PARTS[i]);
-            if (!globalData.debug.active && Number.isNaN(SUB)) {
+            if (!App.debug.active && Number.isNaN(SUB)) {
                 console.log(`invalid keypad string: ${FORMATTED_KEYPAD}`);
             }
             const subX = (SUB - 1) % 3;
@@ -161,20 +161,20 @@ export function getMaxDist(vel, g) {
  */
 export function getElevation(dist = 0, vDelta = 0, vel = 0) {
     var padding = 0;
-    const GRAVITY = globalData.gravity * globalData.activeWeapon.gravityScale;
+    const GRAVITY = App.gravity * App.activeWeapon.gravityScale;
     const P1 = Math.sqrt(vel ** 4 - GRAVITY * (GRAVITY * dist ** 2 + 2 * vDelta * vel ** 2));
 
-    if (globalData.activeWeapon.name === "Technical"){
+    if (App.activeWeapon.name === "Technical"){
         // The technical mortar is bugged : the ingame range metter is off by 5°
         // Ugly fix until OWI correct it
         padding = -0.0872665;
     }
 
-    return padding + Math.atan((vel ** 2 - (P1 * globalData.activeWeapon.getAngleType())) / (GRAVITY * dist));
+    return padding + Math.atan((vel ** 2 - (P1 * App.activeWeapon.getAngleType())) / (GRAVITY * dist));
 }
 
 export function getSpreadParameter(elevation, vel){
-    const gravity = globalData.gravity * globalData.activeWeapon.gravityScale;
+    const gravity = App.gravity * App.activeWeapon.gravityScale;
 
     return  {
         semiMajorAxis: getHorizontalSpread(elevation, vel, gravity),
@@ -191,10 +191,10 @@ export function getSpreadParameter(elevation, vel){
  * @returns {lat;lng} - offset position
  */
 export function getOffsetLatLng(pos) {
-    const mapScale = globalData.canvas.size / MAPS.find((elem, index) => index == globalData.activeMap).size;
+    const mapScale = App.canvas.size / MAPS.find((elem, index) => index == App.activeMap).size;
     return {
-        lat: (pos.lat + MAPS.find((elem, index) => index == globalData.activeMap).offset[0] * mapScale) * mapScale,
-        lng: (pos.lng + MAPS.find((elem, index) => index == globalData.activeMap).offset[1] * mapScale) * mapScale
+        lat: (pos.lat + MAPS.find((elem, index) => index == App.activeMap).offset[0] * mapScale) * mapScale,
+        lng: (pos.lng + MAPS.find((elem, index) => index == App.activeMap).offset[1] * mapScale) * mapScale
     };
 }
 
@@ -213,7 +213,7 @@ export function getHeight(a, b) {
     var ctx = document.getElementById("canvas").getContext("2d");
 
     // if user didn't select map, no height calculation
-    if (!globalData.activeMap) { return 0; }
+    if (!App.activeMap) { return 0; }
 
     // Apply offset & scaling
     // Heightmaps & maps doesn't always start at A01, they sometimes need to be offset manually
@@ -227,7 +227,7 @@ export function getHeight(a, b) {
 
 
     // Debug purpose
-    if (globalData.debug.active) {
+    if (App.debug.active) {
         console.log("------------------------------");
         console.log("HEIGHTMAP");
         console.log("------------------------------");
@@ -252,8 +252,8 @@ export function getHeight(a, b) {
         return "BERROR";
     }
 
-    Aheight = (255 + Aheight[0] - Aheight[2]) * MAPS.find((elem, index) => index == globalData.activeMap).scaling;
-    Bheight = (255 + Bheight[0] - Bheight[2]) * MAPS.find((elem, index) => index == globalData.activeMap).scaling;
+    Aheight = (255 + Aheight[0] - Aheight[2]) * MAPS.find((elem, index) => index == App.activeMap).scaling;
+    Bheight = (255 + Bheight[0] - Bheight[2]) * MAPS.find((elem, index) => index == App.activeMap).scaling;
 
     return Bheight - Aheight;
 }
@@ -300,7 +300,7 @@ export function shoot(inputChanged = "") {
     var b = TARGET_LOC.val();
     var aPos;
     var bPos;
-    const mapScale = globalData.mapSize / MAPS.find((elem, index) => index == globalData.activeMap).size;
+    const mapScale = App.mapSize / MAPS.find((elem, index) => index == App.activeMap).size;
 
     resetCalc();
 
@@ -341,23 +341,23 @@ export function shoot(inputChanged = "") {
         return 1;
     }
 
-    heightA = globalData.minimap.heightmap.getHeight(L.latLng([aPos.lng * -mapScale, aPos.lat * mapScale]));
-    heightB = globalData.minimap.heightmap.getHeight( L.latLng([bPos.lng * -mapScale, bPos.lat * mapScale]));
+    heightA = App.minimap.heightmap.getHeight(L.latLng([aPos.lng * -mapScale, aPos.lat * mapScale]));
+    heightB = App.minimap.heightmap.getHeight( L.latLng([bPos.lng * -mapScale, bPos.lat * mapScale]));
     height = heightB - heightA;
 
     distance = getDist(aPos, bPos);
     bearing = getBearing(aPos, bPos);
-    vel = globalData.activeWeapon.getVelocity(distance);
+    vel = App.activeWeapon.getVelocity(distance);
     elevation = getElevation(distance, height, vel);
 
 
-    if (globalData.activeWeapon.unit === "mil") {
+    if (App.activeWeapon.unit === "mil") {
         elevation = radToMil(elevation);
     } else {
         elevation = radToDeg(elevation);
         // The technical mortar is bugged : the ingame range metter is off by 5°
         // Ugly fix until OWI correct it
-        if (globalData.activeWeapon.name === "Technical") { elevation = elevation - 5; }
+        if (App.activeWeapon.name === "Technical") { elevation = elevation - 5; }
     }
 
 
@@ -368,7 +368,7 @@ export function shoot(inputChanged = "") {
     }
 
 
-    if ((elevation > globalData.activeWeapon.minElevation[1])) {
+    if ((elevation > App.activeWeapon.minElevation[1])) {
         showError("Target is too close : " + distance.toFixed(0) + "m", "target");
         return 1;
     }
@@ -388,7 +388,7 @@ export function shoot(inputChanged = "") {
  */
 function insertCalc(bearing, elevation, distance, vel, height) {
 
-    if (!globalData.debug.active) {
+    if (!App.debug.active) {
         console.clear();
     } else {
         console.log("------------------------------");
@@ -401,18 +401,18 @@ function insertCalc(bearing, elevation, distance, vel, height) {
     console.log(`-> Velocity: ${vel.toFixed(1)}m/s`);
 
     animateCalc($("#bearingNum").html(),bearing.toFixed(1),500,"bearingNum");
-    animateCalc($("#elevationNum").html(),elevation.toFixed(globalData.activeWeapon.elevationPrecision),500,"elevationNum");
+    animateCalc($("#elevationNum").html(),elevation.toFixed(App.activeWeapon.elevationPrecision),500,"elevationNum");
 
     $("elevation").html($("<i class=\"fas fa-drafting-compass fa-rotate-180 resultIcons\"></i>"));
      
-    if (globalData.activeWeapon.getAngleType() === -1) {
+    if (App.activeWeapon.getAngleType() === -1) {
         $("#highlow").html($("<i class=\"fa-solid fa-sort-amount-up resultIcons\"></i>"));
     }
     else {
         $("#highlow").html($("<i class=\"fa-solid fa-sort-amount-down resultIcons\"></i>"));
     }
     
-    if (globalData.activeWeapon.name != "mortar" && globalData.activeWeapon.name != "UB-32") {
+    if (App.activeWeapon.name != "mortar" && App.activeWeapon.name != "UB-32") {
         $("#highlow i").addClass("active");
     }
     
@@ -483,7 +483,7 @@ function showError(msg, issue) {
     $("#settings").css({ "border-color": "firebrick" });
     animateCSS($("#settings"), "shakeX");
 
-    if (!globalData.debug.active) { console.clear(); }
+    if (!App.debug.active) { console.clear(); }
     console.error(msg);
 }
 
@@ -635,7 +635,7 @@ export function resizeInputsOnResize() {
     });
 
     if ($(window).width() <= mobileWidth) {
-        globalData.line.hide("none");
+        App.line.hide("none");
     }
 }
 
@@ -676,7 +676,7 @@ export function copyCalc(e) {
     if (!$(".copy").hasClass("copy")) { return 1; }
 
     // When using BM-21, and the target icon is clicked, do nothing
-    if (globalData.activeWeapon.name != "mortar" || globalData.activeWeapon.name != "B-32") {
+    if (App.activeWeapon.name != "mortar" || App.activeWeapon.name != "B-32") {
         if ($(e.target).hasClass("fa-sort-amount-down") || $(e.target).hasClass("fa-sort-amount-up") ) {
             return 1;
         }
@@ -697,10 +697,10 @@ export function copyCalc(e) {
  */
 export function changeHighLow(){
     // If mortar/deployable UB32, deny changing
-    if (globalData.activeWeapon.name == "mortar" || globalData.activeWeapon.name == "UB-32") {return 1;}
+    if (App.activeWeapon.name == "mortar" || App.activeWeapon.name == "UB-32") {return 1;}
 
     const isLowAngle = $("#highlow").find(".fa-sort-amount-up").length > 0;
-    globalData.activeWeapon.angleType = isLowAngle ? "low" : "high";
+    App.activeWeapon.angleType = isLowAngle ? "low" : "high";
     shoot();
 }
 
@@ -789,7 +789,7 @@ export function getKP(lat, lng, precision) {
     sub4Number += Math.floor(x / s4) % 3;
 
     if (!precision){
-        precision = globalData.minimap.getZoom();
+        precision = App.minimap.getZoom();
     }
 
     // The more the user zoom in, the more precise we display coords under mouse
@@ -825,14 +825,14 @@ export function pad(num, size) {
 export function loadUI(){
     $(".btn-delete").hide();
     $("#mapLayerMenu").hide();
-    globalData.ui = localStorage.getItem("data-ui");
+    App.ui = localStorage.getItem("data-ui");
 
-    if (globalData.ui === null || isNaN(globalData.ui) || globalData.ui === ""){
-        globalData.ui = 1; 
+    if (App.ui === null || isNaN(App.ui) || App.ui === ""){
+        App.ui = 1; 
         localStorage.setItem("data-ui", 1);  
     }
 
-    if (globalData.ui == 1){
+    if (App.ui == 1){
         loadMapUIMode();
     }
 
@@ -846,17 +846,17 @@ function loadMapUIMode(){
     $(".mapSelector").addClass("ui");
     $("#switchUIbutton").removeClass("fa-map").addClass("fa-xmarks-lines");
     $("#mapLayerMenu").show();
-    globalData.ui = 1;
-    globalData.line.hide("none");
+    App.ui = 1;
+    App.line.hide("none");
     localStorage.setItem("data-ui", 1);
-    globalData.minimap.invalidateSize();
+    App.minimap.invalidateSize();
 }
 
 export function switchUI(){
 
-    if (globalData.ui == 0){
+    if (App.ui == 0){
         loadMapUIMode();
-        if (globalData.minimap.activeTargetsMarkers.getLayers().length > 0) {
+        if (App.minimap.activeTargetsMarkers.getLayers().length > 0) {
             $(".btn-delete").show();
             $("#mapLayerMenu").show();
         }
@@ -869,7 +869,7 @@ export function switchUI(){
         $("#switchUIbutton").removeClass("fa-xmarks-lines").addClass("fa-map");
         $(".btn-delete").hide();
         $("#mapLayerMenu").hide();
-        globalData.ui = 0;
+        App.ui = 0;
         localStorage.setItem("data-ui", 0);
         drawLine();
     }
@@ -890,8 +890,8 @@ export function isTouchDevice() {
  */
 function getVerticalSpread(angle, vel){
 
-    const moa = degToRad((globalData.activeWeapon.moa / 2) / 60);
-    const gravity = globalData.gravity * globalData.activeWeapon.gravityScale;
+    const moa = degToRad((App.activeWeapon.moa / 2) / 60);
+    const gravity = App.gravity * App.activeWeapon.gravityScale;
 
     // Apply MOA to found Angle and deduce the spread distance
     // https://en.wikipedia.org/wiki/Projectile_motion#Maximum_distance_of_projectile
@@ -929,7 +929,7 @@ function getProjectilePathDistance(angle, velocity, gravity){
  * @returns {number} - Length of horizontal spread in meters
  */
 function getHorizontalSpread(angle, velocity, gravity){
-    var MOA = globalData.activeWeapon.moa / 60;
+    var MOA = App.activeWeapon.moa / 60;
     var p1 = 2 * Math.PI * getProjectilePathDistance(angle, velocity, gravity);
     var p2 = (MOA / 360) * p1;
 
@@ -949,48 +949,9 @@ function getHorizontalSpread(angle, velocity, gravity){
  * @returns {number} - time of flight in seconds
  */
 export function getTimeOfFlight(angle, vel, heightDiff){
-    const gravity = globalData.gravity * globalData.activeWeapon.gravityScale;
+    const gravity = App.gravity * App.activeWeapon.gravityScale;
     const t = vel * Math.sin(angle) + Math.sqrt( (Math.pow(vel, 2) * Math.pow(Math.sin(angle), 2)) + (2 * gravity * -heightDiff));
     return t / gravity;
-}
-
-/**
- * Calculates the angle the mortar needs to be set in order
- * to hit the target at the desired distance and vertical delta.
- * @param {number} [dist] - distance between mortar and target from getDist()
- * @param {number} [vDelta] - vertical delta between mortar and target from getHeight()
- * @param {number} [vel] - initial mortar projectile velocity
- * @returns {object} - An object containing the elevation angle and ellipse parameters
- */
-function getElevationWithEllipseParams(dist = 0, vDelta = 0, vel = 0) {
-    const gravity = globalData.gravity * globalData.activeWeapon.gravityScale;
-    var ellipseParams;
-
-    // Calculate the mortar elevation angle
-    var P1 = Math.sqrt(vel ** 4 - gravity * (gravity * dist ** 2 + 2 * vDelta * vel ** 2));
-    var angle = Math.atan((vel ** 2 - (P1 * globalData.activeWeapon.getAngleType())) / (gravity * dist));
-    
-    // Calculate spread ellipse parameters
-    if (globalData.activeWeapon.moa != 0){
-        ellipseParams = {
-            semiMajorAxis: getHorizontalSpread(angle, vel, gravity),
-            semiMinorAxis: getVerticalSpread(angle, vel),
-            ellipseAngle: (angle * (180 / Math.PI))
-        };
-    }
-    else {
-        ellipseParams = {
-            semiMajorAxis: 0,
-            semiMinorAxis: 0,
-            ellipseAngle: 0
-        };
-    }
-
-    // Return object containing elevation angle and ellipse parameters
-    return {
-        elevationAngle: angle,
-        ellipseParams: ellipseParams,
-    };
 }
 
 export function showPage(){

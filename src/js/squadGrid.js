@@ -13,7 +13,7 @@ import {
 
 import { isMultiple } from "./utils";
 import { MAPS } from "./maps";
-import { globalData } from "./conf";
+import { App } from "./conf";
 
 /**
  * This Layergroup displays the grid in the same way it is displayed in-game.
@@ -60,7 +60,6 @@ export default LayerGroup.extend({
         LayerGroup.prototype.initialize.call(this);
         Util.setOptions(this, options);
         this.map = map;
-        console.log(this.map)
     },
 
     clearLines() {
@@ -183,7 +182,7 @@ export default LayerGroup.extend({
         // clear old grid lines
         this.clearLines();
 
-        const mapScale = this.map.tilesSize / MAPS.find((elem, index) => index == globalData.activeMap).size;
+        const mapScale = this.map.tilesSize / MAPS.find((elem, index) => index == App.activeMap).size;
 
         const kp = (300 / 3 ** 0) * mapScale;
         const s1 = (300 / 3 ** 1) * mapScale;

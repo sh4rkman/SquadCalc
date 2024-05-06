@@ -1,14 +1,11 @@
 /**
  * Global object holding current application state
  */
-export var globalData = {
+export var App = {
     activeWeapon: "",
     activeMap: "",
-    angleTypePref: "",
     minimap: "",
-    mapScale: "",
     mapSize: 255,
-    markersGroup: "",
     canvas: {
         obj: "",
         size: 1000, //canvas size defined in plain html (not the css resize)
@@ -20,7 +17,6 @@ export var globalData = {
         DEBUG_TARGET_COORD: "",
     },
     gravity: 9.8,
-    theme: "classic",
     line: "",
     userSettings: {
         keypadUnderCursor: true,
@@ -31,3 +27,4 @@ export var globalData = {
         heightmapMode: false,
     }
 };
+

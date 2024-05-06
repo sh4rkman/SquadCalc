@@ -1,6 +1,6 @@
 import L from "leaflet";
 import { MAPS } from "./maps";
-import { globalData } from "./conf";
+import { App } from "./conf";
 import { shoot } from "./utils";
 
 export default L.ImageOverlay.extend({
@@ -27,7 +27,6 @@ export default L.ImageOverlay.extend({
             this.ctx.drawImage(this._image, 0, 0, this.canvas.width, this.canvas.height);
             shoot();
         });
-
     },
 
     /**
@@ -36,7 +35,7 @@ export default L.ImageOverlay.extend({
      * @returns {integer} - height in meters
      */
     getHeight: function(latlng){
-        const ZSCALING = MAPS.find((elem, index) => index == globalData.activeMap).scaling;
+        const ZSCALING = MAPS.find((elem, index) => index == App.activeMap).scaling;
         var color = this.ctx.getImageData(Math.round(latlng.lng * this.heightmapScaling), Math.round(latlng.lat * -this.heightmapScaling), 1, 1).data;
         return (255 + color[0] - color[2]) * ZSCALING;
     },

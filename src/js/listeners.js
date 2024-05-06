@@ -1,11 +1,11 @@
 import { shoot, filterInput, resizeInput, resizeInputsOnResize, RemoveSaves, copySave, copyCalc, saveCalc, changeHighLow, switchUI } from "./utils";
 import { changeWeapon } from "./weapons";
-import { globalData } from "./conf";
+import { App } from "./conf";
 
 $(document).on("change", ".dropbtn2", function() { changeWeapon(); });
 $(document).on("change", ".dropbtn", function() { 
-    globalData.minimap.clear(); 
-    globalData.minimap.draw(true); 
+    App.minimap.clear(); 
+    App.minimap.draw(true); 
 });
 
 $(document).on("input", "#mortar-location", function() { shoot("weapon"); });
@@ -24,7 +24,7 @@ $(document).on("click", "#highlow", function() { changeHighLow(); });
 $(document).on("click", function(event) {if (!$(event.target).closest(".fab-wrapper").length) {$("#fabCheckbox").prop("checked", false);}});
 $(document).on("click", "#fabCheckbox2", function() {switchUI();});
 $(document).on("click", "#fabCheckbox", function() {$("#helpDialog")[0].showModal();});
-$(document).on("click", ".btn-delete", function() { globalData.minimap.deleteTargets();});
+$(document).on("click", ".btn-delete", function() { App.minimap.deleteTargets();});
 
 $(window).on("resize", function() { resizeInputsOnResize(); });
 
@@ -37,7 +37,7 @@ $("#canvasControls button").on("click", function(){
 });
 
 $("#mapLayerMenu").find("button").on("click", function () {
-    globalData.minimap.reDraw($(this).attr("value"));
+    App.minimap.reDraw($(this).attr("value"));
 });
 
 

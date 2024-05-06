@@ -1,7 +1,7 @@
 import targetIcon from "../img/icons/marker_target1.webp";
 //import weaponIcon from "../img/icons/marker_mortar_0.webp";
 import { degToRad, radToDeg, radToMil } from "../js/utils.js";
-import { globalData } from "./conf.js";
+import { App } from "./conf.js";
 
 export default class Simulation {
 
@@ -40,7 +40,7 @@ export default class Simulation {
         } else {
             this.div.find(".infTimeOfFlight").first().text(this.results.timeOfFlight.toFixed(1)+"s");
             this.div.find(".infSpread").first().text("H:"+this.results.spreadParameters.semiMajorAxis.toFixed(1)+"m V:"+this.results.spreadParameters.semiMinorAxis.toFixed(1)+"m");
-            if (globalData.activeWeapon.unit === "mil"){
+            if (App.activeWeapon.unit === "mil"){
                 this.div.find(".infElevation").first().text(radToMil(this.results.elevation).toFixed(1)+"mil");
             } else {
                 this.div.find(".infElevation").first().text(radToDeg(this.results.elevation).toFixed(1)+"°");

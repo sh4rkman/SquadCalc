@@ -1,4 +1,4 @@
-import { globalData } from "./conf";
+import { App } from "./conf";
 import LeaderLine from "leader-line-new";
 
 
@@ -42,9 +42,9 @@ export function createLine() {
         dash: { len: 10, gap: 8 },
     };
 
-    globalData.line = new LeaderLine(
+    App.line = new LeaderLine(
         LeaderLine.pointAnchor(
-            document.getElementById("mortarImg"), { x: globalData.activeWeapon.logoCannonPos, y: "-30%" }
+            document.getElementById("mortarImg"), { x: App.activeWeapon.logoCannonPos, y: "-30%" }
         ),
         LeaderLine.pointAnchor(
             document.getElementById("targetImg"), { x: "-30%", y: "-30%" }
@@ -59,8 +59,8 @@ export function createLine() {
 export function drawLine() {
     if ($(window).width() > 767) {
         setTimeout(function() {
-            globalData.line.start = LeaderLine.pointAnchor(document.getElementById("mortarImg"), { x: globalData.activeWeapon.logoCannonPos, y: "-30%" });
-            globalData.line.show("draw", { duration: 2000 });
+            App.line.start = LeaderLine.pointAnchor(document.getElementById("mortarImg"), { x: App.activeWeapon.logoCannonPos, y: "-30%" });
+            App.line.show("draw", { duration: 2000 });
             explode($(".leader-line").position().left, $(".leader-line").position().top, -135, 45);
         }, 1200);
     }

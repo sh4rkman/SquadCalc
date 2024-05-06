@@ -1,11 +1,11 @@
 import L from "leaflet";
 import squadGrid from "./squadGrid";
 import squadHeightmap from "./squadHeightmaps";
-import { globalData } from "./conf";
+import { App } from "./conf";
 import { MAPS } from "./maps";
 import { squadWeaponMarker, squadTargetMarker } from "./squadMarker";
 import { mortarIcon, mortarIcon1, mortarIcon2 } from "./squadIcon";
-import { getKP, shoot } from "./utils";
+import { getKP } from "./utils";
 import { explode } from "./animations";
 
 export var squadMinimap = L.Map.extend({
@@ -13,14 +13,9 @@ export var squadMinimap = L.Map.extend({
 
 
     initialize: function (id, tilesSize, options) {
-        
-        console.log(id)
-        console.log(tilesSize)
-        this.tilesSize = tilesSize
-        console.log(this.tilesSize)
 
-        var options = {
-            center: [-this.tilesSize/2, this.tilesSize/2],
+        options = {
+            center: [-tilesSize/2, tilesSize/2],
             attributionControl: false,
             crs: L.CRS.Simple,
             minZoom: 1,
@@ -34,15 +29,13 @@ export var squadMinimap = L.Map.extend({
             boxZoom: true,
             fadeAnimation: true,
             zoom: 2,
-            //maxBoundsViscosity: 0,
-            //maxBounds:[[500, -500], [-800, 800]],
         };
 
         L.setOptions(this, options);
         L.Map.prototype.initialize.call(this, id, options);
 
 
-
+        this.tilesSize = tilesSize;
         this.heightmapGroup = L.layerGroup().addTo(this);
         this.layerGroup = L.layerGroup().addTo(this);
 
@@ -66,7 +59,7 @@ export var squadMinimap = L.Map.extend({
         this.on("dblclick", this._handleDoubleCkick, this);
         this.on("contextmenu", this._handleContextMenu, this);
         this.on("mouseout", this._handleMouseOut, this);
-        if (globalData.userSettings.keypadUnderCursor){
+        if (App.userSettings.keypadUnderCursor){
             this.on("mousemove", this._handleMouseMove, this);
         }
     },
@@ -86,11 +79,12 @@ export var squadMinimap = L.Map.extend({
         mapVal = $(".dropbtn").val();
         if (mapVal == "") {mapVal = 11;} // default map is Kohat
         map = MAPS.find((elem, index) => index == mapVal);
-        globalData.activeMap = mapVal;
-        globalData.mapScale = this.tilesSize / map.size;
+        App.activeMap = mapVal;
+
 
         imageBounds = L.latLngBounds(L.latLng(0, 0), L.latLng(-this.tilesSize, this.tilesSize));
-        this.mapScale = map.size / this.tilesSize;
+        this.gameToMapScale = this.tilesSize / map.size;
+        this.mapToGameScale = map.size / this.tilesSize;
 
         previousLayers = this.layerGroup.getLayers();
 
@@ -136,7 +130,7 @@ export var squadMinimap = L.Map.extend({
         this.grid = new squadGrid(this);
         this.grid.setBounds(L.latLngBounds(L.latLng(0, 0), L.latLng(-this.tilesSize+1, this.tilesSize-1)));
 
-        if (globalData.userSettings.grid) {
+        if (App.userSettings.grid) {
             this.showGrid();
         }
 
@@ -168,7 +162,7 @@ export var squadMinimap = L.Map.extend({
         $("#mapLayerMenu").find("button").removeClass("active");
         $(".btn-"+val).addClass("active");
 
-        globalData.userSettings.layerMode = val;
+        App.userSettings.layerMode = val;
         localStorage.setItem("settings-terrain-mode", val);
        
         this.draw(false);
@@ -238,42 +232,6 @@ export var squadMinimap = L.Map.extend({
     },
 
     /**
-     * Draw the selected map's heightmap in a hidden canvas
-     */
-    drawHeightmap: function() {
-        const IMG = new Image(); // Create new img element
-        const map = MAPS.find((elem, index) => index == globalData.activeMap);
-        IMG.src = "maps"+ map.mapURL + map.name.toLowerCase() + ".webp";
-
-        IMG.addEventListener("load", function() { // wait for the image to load or it does crazy stuff
-            globalData.canvas.obj.drawImage(IMG, 0, 0, globalData.canvas.size, globalData.canvas.size);
-            shoot();
-        }, false);
-   
-    },
-
-    /**
-     * Load the heatmap to the canvas
-     */
-    loadHeatmap: function() {
-        const IMG = new Image();
-        globalData.canvas.obj = document.getElementById("canvas").getContext("2d", {willReadFrequently: true});
-
-        IMG.addEventListener("load", function() {
-            globalData.canvas.obj.drawImage(IMG, 0, 0, globalData.canvas.size, globalData.canvas.size); // Draw img at good scale
-        }, false);
-
-        if (globalData.debug.active) {
-            // when in debug mode, display the heightmap and prepare keypads
-            $("#canvas").css("display", "flex");
-            $("#mortar-location").val(globalData.debug.DEBUG_MORTAR_COORD);
-            $("#target-location").val(globalData.debug.DEBUG_TARGET_COORD);
-            shoot();
-        }
-    },
-
-
-    /**
      * Right-Click
      * Place a new WeaponMarker on the minimap
      */
@@ -311,8 +269,8 @@ export var squadMinimap = L.Map.extend({
             return;
         }
 
-        this.mouseLocationPopup.setLatLng(e.latlng).openOn(globalData.minimap);
-        this.mouseLocationPopup.setContent("<p>"+ getKP(-e.latlng.lat * this.mapScale, e.latlng.lng * this.mapScale) + "</p>");
+        this.mouseLocationPopup.setLatLng(e.latlng).openOn(this);
+        this.mouseLocationPopup.setContent("<p>"+ getKP(-e.latlng.lat * this.mapToGameScale, e.latlng.lng * this.mapToGameScale) + "</p>");
     },
 
 
@@ -331,10 +289,10 @@ export var squadMinimap = L.Map.extend({
             return 0;
         }
         
-        new squadTargetMarker(L.latLng(e.latlng), {animate: globalData.userSettings.targetAnimation}, this).addTo(this.markersGroup);
+        new squadTargetMarker(L.latLng(e.latlng), {animate: App.userSettings.targetAnimation}, this).addTo(this.markersGroup);
         $(".btn-delete").show();
 
-        if (globalData.userSettings.targetAnimation){
+        if (App.userSettings.targetAnimation){
             setTimeout(function() {
                 explode(e.containerPoint.x, e.containerPoint.y, -190, 10);
             }, 250);
