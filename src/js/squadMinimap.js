@@ -9,28 +9,39 @@ import { getKP, shoot } from "./utils";
 import { explode } from "./animations";
 
 export var squadMinimap = L.Map.extend({
-    options: {
-        center: [-globalData.mapSize/2, globalData.mapSize/2],
-        attributionControl: false,
-        crs: L.CRS.Simple,
-        minZoom: 1,
-        maxZoom: 8,
-        zoomControl: false,
-        doubleClickZoom: false,
-        edgeBufferTiles: 5,
-        renderer: L.svg({padding: 3}), // https://leafletjs.com/reference.html#path-clip_padding
-        closePopupOnClick: false,
-        wheelPxPerZoomLevel: 75,
-        boxZoom: true,
-        fadeAnimation: true,
-        zoom: 2,
-        //maxBoundsViscosity: 0,
-        //maxBounds:[[500, -500], [-800, 800]],
-    },
 
 
-    initialize: function (latlng, options) {
-        L.Map.prototype.initialize.call(this, latlng, options);
+
+    initialize: function (id, tilesSize, options) {
+        
+        console.log(id)
+        console.log(tilesSize)
+        this.tilesSize = tilesSize
+        console.log(this.tilesSize)
+
+        var options = {
+            center: [-this.tilesSize/2, this.tilesSize/2],
+            attributionControl: false,
+            crs: L.CRS.Simple,
+            minZoom: 1,
+            maxZoom: 8,
+            zoomControl: false,
+            doubleClickZoom: false,
+            edgeBufferTiles: 5,
+            renderer: L.svg({padding: 3}), // https://leafletjs.com/reference.html#path-clip_padding
+            closePopupOnClick: false,
+            wheelPxPerZoomLevel: 75,
+            boxZoom: true,
+            fadeAnimation: true,
+            zoom: 2,
+            //maxBoundsViscosity: 0,
+            //maxBounds:[[500, -500], [-800, 800]],
+        };
+
+        L.setOptions(this, options);
+        L.Map.prototype.initialize.call(this, id, options);
+
+
 
         this.heightmapGroup = L.layerGroup().addTo(this);
         this.layerGroup = L.layerGroup().addTo(this);
@@ -76,10 +87,10 @@ export var squadMinimap = L.Map.extend({
         if (mapVal == "") {mapVal = 11;} // default map is Kohat
         map = MAPS.find((elem, index) => index == mapVal);
         globalData.activeMap = mapVal;
-        globalData.mapScale = globalData.mapSize / map.size;
+        globalData.mapScale = this.tilesSize / map.size;
 
-        imageBounds = L.latLngBounds(L.latLng(0, 0), L.latLng(-globalData.mapSize, globalData.mapSize));
-        this.mapScale = map.size / globalData.mapSize;
+        imageBounds = L.latLngBounds(L.latLng(0, 0), L.latLng(-this.tilesSize, this.tilesSize));
+        this.mapScale = map.size / this.tilesSize;
 
         previousLayers = this.layerGroup.getLayers();
 
@@ -90,7 +101,7 @@ export var squadMinimap = L.Map.extend({
                 this.heightmapGroup.removeLayer(this.heightmap);
             }
 
-            this.heightmap = new squadHeightmap("maps"+ map.mapURL + map.name.toLowerCase() + ".webp", imageBounds ).addTo(this.heightmapGroup);
+            this.heightmap = new squadHeightmap("maps"+ map.mapURL + map.name.toLowerCase() + ".webp", imageBounds, this).addTo(this.heightmapGroup);
             this.heightmap.bringToBack();
         }
 
@@ -99,7 +110,7 @@ export var squadMinimap = L.Map.extend({
                 maxNativeZoom: map.maxZoomLevel,
                 noWrap: true,
                 bounds: imageBounds,
-                tileSize: globalData.mapSize,
+                tileSize: this.tilesSize,
             }).addTo(this.layerGroup);
             this.basemap.bringToFront();
             this.heightmap.setOpacity(0);
@@ -109,7 +120,7 @@ export var squadMinimap = L.Map.extend({
                 maxNativeZoom: map.maxZoomLevel,
                 noWrap: true,
                 bounds: imageBounds,
-                tileSize: globalData.mapSize,
+                tileSize: this.tilesSize,
             }).addTo(this.layerGroup);
             this.terrainmap.bringToFront();
             this.heightmap.setOpacity(0);
@@ -122,8 +133,8 @@ export var squadMinimap = L.Map.extend({
         }
 
         if (this.grid){this.grid.remove();}
-        this.grid = new squadGrid();
-        this.grid.setBounds(L.latLngBounds(L.latLng(0, 0), L.latLng(-globalData.mapSize+1, globalData.mapSize-1)));
+        this.grid = new squadGrid(this);
+        this.grid.setBounds(L.latLngBounds(L.latLng(0, 0), L.latLng(-this.tilesSize+1, this.tilesSize-1)));
 
         if (globalData.userSettings.grid) {
             this.showGrid();
@@ -132,17 +143,17 @@ export var squadMinimap = L.Map.extend({
         // wait for the load animation to finish before removing previous tiles
         // Ugly hack to avoid logo flashing when switching map
         setTimeout(() => {
-            globalData.minimap.layerGroup.eachLayer((layer) => {
+            this.layerGroup.eachLayer((layer) => {
                 for (let index = 0; index < previousLayers.length; index++) {
                     if (previousLayers[index] === layer) {
-                        globalData.minimap.layerGroup.removeLayer(layer);
+                        this.layerGroup.removeLayer(layer);
                     }
                 }
             });
         }, 1000);
 
         if (reset){
-            this.setView([-globalData.mapSize/2, globalData.mapSize/2], 2);
+            this.setView([-this.tilesSize/2, this.tilesSize/2], 2);
             $(".btn-delete").hide();
         }
 
@@ -269,16 +280,16 @@ export var squadMinimap = L.Map.extend({
     _handleContextMenu: function(e) {
 
         // If out of bounds
-        if (e.latlng.lat > 0 ||  e.latlng.lat < -globalData.mapSize || e.latlng.lng < 0 || e.latlng.lng > globalData.mapSize) {
+        if (e.latlng.lat > 0 ||  e.latlng.lat < -this.tilesSize || e.latlng.lng < 0 || e.latlng.lng > this.tilesSize) {
             return 1;
         }
 
         if (this.activeWeaponsMarkers.getLayers().length === 0) {
-            new squadWeaponMarker(e.latlng, {icon: mortarIcon}).addTo(this.markersGroup).addTo(this.activeWeaponsMarkers);
+            new squadWeaponMarker(e.latlng, {icon: mortarIcon}, this).addTo(this.markersGroup).addTo(this.activeWeaponsMarkers);
             return 0;
         } else {
             if (this.activeWeaponsMarkers.getLayers().length === 1) {
-                new squadWeaponMarker(e.latlng, {icon: mortarIcon2}).addTo(this.markersGroup).addTo(this.activeWeaponsMarkers);
+                new squadWeaponMarker(e.latlng, {icon: mortarIcon2}, this).addTo(this.markersGroup).addTo(this.activeWeaponsMarkers);
                 this.activeWeaponsMarkers.getLayers()[0].setIcon(mortarIcon1);
                 this.updateTargets();
             }
@@ -295,7 +306,7 @@ export var squadMinimap = L.Map.extend({
         if (!matchMedia("(pointer:fine)").matches) { return 1; }
 
         // If out of bounds
-        if (e.latlng.lat > 0 ||  e.latlng.lat < -globalData.mapSize || e.latlng.lng < 0 || e.latlng.lng > globalData.mapSize) {
+        if (e.latlng.lat > 0 ||  e.latlng.lat < -this.tilesSize || e.latlng.lng < 0 || e.latlng.lng > this.tilesSize) {
             this.mouseLocationPopup.close();
             return;
         }
@@ -311,16 +322,16 @@ export var squadMinimap = L.Map.extend({
      */
     _handleDoubleCkick: function (e) {
         // If out of bounds
-        if (e.latlng.lat > 0 ||  e.latlng.lat < -globalData.mapSize || e.latlng.lng < 0 || e.latlng.lng > globalData.mapSize) {
+        if (e.latlng.lat > 0 ||  e.latlng.lat < -this.tilesSize || e.latlng.lng < 0 || e.latlng.lng > this.tilesSize) {
             return 1;
         }
 
         if (this.activeWeaponsMarkers.getLayers().length === 0) {
-            new squadWeaponMarker(e.latlng, {icon: mortarIcon}).addTo(globalData.minimap.markersGroup).addTo(this.activeWeaponsMarkers);
+            new squadWeaponMarker(e.latlng, {icon: mortarIcon}, this).addTo(this.markersGroup, this).addTo(this.activeWeaponsMarkers);
             return 0;
         }
         
-        new squadTargetMarker(L.latLng(e.latlng), {animate: globalData.userSettings.targetAnimation}).addTo(this.markersGroup);
+        new squadTargetMarker(L.latLng(e.latlng), {animate: globalData.userSettings.targetAnimation}, this).addTo(this.markersGroup);
         $(".btn-delete").show();
 
         if (globalData.userSettings.targetAnimation){

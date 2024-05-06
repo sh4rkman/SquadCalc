@@ -32,7 +32,8 @@ export var squadMarker = L.Marker.extend({
     },
 
     // Initialize method
-    initialize: function (latlng, options) {
+    initialize: function (latlng, options, map) {
+        this.map = map;
         L.Marker.prototype.initialize.call(this, latlng, options);
         this.on("dragstart", this._handleDragStart, this);
         this.on("dragend", this._handleDragEnd, this);
@@ -44,8 +45,8 @@ export var squadMarker = L.Marker.extend({
      * @returns {e} - same event with corrected Latlng 
      */
     keepOnMap: function(e){
-        if (e.latlng.lng > globalData.mapSize) {e.latlng.lng = globalData.mapSize;}
-        if (e.latlng.lat < -globalData.mapSize ) {e.latlng.lat = -globalData.mapSize;}
+        if (e.latlng.lng > this.map.tilesSize) {e.latlng.lng = this.map.tilesSize;}
+        if (e.latlng.lat < -this.map.tilesSize ) {e.latlng.lat = -this.map.tilesSize;}
         if (e.latlng.lng < 0) {e.latlng.lng = 0;}
         if (e.latlng.lat > 0) {e.latlng.lat = 0;}
         return e;
@@ -57,10 +58,13 @@ export var squadWeaponMarker = squadMarker.extend({
         autoPan: false,
     },
 
-    initialize: function (latlng, options) {
-
+    initialize: function (latlng, options, map) {
         var cursorClass;
 
+
+        L.setOptions(this, options);
+        squadMarker.prototype.initialize.call(this, latlng, options, map);
+        console.log(this.map)
         if (globalData.userSettings.cursor) {
             cursorClass = "crosshair";
         }
@@ -69,7 +73,7 @@ export var squadWeaponMarker = squadMarker.extend({
         }
 
         this.maxDistCircleOn = {
-            radius: globalData.activeWeapon.getMaxDistance() * (globalData.mapSize / MAPS.find((elem, index) => index == globalData.activeMap).size),
+            radius: globalData.activeWeapon.getMaxDistance() * (this.map.tilesSize / MAPS.find((elem, index) => index == globalData.activeMap).size),
             opacity: 0.7,
             color: "#00137f",
             fillOpacity: 0,
@@ -79,7 +83,7 @@ export var squadWeaponMarker = squadMarker.extend({
         };
 
         this.minDistCircleOn = {
-            radius: globalData.activeWeapon.minDistance * (globalData.mapSize / MAPS.find((elem, index) => index == globalData.activeMap).size),
+            radius: globalData.activeWeapon.minDistance * (this.map.tilesSize / MAPS.find((elem, index) => index == globalData.activeMap).size),
             opacity: 0.7,
             color: "#00137f",
             fillOpacity: 0.2,
@@ -105,13 +109,12 @@ export var squadWeaponMarker = squadMarker.extend({
 
 
 
-        L.setOptions(this, options);
-        squadMarker.prototype.initialize.call(this, latlng, options);
+
 
         // Create the min/max range markers
-        this.minRangeMarker = L.circle(latlng, this.minDistCircleOn).addTo(globalData.minimap.markersGroup);
-        this.rangeMarker = L.circle(latlng, this.maxDistCircleOn).addTo(globalData.minimap.markersGroup);
-        this.miniCircle = L.circleMarker(latlng, this.miniCircleOptions).addTo(globalData.minimap.markersGroup);
+        this.minRangeMarker = L.circle(latlng, this.minDistCircleOn).addTo(this.map.markersGroup);
+        this.rangeMarker = L.circle(latlng, this.maxDistCircleOn).addTo(this.map.markersGroup);
+        this.miniCircle = L.circleMarker(latlng, this.miniCircleOptions).addTo(this.map.markersGroup);
         
         if (!globalData.userSettings.weaponMinMaxRange) {
             this.minRangeMarker.setStyle(this.minMaxDistCircleOff);
@@ -137,24 +140,24 @@ export var squadWeaponMarker = squadMarker.extend({
      */
     delete: function(){
 
-        this.removeFrom(globalData.minimap.activeWeaponsMarkers);
+        this.removeFrom(this.map.activeWeaponsMarkers);
 
-        if (globalData.minimap.activeWeaponsMarkers.getLayers().length === 0) { 
-            globalData.minimap.deleteTargets();
+        if (this.map.activeWeaponsMarkers.getLayers().length === 0) { 
+            this.map.deleteTargets();
         }
         else {
             // Set default icon on remaining weapon
-            globalData.minimap.activeWeaponsMarkers.getLayers()[0].setIcon(mortarIcon);
+            this.map.activeWeaponsMarkers.getLayers()[0].setIcon(mortarIcon);
         }
 
         // Delete the weapon marker and everthing tied to it
         this.remove();
-        this.removeFrom(globalData.minimap.activeWeaponsMarkers);
+        this.removeFrom(this.map.activeWeaponsMarkers);
         this.minRangeMarker.remove();
         this.rangeMarker.remove();
 
         // Update remaining targets if they exists
-        globalData.minimap.updateTargets();
+        this.map.updateTargets();
     },
 
 
@@ -163,8 +166,8 @@ export var squadWeaponMarker = squadMarker.extend({
      */
     updateWeapon: function(){
 
-        var radiusMax = globalData.activeWeapon.getMaxDistance() * (globalData.mapSize / MAPS.find((elem, index) => index == globalData.activeMap).size);
-        var radiusMin = globalData.activeWeapon.minDistance * (globalData.mapSize / MAPS.find((elem, index) => index == globalData.activeMap).size);
+        var radiusMax = globalData.activeWeapon.getMaxDistance() * (this.map.tilesSize / MAPS.find((elem, index) => index == globalData.activeMap).size);
+        var radiusMin = globalData.activeWeapon.minDistance * (this.map.tilesSize / MAPS.find((elem, index) => index == globalData.activeMap).size);
         
         this.minRangeMarker.setRadius(radiusMin);
         this.rangeMarker.setRadius(radiusMax);
@@ -206,10 +209,10 @@ export var squadWeaponMarker = squadMarker.extend({
     _handleDragStart: function () {
 
         $(".leaflet-marker-icon").css("cursor", "grabbing");
-        globalData.minimap.mouseLocationPopup.close();
-        globalData.minimap.off("mousemove", globalData.minimap._handleMouseMove);
+        this.map.mouseLocationPopup.close();
+        this.map.off("mousemove", this.map._handleMouseMove);
 
-        globalData.minimap.activeTargetsMarkers.eachLayer(function (layer) {
+        this.map.activeTargetsMarkers.eachLayer(function (layer) {
             layer.calcMarker1.setContent("  ");
             layer.calcMarker2.setContent("  ");
             layer.spreadMarker1.setStyle({opacity: 0, fillOpacity: 0});
@@ -221,12 +224,12 @@ export var squadWeaponMarker = squadMarker.extend({
     _handleDragEnd: function () {
 
         if (globalData.userSettings.keypadUnderCursor){
-            globalData.minimap.on("mousemove", globalData.minimap._handleMouseMove);
+            this.map.on("mousemove", this.map._handleMouseMove);
         }
         $(".leaflet-marker-icon").css("cursor", "grab");
         this.miniCircle.setStyle({opacity: 0});
         this.setOpacity(0);
-        globalData.minimap.updateTargets();
+        this.map.updateTargets();
 
     },
 });
@@ -243,8 +246,12 @@ export var squadTargetMarker = squadMarker.extend({
         }
     },
 
-    initialize: function (latlng, options) {
-        const mapScale = MAPS.find((elem, index) => index == globalData.activeMap).size / globalData.mapSize;
+    initialize: function (latlng, options, map) {
+
+        L.setOptions(this, options);
+        squadMarker.prototype.initialize.call(this, latlng, options, map);
+
+        const mapScale = MAPS.find((elem, index) => index == globalData.activeMap).size / this.map.tilesSize;
         var radiiElipse;
         var angleElipse;
         var cursorClass;
@@ -259,8 +266,9 @@ export var squadTargetMarker = squadMarker.extend({
         var velocity;
         var elevation;
 
-        L.setOptions(this, options);
 
+
+        
         if (globalData.userSettings.cursor) {
             cursorClass = "crosshair";
         }
@@ -318,9 +326,9 @@ export var squadTargetMarker = squadMarker.extend({
         };
 
         // Create marker
-        squadMarker.prototype.initialize.call(this, latlng, options);
-        this.addTo(globalData.minimap.activeTargetsMarkers);
-        this.miniCircle = L.circleMarker(latlng, this.miniCircleOptions).addTo(globalData.minimap.markersGroup);
+
+        this.addTo(this.map.activeTargetsMarkers);
+        this.miniCircle = L.circleMarker(latlng, this.miniCircleOptions).addTo(this.map.markersGroup);
 
         if (this.options.animate){
             this.setIcon(targetIconAnimated1);
@@ -330,7 +338,7 @@ export var squadTargetMarker = squadMarker.extend({
         }
 
 
-        weaponPos = globalData.minimap.activeWeaponsMarkers.getLayers()[0].getLatLng();
+        weaponPos = this.map.activeWeaponsMarkers.getLayers()[0].getLatLng();
         a = L.latLng([weaponPos.lng * mapScale, weaponPos.lat * -mapScale]);
         b = L.latLng([latlng.lng * mapScale, latlng.lat * -mapScale]);
         weaponHeight = this._map.heightmap.getHeight(weaponPos);
@@ -357,22 +365,22 @@ export var squadTargetMarker = squadMarker.extend({
         angleElipse = this.options.results.spreadParameters.elevation;
 
         // Calc PopUp for weapon 1
-        this.calcMarker1 = L.popup(popUpOptions_weapon1).setLatLng(latlng).openOn(globalData.minimap).addTo(globalData.minimap.markersGroup);
+        this.calcMarker1 = L.popup(popUpOptions_weapon1).setLatLng(latlng).openOn(globalData.minimap).addTo(this.map.markersGroup);
 
         // Calc PopUp for weapon 2 (not displayed yet)
-        this.calcMarker2 = L.popup(popUpOptions_weapon2).setLatLng(latlng).addTo(globalData.minimap.markersGroup);
+        this.calcMarker2 = L.popup(popUpOptions_weapon2).setLatLng(latlng).addTo(this.map.markersGroup);
 
-        this.spreadMarker1 = L.ellipse(latlng, radiiElipse, this.options.results.bearing, this.spreadOptionsOn).addTo(globalData.minimap.markersGroup);
-        this.spreadMarker2 = L.ellipse(latlng, radiiElipse, angleElipse, this.spreadOptionsOff).addTo(globalData.minimap.markersGroup);
+        this.spreadMarker1 = L.ellipse(latlng, radiiElipse, this.options.results.bearing, this.spreadOptionsOn).addTo(this.map.markersGroup);
+        this.spreadMarker2 = L.ellipse(latlng, radiiElipse, angleElipse, this.spreadOptionsOff).addTo(this.map.markersGroup);
 
         if (globalData.userSettings.spreadRadius) {
             this.spreadMarker1.setStyle(this.spreadOptionsOff);
         }
 
         // If two weapons already on the map
-        if (globalData.minimap.activeWeaponsMarkers.getLayers().length === 2) {
+        if (this.map.activeWeaponsMarkers.getLayers().length === 2) {
 
-            weaponPos = globalData.minimap.activeWeaponsMarkers.getLayers()[1].getLatLng();
+            weaponPos = this.map.activeWeaponsMarkers.getLayers()[1].getLatLng();
             a = L.latLng([weaponPos.lng * mapScale, weaponPos.lat * -mapScale]);        
             weaponHeight = this._map.heightmap.getHeight(weaponPos);
             targetHeight = this._map.heightmap.getHeight(latlng);
@@ -444,18 +452,18 @@ export var squadTargetMarker = squadMarker.extend({
      * @param {this}
      */
     delete: function(){
-        this.spreadMarker1.removeFrom(globalData.minimap.markersGroup);
-        this.spreadMarker2.removeFrom(globalData.minimap.markersGroup);
+        this.spreadMarker1.removeFrom(this.map.markersGroup);
+        this.spreadMarker2.removeFrom(this.map.markersGroup);
 
-        this.calcMarker1.removeFrom(globalData.minimap.markersGroup);
-        this.calcMarker2.removeFrom(globalData.minimap.markersGroup);
+        this.calcMarker1.removeFrom(this.map.markersGroup);
+        this.calcMarker2.removeFrom(this.map.markersGroup);
 
-        this.removeFrom(globalData.minimap.activeTargetsMarkers);
-        this.removeFrom(globalData.minimap.markersGroup);
+        this.removeFrom(this.map.activeTargetsMarkers);
+        this.removeFrom(this.map.markersGroup);
 
         this.remove();
 
-        if (globalData.minimap.activeTargetsMarkers.getLayers().length === 0) {
+        if (this.map.activeTargetsMarkers.getLayers().length === 0) {
             $(".btn-delete").hide();
         }
     },
@@ -478,7 +486,7 @@ export var squadTargetMarker = squadMarker.extend({
         }
 
         if (isNaN(TOF)) { TOF = "---";} 
-        else { TOF = TOF.toFixed(0) + "s";}
+        else { TOF = TOF.toFixed(1) + "s";}
         
         content = "<span class='calcNumber'></span></br><span>" + ELEV + "</span>";
 
@@ -507,7 +515,7 @@ export var squadTargetMarker = squadMarker.extend({
             this.spreadMarker1.setStyle(this.spreadOptionsOff);
         }
 
-        if (globalData.minimap.activeWeaponsMarkers.getLayers().length === 2) {
+        if (this.map.activeWeaponsMarkers.getLayers().length === 2) {
             if (globalData.userSettings.spreadRadius) {
                 this.spreadMarker2.setStyle(this.spreadOptionsOn);
             }
@@ -519,12 +527,12 @@ export var squadTargetMarker = squadMarker.extend({
 
 
     updateCalc: function(){
-        const mapScale = MAPS.find((elem, index) => index == globalData.activeMap).size / globalData.mapSize;
-        var weaponPos = globalData.minimap.activeWeaponsMarkers.getLayers()[0].getLatLng();
+        const mapScale = MAPS.find((elem, index) => index == globalData.activeMap).size / this.map.tilesSize;
+        var weaponPos = this.map.activeWeaponsMarkers.getLayers()[0].getLatLng();
         var a = L.latLng([weaponPos.lng * mapScale, weaponPos.lat * -mapScale]);
         var b = L.latLng([this.getLatLng().lng * mapScale, this.getLatLng().lat * -mapScale]);
-        var weaponHeight = globalData.minimap.heightmap.getHeight(weaponPos);
-        var targetHeight = globalData.minimap.heightmap.getHeight(this.getLatLng());
+        var weaponHeight = this.map.heightmap.getHeight(weaponPos);
+        var targetHeight = this.map.heightmap.getHeight(this.getLatLng());
         var dist = getDist(a, b);
         var elevation = getElevation(dist, targetHeight - weaponHeight, globalData.activeWeapon.getVelocity(dist));
         var velocity = globalData.activeWeapon.getVelocity(dist);
@@ -561,9 +569,9 @@ export var squadTargetMarker = squadMarker.extend({
         
         this.spreadMarker2.setStyle(this.spreadOptionsOff);
 
-        if (globalData.minimap.activeWeaponsMarkers.getLayers().length === 2) {
+        if (this.map.activeWeaponsMarkers.getLayers().length === 2) {
 
-            weaponPos = globalData.minimap.activeWeaponsMarkers.getLayers()[1].getLatLng();
+            weaponPos = this.map.activeWeaponsMarkers.getLayers()[1].getLatLng();
             a = L.latLng([weaponPos.lng * mapScale, weaponPos.lat * -mapScale]);    
             weaponHeight = this._map.heightmap.getHeight(weaponPos);
             targetHeight = this._map.heightmap.getHeight(this.getLatLng());
@@ -645,14 +653,14 @@ export var squadTargetMarker = squadMarker.extend({
         //     }
         // }
 
-        weaponPos1 = globalData.minimap.activeWeaponsMarkers.getLayers()[0].getLatLng();
+        weaponPos1 = this.map.activeWeaponsMarkers.getLayers()[0].getLatLng();
         heightPath1 = this._map.heightmap.getHeightPath(weaponPos1, this.getLatLng());
         simulation1 = new SquadSimulation("#sim1", this.options.results, heightPath1);
         $("#canvasControls").css("display", "none");
 
-        if (globalData.minimap.activeWeaponsMarkers.getLayers().length === 2){
+        if (this.map.activeWeaponsMarkers.getLayers().length === 2){
             $("#canvasControls").css("display", "block");
-            weaponPos2 = globalData.minimap.activeWeaponsMarkers.getLayers()[1].getLatLng();
+            weaponPos2 = this.map.activeWeaponsMarkers.getLayers()[1].getLatLng();
             heightPath2 = this._map.heightmap.getHeightPath(weaponPos2, this.getLatLng());
             simulation2 = new SquadSimulation("#sim2", this.options.results2, heightPath2);
         }
@@ -690,8 +698,8 @@ export var squadTargetMarker = squadMarker.extend({
     // set "grabbing" cursor on grab start
     _handleDragStart: function () {
         $(".leaflet-marker-icon").css("cursor", "grabbing");
-        globalData.minimap.mouseLocationPopup.close();
-        globalData.minimap.off("mousemove", globalData.minimap._handleMouseMove);
+        this.map.mouseLocationPopup.close();
+        this.map.off("mousemove", this.map._handleMouseMove);
 
         if (isTouchDevice()){
             this.calcMarker1.setContent("  ");
@@ -705,7 +713,7 @@ export var squadTargetMarker = squadMarker.extend({
     // Reset cursor on drag end
     _handleDragEnd: function () {
         if (globalData.userSettings.keypadUnderCursor){
-            globalData.minimap.on("mousemove", globalData.minimap._handleMouseMove);
+            this.map.on("mousemove", this.map._handleMouseMove);
         }
         $(".leaflet-marker-icon").css("cursor", "grab");
 

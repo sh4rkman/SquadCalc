@@ -9,18 +9,20 @@ export default L.ImageOverlay.extend({
     },
 
     /**
-     * Calculate heights for a given LatLng Point
-     * @param {url} [url] - image URL to display
-     * @param {options} [options]
+     * Initialize heightmap layer
+     * @param {string} [url] - heightmap URL
+     * @param {Array} [options]
+     * @param {map} [map]
      */
-    initialize: function (url, bounds) {
+    initialize: function (url, bounds, map) {
         //L.setOptions(this, options); uncomment if custom options are needed
         L.ImageOverlay.prototype.initialize.call(this, url, bounds);
+        this.map = map;
         this.canvas = document.getElementById("canvas");
         this.ctx = this.canvas.getContext("2d", {willReadFrequently: true});
         this.canvas.height = 1000;
         this.canvas.width = 1000;
-        this.heightmapScaling = this.canvas.height / globalData.mapSize;
+        this.heightmapScaling = this.canvas.height / this.map.tilesSize;
         this.on("load", function(){
             this.ctx.drawImage(this._image, 0, 0, this.canvas.width, this.canvas.height);
             shoot();

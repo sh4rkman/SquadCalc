@@ -875,50 +875,6 @@ export function switchUI(){
     }
 }
 
-export function getCalcFromUI(a, b) {
-    var height;
-    var distance;
-    var results;
-    var bearing;
-    var vel;
-    var elevation;
-    const mapScale = MAPS.find((elem, index) => index == globalData.activeMap).size / globalData.mapSize;
-
-    a = L.latLng([a.lng * mapScale, a.lat * -mapScale]);
-    b = L.latLng([b.lng * mapScale, b.lat * -mapScale]);
-
-    height = getHeight(a, b);
-    distance = getDist(a, b);
-    bearing = getBearing(a, b);
-    vel = globalData.activeWeapon.getVelocity(distance);
-    results = getElevationWithEllipseParams(distance, height, vel);
-    elevation = results.elevationAngle;
-
-    if (globalData.activeWeapon.unit === "mil") {
-        elevation = radToMil(elevation);
-    } else {
-        elevation = radToDeg(elevation);
-        if (globalData.activeWeapon.name === "Technical") { elevation = elevation - 5; }
-    }
-
-    if (isNaN(elevation) || elevation > globalData.activeWeapon.minElevation[1]){
-        elevation = "---";
-    }
-    else {
-        elevation = elevation.toFixed(globalData.activeWeapon.elevationPrecision);
-    }
-
-    return {
-        bearing: bearing.toFixed(1),
-        distance: distance.toFixed(0),
-        elevation: elevation,
-        ellipseParams: results.ellipseParams,
-    };
-}
-
-
-
-
 export function isTouchDevice() {
     return (("ontouchstart" in window) ||
        (navigator.maxTouchPoints > 0) ||

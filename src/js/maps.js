@@ -248,6 +248,7 @@ export function loadMapSelector() {
 }
 
 export function loadMinimap(){
-    globalData.minimap = new squadMinimap("map");
+    var tileSize = 255;
+    globalData.minimap = new squadMinimap("map", tileSize);
     globalData.minimap.draw(true);
 }
