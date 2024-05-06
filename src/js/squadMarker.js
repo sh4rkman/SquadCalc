@@ -5,7 +5,6 @@ import { App } from "./conf";
 import { MAPS } from  "./maps";
 import SquadSimulation from "./squadSimulation";
 import { isTouchDevice } from "./utils";
-import SquadFiringSolution from "./squadFiringSolution";
 
 import { 
     getDist,
@@ -338,18 +337,16 @@ export var squadTargetMarker = squadMarker.extend({
 
 
         weaponPos = this.map.activeWeaponsMarkers.getLayers()[0].getLatLng();
-        a = L.latLng([weaponPos.lng * mapScale, weaponPos.lat * -mapScale]);
-        b = L.latLng([latlng.lng * mapScale, latlng.lat * -mapScale]);
         weaponHeight = this._map.heightmap.getHeight(weaponPos);
         targetHeight = this._map.heightmap.getHeight(latlng);
+
+        a = L.latLng([weaponPos.lng * mapScale, weaponPos.lat * -mapScale]);
+        b = L.latLng([latlng.lng * mapScale, latlng.lat * -mapScale]);
+
         dist = getDist(a, b);
         velocity = App.activeWeapon.getVelocity(dist);
         elevation = getElevation(dist, targetHeight - weaponHeight, velocity);
         
-
-        //var test = new SquadFiringSolution(a, b)
-        //console.log(test)
-
         this.options.results = {
             distance: dist,
             elevation: getElevation(dist, targetHeight - weaponHeight, velocity),
