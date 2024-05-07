@@ -1,37 +1,41 @@
 import L from "leaflet";
 import squadGrid from "./squadGrid";
 import squadHeightmap from "./squadHeightmaps";
-import { globalData } from "./conf";
+import { App } from "./conf";
 import { MAPS } from "./maps";
 import { squadWeaponMarker, squadTargetMarker } from "./squadMarker";
 import { mortarIcon, mortarIcon1, mortarIcon2 } from "./squadIcon";
-import { getKP, shoot } from "./utils";
+import { getKP } from "./utils";
 import { explode } from "./animations";
 
 export var squadMinimap = L.Map.extend({
-    options: {
-        center: [-globalData.mapSize/2, globalData.mapSize/2],
-        attributionControl: false,
-        crs: L.CRS.Simple,
-        minZoom: 1,
-        maxZoom: 8,
-        zoomControl: false,
-        doubleClickZoom: false,
-        edgeBufferTiles: 5,
-        renderer: L.svg({padding: 3}), // https://leafletjs.com/reference.html#path-clip_padding
-        closePopupOnClick: false,
-        wheelPxPerZoomLevel: 75,
-        boxZoom: true,
-        fadeAnimation: true,
-        zoom: 2,
-        //maxBoundsViscosity: 0,
-        //maxBounds:[[500, -500], [-800, 800]],
-    },
 
 
-    initialize: function (latlng, options) {
-        L.Map.prototype.initialize.call(this, latlng, options);
 
+    initialize: function (id, tilesSize, options) {
+
+        options = {
+            center: [-tilesSize/2, tilesSize/2],
+            attributionControl: false,
+            crs: L.CRS.Simple,
+            minZoom: 1,
+            maxZoom: 8,
+            zoomControl: false,
+            doubleClickZoom: false,
+            edgeBufferTiles: 5,
+            renderer: L.svg({padding: 3}), // https://leafletjs.com/reference.html#path-clip_padding
+            closePopupOnClick: false,
+            wheelPxPerZoomLevel: 75,
+            boxZoom: true,
+            fadeAnimation: true,
+            zoom: 2,
+        };
+
+        L.setOptions(this, options);
+        L.Map.prototype.initialize.call(this, id, options);
+
+
+        this.tilesSize = tilesSize;
         this.heightmapGroup = L.layerGroup().addTo(this);
         this.layerGroup = L.layerGroup().addTo(this);
 
@@ -55,7 +59,7 @@ export var squadMinimap = L.Map.extend({
         this.on("dblclick", this._handleDoubleCkick, this);
         this.on("contextmenu", this._handleContextMenu, this);
         this.on("mouseout", this._handleMouseOut, this);
-        if (globalData.userSettings.keypadUnderCursor){
+        if (App.userSettings.keypadUnderCursor){
             this.on("mousemove", this._handleMouseMove, this);
         }
     },
@@ -75,11 +79,12 @@ export var squadMinimap = L.Map.extend({
         mapVal = $(".dropbtn").val();
         if (mapVal == "") {mapVal = 11;} // default map is Kohat
         map = MAPS.find((elem, index) => index == mapVal);
-        globalData.activeMap = mapVal;
-        globalData.mapScale = globalData.mapSize / map.size;
+        App.activeMap = mapVal;
 
-        imageBounds = L.latLngBounds(L.latLng(0, 0), L.latLng(-globalData.mapSize, globalData.mapSize));
-        this.mapScale = map.size / globalData.mapSize;
+
+        imageBounds = L.latLngBounds(L.latLng(0, 0), L.latLng(-this.tilesSize, this.tilesSize));
+        this.gameToMapScale = this.tilesSize / map.size;
+        this.mapToGameScale = map.size / this.tilesSize;
 
         previousLayers = this.layerGroup.getLayers();
 
@@ -90,7 +95,7 @@ export var squadMinimap = L.Map.extend({
                 this.heightmapGroup.removeLayer(this.heightmap);
             }
 
-            this.heightmap = new squadHeightmap("maps"+ map.mapURL + map.name.toLowerCase() + ".webp", imageBounds ).addTo(this.heightmapGroup);
+            this.heightmap = new squadHeightmap("maps"+ map.mapURL + "heightmap.webp", imageBounds, this).addTo(this.heightmapGroup);
             this.heightmap.bringToBack();
         }
 
@@ -99,7 +104,7 @@ export var squadMinimap = L.Map.extend({
                 maxNativeZoom: map.maxZoomLevel,
                 noWrap: true,
                 bounds: imageBounds,
-                tileSize: globalData.mapSize,
+                tileSize: this.tilesSize,
             }).addTo(this.layerGroup);
             this.basemap.bringToFront();
             this.heightmap.setOpacity(0);
@@ -109,7 +114,7 @@ export var squadMinimap = L.Map.extend({
                 maxNativeZoom: map.maxZoomLevel,
                 noWrap: true,
                 bounds: imageBounds,
-                tileSize: globalData.mapSize,
+                tileSize: this.tilesSize,
             }).addTo(this.layerGroup);
             this.terrainmap.bringToFront();
             this.heightmap.setOpacity(0);
@@ -122,27 +127,27 @@ export var squadMinimap = L.Map.extend({
         }
 
         if (this.grid){this.grid.remove();}
-        this.grid = new squadGrid();
-        this.grid.setBounds(L.latLngBounds(L.latLng(0, 0), L.latLng(-globalData.mapSize+1, globalData.mapSize-1)));
+        this.grid = new squadGrid(this);
+        this.grid.setBounds(L.latLngBounds(L.latLng(0, 0), L.latLng(-this.tilesSize+1, this.tilesSize-1)));
 
-        if (globalData.userSettings.grid) {
+        if (App.userSettings.grid) {
             this.showGrid();
         }
 
         // wait for the load animation to finish before removing previous tiles
         // Ugly hack to avoid logo flashing when switching map
         setTimeout(() => {
-            globalData.minimap.layerGroup.eachLayer((layer) => {
+            this.layerGroup.eachLayer((layer) => {
                 for (let index = 0; index < previousLayers.length; index++) {
                     if (previousLayers[index] === layer) {
-                        globalData.minimap.layerGroup.removeLayer(layer);
+                        this.layerGroup.removeLayer(layer);
                     }
                 }
             });
         }, 1000);
 
         if (reset){
-            this.setView([-globalData.mapSize/2, globalData.mapSize/2], 2);
+            this.setView([-this.tilesSize/2, this.tilesSize/2], 2);
             $(".btn-delete").hide();
         }
 
@@ -157,7 +162,7 @@ export var squadMinimap = L.Map.extend({
         $("#mapLayerMenu").find("button").removeClass("active");
         $(".btn-"+val).addClass("active");
 
-        globalData.userSettings.layerMode = val;
+        App.userSettings.layerMode = val;
         localStorage.setItem("settings-terrain-mode", val);
        
         this.draw(false);
@@ -227,58 +232,22 @@ export var squadMinimap = L.Map.extend({
     },
 
     /**
-     * Draw the selected map's heightmap in a hidden canvas
-     */
-    drawHeightmap: function() {
-        const IMG = new Image(); // Create new img element
-        const map = MAPS.find((elem, index) => index == globalData.activeMap);
-        IMG.src = "maps"+ map.mapURL + map.name.toLowerCase() + ".webp";
-
-        IMG.addEventListener("load", function() { // wait for the image to load or it does crazy stuff
-            globalData.canvas.obj.drawImage(IMG, 0, 0, globalData.canvas.size, globalData.canvas.size);
-            shoot();
-        }, false);
-   
-    },
-
-    /**
-     * Load the heatmap to the canvas
-     */
-    loadHeatmap: function() {
-        const IMG = new Image();
-        globalData.canvas.obj = document.getElementById("canvas").getContext("2d", {willReadFrequently: true});
-
-        IMG.addEventListener("load", function() {
-            globalData.canvas.obj.drawImage(IMG, 0, 0, globalData.canvas.size, globalData.canvas.size); // Draw img at good scale
-        }, false);
-
-        if (globalData.debug.active) {
-            // when in debug mode, display the heightmap and prepare keypads
-            $("#canvas").css("display", "flex");
-            $("#mortar-location").val(globalData.debug.DEBUG_MORTAR_COORD);
-            $("#target-location").val(globalData.debug.DEBUG_TARGET_COORD);
-            shoot();
-        }
-    },
-
-
-    /**
      * Right-Click
      * Place a new WeaponMarker on the minimap
      */
     _handleContextMenu: function(e) {
 
         // If out of bounds
-        if (e.latlng.lat > 0 ||  e.latlng.lat < -globalData.mapSize || e.latlng.lng < 0 || e.latlng.lng > globalData.mapSize) {
+        if (e.latlng.lat > 0 ||  e.latlng.lat < -this.tilesSize || e.latlng.lng < 0 || e.latlng.lng > this.tilesSize) {
             return 1;
         }
 
         if (this.activeWeaponsMarkers.getLayers().length === 0) {
-            new squadWeaponMarker(e.latlng, {icon: mortarIcon}).addTo(this.markersGroup).addTo(this.activeWeaponsMarkers);
+            new squadWeaponMarker(e.latlng, {icon: mortarIcon}, this).addTo(this.markersGroup).addTo(this.activeWeaponsMarkers);
             return 0;
         } else {
             if (this.activeWeaponsMarkers.getLayers().length === 1) {
-                new squadWeaponMarker(e.latlng, {icon: mortarIcon2}).addTo(this.markersGroup).addTo(this.activeWeaponsMarkers);
+                new squadWeaponMarker(e.latlng, {icon: mortarIcon2}, this).addTo(this.markersGroup).addTo(this.activeWeaponsMarkers);
                 this.activeWeaponsMarkers.getLayers()[0].setIcon(mortarIcon1);
                 this.updateTargets();
             }
@@ -295,13 +264,13 @@ export var squadMinimap = L.Map.extend({
         if (!matchMedia("(pointer:fine)").matches) { return 1; }
 
         // If out of bounds
-        if (e.latlng.lat > 0 ||  e.latlng.lat < -globalData.mapSize || e.latlng.lng < 0 || e.latlng.lng > globalData.mapSize) {
+        if (e.latlng.lat > 0 ||  e.latlng.lat < -this.tilesSize || e.latlng.lng < 0 || e.latlng.lng > this.tilesSize) {
             this.mouseLocationPopup.close();
             return;
         }
 
-        this.mouseLocationPopup.setLatLng(e.latlng).openOn(globalData.minimap);
-        this.mouseLocationPopup.setContent("<p>"+ getKP(-e.latlng.lat * this.mapScale, e.latlng.lng * this.mapScale) + "</p>");
+        this.mouseLocationPopup.setLatLng(e.latlng).openOn(this);
+        this.mouseLocationPopup.setContent("<p>"+ getKP(-e.latlng.lat * this.mapToGameScale, e.latlng.lng * this.mapToGameScale) + "</p>");
     },
 
 
@@ -311,19 +280,19 @@ export var squadMinimap = L.Map.extend({
      */
     _handleDoubleCkick: function (e) {
         // If out of bounds
-        if (e.latlng.lat > 0 ||  e.latlng.lat < -globalData.mapSize || e.latlng.lng < 0 || e.latlng.lng > globalData.mapSize) {
+        if (e.latlng.lat > 0 ||  e.latlng.lat < -this.tilesSize || e.latlng.lng < 0 || e.latlng.lng > this.tilesSize) {
             return 1;
         }
 
         if (this.activeWeaponsMarkers.getLayers().length === 0) {
-            new squadWeaponMarker(e.latlng, {icon: mortarIcon}).addTo(globalData.minimap.markersGroup).addTo(this.activeWeaponsMarkers);
+            new squadWeaponMarker(e.latlng, {icon: mortarIcon}, this).addTo(this.markersGroup, this).addTo(this.activeWeaponsMarkers);
             return 0;
         }
         
-        new squadTargetMarker(L.latLng(e.latlng), {animate: globalData.userSettings.targetAnimation}).addTo(this.markersGroup);
+        new squadTargetMarker(L.latLng(e.latlng), {animate: App.userSettings.targetAnimation}, this).addTo(this.markersGroup);
         $(".btn-delete").show();
 
-        if (globalData.userSettings.targetAnimation){
+        if (App.userSettings.targetAnimation){
             setTimeout(function() {
                 explode(e.containerPoint.x, e.containerPoint.y, -190, 10);
             }, 250);

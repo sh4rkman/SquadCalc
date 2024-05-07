@@ -1,4 +1,4 @@
-import { globalData } from "./conf";
+import { App } from "./conf";
 import { tooltip_coordPreview } from "./tooltips.js";
 
 /* eslint no-unused-vars: "off" */
@@ -28,14 +28,14 @@ function loadLocalSetting(item, default_value = 1) {
 export function loadSettings(){
     var setting = localStorage.getItem("settings-terrain-mode");
     
-    globalData.userSettings.keypadUnderCursor = loadLocalSetting("settings-keypad-cursor");
+    App.userSettings.keypadUnderCursor = loadLocalSetting("settings-keypad-cursor");
     if (matchMedia("(pointer:fine)").matches) {
-        $("#keypadUnderCursorSetting").prop("checked", globalData.userSettings.keypadUnderCursor);
+        $("#keypadUnderCursorSetting").prop("checked", App.userSettings.keypadUnderCursor);
     }
     else {
         $("#keypadUnderCursorSettingRow").hide();
         $("#cursorChoiceSettings").hide();
-        globalData.userSettings.keypadUnderCursor = false;
+        App.userSettings.keypadUnderCursor = false;
     }
 
 
@@ -45,34 +45,34 @@ export function loadSettings(){
         localStorage.setItem("settings-terrain-mode", setting);
     }
 
-    globalData.userSettings.terrainMode = setting;
+    App.userSettings.terrainMode = setting;
     $(".btn-"+setting).addClass("active");
 
 
-    globalData.userSettings.spreadRadius = loadLocalSetting("settings-spread-radius");
-    $("#spreadRadiusSetting").prop("checked", globalData.userSettings.spreadRadius);
+    App.userSettings.spreadRadius = loadLocalSetting("settings-spread-radius");
+    $("#spreadRadiusSetting").prop("checked", App.userSettings.spreadRadius);
 
-    globalData.userSettings.targetAnimation = loadLocalSetting("settings-target-animation");
-    $("#targetAnimationSettings").prop("checked", globalData.userSettings.targetAnimation);
+    App.userSettings.targetAnimation = loadLocalSetting("settings-target-animation");
+    $("#targetAnimationSettings").prop("checked", App.userSettings.targetAnimation);
 
-    globalData.userSettings.grid = loadLocalSetting("settings-grid");
-    $("#gridSetting").prop("checked", globalData.userSettings.grid);
+    App.userSettings.grid = loadLocalSetting("settings-grid");
+    $("#gridSetting").prop("checked", App.userSettings.grid);
     
-    globalData.userSettings.weaponMinMaxRange = loadLocalSetting("settings-weapon-range");
-    $("#weaponRangeSettings").prop("checked", globalData.userSettings.weaponMinMaxRange);
+    App.userSettings.weaponMinMaxRange = loadLocalSetting("settings-weapon-range");
+    $("#weaponRangeSettings").prop("checked", App.userSettings.weaponMinMaxRange);
 
-    globalData.userSettings.showBearing = loadLocalSetting("settings-show-bearing", 1);
-    $("#bearingSetting").prop("checked", globalData.userSettings.showBearing);
+    App.userSettings.showBearing = loadLocalSetting("settings-show-bearing", 1);
+    $("#bearingSetting").prop("checked", App.userSettings.showBearing);
 
-    globalData.userSettings.showDistance = loadLocalSetting("settings-show-distance", 0);
-    $("#distanceSetting").prop("checked", globalData.userSettings.showDistance);
+    App.userSettings.showDistance = loadLocalSetting("settings-show-distance", 0);
+    $("#distanceSetting").prop("checked", App.userSettings.showDistance);
 
-    globalData.userSettings.showTimeOfFlight = loadLocalSetting("settings-show-timeofflight", 0);
-    $("#timeOfFlightSetting").prop("checked", globalData.userSettings.showTimeOfFlight);
+    App.userSettings.showTimeOfFlight = loadLocalSetting("settings-show-timeofflight", 0);
+    $("#timeOfFlightSetting").prop("checked", App.userSettings.showTimeOfFlight);
 
-    globalData.userSettings.cursor = loadLocalSetting("settings-cursor", 1);
+    App.userSettings.cursor = loadLocalSetting("settings-cursor", 1);
 
-    if (globalData.userSettings.cursor) {
+    if (App.userSettings.cursor) {
         $("#preview").css("cursor", "crosshair");
         $("#map").css("cursor", "crosshair");
         $(".leaflet-overlay-pane, .leaflet-interactive").css("cursor", "crosshair");
@@ -83,8 +83,8 @@ export function loadSettings(){
         $(".leaflet-overlay-pane, .leaflet-interactive").css("cursor", "default");
     }
 
-    $("#cursorChoice1").prop("checked", globalData.userSettings.cursor);
-    $("#cursorChoice2").prop("checked", !globalData.userSettings.cursor);
+    $("#cursorChoice1").prop("checked", App.userSettings.cursor);
+    $("#cursorChoice2").prop("checked", !App.userSettings.cursor);
 
     updatePreview();
 }
@@ -93,13 +93,13 @@ export function loadSettings(){
 function updatePreview(){
     var subtextContent;
 
-    if (globalData.userSettings.spreadRadius){
+    if (App.userSettings.spreadRadius){
         $("#spreadPreview").show();
     } else {
         $("#spreadPreview").hide();
     }
 
-    if (globalData.userSettings.weaponMinMaxRange){
+    if (App.userSettings.weaponMinMaxRange){
         $("#maxRangePreview").show();
     } else {
         $("#maxRangePreview").hide();
@@ -107,25 +107,25 @@ function updatePreview(){
 
     subtextContent = "<span>1345</span><br>";
 
-    if (globalData.userSettings.showBearing){ 
+    if (App.userSettings.showBearing){ 
         subtextContent += "<span class=\"bearingPreview\">241.5°</span><br>";
     } 
-    if (globalData.userSettings.showTimeOfFlight){
-        subtextContent += "<span class=\"bearingPreview\">20s</span><br>";
+    if (App.userSettings.showTimeOfFlight){
+        subtextContent += "<span class=\"bearingPreview\">20.1s</span><br>";
     } 
-    if (globalData.userSettings.showDistance){ 
+    if (App.userSettings.showDistance){ 
         subtextContent += "<span class=\"bearingPreview\">1145m</span><br>";
     } 
 
     $("#textPreview").html(subtextContent);
 
-    if (globalData.userSettings.grid){
+    if (App.userSettings.grid){
         $("#gridPreview").show();
     } else {
         $("#gridPreview").hide();
     }
 
-    if (globalData.userSettings.keypadUnderCursor){
+    if (App.userSettings.keypadUnderCursor){
         tooltip_coordPreview.enable();
     } else {
         tooltip_coordPreview.disable();
@@ -139,20 +139,20 @@ $("#keypadUnderCursorSetting").on("change", function() {
 
     // if no mouse support detected, disable the fonctionality
     if (!matchMedia("(pointer:fine)").matches) {
-        globalData.userSettings.keypadUnderCursor = false;
+        App.userSettings.keypadUnderCursor = false;
         return;
     }
 
     val = $("#keypadUnderCursorSetting").is(":checked");
 
     if (val){
-        globalData.minimap.on("mousemove", globalData.minimap._handleMouseMove);
+        App.minimap.on("mousemove", App.minimap._handleMouseMove);
     }
     else {
-        globalData.minimap.off("mousemove", globalData.minimap._handleMouseMove);
-        globalData.minimap.mouseLocationPopup.close();
+        App.minimap.off("mousemove", App.minimap._handleMouseMove);
+        App.minimap.mouseLocationPopup.close();
     }
-    globalData.userSettings.keypadUnderCursor = val;
+    App.userSettings.keypadUnderCursor = val;
     localStorage.setItem("settings-keypad-cursor", +val);
     updatePreview();
 });
@@ -160,31 +160,31 @@ $("#keypadUnderCursorSetting").on("change", function() {
 $("#gridSetting").on("change", function() {
     var val = $("#gridSetting").is(":checked");
     if (val) {
-        globalData.userSettings.grid = val;
+        App.userSettings.grid = val;
         localStorage.setItem("settings-grid", +val);
-        globalData.minimap.showGrid();
+        App.minimap.showGrid();
     }
     else {
-        globalData.userSettings.grid = val;
+        App.userSettings.grid = val;
         localStorage.setItem("settings-grid", +val);
-        globalData.minimap.hideGrid();
+        App.minimap.hideGrid();
     }
     updatePreview();
 });
 
 $("#spreadRadiusSetting").on("change", function() {
     var val = $("#spreadRadiusSetting").is(":checked");
-    globalData.userSettings.spreadRadius = val;
+    App.userSettings.spreadRadius = val;
     localStorage.setItem("settings-spread-radius", +val);
-    globalData.minimap.updateTargetsSpreads(); // Update every targets to add/remove spread radius
+    App.minimap.updateTargetsSpreads(); // Update every targets to add/remove spread radius
     updatePreview();
 });
 
 $("#weaponRangeSettings").on("change", function() {
     var val =  $("#weaponRangeSettings").is(":checked");
-    globalData.userSettings.weaponMinMaxRange = val;
+    App.userSettings.weaponMinMaxRange = val;
     localStorage.setItem("settings-weapon-range", +val);
-    globalData.minimap.updateWeapons();
+    App.minimap.updateWeapons();
     updatePreview();
 });
 
@@ -206,17 +206,17 @@ $("input[type=radio][name=cursorChoice]").on("change", function() {
         $(".default").css("cursor", "default");
     }
 
-    globalData.userSettings.cursor = val;
+    App.userSettings.cursor = val;
     localStorage.setItem("settings-cursor", val);
 
 });
 
 $("#targetAnimationSettings").on("change", function() {
     var val = $("#targetAnimationSettings").is(":checked");
-    globalData.userSettings.targetAnimation = val;
+    App.userSettings.targetAnimation = val;
     localStorage.setItem("settings-target-animation", +val);
 
-    globalData.minimap.activeTargetsMarkers.eachLayer(function (layer) {
+    App.minimap.activeTargetsMarkers.eachLayer(function (layer) {
         if (val) {
             layer.setIcon(targetIconAnimated1);
         }
@@ -228,59 +228,59 @@ $("#targetAnimationSettings").on("change", function() {
 
 $("#bearingOverDistanceSettings").on("change", function() {
     if ($("#bearingOverDistanceSettings").is(":checked")) {
-        globalData.userSettings.bearingOverDistance = 1;
+        App.userSettings.bearingOverDistance = 1;
         localStorage.setItem("settings-bearing-distance", 1);
     }
     else {
-        globalData.userSettings.bearingOverDistance = 0;
+        App.userSettings.bearingOverDistance = 0;
         localStorage.setItem("settings-bearing-distance", 0);
     }
 
     // Update every targets to add/remove distance
-    globalData.minimap.updateTargets(); // TODO, don't update everything, just the marker content
+    App.minimap.updateTargets(); // TODO, don't update everything, just the marker content
     updatePreview();
 });
 
 $("#bearingSetting").on("change", function() {
     if ($("#bearingSetting").is(":checked")) {
-        globalData.userSettings.showBearing = 1;
+        App.userSettings.showBearing = 1;
         localStorage.setItem("settings-show-bearing", 1);
     }
     else {
-        globalData.userSettings.showBearing = 0;
+        App.userSettings.showBearing = 0;
         localStorage.setItem("settings-show-bearing", 0);
     }
 
-    globalData.minimap.updateTargets();
+    App.minimap.updateTargets();
     updatePreview();
 });
 
 $("#distanceSetting").on("change", function() {
     if ($("#distanceSetting").is(":checked")) {
-        globalData.userSettings.showDistance = 1;
+        App.userSettings.showDistance = 1;
         localStorage.setItem("settings-show-distance", 1);
     }
     else {
-        globalData.userSettings.showDistance = 0;
+        App.userSettings.showDistance = 0;
         localStorage.setItem("settings-show-distance", 0);
     }
 
-    globalData.minimap.updateTargets();
+    App.minimap.updateTargets();
     updatePreview();
 });
 
 
 $("#timeOfFlightSetting").on("change", function() {
     if ($("#timeOfFlightSetting").is(":checked")) {
-        globalData.userSettings.showTimeOfFlight = 1;
+        App.userSettings.showTimeOfFlight = 1;
         localStorage.setItem("settings-show-timeofflight", 1);
     }
     else {
-        globalData.userSettings.showTimeOfFlight = 0;
+        App.userSettings.showTimeOfFlight = 0;
         localStorage.setItem("settings-show-timeofflight", 0);
     }
 
-    globalData.minimap.updateTargets();
+    App.minimap.updateTargets();
     updatePreview();
 });
 

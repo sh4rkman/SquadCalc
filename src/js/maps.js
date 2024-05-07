@@ -1,4 +1,4 @@
-import { globalData } from "./conf";
+import { App } from "./conf";
 import { squadMinimap } from "./squadMinimap";
 
 // Each map has a different size and require scaling w, y and z when calculating height
@@ -222,7 +222,7 @@ export function loadMapSelector() {
     const MAP_SELECTOR = $(".dropbtn");
 
     // Initiate select2 object (https://select2.org/)
-    if (globalData.debug.active) {
+    if (App.debug.active) {
         MAP_SELECTOR.select2({
             dropdownCssClass: "dropbtn",
             dropdownParent: $("#mapSelector"),
@@ -244,10 +244,11 @@ export function loadMapSelector() {
     });
 
     $(".dropbtn").val(11);
-    globalData.minimap.loadHeatmap();
+
 }
 
 export function loadMinimap(){
-    globalData.minimap = new squadMinimap("map");
-    globalData.minimap.draw(true);
+    var tileSize = 255;
+    App.minimap = new squadMinimap("map", tileSize);
+    App.minimap.draw(true);
 }

@@ -1,6 +1,6 @@
 import L from "leaflet";
 import { MAPS } from "./maps";
-import { globalData } from "./conf";
+import { App } from "./conf";
 import { shoot } from "./utils";
 
 export default L.ImageOverlay.extend({
@@ -9,23 +9,24 @@ export default L.ImageOverlay.extend({
     },
 
     /**
-     * Calculate heights for a given LatLng Point
-     * @param {url} [url] - image URL to display
-     * @param {options} [options]
+     * Initialize heightmap layer
+     * @param {string} [url] - heightmap URL
+     * @param {Array} [options]
+     * @param {map} [map]
      */
-    initialize: function (url, bounds) {
+    initialize: function (url, bounds, map) {
         //L.setOptions(this, options); uncomment if custom options are needed
         L.ImageOverlay.prototype.initialize.call(this, url, bounds);
+        this.map = map;
         this.canvas = document.getElementById("canvas");
         this.ctx = this.canvas.getContext("2d", {willReadFrequently: true});
         this.canvas.height = 1000;
         this.canvas.width = 1000;
-        this.heightmapScaling = this.canvas.height / globalData.mapSize;
+        this.heightmapScaling = this.canvas.height / this.map.tilesSize;
         this.on("load", function(){
             this.ctx.drawImage(this._image, 0, 0, this.canvas.width, this.canvas.height);
             shoot();
         });
-
     },
 
     /**
@@ -34,7 +35,7 @@ export default L.ImageOverlay.extend({
      * @returns {integer} - height in meters
      */
     getHeight: function(latlng){
-        const ZSCALING = MAPS.find((elem, index) => index == globalData.activeMap).scaling;
+        const ZSCALING = MAPS.find((elem, index) => index == App.activeMap).scaling;
         var color = this.ctx.getImageData(Math.round(latlng.lng * this.heightmapScaling), Math.round(latlng.lat * -this.heightmapScaling), 1, 1).data;
         return (255 + color[0] - color[2]) * ZSCALING;
     },

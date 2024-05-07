@@ -1,4 +1,4 @@
-import { globalData } from "./conf";
+import { App } from "./conf";
 import { drawLine } from "./animations";
 import { shoot } from "./utils";
 
@@ -63,7 +63,7 @@ export class Weapon {
      */
     getMaxDistance() {
         if (this.velocity.constructor != Array) { 
-            return (this.velocity ** 2) / globalData.gravity / this.gravityScale; 
+            return (this.velocity ** 2) / App.gravity / this.gravityScale; 
         }
 
         // When using UB32, return last value from UB32_table
@@ -122,17 +122,17 @@ export const WEAPONS = [
 export function changeWeapon() {
     const weapon = $(".dropbtn2").val();
 
-    globalData.line.hide("none");
+    App.line.hide("none");
     localStorage.setItem("data-weapon", weapon);
-    globalData.activeWeapon = WEAPONS[weapon];
-    $("#mortarImg").attr("src", globalData.activeWeapon.logo);
+    App.activeWeapon = WEAPONS[weapon];
+    $("#mortarImg").attr("src", App.activeWeapon.logo);
     shoot();
 
-    if (globalData.ui === 0){drawLine();}
+    if (App.ui === 0){drawLine();}
 
     // Update Minimap marker
-    globalData.minimap.updateWeapons();
-    globalData.minimap.updateTargets();
+    App.minimap.updateWeapons();
+    App.minimap.updateTargets();
 }
 
 
