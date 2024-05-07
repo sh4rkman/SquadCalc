@@ -1,5 +1,22 @@
 
 
+
+# <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">  **23.3.0** *(2024-05-07)*
+
+<img src="https://img.shields.io/badge/-new-green"> Added a "loading" animation background on logo
+
+<img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed some bridges/buildings being covered with terrain on kohat/manicouagan terrain maps
+
+<img src="https://img.shields.io/badge/-%20fix%20-orange"> fix [#142](https://github.com/sh4rkman/SquadCalc/issues/142)
+
+
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
+
+
+
+
 # <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">  **23.2.0** *(2024-05-06)*
 
 
