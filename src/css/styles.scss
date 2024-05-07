@@ -478,22 +478,34 @@ header {
     display: table;
     font-family: $logoFont;
     font-size: 7em;
-    span:first-child {
-        display: table-cell;
-        vertical-align: middle;
+    letter-spacing: 0;
+    span {
         font-weight: bolder;
         line-height : 1.3em;
-        letter-spacing: 0;
+        display: table-cell;
+        vertical-align: middle;
         span {
             display: inline-block;
         }
         span:nth-child(1) {
-            padding: 0 0 15px 15px;
+            padding: 0 0px 10px;
         }
         span:nth-child(2) {
-            background: $mainColor;
             padding: 0 15px 10px;
+            background: linear-gradient(to right, $mainColor 50%, $mainBGColor 50%);
+            background-size: 200% 100%;
+            background-position: right bottom;
+            animation: 1s ease-out 0.3s 1 forwards loading;
         }
+    }
+}
+
+@keyframes loading {
+    0% {
+        background-position: right bottom;
+    }
+    100% {
+        background-position: left bottom;
     }
 }
 

@@ -960,5 +960,5 @@ export function showPage(){
         $("#loaderLogo").fadeOut("slow", function() {
             $("#loader").fadeOut("fast");
         });
-    }, 1000);
+    }, 1300);
 }
