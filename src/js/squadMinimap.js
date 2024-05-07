@@ -95,7 +95,7 @@ export var squadMinimap = L.Map.extend({
                 this.heightmapGroup.removeLayer(this.heightmap);
             }
 
-            this.heightmap = new squadHeightmap("maps"+ map.mapURL + map.name.toLowerCase() + ".webp", imageBounds, this).addTo(this.heightmapGroup);
+            this.heightmap = new squadHeightmap("maps"+ map.mapURL + "heightmap.webp", imageBounds, this).addTo(this.heightmapGroup);
             this.heightmap.bringToBack();
         }
 
