@@ -25,10 +25,11 @@ import "./js/listeners.js";
 $(function() {
     loadSettings();
     createLine();
+    loadMapSelector();
     loadMinimap();
     loadWeapons();
     loadUI();
-    loadMapSelector();
+
     preventAutocomplete();
     showPage();
     registerServiceWorkers();

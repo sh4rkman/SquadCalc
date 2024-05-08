@@ -37,7 +37,8 @@ export default L.ImageOverlay.extend({
     getHeight: function(latlng){
         const ZSCALING = MAPS.find((elem, index) => index == App.activeMap).scaling;
         var color = this.ctx.getImageData(Math.round(latlng.lng * this.heightmapScaling), Math.round(latlng.lat * -this.heightmapScaling), 1, 1).data;
-        return (255 + color[0] - color[2]) * ZSCALING;
+        if(color[0] + color[2] === 0) {return 0;} // out of map
+        else {return(255 + color[0] - color[2]) * ZSCALING; }
     },
 
     /**
