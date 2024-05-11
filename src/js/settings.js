@@ -26,7 +26,7 @@ function loadLocalSetting(item, default_value = 1) {
 
 
 export function loadSettings(){
-    var setting = localStorage.getItem("settings-terrain-mode");
+    var setting = localStorage.getItem("settings-map-mode");
     
     App.userSettings.keypadUnderCursor = loadLocalSetting("settings-keypad-cursor");
     if (matchMedia("(pointer:fine)").matches) {
@@ -42,10 +42,9 @@ export function loadSettings(){
 
     if (setting === null || setting === ""){
         setting = "basemap";
-        localStorage.setItem("settings-terrain-mode", setting);
+        localStorage.setItem("settings-map-mode", setting);
     }
 
-    App.userSettings.terrainMode = setting;
     $(".btn-"+setting).addClass("active");
 
 

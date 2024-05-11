@@ -75,7 +75,7 @@ test('Basic calcs + map', async ({  }) => {
 
   // Check calcs
   await expect(page.locator('#bearingNum')).toContainText("33.7");
-  await expect(page.locator('#elevationNum')).toContainText("1446");
+  await expect(page.locator('#elevationNum')).toContainText("1444");
 });
 
 test('Advanced calc', async ({  }) => {
@@ -83,32 +83,32 @@ test('Advanced calc', async ({  }) => {
   await page.getByRole('option', { name: 'Al basrah' }).click();
   // pressSequentially coordonates
   await page.locator('#mortar-location').click();
-  await page.locator('#mortar-location').pressSequentially('B0234');
+  await page.locator('#mortar-location').pressSequentially('C05855');
   await page.locator('#target-location').click();
-  await page.locator('#target-location').pressSequentially('C01245');
+  await page.locator('#target-location').pressSequentially('F0675');
 
   // Select a map
   await page.getByRole('textbox', { name: 'Al basrah' }).click();
   await page.getByRole('option', { name: 'BLACK COAST' }).click();
 
   // Check calcs
-  await expect(page.locator('#bearingNum')).toContainText("33.7");
-  await expect(page.locator('#elevationNum')).toContainText("1450");
+  await expect(page.locator('#bearingNum')).toContainText("110.6");
+  await expect(page.locator('#elevationNum')).toContainText("1214");
 
   // Select BM21 Grad
   await page.getByRole('textbox', { name: 'mortar' }).click();
   await page.getByRole('option', { name: 'BM-21 Grad' }).click();
 
   // Check calcs
-  await expect(page.locator('#bearingNum')).toContainText("33.7");
-  await expect(page.locator('#elevationNum')).toContainText("2.7");
+  await expect(page.locator('#bearingNum')).toContainText("110.6");
+  await expect(page.locator('#elevationNum')).toContainText("11.1");
 
   // Change high/low calc
   await page.locator('#highlow i').click();
   
   // Check calcs
-  await expect(page.locator('#bearingNum')).toContainText("33.7");
-  await expect(page.locator('#elevationNum')).toContainText("84.9");
+  await expect(page.locator('#bearingNum')).toContainText("110.6");
+  await expect(page.locator('#elevationNum')).toContainText("77.7");
 
 });
 

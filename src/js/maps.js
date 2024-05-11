@@ -80,7 +80,6 @@ export const MAPS = [
     //     size: 4008, // OK
     //     offset: [0, 0], 
     //     scaling: 0.0859, // OK
-    //     heightmapURL: JensenURL,
     //     mapURL: "/jensen/{z}_{x}_{y}.webp",
     //     maxZoomLevel: 4,
     // },
@@ -169,7 +168,6 @@ export const MAPS = [
         size: 2800, // OK
         offset: [-100, -100], 
         scaling: 0.0583, 
-        heightmapURL: NarvaURL,
         mapURL: "/narva-flooded/{z}_{x}_{y}.webp",
         maxZoomLevel: 4,
     }, */
@@ -248,7 +246,7 @@ export function loadMapSelector() {
 }
 
 export function loadMinimap(){
-    var tileSize = 255;
+    var tileSize = 256;
     App.minimap = new squadMinimap("map", tileSize);
     App.minimap.draw(true);
 }

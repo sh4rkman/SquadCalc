@@ -45,21 +45,21 @@ tippy(".btn-basemap", {
     animation: "fade",
     placement: "left",
     touch: false,
-    content: "BaseMap",
+    content: "Base Map",
 });
 
 tippy(".btn-terrainmap", {
     animation: "fade",
     placement: "left",
     touch: false,
-    content: "TerrainMap",
+    content: "Terrain Map",
 });
 
-tippy(".btn-heightmap", {
+tippy(".btn-topomap", {
     animation: "fade",
     placement: "left",
     touch: false,
-    content: "Heightmap",
+    content: "Topographic Map",
 });
 
 

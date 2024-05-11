@@ -24,7 +24,6 @@ export var App = {
         targetAnimation: true,
         weaponMinMaxRange: true,
         bearingOverDistance: false,
-        heightmapMode: false,
     }
 };
 

@@ -7,10 +7,11 @@ import { squadWeaponMarker, squadTargetMarker } from "./squadMarker";
 import { mortarIcon, mortarIcon1, mortarIcon2 } from "./squadIcon";
 import { getKP } from "./utils";
 import { explode } from "./animations";
+import "leaflet-edgebuffer";
+import "leaflet.gridlayer.fadeout";
+
 
 export var squadMinimap = L.Map.extend({
-
-
 
     initialize: function (id, tilesSize, options) {
 
@@ -23,7 +24,7 @@ export var squadMinimap = L.Map.extend({
             zoomControl: false,
             doubleClickZoom: false,
             edgeBufferTiles: 5,
-            renderer: L.svg({padding: 3}), // https://leafletjs.com/reference.html#path-clip_padding
+            renderer: L.svg({padding: 3}),
             closePopupOnClick: false,
             wheelPxPerZoomLevel: 75,
             boxZoom: true,
@@ -31,17 +32,26 @@ export var squadMinimap = L.Map.extend({
             zoom: 2,
         };
 
+
         L.setOptions(this, options);
         L.Map.prototype.initialize.call(this, id, options);
 
+        // Default map to Kohat
+        this.activeMap = MAPS.find((elem, index) => index == 11);
+
+
 
         this.tilesSize = tilesSize;
-        this.heightmapGroup = L.layerGroup().addTo(this);
+        this.imageBounds = L.latLngBounds(L.latLng(0, 0), L.latLng(-this.tilesSize, this.tilesSize));
+        this.tileLayerOption = {
+            maxNativeZoom: this.activeMap.maxZoomLevel,
+            noWrap: true,
+            bounds: this.imageBounds,
+            tileSize: this.tilesSize,
+        };
+
         this.layerGroup = L.layerGroup().addTo(this);
-
         this.markersGroup = L.layerGroup().addTo(this);
-
-
         this.activeTargetsMarkers = L.layerGroup().addTo(this);
         this.activeWeaponsMarkers = L.layerGroup().addTo(this);
         this.grid = "";
@@ -62,96 +72,34 @@ export var squadMinimap = L.Map.extend({
         if (App.userSettings.keypadUnderCursor){
             this.on("mousemove", this._handleMouseMove, this);
         }
+
     },
 
     /**
      * Draw the map+grid inside the map container
      */
-    draw: function(reset){
+    draw: function(){
         // everything is a mess, rewrite this shit asap
         const layerMode = $("#mapLayerMenu .active").attr("value");
-        var mapVal;
-        var map;
-        var imageBounds;
-        var previousLayers;
 
-        // what map are we using
-        mapVal = $(".dropbtn").val();
-        if (mapVal == "") {mapVal = 11;} // default map is Kohat
-        map = MAPS.find((elem, index) => index == mapVal);
-        App.activeMap = mapVal;
+        this.gameToMapScale = this.tilesSize / this.activeMap.size;
+        this.mapToGameScale = this.activeMap.size / this.tilesSize;
 
+        // Load Heightmap in canvas
+        this.heightmap = new squadHeightmap(this.imageBounds, this);
 
-        imageBounds = L.latLngBounds(L.latLng(0, 0), L.latLng(-this.tilesSize, this.tilesSize));
-        this.gameToMapScale = this.tilesSize / map.size;
-        this.mapToGameScale = map.size / this.tilesSize;
-
-        previousLayers = this.layerGroup.getLayers();
-
-
-        // Always add the heightmap
-        if (reset){
-            if (this.heightmap) {
-                this.heightmapGroup.removeLayer(this.heightmap);
-            }
-
-            this.heightmap = new squadHeightmap("maps"+ map.mapURL + "heightmap.webp", imageBounds, this).addTo(this.heightmapGroup);
-            this.heightmap.bringToBack();
-        }
-
-        if (layerMode == "basemap") {
-            this.basemap = L.tileLayer("maps" + map.mapURL + "minimap/{z}_{x}_{y}.webp", {
-                maxNativeZoom: map.maxZoomLevel,
-                noWrap: true,
-                bounds: imageBounds,
-                tileSize: this.tilesSize,
-            }).addTo(this.layerGroup);
-            this.basemap.bringToFront();
-            this.heightmap.setOpacity(0);
-        }
-        else if ( layerMode == "terrainmap") {
-            this.terrainmap = L.tileLayer("maps" + map.mapURL + "terrainmap/{z}_{x}_{y}.webp", {
-                maxNativeZoom: map.maxZoomLevel,
-                noWrap: true,
-                bounds: imageBounds,
-                tileSize: this.tilesSize,
-            }).addTo(this.layerGroup);
-            this.terrainmap.bringToFront();
-            this.heightmap.setOpacity(0);
-        }
-        
-
-        if (layerMode === "heightmap"){
-            this.heightmap.setOpacity(1);
-            this.heightmap.bringToFront();
-        }
+        if (this.activeLayer) this.activeLayer.remove();
+        this.activeLayer = L.tileLayer("", this.tileLayerOption);
+        this.activeLayer.setUrl("maps" + this.activeMap.mapURL + layerMode + "/{z}_{x}_{y}.webp");
+        this.activeLayer.addTo(this.layerGroup);
 
         if (this.grid){this.grid.remove();}
         this.grid = new squadGrid(this);
-        this.grid.setBounds(L.latLngBounds(L.latLng(0, 0), L.latLng(-this.tilesSize+1, this.tilesSize-1)));
+        this.grid.setBounds(L.latLngBounds(L.latLng(0, 0), L.latLng(-this.tilesSize, this.tilesSize)));
 
         if (App.userSettings.grid) {
             this.showGrid();
         }
-
-        // wait for the load animation to finish before removing previous tiles
-        // Ugly hack to avoid logo flashing when switching map
-        setTimeout(() => {
-            this.layerGroup.eachLayer((layer) => {
-                for (let index = 0; index < previousLayers.length; index++) {
-                    if (previousLayers[index] === layer) {
-                        this.layerGroup.removeLayer(layer);
-                    }
-                }
-            });
-        }, 1000);
-
-        if (reset){
-            this.setView([-this.tilesSize/2, this.tilesSize/2], 2);
-            $(".btn-delete").hide();
-        }
-
-        //this.drawHeightmap(imageBounds);
 
     },
 
@@ -163,7 +111,7 @@ export var squadMinimap = L.Map.extend({
         $(".btn-"+val).addClass("active");
 
         App.userSettings.layerMode = val;
-        localStorage.setItem("settings-terrain-mode", val);
+        localStorage.setItem("settings-map-mode", val);
        
         this.draw(false);
     },
@@ -176,6 +124,10 @@ export var squadMinimap = L.Map.extend({
         this.markersGroup.clearLayers();
         this.activeWeaponsMarkers.clearLayers();
         this.activeTargetsMarkers.clearLayers();
+        this.layerGroup.clearLayers();
+
+        this.setView([-this.tilesSize/2, this.tilesSize/2], 2);
+        $(".btn-delete").hide();
     },
 
     /**
