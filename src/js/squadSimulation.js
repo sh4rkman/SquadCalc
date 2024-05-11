@@ -136,8 +136,6 @@ export default class Simulation {
         ctx.fillRect(0, 0, this.padding, this.canvas.height);
         ctx.fillRect(this.canvas.width, 0, -this.padding, this.canvas.height);
 
-        // Draw icons
-        //this.drawCanvasIcons(this.padding);
     }
 
     /**
@@ -163,15 +161,6 @@ export default class Simulation {
             this.canvas.height - (this.heightPath.at(-1) * yScaling) - IMG_HEIGHT - this.yOffset,
             IMG_WIDTH,
             IMG_HEIGHT);
-
-        // image.src = weaponIcon;
-        // ctx.drawImage(
-        //     image,
-        //     (PADDING * this.canvas.width) - (IMG_WIDTH/2),
-        //     this.canvas.height - (this.heightPath.at(1) * yScaling) - IMG_HEIGHT,
-        //     IMG_WIDTH,
-        //     IMG_HEIGHT);
-
         
         // Flip it back
         ctx.scale(1, -1);

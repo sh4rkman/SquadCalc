@@ -1,44 +1,42 @@
 import L from "leaflet";
-import { MAPS } from "./maps";
-import { App } from "./conf";
 import { shoot } from "./utils";
 
-export default L.ImageOverlay.extend({
-    options: {
-
-    },
+export default class SquadHeightmap {
 
     /**
      * Initialize heightmap layer
      * @param {string} [url] - heightmap URL
      * @param {Array} [options]
-     * @param {map} [map]
+     * @param {L.map} [map]
      */
-    initialize: function (url, bounds, map) {
-        //L.setOptions(this, options); uncomment if custom options are needed
-        L.ImageOverlay.prototype.initialize.call(this, url, bounds);
+    constructor(bounds, map) {
+        var img = new Image();
         this.map = map;
         this.canvas = document.getElementById("canvas");
         this.ctx = this.canvas.getContext("2d", {willReadFrequently: true});
         this.canvas.height = 1000;
         this.canvas.width = 1000;
         this.heightmapScaling = this.canvas.height / this.map.tilesSize;
-        this.on("load", function(){
-            this.ctx.drawImage(this._image, 0, 0, this.canvas.width, this.canvas.height);
-            shoot();
-        });
-    },
+
+        img.src = "maps"+ this.map.activeMap.mapURL + "heightmap.webp";
+        img.onload = (function(heightmap){
+            return function() {
+                heightmap.ctx.drawImage(img, 0, 0, heightmap.canvas.width, heightmap.canvas.height);
+                shoot();
+            };
+        })(this);
+    }
 
     /**
      * Calculate heights for a given LatLng Point
      * @param {LatLng} [latlng] - LatLng Point
      * @returns {integer} - height in meters
      */
-    getHeight: function(latlng){
-        const ZSCALING = MAPS.find((elem, index) => index == App.activeMap).scaling;
+    getHeight(latlng){
         var color = this.ctx.getImageData(Math.round(latlng.lng * this.heightmapScaling), Math.round(latlng.lat * -this.heightmapScaling), 1, 1).data;
-        return (255 + color[0] - color[2]) * ZSCALING;
-    },
+        if (color[0] + color[2] === 0) return 0; // out of map
+        else return ( (255 + color[0] - color[2]) * this.map.activeMap.scaling );
+    }
 
     /**
      * Calculate a path of heights between two points
@@ -46,7 +44,7 @@ export default L.ImageOverlay.extend({
      * @param {LatLng} [targetLatlng] - LatLng Point
      * @returns {Array} - containing all the heights between mortarLatlng and targetLatlng in meters
      */
-    getHeightPath: function(mortarLatlng, targetLatlng, STEP = 100) {
+    getHeightPath(mortarLatlng, targetLatlng, STEP = 100) {
         var heightPath = [];
         var start = new L.latLng(mortarLatlng.lat, mortarLatlng.lng);
         var end = new L.latLng(targetLatlng.lat, targetLatlng.lng);
@@ -60,6 +58,6 @@ export default L.ImageOverlay.extend({
         }
     
         return heightPath;
-    },
+    }
 
-});
+}

@@ -21,7 +21,7 @@ const MAPDATA = [
           [-2300, -2050],
           [2300, 2550],
         ],
-        hDim: [3571, 3571], // dimensions of exported heightmap
+        hDim: [4081, 4081], // dimensions of exported heightmap
         lOrigin: [-2040, -2040], // origin of landscape in SquadSDK (sometimes extracted by placing actor in corner)
       },
     },
@@ -396,14 +396,14 @@ const MAPDATA = [
       locations: [
       ],
       extra: {
-        scale: [1, 1, 1],
+        scale: [0.5, 0.5, 1],
         levels: [100, 264],
         minimap: [
           [-1076, -1076],
           [1420, 1420],
         ],
         hDim: [6097, 7367],
-        lOrigin: [-1333, -1714],
+        lOrigin: [-1334, -1715], // not in the sdk, deduced
       },
     },
     {
@@ -474,7 +474,7 @@ const MAPDATA = [
           [-2016, -2016],
           [2015, 2015],
         ],
-        hDim: [4081, 4081],
+        hDim: [4065, 4065],
         lOrigin: [-2032, -2032],
       },
     },
@@ -504,8 +504,8 @@ const MAPDATA = [
           [-1200, -1100],
           [1200, 1300],
         ],
-        hDim: [4081, 4081],
-        lOrigin: [-2310, -1927],
+        hDim: [3061, 2551],
+        lOrigin: [-1545, -1260],
       },
     },
     {
@@ -642,8 +642,8 @@ const MAPDATA = [
           [-640, -447],
           [660, 853],
         ],
-        hDim: [1985, 1985],
-        lOrigin: [-992, -992],
+        hDim: [1427, 1055],
+        lOrigin: [-683, -373], // not from sdk
       },
     },
     {
@@ -660,8 +660,8 @@ const MAPDATA = [
           [-2340, -2340],
           [2340, 2340],
         ],
-        hDim: [4081, 4081],
-        lOrigin: [-2040, -2040],
+        hDim: [4573, 4573],
+        lOrigin: [-2032, -2032],
       },
     },
     {
@@ -692,8 +692,8 @@ const MAPDATA = [
           [-3002, -3002],
           [3048, 3048],
         ],
-        hDim: [8129, 8129],
-        lOrigin: [-4064, -4064],
+        hDim: [6050, 6050],
+        lOrigin: [-3002, -3002], // don't trust sdk, landscape origin changed
       },
     },
   ];

@@ -179,6 +179,7 @@ header {
 
 
 
+
 #map_ui {
     position: relative;
     height: 100vh; 
@@ -194,6 +195,9 @@ header {
         }
         img.leaflet-tile {
             mix-blend-mode: plus-lighter;
+        }
+        .leaflet-tile {
+            background: rgb(255, 255, 255);
         }
         .kpPopup {
             background: transparent;
@@ -268,8 +272,14 @@ header {
             opacity: 0; 
             animation: target-appear 0.25s ease-in-out forwards 0s;
         }
+        .gridText {
+            @extend %text-outline;
+            font-size: 1.1em;
+        }
     }
 }
+
+
 
 #mapLayerMenu{
     position: absolute;
@@ -307,11 +317,11 @@ header {
         .fa-mound {
             font-size: 1.5em;
             background: -webkit-gradient(linear, left top, left bottom,
-             from(rgb(255, 0, 0)),
-             color-stop(0.4, #8b0000),
-             color-stop(0.5, #000),
-             color-stop(0.7, #0031b8),
-             to(#04f));
+             from(#d66916),
+             color-stop(0.3, #c27942),
+             color-stop(0.4, #c7c875),
+             color-stop(0.5, #629c61),
+             to(#162015));
             background-clip: text;
             -webkit-text-fill-color: transparent;
             -webkit-background-clip: text;
@@ -686,7 +696,6 @@ footer {
     bottom: 0;
     height: 350px;
     width: 350px;
-    border: solid red 1px
 }
 
 .leader-line {
@@ -867,7 +876,7 @@ footer {
         width: 150px;
         height: 150px;
         margin:auto;
-        background-image: url("../../public/maps/chora/minimap/4_6_7.webp");
+        background-image: url("../../public/maps/chora/basemap/4_6_7.webp");
         background-size: contain;
         #center {
             display: flex;

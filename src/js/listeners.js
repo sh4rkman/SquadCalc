@@ -1,9 +1,11 @@
 import { shoot, filterInput, resizeInput, resizeInputsOnResize, RemoveSaves, copySave, copyCalc, saveCalc, changeHighLow, switchUI } from "./utils";
 import { changeWeapon } from "./weapons";
 import { App } from "./conf";
+import { MAPS } from "./maps";
 
 $(document).on("change", ".dropbtn2", function() { changeWeapon(); });
-$(document).on("change", ".dropbtn", function() { 
+$(document).on("change", ".dropbtn", function() {
+    App.minimap.activeMap = MAPS.find((elem, index) => index == this.value);
     App.minimap.clear(); 
     App.minimap.draw(true); 
 });

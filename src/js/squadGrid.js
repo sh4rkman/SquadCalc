@@ -8,12 +8,10 @@
  */
 
 import {
-    LayerGroup, Util, LatLng, Polyline,
+    LayerGroup, Util, LatLng, Polyline, Marker, DivIcon
 } from "leaflet";
 
 import { isMultiple } from "./utils";
-import { MAPS } from "./maps";
-import { App } from "./conf";
 
 /**
  * This Layergroup displays the grid in the same way it is displayed in-game.
@@ -72,7 +70,6 @@ export default LayerGroup.extend({
    */
     setBounds(bounds) {
         this.bounds = bounds;
-
         if (this.map) {
             this.redraw();
             this.updateLineOpacity();
@@ -87,8 +84,6 @@ export default LayerGroup.extend({
     },
 
     onRemove(map) {
-        //console.debug("onRemove");
-
         // remove listener for view change
         map.off("zoomend", this.updateLineOpacity, this);
         this.clearLines();
@@ -182,11 +177,10 @@ export default LayerGroup.extend({
         // clear old grid lines
         this.clearLines();
 
-        const mapScale = this.map.tilesSize / MAPS.find((elem, index) => index == App.activeMap).size;
-
-        const kp = (300 / 3 ** 0) * mapScale;
-        const s1 = (300 / 3 ** 1) * mapScale;
-        const s2 = (300 / 3 ** 2) * mapScale;
+        // Define and scale line's intervals
+        const kp = (300 / 3 ** 0) * this.map.gameToMapScale;
+        const s1 = (300 / 3 ** 1) * this.map.gameToMapScale;
+        const s2 = (300 / 3 ** 2) * this.map.gameToMapScale;
 
         // for complete grid drawing we take lowest interval, as we want to draw all lines
         // whether or not they will be seen is dependant on another function setting
@@ -197,14 +191,16 @@ export default LayerGroup.extend({
         this.kpLines = [];
         this.s1Lines = [];
         this.s2Lines = [];
+        this.labels = [];
+        
 
         // vertical keypad lines
         // doing some magic against floating point imprecision
         const startX = this.bounds.getWest();
         const endX = this.bounds.getEast();
 
-        for (let x = startX; x <= endX; x += interval) {
-            const bot = new LatLng(this.bounds.getSouth()-1, x);
+        for (let x = startX, z = 0; x <= endX; x += interval) {
+            const bot = new LatLng(this.bounds.getSouth(), x);
             const top = new LatLng(this.bounds.getNorth(), x);
 
             // checking which style to use for the current line
@@ -214,6 +210,24 @@ export default LayerGroup.extend({
             // we use if-else so that we don't draw lines over each other
             if (isMultiple(kp, x)) {
                 this.kpLines.push(new Polyline([bot, top], this.lineStyleKP));
+
+                // Create
+                let top2 = new LatLng(this.bounds.getNorth(), x-(kp/2));
+
+                if (x!=0) {
+                    this.labels.push(new Marker(top2, {
+                        interactive: false,
+                        icon: new DivIcon({
+                            className: "gridText",
+                            html: (z + 9).toString(36).toUpperCase(),
+                            iconSize: [20, 20],
+                            iconAnchor: [10, 20]
+                        })
+                    }));
+                }
+
+                z += 1;
+
             } else if (isMultiple(s1, x)) {
                 this.s1Lines.push(new Polyline([bot, top], this.lineStyleSUB1));
             } else if (isMultiple(s2, x)) {
@@ -224,15 +238,31 @@ export default LayerGroup.extend({
         }
 
         // horizontal keypad lines, almost the same as for vertical lines
-        const startY = Math.ceil(this.bounds.getSouth() / interval) * interval;
-        const endY = Math.floor(this.bounds.getNorth() / interval) * interval;
+        const startY = Math.ceil(this.bounds.getNorth() / interval) * interval;
+        const endY = Math.floor(this.bounds.getSouth() / interval) * interval;
 
-        for (let y = startY; y <= endY; y += interval) {
+        for (let y = startY, z = 0; y >= endY; y -= interval) {
             const left = new LatLng(y, this.bounds.getWest());
-            const right = new LatLng(y, this.bounds.getEast()+1);
+            const right = new LatLng(y, this.bounds.getEast());
+
 
             if (isMultiple(kp, y)) {
+                let textPos = new LatLng(y+(kp/2), this.bounds.getWest());
                 this.kpLines.push(new Polyline([left, right], this.lineStyleKP));
+
+                if (y!=0){ // skip first label
+                    this.labels.push(new Marker(textPos, {
+                        interactive: false,
+                        icon: new DivIcon({
+                            className: "gridText",
+                            html: "<div>" + z + "</div>",
+                            iconSize: [20, 20],
+                            iconAnchor: [20, 10]
+                        })
+                    }));
+                }
+                z+=1;
+
             } else if (isMultiple(s1, y)) {
                 this.s1Lines.push(new Polyline([left, right], this.lineStyleSUB1));
             } else if (isMultiple(s2, y)) {
@@ -245,5 +275,6 @@ export default LayerGroup.extend({
         this.kpLines.forEach(this.addLayer, this);
         this.s1Lines.forEach(this.addLayer, this);
         this.s2Lines.forEach(this.addLayer, this);
+        this.labels.forEach(this.addLayer, this);
     },
 });

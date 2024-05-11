@@ -389,7 +389,7 @@ export function shoot(inputChanged = "") {
 function insertCalc(bearing, elevation, distance, vel, height) {
 
     if (!App.debug.active) {
-        console.clear();
+        //console.clear();
     } else {
         console.log("------------------------------");
         console.log("         FINAL CALC");

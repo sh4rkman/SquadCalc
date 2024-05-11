@@ -2,7 +2,6 @@ import L from "leaflet";
 import "./ellipse";
 
 import { App } from "./conf";
-import { MAPS } from  "./maps";
 import SquadSimulation from "./squadSimulation";
 import { isTouchDevice } from "./utils";
 
@@ -72,7 +71,7 @@ export var squadWeaponMarker = squadMarker.extend({
         }
 
         this.maxDistCircleOn = {
-            radius: App.activeWeapon.getMaxDistance() * (this.map.tilesSize / MAPS.find((elem, index) => index == App.activeMap).size),
+            radius: App.activeWeapon.getMaxDistance() * this.map.gameToMapScale,
             opacity: 0.7,
             color: "#00137f",
             fillOpacity: 0,
@@ -82,7 +81,7 @@ export var squadWeaponMarker = squadMarker.extend({
         };
 
         this.minDistCircleOn = {
-            radius: App.activeWeapon.minDistance * (this.map.tilesSize / MAPS.find((elem, index) => index == App.activeMap).size),
+            radius: App.activeWeapon.minDistance * this.map.gameToMapScale,
             opacity: 0.7,
             color: "#00137f",
             fillOpacity: 0.2,
@@ -149,11 +148,12 @@ export var squadWeaponMarker = squadMarker.extend({
             this.map.activeWeaponsMarkers.getLayers()[0].setIcon(mortarIcon);
         }
 
-        // Delete the weapon marker and everthing tied to it
+        // Delete the weapon marker and everything tied to it
         this.remove();
         this.removeFrom(this.map.activeWeaponsMarkers);
         this.minRangeMarker.remove();
         this.rangeMarker.remove();
+        this.miniCircle.remove();
 
         // Update remaining targets if they exists
         this.map.updateTargets();
@@ -165,8 +165,8 @@ export var squadWeaponMarker = squadMarker.extend({
      */
     updateWeapon: function(){
 
-        var radiusMax = App.activeWeapon.getMaxDistance() * (this.map.tilesSize / MAPS.find((elem, index) => index == App.activeMap).size);
-        var radiusMin = App.activeWeapon.minDistance * (this.map.tilesSize / MAPS.find((elem, index) => index == App.activeMap).size);
+        var radiusMax = App.activeWeapon.getMaxDistance() * this.map.gameToMapScale;
+        var radiusMin = App.activeWeapon.minDistance * this.map.gameToMapScale;
         
         this.minRangeMarker.setRadius(radiusMin);
         this.rangeMarker.setRadius(radiusMax);
@@ -259,13 +259,9 @@ export var squadTargetMarker = squadMarker.extend({
         var dist;
         var velocity;
         var elevation;
-        var mapScale;
 
         L.setOptions(this, options);
         squadMarker.prototype.initialize.call(this, latlng, options, map);
-
-        mapScale = MAPS.find((elem, index) => index == App.activeMap).size / this.map.tilesSize;
-
         
         if (App.userSettings.cursor) {
             cursorClass = "crosshair";
@@ -340,8 +336,8 @@ export var squadTargetMarker = squadMarker.extend({
         weaponHeight = this._map.heightmap.getHeight(weaponPos);
         targetHeight = this._map.heightmap.getHeight(latlng);
 
-        a = L.latLng([weaponPos.lng * mapScale, weaponPos.lat * -mapScale]);
-        b = L.latLng([latlng.lng * mapScale, latlng.lat * -mapScale]);
+        a = L.latLng([weaponPos.lng * this.map.mapToGameScale, -weaponPos.lat * this.map.mapToGameScale]);
+        b = L.latLng([latlng.lng * this.map.mapToGameScale, -latlng.lat * this.map.mapToGameScale]);
 
         dist = getDist(a, b);
         velocity = App.activeWeapon.getVelocity(dist);
@@ -380,7 +376,7 @@ export var squadTargetMarker = squadMarker.extend({
         if (this.map.activeWeaponsMarkers.getLayers().length === 2) {
 
             weaponPos = this.map.activeWeaponsMarkers.getLayers()[1].getLatLng();
-            a = L.latLng([weaponPos.lng * mapScale, weaponPos.lat * -mapScale]);        
+            a = L.latLng([weaponPos.lng * this.map.mapToGameScale, -weaponPos.lat * this.map.mapToGameScale]);        
             weaponHeight = this._map.heightmap.getHeight(weaponPos);
             targetHeight = this._map.heightmap.getHeight(latlng);
             dist = getDist(a, b);
@@ -451,11 +447,13 @@ export var squadTargetMarker = squadMarker.extend({
      * @param {this}
      */
     delete: function(){
-        this.spreadMarker1.removeFrom(this.map.markersGroup);
-        this.spreadMarker2.removeFrom(this.map.markersGroup);
+        this.spreadMarker1.remove();
+        this.spreadMarker2.remove();
 
-        this.calcMarker1.removeFrom(this.map.markersGroup);
-        this.calcMarker2.removeFrom(this.map.markersGroup);
+        this.calcMarker1.remove();
+        this.calcMarker2.remove();
+
+        this.miniCircle.remove();
 
         this.removeFrom(this.map.activeTargetsMarkers);
         this.removeFrom(this.map.markersGroup);
@@ -526,10 +524,9 @@ export var squadTargetMarker = squadMarker.extend({
 
 
     updateCalc: function(){
-        const mapScale = MAPS.find((elem, index) => index == App.activeMap).size / this.map.tilesSize;
         var weaponPos = this.map.activeWeaponsMarkers.getLayers()[0].getLatLng();
-        var a = L.latLng([weaponPos.lng * mapScale, weaponPos.lat * -mapScale]);
-        var b = L.latLng([this.getLatLng().lng * mapScale, this.getLatLng().lat * -mapScale]);
+        var a = L.latLng([weaponPos.lng * this.map.mapToGameScale, -weaponPos.lat * this.map.mapToGameScale]);
+        var b = L.latLng([this.getLatLng().lng * this.map.mapToGameScale, -this.getLatLng().lat * this.map.mapToGameScale]);
         var weaponHeight = this.map.heightmap.getHeight(weaponPos);
         var targetHeight = this.map.heightmap.getHeight(this.getLatLng());
         var dist = getDist(a, b);
@@ -571,7 +568,7 @@ export var squadTargetMarker = squadMarker.extend({
         if (this.map.activeWeaponsMarkers.getLayers().length === 2) {
 
             weaponPos = this.map.activeWeaponsMarkers.getLayers()[1].getLatLng();
-            a = L.latLng([weaponPos.lng * mapScale, weaponPos.lat * -mapScale]);    
+            a = L.latLng([weaponPos.lng * this.map.mapToGameScale, -weaponPos.lat * this.map.mapToGameScale]);    
             weaponHeight = this._map.heightmap.getHeight(weaponPos);
             targetHeight = this._map.heightmap.getHeight(this.getLatLng());
             dist = getDist(a, b);

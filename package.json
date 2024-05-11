@@ -1,6 +1,6 @@
 {
   "name": "squadcalc",
-  "version": "23.3.0",
+  "version": "24.0.0",
   "description": "A Complete Mortar Calculator for Squad",
   "author": "Maxime 'sharkman' Boussard",
   "license": "MIT",
@@ -53,6 +53,7 @@
     "leader-line-new": "^1.1.9",
     "leaflet": "^1.9.4",
     "leaflet-edgebuffer": "^1.0.6",
+    "leaflet.gridlayer.fadeout": "^0.1.0",
     "mini-css-extract-plugin": "^2.7.6",
     "npm-run-all": "^4.1.5",
     "postcss": ">=8.4.31",

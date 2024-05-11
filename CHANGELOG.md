@@ -1,5 +1,19 @@
 
 
+# <img src="https://img.shields.io/badge/-major%20release-blue?style=flat-square">  **24.0.0** *(2024-05-11)*
+
+<img src="https://img.shields.io/badge/-new-green"> **Topographic maps !** Heightmap layers have been replaced with a mix of topographic, hypsometric and hillshading layers. Blue/Red heightmaps are still used behind the scene to find heights
+
+<img src="https://img.shields.io/badge/-new-green"> Grid now display the letters and numbers next to every column and row
+
+<img src="https://img.shields.io/badge/-%20fix%20-orange"> fixed a bug where the grid was drawn a pixel too far
+
+<img src="https://img.shields.io/badge/-%20fix%20-orange"> fixed a bug where mini-placing-circles were not properly destroyed and still hoverable
+
+
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
 
 # <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">  **23.3.0** *(2024-05-07)*
 
