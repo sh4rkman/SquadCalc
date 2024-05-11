@@ -34,8 +34,9 @@ This tool facilitates rapid mortar calculations through two distinct modes:
 </br>
 
 
-![image](./src/img/github/desktop_ui.webp)<img width="224" height="426" src="./src/img/github/mobile_ui.webp">
-![image](./src/img/github/desktop.webp)<img width="224" height="426" src="./src/img/github/mobile.webp">
+![image](./src/img/github/desktop_ui.webp)
+![image](./src/img/github/desktop_ui_2.webp)
+![image](./src/img/github/desktop.webp)
 
 
 
@@ -44,14 +45,48 @@ This tool facilitates rapid mortar calculations through two distinct modes:
 # **Features**
 
 
-### **Elevations Calculations**
+## **Elevations Calculations**
 
 SquadCalc utilizes heightmaps extracted from the Squad SDK to precisely compute the elevation difference between mortars and targets, automatically adjusting the elevation settings. 
 
-### **Map & Weapons Support**
+
+## **Map Layers**
+
+### Base map :
+The classic, straight from the game base map.  
+
+<img width="400" height="400" src="./src/img/github/basemap.webp">
+
+### Terrain map :
+Base map enhanced with bumpmap from SDK's heightmap. Add a better comprehension of terrain.  
+Also known as "why the fuck is it not the default ingame map?"
+
+<img width="400" height="400" src="./src/img/github/terrainmap.webp">
 
 
-| **Weapons**           |                    |
+### Topographic map :
+A mix of bump map, contour map with a touch of hypsometric colors for a complete understanding of map reliefs.
+
+<img width="400" height="400" src="./src/img/github/topomap.webp">
+
+
+## **Advanced informations & Simulation**
+
+Get a better and complete understanding of your shots and visualise a simulation of the projectile path and the terrain between you and your targets. 
+You can even see if terrain is going to block your projectiles when using low angle weapons ! (UB/GRAD) 
+
+<img width="500" height="439" src="./src/img/github/simulation.webp"></br></br>
+
+  
+## **Advanced customisation**
+
+<img width="330" height="702" src="./src/img/github/settings.webp"></br></br>
+
+
+# **Map & Weapons Support**
+
+
+| **WEAPONS**           |                    |
 |-----------------------|--------------------|
 | Mortars               |        ✅          |
 | UB-32                 |        ✅          |
@@ -62,7 +97,7 @@ SquadCalc utilizes heightmaps extracted from the Squad SDK to precisely compute 
 
 
 
-| **Maps**                    |                     |
+| **MAPS**                    |                     |
 |-----------------------------|---------------------|
 | Al Basrah                   |         ✅          |
 | Anvil                       |         ✅          |

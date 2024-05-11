@@ -8,7 +8,7 @@
  */
 
 import {
-    LayerGroup, Util, LatLng, Polyline, Marker,
+    LayerGroup, Util, LatLng, Polyline, Marker, DivIcon
 } from "leaflet";
 
 import { isMultiple } from "./utils";
@@ -217,7 +217,7 @@ export default LayerGroup.extend({
                 if (x!=0) {
                     this.labels.push(new Marker(top2, {
                         interactive: false,
-                        icon: L.divIcon({
+                        icon: new DivIcon({
                             className: "gridText",
                             html: (z + 9).toString(36).toUpperCase(),
                             iconSize: [20, 20],
@@ -253,7 +253,7 @@ export default LayerGroup.extend({
                 if (y!=0){ // skip first label
                     this.labels.push(new Marker(textPos, {
                         interactive: false,
-                        icon: L.divIcon({
+                        icon: new DivIcon({
                             className: "gridText",
                             html: "<div>" + z + "</div>",
                             iconSize: [20, 20],

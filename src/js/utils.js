@@ -344,7 +344,6 @@ export function shoot(inputChanged = "") {
     heightA = App.minimap.heightmap.getHeight(L.latLng([aPos.lng * -mapScale, aPos.lat * mapScale]));
     heightB = App.minimap.heightmap.getHeight( L.latLng([bPos.lng * -mapScale, bPos.lat * mapScale]));
     height = heightB - heightA;
-    console.log(height, heightB, heightA)
 
     distance = getDist(aPos, bPos);
     bearing = getBearing(aPos, bPos);

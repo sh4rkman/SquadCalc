@@ -85,7 +85,7 @@ module.exports = {
                 "sizes": "748x1568",
                 "type": "image/webp",
                 "form_factor": "narrow",
-                "label": "Map View"
+                "label": "Minimalist/keyboard friendly calculator"
               },
               {
                 "src": "./src/img/github/desktop_ui.webp",
@@ -95,11 +95,18 @@ module.exports = {
                 "label": "Map View"
               },
               {
+                "src": "./src/img/github/desktop_ui_2.webp",
+                "sizes": "601x426",
+                "type": "image/webp",
+                "form_factor": "wide",
+                "label": "Topographic maps"
+              },
+              {
                 "src": "./src/img/github/desktop.webp",
                 "sizes": "601x426",
                 "type": "image/webp",
                 "form_factor": "wide",
-                "label": "Map View"
+                "label": "Minimalist/keyboard friendly calculator"
               },
             ]
           }),
