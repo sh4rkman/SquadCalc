@@ -80,7 +80,10 @@ You can even see if terrain is going to block your projectiles when using low an
   
 ## **Advanced customisation**
 
-<img width="330" height="702" src="./src/img/github/settings.webp"></br></br>
+Want to see Spread radius, time of flight, distance AND bearing for each targets ? You can.  
+Rather have a minimalist/non-clustered map ? you can too. Hop in settings to customise everything.
+
+<img width="250" height="550" src="./src/img/github/settings.webp"></br></br>
 
 
 # **Map & Weapons Support**
@@ -131,7 +134,7 @@ You can even see if terrain is going to block your projectiles when using low an
 </br></br>
 
 # Installation
-</br>
+
 
 
 ## Clone and install
@@ -150,22 +153,8 @@ npm run start
 ## Building production bundle
 </br>
 
-for a preprod environnement (robots.txt disallow all):
-```
-npm run build:dev
-```
-</br>
 
-for a final production environnement :
+For a final production environnement :
 ```
 npm run build:prod
 ```
-
-</br></br>
-
-
-
-# Thanks
-
-This project is **largely** inspired by the work of Endebert on <a href="https://github.com/Endebert/squadmc">SquadMC</a>.  
-I wanted a lighter alternative to this great tool, some could say this project is just a new interface to squadmc calculation code.
