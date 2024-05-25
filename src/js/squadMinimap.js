@@ -1,8 +1,7 @@
-import L from "leaflet";
+import { TileLayer, Map, CRS, svg, Util, LayerGroup, LatLngBounds, Popup } from "leaflet";
 import squadGrid from "./squadGrid";
 import squadHeightmap from "./squadHeightmaps";
 import { App } from "./conf";
-import { MAPS } from "./maps";
 import { squadWeaponMarker, squadTargetMarker } from "./squadMarker";
 import { mortarIcon, mortarIcon1, mortarIcon2 } from "./squadIcon";
 import { getKP } from "./utils";
@@ -11,20 +10,28 @@ import "leaflet-edgebuffer";
 import "leaflet.gridlayer.fadeout";
 
 
-export var squadMinimap = L.Map.extend({
 
-    initialize: function (id, tilesSize, options) {
+export var squadMinimap = Map.extend({
+
+    /**
+     * Initialize Map
+     * @param {HTMLElement} [id] - id of the map in the HTML
+     * @param {Number} [tilesSize] - Size in pixel of the tiles
+     * @param {Object} [defaultMap] - squad map to initialize
+     * @param {Array} [options]
+     */
+    initialize: function (id, tilesSize, defaultMap, options) {
 
         options = {
             center: [-tilesSize/2, tilesSize/2],
             attributionControl: false,
-            crs: L.CRS.Simple,
+            crs: CRS.Simple,
             minZoom: 1,
             maxZoom: 8,
             zoomControl: false,
             doubleClickZoom: false,
             edgeBufferTiles: 5,
-            renderer: L.svg({padding: 3}),
+            renderer: svg({padding: 3}),
             closePopupOnClick: false,
             wheelPxPerZoomLevel: 75,
             boxZoom: true,
@@ -33,29 +40,17 @@ export var squadMinimap = L.Map.extend({
         };
 
 
-        L.setOptions(this, options);
-        L.Map.prototype.initialize.call(this, id, options);
-
-        // Default map to Kohat
-        this.activeMap = MAPS.find((elem, index) => index == 11);
-
-
-
+        Util.setOptions(this, options);
+        Map.prototype.initialize.call(this, id, options);
+        this.activeMap = defaultMap;
         this.tilesSize = tilesSize;
-        this.imageBounds = L.latLngBounds(L.latLng(0, 0), L.latLng(-this.tilesSize, this.tilesSize));
-        this.tileLayerOption = {
-            maxNativeZoom: this.activeMap.maxZoomLevel,
-            noWrap: true,
-            bounds: this.imageBounds,
-            tileSize: this.tilesSize,
-        };
-
-        this.layerGroup = L.layerGroup().addTo(this);
-        this.markersGroup = L.layerGroup().addTo(this);
-        this.activeTargetsMarkers = L.layerGroup().addTo(this);
-        this.activeWeaponsMarkers = L.layerGroup().addTo(this);
+        this.imageBounds = new LatLngBounds([0, 0], [-this.tilesSize, this.tilesSize]);
+        this.layerGroup = new LayerGroup().addTo(this);
+        this.markersGroup = new LayerGroup().addTo(this);
+        this.activeTargetsMarkers = new LayerGroup().addTo(this);
+        this.activeWeaponsMarkers = new LayerGroup().addTo(this);
         this.grid = "";
-        this.mouseLocationPopup = L.popup({
+        this.mouseLocationPopup = new Popup({
             closeButton: false,
             className: "kpPopup",
             autoClose: false,
@@ -64,6 +59,12 @@ export var squadMinimap = L.Map.extend({
             autoPan: false,
             interactive: false,
         });
+        this.tileLayerOption = {
+            maxNativeZoom: this.activeMap.maxZoomLevel,
+            noWrap: true,
+            bounds: this.imageBounds,
+            tileSize: this.tilesSize,
+        };
       
         // Custom events handlers
         this.on("dblclick", this._handleDoubleCkick, this);
@@ -76,11 +77,9 @@ export var squadMinimap = L.Map.extend({
     },
 
     /**
-     * Draw the map+grid inside the map container
+     * Initiate Heightmap & Grid then load layer
      */
     draw: function(){
-        // everything is a mess, rewrite this shit asap
-        const layerMode = $("#mapLayerMenu .active").attr("value");
 
         this.gameToMapScale = this.tilesSize / this.activeMap.size;
         this.mapToGameScale = this.activeMap.size / this.tilesSize;
@@ -88,32 +87,27 @@ export var squadMinimap = L.Map.extend({
         // Load Heightmap in canvas
         this.heightmap = new squadHeightmap(this.imageBounds, this);
 
-        if (this.activeLayer) this.activeLayer.remove();
-        this.activeLayer = L.tileLayer("", this.tileLayerOption);
-        this.activeLayer.setUrl("maps" + this.activeMap.mapURL + layerMode + "/{z}_{x}_{y}.webp");
-        this.activeLayer.addTo(this.layerGroup);
-
-        if (this.grid){this.grid.remove();}
+        // remove existing grid and replace it
+        //if (this.grid) this.grid.remove();
         this.grid = new squadGrid(this);
-        this.grid.setBounds(L.latLngBounds(L.latLng(0, 0), L.latLng(-this.tilesSize, this.tilesSize)));
+        this.grid.setBounds(new LatLngBounds([0, 0], [-this.tilesSize, this.tilesSize]));
+        if (App.userSettings.grid) this.showGrid();
 
-        if (App.userSettings.grid) {
-            this.showGrid();
-        }
-
+        // load map
+        this.changeLayer();
     },
 
 
+    /**
+     * remove existing layer and replace it
+     */
+    changeLayer: function(){
+        const LAYERMODE = $("#mapLayerMenu .active").attr("value");
 
-    reDraw: function(val){
-     
-        $("#mapLayerMenu").find("button").removeClass("active");
-        $(".btn-"+val).addClass("active");
-
-        App.userSettings.layerMode = val;
-        localStorage.setItem("settings-map-mode", val);
-       
-        this.draw(false);
+        if (this.activeLayer) this.activeLayer.remove();
+        this.activeLayer = new TileLayer("", this.tileLayerOption);
+        this.activeLayer.setUrl("maps" + this.activeMap.mapURL + LAYERMODE + "/{z}_{x}_{y}.webp");
+        this.activeLayer.addTo(this.layerGroup);
     },
 
 
@@ -141,7 +135,7 @@ export var squadMinimap = L.Map.extend({
     },
 
     /**
-    * TODO
+    * Recalc and update every target spread circle
     */
     updateTargetsSpreads: function(){
         // Update existent targets
@@ -241,7 +235,7 @@ export var squadMinimap = L.Map.extend({
             return 0;
         }
         
-        new squadTargetMarker(L.latLng(e.latlng), {animate: App.userSettings.targetAnimation}, this).addTo(this.markersGroup);
+        new squadTargetMarker(e.latlng, {animate: App.userSettings.targetAnimation}, this).addTo(this.markersGroup);
         $(".btn-delete").show();
 
         if (App.userSettings.targetAnimation){

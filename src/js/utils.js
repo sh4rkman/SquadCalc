@@ -2,7 +2,7 @@ import { tooltip_save, tooltip_copied } from "./tooltips";
 import { App } from "./conf";
 import { MAPS } from "./maps";
 import { animateCSS, animateCalc, drawLine} from "./animations";
-import L from "leaflet";
+import { LatLng } from "leaflet";
 
 /**
  * Returns the latlng coordinates based on the given keypad string.
@@ -341,8 +341,8 @@ export function shoot(inputChanged = "") {
         return 1;
     }
 
-    heightA = App.minimap.heightmap.getHeight(L.latLng([aPos.lng * -mapScale, aPos.lat * mapScale]));
-    heightB = App.minimap.heightmap.getHeight( L.latLng([bPos.lng * -mapScale, bPos.lat * mapScale]));
+    heightA = App.minimap.heightmap.getHeight(new LatLng(aPos.lng * -mapScale, aPos.lat * mapScale));
+    heightB = App.minimap.heightmap.getHeight(new LatLng(bPos.lng * -mapScale, bPos.lat * mapScale));
     height = heightB - heightA;
 
     distance = getDist(aPos, bPos);

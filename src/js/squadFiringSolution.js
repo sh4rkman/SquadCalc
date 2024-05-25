@@ -1,5 +1,5 @@
 import { App } from "./conf";
-import L from "leaflet";
+import { LatLng } from "leaflet";
 
 
 
@@ -41,8 +41,8 @@ export default class SquadFiringSolution {
      * @return {number} - distance in meter
      */
     getDist(){
-        const scaledWeaponLatLng = L.latLng([this.weaponLatLng.lng * this.map.mapToGameScale, this.weaponLatLng.lat * -this.map.mapToGameScale]);
-        const scaledTargetLatLng = L.latLng([this.targetLatLng.lng * this.map.mapToGameScale, this.targetLatLng.lat * -this.map.mapToGameScale]);
+        const scaledWeaponLatLng = new LatLng(this.weaponLatLng.lng * this.map.mapToGameScale, this.weaponLatLng.lat * -this.map.mapToGameScale);
+        const scaledTargetLatLng = new LatLng(this.targetLatLng.lng * this.map.mapToGameScale, this.targetLatLng.lat * -this.map.mapToGameScale);
         return Math.hypot(scaledWeaponLatLng.lat - scaledTargetLatLng.lat, scaledWeaponLatLng.lng - scaledTargetLatLng.lng);
     }
 
@@ -77,8 +77,8 @@ export default class SquadFiringSolution {
      * @returns {number} - bearing required to see B from A
      */
     getBearing() {
-        const scaledWeaponLatLng = L.latLng([this.weaponLatLng.lng * this.map.mapToGameScale, this.weaponLatLng.lat * -this.map.mapToGameScale]);
-        const scaledTargetLatLng = L.latLng([this.targetLatLng.lng * this.map.mapToGameScale, this.targetLatLng.lat * -this.map.mapToGameScale]);
+        const scaledWeaponLatLng = new LatLng(this.weaponLatLng.lng * this.map.mapToGameScale, this.weaponLatLng.lat * -this.map.mapToGameScale);
+        const scaledTargetLatLng = new LatLng(this.targetLatLng.lng * this.map.mapToGameScale, this.targetLatLng.lat * -this.map.mapToGameScale);
         var bearing = Math.atan2(scaledTargetLatLng.lng - scaledWeaponLatLng.lng, scaledTargetLatLng.lat - scaledWeaponLatLng.lat) * 180 / Math.PI + 90;
         if (bearing < 0) { bearing += 360; } // Avoid Negative Angle by adding a whole rotation
         return bearing;

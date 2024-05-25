@@ -1,3 +1,16 @@
+# <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">  **24.1.0** *(2024-05-25)*
+
+<img src="https://img.shields.io/badge/-new-green"> Now displaying a weapon number next to calcs when using several weapons
+
+<img src="https://img.shields.io/badge/-%20fix%20-orange"> fixed dead pixels on Kohat heightmap
+
+<img src="https://img.shields.io/badge/-%20Improv%20-orange"> Scaled down Kohat heightmap
+
+<img src="https://img.shields.io/badge/-%20Improv%20-orange"> Code rewritting and three-shaking
+
+
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
 
 
 # <img src="https://img.shields.io/badge/-major%20release-blue?style=flat-square">  **24.0.0** *(2024-05-11)*

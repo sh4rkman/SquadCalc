@@ -1,5 +1,5 @@
-import L from "leaflet";
-import "./ellipse";
+import { Marker, Util, Circle, CircleMarker, LatLng, Popup } from "leaflet";
+import { ellipse } from "./ellipse";
 
 import { App } from "./conf";
 import SquadSimulation from "./squadSimulation";
@@ -21,7 +21,7 @@ import { mortarIcon, targetIcon1, targetIconAnimated1 } from "./squadIcon";
 /*
  * Global Squad Marker Class 
 */
-export var squadMarker = L.Marker.extend({
+export var squadMarker = Marker.extend({
     options: {
         draggable: true,
         riseOnHover: true,
@@ -32,7 +32,7 @@ export var squadMarker = L.Marker.extend({
     // Initialize method
     initialize: function (latlng, options, map) {
         this.map = map;
-        L.Marker.prototype.initialize.call(this, latlng, options);
+        Marker.prototype.initialize.call(this, latlng, options);
         this.on("dragstart", this._handleDragStart, this);
         this.on("dragend", this._handleDragEnd, this);
     },
@@ -60,7 +60,7 @@ export var squadWeaponMarker = squadMarker.extend({
         var cursorClass;
 
 
-        L.setOptions(this, options);
+        Util.setOptions(this, options);
         squadMarker.prototype.initialize.call(this, latlng, options, map);
 
         if (App.userSettings.cursor) {
@@ -110,9 +110,9 @@ export var squadWeaponMarker = squadMarker.extend({
 
 
         // Create the min/max range markers
-        this.minRangeMarker = L.circle(latlng, this.minDistCircleOn).addTo(this.map.markersGroup);
-        this.rangeMarker = L.circle(latlng, this.maxDistCircleOn).addTo(this.map.markersGroup);
-        this.miniCircle = L.circleMarker(latlng, this.miniCircleOptions).addTo(this.map.markersGroup);
+        this.minRangeMarker = new Circle(latlng, this.minDistCircleOn).addTo(this.map.markersGroup);
+        this.rangeMarker = new Circle(latlng, this.maxDistCircleOn).addTo(this.map.markersGroup);
+        this.miniCircle = new CircleMarker(latlng, this.miniCircleOptions).addTo(this.map.markersGroup);
         
         if (!App.userSettings.weaponMinMaxRange) {
             this.minRangeMarker.setStyle(this.minMaxDistCircleOff);
@@ -260,7 +260,7 @@ export var squadTargetMarker = squadMarker.extend({
         var velocity;
         var elevation;
 
-        L.setOptions(this, options);
+        Util.setOptions(this, options);
         squadMarker.prototype.initialize.call(this, latlng, options, map);
         
         if (App.userSettings.cursor) {
@@ -322,7 +322,7 @@ export var squadTargetMarker = squadMarker.extend({
         // Create marker
 
         this.addTo(this.map.activeTargetsMarkers);
-        this.miniCircle = L.circleMarker(latlng, this.miniCircleOptions).addTo(this.map.markersGroup);
+        this.miniCircle = new CircleMarker(latlng, this.miniCircleOptions).addTo(this.map.markersGroup);
 
         if (this.options.animate){
             this.setIcon(targetIconAnimated1);
@@ -336,8 +336,8 @@ export var squadTargetMarker = squadMarker.extend({
         weaponHeight = this._map.heightmap.getHeight(weaponPos);
         targetHeight = this._map.heightmap.getHeight(latlng);
 
-        a = L.latLng([weaponPos.lng * this.map.mapToGameScale, -weaponPos.lat * this.map.mapToGameScale]);
-        b = L.latLng([latlng.lng * this.map.mapToGameScale, -latlng.lat * this.map.mapToGameScale]);
+        a = new LatLng(weaponPos.lng * this.map.mapToGameScale, -weaponPos.lat * this.map.mapToGameScale);
+        b = new LatLng(latlng.lng * this.map.mapToGameScale, -latlng.lat * this.map.mapToGameScale);
 
         dist = getDist(a, b);
         velocity = App.activeWeapon.getVelocity(dist);
@@ -360,23 +360,24 @@ export var squadTargetMarker = squadMarker.extend({
         angleElipse = this.options.results.spreadParameters.elevation;
 
         // Calc PopUp for weapon 1
-        this.calcMarker1 = L.popup(popUpOptions_weapon1).setLatLng(latlng).openOn(this.map).addTo(this.map.markersGroup);
+        this.calcMarker1 = new Popup(popUpOptions_weapon1).setLatLng(latlng).openOn(this.map).addTo(this.map.markersGroup);
 
         // Calc PopUp for weapon 2 (not displayed yet)
-        this.calcMarker2 = L.popup(popUpOptions_weapon2).setLatLng(latlng).addTo(this.map.markersGroup);
+        this.calcMarker2 = new Popup(popUpOptions_weapon2).setLatLng(latlng).addTo(this.map.markersGroup);
 
-        this.spreadMarker1 = L.ellipse(latlng, radiiElipse, this.options.results.bearing, this.spreadOptionsOn).addTo(this.map.markersGroup);
-        this.spreadMarker2 = L.ellipse(latlng, radiiElipse, angleElipse, this.spreadOptionsOff).addTo(this.map.markersGroup);
+        this.spreadMarker1 = new ellipse(latlng, radiiElipse, this.options.results.bearing, this.spreadOptionsOn).addTo(this.map.markersGroup);
+        this.spreadMarker2 = new ellipse(latlng, radiiElipse, angleElipse, this.spreadOptionsOff).addTo(this.map.markersGroup);
 
         if (App.userSettings.spreadRadius) {
             this.spreadMarker1.setStyle(this.spreadOptionsOff);
         }
-
+        this.calcMarker1.setContent(this.getContent(this.options.results));
+        
         // If two weapons already on the map
         if (this.map.activeWeaponsMarkers.getLayers().length === 2) {
 
             weaponPos = this.map.activeWeaponsMarkers.getLayers()[1].getLatLng();
-            a = L.latLng([weaponPos.lng * this.map.mapToGameScale, -weaponPos.lat * this.map.mapToGameScale]);        
+            a = new LatLng(weaponPos.lng * this.map.mapToGameScale, -weaponPos.lat * this.map.mapToGameScale);        
             weaponHeight = this._map.heightmap.getHeight(weaponPos);
             targetHeight = this._map.heightmap.getHeight(latlng);
             dist = getDist(a, b);
@@ -410,7 +411,8 @@ export var squadTargetMarker = squadMarker.extend({
                     this.spreadMarker2.setStyle(this.spreadOptionsOff);
                 }
             }
-            this.calcMarker2.setContent(this.getContent(this.options.results2)).openOn(this.map);
+            this.calcMarker2.setContent("2." + this.getContent(this.options.results2)).openOn(this.map);
+            this.calcMarker1.setContent("1." + this.getContent(this.options.results));
         }
 
         
@@ -430,7 +432,7 @@ export var squadTargetMarker = squadMarker.extend({
             }
         }
 
-        this.calcMarker1.setContent(this.getContent(this.options.results));
+
 
         // Custom events handlers
         this.on("click", this._handleClick, this);
@@ -525,8 +527,8 @@ export var squadTargetMarker = squadMarker.extend({
 
     updateCalc: function(){
         var weaponPos = this.map.activeWeaponsMarkers.getLayers()[0].getLatLng();
-        var a = L.latLng([weaponPos.lng * this.map.mapToGameScale, -weaponPos.lat * this.map.mapToGameScale]);
-        var b = L.latLng([this.getLatLng().lng * this.map.mapToGameScale, -this.getLatLng().lat * this.map.mapToGameScale]);
+        var a = new LatLng(weaponPos.lng * this.map.mapToGameScale, -weaponPos.lat * this.map.mapToGameScale);
+        var b = new LatLng(this.getLatLng().lng * this.map.mapToGameScale, -this.getLatLng().lat * this.map.mapToGameScale);
         var weaponHeight = this.map.heightmap.getHeight(weaponPos);
         var targetHeight = this.map.heightmap.getHeight(this.getLatLng());
         var dist = getDist(a, b);
@@ -562,13 +564,13 @@ export var squadTargetMarker = squadMarker.extend({
             this.spreadMarker1.setTilt(this.options.results.bearing);
         }
 
-        
+        this.calcMarker1.setContent(this.getContent(this.options.results));
         this.spreadMarker2.setStyle(this.spreadOptionsOff);
 
         if (this.map.activeWeaponsMarkers.getLayers().length === 2) {
 
             weaponPos = this.map.activeWeaponsMarkers.getLayers()[1].getLatLng();
-            a = L.latLng([weaponPos.lng * this.map.mapToGameScale, -weaponPos.lat * this.map.mapToGameScale]);    
+            a = new LatLng(weaponPos.lng * this.map.mapToGameScale, -weaponPos.lat * this.map.mapToGameScale);    
             weaponHeight = this._map.heightmap.getHeight(weaponPos);
             targetHeight = this._map.heightmap.getHeight(this.getLatLng());
             dist = getDist(a, b);
@@ -603,12 +605,13 @@ export var squadTargetMarker = squadMarker.extend({
                     this.spreadMarker2.setStyle(this.spreadOptionsOff);
                 }
             }
-            this.calcMarker2.setContent(this.getContent(this.options.results2)).openOn(this.map);
+            this.calcMarker2.setContent("2." + this.getContent(this.options.results2)).openOn(this.map);
+            this.calcMarker1.setContent("1." + this.getContent(this.options.results));
         }
         else {
             this.calcMarker2.close();
         }
-        this.calcMarker1.setContent(this.getContent(this.options.results));
+
     },
 
 

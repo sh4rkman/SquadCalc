@@ -247,6 +247,7 @@ export function loadMapSelector() {
 
 export function loadMinimap(){
     var tileSize = 256;
-    App.minimap = new squadMinimap("map", tileSize);
-    App.minimap.draw(true);
+    var defaultMap = MAPS[11]; // Kohat
+    App.minimap = new squadMinimap("map", tileSize, defaultMap);
+    App.minimap.draw();
 }
