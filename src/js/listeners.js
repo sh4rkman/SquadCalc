@@ -39,7 +39,13 @@ $("#canvasControls button").on("click", function(){
 });
 
 $("#mapLayerMenu").find("button").on("click", function () {
-    App.minimap.reDraw($(this).attr("value"));
+    var val = $(this).attr("value");
+
+    $("#mapLayerMenu").find("button").removeClass("active");
+    $(".btn-"+val).addClass("active");
+    App.userSettings.layerMode = val;
+    localStorage.setItem("settings-map-mode", val);
+    App.minimap.changeLayer();
 });
 
 

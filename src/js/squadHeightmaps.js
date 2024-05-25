@@ -1,4 +1,4 @@
-import L from "leaflet";
+import { LatLng } from "leaflet";
 import { shoot } from "./utils";
 
 export default class SquadHeightmap {
@@ -46,8 +46,8 @@ export default class SquadHeightmap {
      */
     getHeightPath(mortarLatlng, targetLatlng, STEP = 100) {
         var heightPath = [];
-        var start = new L.latLng(mortarLatlng.lat, mortarLatlng.lng);
-        var end = new L.latLng(targetLatlng.lat, targetLatlng.lng);
+        var start = new LatLng(mortarLatlng.lat, mortarLatlng.lng);
+        var end = new LatLng(targetLatlng.lat, targetLatlng.lng);
         var latDiff =  end.lat - start.lat;
         var lngDiff =  end.lng - start.lng;
         

@@ -13,58 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import L from "leaflet";
+import { LatLngBounds, Path, Canvas, SVG, Util, Point, Bounds } from "leaflet";
 
-L.SVG.include ({
-    _updateEllipse: function (layer) {
-        var rx = layer._radiusX;
-        var ry = layer._radiusY;
-        var phi = layer._tiltDeg;
-        var endPoint = layer._endPointParams;
 
-        var d = "M" + endPoint.x0 + "," + endPoint.y0 +
-            "A" + rx + "," + ry + "," + phi + "," +
-            endPoint.largeArc + "," + endPoint.sweep + "," +
-            endPoint.x1 + "," + endPoint.y1 + " z";
-        this._setPath(layer, d);
-    }
-});
+export var ellipse = function (latlng, radii, tilt, options) {
+    return new Ellipse(latlng, radii, tilt, options);
+};
 
-L.Canvas.include ({
-    _updateEllipse: function (layer) {
-        var p;
-        var ctx;
-        var r;
-        var s;
-
-        if (layer._empty()) { return; }
-
-        p = layer._point;
-        ctx = this._ctx;
-        r = layer._radiusX;
-        s = (layer._radiusY || r) / r;
-
-        this._drawnLayers[layer._leaflet_id] = layer;
-
-        ctx.save();
-
-        ctx.translate(p.x, p.y);
-        if (layer._tilt !== 0) {
-            ctx.rotate( layer._tilt );
-        }
-        if (s !== 1) {
-            ctx.scale(1, s);
-        }
-
-        ctx.beginPath();
-        ctx.arc(0, 0, r, 0, Math.PI * 2);
-        ctx.restore();
-
-        this._fillStroke(ctx, layer);
-    },
-});
-
-L.Ellipse = L.Path.extend({
+var Ellipse = Path.extend({
 
     options: {
         fill: true,
@@ -74,8 +30,8 @@ L.Ellipse = L.Path.extend({
 
     initialize: function (latlng, radii, tilt, options) {
 
-        L.setOptions(this, options);
-        this._latlng = L.latLng(latlng);
+        Util.setOptions(this, options);
+        this._latlng = latlng;
 
         if (tilt) {
             this._tiltDeg = tilt;
@@ -96,7 +52,7 @@ L.Ellipse = L.Path.extend({
     },
 
     getRadius: function () {
-        return new L.point(this._mRadiusX, this._mRadiusY);
+        return new Point(this._mRadiusX, this._mRadiusY);
     },
 
     setTilt: function (tilt) {
@@ -110,7 +66,7 @@ L.Ellipse = L.Path.extend({
             latRadius = this._getLatRadius(),
             latlng = this._latlng;
 
-        return new L.LatLngBounds(
+        return new LatLngBounds(
             [latlng.lat - latRadius, latlng.lng - lngRadius],
             [latlng.lat + latRadius, latlng.lng + lngRadius]);
     },
@@ -118,7 +74,7 @@ L.Ellipse = L.Path.extend({
     // @method setLatLng(latLng: LatLng): this
     // Sets the position of a circle marker to a new location.
     setLatLng: function (latlng) {
-        this._latlng = L.latLng(latlng);
+        this._latlng = latlng;
         this.redraw();
         return this.fire("move", {latlng: this._latlng});
     },
@@ -129,7 +85,7 @@ L.Ellipse = L.Path.extend({
         return this._latlng;
     },
 
-    setStyle: L.Path.prototype.setStyle,
+    setStyle: Path.prototype.setStyle,
 
     _project: function () {
         var lngRadius = this._getLngRadius(),
@@ -158,7 +114,7 @@ L.Ellipse = L.Path.extend({
         var halfHeight = Math.sqrt(aSquare*sinSquare+bSquare*cosSquare);
         var w = this._clickTolerance();
         var p = [halfWidth + w, halfHeight + w];
-        this._pxBounds = new L.Bounds(this._point.subtract(p), this._point.add(p));
+        this._pxBounds = new Bounds(this._point.subtract(p), this._point.add(p));
     },
 
     _update: function () {
@@ -226,6 +182,52 @@ L.Ellipse = L.Path.extend({
     }
 });
 
-export default L.ellipse = function (latlng, radii, tilt, options) {
-    return new L.Ellipse(latlng, radii, tilt, options);
-};
+SVG.include ({
+    _updateEllipse: function (layer) {
+        var rx = layer._radiusX;
+        var ry = layer._radiusY;
+        var phi = layer._tiltDeg;
+        var endPoint = layer._endPointParams;
+
+        var d = "M" + endPoint.x0 + "," + endPoint.y0 +
+            "A" + rx + "," + ry + "," + phi + "," +
+            endPoint.largeArc + "," + endPoint.sweep + "," +
+            endPoint.x1 + "," + endPoint.y1 + " z";
+        this._setPath(layer, d);
+    }
+});
+
+Canvas.include ({
+    _updateEllipse: function (layer) {
+        var p;
+        var ctx;
+        var r;
+        var s;
+
+        if (layer._empty()) { return; }
+
+        p = layer._point;
+        ctx = this._ctx;
+        r = layer._radiusX;
+        s = (layer._radiusY || r) / r;
+
+        this._drawnLayers[layer._leaflet_id] = layer;
+
+        ctx.save();
+
+        ctx.translate(p.x, p.y);
+        if (layer._tilt !== 0) {
+            ctx.rotate( layer._tilt );
+        }
+        if (s !== 1) {
+            ctx.scale(1, s);
+        }
+
+        ctx.beginPath();
+        ctx.arc(0, 0, r, 0, Math.PI * 2);
+        ctx.restore();
+
+        this._fillStroke(ctx, layer);
+    },
+});
+
