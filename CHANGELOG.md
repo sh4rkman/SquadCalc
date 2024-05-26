@@ -2,7 +2,7 @@
 
 <img src="https://img.shields.io/badge/-new-green"> Now displaying a weapon number next to calcs when using several weapons
 
-<img src="https://img.shields.io/badge/-%20fix%20-orange"> fixed dead pixels on Kohat heightmap
+<img src="https://img.shields.io/badge/-%20fix%20-orange"> fixed dead pixels on Kohat heightmap (thanks zfzr031 !)
 
 <img src="https://img.shields.io/badge/-%20Improv%20-orange"> Scaled down Kohat heightmap
 
