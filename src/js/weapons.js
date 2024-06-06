@@ -9,6 +9,7 @@ import mlrsLogo from "../img/icons/mlrs_white.png";
 //import frenchLogo from "../img/icons/120mm_white.png";
 import ub32Logo from "../img/icons/ub32_white.png";
 import ub322Logo from "../img/icons/ub32_deployable.png";
+import mk19rwsLogo from "../img/icons/mk19_rws_white.png"
 
 /* eslint no-unused-vars: "off" */
 import target from "../img/icons/target.png";
@@ -55,15 +56,15 @@ export class Weapon {
         if (this.angleType === "high") { return -1; }
         return 1;
     }
-    
+
     /**
      * Return maximum distance for 45°
      * https://en.wikipedia.org/wiki/Projectile_motion#Maximum_distance_of_projectile
      * @returns {number} [distance]
      */
     getMaxDistance() {
-        if (this.velocity.constructor != Array) { 
-            return (this.velocity ** 2) / App.gravity / this.gravityScale; 
+        if (this.velocity.constructor != Array) {
+            return (this.velocity ** 2) / App.gravity / this.gravityScale;
         }
 
         // When using UB32, return last value from UB32_table
@@ -109,6 +110,7 @@ export const WEAPONS = [
     new Weapon("Technical", 109.890938, 1, [-45, 135], "deg", technicalLogo, "50%", "vehicles", "high", 1, 51, 50),
     new Weapon("Tech. UB-32", UB32_table, 2, [-45, 135], "deg", ub32Logo, "55%", "vehicles", "low", 1, 0, 300),
     new Weapon("BM-21 Grad", 200, 2, [-45, 135], "deg", mlrsLogo, "60%", "vehicles", "low", 1, 0, 200),
+    new Weapon("Mk19 RWS", 240, 1, [-10, 45], "deg", mk19rwsLogo, "60%", "vehicles", "low", 1, 0, 50),
 
     //new Weapon("Short", 109.890938, 1, 1520, undefined, "mil", frenchLogo, "135%", "frenchDLC", "high", 0),
     //new Weapon("Medium", 143.5, 1, 1520, undefined, "mil", frenchLogo, "135%", "frenchDLC", "high", 0),
@@ -128,7 +130,7 @@ export function changeWeapon() {
     $("#mortarImg").attr("src", App.activeWeapon.logo);
     shoot();
 
-    if (App.ui === 0){drawLine();}
+    if (App.ui === 0) { drawLine(); }
 
     // Update Minimap marker
     App.minimap.updateWeapons();
