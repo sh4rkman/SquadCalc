@@ -92,5 +92,6 @@ tippy("#preview", {
     placement: "bottom",
     appendTo: document.querySelector("#preview"),
     theme: "preview",
+    hideOnClick: false,
 });
 tooltip_coordPreview = document.querySelector("#preview")._tippy;

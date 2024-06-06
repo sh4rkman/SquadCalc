@@ -18,7 +18,7 @@ import { loadWeapons } from "./js/weapons";
 import { createLine } from "./js/animations";
 import { loadSettings } from "./js/settings.js";
 import { registerServiceWorkers } from "./js/serviceWorkers.js";
-
+import packageInfo from '../package.json';
 import "./js/listeners.js";
 
 $(function() {
@@ -31,5 +31,5 @@ $(function() {
     preventAutocomplete();
     showPage();
     registerServiceWorkers();
-    console.log("Calculator Loaded!");
+    console.log("Calculator v" + packageInfo.version + " Loaded!");
 });

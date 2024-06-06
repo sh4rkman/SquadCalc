@@ -4,7 +4,7 @@ const CopyPlugin = require("copy-webpack-plugin");
 const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 var WebpackPwaManifest = require('webpack-pwa-manifest')
-const workbox = require("workbox-webpack-plugin")
+const workbox = require("workbox-webpack-plugin");
 
 module.exports = {
     entry: './src/app.js',
@@ -46,89 +46,89 @@ module.exports = {
               { from: "./src/img/github/", to: "./src/img/github/" },
             ],
           }),
-          new WebpackPwaManifest({
-            name: 'SquadCalc',
-            short_name: 'SquadCalc',
-            start_url: "/",
-            description: 'A Minimalist Mortar Calculator',
-            background_color: '#111111',
-            publicPath : './',
-            fingerprints: false,
-            theme_color: '#FFFFFF',
-            inject: true,
-            ios: true,
-            crossorigin: 'use-credentials',
-            icons: [
-              {
-                src: path.resolve('./src/img/favicons/maskable_icon_x512.png'),
-                sizes: [96, 192, 256, 384, 512],
-                destination: path.join('src', 'img', 'favicons'),
-              },
-              {
-                src: path.resolve('./src/img/favicons/maskable_icon_x512.png'),
-                size: '1024x1024',
-                destination: path.join('src', 'img', 'favicons'),
-                ios: true,
-                purpose: 'maskable'
-              }
-            ],
-            screenshots : [
-              {
-                "src": "./src/img/github/mobile_ui.webp",
-                "sizes": "748x1568",
-                "type": "image/webp",
-                "form_factor": "narrow",
-                "label": "Map View"
-              },
-              {
-                "src": "./src/img/github/mobile.webp",
-                "sizes": "748x1568",
-                "type": "image/webp",
-                "form_factor": "narrow",
-                "label": "Minimalist/keyboard friendly calculator"
-              },
-              {
-                "src": "./src/img/github/desktop_ui.webp",
-                "sizes": "601x426",
-                "type": "image/webp",
-                "form_factor": "wide",
-                "label": "Map View"
-              },
-              {
-                "src": "./src/img/github/desktop_ui_2.webp",
-                "sizes": "601x426",
-                "type": "image/webp",
-                "form_factor": "wide",
-                "label": "Topographic maps"
-              },
-              {
-                "src": "./src/img/github/desktop.webp",
-                "sizes": "601x426",
-                "type": "image/webp",
-                "form_factor": "wide",
-                "label": "Minimalist/keyboard friendly calculator"
-              },
-            ]
-          }),
-          new workbox.GenerateSW({
-            swDest: "./sw.js",
-            skipWaiting: true,
-            clientsClaim: true,
-            maximumFileSizeToCacheInBytes: 10000000,
-            exclude: [
-              /manifest\.json$/, // web app manifest
-              /\.map$/, // source maps
-              /\/favicons\//, // favicon
-              /robots\.txt/, // robots.txt
-            ],
-            runtimeCaching: [{
-              urlPattern: new RegExp(/\/maps\/[^\/]+\/[^\/]+\/[1-5]/),
-              handler: 'StaleWhileRevalidate',
-              options: {
-                cacheName: 'squadcalc-tiles',
-              },
-            }],
-          })
+        new WebpackPwaManifest({
+          name: 'SquadCalc',
+          short_name: 'SquadCalc',
+          start_url: "/",
+          description: 'A Minimalist Mortar Calculator',
+          background_color: '#111111',
+          publicPath : './',
+          fingerprints: false,
+          theme_color: '#FFFFFF',
+          inject: true,
+          ios: true,
+          crossorigin: 'use-credentials',
+          icons: [
+            {
+              src: path.resolve('./src/img/favicons/maskable_icon_x512.png'),
+              sizes: [96, 192, 256, 384, 512],
+              destination: path.join('src', 'img', 'favicons'),
+            },
+            {
+              src: path.resolve('./src/img/favicons/maskable_icon_x512.png'),
+              size: '1024x1024',
+              destination: path.join('src', 'img', 'favicons'),
+              ios: true,
+              purpose: 'maskable'
+            }
+          ],
+          screenshots : [
+            {
+              "src": "./src/img/github/mobile_ui.webp",
+              "sizes": "748x1568",
+              "type": "image/webp",
+              "form_factor": "narrow",
+              "label": "Map View"
+            },
+            {
+              "src": "./src/img/github/mobile.webp",
+              "sizes": "748x1568",
+              "type": "image/webp",
+              "form_factor": "narrow",
+              "label": "Minimalist/keyboard friendly calculator"
+            },
+            {
+              "src": "./src/img/github/desktop_ui.webp",
+              "sizes": "601x426",
+              "type": "image/webp",
+              "form_factor": "wide",
+              "label": "Map View"
+            },
+            {
+              "src": "./src/img/github/desktop_ui_2.webp",
+              "sizes": "601x426",
+              "type": "image/webp",
+              "form_factor": "wide",
+              "label": "Topographic maps"
+            },
+            {
+              "src": "./src/img/github/desktop.webp",
+              "sizes": "601x426",
+              "type": "image/webp",
+              "form_factor": "wide",
+              "label": "Minimalist/keyboard friendly calculator"
+            },
+          ]
+        }),
+        new workbox.GenerateSW({
+          swDest: "./sw.js",
+          skipWaiting: true,
+          clientsClaim: true,
+          maximumFileSizeToCacheInBytes: 10000000,
+          exclude: [
+            /manifest\.json$/, // web app manifest
+            /\.map$/, // source maps
+            /\/favicons\//, // favicon
+            /robots\.txt/, // robots.txt
+          ],
+          runtimeCaching: [{
+            urlPattern: new RegExp(/\/maps\/[^\/]+\/[^\/]+\/[1-5]/),
+            handler: 'StaleWhileRevalidate',
+            options: {
+              cacheName: 'squadcalc-tiles',
+            },
+          }],
+        })
     ],
     // Disable warning message for big chuncks
     performance: {
