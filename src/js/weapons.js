@@ -110,7 +110,7 @@ export const WEAPONS = [
     new Weapon("Technical", 109.890938, 1, [-45, 135], "deg", technicalLogo, "50%", "vehicles", "high", 1, 51, 50),
     new Weapon("Tech. UB-32", UB32_table, 2, [-45, 135], "deg", ub32Logo, "55%", "vehicles", "low", 1, 0, 300),
     new Weapon("BM-21 Grad", 200, 2, [-45, 135], "deg", mlrsLogo, "60%", "vehicles", "low", 1, 0, 200),
-    new Weapon("Mk19 RWS", 238, 1, [-10, 45], "deg", mk19rwsLogo, "60%", "vehicles", "low", 1, 0, 50),
+    new Weapon("Mk19 RWS", 238, 1, [-45, 45], "deg", mk19rwsLogo, "60%", "vehicles", "low", 1, 0, 50),
 
     //new Weapon("Short", 109.890938, 1, 1520, undefined, "mil", frenchLogo, "135%", "frenchDLC", "high", 0),
     //new Weapon("Medium", 143.5, 1, 1520, undefined, "mil", frenchLogo, "135%", "frenchDLC", "high", 0),
