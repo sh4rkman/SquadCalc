@@ -23,22 +23,21 @@ export var squadMinimap = Map.extend({
     initialize: function (id, tilesSize, defaultMap, options) {
 
         options = {
-            center: [-tilesSize/2, tilesSize/2],
             attributionControl: false,
+            boxZoom: true,
+            center: [-tilesSize/2, tilesSize/2],
+            closePopupOnClick: false,
             crs: CRS.Simple,
-            minZoom: 1,
-            maxZoom: 8,
-            zoomControl: false,
             doubleClickZoom: false,
             edgeBufferTiles: 5,
-            renderer: svg({padding: 3}),
-            closePopupOnClick: false,
-            wheelPxPerZoomLevel: 75,
-            boxZoom: true,
             fadeAnimation: true,
+            maxZoom: 8,
+            minZoom: 1,
+            renderer: svg({padding: 3}),
+            wheelPxPerZoomLevel: 75,
             zoom: 2,
+            zoomControl: false,
         };
-
 
         Util.setOptions(this, options);
         Map.prototype.initialize.call(this, id, options);
