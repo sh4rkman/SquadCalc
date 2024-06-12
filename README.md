@@ -55,19 +55,19 @@ SquadCalc utilizes heightmaps extracted from the Squad SDK to precisely compute 
 ### Base map :
 The classic, straight from the game base map.  
 
-<img width="400" height="400" src="./src/img/github/basemap.webp">
+<img width="400" height="360" src="./src/img/github/basemap.webp">
 
 ### Terrain map :
 Base map enhanced with bumpmap from SDK's heightmap. Add a better comprehension of terrain.  
 Also known as "why the fuck is it not the default ingame map?"
 
-<img width="400" height="400" src="./src/img/github/terrainmap.webp">
+<img width="400" height="360" src="./src/img/github/terrainmap.webp">
 
 
 ### Topographic map :
 A mix of bump map, contour map with a touch of hypsometric colors for a complete understanding of map reliefs.
 
-<img width="400" height="400" src="./src/img/github/topomap.webp">
+<img width="400" height="360" src="./src/img/github/topomap.webp">
 
 
 ## **Advanced informations & Simulation**
@@ -89,14 +89,15 @@ Rather have a minimalist/non-clustered map ? you can too. Hop in settings to cus
 # **Map & Weapons Support**
 
 
-| **WEAPONS**           |                    |
-|-----------------------|--------------------|
-| Mortars               |        ✅          |
-| UB-32                 |        ✅          |
-| Hell Canon            |        ✅          |
-| Technicals mortars    |        ✅          |
-| Technicals/BRDM UB-32 |        ✅          |
-| BM-21 Grad            |        ✅          |
+|                                   |       **WEAPONS**     |                                                    |
+|-------------------------------------------------------------------|-----------------------|--------------------|
+|<img height="40" src="./src/img/icons/mortar.png">                 | Mortars               |        ✅          |
+|<img height="40" src="./src/img/icons/ub32_deployable.png">        | UB-32                 |        ✅          |
+|<img height="40" src="./src/img/icons/hellcannon_white.png">       | Hell Canon            |        ✅          |
+|<img height="40" src="./src/img/icons/technical_mortar_white.png"> | Technicals mortars    |        ✅          |
+|<img height="40" src="./src/img/icons/ub32_white.png">             | Technicals/BRDM UB-32 |        ✅          |
+|<img height="40" src="./src/img/icons/mlrs_white.png">             | BM-21 Grad            |        ✅          |
+| <img height="40" src="./src/img/icons/m113a3_white.png">          | M1064-A3 120mm        |        ✅          |
 
 
 
