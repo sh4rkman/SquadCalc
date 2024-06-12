@@ -1,6 +1,6 @@
 {
   "name": "squadcalc",
-  "version": "25.0.0",
+  "version": "25.0.1",
   "description": "A Complete Mortar Calculator for Squad",
   "author": "Maxime 'sharkman' Boussard",
   "license": "MIT",
@@ -74,7 +74,7 @@
     "webpack-jquery-ui": "^2.0.1",
     "webpack-merge": "^5.8.0",
     "webpack-nano": "^1.1.1",
-    "webpack-pwa-manifest": "^4.3.0",
+    "webpack-pwa-manifest": "^4.0.0",
     "workbox-webpack-plugin": "^7.0.0"
   }
 }

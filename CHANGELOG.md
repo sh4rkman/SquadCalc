@@ -1,8 +1,13 @@
 
 
+# <img src="https://img.shields.io/badge/-major%20release-blue?style=flat-square">  **25.0.1** *(2024-06-12)*
+
+<img src="https://img.shields.io/badge/-%20Improv%20-orange">  Added minimum range for M1064-A3
 
 
-# <img src="https://img.shields.io/badge/-major%20release-blue?style=flat-square">  **25.0** *(2024-06-12)*
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
+# <img src="https://img.shields.io/badge/-major%20release-blue?style=flat-square">  **25.0.0** *(2024-06-12)*
 
 <img src="https://img.shields.io/badge/-new-green"> Added M1064-A3 120mm
 

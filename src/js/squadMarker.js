@@ -334,10 +334,10 @@ export var squadTargetMarker = squadMarker.extend({
 
         weaponPos = this.map.activeWeaponsMarkers.getLayers()[0].getLatLng();
         weaponHeight = this._map.heightmap.getHeight(weaponPos);
-        targetHeight = this._map.heightmap.getHeight(latlng);
+        targetHeight = this._map.heightmap.getHeight(this.getLatLng());
 
         a = new LatLng(weaponPos.lng * this.map.mapToGameScale, -weaponPos.lat * this.map.mapToGameScale);
-        b = new LatLng(latlng.lng * this.map.mapToGameScale, -latlng.lat * this.map.mapToGameScale);
+        b = new LatLng(this.getLatLng().lng * this.map.mapToGameScale, -this.getLatLng().lat * this.map.mapToGameScale);
 
         dist = getDist(a, b);
         velocity = App.activeWeapon.getVelocity(dist);
@@ -379,7 +379,7 @@ export var squadTargetMarker = squadMarker.extend({
             weaponPos = this.map.activeWeaponsMarkers.getLayers()[1].getLatLng();
             a = new LatLng(weaponPos.lng * this.map.mapToGameScale, -weaponPos.lat * this.map.mapToGameScale);        
             weaponHeight = this._map.heightmap.getHeight(weaponPos);
-            targetHeight = this._map.heightmap.getHeight(latlng);
+            targetHeight = this._map.heightmap.getHeight(this.getLatLng());
             dist = getDist(a, b);
             velocity = App.activeWeapon.getVelocity(dist);
             elevation = getElevation(dist, targetHeight - weaponHeight, velocity);
@@ -597,7 +597,6 @@ export var squadTargetMarker = squadMarker.extend({
             else {
                 this.spreadMarker2.setRadius([(this.options.results2.spreadParameters.semiMajorAxis * this.map.gameToMapScale)/2, (this.options.results2.spreadParameters.semiMinorAxis * this.map.gameToMapScale)/2]);
                 this.spreadMarker2.setTilt(this.options.results2.bearing);
-
                 if (App.userSettings.spreadRadius) {
                     this.spreadMarker2.setStyle(this.spreadOptionsOn);
                 }
