@@ -1,5 +1,13 @@
 
 
+# <img src="https://img.shields.io/badge/-major%20release-blue?style=flat-square">  **25.0.2** *(2024-06-12)*
+
+<img src="https://img.shields.io/badge/-%20fix%20-orange"> Corrected Yehorivka heightmap [#155](https://github.com/sh4rkman/SquadCalc/issues/155) (Thanks SuisQi!)
+
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
+
 # <img src="https://img.shields.io/badge/-major%20release-blue?style=flat-square">  **25.0.1** *(2024-06-12)*
 
 <img src="https://img.shields.io/badge/-%20Improv%20-orange">  Added minimum range for M1064-A3

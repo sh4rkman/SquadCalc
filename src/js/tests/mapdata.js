@@ -687,12 +687,12 @@ const MAPDATA = [
       ],
       extra: {
         scale: [1, 1, 4],
-        levels: [70, 753],
+        levels: [0, 833],
         minimap: [
           [-3002, -3002],
           [3048, 3048],
         ],
-        hDim: [6050, 6050],
+        hDim: [6351, 6351],
         lOrigin: [-3002, -3002], // don't trust sdk, landscape origin changed
       },
     },
