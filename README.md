@@ -113,7 +113,7 @@ Rather have a minimalist/non-clustered map ? you can too. Hop in settings to cus
 | Goose Bay                   |         ✅          |
 | Gorodok                     |         ✅          |
 | Harju                       |         ✅          |
-| Jensen's Range              |         ✅          |
+| Jensen's Range              |         ❌          |
 | Kamdesh Highlands           |         ✅          |
 | Kohat Toi                   |         ✅          |
 | Kokan                       |         ✅          |
