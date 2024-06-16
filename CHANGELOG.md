@@ -1,8 +1,32 @@
+
+
+# <img src="https://img.shields.io/badge/-major%20release-blue?style=flat-square">  **25.0.2** *(2024-06-12)*
+
+<img src="https://img.shields.io/badge/-%20fix%20-orange"> Corrected Yehorivka heightmap [#155](https://github.com/sh4rkman/SquadCalc/issues/155) (Thanks SuisQi!)
+
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
+
+# <img src="https://img.shields.io/badge/-major%20release-blue?style=flat-square">  **25.0.1** *(2024-06-12)*
+
+<img src="https://img.shields.io/badge/-%20Improv%20-orange">  Added minimum range for M1064-A3
+
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
+# <img src="https://img.shields.io/badge/-major%20release-blue?style=flat-square">  **25.0.0** *(2024-06-12)*
+
+<img src="https://img.shields.io/badge/-new-green"> Added M1064-A3 120mm
+
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
 # <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">  **24.1.0** *(2024-05-25)*
 
 <img src="https://img.shields.io/badge/-new-green"> Now displaying a weapon number next to calcs when using several weapons
 
-<img src="https://img.shields.io/badge/-%20fix%20-orange"> fixed dead pixels on Kohat heightmap
+<img src="https://img.shields.io/badge/-%20fix%20-orange"> fixed dead pixels on Kohat heightmap (thanks zfzr031 !)
 
 <img src="https://img.shields.io/badge/-%20Improv%20-orange"> Scaled down Kohat heightmap
 

@@ -207,7 +207,7 @@ export const MAPS = [
         name: "Yehorivka", 
         size: 6350, // Not the SDK values weirdly
         offset: [-8300, -8300], 
-        scaling: 0.2732, 
+        scaling: 0.3332, 
         mapURL: "/yehorivka/", 
         maxZoomLevel: 4,
     }

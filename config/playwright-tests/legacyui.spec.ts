@@ -96,7 +96,7 @@ test('Advanced calc', async ({  }) => {
   await expect(page.locator('#elevationNum')).toContainText("1214");
 
   // Select BM21 Grad
-  await page.getByRole('textbox', { name: 'mortar' }).click();
+  await page.getByRole('textbox', { name: 'Mortar', exact: true }).click();
   await page.getByRole('option', { name: 'BM-21 Grad' }).click();
 
   // Check calcs
@@ -122,8 +122,8 @@ test('Save calc', async ({  }) => {
   await page.locator('#target-location').pressSequentially('C01245');
 
   // Select mortar
-  await page.getByRole('textbox', { name: 'mortar' }).click();
-  await page.getByRole('option', { name: 'mortar' }).click();
+  await page.getByRole('textbox', { name: 'Mortar', exact: true }).click();
+  await page.getByRole('option', { name: 'Mortar', exact: true }).click();
 
   // Select a map
   await page.getByRole('textbox', { name: 'Al basrah' }).click();

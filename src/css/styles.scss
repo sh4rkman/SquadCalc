@@ -134,15 +134,13 @@ header {
         background-color: transparent;
     }
     .select2-container {
+        @extend %text-outline;
         background-color: transparent;
         border-bottom: 1px solid $mainTxtColor;
-        font-weight: bold;
         line-height: 2.188em;
         min-width: 200px;
         padding-bottom: 0.3em;
         text-transform: uppercase;
-
-        @extend %text-outline;
     }
     .select2-container--default {
         .select2-results__option--highlighted[aria-selected] {
@@ -184,7 +182,7 @@ header {
     position: relative;
     height: 100vh; 
     width: 100vw; 
-    margin: 0;
+    // margin: 0;
     #map {
         height: 100%;
         width: 100%;
@@ -193,35 +191,27 @@ header {
         .leaflet-pane .leaflet-marker-pane .leaflet-marker-icon {
             cursor: grab;
         }
-        img.leaflet-tile {
-            mix-blend-mode: plus-lighter;
-        }
-        .leaflet-tile {
-            background: rgb(255, 255, 255);
-        }
         .kpPopup {
             background: transparent;
             pointer-events: none;
             .leaflet-popup-tip,
             .leaflet-popup-content-wrapper {
-                user-select: none; 
+                @extend %text-outline;
+                // user-select: none; 
                 font-family: $mainFont, Times, "Times New Roman", serif;
-                font-weight: bold;
                 font-size: 1.2em;
                 background: transparent;
                 box-shadow: none;
-                color:$mainTxtColor;
+                color: $mainTxtColor;
                 height: 2em;
                 padding: 0;
                 text-align: center;
-        
-                @extend %text-outline;
             }
             .leaflet-popup-tip {
-                display: none;
+                // display: none;
             }
             &.leaflet-popup {
-                transition: none;
+                // transition: none;
             }
         }
         .calcPopup, .calcPopup2 {
@@ -229,13 +219,11 @@ header {
             margin: 0;
             padding: 0;
             font-family: $mainFont, Times, "Times New Roman", serif;
-            background: transparent;
-            border: none;
-            box-shadow: none;
+            // background: transparent;
+            // border: none;
+            // box-shadow: none;
             pointer-events: none;
-            font-weight: bold;
             font-size: 0.9em;
-            color: $mainTxtColor;
             height: 45px;
             .bearingUiCalc {
                 font-size: 0.7em;
@@ -251,7 +239,7 @@ header {
                 line-height: 1;
             }
             .leaflet-popup-tip-container {
-                display: none;
+                // display: none;
             } 
             &.calcPopup {
                 .leaflet-popup-content-wrapper {
@@ -280,7 +268,6 @@ header {
 }
 
 
-
 #mapLayerMenu{
     position: absolute;
     right: 2%;
@@ -292,11 +279,11 @@ header {
         position: relative;
         width: 40px;
         height: 40px;
-        line-height: 10px;
-        font-size: 1em;
-        background-color: white;
-        margin-top: 0.3em;
-        margin-bottom: 0.3em;
+        // line-height: 10px;
+        // font-size: 1em;
+        // background-color: white;
+        margin: 0.3em 0;
+        // margin-bottom: 0.3em;
         color: $mainBGColor;
         border-radius: 6px;
         cursor: pointer;
@@ -325,7 +312,6 @@ header {
             background-clip: text;
             -webkit-text-fill-color: transparent;
             -webkit-background-clip: text;
-
         }
 
     }
@@ -333,6 +319,87 @@ header {
 }
 
 
+.sim {
+    display: none;
+    &.active {
+        display: block;
+    }
+}
+
+#canvasControls{
+    margin: 0 auto 1em;
+    text-align: center;
+    width: 100%;
+    display: none;
+    button {
+        height: 20px;
+        color: $mainBGColor;
+        width: 45%;
+        cursor: pointer;
+        &.active {
+            background-color: $mainColor;
+            color: white;
+        }
+    }
+}
+
+#calcInformation {
+    margin: auto;
+    background-color: $mainBGColor;
+    color: $mainTxtColor;
+    text-align: left;
+    border-radius: 10px;
+    font-size: 0.7em;
+    max-width: 700px;
+    width: calc(100% - 10%);
+    overflow: hidden;
+    h2 {
+        padding: 1.25em 0 0 1.25em;
+    }
+    table {
+        float: left;
+        border-collapse: collapse;
+        width: 44%;
+        margin: 0 3% 2em;
+        font-size: 0.7em;
+        td {
+            height: 2em;
+            border-bottom: lightgrey 1px solid;
+            font-size: 1.2em;
+            &:nth-child(1){
+                font-weight: bold;
+                text-transform: uppercase;
+                font-size: 1em;
+            }
+            &:nth-child(2){
+                font-weight: lighter;
+                text-align: right;
+            }
+        }
+    }
+    .heightGraph {
+        background-color: white;
+        width: 100%;
+        margin-bottom: -5px;
+        transform: rotate(180deg) scaleX(-1);
+    }
+    #closeCalcInformation{
+        position: absolute;
+        font-size: 1.7em;
+        right: 8px;
+        top: 8px;
+        background-color: transparent;
+        transition: all 0.2s ease;
+        &:hover {
+            cursor: pointer;
+            color: $mainColor;
+            transform: scale(0.9);
+        }
+    }
+    &::backdrop {
+        backdrop-filter: blur(3px) brightness(120%) grayscale(20%) contrast(90%);
+    }
+}
 
 #actionMenu {
     position: absolute;
@@ -343,8 +410,8 @@ header {
         width: 40px;
         height: 40px;
         line-height: 10px;
-        font-size: 1em;
-        background-color: white;
+        // font-size: 1em;
+        // background-color: white;
         color: $mainBGColor;
         border-radius: 6px;
         cursor: pointer;
@@ -510,14 +577,6 @@ header {
     }
 }
 
-@keyframes loading {
-    0% {
-        background-position: right bottom;
-    }
-    100% {
-        background-position: left bottom;
-    }
-}
 
 /***************************************
    ************   FOOTER   ***************
@@ -544,7 +603,7 @@ footer {
             font-size: 1.1rem;
             height: 2.5rem;
             position: relative;
-            margin: auto;
+            // margin: auto;
             transition: all 0.3s ease;
             width: 2.5rem;
             z-index: 1;
@@ -609,6 +668,52 @@ footer {
     }
 }
 
+@keyframes dash-check {
+    to {
+        stroke-dashoffset: 0;
+    }
+}
+
+@keyframes target-appear {
+    0% {
+        top: -600px;
+        opacity: 0;
+    }
+    100% {
+        top: 0;
+        opacity: 1;
+    }
+}
+
+@keyframes spread-appear {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes weapon-appear {
+    0% {
+        top: -10px;
+        opacity: 0;
+    }
+    100% {
+        top: 0;
+        opacity: 1;
+    }
+}
+
+@keyframes loading {
+    0% {
+        background-position: right bottom;
+    }
+    100% {
+        background-position: left bottom;
+    }
+}
+
 .animate__animated.animate__fadeInDown {
     --animate-duration: 0.2s;
 }
@@ -667,16 +772,14 @@ footer {
         background-color: $mainColor;
     }
     &[data-theme~='preview'] {
+        @extend %text-outline;
+        background-color: transparent;
+        color: $mainTxtColor;
+        letter-spacing: 0.1rem;
+        margin-top: 5px;
         &[data-placement^='bottom']>.tippy-arrow::before {
             border-bottom-color: transparent;
         }
-        background-color: transparent;
-        color: $mainTxtColor;
-        font-weight: bold;
-        letter-spacing: 0.1rem;
-        margin-top: 5px;
-
-        @extend %text-outline;
     }
 }
 
@@ -702,90 +805,6 @@ footer {
     z-index: -1;
 }
 
-#canvasControls{
-    margin: 0 auto 1em;
-    text-align: center;
-    width: 100%;
-    display: none;
-    button {
-        height: 20px;
-        color: $mainBGColor;
-        width: 45%;
-        cursor: pointer;
-        &.active {
-            background-color: $mainColor;
-            color: white;
-        }
-    }
-}
-
-.sim {
-    display: none;
-    &.active {
-        display: block;
-    }
-}
-
-#calcInformation {
-    margin: auto;
-    background-color: $mainBGColor;
-    color: $mainTxtColor;
-    text-align: left;
-    border-radius: 10px;
-    font-size: 0.7em;
-    max-width: 700px;
-    width: calc(100% - 10%);
-    overflow: hidden;
-    h2 {
-        padding: 1.25em 0 0 1.25em;
-    }
-    table {
-        float: left;
-        border-collapse: collapse;
-        width: 44%;
-        margin-left: 4%;
-        margin-bottom: 2em;
-        font-size: 0.7em;
-        td {
-            height: 2em;
-            border-bottom: lightgrey 1px solid;
-            font-size: 1.2em;
-            &:nth-child(1){
-                font-weight: bold;
-                text-transform: uppercase;
-                font-size: 1em;
-            }
-            &:nth-child(2){
-                font-weight: lighter;
-                text-align: right;
-            }
-        }
-
-
-    }
-    .heightGraph {
-        background-color: white;
-        width: 100%;
-        margin-bottom: -5px;
-        transform: rotate(180deg) scaleX(-1);
-    }
-    #closeCalcInformation{
-        position: absolute;
-        font-size: 1.7em;
-        right: 8px;
-        top: 8px;
-        background-color: transparent;
-        transition: all 0.2s ease;
-        &:hover {
-            cursor: pointer;
-            color: $mainColor;
-            transform: scale(0.9);
-        }
-    }
-    &::backdrop {
-        backdrop-filter: blur(3px) brightness(120%) grayscale(20%) contrast(90%);
-    }
-}
 
 #helpDialog {
     margin: auto;
@@ -807,8 +826,8 @@ footer {
     }
     table {
         margin: 10px 30px 20px;
+        border: none;
         &.userSettings {
-            border: none;
             td {
                 padding: 0;
                 border: none;
@@ -821,7 +840,6 @@ footer {
             margin: 3em 0.3em 0.7em auto;
             width: auto;
             font-size: 1.4em;
-            border: none;
             td {
                 border: none;
                 padding: 0 0.5em;
@@ -865,8 +883,8 @@ footer {
         top: 8px;
         background-color: transparent;
         transition: all 0.2s ease;
+        cursor: pointer;
         &:hover {
-            cursor: pointer;
             color: $mainColor;
             transform: scale(0.9);
         }
@@ -875,7 +893,7 @@ footer {
         outline: solid firebrick 3px;
         width: 150px;
         height: 150px;
-        margin:auto;
+        margin: auto;
         background-image: url("../../public/maps/chora/basemap/4_6_7.webp");
         background-size: contain;
         #center {
@@ -905,7 +923,6 @@ footer {
             margin-top: 55px;
             margin-left: 25px;
             position: absolute;
-            font-weight: bold;
             z-index: 1;
             .bearingPreview {
                 font-size: 0.6em;
@@ -962,7 +979,6 @@ $bezier: cubic-bezier(0.65, 0.25, 0.56, 0.96);
     }
 }
 
-
 .mcui-check {
     height: 100%;
     width: 100%;
@@ -989,47 +1005,9 @@ $bezier: cubic-bezier(0.65, 0.25, 0.56, 0.96);
     }
 }
   
-@keyframes dash-check {
-    to {
-        stroke-dashoffset: 0;
-    }
-}
-
-@keyframes target-appear {
-    0% {
-        top: -600px;
-        opacity: 0;
-    }
-    100% {
-        top: 0;
-        opacity: 1;
-    }
-}
-
-@keyframes spread-appear {
-    0% {
-        opacity: 0;
-    }
-    100% {
-        opacity: 1;
-    }
-}
-
-
-
-
-@keyframes weapon-appear {
-    0% {
-        top: -10px;
-        opacity: 0;
-    }
-    100% {
-        top: 0;
-        opacity: 1;
-    }
-}
 
 %text-outline {
+    font-weight: bold;
     text-shadow: 1px 1px 0 #111,
     -1px 1px 0 #111,
     1px -1px 0 #111,
@@ -1055,9 +1033,6 @@ $bezier: cubic-bezier(0.65, 0.25, 0.56, 0.96);
     2px -1px 0 #111,
     -2px -1px 0 #111;
 }
-
-
-
 
 .crosshair {
     cursor: crosshair;
