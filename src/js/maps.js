@@ -241,13 +241,14 @@ export function loadMapSelector() {
         MAP_SELECTOR.append("<option value=\"" + i + "\">" + map.name + "</option>");
     });
 
-    $(".dropbtn").val(11);
 
 }
 
 export function loadMinimap(){
     var tileSize = 256;
-    var defaultMap = MAPS[11]; // Kohat
+    var randMapId = Math.floor(Math.random() * MAPS.length);
+    var defaultMap = MAPS[randMapId];
+    $(".dropbtn").val(randMapId);
     App.minimap = new squadMinimap("map", tileSize, defaultMap);
     App.minimap.draw();
 }
