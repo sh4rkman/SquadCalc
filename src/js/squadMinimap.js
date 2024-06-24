@@ -102,7 +102,6 @@ export var squadMinimap = Map.extend({
      */
     changeLayer: function(){
         const LAYERMODE = $("#mapLayerMenu .active").attr("value");
-
         if (this.activeLayer) this.activeLayer.remove();
         this.activeLayer = new TileLayer("", this.tileLayerOption);
         this.activeLayer.setUrl("maps" + this.activeMap.mapURL + LAYERMODE + "/{z}_{x}_{y}.webp");

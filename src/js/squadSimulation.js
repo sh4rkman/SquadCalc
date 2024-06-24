@@ -43,7 +43,7 @@ export default class Simulation {
             if (App.activeWeapon.unit === "mil"){
                 this.div.find(".infElevation").first().text(radToMil(this.results.elevation).toFixed(1)+"mil");
             } else {
-                this.div.find(".infElevation").first().text(radToDeg(this.results.elevation).toFixed(1)+"°");
+                this.div.find(".infElevation").first().text(radToDeg(this.results.elevation).toFixed(2)+"°");
             }
         }
 

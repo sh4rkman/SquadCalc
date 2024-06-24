@@ -1,6 +1,21 @@
 
 
-# <img src="https://img.shields.io/badge/-major%20release-blue?style=flat-square">  **25.0.2** *(2024-06-12)*
+# <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">   **25.0.3** *(2024-06-24)*
+
+<img src="https://img.shields.io/badge/-%20fix%20-orange"> Changed M121 Velocity and MOA to 8.1 hotfix
+
+<img src="https://img.shields.io/badge/-%20Improv%20-orange"> Renamed M1064 120mm to M1064-M121
+
+<img src="https://img.shields.io/badge/-%20Improv%20-orange"> SquadCalc now load a random map at first launch instead of a the same default map
+
+<img src="https://img.shields.io/badge/-%20Improv%20-orange"> Advanced Informations now displays elevation up to two decimals for weapons using degrees
+
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
+
+
+# <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">   **25.0.2** *(2024-06-12)*
 
 <img src="https://img.shields.io/badge/-%20fix%20-orange"> Corrected Yehorivka heightmap [#155](https://github.com/sh4rkman/SquadCalc/issues/155) (Thanks SuisQi!)
 
