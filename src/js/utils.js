@@ -164,7 +164,7 @@ export function getElevation(dist = 0, vDelta = 0, vel = 0) {
     const GRAVITY = App.gravity * App.activeWeapon.gravityScale;
     const P1 = Math.sqrt(vel ** 4 - GRAVITY * (GRAVITY * dist ** 2 + 2 * vDelta * vel ** 2));
 
-    if (App.activeWeapon.name === "Technical"){
+    if (App.activeWeapon.name === "Tech. Mortar"){
         // The technical mortar is bugged : the ingame range metter is off by 5°
         // Ugly fix until OWI correct it
         padding = -0.0872665;
