@@ -59,7 +59,7 @@ export default class SquadFiringSolution {
         var padding = 0;
         const P1 = Math.sqrt(vel ** 4 - this.gravity * (this.gravity * dist ** 2 + 2 * vDelta * vel ** 2));
     
-        if (App.activeWeapon.name==="Technical"){
+        if (App.activeWeapon.name==="Tech. Mortar"){
             // The technical mortar is bugged : the ingame range metter is off by 5°, Ugly fix until OWI correct it
             padding = -0.0872665;
         }
