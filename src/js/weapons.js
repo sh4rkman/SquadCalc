@@ -10,6 +10,7 @@ import mlrsLogo from "../img/icons/mlrs_white.png";
 import ub32Logo from "../img/icons/ub32_white.png";
 import ub322Logo from "../img/icons/ub32_deployable.png";
 import m113Logo from "../img/icons/m113a3_white.png";
+import mk19rwsLogo from "../img/icons/mk19_rws_white.png"
 
 /* eslint no-unused-vars: "off" */
 import target from "../img/icons/target.png";
@@ -112,6 +113,7 @@ export const WEAPONS = [
     new Weapon("Tech. UB-32", UB32_table, 2, [-45, 135], "deg", ub32Logo, "55%", "vehicles", "low", 1, 0, 300),
     new Weapon("BM-21 Grad", 200, 2, [-45, 135], "deg", mlrsLogo, "60%", "vehicles", "low", 1, 0, 200),
     new Weapon("M1064 M121", 142, 1, [45, 85.3], "deg", m113Logo, "45%", "vehicles", "high", 1, 340, 50),
+    new Weapon("Mk19 RWS", 240, 1, [-45, 45], "deg", mk19rwsLogo, "60%", "vehicles", "low", 1, 0, 50),
 ];
 
 

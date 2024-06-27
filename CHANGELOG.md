@@ -1,4 +1,13 @@
 
+
+# <img src="https://img.shields.io/badge/-major%20release-blue?style=flat-square">  **26.0.0** *(2024-06-27)*
+
+<img src="https://img.shields.io/badge/-new-green"> New weapon tested and battle-proved by [Ferrariic](https://github.com/Ferrariic) : MK19-RWS !
+
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
+
 # <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">   **25.0.4** *(2024-06-27)*
 
 <img src="https://img.shields.io/badge/-%20Improv%20-orange"> Changed gravity used by every weapon to equator gravity (9.78), see [#156](https://github.com/sh4rkman/SquadCalc/issues/156) (Thanks SuisQi!)
