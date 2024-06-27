@@ -57,15 +57,15 @@ export class Weapon {
         if (this.angleType === "high") { return -1; }
         return 1;
     }
-    
+
     /**
      * Return maximum distance for 45°
      * https://en.wikipedia.org/wiki/Projectile_motion#Maximum_distance_of_projectile
      * @returns {number} [distance]
      */
     getMaxDistance() {
-        if (this.velocity.constructor != Array) { 
-            return (this.velocity ** 2) / App.gravity / this.gravityScale; 
+        if (this.velocity.constructor != Array) {
+            return (this.velocity ** 2) / App.gravity / this.gravityScale;
         }
 
         // When using UB32, return last value from UB32_table
@@ -127,7 +127,7 @@ export function changeWeapon() {
     $("#mortarImg").attr("src", App.activeWeapon.logo);
     shoot();
 
-    if (App.ui === 0){drawLine();}
+    if (App.ui === 0) { drawLine(); }
 
     // Update Minimap marker
     App.minimap.updateWeapons();
