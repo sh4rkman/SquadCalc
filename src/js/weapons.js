@@ -10,7 +10,7 @@ import mlrsLogo from "../img/icons/mlrs_white.png";
 import ub32Logo from "../img/icons/ub32_white.png";
 import ub322Logo from "../img/icons/ub32_deployable.png";
 import m113Logo from "../img/icons/m113a3_white.png";
-import mk19rwsLogo from "../img/icons/mk19_rws_white.png"
+import mk19rwsLogo from "../img/icons/mk19_rws_white.png";
 
 /* eslint no-unused-vars: "off" */
 import target from "../img/icons/target.png";
