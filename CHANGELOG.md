@@ -1,4 +1,14 @@
 
+# <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">   **25.0.4** *(2024-06-27)*
+
+<img src="https://img.shields.io/badge/-%20Improv%20-orange"> Changed gravity used by every weapon to equator gravity (9.78), see [#156](https://github.com/sh4rkman/SquadCalc/issues/156) (Thanks SuisQi!)
+
+<img src="https://img.shields.io/badge/-%20Improv%20-orange"> Changed mortar velocity to SDK raw value (109.89 -> 110)
+
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
+
 
 # <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">   **25.0.3** *(2024-06-24)*
 
