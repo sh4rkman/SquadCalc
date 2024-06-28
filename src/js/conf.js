@@ -16,7 +16,7 @@ export var App = {
         DEBUG_MORTAR_COORD: "",
         DEBUG_TARGET_COORD: "",
     },
-    gravity: 9.8,
+    gravity: 9.78,
     line: "",
     userSettings: {
         keypadUnderCursor: true,
