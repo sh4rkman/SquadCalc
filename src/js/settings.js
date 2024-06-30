@@ -216,12 +216,7 @@ $("#targetAnimationSettings").on("change", function() {
     localStorage.setItem("settings-target-animation", +val);
 
     App.minimap.activeTargetsMarkers.eachLayer(function (layer) {
-        if (val) {
-            layer.setIcon(targetIconAnimated1);
-        }
-        else {
-            layer.setIcon(targetIcon1);
-        }
+        layer.updateIcon();
     });
 });
 

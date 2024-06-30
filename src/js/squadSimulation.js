@@ -1,4 +1,4 @@
-import targetIcon from "../img/icons/marker_target1.webp";
+import targetIcon from "../img/icons/marker_target_enabled.webp";
 //import weaponIcon from "../img/icons/marker_mortar_0.webp";
 import { degToRad, radToDeg, radToMil } from "../js/utils.js";
 import { App } from "./conf.js";
@@ -174,7 +174,7 @@ export default class Simulation {
      */
     drawTrajectory(callback) {
         const ctx = this.canvas.getContext("2d");
-        const G = 9.8 * this.results.gravityScale * this.yScaling;
+        const G = App.gravity * this.results.gravityScale * this.yScaling;
         const FREQ = 20;
         var elevation;
         var xVel;
