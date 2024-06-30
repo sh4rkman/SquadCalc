@@ -129,6 +129,7 @@ export var squadMinimap = Map.extend({
         // Update existent targets
         this.activeTargetsMarkers.eachLayer(function (target) {
             target.updateCalc(target.latlng);
+            target.updateIcon();
         });
     },
 
@@ -223,6 +224,7 @@ export var squadMinimap = Map.extend({
      * Create a new target, or weapon is no weapon exists
      */
     _handleDoubleCkick: function (e) {
+        var target;
         // If out of bounds
         if (e.latlng.lat > 0 ||  e.latlng.lat < -this.tilesSize || e.latlng.lng < 0 || e.latlng.lng > this.tilesSize) {
             return 1;
@@ -232,15 +234,26 @@ export var squadMinimap = Map.extend({
             new squadWeaponMarker(e.latlng, {icon: mortarIcon}, this).addTo(this.markersGroup, this).addTo(this.activeWeaponsMarkers);
             return 0;
         }
-        
-        new squadTargetMarker(e.latlng, {animate: App.userSettings.targetAnimation}, this).addTo(this.markersGroup);
+
+        target = new squadTargetMarker(e.latlng, {animate: App.userSettings.targetAnimation}, this).addTo(this.markersGroup);
         $(".btn-delete").show();
 
         if (App.userSettings.targetAnimation){
+            if (this.activeWeaponsMarkers.getLayers().length === 1) {
+                if (isNaN(target.options.results.elevation)){ return; }
+            }
+            else {
+                if (isNaN(target.options.results.elevation) && isNaN(target.options.results2.elevation)){ return; }
+            }
+
             setTimeout(function() {
                 explode(e.containerPoint.x, e.containerPoint.y, -190, 10);
+                target.options.animate = false;
             }, 250);
+
         }
+        
+
     },
 
     /**

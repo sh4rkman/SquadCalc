@@ -1,4 +1,4 @@
-import { Marker, Util, Circle, CircleMarker, LatLng, Popup } from "leaflet";
+import { Marker, Util, Circle, CircleMarker, LatLng, Popup} from "leaflet";
 import { ellipse } from "./ellipse";
 
 import { App } from "./conf";
@@ -12,10 +12,14 @@ import {
     radToDeg,
     getBearing,
     getSpreadParameter,
-    getTimeOfFlight
+    getTimeOfFlight,
 } from "./utils";
 
-import { mortarIcon, targetIcon1, targetIconAnimated1 } from "./squadIcon";
+import { 
+    targetIcon1,
+    targetIconAnimated1,
+    targetIconDisabled,
+} from "./squadIcon";
 
 
 /*
@@ -107,8 +111,6 @@ export var squadWeaponMarker = squadMarker.extend({
 
 
 
-
-
         // Create the min/max range markers
         this.minRangeMarker = new Circle(latlng, this.minDistCircleOn).addTo(this.map.markersGroup);
         this.rangeMarker = new Circle(latlng, this.maxDistCircleOn).addTo(this.map.markersGroup);
@@ -123,6 +125,8 @@ export var squadWeaponMarker = squadMarker.extend({
             this.minRangeMarker.setStyle(this.minMaxDistCircleOff);
         }
 
+        this.getIcon();
+
         // Custom events handlers
         this.on("click", this._handleClick, this);
         this.on("drag", this._handleDrag, this);
@@ -130,6 +134,19 @@ export var squadWeaponMarker = squadMarker.extend({
         this.on("dragEnd", this._handleDragEnd, this);
         this.on("dblclick", this._handleDblclick, this);
         this.on("contextmenu", this._handleContextMenu, this);
+    },
+
+
+    getIcon: function(){
+        if (this.map.activeWeaponsMarkers.getLayers().length === 0) {
+            this.setIcon(App.activeWeapon.marker);
+        }
+    },
+
+    updateIcon: function(){
+        if (this.map.activeWeaponsMarkers.getLayers().length === 1) {
+            this.setIcon(App.activeWeapon.marker);
+        }
     },
 
     /**
@@ -145,7 +162,7 @@ export var squadWeaponMarker = squadMarker.extend({
         }
         else {
             // Set default icon on remaining weapon
-            this.map.activeWeaponsMarkers.getLayers()[0].setIcon(mortarIcon);
+            this.map.activeWeaponsMarkers.getLayers()[0].setIcon(App.activeWeapon.marker);
         }
 
         // Delete the weapon marker and everything tied to it
@@ -185,6 +202,8 @@ export var squadWeaponMarker = squadMarker.extend({
             }
             this.rangeMarker.setStyle(this.maxDistCircleOn);
         }
+
+        this.updateIcon();
     },
 
 
@@ -229,7 +248,6 @@ export var squadWeaponMarker = squadMarker.extend({
         this.miniCircle.setStyle({opacity: 0});
         this.setOpacity(0);
         this.map.updateTargets();
-
     },
 });
 
@@ -240,9 +258,6 @@ export var squadTargetMarker = squadMarker.extend({
         calcMarker2: null,
         spreadMarker1: null,
         spreadMarker2: null,
-        results: {
-
-        }
     },
 
     initialize: function (latlng, options, map) {
@@ -324,14 +339,6 @@ export var squadTargetMarker = squadMarker.extend({
         this.addTo(this.map.activeTargetsMarkers);
         this.miniCircle = new CircleMarker(latlng, this.miniCircleOptions).addTo(this.map.markersGroup);
 
-        if (this.options.animate){
-            this.setIcon(targetIconAnimated1);
-        }
-        else {
-            this.setIcon(targetIcon1);
-        }
-
-
         weaponPos = this.map.activeWeaponsMarkers.getLayers()[0].getLatLng();
         weaponHeight = this._map.heightmap.getHeight(weaponPos);
         targetHeight = this._map.heightmap.getHeight(this.getLatLng());
@@ -398,10 +405,11 @@ export var squadTargetMarker = squadMarker.extend({
             };
 
             // Initiate Spread Ellipse Marker
-            if (this.options.results2.elevation === "---" || this.options.results2.spreadParameters.semiMajorAxis === 0) {
+            if (isNaN(this.options.results2.elevation) || this.options.results2.spreadParameters.semiMajorAxis === 0) {
                 this.spreadMarker2.setStyle({opacity: 0, fillOpacity: 0});
             }
             else {
+
                 this.spreadMarker2.setRadius([(this.options.results2.spreadParameters.semiMajorAxis * this.map.gameToMapScale)/2, (this.options.results2.spreadParameters.semiMinorAxis * this.map.gameToMapScale)/2]);
                 this.spreadMarker2.setTilt(this.options.results2.bearing);
                 if (App.userSettings.spreadRadius) {
@@ -432,7 +440,7 @@ export var squadTargetMarker = squadMarker.extend({
             }
         }
 
-
+        this.createIcon();
 
         // Custom events handlers
         this.on("click", this._handleClick, this);
@@ -548,9 +556,8 @@ export var squadTargetMarker = squadMarker.extend({
             timeOfFlight: getTimeOfFlight(elevation, velocity, targetHeight - weaponHeight),
         };
               
-        if (this.options.results.elevation === "---" || this.options.results.spreadParameters.semiMajorAxis === 0) {
+        if (isNaN(this.options.results.elevation) || this.options.results.spreadParameters.semiMajorAxis === 0) {
             this.spreadMarker1.setStyle({opacity: 0, fillOpacity: 0});
-
         }
         else {
 
@@ -591,7 +598,7 @@ export var squadTargetMarker = squadMarker.extend({
             };
 
 
-            if (this.options.results2.elevation === "---" || this.options.results2.spreadParameters.semiMajorAxis === 0) {
+            if (isNaN(this.options.results2.elevation) || this.options.results2.spreadParameters.semiMajorAxis === 0) {
                 this.spreadMarker2.setStyle({opacity: 0, fillOpacity: 0});
             }
             else {
@@ -689,6 +696,8 @@ export var squadTargetMarker = squadMarker.extend({
 
     // Reset cursor on drag end
     _handleDragEnd: function () {
+        //this.off("click");
+
         if (App.userSettings.keypadUnderCursor){
             this.map.on("mousemove", this.map._handleMouseMove);
         }
@@ -698,6 +707,73 @@ export var squadTargetMarker = squadMarker.extend({
 
         // update one last time when drag end
         this.updateCalc();
+        this.updateIcon();
+    },
+
+   
+    updateIcon: function(){
+        var icon;
+
+        this.options.animate = false;
+
+        if (this.map.activeWeaponsMarkers.getLayers().length === 1) {
+            if (isNaN(this.options.results.elevation)){
+                icon = targetIconDisabled;
+            }
+            else {
+                if (this.options.animate){ icon =  targetIconAnimated1; }
+                else { icon = targetIcon1; }
+            }
+        }
+        else {
+            if (isNaN(this.options.results.elevation) && isNaN(this.options.results2.elevation)){
+                icon = targetIconDisabled;
+            }
+            else {
+                if (this.options.animate){ icon =  targetIconAnimated1; }
+                else { icon = targetIcon1; }
+            }
+        }
+       
+        
+        // hack leaflet to avoid unwanted click event
+        // https://github.com/Leaflet/Leaflet/issues/5067
+        setTimeout((function (this2) {
+            return function () {
+                this2.setIcon(icon);
+            };
+        })(this));
+    },
+
+    createIcon: function(){
+        var icon;
+
+        if (this.map.activeWeaponsMarkers.getLayers().length === 1) {
+            if (isNaN(this.options.results.elevation)){
+                icon = targetIconDisabled;
+            }
+            else {
+                if (this.options.animate){ 
+                    icon = targetIconAnimated1;
+                    this.options.animate = true;
+                }
+                else { icon = targetIcon1; }
+            }
+        }
+        else {
+            if (isNaN(this.options.results.elevation) && isNaN(this.options.results2.elevation)){
+                icon = targetIconDisabled;
+            }
+            else {
+                if (this.options.animate){ 
+                    icon = targetIconAnimated1;
+                    this.options.animate = true;
+                }
+                else { icon = targetIcon1; }
+            }
+        }
+        
+        this.setIcon(icon);
     },
 
     // Delete targetMarker on right clic

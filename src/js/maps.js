@@ -75,14 +75,14 @@ export const MAPS = [
         mapURL: "/gorodok/",
         maxZoomLevel: 4,
     },
-    // { 
-    //     name: "Jensen's", 
-    //     size: 4008, // OK
-    //     offset: [0, 0], 
-    //     scaling: 0.0859, // OK
-    //     mapURL: "/jensen/{z}_{x}_{y}.webp",
-    //     maxZoomLevel: 4,
-    // },
+    { 
+        name: "Jensen", 
+        size: 4008, // OK
+        offset: [0, 0], 
+        scaling: 0.0859, // OK
+        mapURL: "/jensen/",
+        maxZoomLevel: 4,
+    },
     { 
         name: "Harju", 
         size: 4032, // OK
@@ -181,7 +181,7 @@ export const MAPS = [
     },
     { 
         name: "Skorpo", 
-        size: 6869, // OK but owi fuckedup again, X and Y sizes are not the same..
+        size: 6869, // OK
         offset: [0, 0], 
         scaling: 1.0927, 
         mapURL: "/skorpo/",

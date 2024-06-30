@@ -1,5 +1,19 @@
 
 
+# <img src="https://img.shields.io/badge/-major%20release-blue?style=flat-square">  **26.0.0** *(2024-06-27)*
+
+<img src="https://img.shields.io/badge/-new-green"> Each weapon now have their own map marker
+
+<img src="https://img.shields.io/badge/-new-green"> Out of range targets now have their own "grey" marker so you can spot at a glance if it's in range or not
+
+<img src="https://img.shields.io/badge/-%20fix%20-orange"> Reduced global gravity from 9.8 to 9.78. This should make every weapon shoots 1-3m shorter and be more accurate than before. See [#156](https://github.com/sh4rkman/SquadCalc/issues/156)
+
+<img src="https://img.shields.io/badge/-%20fix%20-orange"> Changed mortars velocity from 109.89 to 110m/s (SDK value)
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
+
+
 # <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">   **25.0.3** *(2024-06-24)*
 
 <img src="https://img.shields.io/badge/-%20fix%20-orange"> Changed M121 Velocity and MOA to 8.1 hotfix
