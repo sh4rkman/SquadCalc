@@ -75,14 +75,14 @@ export const MAPS = [
         mapURL: "/gorodok/",
         maxZoomLevel: 4,
     },
-    { 
-        name: "Jensen", 
-        size: 4008, // OK
-        offset: [0, 0], 
-        scaling: 0.0859, // OK
-        mapURL: "/jensen/",
-        maxZoomLevel: 4,
-    },
+    // { 
+    //     name: "Jensen", 
+    //     size: 4008, // OK
+    //     offset: [0, 0], 
+    //     scaling: 0.0859, // OK
+    //     mapURL: "/jensen/",
+    //     maxZoomLevel: 4,
+    // },
     { 
         name: "Harju", 
         size: 4032, // OK
