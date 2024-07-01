@@ -255,7 +255,7 @@ export default LayerGroup.extend({
                         interactive: false,
                         icon: new DivIcon({
                             className: "gridText",
-                            html: "<div>" + z + "</div>",
+                            html: z,
                             iconSize: [20, 20],
                             iconAnchor: [20, 10]
                         })
@@ -272,9 +272,18 @@ export default LayerGroup.extend({
             }
         }
 
+
+
+        // Add line and labels
         this.kpLines.forEach(this.addLayer, this);
         this.s1Lines.forEach(this.addLayer, this);
         this.s2Lines.forEach(this.addLayer, this);
         this.labels.forEach(this.addLayer, this);
+
+        // Make label unfocusable with tab to avoid users panning the map while alt-tabbing
+        var elements = document.querySelectorAll(".gridText");
+        for (var i = 0; i < elements.length; ++i) {
+            elements[i].setAttribute("tabindex", "-1");
+        }
     },
 });
