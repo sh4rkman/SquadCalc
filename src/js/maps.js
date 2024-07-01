@@ -76,7 +76,7 @@ export const MAPS = [
         maxZoomLevel: 4,
     },
     // { 
-    //     name: "Jensen", 
+    //     name: "Jensen's Range", 
     //     size: 4008, // OK
     //     offset: [0, 0], 
     //     scaling: 0.0859, // OK

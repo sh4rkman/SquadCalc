@@ -126,7 +126,7 @@ const tech_table = [
 ];
 
 // gravity
-const g = 9.8 * 2;
+const g = 9.78 * 2;
 
 // deg to mil factor
 // "1mil = 1/6400 of a circle in NATO countries."
