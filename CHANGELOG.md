@@ -1,5 +1,5 @@
 
-# <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">   **25.0.3** *(2024-06-24)*
+# <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">   **26.0.1** *(2024-06-24)*
 
 <img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed an issue where tabbing would focus map elements and pan the map out of the current view
 
