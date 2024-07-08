@@ -1,7 +1,7 @@
-import { shoot, filterInput, resizeInput, resizeInputsOnResize, RemoveSaves, copySave, copyCalc, saveCalc, changeHighLow, switchUI } from "./utils";
-import { changeWeapon } from "./weapons";
+import { shoot, filterInput, resizeInput, resizeInputsOnResize, RemoveSaves, copySave, copyCalc, saveCalc, changeHighLow,  } from "./utils";
+import { changeWeapon, switchUI } from "../app"; 
 import { App } from "./conf";
-import { MAPS } from "./maps";
+import { MAPS } from "../data/maps";
 
 $(document).on("change", ".dropbtn2", function() { changeWeapon(); });
 $(document).on("change", ".dropbtn", function() {
@@ -40,7 +40,6 @@ $("#canvasControls button").on("click", function(){
 
 $("#mapLayerMenu").find("button").on("click", function () {
     var val = $(this).attr("value");
-
     $("#mapLayerMenu").find("button").removeClass("active");
     $(".btn-"+val).addClass("active");
     App.userSettings.layerMode = val;
@@ -68,3 +67,23 @@ $("#calcInformation").on("click", function(event) {
         calcInformation.close();
     }
 });
+
+const weaponInformation = document.querySelector("#weaponInformation");
+$("#weaponInformation").on("click", function(event) {
+    var rect = weaponInformation.getBoundingClientRect();
+    var isInDialog = (rect.top <= event.clientY && event.clientY <= rect.top + rect.height &&
+    rect.left <= event.clientX && event.clientX <= rect.left + rect.width);
+    if (!isInDialog) {
+        weaponInformation.close();
+    }
+});
+
+// Remove lsiteners when closing weapon information to avoid stacking
+weaponInformation.addEventListener("close", function(){
+    $("input[type=radio][name=angleChoice]").off();
+    $(".heightPadding input").off();
+});
+
+
+
+

@@ -1,7 +1,3 @@
-import { App } from "./conf";
-import { squadMinimap } from "./squadMinimap";
-
-// Each map has a different size and require scaling w, y and z when calculating height
 export const MAPS = [
     { 
         name: "Al Basrah", 
@@ -212,43 +208,3 @@ export const MAPS = [
         maxZoomLevel: 4,
     }
 ];
-
-/**
- * Load the maps to the menu
- */
-export function loadMapSelector() {
-    const MAP_SELECTOR = $(".dropbtn");
-
-    // Initiate select2 object (https://select2.org/)
-    if (App.debug.active) {
-        MAP_SELECTOR.select2({
-            dropdownCssClass: "dropbtn",
-            dropdownParent: $("#mapSelector"),
-            minimumResultsForSearch: -1,
-            placeholder: "DEBUG MODE"
-        });
-    } else {
-        MAP_SELECTOR.select2({
-            dropdownCssClass: "dropbtn",
-            dropdownParent: $("#mapSelector"),
-            minimumResultsForSearch: -1, // Disable search
-            placeholder: "SELECT A MAP"
-        });
-    }
-
-    // load maps into select2
-    MAPS.forEach(function(map, i) {
-        MAP_SELECTOR.append("<option value=\"" + i + "\">" + map.name + "</option>");
-    });
-
-
-}
-
-export function loadMinimap(){
-    var tileSize = 256;
-    var randMapId = Math.floor(Math.random() * MAPS.length);
-    var defaultMap = MAPS[randMapId];
-    $(".dropbtn").val(randMapId);
-    App.minimap = new squadMinimap("map", tileSize, defaultMap);
-    App.minimap.draw();
-}

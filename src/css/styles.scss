@@ -36,6 +36,7 @@ a:visited {
 }
 
 img {
+    @extend .unselectable;
     display: block;
     margin: auto;
     -webkit-user-drag: none;
@@ -197,7 +198,7 @@ header {
             .leaflet-popup-tip,
             .leaflet-popup-content-wrapper {
                 @extend %text-outline;
-                // user-select: none; 
+                @extend .unselectable;
                 font-family: $mainFont, Times, "Times New Roman", serif;
                 font-size: 1.2em;
                 background: transparent;
@@ -207,21 +208,16 @@ header {
                 padding: 0;
                 text-align: center;
             }
-            .leaflet-popup-tip {
-                // display: none;
-            }
             &.leaflet-popup {
-                // transition: none;
+                transition: none;
             }
         }
         .calcPopup, .calcPopup2 {
             @extend %text-outline;
+            @extend .unselectable;
             margin: 0;
             padding: 0;
             font-family: $mainFont, Times, "Times New Roman", serif;
-            // background: transparent;
-            // border: none;
-            // box-shadow: none;
             pointer-events: none;
             font-size: 0.9em;
             height: 45px;
@@ -238,9 +234,6 @@ header {
                 margin: 0;
                 line-height: 1;
             }
-            .leaflet-popup-tip-container {
-                // display: none;
-            } 
             &.calcPopup {
                 .leaflet-popup-content-wrapper {
                     text-align: right;
@@ -319,13 +312,6 @@ header {
 }
 
 
-.sim {
-    display: none;
-    &.active {
-        display: block;
-    }
-}
-
 #canvasControls{
     margin: 0 auto 1em;
     text-align: center;
@@ -343,7 +329,7 @@ header {
     }
 }
 
-#calcInformation {
+#calcInformation, #weaponInformation {
     margin: auto;
     background-color: $mainBGColor;
     color: $mainTxtColor;
@@ -353,6 +339,12 @@ header {
     max-width: 700px;
     width: calc(100% - 10%);
     overflow: hidden;
+    .sim {
+        display: none;
+        &.active {
+            display: block;
+        }
+    }
     h2 {
         padding: 1.25em 0 0 1.25em;
     }
@@ -362,6 +354,9 @@ header {
         width: 44%;
         margin: 0 3% 2em;
         font-size: 0.7em;
+        .noborder {
+            border: none;
+        }
         td {
             height: 2em;
             border-bottom: lightgrey 1px solid;
@@ -375,6 +370,9 @@ header {
                 font-weight: lighter;
                 text-align: right;
             }
+            &.info {
+                cursor: help;
+            }
         }
     }
     .heightGraph {
@@ -383,7 +381,7 @@ header {
         margin-bottom: -5px;
         transform: rotate(180deg) scaleX(-1);
     }
-    #closeCalcInformation{
+    #closeCalcInformation, #closeWeaponInformation{
         position: absolute;
         font-size: 1.7em;
         right: 8px;
@@ -410,8 +408,6 @@ header {
         width: 40px;
         height: 40px;
         line-height: 10px;
-        // font-size: 1em;
-        // background-color: white;
         color: $mainBGColor;
         border-radius: 6px;
         cursor: pointer;
@@ -420,7 +416,6 @@ header {
             background-color: $mainColor;
             color: $mainTxtColor;
         }
-
     }
     .active {
         background-color: $mainColor;
@@ -781,6 +776,11 @@ footer {
             border-bottom-color: transparent;
         }
     }
+    &[data-theme~='infTooltips'] {
+        font-size: 1em;
+        text-align: center;
+        padding: 10px;
+    }
 }
 
 .tippy-arrow {
@@ -805,6 +805,43 @@ footer {
     z-index: -1;
 }
 
+#weaponInformation {
+    #angleChoiceSettings {
+        input {
+            height: 15px;
+            accent-color: $mainColor;
+            &:active:not([disabled]) {
+                transform: scale(0.7);
+            }
+            &:hover:not([disabled]) {
+                cursor: pointer;
+            }
+        }
+        label {
+            float:right;
+            text-align: center;
+        }
+    }
+    .heightPadding {
+        input{
+            width: 50px;
+            text-align: center;
+            font-size: 1em;
+            border: 1px solid #ddd;
+            border-radius:4px;
+            display: inline-block;
+            vertical-align: middle;
+        }
+    }
+    td {
+        cursor: default;
+        width: auto;
+    }
+    .weaponIcon {
+        height: 70px;
+        margin-bottom: 2em;
+    }
+}
 
 #helpDialog {
     margin: auto;

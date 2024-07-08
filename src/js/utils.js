@@ -1,7 +1,7 @@
 import { tooltip_save, tooltip_copied } from "./tooltips";
 import { App } from "./conf";
-import { MAPS } from "./maps";
-import { animateCSS, animateCalc, drawLine} from "./animations";
+import { MAPS } from "../data/maps";
+import { animateCSS, animateCalc} from "./animations";
 import { LatLng } from "leaflet";
 
 /**
@@ -141,17 +141,6 @@ export function getDist(a, b) {
 }
 
 /**
- * Calculates the distance between two points.
- * @param {number} vel -
- * @param {number} g 
- * @returns {number} distance
- */
-export function getMaxDist(vel, g) {
-    return vel**2/g;
-}
-
-
-/**
  * Calculates the angle the mortar needs to be set in order
  * to hit the target at the desired distance and vertical delta.
  * @param {number} [dist] - distance between mortar and target from getDist()
@@ -172,17 +161,6 @@ export function getElevation(dist = 0, vDelta = 0, vel = 0) {
 
     return padding + Math.atan((vel ** 2 - (P1 * App.activeWeapon.getAngleType())) / (GRAVITY * dist));
 }
-
-export function getSpreadParameter(elevation, vel){
-    const gravity = App.gravity * App.activeWeapon.gravityScale;
-
-    return  {
-        semiMajorAxis: getHorizontalSpread(elevation, vel, gravity),
-        semiMinorAxis: getVerticalSpread(elevation, vel),
-        ellipseAngle: (elevation * (180 / Math.PI))
-    };
-}
-
 
 /**
  * Apply current map offset to given position
@@ -582,34 +560,6 @@ function setCursor(startA, startB, a, b, inputChanged) {
 
 
 /**
- * Generate random id
- * @param {Number} length - length of desired string to be returned
- * @returns {String} randomly generated string
- */
-function makeid(length) {
-    var result = "";
-    var characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-    var charactersLength = characters.length;
-
-    for (let i = 0; i < length; i += 1) {
-        result += characters.charAt(Math.floor(Math.random() *
-            charactersLength));
-    }
-    return result;
-}
-
-
-/**
- * Give Inputs random name to avoid browsers/mobile keyboards autocomplete
- */
-export function preventAutocomplete() {
-    $("#mortar-location").attr("name", makeid(10));
-    $("#target-location").attr("name", makeid(10));
-    $(".dropbtn").attr("name", makeid(10));
-}
-
-
-/**
  * Resize Saved Names according to their content
  * using a hidden <span> as a ruler
  * @param {input} i - input to resize
@@ -822,143 +772,15 @@ export function pad(num, size) {
 }
 
 
-export function loadUI(){
-    $(".btn-delete").hide();
-    $("#mapLayerMenu").hide();
-    App.ui = localStorage.getItem("data-ui");
-
-    if (App.ui === null || isNaN(App.ui) || App.ui === ""){
-        App.ui = 1; 
-        localStorage.setItem("data-ui", 1);  
-    }
-
-    if (App.ui == 1){
-        loadMapUIMode();
-    }
-
-}
 
 
-function loadMapUIMode(){
-    $("#classic_ui").addClass("hidden");
-    $("#map_ui").removeClass("hidden");
-    $(".weaponSelector").addClass("ui");
-    $(".mapSelector").addClass("ui");
-    $("#switchUIbutton").removeClass("fa-map").addClass("fa-xmarks-lines");
-    $("#mapLayerMenu").show();
-    App.ui = 1;
-    App.line.hide("none");
-    localStorage.setItem("data-ui", 1);
-    App.minimap.invalidateSize();
-}
 
-export function switchUI(){
 
-    if (App.ui == 0){
-        loadMapUIMode();
-        if (App.minimap.activeTargetsMarkers.getLayers().length > 0) {
-            $(".btn-delete").show();
-            $("#mapLayerMenu").show();
-        }
-    }
-    else {
-        $("#map_ui").addClass("hidden");
-        $("#classic_ui").removeClass("hidden");
-        $(".weaponSelector").removeClass("ui");
-        $(".mapSelector").removeClass("ui");
-        $("#switchUIbutton").removeClass("fa-xmarks-lines").addClass("fa-map");
-        $(".btn-delete").hide();
-        $("#mapLayerMenu").hide();
-        App.ui = 0;
-        localStorage.setItem("data-ui", 0);
-        drawLine();
-    }
-}
+
+
 
 export function isTouchDevice() {
     return (("ontouchstart" in window) ||
        (navigator.maxTouchPoints > 0) ||
        (navigator.msMaxTouchPoints > 0));
-}
-
-/**
- * Calculates the vertical spread of a projectile
- * to hit the target at the desired distance and vertical delta.
- * @param {number} [angle] - angle of the initial shot
- * @param {number} [vel] - initial mortar projectile velocity in m/s
- * @returns {number} - vertical spread in meter
- */
-function getVerticalSpread(angle, vel){
-
-    const moa = degToRad((App.activeWeapon.moa / 2) / 60);
-    const gravity = App.gravity * App.activeWeapon.gravityScale;
-
-    // Apply MOA to found Angle and deduce the spread distance
-    // https://en.wikipedia.org/wiki/Projectile_motion#Maximum_distance_of_projectile
-    const verticalSpread1 = (vel ** 2 * Math.sin(2*(angle + moa))) / gravity;
-    const verticalSpread2  = (vel ** 2 * Math.sin(2*(angle - moa))) / gravity;
-    const totalSpread = Math.abs(verticalSpread2 - verticalSpread1);
-
-    if (isNaN(totalSpread)) {
-        return 0;
-    } else {
-        return totalSpread;
-    }
-}
-
-/**
- * Calculates the length of the projectile path in air, neglecting heights difference
- * https://en.wikipedia.org/wiki/Projectile_motion#Total_Path_Length_of_the_Trajectory
- * @param {number} [angle] - angle of the initial shot in radian
- * @param {number} [vel] - initial mortar projectile velocity in m/s
- * @param {number} [gravity] - gravity applied to the projectile
- * @returns {number} - projectile path length in meters
- */
-function getProjectilePathDistance(angle, velocity, gravity){
-    const p1 = velocity**2 / gravity;
-    const p2 = Math.sin(angle) + Math.cos(angle)**2 * Math.atanh(Math.sin(angle));
-    return Math.abs(p1 * p2);
-}
-
-
-/**
- * Calculates the horizontal spread for a given trajectory path length 
- * @param {number} [angle] - angle of the initial shot in radian
- * @param {number} [vel] - initial mortar projectile velocity in m/s
- * @param {number} [gravity] - gravity applied to the projectile
- * @returns {number} - Length of horizontal spread in meters
- */
-function getHorizontalSpread(angle, velocity, gravity){
-    var MOA = App.activeWeapon.moa / 60;
-    var p1 = 2 * Math.PI * getProjectilePathDistance(angle, velocity, gravity);
-    var p2 = (MOA / 360) * p1;
-
-    if (isNaN(p2)) {
-        return 0;
-    } else {
-        return p2;
-    }
-}
-
-
-/**
- * Calculate the time of flight of the projectile
- * @param {number} [angle] - angle of the initial shot in radian
- * @param {number} [vel] - initial mortar projectile velocity in m/s
- *  * @param {number} [heightDiff] - difference between weapon and target in meters
- * @returns {number} - time of flight in seconds
- */
-export function getTimeOfFlight(angle, vel, heightDiff){
-    const gravity = App.gravity * App.activeWeapon.gravityScale;
-    const t = vel * Math.sin(angle) + Math.sqrt( (Math.pow(vel, 2) * Math.pow(Math.sin(angle), 2)) + (2 * gravity * -heightDiff));
-    return t / gravity;
-}
-
-export function showPage(){
-    document.body.style.visibility = "visible";
-    setTimeout(function() {
-        $("#loaderLogo").fadeOut("slow", function() {
-            $("#loader").fadeOut("fast");
-        });
-    }, 1300);
 }

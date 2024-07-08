@@ -61,7 +61,7 @@
 
 /* L<544px */
 @media screen and (max-width: 34em) {
-    #calcInformation {
+    #calcInformation, #weaponInformation {
         table {
             width: 90%;
             margin: 0 5% 5%;
@@ -152,7 +152,7 @@
             height: 50px;
         }
     }
-    #calcInformation {
+    #calcInformation, #weaponInformation {
         table {
             font-size: 0.9em;
         }

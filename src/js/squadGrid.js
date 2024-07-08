@@ -281,9 +281,8 @@ export default LayerGroup.extend({
         this.labels.forEach(this.addLayer, this);
 
         // Make label unfocusable with tab to avoid users panning the map while alt-tabbing
-        var elements = document.querySelectorAll(".gridText");
-        for (var i = 0; i < elements.length; ++i) {
-            elements[i].setAttribute("tabindex", "-1");
+        for (let i = 0; i < document.querySelectorAll(".gridText").length; ++i) {
+            document.querySelectorAll(".gridText")[i].setAttribute("tabindex", "-1");
         }
     },
 });

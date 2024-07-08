@@ -26,10 +26,17 @@
     <link rel="preload" href="./fonts/webfonts/fa-brands-400.woff2" as="font" crossorigin>
     <link rel="preload" href="./fonts/webfonts/fa-solid-900.woff2" as="font" crossorigin>
 
-    <!-- FUCK IE, I GIVE UP -->
+    <!-- FUCK IE / REGISTER SW -->
     <script>
         if (navigator.appName.indexOf("Internet Explorer") != -1 || navigator.userAgent.match(/Trident.*rv[ :]*11\./)) {
             window.location = "https://choosebrowser.com/";
+        }
+        if ("serviceWorker" in navigator) {
+            try {
+                navigator.serviceWorker.register("sw.js");
+            } catch (error) {
+                console.error(`Registration failed with ${error}`);
+            }
         }
     </script>
 
@@ -163,7 +170,7 @@
 
                 <tr id="keypadUnderCursorSettingRow">
                     <td >
-                        <label  class="mcui-checkbox" >
+                        <label class="mcui-checkbox" >
                             <input id="keypadUnderCursorSetting" type="checkbox">
                             <span>
                               <svg class="mcui-check" viewBox="-2 -2 35 35" aria-hidden="true">
@@ -215,6 +222,21 @@
                           </label>
                     </td>
                     <td>Show Spread Radius</td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <label class="mcui-checkbox">
+                            <input id="damageRadiusSetting" type="checkbox">
+                            <span>
+                              <svg class="mcui-check" viewBox="-2 -2 35 35" aria-hidden="true">
+                                <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
+                              </svg>
+                            </span>
+                            <span></span>
+                          </label>
+                    </td>
+                    <td>Show 100 &amp; 25 Damage Radius</td>
                 </tr>
 
                 <tr>
@@ -355,7 +377,7 @@
                 </button>
             </form>
 
-            <h2>Calculation Informations</h2>
+            <h2>Target Informations</h2>
             <br><br><br>
 
 
@@ -389,7 +411,7 @@
                 <table>
                     <tbody>
                         <tr>
-                            <td>Spread</td><td class="infSpread"></td>
+                            <td class="infSpreadTooltip info">Spread</td><td class="infSpread"></td>
                         </tr>
                         <tr>
                             <td>Weapon Height</td><td class="infWHeight"></td>
@@ -428,7 +450,7 @@
                 <table>
                     <tbody>
                         <tr>
-                            <td>Spread</td><td class="infSpread"></td>
+                            <td class="infSpreadTooltip info">Spread</td><td class="infSpread"></td>
                         </tr>
                         <tr>
                             <td>Weapon Height</td><td class="infWHeight"></td>
@@ -447,6 +469,86 @@
         </dialog>
 
     </div>
+
+
+    <dialog id="weaponInformation">
+        <form method="dialog">
+            <button id="closeWeaponInformation">
+                <i class="fa-regular fa-circle-xmark"></i>
+            </button>
+        </form>
+
+        <h2>Weapon Informations</h2>
+        <br><br><br>
+
+        <img class="weaponIcon" alt="weapon icon" src="./img/icons/mortar.png">
+        
+        <div class="sim active">
+            <table>
+                <tbody>
+                    <tr>
+                        <td>name</td><td class="infName"></td>
+                    </tr>
+                    <tr>
+                        <td>Range</td><td class="infRange"></td>
+                    </tr>
+                    <tr>
+                        <td class="infVelocityTooltip info">Velocity</td><td class="infVelocity"></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <table>
+                <tbody>
+                    <tr>
+                        <td class="infMOATooltip info">MOA</td><td class="infMOA"></td>
+                    </tr>
+                    <tr>
+                        <td>100 damage radius</td><td class="inf100damage"></td>
+                    </tr>
+                    <tr>
+                        <td>25 damage radius</td><td class="inf25damage"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="sim active">
+            <table>
+                <tbody>
+                    <tr>
+                        <td class="noborder">Angle :</td>
+                        <td class="noborder">
+                            <div id="angleChoiceSettings">
+                                <label>
+                                    <input type="radio" id="angleChoiceLow" name="angleChoice" value="low">
+                                    Low
+                                </label>
+                                <label>
+                                    <input type="radio" id="angleChoiceHigh" name="angleChoice" value="high" checked="checked">
+                                    High
+                                </label>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <table>
+                <tbody>
+                    <tr>
+                        <td class="noborder infHeightPaddingTooltip info">Additional height :</td>
+                        <td class="noborder">
+                            <div class="heightPadding">
+                                <input type="number" value="0" min="0" max="100" step="1">  meters
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </dialog>
 
     <div id="actionMenu">
         <button type="button" class="btn btn-delete" aria-label="delete all targets">

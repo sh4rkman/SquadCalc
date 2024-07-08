@@ -1,21 +1,22 @@
 import targetIcon from "../img/icons/marker_target_enabled.webp";
-//import weaponIcon from "../img/icons/marker_mortar_0.webp";
-import { degToRad, radToDeg, radToMil } from "../js/utils.js";
+import targetIconDisabled from "../img/icons/marker_target_disabled.webp";
+import { degToRad } from "../js/utils.js";
 import { App } from "./conf.js";
 
 export default class Simulation {
 
-    constructor(div, results, heightPath, padding = 0.1) {
+    constructor(div, firingSolution, heightPath, angleType, padding = 0.1) {
         this.div = $(div);
-        this.canvas = this.div.find("canvas").get(0);
-        this.results = results;
+        this.firingSolution = firingSolution;
         this.heightPath = heightPath;
+        this.angleType = angleType;
+        this.canvas = this.div.find("canvas").get(0);
         this.padding = padding * this.canvas.width;
-        this.xScaling = ( this.canvas.width - ( 2 * this.padding ) ) / this.results.distance;
-        this.yScaling = this.canvas.width/ this.results.distance;
+        this.xScaling = ( this.canvas.width - ( 2 * this.padding ) ) / this.firingSolution.distance;
+        this.yScaling = this.canvas.width/ this.firingSolution.distance;
         this.yOffset = this.getMinGround();
         this.animationFrame = "";
-        
+
         this.buildTables();
         this.clear();
         this.drawGrid();
@@ -27,26 +28,36 @@ export default class Simulation {
     }
 
     buildTables(){
-        this.div.find(".infBearing").first().text(this.results.bearing.toFixed(1)+"°");
-        this.div.find(".infDistance").first().text(this.results.distance.toFixed(1)+"m");
-        this.div.find(".infWHeight").first().text(this.results.weaponHeight.toFixed(1)+"m");
-        this.div.find(".infTHeight").first().text(this.results.targetHeight.toFixed(1)+"m");
-        this.div.find(".infDHeight").first().text(this.results.diffHeight.toFixed(1)+"m");
+        this.div.find(".infBearing").first().text(this.firingSolution.bearing.toFixed(1)+"°");
+        this.div.find(".infDistance").first().text(this.firingSolution.distance.toFixed(1)+"m");
+        this.div.find(".infWHeight").first().text(this.firingSolution.weaponHeight.toFixed(1)+"m");
+        this.div.find(".infTHeight").first().text(this.firingSolution.targetHeight.toFixed(1)+"m");
+        this.div.find(".infDHeight").first().text(this.firingSolution.heightDiff.toFixed(1)+"m");
 
-        if (isNaN(this.results.elevation)) {
+        if (isNaN(this.firingSolution.elevation.high.rad)) {
             this.div.find(".infElevation").first().text("---");
             this.div.find(".infTimeOfFlight").first().text("---");
             this.div.find(".infSpread").first().text("---");
         } else {
-            this.div.find(".infTimeOfFlight").first().text(this.results.timeOfFlight.toFixed(1)+"s");
-            this.div.find(".infSpread").first().text("H:"+this.results.spreadParameters.semiMajorAxis.toFixed(1)+"m V:"+this.results.spreadParameters.semiMinorAxis.toFixed(1)+"m");
-            if (App.activeWeapon.unit === "mil"){
-                this.div.find(".infElevation").first().text(radToMil(this.results.elevation).toFixed(1)+"mil");
+
+            if (this.angleType === "high"){
+                this.div.find(".infTimeOfFlight").first().text(this.firingSolution.timeOfFlight.high.toFixed(1)+"s");
+                this.div.find(".infSpread").first().text("H:"+ this.firingSolution.spreadParameters.high.semiMajorAxis.toFixed(1) + "m V:"+ this.firingSolution.spreadParameters.high.semiMinorAxis.toFixed(1)+"m");
+                if (App.activeWeapon.unit === "mil"){
+                    this.div.find(".infElevation").first().text(this.firingSolution.elevation.high.mil.toFixed(1)+"mil");
+                } else {
+                    this.div.find(".infElevation").first().text(this.firingSolution.elevation.high.deg.toFixed(2)+"°");
+                }
             } else {
-                this.div.find(".infElevation").first().text(radToDeg(this.results.elevation).toFixed(2)+"°");
+                this.div.find(".infTimeOfFlight").first().text(this.firingSolution.timeOfFlight.low.toFixed(1)+"s");
+                this.div.find(".infSpread").first().text("H:"+ this.firingSolution.spreadParameters.low.semiMajorAxis.toFixed(1) + "m V:"+ this.firingSolution.spreadParameters.high.semiMinorAxis.toFixed(1)+"m");
+                if (App.activeWeapon.unit === "mil"){
+                    this.div.find(".infElevation").first().text(this.firingSolution.elevation.low.mil.toFixed(1)+"mil");
+                } else {
+                    this.div.find(".infElevation").first().text(this.firingSolution.elevation.low.deg.toFixed(2)+"°");
+                }
             }
         }
-
     }
 
     getMinGround(){
@@ -60,7 +71,7 @@ export default class Simulation {
         const ctx = this.canvas.getContext("2d");
         var step;
 
-        if (this.results.distance > 1200) {
+        if (this.firingSolution.distance > 1200) {
             step = 600;
         }
         else {
@@ -145,7 +156,7 @@ export default class Simulation {
      */
     drawCanvasIcons(){
         const ctx = this.canvas.getContext("2d");
-        const yScaling = this.canvas.width/this.results.distance;
+        const yScaling = this.canvas.width / this.firingSolution.distance;
         const IMG_WIDTH = 52;
         const IMG_HEIGHT = 64;
         const image = new Image(IMG_WIDTH, IMG_HEIGHT);
@@ -153,15 +164,21 @@ export default class Simulation {
         // Flip the canvas first
         ctx.translate(0, this.canvas.height);
         ctx.scale(1, -1);
-    
-        image.src = targetIcon;
+               
+        if (isNaN(this.firingSolution.elevation.high.rad)) {
+            image.src = targetIconDisabled;
+        } 
+        else {
+            image.src = targetIcon;
+        }
+
         ctx.drawImage(
             image,
             this.canvas.width - this.padding - (IMG_WIDTH/2),
             this.canvas.height - (this.heightPath.at(-1) * yScaling) - IMG_HEIGHT - this.yOffset,
             IMG_WIDTH,
             IMG_HEIGHT);
-        
+
         // Flip it back
         ctx.scale(1, -1);
         ctx.translate(0, -this.canvas.height);
@@ -174,29 +191,31 @@ export default class Simulation {
      */
     drawTrajectory(callback) {
         const ctx = this.canvas.getContext("2d");
-        const G = App.gravity * this.results.gravityScale * this.yScaling;
+        const G = this.firingSolution.gravity * this.yScaling;
         const FREQ = 20;
         var elevation;
         var xVel;
         var yVel;
         let x = this.padding;
         let oldX = this.padding;
-        let y = this.heightPath[0] * this.yScaling + this.yOffset;
-        let oldY = this.heightPath[0] * this.yScaling + this.yOffset;
+        let y = this.firingSolution.weaponHeight * this.yScaling + this.yOffset;
+        let oldY = this.firingSolution.weaponHeight * this.yScaling + this.yOffset;
         var this2 = this;
 
-        if (isNaN(this.results.elevation)) {
+        if (isNaN(this.firingSolution.elevation.high.rad)) {
             elevation = degToRad(45);
         } else {
-            elevation = this.results.elevation;
+            if (this.angleType === "high") {
+                elevation = this.firingSolution.elevation.high.rad;
+            } else {
+                elevation = this.firingSolution.elevation.low.rad;
+            }
         }
 
-        xVel = Math.cos(elevation) * this.results.velocity * this.xScaling;
-        yVel = Math.sin(elevation) * this.results.velocity * this.yScaling;
+        xVel = Math.cos(elevation) * this.firingSolution.velocity * this.xScaling;
+        yVel = Math.sin(elevation) * this.firingSolution.velocity * this.yScaling;
 
-
-
-        if (isNaN(this.results.velocity)) return;
+        if (isNaN(this.firingSolution.velocity)) return;
 
         ctx.lineWidth = 5;
         ctx.strokeStyle = "#b22222";

@@ -51,6 +51,9 @@ export function loadSettings(){
     App.userSettings.spreadRadius = loadLocalSetting("settings-spread-radius");
     $("#spreadRadiusSetting").prop("checked", App.userSettings.spreadRadius);
 
+    App.userSettings.damageRadius = loadLocalSetting("settings-damage-radius", 0);
+    $("#damageRadiusSetting").prop("checked", App.userSettings.damageRadius);
+
     App.userSettings.targetAnimation = loadLocalSetting("settings-target-animation");
     $("#targetAnimationSettings").prop("checked", App.userSettings.targetAnimation);
 
@@ -178,6 +181,15 @@ $("#spreadRadiusSetting").on("change", function() {
     App.minimap.updateTargetsSpreads(); // Update every targets to add/remove spread radius
     updatePreview();
 });
+
+$("#damageRadiusSetting").on("change", function() {
+    var val = $("#damageRadiusSetting").is(":checked");
+    App.userSettings.damageRadius = val;
+    localStorage.setItem("settings-damage-radius", +val);
+    App.minimap.updateTargetsSpreads(); // Update every targets to add/remove spread radius
+    updatePreview();
+});
+
 
 $("#weaponRangeSettings").on("change", function() {
     var val =  $("#weaponRangeSettings").is(":checked");
