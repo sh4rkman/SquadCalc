@@ -18,6 +18,7 @@
 
 # <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">   **26.0.1** *(2024-06-30)*
 
+
 <img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed an issue where alt/shift-tabbing would focus map grid and pan the map out of the current view
 
 <img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed UB32 precision with the new gravity introduced in 26.0.0
