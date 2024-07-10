@@ -371,7 +371,7 @@ export var squadTargetMarker = squadMarker.extend({
             fillOpacity: 0,
             dashArray: "5,6",
             color: "#b22222",
-            weight: 1,
+            weight: 1.3,
             className: cursorClass,
         };
 

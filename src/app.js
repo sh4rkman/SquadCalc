@@ -31,7 +31,7 @@ $(function() {
     loadWeapons();
     loadUI();
     showPage();
-    console.log("Calculator v" + packageInfo.version + " Loaded!");
+    console.log("SquadCalc v" + packageInfo.version + " Loaded!");
 });
 
 
