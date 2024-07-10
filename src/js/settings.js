@@ -5,11 +5,8 @@ import { tooltip_coordPreview } from "./tooltips.js";
 import speadIcon from "../img/icons/spread.png";
 import gridIcon from "../img/icons/grid.png";
 import maxRangeIcon from "../img/icons/maxrange.png";
+import damageRangeIcon from "../img/icons/damage.png";
 
-import { 
-    targetIcon1,
-    targetIconAnimated1,
-} from "./squadIcon";
 
 function loadLocalSetting(item, default_value = 1) {
 
@@ -34,7 +31,7 @@ export function loadSettings(){
     }
     else {
         $("#keypadUnderCursorSettingRow").hide();
-        $("#cursorChoiceSettings").hide();
+        //$("#cursorChoiceSettings").hide();
         App.userSettings.keypadUnderCursor = false;
     }
 
@@ -50,6 +47,9 @@ export function loadSettings(){
 
     App.userSettings.spreadRadius = loadLocalSetting("settings-spread-radius");
     $("#spreadRadiusSetting").prop("checked", App.userSettings.spreadRadius);
+
+    App.userSettings.damageRadius = loadLocalSetting("settings-damage-radius", 0);
+    $("#damageRadiusSetting").prop("checked", App.userSettings.damageRadius);
 
     App.userSettings.targetAnimation = loadLocalSetting("settings-target-animation");
     $("#targetAnimationSettings").prop("checked", App.userSettings.targetAnimation);
@@ -69,22 +69,21 @@ export function loadSettings(){
     App.userSettings.showTimeOfFlight = loadLocalSetting("settings-show-timeofflight", 0);
     $("#timeOfFlightSetting").prop("checked", App.userSettings.showTimeOfFlight);
 
-    App.userSettings.cursor = loadLocalSetting("settings-cursor", 1);
+    App.userSettings.cursor = loadLocalSetting("settings-cursor", 0);
+    $("#cursorChoiceSettings").prop("checked", App.userSettings.cursor);
 
     if (App.userSettings.cursor) {
-        $("#preview").css("cursor", "crosshair");
-        $("#map").css("cursor", "crosshair");
-        $(".leaflet-overlay-pane, .leaflet-interactive").css("cursor", "crosshair");
-    }
-    else {
         $("#preview").css("cursor", "default");
         $("#map").css("cursor", "default");
-        $(".leaflet-overlay-pane, .leaflet-interactive").css("cursor", "default");
+        $(".crosshair").css("cursor", "default");
+        $(".default").css("cursor", "default");
     }
-
-    $("#cursorChoice1").prop("checked", App.userSettings.cursor);
-    $("#cursorChoice2").prop("checked", !App.userSettings.cursor);
-
+    else {
+        $("#preview").css("cursor", "crosshair");
+        $("#map").css("cursor", "crosshair");
+        $(".default").css("cursor", "crosshair");
+        $(".crosshair").css("cursor", "crosshair");        
+    }
     updatePreview();
 }
 
@@ -102,6 +101,12 @@ function updatePreview(){
         $("#maxRangePreview").show();
     } else {
         $("#maxRangePreview").hide();
+    }
+
+    if (App.userSettings.damageRadius){
+        $("#damagePreview").show();
+    } else {
+        $("#damagePreview").hide();
     }
 
     subtextContent = "<span>1345</span><br>";
@@ -179,6 +184,14 @@ $("#spreadRadiusSetting").on("change", function() {
     updatePreview();
 });
 
+$("#damageRadiusSetting").on("change", function() {
+    var val = $("#damageRadiusSetting").is(":checked");
+    App.userSettings.damageRadius = val;
+    localStorage.setItem("settings-damage-radius", +val);
+    App.minimap.updateTargetsSpreads(); // Update every targets to add/remove spread radius
+    updatePreview();
+});
+
 $("#weaponRangeSettings").on("change", function() {
     var val =  $("#weaponRangeSettings").is(":checked");
     App.userSettings.weaponMinMaxRange = val;
@@ -187,27 +200,23 @@ $("#weaponRangeSettings").on("change", function() {
     updatePreview();
 });
 
-$("input[type=radio][name=cursorChoice]").on("change", function() {
-    var val = this.value;
+$("#cursorChoiceSettings").on("change", function() {
+    var val =  $("#cursorChoiceSettings").is(":checked");
+    App.userSettings.cursor = val;
+    localStorage.setItem("settings-cursor", +val);
 
-    if (this.value === "crosshair") {
-        val = 1;
-        $("#preview").css("cursor", "crosshair");
-        $("#map").css("cursor", "crosshair");
-        $(".default").css("cursor", "crosshair");
-        $(".crosshair").css("cursor", "crosshair");
-    }
-    else {
-        val = 0;
+    if (val) {
         $("#preview").css("cursor", "default");
         $("#map").css("cursor", "default");
         $(".crosshair").css("cursor", "default");
         $(".default").css("cursor", "default");
     }
-
-    App.userSettings.cursor = val;
-    localStorage.setItem("settings-cursor", val);
-
+    else {
+        $("#preview").css("cursor", "crosshair");
+        $("#map").css("cursor", "crosshair");
+        $(".default").css("cursor", "crosshair");
+        $(".crosshair").css("cursor", "crosshair");
+    }
 });
 
 $("#targetAnimationSettings").on("change", function() {

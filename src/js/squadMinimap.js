@@ -140,6 +140,7 @@ export var squadMinimap = Map.extend({
         // Update existent targets
         this.activeTargetsMarkers.eachLayer(function (target) {
             target.updateSpread();
+            target.updateDamageRadius();
         });
     },
 
@@ -225,6 +226,7 @@ export var squadMinimap = Map.extend({
      */
     _handleDoubleCkick: function (e) {
         var target;
+        
         // If out of bounds
         if (e.latlng.lat > 0 ||  e.latlng.lat < -this.tilesSize || e.latlng.lng < 0 || e.latlng.lng > this.tilesSize) {
             return 1;
@@ -240,20 +242,16 @@ export var squadMinimap = Map.extend({
 
         if (App.userSettings.targetAnimation){
             if (this.activeWeaponsMarkers.getLayers().length === 1) {
-                if (isNaN(target.options.results.elevation)){ return; }
-            }
-            else {
-                if (isNaN(target.options.results.elevation) && isNaN(target.options.results2.elevation)){ return; }
+                if (isNaN(target.firingSolution1.elevation.high.rad)){ return; }
+            } else {
+                if (isNaN(target.firingSolution1.elevation.high.rad) && isNaN(target.firingSolution2.elevation.high.rad)){ return; }
             }
 
             setTimeout(function() {
                 explode(e.containerPoint.x, e.containerPoint.y, -190, 10);
                 target.options.animate = false;
             }, 250);
-
         }
-        
-
     },
 
     /**

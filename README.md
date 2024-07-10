@@ -55,19 +55,26 @@ SquadCalc utilizes heightmaps extracted from the Squad SDK to precisely compute 
 ### Base map :
 The classic, straight from the game base map.  
 
-<img width="400" height="360" src="./src/img/github/basemap.webp">
+
+<picture>
+  <img src="./src/img/github/basemap.webp" alt="base map">
+</picture>
 
 ### Terrain map :
 Base map enhanced with bumpmap from SDK's heightmap. Add a better comprehension of terrain.  
 Also known as "why the fuck is it not the default ingame map?"
 
-<img width="400" height="360" src="./src/img/github/terrainmap.webp">
 
+<picture>
+  <img src="./src/img/github/terrainmap.webp" alt="terrain map">
+</picture>
 
 ### Topographic map :
 A mix of bump map, contour map with a touch of hypsometric colors for a complete understanding of map reliefs.
 
-<img width="400" height="360" src="./src/img/github/topomap.webp">
+<picture>
+  <img src="./src/img/github/topomap.webp" alt="topographic map">
+</picture>
 
 
 ## **Advanced informations & Simulation**
@@ -75,15 +82,25 @@ A mix of bump map, contour map with a touch of hypsometric colors for a complete
 Get a better and complete understanding of your shots and visualise a simulation of the projectile path and the terrain between you and your targets. 
 You can even see if terrain is going to block your projectiles when using low angle weapons ! (UB/GRAD) 
 
-<img width="500" height="439" src="./src/img/github/simulation.webp"></br></br>
 
-  
+<picture>
+  <img src="./src/img/github/simulation.webp" alt="target information">
+</picture>
+
+<picture>
+  <img src="./src/img/github/weaponInformation.webp" alt="weapon information">
+</picture>
+
 ## **Advanced customisation**
 
 Want to see Spread radius, time of flight, distance AND bearing for each targets ? You can.  
 Rather have a minimalist/non-clustered map ? you can too. Hop in settings to customise everything.
 
-<img width="250" height="550" src="./src/img/github/settings.webp"></br></br>
+<picture>
+    <img src="./src/img/github/settings.webp">
+</picture>
+
+</br></br>
 
 
 # **Map & Weapons Support**
@@ -97,7 +114,7 @@ Rather have a minimalist/non-clustered map ? you can too. Hop in settings to cus
 |<img height="40" src="./src/img/icons/technical_mortar_white.png"> | Technicals mortars    |        ✅          |
 |<img height="40" src="./src/img/icons/ub32_white.png">             | Technicals/BRDM UB-32 |        ✅          |
 |<img height="40" src="./src/img/icons/mlrs_white.png">             | BM-21 Grad            |        ✅          |
-| <img height="40" src="./src/img/icons/m113a3_white.png">          | M1064-A3 120mm        |        ✅          |
+|<img height="40" src="./src/img/icons/m113a3_white.png">           | M1064-A3 120mm        |        ✅          |
 
 
 

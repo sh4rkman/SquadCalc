@@ -1,9 +1,27 @@
 
-# <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">   **26.0.1** *(2024-06-24)*
+# <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">   **27.0.0** *(2024-07-09)*
 
-<img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed an issue where tabbing would focus map elements and pan the map out of the current view
+<img src="https://img.shields.io/badge/-new-green"> Weapon Informations & advanced customisation ! You can now left click a weapon to check his properties (velocity, moa, ...). You also switch between High & Low angles, and add some elevation when shooting from the top of a building for example
 
-<img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed UB32 precision with the new gravity introduced in  26.0.0
+<img src="https://img.shields.io/badge/-new-green"> Weapon splash damage ! Jump into settings to active target radius for 100 & 25 damage range.
+
+<img src="https://img.shields.io/badge/-%20Improv%20-orange"> In simulation dialog, targets now use a grey/disabled version if there is no firing solution
+
+<img src="https://img.shields.io/badge/-%20Improv%20-orange"> Reworked settings on two columns on large screen
+
+<img src="https://img.shields.io/badge/-%20Improv%20-orange"> **Lot** of code rewriting
+
+
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
+
+# <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">   **26.0.1** *(2024-06-30)*
+
+
+<img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed an issue where alt/shift-tabbing would focus map grid and pan the map out of the current view
+
+<img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed UB32 precision with the new gravity introduced in 26.0.0
 
 
 

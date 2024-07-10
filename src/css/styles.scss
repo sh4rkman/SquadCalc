@@ -19,6 +19,7 @@ button,
 input,
 select,
 textarea,
+caption,
 .pure-g [class*="pure-u"] {
     color: $mainTxtColor;
     font-family: $mainFont, Times, "Times New Roman", serif;
@@ -36,6 +37,7 @@ a:visited {
 }
 
 img {
+    @extend .unselectable;
     display: block;
     margin: auto;
     -webkit-user-drag: none;
@@ -197,7 +199,7 @@ header {
             .leaflet-popup-tip,
             .leaflet-popup-content-wrapper {
                 @extend %text-outline;
-                // user-select: none; 
+                @extend .unselectable;
                 font-family: $mainFont, Times, "Times New Roman", serif;
                 font-size: 1.2em;
                 background: transparent;
@@ -207,21 +209,16 @@ header {
                 padding: 0;
                 text-align: center;
             }
-            .leaflet-popup-tip {
-                // display: none;
-            }
             &.leaflet-popup {
-                // transition: none;
+                transition: none;
             }
         }
         .calcPopup, .calcPopup2 {
             @extend %text-outline;
+            @extend .unselectable;
             margin: 0;
             padding: 0;
             font-family: $mainFont, Times, "Times New Roman", serif;
-            // background: transparent;
-            // border: none;
-            // box-shadow: none;
             pointer-events: none;
             font-size: 0.9em;
             height: 45px;
@@ -238,9 +235,6 @@ header {
                 margin: 0;
                 line-height: 1;
             }
-            .leaflet-popup-tip-container {
-                // display: none;
-            } 
             &.calcPopup {
                 .leaflet-popup-content-wrapper {
                     text-align: right;
@@ -319,13 +313,6 @@ header {
 }
 
 
-.sim {
-    display: none;
-    &.active {
-        display: block;
-    }
-}
-
 #canvasControls{
     margin: 0 auto 1em;
     text-align: center;
@@ -343,37 +330,31 @@ header {
     }
 }
 
-#calcInformation {
-    margin: auto;
-    background-color: $mainBGColor;
-    color: $mainTxtColor;
-    text-align: left;
-    border-radius: 10px;
+#calcInformation, #weaponInformation {
     font-size: 0.7em;
-    max-width: 700px;
-    width: calc(100% - 10%);
-    overflow: hidden;
-    h2 {
-        padding: 1.25em 0 0 1.25em;
+    .sim {
+        display: none;
+        &.active {
+            display: block;
+        }
     }
     table {
-        float: left;
-        border-collapse: collapse;
-        width: 44%;
-        margin: 0 3% 2em;
-        font-size: 0.7em;
+        .noborder {
+            border: none;
+        }
         td {
             height: 2em;
             border-bottom: lightgrey 1px solid;
-            font-size: 1.2em;
             &:nth-child(1){
                 font-weight: bold;
                 text-transform: uppercase;
-                font-size: 1em;
             }
             &:nth-child(2){
                 font-weight: lighter;
                 text-align: right;
+            }
+            &.info {
+                cursor: help;
             }
         }
     }
@@ -382,22 +363,6 @@ header {
         width: 100%;
         margin-bottom: -5px;
         transform: rotate(180deg) scaleX(-1);
-    }
-    #closeCalcInformation{
-        position: absolute;
-        font-size: 1.7em;
-        right: 8px;
-        top: 8px;
-        background-color: transparent;
-        transition: all 0.2s ease;
-        &:hover {
-            cursor: pointer;
-            color: $mainColor;
-            transform: scale(0.9);
-        }
-    }
-    &::backdrop {
-        backdrop-filter: blur(3px) brightness(120%) grayscale(20%) contrast(90%);
     }
 }
 
@@ -410,8 +375,6 @@ header {
         width: 40px;
         height: 40px;
         line-height: 10px;
-        // font-size: 1em;
-        // background-color: white;
         color: $mainBGColor;
         border-radius: 6px;
         cursor: pointer;
@@ -420,7 +383,6 @@ header {
             background-color: $mainColor;
             color: $mainTxtColor;
         }
-
     }
     .active {
         background-color: $mainColor;
@@ -603,7 +565,6 @@ footer {
             font-size: 1.1rem;
             height: 2.5rem;
             position: relative;
-            // margin: auto;
             transition: all 0.3s ease;
             width: 2.5rem;
             z-index: 1;
@@ -781,6 +742,11 @@ footer {
             border-bottom-color: transparent;
         }
     }
+    &[data-theme~='infTooltips'] {
+        font-size: 1em;
+        text-align: center;
+        padding: 10px;
+    }
 }
 
 .tippy-arrow {
@@ -806,77 +772,23 @@ footer {
 }
 
 
-#helpDialog {
+dialog {
+    width: calc(100% - 10%);
+    text-align: left;
+    border-radius: 10px;
     margin: auto;
     background-color: $mainBGColor;
     color: $mainTxtColor;
-    text-align: left;
-    border-radius: 10px;
-    font-size: 0.7em;
-    letter-spacing: 1px;
-    line-height: 1em;
+    font-size: 0.75em;
+    max-width: 700px;
+    overflow: hidden;
     &::backdrop {
         backdrop-filter: blur(3px) brightness(120%) grayscale(20%) contrast(90%);
     }
-    h2{
-        margin: 25px 20px 30px;
+    h2, h3 {
+        padding: 1.25em;
     }
-    h3 {
-        margin: 25px 20px 0;
-    }
-    table {
-        margin: 10px 30px 20px;
-        border: none;
-        &.userSettings {
-            td {
-                padding: 0;
-                border: none;
-                &:nth-child(1) {
-                    padding-right: 0.75em;
-                }
-            }
-        }
-        &#links {
-            margin: 3em 0.3em 0.7em auto;
-            width: auto;
-            font-size: 1.4em;
-            td {
-                border: none;
-                padding: 0 0.5em;
-            }
-            a, a:visited {
-                color: $mainTxtColor;
-            }
-            a:hover {
-                cursor: pointer;
-                color: $mainColor;
-                i {
-                    transition: all 0.2s ease;
-                    transform: scale(0.9);
-                }
-            }
-        }
-    }
-    #cursorChoiceSettings {
-        height: auto;
-        width: 220px;
-        margin: 25px 20px 20px;
-        input {
-            height: 15px;
-            accent-color: $mainColor;
-            &:active:not([disabled]) {
-                transform: scale(0.7);
-            }
-            &:hover:not([disabled]) {
-                cursor: pointer;
-            }
-        }
-        label {
-            float:right;
-            text-align: center;
-        }
-    }
-    #closeModal {
+    .closeModal {
         position: absolute;
         font-size: 1.7em;
         right: 8px;
@@ -889,45 +801,146 @@ footer {
             transform: scale(0.9);
         }
     }
-    #preview {
-        outline: solid firebrick 3px;
-        width: 150px;
-        height: 150px;
-        margin: auto;
-        background-image: url("../../public/maps/chora/basemap/4_6_7.webp");
-        background-size: contain;
-        #center {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 150px;
-            height: 150px;
-            #markerPreview {
-                position: absolute;
-                width: 30px;
+    table {
+        float: left;
+        border-collapse: collapse;
+        margin: 0 0 2em 2em;
+        width: 90%;
+        
+    }
+    &#weaponInformation {
+        #angleChoiceSettings {
+            input {
+                height: 15px;
+                accent-color: $mainColor;
+                &:active:not([disabled]) {
+                    transform: scale(0.7);
+                }
+                &:hover:not([disabled]) {
+                    cursor: pointer;
+                }
             }
-            #gridPreview {
-                position: absolute;
-                opacity: 1;
-                width: 150px;
-            }
-            #maxRangePreview {
-                position: absolute;
-                width: 147px;
-                margin-right: 3px;
-                margin-top: 3px;
+            label {
+                float:right;
+                text-align: center;
             }
         }
-        #textPreview{
-            @extend %text-outline;
-            margin-top: 55px;
-            margin-left: 25px;
-            position: absolute;
-            z-index: 1;
-            .bearingPreview {
-                font-size: 0.6em;
-                text-align: right;
+        .heightPadding {
+            input{
+                width: 50px;
+                text-align: center;
+                font-size: 1em;
+                border: 1px solid #ddd;
+                border-radius:4px;
+                display: inline-block;
+                vertical-align: middle;
+            }
+        }
+        td {
+            cursor: default;
+            width: auto;
+        }
+        .weaponIcon {
+            height: 70px;
+            margin-bottom: 2em;
+        }
+    }
+    &#helpDialog {
+        max-width: 300px;
+        h3 {
+            font-size: 1.3em;
+        }
+        table {
+            border: none;
+            &.userSettings {
+                td {
+                    padding: 0;
+                    border: none;
+                    &:nth-child(1) {
+                        width: 30px;
+                    }
+                }
+            }
+            caption {
+                margin: 5px 20px 15px 0;
+                color: $mainTxtColor;
+                font-style: normal;
+                font-weight: bold;
+                font-size: 1.3em;
+                text-align: left;
+                font-family: $mainFont, Times, "Times New Roman", serif;
+            }
+            &#links {
+                margin: 1.8em 0.3em 0.7em auto;
+                width: auto;
+                font-size: 1.4em;
                 float: right;
+                td {
+                    border: none;
+                    padding: 0 0.5em;
+                }
+                a, a:visited {
+                    color: $mainTxtColor;
+                }
+                a:hover {
+                    cursor: pointer;
+                    color: $mainColor;
+                    i {
+                        transition: all 0.2s ease;
+                        transform: scale(0.9);
+                    }
+                }
+            }
+        }
+        #preview {
+            outline: solid firebrick 3px;
+            width: 100px;
+            height: 100px;
+            margin: auto;
+            float: none;
+            background-image: url("../../public/maps/chora/basemap/4_6_7.webp");
+            background-size: contain;
+            #center {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 100px;
+                height: 100px;
+                #markerPreview {
+                    position: absolute;
+                    width: 25px;
+                }
+                #gridPreview {
+                    position: absolute;
+                    opacity: 1;
+                    width: 100px;
+                }
+                #maxRangePreview {
+                    position: absolute;
+                    width: 105px;
+                }
+                #damagePreview {
+                    position: absolute;
+                    margin-top: 30px;
+                    width: 80px;
+                }
+                #spreadPreview {
+                    position: absolute;
+                    margin-top: 15px;
+                    width: 80px;
+                }
+            }
+            #textPreview{
+                @extend %text-outline;
+                margin-top: 33px;
+                margin-left: 5px;
+                position: absolute;
+                z-index: 1;
+                .bearingPreview {
+                    font-size: 0.6em;
+                    text-align: right;
+                    float: right;
+                }
             }
         }
     }

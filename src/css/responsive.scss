@@ -32,9 +32,6 @@
             }
         }
     }
-    #helpDialog {
-        font-size: 0.75em;
-    }
 }
 
 
@@ -49,7 +46,6 @@
         }
     }
     #helpDialog {
-        font-size: 0.8em;
         line-height: 1.1em;
     }
 }
@@ -58,16 +54,6 @@
 /***************************************************
    ************   WIDTH ADJUSTMENTS  ***************
    ***************************************************/
-
-/* L<544px */
-@media screen and (max-width: 34em) {
-    #calcInformation {
-        table {
-            width: 90%;
-            margin: 0 5% 5%;
-        }
-    }
-}
 
 
 /* L<768px */
@@ -152,9 +138,54 @@
             height: 50px;
         }
     }
-    #calcInformation {
+    dialog {
         table {
-            font-size: 0.9em;
+            width: 44%;
+            margin: 0 3% 2em;
+        }
+        &#helpDialog{
+            max-width: 700px;
+            font-size: 0.8em;
+            table {
+                td {
+                    padding: 0;
+                    border: none;
+                    &:nth-child(1) {
+                        padding-right: 0.75em;
+                    }
+                }
+            }
+            #preview {
+                width: 150px;
+                height: 150px;
+                #center {
+                    width: 150px;
+                    height: 150px;
+                    #markerPreview {
+                        width: 30px;
+                    }
+                    #gridPreview {
+                        width: 150px;
+                    }
+                    #maxRangePreview {
+                        width: 147px;
+                        margin-right: 3px;
+                        margin-top: 3px;
+                    }
+                    #damagePreview {
+                        width: 110px;
+                    }
+                }
+                #textPreview{
+                    margin-top: 55px;
+                    margin-left: 25px;
+                    .bearingPreview {
+                        font-size: 0.6em;
+                        text-align: right;
+                        float: right;
+                    }
+                }
+            }
         }
     }
     footer {
@@ -177,8 +208,9 @@
                 }
             }
         }
-
     }
+
+
 
     /* -- L*560px -- */
     @media (min-height: 35em) {

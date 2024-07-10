@@ -8,7 +8,7 @@ import { LatLng } from "leaflet";
 
 export default class SquadFiringSolution {
 
-    constructor(weaponLatLng, targetLatLng, map) {
+    constructor(weaponLatLng, targetLatLng, map, heightPadding) {
         this.map = map;
         this.activeWeapon = App.activeWeapon;
         this.weaponLatLng = weaponLatLng;
@@ -17,7 +17,7 @@ export default class SquadFiringSolution {
         this.distance = this.getDist();
         this.bearing = this.getBearing(this.weaponLatLng, this.targetLatLng);
         this.velocity = App.activeWeapon.getVelocity(this.distance);
-        this.weaponHeight = this.map.heightmap.getHeight(weaponLatLng);
+        this.weaponHeight = this.map.heightmap.getHeight(weaponLatLng) + heightPadding;
         this.targetHeight = this.map.heightmap.getHeight(targetLatLng);
         this.heightDiff =  this.targetHeight - this.weaponHeight;
         this.elevation = {low: [], high: []};
@@ -37,7 +37,7 @@ export default class SquadFiringSolution {
 
 
     /**
-     * TODO
+     * Calculate ingame distance between weapon & target
      * @return {number} - distance in meter
      */
     getDist(){
@@ -85,9 +85,10 @@ export default class SquadFiringSolution {
     }
 
     /**
-     * TODO
-     * @param {number} TODO - radians
-     * @returns {number} TODO
+     * Calculate Axises and angle for spread ellipse
+     * @param {number} [elevation] - Radians
+     * @param {number} [vel] - Weapon Velocity
+     * @returns {object} [semiMajorAxis, semiMinorAxis, ellipseAngle]
      */
     getSpreadParameter(elevation, vel){  
         return  {
@@ -201,4 +202,8 @@ export default class SquadFiringSolution {
     degToMil(deg) {
         return deg / (360 / 6400);
     }
+
+
+    
+
 }

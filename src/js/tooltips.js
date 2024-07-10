@@ -95,3 +95,46 @@ tippy("#preview", {
     hideOnClick: false,
 });
 tooltip_coordPreview = document.querySelector("#preview")._tippy;
+
+const targetDialog = document.getElementById("calcInformation");
+tippy(".infSpreadTooltip", {
+    animation: "fade",
+    placement: "top",
+    touch: false,
+    appendTo: targetDialog,
+    theme: "infTooltips",
+    delay: [500, 0],
+    content: "Due to the weapon's minute of angle (MOA) imprecision and the length of the projectile, shots can spread in an elliptical pattern.",
+});
+
+const weaponDialog = document.getElementById("weaponInformation");
+tippy(".infMOATooltip", {
+    animation: "fade",
+    placement: "top",
+    touch: false,
+    appendTo: weaponDialog,
+    theme: "infTooltips",
+    delay: [500, 0],
+
+    content: "A minute of angle (MOA) in artillery measures weapon imprecision, indicating the spread of shots. One MOA equals 1/60th of a degree.",
+});
+tippy(".infVelocityTooltip", {
+    animation: "fade",
+    placement: "top",
+    touch: false,
+    appendTo: weaponDialog,
+    theme: "infTooltips",
+    delay: [500, 0],
+
+    content: "Muzzle velocity is the speed at which a projectile leaves the barrel of a gun, measured immediately upon exit. It affects the range, and accuracy the shot.",
+});
+tippy(".infHeightPaddingTooltip", {
+    animation: "fade",
+    placement: "top",
+    touch: false,
+    appendTo: weaponDialog,
+    theme: "infTooltips",
+    delay: [500, 0],
+
+    content: "When placing the weapon above the ground (e.g., on buildings or bridges), use this field to specify the additional height.",
+});
