@@ -75,12 +75,14 @@ export function loadSettings(){
     if (App.userSettings.cursor) {
         $("#preview").css("cursor", "default");
         $("#map").css("cursor", "default");
-        $(".leaflet-overlay-pane, .leaflet-interactive").css("cursor", "default");
+        $(".crosshair").css("cursor", "default");
+        $(".default").css("cursor", "default");
     }
     else {
         $("#preview").css("cursor", "crosshair");
         $("#map").css("cursor", "crosshair");
-        $(".leaflet-overlay-pane, .leaflet-interactive").css("cursor", "crosshair");
+        $(".default").css("cursor", "crosshair");
+        $(".crosshair").css("cursor", "crosshair");        
     }
     updatePreview();
 }

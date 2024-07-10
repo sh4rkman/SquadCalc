@@ -55,9 +55,10 @@ export var squadWeaponMarker = squadMarker.extend({
         squadMarker.prototype.initialize.call(this, latlng, options, map);
 
         if (App.userSettings.cursor) {
-            cursorClass = "crosshair";
-        } else {
             cursorClass = "default";
+        } else {
+            cursorClass = "crosshair";
+
         }
         
         this.maxDistCircleOn = {
@@ -229,6 +230,11 @@ export var squadWeaponMarker = squadMarker.extend({
             $(".inf25damage").first().text("Unknown");    
         }
 
+        if (App.activeWeapon.name === "Mortar") {
+            $("#angleChoice").hide();
+        } else {
+            $("#angleChoice").show();
+        }
 
         if (App.activeWeapon.name === "UB-32" || App.activeWeapon.name === "Tech. UB-32") {
             $(".infVelocity").first().text("300m/s");
@@ -311,9 +317,9 @@ export var squadTargetMarker = squadMarker.extend({
         squadMarker.prototype.initialize.call(this, latlng, options, map);
         
         if (App.userSettings.cursor) {
-            cursorClass = "crosshair";
-        } else {
             cursorClass = "default";
+        } else {
+            cursorClass = "crosshair";
         }
 
         

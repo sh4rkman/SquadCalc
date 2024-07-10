@@ -7,6 +7,8 @@
 
 <img src="https://img.shields.io/badge/-%20Improv%20-orange"> In simulation dialog, targets now use a grey/disabled version if there is no firing solution
 
+<img src="https://img.shields.io/badge/-%20Improv%20-orange"> Reworked settings on two columns on large screen
+
 <img src="https://img.shields.io/badge/-%20Improv%20-orange"> **Lot** of code rewriting
 
 
