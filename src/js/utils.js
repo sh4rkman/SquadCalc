@@ -366,13 +366,6 @@ export function shoot(inputChanged = "") {
  */
 function insertCalc(bearing, elevation, distance, vel, height) {
 
-    if (!App.debug.active) {
-        //console.clear();
-    } else {
-        console.log("------------------------------");
-        console.log("         FINAL CALC");
-        console.log("------------------------------");
-    }
     console.log(`${$("#mortar-location").val()} -> ${$("#target-location").val()}`);
     console.log(`-> Bearing: ${bearing.toFixed(1)}° - Elevation: ${elevation.toFixed(1)}↷`);
     console.log(`-> Distance: ${distance.toFixed(0)}m - height: ${height.toFixed(0)}m`);
@@ -382,7 +375,7 @@ function insertCalc(bearing, elevation, distance, vel, height) {
     animateCalc($("#elevationNum").html(),elevation.toFixed(App.activeWeapon.elevationPrecision),500,"elevationNum");
 
     $("elevation").html($("<i class=\"fas fa-drafting-compass fa-rotate-180 resultIcons\"></i>"));
-     
+    
     if (App.activeWeapon.getAngleType() === -1) {
         $("#highlow").html($("<i class=\"fa-solid fa-sort-amount-up resultIcons\"></i>"));
     }
@@ -390,7 +383,7 @@ function insertCalc(bearing, elevation, distance, vel, height) {
         $("#highlow").html($("<i class=\"fa-solid fa-sort-amount-down resultIcons\"></i>"));
     }
     
-    if (App.activeWeapon.name != "mortar" && App.activeWeapon.name != "UB-32") {
+    if (App.activeWeapon.name != "Mortar" && App.activeWeapon.name != "UB-32") {
         $("#highlow i").addClass("active");
     }
     
@@ -620,17 +613,17 @@ export function saveCalc() {
  * Copy current calc to clipboard
  * @param {event} e - click event that triggered copy
  */
-export function copyCalc(e) {
+export function copyCalc() {
     
     // If calcs aren't ready, do nothing
     if (!$(".copy").hasClass("copy")) { return 1; }
 
-    // When using BM-21, and the target icon is clicked, do nothing
-    if (App.activeWeapon.name != "mortar" || App.activeWeapon.name != "B-32") {
-        if ($(e.target).hasClass("fa-sort-amount-down") || $(e.target).hasClass("fa-sort-amount-up") ) {
-            return 1;
-        }
-    }
+    // // When using BM-21, and the target icon is clicked, do nothing
+    // if (App.activeWeapon.name != "mortar" || App.activeWeapon.name != "B-32") {
+    //     if ($(e.target).hasClass("fa-sort-amount-down") || $(e.target).hasClass("fa-sort-amount-up") ) {
+    //         return 1;
+    //     }
+    // }
 
     animateCSS($(".copy"), "headShake");
 
@@ -646,9 +639,6 @@ export function copyCalc(e) {
  * Toggle high/low angles
  */
 export function changeHighLow(){
-    // If mortar/deployable UB32, deny changing
-    if (App.activeWeapon.name == "mortar" || App.activeWeapon.name == "UB-32") {return 1;}
-
     const isLowAngle = $("#highlow").find(".fa-sort-amount-up").length > 0;
     App.activeWeapon.angleType = isLowAngle ? "low" : "high";
     shoot();
@@ -660,8 +650,7 @@ export function changeHighLow(){
  *
  * @param a
  * @param b
- * @returns {boolean} true if 'a' is a multiple of 'b' with a precision up to 4 decimals,
- *                    false otherwise
+ * @returns {boolean} true if 'a' is a multiple of 'b', false otherwise              
  */
 export function isMultiple(a, b) {
     const t = b / a;

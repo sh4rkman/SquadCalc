@@ -1,4 +1,26 @@
 
+
+# <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">   **27.1.0** *(2024-07-11)*
+
+
+<img src="https://img.shields.io/badge/-%20Improv%20-orange"> Damage radius now take into account the height of the explosion. Mostly impact M121 proximity rounds that explode at 10m from the ground, resulting on a much smaller kill zone.
+
+<img src="https://img.shields.io/badge/-%20fix%20-orange"> UB-32 & Technical UB-32 now have their own damage radius
+
+<img src="https://img.shields.io/badge/-%20fix%20-orange"> Removed the ability to switch to high angle on UB-32 emplacement (both on legacy and map mode)
+
+<img src="https://img.shields.io/badge/-%20fix%20-orange"> Removed the ability to switch to high angle on regular mortar (legacy mode)
+
+<img src="https://img.shields.io/badge/-%20fix%20-orange"> tweaked font size of dialogs on mobile
+
+
+
+
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
+
+
 # <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">   **27.0.0** *(2024-07-09)*
 
 <img src="https://img.shields.io/badge/-new-green"> Weapon Informations & advanced customisation ! You can now left click a weapon to check his properties (velocity, moa, ...). You also switch between High & Low angles, and add some elevation when shooting from the top of a building for example

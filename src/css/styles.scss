@@ -331,7 +331,6 @@ header {
 }
 
 #calcInformation, #weaponInformation {
-    font-size: 0.7em;
     .sim {
         display: none;
         &.active {
@@ -779,7 +778,7 @@ dialog {
     margin: auto;
     background-color: $mainBGColor;
     color: $mainTxtColor;
-    font-size: 0.75em;
+    font-size: 0.65em;
     max-width: 700px;
     overflow: hidden;
     &::backdrop {
