@@ -330,6 +330,8 @@ header {
     }
 }
 
+
+
 #calcInformation, #weaponInformation {
     .sim {
         display: none;
@@ -364,6 +366,8 @@ header {
         transform: rotate(180deg) scaleX(-1);
     }
 }
+
+
 
 #actionMenu {
     position: absolute;
@@ -808,6 +812,7 @@ dialog {
         
     }
     &#weaponInformation {
+        max-width: 350px;
         #angleChoiceSettings {
             input {
                 height: 15px;

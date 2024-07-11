@@ -139,9 +139,13 @@
         }
     }
     dialog {
+        font-size: 0.7em;
         table {
             width: 44%;
             margin: 0 3% 2em;
+        }
+        &#weaponInformation{
+            max-width: 600px;
         }
         &#helpDialog{
             font-size: 0.8em;
