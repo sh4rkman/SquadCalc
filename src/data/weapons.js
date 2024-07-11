@@ -55,6 +55,7 @@ export var WEAPONS = [
         moa: 50,
         explosionDamage: 350,
         explosionRadius: [0, 40],
+        explosionDistanceFromImpact: 0.5,
         damageFallOff: 7,
     },
     {
@@ -71,9 +72,10 @@ export var WEAPONS = [
         elevationPrecision: 1,
         minDistance: 0,
         moa: 300,
-        explosionDamage: 0,
-        explosionRadius: [0, 0],
-        damageFallOff: 0,
+        explosionDamage: 115,
+        explosionRadius: [5, 18],
+        explosionDistanceFromImpact: 0.2,
+        damageFallOff: 1,
     },
     {
         name: "Hell Cannon",
@@ -91,6 +93,7 @@ export var WEAPONS = [
         moa: 100,
         explosionDamage: 125,
         explosionRadius: [1, 50],
+        explosionDistanceFromImpact: 2,
         damageFallOff: 1,
     },
     {
@@ -109,6 +112,7 @@ export var WEAPONS = [
         moa: 50,
         explosionDamage: 350,
         explosionRadius: [0, 40],
+        explosionDistanceFromImpact: 0.5,
         damageFallOff: 7,
     },
     {
@@ -125,9 +129,10 @@ export var WEAPONS = [
         elevationPrecision: 1,
         minDistance: 0,
         moa: 300,
-        explosionDamage: 0,
-        explosionRadius: [0, 0],
-        damageFallOff: 0,
+        explosionDamage: 115,
+        explosionRadius: [5, 18],
+        explosionDistanceFromImpact: 0.2,
+        damageFallOff: 1,
     },
     {
         name: "BM-21 Grad",
@@ -145,6 +150,7 @@ export var WEAPONS = [
         moa: 200,
         explosionDamage: 140,
         explosionRadius: [1, 35],
+        explosionDistanceFromImpact: 2,
         damageFallOff: 1,
     },
     {
@@ -163,6 +169,7 @@ export var WEAPONS = [
         moa: 50,
         explosionDamage: 100,
         explosionRadius: [10, 60],
+        explosionDistanceFromImpact: 10,
         damageFallOff: 1.3,
     }    
 ];

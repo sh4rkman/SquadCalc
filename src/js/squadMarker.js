@@ -221,22 +221,16 @@ export var squadWeaponMarker = squadMarker.extend({
         $(".infMOA").first().text(App.activeWeapon.moa + " ("+ (App.activeWeapon.moa / 60).toFixed(1) +"°)");
         $(".infMinDistance").first().text(App.activeWeapon.minDistance + "m");
         $(".infMaxDistance").first().text(App.activeWeapon.maxDistance.toFixed(1) + "m");
+        $(".inf100damage").first().text(App.activeWeapon.hundredDamageRadius.toFixed(1) + "m");
+        $(".inf25damage").first().text(App.activeWeapon.twentyFiveDamageRadius.toFixed(1) + "m");
 
-        if (!isNaN(App.activeWeapon.hundredDamageRadius)) {
-            $(".inf100damage").first().text(App.activeWeapon.hundredDamageRadius.toFixed(1) + "m");
-            $(".inf25damage").first().text(App.activeWeapon.twentyFiveDamageRadius.toFixed(1) + "m");
-        } else {
-            $(".inf100damage").first().text("Unknown");
-            $(".inf25damage").first().text("Unknown");    
-        }
-
-        if (App.activeWeapon.name === "Mortar") {
+        if (["Mortar", "UB-32"].includes(App.activeWeapon.name)) {
             $("#angleChoice").hide();
         } else {
             $("#angleChoice").show();
         }
-
-        if (App.activeWeapon.name === "UB-32" || App.activeWeapon.name === "Tech. UB-32") {
+        
+        if (["Tech. UB-32", "UB-32"].includes(App.activeWeapon.name)) {
             $(".infVelocity").first().text("300m/s");
         } else {
             $(".infVelocity").first().text(App.activeWeapon.velocity + "m/s");

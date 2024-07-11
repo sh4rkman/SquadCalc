@@ -1,7 +1,7 @@
 import { App } from "./conf";
 
 export class Weapon {
-    constructor(name, velocity, gravityScale, minElevation, unit, logo, marker, logoCannonPos, type, angleType, elevationPrecision, minDistance, moa, maxDamage, startRadius, endRadius, falloff) {
+    constructor(name, velocity, gravityScale, minElevation, unit, logo, marker, logoCannonPos, type, angleType, elevationPrecision, minDistance, moa, maxDamage, startRadius, endRadius, distanceFromImpact, falloff) {
         this.name = name;
         this.velocity = velocity;
         this.gravityScale = gravityScale;
@@ -16,8 +16,8 @@ export class Weapon {
         this.minDistance = minDistance;
         this.moa = moa;
         this.maxDistance = this.getMaxDistance();
-        this.hundredDamageRadius = this.calculateDistanceForDamage(maxDamage, startRadius, endRadius, falloff, 100);
-        this.twentyFiveDamageRadius = this.calculateDistanceForDamage(maxDamage, startRadius, endRadius, falloff, 25);
+        this.hundredDamageRadius = this.calculateDistanceForDamage(maxDamage, startRadius, endRadius, falloff, distanceFromImpact, 100);
+        this.twentyFiveDamageRadius = this.calculateDistanceForDamage(maxDamage, startRadius, endRadius, falloff, distanceFromImpact, 25);
     }
 
     /**
@@ -58,8 +58,10 @@ export class Weapon {
         return this.velocity.slice(-1)[0][0];
     }
 
-    calculateDistanceForDamage(maxDamage, startRadius, endRadius, falloff, targetDamage) {
-        return endRadius - (Math.pow(targetDamage / maxDamage, 1 / falloff) * (endRadius - startRadius));
+    calculateDistanceForDamage(maxDamage, startRadius, endRadius, falloff, distanceFromImpact, targetDamage) {
+        var characterSize = 1.8;
+        var radius = endRadius - (Math.pow(targetDamage / maxDamage, 1 / falloff) * (endRadius - startRadius));
+        return Math.sqrt(-Math.pow(distanceFromImpact - characterSize, 2 ) + Math.pow(radius, 2));
     }
 
 }

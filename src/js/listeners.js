@@ -22,7 +22,7 @@ $(document).on("click", ".savespan", function() { copySave($(this)); });
 
 $(document).on("click", "#savebutton", function() { saveCalc(); });
 $(document).on("click", "#copy", function(e) { copyCalc(e); });
-$(document).on("click", "#highlow", function() { changeHighLow(); });
+$(document).on("click", "#highlow .active", function() { changeHighLow(); });
 $(document).on("click", function(event) {if (!$(event.target).closest(".fab-wrapper").length) {$("#fabCheckbox").prop("checked", false);}});
 $(document).on("click", "#fabCheckbox2", function() {switchUI();});
 $(document).on("click", "#fabCheckbox", function() {$("#helpDialog")[0].showModal();});

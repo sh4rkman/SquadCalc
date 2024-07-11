@@ -15,7 +15,7 @@ import "./css/responsive.scss";
 import { App } from "./js/conf.js";
 import { MAPS } from "./data/maps.js";
 import { squadMinimap } from "./js/squadMinimap.js";
-import { Weapon } from "./js/weapons.js";
+import { Weapon } from "./js/squadWeapons.js";
 import { WEAPONS, WEAPONSTYPE } from "./data/weapons.js";
 import { shoot } from "./js/utils.js";
 import { createLine, drawLine } from "./js/animations";
@@ -89,6 +89,7 @@ export function loadWeapons() {
             weapon.explosionDamage,
             weapon.explosionRadius[0],
             weapon.explosionRadius[1],
+            weapon.explosionDistanceFromImpact,
             weapon.damageFallOff
         );
     });
