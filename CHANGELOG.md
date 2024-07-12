@@ -1,12 +1,12 @@
-
-
 # <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">   **28.0.0** *(2024-07-12)*
 
-<img src="https://img.shields.io/badge/-new-green"> Added the possibility to choose between Proximity Impact and Near-Surface rounds when using M121
+<img src="https://img.shields.io/badge/-new-green"> Added the possibility to choose between Impact and Near-Surface rounds when using M121
 
 <img src="https://img.shields.io/badge/-new-green"> Added Jensen's Range to map list
 
 <img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed UB32 imprecision at high range (2050-2150m)
+
+<img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed a visual bug in map selector
 
 
 
