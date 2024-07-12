@@ -31,12 +31,12 @@ const UB32_table = [
     [1800, 207.3186719065925],
     [1900, 207.57652270427334],
     [2000, 208.62643147834694],
-    [2050, 206.18365942119797],
-    [2100, 205.6621778109742],
-    [2143, 204.87704785305388],
+    [2050, 208.4836594211979],
+    //[2100, 206.292701799937445],
+    [2178, 206.40174417867692],
 ];
 
-export const WEAPONSTYPE = ["deployables", "vehicles",];
+export const WEAPONSTYPE = ["deployables", "vehicles"];
 
 export var WEAPONS = [
     {
@@ -55,7 +55,7 @@ export var WEAPONS = [
         moa: 50,
         explosionDamage: 350,
         explosionRadius: [0, 40],
-        explosionDistanceFromImpact: 0.5,
+        explosionDistanceFromImpact: 1,
         damageFallOff: 7,
     },
     {
@@ -171,5 +171,20 @@ export var WEAPONS = [
         explosionRadius: [10, 60],
         explosionDistanceFromImpact: 10,
         damageFallOff: 1.3,
+        shells : [{
+            moa: 40,
+            explosionDamage: 400,
+            explosionRadius: [0, 40],
+            explosionDistanceFromImpact: 1,
+            damageFallOff: 7,
+        },
+        {
+            moa: 50,
+            explosionDamage: 100,
+            explosionRadius: [10, 60],
+            explosionDistanceFromImpact: 10,
+            damageFallOff: 1.3,
+        },
+        ]
     }    
 ];

@@ -41,7 +41,7 @@
     header {
         #mapSelector {
             .select2-results__options {
-                max-height: 700px;
+                max-height: 750px;
             }
         }
     }
@@ -98,13 +98,15 @@
             // fix to top left corner
             left: 1em;
             position: fixed;
-            top: 0;
             .select2-container {
                 float: left;
                 font-size: 1em;
             }
             &.ui {
                 top: 0;
+            }
+            #ammoSelector {
+                padding-top: 3em;
             }
         }
         .mapSelector {

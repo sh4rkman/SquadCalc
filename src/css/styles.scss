@@ -81,8 +81,8 @@ button:focus {
 
 header {
     .weaponSelector {
+        z-index: 4;
         padding-top: 1em;
-        z-index: 5;
         .select2-results__options {
             font-weight: 600;
             line-height: 1.4em;
@@ -97,22 +97,26 @@ header {
         }
         &.ui {
             position: fixed;
-            top: 0;
+            top: 3.1em;
+        }
+        #ammoSelector{
+            padding-top: 1em;
         }
     }
     .mapSelector {
-        padding: 1em 0;
-        z-index: 4;
+        padding-top: 1em;
+        z-index: 5;
         &.ui {
             position: fixed;
-            top: 3em;
+            top: 0;
         }
     }
     .selectbox {
         padding: 0;
     }
     .dropbtn,
-    .dropbtn2 {
+    .dropbtn2,
+    .dropbtn3 {
         color: #fff;
         font-weight: bold;
         line-height: 2.188em;

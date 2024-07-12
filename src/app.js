@@ -70,6 +70,7 @@ function loadMinimap(){
 export function loadWeapons() {
     const WEAPONSLENGTH = WEAPONS.length;
     const WEAPON_SELECTOR = $(".dropbtn2");
+    const SHELL_SELECTOR = $(".dropbtn3");
 
     WEAPONS.forEach((weapon, index, arr) => {
         arr[index] = new Weapon(
@@ -90,7 +91,8 @@ export function loadWeapons() {
             weapon.explosionRadius[0],
             weapon.explosionRadius[1],
             weapon.explosionDistanceFromImpact,
-            weapon.damageFallOff
+            weapon.damageFallOff,
+            weapon.shells
         );
     });
     
@@ -100,6 +102,16 @@ export function loadWeapons() {
         minimumResultsForSearch: -1, // Disable search
         placeholder: "SELECT A WEAPON"
     });
+
+
+    SHELL_SELECTOR.select2({
+        dropdownCssClass: "dropbtn3",
+        dropdownParent: $("#ammoSelector"),
+        minimumResultsForSearch: -1, // Disable search
+        placeholder: "SELECT A WEAPON"
+    });
+
+    
 
     for (let i = 0; i < WEAPONSTYPE.length; i += 1) {
         WEAPON_SELECTOR.append("<optgroup label=\"" + WEAPONSTYPE[i] + "\">");
@@ -152,11 +164,21 @@ function getWeapon() {
  * save current weapon into browser cache
  */
 export function changeWeapon() {
-    const weapon = $(".dropbtn2").val();
+    const WEAPON = $(".dropbtn2").val();
+
+
 
     App.line.hide("none");
-    localStorage.setItem("data-weapon", weapon);
-    App.activeWeapon = WEAPONS[weapon];
+    localStorage.setItem("data-weapon", WEAPON);
+    App.activeWeapon = WEAPONS[WEAPON];
+
+    if (WEAPON == 6) {
+        $("#ammoSelector").show();
+        changeShell($(".dropbtn3").val());
+    } else {
+        $("#ammoSelector").hide();
+    }
+
     $("#mortarImg").attr("src", App.activeWeapon.logo);
     shoot();
 
@@ -165,6 +187,29 @@ export function changeWeapon() {
     // Update Minimap marker
     App.minimap.updateWeapons();
     App.minimap.updateTargets();
+}
+
+export function changeShell(shell){
+
+    if ($(".dropbtn2").val() != 6) { return;}
+
+    App.activeWeapon.moa = WEAPONS[6].shells[shell].moa;
+    App.activeWeapon.hundredDamageRadius = App.activeWeapon.calculateDistanceForDamage(
+        WEAPONS[6].shells[shell].explosionDamage,
+        WEAPONS[6].shells[shell].explosionRadius[0],
+        WEAPONS[6].shells[shell].explosionRadius[1],
+        WEAPONS[6].shells[shell].damageFallOff,
+        WEAPONS[6].shells[shell].explosionDistanceFromImpact, 
+        100);
+
+    App.activeWeapon.twentyFiveDamageRadius = App.activeWeapon.calculateDistanceForDamage(
+        WEAPONS[6].shells[shell].explosionDamage,
+        WEAPONS[6].shells[shell].explosionRadius[0],
+        WEAPONS[6].shells[shell].explosionRadius[1],
+        WEAPONS[6].shells[shell].damageFallOff,
+        WEAPONS[6].shells[shell].explosionDistanceFromImpact, 
+        25);
+
 }
 
 function loadMapUIMode(){
