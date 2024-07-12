@@ -58,7 +58,6 @@ export var squadWeaponMarker = squadMarker.extend({
             cursorClass = "default";
         } else {
             cursorClass = "crosshair";
-
         }
         
         this.maxDistCircleOn = {
@@ -211,12 +210,18 @@ export var squadWeaponMarker = squadMarker.extend({
 
     _handleClick: function(weapon) {
         const DIALOG = document.getElementById("weaponInformation");
+        var name = App.activeWeapon.name;
 
         // Logo
         $(".weaponIcon").first().attr("src", App.activeWeapon.logo);
 
         // Informations
-        $(".infName").first().text(App.activeWeapon.name);
+
+        if (App.activeWeapon.name === "M1064 M121") {
+            name = name + " (" + $(".dropbtn3 option:selected" ).text() + ")";
+        }  
+
+        $(".infName").first().text(name);
         $(".infRange").first().text(App.activeWeapon.minDistance + "m - " + App.activeWeapon.maxDistance.toFixed(0) + "m");
         $(".infMOA").first().text(App.activeWeapon.moa + " ("+ (App.activeWeapon.moa / 60).toFixed(1) +"°)");
         $(".infMinDistance").first().text(App.activeWeapon.minDistance + "m");
@@ -689,6 +694,8 @@ export var squadTargetMarker = squadMarker.extend({
             this.calcMarker2.setContent("  ");
             this.spreadMarker1.setStyle({opacity: 0, fillOpacity: 0});
             this.spreadMarker2.setStyle({opacity: 0, fillOpacity: 0});
+            this.hundredDamageRadius.setStyle({opacity: 0, fillOpacity: 0});
+            this.twentyFiveDamageRadius.setStyle({opacity: 0, fillOpacity: 0});
         }
         this.miniCircle.setStyle({opacity: 1});
     },

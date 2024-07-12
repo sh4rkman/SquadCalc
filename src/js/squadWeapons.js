@@ -1,7 +1,7 @@
 import { App } from "./conf";
 
 export class Weapon {
-    constructor(name, velocity, gravityScale, minElevation, unit, logo, marker, logoCannonPos, type, angleType, elevationPrecision, minDistance, moa, maxDamage, startRadius, endRadius, distanceFromImpact, falloff) {
+    constructor(name, velocity, gravityScale, minElevation, unit, logo, marker, logoCannonPos, type, angleType, elevationPrecision, minDistance, moa, maxDamage, startRadius, endRadius, distanceFromImpact, falloff, shells = []) {
         this.name = name;
         this.velocity = velocity;
         this.gravityScale = gravityScale;
@@ -18,6 +18,7 @@ export class Weapon {
         this.maxDistance = this.getMaxDistance();
         this.hundredDamageRadius = this.calculateDistanceForDamage(maxDamage, startRadius, endRadius, falloff, distanceFromImpact, 100);
         this.twentyFiveDamageRadius = this.calculateDistanceForDamage(maxDamage, startRadius, endRadius, falloff, distanceFromImpact, 25);
+        this.shells = shells;
     }
 
     /**
