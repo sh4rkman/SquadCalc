@@ -1,6 +1,6 @@
 {
   "name": "squadcalc",
-  "version": "27.2.0",
+  "version": "28.0.0",
   "description": "A Complete Mortar Calculator for Squad",
   "author": "Maxime 'sharkman' Boussard",
   "license": "MIT",
@@ -36,7 +36,7 @@
     "test:stylelint": "stylelint -c ./config/.stylelintrc.json ./src/css/*.scss",
     "test:htmlhint": "htmlhint --nocolor ./src/",
     "test:w3c": "html-validator --quiet --continue ./src/",
-    "cpdir": "node -e \"require('fs').cpSync('./public/maps', './dist/maps', {recursive: true});\""
+    "cpdir": "node -e \"require('fs').cpSync('./public/', './dist/', {recursive: true});\""
   },
   "devDependencies": {
     "@playwright/test": "^1.43.1",
@@ -49,6 +49,8 @@
     "html-loader": "^3.1.0",
     "html-webpack-plugin": "^5.5.3",
     "htmlhint": "^1.1.4",
+    "i18next": "^23.11.5",
+    "i18next-http-backend": "^2.5.2",
     "jshint": "^2.13.6",
     "leader-line-new": "^1.1.9",
     "leaflet": "^1.9.4",
@@ -76,5 +78,8 @@
     "webpack-nano": "^1.1.1",
     "webpack-pwa-manifest": "^4.3.0",
     "workbox-webpack-plugin": "^7.0.0"
+  },
+  "dependencies": {
+
   }
 }

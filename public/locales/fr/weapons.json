@@ -1,0 +1,13 @@
+{
+    "deployables": "Déployables",
+        "Mortar": "Mortier",
+        "UB-32": "UB-32",
+        "HellCannon": "Hell Cannon",
+    "vehicles": "Véhicules",
+        "Tech.Mortar": "Mortier mobile",
+        "Tech.UB-32": "UB-32 mobile",
+        "BM-21Grad": "BM-21 Grad",
+        "M1064M121": "M1064 M121",
+            "impact": "Impact",
+            "nearSurface": "Aérienne"
+}

@@ -778,7 +778,6 @@ footer {
     z-index: -1;
 }
 
-
 dialog {
     width: calc(100% - 10%);
     text-align: left;
@@ -807,6 +806,64 @@ dialog {
             color: $mainColor;
             transform: scale(0.9);
         }
+    }
+    #lngSelector {
+        position: absolute;
+        right: 50px;
+        top: 8px;
+        font-weight: bold;
+    }
+    .dropbtn4 {
+        color: #fff;
+        font-weight: bold;
+        line-height: 1.5em;
+        text-transform: uppercase;
+        text-align: center;
+        background-color: var(--themecolor, $mainBGColor);
+        z-index: 1;
+        select {
+            -moz-appearance: none;
+            -webkit-appearance: none;
+            appearance: none;
+            background-color: transparent;
+            background-image: none;
+            border: none;
+            box-shadow: none;
+        }
+        &:focus {
+            outline: none;
+        }
+        .select2 {
+            background-color: transparent;
+        }
+        .select2-container {
+            @extend %text-outline;
+            background-color: transparent;
+            border-bottom: 1px solid $mainTxtColor;
+            line-height: 2.188em;
+            padding-bottom: 0.3em;
+            text-transform: uppercase;
+        }
+    }
+    .select2-container--default {
+        .select2-results__option--highlighted[aria-selected] {
+            background-color: $mainColor;
+        }
+        .select2-results__option--selected {
+            background-color: $mainColor;
+            opacity: 0.5;
+        }
+        .select2-selection--single .select2-selection__rendered {
+            color: #fff;
+        }
+        .select2-selection--single {
+            background-color: transparent;
+            border: none;
+            color: $mainTxtColor;
+        }
+    }
+    span.select2-selection.select2-selection--single {
+        outline: none;
     }
     table {
         float: left;

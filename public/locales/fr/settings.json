@@ -1,0 +1,21 @@
+{
+    "SettingsTitle": "Paramètres",
+    "mapOptions": "Options de Carte",
+        "showGrid": "Afficher la grille",
+        "showKeypad": "Afficher la grille sous le curseur",
+        "showMaxRange": "Afficher la distance max/min de tir",
+        "useClassicCursor": "Utiliser le curseur classique",
+    "targetOptions": "Options des cibles",
+        "showSpread": "Rayon de dispersion",
+        "showDamage": "Rayons de 100 & 25 dégâts",
+        "showAnimations": "Afficher les animations",
+        "showBearing": "Afficher l'orientation",
+        "showDistance": "Afficher la distance",
+        "showTimeOfFlight": "Afficher le temps de vol",
+        "showHeightDiff": "Afficher la différence d'altitude",
+    "preview": "Aperçu",
+    "changelog": "Journal des modifications",
+    "github": "Voir le code sur Github",
+    "youtube": "Regarde mes vidéos !",
+    "bug": "Signaler un bug"
+}

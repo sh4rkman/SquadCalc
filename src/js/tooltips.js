@@ -1,6 +1,6 @@
 import tippy, {followCursor} from "tippy.js";
 import "tippy.js/dist/tippy.css";
-
+import i18next from "i18next";
 
 export var tooltip_save;
 export var tooltip_copied;
@@ -11,14 +11,14 @@ export var tooltip_coordPreview;
 tippy("#settings", {
     allowHTML: true,
     animation: "fade",
-    content: "<i class=\"fa fa-check\"></i> Copied !",
     placement: "bottom",
     theme: "new",
     trigger: "manual",
-    onShow(instance) {
+    onShow(tip) {
+        tip.setContent("<i class=\"fa fa-check\"></i> " + i18next.t("tooltips:copied"));
         setTimeout(() => {
-            instance.hide();
-            instance.disable();
+            tip.hide();
+            tip.disable();
         }, 1500);
     }
 });
@@ -30,37 +30,49 @@ tippy("#bearingNum", {
     placement: "bottom",
     allowHTML: true,
     touch: false,
-    content: "Bearing </br> <span class=\"tooltipsubtext\">(where to aim)</span>",
     theme: "results",
+    onShow(tip) {
+        tip.setContent(i18next.t("tooltips:bearing") + "</br><span class=\"tooltipsubtext\">" + i18next.t("tooltips:whereToAim") + "</span>");
+    },
 });
 
 tippy(".btn-delete", {
     animation: "fade",
     placement: "top",
     touch: false,
-    content: "Delete all targets",
+    onShow(tip) {
+        tip.setContent(i18next.t("tooltips:deleteTargets"));
+    },
 });
 
 tippy(".btn-basemap", {
     animation: "fade",
     placement: "left",
     touch: false,
-    content: "Base Map",
+    onShow(tip) {
+        tip.setContent(i18next.t("tooltips:basemode"));
+    },
 });
 
 tippy(".btn-terrainmap", {
     animation: "fade",
     placement: "left",
     touch: false,
-    content: "Terrain Map",
+    onShow(tip) {
+        tip.setContent(i18next.t("tooltips:terrainmode"));
+    },
 });
+
 
 tippy(".btn-topomap", {
     animation: "fade",
     placement: "left",
     touch: false,
-    content: "Topographic Map",
+    onShow(tip) {
+        tip.setContent(i18next.t("tooltips:topographicmode"));
+    },
 });
+
 
 
 tippy("#elevationNum", {
@@ -68,18 +80,22 @@ tippy("#elevationNum", {
     placement: "bottom",
     allowHTML: true,
     touch: false,
-    content: "Elevation </br> <span class=\"tooltipsubtext\">(how far it will shoot)</span>",
     theme: "results",
+    onShow(tip) {
+        tip.setContent(i18next.t("tooltips:elevation") + "</br> <span class=\"tooltipsubtext\">" + i18next.t("tooltips:howFar") + "</span>");
+    },
 });
 
 tippy("#savebutton i", {
     animation: "fade",
     allowHTML: true,
-    content: "Save </br> <span class=\"tooltipsubtext\"> (the results for later)</span>",
     interactiveDebounce: 75,
     placement: "bottom",
     theme: "results",
     touch: false,
+    onShow(tip) {
+        tip.setContent(i18next.t("tooltips:save") + "</br> <span class=\"tooltipsubtext\">" + i18next.t("tooltips:resultLater") + "</span>");
+    },
 });
 tooltip_save = document.querySelector("#savebutton i")._tippy;
 
@@ -104,7 +120,9 @@ tippy(".infSpreadTooltip", {
     appendTo: targetDialog,
     theme: "infTooltips",
     delay: [500, 0],
-    content: "Due to the weapon's minute of angle (MOA) imprecision and the length of the projectile, shots can spread in an elliptical pattern.",
+    onShow(tip) {
+        tip.setContent(i18next.t("tooltips:spreadDesc"));
+    },
 });
 
 const weaponDialog = document.getElementById("weaponInformation");
@@ -115,9 +133,11 @@ tippy(".infMOATooltip", {
     appendTo: weaponDialog,
     theme: "infTooltips",
     delay: [500, 0],
-
-    content: "A minute of angle (MOA) in artillery measures weapon imprecision, indicating the spread of shots. One MOA equals 1/60th of a degree.",
+    onShow(tip) {
+        tip.setContent(i18next.t("tooltips:moaDesc"));
+    },
 });
+
 tippy(".infVelocityTooltip", {
     animation: "fade",
     placement: "top",
@@ -125,9 +145,11 @@ tippy(".infVelocityTooltip", {
     appendTo: weaponDialog,
     theme: "infTooltips",
     delay: [500, 0],
-
-    content: "Muzzle velocity is the speed at which a projectile leaves the barrel of a gun, measured immediately upon exit. It affects the range, and accuracy the shot.",
+    onShow(tip) {
+        tip.setContent(i18next.t("tooltips:velocityDesc"));
+    },
 });
+
 tippy(".infHeightPaddingTooltip", {
     animation: "fade",
     placement: "top",
@@ -135,6 +157,7 @@ tippy(".infHeightPaddingTooltip", {
     appendTo: weaponDialog,
     theme: "infTooltips",
     delay: [500, 0],
-
-    content: "When placing the weapon above the ground (e.g., on buildings or bridges), use this field to specify the additional height.",
+    onShow(tip) {
+        tip.setContent(i18next.t("tooltips:heightPaddingDesc"));
+    },
 });

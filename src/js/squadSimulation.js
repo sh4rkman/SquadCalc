@@ -2,6 +2,7 @@ import targetIcon from "../img/icons/marker_target_enabled.webp";
 import targetIconDisabled from "../img/icons/marker_target_disabled.webp";
 import { degToRad } from "../js/utils.js";
 import { App } from "./conf.js";
+import i18next from "i18next";
 
 export default class Simulation {
 
@@ -28,11 +29,11 @@ export default class Simulation {
     }
 
     buildTables(){
-        this.div.find(".infBearing").first().text(this.firingSolution.bearing.toFixed(1)+"°");
-        this.div.find(".infDistance").first().text(this.firingSolution.distance.toFixed(1)+"m");
-        this.div.find(".infWHeight").first().text(this.firingSolution.weaponHeight.toFixed(1)+"m");
-        this.div.find(".infTHeight").first().text(this.firingSolution.targetHeight.toFixed(1)+"m");
-        this.div.find(".infDHeight").first().text(this.firingSolution.heightDiff.toFixed(1)+"m");
+        this.div.find(".infBearing").first().text(this.firingSolution.bearing.toFixed(1)+i18next.t("common:°"));
+        this.div.find(".infDistance").first().text(this.firingSolution.distance.toFixed(1)+i18next.t("common:m"));
+        this.div.find(".infWHeight").first().text(this.firingSolution.weaponHeight.toFixed(1)+i18next.t("common:m"));
+        this.div.find(".infTHeight").first().text(this.firingSolution.targetHeight.toFixed(1)+i18next.t("common:m"));
+        this.div.find(".infDHeight").first().text(this.firingSolution.heightDiff.toFixed(1)+i18next.t("common:m"));
 
         if (isNaN(this.firingSolution.elevation.high.rad)) {
             this.div.find(".infElevation").first().text("---");
@@ -41,20 +42,20 @@ export default class Simulation {
         } else {
 
             if (this.angleType === "high"){
-                this.div.find(".infTimeOfFlight").first().text(this.firingSolution.timeOfFlight.high.toFixed(1)+"s");
-                this.div.find(".infSpread").first().text("H:"+ this.firingSolution.spreadParameters.high.semiMajorAxis.toFixed(1) + "m V:"+ this.firingSolution.spreadParameters.high.semiMinorAxis.toFixed(1)+"m");
+                this.div.find(".infTimeOfFlight").first().text(this.firingSolution.timeOfFlight.high.toFixed(1)+i18next.t("common:s"));
+                this.div.find(".infSpread").first().text("H:"+ this.firingSolution.spreadParameters.high.semiMajorAxis.toFixed(1) + i18next.t("common:m") + " V:"+ this.firingSolution.spreadParameters.high.semiMinorAxis.toFixed(1) + i18next.t("common:m"));
                 if (App.activeWeapon.unit === "mil"){
                     this.div.find(".infElevation").first().text(this.firingSolution.elevation.high.mil.toFixed(1)+"mil");
                 } else {
-                    this.div.find(".infElevation").first().text(this.firingSolution.elevation.high.deg.toFixed(2)+"°");
+                    this.div.find(".infElevation").first().text(this.firingSolution.elevation.high.deg.toFixed(2)+i18next.t("common:°"));
                 }
             } else {
-                this.div.find(".infTimeOfFlight").first().text(this.firingSolution.timeOfFlight.low.toFixed(1)+"s");
-                this.div.find(".infSpread").first().text("H:"+ this.firingSolution.spreadParameters.low.semiMajorAxis.toFixed(1) + "m V:"+ this.firingSolution.spreadParameters.high.semiMinorAxis.toFixed(1)+"m");
+                this.div.find(".infTimeOfFlight").first().text(this.firingSolution.timeOfFlight.low.toFixed(1)+i18next.t("common:s"));
+                this.div.find(".infSpread").first().text("H:"+ this.firingSolution.spreadParameters.low.semiMajorAxis.toFixed(1) + i18next.t("common:m") + " V:"+ this.firingSolution.spreadParameters.high.semiMinorAxis.toFixed(1) + i18next.t("common:m"));
                 if (App.activeWeapon.unit === "mil"){
                     this.div.find(".infElevation").first().text(this.firingSolution.elevation.low.mil.toFixed(1)+"mil");
                 } else {
-                    this.div.find(".infElevation").first().text(this.firingSolution.elevation.low.deg.toFixed(2)+"°");
+                    this.div.find(".infElevation").first().text(this.firingSolution.elevation.low.deg.toFixed(2)+i18next.t("common:°"));
                 }
             }
         }
@@ -105,7 +106,7 @@ export default class Simulation {
         ctx.fillStyle = "#111";
         ctx.font = "14px Montserrat";
         for (let i= this.padding; i <this.canvas.width; i = i + step * this.xScaling){
-            ctx.fillText( ( (i - this.padding ) / this.xScaling ).toFixed(0) + "m", i+5, 20);
+            ctx.fillText( ( (i - this.padding ) / this.xScaling ).toFixed(0) + i18next.t("common:m"), i+5, 20);
         }
     
         // Flip it back

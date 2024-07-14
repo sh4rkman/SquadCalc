@@ -15,6 +15,7 @@
             "error",
             4
         ],
+        "no-compare-neg-zero": "off",
         "keyword-spacing": [
             "error",
             { "before": true }

@@ -5,7 +5,8 @@ import "select2/dist/css/select2.min.css";
 import "select2/dist/js/select2.min.js";
 import "animate.css";
 import "leaflet/dist/leaflet.css";
-//import "leaflet/dist/images/marker-shadow.png"; // fix
+
+
 
 // Local styles
 import "./css/styles.scss";
@@ -22,8 +23,10 @@ import { createLine, drawLine } from "./js/animations";
 import { loadSettings } from "./js/settings.js";
 import packageInfo from "../package.json";
 import "./js/listeners.js";
+import { loadLanguage } from "./js/localization.js";
 
 $(function() {
+    loadLanguage();
     loadSettings();
     createLine();
     loadMapSelector();
@@ -50,7 +53,7 @@ function loadMapSelector() {
     
     // load maps into select2
     MAPS.forEach(function(map, i) {
-        MAP_SELECTOR.append("<option value=\"" + i + "\">" + map.name + "</option>");
+        MAP_SELECTOR.append("<option data-i18n=maps:" +  map.name + " value=\"" + i + "\"></option>");
     });
 
 }
@@ -114,10 +117,10 @@ export function loadWeapons() {
     
 
     for (let i = 0; i < WEAPONSTYPE.length; i += 1) {
-        WEAPON_SELECTOR.append("<optgroup label=\"" + WEAPONSTYPE[i] + "\">");
+        WEAPON_SELECTOR.append("<optgroup data-i18n-label=\"weapons:" + WEAPONSTYPE[i] + "\">");
         for (let y = 0; y < WEAPONSLENGTH; y += 1) {
             if (WEAPONS[y].type === WEAPONSTYPE[i]) {
-                WEAPON_SELECTOR.append("<option value=\"" + y + "\">" + WEAPONS[y].name + "</option>");
+                WEAPON_SELECTOR.append("<option data-i18n=weapons:" + WEAPONS[y].name + " value=\"" + y + "\"></option>");
             }
         }
         WEAPON_SELECTOR.append("</optgroup>");
@@ -166,8 +169,6 @@ function getWeapon() {
 export function changeWeapon() {
     const WEAPON = $(".dropbtn2").val();
 
-
-
     App.line.hide("none");
     localStorage.setItem("data-weapon", WEAPON);
     App.activeWeapon = WEAPONS[WEAPON];
@@ -209,7 +210,6 @@ export function changeShell(shell){
         WEAPONS[6].shells[shell].damageFallOff,
         WEAPONS[6].shells[shell].explosionDistanceFromImpact, 
         25);
-
 }
 
 function loadMapUIMode(){
@@ -248,3 +248,14 @@ export function switchUI(){
         drawLine();
     }
 }
+
+
+
+
+
+
+$(".dropbtn4").select2({
+    dropdownCssClass: "dropbtn4",
+    dropdownParent: $("#helpDialog"),
+    minimumResultsForSearch: -1, // Disable search
+});
