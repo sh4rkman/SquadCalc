@@ -6,6 +6,8 @@
 
 <img src="https://img.shields.io/badge/-new-green"> Added Jensen's Range to map list
 
+<img src="https://img.shields.io/badge/-new-green"> Added the possibility to display height difference between weapon & target in target firing solution
+
 <img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed UB32 imprecision at high range (2050-2150m)
 
 <img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed a visual bug in map selector

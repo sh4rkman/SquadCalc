@@ -88,7 +88,6 @@ export function loadSettings(){
         $(".default").css("cursor", "crosshair");
         $(".crosshair").css("cursor", "crosshair");        
     }
-    updatePreview();
 }
 
 

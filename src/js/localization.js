@@ -1,21 +1,22 @@
 import i18next from "i18next";
 import HttpApi from "i18next-http-backend";
 import { App } from "./conf.js";
+import { updatePreview } from "./settings.js";
 
 function getLanguage(){
     const supportedLanguages = ["en", "ru", "zh", "fr", "uk"];
-    const languageCode = navigator.language.split("-")[0].toLowerCase();
+    const browserLanguage = navigator.language.split("-")[0].toLowerCase();
     var language = localStorage.getItem("settings-language");
 
     if (language === null || language === ""){
-        alert(languageCode);
-        if (supportedLanguages.includes(languageCode)) {
-            language = languageCode;
+        if (supportedLanguages.includes(browserLanguage)) {
+            language = browserLanguage;
         } else {
             language = "en";
         }
-        localStorage.setItem("settings-language", "en");
+        localStorage.setItem("settings-language", language);
     }
+
     $(".dropbtn4").val(language);
     $(".dropbtn4").trigger("change");
 }
@@ -39,24 +40,24 @@ function updateContent() {
     });
 
     App.minimap.updateTargets();
-    //updatePreview();
+    updatePreview();
 
     $(".dropbtn").select2("destroy").select2({
         dropdownCssClass: "dropbtn",
         dropdownParent: $("#mapSelector"),
-        minimumResultsForSearch: -1, // Disable search
+        minimumResultsForSearch: -1,
     });
 
     $(".dropbtn2").select2("destroy").select2({
         dropdownCssClass: "dropbtn",
         dropdownParent: $("#weaponSelector"),
-        minimumResultsForSearch: -1, // Disable search
+        minimumResultsForSearch: -1,
     });
 
     $(".dropbtn3").select2("destroy").select2({
         dropdownCssClass: "dropbtn",
         dropdownParent: $("#ammoSelector"),
-        minimumResultsForSearch: -1, // Disable search
+        minimumResultsForSearch: -1,
     });
 }
 
@@ -77,6 +78,6 @@ export function loadLanguage() {
     $(document).on("change", ".dropbtn4", function() { 
         i18next.changeLanguage(this.value, updateContent);
         localStorage.setItem("settings-language", this.value);
-        $('html').attr('lang', this.value);
+        $("html").attr("lang", this.value);
     });
 }
