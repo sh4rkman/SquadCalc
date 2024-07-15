@@ -4,6 +4,7 @@ import { App } from "./conf";
 import SquadSimulation from "./squadSimulation";
 import SquadFiringSolution from "./squadFiringSolution";
 import { isTouchDevice } from "./utils";
+import i18next from "i18next";
 
 import { 
     targetIcon1,
@@ -220,14 +221,14 @@ export var squadWeaponMarker = squadMarker.extend({
         if (App.activeWeapon.name === "M1064 M121") {
             name = name + " (" + $(".dropbtn3 option:selected" ).text() + ")";
         }  
-
-        $(".infName").first().text(name);
-        $(".infRange").first().text(App.activeWeapon.minDistance + "m - " + App.activeWeapon.maxDistance.toFixed(0) + "m");
-        $(".infMOA").first().text(App.activeWeapon.moa + " ("+ (App.activeWeapon.moa / 60).toFixed(1) +"°)");
-        $(".infMinDistance").first().text(App.activeWeapon.minDistance + "m");
-        $(".infMaxDistance").first().text(App.activeWeapon.maxDistance.toFixed(1) + "m");
-        $(".inf100damage").first().text(App.activeWeapon.hundredDamageRadius.toFixed(1) + "m");
-        $(".inf25damage").first().text(App.activeWeapon.twentyFiveDamageRadius.toFixed(1) + "m");
+        
+        $(".infName").first().text(i18next.t("weapons:"+name));
+        $(".infRange").first().text(App.activeWeapon.minDistance + i18next.t("common:m") + " - " + App.activeWeapon.maxDistance.toFixed(0) + i18next.t("common:m"));
+        $(".infMOA").first().text(App.activeWeapon.moa + " ("+ (App.activeWeapon.moa / 60).toFixed(1) + i18next.t("common:°") + ")");
+        $(".infMinDistance").first().text(App.activeWeapon.minDistance + i18next.t("common:m"));
+        $(".infMaxDistance").first().text(App.activeWeapon.maxDistance.toFixed(1) + i18next.t("common:m"));
+        $(".inf100damage").first().text(App.activeWeapon.hundredDamageRadius.toFixed(1) + i18next.t("common:m"));
+        $(".inf25damage").first().text(App.activeWeapon.twentyFiveDamageRadius.toFixed(1) + i18next.t("common:m"));
 
         if (["Mortar", "UB-32"].includes(App.activeWeapon.name)) {
             $("#angleChoice").hide();
@@ -235,10 +236,10 @@ export var squadWeaponMarker = squadMarker.extend({
             $("#angleChoice").show();
         }
         
-        if (["Tech. UB-32", "UB-32"].includes(App.activeWeapon.name)) {
+        if (["Tech.UB-32", "UB-32"].includes(App.activeWeapon.name)) {
             $(".infVelocity").first().text("300m/s");
         } else {
-            $(".infVelocity").first().text(App.activeWeapon.velocity + "m/s");
+            $(".infVelocity").first().text(App.activeWeapon.velocity + i18next.t("common:m") + "/" + i18next.t("common:s"));
         }
 
         // Angle
@@ -452,15 +453,19 @@ export var squadTargetMarker = squadMarker.extend({
     getContent: function(firingSolution, angleType){
         const DIST = firingSolution.distance;
         const BEARING = firingSolution.bearing;
+        var heightDiff = firingSolution.heightDiff.toFixed(0);
         var content;
         var elevation;
         var timeOfFlight;
 
+        if (Math.sign(heightDiff) === 1 || heightDiff == -0) {
+            heightDiff = "+" + Math.abs(heightDiff);
+        }
+
         if (angleType === "high"){
             elevation = firingSolution.elevation.high;
             timeOfFlight = firingSolution.timeOfFlight.high;
-        }
-        else {
+        } else {
             elevation = firingSolution.elevation.low;
             timeOfFlight = firingSolution.timeOfFlight.low;
         }
@@ -476,12 +481,12 @@ export var squadTargetMarker = squadMarker.extend({
         }
 
         if (isNaN(timeOfFlight)) { timeOfFlight = "---";} 
-        else { timeOfFlight = timeOfFlight.toFixed(1) + "s";}
+        else { timeOfFlight = timeOfFlight.toFixed(1) + i18next.t("common:s");}
         
         content = "<span class='calcNumber'></span></br><span>" + elevation + "</span>";
 
         if (App.userSettings.showBearing) {
-            content += "<br><span class='bearingUiCalc'>" +  BEARING.toFixed(1) + "° </span>";
+            content += "<br><span class='bearingUiCalc'>" +  BEARING.toFixed(1) + i18next.t("common:°") + "</span>";
         }
 
         if (App.userSettings.showTimeOfFlight) {
@@ -489,7 +494,11 @@ export var squadTargetMarker = squadMarker.extend({
         } 
 
         if (App.userSettings.showDistance) {
-            content += "<br><span class='bearingUiCalc'>" +  DIST.toFixed(0) + "m </span>";
+            content += "<br><span class='bearingUiCalc'>" +  DIST.toFixed(0) + i18next.t("common:m") + "</span>";
+        }
+
+        if (App.userSettings.showHeight) {
+            content += "<br><span class='bearingUiCalc'>" +  heightDiff + i18next.t("common:m") + "</span>";
         }
 
         return content;

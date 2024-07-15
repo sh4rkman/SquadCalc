@@ -78,7 +78,7 @@ export var WEAPONS = [
         damageFallOff: 1,
     },
     {
-        name: "Hell Cannon",
+        name: "HellCannon",
         velocity: 95,
         gravityScale: 1,
         minElevation: [10, 85],
@@ -97,7 +97,7 @@ export var WEAPONS = [
         damageFallOff: 1,
     },
     {
-        name: "Tech. Mortar",
+        name: "Tech.Mortar",
         velocity: 110,
         gravityScale: 1,
         minElevation: [-45, 135],
@@ -116,7 +116,7 @@ export var WEAPONS = [
         damageFallOff: 7,
     },
     {
-        name: "Tech. UB-32",
+        name: "Tech.UB-32",
         velocity: UB32_table,
         gravityScale: 2,
         minElevation: [-45, 135],
@@ -135,7 +135,7 @@ export var WEAPONS = [
         damageFallOff: 1,
     },
     {
-        name: "BM-21 Grad",
+        name: "BM-21Grad",
         velocity: 200,
         gravityScale: 2,
         minElevation: [-45, 135],
@@ -154,7 +154,7 @@ export var WEAPONS = [
         damageFallOff: 1,
     },
     {
-        name: "M1064 M121",
+        name: "M1064M121",
         velocity: 142,
         gravityScale: 1,
         minElevation: [45, 85.3],

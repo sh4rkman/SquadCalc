@@ -1,6 +1,6 @@
 export const MAPS = [
     { 
-        name: "Al Basrah", 
+        name: "AlBasrah", 
         size: 3040, // OK
         offset: [0, 0],
         scaling: 0.01294, // OK
@@ -24,7 +24,7 @@ export const MAPS = [
         maxZoomLevel: 4,
     },
     { 
-        name: "Black Coast", 
+        name: "BlackCoast", 
         size: 4600, // OK but not what mapdata gave us. Maybe because of x scaling?
         offset: [0, 0], 
         scaling: 0.35, 
@@ -48,7 +48,7 @@ export const MAPS = [
         maxZoomLevel: 4,
     },
     { 
-        name: "Fool's Road",
+        name: "FoolsRoad",
         size: 1774, // OK
         offset: [0, 0], 
         scaling: 0.21600000000000003,
@@ -56,7 +56,7 @@ export const MAPS = [
         maxZoomLevel: 4,
     },
     { 
-        name: "Goose Bay", 
+        name: "GooseBay", 
         size: 4031, // OK
         offset: [0, 0], 
         scaling: 0.22064, // OK

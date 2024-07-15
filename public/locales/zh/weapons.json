@@ -1,0 +1,13 @@
+{
+    "deployables": "可部署装备",
+        "Mortar": "迫击炮",
+        "UB-32": "UB-32",
+        "HellCannon": "地狱加农炮",
+    "vehicles": "车辆",
+        "Tech.Mortar": "技术迫击炮",
+        "Tech.UB-32": "技术UB-32",
+        "BM-21Grad": "BM-21 Grad",
+        "M1064M121": "M1064 M121",
+            "impact": "影响",
+            "nearSurface": "近地表"
+}

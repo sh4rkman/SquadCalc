@@ -1,0 +1,17 @@
+{
+    "basemode": "Carte de base",
+    "terrainmode": "Carte de reliefs",
+    "topographicmode": "Carte topographique",
+    "deleteTargets": "Supprimer toutes les cibles",
+    "bearing": "Direction",
+    "whereToAim": "(où viser)",
+    "elevation": "Elévation",
+    "howFar": "(A quelle distance ça tirera)",
+    "save": "Sauvegarder",
+    "copied": "Copié !",
+    "resultLater": "(les résultats pour plus tard)",
+    "spreadDesc": "En raison de l'imprécision de la minute d'angle (MOA) de l'arme et de la longueur du projectile, les tirs peuvent se disperser selon un schéma elliptique.",
+    "moaDesc": "Une minute d'angle (MOA) en artillerie mesure l'imprécision de l'arme, indiquant la dispersion des tirs. Une MOA équivaut à 1/60e de degré.",
+    "velocityDesc": "La vélocité est la vitesse à laquelle un projectile quitte le canon d'une arme à feu, mesurée immédiatement après sa sortie. Elle affecte la portée et la précision du tir.",
+    "heightPaddingDesc": "Si l'arme est installé plus haut que le sol (par exemple, sur des bâtiments ou des ponts), utilisez ce champ pour spécifier la hauteur supplémentaire."
+}

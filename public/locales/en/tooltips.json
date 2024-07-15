@@ -1,0 +1,17 @@
+{
+    "basemode": "Base Map",
+    "terrainmode": "Terrain Map",
+    "topographicmode": "Topographic Map",
+    "deleteTargets": "Delete all targets",
+    "bearing": "Bearing",
+    "whereToAim": "(where to aim)",
+    "elevation": "elevation",
+    "howFar": "(how far it will shoot)",
+    "save": "Save",
+    "copied": "Copied !",
+    "resultLater": "(the results for later)",
+    "spreadDesc": "Due to the weapon's minute of angle (MOA) imprecision and the length of the projectile, shots can spread in an elliptical pattern.",
+    "moaDesc": "A minute of angle (MOA) in artillery measures weapon imprecision, indicating the spread of shots. One MOA equals 1/60th of a degree.",
+    "velocityDesc": "Muzzle velocity is the speed at which a projectile leaves the barrel of a gun, measured immediately upon exit. It affects the range, and accuracy the shot.",
+    "heightPaddingDesc": "When placing the weapon above the ground (e.g., on buildings or bridges), use this field to specify the additional height."
+}

@@ -1,0 +1,21 @@
+{
+    "SettingsTitle": "设置",
+    "mapOptions": "地图选项",
+        "showGrid": "显示网格",
+        "showKeypad": "在光标下显示键盘",
+        "showMaxRange": "显示武器最小/最大射程",
+        "useClassicCursor": "使用经典光标",
+    "targetOptions": "目标选项",
+        "showSpread": "显示散布半径",
+        "showDamage": "显示100和25的伤害半径",
+        "showAnimations": "显示动画",
+        "showBearing": "显示方位",
+        "showDistance": "显示距离",
+        "showTimeOfFlight": "显示飞行时间",
+        "showHeightDiff": "显示高度差",
+    "preview": "预览",
+    "changelog": "更新日志",
+    "github": "在GitHub上查看代码",
+    "youtube": "观看我的视频！",
+    "bug": "报告问题"
+}

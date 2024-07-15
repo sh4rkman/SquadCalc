@@ -1,0 +1,17 @@
+{
+    "basemode": "基础地图",
+    "terrainmode": "地形地图",
+    "topographicmode": "地形图",
+    "deleteTargets": "删除所有目标",
+    "bearing": "方位",
+    "whereToAim": "瞄准位置",
+    "elevation": "海拔",
+    "howFar": "射程多远",
+    "save": "保存",
+    "copied": "复制成功！",
+    "resultLater": "结果稍后",
+    "spreadDesc": "由于武器的角分 (MOA) 不精确性和弹道长度，射击会在椭圆形的模式下散布。",
+    "moaDesc": "角分 (MOA) 在炮兵中衡量武器的不精确性，表示射击的散布范围。一个角分等于一度的 1/60。",
+    "velocityDesc": "枪口初速是指弹丸离开枪管时的速度，测量它的即时速度。它影响射程和准确性。",
+    "heightPaddingDesc": "当将武器放置在地面以上时（例如在建筑物或桥梁上），使用此字段指定额外的高度。"
+}

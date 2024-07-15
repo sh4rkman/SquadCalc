@@ -1,0 +1,21 @@
+{
+    "SettingsTitle": "Settings",
+    "mapOptions": "Map Options",
+        "showGrid": "Show Grid",
+        "showKeypad": "Show Keypads under Cursor",
+        "showMaxRange": "Show Weapon Min/Max Range",
+        "useClassicCursor": "Use Classic Cursor",
+    "targetOptions": "Targets Options",
+        "showSpread": "Show Spread Radius",
+        "showDamage": "Show 100 & 25 Damage Radius",
+        "showAnimations": "Show Animations",
+        "showBearing": "Show Bearing",
+        "showDistance": "Show Distance",
+        "showTimeOfFlight": "Show Time of Flight",
+        "showHeightDiff": "Show Height Difference",
+    "preview": "Preview",
+    "changelog": "ChangeLog",
+    "github": "View code on Github",
+    "youtube": "Watch my videos!",
+    "bug": "Report a bug"
+}

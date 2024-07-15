@@ -1,5 +1,6 @@
 import { App } from "./conf";
 import { tooltip_coordPreview } from "./tooltips.js";
+import i18next from "i18next";
 
 /* eslint no-unused-vars: "off" */
 import speadIcon from "../img/icons/spread.png";
@@ -51,6 +52,9 @@ export function loadSettings(){
     App.userSettings.damageRadius = loadLocalSetting("settings-damage-radius", 0);
     $("#damageRadiusSetting").prop("checked", App.userSettings.damageRadius);
 
+    App.userSettings.showHeight = loadLocalSetting("settings-show-height", 0);
+    $("#heightSetting").prop("checked", App.userSettings.showHeight);
+
     App.userSettings.targetAnimation = loadLocalSetting("settings-target-animation");
     $("#targetAnimationSettings").prop("checked", App.userSettings.targetAnimation);
 
@@ -84,11 +88,10 @@ export function loadSettings(){
         $(".default").css("cursor", "crosshair");
         $(".crosshair").css("cursor", "crosshair");        
     }
-    updatePreview();
 }
 
 
-function updatePreview(){
+export function updatePreview(){
     var subtextContent;
 
     if (App.userSettings.spreadRadius){
@@ -112,13 +115,16 @@ function updatePreview(){
     subtextContent = "<span>1345</span><br>";
 
     if (App.userSettings.showBearing){ 
-        subtextContent += "<span class=\"bearingPreview\">241.5°</span><br>";
+        subtextContent += "<span class=\"bearingPreview\">241.5" + i18next.t("common:°") +"</span><br>";
     } 
     if (App.userSettings.showTimeOfFlight){
-        subtextContent += "<span class=\"bearingPreview\">20.1s</span><br>";
+        subtextContent += "<span class=\"bearingPreview\">20.1" + i18next.t("common:s") +" </span><br>";
     } 
     if (App.userSettings.showDistance){ 
-        subtextContent += "<span class=\"bearingPreview\">1145m</span><br>";
+        subtextContent += "<span class=\"bearingPreview\">1145" + i18next.t("common:m") + "</span><br>";
+    }
+    if (App.userSettings.showHeight){ 
+        subtextContent += "<span class=\"bearingPreview\">+19" + i18next.t("common:m") +"</span><br>";
     } 
 
     $("#textPreview").html(subtextContent);
@@ -191,6 +197,22 @@ $("#damageRadiusSetting").on("change", function() {
     App.minimap.updateTargetsSpreads(); // Update every targets to add/remove spread radius
     updatePreview();
 });
+
+
+$("#heightSetting").on("change", function() {
+    if ($("#heightSetting").is(":checked")) {
+        App.userSettings.showHeight = 1;
+        localStorage.setItem("settings-show-height", 1);
+    }
+    else {
+        App.userSettings.showHeight = 0;
+        localStorage.setItem("settings-show-height", 0);
+    }
+
+    App.minimap.updateTargets();
+    updatePreview();
+});
+
 
 $("#weaponRangeSettings").on("change", function() {
     var val =  $("#weaponRangeSettings").is(":checked");

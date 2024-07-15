@@ -2,6 +2,7 @@ import { shoot, filterInput, resizeInput, resizeInputsOnResize, RemoveSaves, cop
 import { changeWeapon, changeShell, switchUI, } from "../app"; 
 import { App } from "./conf";
 import { MAPS } from "../data/maps";
+import { updatePreview } from "./settings";
 
 $(document).on("change", ".dropbtn3", function() { 
     changeShell(this.value);
@@ -29,7 +30,10 @@ $(document).on("click", "#copy", function(e) { copyCalc(e); });
 $(document).on("click", "#highlow .active", function() { changeHighLow(); });
 $(document).on("click", function(event) {if (!$(event.target).closest(".fab-wrapper").length) {$("#fabCheckbox").prop("checked", false);}});
 $(document).on("click", "#fabCheckbox2", function() {switchUI();});
-$(document).on("click", "#fabCheckbox", function() {$("#helpDialog")[0].showModal();});
+$(document).on("click", "#fabCheckbox", function() {
+    updatePreview();
+    $("#helpDialog")[0].showModal();
+});
 $(document).on("click", ".btn-delete", function() { App.minimap.deleteTargets();});
 
 $(window).on("resize", function() { resizeInputsOnResize(); });
