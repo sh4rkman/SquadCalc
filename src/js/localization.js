@@ -3,32 +3,64 @@ import HttpApi from "i18next-http-backend";
 import { App } from "./conf.js";
 import { updatePreview } from "./settings.js";
 
+
+/**
+ * Update every label with the correct localization text
+ */
+export function loadLanguage() {
+    i18next.use(HttpApi).init({
+        lng: "en",
+        fallbackLng: ["en"],
+        ns: ["tooltips","settings", "maps", "weapons", "common"],
+        debug: false,
+        backend: {
+            loadPath: "./locales/{{lng}}/{{ns}}.json",
+        }
+    }, function(err) {
+        if (err) return console.error(err);
+        getLanguage();
+    });
+
+    $(document).on("change", ".dropbtn4", function() { 
+        i18next.changeLanguage(this.value, updateContent);
+        localStorage.setItem("settings-language", this.value);
+        $("html").attr("lang", this.value);
+    });
+}
+
+/**
+ * Find what language to use
+ * Priority Order : LocalStorage > navigator.language > English
+ */
 function getLanguage(){
     const supportedLanguages = ["en", "ru", "zh", "fr", "uk"];
     const browserLanguage = navigator.language.split("-")[0].toLowerCase();
     var language = localStorage.getItem("settings-language");
 
+    // If nothing in localstorage, try to find what language navigator is using
     if (language === null || language === ""){
         if (supportedLanguages.includes(browserLanguage)) {
             language = browserLanguage;
         } else {
+            // language not supported, set default to english
             language = "en";
         }
         localStorage.setItem("settings-language", language);
     }
 
-    $(".dropbtn4").val(language);
-    $(".dropbtn4").trigger("change");
+    $(".dropbtn4").val(language).trigger("change");
 }
 
-
+/**
+ * Update every label with the correct localization text
+ */
 function updateContent() {
-    document.querySelectorAll("[data-i18n]").forEach(element => {
-        const key = element.getAttribute("data-i18n");
-        element.textContent = i18next.t(key);
-    });
-
-    document.querySelectorAll("[data-i18n-title], [data-i18n-label], [data-i18n-aria-label], [data-i18n-alt]").forEach(element => {
+    document.querySelectorAll("[data-i18n], [data-i18n-title], [data-i18n-content], [data-i18n-label], [data-i18n-aria-label], [data-i18n-alt]").forEach(element => {
+        if (element.hasAttribute("data-i18n")) {
+            const key = element.getAttribute("data-i18n");
+            element.textContent = i18next.t(key);
+        }
+        
         Array.from(element.attributes).forEach(attribute => {
             if (attribute.name.startsWith("data-i18n-")) {
                 const key = attribute.value;
@@ -58,26 +90,5 @@ function updateContent() {
         dropdownCssClass: "dropbtn",
         dropdownParent: $("#ammoSelector"),
         minimumResultsForSearch: -1,
-    });
-}
-
-export function loadLanguage() {
-    i18next.use(HttpApi).init({
-        lng: "en",
-        fallbackLng: ["en"],
-        ns: ["tooltips","settings", "maps", "weapons", "common"],
-        debug: false,
-        backend: {
-            loadPath: "./locales/{{lng}}/{{ns}}.json",
-        }
-    }, function(err) {
-        if (err) return console.error(err);
-        getLanguage();
-    });
-
-    $(document).on("change", ".dropbtn4", function() { 
-        i18next.changeLanguage(this.value, updateContent);
-        localStorage.setItem("settings-language", this.value);
-        $("html").attr("lang", this.value);
     });
 }
