@@ -2,6 +2,7 @@
     "squad": "SQUAD",
     "calc": "CALC",
     "squadcalc": "SquadCalc",
+    "desc": "Un calculateur de mortier complet pour SQUAD !",
     "weaponInf": "Informations sur l'arme",
         "name": "Nom",
         "range": "Portée",

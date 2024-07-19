@@ -1,3 +1,15 @@
+# <img src="https://img.shields.io/badge/-major%20release-blue?style=flat-square">   **28.0.1** *(2024-07-16)*
+
+<img src="https://img.shields.io/badge/-%20fix%20-orange"> Now avoid loading english translations if another language is set
+
+<img src="https://img.shields.io/badge/-%20fix%20-orange"> Damage spreads now correctly disappear when target is out of range and spread radius is off
+
+<img src="https://img.shields.io/badge/-%20Improv%20-orange"> Now translating site description for search engines
+
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
+
 # <img src="https://img.shields.io/badge/-major%20release-blue?style=flat-square">   **28.0.0** *(2024-07-16)*
 
 <img src="https://img.shields.io/badge/-new-green"> Added Chinese, Ukrainian, Russian, French language

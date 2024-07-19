@@ -556,9 +556,8 @@ export var squadTargetMarker = squadMarker.extend({
         var baseRadiiY = this.spreadMarker1.getRadius().y;
         var baseBearing = 0;
 
-        // If user didn't activate splash, or selected UB32 
-        // (until i figure out how S5 rockets explosions work)
-        if (isNaN(RADIUS100) || !App.userSettings.damageRadius) {
+        // If user didn't activate damage radius
+        if (!App.userSettings.damageRadius) {
             this.hundredDamageRadius.setStyle(this.spreadOptionsOff);
             this.twentyFiveDamageRadius.setStyle(this.spreadOptionsOff);
             return;
@@ -567,9 +566,7 @@ export var squadTargetMarker = squadMarker.extend({
         if (App.userSettings.spreadRadius){
 
             if (this.map.activeWeaponsMarkers.getLayers().length == 2) {
-                // If there is two weapon, just draw a circle around with the biggest radius found in the spreads
-                // Not perfectly accurate but that will do
-                
+
                 if (isNaN(this.firingSolution1.elevation.high.rad) && isNaN(this.firingSolution2.elevation.high.rad)) {
                     this.hundredDamageRadius.setStyle(this.spreadOptionsOff);
                     this.twentyFiveDamageRadius.setStyle(this.spreadOptionsOff);
@@ -585,9 +582,12 @@ export var squadTargetMarker = squadMarker.extend({
                     baseRadiiY = this.spreadMarker1.getRadius().y;
                     baseBearing = this.firingSolution1.bearing;
                 } else {
+                    // If there is two firing solutions, just draw a circle with the biggest radius found in the spreads
+                    // Not perfectly accurate but that will do
                     baseRadiiX = Math.max(this.spreadMarker1.getRadius().x, this.spreadMarker2.getRadius().x, this.spreadMarker1.getRadius().y, this.spreadMarker2.getRadius().y);
                     baseRadiiY = baseRadiiX;
                 }
+
             } else {
                 if (isNaN(this.firingSolution1.elevation.high.rad)) {
                     this.hundredDamageRadius.setStyle(this.spreadOptionsOff);
@@ -602,6 +602,21 @@ export var squadTargetMarker = squadMarker.extend({
             this.hundredDamageRadius.setRadius([baseRadiiX + RADIUS100, baseRadiiY + RADIUS100]);
             this.twentyFiveDamageRadius.setRadius([baseRadiiX + RADIUS25, baseRadiiY + RADIUS25]);
         } else {
+
+            if (this.map.activeWeaponsMarkers.getLayers().length == 2) {
+                if (isNaN(this.firingSolution1.elevation.high.rad) && isNaN(this.firingSolution2.elevation.high.rad)) {
+                    this.hundredDamageRadius.setStyle(this.spreadOptionsOff);
+                    this.twentyFiveDamageRadius.setStyle(this.spreadOptionsOff);
+                    return;
+                }
+            } else {
+                if (isNaN(this.firingSolution1.elevation.high.rad)) {
+                    this.hundredDamageRadius.setStyle(this.spreadOptionsOff);
+                    this.twentyFiveDamageRadius.setStyle(this.spreadOptionsOff);
+                    return;
+                }
+            }
+
             this.hundredDamageRadius.setRadius([RADIUS100, RADIUS100]);
             this.twentyFiveDamageRadius.setRadius([RADIUS25, RADIUS25]);
         }
