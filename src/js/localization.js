@@ -9,8 +9,7 @@ import { updatePreview } from "./settings.js";
  */
 export function loadLanguage() {
     i18next.use(HttpApi).init({
-        lng: "en",
-        fallbackLng: ["en"],
+        fallbackLng: false,
         ns: ["tooltips","settings", "maps", "weapons", "common"],
         debug: false,
         backend: {
