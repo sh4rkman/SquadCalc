@@ -1,10 +1,18 @@
-# <img src="https://img.shields.io/badge/-major%20release-blue?style=flat-square">   **28.0.1** *(2024-07-16)*
+# <img src="https://img.shields.io/badge/-major%20release-blue?style=flat-square">   **28.0.2** *(2024-07-25)*
+
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Corrected Chinese translations (thanks @peter5he1by !)
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
+
+
+# <img src="https://img.shields.io/badge/-major%20release-blue?style=flat-square">   **28.0.1** *(2024-07-19)*
 
 <img src="https://img.shields.io/badge/-%20fix%20-orange"> Now avoid loading english translations if another language is set
 
 <img src="https://img.shields.io/badge/-%20fix%20-orange"> Damage spreads now correctly disappear when target is out of range and spread radius is off
 
-<img src="https://img.shields.io/badge/-%20Improv%20-orange"> Now translating site description for search engines
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Now translating site description for search engines
 
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
@@ -34,7 +42,7 @@
 # <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">   **27.1.0** *(2024-07-11)*
 
 
-<img src="https://img.shields.io/badge/-%20Improv%20-orange"> Damage radius now take into account the height of the explosion. Mostly impact M121 proximity rounds that explode at 10m from the ground, resulting on a much smaller kill zone.
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Damage radius now take into account the height of the explosion. Mostly impact M121 proximity rounds that explode at 10m from the ground, resulting on a much smaller kill zone.
 
 <img src="https://img.shields.io/badge/-%20fix%20-orange"> UB-32 & Technical UB-32 now have their own damage radius
 
@@ -58,11 +66,11 @@
 
 <img src="https://img.shields.io/badge/-new-green"> Weapon splash damage ! Jump into settings to active target radius for 100 & 25 damage range.
 
-<img src="https://img.shields.io/badge/-%20Improv%20-orange"> In simulation dialog, targets now use a grey/disabled version if there is no firing solution
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> In simulation dialog, targets now use a grey/disabled version if there is no firing solution
 
-<img src="https://img.shields.io/badge/-%20Improv%20-orange"> Reworked settings on two columns on large screen
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Reworked settings on two columns on large screen
 
-<img src="https://img.shields.io/badge/-%20Improv%20-orange"> **Lot** of code rewriting
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> **Lot** of code rewriting
 
 
 
@@ -101,11 +109,11 @@
 
 <img src="https://img.shields.io/badge/-%20fix%20-orange"> Changed M121 Velocity and MOA to 8.1 hotfix
 
-<img src="https://img.shields.io/badge/-%20Improv%20-orange"> Renamed M1064 120mm to M1064-M121
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Renamed M1064 120mm to M1064-M121
 
-<img src="https://img.shields.io/badge/-%20Improv%20-orange"> SquadCalc now load a random map at first launch instead of a the same default map
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> SquadCalc now load a random map at first launch instead of a the same default map
 
-<img src="https://img.shields.io/badge/-%20Improv%20-orange"> Advanced Informations now displays elevation up to two decimals for weapons using degrees
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Advanced Informations now displays elevation up to two decimals for weapons using degrees
 
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
@@ -122,7 +130,7 @@
 
 # <img src="https://img.shields.io/badge/-major%20release-blue?style=flat-square">  **25.0.1** *(2024-06-12)*
 
-<img src="https://img.shields.io/badge/-%20Improv%20-orange">  Added minimum range for M1064-A3
+<img src="https://img.shields.io/badge/-%20improv%20-orange">  Added minimum range for M1064-A3
 
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
@@ -140,9 +148,9 @@
 
 <img src="https://img.shields.io/badge/-%20fix%20-orange"> fixed dead pixels on Kohat heightmap (thanks zfzr031 !)
 
-<img src="https://img.shields.io/badge/-%20Improv%20-orange"> Scaled down Kohat heightmap
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Scaled down Kohat heightmap
 
-<img src="https://img.shields.io/badge/-%20Improv%20-orange"> Code rewritting and three-shaking
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Code rewritting and three-shaking
 
 
 
@@ -216,11 +224,11 @@
 
 <img src="https://img.shields.io/badge/-new-green"> **Calc Information** ! You can know clic a target to see advanced informations and previsualize the terrain between weapon and target, and if the projectile is going to hit terrain.
 
-<img src="https://img.shields.io/badge/-%20Improv%20-orange"> Reworked the layer picking buttons
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Reworked the layer picking buttons
 
-<img src="https://img.shields.io/badge/-%20Improv%20-orange"> Disabled target updating while dragging on mobile to avoid sluttering
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Disabled target updating while dragging on mobile to avoid sluttering
 
-<img src="https://img.shields.io/badge/-%20Improv%20-orange"> Lot of code rewriting
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Lot of code rewriting
 
 
 
@@ -246,7 +254,7 @@
 
 <img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed a bug that prevented from placing markers near the bottom of the page
 
-<img src="https://img.shields.io/badge/-%20Improv%20-orange"> improved font caching/loading for faster experience (Largest Contentuful Paint went from 1.1s to 0.8s, and First Contentful Paint from 0.7s to 0.3s !)
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> improved font caching/loading for faster experience (Largest Contentuful Paint went from 1.1s to 0.8s, and First Contentful Paint from 0.7s to 0.3s !)
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
 
@@ -278,7 +286,7 @@
 
 # <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">   **20.6.0** *(2024-03-29)*
 
-<img src="https://img.shields.io/badge/-%20Improv%20-orange"> SquadCalc is now using [ServiceWorker](https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API) to load maps faster, and store itself offline
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> SquadCalc is now using [ServiceWorker](https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API) to load maps faster, and store itself offline
 
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
@@ -314,13 +322,13 @@
 
 # <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">   **20.3.0** *(2024-03-22)*
 
-<img src="https://img.shields.io/badge/-%20Improv%20-orange"> Falling back to 256px tiles
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Falling back to 256px tiles
 
-<img src="https://img.shields.io/badge/-%20Improv%20-orange"> Updated Kokan minimap
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Updated Kokan minimap
 
-<img src="https://img.shields.io/badge/-%20Improv%20-orange"> Updated AlBasrah Heightmap
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Updated AlBasrah Heightmap
 
-<img src="https://img.shields.io/badge/-%20Improv%20-orange"> Reworked FavIcons/PWA Manifest
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Reworked FavIcons/PWA Manifest
 
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
@@ -331,9 +339,9 @@
 
 # <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">   **20.1.0** *(2024-03-19)*
 
-<img src="https://img.shields.io/badge/-%20Improv%20-orange"> Converted markers to .webp format
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Converted markers to .webp format
 
-<img src="https://img.shields.io/badge/-%20Improv%20-orange"> Converted heightmaps to .webp format
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Converted heightmaps to .webp format
 
 <img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed -again- slight borders appearing between tiles when moving map on chromium (still visible but barely)
 
@@ -348,11 +356,11 @@
 
 <img src="https://img.shields.io/badge/-new-green"> Now using 512px*512px .WEBP images for tiles, instead of 256px*256px .JPG, thus only using 8% more bandwitch on average.
 
-<img src="https://img.shields.io/badge/-%20Improv%20-orange"> Reduced grid thickness at lower zoom level
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Reduced grid thickness at lower zoom level
 
-<img src="https://img.shields.io/badge/-%20Improv%20-orange"> Default map is now Chora (new Basrah is ugly af)
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Default map is now Chora (new Basrah is ugly af)
 
-<img src="https://img.shields.io/badge/-%20Improv%20-orange"> Reduced Javascript bundles size for faster load
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Reduced Javascript bundles size for faster load
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
 
@@ -362,7 +370,7 @@
 
 <img src="https://img.shields.io/badge/-new-green"> Updated AlBasrah, Belaya and Kokan maps according to Squad 7.2 update
 
-<img src="https://img.shields.io/badge/-%20Improv%20-orange"> Disabled cursor choice on mobile
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Disabled cursor choice on mobile
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
 
@@ -382,7 +390,7 @@
 
 # <img src="https://img.shields.io/badge/-major%20release-blue?style=flat-square">  **17.0.0** *(2024-03-01)*
 
-<img src="https://img.shields.io/badge/-%20Improv%20-orange"> Dispersion calculations are now calculated according to ingame/real life physics and not just estimated. They should be more accurate. Thanks to Moleman for his help understanding the formulas, check [his guide](https://steamcommunity.com/sharedfiles/filedetails/?l=english&id=3118256939&searchtext=Cerca+tra+le+guide+di+Squad) on mortars btw.
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Dispersion calculations are now calculated according to ingame/real life physics and not just estimated. They should be more accurate. Thanks to Moleman for his help understanding the formulas, check [his guide](https://steamcommunity.com/sharedfiles/filedetails/?l=english&id=3118256939&searchtext=Cerca+tra+le+guide+di+Squad) on mortars btw.
 
 <img src="https://img.shields.io/badge/-new-green"> Now displaying dispersion for UB32 weapon/deployable
 
@@ -416,9 +424,9 @@
 
 <img src="https://img.shields.io/badge/-%20fix%20-orange"> Enable calc text zoomanimation so it doesn't "jump" on the map while zooming/unzooming
 
-<img src="https://img.shields.io/badge/-%20Improv%20-orange"> Map can now be unzoom further away, allowing to see whole map on mobile/small device
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Map can now be unzoom further away, allowing to see whole map on mobile/small device
 
-<img src="https://img.shields.io/badge/-%20Improv%20-orange"> Re-enabled map-tile buffering : when idle on the map, tiles ouside of view are loading in background to avoid tiles appearing while panning
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Re-enabled map-tile buffering : when idle on the map, tiles ouside of view are loading in background to avoid tiles appearing while panning
 
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
@@ -435,7 +443,7 @@
 
 <img src="https://img.shields.io/badge/-new-green"> Added a new "Shortcuts" in the settings dialog to display how to use the map mode
 
-<img src="https://img.shields.io/badge/-%20Improv%20-orange"> Added a slight shadow outline on target markers so they are easier to see on red-ish background or on top of another marker
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Added a slight shadow outline on target markers so they are easier to see on red-ish background or on top of another marker
 
 <img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed image being cached improperly
 
@@ -449,11 +457,11 @@
 
 <img src="https://img.shields.io/badge/-new-green"> Added a new setting to replace bearing (°) with distance to target (m) on map mode's targets.
 
-<img src="https://img.shields.io/badge/-%20Improv%20-orange"> Settings background is now more constrasted, specially in classic mode.
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Settings background is now more constrasted, specially in classic mode.
 
-<img src="https://img.shields.io/badge/-%20Improv%20-orange"> Moved "show markers animations" to the Performance category in settings
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Moved "show markers animations" to the Performance category in settings
 
-<img src="https://img.shields.io/badge/-%20Improv%20-orange"> Reduced switchmode/settings buttons on mobile
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Reduced switchmode/settings buttons on mobile
 
 <img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed UB32 being inaccurate between 1500-1600m, thanks @Butterhead98 ([#102](https://github.com/sh4rkman/SquadCalc/issues/102))
 
@@ -475,11 +483,11 @@
 
 <img src="https://img.shields.io/badge/-new-green"> New icon for targets markers
 
-<img src="https://img.shields.io/badge/-%20Improv%20-orange"> Grid have been reworked to be less blurry at every zoom level
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Grid have been reworked to be less blurry at every zoom level
 
-<img src="https://img.shields.io/badge/-%20Improv%20-orange"> now buffering grid outside of view to avoid entire parts of maps without grid while panning
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> now buffering grid outside of view to avoid entire parts of maps without grid while panning
 
-<img src="https://img.shields.io/badge/-%20Improv%20-orange"> now buffering map tiles outside of view to avoid appearing tiles while panning
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> now buffering map tiles outside of view to avoid appearing tiles while panning
 
 <img src="https://img.shields.io/badge/-%20removed%20-red"> Themes have been removed for now, maybe to return later in another form.
 
@@ -494,7 +502,7 @@
 
 <img src="https://img.shields.io/badge/-new-green"> You can now place up to two weapons on the map (CTRL+doubleclick)
 
-<img src="https://img.shields.io/badge/-%20Improv%20-orange"> Reduced target marker size
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Reduced target marker size
 
 <img src="https://img.shields.io/badge/-%20fix%20-orange"> The switchmode icon is now correctly centered ([#101](https://github.com/sh4rkman/SquadCalc/issues/101))
 
@@ -508,9 +516,9 @@
 
 # <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">  **13.0.1** *(2023-11-22)*
 
-<img src="https://img.shields.io/badge/-%20Improv%20-orange"> Markers now cannot be placed/dragged outside of map ([#98](https://github.com/sh4rkman/SquadCalc/issues/98))
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Markers now cannot be placed/dragged outside of map ([#98](https://github.com/sh4rkman/SquadCalc/issues/98))
 
-<img src="https://img.shields.io/badge/-%20Improv%20-orange">A map (al basrah) is selected by default (legacy/mapmode) ([#93](https://github.com/sh4rkman/SquadCalc/issues/93))
+<img src="https://img.shields.io/badge/-%20improv%20-orange">A map (al basrah) is selected by default (legacy/mapmode) ([#93](https://github.com/sh4rkman/SquadCalc/issues/93))
 
 <img src="https://img.shields.io/badge/-%20fix%20-orange"> Grid is now fully covering the map ([#92](https://github.com/sh4rkman/SquadCalc/issues/92))
 
@@ -541,7 +549,7 @@
 
 # <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">  **12.1.2** *(2023-11-04)*
 
-<img src="https://img.shields.io/badge/-%20Improv%20-orange"> Bottom-right menu now autoclose when clicking elsewhere in the window
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Bottom-right menu now autoclose when clicking elsewhere in the window
 
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
@@ -568,9 +576,9 @@
 
 <img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed an issue where the tooltip encouraging clicking the results to copy them was covering the target input on mobile with on-screen keyboard open. Tooltip is now hidden on mobile
 
-<img src="https://img.shields.io/badge/-%20Improv%20-orange"> Implementated an automated testing tool to detect issues and test on various browswers
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Implementated an automated testing tool to detect issues and test on various browswers
 
-<img src="https://img.shields.io/badge/-%20Improv%20-orange"> Various code refactor & rework
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Various code refactor & rework
 
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
@@ -646,7 +654,7 @@
 
 <img src="https://img.shields.io/badge/-new-green"> aded UB-32 suport
 
-<img src="https://img.shields.io/badge/-%20Improv%20-orange"> HellCannon and technical mortar are now using the standard projectile motion formula instead of estimated calculations on ingame table
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> HellCannon and technical mortar are now using the standard projectile motion formula instead of estimated calculations on ingame table
 
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
