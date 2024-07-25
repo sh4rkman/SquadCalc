@@ -1,7 +1,7 @@
 {
-    "squad": "小队",
-    "calc": "计算",
-    "squadcalc": "小队计算",
+    "squad": "Squad",
+    "calc": "Calc",
+    "squadcalc": "SquadCalc",
     "desc": "全面的SQUAD迫击炮计算器",
     "weaponInf": "武器信息",
         "name": "名称",
