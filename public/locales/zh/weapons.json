@@ -8,6 +8,6 @@
         "Tech.UB-32": "火箭巢车",
         "BM-21Grad": "冰雹",
         "M1064M121": "M1064 M121",
-            "impact": "影响",
-            "nearSurface": "近地表"
+            "impact": "触发式",
+            "nearSurface": "空爆"
 }
