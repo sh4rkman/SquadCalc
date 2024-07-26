@@ -6,8 +6,6 @@ import "select2/dist/js/select2.min.js";
 import "animate.css";
 import "leaflet/dist/leaflet.css";
 
-
-
 // Local styles
 import "./css/styles.scss";
 import "./css/responsive.scss";
@@ -55,7 +53,6 @@ function loadMapSelector() {
     MAPS.forEach(function(map, i) {
         MAP_SELECTOR.append("<option data-i18n=maps:" +  map.name + " value=\"" + i + "\"></option>");
     });
-
 }
 
 function loadMinimap(){
@@ -249,13 +246,3 @@ export function switchUI(){
     }
 }
 
-
-
-
-
-
-$(".dropbtn4").select2({
-    dropdownCssClass: "dropbtn4",
-    dropdownParent: $("#helpDialog"),
-    minimumResultsForSearch: -1, // Disable search
-});

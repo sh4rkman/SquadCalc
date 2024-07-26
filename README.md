@@ -1,12 +1,25 @@
 
 
-![image](./src/img/github/logo.webp)
 
+<h1 align="center">
+  <a href="https://squadcalc.app">
+    <img src="./src/img/github/logo.webp" alt="squadcalc logo">
+  </a>
+</h1>
 
- <a href="https://github.com/sh4rkman/SquadCalc/blob/master/LICENSE"><img src="https://img.shields.io/github/license/Naereen/StrapDown.js.svg" alt="Licence"></a>
-<a href="https://validator.w3.org/nu/?doc=https%3A%2F%2Fsquadcalc.app%2F"><img src="https://img.shields.io/badge/W3C-Good-green.svg" alt="W3C"></a>
-<a href="https://deepscan.io/dashboard#view=project&tid=12376&pid=25781&bid=811276"><img src="https://deepscan.io/api/teams/12376/projects/25781/branches/811276/badge/grade.svg" alt="DeepScan grade"></a>
-<a href="https://www.codefactor.io/repository/github/sh4rkman/squadcalc"><img src="https://www.codefactor.io/repository/github/sh4rkman/squadcalc/badge" alt="CodeFactor"></a>
+<p align="center">
+  <a href="https://github.com/sh4rkman/SquadCalc/blob/master/LICENSE"><img src="https://img.shields.io/github/license/Naereen/StrapDown.js.svg?style=for-the-badge" alt="Licence"></a>
+  <img src="https://up.sharkman.info/api/badge/3/uptime?style=for-the-badge" alt="Uptime">
+</p>
+
+<p align="center">
+  <a href="https://github.com/sh4rkman/SquadCalc/issues/new">🪳 Report a Bug </a> &nbsp;&bull;&nbsp;
+  <a href="https://github.com/sh4rkman/SquadCalc/wiki/Translating-SquadCalc"> 🗣️ Help to Translate </a>
+  &nbsp;&bull;&nbsp;<a href="https://github.com/sh4rkman/SquadCalc/wiki">📖 Wiki</a> &nbsp;
+</p>
+
+***
+
 
 
 </br>

@@ -32,7 +32,7 @@ function getPos(kp) {
         } else {
             // opposite of calculations in getKP()
             const SUB = Number(PARTS[i]);
-            if (!App.debug.active && Number.isNaN(SUB)) {
+            if (Number.isNaN(SUB)) {
                 console.log(`invalid keypad string: ${FORMATTED_KEYPAD}`);
             }
             const subX = (SUB - 1) % 3;
@@ -202,25 +202,6 @@ export function getHeight(a, b) {
     // Read Heightmap color values for a & b
     Aheight = ctx.getImageData(Math.round(AOffset.lat), Math.round(AOffset.lng), 1, 1).data;
     Bheight = ctx.getImageData(Math.round(BOffset.lat), Math.round(BOffset.lng), 1, 1).data;
-
-
-    // Debug purpose
-    if (App.debug.active) {
-        console.log("------------------------------");
-        console.log("HEIGHTMAP");
-        console.log("------------------------------");
-        console.log(`A {lat:${ a.lat.toFixed(2)}; lng: ${a.lng.toFixed(2)}}`);
-        console.log(`    -> Offset {lat: ${AOffset.lat.toFixed(2)}; lng: ${AOffset.lng.toFixed(2)}}`);
-        console.log(`    -> ${Aheight} (RGBa)`);
-        console.log(`B {lat: ${b.lat.toFixed(2)}; lng: ${b.lng.toFixed(2)}}`);
-        console.log(`    -> Offset {lat: ${BOffset.lat.toFixed(2)}; lng: ${BOffset.lng.toFixed(2)}}`);
-        console.log(`    -> ${Bheight} (RGBa)`);
-
-        // place visual green marker on the canvas
-        ctx.fillStyle = "green";
-        //ctx.fillRect(AOffset.lat, AOffset.lng, 10, 10);
-        //ctx.fillRect(BOffset.lat, BOffset.lng, 10, 10);
-    }
 
     // Check if a & b aren't out of canvas
     if (Aheight[2] === 0 && Aheight[0] === 0) {
@@ -454,7 +435,7 @@ function showError(msg, issue) {
     $("#settings").css({ "border-color": "firebrick" });
     animateCSS($("#settings"), "shakeX");
 
-    if (!App.debug.active) { console.clear(); }
+    console.clear();
     console.error(msg);
 }
 

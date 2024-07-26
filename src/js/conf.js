@@ -24,6 +24,13 @@ export var App = {
         targetAnimation: true,
         weaponMinMaxRange: true,
         bearingOverDistance: false,
-    }
+    },
+    supportedLanguages: [
+        ["en", "EN"],
+        ["zh", "中文"],
+        ["uk", "UKR"],
+        ["ru", "РУС"],
+        ["fr", "FR"],
+    ],
 };
 
