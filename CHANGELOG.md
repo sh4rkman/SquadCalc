@@ -1,4 +1,17 @@
-# <img src="https://img.shields.io/badge/-major%20release-blue?style=flat-square">   **28.0.2** *(2024-07-25)*
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **28.0.3** *(2024-07-26)*
+
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Improved language loading mechanic
+
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> New readme with redirection to Wiki
+
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Code cleaning
+
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> removed self-promotion to my dead youtube channel
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
+
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **28.0.2** *(2024-07-25)*
 
 <img src="https://img.shields.io/badge/-%20improv%20-orange"> Corrected Chinese translations (thanks @peter5he1by !)
 
@@ -6,7 +19,7 @@
 
 
 
-# <img src="https://img.shields.io/badge/-major%20release-blue?style=flat-square">   **28.0.1** *(2024-07-19)*
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **28.0.1** *(2024-07-19)*
 
 <img src="https://img.shields.io/badge/-%20fix%20-orange"> Now avoid loading english translations if another language is set
 
@@ -18,7 +31,7 @@
 </br></br><!-- CHANGELOG SPLIT MARKER -->
 
 
-# <img src="https://img.shields.io/badge/-major%20release-blue?style=flat-square">   **28.0.0** *(2024-07-16)*
+# <img src="https://img.shields.io/badge/-major%20release-b22222?style=for-the-badge">   **28.0.0** *(2024-07-16)*
 
 <img src="https://img.shields.io/badge/-new-green"> Added Chinese, Ukrainian, Russian, French language
 
@@ -39,7 +52,7 @@
 
 
 
-# <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">   **27.1.0** *(2024-07-11)*
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">   **27.1.0** *(2024-07-11)*
 
 
 <img src="https://img.shields.io/badge/-%20improv%20-orange"> Damage radius now take into account the height of the explosion. Mostly impact M121 proximity rounds that explode at 10m from the ground, resulting on a much smaller kill zone.
@@ -60,7 +73,7 @@
 
 
 
-# <img src="https://img.shields.io/badge/-major%20release-blue?style=flat-square">  **27.0.0** *(2024-07-09)*
+# <img src="https://img.shields.io/badge/-major%20release-b22222?style=for-the-badge">  **27.0.0** *(2024-07-09)*
 
 <img src="https://img.shields.io/badge/-new-green"> Weapon Informations & advanced customisation ! You can now left click a weapon to check his properties (velocity, moa, ...). You also switch between High & Low angles, and add some elevation when shooting from the top of a building for example
 
@@ -77,7 +90,7 @@
 </br></br><!-- CHANGELOG SPLIT MARKER -->
 
 
-# <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">   **26.0.1** *(2024-06-30)*
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">   **26.0.1** *(2024-06-30)*
 
 
 <img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed an issue where alt/shift-tabbing would focus map grid and pan the map out of the current view
@@ -91,7 +104,7 @@
 
 
 
-# <img src="https://img.shields.io/badge/-major%20release-blue?style=flat-square">  **26.0.0** *(2024-06-27)*
+# <img src="https://img.shields.io/badge/-major%20release-b22222?style=for-the-badge">  **26.0.0** *(2024-06-27)*
 
 <img src="https://img.shields.io/badge/-new-green"> Each weapon now have their own map marker
 
@@ -105,7 +118,7 @@
 
 
 
-# <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">   **25.0.3** *(2024-06-24)*
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">   **25.0.3** *(2024-06-24)*
 
 <img src="https://img.shields.io/badge/-%20fix%20-orange"> Changed M121 Velocity and MOA to 8.1 hotfix
 
@@ -120,7 +133,7 @@
 
 
 
-# <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">   **25.0.2** *(2024-06-12)*
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">   **25.0.2** *(2024-06-12)*
 
 <img src="https://img.shields.io/badge/-%20fix%20-orange"> Corrected Yehorivka heightmap [#155](https://github.com/sh4rkman/SquadCalc/issues/155) (Thanks SuisQi!)
 
@@ -128,21 +141,21 @@
 </br></br><!-- CHANGELOG SPLIT MARKER -->
 
 
-# <img src="https://img.shields.io/badge/-major%20release-blue?style=flat-square">  **25.0.1** *(2024-06-12)*
+# <img src="https://img.shields.io/badge/-major%20release-b22222?style=for-the-badge">  **25.0.1** *(2024-06-12)*
 
 <img src="https://img.shields.io/badge/-%20improv%20-orange">  Added minimum range for M1064-A3
 
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
 
-# <img src="https://img.shields.io/badge/-major%20release-blue?style=flat-square">  **25.0.0** *(2024-06-12)*
+# <img src="https://img.shields.io/badge/-major%20release-b22222?style=for-the-badge">  **25.0.0** *(2024-06-12)*
 
 <img src="https://img.shields.io/badge/-new-green"> Added M1064-A3 120mm
 
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
 
-# <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">  **24.1.0** *(2024-05-25)*
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **24.1.0** *(2024-05-25)*
 
 <img src="https://img.shields.io/badge/-new-green"> Now displaying a weapon number next to calcs when using several weapons
 
@@ -157,7 +170,7 @@
 </br></br><!-- CHANGELOG SPLIT MARKER -->
 
 
-# <img src="https://img.shields.io/badge/-major%20release-blue?style=flat-square">  **24.0.0** *(2024-05-11)*
+# <img src="https://img.shields.io/badge/-major%20release-b22222?style=for-the-badge">  **24.0.0** *(2024-05-11)*
 
 <img src="https://img.shields.io/badge/-new-green"> **Topographic maps !** Heightmap layers have been replaced with a mix of topographic, hypsometric and hillshading layers. Blue/Red heightmaps are still used behind the scene to find heights
 
@@ -172,7 +185,7 @@
 </br></br><!-- CHANGELOG SPLIT MARKER -->
 
 
-# <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">  **23.3.0** *(2024-05-07)*
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **23.3.0** *(2024-05-07)*
 
 <img src="https://img.shields.io/badge/-new-green"> Added a "loading" animation background on logo
 
@@ -188,7 +201,7 @@
 
 
 
-# <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">  **23.2.0** *(2024-05-06)*
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **23.2.0** *(2024-05-06)*
 
 
 <img src="https://img.shields.io/badge/-%20fix%20-orange"> Layer preference is now properly restored when loading the page again
@@ -204,7 +217,7 @@
 
 
 
-# <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff"> **23.1.0** *(2024-05-05)*
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge"> **23.1.0** *(2024-05-05)*
 
 <img src="https://img.shields.io/badge/-new-green"> You can now preview calc informations for a second weapon if it's placed
 
@@ -218,7 +231,7 @@
 
 
 
-# <img src="https://img.shields.io/badge/-major%20release-blue?style=flat-square">  **23.0.0** *(2024-05-01)*
+# <img src="https://img.shields.io/badge/-major%20release-b22222?style=for-the-badge">  **23.0.0** *(2024-05-01)*
 
 <img src="https://img.shields.io/badge/-new-green"> **Heightmaps** ! You can know switch to a "heightmaps" mode with better understanding of elevation.
 
@@ -238,7 +251,7 @@
 
 
 
-# <img src="https://img.shields.io/badge/-major%20release-blue?style=flat-square">  **22.0.0** *(2024-04-25)*
+# <img src="https://img.shields.io/badge/-major%20release-b22222?style=for-the-badge">  **22.0.0** *(2024-04-25)*
 
 <img src="https://img.shields.io/badge/-new-green"> **Terrain maps** ! You can know switch to a "terrain" mode with better understanding of elevation. Straight from the SDK, makes you wondering how the fuck you can't have decent minimap ingame right.
 
@@ -248,7 +261,7 @@
 
 
 
-# <img src="https://img.shields.io/badge/-major%20release-blue?style=flat-square">  **21.0.0** *(2024-04-20)*
+# <img src="https://img.shields.io/badge/-major%20release-b22222?style=for-the-badge">  **21.0.0** *(2024-04-20)*
 
 <img src="https://img.shields.io/badge/-new-green"> Added a button to clear all target markers
 
@@ -260,7 +273,7 @@
 
 
 
-# <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">  **20.7.2** *(2024-04-15)*
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **20.7.2** *(2024-04-15)*
 
 <img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed maps/tiles caching for better performance/fix caching problems when updating maps
 
@@ -268,7 +281,7 @@
 
 
 
-# <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">  **20.7.1** *(2024-04-13)*
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **20.7.1** *(2024-04-13)*
 
 <img src="https://img.shields.io/badge/-%20fix%20-orange"> Updated Skorpo map & heightmap (thanks peter5he1by! [#130](https://github.com/sh4rkman/SquadCalc/issues/130))
 
@@ -276,7 +289,7 @@
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
 
-# <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">  **20.7.0** *(2024-04-03)*
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **20.7.0** *(2024-04-03)*
 
 <img src="https://img.shields.io/badge/-new-green"> New explosion animation when a target is created (can be disabled in settings)
 
@@ -284,7 +297,7 @@
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
 
-# <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">   **20.6.0** *(2024-03-29)*
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">   **20.6.0** *(2024-03-29)*
 
 <img src="https://img.shields.io/badge/-%20improv%20-orange"> SquadCalc is now using [ServiceWorker](https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API) to load maps faster, and store itself offline
 
@@ -292,7 +305,7 @@
 </br></br><!-- CHANGELOG SPLIT MARKER -->
 
 
-# <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">   **20.5.1** *(2024-03-25)*
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">   **20.5.1** *(2024-03-25)*
 
 <img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed changelog link
 
@@ -300,14 +313,14 @@
 </br></br><!-- CHANGELOG SPLIT MARKER -->
 
 
-# <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">   **20.5.0** *(2024-03-24)*
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">   **20.5.0** *(2024-03-24)*
 
 <img src="https://img.shields.io/badge/-new-green"> Logo is now displayed under map tiles
 
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
 
-# <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">   **20.4.0** *(2024-03-23)*
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">   **20.4.0** *(2024-03-23)*
 
 <img src="https://img.shields.io/badge/-new-green"> New logo/favicons
 
@@ -320,7 +333,7 @@
 
 
 
-# <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">   **20.3.0** *(2024-03-22)*
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">   **20.3.0** *(2024-03-22)*
 
 <img src="https://img.shields.io/badge/-%20improv%20-orange"> Falling back to 256px tiles
 
@@ -337,7 +350,7 @@
 
 
 
-# <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">   **20.1.0** *(2024-03-19)*
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">   **20.1.0** *(2024-03-19)*
 
 <img src="https://img.shields.io/badge/-%20improv%20-orange"> Converted markers to .webp format
 
@@ -350,7 +363,7 @@
 
 
 
-# <img src="https://img.shields.io/badge/-major%20release-blue?style=flat-square">  **20.0.0** *(2024-03-18)*
+# <img src="https://img.shields.io/badge/-major%20release-b22222?style=for-the-badge">  **20.0.0** *(2024-03-18)*
 
 <img src="https://img.shields.io/badge/-new-green"> Updated Narva, Tallil, Logar anf Yehorivka maps
 
@@ -366,7 +379,7 @@
 
 
 
-# <img src="https://img.shields.io/badge/-major%20release-blue?style=flat-square">  **19.0.0** *(2024-03-07)*
+# <img src="https://img.shields.io/badge/-major%20release-b22222?style=for-the-badge">  **19.0.0** *(2024-03-07)*
 
 <img src="https://img.shields.io/badge/-new-green"> Updated AlBasrah, Belaya and Kokan maps according to Squad 7.2 update
 
@@ -376,7 +389,7 @@
 
 
 
-# <img src="https://img.shields.io/badge/-major%20release-blue?style=flat-square">  **18.0.0** *(2024-03-07)*
+# <img src="https://img.shields.io/badge/-major%20release-b22222?style=for-the-badge">  **18.0.0** *(2024-03-07)*
 
 <img src="https://img.shields.io/badge/-new-green"> You can know choose between classic cursor and crosshair
 
@@ -388,7 +401,7 @@
 
 
 
-# <img src="https://img.shields.io/badge/-major%20release-blue?style=flat-square">  **17.0.0** *(2024-03-01)*
+# <img src="https://img.shields.io/badge/-major%20release-b22222?style=for-the-badge">  **17.0.0** *(2024-03-01)*
 
 <img src="https://img.shields.io/badge/-%20improv%20-orange"> Dispersion calculations are now calculated according to ingame/real life physics and not just estimated. They should be more accurate. Thanks to Moleman for his help understanding the formulas, check [his guide](https://steamcommunity.com/sharedfiles/filedetails/?l=english&id=3118256939&searchtext=Cerca+tra+le+guide+di+Squad) on mortars btw.
 
@@ -405,7 +418,7 @@
 
 
 
-# <img src="https://img.shields.io/badge/-major%20release-blue?style=flat-square"> **16.0.0** *(2024-02-08)*
+# <img src="https://img.shields.io/badge/-major%20release-b22222?style=for-the-badge"> **16.0.0** *(2024-02-08)*
 
 <img src="https://img.shields.io/badge/-new-green"> Added Sanxian
 
@@ -416,7 +429,7 @@
 
 
 
-# <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">  **15.0.1** *(2023-12-07)*
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **15.0.1** *(2023-12-07)*
 
 <img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed Weapons being able to be placed outside of map with right click ([#104](https://github.com/sh4rkman/SquadCalc/issues/104))
 
@@ -433,7 +446,7 @@
 
 
 
-# <img src="https://img.shields.io/badge/-major%20release-blue?style=flat-square">  **15.0.0** *(2023-12-04)*
+# <img src="https://img.shields.io/badge/-major%20release-b22222?style=for-the-badge">  **15.0.0** *(2023-12-04)*
 
 <img src="https://img.shields.io/badge/-new-green"> Simplified interractions with markers : double-click - new targets (or weapon if no weapon have been placed), right-clic - new weapon. Left clicking any markers delete it
 
@@ -453,7 +466,7 @@
 
 
 
-# <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">  **14.1.0** *(2023-12-02)*
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **14.1.0** *(2023-12-02)*
 
 <img src="https://img.shields.io/badge/-new-green"> Added a new setting to replace bearing (°) with distance to target (m) on map mode's targets.
 
@@ -475,7 +488,7 @@
 
 
 
-# <img src="https://img.shields.io/badge/-major%20release-blue?style=flat-square">  **14.0.0** *(2023-12-01)*
+# <img src="https://img.shields.io/badge/-major%20release-b22222?style=for-the-badge">  **14.0.0** *(2023-12-01)*
 
 <img src="https://img.shields.io/badge/-new-green"> New settings menu on bottom right corner to customize map/marker behaviour (external links have been moved here aswell in a more compact way)
 
@@ -496,7 +509,7 @@
 
 
 
-# <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">  **13.1.0** *(2023-11-26)*
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **13.1.0** *(2023-11-26)*
 
 <img src="https://img.shields.io/badge/-new-green"> A new spread circle has been added on targets to show the spread possibility of rounds (mortar, hellcanon, technicals only)
 
@@ -514,7 +527,7 @@
 </br></br><!-- CHANGELOG SPLIT MARKER -->
 
 
-# <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">  **13.0.1** *(2023-11-22)*
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **13.0.1** *(2023-11-22)*
 
 <img src="https://img.shields.io/badge/-%20improv%20-orange"> Markers now cannot be placed/dragged outside of map ([#98](https://github.com/sh4rkman/SquadCalc/issues/98))
 
@@ -529,7 +542,7 @@
 </br></br><!-- CHANGELOG SPLIT MARKER -->
 
 
-# <img src="https://img.shields.io/badge/-major%20release-blue?style=flat-square">  **13.0.0** *(2023-11-21)*
+# <img src="https://img.shields.io/badge/-major%20release-b22222?style=for-the-badge">  **13.0.0** *(2023-11-21)*
 
 <img src="https://img.shields.io/badge/-new-green"> New interactive map mode ! You can know switch UI mode with the bottom right button to display a map where you can place and drag markers.
 
@@ -539,7 +552,7 @@
 </br></br><!-- CHANGELOG SPLIT MARKER -->
 
 
-# <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">  **12.2** *(2023-11-07)*
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **12.2** *(2023-11-07)*
 
 <img src="https://img.shields.io/badge/-new-green"> Added Sanxian Island (beta)
 
@@ -547,7 +560,7 @@
 </br></br><!-- CHANGELOG SPLIT MARKER -->
 
 
-# <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">  **12.1.2** *(2023-11-04)*
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **12.1.2** *(2023-11-04)*
 
 <img src="https://img.shields.io/badge/-%20improv%20-orange"> Bottom-right menu now autoclose when clicking elsewhere in the window
 
@@ -555,7 +568,7 @@
 </br></br><!-- CHANGELOG SPLIT MARKER -->
 
 
-# <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">  **12.1.1** *(2023-11-02)*
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **12.1.1** *(2023-11-02)*
 
 <img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed an issue on Chrome/Edge where calcs on heightmaps were slightly off ([#88](https://github.com/sh4rkman/SquadCalc/issues/88)) 
 
@@ -564,7 +577,7 @@
 
 
 
-# <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">  **12.1.0** *(2023-11-01)*
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **12.1.0** *(2023-11-01)*
 
 <img src="https://img.shields.io/badge/-new-green"> You are now able to choose high/low angle for every vehicles and Hell cannon by clicking the icon next to elevation
 
@@ -586,7 +599,7 @@
 
 
 
-# <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">  **12.0.1** *(2023-10-26)*
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **12.0.1** *(2023-10-26)*
 
 <img src="https://img.shields.io/badge/-new-green"> Added new UB32 deployables (same calc than technical UB32, but fancy icon)
 
@@ -601,7 +614,7 @@
 
 
 
-# <img src="https://img.shields.io/badge/-major%20release-blue?style=flat-square">  **12.0.0** *(2023-10-26)*
+# <img src="https://img.shields.io/badge/-major%20release-b22222?style=for-the-badge">  **12.0.0** *(2023-10-26)*
 
 <img src="https://img.shields.io/badge/-new-green"> New "counting" animation when updating calc numbers
 
@@ -609,7 +622,7 @@
 
 
 
-# <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">  **11.2.0** *(2023-10-24)*
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **11.2.0** *(2023-10-24)*
 
 <img src="https://img.shields.io/badge/-new-green"> You can know switch between high/low angle with BM-21 Grad by clicking the elevation icon next to elevation number.
 
@@ -619,7 +632,7 @@
 
 
 
-# <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">  **11.1.2** *(2023-10-16)*
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **11.1.2** *(2023-10-16)*
 
 <img src="https://img.shields.io/badge/-%20fix%20-orange"> Fontawesome Icons are now selfhosted
 
@@ -628,7 +641,7 @@
 
 
 
-# <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff">  **11.1.1** *(2023-05-11)*
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **11.1.1** *(2023-05-11)*
 
 <img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed weapon image width for Steam Browser ([#71](https://github.com/sh4rkman/SquadCalc/issues/66))
 
@@ -638,7 +651,7 @@
 
 
 
-# <img src="https://img.shields.io/badge/-major%20release-blue?style=flat-square">  **11.1.0** *(2023-05-04)*
+# <img src="https://img.shields.io/badge/-major%20release-b22222?style=for-the-badge">  **11.1.0** *(2023-05-04)*
 
 <img src="https://img.shields.io/badge/-new-green"> Added a new fancy shooting animation
 
@@ -650,7 +663,7 @@
 
 
 
-# <img src="https://img.shields.io/badge/-major%20release-blue?style=flat-square">  **11.0.0** *(2023-04-26)*
+# <img src="https://img.shields.io/badge/-major%20release-b22222?style=for-the-badge">  **11.0.0** *(2023-04-26)*
 
 <img src="https://img.shields.io/badge/-new-green"> aded UB-32 suport
 
@@ -661,7 +674,7 @@
 
 
 
-# <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff"> **10.4.0** *(2023-04-24)*
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge"> **10.4.0** *(2023-04-24)*
 
 <img src="https://img.shields.io/badge/-new-green"> updated BM-21 to V4.4  
 * new min & max ranges.  
@@ -675,13 +688,13 @@
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
 
-# <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff"> **10.3.0** *(2023-04-16)*
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge"> **10.3.0** *(2023-04-16)*
 
 <img src="https://img.shields.io/badge/-dev-grey"> Reworked project structure
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
 
-# <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff"> **10.2.0** *(2023-04-14)*
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge"> **10.2.0** *(2023-04-14)*
 
 <img src="https://img.shields.io/badge/-new-green"> now auto-generating robots.txt in prod/dev building scripts
 
@@ -692,7 +705,7 @@
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
 
-# <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff"> **10.1.0** *(2023-04-08)*
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge"> **10.1.0** *(2023-04-08)*
 
 <img src="https://img.shields.io/badge/-new-green"> updated hellcannon icon
 
@@ -707,7 +720,7 @@
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
 
-# <img src="https://img.shields.io/badge/-major%20release-blue?style=flat-square"> **10.0.0** *(2023-04-06)*
+# <img src="https://img.shields.io/badge/-major%20release-b22222?style=for-the-badge"> **10.0.0** *(2023-04-06)*
 
 <img src="https://img.shields.io/badge/-new-green"> Active weapon icon is now displayed in the keypads section
 
@@ -721,7 +734,7 @@
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
 
-# <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff"> **9.0.3** *(2023-03-20)*
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge"> **9.0.3** *(2023-03-20)*
 
 <img src="https://img.shields.io/badge/-new-green"> Added informative tooltips on results
 
@@ -736,7 +749,7 @@
 </br></br><!-- CHANGELOG SPLIT MARKER -->
 
 
-# <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff"> **9.0.2** *(2023-03-18)*
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge"> **9.0.2** *(2023-03-18)*
 
 <img src="https://img.shields.io/badge/-new-green"> Added this changelog file
 
@@ -745,14 +758,14 @@
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
 
-# <img src="https://img.shields.io/badge/-minor%20release-%2337b6ff"> **9.0.1** *(2023-03-18)*
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge"> **9.0.1** *(2023-03-18)*
 
 <img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed Yehorivka heightmap's offset, heights calculations should be right for now (Thanks @TheGrimReaper13 !)
 
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
 
-# <img src="https://img.shields.io/badge/-major%20release-blue?style=flat-square"> **9.0.0** *(2023-03-16)*
+# <img src="https://img.shields.io/badge/-major%20release-b22222?style=for-the-badge"> **9.0.0** *(2023-03-16)*
 
 <img src="https://img.shields.io/badge/-new-green"> Added Manicouagan in the map list (removed Manic)
 

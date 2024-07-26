@@ -8,6 +8,9 @@ import { updatePreview } from "./settings.js";
  * Update every label with the correct localization text
  */
 export function loadLanguage() {
+    const LANG_SELECTOR = $(".dropbtn4");
+    const LANGUAGES = App.supportedLanguages;
+
     i18next.use(HttpApi).init({
         fallbackLng: false,
         ns: ["tooltips","settings", "maps", "weapons", "common"],
@@ -18,6 +21,17 @@ export function loadLanguage() {
     }, function(err) {
         if (err) return console.error(err);
         getLanguage();
+    });
+
+
+    LANG_SELECTOR.select2({
+        dropdownCssClass: "dropbtn4",
+        dropdownParent: $("#helpDialog"),
+        minimumResultsForSearch: -1, // Disable search
+    });
+
+    LANGUAGES.forEach(function(lng, i) {
+        LANG_SELECTOR.append("<option value=\"" + lng[0] + "\">" + lng[1] + "</option>");
     });
 
     $(document).on("change", ".dropbtn4", function() { 
@@ -32,13 +46,13 @@ export function loadLanguage() {
  * Priority Order : LocalStorage > navigator.language > English
  */
 function getLanguage(){
-    const supportedLanguages = ["en", "ru", "zh", "fr", "uk"];
     const browserLanguage = navigator.language.split("-")[0].toLowerCase();
+    const supportedLanguagesCodes = App.supportedLanguages.map(pair => pair[0]);
     var language = localStorage.getItem("settings-language");
 
     // If nothing in localstorage, try to find what language navigator is using
     if (language === null || language === ""){
-        if (supportedLanguages.includes(browserLanguage)) {
+        if (supportedLanguagesCodes.includes(browserLanguage)) {
             language = browserLanguage;
         } else {
             // language not supported, set default to english
