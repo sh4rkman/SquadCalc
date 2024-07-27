@@ -1,24 +1,23 @@
 
-
-
 <h1 align="center">
-  <a href="https://squadcalc.app">
-    <img src="./src/img/github/logo.webp" alt="squadcalc logo">
-  </a>
+    <a href="https://squadcalc.app">
+      <img src="./src/img/github/logo.webp" alt="squadcalc logo">
+    </a>
 </h1>
 
 <p align="center">
-  <a href="https://github.com/sh4rkman/SquadCalc/blob/master/LICENSE"><img src="https://img.shields.io/github/license/Naereen/StrapDown.js.svg?style=for-the-badge" alt="Licence"></a>
-  <img src="https://up.sharkman.info/api/badge/3/uptime?style=for-the-badge" alt="Uptime">
+    <a href="https://github.com/sh4rkman/SquadCalc/blob/master/LICENSE"><img src="https://img.shields.io/github/license/Naereen/StrapDown.js.svg?style=for-the-badge" alt="Licence"></a>  
+    <img src="https://up.sharkman.info/api/badge/3/uptime/72?style=for-the-badge" alt="Uptime">
 </p>
 
 <p align="center">
-  <a href="https://github.com/sh4rkman/SquadCalc/issues/new">🪳 Report a Bug </a> &nbsp;&bull;&nbsp;
-  <a href="https://github.com/sh4rkman/SquadCalc/wiki/Translating-SquadCalc"> 🗣️ Help to Translate </a>
-  &nbsp;&bull;&nbsp;<a href="https://github.com/sh4rkman/SquadCalc/wiki">📖 Wiki</a> &nbsp;
+    <a href="https://github.com/sh4rkman/SquadCalc/issues/new">🪳 Report a Bug</a> &nbsp;&bull;&nbsp;
+    <a href="https://github.com/sh4rkman/SquadCalc/wiki/Translating-SquadCalc"> 📜 Help to Translate</a> &nbsp;&bull;&nbsp;
+    <a href="https://github.com/sh4rkman/SquadCalc/wiki">📖 Wiki</a> &nbsp;&bull;&nbsp;
+    <a href="https://github.com/sh4rkman/SquadCalc/blob/master/CHANGELOG.md">🆕 ChangeLog</a>
 </p>
 
-***
+
 
 
 
@@ -32,7 +31,7 @@
 </br>
 
 
-Squadcalc.app is a mortar calculator designed specifically for the game <a href="https://joinsquad.com/">Squad</a>.  
+[squadcalc.app](https://squadcalc.app/) is a mortar calculator designed specifically for the game <a href="https://joinsquad.com/">Squad</a>.  
 This tool facilitates rapid mortar calculations through two distinct modes:
 1. **Interactive Map Mode:** This mode enables users to intuitively add visual targets by double-clicking on the map, allowing easy manipulation of weapons and targets through drag-and-drop functionality.
 
@@ -160,32 +159,3 @@ Rather have a minimalist/non-clustered map ? you can too. Hop in settings to cus
 | Sumari Bala                 |         ✅          |
 | Tallil Outskirts            |         ✅          |
 | Yehorivka                   |         ✅          |
-
-
-</br></br>
-
-# Installation
-
-
-
-## Clone and install
-
-```
-git clone https://github.com/sh4rkman/SquadCalc.git
-cd SquadCalc
-npm ci
-```
-
-## Running a development local server
-```
-npm run start
-```
-
-## Building production bundle
-</br>
-
-
-For a final production environnement :
-```
-npm run build:prod
-```

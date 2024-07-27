@@ -102,7 +102,6 @@ export default class SquadFiringSolution {
      * Calculates the horizontal spread for a given trajectory path length 
      * @param {number} [angle] - angle of the initial shot in radian
      * @param {number} [vel] - initial mortar projectile velocity in m/s
-     * @param {number} [gravity] - gravity applied to the projectile
      * @returns {number} - Length of horizontal spread in meters
      */
     getHorizontalSpread(angle, velocity){
