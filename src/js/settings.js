@@ -262,7 +262,7 @@ $("#bearingOverDistanceSettings").on("change", function() {
     }
 
     // Update every targets to add/remove distance
-    App.minimap.updateTargets(); // TODO, don't update everything, just the marker content
+    App.minimap.updateTargets();
     updatePreview();
 });
 

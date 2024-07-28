@@ -187,6 +187,8 @@ export function changeWeapon() {
     App.minimap.updateTargets();
 }
 
+
+// TODO, move this  uglyness to squadWeapons.js
 export function changeShell(shell){
 
     if ($(".dropbtn2").val() != 6) { return;}

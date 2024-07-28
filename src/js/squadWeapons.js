@@ -59,6 +59,10 @@ export class Weapon {
         return this.velocity.slice(-1)[0][0];
     }
 
+    /**
+     * Return distance at which will be dealt given damage
+     * https://github.com/sh4rkman/SquadCalc/wiki/Deducing-Damage-Radius
+     */
     calculateDistanceForDamage(maxDamage, startRadius, endRadius, falloff, distanceFromImpact, targetDamage) {
         var characterSize = 1.8;
         var radius = endRadius - (Math.pow(targetDamage / maxDamage, 1 / falloff) * (endRadius - startRadius));
