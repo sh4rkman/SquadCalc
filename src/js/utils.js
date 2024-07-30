@@ -3,6 +3,7 @@ import { App } from "./conf";
 import { MAPS } from "../data/maps";
 import { animateCSS, animateCalc} from "./animations";
 import { LatLng } from "leaflet";
+import i18next from "i18next";
 
 /**
  * Returns the latlng coordinates based on the given keypad string.
@@ -291,11 +292,11 @@ export function shoot(inputChanged = "") {
     if (Number.isNaN(aPos.lng) || Number.isNaN(bPos.lng)) {
 
         if (Number.isNaN(aPos.lng) && Number.isNaN(bPos.lng)) {
-            showError("Invalid mortar and target");
+            showError("invalidMortarTarget");
         } else if (Number.isNaN(aPos.lng)) {
-            showError("Invalid mortar", "mortar");
+            showError("invalidMortar", "mortar");
         } else {
-            showError("Invalid target", "target");
+            showError("invalidTarget", "target");
         }
         return 1;
     }
@@ -416,6 +417,10 @@ export function filterInput(e) {
  * @param {string} issue - mortar/target/both
  */
 function showError(msg, issue) {
+    console.log(i18next.t("common:"+msg))
+    //msg = i18next.t("common:"+msg);
+
+    msg = "<div data-i18n='common:"+ msg+ "'>" + i18next.t("common:"+msg) + "</div>"
 
     if (issue === "mortar") {
         $("#mortar-location").addClass("error2");
@@ -428,15 +433,16 @@ function showError(msg, issue) {
     // Rework the #setting div to display a single message
     $("#bearing").addClass("hidden").removeClass("pure-u-10-24");
     $("#elevation").addClass("hidden").removeClass("pure-u-10-24");
-    $("#errorMsg").removeClass("pure-u-4-24").addClass("pure-u-1").addClass("errorMsg").html(msg);
-
+    $("#errorMsg").removeClass("pure-u-4-24").addClass("pure-u-1").addClass("errorMsg")
+    $("#errorMsg").html(msg);
+    
     // remove the pointer cursor & tooltip
     $("#copy").removeClass("copy");
     $("#settings").css({ "border-color": "firebrick" });
     animateCSS($("#settings"), "shakeX");
 
-    console.clear();
-    console.error(msg);
+    //console.clear();
+    //console.error(msg);
 }
 
 

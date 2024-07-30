@@ -31,5 +31,6 @@
         "heightDiff": "Різниця висот",
     "outOfRange": "Ціль знаходиться за межами дальності:",
     "invalidMortar": "Недійсна зброя",
-    "invalidTarget": "Недійсна ціль"
+    "invalidTarget": "Недійсна ціль",
+    "invalidMortarTarget": "Непридатна зброя та мішень"   
 }
