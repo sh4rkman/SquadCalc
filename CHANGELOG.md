@@ -1,3 +1,10 @@
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **28.0.4** *(2024-07-30)*
+
+<img src="https://img.shields.io/badge/-%20fix%20-orange"> Added missing translations on legacy mode
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
+
 # <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **28.0.3** *(2024-07-26)*
 
 <img src="https://img.shields.io/badge/-%20improv%20-orange"> Improved language loading mechanic

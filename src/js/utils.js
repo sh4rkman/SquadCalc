@@ -290,13 +290,12 @@ export function shoot(inputChanged = "") {
 
 
     if (Number.isNaN(aPos.lng) || Number.isNaN(bPos.lng)) {
-
         if (Number.isNaN(aPos.lng) && Number.isNaN(bPos.lng)) {
-            showError("invalidMortarTarget");
+            showError("<div data-i18n='common:invalidMortarTarget'>" + i18next.t("common:invalidMortarTarget") + "</div>");
         } else if (Number.isNaN(aPos.lng)) {
-            showError("invalidMortar", "mortar");
+            showError("<div data-i18n='common:invalidMortar'>" + i18next.t("common:invalidMortar") + "</div>", "mortar");
         } else {
-            showError("invalidTarget", "target");
+            showError("<div data-i18n='common:invalidTarget'>" + i18next.t("common:invalidTarget") + "</div>", "target");
         }
         return 1;
     }
@@ -323,13 +322,7 @@ export function shoot(inputChanged = "") {
 
     // If Target too far, display it and exit function
     if (Number.isNaN(elevation)) {
-        showError("Target is out of range : " + distance.toFixed(0) + "m", "target");
-        return 1;
-    }
-
-
-    if ((elevation > App.activeWeapon.minElevation[1])) {
-        showError("Target is too close : " + distance.toFixed(0) + "m", "target");
+        showError("<span data-i18n='common:targetOutOfRange'>" + i18next.t("common:targetOutOfRange")+ "</span> : " + distance.toFixed(0) + "<span data-i18n='common:m'>" + i18next.t("common:m") + "</span>", "target");
         return 1;
     }
     
@@ -413,15 +406,11 @@ export function filterInput(e) {
 
 /**
  * Display error in html & console
- * @param {string} msg - error message to be displayed
+ * @param {string} msg - error message code to be displayed
  * @param {string} issue - mortar/target/both
  */
 function showError(msg, issue) {
-    console.log(i18next.t("common:"+msg))
-    //msg = i18next.t("common:"+msg);
-
-    msg = "<div data-i18n='common:"+ msg+ "'>" + i18next.t("common:"+msg) + "</div>"
-
+    console.log(msg)
     if (issue === "mortar") {
         $("#mortar-location").addClass("error2");
     } else if (issue === "target") {
@@ -433,16 +422,14 @@ function showError(msg, issue) {
     // Rework the #setting div to display a single message
     $("#bearing").addClass("hidden").removeClass("pure-u-10-24");
     $("#elevation").addClass("hidden").removeClass("pure-u-10-24");
-    $("#errorMsg").removeClass("pure-u-4-24").addClass("pure-u-1").addClass("errorMsg")
+    $("#errorMsg").removeClass("pure-u-4-24").addClass("pure-u-1").addClass("errorMsg");
     $("#errorMsg").html(msg);
-    
+
     // remove the pointer cursor & tooltip
     $("#copy").removeClass("copy");
     $("#settings").css({ "border-color": "firebrick" });
     animateCSS($("#settings"), "shakeX");
 
-    //console.clear();
-    //console.error(msg);
 }
 
 
