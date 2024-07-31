@@ -32,7 +32,7 @@ export function loadSettings(){
     }
     else {
         $("#keypadUnderCursorSettingRow").hide();
-        //$("#cursorChoiceSettings").hide();
+        $(".cursorChoiceSettings").hide();
         App.userSettings.keypadUnderCursor = false;
     }
 
@@ -262,7 +262,7 @@ $("#bearingOverDistanceSettings").on("change", function() {
     }
 
     // Update every targets to add/remove distance
-    App.minimap.updateTargets(); // TODO, don't update everything, just the marker content
+    App.minimap.updateTargets();
     updatePreview();
 });
 

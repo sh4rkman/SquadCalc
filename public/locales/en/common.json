@@ -31,5 +31,8 @@
         "heightDiff": "Height Difference",
     "outOfRange": "Target is out of range :",
     "invalidMortar": "Invalid Weapon",
-    "invalidTarget": "Invalid Target"
+    "invalidTarget": "Invalid Target",
+    "invalidMortarTarget": "Invalid Weapon & Target",
+    "targetOutOfRange": "Target is out of range",
+    "targetTooClose" : "Target is too close"
 }

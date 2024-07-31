@@ -1,6 +1,5 @@
 import targetIcon from "../img/icons/marker_target_enabled.webp";
 import targetIconDisabled from "../img/icons/marker_target_disabled.webp";
-import { degToRad } from "../js/utils.js";
 import { App } from "./conf.js";
 import i18next from "i18next";
 
@@ -204,7 +203,8 @@ export default class Simulation {
         var this2 = this;
 
         if (isNaN(this.firingSolution.elevation.high.rad)) {
-            elevation = degToRad(45);
+            // if no firing solution, simulate a maxdisance shot
+            elevation = 0,785398;
         } else {
             if (this.angleType === "high") {
                 elevation = this.firingSolution.elevation.high.rad;

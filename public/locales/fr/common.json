@@ -31,5 +31,8 @@
         "heightDiff": "Différence de hauteur",
     "outOfRange": "La cible est hors de portée :",
     "invalidMortar": "Arme invalide",
-    "invalidTarget": "Cible invalide"
+    "invalidTarget": "Cible invalide",
+    "invalidMortarTarget": "Arme & Cible invalides",
+    "targetOutOfRange": "Cible hors de portée",
+    "targetTooClose" : "Cible trop proche"
 }

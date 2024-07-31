@@ -31,5 +31,8 @@
         "heightDiff": "Разница высот",
     "outOfRange": "Цель вне дальности:",
     "invalidMortar": "Недействительное оружие",
-    "invalidTarget": "Неверная цель"
+    "invalidTarget": "Неверная цель",
+    "invalidMortarTarget": "Инвалидное оружие и мишень",
+    "targetOutOfRange": "Цель находится вне зоны действия",
+    "targetTooClose" : "Цель слишком близко"
 }

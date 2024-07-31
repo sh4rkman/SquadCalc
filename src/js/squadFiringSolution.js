@@ -1,11 +1,6 @@
 import { App } from "./conf";
 import { LatLng } from "leaflet";
 
-
-
-// WIP, currently not using this class
-
-
 export default class SquadFiringSolution {
 
     constructor(weaponLatLng, targetLatLng, map, heightPadding) {
@@ -38,6 +33,7 @@ export default class SquadFiringSolution {
 
     /**
      * Calculate ingame distance between weapon & target
+     * https://github.com/sh4rkman/SquadCalc/wiki/Deducing-distance-and-bearing#finding-distance
      * @return {number} - distance in meter
      */
     getDist(){
@@ -49,6 +45,7 @@ export default class SquadFiringSolution {
     /**
      * Calculates the angle the mortar needs to be set in order
      * to hit the target at the desired distance and vertical delta.
+     * https://github.com/sh4rkman/SquadCalc/wiki/Deducing-Elevation
      * @param {number} [dist] - distance between mortar and target from getDist()
      * @param {number} [vDelta] - vertical delta between mortar and target from getHeight()
      * @param {number} [vel] - initial mortar projectile velocity
@@ -74,6 +71,7 @@ export default class SquadFiringSolution {
 
     /**
      * Calculates the bearing required to see point B from point A.
+     * https://github.com/sh4rkman/SquadCalc/wiki/Deducing-distance-and-bearing#finding-bearing
      * @returns {number} - bearing required to see B from A
      */
     getBearing() {
@@ -100,6 +98,7 @@ export default class SquadFiringSolution {
 
     /**
      * Calculates the horizontal spread for a given trajectory path length 
+     * https://github.com/sh4rkman/SquadCalc/wiki/Deducing-Spread#horizontal-spread
      * @param {number} [angle] - angle of the initial shot in radian
      * @param {number} [vel] - initial mortar projectile velocity in m/s
      * @returns {number} - Length of horizontal spread in meters
@@ -109,11 +108,8 @@ export default class SquadFiringSolution {
         var p1 = 2 * Math.PI * this.getProjectilePathDistance(angle, velocity);
         var p2 = (MOA / 360) * p1;
 
-        if (isNaN(p2)) {
-            return 0;
-        } else {
-            return p2;
-        }
+        if (isNaN(p2)) { return 0; } 
+        return p2;
     }
 
     /**
@@ -133,16 +129,13 @@ export default class SquadFiringSolution {
     /**
      * Calculates the vertical spread of a projectile
      * to hit the target at the desired distance and vertical delta.
+     * https://github.com/sh4rkman/SquadCalc/wiki/Deducing-Spread#vertical-spread
      * @param {number} [angle] - angle of the initial shot
      * @param {number} [vel] - initial mortar projectile velocity in m/s
      * @returns {number} - vertical spread in meter
      */
     getVerticalSpread(angle, vel){
-
         const moa = this.degToRad((App.activeWeapon.moa / 2) / 60);
-    
-        // Apply MOA to found Angle and deduce the spread distance
-        // https://en.wikipedia.org/wiki/Projectile_motion#Maximum_distance_of_projectile
         const verticalSpread1 = (vel ** 2 * Math.sin(2*(angle + moa))) / this.gravity;
         const verticalSpread2  = (vel ** 2 * Math.sin(2*(angle - moa))) / this.gravity;
         const totalSpread = Math.abs(verticalSpread2 - verticalSpread1);
@@ -201,8 +194,5 @@ export default class SquadFiringSolution {
     degToMil(deg) {
         return deg / (360 / 6400);
     }
-
-
-    
 
 }

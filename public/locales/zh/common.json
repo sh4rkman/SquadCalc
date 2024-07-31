@@ -31,5 +31,8 @@
         "heightDiff": "高度差",
     "outOfRange": "目标超出射程：",
     "invalidMortar": "无效的武器",
-    "invalidTarget": "无效的目标"
+    "invalidTarget": "无效的目标",
+    "invalidMortarTarget": "取消武器和目标",
+    "targetOutOfRange": "目标超出范围",
+    "targetTooClose" : "目标太近"  
 }
