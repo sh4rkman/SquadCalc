@@ -1,6 +1,14 @@
-# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **28.0.4** *(2024-07-30)*
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **28.0.4** *(2024-07-31)*
 
 <img src="https://img.shields.io/badge/-%20fix%20-orange"> Added missing translations on legacy mode
+
+<img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed height calculations on legacy mode  
+
+<img src="https://img.shields.io/badge/-%20fix%20-orange"> Now hidding the classic cursor setting on touch screen 
+
+<img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed gorodok heightmap/zscaling
+
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Code reworking
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
 
