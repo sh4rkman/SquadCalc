@@ -33,5 +33,6 @@
     "invalidMortar": "Недійсна зброя",
     "invalidTarget": "Недійсна ціль",
     "invalidMortarTarget": "Непридатна зброя та мішень",
-    "targetOutOfRange": "Ціль поза зоною досяжності"   
+    "targetOutOfRange": "Ціль поза зоною досяжності",
+    "targetTooClose" : "Ціль занадто близько"   
 }

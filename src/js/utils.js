@@ -1,9 +1,9 @@
 import { tooltip_save, tooltip_copied } from "./tooltips";
 import { App } from "./conf";
-import { MAPS } from "../data/maps";
 import { animateCSS, animateCalc} from "./animations";
 import { LatLng } from "leaflet";
 import i18next from "i18next";
+import SquadFiringSolution from "./squadFiringSolution";
 
 /**
  * Returns the latlng coordinates based on the given keypad string.
@@ -96,129 +96,6 @@ export function getBearing(a, b) {
 }
 
 /**
- * Converts radians into NATO mils
- * @param {number} rad - radians
- * @returns {number} NATO mils
- */
-export function radToMil(rad) {
-    return degToMil(radToDeg(rad));
-}
-
-/**
- * Converts degrees to radians
- * @param {number} deg - degrees
- * @returns {number} radians
- */
-export function degToRad(deg) {
-    return (deg * Math.PI) / 180;
-}
-
-/**
- * Converts radians into degrees
- * @param {number} rad - radians
- * @returns {number} degrees
- */
-export function radToDeg(rad) {
-    return (rad * 180) / Math.PI;
-}
-
-/**
- * Converts degrees into NATO mils
- * @param {number} deg - degrees
- * @returns {number} NATO mils
- */
-function degToMil(deg) {
-    return deg / (360 / 6400);
-}
-
-/**
- * Calculates the distance between two points.
- * @param {LatLng} a - point A
- * @param {LatLng} b - point B
- * @returns {number} distance A <-> B
- */
-export function getDist(a, b) {
-    return Math.hypot(a.lat - b.lat, a.lng - b.lng);
-}
-
-/**
- * Calculates the angle the mortar needs to be set in order
- * to hit the target at the desired distance and vertical delta.
- * @param {number} [dist] - distance between mortar and target from getDist()
- * @param {number} [vDelta] - vertical delta between mortar and target from getHeight()
- * @param {number} [vel] - initial mortar projectile velocity
- * @returns {number || NaN} radian angle if target in range, NaN otherwise
- */
-export function getElevation(dist = 0, vDelta = 0, vel = 0) {
-    var padding = 0;
-    const GRAVITY = App.gravity * App.activeWeapon.gravityScale;
-    const P1 = Math.sqrt(vel ** 4 - GRAVITY * (GRAVITY * dist ** 2 + 2 * vDelta * vel ** 2));
-
-    if (App.activeWeapon.name === "Tech. Mortar"){
-        // The technical mortar is bugged : the ingame range metter is off by 5°
-        // Ugly fix until OWI correct it
-        padding = -0.0872665;
-    }
-
-    return padding + Math.atan((vel ** 2 - (P1 * App.activeWeapon.getAngleType())) / (GRAVITY * dist));
-}
-
-/**
- * Apply current map offset to given position
- *
- * @param {lat;lng} pos - position
- * @returns {lat;lng} - offset position
- */
-export function getOffsetLatLng(pos) {
-    const mapScale = App.canvas.size / MAPS.find((elem, index) => index == App.activeMap).size;
-    return {
-        lat: (pos.lat + MAPS.find((elem, index) => index == App.activeMap).offset[0] * mapScale) * mapScale,
-        lng: (pos.lng + MAPS.find((elem, index) => index == App.activeMap).offset[1] * mapScale) * mapScale
-    };
-}
-
-/**
- * Calculates the height difference between mortar and target
- *
- * @param {Number} a - {lat;lng} where mortar is
- * @param {Number} b - {lat;lng} where target is
- * @returns {number} - relative height in meters
- */
-export function getHeight(a, b) {
-    var Aheight;
-    var Bheight;
-    var AOffset;
-    var BOffset;
-    var ctx = document.getElementById("canvas").getContext("2d");
-
-    // if user didn't select map, no height calculation
-    if (!App.activeMap) { return 0; }
-
-    // Apply offset & scaling
-    // Heightmaps & maps doesn't always start at A01, they sometimes need to be offset manually
-    AOffset = getOffsetLatLng(a);
-    BOffset = getOffsetLatLng(b);
-
-
-    // Read Heightmap color values for a & b
-    Aheight = ctx.getImageData(Math.round(AOffset.lat), Math.round(AOffset.lng), 1, 1).data;
-    Bheight = ctx.getImageData(Math.round(BOffset.lat), Math.round(BOffset.lng), 1, 1).data;
-
-    // Check if a & b aren't out of canvas
-    if (Aheight[2] === 0 && Aheight[0] === 0) {
-        return "AERROR";
-    }
-    if (Bheight[2] === 0 && Bheight[0] === 0) {
-        return "BERROR";
-    }
-
-    Aheight = (255 + Aheight[0] - Aheight[2]) * MAPS.find((elem, index) => index == App.activeMap).scaling;
-    Bheight = (255 + Bheight[0] - Bheight[2]) * MAPS.find((elem, index) => index == App.activeMap).scaling;
-
-    return Bheight - Aheight;
-}
-
-/**
  * Reset UI to default
  */
 function resetCalc() {
@@ -247,20 +124,14 @@ function resetCalc() {
 export function shoot(inputChanged = "") {
     var startA;
     var startB;
-    var height;
-    var heightB;
-    var heightA;
-    var distance;
     var elevation;
-    var bearing;
-    var vel;
+    var firingSolution;
     const MORTAR_LOC = $("#mortar-location");
     const TARGET_LOC = $("#target-location");
     var a = MORTAR_LOC.val();
     var b = TARGET_LOC.val();
     var aPos;
     var bPos;
-    const mapScale = App.mapSize / MAPS.find((elem, index) => index == App.activeMap).size;
 
     resetCalc();
 
@@ -287,8 +158,6 @@ export function shoot(inputChanged = "") {
     aPos = getPos(a);
     bPos = getPos(b);
 
-
-
     if (Number.isNaN(aPos.lng) || Number.isNaN(bPos.lng)) {
         if (Number.isNaN(aPos.lng) && Number.isNaN(bPos.lng)) {
             showError("<div data-i18n='common:invalidMortarTarget'>" + i18next.t("common:invalidMortarTarget") + "</div>");
@@ -300,51 +169,51 @@ export function shoot(inputChanged = "") {
         return 1;
     }
 
-    heightA = App.minimap.heightmap.getHeight(new LatLng(aPos.lng * -mapScale, aPos.lat * mapScale));
-    heightB = App.minimap.heightmap.getHeight(new LatLng(bPos.lng * -mapScale, bPos.lat * mapScale));
-    height = heightB - heightA;
+    aPos = new LatLng(-aPos.lng * App.minimap.gameToMapScale, aPos.lat * App.minimap.gameToMapScale);
+    bPos = new LatLng(-bPos.lng * App.minimap.gameToMapScale, bPos.lat * App.minimap.gameToMapScale);
 
-    distance = getDist(aPos, bPos);
-    bearing = getBearing(aPos, bPos);
-    vel = App.activeWeapon.getVelocity(distance);
-    elevation = getElevation(distance, height, vel);
+    firingSolution = new SquadFiringSolution(aPos, bPos, App.minimap, 0);
 
+    if (App.activeWeapon.getAngleType() === -1) {
+        elevation = firingSolution.elevation.high;
+    } else {
+        elevation = firingSolution.elevation.low;
+    }
 
     if (App.activeWeapon.unit === "mil") {
-        elevation = radToMil(elevation);
+        elevation = elevation.mil;
     } else {
-        elevation = radToDeg(elevation);
-        // The technical mortar is bugged : the ingame range metter is off by 5°
-        // Ugly fix until OWI correct it
-        if (App.activeWeapon.name === "Technical") { elevation = elevation - 5; }
+        elevation = elevation.deg;
     }
 
-
-    // If Target too far, display it and exit function
-    if (Number.isNaN(elevation)) {
-        showError("<span data-i18n='common:targetOutOfRange'>" + i18next.t("common:targetOutOfRange")+ "</span> : " + distance.toFixed(0) + "<span data-i18n='common:m'>" + i18next.t("common:m") + "</span>", "target");
-        return 1;
+    if (App.activeWeapon.getAngleType() === -1) {
+        if (elevation > App.activeWeapon.minElevation[1]) {
+            showError("<span data-i18n='common:targetTooClose'>" + i18next.t("common:targetTooClose") + "</span> : " + firingSolution.distance.toFixed(0) + "<span data-i18n='common:m'>" + i18next.t("common:m") + "</span>", "target");
+            return 1;
+        }
+    } else {
+        if (elevation < App.activeWeapon.minElevation[0]) {
+            showError("<span data-i18n='common:targetTooClose'>" + i18next.t("common:targetTooClose") + "</span> : " + firingSolution.distance.toFixed(0) + "<span data-i18n='common:m'>" + i18next.t("common:m") + "</span>", "target");
+            return 1;
+        }  
     }
     
-    insertCalc(bearing, elevation, distance, vel, height);
+    // If Target too far, display it and exit function
+    if (Number.isNaN(elevation)) {
+        showError("<span data-i18n='common:targetOutOfRange'>" + i18next.t("common:targetOutOfRange") + "</span> : " + firingSolution.distance.toFixed(0) + "<span data-i18n='common:m'>" + i18next.t("common:m") + "</span>", "target");
+        return 1;
+    }
+
+    insertCalc(firingSolution.bearing, elevation, firingSolution.distance);
 
 }
 
 /**
  * Insert Calculations into html
- *
  * @param {number} bearing 
  * @param {number} elevation 
- * @param {number} distance 
- * @param {number} vel 
- * @param {number} height 
  */
-function insertCalc(bearing, elevation, distance, vel, height) {
-
-    console.log(`${$("#mortar-location").val()} -> ${$("#target-location").val()}`);
-    console.log(`-> Bearing: ${bearing.toFixed(1)}° - Elevation: ${elevation.toFixed(1)}↷`);
-    console.log(`-> Distance: ${distance.toFixed(0)}m - height: ${height.toFixed(0)}m`);
-    console.log(`-> Velocity: ${vel.toFixed(1)}m/s`);
+function insertCalc(bearing, elevation) {
 
     animateCalc($("#bearingNum").html(),bearing.toFixed(1),500,"bearingNum");
     animateCalc($("#elevationNum").html(),elevation.toFixed(App.activeWeapon.elevationPrecision),500,"elevationNum");
@@ -410,7 +279,7 @@ export function filterInput(e) {
  * @param {string} issue - mortar/target/both
  */
 function showError(msg, issue) {
-    console.log(msg)
+
     if (issue === "mortar") {
         $("#mortar-location").addClass("error2");
     } else if (issue === "target") {
@@ -452,9 +321,9 @@ export function copySave(COPY_ZONE) {
 
 /**
  * Copy string to clipboard
- * execCommand is deprecated but navigator.clipboard doesn't work in steam browser
  */
 function copy(string) {
+    // execCommand is deprecated but navigator.clipboard doesn't work in steam browser
     const el = document.createElement("textarea");
     el.value = string;
     el.setAttribute("readonly", "");
@@ -587,17 +456,16 @@ export function saveCalc() {
  * Copy current calc to clipboard
  * @param {event} e - click event that triggered copy
  */
-export function copyCalc() {
+export function copyCalc(e) {
     
     // If calcs aren't ready, do nothing
     if (!$(".copy").hasClass("copy")) { return 1; }
 
-    // // When using BM-21, and the target icon is clicked, do nothing
-    // if (App.activeWeapon.name != "mortar" || App.activeWeapon.name != "B-32") {
-    //     if ($(e.target).hasClass("fa-sort-amount-down") || $(e.target).hasClass("fa-sort-amount-up") ) {
-    //         return 1;
-    //     }
-    // }
+    if ($(e.target).hasClass("fa-sort-amount-down") || $(e.target).hasClass("fa-sort-amount-up") ) {
+        if (!$(e.target).hasClass("active")) {
+            return 1;
+        }
+    }
 
     animateCSS($(".copy"), "headShake");
 
@@ -617,22 +485,6 @@ export function changeHighLow(){
     App.activeWeapon.angleType = isLowAngle ? "low" : "high";
     shoot();
 }
-
-
-/**
- * Returns true if 'a' is a multiple of 'b' with a precision up to 4 decimals
- *
- * @param a
- * @param b
- * @returns {boolean} true if 'a' is a multiple of 'b', false otherwise              
- */
-export function isMultiple(a, b) {
-    const t = b / a;
-    const r = Math.round(t);
-    const d = t >= r ? t - r : r - t;
-    return d < 0.0001;
-}
-
 
 /**
  * Calculates the keypad coordinates for a given latlng coordinate, e.g. "A5-3-7"
@@ -733,14 +585,6 @@ export function getKP(lat, lng, precision) {
 export function pad(num, size) {
     return `0000${num}`.substr(-size);
 }
-
-
-
-
-
-
-
-
 
 export function isTouchDevice() {
     return (("ontouchstart" in window) ||

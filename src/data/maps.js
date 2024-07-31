@@ -67,7 +67,7 @@ export const MAPS = [
         name: "Gorodok", 
         size: 4064, // OK
         offset: [200, 200], 
-        scaling: 0.236,
+        scaling: 0.2,
         mapURL: "/gorodok/",
         maxZoomLevel: 4,
     },

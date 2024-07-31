@@ -33,5 +33,6 @@
     "invalidMortar": "Arme invalide",
     "invalidTarget": "Cible invalide",
     "invalidMortarTarget": "Arme & Cible invalides",
-    "targetOutOfRange": "Cible est hors de portée"
+    "targetOutOfRange": "Cible hors de portée",
+    "targetTooClose" : "Cible trop proche"
 }

@@ -32,7 +32,7 @@ export function loadSettings(){
     }
     else {
         $("#keypadUnderCursorSettingRow").hide();
-        //$("#cursorChoiceSettings").hide();
+        $(".cursorChoiceSettings").hide();
         App.userSettings.keypadUnderCursor = false;
     }
 

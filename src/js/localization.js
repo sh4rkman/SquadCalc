@@ -30,7 +30,7 @@ export function loadLanguage() {
         minimumResultsForSearch: -1, // Disable search
     });
 
-    LANGUAGES.forEach(function(lng, i) {
+    LANGUAGES.forEach(function(lng) {
         LANG_SELECTOR.append("<option value=\"" + lng[0] + "\">" + lng[1] + "</option>");
     });
 

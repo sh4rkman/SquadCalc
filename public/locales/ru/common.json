@@ -33,5 +33,6 @@
     "invalidMortar": "Недействительное оружие",
     "invalidTarget": "Неверная цель",
     "invalidMortarTarget": "Инвалидное оружие и мишень",
-    "targetOutOfRange": "Цель находится вне зоны действия"
+    "targetOutOfRange": "Цель находится вне зоны действия",
+    "targetTooClose" : "Цель слишком близко"
 }

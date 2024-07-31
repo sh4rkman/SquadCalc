@@ -11,7 +11,6 @@ import {
     LayerGroup, Util, LatLng, Polyline, Marker, DivIcon
 } from "leaflet";
 
-import { isMultiple } from "./utils";
 
 /**
  * This Layergroup displays the grid in the same way it is displayed in-game.
@@ -125,10 +124,10 @@ export default LayerGroup.extend({
     },
 
     /**
-   * Updates the opacity for all lines in the lines array to the desired opacity value.
-   * @param {Array} lines - array of lines to update
-   * @param {Number} opacity - desired opacity value
-   */
+    * Updates the opacity for all lines in the lines array to the desired opacity value.
+    * @param {Array} lines - array of lines to update
+    * @param {Number} opacity - desired opacity value
+    */
     setLinesOpacity(lines, opacity = 0.5) {
     // we check only the first object as we are updating all at the same time
     // and this one check might save us iterating through the whole array
@@ -146,10 +145,10 @@ export default LayerGroup.extend({
 
 
     /**
-   * Updates the weight for all lines in the lines array to the desired weight value.
-   * @param {Array} lines - array of lines to update
-   * @param {Number} weight - desired weight value
-   */
+    * Updates the weight for all lines in the lines array to the desired weight value.
+    * @param {Array} lines - array of lines to update
+    * @param {Number} weight - desired weight value
+    */
     setLinesWeight(lines, weight = 1) {
         // we check only the first object as we are updating all at the same time
         // and this one check might save us iterating through the whole array
@@ -166,8 +165,8 @@ export default LayerGroup.extend({
     },
 
     /**
-   * Redraws the grid inside the current view bounds.
-   */
+    * Redraws the grid inside the current view bounds.
+    */
     redraw() {
         
         if (!this.bounds) {
@@ -208,7 +207,7 @@ export default LayerGroup.extend({
             // basically, main style if multiple of 300, sub1 style if multiple of 100,
             // sub2 if multiple of 33
             // we use if-else so that we don't draw lines over each other
-            if (isMultiple(kp, x)) {
+            if (this.isMultiple(kp, x)) {
                 this.kpLines.push(new Polyline([bot, top], this.lineStyleKP));
 
                 // Create
@@ -228,9 +227,9 @@ export default LayerGroup.extend({
 
                 z += 1;
 
-            } else if (isMultiple(s1, x)) {
+            } else if (this.isMultiple(s1, x)) {
                 this.s1Lines.push(new Polyline([bot, top], this.lineStyleSUB1));
-            } else if (isMultiple(s2, x)) {
+            } else if (this.isMultiple(s2, x)) {
                 this.s2Lines.push(new Polyline([bot, top], this.lineStyleSUB2));
             } else {
                 console.warn(`no match! x = ${x}; x%:`, [x % kp, x % s1, x % s2]); // this should never happen
@@ -246,7 +245,7 @@ export default LayerGroup.extend({
             const right = new LatLng(y, this.bounds.getEast());
 
 
-            if (isMultiple(kp, y)) {
+            if (this.isMultiple(kp, y)) {
                 let textPos = new LatLng(y+(kp/2), this.bounds.getWest());
                 this.kpLines.push(new Polyline([left, right], this.lineStyleKP));
 
@@ -263,9 +262,9 @@ export default LayerGroup.extend({
                 }
                 z+=1;
 
-            } else if (isMultiple(s1, y)) {
+            } else if (this.isMultiple(s1, y)) {
                 this.s1Lines.push(new Polyline([left, right], this.lineStyleSUB1));
-            } else if (isMultiple(s2, y)) {
+            } else if (this.isMultiple(s2, y)) {
                 this.s2Lines.push(new Polyline([left, right], this.lineStyleSUB2));
             } else {
                 console.warn(`no match! y = ${y}; y%:`, [y % kp, y % s1, y % s2]);
@@ -285,4 +284,17 @@ export default LayerGroup.extend({
             document.querySelectorAll(".gridText")[i].setAttribute("tabindex", "-1");
         }
     },
+    
+    /**
+     * Returns true if 'a' is a multiple of 'b' with a precision up to 4 decimals
+     * @param a
+     * @param b
+     * @returns {boolean} true if 'a' is a multiple of 'b', false otherwise              
+     */
+    isMultiple(a, b) {
+        const t = b / a;
+        const r = Math.round(t);
+        const d = t >= r ? t - r : r - t;
+        return d < 0.0001;
+    }
 });
