@@ -204,7 +204,7 @@ export default class Simulation {
 
         if (isNaN(this.firingSolution.elevation.high.rad)) {
             // if no firing solution, simulate a maxdisance shot
-            elevation = 0,785398;
+            elevation = 0.785398;
         } else {
             if (this.angleType === "high") {
                 elevation = this.firingSolution.elevation.high.rad;

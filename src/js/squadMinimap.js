@@ -4,7 +4,6 @@ import squadHeightmap from "./squadHeightmaps";
 import { App } from "./conf";
 import { squadWeaponMarker, squadTargetMarker } from "./squadMarker";
 import { mortarIcon, mortarIcon1, mortarIcon2 } from "./squadIcon";
-import { getKP } from "./utils";
 import { explode } from "./animations";
 import "leaflet-edgebuffer";
 import "leaflet.gridlayer.fadeout";
@@ -177,6 +176,97 @@ export var squadMinimap = Map.extend({
         this.grid.removeFrom(this.layerGroup);
     },
 
+
+    /**
+     * Calculates the keypad coordinates for a given latlng coordinate, e.g. "A5-3-7"
+     * @param lat - latitude coordinate
+     * @param lng - longitude coordinate
+     * @param precision - wanted precision (optionnal)
+     * @returns {string} keypad coordinates as string
+     */
+    getKP: function(lat, lng, precision) {
+        // to minimize confusion
+        const x = lng;
+        const y = lat;
+
+        if (x < 0 || y < 0) {
+            return "XXX-X-X"; // when outside of min bounds
+        }
+
+        const kp = 300 / 3 ** 0; // interval of main keypad, e.g "A5"
+        const s1 = 300 / 3 ** 1; // interval of first sub keypad
+        const s2 = 300 / 3 ** 2; // interval of second sub keypad
+        const s3 = 300 / 3 ** 3; // interval of third sub keypad
+        const s4 = 300 / 3 ** 4; // interval of third sub keypad
+
+        // basic grid, e.g. B5
+        const kpCharCode = 65 + Math.floor(x / kp);
+        let kpLetter;
+        // PostScriptum Arnhem Lane A->Z and then a->b letters fix
+        if (kpCharCode > 90) {
+            kpLetter = String.fromCharCode(kpCharCode + 6);
+        } else {
+            kpLetter = String.fromCharCode(kpCharCode);
+        }
+
+        var kpNumber = `0000${Math.floor(y / kp) + 1}`.slice(-2);
+
+        // sub keypad 1, e.g. B5 - 5
+        // ok when we go down, we have 3x3 pads and start with the left most column, i.e. 7,4,1
+        // so we check which index y is in, either 1st (7), 2nd (4), or 3rd (1)
+        const subY = Math.floor(y / s1) % 3;
+
+        // now we substract the index times 3 from 10
+        // 1st = 10 - 1*3 = 7
+        // 1st = 10 - 2*3 = 4
+        // 1st = 10 - 3*3 = 1
+        let subNumber = 10 - (subY + 1) * 3;
+
+        // now all we need to do is add the index for of x, but starting from 0
+        subNumber += Math.floor(x / s1) % 3;
+
+        // sub keypad 2, e.g. B5 - 5 - 3;
+        // same as above for sub keypad 1
+        const sub2Y = Math.floor(y / s2) % 3;
+        let sub2Number = 10 - (sub2Y + 1) * 3;
+        sub2Number += Math.floor(x / s2) % 3;
+
+
+        // sub keypad 3, e.g. B5 - 5 - 3 - 2;
+        // same as above for sub keypad 2
+        const sub3Y = Math.floor(y / s3) % 3;
+        let sub3Number = 10 - (sub3Y + 1) * 3;
+        sub3Number += Math.floor(x / s3) % 3;
+
+        // sub keypad 3, e.g. B5 - 5 - 3 - 2;
+        // same as above for sub keypad 2
+        const sub4Y = Math.floor(y / s4) % 3;
+        let sub4Number = 10 - (sub4Y + 1) * 3;
+        sub4Number += Math.floor(x / s4) % 3;
+
+        if (!precision){
+            precision = App.minimap.getZoom();
+        }
+
+        // The more the user zoom in, the more precise we display coords under mouse
+        switch (precision){
+            case 0:
+                return `${kpLetter}${kpNumber}`; 
+            case 1:
+                return `${kpLetter}${kpNumber}`;
+            case 2:
+                return `${kpLetter}${kpNumber}`;
+            case 3:
+                return `${kpLetter}${kpNumber}-${subNumber}`;
+            case 4:
+                return `${kpLetter}${kpNumber}-${subNumber}-${sub2Number}`;
+            case 5:
+                return `${kpLetter}${kpNumber}-${subNumber}-${sub2Number}-${sub3Number}`;
+            default:
+                return `${kpLetter}${kpNumber}-${subNumber}-${sub2Number}-${sub3Number}-${sub4Number}`;
+        }
+    },
+
     /**
      * Right-Click
      * Place a new WeaponMarker on the minimap
@@ -214,9 +304,8 @@ export var squadMinimap = Map.extend({
             this.mouseLocationPopup.close();
             return;
         }
-
         this.mouseLocationPopup.setLatLng(e.latlng).openOn(this);
-        this.mouseLocationPopup.setContent("<p>"+ getKP(-e.latlng.lat * this.mapToGameScale, e.latlng.lng * this.mapToGameScale) + "</p>");
+        this.mouseLocationPopup.setContent("<p>"+ this.getKP(-e.latlng.lat * this.mapToGameScale, e.latlng.lng * this.mapToGameScale) + "</p>");
     },
 
 
