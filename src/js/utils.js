@@ -143,11 +143,11 @@ export function shoot(inputChanged = "") {
 
     if (Number.isNaN(aPos.lng) || Number.isNaN(bPos.lng)) {
         if (Number.isNaN(aPos.lng) && Number.isNaN(bPos.lng)) {
-            showError("<div data-i18n='common:invalidMortarTarget'>" + i18next.t("common:invalidMortarTarget") + "</div>");
+            showError(`<div data-i18n='common:invalidMortarTarget'>${i18next.t("common:invalidMortarTarget")}</div>`);
         } else if (Number.isNaN(aPos.lng)) {
-            showError("<div data-i18n='common:invalidMortar'>" + i18next.t("common:invalidMortar") + "</div>", "mortar");
+            showError(`<div data-i18n='common:invalidMortar'>${i18next.t("common:invalidMortar")}</div>`, "mortar");
         } else {
-            showError("<div data-i18n='common:invalidTarget'>" + i18next.t("common:invalidTarget") + "</div>", "target");
+            showError(`<div data-i18n='common:invalidTarget'>${i18next.t("common:invalidTarget")}</div>`, "target");
         }
         return 1;
     }

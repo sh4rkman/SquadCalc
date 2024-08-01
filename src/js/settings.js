@@ -115,16 +115,16 @@ export function updatePreview(){
     subtextContent = "<span>1345</span><br>";
 
     if (App.userSettings.showBearing){ 
-        subtextContent += "<span class=\"bearingPreview\">241.5" + i18next.t("common:°") +"</span><br>";
+        subtextContent += `<span class=bearingPreview>241.5${i18next.t("common:°")}</span><br>`;
     } 
     if (App.userSettings.showTimeOfFlight){
-        subtextContent += "<span class=\"bearingPreview\">20.1" + i18next.t("common:s") +" </span><br>";
+        subtextContent += `<span class=bearingPreview>20.1${i18next.t("common:s")}</span><br>`;
     } 
     if (App.userSettings.showDistance){ 
-        subtextContent += "<span class=\"bearingPreview\">1145" + i18next.t("common:m") + "</span><br>";
+        subtextContent += `<span class=bearingPreview>1145${i18next.t("common:m")}</span><br>`;
     }
     if (App.userSettings.showHeight){ 
-        subtextContent += "<span class=\"bearingPreview\">+19" + i18next.t("common:m") +"</span><br>";
+        subtextContent += `<span class=bearingPreview>+19${i18next.t("common:m")}</span><br>`;
     } 
 
     $("#textPreview").html(subtextContent);

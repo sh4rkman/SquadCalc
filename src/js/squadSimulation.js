@@ -42,7 +42,7 @@ export default class Simulation {
 
             if (this.angleType === "high"){
                 this.div.find(".infTimeOfFlight").first().text(this.firingSolution.timeOfFlight.high.toFixed(1)+i18next.t("common:s"));
-                this.div.find(".infSpread").first().text("H:"+ this.firingSolution.spreadParameters.high.semiMajorAxis.toFixed(1) + i18next.t("common:m") + " V:"+ this.firingSolution.spreadParameters.high.semiMinorAxis.toFixed(1) + i18next.t("common:m"));
+                this.div.find(".infSpread").first().text(`H:${this.firingSolution.spreadParameters.high.semiMajorAxis.toFixed(1) + i18next.t("common:m")} V:${this.firingSolution.spreadParameters.high.semiMinorAxis.toFixed(1) + i18next.t("common:m")}`);
                 if (App.activeWeapon.unit === "mil"){
                     this.div.find(".infElevation").first().text(this.firingSolution.elevation.high.mil.toFixed(1)+"mil");
                 } else {
@@ -50,7 +50,7 @@ export default class Simulation {
                 }
             } else {
                 this.div.find(".infTimeOfFlight").first().text(this.firingSolution.timeOfFlight.low.toFixed(1)+i18next.t("common:s"));
-                this.div.find(".infSpread").first().text("H:"+ this.firingSolution.spreadParameters.low.semiMajorAxis.toFixed(1) + i18next.t("common:m") + " V:"+ this.firingSolution.spreadParameters.high.semiMinorAxis.toFixed(1) + i18next.t("common:m"));
+                this.div.find(".infSpread").first().text(`H:${this.firingSolution.spreadParameters.low.semiMajorAxis.toFixed(1) + i18next.t("common:m")} V:${this.firingSolution.spreadParameters.low.semiMinorAxis.toFixed(1) + i18next.t("common:m")}`);
                 if (App.activeWeapon.unit === "mil"){
                     this.div.find(".infElevation").first().text(this.firingSolution.elevation.low.mil.toFixed(1)+"mil");
                 } else {

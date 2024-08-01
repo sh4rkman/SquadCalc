@@ -31,7 +31,7 @@ export function loadLanguage() {
     });
 
     LANGUAGES.forEach(function(lng) {
-        LANG_SELECTOR.append("<option value=\"" + lng[0] + "\">" + lng[1] + "</option>");
+        LANG_SELECTOR.append(`<option value=${lng[0]}>${lng[1]}</option>`);
     });
 
     $(document).on("change", ".dropbtn4", function() { 

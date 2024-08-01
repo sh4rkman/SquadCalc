@@ -32,7 +32,7 @@ $(function() {
     loadWeapons();
     loadUI();
     showPage();
-    console.log("SquadCalc v" + packageInfo.version + " Loaded!");
+    console.log(`SquadCalc v${packageInfo.version} Loaded!`);
 });
 
 
@@ -51,7 +51,7 @@ function loadMapSelector() {
     
     // load maps into select2
     MAPS.forEach(function(map, i) {
-        MAP_SELECTOR.append("<option data-i18n=maps:" +  map.name + " value=\"" + i + "\"></option>");
+        MAP_SELECTOR.append(`<option data-i18n=maps:${map.name} value=${i}></option>`);
     });
 }
 
@@ -114,10 +114,10 @@ export function loadWeapons() {
     
 
     for (let i = 0; i < WEAPONSTYPE.length; i += 1) {
-        WEAPON_SELECTOR.append("<optgroup data-i18n-label=\"weapons:" + WEAPONSTYPE[i] + "\">");
+        WEAPON_SELECTOR.append(`<optgroup data-i18n-label=weapons:${WEAPONSTYPE[i]}>`);
         for (let y = 0; y < WEAPONSLENGTH; y += 1) {
             if (WEAPONS[y].type === WEAPONSTYPE[i]) {
-                WEAPON_SELECTOR.append("<option data-i18n=weapons:" + WEAPONS[y].name + " value=\"" + y + "\"></option>");
+                WEAPON_SELECTOR.append(`<option data-i18n=weapons:${WEAPONS[y].name} value=${y}></option>`);
             }
         }
         WEAPON_SELECTOR.append("</optgroup>");
