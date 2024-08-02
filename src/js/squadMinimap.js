@@ -1,4 +1,4 @@
-import { TileLayer, Map, CRS, svg, Util, LayerGroup, LatLngBounds, Popup } from "leaflet";
+import { TileLayer, Map, CRS, svg, Util, LayerGroup, Popup } from "leaflet";
 import squadGrid from "./squadGrid";
 import squadHeightmap from "./squadHeightmaps";
 import { App } from "./conf";
@@ -42,12 +42,13 @@ export var squadMinimap = Map.extend({
         Map.prototype.initialize.call(this, id, options);
         this.activeMap = defaultMap;
         this.tilesSize = tilesSize;
-        this.imageBounds = new LatLngBounds([0, 0], [-this.tilesSize, this.tilesSize]);
+        this.imageBounds = [{lat: 0, lng:0}, {lat: -this.tilesSize, lng: this.tilesSize}];
         this.layerGroup = new LayerGroup().addTo(this);
         this.markersGroup = new LayerGroup().addTo(this);
         this.activeTargetsMarkers = new LayerGroup().addTo(this);
         this.activeWeaponsMarkers = new LayerGroup().addTo(this);
         this.grid = "";
+        this.mousePos = "";
         this.mouseLocationPopup = new Popup({
             closeButton: false,
             className: "kpPopup",
@@ -55,6 +56,7 @@ export var squadMinimap = Map.extend({
             closeOnEscapeKey: false,
             offset: [0, 75],
             autoPan: false,
+            closeOnClick: false,
             interactive: false,
         });
         this.tileLayerOption = {
@@ -68,8 +70,10 @@ export var squadMinimap = Map.extend({
         this.on("dblclick", this._handleDoubleCkick, this);
         this.on("contextmenu", this._handleContextMenu, this);
         this.on("mouseout", this._handleMouseOut, this);
+
         if (App.userSettings.keypadUnderCursor){
             this.on("mousemove", this._handleMouseMove, this);
+            this.on("zoomend", this._handleZoom, this);
         }
 
     },
@@ -83,12 +87,13 @@ export var squadMinimap = Map.extend({
         this.mapToGameScale = this.activeMap.size / this.tilesSize;
 
         // Load Heightmap in canvas
-        this.heightmap = new squadHeightmap(this.imageBounds, this);
+        this.heightmap = new squadHeightmap(this);
 
         // remove existing grid and replace it
-        //if (this.grid) this.grid.remove();
+        if (this.grid) this.grid.remove();
         this.grid = new squadGrid(this);
-        this.grid.setBounds(new LatLngBounds([0, 0], [-this.tilesSize, this.tilesSize]));
+        this.grid .setBounds([[0,0], [-this.tilesSize, this.tilesSize]]);
+
         if (App.userSettings.grid) this.showGrid();
 
         // load map
@@ -181,10 +186,9 @@ export var squadMinimap = Map.extend({
      * Calculates the keypad coordinates for a given latlng coordinate, e.g. "A5-3-7"
      * @param lat - latitude coordinate
      * @param lng - longitude coordinate
-     * @param precision - wanted precision (optionnal)
      * @returns {string} keypad coordinates as string
      */
-    getKP: function(lat, lng, precision) {
+    getKP: function(lat, lng) {
         // to minimize confusion
         const x = lng;
         const y = lat;
@@ -194,18 +198,11 @@ export var squadMinimap = Map.extend({
         const s2 = 300 / 3 ** 2; // interval of second sub keypad
         const s3 = 300 / 3 ** 3; // interval of third sub keypad
         const s4 = 300 / 3 ** 4; // interval of third sub keypad
-
+        var precision = this.getZoom();
 
         // basic grid, e.g. B5
         const kpCharCode = 65 + Math.floor(x / kp);
-        let kpLetter;
-        // PostScriptum Arnhem Lane A->Z and then a->b letters fix
-        if (kpCharCode > 90) {
-            kpLetter = String.fromCharCode(kpCharCode + 6);
-        } else {
-            kpLetter = String.fromCharCode(kpCharCode);
-        }
-
+        let kpLetter = String.fromCharCode(kpCharCode);
 
         // sub keypad 1, e.g. B5 - 5
         // ok when we go down, we have 3x3 pads and start with the left most column, i.e. 7,4,1
@@ -235,10 +232,6 @@ export var squadMinimap = Map.extend({
         const sub4Y = Math.floor(y / s4) % 3;
         let sub4Number = 10 - (sub4Y + 1) * 3;
         sub4Number += Math.floor(x / s4) % 3;
-
-        if (!precision){
-            precision = App.minimap.getZoom();
-        }
 
         // The more the user zoom in, the more precise we display coords under mouse
         switch (precision){
@@ -296,6 +289,7 @@ export var squadMinimap = Map.extend({
             this.mouseLocationPopup.close();
             return;
         }
+
         this.mouseLocationPopup.setLatLng(e.latlng).openOn(this);
         this.mouseLocationPopup.setContent(`<p>${this.getKP(-e.latlng.lat * this.mapToGameScale, e.latlng.lng * this.mapToGameScale)}</p>`);
     },
@@ -341,6 +335,13 @@ export var squadMinimap = Map.extend({
      */
     _handleMouseOut: function() {
         this.mouseLocationPopup.close();
+    },
+
+    /**
+     * After each zoom, update keypadUnderMouse precision
+     */
+    _handleZoom: function() {
+        this.mouseLocationPopup.setContent(`<p>${this.getKP(-this.mouseLocationPopup._latlng.lat * this.mapToGameScale, this.mouseLocationPopup._latlng.lng * this.mapToGameScale)}</p>`);
     },
 
 });

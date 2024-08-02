@@ -1,7 +1,6 @@
 import { tooltip_save, tooltip_copied } from "./tooltips";
 import { App } from "./conf";
 import { animateCSS, animateCalc} from "./animations";
-import { LatLng } from "leaflet";
 import i18next from "i18next";
 import SquadFiringSolution from "./squadFiringSolution";
 
@@ -152,8 +151,8 @@ export function shoot(inputChanged = "") {
         return 1;
     }
 
-    aPos = new LatLng(-aPos.lng * App.minimap.gameToMapScale, aPos.lat * App.minimap.gameToMapScale);
-    bPos = new LatLng(-bPos.lng * App.minimap.gameToMapScale, bPos.lat * App.minimap.gameToMapScale);
+    aPos = {lat: -aPos.lng * App.minimap.gameToMapScale, lng: aPos.lat * App.minimap.gameToMapScale};
+    bPos = {lat: -bPos.lng * App.minimap.gameToMapScale, lng: bPos.lat * App.minimap.gameToMapScale};
 
     firingSolution = new SquadFiringSolution(aPos, bPos, App.minimap, 0);
 
@@ -171,19 +170,19 @@ export function shoot(inputChanged = "") {
 
     if (App.activeWeapon.getAngleType() === -1) {
         if (elevation > App.activeWeapon.minElevation[1]) {
-            showError("<span data-i18n='common:targetTooClose'>" + i18next.t("common:targetTooClose") + "</span> : " + firingSolution.distance.toFixed(0) + "<span data-i18n='common:m'>" + i18next.t("common:m") + "</span>", "target");
+            showError(`<span data-i18n=common:targetTooClose>${i18next.t("common:targetTooClose")}</span> : ${firingSolution.distance.toFixed(0)}<span data-i18n=common:m>${i18next.t("common:m")}</span>`, "target");
             return 1;
         }
     } else {
         if (elevation < App.activeWeapon.minElevation[0]) {
-            showError("<span data-i18n='common:targetTooClose'>" + i18next.t("common:targetTooClose") + "</span> : " + firingSolution.distance.toFixed(0) + "<span data-i18n='common:m'>" + i18next.t("common:m") + "</span>", "target");
+            showError(`<span data-i18n=common:targetTooClose>${i18next.t("common:targetTooClose")}</span> : ${firingSolution.distance.toFixed(0)}<span data-i18n=common:m>${i18next.t("common:m")}</span>`, "target");
             return 1;
         }  
     }
     
     // If Target too far, display it and exit function
     if (Number.isNaN(elevation)) {
-        showError("<span data-i18n='common:targetOutOfRange'>" + i18next.t("common:targetOutOfRange") + "</span> : " + firingSolution.distance.toFixed(0) + "<span data-i18n='common:m'>" + i18next.t("common:m") + "</span>", "target");
+        showError(`<span data-i18n=common:targetOutOfRange>${i18next.t("common:targetOutOfRange")}</span> : ${firingSolution.distance.toFixed(0)}<span data-i18n=common:m>${i18next.t("common:m")}</span>`, "target");
         return 1;
     }
 
@@ -390,7 +389,7 @@ export function resizeInput(i) {
     } else {
         $("#ruler").html(i.value);
     }
-    i.style.width = $("#ruler").width() * 1.05 + "px";
+    i.style.width = `${$("#ruler").width() * 1.05}px`;
 }
 
 /**
@@ -417,17 +416,17 @@ export function saveCalc() {
         $(".saved_list p").first().remove();
     }
     $(".saved_list").append(
-        "<p class='savedrow'>" +
-        "<input maxlength=\"20\" spellcheck='false' placeholder='" + encodeURI($("#target-location").val()) + "'class='friendlyname'></input>" +
-        "<span class=\"savespan\"> ➜ " +
-        $("#bearing").text() +
-        " - " +
-        $("#elevation").text() +
-        "&nbsp;&nbsp;" +
-        "</span><i class=\"fa fa-times-circle fa-fw del\" aria-hidden=\"true\"></i></p>");
+        `<p class=savedrow>
+            <input maxlength=20 spellcheck=false placeholder=${encodeURI($("#target-location").val())} class=friendlyname></input>
+            <span class=savespan> 
+                ➜ ${$("#bearing").text()} - ${$("#elevation").text()}
+            </span>
+            <i class="fa fa-times-circle fa-fw del" aria-hidden=true></i>
+        </p>`
+    );
 
     // resize the inserted input according the the placeholder length 
-    $(".saved_list p").find("input").last().width($("#target-location").val().length * 1.2 + "ch");
+    $(".saved_list p").find("input").last().width(`${$("#target-location").val().length * 1.2}ch`);
 
     // display it
     $("#saved").removeClass("hidden");
@@ -452,7 +451,7 @@ export function copyCalc(e) {
 
     animateCSS($(".copy"), "headShake");
 
-    copy($("#target-location").val() + " ➜ " + $("#bearing").text() + " - " + $("#elevation").text());
+    copy(`${$("#target-location").val()} ➜ ${$("#bearing").text()} - ${$("#elevation").text()}`);
 
     // the user understood he can click2copy, remove the tooltip
     localStorage.setItem("InfoToolTips_copy", true);

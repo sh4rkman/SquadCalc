@@ -15,7 +15,7 @@ tippy("#settings", {
     theme: "new",
     trigger: "manual",
     onShow(tip) {
-        tip.setContent("<i class=\"fa fa-check\"></i> " + i18next.t("tooltips:copied"));
+        tip.setContent(`<i class=fa fa-check></i>${i18next.t("tooltips:copied")}`);
         setTimeout(() => {
             tip.hide();
             tip.disable();

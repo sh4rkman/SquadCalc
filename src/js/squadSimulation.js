@@ -1,22 +1,23 @@
 import targetIcon from "../img/icons/marker_target_enabled.webp";
 import targetIconDisabled from "../img/icons/marker_target_disabled.webp";
-import { App } from "./conf.js";
 import i18next from "i18next";
 
 export default class Simulation {
 
-    constructor(div, firingSolution, heightPath, angleType, padding = 0.1) {
+    constructor(div, firingSolution, heightPath, angleType, activeWeaponUnit, padding = 0.1) {
         this.div = $(div);
         this.firingSolution = firingSolution;
         this.heightPath = heightPath;
         this.angleType = angleType;
         this.canvas = this.div.find("canvas").get(0);
+        this.ctx = this.canvas.getContext("2d");
         this.padding = padding * this.canvas.width;
         this.xScaling = ( this.canvas.width - ( 2 * this.padding ) ) / this.firingSolution.distance;
         this.yScaling = this.canvas.width/ this.firingSolution.distance;
         this.yOffset = this.getMinGround();
         this.animationFrame = "";
-
+        this.activeWeaponUnit = activeWeaponUnit;
+        
         this.buildTables();
         this.clear();
         this.drawGrid();
@@ -27,6 +28,9 @@ export default class Simulation {
         
     }
 
+    /**
+     * Populate the simulation table with info
+     */
     buildTables(){
         this.div.find(".infBearing").first().text(this.firingSolution.bearing.toFixed(1)+i18next.t("common:°"));
         this.div.find(".infDistance").first().text(this.firingSolution.distance.toFixed(1)+i18next.t("common:m"));
@@ -43,16 +47,16 @@ export default class Simulation {
             if (this.angleType === "high"){
                 this.div.find(".infTimeOfFlight").first().text(this.firingSolution.timeOfFlight.high.toFixed(1)+i18next.t("common:s"));
                 this.div.find(".infSpread").first().text(`H:${this.firingSolution.spreadParameters.high.semiMajorAxis.toFixed(1) + i18next.t("common:m")} V:${this.firingSolution.spreadParameters.high.semiMinorAxis.toFixed(1) + i18next.t("common:m")}`);
-                if (App.activeWeapon.unit === "mil"){
-                    this.div.find(".infElevation").first().text(this.firingSolution.elevation.high.mil.toFixed(1)+"mil");
+                if (this.activeWeaponUnit === "mil"){
+                    this.div.find(".infElevation").first().text(`${this.firingSolution.elevation.high.mil.toFixed(1)}mil`);
                 } else {
                     this.div.find(".infElevation").first().text(this.firingSolution.elevation.high.deg.toFixed(2)+i18next.t("common:°"));
                 }
             } else {
                 this.div.find(".infTimeOfFlight").first().text(this.firingSolution.timeOfFlight.low.toFixed(1)+i18next.t("common:s"));
                 this.div.find(".infSpread").first().text(`H:${this.firingSolution.spreadParameters.low.semiMajorAxis.toFixed(1) + i18next.t("common:m")} V:${this.firingSolution.spreadParameters.low.semiMinorAxis.toFixed(1) + i18next.t("common:m")}`);
-                if (App.activeWeapon.unit === "mil"){
-                    this.div.find(".infElevation").first().text(this.firingSolution.elevation.low.mil.toFixed(1)+"mil");
+                if (this.activeWeaponUnit === "mil"){
+                    this.div.find(".infElevation").first().text(`${this.firingSolution.elevation.low.mil.toFixed(1)}mil`);
                 } else {
                     this.div.find(".infElevation").first().text(this.firingSolution.elevation.low.deg.toFixed(2)+i18next.t("common:°"));
                 }
@@ -60,6 +64,10 @@ export default class Simulation {
         }
     }
 
+    /**
+     * Read the heightpath and determine the appropriate ground level to display 
+     * @return {number} Minimum ground
+     */
     getMinGround(){
         return ( 30 - Math.min(...this.heightPath) ) * this.yScaling;
     }
@@ -68,65 +76,53 @@ export default class Simulation {
      * Draw a grid on canvas representing distances
      */
     drawGrid(){
-        const ctx = this.canvas.getContext("2d");
         var step;
 
-        if (this.firingSolution.distance > 1200) {
-            step = 600;
-        }
-        else {
-            step = 300;
-        }
-
+        if (this.firingSolution.distance > 1200) { step = 600; } else { step = 300; }
 
         // One grey line every 100m on x
-        ctx.fillStyle = "lightgrey";
+        this.ctx.fillStyle = "lightgrey";
         for (let i= this.padding; i <this.canvas.width; i = i + 100 * this.xScaling){
-            ctx.fillRect(i, 0, 1, this.canvas.height);
+            this.ctx.fillRect(i, 0, 1, this.canvas.height);
         }
     
         // One black line every 300m on x
-        ctx.fillStyle = "#111";
+        this.ctx.fillStyle = "#111";
         for (let i= this.padding + step * this.xScaling; i <this.canvas.width; i = i + step * this.xScaling){
-            ctx.fillRect(i, 0, 1, this.canvas.height);
+            this.ctx.fillRect(i, 0, 1, this.canvas.height);
         }
     
         // One line every 50m on y
-        ctx.fillStyle = "lightgrey";
+        this.ctx.fillStyle = "lightgrey";
         for (let i = 0 + this.yOffset; i < this.canvas.height; i = i + 50 * this.yScaling){
-            ctx.fillRect(0, i, this.canvas.width, 1);
+            this.ctx.fillRect(0, i, this.canvas.width, 1);
         }
 
         // Flip the canvas first
-        ctx.translate(0, this.canvas.height);
-        ctx.scale(1, -1);
+        this.ctx.translate(0, this.canvas.height);
+        this.ctx.scale(1, -1);
 
         // One black line every 300m on x
-        ctx.fillStyle = "#111";
-        ctx.font = "14px Montserrat";
-        for (let i= this.padding; i <this.canvas.width; i = i + step * this.xScaling){
-            ctx.fillText( ( (i - this.padding ) / this.xScaling ).toFixed(0) + i18next.t("common:m"), i+5, 20);
+        this.ctx.fillStyle = "#111";
+        this.ctx.font = "14px Montserrat";
+        for (let i = this.padding; i <this.canvas.width; i = i + step * this.xScaling){
+            this.ctx.fillText( ( (i - this.padding ) / this.xScaling ).toFixed(0) + i18next.t("common:m"), i+5, 20);
         }
     
         // Flip it back
-        ctx.scale(1, -1);
-        ctx.translate(0, -this.canvas.height);
-
+        this.ctx.scale(1, -1);
+        this.ctx.translate(0, -this.canvas.height);
     }
 
     /**
-     * TODO
-     * @param {TODO} [TODO] - TODO
-     * @returns {TODO} - TODO
+     * Draw the ground in the canvas
      */
     drawGroundLevel(){
-        const ctx = this.canvas.getContext("2d");
         const xScaling = ( this.canvas.width - (2 * this.padding) ) / ( this.heightPath.length - 1 );
         const groundColor = "#111";
         var ground = new Path2D();
         
-        ctx.lineWidth = 1;
-
+        this.ctx.lineWidth = 1;
 
         this.heightPath.forEach(function(height, meter){
             let x = meter * xScaling + this.padding;
@@ -139,31 +135,25 @@ export default class Simulation {
         ground.lineTo(this.padding, 0);        
         ground.closePath();
     
-
-
-        ctx.fillStyle = groundColor;
-        ctx.fill(ground);
-        ctx.fillStyle = "#f2f2f2";
-        ctx.fillRect(0, 0, this.padding, this.canvas.height);
-        ctx.fillRect(this.canvas.width, 0, -this.padding, this.canvas.height);
-
+        this.ctx.fillStyle = groundColor;
+        this.ctx.fill(ground);
+        this.ctx.fillStyle = "#f2f2f2";
+        this.ctx.fillRect(0, 0, this.padding, this.canvas.height);
+        this.ctx.fillRect(this.canvas.width, 0, -this.padding, this.canvas.height);
     }
 
     /**
-     * TODO
-     * @param {TODO} [TODO] - TODO
-     * @returns {TODO} - TODO
+     * Draw Target Icon in the simulation canvas
      */
     drawCanvasIcons(){
-        const ctx = this.canvas.getContext("2d");
         const yScaling = this.canvas.width / this.firingSolution.distance;
         const IMG_WIDTH = 52;
         const IMG_HEIGHT = 64;
         const image = new Image(IMG_WIDTH, IMG_HEIGHT);
     
         // Flip the canvas first
-        ctx.translate(0, this.canvas.height);
-        ctx.scale(1, -1);
+        this.ctx.translate(0, this.canvas.height);
+        this.ctx.scale(1, -1);
                
         if (isNaN(this.firingSolution.elevation.high.rad)) {
             image.src = targetIconDisabled;
@@ -172,7 +162,7 @@ export default class Simulation {
             image.src = targetIcon;
         }
 
-        ctx.drawImage(
+        this.ctx.drawImage(
             image,
             this.canvas.width - this.padding - (IMG_WIDTH/2),
             this.canvas.height - (this.heightPath.at(-1) * yScaling) - IMG_HEIGHT - this.yOffset,
@@ -180,17 +170,15 @@ export default class Simulation {
             IMG_HEIGHT);
 
         // Flip it back
-        ctx.scale(1, -1);
-        ctx.translate(0, -this.canvas.height);
+        this.ctx.scale(1, -1);
+        this.ctx.translate(0, -this.canvas.height);
     }
 
     /**
-     * TODO
-     * @param {TODO} [TODO] - TODO
-     * @returns {TODO} - TODO
+     * Draw Trajectile projectory in the canvas
+     * @param {Function} [Callback] - Function to callback after projectile is drawn
      */
     drawTrajectory(callback) {
-        const ctx = this.canvas.getContext("2d");
         const G = this.firingSolution.gravity * this.yScaling;
         const FREQ = 20;
         var elevation;
@@ -218,10 +206,10 @@ export default class Simulation {
 
         if (isNaN(this.firingSolution.velocity)) return;
 
-        ctx.lineWidth = 5;
-        ctx.strokeStyle = "#b22222";
-        ctx.beginPath();
-        ctx.moveTo(oldX, oldY);
+        this.ctx.lineWidth = 5;
+        this.ctx.strokeStyle = "#b22222";
+        this.ctx.beginPath();
+        this.ctx.moveTo(oldX, oldY);
 
 
         function drawProjectile() {
@@ -234,12 +222,12 @@ export default class Simulation {
                 if (x > (this2.canvas.width - this2.padding)) {
                     x = this2.canvas.width - this2.padding;
                 }
-                ctx.lineTo(x, y);
-                ctx.stroke();
+                this2.ctx.lineTo(x, y);
+                this2.ctx.stroke();
                 callback(this2);
             } else {
-                ctx.lineTo(x, y);
-                ctx.stroke();
+                this2.ctx.lineTo(x, y);
+                this2.ctx.stroke();
                 oldX = x;
                 oldY = y;
                 this2.animationFrame = requestAnimationFrame(drawProjectile);
@@ -252,12 +240,10 @@ export default class Simulation {
 
         
     /**
-     * TODO
-     * @param {TODO} [TODO] - TODO
-     * @returns {TODO} - TODO
+     * Erase the canvas back to white
      */
     clear(){
-        this.canvas.getContext("2d").clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     }
 
 }

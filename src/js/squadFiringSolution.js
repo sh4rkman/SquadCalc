@@ -1,5 +1,4 @@
 import { App } from "./conf";
-import { LatLng } from "leaflet";
 
 export default class SquadFiringSolution {
 
@@ -16,18 +15,18 @@ export default class SquadFiringSolution {
         this.targetHeight = this.map.heightmap.getHeight(targetLatLng);
         this.heightDiff =  this.targetHeight - this.weaponHeight;
         this.elevation = {low: [], high: []};
-        this.elevation.low.rad = this.getElevation(this.distance, this.heightDiff, this.velocity, true);
+        this.elevation.low.rad = this.getElevation(this.distance, true);
         this.elevation.low.deg = this.radToDeg(this.elevation.low.rad);
         this.elevation.low.mil = this.radToMil(this.elevation.low.rad);
-        this.elevation.high.rad = this.getElevation(this.distance, this.heightDiff, this.velocity, false);
+        this.elevation.high.rad = this.getElevation(this.distance, false);
         this.elevation.high.deg = this.radToDeg(this.elevation.high.rad);
         this.elevation.high.mil = this.radToMil(this.elevation.high.rad);
         this.spreadParameters = {low: [], high: []};
-        this.spreadParameters.low = this.getSpreadParameter(this.elevation.low.rad, this.velocity);
-        this.spreadParameters.high = this.getSpreadParameter(this.elevation.high.rad, this.velocity);
+        this.spreadParameters.low = this.getSpreadParameter(this.elevation.low.rad);
+        this.spreadParameters.high = this.getSpreadParameter(this.elevation.high.rad);
         this.timeOfFlight = {low: [], high: []};
-        this.timeOfFlight.low = this.getTimeOfFlight(this.elevation.low.rad, this.velocity, this.heightDiff);
-        this.timeOfFlight.high = this.getTimeOfFlight(this.elevation.high.rad, this.velocity, this.heightDiff);
+        this.timeOfFlight.low = this.getTimeOfFlight(this.elevation.low.rad);
+        this.timeOfFlight.high = this.getTimeOfFlight(this.elevation.high.rad);
     }
 
 
@@ -37,9 +36,9 @@ export default class SquadFiringSolution {
      * @return {number} - distance in meter
      */
     getDist(){
-        const scaledWeaponLatLng = new LatLng(this.weaponLatLng.lng * this.map.mapToGameScale, this.weaponLatLng.lat * -this.map.mapToGameScale);
-        const scaledTargetLatLng = new LatLng(this.targetLatLng.lng * this.map.mapToGameScale, this.targetLatLng.lat * -this.map.mapToGameScale);
-        return Math.hypot(scaledWeaponLatLng.lat - scaledTargetLatLng.lat, scaledWeaponLatLng.lng - scaledTargetLatLng.lng);
+        const latDelta = (this.targetLatLng.lat - this.weaponLatLng.lat) * -this.map.mapToGameScale;
+        const lngDelta = (this.targetLatLng.lng - this.weaponLatLng.lng) * this.map.mapToGameScale;
+        return Math.hypot(latDelta, lngDelta);
     }
 
     /**
@@ -52,9 +51,9 @@ export default class SquadFiringSolution {
      * @param {boolean} [lowangle] - "high" or "low" angle
      * @returns {number || NaN} radian angle if target in range, NaN otherwise
     */
-    getElevation(dist = 0, vDelta = 0, vel = 0, lowangle = false) {
+    getElevation(dist = 0, lowangle = false) {
         var padding = 0;
-        const P1 = Math.sqrt(vel ** 4 - this.gravity * (this.gravity * dist ** 2 + 2 * vDelta * vel ** 2));
+        const P1 = Math.sqrt(this.velocity ** 4 - this.gravity * (this.gravity * dist ** 2 + 2 * this.heightDiff * this.velocity ** 2));
     
         if (App.activeWeapon.name==="Tech. Mortar"){
             // The technical mortar is bugged : the ingame range metter is off by 5°, Ugly fix until OWI correct it
@@ -62,10 +61,10 @@ export default class SquadFiringSolution {
         }
 
         if (lowangle) {
-            return padding + Math.atan((vel ** 2 - (P1)) / (this.gravity * dist));
+            return padding + Math.atan((this.velocity ** 2 - (P1)) / (this.gravity * dist));
         }
         else {
-            return padding + Math.atan((vel ** 2 + (P1)) / (this.gravity * dist));
+            return padding + Math.atan((this.velocity ** 2 + (P1)) / (this.gravity * dist));
         }
     }
 
@@ -75,23 +74,22 @@ export default class SquadFiringSolution {
      * @returns {number} - bearing required to see B from A
      */
     getBearing() {
-        const scaledWeaponLatLng = new LatLng(this.weaponLatLng.lng * this.map.mapToGameScale, this.weaponLatLng.lat * -this.map.mapToGameScale);
-        const scaledTargetLatLng = new LatLng(this.targetLatLng.lng * this.map.mapToGameScale, this.targetLatLng.lat * -this.map.mapToGameScale);
-        var bearing = Math.atan2(scaledTargetLatLng.lng - scaledWeaponLatLng.lng, scaledTargetLatLng.lat - scaledWeaponLatLng.lat) * 180 / Math.PI + 90;
+        const latDelta = (this.targetLatLng.lat - this.weaponLatLng.lat) * -this.map.mapToGameScale;
+        const lngDelta = (this.targetLatLng.lng - this.weaponLatLng.lng) * this.map.mapToGameScale;
+        var bearing = Math.atan2(latDelta, lngDelta) * 180 / Math.PI + 90;
         if (bearing < 0) { bearing += 360; } // Avoid Negative Angle by adding a whole rotation
         return bearing;
     }
 
     /**
      * Calculate Axises and angle for spread ellipse
-     * @param {number} [elevation] - Radians
-     * @param {number} [vel] - Weapon Velocity
+     * @param {number} [elevation] - Elevation angle in radian
      * @returns {object} [semiMajorAxis, semiMinorAxis, ellipseAngle]
      */
-    getSpreadParameter(elevation, vel){  
+    getSpreadParameter(elevation){  
         return  {
-            semiMajorAxis: this.getHorizontalSpread(elevation, vel, this.gravity),
-            semiMinorAxis: this.getVerticalSpread(elevation, vel),
+            semiMajorAxis: this.getHorizontalSpread(elevation, this.velocity, this.gravity),
+            semiMinorAxis: this.getVerticalSpread(elevation, this.velocity),
             ellipseAngle: (elevation * (180 / Math.PI))
         };
     }
@@ -100,12 +98,11 @@ export default class SquadFiringSolution {
      * Calculates the horizontal spread for a given trajectory path length 
      * https://github.com/sh4rkman/SquadCalc/wiki/Deducing-Spread#horizontal-spread
      * @param {number} [angle] - angle of the initial shot in radian
-     * @param {number} [vel] - initial mortar projectile velocity in m/s
      * @returns {number} - Length of horizontal spread in meters
      */
-    getHorizontalSpread(angle, velocity){
+    getHorizontalSpread(angle){
         var MOA = App.activeWeapon.moa / 60;
-        var p1 = 2 * Math.PI * this.getProjectilePathDistance(angle, velocity);
+        var p1 = 2 * Math.PI * this.getProjectilePathDistance(angle, this.velocity);
         var p2 = (MOA / 360) * p1;
 
         if (isNaN(p2)) { return 0; } 
@@ -116,12 +113,11 @@ export default class SquadFiringSolution {
      * Calculates the length of the projectile path in air, neglecting heights difference
      * https://en.wikipedia.org/wiki/Projectile_motion#Total_Path_Length_of_the_Trajectory
      * @param {number} [angle] - angle of the initial shot in radian
-     * @param {number} [vel] - initial mortar projectile velocity in m/s
      * @param {number} [gravity] - gravity applied to the projectile
      * @returns {number} - projectile path length in meters
      */
-    getProjectilePathDistance(angle, velocity){
-        const p1 = velocity**2 / this.gravity;
+    getProjectilePathDistance(angle){
+        const p1 = this.velocity**2 / this.gravity;
         const p2 = Math.sin(angle) + Math.cos(angle)**2 * Math.atanh(Math.sin(angle));
         return Math.abs(p1 * p2);
     }
@@ -131,13 +127,12 @@ export default class SquadFiringSolution {
      * to hit the target at the desired distance and vertical delta.
      * https://github.com/sh4rkman/SquadCalc/wiki/Deducing-Spread#vertical-spread
      * @param {number} [angle] - angle of the initial shot
-     * @param {number} [vel] - initial mortar projectile velocity in m/s
      * @returns {number} - vertical spread in meter
      */
-    getVerticalSpread(angle, vel){
+    getVerticalSpread(angle){
         const moa = this.degToRad((App.activeWeapon.moa / 2) / 60);
-        const verticalSpread1 = (vel ** 2 * Math.sin(2*(angle + moa))) / this.gravity;
-        const verticalSpread2  = (vel ** 2 * Math.sin(2*(angle - moa))) / this.gravity;
+        const verticalSpread1 = (this.velocity ** 2 * Math.sin(2*(angle + moa))) / this.gravity;
+        const verticalSpread2  = (this.velocity ** 2 * Math.sin(2*(angle - moa))) / this.gravity;
         const totalSpread = Math.abs(verticalSpread2 - verticalSpread1);
     
         if (isNaN(totalSpread)) {
@@ -150,12 +145,10 @@ export default class SquadFiringSolution {
     /**
      * Calculate the time of flight of the projectile
      * @param {number} [angle] - angle of the initial shot in radian
-     * @param {number} [vel] - initial mortar projectile velocity in m/s
-     * @param {number} [heightDiff] - difference between weapon and target in meters
      * @returns {number} - time of flight in seconds
      */
-    getTimeOfFlight(angle, vel, heightDiff){
-        const t = vel * Math.sin(angle) + Math.sqrt( (Math.pow(vel, 2) * Math.pow(Math.sin(angle), 2)) + (2 * this.gravity * -heightDiff));
+    getTimeOfFlight(angle){
+        const t = this.velocity * Math.sin(angle) + Math.sqrt( (Math.pow(this.velocity, 2) * Math.pow(Math.sin(angle), 2)) + (2 * this.gravity * -this.heightDiff));
         return t / this.gravity;
     }
 

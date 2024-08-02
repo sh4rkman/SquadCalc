@@ -219,12 +219,12 @@ export var squadWeaponMarker = squadMarker.extend({
         // Informations
 
         if (App.activeWeapon.name === "M1064 M121") {
-            name = name + " (" + $(".dropbtn3 option:selected" ).text() + ")";
+            name = `${name} (${$(".dropbtn3 option:selected" ).text()})`;
         }  
         
         $(".infName").first().text(i18next.t("weapons:"+name));
-        $(".infRange").first().text(App.activeWeapon.minDistance + i18next.t("common:m") + " - " + App.activeWeapon.maxDistance.toFixed(0) + i18next.t("common:m"));
-        $(".infMOA").first().text(App.activeWeapon.moa + " ("+ (App.activeWeapon.moa / 60).toFixed(1) + i18next.t("common:°") + ")");
+        $(".infRange").first().text(`${App.activeWeapon.minDistance + i18next.t("common:m")} - ${App.activeWeapon.maxDistance.toFixed(0) + i18next.t("common:m")}`);
+        $(".infMOA").first().text(`${App.activeWeapon.moa} (${(App.activeWeapon.moa / 60).toFixed(1) + i18next.t("common:°")})`);
         $(".infMinDistance").first().text(App.activeWeapon.minDistance + i18next.t("common:m"));
         $(".infMaxDistance").first().text(App.activeWeapon.maxDistance.toFixed(1) + i18next.t("common:m"));
         $(".inf100damage").first().text(App.activeWeapon.hundredDamageRadius.toFixed(1) + i18next.t("common:m"));
@@ -239,7 +239,7 @@ export var squadWeaponMarker = squadMarker.extend({
         if (["Tech.UB-32", "UB-32"].includes(App.activeWeapon.name)) {
             $(".infVelocity").first().text("300m/s");
         } else {
-            $(".infVelocity").first().text(App.activeWeapon.velocity + i18next.t("common:m") + "/" + i18next.t("common:s"));
+            $(".infVelocity").first().text(`${App.activeWeapon.velocity + i18next.t("common:m")}/${i18next.t("common:s")}`);
         }
 
         // Angle
@@ -404,8 +404,8 @@ export var squadTargetMarker = squadMarker.extend({
         if (this.map.activeWeaponsMarkers.getLayers().length === 2) {
             weaponPos = this.map.activeWeaponsMarkers.getLayers()[1].getLatLng();
             this.firingSolution2 = new SquadFiringSolution(weaponPos, this.getLatLng(), this.map, this.map.activeWeaponsMarkers.getLayers()[1].heightPadding);
-            this.calcMarker2.setContent("2." + this.getContent(this.firingSolution2, this.map.activeWeaponsMarkers.getLayers()[1].angleType)).openOn(this.map);
-            this.calcMarker1.setContent("1." + this.getContent(this.firingSolution1, this.map.activeWeaponsMarkers.getLayers()[0].angleType));
+            this.calcMarker1.setContent(`1. ${this.getContent(this.firingSolution1, this.map.activeWeaponsMarkers.getLayers()[0].angleType)}`);
+            this.calcMarker2.setContent(`2. ${this.getContent(this.firingSolution2, this.map.activeWeaponsMarkers.getLayers()[1].angleType)}`).openOn(this.map);
         }
 
         // Initiate Spread Ellipse
@@ -458,8 +458,9 @@ export var squadTargetMarker = squadMarker.extend({
         var elevation;
         var timeOfFlight;
 
+        // avoid -0
         if (Math.sign(heightDiff) === 1 || heightDiff == -0) {
-            heightDiff = "+" + Math.abs(heightDiff);
+            heightDiff = `+${Math.abs(heightDiff)}`;
         }
 
         if (angleType === "high"){
@@ -472,33 +473,32 @@ export var squadTargetMarker = squadMarker.extend({
         
         if (isNaN(elevation.rad)) {
             elevation = "---";
+            timeOfFlight = "---";
         } else {
             if (App.activeWeapon.unit === "mil"){
                 elevation = elevation.mil.toFixed(0);
             } else {
                 elevation = elevation.deg.toFixed(1);
             }
+            timeOfFlight = timeOfFlight.toFixed(1) + i18next.t("common:s");
         }
 
-        if (isNaN(timeOfFlight)) { timeOfFlight = "---";} 
-        else { timeOfFlight = timeOfFlight.toFixed(1) + i18next.t("common:s");}
-        
-        content = "<span class='calcNumber'></span></br><span>" + elevation + "</span>";
+        content = `<span class=calcNumber></span></br><span>${elevation}</span>`;
 
         if (App.userSettings.showBearing) {
-            content += "<br><span class='bearingUiCalc'>" +  BEARING.toFixed(1) + i18next.t("common:°") + "</span>";
+            content += `<br><span class=bearingUiCalc>${BEARING.toFixed(1) + i18next.t("common:°")}</span>`;
         }
 
         if (App.userSettings.showTimeOfFlight) {
-            content += "<br><span class='bearingUiCalc'>" + timeOfFlight + "</span>";
+            content += `<br><span class=bearingUiCalc>${timeOfFlight}</span>`;
         } 
 
         if (App.userSettings.showDistance) {
-            content += "<br><span class='bearingUiCalc'>" +  DIST.toFixed(0) + i18next.t("common:m") + "</span>";
+            content += `<br><span class=bearingUiCalc>${DIST.toFixed(0)}${i18next.t("common:m")}</span>`;
         }
-
+        
         if (App.userSettings.showHeight) {
-            content += "<br><span class='bearingUiCalc'>" +  heightDiff + i18next.t("common:m") + "</span>";
+            content += `<br><span class=bearingUiCalc>${heightDiff}${i18next.t("common:m")}</span>`;
         }
 
         return content;
@@ -507,46 +507,37 @@ export var squadTargetMarker = squadMarker.extend({
 
     updateSpread: function(){
         var spreadParameters;
-
+        var layers = this.map.activeWeaponsMarkers.getLayers();
+        var gameToMapScale = this.map.gameToMapScale;
+    
         // No spread wanted, return
         if (!App.userSettings.spreadRadius) {
             this.spreadMarker1.setStyle(this.spreadOptionsOff);
             this.spreadMarker2.setStyle(this.spreadOptionsOff);
             return;
         }
-
+    
+        const setSpreadMarker = (marker, firingSolution, layerIndex) => {
+            if (!isNaN(firingSolution.elevation.high.rad)) {
+                const angleType = layers[layerIndex].angleType;
+                spreadParameters = angleType === "high" ? firingSolution.spreadParameters.high : firingSolution.spreadParameters.low;
+                marker.setRadius([(spreadParameters.semiMajorAxis * gameToMapScale) / 2, (spreadParameters.semiMinorAxis * gameToMapScale) / 2]);
+                marker.setTilt(firingSolution.bearing);
+                marker.setStyle(this.spreadOptionsOn);
+            } else {
+                marker.setStyle(this.spreadOptionsOff);
+            }
+        };
+    
         // Spread for Weapon1
-        if (!isNaN(this.firingSolution1.elevation.high.rad)){
-            if (this.map.activeWeaponsMarkers.getLayers()[0].angleType === "high") {
-                spreadParameters = this.firingSolution1.spreadParameters.high;
-            } else {
-                spreadParameters = this.firingSolution1.spreadParameters.low;
-            }
-            this.spreadMarker1.setRadius([(spreadParameters.semiMajorAxis * this.map.gameToMapScale)/2, (spreadParameters.semiMinorAxis * this.map.gameToMapScale)/2]);
-            this.spreadMarker1.setTilt(this.firingSolution1.bearing);
-            this.spreadMarker1.setStyle(this.spreadOptionsOn);
-        } else {
-            this.spreadMarker1.setStyle(this.spreadOptionsOff);
-        }
-        this.spreadMarker2.setStyle(this.spreadOptionsOff);
-        
+        setSpreadMarker(this.spreadMarker1, this.firingSolution1, 0);
+    
         // Spread for Weapon2
-        if (this.map.activeWeaponsMarkers.getLayers().length === 2) {
-            if (isNaN(this.firingSolution2.elevation.high.rad)) {
-                this.spreadMarker2.setStyle(this.spreadOptionsOff);
-                return;
-            }
-
-            if (this.map.activeWeaponsMarkers.getLayers()[1].angleType === "high") {
-                spreadParameters = this.firingSolution2.spreadParameters.high;
-            } else {
-                spreadParameters = this.firingSolution2.spreadParameters.low;
-            }
-            this.spreadMarker2.setRadius([(spreadParameters.semiMajorAxis * this.map.gameToMapScale)/2, (spreadParameters.semiMinorAxis * this.map.gameToMapScale)/2]);
-            this.spreadMarker2.setTilt(this.firingSolution2.bearing);
-            this.spreadMarker2.setStyle(this.spreadOptionsOn);
+        if (layers.length === 2) {
+            setSpreadMarker(this.spreadMarker2, this.firingSolution2, 1);
+        } else {
+            this.spreadMarker2.setStyle(this.spreadOptionsOff);
         }
-
     },
 
     updateDamageRadius: function(){
@@ -636,8 +627,8 @@ export var squadTargetMarker = squadMarker.extend({
 
         if (this.map.activeWeaponsMarkers.getLayers().length === 2) {
             this.firingSolution2 = new SquadFiringSolution(this.map.activeWeaponsMarkers.getLayers()[1].getLatLng(), this.getLatLng(), this.map, this.map.activeWeaponsMarkers.getLayers()[1].heightPadding);
-            this.calcMarker2.setContent("2." + this.getContent(this.firingSolution2, this.map.activeWeaponsMarkers.getLayers()[1].angleType)).openOn(this.map);
-            this.calcMarker1.setContent("1." + this.getContent(this.firingSolution1, this.map.activeWeaponsMarkers.getLayers()[0].angleType));
+            this.calcMarker1.setContent(`1. ${this.getContent(this.firingSolution1, this.map.activeWeaponsMarkers.getLayers()[0].angleType)}`);
+            this.calcMarker2.setContent(`2. ${this.getContent(this.firingSolution2, this.map.activeWeaponsMarkers.getLayers()[1].angleType)}`).openOn(this.map);
         } else {
             this.calcMarker2.close();
         }
@@ -664,14 +655,14 @@ export var squadTargetMarker = squadMarker.extend({
 
         weaponPos1 = this.map.activeWeaponsMarkers.getLayers()[0].getLatLng();
         heightPath1 = this._map.heightmap.getHeightPath(weaponPos1, this.getLatLng());
-        simulation1 = new SquadSimulation("#sim1", this.firingSolution1, heightPath1, this.map.activeWeaponsMarkers.getLayers()[0].angleType);
+        simulation1 = new SquadSimulation("#sim1", this.firingSolution1, heightPath1, this.map.activeWeaponsMarkers.getLayers()[0].angleType, App.activeWeapon.unit);
         $("#canvasControls").css("display", "none");
 
         if (this.map.activeWeaponsMarkers.getLayers().length === 2){
             $("#canvasControls").css("display", "block");
             weaponPos2 = this.map.activeWeaponsMarkers.getLayers()[1].getLatLng();
             heightPath2 = this._map.heightmap.getHeightPath(weaponPos2, this.getLatLng());
-            simulation2 = new SquadSimulation("#sim2", this.firingSolution2, heightPath2, this.map.activeWeaponsMarkers.getLayers()[1].angleType);
+            simulation2 = new SquadSimulation("#sim2", this.firingSolution2, heightPath2, this.map.activeWeaponsMarkers.getLayers()[1].angleType, App.activeWeapon.unit);
         }
 
         // If the user close the modal, stop the animation
