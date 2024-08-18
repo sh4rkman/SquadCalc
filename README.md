@@ -45,7 +45,7 @@ This tool facilitates rapid mortar calculations through two distinct modes:
 
 <div align="center">
 
-  ![image](./src/img/github/desktop_ui.webp)
+  ![image](./src/img/github/desktop_ui_1.webp)
   ![image](./src/img/github/desktop_ui_2.webp)
   ![image](./src/img/github/desktop_ui_3.webp)
   ![image](./src/img/github/desktop_ui_4.webp)
