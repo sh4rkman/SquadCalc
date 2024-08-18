@@ -1,3 +1,14 @@
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **28.0.5** *(2024-08-18)*
+
+<img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed some translations not updating when switching language on settings dialog 
+
+<img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed M1064 shell name not appearing on weapon dialog  
+
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> (huge) Code reworking
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
+
 # <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **28.0.4** *(2024-07-31)*
 
 <img src="https://img.shields.io/badge/-%20fix%20-orange"> Added missing translations on legacy mode

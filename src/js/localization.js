@@ -1,15 +1,11 @@
 import i18next from "i18next";
 import HttpApi from "i18next-http-backend";
-import { App } from "./conf.js";
-import { updatePreview } from "./settings.js";
-
 
 /**
  * Update every label with the correct localization text
  */
-export function loadLanguage() {
+export function loadLanguage(LANGUAGES) {
     const LANG_SELECTOR = $(".dropbtn4");
-    const LANGUAGES = App.supportedLanguages;
 
     i18next.use(HttpApi).init({
         fallbackLng: false,
@@ -20,7 +16,7 @@ export function loadLanguage() {
         }
     }, function(err) {
         if (err) return console.error(err);
-        getLanguage();
+        getLanguage(LANGUAGES);
     });
 
 
@@ -31,7 +27,7 @@ export function loadLanguage() {
     });
 
     LANGUAGES.forEach(function(lng) {
-        LANG_SELECTOR.append("<option value=\"" + lng[0] + "\">" + lng[1] + "</option>");
+        LANG_SELECTOR.append(`<option value=${lng[0]}>${lng[1]}</option>`);
     });
 
     $(document).on("change", ".dropbtn4", function() { 
@@ -45,9 +41,9 @@ export function loadLanguage() {
  * Find what language to use
  * Priority Order : LocalStorage > navigator.language > English
  */
-function getLanguage(){
+function getLanguage(LANGUAGES){
     const browserLanguage = navigator.language.split("-")[0].toLowerCase();
-    const supportedLanguagesCodes = App.supportedLanguages.map(pair => pair[0]);
+    const supportedLanguagesCodes = LANGUAGES.map(pair => pair[0]);
     var language = localStorage.getItem("settings-language");
 
     // If nothing in localstorage, try to find what language navigator is using
@@ -83,9 +79,6 @@ function updateContent() {
             }
         });
     });
-
-    App.minimap.updateTargets();
-    updatePreview();
 
     $(".dropbtn").select2("destroy").select2({
         dropdownCssClass: "dropbtn",

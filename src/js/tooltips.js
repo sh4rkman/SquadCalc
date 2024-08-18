@@ -15,7 +15,7 @@ tippy("#settings", {
     theme: "new",
     trigger: "manual",
     onShow(tip) {
-        tip.setContent("<i class=\"fa fa-check\"></i> " + i18next.t("tooltips:copied"));
+        tip.setContent(`<i class=fa fa-check></i>${i18next.t("tooltips:copied")}`);
         setTimeout(() => {
             tip.hide();
             tip.disable();
@@ -32,7 +32,7 @@ tippy("#bearingNum", {
     touch: false,
     theme: "results",
     onShow(tip) {
-        tip.setContent(i18next.t("tooltips:bearing") + "</br><span class=\"tooltipsubtext\">" + i18next.t("tooltips:whereToAim") + "</span>");
+        tip.setContent(`${i18next.t("tooltips:bearing")}</br><span class=tooltipsubtext>${i18next.t("tooltips:whereToAim")}</span>`);
     },
 });
 
@@ -82,7 +82,7 @@ tippy("#elevationNum", {
     touch: false,
     theme: "results",
     onShow(tip) {
-        tip.setContent(i18next.t("tooltips:elevation") + "</br> <span class=\"tooltipsubtext\">" + i18next.t("tooltips:howFar") + "</span>");
+        tip.setContent(`${i18next.t("tooltips:elevation")}</br><span class=tooltipsubtext>${i18next.t("tooltips:howFar")}</span>`);
     },
 });
 
@@ -94,7 +94,7 @@ tippy("#savebutton i", {
     theme: "results",
     touch: false,
     onShow(tip) {
-        tip.setContent(i18next.t("tooltips:save") + "</br> <span class=\"tooltipsubtext\">" + i18next.t("tooltips:resultLater") + "</span>");
+        tip.setContent(`${i18next.t("tooltips:save")}</br><span class=tooltipsubtext> ${i18next.t("tooltips:resultLater")}</span>`);
     },
 });
 tooltip_save = document.querySelector("#savebutton i")._tippy;

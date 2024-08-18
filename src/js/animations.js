@@ -1,4 +1,4 @@
-import { App } from "./conf";
+import { App } from "../app";
 import LeaderLine from "leader-line-new";
 
 
@@ -81,11 +81,11 @@ export function explode(x, y, startAngle, endAngle) {
     let ctx = c.getContext("2d");
 
     c.style.position = "absolute";
-    c.style.left = (x - 100) + "px";
-    c.style.top = (y - 100) + "px";
+    c.style.left = `${x - 100}px`;
+    c.style.top = `${y - 100}px`;
     c.style.pointerEvents = "none";
-    c.style.width = 200 + "px";
-    c.style.height = 200 + "px";
+    c.style.width = `${200}px`;
+    c.style.height = `${200}px`;
     c.style.zIndex = 100;
     c.width = 200 * ratio;
     c.height = 200 * ratio;

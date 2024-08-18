@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { LatLngBounds, Path, Canvas, SVG, Util, Point, Bounds } from "leaflet";
+import { Path, Canvas, SVG, Util, Point, Bounds } from "leaflet";
 
 
 export var ellipse = function (latlng, radii, tilt, options) {
@@ -65,9 +65,10 @@ var Ellipse = Path.extend({
             latRadius = this._getLatRadius(),
             latlng = this._latlng;
 
-        return new LatLngBounds(
+        return [
             [latlng.lat - latRadius, latlng.lng - lngRadius],
-            [latlng.lat + latRadius, latlng.lng + lngRadius]);
+            [latlng.lat + latRadius, latlng.lng + lngRadius]
+        ];
     },
 
     // @method setLatLng(latLng: LatLng): this
@@ -188,10 +189,7 @@ SVG.include ({
         var phi = layer._tiltDeg;
         var endPoint = layer._endPointParams;
 
-        var d = "M" + endPoint.x0 + "," + endPoint.y0 +
-            "A" + rx + "," + ry + "," + phi + "," +
-            endPoint.largeArc + "," + endPoint.sweep + "," +
-            endPoint.x1 + "," + endPoint.y1 + " z";
+        var d = `M${endPoint.x0},${endPoint.y0}A${rx},${ry},${phi},${endPoint.largeArc},${endPoint.sweep},${endPoint.x1},${endPoint.y1} z`;
         this._setPath(layer, d);
     }
 });
@@ -229,4 +227,3 @@ Canvas.include ({
         this._fillStroke(ctx, layer);
     },
 });
-

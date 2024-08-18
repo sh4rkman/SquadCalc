@@ -61,7 +61,7 @@ function calc() {
 
 
 console.log("--------------------------");
-console.log("Max distance: " + maxDistance + "m");
+console.log(`Max distance: ${maxDistance}m`);
 console.log("--------------------------");
 
 console.log("|DISTANCE|  DEGREE  |");

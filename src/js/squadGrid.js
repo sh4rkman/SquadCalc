@@ -8,7 +8,7 @@
  */
 
 import {
-    LayerGroup, Util, LatLng, Polyline, Marker, DivIcon
+    LayerGroup, Util, Polyline, Marker, DivIcon, LatLngBounds
 } from "leaflet";
 
 
@@ -68,7 +68,7 @@ export default LayerGroup.extend({
    * @param {LatLngBounds} bounds
    */
     setBounds(bounds) {
-        this.bounds = bounds;
+        this.bounds = new LatLngBounds(bounds[0], bounds[1]);
         if (this.map) {
             this.redraw();
             this.updateLineOpacity();
@@ -199,8 +199,8 @@ export default LayerGroup.extend({
         const endX = this.bounds.getEast();
 
         for (let x = startX, z = 0; x <= endX; x += interval) {
-            const bot = new LatLng(this.bounds.getSouth(), x);
-            const top = new LatLng(this.bounds.getNorth(), x);
+            const bot = {lat: this.bounds.getSouth(), lng: x};
+            const top = {lat: this.bounds.getNorth(), lng: x};
 
             // checking which style to use for the current line
             // style is decided by whether or not current line is multiple of which (sub-) keypad interval
@@ -211,7 +211,7 @@ export default LayerGroup.extend({
                 this.kpLines.push(new Polyline([bot, top], this.lineStyleKP));
 
                 // Create
-                let top2 = new LatLng(this.bounds.getNorth(), x-(kp/2));
+                let top2 = {lat: this.bounds.getNorth(), lng: x-(kp/2)};
 
                 if (x!=0) {
                     this.labels.push(new Marker(top2, {
@@ -241,12 +241,12 @@ export default LayerGroup.extend({
         const endY = Math.floor(this.bounds.getSouth() / interval) * interval;
 
         for (let y = startY, z = 0; y >= endY; y -= interval) {
-            const left = new LatLng(y, this.bounds.getWest());
-            const right = new LatLng(y, this.bounds.getEast());
+            const left = {lat: y, lng: this.bounds.getWest()};
+            const right = {lat: y, lng: this.bounds.getEast()};
 
 
             if (this.isMultiple(kp, y)) {
-                let textPos = new LatLng(y+(kp/2), this.bounds.getWest());
+                let textPos = {lat: y+(kp/2), lng: this.bounds.getWest()};
                 this.kpLines.push(new Polyline([left, right], this.lineStyleKP));
 
                 if (y!=0){ // skip first label

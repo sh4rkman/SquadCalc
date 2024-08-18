@@ -45,12 +45,12 @@ module.exports = {
             patterns: [
               { from: "./src/img/github/", to: "./src/img/github/" },
             ],
-          }),
+        }),
         new WebpackPwaManifest({
           name: 'SquadCalc',
           short_name: 'SquadCalc',
           start_url: "/",
-          description: 'A Minimalist Mortar Calculator',
+          description: 'A Complete Mortar Calculator for Squad',
           background_color: '#111111',
           publicPath : './',
           fingerprints: false,
@@ -88,25 +88,39 @@ module.exports = {
               "label": "Minimalist/keyboard friendly calculator"
             },
             {
-              "src": "./src/img/github/desktop_ui.webp",
-              "sizes": "601x426",
+              "src": "./src/img/github/desktop_ui_1.webp",
+              "sizes": "799x553",
               "type": "image/webp",
               "form_factor": "wide",
-              "label": "Map View"
+              "label": "Map Mode"
+            },
+            {
+              "src": "./src/img/github/desktop_ui_0.webp",
+              "sizes": "791x547",
+              "type": "image/webp",
+              "form_factor": "wide",
+              "label": "Legacy Mode"
             },
             {
               "src": "./src/img/github/desktop_ui_2.webp",
-              "sizes": "601x426",
+              "sizes": "786x544",
               "type": "image/webp",
               "form_factor": "wide",
               "label": "Topographic maps"
-            },
+            },           
             {
-              "src": "./src/img/github/desktop.webp",
-              "sizes": "601x426",
+              "src": "./src/img/github/desktop_ui_3.webp",
+              "sizes": "799x553",
               "type": "image/webp",
               "form_factor": "wide",
-              "label": "Minimalist/keyboard friendly calculator"
+              "label": "Weapon Stats"
+            },
+            {
+              "src": "./src/img/github/desktop_ui_4.webp",
+              "sizes": "799x553",
+              "type": "image/webp",
+              "form_factor": "wide",
+              "label": "Target Stats"
             },
           ]
         }),

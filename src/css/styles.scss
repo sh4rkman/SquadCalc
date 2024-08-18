@@ -702,6 +702,10 @@ footer {
 
 .tippy-box {
     &[data-theme~='new'] {
+        background-color: $newColor;
+        color: $mainTxtColor;
+        font-weight: bold;
+        letter-spacing: 0.1rem;
         &[data-placement^='top']>.tippy-arrow::before {
             border-top-color: $newColor;
         }
@@ -714,10 +718,6 @@ footer {
         &[data-placement^='right']>.tippy-arrow::before {
             border-right-color: $newColor;
         }
-        background-color: $newColor;
-        color: $mainTxtColor;
-        font-weight: bold;
-        letter-spacing: 0.1rem;
     }
     &[data-theme~="results"] .tippy-content {
         font-size: 1.4em;
@@ -726,6 +726,7 @@ footer {
         font-weight: bold;
     }
     &[data-theme~='fab'] {
+        background-color: $mainColor;
         &[data-placement^='top']>.tippy-arrow::before {
             border-top-color: $mainColor;
         }
@@ -738,7 +739,6 @@ footer {
         &[data-placement^='right']>.tippy-arrow::before {
             border-right-color: $mainColor;
         }
-        background-color: $mainColor;
     }
     &[data-theme~='preview'] {
         @extend %text-outline;

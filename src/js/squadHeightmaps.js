@@ -1,15 +1,14 @@
-import { LatLng } from "leaflet";
-import { shoot } from "./utils";
+import { App } from "../app";
 
 export default class SquadHeightmap {
 
     /**
-     * Initialize heightmap layer
+     * Initialize heightmap Canvas
      * @param {string} [url] - heightmap URL
      * @param {Array} [options]
      * @param {L.map} [map]
      */
-    constructor(bounds, map) {
+    constructor(map) {
         var img = new Image();
         this.map = map;
         this.canvas = document.getElementById("canvas");
@@ -18,17 +17,18 @@ export default class SquadHeightmap {
         this.canvas.width = 1000;
         this.heightmapScaling = this.canvas.height / this.map.tilesSize;
 
-        img.src = "maps"+ this.map.activeMap.mapURL + "heightmap.webp";
+        img.src = `maps${this.map.activeMap.mapURL}heightmap.webp`;
         img.onload = (function(heightmap){
             return function() {
                 heightmap.ctx.drawImage(img, 0, 0, heightmap.canvas.width, heightmap.canvas.height);
-                shoot();
+                App.shoot();
             };
         })(this);
     }
 
     /**
      * Calculate heights for a given LatLng Point
+     * https://github.com/sh4rkman/SquadCalc/wiki/Deducing-Altitude
      * @param {LatLng} [latlng] - LatLng Point
      * @returns {integer} - height in meters
      */
@@ -42,12 +42,12 @@ export default class SquadHeightmap {
      * Calculate a path of heights between two points
      * @param {LatLng} [mortarLatlng] - LatLng Point
      * @param {LatLng} [targetLatlng] - LatLng Point
-     * @returns {Array} - containing all the heights between mortarLatlng and targetLatlng in meters
+     * @returns {Array} - Array containing all the Heights between weapon and Target in meters
      */
     getHeightPath(mortarLatlng, targetLatlng, STEP = 100) {
         var heightPath = [];
-        var start = new LatLng(mortarLatlng.lat, mortarLatlng.lng);
-        var end = new LatLng(targetLatlng.lat, targetLatlng.lng);
+        var start = {lat: mortarLatlng.lat, lng: mortarLatlng.lng};
+        var end = {lat:targetLatlng.lat, lng:targetLatlng.lng};
         var latDiff =  end.lat - start.lat;
         var lngDiff =  end.lng - start.lng;
         
