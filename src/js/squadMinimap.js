@@ -1,7 +1,7 @@
 import { TileLayer, Map, CRS, svg, Util, LayerGroup, Popup } from "leaflet";
 import squadGrid from "./squadGrid";
 import squadHeightmap from "./squadHeightmaps";
-import { App } from "./conf";
+import { App } from "../app";
 import { squadWeaponMarker, squadTargetMarker } from "./squadMarker";
 import { mortarIcon, mortarIcon1, mortarIcon2 } from "./squadIcon";
 import { explode } from "./animations";

@@ -227,4 +227,3 @@ Canvas.include ({
         this._fillStroke(ctx, layer);
     },
 });
-

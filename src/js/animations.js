@@ -1,4 +1,4 @@
-import { App } from "./conf";
+import { App } from "../app";
 import LeaderLine from "leader-line-new";
 
 

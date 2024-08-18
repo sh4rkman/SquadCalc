@@ -1,4 +1,4 @@
-import { shoot } from "./utils";
+import { App } from "../app";
 
 export default class SquadHeightmap {
 
@@ -21,7 +21,7 @@ export default class SquadHeightmap {
         img.onload = (function(heightmap){
             return function() {
                 heightmap.ctx.drawImage(img, 0, 0, heightmap.canvas.width, heightmap.canvas.height);
-                shoot();
+                App.shoot();
             };
         })(this);
     }

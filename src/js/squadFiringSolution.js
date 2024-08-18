@@ -1,4 +1,4 @@
-import { App } from "./conf";
+import { App } from "../app";
 
 export default class SquadFiringSolution {
 
@@ -101,7 +101,7 @@ export default class SquadFiringSolution {
      * @returns {number} - Length of horizontal spread in meters
      */
     getHorizontalSpread(angle){
-        var MOA = App.activeWeapon.moa / 60;
+        var MOA = App.activeWeapon.moa / 60; // convert moa to degree
         var p1 = 2 * Math.PI * this.getProjectilePathDistance(angle, this.velocity);
         var p2 = (MOA / 360) * p1;
 
@@ -144,6 +144,7 @@ export default class SquadFiringSolution {
 
     /**
      * Calculate the time of flight of the projectile
+     * https://github.com/sh4rkman/SquadCalc/wiki/Deducing-Time-Of-Flight
      * @param {number} [angle] - angle of the initial shot in radian
      * @returns {number} - time of flight in seconds
      */

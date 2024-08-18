@@ -1,4 +1,4 @@
-import { App } from "./conf";
+import { App } from "../app";
 import { tooltip_coordPreview } from "./tooltips.js";
 import i18next from "i18next";
 
@@ -35,8 +35,6 @@ export function loadSettings(){
         $(".cursorChoiceSettings").hide();
         App.userSettings.keypadUnderCursor = false;
     }
-
-
 
     if (setting === null || setting === ""){
         setting = "basemap";
@@ -88,6 +86,24 @@ export function loadSettings(){
         $(".default").css("cursor", "crosshair");
         $(".crosshair").css("cursor", "crosshair");        
     }
+
+    // Add Events Listeners on cog button
+    // Open Settings
+    $(document).on("click", "#fabCheckbox", function() {
+        updatePreview();
+        $("#helpDialog")[0].showModal();
+    });
+
+    const helpDialog = document.querySelector("#helpDialog");
+    $("#helpDialog").on("click", function(event) {
+        var rect = helpDialog.getBoundingClientRect();
+        var isInDialog = (rect.top <= event.clientY && event.clientY <= rect.top + rect.height &&
+        rect.left <= event.clientX && event.clientX <= rect.left + rect.width);
+        if (!isInDialog) {
+            helpDialog.close();
+        }
+    });
+
 }
 
 
@@ -115,16 +131,16 @@ export function updatePreview(){
     subtextContent = "<span>1345</span><br>";
 
     if (App.userSettings.showBearing){ 
-        subtextContent += `<span class=bearingPreview>241.5${i18next.t("common:°")}</span><br>`;
+        subtextContent += `<span class=bearingPreview>241.5<span data-i18n="common:°">${i18next.t("common:°")}</span></span><br>`;
     } 
     if (App.userSettings.showTimeOfFlight){
-        subtextContent += `<span class=bearingPreview>20.1${i18next.t("common:s")}</span><br>`;
+        subtextContent += `<span class=bearingPreview>20.1<span data-i18n="common:s">${i18next.t("common:s")}</span></span><br>`;
     } 
     if (App.userSettings.showDistance){ 
-        subtextContent += `<span class=bearingPreview>1145${i18next.t("common:m")}</span><br>`;
+        subtextContent += `<span class=bearingPreview>1145<span data-i18n="common:m">${i18next.t("common:m")}</span></span><br>`;
     }
     if (App.userSettings.showHeight){ 
-        subtextContent += `<span class=bearingPreview>+19${i18next.t("common:m")}</span><br>`;
+        subtextContent += `<span class=bearingPreview>+19<span data-i18n="common:m">${i18next.t("common:m")}</span></span><br>`;
     } 
 
     $("#textPreview").html(subtextContent);

@@ -1,17 +1,10 @@
-import { Marker, Circle, CircleMarker, Popup} from "leaflet";
+import { App } from "../app";
 import { ellipse } from "./ellipse";
-import { App } from "./conf";
+import { Marker, Circle, CircleMarker, Popup, Browser} from "leaflet";
+import { targetIcon1, targetIconAnimated1, targetIconDisabled } from "./squadIcon";
 import SquadSimulation from "./squadSimulation";
 import SquadFiringSolution from "./squadFiringSolution";
-import { isTouchDevice } from "./utils";
 import i18next from "i18next";
-
-import { 
-    targetIcon1,
-    targetIconAnimated1,
-    targetIconDisabled,
-} from "./squadIcon";
-
 
 /*
  * Global Squad Marker Class 
@@ -217,12 +210,13 @@ export var squadWeaponMarker = squadMarker.extend({
         $(".weaponIcon").first().attr("src", App.activeWeapon.logo);
 
         // Informations
-
-        if (App.activeWeapon.name === "M1064 M121") {
-            name = `${name} (${$(".dropbtn3 option:selected" ).text()})`;
-        }  
+        if (App.activeWeapon.name === "M1064M121") {
+            name = `${i18next.t("weapons:"+name)} (${$(".dropbtn3 option:selected" ).text()})`;
+        }  else {
+            name = `${i18next.t("weapons:"+name)}`;
+        }
         
-        $(".infName").first().text(i18next.t("weapons:"+name));
+        $(".infName").first().text(name);
         $(".infRange").first().text(`${App.activeWeapon.minDistance + i18next.t("common:m")} - ${App.activeWeapon.maxDistance.toFixed(0) + i18next.t("common:m")}`);
         $(".infMOA").first().text(`${App.activeWeapon.moa} (${(App.activeWeapon.moa / 60).toFixed(1) + i18next.t("common:°")})`);
         $(".infMinDistance").first().text(App.activeWeapon.minDistance + i18next.t("common:m"));
@@ -480,13 +474,13 @@ export var squadTargetMarker = squadMarker.extend({
             } else {
                 elevation = elevation.deg.toFixed(1);
             }
-            timeOfFlight = timeOfFlight.toFixed(1) + i18next.t("common:s");
+            timeOfFlight = `${timeOfFlight.toFixed(1)}<span data-i18n="common:m">${i18next.t("common:s")}</span>`;
         }
 
         content = `<span class=calcNumber></span></br><span>${elevation}</span>`;
 
         if (App.userSettings.showBearing) {
-            content += `<br><span class=bearingUiCalc>${BEARING.toFixed(1) + i18next.t("common:°")}</span>`;
+            content += `<br><span class=bearingUiCalc>${BEARING.toFixed(1)}<span data-i18n="common:°">${i18next.t("common:°")}</span></span>`;
         }
 
         if (App.userSettings.showTimeOfFlight) {
@@ -494,11 +488,11 @@ export var squadTargetMarker = squadMarker.extend({
         } 
 
         if (App.userSettings.showDistance) {
-            content += `<br><span class=bearingUiCalc>${DIST.toFixed(0)}${i18next.t("common:m")}</span>`;
+            content += `<br><span class=bearingUiCalc>${DIST.toFixed(0)}<span data-i18n="common:m">${i18next.t("common:m")}</span></span>`;
         }
         
         if (App.userSettings.showHeight) {
-            content += `<br><span class=bearingUiCalc>${heightDiff}${i18next.t("common:m")}</span>`;
+            content += `<br><span class=bearingUiCalc>${heightDiff}<span data-i18n="common:m">${i18next.t("common:m")}</span></span>`;
         }
 
         return content;
@@ -692,7 +686,7 @@ export var squadTargetMarker = squadMarker.extend({
 
         // Update bearing/elevation/spread marker
         // On mobile, save performance
-        if (!isTouchDevice()){
+        if (Browser.pointer){
             this.updateCalc();
         }
  
@@ -704,7 +698,7 @@ export var squadTargetMarker = squadMarker.extend({
         this.map.mouseLocationPopup.close();
         this.map.off("mousemove", this.map._handleMouseMove);
 
-        if (isTouchDevice()){
+        if (!Browser.pointer){
             this.calcMarker1.setContent("  ");
             this.calcMarker2.setContent("  ");
             this.spreadMarker1.setStyle({opacity: 0, fillOpacity: 0});

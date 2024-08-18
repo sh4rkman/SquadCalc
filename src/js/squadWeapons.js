@@ -1,4 +1,5 @@
-import { App } from "./conf";
+import { App } from "../app";
+import { WEAPONS } from "../data/weapons.js";
 
 export class Weapon {
     constructor(name, velocity, gravityScale, minElevation, unit, logo, marker, logoCannonPos, type, angleType, elevationPrecision, minDistance, moa, maxDamage, startRadius, endRadius, distanceFromImpact, falloff, shells = []) {
@@ -67,6 +68,30 @@ export class Weapon {
         var characterSize = 1.8;
         var radius = endRadius - (Math.pow(targetDamage / maxDamage, 1 / falloff) * (endRadius - startRadius));
         return Math.sqrt(-Math.pow(distanceFromImpact - characterSize, 2 ) + Math.pow(radius, 2));
+    }
+
+    changeShell(){
+        var shell = $(".dropbtn3").val();
+        if ($(".dropbtn2").val() != 6) { return;}
+    
+        App.activeWeapon.moa = WEAPONS[6].shells[shell].moa;
+        App.activeWeapon.hundredDamageRadius = App.activeWeapon.calculateDistanceForDamage(
+            WEAPONS[6].shells[shell].explosionDamage,
+            WEAPONS[6].shells[shell].explosionRadius[0],
+            WEAPONS[6].shells[shell].explosionRadius[1],
+            WEAPONS[6].shells[shell].damageFallOff,
+            WEAPONS[6].shells[shell].explosionDistanceFromImpact, 
+            100);
+    
+        App.activeWeapon.twentyFiveDamageRadius = App.activeWeapon.calculateDistanceForDamage(
+            WEAPONS[6].shells[shell].explosionDamage,
+            WEAPONS[6].shells[shell].explosionRadius[0],
+            WEAPONS[6].shells[shell].explosionRadius[1],
+            WEAPONS[6].shells[shell].damageFallOff,
+            WEAPONS[6].shells[shell].explosionDistanceFromImpact, 
+            25);
+
+        App.minimap.updateTargets();
     }
 
 }
