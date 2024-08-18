@@ -89,38 +89,38 @@ module.exports = {
             },
             {
               "src": "./src/img/github/desktop_ui_1.webp",
-              "sizes": "799x553",
+              "sizes": "800x553",
               "type": "image/webp",
               "form_factor": "wide",
               "label": "Map Mode"
             },
             {
-              "src": "./src/img/github/desktop_ui_0.webp",
-              "sizes": "791x547",
-              "type": "image/webp",
-              "form_factor": "wide",
-              "label": "Legacy Mode"
-            },
-            {
               "src": "./src/img/github/desktop_ui_2.webp",
-              "sizes": "786x544",
+              "sizes": "800x553",
               "type": "image/webp",
               "form_factor": "wide",
               "label": "Topographic maps"
             },           
             {
               "src": "./src/img/github/desktop_ui_3.webp",
-              "sizes": "799x553",
+              "sizes": "800x553",
               "type": "image/webp",
               "form_factor": "wide",
               "label": "Weapon Stats"
             },
             {
               "src": "./src/img/github/desktop_ui_4.webp",
-              "sizes": "799x553",
+              "sizes": "800x553",
               "type": "image/webp",
               "form_factor": "wide",
               "label": "Target Stats"
+            },
+            {
+              "src": "./src/img/github/desktop_ui_0.webp",
+              "sizes": "800x553",
+              "type": "image/webp",
+              "form_factor": "wide",
+              "label": "Legacy Mode"
             },
           ]
         }),

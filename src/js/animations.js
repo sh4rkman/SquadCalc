@@ -11,13 +11,11 @@ export function animateCSS($element, animation, prefix = "animate__") {
     return new Promise((resolve) => {
         const animationName = `${prefix}${animation}`;
 
-        // Assuming $element is a jQuery object, you can add and remove classes like this
         $element.addClass(`${prefix}animated ${animationName}`);
 
         function handleAnimationEnd(event) {
-            event.stopPropagation();
-
             // Remove the classes from the jQuery object
+            event.stopPropagation();
             $element.removeClass(`${prefix}animated ${animationName}`);
             resolve("Animation ended");
         }
