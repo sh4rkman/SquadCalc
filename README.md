@@ -9,7 +9,7 @@
     <a href="https://github.com/sh4rkman/SquadCalc?tab=MIT-1-ov-file#readme">  
       <img src="https://img.shields.io/github/license/Naereen/StrapDown.js.svg?style=for-the-badge" alt="Licence"></a>
     <a href="https://squadcalc.app">
-      <img src="https://up.sharkman.info/api/badge/3/uptime/72?style=for-the-badge" alt="Uptime">
+      <img src="https://up.sharkman.info/api/badge/3/uptime/24?style=for-the-badge" alt="Uptime">
     </a> 
 </div>
 
