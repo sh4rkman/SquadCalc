@@ -5,6 +5,7 @@ import { targetIcon1, targetIconAnimated1, targetIconDisabled } from "./squadIco
 import SquadSimulation from "./squadSimulation";
 import SquadFiringSolution from "./squadFiringSolution";
 import i18next from "i18next";
+import { sendMarkerData } from "./squadCalcAPI";
 
 /*
  * Global Squad Marker Class 
@@ -108,6 +109,16 @@ export var squadWeaponMarker = squadMarker.extend({
         }
 
         this.getIcon();
+
+        // Report marker to squadcalc API if API is configured
+        if (process.env.API_URL) {
+            sendMarkerData({
+                lat: this._latlng.lat,
+                lng: this._latlng.lng,
+                weapon: App.activeWeapon.name,
+                map: App.minimap.activeMap.name,
+            });
+        }
 
         // Custom events handlers
         this.on("click", this._handleClick, this);
@@ -295,6 +306,16 @@ export var squadWeaponMarker = squadMarker.extend({
         this.miniCircle.setStyle({opacity: 0});
         this.setOpacity(0);
         this.map.updateTargets();
+
+        // Report marker to squadcalc API if API is configured
+        if (process.env.API_URL) {
+            sendMarkerData({
+                lat: this._latlng.lat,
+                lng: this._latlng.lng,
+                weapon: App.activeWeapon.name,
+                map: App.minimap.activeMap.name,
+            });
+        }
     },
 });
 

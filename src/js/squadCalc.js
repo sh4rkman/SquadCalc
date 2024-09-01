@@ -10,6 +10,7 @@ import { loadLanguage } from "./localization.js";
 import packageInfo from "../../package.json";
 import { animateCSS, animateCalc } from "./animations";
 import { tooltip_save, tooltip_copied } from "./tooltips.js";
+import { checkApiHealth } from "./squadCalcAPI.js";
 
 
 
@@ -34,6 +35,7 @@ export default class SquadCalc {
         this.loadMinimap();
         this.loadWeapons();
         this.loadUI();
+        checkApiHealth();
         console.log(`SquadCalc v${packageInfo.version} Loaded!`);
     }
 
