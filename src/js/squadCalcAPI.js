@@ -20,6 +20,24 @@ export function sendMarkerData(markerData) {
         });
 }
 
+
+export const checkApiHealth = async () => {
+    try {
+        const response = await fetch(`${process.env.API_URL}/health`);
+        if (response.ok) {
+            const data = await response.json();
+            if (data.status === 'OK') {
+                console.log('Connected to SquadCalc API');
+            }
+        } else {
+            console.error('Not connected to SquadCalc API');
+        }
+    } catch (error) {
+        console.error('Not connected to SquadCalc API');
+    }
+};
+
+
 // TBA
 // export function fetchMarkersByMap(mapName) {
 //     var url = `${process.env.API_URL}/get/weapons?map=${encodeURIComponent(mapName)}`;
