@@ -5,9 +5,11 @@ import { App } from "../app";
 import { squadWeaponMarker, squadTargetMarker } from "./squadMarker";
 import { mortarIcon, mortarIcon1, mortarIcon2 } from "./squadIcon";
 import { explode } from "./animations";
+//import { fetchMarkersByMap } from "./squadCalcAPI";
 import "leaflet-edgebuffer";
 import "leaflet.gridlayer.fadeout";
-
+//import "./webgl-heatmap.js"
+//import "./heatmap.js";
 
 
 export var squadMinimap = Map.extend({
@@ -65,7 +67,6 @@ export var squadMinimap = Map.extend({
             bounds: this.imageBounds,
             tileSize: this.tilesSize,
         };
-      
         // Custom events handlers
         this.on("dblclick", this._handleDoubleCkick, this);
         this.on("contextmenu", this._handleContextMenu, this);
@@ -92,7 +93,7 @@ export var squadMinimap = Map.extend({
         // remove existing grid and replace it
         if (this.grid) this.grid.remove();
         this.grid = new squadGrid(this);
-        this.grid .setBounds([[0,0], [-this.tilesSize, this.tilesSize]]);
+        this.grid.setBounds([[0,0], [-this.tilesSize, this.tilesSize]]);
 
         if (App.userSettings.grid) this.showGrid();
 
@@ -107,9 +108,27 @@ export var squadMinimap = Map.extend({
     changeLayer: function(){
         const LAYERMODE = $("#mapLayerMenu .active").attr("value");
         if (this.activeLayer) this.activeLayer.remove();
+        //if (this.heatmap) this.heatmap.remove();
         this.activeLayer = new TileLayer("", this.tileLayerOption);
         this.activeLayer.setUrl(`maps${this.activeMap.mapURL}${LAYERMODE}/{z}_{x}_{y}.webp`);
         this.activeLayer.addTo(this.layerGroup);
+
+        // // Fetch squadCalcAPI if alive
+        // fetchMarkersByMap(App.minimap.activeMap.name)
+        //     .then(markers => {          
+        //         this.heatmap = new L.webGLHeatmap({
+        //             size: 10,
+        //             units: 'px',
+        //             opacity: 0.5,
+        //             alphaRange: 0.5,
+        //         });
+
+        //         this.heatmap.setData(markers);
+        //         this.addLayer(this.heatmap);
+        //     })
+        //     .catch(error => {
+        //         console.debug('Error fetching markers:', error);
+        //     });
     },
 
 
@@ -193,7 +212,7 @@ export var squadMinimap = Map.extend({
         const x = lng;
         const y = lat;
         const kp = 300 / 3 ** 0; // interval of main keypad, e.g "A5"
-        const kpNumber = `0000${Math.floor(y / kp) + 1}`.slice(-2); 
+        const kpNumber = `0000${Math.floor(y / kp) + 1}`.slice(-2);
         const s1 = 300 / 3 ** 1; // interval of first sub keypad
         const s2 = 300 / 3 ** 2; // interval of second sub keypad
         const s3 = 300 / 3 ** 3; // interval of third sub keypad
@@ -236,7 +255,7 @@ export var squadMinimap = Map.extend({
         // The more the user zoom in, the more precise we display coords under mouse
         switch (precision){
         case 0:
-            return `${kpLetter}${kpNumber}`; 
+            return `${kpLetter}${kpNumber}`;
         case 1:
             return `${kpLetter}${kpNumber}`;
         case 2:
@@ -279,7 +298,7 @@ export var squadMinimap = Map.extend({
      * Mouse-Over
      * Display and update hovered keypad under cursor
      */
-    _handleMouseMove: function (e) { 
+    _handleMouseMove: function (e) {
 
         // if no mouse support
         if (!matchMedia("(pointer:fine)").matches) { return 1; }
@@ -301,7 +320,7 @@ export var squadMinimap = Map.extend({
      */
     _handleDoubleCkick: function (e) {
         var target;
-        
+
         // If out of bounds
         if (e.latlng.lat > 0 ||  e.latlng.lat < -this.tilesSize || e.latlng.lng < 0 || e.latlng.lng > this.tilesSize) {
             return 1;

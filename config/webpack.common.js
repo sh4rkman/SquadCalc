@@ -5,6 +5,7 @@ const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 var WebpackPwaManifest = require('webpack-pwa-manifest')
 const workbox = require("workbox-webpack-plugin");
+const Dotenv = require('dotenv-webpack');
 
 module.exports = {
     entry: './src/app.js',
@@ -41,6 +42,7 @@ module.exports = {
         new webpack.ProvidePlugin({
             $: "jquery", jQuery: "jquery", "window.jQuery": "jquery'", "window.$": "jquery"
         }),
+        new Dotenv(),
         new CopyPlugin({
             patterns: [
               { from: "./src/img/github/", to: "./src/img/github/" },
