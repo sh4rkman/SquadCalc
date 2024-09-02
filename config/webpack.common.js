@@ -1,14 +1,26 @@
+require('dotenv').config();
 const path = require('path');
 const webpack = require('webpack');
 const CopyPlugin = require("copy-webpack-plugin");
 const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 var WebpackPwaManifest = require('webpack-pwa-manifest')
-const workbox = require("workbox-webpack-plugin");
+const RobotstxtPlugin = require("robotstxt-webpack-plugin");
 const Dotenv = require('dotenv-webpack');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const workbox = require("workbox-webpack-plugin");
+const isProduction = process.env.PROD && process.env.PROD.toLowerCase() === 'true';
+const isIndexed = process.env.INDEX && process.env.INDEX.toLowerCase() === 'true';
+const robotstxtPolicy = isIndexed 
+    ? [{ userAgent: "*", allow: "/" }] 
+    : [{ userAgent: "*", disallow: "/" }];
+
+
 
 module.exports = {
     entry: './src/app.js',
+    mode: isProduction ? 'production' : 'development',
+    devtool: isProduction ? false : 'inline-source-map',
     output: {
         filename: './src/js/[name].[contenthash].min.js',
         path: path.join(process.cwd(), 'dist'),
@@ -22,27 +34,23 @@ module.exports = {
             { test: /\.(png|svg|jpg|jpeg|gif|webp)$/i, type: 'asset/resource', },
             { test: /\.(sc|sa|c)ss$/i, use: ['style-loader', 'css-loader', 'sass-loader'],},
         ],  
-    },
-    optimization: {
-        moduleIds: 'deterministic',
-         runtimeChunk: 'single',
-         splitChunks: {
-            cacheGroups: {
-              vendor: {
-                test: /[\\/]node_modules[\\/]/,
-                name: 'vendors',
-                chunks: 'all',
-                maxSize: 50000,
-              },
-           },
-         },
-       },
+    }, 
     plugins: [
-        // Use the ProvidePlugin constructor to inject jquery implicit globals
+        new Dotenv(),
+        new HtmlWebpackPlugin({
+          template: './src/index.html',
+          minify: isProduction ? {
+              collapseWhitespace: true,
+              removeComments: true,
+              removeAttributeQuotes: true,
+          } : false
+        }),
         new webpack.ProvidePlugin({
             $: "jquery", jQuery: "jquery", "window.jQuery": "jquery'", "window.$": "jquery"
         }),
-        new Dotenv(),
+        new RobotstxtPlugin({
+          policy: robotstxtPolicy,
+        }),
         new CopyPlugin({
             patterns: [
               { from: "./src/img/github/", to: "./src/img/github/" },
@@ -149,20 +157,32 @@ module.exports = {
     // Disable warning message for big chuncks
     performance: {
         hints: false,
-        maxEntrypointSize: 512000,
-        maxAssetSize: 512000
+        maxEntrypointSize: isProduction ? 512000 : Infinity,
+        maxAssetSize: isProduction ? 512000 : Infinity,
     },
     optimization: {
-      minimizer: [
+      moduleIds: 'deterministic',
+      runtimeChunk: 'single',
+      splitChunks: {
+          cacheGroups: {
+              vendor: {
+                  test: /[\\/]node_modules[\\/]/,
+                  name: 'vendors',
+                  chunks: 'all',
+                  maxSize: isProduction ? 50000 : Infinity,
+              },
+          },
+      },
+      minimizer: isProduction ? [
           new CssMinimizerPlugin(), //CSS
-          new TerserPlugin({ //JS
+          new TerserPlugin({
               extractComments: false,
               terserOptions: {
-                format: {
-                  comments: false, // remove *.LICENCE.txt
-                },
+                  format: {
+                      comments: false,
+                  },
               },
-            }), 
-      ],
+          }),
+      ] : [],
   },
 };

@@ -39,7 +39,7 @@ jobs:
           ssh-add ~/.ssh/${{ secrets.SSH_PUBLIC_KEY_NAME }}
           cd ${{ secrets.DEV_DIST }}
           npm ci
-          npm run build:dev
+          npm run build
 
     - name: Discord notification
       env:
@@ -49,18 +49,5 @@ jobs:
       uses: Ilshidur/action-discord@master
       with:
         args: 'The project {{ EVENT_PAYLOAD.repository.full_name }} has been deployed successfully on https://dev.squadcalc.app'
-    # - name: Playwright test
-    #   uses: appleboy/ssh-action@v1.0.3
-    #   with:
-    #     host: ${{ secrets.HOST }}
-    #     username: ${{ secrets.USERNAME }}
-    #     password: ${{ secrets.PASSWORD }}
-    #     port: ${{ secrets.PORT }}
-    #     script: |
-    #       eval `ssh-agent -s`
-    #       ssh-add ~/.ssh/${{ secrets.SSH_PUBLIC_KEY_NAME }}
-    #       cd ${{ secrets.DEV_DIST }}
-    #       npx playwright install
-    #       npx playwright test
 
 

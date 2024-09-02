@@ -8,7 +8,7 @@ import { explode } from "./animations";
 //import { fetchMarkersByMap } from "./squadCalcAPI";
 import "leaflet-edgebuffer";
 import "leaflet.gridlayer.fadeout";
-//import "./webgl-heatmap.js"
+//import "./webgl-heatmap.js";
 //import "./heatmap.js";
 
 
@@ -112,13 +112,13 @@ export var squadMinimap = Map.extend({
         this.activeLayer = new TileLayer("", this.tileLayerOption);
         this.activeLayer.setUrl(`maps${this.activeMap.mapURL}${LAYERMODE}/{z}_{x}_{y}.webp`);
         this.activeLayer.addTo(this.layerGroup);
-
-        // // Fetch squadCalcAPI if alive
-        // fetchMarkersByMap(App.minimap.activeMap.name)
+ 
+        // Fetch squadCalcAPI if alive
+        // fetchMarkersByMap(App.minimap.activeMap.name, App.activeWeapon.name)
         //     .then(markers => {          
         //         this.heatmap = new L.webGLHeatmap({
-        //             size: 10,
-        //             units: 'px',
+        //             size: 20,
+        //             units: "px",
         //             opacity: 0.5,
         //             alphaRange: 0.5,
         //         });
@@ -127,7 +127,7 @@ export var squadMinimap = Map.extend({
         //         this.addLayer(this.heatmap);
         //     })
         //     .catch(error => {
-        //         console.debug('Error fetching markers:', error);
+        //         console.debug("Error fetching markers:", error);
         //     });
     },
 
