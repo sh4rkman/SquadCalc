@@ -1,3 +1,23 @@
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **29.0.1** *(2024-09-02)*
+
+<img src="https://img.shields.io/badge/-new-green"> SquadCalc now publish targets positions to the API for futur incoming features (heatmap of commonly used targets positions)
+
+<img src="https://img.shields.io/badge/-new-green"> Now cheching the API health at startup
+
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> webpack & npm script simplifications
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
+
+
+# <img src="https://img.shields.io/badge/-major%20release-b22222?style=for-the-badge">  **29.0.0** *(2024-09-01)*
+
+<img src="https://img.shields.io/badge/-new-green"> Now connected to brand new SquadCalc API, SquadCalc now publish weapons positions to the API for futur incoming features (heatmap of commonly used mortar positions)
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
+
+
 # <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **28.0.5** *(2024-08-18)*
 
 <img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed some translations not updating when switching language on settings dialog 
