@@ -23,20 +23,12 @@
     "esversion": 7
   },
   "scripts": {
-    "start": "webpack serve --open --config ./config/webpack.test.js",
-    "build:prod": "npm-run-all build:prod2 cpdir",
-    "build:dev": "npm-run-all build:dev2 cpdir",
-    "build:prod2": "webpack --config ./config/webpack.prod.js",
-    "build:dev2": "webpack --config ./config/webpack.dev.js",
+    "start": "webpack serve --open --config ./config/webpack.common.js",
+    "build": "npm run bundle && node -e \"require('fs').cpSync('./public/', './dist/', {recursive: true});\"",
+    "bundle": "webpack --config ./config/webpack.common.js",
+    "lint": "stylelint -c ./config/.stylelintrc.json ./src/css/*.scss && htmlhint --nocolor ./src/ && html-validator --quiet --continue ./src/ && jshint ./src/ && eslint -c ./config/.eslintrc.json ./src/",
     "mapinfo": "node src/js/tests/mapdata.js info",
-    "weaponInfo": "node src/js/tests/calcMortarTech.js info",
-    "test:all": "npm-run-all test:eslint test:jshint test:stylelint test:htmlhint test:w3c",
-    "test:eslint": "eslint -c ./config/.eslintrc.json ./src/",
-    "test:jshint": "jshint ./src/",
-    "test:stylelint": "stylelint -c ./config/.stylelintrc.json ./src/css/*.scss",
-    "test:htmlhint": "htmlhint --nocolor ./src/",
-    "test:w3c": "html-validator --quiet --continue ./src/",
-    "cpdir": "node -e \"require('fs').cpSync('./public/', './dist/', {recursive: true});\""
+    "weaponInfo": "node src/js/tests/calcMortarTech.js info"
   },
   "devDependencies": {
     "@playwright/test": "^1.43.1",
@@ -59,7 +51,6 @@
     "leaflet-edgebuffer": "^1.0.6",
     "leaflet.gridlayer.fadeout": "^0.1.0",
     "mini-css-extract-plugin": "^2.7.6",
-    "npm-run-all": "^4.1.5",
     "postcss": ">=8.4.31",
     "purecss": "^3.0.0",
     "robotstxt-webpack-plugin": "^8.0.0",

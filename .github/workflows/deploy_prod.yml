@@ -33,7 +33,7 @@ jobs:
           ssh-add ~/.ssh/${{ secrets.SSH_PUBLIC_KEY_NAME }}
           cd ${{ secrets.DIST }}
           npm ci
-          npm run build:prod
+          npm run build
     - name: Discord notification
       env:
         DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
