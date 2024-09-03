@@ -5,7 +5,8 @@ import { targetIcon1, targetIconAnimated1, targetIconDisabled } from "./squadIco
 import SquadSimulation from "./squadSimulation";
 import SquadFiringSolution from "./squadFiringSolution";
 import i18next from "i18next";
-import { sendMarkerData } from "./squadCalcAPI";
+import { sendMarkerData, sendTargetData } from "./squadCalcAPI";
+
 
 /*
  * Global Squad Marker Class 
@@ -410,6 +411,16 @@ export var squadTargetMarker = squadMarker.extend({
         this.miniCircle = new CircleMarker(latlng, this.miniCircleOptions).addTo(this.map.markersGroup);
         this.firingSolution1 = new SquadFiringSolution(this.map.activeWeaponsMarkers.getLayers()[0].getLatLng(), this.getLatLng(), this.map, this.map.activeWeaponsMarkers.getLayers()[0].heightPadding);
         
+        // Report target to squadcalc API if API is configured
+        if (process.env.API_URL) {
+            sendTargetData({
+                lat: latlng.lat,
+                lng: latlng.lng,
+                weapon: App.activeWeapon.name,
+                map: App.minimap.activeMap.name,
+            });
+        }
+
         // Calc PopUps
         this.calcMarker1 = new Popup(popUpOptions_weapon1).setLatLng(latlng).addTo(this.map.markersGroup);
         this.calcMarker2 = new Popup(popUpOptions_weapon2).setLatLng(latlng).addTo(this.map.markersGroup);
@@ -731,7 +742,8 @@ export var squadTargetMarker = squadMarker.extend({
     },
 
     // Reset cursor on drag end
-    _handleDragEnd: function () {
+    _handleDragEnd: function (e) {
+        var latlng = e.target.getLatLng();
 
         if (App.userSettings.keypadUnderCursor){
             this.map.on("mousemove", this.map._handleMouseMove);
@@ -743,6 +755,16 @@ export var squadTargetMarker = squadMarker.extend({
         // update one last time when drag end
         this.updateCalc();
         this.updateIcon();
+
+        // Report target to squadcalc API if API is configured
+        if (process.env.API_URL) {
+            sendTargetData({
+                lat: latlng.lat,
+                lng: latlng.lng,
+                weapon: App.activeWeapon.name,
+                map: App.minimap.activeMap.name,
+            });
+        }
     },
 
    
