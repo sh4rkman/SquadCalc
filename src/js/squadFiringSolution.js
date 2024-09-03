@@ -1,5 +1,4 @@
 import { App } from "../app";
-import { sendTargetData } from "./squadCalcAPI";
 
 export default class SquadFiringSolution {
 
@@ -28,16 +27,6 @@ export default class SquadFiringSolution {
         this.timeOfFlight = {low: [], high: []};
         this.timeOfFlight.low = this.getTimeOfFlight(this.elevation.low.rad);
         this.timeOfFlight.high = this.getTimeOfFlight(this.elevation.high.rad);
-
-        // Report target to squadcalc API if API is configured
-        if (process.env.API_URL) {
-            sendTargetData({
-                lat: targetLatLng.lat,
-                lng: targetLatLng.lng,
-                weapon: App.activeWeapon.name,
-                map: App.minimap.activeMap.name,
-            });
-        }
     }
 
 
