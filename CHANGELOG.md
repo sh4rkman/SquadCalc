@@ -1,3 +1,11 @@
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **29.0.2** *(2024-09-03)*
+
+<img src="https://img.shields.io/badge/-%20fix%20-orange"> Dragging Targets around the map doesn't call the post/target api hundred of times anymore 
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
+
+
 # <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **29.0.1** *(2024-09-02)*
 
 <img src="https://img.shields.io/badge/-new-green"> SquadCalc now publish targets positions to the API for futur incoming features (heatmap of commonly used targets positions)
