@@ -1,30 +1,33 @@
+import packageInfo from "../../package.json";
 
 
 export function sendMarkerData(markerData) {
     fetch(`${process.env.API_URL}/post/weapons`, {
         method: "POST",
         headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            'X-App-Version': packageInfo.version
         },
         body: JSON.stringify(markerData)
     })
-        .then(response => {
-            if (response.ok) {
-                console.debug(`Marker data successfully sent to ${process.env.API_URL}`);
-            } else {
-                console.debug("HTTP error:", response.status);
-            }
-        })
-        .catch(error => {
-            console.debug("Error sending marker data:", error);
-        });
+    .then(response => {
+        if (response.ok) {
+            console.debug(`Marker data successfully sent to ${process.env.API_URL}`);
+        } else {
+            console.debug("HTTP error:", response.status);
+        }
+    })
+    .catch(error => {
+        console.debug("Error sending marker data:", error);
+    });
 }
 
 export function sendTargetData(targetData) {
     fetch(`${process.env.API_URL}/post/targets`, {
         method: "POST",
         headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            'X-App-Version': packageInfo.version
         },
         body: JSON.stringify(targetData)
     })
@@ -61,7 +64,7 @@ export const checkApiHealth = async () => {
 //TBA
 // export function fetchMarkersByMap(mapName, weapon) {
 //     //var url = `${process.env.API_URL}/get/weapons?map=${encodeURIComponent(mapName)}&weapon=${encodeURIComponent(weapon)}`;
-//     var url = `${process.env.API_URL}/get/weapons?map=${encodeURIComponent(mapName)}`;
+//     var url = `${process.env.API_URL}/get/targets?map=${encodeURIComponent(mapName)}`;
 
 //     return fetch(url)
 //         .then(response => {
