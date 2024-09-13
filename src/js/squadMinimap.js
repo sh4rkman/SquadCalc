@@ -1,15 +1,16 @@
-import { TileLayer, Map, CRS, svg, Util, LayerGroup, Popup } from "leaflet";
+import {TileLayer, Map, CRS, svg, Util, LayerGroup, Popup } from "leaflet";
 import squadGrid from "./squadGrid";
 import squadHeightmap from "./squadHeightmaps";
 import { App } from "../app";
 import { squadWeaponMarker, squadTargetMarker } from "./squadMarker";
 import { mortarIcon, mortarIcon1, mortarIcon2 } from "./squadIcon";
 import { explode } from "./animations";
-//import { fetchMarkersByMap } from "./squadCalcAPI";
+import { fetchMarkersByMap } from "./squadCalcAPI";
 import "leaflet-edgebuffer";
 import "leaflet.gridlayer.fadeout";
-//import "./webgl-heatmap.js";
-//import "./heatmap.js";
+import "leaflet-spin";
+import "./webgl-heatmap.js";
+import webGLHeatmap from "./leaflet-webgl-heatmap.js";
 
 
 export var squadMinimap = Map.extend({
@@ -98,6 +99,7 @@ export var squadMinimap = Map.extend({
         if (App.userSettings.grid) this.showGrid();
 
         // load map
+        this.toggleHeatmap();
         this.changeLayer();
     },
 
@@ -108,27 +110,45 @@ export var squadMinimap = Map.extend({
     changeLayer: function(){
         const LAYERMODE = $("#mapLayerMenu .active").attr("value");
         if (this.activeLayer) this.activeLayer.remove();
-        //if (this.heatmap) this.heatmap.remove();
         this.activeLayer = new TileLayer("", this.tileLayerOption);
         this.activeLayer.setUrl(`maps${this.activeMap.mapURL}${LAYERMODE}/{z}_{x}_{y}.webp`);
         this.activeLayer.addTo(this.layerGroup);
- 
-        // Fetch squadCalcAPI if alive
-        // fetchMarkersByMap(App.minimap.activeMap.name, App.activeWeapon.name)
-        //     .then(markers => {          
-        //         this.heatmap = new L.webGLHeatmap({
-        //             size: 20,
-        //             units: "px",
-        //             opacity: 0.5,
-        //             alphaRange: 0.5,
-        //         });
+    },
 
-        //         this.heatmap.setData(markers);
-        //         this.addLayer(this.heatmap);
-        //     })
-        //     .catch(error => {
-        //         console.debug("Error fetching markers:", error);
-        //     });
+
+    /**
+     * Show/Hide heatmap of commonly used
+     */
+    toggleHeatmap: function(){
+
+        if ($(".btn-helpmap").hasClass("active")){
+            this.spin(true, {color: "white", scale: 1.5, width: 5});
+            if (this.heatmap) this.heatmap.remove();
+            fetchMarkersByMap(App.minimap.activeMap.name, App.activeWeapon.name)
+                .then(markers => {
+                    this.heatmap = new webGLHeatmap({
+                        size: 8,
+                        units: "m",
+                        opacity: 0.5,
+                        alphaRange: 0.7,
+                    });
+                    this.heatmap.setData(markers);
+                    this.addLayer(this.heatmap);
+                    this.spin(false);
+                })
+                .catch(error => {
+                    this.spin(false);
+                    $(".btn-helpmap").removeClass("active");
+                    App.openToast("error", "error", "apiError");
+                    console.debug("Error fetching markers:", error);
+                });
+        }
+        else {
+            if (this.heatmap) {
+                this.removeLayer(this.heatmap);  // Remove the heatmap layer from the map
+                this.heatmap = null;  // Clear the reference to the heatmap
+            }
+        }
     },
 
 
@@ -360,7 +380,11 @@ export var squadMinimap = Map.extend({
      * After each zoom, update keypadUnderMouse precision
      */
     _handleZoom: function() {
-        this.mouseLocationPopup.setContent(`<p>${this.getKP(-this.mouseLocationPopup._latlng.lat * this.mapToGameScale, this.mouseLocationPopup._latlng.lng * this.mapToGameScale)}</p>`);
+        // Make sure the user opened the popup by moving the mouse before zooming
+        // ...or it throw error
+        if (this.mouseLocationPopup._latlng){
+            this.mouseLocationPopup.setContent(`<p>${this.getKP(-this.mouseLocationPopup._latlng.lat * this.mapToGameScale, this.mouseLocationPopup._latlng.lng * this.mapToGameScale)}</p>`);
+        }
     },
 
 });

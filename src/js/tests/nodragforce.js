@@ -1,4 +1,6 @@
 /* jshint ignore:start */
+/* eslint-disable */
+
 // TABLES
 const squadTable = [
     [50, 1579],
@@ -120,7 +122,6 @@ function getTime(x, rad) {
 // my own attempt. same result, but requires two calculations
 // 1. calculate time for shell to reach target
 // 2. calculate velocity using time
-// eslint-disable-next-line no-unused-vars
 function getVelOld(x, rad) {
     const t = getTime(x, rad);
     const r = x / (Math.cos(rad) * t);
@@ -144,7 +145,6 @@ function getVel(x, rad) {
 }
 
 // get angle needed to hit target at distance x with velocity v
-// eslint-disable-next-line no-unused-vars
 function getAngle(x, v) {
     const a = 0.5 * Math.asin((g * x) / (v * v));
     return a;
@@ -244,7 +244,7 @@ tables.forEach((t) => {
 
         // get deviation per table row
         const deviations = [];
-        // eslint-disable-next-line no-loop-func
+
         tTable.forEach((entry) => {
             const tDistance = entry[0];
             const tAngle = entry[1];

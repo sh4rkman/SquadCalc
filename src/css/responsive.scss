@@ -5,7 +5,7 @@
 
 /* -- L*568px -- */
 
-@media (min-height: 35em) {
+@media (height >= 35em) {
     header {
         #mapSelector {
             .select2-results__options {
@@ -23,7 +23,7 @@
 
 /* -- L*730px -- */
 
-@media (min-height: 45em) {
+@media (height >= 45em) {
     header {
         #mapSelector {
             .select2-results__options {
@@ -37,7 +37,7 @@
 
 /* -- L*800px -- */
 
-@media (min-height: 50em) {
+@media (height >= 50em) {
     header {
         #mapSelector {
             .select2-results__options {
@@ -58,9 +58,9 @@
 
 /* L<768px */
 
-@media screen and (max-width: 48em) {
+@media screen and (width <= 48em) {
     /* -- H < 568px -- */
-    @media (min-height: 35em) {
+    @media (height >= 35em) {
         #classic_ui {
             input {
                 height: 40px;
@@ -74,7 +74,7 @@
         }
     }
     /* -- H < 800px -- */
-    @media (min-height: 50em) {
+    @media (height >= 50em) {
         #classic_ui {
             padding-top: 1em;
             .results {
@@ -91,7 +91,7 @@
 
 /* ≥ 768px */
 
-@media screen and (min-width: 48em) {
+@media screen and (width >= 48em) {
     /* On big screen, fix map&weapon Selectors on top corners */
     header {
         .weaponSelector {
@@ -133,11 +133,14 @@
         }
     }
     #mapLayerMenu{
-        top: 30%;
         .btn {
             font-size: 1.4em;
             width: 50px;
             height: 50px;
+        }
+        .question-shift {
+            position: relative;
+            top: -2px;
         }
     }
     dialog {
@@ -219,7 +222,7 @@
 
 
     /* -- L*560px -- */
-    @media (min-height: 35em) {
+    @media (height >= 35em) {
         #classic_ui {
             font-size: 25px;
             padding-top: 5em;
@@ -229,7 +232,7 @@
         }
     }
     /* -- L*730px -- */
-    @media (min-height: 45em) {
+    @media (height >= 45em) {
         #classic_ui {
             padding-top: 5em;
             input {
@@ -238,7 +241,7 @@
         }
     }
     /* -- L*800px -- */
-    @media (min-height: 50em) {
+    @media (height >= 50em) {
         #classic_ui {
             font-size: 30px;
         }
@@ -248,7 +251,7 @@
 
 /* ≥ 992px */
 
-@media screen and (min-width: 62em) {
+@media screen and (width >= 62em) {
     header {
         .select2-container {
             font-size: 1em;
@@ -260,7 +263,7 @@
 
 /* ≥ 1200px */
 
-@media screen and (min-width: 62em) {
+@media screen and (width >= 62em) {
     header {
         .select2-container {
             max-width: 230px;
@@ -271,7 +274,7 @@
 
 /* ≥ 1400px */
 
-@media screen and (min-width: 87.5em) {
+@media screen and (width >= 87.5em) {
     header {
         .select2-results__options {
             font-size: 1em;
@@ -282,9 +285,9 @@
 
 /* ≥ 1920px */
 
-@media screen and (min-width: 124em) {
+@media screen and (width >= 124em) {
     /* ≥ 1920px & 1080 */
-    @media (min-height: 68em) {
+    @media (height >= 68em) {
         header {
             .weaponSelector {
                 padding: 2em 0 0 1.5em;

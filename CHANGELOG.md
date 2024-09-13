@@ -1,6 +1,31 @@
+# <img src="https://img.shields.io/badge/-major%20release-b22222?style=for-the-badge">  **30.0.0** *(2024-09-13)*
+
+<img src="https://img.shields.io/badge/-new-green"> New feature : "Show Frequent Weapon Locations". Thanks to the data collected through squadcalc API users can now display a heatmap of common places where to deploy their weapon.
+
+<img src="https://img.shields.io/badge/-new-green"> New feature : Focus Mode. A new button allow to hide everything but the map to have a minimalist/focused view. Shortcut: Enter.
+
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Restyled tooltips
+
+<img src="https://img.shields.io/badge/-%20dev%20-orange"> Improved project bundling with webpack (now using webpack-copy-plugin instead of manual copy, using internal webpack ENV variable, less useless npm scripts, ...)
+
+<img src="https://img.shields.io/badge/-%20dev%20-orange"> Updated every dependencies
+
+<img src="https://img.shields.io/badge/-%20dev%20-orange"> removed playwright tests
+
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **29.0.3** *(2024-09-06)*
+
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> API calls now send current squadcalc version
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
+
+
 # <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **29.0.2** *(2024-09-03)*
 
-<img src="https://img.shields.io/badge/-%20fix%20-orange"> Dragging Targets around the map doesn't call the post/target api hundred of times anymore 
+<img src="https://img.shields.io/badge/-%20fix%20-orange"> Dragging Targets around the map doesn't call the post/target api hundreds of times anymore 
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
 

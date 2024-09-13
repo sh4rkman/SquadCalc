@@ -11,7 +11,7 @@ import packageInfo from "../../package.json";
 import { animateCSS, animateCalc } from "./animations";
 import { tooltip_save, tooltip_copied } from "./tooltips.js";
 import { checkApiHealth } from "./squadCalcAPI.js";
-
+import { Browser } from "leaflet";
 
 
 export default class SquadCalc {
@@ -143,6 +143,8 @@ export default class SquadCalc {
     loadUI(){
         const calcInformation = document.querySelector("#calcInformation");
         const weaponInformation = document.querySelector("#weaponInformation");
+        const helpDialog = document.querySelector("#helpDialog");
+
         $(".btn-delete").hide();
         $("#mapLayerMenu").hide();
         this.ui = localStorage.getItem("data-ui");
@@ -170,14 +172,101 @@ export default class SquadCalc {
         $("#copy").on("click", (event) => { this.copyCalc(event); });
         $(".btn-delete").on("click", () => { this.minimap.deleteTargets();});
         $("#fabCheckbox2").on("change", () => { this.switchUI();});
-        $("#mapLayerMenu").find("button").on("click", (e) => {
+
+        $("#mapLayerMenu").find("button.layers").on("click", (e) => {
             var val = $(e.currentTarget).attr("value");
-            $("#mapLayerMenu").find("button").removeClass("active");
+            if (val === "helpmap") {
+                $(".btn-"+val).toggleClass("active");
+                this.minimap.toggleHeatmap();
+                return;
+            }
+            $("#mapLayerMenu").find(".layers").removeClass("active");
             $(".btn-"+val).addClass("active");
             localStorage.setItem("settings-map-mode", val);
             this.userSettings.layerMode = val;
             this.minimap.changeLayer();
         });
+
+        $("#mapLayerMenu").find("button.btn-helpmap").on("click", () => {
+            $(".btn-helpmap").toggleClass("active");
+            this.minimap.toggleHeatmap();
+        });
+
+
+        if (Browser.pointer) {
+
+            $("#mapLayerMenu").find("button.btn-focus").on("click", () => {
+                $("header").hide();
+                $("footer").hide();
+                $("#background").hide();
+                $("#mapLayerMenu").hide();
+                this.openToast("success", "focusMode", "enterToExit");
+            });
+    
+            $(document).on("keydown", (e) => {
+
+                // Disable Shortkeys in legacy mode
+                if (this.ui == 0) { return; }
+
+                // ENTER = FOCUS MODE
+                if (e.key === "Enter") {
+
+                    // A dialog is open, user probably just wants to close it
+                    if (weaponInformation.open || calcInformation.open || helpDialog.open) { return; }
+                    
+                    if ($("header").is(":hidden")) { // Quit focus mode
+                        $("header").show();
+                        $("footer").show();
+                        $("#mapLayerMenu").show();
+                        $("#background").show();
+                        closeToast();
+                    } else {
+                        $("header").hide();
+                        $("footer").hide();
+                        $("#background").hide();
+                        $("#mapLayerMenu").hide();
+                        this.openToast("success", "focusMode", "enterToExit");
+                    }
+                }
+
+            });
+
+            
+            let countdown;
+            
+            const closeToast = () => {
+                document.querySelector("#toast").style.animation = "close 0.3s cubic-bezier(.87,-1,.57,.97) forwards";
+                document.querySelector("#timer").classList.remove("timer-animation");
+                clearTimeout(countdown);
+            };
+            
+            this.openToast = (type, title, text) => {
+                
+                clearTimeout(countdown);
+
+                const toast = document.querySelector("#toast");
+                toast.classList = [type];
+                toast.style.animation = "open 0.3s cubic-bezier(.47,.02,.44,2) forwards";
+                document.querySelector("#timer").classList.add("timer-animation");
+
+                // Set Content
+                toast.querySelector("h4").setAttribute("data-i18n", `tooltips:${title}`);
+                toast.querySelector("h4").innerHTML = i18next.t(`tooltips:${title}`);
+                toast.querySelector("p").setAttribute("data-i18n", `tooltips:${text}`);
+                toast.querySelector("p").innerHTML = i18next.t(`tooltips:${text}`);
+
+                
+                countdown = setTimeout(() => {
+                    closeToast();
+                }, 5000);
+            };
+
+            document.querySelector("#toast").addEventListener("click", closeToast);
+
+        } else {
+            $(".btn-focus").hide();
+        }
+
         $("#calcInformation").on("click", function(event) {
             var rect = calcInformation.getBoundingClientRect();
             var isInDialog = (rect.top <= event.clientY && event.clientY <= rect.top + rect.height &&
@@ -288,6 +377,8 @@ export default class SquadCalc {
         // Update Minimap marker
         this.minimap.updateWeapons();
         this.minimap.updateTargets();
+
+        this.minimap.toggleHeatmap();
     }
 
     /**

@@ -532,17 +532,14 @@
                         <td data-i18n="common:angle" class="noborder">Angle :</td>
                         <td class="noborder">
                             <div id="angleChoiceSettings">
-                                
                                 <label>
                                     <input type="radio" id="angleChoiceLow" name="angleChoice" value="low">
                                     <span data-i18n="common:low"></span>
                                 </label>
-                                
                                 <label>
                                     <input type="radio" id="angleChoiceHigh" name="angleChoice" value="high" checked="checked">
                                     <span data-i18n="common:high"></span>
-                                </label>
-                                
+                                </label>   
                             </div>
                         </td>
                     </tr>
@@ -565,23 +562,47 @@
 
     </dialog>
 
-    <div id="actionMenu">
-        <button type="button" class="btn btn-delete" aria-label="delete all targets">
-            <i class="fa-solid fa-trash"></i>
-        </button>
-    </div>
-
     <div id="mapLayerMenu">
-        <button type="button" class="btn btn-basemap" value="basemap" aria-label="Switch to base map">
+
+
+
+        <button type="button" class="btn btn-basemap layers hidable" value="basemap" aria-label="Switch to base map">
             <i class="fa-solid fa-map"></i>
         </button>
-        <button type="button" class="btn btn-terrainmap" value="terrainmap" aria-label="Switch to terrain map">
+        <button type="button" class="btn btn-terrainmap layers hidable" value="terrainmap" aria-label="Switch to terrain map">
             <i class="fa-solid fa-mountain-sun"></i>
         </button>
-        <button type="button" class="btn btn-topomap" value="topomap" aria-label="Switch to topographic map">
+        <button type="button" class="btn btn-topomap layers hidable" value="topomap" aria-label="Switch to topographic map">
             <i class="fa-solid fa-mound"></i>
         </button>
+
+    
+        <button type="button" class="btn btn-helpmap others hidable" value="helpmap" aria-label="See where players usually place weapons">
+            <span class="fa-stack fa-1x">
+                <i class="fas fa-location-pin fa-stack-2x"></i>
+                <i class="fas fa-question fa-stack-1x fa-inverse question-shift"></i>
+            </span>
+        </button>
+        <button type="button" class="btn btn-focus others" aria-label="fullscreen">
+            <i class="fa-solid fa-expand"></i>
+        </button>
+        <button type="button" class="btn btn-delete others hidable" aria-label="delete all targets">
+            <i class="fa-solid fa-trash"></i>
+        </button>
+
     </div>
+
+    <section id="toast" class="info">
+        <div id="icon-wrapper">
+          <div id="icon"></div>
+        </div>
+        <div id="toast-message">
+          <h4 data-i18n="tooltips:focusMode">Focus Mode</h4>
+          <p data-i18n="tooltips:enterToExit">Press 'ENTER' to exit</p>
+        </div>
+        <button id="toast-close"></button>
+        <div id="timer"></div>
+    </section>
 
     <footer class="pure-u-1 pure-u-md-1 pure-u-lg-1">
 

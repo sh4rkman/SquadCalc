@@ -1,4 +1,6 @@
 /* jshint ignore:start */
+/* eslint-disable */
+
 /**
  * CONSTANTS
  */
