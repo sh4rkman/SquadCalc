@@ -38,16 +38,28 @@ tippy("#bearingNum", {
 
 tippy(".btn-delete", {
     animation: "fade",
-    placement: "top",
+    placement: "left",
     touch: false,
+    theme: "menu",
     onShow(tip) {
         tip.setContent(i18next.t("tooltips:deleteTargets"));
+    },
+});
+
+tippy(".btn-focus", {
+    animation: "fade",
+    placement: "left",
+    touch: false,
+    theme: "menu",
+    onShow(tip) {
+        tip.setContent(i18next.t("tooltips:focusMode"));
     },
 });
 
 tippy(".btn-basemap", {
     animation: "fade",
     placement: "left",
+    theme: "menu",
     touch: false,
     onShow(tip) {
         tip.setContent(i18next.t("tooltips:basemode"));
@@ -57,6 +69,7 @@ tippy(".btn-basemap", {
 tippy(".btn-terrainmap", {
     animation: "fade",
     placement: "left",
+    theme: "menu",
     touch: false,
     onShow(tip) {
         tip.setContent(i18next.t("tooltips:terrainmode"));
@@ -67,12 +80,22 @@ tippy(".btn-terrainmap", {
 tippy(".btn-topomap", {
     animation: "fade",
     placement: "left",
+    theme: "menu",
     touch: false,
     onShow(tip) {
         tip.setContent(i18next.t("tooltips:topographicmode"));
     },
 });
 
+tippy(".btn-helpmap", {
+    animation: "fade",
+    placement: "left",
+    theme: "menu",
+    touch: false,
+    onShow(tip) {
+        tip.setContent(i18next.t("tooltips:helpmode"));
+    },
+});
 
 
 tippy("#elevationNum", {

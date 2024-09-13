@@ -32,4 +32,3 @@ var options = {
 
 export var App = new SquadCalc(options);
 App.init();
-

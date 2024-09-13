@@ -1,30 +1,33 @@
-require('dotenv').config();
+const Dotenv = require('dotenv-webpack');
 const path = require('path');
 const webpack = require('webpack');
-const CopyPlugin = require("copy-webpack-plugin");
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
-var WebpackPwaManifest = require('webpack-pwa-manifest')
+const WebpackPwaManifest = require('webpack-pwa-manifest')
 const RobotstxtPlugin = require("robotstxt-webpack-plugin");
-const Dotenv = require('dotenv-webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const workbox = require("workbox-webpack-plugin");
-const isProduction = process.env.PROD && process.env.PROD.toLowerCase() === 'true';
-const isIndexed = process.env.INDEX && process.env.INDEX.toLowerCase() === 'true';
-const robotstxtPolicy = isIndexed 
+
+
+module.exports = (env) => {
+
+  // If you want webpack to add a robot.txt indexing, create a .env file with INDEX=TRUE
+  const isIndexed = process.env.INDEX && process.env.INDEX.toLowerCase() === 'true';
+  const robotstxtPolicy = isIndexed 
     ? [{ userAgent: "*", allow: "/" }] 
     : [{ userAgent: "*", disallow: "/" }];
 
+  return {
 
-
-module.exports = {
     entry: './src/app.js',
-    mode: isProduction ? 'production' : 'development',
-    devtool: isProduction ? false : 'inline-source-map',
+    stats: { warnings: false},
+    mode: env.WEBPACK_BUILD ? 'production' : 'development',
+    devtool: env.WEBPACK_BUILD ? false : 'inline-source-map',
     output: {
         filename: './src/js/[name].[contenthash].min.js',
-        path: path.join(process.cwd(), 'dist'),
-        publicPath: '',
+        path: path.resolve(__dirname, '../dist'),
+        publicPath: '/',
         clean: true,
         assetModuleFilename: '[path][name].[contenthash][ext]'
     },
@@ -33,28 +36,39 @@ module.exports = {
             { test: /\.html$/i, loader: "html-loader", },
             { test: /\.(png|svg|jpg|jpeg|gif|webp)$/i, type: 'asset/resource', },
             { test: /\.(sc|sa|c)ss$/i, use: ['style-loader', 'css-loader', 'sass-loader'],},
-        ],  
-    }, 
+        ],
+    },
+    devServer: {
+      open: true,
+      static: {
+        directory: path.join(__dirname, '../public'),
+        publicPath: '/',
+      },
+    },
     plugins: [
         new Dotenv(),
         new HtmlWebpackPlugin({
           template: './src/index.html',
-          minify: isProduction ? {
+          minify: env.WEBPACK_BUILD ? {
               collapseWhitespace: true,
               removeComments: true,
               removeAttributeQuotes: true,
           } : false
+        }),
+        new CopyWebpackPlugin({
+          patterns: [
+            {
+              from: path.resolve(__dirname, '../public'),
+              to: path.resolve(__dirname, '../dist'),
+            },
+            { from: "./src/img/github/", to: "./src/img/github/" },
+          ],
         }),
         new webpack.ProvidePlugin({
             $: "jquery", jQuery: "jquery", "window.jQuery": "jquery'", "window.$": "jquery"
         }),
         new RobotstxtPlugin({
           policy: robotstxtPolicy,
-        }),
-        new CopyPlugin({
-            patterns: [
-              { from: "./src/img/github/", to: "./src/img/github/" },
-            ],
         }),
         new WebpackPwaManifest({
           name: 'SquadCalc',
@@ -144,8 +158,10 @@ module.exports = {
             /\.map$/, // source maps
             /\/favicons\//, // favicon
             /robots\.txt/, // robots.txt
+            /\.webp$/,
           ],
-          runtimeCaching: [{
+          runtimeCaching: [
+          {
             urlPattern: new RegExp(/\/maps\/[^\/]+\/[^\/]+\/[1-5]/),
             handler: 'StaleWhileRevalidate',
             options: {
@@ -154,11 +170,10 @@ module.exports = {
           }],
         })
     ],
-    // Disable warning message for big chuncks
     performance: {
         hints: false,
-        maxEntrypointSize: isProduction ? 512000 : Infinity,
-        maxAssetSize: isProduction ? 512000 : Infinity,
+        maxEntrypointSize: env.WEBPACK_BUILD ? 512000 : Infinity,
+        maxAssetSize: env.WEBPACK_BUILD ? 512000 : Infinity,
     },
     optimization: {
       moduleIds: 'deterministic',
@@ -169,11 +184,11 @@ module.exports = {
                   test: /[\\/]node_modules[\\/]/,
                   name: 'vendors',
                   chunks: 'all',
-                  maxSize: isProduction ? 50000 : Infinity,
+                  maxSize: env.WEBPACK_BUILD ? 50000 : Infinity,
               },
           },
       },
-      minimizer: isProduction ? [
+      minimizer: env.WEBPACK_BUILD ? [
           new CssMinimizerPlugin(), //CSS
           new TerserPlugin({
               extractComments: false,
@@ -184,5 +199,6 @@ module.exports = {
               },
           }),
       ] : [],
-  },
+    },
+  }
 };
