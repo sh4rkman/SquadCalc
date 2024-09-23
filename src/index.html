@@ -31,7 +31,7 @@
         if (navigator.appName.indexOf("Internet Explorer") != -1 || navigator.userAgent.match(/Trident.*rv[ :]*11\./)) {
             window.location = "https://choosebrowser.com/";
         }
-        
+
         if ("serviceWorker" in navigator) {
             // Unregister the service worker
             navigator.serviceWorker.getRegistrations().then((registrations) => {
@@ -184,7 +184,7 @@
                             </span>
                           </label>
                     </td>
-                    <td data-i18n="settings:showGrid" class="toggleCheckbox"></td>
+                    <td><span data-i18n="settings:showGrid" class="toggleCheckbox"></span></td>
                 </tr>
 
                 <tr id="keypadUnderCursorSettingRow">
@@ -217,7 +217,7 @@
                             </span>
                           </label>
                     </td>
-                    <td data-i18n="settings:showMaxRange" class="toggleCheckbox"></td>
+                    <td><span data-i18n="settings:showMaxRange" class="toggleCheckbox"></span></td>
                 </tr>
 
                 <tr class="cursorChoiceSettings">
@@ -231,7 +231,7 @@
                             </span>
                           </label>
                     </td>
-                    <td data-i18n="settings:useClassicCursor" class="toggleCheckbox"></td>
+                    <td><span data-i18n="settings:useClassicCursor" class="toggleCheckbox"></span></td>
                 </tr>
 
                 <tr class="mapAnimationSettings">
@@ -308,7 +308,7 @@
                             </span>
                           </label>
                     </td>
-                    <td data-i18n="settings:showBearing" class="toggleCheckbox"></td>
+                    <td><span data-i18n="settings:showBearing" class="toggleCheckbox"></span></td>
                 </tr>
 
                 <tr>
@@ -322,7 +322,7 @@
                             </span>
                           </label>
                     </td>
-                    <td data-i18n="settings:showDistance" class="toggleCheckbox"></td>
+                    <td><span data-i18n="settings:showDistance" class="toggleCheckbox"></span></td>
                 </tr>
 
                 <tr>
@@ -336,8 +336,9 @@
                             </span>
                           </label>
                     </td>
-                    <td data-i18n="settings:showTimeOfFlight" class="toggleCheckbox"></td>
+                    <td><span data-i18n="settings:showTimeOfFlight" class="toggleCheckbox"></span></td>
                 </tr>
+
                 <tr>
                     <td>
                         <label class="mcui-checkbox">
@@ -349,7 +350,7 @@
                             </span>
                           </label>
                     </td>
-                    <td data-i18n="settings:showHeightDiff" class="toggleCheckbox"></td>
+                    <td><span data-i18n="settings:showHeightDiff" class="toggleCheckbox"></span></td>
                 </tr>
             </tbody>
         </table>
