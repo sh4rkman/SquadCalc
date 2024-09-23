@@ -31,9 +31,9 @@
         if (navigator.appName.indexOf("Internet Explorer") != -1 || navigator.userAgent.match(/Trident.*rv[ :]*11\./)) {
             window.location = "https://choosebrowser.com/";
         }
-
+        
         if ("serviceWorker" in navigator) {
-
+            // Unregister the service worker
             navigator.serviceWorker.getRegistrations().then((registrations) => {
                 registrations.forEach((registration) => {
                     registration.unregister();
@@ -41,6 +41,15 @@
             }).catch((error) => {
                 console.error(`Error during service worker unregistration: ${error}`);
             });
+
+            // Clear any related caches
+            if (window.caches) {
+                caches.keys().then((cacheNames) => {
+                    cacheNames.forEach((cacheName) => {
+                        caches.delete(cacheName);
+                    });
+                });
+            }
         }
         
     </script>
