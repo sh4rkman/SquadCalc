@@ -25,6 +25,82 @@ tippy("#settings", {
 tooltip_copied = document.querySelector("#settings")._tippy;
 tooltip_copied.disable();
 
+tippy("span[data-i18n='settings:showDamage']", {
+    animation: "fade",
+    placement: "bottom",
+    allowHTML: true,
+    touch: false,
+    theme: "settingsTooltips",
+    hideOnClick: false,
+    maxWidth: 200,
+    delay: 50,
+    appendTo: document.querySelector("#helpDialog"),
+    onShow(tip) {
+        tip.setContent(`${i18next.t("tooltips:damageRadiusTooltip")}`);
+    },
+});
+
+tippy("span[data-i18n='settings:mapAnimationSettings']", {
+    animation: "fade",
+    placement: "bottom",
+    allowHTML: true,
+    touch: false,
+    theme: "settingsTooltips",
+    hideOnClick: false,
+    delay: 50,
+    maxWidth: 200,
+    appendTo: document.querySelector("#helpDialog"),
+    onShow(tip) {
+        tip.setContent(`${i18next.t("tooltips:smoothMapTooltip")}`);
+    },
+});
+
+tippy("span[data-i18n='settings:showAnimations']", {
+    animation: "fade",
+    placement: "bottom",
+    allowHTML: true,
+    touch: false,
+    theme: "settingsTooltips",
+    hideOnClick: false,
+    delay: 50,
+    maxWidth: 200,
+    appendTo: document.querySelector("#helpDialog"),
+    onShow(tip) {
+        tip.setContent(`${i18next.t("tooltips:targetAnimationTooltip")}`);
+    },
+});
+
+tippy("span[data-i18n='settings:showKeypad']", {
+    animation: "fade",
+    placement: "bottom",
+    allowHTML: true,
+    touch: false,
+    theme: "settingsTooltips",
+    hideOnClick: false,
+    delay: 50,
+    maxWidth: 200,
+    appendTo: document.querySelector("#helpDialog"),
+    onShow(tip) {
+        tip.setContent(`${i18next.t("tooltips:showKeypadTooltip")}`);
+    },
+});
+
+tippy("span[data-i18n='settings:showSpread']", {
+    animation: "fade",
+    placement: "bottom",
+    allowHTML: true,
+    touch: false,
+    theme: "settingsTooltips",
+    hideOnClick: false,
+    delay: 50,
+    maxWidth: 200,
+    appendTo: document.querySelector("#helpDialog"),
+    onShow(tip) {
+        tip.setContent(`${i18next.t("tooltips:showSpreadTooltip")}`);
+    },
+});
+
+
 tippy("#bearingNum", {
     animation: "fade",
     placement: "bottom",

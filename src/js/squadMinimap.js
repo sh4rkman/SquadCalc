@@ -1,4 +1,4 @@
-import {TileLayer, Map, CRS, svg, Util, LayerGroup, Popup } from "leaflet";
+import {imageOverlay, Map, CRS, svg, Util, LayerGroup, Popup } from "leaflet";
 import squadGrid from "./squadGrid";
 import squadHeightmap from "./squadHeightmaps";
 import { App } from "../app";
@@ -6,8 +6,9 @@ import { squadWeaponMarker, squadTargetMarker } from "./squadMarker";
 import { mortarIcon, mortarIcon1, mortarIcon2 } from "./squadIcon";
 import { explode } from "./animations";
 import { fetchMarkersByMap } from "./squadCalcAPI";
-import "leaflet-edgebuffer";
-import "leaflet.gridlayer.fadeout";
+//import "leaflet-edgebuffer";
+import "@luomus/leaflet-smooth-wheel-zoom";
+//import "leaflet.gridlayer.fadeout";
 import "leaflet-spin";
 import "./webgl-heatmap.js";
 import webGLHeatmap from "./leaflet-webgl-heatmap.js";
@@ -31,14 +32,16 @@ export var squadMinimap = Map.extend({
             closePopupOnClick: false,
             crs: CRS.Simple,
             doubleClickZoom: false,
-            edgeBufferTiles: 5,
-            fadeAnimation: true,
             maxZoom: 8,
             minZoom: 1,
             renderer: svg({padding: 3}),
-            wheelPxPerZoomLevel: 75,
             zoom: 2,
             zoomControl: false,
+            smoothSensitivity: 1.5, 
+            scrollWheelZoom: App.userSettings.smoothMap,
+            smoothWheelZoom: !App.userSettings.smoothMap,
+            inertia: App.userSettings.smoothMap,
+            zoomAnimation: App.userSettings.smoothMap,
         };
 
         Util.setOptions(this, options);
@@ -46,6 +49,7 @@ export var squadMinimap = Map.extend({
         this.activeMap = defaultMap;
         this.tilesSize = tilesSize;
         this.imageBounds = [{lat: 0, lng:0}, {lat: -this.tilesSize, lng: this.tilesSize}];
+        this.spinOptions = {color: "white", scale: 1.5, width: 5, shadow: "5px 5px 5px transparent"};
         this.layerGroup = new LayerGroup().addTo(this);
         this.markersGroup = new LayerGroup().addTo(this);
         this.activeTargetsMarkers = new LayerGroup().addTo(this);
@@ -62,12 +66,7 @@ export var squadMinimap = Map.extend({
             closeOnClick: false,
             interactive: false,
         });
-        this.tileLayerOption = {
-            maxNativeZoom: this.activeMap.maxZoomLevel,
-            noWrap: true,
-            bounds: this.imageBounds,
-            tileSize: this.tilesSize,
-        };
+
         // Custom events handlers
         this.on("dblclick", this._handleDoubleCkick, this);
         this.on("contextmenu", this._handleContextMenu, this);
@@ -96,10 +95,7 @@ export var squadMinimap = Map.extend({
         this.grid = new squadGrid(this);
         this.grid.setBounds([[0,0], [-this.tilesSize, this.tilesSize]]);
 
-        if (App.userSettings.grid) this.showGrid();
-
         // load map
-        this.toggleHeatmap();
         this.changeLayer();
     },
 
@@ -109,10 +105,28 @@ export var squadMinimap = Map.extend({
      */
     changeLayer: function(){
         const LAYERMODE = $("#mapLayerMenu .active").attr("value");
-        if (this.activeLayer) this.activeLayer.remove();
-        this.activeLayer = new TileLayer("", this.tileLayerOption);
-        this.activeLayer.setUrl(`maps${this.activeMap.mapURL}${LAYERMODE}/{z}_{x}_{y}.webp`);
+        const OLDLAYER = this.activeLayer;
+
+        // https://www.youtube.com/watch?v=S9mQQpBGCz4
+        this.spin(true, this.spinOptions);
+
+        // Change image
+        this.activeLayer = new imageOverlay("", this.imageBounds);
+        this.activeLayer.setUrl(`maps${this.activeMap.mapURL}${LAYERMODE}.webp`);
+    
+        // Add the new layer but keep it hidden initially
         this.activeLayer.addTo(this.layerGroup);
+        $(this.activeLayer.getElement()).css("opacity", 0);
+    
+        // When the new image is loaded, fade it in & remove spiner 
+        this.activeLayer.on("load", () => {
+            this.spin(false);
+            $(this.activeLayer.getElement()).animate({opacity: 1}, 500, () => {
+                if (OLDLAYER) OLDLAYER.remove();
+                if (App.userSettings.grid) this.showGrid();
+                this.toggleHeatmap();
+            });
+        });
     },
 
 
@@ -122,12 +136,12 @@ export var squadMinimap = Map.extend({
     toggleHeatmap: function(){
 
         if ($(".btn-helpmap").hasClass("active")){
-            this.spin(true, {color: "white", scale: 1.5, width: 5});
+            this.spin(true, this.spinOptions);
             if (this.heatmap) this.heatmap.remove();
             fetchMarkersByMap(App.minimap.activeMap.name, App.activeWeapon.name)
                 .then(markers => {
                     this.heatmap = new webGLHeatmap({
-                        size: 8,
+                        size: 7,
                         units: "m",
                         opacity: 0.5,
                         alphaRange: 0.7,
@@ -159,7 +173,7 @@ export var squadMinimap = Map.extend({
         this.markersGroup.clearLayers();
         this.activeWeaponsMarkers.clearLayers();
         this.activeTargetsMarkers.clearLayers();
-        this.layerGroup.clearLayers();
+        //this.layerGroup.clearLayers();
 
         this.setView([-this.tilesSize/2, this.tilesSize/2], 2);
         $(".btn-delete").hide();
@@ -237,7 +251,7 @@ export var squadMinimap = Map.extend({
         const s2 = 300 / 3 ** 2; // interval of second sub keypad
         const s3 = 300 / 3 ** 3; // interval of third sub keypad
         const s4 = 300 / 3 ** 4; // interval of third sub keypad
-        var precision = this.getZoom();
+        const precision = Math.round(this.getZoom());
 
         // basic grid, e.g. B5
         const kpCharCode = 65 + Math.floor(x / kp);

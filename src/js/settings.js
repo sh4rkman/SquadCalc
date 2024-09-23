@@ -43,6 +43,8 @@ export function loadSettings(){
 
     $(".btn-"+setting).addClass("active");
 
+    App.userSettings.smoothMap = loadLocalSetting("settings-smooth-map", 0);
+    $("#mapAnimationSettings").prop("checked", App.userSettings.smoothMap);
 
     App.userSettings.spreadRadius = loadLocalSetting("settings-spread-radius");
     $("#spreadRadiusSetting").prop("checked", App.userSettings.spreadRadius);
@@ -159,7 +161,6 @@ export function updatePreview(){
 }
 
 
-
 $("#keypadUnderCursorSetting").on("change", function() {
     var val;
 
@@ -204,6 +205,12 @@ $("#spreadRadiusSetting").on("change", function() {
     localStorage.setItem("settings-spread-radius", +val);
     App.minimap.updateTargetsSpreads(); // Update every targets to add/remove spread radius
     updatePreview();
+});
+
+$("#mapAnimationSettings").on("change", function() {
+    var val = $("#mapAnimationSettings").is(":checked");
+    App.userSettings.smoothMap = val;
+    localStorage.setItem("settings-smooth-map", +val);
 });
 
 $("#damageRadiusSetting").on("change", function() {
@@ -325,3 +332,13 @@ $("#timeOfFlightSetting").on("change", function() {
     updatePreview();
 });
 
+
+// Add an even listener on all settings label so it can also be clicked
+document.querySelectorAll(".toggleCheckbox").forEach(function(label) {
+    label.addEventListener("click", function() {
+        // Find the checkbox in the same row and toggle it
+        const checkbox = this.closest("tr").querySelector("input[type='checkbox']");
+        checkbox.checked = !checkbox.checked;
+        checkbox.dispatchEvent(new Event("change"));
+    });
+});

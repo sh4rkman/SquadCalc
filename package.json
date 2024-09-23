@@ -1,6 +1,6 @@
 {
   "name": "squadcalc",
-  "version": "30.0.0",
+  "version": "31.0.0",
   "description": "A Complete Mortar Calculator for Squad",
   "author": "Maxime 'sharkman' Boussard",
   "license": "MIT",
@@ -47,10 +47,8 @@
     "jshint": "^2.13.6",
     "leader-line-new": "^1.1.9",
     "leaflet": "^1.9.4",
-    "leaflet-edgebuffer": "^1.0.6",
     "leaflet-loader": "^0.0.3",
     "leaflet-spin": "^1.1.2",
-    "leaflet.gridlayer.fadeout": "^0.1.0",
     "mini-css-extract-plugin": "^2.9.1",
     "postcss": ">=8.4.45",
     "purecss": "^3.0.0",
@@ -68,6 +66,7 @@
     "webpack-dev-server": "^5.1.0",
     "webpack-merge": "^6.0.1",
     "webpack-pwa-manifest": "^4.3.0",
-    "workbox-webpack-plugin": "^7.1.0"
+    "workbox-webpack-plugin": "^7.1.0",
+    "@luomus/leaflet-smooth-wheel-zoom": "^1.0.0"
   }
 }

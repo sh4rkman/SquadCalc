@@ -1,3 +1,21 @@
+# <img src="https://img.shields.io/badge/-major%20release-b22222?style=for-the-badge">  **31.0.0** *(2024-09-23)*
+
+<img src="https://img.shields.io/badge/-new-green"> Single Image Maps : maps are now displayed with a single image file, instead of hundreds of tiles. Add a smoother usage once fully loaded at the cost of higher bandwidth/initial loading
+
+<img src="https://img.shields.io/badge/-new-green"> New setting : "Pan/Zoom animations" allow you to toggle map animation while moving/zooming on the map. Smooth vs Reactive experience
+
+<img src="https://img.shields.io/badge/-new-green"> Added a loading indicator while loading maps
+
+<img src="https://img.shields.io/badge/-new-green"> Added tooltips adding precision on some settings
+
+<img src="https://img.shields.io/badge/-new-green"> Settings label can now be clicked to tick them
+
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Reduced size heatmap points
+
+<img src="https://img.shields.io/badge/-%20dev%20-orange"> Removed service worker caching for now to see if it fixes caching problems
+
+
+
 # <img src="https://img.shields.io/badge/-major%20release-b22222?style=for-the-badge">  **30.0.0** *(2024-09-13)*
 
 <img src="https://img.shields.io/badge/-new-green"> New feature : "Show Frequent Weapon Locations". Thanks to the data collected through squadcalc API users can now display a heatmap of common places where to deploy their weapon.
