@@ -12,6 +12,8 @@
 
 <img src="https://img.shields.io/badge/-%20improv%20-orange"> Reduced size heatmap points
 
+<img src="https://img.shields.io/badge/-%20dev%20-orange"> Removed service worker caching for now to see if it fixes caching problems
+
 
 
 # <img src="https://img.shields.io/badge/-major%20release-b22222?style=for-the-badge">  **30.0.0** *(2024-09-13)*
