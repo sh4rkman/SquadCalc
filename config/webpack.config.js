@@ -7,7 +7,7 @@ const TerserPlugin = require("terser-webpack-plugin");
 const WebpackPwaManifest = require('webpack-pwa-manifest')
 const RobotstxtPlugin = require("robotstxt-webpack-plugin");
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const workbox = require("workbox-webpack-plugin");
+//const workbox = require("workbox-webpack-plugin");
 
 
 module.exports = (env) => {
@@ -148,27 +148,27 @@ module.exports = (env) => {
             },
           ]
         }),
-        new workbox.GenerateSW({
-          swDest: "./sw.js",
-          skipWaiting: true,
-          clientsClaim: true,
-          maximumFileSizeToCacheInBytes: 10000000,
-          exclude: [
-            /manifest\.json$/, // web app manifest
-            /\.map$/, // source maps
-            /\/favicons\//, // favicon
-            /robots\.txt/, // robots.txt
-            /\.webp$/,
-          ],
-          runtimeCaching: [
-          {
-            urlPattern: new RegExp(/\/maps\/[^\/]+\/[^\/]+\/[1-5]/),
-            handler: 'StaleWhileRevalidate',
-            options: {
-              cacheName: 'squadcalc-tiles',
-            },
-          }],
-        })
+        // new workbox.GenerateSW({
+        //   swDest: "./sw.js",
+        //   skipWaiting: true,
+        //   clientsClaim: true,
+        //   maximumFileSizeToCacheInBytes: 10000000,
+        //   exclude: [
+        //     /manifest\.json$/, // web app manifest
+        //     /\.map$/, // source maps
+        //     /\/favicons\//, // favicon
+        //     /robots\.txt/, // robots.txt
+        //     /\.webp$/,
+        //   ],
+        //   runtimeCaching: [
+        //   {
+        //     urlPattern: new RegExp(/\/maps\/[^\/]+\/[^\/]+\/[1-5]/),
+        //     handler: 'StaleWhileRevalidate',
+        //     options: {
+        //       cacheName: 'squadcalc-tiles',
+        //     },
+        //   }],
+        // })
     ],
     performance: {
         hints: false,

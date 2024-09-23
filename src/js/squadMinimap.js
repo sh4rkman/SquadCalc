@@ -95,10 +95,7 @@ export var squadMinimap = Map.extend({
         this.grid = new squadGrid(this);
         this.grid.setBounds([[0,0], [-this.tilesSize, this.tilesSize]]);
 
-        if (App.userSettings.grid) this.showGrid();
-
         // load map
-        this.toggleHeatmap();
         this.changeLayer();
     },
 
@@ -126,6 +123,8 @@ export var squadMinimap = Map.extend({
             this.spin(false);
             $(this.activeLayer.getElement()).animate({opacity: 1}, 500, () => {
                 if (OLDLAYER) OLDLAYER.remove();
+                if (App.userSettings.grid) this.showGrid();
+                this.toggleHeatmap();
             });
         });
     },

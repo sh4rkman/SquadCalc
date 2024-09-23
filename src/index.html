@@ -31,12 +31,16 @@
         if (navigator.appName.indexOf("Internet Explorer") != -1 || navigator.userAgent.match(/Trident.*rv[ :]*11\./)) {
             window.location = "https://choosebrowser.com/";
         }
+
         if ("serviceWorker" in navigator) {
-            try {
-                navigator.serviceWorker.register("sw.js");
-            } catch (error) {
-                console.error(`Registration failed with ${error}`);
-            }
+
+            navigator.serviceWorker.getRegistrations().then((registrations) => {
+                registrations.forEach((registration) => {
+                    registration.unregister();
+                });
+            }).catch((error) => {
+                console.error(`Error during service worker unregistration: ${error}`);
+            });
         }
         
     </script>
