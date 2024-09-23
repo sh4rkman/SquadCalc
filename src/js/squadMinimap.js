@@ -32,8 +32,6 @@ export var squadMinimap = Map.extend({
             closePopupOnClick: false,
             crs: CRS.Simple,
             doubleClickZoom: false,
-            // edgeBufferTiles: 5, // Only when tiling?
-            fadeAnimation: true, // Only when tiling?
             maxZoom: 8,
             minZoom: 1,
             renderer: svg({padding: 3}),
@@ -68,12 +66,7 @@ export var squadMinimap = Map.extend({
             closeOnClick: false,
             interactive: false,
         });
-        // this.tileLayerOption = {
-        //     maxNativeZoom: this.activeMap.maxZoomLevel,
-        //     noWrap: true,
-        //     bounds: this.imageBounds,
-        //     tileSize: this.tilesSize,
-        // };
+
         // Custom events handlers
         this.on("dblclick", this._handleDoubleCkick, this);
         this.on("contextmenu", this._handleContextMenu, this);
@@ -115,17 +108,25 @@ export var squadMinimap = Map.extend({
      */
     changeLayer: function(){
         const LAYERMODE = $("#mapLayerMenu .active").attr("value");
+        const OLDLAYER = this.activeLayer;
 
+        // https://www.youtube.com/watch?v=S9mQQpBGCz4
         this.spin(true, this.spinOptions);
 
-        if (this.activeLayer) this.activeLayer.remove();
+        // Change image
         this.activeLayer = new imageOverlay("", this.imageBounds);
         this.activeLayer.setUrl(`maps${this.activeMap.mapURL}${LAYERMODE}.webp`);
+    
+        // Add the new layer but keep it hidden initially
         this.activeLayer.addTo(this.layerGroup);
-
-        // Wait for the image to load completely before performing further actions
+        $(this.activeLayer.getElement()).css("opacity", 0);
+    
+        // When the new image is loaded, fade it in & remove spiner 
         this.activeLayer.on("load", () => {
             this.spin(false);
+            $(this.activeLayer.getElement()).animate({opacity: 1}, 500, () => {
+                if (OLDLAYER) OLDLAYER.remove();
+            });
         });
     },
 
@@ -173,7 +174,7 @@ export var squadMinimap = Map.extend({
         this.markersGroup.clearLayers();
         this.activeWeaponsMarkers.clearLayers();
         this.activeTargetsMarkers.clearLayers();
-        this.layerGroup.clearLayers();
+        //this.layerGroup.clearLayers();
 
         this.setView([-this.tilesSize/2, this.tilesSize/2], 2);
         $(".btn-delete").hide();

@@ -938,12 +938,9 @@ dialog {
                     }
                 }
             }
-            tr {
+            .toggleCheckbox {
                 @extend .unselectable;
                 cursor: pointer;
-                label span {
-                    cursor: default;
-                }
             }
             caption {
                 margin: 5px 20px 15px 0;

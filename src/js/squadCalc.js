@@ -61,7 +61,7 @@ export default class SquadCalc {
         MAP_SELECTOR.on("change", (event) => {
             this.minimap.activeMap = MAPS.find((elem, index) => index == event.target.value);
             this.minimap.clear(); 
-            this.minimap.draw(true); 
+            this.minimap.draw(); 
         });
     }
 
