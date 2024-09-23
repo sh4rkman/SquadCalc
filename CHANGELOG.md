@@ -1,3 +1,14 @@
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **31.0.1** *(2024-09-23)*
+
+<img src="https://img.shields.io/badge/-%fix%20-orange"> Fixed faulty 'pointer' cursor when hovering settings row without any text
+
+<img src="https://img.shields.io/badge/-%fix%20-orange"> Fixed Skorpo basemap
+
+<img src="https://img.shields.io/badge/-%dev%20-orange"> Fixed environnement variables not correctly loaded
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
+
 # <img src="https://img.shields.io/badge/-major%20release-b22222?style=for-the-badge">  **31.0.0** *(2024-09-23)*
 
 <img src="https://img.shields.io/badge/-new-green"> Single Image Maps : maps are now displayed with a single image file, instead of hundreds of tiles. Add a smoother usage once fully loaded at the cost of higher bandwidth/initial loading
@@ -15,6 +26,7 @@
 <img src="https://img.shields.io/badge/-%20dev%20-orange"> Removed service worker caching for now to see if it fixes caching problems
 
 
+</br></br><!-- CHANGELOG SPLIT MARKER -->
 
 # <img src="https://img.shields.io/badge/-major%20release-b22222?style=for-the-badge">  **30.0.0** *(2024-09-13)*
 
@@ -32,6 +44,8 @@
 
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
+
+
 
 # <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **29.0.3** *(2024-09-06)*
 

@@ -12,6 +12,8 @@ const workbox = require("workbox-webpack-plugin");
 
 module.exports = (env) => {
 
+  require('dotenv').config();
+
   // If you want webpack to add a robot.txt indexing, create a .env file with INDEX=TRUE
   const isIndexed = process.env.INDEX && process.env.INDEX.toLowerCase() === 'true';
   const robotstxtPolicy = isIndexed 
