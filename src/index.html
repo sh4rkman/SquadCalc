@@ -166,11 +166,12 @@
                     <td>
                         <label class="mcui-checkbox">
                             <input id="gridSetting" type="checkbox">
-                            <span><svg class="mcui-check" viewBox="-2 -2 35 35" aria-hidden="true"><polyline points="7.57 15.87 12.62 21.07 23.43 9.93" /></svg></span>
-                            <span></span>
+                            <span>
+                                <svg class="mcui-check" viewBox="-2 -2 35 35" aria-hidden="true"><polyline points="7.57 15.87 12.62 21.07 23.43 9.93" /></svg>
+                            </span>
                           </label>
                     </td>
-                    <td data-i18n="settings:showGrid"></td>
+                    <td data-i18n="settings:showGrid" class="toggleCheckbox"></td>
                 </tr>
 
                 <tr id="keypadUnderCursorSettingRow">
@@ -182,10 +183,10 @@
                                 <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
                               </svg>
                             </span>
-                            <span></span>
                           </label>
                     </td>
-                    <td data-i18n="settings:showKeypad">
+                    <td> 
+                        <span data-i18n="settings:showKeypad" class="toggleCheckbox"></span>
                         <br>
                         <span id="KPSettingSubText" class="settingsSubtext">
                         </span>
@@ -201,10 +202,9 @@
                                 <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
                               </svg>
                             </span>
-                            <span></span>
                           </label>
                     </td>
-                    <td data-i18n="settings:showMaxRange"></td>
+                    <td data-i18n="settings:showMaxRange" class="toggleCheckbox"></td>
                 </tr>
 
                 <tr class="cursorChoiceSettings">
@@ -216,10 +216,23 @@
                                 <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
                               </svg>
                             </span>
-                            <span></span>
                           </label>
                     </td>
-                    <td data-i18n="settings:useClassicCursor"></td>
+                    <td data-i18n="settings:useClassicCursor" class="toggleCheckbox"></td>
+                </tr>
+
+                <tr class="mapAnimationSettings">
+                    <td>
+                        <label class="mcui-checkbox">
+                            <input id="mapAnimationSettings" type="checkbox">
+                            <span>
+                              <svg class="mcui-check" viewBox="-2 -2 35 35" aria-hidden="true">
+                                <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
+                              </svg>
+                            </span>
+                          </label>
+                    </td>
+                    <td><span data-i18n="settings:mapAnimationSettings" class="toggleCheckbox"></span></td>
                 </tr>
 
             </tbody>
@@ -238,13 +251,12 @@
                                 <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
                               </svg>
                             </span>
-                            <span></span>
                           </label>
                     </td>
-                    <td data-i18n="settings:showSpread"></td>
+                    <td><span data-i18n="settings:showSpread" class="toggleCheckbox"></span></td>
                 </tr>
 
-                <tr>
+                <tr class="damageRadiusSetting">
                     <td>
                         <label class="mcui-checkbox">
                             <input id="damageRadiusSetting" type="checkbox">
@@ -253,13 +265,12 @@
                                 <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
                               </svg>
                             </span>
-                            <span></span>
-                          </label>
+                        </label>
                     </td>
-                    <td data-i18n="settings:showDamage"></td>
+                    <td><span data-i18n="settings:showDamage" class="toggleCheckbox"></span></td>
                 </tr>
 
-                <tr>
+                <tr class="targetAnimationSettings">
                     <td>
                         <label class="mcui-checkbox">
                             <input id="targetAnimationSettings" type="checkbox">
@@ -268,10 +279,9 @@
                                 <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
                               </svg>
                             </span>
-                            <span></span>
                           </label>
                     </td>
-                    <td data-i18n="settings:showAnimations"></td>
+                    <td><span data-i18n="settings:showAnimations" class="toggleCheckbox"></span></td>
                 </tr>
 
                 <tr>
@@ -283,10 +293,9 @@
                                 <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
                               </svg>
                             </span>
-                            <span></span>
                           </label>
                     </td>
-                    <td data-i18n="settings:showBearing"></td>
+                    <td data-i18n="settings:showBearing" class="toggleCheckbox"></td>
                 </tr>
 
                 <tr>
@@ -298,10 +307,9 @@
                                 <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
                               </svg>
                             </span>
-                            <span></span>
                           </label>
                     </td>
-                    <td data-i18n="settings:showDistance"></td>
+                    <td data-i18n="settings:showDistance" class="toggleCheckbox"></td>
                 </tr>
 
                 <tr>
@@ -313,10 +321,9 @@
                                 <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
                               </svg>
                             </span>
-                            <span></span>
                           </label>
                     </td>
-                    <td data-i18n="settings:showTimeOfFlight"></td>
+                    <td data-i18n="settings:showTimeOfFlight" class="toggleCheckbox"></td>
                 </tr>
                 <tr>
                     <td>
@@ -327,10 +334,9 @@
                                 <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
                               </svg>
                             </span>
-                            <span></span>
                           </label>
                     </td>
-                    <td data-i18n="settings:showHeightDiff"></td>
+                    <td data-i18n="settings:showHeightDiff" class="toggleCheckbox"></td>
                 </tr>
             </tbody>
         </table>
@@ -344,11 +350,11 @@
                 <span class="bearingPreview">241.5°</span>
             </div>
             <div id="center">
-                <img id="damagePreview" loading="lazy" src="./img/icons/damage.png" alt="damagePreview">
-                <img id="spreadPreview" loading="lazy" src="./img/icons/spread.png" alt="spreadPreview">
-                <img id="gridPreview" loading="lazy" src="./img/icons/grid.png" alt="gridPreview">
-                <img id="markerPreview" loading="lazy" src="./img/icons/marker_target_enabled.webp" alt="markerPreview">
-                <img id="maxRangePreview" loading="lazy" src="./img/icons/maxrange.png" alt="maxRangePreview">
+                <img id="damagePreview" loading="lazy" src="./img/icons/damage.png" alt="damagePreview" draggable="false">
+                <img id="spreadPreview" loading="lazy" src="./img/icons/spread.png" alt="spreadPreview" draggable="false">
+                <img id="gridPreview" loading="lazy" src="./img/icons/grid.png" alt="gridPreview" draggable="false">
+                <img id="markerPreview" loading="lazy" src="./img/icons/marker_target_enabled.webp" alt="markerPreview" draggable="false">
+                <img id="maxRangePreview" loading="lazy" src="./img/icons/maxrange.png" alt="maxRangePreview" draggable="false">
             </div>
         </div>
 

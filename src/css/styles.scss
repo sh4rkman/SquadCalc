@@ -760,6 +760,13 @@ footer {
         text-align: center;
         padding: 10px;
     }
+    &[data-theme~='settingsTooltips'] {
+        margin-top: 2px;
+        font-size: 0.9em;
+        text-align: center;
+        padding: 5px;
+        box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+    }
 }
 
 .tippy-arrow {
@@ -875,8 +882,7 @@ dialog {
         float: left;
         border-collapse: collapse;
         margin: 0 0 2em 2em;
-        width: 90%;
-        
+        width: 90%;        
     }
     &#weaponInformation {
         max-width: 350px;
@@ -932,6 +938,13 @@ dialog {
                     }
                 }
             }
+            tr {
+                @extend .unselectable;
+                cursor: pointer;
+                label span {
+                    cursor: default;
+                }
+            }
             caption {
                 margin: 5px 20px 15px 0;
                 color: $mainTxtColor;
@@ -969,7 +982,7 @@ dialog {
             height: 100px;
             margin: auto;
             float: none;
-            background-image: url("../../public/maps/chora/basemap/4_6_7.webp");
+            background-image: url("../img/icons/preview.webp");
             background-size: contain;
             #center {
                 display: flex;

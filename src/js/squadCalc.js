@@ -66,9 +66,9 @@ export default class SquadCalc {
     }
 
     loadMinimap(){
-        var tileSize = 256;
-        var randMapId = Math.floor(Math.random() * MAPS.length);
-        var defaultMap = MAPS[randMapId];
+        const tileSize = 256;
+        const randMapId = Math.floor(Math.random() * MAPS.length);
+        const defaultMap = MAPS[randMapId];
         $(".dropbtn").val(randMapId);
         this.minimap = new squadMinimap("map", tileSize, defaultMap);
         this.minimap.draw();

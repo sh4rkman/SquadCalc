@@ -18,5 +18,10 @@
     "spreadDesc": "由于武器的角分 (MOA) 不精确性和弹道长度，射击会在椭圆形的模式下散布。",
     "moaDesc": "角分 (MOA) 在炮兵中衡量武器的不精确性，表示射击的散布范围。一角分等于1/60度。",
     "velocityDesc": "枪口初速是指弹丸离开枪管时的即时速度，它影响射程和精准度。",
-    "heightPaddingDesc": "当武器放置在地面以上时（例如在建筑物或桥梁上），使用此字段指定额外的高度。"
+    "heightPaddingDesc": "当武器放置在地面以上时（例如在建筑物或桥梁上），使用此字段指定额外的高度。",
+    "smoothMapTooltip": "在缩放或移动地图时添加平滑动画。需要重新加载页面",
+    "targetAnimationTooltip": "目标标记将以‘下落’动画出现",
+    "damageRadiusTooltip": "显示伤害半径和25点伤害的半径",
+    "showKeypadTooltip": "在光标下显示数字键盘",
+    "showSpreadTooltip": "显示目标周围可能的弹药散布区域"
 }
