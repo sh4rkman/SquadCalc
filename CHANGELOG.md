@@ -1,8 +1,8 @@
 # <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **31.0.1** *(2024-09-23)*
 
-<img src="https://img.shields.io/badge/-%fix%20-orange"> Fixed faulty 'pointer' cursor when hovering settings row without any text
+<img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed faulty 'pointer' cursor when hovering settings row without any text
 
-<img src="https://img.shields.io/badge/-%fix%20-orange"> Fixed Skorpo basemap
+<img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed Skorpo basemap
 
 <img src="https://img.shields.io/badge/-%dev%20-orange"> Fixed environnement variables not correctly loaded
 
