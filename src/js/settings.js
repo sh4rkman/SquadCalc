@@ -1,7 +1,7 @@
 import { App } from "../app";
 import { tooltip_coordPreview } from "./tooltips.js";
 import i18next from "i18next";
-import { animateCSS } from "./animations.js"
+import { animateCSS } from "./animations.js";
 
 /* eslint no-unused-vars: "off" */
 import speadIcon from "../img/icons/spread.png";

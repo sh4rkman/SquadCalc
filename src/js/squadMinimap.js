@@ -6,9 +6,7 @@ import { squadWeaponMarker, squadTargetMarker } from "./squadMarker";
 import { mortarIcon, mortarIcon1, mortarIcon2 } from "./squadIcon";
 import { explode } from "./animations";
 import { fetchMarkersByMap } from "./squadCalcAPI";
-//import "leaflet-edgebuffer";
 import "@luomus/leaflet-smooth-wheel-zoom";
-//import "leaflet.gridlayer.fadeout";
 import "leaflet-spin";
 import "./libs/webgl-heatmap.js";
 import webGLHeatmap from "./libs/leaflet-webgl-heatmap.js";
@@ -35,7 +33,7 @@ export var squadMinimap = Map.extend({
             maxZoom: 8,
             minZoom: 1,
             renderer: svg({padding: 3}),
-            zoom: 5,
+            zoom: 2,
             zoomControl: false,
             smoothSensitivity: 1.5, 
             scrollWheelZoom: App.userSettings.smoothMap,
@@ -66,11 +64,6 @@ export var squadMinimap = Map.extend({
             closeOnClick: false,
             interactive: false,
         });
-
-        // Chrome Lag work-around
-        // Looks like Chrome doesn't handle well 4k images when starting at low zoom level and zooming-in
-        // We initiate the map at zoomLevel=5 and zoom back to 2 as a work
-        this.setZoom(2);
 
         // Custom events handlers
         this.on("dblclick", this._handleDoubleCkick, this);
@@ -118,7 +111,7 @@ export var squadMinimap = Map.extend({
         // Change image
         this.activeLayer = new imageOverlay("", this.imageBounds);
         this.activeLayer.setUrl(`maps${this.activeMap.mapURL}${LAYERMODE}.webp`);
-    
+
         // Add the new layer but keep it hidden initially
         this.activeLayer.addTo(this.layerGroup);
         $(this.activeLayer.getElement()).css("opacity", 0);
