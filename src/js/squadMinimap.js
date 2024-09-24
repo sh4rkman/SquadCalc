@@ -10,8 +10,8 @@ import { fetchMarkersByMap } from "./squadCalcAPI";
 import "@luomus/leaflet-smooth-wheel-zoom";
 //import "leaflet.gridlayer.fadeout";
 import "leaflet-spin";
-import "./webgl-heatmap.js";
-import webGLHeatmap from "./leaflet-webgl-heatmap.js";
+import "./libs/webgl-heatmap.js";
+import webGLHeatmap from "./libs/leaflet-webgl-heatmap.js";
 
 
 export var squadMinimap = Map.extend({
@@ -35,7 +35,7 @@ export var squadMinimap = Map.extend({
             maxZoom: 8,
             minZoom: 1,
             renderer: svg({padding: 3}),
-            zoom: 2,
+            zoom: 5,
             zoomControl: false,
             smoothSensitivity: 1.5, 
             scrollWheelZoom: App.userSettings.smoothMap,
@@ -66,6 +66,11 @@ export var squadMinimap = Map.extend({
             closeOnClick: false,
             interactive: false,
         });
+
+        // Chrome Lag work-around
+        // Looks like Chrome doesn't handle well 4k images when starting at low zoom level and zooming-in
+        // We initiate the map at zoomLevel=5 and zoom back to 2 as a work
+        this.setZoom(2);
 
         // Custom events handlers
         this.on("dblclick", this._handleDoubleCkick, this);

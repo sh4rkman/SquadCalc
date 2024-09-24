@@ -23,5 +23,6 @@
     "targetAnimationTooltip": "Les marqueurs de cibles apparaîtront avec une animation de 'chute'",
     "damageRadiusTooltip": "Affiche le rayon de dégâts et le rayon des 25 points de dégâts",
     "showKeypadTooltip": "Affiche le numéro de grille (ex: \"B03-4-5\") sous le curseur de souris",
-    "showSpreadTooltip": "Affiche la dispersion possible des projectiles autour des cibles"
+    "showSpreadTooltip": "Affiche la dispersion possible des projectiles autour des cibles",
+    "showMaxRangeTooltip": "Affiche des cercles bleus pour la portée minimale et maximale. Ne tient pas compte de l'altitude"
 }

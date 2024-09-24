@@ -12,7 +12,11 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ * 
+ * Slightly patched by Maxime "sharkman" Boussard for https://github.com/sh4rkman/SquadCalc
  */
+
+
 import { Path, Canvas, SVG, Util, Point, Bounds } from "leaflet";
 
 

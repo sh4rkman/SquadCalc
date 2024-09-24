@@ -20,11 +20,12 @@
     <!-- FAVICON -->
     <link rel="shortcut icon" type="image/x-icon" href="./img/favicons/favicon.ico">
 
-    <!-- PRECONNECT FOR FASTER LOAD -->
-    <link rel="preload" href="./fonts/webfonts/montserrat-v26-latin-regular.woff2" as="font" crossorigin>
-    <link rel="preload" href="./fonts/webfonts/oswald-v53-latin-700.woff2" as="font" crossorigin>
-    <link rel="preload" href="./fonts/webfonts/fa-brands-400.woff2" as="font" crossorigin>
-    <link rel="preload" href="./fonts/webfonts/fa-solid-900.woff2" as="font" crossorigin>
+    <!-- FONT/ICON -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@612&family=Oswald:wght@200..700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css">
+
 
     <!-- FUCK IE / REGISTER SW -->
     <script>
@@ -60,7 +61,7 @@
 
 
     <div id="loader" class="pure-g">
-        <span id="loaderLogo">
+        <span id="loaderLogo" class="animate__animated animate__jackInTheBox">
             <span data-i18n="common:squad"></span>
             <span data-i18n="common:calc"></span>
         </span>
@@ -157,11 +158,11 @@
 
     <canvas id="canvas" width="1000" height="1000"></canvas>
 
-    <dialog id="helpDialog">
+    <dialog id="helpDialog" class="animate__animated animate__zoomIn">
 
         <form method="dialog">
             <button class="closeModal">
-                <i class="fa-regular fa-circle-xmark"></i>
+                <i class="fa-solid fa-circle-xmark"></i>
             </button>
         </form>
 
@@ -409,10 +410,10 @@
 
         </div>
 
-        <dialog id="calcInformation">
+        <dialog id="calcInformation" class="animate__animated animate__zoomIn">
             <form method="dialog">
                 <button class="closeModal">
-                    <i class="fa-regular fa-circle-xmark"></i>
+                    <i class="fa-solid fa-circle-xmark"></i>
                 </button>
             </form>
 
@@ -504,10 +505,10 @@
     </div>
 
 
-    <dialog id="weaponInformation">
+    <dialog id="weaponInformation" class="animate__animated animate__zoomIn">
         <form method="dialog">
             <button class="closeModal">
-                <i class="fa-regular fa-circle-xmark"></i>
+                <i class="fa-solid fa-circle-xmark"></i>
             </button>
         </form>
 

@@ -16,9 +16,7 @@ export function sendMarkerData(markerData) {
         },
         body: JSON.stringify(markerData)
     }).then(response => {
-        if (response.ok) {
-            console.debug(`Marker data successfully sent to ${process.env.API_URL}`);
-        } else {
+        if (!response.ok) {
             console.debug("HTTP error:", response.status);
         }
     }).catch(error => {
@@ -41,9 +39,7 @@ export function sendTargetData(targetData) {
         body: JSON.stringify(targetData)
     })
         .then(response => {
-            if (response.ok) {
-                console.debug(`Target data successfully sent to ${process.env.API_URL}`);
-            } else {
+            if (!response.ok) {
                 console.debug("HTTP error:", response.status);
             }
         })

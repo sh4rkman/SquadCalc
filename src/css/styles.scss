@@ -674,7 +674,11 @@ footer {
 }
 
 .animate__animated.animate__headShake {
-    --animate-duration: 0.5s;
+    --animate-duration: 0.4s;
+}
+
+.animate__animated.animate__zoomIn {
+    --animate-duration: 0.15s;
 }
 
 

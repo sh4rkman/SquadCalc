@@ -1,0 +1,1 @@
+This folder contains external JavaScript libraries that were manually added because they were not available via npm or other package managers, or because i need to slightly adapt/patch bugs.

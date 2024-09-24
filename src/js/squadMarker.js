@@ -1,5 +1,5 @@
 import { App } from "../app";
-import { ellipse } from "./ellipse";
+import { ellipse } from "./libs/ellipse";
 import { Marker, Circle, CircleMarker, Popup, Browser} from "leaflet";
 import { targetIcon1, targetIconAnimated1, targetIconDisabled } from "./squadIcon";
 import SquadSimulation from "./squadSimulation";

@@ -31,7 +31,7 @@ tippy("span[data-i18n='settings:showDamage']", {
     allowHTML: true,
     touch: false,
     theme: "settingsTooltips",
-    hideOnClick: false,
+    hideOnClick: true,
     maxWidth: 200,
     delay: 50,
     appendTo: document.querySelector("#helpDialog"),
@@ -46,7 +46,7 @@ tippy("span[data-i18n='settings:mapAnimationSettings']", {
     allowHTML: true,
     touch: false,
     theme: "settingsTooltips",
-    hideOnClick: false,
+    hideOnClick: true,
     delay: 50,
     maxWidth: 200,
     appendTo: document.querySelector("#helpDialog"),
@@ -61,7 +61,7 @@ tippy("span[data-i18n='settings:showAnimations']", {
     allowHTML: true,
     touch: false,
     theme: "settingsTooltips",
-    hideOnClick: false,
+    hideOnClick: true,
     delay: 50,
     maxWidth: 200,
     appendTo: document.querySelector("#helpDialog"),
@@ -76,7 +76,7 @@ tippy("span[data-i18n='settings:showKeypad']", {
     allowHTML: true,
     touch: false,
     theme: "settingsTooltips",
-    hideOnClick: false,
+    hideOnClick: true,
     delay: 50,
     maxWidth: 200,
     appendTo: document.querySelector("#helpDialog"),
@@ -91,12 +91,27 @@ tippy("span[data-i18n='settings:showSpread']", {
     allowHTML: true,
     touch: false,
     theme: "settingsTooltips",
-    hideOnClick: false,
+    hideOnClick: true,
     delay: 50,
     maxWidth: 200,
     appendTo: document.querySelector("#helpDialog"),
     onShow(tip) {
         tip.setContent(`${i18next.t("tooltips:showSpreadTooltip")}`);
+    },
+});
+
+tippy("span[data-i18n='settings:showMaxRange']", {
+    animation: "fade",
+    placement: "bottom",
+    allowHTML: true,
+    touch: false,
+    theme: "settingsTooltips",
+    hideOnClick: true,
+    delay: 50,
+    maxWidth: 200,
+    appendTo: document.querySelector("#helpDialog"),
+    onShow(tip) {
+        tip.setContent(`${i18next.t("tooltips:showMaxRangeTooltip")}`);
     },
 });
 

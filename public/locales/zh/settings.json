@@ -3,7 +3,7 @@
     "mapOptions": "地图选项",
         "showGrid": "显示网格",
         "showKeypad": "在光标下显示键盘",
-        "showMaxRange": "显示武器最小/最大射程",
+        "showMaxRange": "显示武器射程",
         "useClassicCursor": "不使用十字线光标",
         "mapAnimationSettings": "平移/缩放动画",
     "targetOptions": "目标选项",
