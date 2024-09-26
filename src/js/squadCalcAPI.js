@@ -100,8 +100,8 @@ export function fetchMarkersByMap(mapName, weapon) {
 }
 
 export function initWebSocket() {
-    if (!process.env.WEBSOCKET) { return; }
-    const socketMap = new WebSocket(`ws://${process.env.WEBSOCKET}`);
+    if (process.env.WEBSOCKET != "true") { return; }
+    const socketMap = new WebSocket(`ws://127.0.0.1:12345`);
     const socketCoordinates = new WebSocket("ws://127.0.0.1:12346");
     setInterval(() => checkCoordinates(socketCoordinates), 1000);
     
