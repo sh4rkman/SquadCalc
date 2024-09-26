@@ -1,10 +1,33 @@
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **31.1.1** *(2024-09-27)*
+
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Emplaced and mobile UB-32 are now using perfectly accurate formulas taking deceleration into account instead of "deducing" average velocities from ingame table. Thanks to @Devil4ngle and check out <a href="https://github.com/Devil4ngle/squadmortar">his project</a>
+
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Projectile Simulation now plays at consistent speed whatever refresh rate your monitor is 
+
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Added shitty animations on loading logo, settings texts when clicked, and dialogs
+
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> added a new tooltip on "show min/max distance" setting
+
+<img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed weird span when scrolling at Min and Max zoomLevel ([#201](https://github.com/sh4rkman/SquadCalc/issues/201))
+
+<img src="https://img.shields.io/badge/-%20dev%20-orange"> Back to using CDN to serve Fonts/Icons
+
+<img src="https://img.shields.io/badge/-%20dev%20-orange"> Added support for Devil4ngle squadmortar by introducing activable websocket connection
+
+<img src="https://img.shields.io/badge/-%20dev%20-orange"> moved non-squadcalc JS libraries to a separate folder `/src/js/libs/`
+
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
+
+
 # <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **31.0.1** *(2024-09-23)*
 
 <img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed faulty 'pointer' cursor when hovering settings row without any text
 
 <img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed Skorpo basemap
 
-<img src="https://img.shields.io/badge/-%dev%20-orange"> Fixed environnement variables not correctly loaded
+<img src="https://img.shields.io/badge/-%20dev%20-orange"> Fixed environnement variables not correctly loaded
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
 

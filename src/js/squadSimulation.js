@@ -175,30 +175,24 @@ export default class Simulation {
     }
 
     /**
-     * Draw Trajectile projectory in the canvas
-     * @param {Function} [Callback] - Function to callback after projectile is drawn
+     * Draw projectile trajectory on the canvas.
+     * @param {Function} [callback] - Function to call after the projectile is drawn.
      */
     drawTrajectory(callback) {
+        const MAXANGLE = 0.785398; // 45° in radians
         const G = this.firingSolution.gravity * this.yScaling;
-        const FREQ = 20;
-        var elevation;
-        var xVel;
-        var yVel;
+
+        let elevation;
+        let xVel;
+        let yVel;
         let x = this.padding;
-        let oldX = this.padding;
         let y = this.firingSolution.weaponHeight * this.yScaling + this.yOffset;
-        let oldY = this.firingSolution.weaponHeight * this.yScaling + this.yOffset;
-        var this2 = this;
 
         if (isNaN(this.firingSolution.elevation.high.rad)) {
-            // if no firing solution, simulate a maxdisance shot
-            elevation = 0.785398;
+            // If no firing solution, simulate a max distance shot 
+            elevation = MAXANGLE;
         } else {
-            if (this.angleType === "high") {
-                elevation = this.firingSolution.elevation.high.rad;
-            } else {
-                elevation = this.firingSolution.elevation.low.rad;
-            }
+            elevation = this.angleType === "high" ? this.firingSolution.elevation.high.rad : this.firingSolution.elevation.low.rad;
         }
 
         xVel = Math.cos(elevation) * this.firingSolution.velocity * this.xScaling;
@@ -209,33 +203,36 @@ export default class Simulation {
         this.ctx.lineWidth = 5;
         this.ctx.strokeStyle = "#b22222";
         this.ctx.beginPath();
-        this.ctx.moveTo(oldX, oldY);
+        this.ctx.moveTo(x, y);
 
+        let lastTime = performance.now();
 
-        function drawProjectile() {
+        const drawProjectile = (currentTime) => {
+            // Calculate time elapsed since the last frame
+            const deltaTime = (currentTime - lastTime) / 100; // Convert to seconds
+            lastTime = currentTime;
 
-            x += xVel / FREQ;
-            y += yVel / FREQ;
-            yVel -= G / FREQ;
-            
-            if (y < 0 || x > (this2.canvas.width - this2.padding)) {
-                if (x > (this2.canvas.width - this2.padding)) {
-                    x = this2.canvas.width - this2.padding;
+            // Update the projectile's position based on the elapsed time
+            x += xVel * deltaTime;
+            y += yVel * deltaTime;
+            yVel -= G * deltaTime; // Update y velocity with gravity
+
+            // Check if the projectile is out of bounds
+            if (y < 0 || x > (this.canvas.width - this.padding)) {
+                if (x > (this.canvas.width - this.padding)) {
+                    x = this.canvas.width - this.padding;
                 }
-                this2.ctx.lineTo(x, y);
-                this2.ctx.stroke();
-                callback(this2);
+                this.ctx.lineTo(x, y);
+                this.ctx.stroke();
+                callback(this);
             } else {
-                this2.ctx.lineTo(x, y);
-                this2.ctx.stroke();
-                oldX = x;
-                oldY = y;
-                this2.animationFrame = requestAnimationFrame(drawProjectile);
+                this.ctx.lineTo(x, y);
+                this.ctx.stroke();
+                this.animationFrame = requestAnimationFrame(drawProjectile);
             }
-            
-        }
-    
-        this.animationFrame = requestAnimationFrame(drawProjectile.bind(this));
+        };
+
+        this.animationFrame = requestAnimationFrame(drawProjectile);
     }
 
         

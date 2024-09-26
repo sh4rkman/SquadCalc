@@ -6,10 +6,11 @@ import { squadWeaponMarker, squadTargetMarker } from "./squadMarker";
 import { mortarIcon, mortarIcon1, mortarIcon2 } from "./squadIcon";
 import { explode } from "./animations";
 import { fetchMarkersByMap } from "./squadCalcAPI";
-import "@luomus/leaflet-smooth-wheel-zoom";
+import webGLHeatmap from "./libs/leaflet-webgl-heatmap.js";
 import "leaflet-spin";
 import "./libs/webgl-heatmap.js";
-import webGLHeatmap from "./libs/leaflet-webgl-heatmap.js";
+
+import "./libs/leaflet-smoothWheelZoom.js";
 
 
 export var squadMinimap = Map.extend({
@@ -35,6 +36,7 @@ export var squadMinimap = Map.extend({
             renderer: svg({padding: 3}),
             zoom: 2,
             zoomControl: false,
+            zoomSnap: 0, 
             smoothSensitivity: 1.5, 
             scrollWheelZoom: App.userSettings.smoothMap,
             smoothWheelZoom: !App.userSettings.smoothMap,

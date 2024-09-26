@@ -30,7 +30,6 @@
     "weaponInfo": "node src/js/tests/calcMortarTech.js info"
   },
   "devDependencies": {
-    "@luomus/leaflet-smooth-wheel-zoom": "^1.0.0",
     "@types/leaflet": "^1.9.12",
     "@types/node": "^22.5.4",
     "animate.css": "^4.1.1",

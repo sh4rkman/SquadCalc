@@ -2,9 +2,12 @@ import { App } from "../app";
 import { WEAPONS } from "../data/weapons.js";
 
 export class Weapon {
-    constructor(name, velocity, gravityScale, minElevation, unit, logo, marker, logoCannonPos, type, angleType, elevationPrecision, minDistance, moa, maxDamage, startRadius, endRadius, distanceFromImpact, falloff, shells = []) {
+    constructor(name, velocity, deceleration, decelerationTime, gravityScale, minElevation, unit, logo, marker, logoCannonPos, type, angleType, elevationPrecision, minDistance, moa, maxDamage, startRadius, endRadius, distanceFromImpact, falloff, shells = []) {
         this.name = name;
         this.velocity = velocity;
+        this.deceleration = deceleration;
+        this.decelerationTime = decelerationTime;
+        this.decelerationDistance = this.velocity * this.decelerationTime - 0.5 * this.deceleration * Math.pow(this.decelerationTime, 2);
         this.gravityScale = gravityScale;
         this.minElevation = minElevation;
         this.unit = unit;
@@ -23,18 +26,36 @@ export class Weapon {
     }
 
     /**
-     * Return the weapon velocity
-     * @param {number} } [distance] - distance between mortar and target from getDist()
-     * @returns {number} - Velocity of the weapon for said distance
+     * Calculate the weapon velocity based on the distance to the target.
+     * 
+     * If the projectile has a deceleration phase, the function considers both the deceleration
+     * and the post-deceleration velocity. 
+     * 
+     * The deceleration code is black magic produced by https://github.com/Devil4ngle
+     * 
+     * @param {number} [distance] - Distance between the mortar and the target from getDist().
+     * @returns {number} - Calculated velocity of the weapon for the given distance.
      */
     getVelocity(distance) {
-        if (this.velocity.constructor != Array) { return this.velocity; }
+       
+        // If there's no deceleration, return the constant velocity
+        if (this.decelerationDistance == 0) { return this.velocity; }
+        
+        // If the distance is within the deceleration phase
+        if (distance <= this.decelerationDistance) {
+            const discriminant = Math.sqrt(Math.pow(this.velocity, 2) + 2 * this.deceleration * distance);
+            const t = (-this.velocity + discriminant) / this.deceleration;
+            return this.velocity - this.deceleration * t;
+        } 
+        
+        // If the distance is beyond the deceleration phase
+        const finalVelocity = this.velocity - this.deceleration * this.decelerationTime;
+        const distanceAfterDeceleration = distance - this.decelerationDistance;
+        const timeAfterDeceleration = distanceAfterDeceleration / finalVelocity;
+        const totalTime = this.decelerationTime + timeAfterDeceleration;
 
-        for (let i = 1; i < this.velocity.length; i += 1) {
-            if (distance < this.velocity[i][0]) {
-                return this.velocity[i - 1][1] + ((distance - this.velocity[i - 1][0]) / (this.velocity[i][0] - this.velocity[i - 1][0])) * (this.velocity[i][1] - this.velocity[i - 1][1]);
-            }
-        }
+        // Calculate the average velocity
+        return distance / totalTime;   
     }
 
     /**
@@ -47,17 +68,32 @@ export class Weapon {
     }
 
     /**
-     * Return maximum distance for 45°
-     * https://en.wikipedia.org/wiki/Projectile_motion#Maximum_distance_of_projectile
-     * @returns {number} [distance]
+     * Calculate the maximum distance a projectile can travel at a 45° angle.
+     * 
+     * If no deceleration is specified (`decelerationDistance == 0`), the total distance is simply the 
+     * standard maximum range for a projectile with no deceleration, based on the initial velocity.
+     *
+     * Reference: https://en.wikipedia.org/wiki/Projectile_motion#Maximum_distance_of_projectile
+     * 
+     * @returns {number} - The maximum distance the projectile can travel.
      */
     getMaxDistance() {
-        if (this.velocity.constructor != Array) {
-            return (this.velocity ** 2) / App.gravity / this.gravityScale;
+
+        // If there's no deceleration
+        if (this.decelerationDistance == 0) { 
+            return (this.velocity ** 2) / App.gravity / this.gravityScale; 
         }
 
-        // When using UB32, return last value from UB32_table
-        return this.velocity.slice(-1)[0][0];
+        // Calculate distance due to deceleration (only the velocity difference part)
+        const velocityDifference = this.velocity - (this.velocity - this.deceleration * this.decelerationTime);
+        const decelerationDistance = velocityDifference * this.decelerationTime;
+
+        // Calculate distance at constant velocity like if the whole trajectory was at cruise speed
+        const finalVelocity = this.velocity - this.deceleration * this.decelerationTime;
+        const cruiseDistance = (finalVelocity ** 2) / App.gravity / this.gravityScale;
+
+        // Add both parts of the distance
+        return decelerationDistance + cruiseDistance;
     }
 
     /**
@@ -70,27 +106,28 @@ export class Weapon {
         return Math.sqrt(-Math.pow(distanceFromImpact - characterSize, 2 ) + Math.pow(radius, 2));
     }
 
+    /**
+     * Updates the shell type for the active weapon 
+     * (recalculates damage radiuses / update MOA)
+     * @returns {void} 
+     */
     changeShell(){
         var shell = $(".dropbtn3").val();
         if ($(".dropbtn2").val() != 6) { return;}
     
-        App.activeWeapon.moa = WEAPONS[6].shells[shell].moa;
-        App.activeWeapon.hundredDamageRadius = App.activeWeapon.calculateDistanceForDamage(
-            WEAPONS[6].shells[shell].explosionDamage,
-            WEAPONS[6].shells[shell].explosionRadius[0],
-            WEAPONS[6].shells[shell].explosionRadius[1],
-            WEAPONS[6].shells[shell].damageFallOff,
-            WEAPONS[6].shells[shell].explosionDistanceFromImpact, 
-            100);
-    
-        App.activeWeapon.twentyFiveDamageRadius = App.activeWeapon.calculateDistanceForDamage(
-            WEAPONS[6].shells[shell].explosionDamage,
-            WEAPONS[6].shells[shell].explosionRadius[0],
-            WEAPONS[6].shells[shell].explosionRadius[1],
-            WEAPONS[6].shells[shell].damageFallOff,
-            WEAPONS[6].shells[shell].explosionDistanceFromImpact, 
-            25);
+        const weaponData = WEAPONS[6].shells[shell];
 
+        const explosionParams = [
+            weaponData.explosionDamage,
+            weaponData.explosionRadius[0],
+            weaponData.explosionRadius[1],
+            weaponData.damageFallOff,
+            weaponData.explosionDistanceFromImpact
+        ];
+    
+        App.activeWeapon.hundredDamageRadius = App.activeWeapon.calculateDistanceForDamage(...explosionParams, 100);
+        App.activeWeapon.twentyFiveDamageRadius = App.activeWeapon.calculateDistanceForDamage(...explosionParams, 25);
+        App.activeWeapon.moa = weaponData.moa;
         App.minimap.updateTargets();
     }
 
