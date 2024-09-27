@@ -5,6 +5,8 @@
     "helpmode": "显示常见的武器位置",
     "focusMode": "专注模式",
     "enterToExit": "按 'Enter' 退出",
+    "squadMortarOverlay": "SquadMortarOverlay detected",
+    "connectedTo": "Connected !",
     "error": "错误！",
     "apiError": "API 未连接..",
     "deleteTargets": "删除所有目标",

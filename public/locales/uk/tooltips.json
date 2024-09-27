@@ -5,6 +5,8 @@
     "helpmode": "Показати часті місця розміщення зброї",
     "focusMode": "Режим фокусу",
     "enterToExit": "Натисніть 'Enter', щоб вийти",
+    "squadMortarOverlay": "SquadMortarOverlay detected",
+    "connectedTo": "Connected !",
     "error": "Помилка!",
     "apiError": "API не підключено..",
     "deleteTargets": "Видалити всі цілі",

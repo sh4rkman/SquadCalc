@@ -5,6 +5,8 @@
     "helpmode": "Emplacements d'arme fréquemment utilisés",
     "focusMode": "Mode Focus",
     "enterToExit": "Appuyez sur 'ENTRÉE' pour quitter",
+    "squadMortarOverlay": "SquadMortarOverlay détecté",
+    "connectedTo": "Connecté !",
     "error": "Erreur !",
     "apiError": "L'API n'est pas connectée..",
     "deleteTargets": "Supprimer toutes les cibles",

@@ -100,13 +100,17 @@ export function fetchMarkersByMap(mapName, weapon) {
 }
 
 export function initWebSocket() {
+
+    // Disable WebSockets if not activated
     if (process.env.WEBSOCKET != "true") { return; }
+
     const socketMap = new WebSocket(`ws://127.0.0.1:12345`);
     const socketCoordinates = new WebSocket("ws://127.0.0.1:12346");
     setInterval(() => checkCoordinates(socketCoordinates), 1000);
     
     socketMap.addEventListener("open", () => {
         console.log("Connection Opened Map");
+        App.openToast("success", "connectedTo", "squadMortarOverlay");
     });
     
     socketCoordinates.addEventListener("open", () => {
@@ -164,7 +168,6 @@ export function initWebSocket() {
             }, 2500);
         }
     });
-
 }
 
 
