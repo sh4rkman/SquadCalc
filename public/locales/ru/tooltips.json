@@ -5,6 +5,8 @@
     "helpmode": "Показать частые места размещения оружия",
     "focusMode": "Режим фокуса",
     "enterToExit": "Нажмите 'Enter', чтобы выйти",
+    "squadMortarOverlay": "SquadMortarOverlay detected",
+    "connectedTo": "Connected !",
     "error": "Ошибка!",
     "apiError": "API не подключен..",
     "deleteTargets": "Удалить все цели",
@@ -23,5 +25,6 @@
     "targetAnimationTooltip": "Маркеры целей будут появляться с анимацией 'падения'",
     "damageRadiusTooltip": "Показать радиус поражения и радиус 25 урона",
     "showKeypadTooltip": "Показать блок кнопок под курсором",
-    "showSpreadTooltip": "Показать возможную область рассеивания снарядов вокруг целей"
+    "showSpreadTooltip": "Показать возможную область рассеивания снарядов вокруг целей",
+    "showMaxRangeTooltip": "Отображает синие круги для минимальной (если применимо) и максимальной дальности. Не учитывает высоту"
 }

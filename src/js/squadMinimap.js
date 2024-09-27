@@ -6,12 +6,11 @@ import { squadWeaponMarker, squadTargetMarker } from "./squadMarker";
 import { mortarIcon, mortarIcon1, mortarIcon2 } from "./squadIcon";
 import { explode } from "./animations";
 import { fetchMarkersByMap } from "./squadCalcAPI";
-//import "leaflet-edgebuffer";
-import "@luomus/leaflet-smooth-wheel-zoom";
-//import "leaflet.gridlayer.fadeout";
+import webGLHeatmap from "./libs/leaflet-webgl-heatmap.js";
 import "leaflet-spin";
-import "./webgl-heatmap.js";
-import webGLHeatmap from "./leaflet-webgl-heatmap.js";
+import "./libs/webgl-heatmap.js";
+
+import "./libs/leaflet-smoothWheelZoom.js";
 
 
 export var squadMinimap = Map.extend({
@@ -37,6 +36,7 @@ export var squadMinimap = Map.extend({
             renderer: svg({padding: 3}),
             zoom: 2,
             zoomControl: false,
+            zoomSnap: 0, 
             smoothSensitivity: 1.5, 
             scrollWheelZoom: App.userSettings.smoothMap,
             smoothWheelZoom: !App.userSettings.smoothMap,
@@ -113,7 +113,7 @@ export var squadMinimap = Map.extend({
         // Change image
         this.activeLayer = new imageOverlay("", this.imageBounds);
         this.activeLayer.setUrl(`maps${this.activeMap.mapURL}${LAYERMODE}.webp`);
-    
+
         // Add the new layer but keep it hidden initially
         this.activeLayer.addTo(this.layerGroup);
         $(this.activeLayer.getElement()).css("opacity", 0);

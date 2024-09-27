@@ -1,5 +1,5 @@
 import { App } from "../app";
-import { ellipse } from "./ellipse";
+import { ellipse } from "./libs/ellipse";
 import { Marker, Circle, CircleMarker, Popup, Browser} from "leaflet";
 import { targetIcon1, targetIconAnimated1, targetIconDisabled } from "./squadIcon";
 import SquadSimulation from "./squadSimulation";
@@ -235,6 +235,7 @@ export var squadWeaponMarker = squadMarker.extend({
         $(".infMaxDistance").first().text(App.activeWeapon.maxDistance.toFixed(1) + i18next.t("common:m"));
         $(".inf100damage").first().text(App.activeWeapon.hundredDamageRadius.toFixed(1) + i18next.t("common:m"));
         $(".inf25damage").first().text(App.activeWeapon.twentyFiveDamageRadius.toFixed(1) + i18next.t("common:m"));
+        $(".infVelocity").first().text(`${App.activeWeapon.velocity + i18next.t("common:m")}/${i18next.t("common:s")}`);
 
         if (["Mortar", "UB-32"].includes(App.activeWeapon.name)) {
             $("#angleChoice").hide();
@@ -242,11 +243,6 @@ export var squadWeaponMarker = squadMarker.extend({
             $("#angleChoice").show();
         }
         
-        if (["Tech.UB-32", "UB-32"].includes(App.activeWeapon.name)) {
-            $(".infVelocity").first().text("300m/s");
-        } else {
-            $(".infVelocity").first().text(`${App.activeWeapon.velocity + i18next.t("common:m")}/${i18next.t("common:s")}`);
-        }
 
         // Angle
         if (this.angleType ==="high"){

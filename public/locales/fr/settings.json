@@ -3,7 +3,7 @@
     "mapOptions": "Options de Carte",
         "showGrid": "Afficher la grille",
         "showKeypad": "Afficher la grille sous le curseur",
-        "showMaxRange": "Afficher la distance max/min de tir",
+        "showMaxRange": "Afficher les portées de tir",
         "useClassicCursor": "Utiliser le curseur classique",
         "mapAnimationSettings": "Animations de déplacement/zoom",
     "targetOptions": "Options des cibles",

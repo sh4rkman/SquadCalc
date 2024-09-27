@@ -3,7 +3,7 @@
     "mapOptions": "Map Options",
         "showGrid": "Show Grid",
         "showKeypad": "Show Keypads under Cursor",
-        "showMaxRange": "Show Weapon Min/Max Range",
+        "showMaxRange": "Show Weapon Range",
         "useClassicCursor": "Use Classic Cursor",
         "mapAnimationSettings": "Pan/Zoom Animations",
     "targetOptions": "Targets Options",

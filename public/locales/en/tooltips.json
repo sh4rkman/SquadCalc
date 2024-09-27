@@ -5,6 +5,8 @@
     "helpmode": "Show frequent weapon locations",
     "focusMode": "Focus Mode",
     "enterToExit": "Press 'ENTER' to exit",
+    "squadMortarOverlay": "SquadMortarOverlay detected",
+    "connectedTo": "Connected !",
     "error": "Error!",
     "apiError": "API isn't connected..",
     "deleteTargets": "Delete all targets",
@@ -23,5 +25,6 @@
     "targetAnimationTooltip": "Targets' markers will appear with a 'falling' animation",
     "damageRadiusTooltip": "Display kill radius and 25 damage radius",
     "showKeypadTooltip": "Display the keypad currently hovered under the cursor",
-    "showSpreadTooltip": "Display possible rounds' dispersion area around the targets"
+    "showSpreadTooltip": "Display possible rounds' dispersion area around the targets",
+    "showMaxRangeTooltip": "Displays blue circles for minimum (if applicable) and maximum range. Does not account for elevation"
 }

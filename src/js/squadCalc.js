@@ -10,7 +10,7 @@ import { loadLanguage } from "./localization.js";
 import packageInfo from "../../package.json";
 import { animateCSS, animateCalc } from "./animations";
 import { tooltip_save, tooltip_copied } from "./tooltips.js";
-import { checkApiHealth } from "./squadCalcAPI.js";
+import { checkApiHealth, initWebSocket } from "./squadCalcAPI.js";
 import { Browser } from "leaflet";
 
 
@@ -36,6 +36,7 @@ export default class SquadCalc {
         this.loadWeapons();
         this.loadUI();
         checkApiHealth();
+        initWebSocket();
         console.log(`SquadCalc v${packageInfo.version} Loaded!`);
     }
 
@@ -86,6 +87,8 @@ export default class SquadCalc {
             arr[index] = new Weapon(
                 weapon.name,
                 weapon.velocity,
+                weapon.deceleration,
+                weapon.decelerationTime,
                 weapon.gravityScale,
                 weapon.minElevation,
                 weapon.unit,

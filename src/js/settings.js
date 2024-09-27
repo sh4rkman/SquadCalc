@@ -1,6 +1,7 @@
 import { App } from "../app";
 import { tooltip_coordPreview } from "./tooltips.js";
 import i18next from "i18next";
+import { animateCSS } from "./animations.js";
 
 /* eslint no-unused-vars: "off" */
 import speadIcon from "../img/icons/spread.png";
@@ -334,11 +335,9 @@ $("#timeOfFlightSetting").on("change", function() {
 
 
 // Add an even listener on all settings label so it can also be clicked
-document.querySelectorAll(".toggleCheckbox").forEach(function(label) {
-    label.addEventListener("click", function() {
-        // Find the checkbox in the same row and toggle it
-        const checkbox = this.closest("tr").querySelector("input[type='checkbox']");
-        checkbox.checked = !checkbox.checked;
-        checkbox.dispatchEvent(new Event("change"));
-    });
+$(".toggleCheckbox").on("click", function() {
+    // Find the checkbox in the same row and toggle it
+    const checkbox = $(this).closest("tr").find("input[type='checkbox']");
+    checkbox.prop("checked", !checkbox.prop("checked")).trigger("change");
+    animateCSS($(this).closest("td"), "headShake");
 });

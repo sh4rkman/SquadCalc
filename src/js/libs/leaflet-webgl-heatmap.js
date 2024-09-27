@@ -164,7 +164,8 @@ export default Renderer.extend({
         // necessary to maintain accurately sized circles
         // to change scale to miles (for example), you will need to convert 40075017 (equatorial circumference of the Earth in metres) to miles
         var map = this._map,
-            lngRadius = (this.size / 2), // For earth projection:  lngRadius = (this.size / 2) * 360 / Math.cos((Math.PI / 180) * latlng.lat),
+            // lngRadius = (this.size / 2) * 360 / Math.cos((Math.PI / 180) * latlng.lat),
+            lngRadius = (this.size / 2), // Patch for no earth projection  
             latlng2 = new LatLng(latlng.lat, latlng.lng - lngRadius),
             point = map.latLngToLayerPoint(latlng),
             point2 = map.latLngToLayerPoint(latlng2);
