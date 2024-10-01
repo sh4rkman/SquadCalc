@@ -1,0 +1,197 @@
+@import "../shared/variables";
+
+#map_ui {
+    position: relative;
+    height: 100vh; 
+    width: 100vw; 
+    #map {
+        height: 100%;
+        width: 100%;
+        background: var(--themecolor, $mainBGColor);
+        z-index: 0;
+        .leaflet-pane .leaflet-marker-pane .leaflet-marker-icon {
+            cursor: grab;
+        }
+        .kpPopup {
+            background: transparent;
+            pointer-events: none;
+            .leaflet-popup-tip,
+            .leaflet-popup-content-wrapper {
+                @extend %text-outline;
+                @extend .unselectable;
+                font-family: $mainFont, Times, "Times New Roman", serif;
+                font-size: 1.2em;
+                background: transparent;
+                box-shadow: none;
+                color: $mainTxtColor;
+                height: 2em;
+                padding: 0;
+                text-align: center;
+            }
+            &.leaflet-popup {
+                transition: none;
+            }
+        }
+        .calcPopup, .calcPopup2 {
+            @extend %text-outline;
+            @extend .unselectable;
+            margin: 0;
+            padding: 0;
+            font-family: $mainFont, Times, "Times New Roman", serif;
+            pointer-events: none;
+            font-size: 0.9em;
+            height: 45px;
+            .bearingUiCalc {
+                font-size: 0.7em;
+            }
+            .leaflet-popup-tip,
+            .leaflet-popup-content-wrapper {
+                background: transparent;
+                box-shadow: none;
+                color: $mainTxtColor;
+            }
+            .leaflet-popup-content{
+                margin: 0;
+                line-height: 1;
+            }
+            &.calcPopup {
+                .leaflet-popup-content-wrapper {
+                    text-align: right;
+                }
+            }
+            &.calcPopup2 {
+                .leaflet-popup-content-wrapper {
+                    text-align: left;
+                }
+            }
+        }
+        .animatedWeaponMarker{
+            opacity: 0; 
+            animation: weapon-appear 0.25s ease-in-out forwards 0s;
+        }
+        .animatedTargetMarker {
+            opacity: 0; 
+            animation: target-appear 0.25s ease-in-out forwards 0s;
+        }
+        .gridText {
+            @extend %text-outline;
+            font-size: 1.1em;
+        }
+    }
+}
+
+
+#mapLayerMenu{
+    position: absolute;
+    right: 2%;
+    top: 40%;
+    transform: translateY(-50%);
+    width: 54px;
+    z-index: 3;
+    height: 340px;
+    overflow-y: auto;
+    .btn {
+        position: relative;
+        width: 40px;
+        height: 40px;
+        margin: 0;
+        color: $mainBGColor;
+        border-bottom:#979797 solid 1px;
+        box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+        cursor: pointer;
+        transition: all 0.2s ease-out;
+        &:hover{
+            background-color: #979797;
+        }
+        &.active {
+            background-color: $mainColor;
+            border-top: $mainColor;
+            border-bottom: $mainColor;
+            color: $mainTxtColor;
+            .fa-mound{
+                background: white;
+                background-clip: text;
+                -webkit-text-fill-color: transparent;
+                -webkit-background-clip: text;
+            }
+        }
+        .fa-mound {
+            font-size: 1.5em;
+            background: -webkit-gradient(linear, left top, left bottom,
+             from(#d66916),
+             color-stop(0.3, #c27942),
+             color-stop(0.4, #c7c875),
+             color-stop(0.5, #629c61),
+             to(#162015));
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            -webkit-background-clip: text;
+        }
+    }
+    .btn-helpmap::before {
+        content: "";
+        pointer-events: none;
+        position: absolute;
+        top: -20px;
+        left: 50%;
+        width: 70%;
+        height: 4px;
+        transform: translateX(-50%); 
+    }
+    .btn-helpmap {
+        margin-top: 30px;
+    }
+    .fa-stack {
+        font-size: 0.7em; 
+    }
+}
+
+.crosshair {
+    cursor: crosshair;
+}
+
+.default {
+    cursor: default;
+}
+
+.logo {
+    @extend .unselectable;
+    position: fixed;
+    height: 100vh; 
+    width: 100vw; 
+    display: table;
+    font-family: $logoFont;
+    text-transform: uppercase;
+    font-size: 7em;
+    letter-spacing: 0;
+    span {
+        font-weight: bolder;
+        line-height : 1.3em;
+        display: table-cell;
+        vertical-align: middle;
+        span {
+            display: inline-block;
+        }
+        span:nth-child(1) {
+            padding: 0 0 10px;
+        }
+        span:nth-child(2) {
+            padding: 0 15px 10px;
+            background: linear-gradient(to right, $mainColor 50%, $mainBGColor 50%);
+            background-size: 200% 100%;
+            background-position: right bottom;
+            animation: 1s ease-out 0.3s 1 forwards loading;
+        }
+    }
+}
+
+#background {
+    @extend .logo;
+}
+
+#loader {
+    @extend .logo;
+    background-color: $mainBGColor;
+    z-index: 99;
+}
+

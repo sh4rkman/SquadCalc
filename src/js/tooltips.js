@@ -4,9 +4,10 @@ import i18next from "i18next";
 
 export var tooltip_save;
 export var tooltip_copied;
-export var tooltip_mlrs;
-export var tooltip_newUI;
 export var tooltip_coordPreview;
+
+
+const helpDialog = document.querySelector("#helpDialog");
 
 tippy("#settings", {
     allowHTML: true,
@@ -34,7 +35,7 @@ tippy("span[data-i18n='settings:showDamage']", {
     hideOnClick: true,
     maxWidth: 200,
     delay: 50,
-    appendTo: document.querySelector("#helpDialog"),
+    appendTo: helpDialog,
     onShow(tip) {
         tip.setContent(`${i18next.t("tooltips:damageRadiusTooltip")}`);
     },
@@ -49,7 +50,7 @@ tippy("span[data-i18n='settings:mapAnimationSettings']", {
     hideOnClick: true,
     delay: 50,
     maxWidth: 200,
-    appendTo: document.querySelector("#helpDialog"),
+    appendTo: helpDialog,
     onShow(tip) {
         tip.setContent(`${i18next.t("tooltips:smoothMapTooltip")}`);
     },
@@ -64,7 +65,7 @@ tippy("span[data-i18n='settings:showAnimations']", {
     hideOnClick: true,
     delay: 50,
     maxWidth: 200,
-    appendTo: document.querySelector("#helpDialog"),
+    appendTo: helpDialog,
     onShow(tip) {
         tip.setContent(`${i18next.t("tooltips:targetAnimationTooltip")}`);
     },
@@ -79,7 +80,7 @@ tippy("span[data-i18n='settings:showKeypad']", {
     hideOnClick: true,
     delay: 50,
     maxWidth: 200,
-    appendTo: document.querySelector("#helpDialog"),
+    appendTo: helpDialog,
     onShow(tip) {
         tip.setContent(`${i18next.t("tooltips:showKeypadTooltip")}`);
     },
@@ -94,7 +95,7 @@ tippy("span[data-i18n='settings:showSpread']", {
     hideOnClick: true,
     delay: 50,
     maxWidth: 200,
-    appendTo: document.querySelector("#helpDialog"),
+    appendTo: helpDialog,
     onShow(tip) {
         tip.setContent(`${i18next.t("tooltips:showSpreadTooltip")}`);
     },
@@ -109,7 +110,7 @@ tippy("span[data-i18n='settings:showMaxRange']", {
     hideOnClick: true,
     delay: 50,
     maxWidth: 200,
-    appendTo: document.querySelector("#helpDialog"),
+    appendTo: helpDialog,
     onShow(tip) {
         tip.setContent(`${i18next.t("tooltips:showMaxRangeTooltip")}`);
     },

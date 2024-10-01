@@ -6,3 +6,4 @@ node_modules/
 dist/
 public/dist/
 config/test-results/
+src/js/tests

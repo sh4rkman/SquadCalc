@@ -7,8 +7,13 @@ import "animate.css";
 import "leaflet/dist/leaflet.css";
 
 // Local styles
-import "./css/styles.scss";
-import "./css/responsive.scss";
+import "./components/header/header.scss";
+import "./components/footer/footer.scss";
+import "./components/map/map.scss";
+import "./components/legacyui/legacyui.scss";
+import "./components/dialogs/dialogs.scss";
+import "./components/shared/_tooltips.scss";
+import "./components/shared/_responsive.scss";
 
 // JS
 import SquadCalc from "./js/squadCalc.js";

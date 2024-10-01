@@ -1,0 +1,117 @@
+@import "../shared/variables";
+
+#classic_ui {
+    height: 40vh;
+    #settings {
+        border-radius: 5px;
+        border: 5px solid $mainTxtColor;
+        font-size: 1.5em;
+        font-weight: bold;
+        margin: 0.7em auto;
+        padding: 1em;
+        position: relative;
+        i {
+            font-size: 50%;
+            margin: -10px; // ugly hack
+        }
+        #highlow {
+            background-color: transparent;
+            .active {
+                cursor: pointer;
+                &:active {
+                    transform: scale(0.7);
+                }
+                &:hover {
+                    color: $mainColor;
+                }
+            }
+        }
+        #savebutton {
+            background-color: transparent;
+            border: none;
+            bottom: 0;
+            color: $mainTxtColor;
+            padding: 0 5px;
+            position: absolute;
+            right: 0;
+            transition: all 0.1s ease-out;
+            i {
+                cursor:pointer;
+                font-size: 0.5em;
+                position: relative;
+                margin: 0;
+            }
+            &:active {
+                transform: scale(0.7);
+            }
+            &:hover {
+                color: $mainColor;
+            }
+            &:focus {
+                outline: none;
+            }
+        }
+    }
+    .copy {
+        &:hover {
+            cursor: pointer;
+        }
+    }
+    .coord {
+        padding: 0.625em 0;
+        img {
+            height: 30px;
+        }
+    }
+    .pure-g [class*="pure-u"] .errorMsg {
+        cursor: default;
+        font-size: 0.7em;
+        line-height: 2em;
+        color: $mainColor;
+    }
+    .error2 {
+        border-bottom: 3px solid $mainColor;
+    }
+    #saved {
+        font-size: 0.6em;
+        .friendlyname {
+            border-style: none;
+            font-size: 1em;
+            height: auto;
+            min-width: 20px;
+            text-align: right;
+            text-transform: none;
+            width: 100px;
+        }
+        .savespan {
+            font-weight: bold;
+            &:hover {
+                cursor: pointer;
+            }
+        }
+        i {
+            cursor: pointer;
+            transition: all 0.2s ease;
+            &:hover {
+                color: $mainColor;
+                transform: scale(1.2);
+            }
+        }
+        #ruler {
+            white-space: nowrap;
+            visibility: hidden;
+            font-size: 1em;
+            font-weight: bold;
+        }
+    }
+}
+
+.leader-line {
+    z-index: -1;
+}
+
+.tooltipsubtext {
+    font-size: 0.6em;
+    letter-spacing: 0.05rem;
+    font-weight: normal;
+}

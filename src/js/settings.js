@@ -1,4 +1,4 @@
-import { App } from "../app";
+import { App } from "../app.js";
 import { tooltip_coordPreview } from "./tooltips.js";
 import i18next from "i18next";
 import { animateCSS } from "./animations.js";
@@ -95,16 +95,6 @@ export function loadSettings(){
     $(document).on("click", "#fabCheckbox", function() {
         updatePreview();
         $("#helpDialog")[0].showModal();
-    });
-
-    const helpDialog = document.querySelector("#helpDialog");
-    $("#helpDialog").on("click", function(event) {
-        var rect = helpDialog.getBoundingClientRect();
-        var isInDialog = (rect.top <= event.clientY && event.clientY <= rect.top + rect.height &&
-        rect.left <= event.clientX && event.clientX <= rect.left + rect.width);
-        if (!isInDialog) {
-            helpDialog.close();
-        }
     });
 
 }

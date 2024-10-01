@@ -1,11 +1,11 @@
-import { App } from "../app";
-import { ellipse } from "./libs/ellipse";
+import { App } from "../app.js";
+import { ellipse } from "./libs/leaflet.ellipse.js";
 import { Marker, Circle, CircleMarker, Popup, Browser} from "leaflet";
-import { targetIcon1, targetIconAnimated1, targetIconDisabled } from "./squadIcon";
-import SquadSimulation from "./squadSimulation";
-import SquadFiringSolution from "./squadFiringSolution";
+import { targetIcon1, targetIconAnimated1, targetIconDisabled } from "./squadIcon.js";
+import SquadSimulation from "./squadSimulation.js";
+import SquadFiringSolution from "./squadFiringSolution.js";
 import i18next from "i18next";
-import { sendMarkerData, sendTargetData } from "./squadCalcAPI";
+import { sendMarkerData, sendTargetData } from "./squadCalcAPI.js";
 
 
 /*

@@ -1,9 +1,10 @@
 {
   "name": "squadcalc",
-  "version": "31.1.1",
+  "version": "31.2.0",
   "description": "A Complete Mortar Calculator for Squad",
   "author": "Maxime 'sharkman' Boussard",
   "license": "MIT",
+  "type": "module",
   "keywords": [
     "squad",
     "squadcalc",
@@ -25,7 +26,7 @@
   "scripts": {
     "start": "webpack serve -c ./config/webpack.config.js",
     "build": "webpack -c ./config/webpack.config.js",
-    "lint": "stylelint -c ./config/.stylelintrc.json ./src/css/*.scss && htmlhint --nocolor ./src/ && html-validator --quiet --continue ./src/ && jshint ./src/ && eslint -c ./config/.eslintrc.js ./src/",
+    "lint": "stylelint -c ./config/.stylelintrc.json ./src/**/*.scss && htmlhint --config ./config/.htmlhintrc.json --nocolor ./src/ && jshint ./src/ && eslint -c ./config/.eslintrc.js ./src/",
     "mapinfo": "node src/js/tests/mapdata.js info",
     "weaponInfo": "node src/js/tests/calcMortarTech.js info"
   },
@@ -60,7 +61,6 @@
     "stylelint": "^16.9.0",
     "stylelint-config-standard-scss": "^13.1.0",
     "tippy.js": "^6.3.7",
-    "w3c-html-validator": "^1.8.2",
     "webpack": "^5.94.0",
     "webpack-cli": "^5.1.4",
     "webpack-dev-server": "^5.1.0",

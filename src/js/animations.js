@@ -1,4 +1,4 @@
-import { App } from "../app";
+import { App } from "../app.js";
 import LeaderLine from "leader-line-new";
 
 

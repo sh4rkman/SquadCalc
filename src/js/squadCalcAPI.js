@@ -1,5 +1,5 @@
 import packageInfo from "../../package.json";
-import { App } from "../app";
+import { App } from "../app.js";
 
 
 /**
@@ -80,43 +80,44 @@ export const checkApiHealth = async () => {
  * @returns {Promise<Object>} A promise that resolves with the fetched marker data in JSON format.
  * @throws {Error} Throws an error if the network request fails or the response is not OK.
  */
-export function fetchMarkersByMap(mapName, weapon) {
-    var url = `${process.env.API_URL}/get/weapons?map=${encodeURIComponent(mapName)}&weapon=${encodeURIComponent(weapon)}`;
+export async function fetchMarkersByMap(mapName, weapon) {
+    const url = `${process.env.API_URL}/get/weapons?map=${encodeURIComponent(mapName)}&weapon=${encodeURIComponent(weapon)}`;
 
-    return fetch(url, {
-        headers: { "X-App-Version": packageInfo.version },
-    }).then(response => {
+    try {
+        const response = await fetch(url, {
+            headers: { "X-App-Version": packageInfo.version },
+        });
+
         if (!response.ok) {
             throw new Error("Network response was not ok");
         }
-        return response.json();
-    }).then(data => {
+
+        const data = await response.json();
         console.debug(`${mapName} data successfully fetched`);
         return data;
-    }).catch(error => {
+    } catch (error) {
         console.debug("Error fetching marker data:", error);
         throw error;
-    });
+    }
 }
 
-export function initWebSocket() {
+
+
+export async function initWebSocket() {
 
     // Disable WebSockets if not activated
     if (process.env.WEBSOCKET != "true") { return; }
+    if (!await checkServerAvailability()) { return; }
 
-    const socketMap = new WebSocket(`ws://127.0.0.1:12345`);
+    const socketMap = new WebSocket("ws://127.0.0.1:12345");
     const socketCoordinates = new WebSocket("ws://127.0.0.1:12346");
     setInterval(() => checkCoordinates(socketCoordinates), 1000);
     
     socketMap.addEventListener("open", () => {
-        console.log("Connection Opened Map");
+        console.log("Connected to SquadMortarOverlay.exe");
         App.openToast("success", "connectedTo", "squadMortarOverlay");
     });
     
-    socketCoordinates.addEventListener("open", () => {
-        console.log("Connection Opened Coordinates");
-    });
-
     socketMap.addEventListener("message", async (event) => {
         if (event.data === "Map") {
             if (socketMap.readyState === WebSocket.OPEN) {
@@ -206,4 +207,26 @@ function checkCoordinates(socketCoordinates) {
             socketCoordinates.send(coorArray);
         }
     }
+}
+
+/**
+ * Checks the availability of a SquadMortarOverlay.exe by attempting to load a fake image from it
+ * @param {number} [timeout] - The maximum time to wait for response
+ * @returns {Promise<boolean>} A promise that resolves to `true` if the SquadMortarOverlay.exe is running
+ */
+function checkServerAvailability(timeout = 2000) {
+    return new Promise((resolve) => {
+        const img = new Image();
+        const timer = setTimeout(() => {
+            img.src = "";
+            resolve(false);
+        }, timeout);
+
+        img.onload = img.onerror = () => {
+            clearTimeout(timer);
+            resolve(true);
+        };
+        
+        img.src = "http://127.0.0.1:12345";
+    });
 }

@@ -15,7 +15,6 @@ export default [
                 ...globals.jquery,
             }
         },
-        ignores: ["**/tests/*.js"],
         rules: {
             indent: [
                 "error",

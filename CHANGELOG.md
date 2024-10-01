@@ -1,3 +1,21 @@
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **31.2.0** *(2024-09-XX)*
+
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Improved responsivness of settings dialog on very small resolution
+
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Reduced heat points size/chroma on weapons heatmaps
+
+<img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed "first zooms lags" due to map image not being properly decoded on Chrome
+
+<img src="https://img.shields.io/badge/-%20dev%20-orange"> Splited HTML/SCSS into components 
+
+<img src="https://img.shields.io/badge/-%20dev%20-orange"> Simplified github actions workflows
+
+<img src="https://img.shields.io/badge/-%20dev%20-orange"> Project now use module syntax (imports/exports) pretty much everywhere
+
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
+
 # <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **31.1.1** *(2024-09-27)*
 
 <img src="https://img.shields.io/badge/-%20improv%20-orange"> Emplaced and mobile UB-32 are now using perfectly accurate formulas taking deceleration into account instead of "deducing" average velocities from ingame table. Thanks to @Devil4ngle and check out <a href="https://github.com/Devil4ngle/squadmortar">his project</a>
