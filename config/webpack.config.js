@@ -79,7 +79,7 @@ export default async (env) => {
               from: path.resolve(__dirname, '../public'),
               to: path.resolve(__dirname, '../dist'),
             },
-            //{ from: "./src/img/github/", to: "./src/img/github/" },
+            { from: "./src/img/github/", to: "./src/img/github/" },
           ],
         }),
         new webpack.ProvidePlugin({
