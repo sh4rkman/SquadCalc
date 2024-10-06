@@ -1,0 +1,96 @@
+@import './variables';
+
+/**************************************
+*  Tippy.js ToolTips customization
+***************************************/
+
+.tippy-box {
+    &[data-theme~='new'] {
+        background-color: $newColor;
+        color: $mainTxtColor;
+        font-weight: bold;
+        letter-spacing: 0.1rem;
+        &[data-placement^='top']>.tippy-arrow::before {
+            border-top-color: $newColor;
+        }
+        &[data-placement^='bottom']>.tippy-arrow::before {
+            border-bottom-color: $newColor;
+        }
+        &[data-placement^='left']>.tippy-arrow::before {
+            border-left-color: $newColor;
+        }
+        &[data-placement^='right']>.tippy-arrow::before {
+            border-right-color: $newColor;
+        }
+    }
+    &[data-theme~="results"] .tippy-content {
+        font-size: 1.4em;
+        padding: 0.5em;
+        line-height: 0.9em;
+        font-weight: bold;
+    }
+    &[data-theme~='fab'] {
+        background-color: $mainColor;
+        &[data-placement^='top']>.tippy-arrow::before {
+            border-top-color: $mainColor;
+        }
+        &[data-placement^='bottom']>.tippy-arrow::before {
+            border-bottom-color: $mainColor;
+        }
+        &[data-placement^='left']>.tippy-arrow::before {
+            border-left-color: $mainColor;
+        }
+        &[data-placement^='right']>.tippy-arrow::before {
+            border-right-color: $mainColor;
+        }
+    }
+    &[data-theme~='menu'] {
+        background-color: $mainTxtColor;
+        color: $mainBGColor;
+        font-size: 14px;
+        font-weight: 600;
+        letter-spacing: .05em;
+        line-height: 1.2em;
+        padding: 10px 14px;
+        border-radius: 5px;
+        box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+        &[data-placement^='top']>.tippy-arrow::before {
+            border-top-color: $mainTxtColor;
+        }
+        &[data-placement^='bottom']>.tippy-arrow::before {
+            border-bottom-color: $mainTxtColor;
+        }
+        &[data-placement^='left']>.tippy-arrow::before {
+            border-left-color: $mainTxtColor;
+        }
+        &[data-placement^='right']>.tippy-arrow::before {
+            border-right-color: $mainTxtColor;
+        }
+    }
+    &[data-theme~='preview'] {
+        @extend %text-outline;
+        background-color: transparent;
+        color: $mainTxtColor;
+        letter-spacing: 0.1rem;
+        margin-top: 5px;
+        &[data-placement^='bottom']>.tippy-arrow::before {
+            border-bottom-color: transparent;
+        }
+    }
+    &[data-theme~='infTooltips'] {
+        font-size: 1em;
+        text-align: center;
+        padding: 10px;
+    }
+    &[data-theme~='settingsTooltips'] {
+        margin-top: 2px;
+        font-size: 0.9em;
+        text-align: center;
+        padding: 5px;
+        box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+    }
+}
+
+.tippy-arrow {
+    transform: scale(1.5);
+}

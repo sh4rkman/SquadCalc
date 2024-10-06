@@ -1,4 +1,4 @@
-import { App } from "../app";
+import { App } from "../app.js";
 
 export default class SquadFiringSolution {
 

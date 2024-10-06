@@ -1,17 +1,17 @@
-import { MAPS } from "../data/maps.js";
+import { MAPS } from "./data/maps.js";
+import { WEAPONS, WEAPONSTYPE } from "./data/weapons.js";
 import { squadMinimap } from "./squadMinimap.js";
 import { Weapon } from "./squadWeapons.js";
-import i18next from "i18next";
-import SquadFiringSolution from "./squadFiringSolution";
-import { WEAPONS, WEAPONSTYPE } from "../data/weapons.js";
-import { createLine, drawLine } from "./animations";
+import { createLine, drawLine } from "./animations.js";
 import { loadSettings } from "./settings.js";
 import { loadLanguage } from "./localization.js";
-import packageInfo from "../../package.json";
-import { animateCSS, animateCalc } from "./animations";
+import { animateCSS, animateCalc } from "./animations.js";
 import { tooltip_save, tooltip_copied } from "./tooltips.js";
 import { checkApiHealth, initWebSocket } from "./squadCalcAPI.js";
+import SquadFiringSolution from "./squadFiringSolution.js";
+import packageInfo from "../../package.json";
 import { Browser } from "leaflet";
+import i18next from "i18next";
 
 
 export default class SquadCalc {
@@ -114,17 +114,16 @@ export default class SquadCalc {
             dropdownCssClass: "dropbtn2",
             dropdownParent: $("#weaponSelector"),
             minimumResultsForSearch: -1, // Disable search
-            placeholder: "SELECT A WEAPON"
+            //placeholder: "SELECT A WEAPON"
         });
 
         SHELL_SELECTOR.select2({
             dropdownCssClass: "dropbtn3",
             dropdownParent: $("#ammoSelector"),
             minimumResultsForSearch: -1, // Disable search
-            placeholder: "SELECT A WEAPON"
+            //placeholder: "SELECT A WEAPON"
         });
 
-        
         // Load Weapons
         for (let i = 0; i < WEAPONSTYPE.length; i += 1) {
             WEAPON_SELECTOR.append(`<optgroup data-i18n-label=weapons:${WEAPONSTYPE[i]}>`);
@@ -136,11 +135,57 @@ export default class SquadCalc {
             WEAPON_SELECTOR.append("</optgroup>");
         }
 
+        // Add Experimental weapons if wanted by user settings
+        this.toggleExperimentalWeapons();
+
         // Add Events Listeners
-        WEAPON_SELECTOR.on("change", () => { this.changeWeapon();});
-        SHELL_SELECTOR.on("change", () => { this.activeWeapon.changeShell();});
+        WEAPON_SELECTOR.on("change", () => { this.changeWeapon(); });
+        SHELL_SELECTOR.on("change", () => { this.activeWeapon.changeShell(); });
         
         this.getWeapon();
+    }
+
+    /**
+     * Add/Remove Experimental Weapons from Weapons dropdown list according to user settings
+     */
+    toggleExperimentalWeapons(){
+        const WEAPON_SELECTOR = $(".dropbtn2");
+        const WEAPONSLENGTH = WEAPONS.length;
+
+        if (this.userSettings.experimentalWeapons) {
+
+            WEAPON_SELECTOR.append(`<optgroup data-i18n-label=weapons:experimental label="${i18next.t("weapons:experimental")}">`);
+            for (let y = 0; y < WEAPONSLENGTH; y += 1) {
+                if (WEAPONS[y].type === "experimental") {
+                    WEAPON_SELECTOR.append(`<option data-i18n=weapons:${WEAPONS[y].name} value=${y}>${i18next.t("weapons:" + WEAPONS[y].name)}</option>`);
+                }
+            }
+            WEAPON_SELECTOR.append("</optgroup>");
+
+        } else {
+
+            let selectedValue = WEAPON_SELECTOR.val();
+            
+            // Remove the experimental optgroup
+            WEAPON_SELECTOR.find("optgroup[data-i18n-label='weapons:experimental']").remove();
+            
+            // Remove experimental options and check if the selected value is experimental
+            WEAPON_SELECTOR.find("option").filter(
+                function() {
+                    return WEAPONS[$(this).val()].type === "experimental";
+                }).each(function() {
+                if ($(this).val() === selectedValue) {
+                    selectedValue = null;
+                }
+                $(this).remove();
+            });
+            
+            // If the selected value was an experimental option, reset to Mortars
+            if (selectedValue === null) {
+                WEAPON_SELECTOR.val(0).trigger("change");
+            }
+        }
+
     }
 
     loadUI(){
@@ -161,21 +206,27 @@ export default class SquadCalc {
             this.loadMapUIMode();
         }
 
-        // Add Events listeners 
+        // Add Events listeners
+
+        // LEGACY MODE
         $("#mortar-location").on("input", () => { this.shoot("weapon"); });
         $("#target-location").on("input",  () => { this.shoot("target"); });
-        $(document).on("input", ".friendlyname", (event) => { this.resizeInput(event.target); });
-        $(window).on("resize", () => { this.resizeInputsOnResize(); });
         $("#mortar-location").on("keypress", (event) => { this.filterInput(event); });
         $("#target-location").on("keypress", (event) => { this.filterInput(event); });
+        $(document).on("input", ".friendlyname", (event) => { this.resizeInput(event.target); });
+        $(window).on("resize", () => { this.resizeInputsOnResize(); });
         $(document).on("click", ".del", (event) => { this.removeSaves(event.target); });
         $(document).on("click", ".savespan", (event) => { this.copySave($(event.target)); });
         $(".savespan").on("click", (event) => { this.copySave(event); });
         $("#savebutton").on("click",  () => { this.saveCalc(); });
         $("#copy").on("click", (event) => { this.copyCalc(event); });
+
+        // MAP MODE
+        this.closeDialogOnClickOutside(calcInformation);
+        this.closeDialogOnClickOutside(weaponInformation);
+        this.closeDialogOnClickOutside(helpDialog);
         $(".btn-delete").on("click", () => { this.minimap.deleteTargets();});
         $("#fabCheckbox2").on("change", () => { this.switchUI();});
-
         $("#mapLayerMenu").find("button.layers").on("click", (e) => {
             var val = $(e.currentTarget).attr("value");
             if (val === "helpmap") {
@@ -189,12 +240,17 @@ export default class SquadCalc {
             this.userSettings.layerMode = val;
             this.minimap.changeLayer();
         });
-
         $("#mapLayerMenu").find("button.btn-helpmap").on("click", () => {
             $(".btn-helpmap").toggleClass("active");
             this.minimap.toggleHeatmap();
         });
-
+        // Hack for Chrome to avoid lag when zooming inside the map
+        // Force a decode each time focus a acquired again
+        $(document).on("visibilitychange", () => {
+            if (document.visibilityState === "visible") {
+                this.minimap.decode();
+            }
+        });
 
         if (Browser.pointer) {
 
@@ -244,24 +300,16 @@ export default class SquadCalc {
             };
             
             this.openToast = (type, title, text) => {
-                
-                clearTimeout(countdown);
-
                 const toast = document.querySelector("#toast");
+                clearTimeout(countdown);
                 toast.classList = [type];
                 toast.style.animation = "open 0.3s cubic-bezier(.47,.02,.44,2) forwards";
                 document.querySelector("#timer").classList.add("timer-animation");
-
-                // Set Content
                 toast.querySelector("h4").setAttribute("data-i18n", `tooltips:${title}`);
                 toast.querySelector("h4").innerHTML = i18next.t(`tooltips:${title}`);
                 toast.querySelector("p").setAttribute("data-i18n", `tooltips:${text}`);
                 toast.querySelector("p").innerHTML = i18next.t(`tooltips:${text}`);
-
-                
-                countdown = setTimeout(() => {
-                    closeToast();
-                }, 5000);
+                countdown = setTimeout(() => { closeToast(); }, 5000);
             };
 
             document.querySelector("#toast").addEventListener("click", closeToast);
@@ -270,22 +318,7 @@ export default class SquadCalc {
             $(".btn-focus").hide();
         }
 
-        $("#calcInformation").on("click", function(event) {
-            var rect = calcInformation.getBoundingClientRect();
-            var isInDialog = (rect.top <= event.clientY && event.clientY <= rect.top + rect.height &&
-            rect.left <= event.clientX && event.clientX <= rect.left + rect.width);
-            if (!isInDialog) {
-                calcInformation.close();
-            }
-        });
-        $("#weaponInformation").on("click", function(event) {
-            var rect = weaponInformation.getBoundingClientRect();
-            var isInDialog = (rect.top <= event.clientY && event.clientY <= rect.top + rect.height &&
-            rect.left <= event.clientX && event.clientX <= rect.left + rect.width);
-            if (!isInDialog) {
-                weaponInformation.close();
-            }
-        });
+      
         weaponInformation.addEventListener("close", function(){
             // Remove listeners when closing weapon information to avoid stacking
             $("input[type=radio][name=angleChoice]").off();
@@ -340,6 +373,17 @@ export default class SquadCalc {
         this.ui = 0;
         localStorage.setItem("data-ui", 0);
 
+    }
+
+    closeDialogOnClickOutside(dialog) {
+        dialog.addEventListener("click", function(event) {
+            var rect = dialog.getBoundingClientRect();
+            var isInDialog = (rect.top <= event.clientY && event.clientY <= rect.top + rect.height &&
+                              rect.left <= event.clientX && event.clientX <= rect.left + rect.width);
+            if (!isInDialog) {
+                dialog.close();
+            }
+        });
     }
 
     loadMapUIMode(){

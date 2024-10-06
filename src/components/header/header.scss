@@ -1,0 +1,105 @@
+@import "../shared/variables";
+
+/***************************************
+************   HEADER   ***************
+**************************************/
+
+/****************
+   * Weapon Selector
+   *****************/
+
+   header {
+    .weaponSelector {
+        z-index: 4;
+        padding-top: 1em;
+        .select2-results__options {
+            font-weight: 600;
+            line-height: 1.1em;
+            font-size: 0.9em;
+        }
+        .select2-results__group {
+            color: rgba(255, 255, 255, .7);
+            padding-top: 10px;
+            font-weight: 900;
+            text-align: left;
+            padding-left: 15px;
+            font-size: 1.1em;
+        }
+        &.ui {
+            position: fixed;
+            top: 3.1em;
+        }
+        #ammoSelector{
+            padding-top: 1em;
+        }
+    }
+    .mapSelector {
+        padding-top: 1em;
+        z-index: 5;
+        .select2-results__options {
+            line-height: 1.1em;
+            font-size: 0.9em;
+        }
+        &.ui {
+            position: fixed;
+            top: 0;
+        }
+    }
+    .selectbox {
+        padding: 0;
+    }
+    .dropbtn,
+    .dropbtn2,
+    .dropbtn3 {
+        color: #fff;
+        font-weight: bold;
+        line-height: 2.188em;
+        text-transform: uppercase;
+        background-color: var(--themecolor, $mainBGColor);
+        z-index: 1;
+        select {
+            -moz-appearance: none;
+            -webkit-appearance: none;
+            appearance: none;
+            background-color: transparent;
+            background-image: none;
+            border: none;
+            box-shadow: none;
+        }
+        &:focus {
+            outline: none;
+        }
+    }
+    .select2 {
+        background-color: transparent;
+    }
+    .select2-container {
+        @extend %text-outline;
+        background-color: transparent;
+        border-bottom: 1px solid $mainTxtColor;
+        line-height: 2.188em;
+        min-width: 200px;
+        padding-bottom: 0.3em;
+        text-transform: uppercase;
+    }
+    .select2-container--default {
+        .select2-results__option--highlighted[aria-selected] {
+            background-color: $mainColor;
+        }
+        .select2-results__option--selected {
+            background-color: $mainColor;
+            opacity: 0.5;
+        }
+        .select2-selection--single .select2-selection__rendered {
+            color: #fff;
+        }
+        .select2-selection--single {
+            background-color: transparent;
+            border: none;
+            color: $mainTxtColor;
+        }
+    }
+    span.select2-selection.select2-selection--single {
+        outline: none;
+    }
+}

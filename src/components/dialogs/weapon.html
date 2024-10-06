@@ -1,0 +1,77 @@
+<dialog id="weaponInformation" class="animate__animated animate__zoomIn">
+    <form method="dialog">
+        <button class="closeModal">
+            <i class="fa-solid fa-circle-xmark"></i>
+        </button>
+    </form>
+
+    <h2 data-i18n="common:weaponInf">Weapon Informations</h2>
+
+    <img class="weaponIcon" alt="weapon icon" src="../../img/icons/mortar.png">
+    
+    <div class="active">
+        <table>
+            <tbody>
+                <tr>
+                    <td data-i18n="common:name"></td><td class="infName"></td>
+                </tr>
+                <tr>
+                    <td data-i18n="common:range"></td><td class="infRange"></td>
+                </tr>
+                <tr>
+                    <td data-i18n="common:velocity" class="infVelocityTooltip info"></td><td class="infVelocity"></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <table>
+            <tbody>
+                <tr>
+                    <td data-i18n="common:moa" class="infMOATooltip info"></td><td class="infMOA"></td>
+                </tr>
+                <tr>
+                    <td data-i18n="common:100radius"></td><td class="inf100damage"></td>
+                </tr>
+                <tr>
+                    <td data-i18n="common:25radius"></td><td class="inf25damage"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="active">
+        <table>
+            <tbody>
+                <tr id="angleChoice">
+                    <td data-i18n="common:angle" class="noborder">Angle :</td>
+                    <td class="noborder">
+                        <div id="angleChoiceSettings">
+                            <label>
+                                <input type="radio" id="angleChoiceLow" name="angleChoice" value="low">
+                                <span data-i18n="common:low"></span>
+                            </label>
+                            <label>
+                                <input type="radio" id="angleChoiceHigh" name="angleChoice" value="high" checked="checked">
+                                <span data-i18n="common:high"></span>
+                            </label>   
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <table>
+            <tbody>
+                <tr>
+                    <td data-i18n="common:addHeight" class="noborder infHeightPaddingTooltip info"></td>
+                    <td class="noborder">
+                        <div class="heightPadding">
+                            <input type="number" value="0" min="0" max="100" step="1"> <span data-i18n="common:meters"></span>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</dialog>

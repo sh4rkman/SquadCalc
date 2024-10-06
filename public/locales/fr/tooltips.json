@@ -22,8 +22,10 @@
     "velocityDesc": "La vélocité est la vitesse à laquelle un projectile quitte le canon d'une arme à feu, mesurée immédiatement après sa sortie. Elle affecte la portée et la précision du tir.",
     "heightPaddingDesc": "Si l'arme est installé plus haut que le sol (par exemple, sur des bâtiments ou des ponts), utilisez ce champ pour spécifier la hauteur supplémentaire.",
     "smoothMapTooltip": "Ajoute des animations lors du zoom ou du déplacement sur la carte. Rechargement de la page nécessaire",
-    "targetAnimationTooltip": "Les marqueurs de cibles apparaîtront avec une animation de 'chute'",
-    "damageRadiusTooltip": "Affiche le rayon de dégâts et le rayon des 25 points de dégâts",
+    "experimentalWeaponsTooltip": "Ajoute des armes à tir indirect non conventionnelles à la liste des armes, utilisez à vos risques et périls !",
+    "highqualityTooltip": "Remplace les images de carte de base par des images de très haute qualité, avec une résolution de 8k*8k pixels. Peut causer des problèmes de performance.",
+    "targetAnimationTooltip": "Les marqueurs des cibles apparaîtront avec une animation de 'chute'",
+    "damageRadiusTooltip": "Affiche les zones où 100 et 25 dégâts seront infligés",
     "showKeypadTooltip": "Affiche le numéro de grille (ex: \"B03-4-5\") sous le curseur de souris",
     "showSpreadTooltip": "Affiche la dispersion possible des projectiles autour des cibles",
     "showMaxRangeTooltip": "Affiche des cercles bleus pour la portée minimale et maximale. Ne tient pas compte de l'altitude"

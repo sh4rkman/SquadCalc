@@ -1,4 +1,4 @@
-import { App } from "../app";
+import { App } from "../app.js";
 import { tooltip_coordPreview } from "./tooltips.js";
 import i18next from "i18next";
 import { animateCSS } from "./animations.js";
@@ -43,6 +43,12 @@ export function loadSettings(){
     }
 
     $(".btn-"+setting).addClass("active");
+
+    App.userSettings.experimentalWeapons = loadLocalSetting("settings-experimental-weapons", 0);
+    $("#experimentalSetting").prop("checked", App.userSettings.experimentalWeapons);
+
+    App.userSettings.highQualityImages = loadLocalSetting("settings-highquality-images", 0);
+    $("#highQualitySetting").prop("checked", App.userSettings.highQualityImages);
 
     App.userSettings.smoothMap = loadLocalSetting("settings-smooth-map", 0);
     $("#mapAnimationSettings").prop("checked", App.userSettings.smoothMap);
@@ -95,16 +101,6 @@ export function loadSettings(){
     $(document).on("click", "#fabCheckbox", function() {
         updatePreview();
         $("#helpDialog")[0].showModal();
-    });
-
-    const helpDialog = document.querySelector("#helpDialog");
-    $("#helpDialog").on("click", function(event) {
-        var rect = helpDialog.getBoundingClientRect();
-        var isInDialog = (rect.top <= event.clientY && event.clientY <= rect.top + rect.height &&
-        rect.left <= event.clientX && event.clientX <= rect.left + rect.width);
-        if (!isInDialog) {
-            helpDialog.close();
-        }
     });
 
 }
@@ -237,6 +233,20 @@ $("#heightSetting").on("change", function() {
     updatePreview();
 });
 
+$("#experimentalSetting").on("change", function() {
+    var val =  $("#experimentalSetting").is(":checked");
+    App.userSettings.experimentalWeapons = val;
+    localStorage.setItem("settings-experimental-weapons", +val);
+    App.toggleExperimentalWeapons();
+});
+
+
+$("#highQualitySetting").on("change", function() {
+    var val =  $("#highQualitySetting").is(":checked");
+    App.userSettings.highQualityImages = val;
+    localStorage.setItem("settings-highquality-images", +val);
+    App.minimap.changeLayer();
+});
 
 $("#weaponRangeSettings").on("change", function() {
     var val =  $("#weaponRangeSettings").is(":checked");

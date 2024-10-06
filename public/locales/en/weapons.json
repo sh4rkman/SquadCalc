@@ -9,5 +9,7 @@
         "BM-21Grad": "BM-21 Grad",
         "M1064M121": "M1064 M121",
             "impact": "Impact",
-            "nearSurface": "Near-Surface"
+            "nearSurface": "Near-Surface",
+    "experimental": "Experimental",
+        "Mk19": "MK19-RWS"
 }

@@ -78,7 +78,7 @@ export default class Simulation {
     drawGrid(){
         var step;
 
-        if (this.firingSolution.distance > 1200) { step = 600; } else { step = 300; }
+        if (this.firingSolution.distance > 1200) { step = 500; } else { step = 300; }
 
         // One grey line every 100m on x
         this.ctx.fillStyle = "lightgrey";

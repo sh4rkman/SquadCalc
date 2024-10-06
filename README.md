@@ -25,17 +25,22 @@
 </br>
 
 
-# <div align="center">Introduction</div>
+
+[squadcalc.app](https://squadcalc.app/) is a mortar *(and more)* calculator designed for the game <a href="https://joinsquad.com/">Squad</a> !  
 
 </br>
+</br>
 
-
-[squadcalc.app](https://squadcalc.app/) is a mortar calculator designed specifically for the game <a href="https://joinsquad.com/">Squad</a>.  
-This tool facilitates rapid mortar calculations through two distinct modes:
-1. **Interactive Map Mode:** This mode enables users to intuitively add visual targets by double-clicking on the map, allowing easy manipulation of weapons and targets through drag-and-drop functionality.
-
-2. **Simple Legacy Mode:** For a straightforward approach, the legacy mode allows users to swiftly enter keypad inputs without the complexity of maps, buttons, or icons.
- 
+# <div align="center">Table of Contents</div>
+1. [Screenshots](#screenshots)
+2. [Features](#features)
+   - [Elevations Calculations](#elevations-calculations)
+   - [Map Layers](#map-layers)
+   - [Commonly Used Spot](#commonly-used-spot)
+   - [Advanced Information & Simulation](#advanced-informations--simulation)
+   - [Advanced Customisation](#advanced-customisation)
+3. [Squad Mortar Overlay Compatibility](#squad-mortar-overlay-compatibility)
+4. [Map & Weapons Support](#map--weapons-support)
 
 
 </br>
@@ -66,31 +71,31 @@ SquadCalc utilizes heightmaps extracted from the Squad SDK to precisely compute 
 
 ## **Map Layers**
 
-### Base map :
-The classic, straight from the game base map.  
-
 <div align="center">
   <picture>
-    <img src="./src/img/github/basemap.webp" alt="base map">
+    <img src="./src/img/github/layers.webp" alt="base map">
   </picture>
 </div>
+
+### Base map :
+The classic, straight from the game base map.  
+Also avaiblable in AI Upscaled 8192x8192 pixels though the Settings. 
 
 ### Terrain map :
 Base map enhanced with bumpmap from SDK's heightmap. Add a better comprehension of terrain.  
 Also known as "why the fuck is it not the default ingame map?"
 
-<div align="center">
-  <picture>
-    <img src="./src/img/github/terrainmap.webp" alt="terrain map">
-  </picture>
-</div>
-
 ### Topographic map :
 A mix of bump map, contour map with a touch of hypsometric colors for a complete understanding of map reliefs.
 
+
+## **Commonly used spot**
+
+If you're having trouble finding a good spot to place your mortar or weapons, activate the 'Frequent Locations' feature to see where other players commonly set theirs!
+
 <div align="center">
   <picture>
-    <img src="./src/img/github/topomap.webp" alt="topographic map">
+    <img src="./src/img/github/heatmap.webp" alt="target information">
   </picture>
 </div>
 
@@ -119,48 +124,44 @@ Rather have a minimalist/non-clustered map ? you can too. Hop in settings to cus
   </picture>
 </div>
 
+
+</br></br>
+# <div align="center">Squad Mortar Overlay Compatibility</div>
+
+SquadCalc is compatible with [Squad Mortar Overlay](https://github.com/Devil4ngle/SquadMortarOverlay), made by [Devil4ngle](https://github.com/Devil4ngle).  
+Squad Mortar Overlay is a program capturing screenshots from your ingame map and overlaying it with SquadCalc.  
+
+It allows :
+* Having ingame markers automatically merged into SquadCalc map to quickly place the right targets
+* Having an ingame overlay with the current SquadCalc calculations displayed in front of Squad
+
+
+<div align="center">
+  <picture>
+      <img src="./src/img/github/squadmortaroverlay.webp">
+  </picture>
+</div>
+
+
+
 </br></br>
 
 
 # <div align="center">Map & Weapons Support</div>
 
-|                                   |       **NAME**     |                                                    |
-|-------------------------------------------------------------------|-----------------------|--------------------|
-|<img height="40" src="./src/img/icons/mortar.png">                 | Mortars               |        ✅          |
-|<img height="40" src="./src/img/icons/ub32_deployable.png">        | UB-32                 |        ✅          |
-|<img height="40" src="./src/img/icons/hellcannon_white.png">       | Hell Canon            |        ✅          |
-|<img height="40" src="./src/img/icons/technical_mortar_white.png"> | Technicals mortars    |        ✅          |
-|<img height="40" src="./src/img/icons/ub32_white.png">             | Technicals/BRDM UB-32 |        ✅          |
-|<img height="40" src="./src/img/icons/mlrs_white.png">             | BM-21 Grad            |        ✅          |
-|<img height="40" src="./src/img/icons/m113a3_white.png">           | M1064-A3 120mm        |        ✅          |
+|                                   |       **SUPPORTED WEAPONS**   |                                            |
+|-------------------------------------------------------------------|-------------------------|------------------|
+|<img height="40" src="./src/img/icons/mortar.png">                 | Mortars                 |     ✅          |
+|<img height="40" src="./src/img/icons/ub32_deployable.png">        | UB-32                   |     ✅          |
+|<img height="40" src="./src/img/icons/hellcannon_white.png">       | Hell Canon              |     ✅          |
+|<img height="40" src="./src/img/icons/technical_mortar_white.png"> | Technicals mortars      |     ✅          |
+|<img height="40" src="./src/img/icons/ub32_white.png">             | Technicals/BRDM UB-32   |     ✅          |
+|<img height="40" src="./src/img/icons/mlrs_white.png">             | BM-21 Grad              |     ✅          |
+|<img height="40" src="./src/img/icons/m113a3_white.png">           | M1064-A3 120mm          |     ✅          |
+|<img height="40" src="./src/img/icons/mk19_rws_white.png">         | MK-19 RWS (Experimental)|     ✅          |
 
 
-| **MAPS**                    |      Supported               |
+|     |         **SUPPORTED MAPS**            |
 |-----------------------------|---------------------|
-| Al Basrah                   |         ✅          |
-| Anvil                       |         ✅          |
-| Belaya                      |         ✅          |
-| Black Coast                 |         ✅          |
-| Chora                       |         ✅          |
-| Fallujah                    |         ✅          |
-| Fool's Road                 |         ✅          |
-| Goose Bay                   |         ✅          |
-| Gorodok                     |         ✅          |
-| Harju                       |         ✅          |
-| Jensen's Range              |         ✅          |
-| Kamdesh Highlands           |         ✅          |
-| Kohat Toi                   |         ✅          |
-| Kokan                       |         ✅          |
-| Lashkar Valley              |         ✅          |
-| Logar Valley                |         ✅          |
-| Manicouagan                 |         ✅          |
-| Mestia                      |         ✅          |
-| Mutaha                      |         ✅          |
-| Narva                       |         ✅          |
-| Narva (flooded)             |         ❌          |
-| Pacific Proving Grounds     |         ❌          |
-| Sanxian Islands             |         ✅          |
-| Skorpo                      |         ✅          |
-| Sumari Bala                 |         ✅          |
-| Tallil Outskirts            |         ✅          |
-| Yehorivka                   |         ✅          |
+| ✅ | Al Basrah, Anvil, Anvil, Belaya, Black Coast, Chora, Fallujah, Fool's Road, Goose Bay, Gorodok, Gorodok, Harju, Jensen's Range, Kamdesh Highlands, Kohat Toi, Kokan, Lashkar Valley, Logar Valley, Manicouagan, Mestia, Mutaha, Narva, Sanxian Islands, Skorpo, Sumari Bala, Tallil Outskirts, Yehorivka       |
+| ❌ | Narva (flooded), Pacific Proving Grounds    |          

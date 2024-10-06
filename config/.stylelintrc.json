@@ -10,7 +10,12 @@
         "comment-empty-line-before": null,
         "selector-class-pattern": null,
         "scss/at-extend-no-missing-placeholder": null,
-        "scss/double-slash-comment-empty-line-before": "never",
+        "scss/double-slash-comment-empty-line-before": [
+            "always",
+            {
+                "except": ["inside-block"]
+            }
+        ],
         "scss/dollar-variable-pattern": null,
         "scss/dollar-variable-colon-space-before": "never",
         "no-descending-specificity": null,

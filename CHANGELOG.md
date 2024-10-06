@@ -1,3 +1,44 @@
+# <img src="https://img.shields.io/badge/-major%20release-b22222?style=for-the-badge">  **32.0.0** *(2024-10-06)*
+
+<img src="https://img.shields.io/badge/-new-green"> **New Weapon : MK19-RWS.** This vehicule mounted MK19 can actually be shot *kinda* precisely at very long range (5km!!) thanks to the degrees indicator in the HUD. It's added as "experimental weapon" for now because of some flows : At very long range the projectile tends to disapear, and the HUD angle indicator being rounded the overall precision can be meh.
+
+<img src="https://img.shields.io/badge/-new-green"> **New Setting : "High Quality Basemap"**, allow you to use AI Upscaled 8192px*8192px file as default basemap. Resolution and quality is actually better than the ingame map but be aware it can cause performance issues/high loading time on some browsers.
+
+<img src="https://img.shields.io/badge/-new-green"> **New Setting : "Experimental Weapons"**, allow you to use experimental indirect-fire weapons in Squadcalc. For now MK19-RWS is available.
+
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Reworked several settings labels/tooltips in several language to be more concise
+
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Slightly reduced font size in weapons/maps dropdown lists.
+
+<img src="https://img.shields.io/badge/-%20fix%20-orange"> Realigned Bearing/Distance in setting's preview
+
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
+
+
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **31.2.0** *(2024-10-01)*
+
+<img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed "first zooms lags" due to map image not being properly decoded on Chrome
+
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Added a quick ping to Squad Mortar Overlay before opening websocket to it, avoid ugly error message in console when it's off (code by Devil4ngle)
+
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Improved responsivness of settings dialog on very small resolution
+
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Reduced heat points size/chroma on weapons heatmaps
+
+<img src="https://img.shields.io/badge/-%20dev%20-orange"> Splited HTML/SCSS into components 
+
+<img src="https://img.shields.io/badge/-%20dev%20-orange"> Simplified github actions workflows
+
+<img src="https://img.shields.io/badge/-%20dev%20-orange"> Linters : Removed w3c validator / Added htmlhint config
+
+<img src="https://img.shields.io/badge/-%20dev%20-orange"> Project now use module syntax (imports/exports) pretty much everywhere
+
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
+
 # <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **31.1.1** *(2024-09-27)*
 
 <img src="https://img.shields.io/badge/-%20improv%20-orange"> Emplaced and mobile UB-32 are now using perfectly accurate formulas taking deceleration into account instead of "deducing" average velocities from ingame table. Thanks to @Devil4ngle and check out <a href="https://github.com/Devil4ngle/squadmortar">his project</a>

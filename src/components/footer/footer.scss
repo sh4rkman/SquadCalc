@@ -1,0 +1,351 @@
+/***************************************
+************   FOOTER   ***************
+**************************************/
+
+   footer {
+    .fabs {
+        bottom: 1.2rem;
+        position: fixed;
+        height: 2.5rem;
+        width: 2.5rem;
+        &.fab-wrapper {
+            right: 1rem;
+        }
+        &.fab-wrapper2 {
+            left: 1rem;
+        }
+        input {
+            display: none;
+        }
+        .fab {
+            background: #333;
+            border-radius: 50%;
+            font-size: 1.1rem;
+            height: 2.5rem;
+            position: relative;
+            transition: all 0.3s ease;
+            width: 2.5rem;
+            z-index: 1;
+            &:active {
+                transform: scale(0.8);
+            }
+            &::before {
+                background-color: rgba(255, 255, 255, 0.1);
+                border-radius: 50%;
+                content: "";
+                height: 100%;
+                left: 0;
+                position: absolute;
+                top: 0;
+                width: 100%;
+            }
+            &:hover {
+                background: rgb(24, 24, 24);
+                cursor: pointer;
+            }
+            .fab-dots-2 {
+                padding-top: 0.7rem;
+            }
+        }
+    }
+}
+
+
+/***************************************
+************   TOAST   ***************
+**************************************/
+
+
+$toastDistanceFromBottom: 40px;
+
+#toast {
+    display: flex;
+    align-items: center;
+    max-width: 400px;
+    width: fit-content;
+    padding: 10px 14px;
+    position: absolute;
+    border-radius: 5px;
+    overflow: hidden;
+    background: white;
+    box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+    z-index: 5;
+    bottom: -100px;
+    left: 50%;
+    transform: translateX(-50%);
+    cursor: pointer;
+}
+
+#icon-wrapper{
+    width: 30px;
+    height: 30px;
+    background: var(--secondary);
+    border-radius: 5px;
+    box-sizing: border-box;
+    padding: 5px;
+}
+
+#icon {
+    background: var(--primary);
+    border-radius: 50%;
+    height: 100%;
+    width: 100%;
+    position: relative;
+}
+
+#icon::before, #icon::after {
+    position: absolute;
+    content: "";
+    background: var(--secondary);
+    border-radius: 5px;
+    top: 50%;
+    left: 50%;
+}
+
+#toast-message {
+    padding: 5px 20px 5px 10px;
+}
+
+#toast-message h4, #toast-message p {
+    margin: 0;
+    line-height: 1.2em;
+}
+
+#toast-message h4 {
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: .05em;
+    color: #404040;
+}
+
+#toast-message p {
+    font-size: 10px;
+    font-weight: 300;
+    letter-spacing: .05em;
+    color: #606060;
+}
+
+#toast-close {
+    position: relative;
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background: rgba(0,0,0,0);
+    transition: background 0.2s ease-in-out;
+}
+
+#toast-close:hover {
+    background: rgba(0,0,0,0.1);
+}
+
+#toast-close::before, #toast-close::after {
+    position: absolute;
+    content: '';
+    height: 12px;
+    width: 1px;
+    border-radius: 5px;
+    background: #606060;
+    top: 50%;
+    left: 50%;
+    transition: background 0.2s ease-in-out;
+}
+
+#toast-close:hover::before, #toast-close:hover::after {
+    background: #404040;
+}
+
+#toast-close::before {
+    transform: translate(-50%, -50%) rotate(45deg);
+}
+
+#toast-close::after {
+    transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+@keyframes close {
+    from {
+    bottom: $toastDistanceFromBottom;
+    opacity: 1;
+    transform: translateX(-50%) scale(1);
+    visibility: visible;
+    }
+    to {
+    bottom: -25px;
+    opacity: 0;
+    transform: translateX(-50%) scale(0.5);
+    visibility: hidden;
+    }
+}
+
+@keyframes open {
+    from {
+    bottom: -25px;
+    opacity: 0;
+    transform: translateX(-50%) scale(0.5);
+    visibility: hidden;
+    }
+    to {
+    bottom: $toastDistanceFromBottom;
+    opacity: 1;
+    transform: translateX(-50%) scale(1);
+    visibility: visible;
+    }
+}
+
+#timer {
+    width: 0%;
+    height: 4px;
+    background: var(--primary);
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    border-top-right-radius: 5px;
+    box-shadow: 0 0 8px var(--primary);
+}
+
+.timer-animation {
+    animation: countdown 5s linear forwards;
+}
+
+@keyframes countdown {
+    from {
+    width: 100%;
+    } 
+    to {
+    width: 0%;
+    } 
+}
+
+/* ----------------------- */
+/* Success Styling         */
+/* ----------------------- */
+
+.success {
+    --primary: #2DD743;
+    --secondary: #E3FEE6;
+}
+
+.success #icon {
+    transform: rotate(-45deg);
+}
+
+.success  #icon::before{
+    width: 10px;
+    height: 3px;
+    transform: translate(calc(-50% + 1px), calc(-50% + 1px));
+}
+
+.success  #icon::after{
+    width: 3px;
+    height: 6px;
+    transform: translate(calc(-50% - 3px), calc(-50% - 1px));
+}
+
+/* ----------------------- */
+/* Warning Styling         */
+/* ----------------------- */
+
+.warning {
+    --primary: #F29208;
+    --secondary: #FFEEDF;
+}
+
+.warning  #icon::before{
+    width: 3px;
+    height: 3px;
+    transform: translate(-50%, calc(-50% + 4px));
+}
+
+.warning  #icon::after{
+    width: 3px;
+    height: 7px;
+    transform: translate(-50%, calc(-50% - 2px));
+}
+
+/* ----------------------- */
+/* Error Styling           */
+/* ----------------------- */
+
+.error {
+    --primary: #E63435;
+    --secondary: #FFEAEC;
+}
+
+.error  #icon::before{
+    width: 3px;
+    height: 3px;
+    transform: translate(-50%, calc(-50% + 4px));
+}
+
+.error  #icon::after{
+    width: 3px;
+    height: 7px;
+    transform: translate(-50%, calc(-50% - 2px));
+}
+
+/* ----------------------- */
+/* Info Styling            */
+/* ----------------------- */
+
+.info {
+    --primary: #42C0F2;
+    --secondary: #CFEFFC;
+}
+
+.info  #icon::before{
+    width: 3px;
+    height: 7px;
+    transform: translate(-50%, calc(-50% + 2px));
+}
+
+.info  #icon::after{
+    width: 3px;
+    height: 3px;
+    transform: translate(-50%, calc(-50% - 4px));
+}
+
+main button {
+    padding: 0.6em 1.5em;
+    font-size: 18px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#successBtn { 
+    border: 1px solid #2DD743; 
+    color: #2DD743;
+    background: #E3FEE6;
+}
+
+#warningBtn { 
+    border: 1px solid #F29208; 
+    color: #F29208;
+    background: #FFEEDF;
+}
+
+#errorBtn { 
+    border: 1px solid #E63435; 
+    color: #E63435;
+    background: #FFEAEC;
+}
+
+#infoBtn { 
+    border: 1px solid #42C0F2; 
+    color: #42C0F2;
+    background: #CFEFFC;
+}
+
+
+/***************************************
+************   CANVAS   ***************
+**************************************/
+
+
+#canvas {
+    display: none;
+    position: absolute;
+    bottom: 0;
+    height: 350px;
+    width: 350px;
+}

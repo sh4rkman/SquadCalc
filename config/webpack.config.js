@@ -1,18 +1,26 @@
-const Dotenv = require('dotenv-webpack');
-const path = require('path');
-const webpack = require('webpack');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
-const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
-const TerserPlugin = require("terser-webpack-plugin");
-const WebpackPwaManifest = require('webpack-pwa-manifest')
-const RobotstxtPlugin = require("robotstxt-webpack-plugin");
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const workbox = require("workbox-webpack-plugin");
+import Dotenv from 'dotenv-webpack';
+import path from 'path';
+import webpack from 'webpack';
+import CopyWebpackPlugin from 'copy-webpack-plugin';
+import CssMinimizerPlugin from 'css-minimizer-webpack-plugin';
+import TerserPlugin from 'terser-webpack-plugin';
+import WebpackPwaManifest from 'webpack-pwa-manifest';
+import RobotstxtPlugin from 'robotstxt-webpack-plugin';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
+import workbox from 'workbox-webpack-plugin';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+// For __dirname in ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 
-module.exports = (env) => {
+export default async (env) => {
 
-  require('dotenv').config();
+  // Dynamically import dotenv and await it since it's a Promise
+  const { config } = await import('dotenv');
+  config();
 
   // If you want webpack to add a robot.txt indexing, create a .env file with INDEX=TRUE
   const isIndexed = process.env.INDEX && process.env.INDEX.toLowerCase() === 'true';
@@ -35,9 +43,17 @@ module.exports = (env) => {
     },
     module: {
         rules: [
-            { test: /\.html$/i, loader: "html-loader", },
             { test: /\.(png|svg|jpg|jpeg|gif|webp)$/i, type: 'asset/resource', },
             { test: /\.(sc|sa|c)ss$/i, use: ['style-loader', 'css-loader', 'sass-loader'],},
+            { test: /\.(html)$/,
+              include: path.join(__dirname, ''),
+              use: {
+                loader: 'html-loader',
+                options: {
+                  interpolate: true
+                }
+              }
+            }
         ],
     },
     devServer: {

@@ -9,5 +9,7 @@
         "BM-21Grad": "БМ-21 Град",
         "M1064M121": "М1064 M121",
             "impact": "Удар",
-            "nearSurface": "воздух"
+            "nearSurface": "воздух",
+    "experimental": "Экспериментальный",
+        "Mk19": "МК19-RWS"
 }

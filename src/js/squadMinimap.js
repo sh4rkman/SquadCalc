@@ -1,11 +1,11 @@
 import {imageOverlay, Map, CRS, svg, Util, LayerGroup, Popup } from "leaflet";
-import squadGrid from "./squadGrid";
-import squadHeightmap from "./squadHeightmaps";
-import { App } from "../app";
-import { squadWeaponMarker, squadTargetMarker } from "./squadMarker";
-import { mortarIcon, mortarIcon1, mortarIcon2 } from "./squadIcon";
-import { explode } from "./animations";
-import { fetchMarkersByMap } from "./squadCalcAPI";
+import squadGrid from "./squadGrid.js";
+import squadHeightmap from "./squadHeightmaps.js";
+import { App } from "../app.js";
+import { squadWeaponMarker, squadTargetMarker } from "./squadMarker.js";
+import { mortarIcon, mortarIcon1, mortarIcon2 } from "./squadIcon.js";
+import { explode } from "./animations.js";
+import { fetchMarkersByMap } from "./squadCalcAPI.js";
 import webGLHeatmap from "./libs/leaflet-webgl-heatmap.js";
 import "leaflet-spin";
 import "./libs/webgl-heatmap.js";
@@ -37,7 +37,7 @@ export var squadMinimap = Map.extend({
             zoom: 2,
             zoomControl: false,
             zoomSnap: 0, 
-            smoothSensitivity: 1.5, 
+            smoothSensitivity: 2, 
             scrollWheelZoom: App.userSettings.smoothMap,
             smoothWheelZoom: !App.userSettings.smoothMap,
             inertia: App.userSettings.smoothMap,
@@ -71,7 +71,7 @@ export var squadMinimap = Map.extend({
         this.on("dblclick", this._handleDoubleCkick, this);
         this.on("contextmenu", this._handleContextMenu, this);
         this.on("mouseout", this._handleMouseOut, this);
-
+    
         if (App.userSettings.keypadUnderCursor){
             this.on("mousemove", this._handleMouseMove, this);
             this.on("zoomend", this._handleZoom, this);
@@ -107,26 +107,32 @@ export var squadMinimap = Map.extend({
         const LAYERMODE = $("#mapLayerMenu .active").attr("value");
         const OLDLAYER = this.activeLayer;
 
-        // https://www.youtube.com/watch?v=S9mQQpBGCz4
+        // Image URL
+        const baseUrl = `maps${this.activeMap.mapURL}${LAYERMODE}`;
+        const suffix = (LAYERMODE === "basemap" && App.userSettings.highQualityImages) ? "_hq" : "";
+        const newImageUrl = `${baseUrl}${suffix}.webp`;
+        
+        // Show spinner
         this.spin(true, this.spinOptions);
 
-        // Change image
-        this.activeLayer = new imageOverlay("", this.imageBounds);
-        this.activeLayer.setUrl(`maps${this.activeMap.mapURL}${LAYERMODE}.webp`);
-
         // Add the new layer but keep it hidden initially
+        this.activeLayer = new imageOverlay(newImageUrl, this.imageBounds);
         this.activeLayer.addTo(this.layerGroup);
         $(this.activeLayer.getElement()).css("opacity", 0);
-    
-        // When the new image is loaded, fade it in & remove spiner 
+        this.decode();
+
+        // When the new image is loaded, fade it in & remove spinner
         this.activeLayer.on("load", () => {
             this.spin(false);
             $(this.activeLayer.getElement()).animate({opacity: 1}, 500, () => {
+                // Remove the old layer after the fade-in is complete
                 if (OLDLAYER) OLDLAYER.remove();
+                // Show grid and heatmap
                 if (App.userSettings.grid) this.showGrid();
                 this.toggleHeatmap();
             });
         });
+
     },
 
 
@@ -141,10 +147,10 @@ export var squadMinimap = Map.extend({
             fetchMarkersByMap(App.minimap.activeMap.name, App.activeWeapon.name)
                 .then(markers => {
                     this.heatmap = new webGLHeatmap({
-                        size: 7,
+                        size: 5,
                         units: "m",
                         opacity: 0.5,
-                        alphaRange: 0.7,
+                        alphaRange: 0.5,
                     });
                     this.heatmap.setData(markers);
                     this.addLayer(this.heatmap);
@@ -165,6 +171,15 @@ export var squadMinimap = Map.extend({
         }
     },
 
+    /**
+     * Force the Browser to decode of the current map image
+     * Hack for Chrome lag when first zooming inside a 4k image
+     */
+    decode: function(){
+        const IMG = new Image();
+        IMG.src = this.activeLayer._url;
+        IMG.decode();
+    },
 
     /**
      * Reset map by clearing every Markers/Layers
@@ -173,8 +188,6 @@ export var squadMinimap = Map.extend({
         this.markersGroup.clearLayers();
         this.activeWeaponsMarkers.clearLayers();
         this.activeTargetsMarkers.clearLayers();
-        //this.layerGroup.clearLayers();
-
         this.setView([-this.tilesSize/2, this.tilesSize/2], 2);
         $(".btn-delete").hide();
     },
@@ -233,7 +246,6 @@ export var squadMinimap = Map.extend({
     hideGrid: function(){
         this.grid.removeFrom(this.layerGroup);
     },
-
 
     /**
      * Calculates the keypad coordinates for a given latlng coordinate, e.g. "A5-3-7"

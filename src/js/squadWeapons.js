@@ -1,5 +1,5 @@
-import { App } from "../app";
-import { WEAPONS } from "../data/weapons.js";
+import { App } from "../app.js";
+import { WEAPONS } from "./data/weapons.js";
 
 export class Weapon {
     constructor(name, velocity, deceleration, decelerationTime, gravityScale, minElevation, unit, logo, marker, logoCannonPos, type, angleType, elevationPrecision, minDistance, moa, maxDamage, startRadius, endRadius, distanceFromImpact, falloff, shells = []) {

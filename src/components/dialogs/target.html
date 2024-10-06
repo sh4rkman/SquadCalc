@@ -1,0 +1,89 @@
+<dialog id="calcInformation" class="animate__animated animate__zoomIn">
+    <form method="dialog">
+        <button class="closeModal">
+            <i class="fa-solid fa-circle-xmark"></i>
+        </button>
+    </form>
+
+    <h2 data-i18n="common:targetInf">Target Informations</h2>
+
+    <div id="canvasControls">
+        <button data-i18n="common:weapon1" type="button" class="active" value="sim1" aria-label="Weapon 1"></button>
+        <button data-i18n="common:weapon2" type="button" class="" value ="sim2" aria-label="Weapon 2"></button>
+    </div>
+    
+    <div id="sim1" class="sim active">
+        <table>
+            <tbody>
+                <tr>
+                    <td data-i18n="common:bearing"></td><td class="infBearing"></td>
+                </tr>
+                <tr>
+                    <td data-i18n="common:elevation"></td><td class="infElevation"></td>
+                </tr>
+                <tr>
+                    <td data-i18n="common:distance"></td><td class="infDistance"></td>
+                </tr>
+                <tr>
+                    <td data-i18n="common:timeOfFlight"></td><td class="infTimeOfFlight"></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <table>
+            <tbody>
+                <tr>
+                    <td data-i18n="common:spread" class="infSpreadTooltip info"></td><td class="infSpread"></td>
+                </tr>
+                <tr>
+                    <td data-i18n="common:weaponHeight"></td><td class="infWHeight"></td>
+                </tr>
+                <tr>
+                    <td data-i18n="common:targetHeight"></td><td class="infTHeight"></td>
+                </tr>
+                <tr>
+                    <td data-i18n="common:heightDiff"></td><td class="infDHeight"></td>
+                </tr>
+            </tbody>
+        </table>
+        <canvas class="heightGraph" width="1000" height="600"></canvas>
+    </div>
+
+    <div id="sim2" class="sim">
+        <table>
+            <tbody>
+                <tr>
+                    <td data-i18n="common:bearing"></td><td class="infBearing"></td>
+                </tr>
+                <tr>
+                    <td data-i18n="common:elevation"></td><td class="infElevation"></td>
+                </tr>
+                <tr>
+                    <td data-i18n="common:distance"></td><td class="infDistance"></td>
+                </tr>
+                <tr>
+                    <td data-i18n="common:timeOfFlight"></td><td class="infTimeOfFlight"></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <table>
+            <tbody>
+                <tr>
+                    <td data-i18n="common:spread" class="infSpreadTooltip info"></td><td class="infSpread"></td>
+                </tr>
+                <tr>
+                    <td data-i18n="common:weaponHeight"></td><td class="infWHeight"></td>
+                </tr>
+                <tr>
+                    <td data-i18n="common:targetHeight"></td><td class="infTHeight"></td>
+                </tr>
+                <tr>
+                    <td data-i18n="common:heightDiff"></td><td class="infDHeight"></td>
+                </tr>
+            </tbody>
+        </table>
+        <canvas class="heightGraph" width="1000" height="600"></canvas>
+    </div>
+
+</dialog>
