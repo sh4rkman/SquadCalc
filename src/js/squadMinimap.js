@@ -106,8 +106,12 @@ export var squadMinimap = Map.extend({
     changeLayer: function(){
         const LAYERMODE = $("#mapLayerMenu .active").attr("value");
         const OLDLAYER = this.activeLayer;
-        const newImageUrl = `maps${this.activeMap.mapURL}${LAYERMODE}.webp`;
 
+        // Image URL
+        const baseUrl = `maps${this.activeMap.mapURL}${LAYERMODE}`;
+        const suffix = (LAYERMODE === "basemap" && App.userSettings.highQualityImages) ? "_hq" : "";
+        const newImageUrl = `${baseUrl}${suffix}.webp`;
+        
         // Show spinner
         this.spin(true, this.spinOptions);
 
@@ -123,8 +127,7 @@ export var squadMinimap = Map.extend({
             $(this.activeLayer.getElement()).animate({opacity: 1}, 500, () => {
                 // Remove the old layer after the fade-in is complete
                 if (OLDLAYER) OLDLAYER.remove();
-
-                // Additional functionalities: Show grid and toggle heatmap
+                // Show grid and heatmap
                 if (App.userSettings.grid) this.showGrid();
                 this.toggleHeatmap();
             });

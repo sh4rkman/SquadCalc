@@ -5,6 +5,7 @@ import technicalLogo from "../../img/icons/technical_mortar_white.png";
 import mlrsLogo from "../../img/icons/mlrs_white.png";
 import ub32Logo from "../../img/icons/ub32_white.png";
 import m113Logo from "../../img/icons/m113a3_white.png";
+import mk19rwsLogo from "../../img/icons/mk19_rws_white.png";
 
 /* eslint no-unused-vars: "off" */
 import target from "../../img/icons/target.png";
@@ -12,7 +13,7 @@ import markerIconPng from "leaflet/dist/images/marker-icon.png";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";
 import markerIconx2 from "leaflet/dist/images/marker-icon-2x.png";
 
-import { mortarIcon, hellIcon, ub32Icon, tMortarIcon, tub32Icon, gradIcon, m121Icon} from "../squadIcon.js";
+import { mortarIcon, hellIcon, ub32Icon, tMortarIcon, tub32Icon, gradIcon, m121Icon, mk19Icon} from "../squadIcon.js";
 
 export const WEAPONSTYPE = ["deployables", "vehicles"];
 
@@ -178,5 +179,26 @@ export var WEAPONS = [
             damageFallOff: 1.3,
         },
         ]
-    }    
+    },
+    {
+        name: "Mk19",
+        velocity: 235,
+        deceleration: 0,
+        decelerationTime : 0,
+        gravityScale: 1,
+        minElevation: [-45, 85.3],
+        unit: "deg",
+        logo: mk19rwsLogo,
+        marker: mk19Icon,
+        logoCannonPos: "60%",
+        type: "experimental",
+        angleType: "low",
+        elevationPrecision: 1,
+        minDistance: 10,
+        moa: 50,
+        explosionDamage: 115,
+        explosionRadius: [5, 18],
+        explosionDistanceFromImpact: 0.2,
+        damageFallOff: 1,
+    }
 ];

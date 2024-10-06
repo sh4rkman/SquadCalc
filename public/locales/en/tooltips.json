@@ -22,6 +22,8 @@
     "velocityDesc": "Muzzle velocity is the speed at which a projectile leaves the barrel of a gun, measured immediately upon exit. It affects the range, and accuracy the shot.",
     "heightPaddingDesc": "When placing the weapon above the ground (e.g., on buildings or bridges), use this field to specify the additional height.",
     "smoothMapTooltip": "Add smooth animations when zooming or panning the map. A page refresh is needed",
+    "experimentalWeaponsTooltip": "Add non-conventional indirect fire weapons to the weapon list, use at your own risk!",
+    "highqualityTooltip": "Replace basemap images with very high quality, AI upscaled, 8k*8k pixels images. Can cause performance issues.",
     "targetAnimationTooltip": "Targets' markers will appear with a 'falling' animation",
     "damageRadiusTooltip": "Display kill radius and 25 damage radius",
     "showKeypadTooltip": "Display the keypad currently hovered under the cursor",

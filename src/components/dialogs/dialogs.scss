@@ -230,6 +230,9 @@ dialog {
                     font-size: 0.6em;
                     text-align: right;
                     float: right;
+                    &:nth-child(3) {
+                        margin-top: 2px;
+                    }
                 }
             }
         }

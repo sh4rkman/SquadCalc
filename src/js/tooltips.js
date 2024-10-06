@@ -56,6 +56,36 @@ tippy("span[data-i18n='settings:mapAnimationSettings']", {
     },
 });
 
+tippy("span[data-i18n='settings:highquality']", {
+    animation: "fade",
+    placement: "bottom",
+    allowHTML: true,
+    touch: false,
+    theme: "settingsTooltips",
+    hideOnClick: true,
+    delay: 50,
+    maxWidth: 275,
+    appendTo: helpDialog,
+    onShow(tip) {
+        tip.setContent(`${i18next.t("tooltips:highqualityTooltip")}`);
+    },
+});
+
+tippy("span[data-i18n='settings:experimentalWeapons']", {
+    animation: "fade",
+    placement: "bottom",
+    allowHTML: true,
+    touch: false,
+    theme: "settingsTooltips",
+    hideOnClick: true,
+    delay: 50,
+    maxWidth: 275,
+    appendTo: helpDialog,
+    onShow(tip) {
+        tip.setContent(`${i18next.t("tooltips:experimentalWeaponsTooltip")}`);
+    },
+});
+
 tippy("span[data-i18n='settings:showAnimations']", {
     animation: "fade",
     placement: "bottom",

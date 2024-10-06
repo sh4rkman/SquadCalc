@@ -12,6 +12,7 @@ import tmortarMarker from "../img/icons/marker_tmortar.webp";
 import tub32Marker from "../img/icons/marker_tub32.webp";
 import gradMarker from "../img/icons/marker_grad.webp";
 import M121Marker from "../img/icons/marker_m121.webp";
+import Mk19Marker from "../img/icons/marker_mk19.webp";
 
 import mortarIconImg1 from "../img/icons/marker_mortar_1.webp";
 import mortarIconImg2 from "../img/icons/marker_mortar_2.webp";
@@ -78,6 +79,16 @@ export var gradIcon = new Icon({
 
 export var m121Icon = new Icon({
     iconUrl: M121Marker,
+    shadowUrl: shadowIconImg,
+    iconSize:     [38, 47], 
+    shadowSize:   [38, 47], 
+    iconAnchor:   [19, 47],
+    shadowAnchor: [10, 47],
+    className: "animatedWeaponMarker"
+});
+
+export var mk19Icon = new Icon({
+    iconUrl: Mk19Marker,
     shadowUrl: shadowIconImg,
     iconSize:     [38, 47], 
     shadowSize:   [38, 47], 

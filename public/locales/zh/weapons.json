@@ -9,5 +9,7 @@
         "BM-21Grad": "冰雹",
         "M1064M121": "M1064 M121",
             "impact": "触发式",
-            "nearSurface": "空爆"
+            "nearSurface": "空爆",
+    "experimental": "实验",
+        "Mk19": "MK19-遥控武器站"
 }

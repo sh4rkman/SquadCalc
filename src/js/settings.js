@@ -44,6 +44,12 @@ export function loadSettings(){
 
     $(".btn-"+setting).addClass("active");
 
+    App.userSettings.experimentalWeapons = loadLocalSetting("settings-experimental-weapons", 0);
+    $("#experimentalSetting").prop("checked", App.userSettings.experimentalWeapons);
+
+    App.userSettings.highQualityImages = loadLocalSetting("settings-highquality-images", 0);
+    $("#highQualitySetting").prop("checked", App.userSettings.highQualityImages);
+
     App.userSettings.smoothMap = loadLocalSetting("settings-smooth-map", 0);
     $("#mapAnimationSettings").prop("checked", App.userSettings.smoothMap);
 
@@ -227,6 +233,20 @@ $("#heightSetting").on("change", function() {
     updatePreview();
 });
 
+$("#experimentalSetting").on("change", function() {
+    var val =  $("#experimentalSetting").is(":checked");
+    App.userSettings.experimentalWeapons = val;
+    localStorage.setItem("settings-experimental-weapons", +val);
+    App.toggleExperimentalWeapons();
+});
+
+
+$("#highQualitySetting").on("change", function() {
+    var val =  $("#highQualitySetting").is(":checked");
+    App.userSettings.highQualityImages = val;
+    localStorage.setItem("settings-highquality-images", +val);
+    App.minimap.changeLayer();
+});
 
 $("#weaponRangeSettings").on("change", function() {
     var val =  $("#weaponRangeSettings").is(":checked");

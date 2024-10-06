@@ -22,6 +22,8 @@
     "velocityDesc": "枪口初速是指弹丸离开枪管时的即时速度，它影响射程和精准度。",
     "heightPaddingDesc": "当武器放置在地面以上时（例如在建筑物或桥梁上），使用此字段指定额外的高度。",
     "smoothMapTooltip": "在缩放或移动地图时添加平滑动画。需要重新加载页面",
+    "experimentalWeaponsTooltip": "将非常规间接火力武器添加到武器列表，使用风险自负！",
+    "highqualityTooltip": "将底图图像替换为超高质量、AI放大的8k*8k像素图像。可能会导致性能问题。",
     "targetAnimationTooltip": "目标标记将以‘下落’动画出现",
     "damageRadiusTooltip": "显示伤害半径和25点伤害的半径",
     "showKeypadTooltip": "在光标下显示数字键盘",

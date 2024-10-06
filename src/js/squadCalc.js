@@ -114,17 +114,16 @@ export default class SquadCalc {
             dropdownCssClass: "dropbtn2",
             dropdownParent: $("#weaponSelector"),
             minimumResultsForSearch: -1, // Disable search
-            placeholder: "SELECT A WEAPON"
+            //placeholder: "SELECT A WEAPON"
         });
 
         SHELL_SELECTOR.select2({
             dropdownCssClass: "dropbtn3",
             dropdownParent: $("#ammoSelector"),
             minimumResultsForSearch: -1, // Disable search
-            placeholder: "SELECT A WEAPON"
+            //placeholder: "SELECT A WEAPON"
         });
 
-        
         // Load Weapons
         for (let i = 0; i < WEAPONSTYPE.length; i += 1) {
             WEAPON_SELECTOR.append(`<optgroup data-i18n-label=weapons:${WEAPONSTYPE[i]}>`);
@@ -136,11 +135,57 @@ export default class SquadCalc {
             WEAPON_SELECTOR.append("</optgroup>");
         }
 
+        // Add Experimental weapons if wanted by user settings
+        this.toggleExperimentalWeapons();
+
         // Add Events Listeners
-        WEAPON_SELECTOR.on("change", () => { this.changeWeapon();});
-        SHELL_SELECTOR.on("change", () => { this.activeWeapon.changeShell();});
+        WEAPON_SELECTOR.on("change", () => { this.changeWeapon(); });
+        SHELL_SELECTOR.on("change", () => { this.activeWeapon.changeShell(); });
         
         this.getWeapon();
+    }
+
+    /**
+     * Add/Remove Experimental Weapons from Weapons dropdown list according to user settings
+     */
+    toggleExperimentalWeapons(){
+        const WEAPON_SELECTOR = $(".dropbtn2");
+        const WEAPONSLENGTH = WEAPONS.length;
+
+        if (this.userSettings.experimentalWeapons) {
+
+            WEAPON_SELECTOR.append(`<optgroup data-i18n-label=weapons:experimental label="${i18next.t("weapons:experimental")}">`);
+            for (let y = 0; y < WEAPONSLENGTH; y += 1) {
+                if (WEAPONS[y].type === "experimental") {
+                    WEAPON_SELECTOR.append(`<option data-i18n=weapons:${WEAPONS[y].name} value=${y}>${i18next.t("weapons:" + WEAPONS[y].name)}</option>`);
+                }
+            }
+            WEAPON_SELECTOR.append("</optgroup>");
+
+        } else {
+
+            let selectedValue = WEAPON_SELECTOR.val();
+            
+            // Remove the experimental optgroup
+            WEAPON_SELECTOR.find("optgroup[data-i18n-label='weapons:experimental']").remove();
+            
+            // Remove experimental options and check if the selected value is experimental
+            WEAPON_SELECTOR.find("option").filter(
+                function() {
+                    return WEAPONS[$(this).val()].type === "experimental";
+                }).each(function() {
+                if ($(this).val() === selectedValue) {
+                    selectedValue = null;
+                }
+                $(this).remove();
+            });
+            
+            // If the selected value was an experimental option, reset to Mortars
+            if (selectedValue === null) {
+                WEAPON_SELECTOR.val(0).trigger("change");
+            }
+        }
+
     }
 
     loadUI(){
