@@ -197,8 +197,8 @@ export var WEAPONS = [
         minDistance: 10,
         moa: 50,
         explosionDamage: 115,
-        explosionRadius: [5, 18],
-        explosionDistanceFromImpact: 0.2,
+        explosionRadius: [1, 15],
+        explosionDistanceFromImpact: 0.08,
         damageFallOff: 1,
     }
 ];

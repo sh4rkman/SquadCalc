@@ -1,6 +1,6 @@
 # <img src="https://img.shields.io/badge/-major%20release-b22222?style=for-the-badge">  **32.0.0** *(2024-10-06)*
 
-<img src="https://img.shields.io/badge/-new-green"> **New Weapon : MK19-RWS.** This vehicule mounted MK19 can actually be shot *kinda* precisely at very long range (5km!!) thanks to the degrees indicator in the HUD. It's added as "experimental weapon" for now because of some flows : At very long range the projectile tends to disapear, and the HUD angle indicator being rounded the overall precision can be meh.
+<img src="https://img.shields.io/badge/-new-green"> **New Weapon : MK19-RWS.** This vehicule mounted MK19 can actually be shot *kinda* precisely at very long range (5km!!) thanks to the degrees indicator in the HUD. It's added as "experimental weapon" for now because of some flows : At very long range the projectile tends to disapear, and the HUD angle indicator being rounded the overall precision can be meh. Thanks to [Ferrariic](https://github.com/Ferrariic) for his original idea and numerous tests (see [this discussion](https://github.com/sh4rkman/SquadCalc/pull/204))
 
 <img src="https://img.shields.io/badge/-new-green"> **New Setting : "High Quality Basemap"**, allow you to use AI Upscaled 8192px*8192px file as default basemap. Resolution and quality is actually better than the ingame map but be aware it can cause performance issues/high loading time on some browsers.
 
