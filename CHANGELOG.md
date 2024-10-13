@@ -1,3 +1,19 @@
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **32.1.0** *(2024-10-13)*
+
+<img src="https://img.shields.io/badge/-new-green"> Added Narva (Flooded) to the map list
+
+<img src="https://img.shields.io/badge/-new-green"> Added Pacific Proving Grounds to the map list
+
+<img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed MK19 spash damage values
+
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Added a quick ping to Squad Mortar Overlay before opening websocket to it, avoid ugly error message in console when it's off (code by Devil4ngle)
+
+<img src="https://img.shields.io/badge/-%20dev%20-orange"> Splited HTML/SCSS into components 
+
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
+
 # <img src="https://img.shields.io/badge/-major%20release-b22222?style=for-the-badge">  **32.0.0** *(2024-10-06)*
 
 <img src="https://img.shields.io/badge/-new-green"> **New Weapon : MK19-RWS.** This vehicule mounted MK19 can actually be shot *kinda* precisely at very long range (5km!!) thanks to the degrees indicator in the HUD. It's added as "experimental weapon" for now because of some flows : At very long range the projectile tends to disapear, and the HUD angle indicator being rounded the overall precision can be meh. Thanks to [Ferrariic](https://github.com/Ferrariic) for his original idea and numerous tests (see [this discussion](https://github.com/sh4rkman/SquadCalc/pull/204))
