@@ -40,7 +40,7 @@
    - [Advanced Information & Simulation](#advanced-informations--simulation)
    - [Advanced Customisation](#advanced-customisation)
 3. [Squad Mortar Overlay Compatibility](#squad-mortar-overlay-compatibility)
-4. [Map & Weapons Support](#map--weapons-support)
+4. [Weapons Support](#map--weapons-support)
 
 
 </br>
@@ -135,6 +135,9 @@ It allows :
 * Having ingame markers automatically merged into SquadCalc map to quickly place the right targets
 * Having an ingame overlay with the current SquadCalc calculations displayed in front of Squad
 
+### [>> Download Squad Mortar Overlay last current version here <<](https://github.com/Devil4ngle/SquadMortarOverlay/releases)
+
+</br>
 
 <div align="center">
   <picture>
@@ -144,24 +147,17 @@ It allows :
 
 
 
-</br></br>
+</br></br></br>
+# <div align="center">Weapons Support</div>
+</br>
 
-
-# <div align="center">Map & Weapons Support</div>
-
-|                                   |       **SUPPORTED WEAPONS**   |                                            |
-|-------------------------------------------------------------------|-------------------------|------------------|
-|<img height="40" src="./src/img/icons/mortar.png">                 | Mortars                 |     ✅          |
-|<img height="40" src="./src/img/icons/ub32_deployable.png">        | UB-32                   |     ✅          |
-|<img height="40" src="./src/img/icons/hellcannon_white.png">       | Hell Canon              |     ✅          |
-|<img height="40" src="./src/img/icons/technical_mortar_white.png"> | Technicals mortars      |     ✅          |
-|<img height="40" src="./src/img/icons/ub32_white.png">             | Technicals/BRDM UB-32   |     ✅          |
-|<img height="40" src="./src/img/icons/mlrs_white.png">             | BM-21 Grad              |     ✅          |
-|<img height="40" src="./src/img/icons/m113a3_white.png">           | M1064-A3 120mm          |     ✅          |
-|<img height="40" src="./src/img/icons/mk19_rws_white.png">         | MK-19 RWS (Experimental)|     ✅          |
-
-
-|     |         **SUPPORTED MAPS**            |
-|-----------------------------|---------------------|
-| ✅ | Al Basrah, Anvil, Anvil, Belaya, Black Coast, Chora, Fallujah, Fool's Road, Goose Bay, Gorodok, Gorodok, Harju, Jensen's Range, Kamdesh Highlands, Kohat Toi, Kokan, Lashkar Valley, Logar Valley, Manicouagan, Mestia, Mutaha, Narva, Sanxian Islands, Skorpo, Sumari Bala, Tallil Outskirts, Yehorivka       |
-| ❌ | Narva (flooded), Pacific Proving Grounds    |          
+|ICON |       **NAME**   | Range |
+|--------|-------|-------|
+|<img height="35" src="./src/img/icons/mortar.png">| Mortar | 1237m |
+|<img height="35" src="./src/img/icons/ub32_deployable.png">| UB-32 | 2245m |
+|<img height="35" src="./src/img/icons/hellcannon_white.png">| Hell Canon | 923m |
+|<img height="35" src="./src/img/icons/technical_mortar_white.png">| Technicals Mortars | 1237m |
+|<img height="30" src="./src/img/icons/ub32_white.png">| Technicals/BRDM UB-32 | 2245m |
+|<img height="35" src="./src/img/icons/mlrs_white.png">| BM-21 Grad | 2045m |
+|<img height="35" src="./src/img/icons/m113a3_white.png">| M1064-A3 120mm | 2062m |
+|<img height="35" src="./src/img/icons/mk19_rws_white.png">| MK-19 RWS *(Experimental)* | 5647m |  

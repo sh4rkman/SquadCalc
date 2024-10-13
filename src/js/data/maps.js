@@ -139,13 +139,20 @@ export const MAPS = [
         mapURL: "/narva/",
         maxZoomLevel: 4,
     },
-    /*{ 
-        name: "Narva (f)", 
+    { 
+        name: "Narva_f", 
         size: 2800, // OK
         scaling: 0.0583, 
-        mapURL: "/narva-flooded/{z}_{x}_{y}.webp",
+        mapURL: "/narva-flooded/",
         maxZoomLevel: 4,
-    }, */
+    },
+    { 
+        name: "Pacific", 
+        size: 4032, // OK
+        scaling: 0.25852400000000003, 
+        mapURL: "/pacific/",
+        maxZoomLevel: 4,
+    },
     { 
         name: "Sanxian",
         size: 4600, 
