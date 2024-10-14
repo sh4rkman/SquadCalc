@@ -3,12 +3,15 @@
     "mapOptions": "Options de Carte",
         "showGrid": "Afficher la grille",
         "showKeypad": "Grille sous le curseur",
-        "showMaxRange": "Portées de tir Min/Max",
         "useClassicCursor": "Curseur classique",
         "mapAnimationSettings": "Animations de zoom",
-        "experimentalWeapons": "Armes expérimentales",
         "highquality": "Carte haute qualité",
+    "weaponOptions": "Options des armes",
+        "weaponDrag": "Grille pendant le déplacement",
+        "showMaxRange": "Portées de tir Min/Max",
+        "experimentalWeapons": "Armes expérimentales",
     "targetOptions": "Options des cibles",
+        "targetDrag": "Grille pendant le déplacement",
         "showSpread": "Rayon de dispersion",
         "showDamage": "Rayons de dégâts",
         "showAnimations": "Animations",
@@ -19,5 +22,7 @@
     "preview": "Aperçu",
     "changelog": "Journal des modifications",
     "github": "Voir le code sur Github",
-    "bug": "Signaler un bug"
+    "bug": "Signaler un bug",
+    "discord": "Discord Officiel",
+    "wiki": "Wiki"
 }

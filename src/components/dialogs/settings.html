@@ -13,83 +13,120 @@
 
     <h2 data-i18n="settings:SettingsTitle">Settings</h2>
 
-    <table class="userSettings">
-        <caption data-i18n="settings:mapOptions"></caption>
-        <tbody>
-            <tr>
-                <td>
-                    <label class="mcui-checkbox">
-                        <input id="gridSetting" type="checkbox">
-                        <span>
+    <div id="userSettings">
+          
+      <table class="userSettings">
+          <caption data-i18n="settings:mapOptions"></caption>
+          <tbody>
+              <tr>
+                  <td>
+                      <label class="mcui-checkbox">
+                          <input id="gridSetting" type="checkbox">
+                          <span>
+                              <svg class="mcui-check" viewBox="-2 -2 35 35" aria-hidden="true">
+                                <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
+                              </svg>
+                          </span>
+                        </label>
+                  </td>
+                  <td><span data-i18n="settings:showGrid" class="toggleCheckbox"></span></td>
+              </tr>
+
+              <tr id="keypadUnderCursorSettingRow">
+                  <td >
+                      <label class="mcui-checkbox" >
+                          <input id="keypadUnderCursorSetting" type="checkbox">
+                          <span>
                             <svg class="mcui-check" viewBox="-2 -2 35 35" aria-hidden="true">
                               <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
                             </svg>
-                        </span>
-                      </label>
-                </td>
-                <td><span data-i18n="settings:showGrid" class="toggleCheckbox"></span></td>
-            </tr>
+                          </span>
+                        </label>
+                  </td>
+                  <td> 
+                      <span data-i18n="settings:showKeypad" class="toggleCheckbox"></span>
+                      <br>
+                      <span id="KPSettingSubText" class="settingsSubtext">
+                      </span>
+                  </td>
+              </tr>
 
-            <tr id="keypadUnderCursorSettingRow">
-                <td >
-                    <label class="mcui-checkbox" >
-                        <input id="keypadUnderCursorSetting" type="checkbox">
-                        <span>
-                          <svg class="mcui-check" viewBox="-2 -2 35 35" aria-hidden="true">
-                            <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
-                          </svg>
-                        </span>
-                      </label>
-                </td>
-                <td> 
-                    <span data-i18n="settings:showKeypad" class="toggleCheckbox"></span>
-                    <br>
-                    <span id="KPSettingSubText" class="settingsSubtext">
+              <tr class="cursorChoiceSettings">
+                  <td>
+                      <label class="mcui-checkbox">
+                          <input id="cursorChoiceSettings" type="checkbox">
+                          <span>
+                            <svg class="mcui-check" viewBox="-2 -2 35 35" aria-hidden="true">
+                              <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
+                            </svg>
+                          </span>
+                        </label>
+                  </td>
+                  <td><span data-i18n="settings:useClassicCursor" class="toggleCheckbox"></span></td>
+              </tr>
+
+              <tr class="mapAnimationSettings">
+                  <td>
+                      <label class="mcui-checkbox">
+                          <input id="mapAnimationSettings" type="checkbox">
+                          <span>
+                            <svg class="mcui-check" viewBox="-2 -2 35 35" aria-hidden="true">
+                              <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
+                            </svg>
+                          </span>
+                        </label>
+                  </td>
+                  <td><span data-i18n="settings:mapAnimationSettings" class="toggleCheckbox"></span></td>
+              </tr>
+
+            <tr class="highQualitySetting">
+              <td>
+                  <label class="mcui-checkbox">
+                      <input id="highQualitySetting" type="checkbox">
+                      <span>
+                        <svg class="mcui-check" viewBox="-2 -2 35 35" aria-hidden="true">
+                          <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
+                        </svg>
+                      </span>
+                    </label>
+              </td>
+              <td><span data-i18n="settings:highquality" class="toggleCheckbox"></span></td>
+          </tr>
+
+          </tbody>
+      </table>
+
+      <table class="userSettings">
+        <caption data-i18n="settings:weaponOptions"></caption>
+        <tbody>
+
+          <tr class="weaponDragSetting">
+            <td>
+                <label class="mcui-checkbox">
+                    <input id="weaponDragSetting" type="checkbox">
+                    <span>
+                      <svg class="mcui-check" viewBox="-2 -2 35 35" aria-hidden="true">
+                        <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
+                      </svg>
                     </span>
-                </td>
-            </tr>
+                  </label>
+            </td>
+            <td><span data-i18n="settings:weaponDrag" class="toggleCheckbox"></span></td>
+          </tr>
 
-            <tr>
-                <td>
-                    <label class="mcui-checkbox">
-                        <input id="weaponRangeSettings" type="checkbox">
-                        <span>
-                          <svg class="mcui-check" viewBox="-2 -2 35 35" aria-hidden="true">
-                            <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
-                          </svg>
-                        </span>
-                      </label>
-                </td>
-                <td><span data-i18n="settings:showMaxRange" class="toggleCheckbox"></span></td>
-            </tr>
-
-            <tr class="cursorChoiceSettings">
-                <td>
-                    <label class="mcui-checkbox">
-                        <input id="cursorChoiceSettings" type="checkbox">
-                        <span>
-                          <svg class="mcui-check" viewBox="-2 -2 35 35" aria-hidden="true">
-                            <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
-                          </svg>
-                        </span>
-                      </label>
-                </td>
-                <td><span data-i18n="settings:useClassicCursor" class="toggleCheckbox"></span></td>
-            </tr>
-
-            <tr class="mapAnimationSettings">
-                <td>
-                    <label class="mcui-checkbox">
-                        <input id="mapAnimationSettings" type="checkbox">
-                        <span>
-                          <svg class="mcui-check" viewBox="-2 -2 35 35" aria-hidden="true">
-                            <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
-                          </svg>
-                        </span>
-                      </label>
-                </td>
-                <td><span data-i18n="settings:mapAnimationSettings" class="toggleCheckbox"></span></td>
-            </tr>
+          <tr>
+            <td>
+                <label class="mcui-checkbox">
+                    <input id="weaponRangeSettings" type="checkbox">
+                    <span>
+                      <svg class="mcui-check" viewBox="-2 -2 35 35" aria-hidden="true">
+                        <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
+                      </svg>
+                    </span>
+                  </label>
+            </td>
+            <td><span data-i18n="settings:showMaxRange" class="toggleCheckbox"></span></td>
+          </tr>
 
             <tr class="experimentalSetting">
               <td>
@@ -105,20 +142,6 @@
               <td><span data-i18n="settings:experimentalWeapons" class="toggleCheckbox"></span></td>
           </tr>
 
-          <tr class="highQualitySetting">
-            <td>
-                <label class="mcui-checkbox">
-                    <input id="highQualitySetting" type="checkbox">
-                    <span>
-                      <svg class="mcui-check" viewBox="-2 -2 35 35" aria-hidden="true">
-                        <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
-                      </svg>
-                    </span>
-                  </label>
-            </td>
-            <td><span data-i18n="settings:highquality" class="toggleCheckbox"></span></td>
-        </tr>
-
         </tbody>
     </table>
 
@@ -126,6 +149,21 @@
     <table class="userSettings">
         <caption data-i18n="settings:targetOptions"></caption>
         <tbody>
+
+          <tr class="targetDragSetting">
+            <td>
+                <label class="mcui-checkbox">
+                    <input id="targetDragSetting" type="checkbox">
+                    <span>
+                      <svg class="mcui-check" viewBox="-2 -2 35 35" aria-hidden="true">
+                        <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
+                      </svg>
+                    </span>
+                  </label>
+            </td>
+            <td><span data-i18n="settings:targetDrag" class="toggleCheckbox"></span></td>
+          </tr>
+
             <tr>
                 <td>
                     <label class="mcui-checkbox">
@@ -227,6 +265,8 @@
         </tbody>
     </table>
 
+  </div>
+
     <h3 data-i18n="settings:preview">Preview</h3>
 
     <div id="preview" class="unselectable">
@@ -247,20 +287,25 @@
         <tbody>
             <tr>
                 <td>
-                    <a class="fab-action" href="https://github.com/sh4rkman/SquadCalc/blob/master/CHANGELOG.md" target="_blank" rel="noopener noreferrer" aria-label="changelog" data-i18n-title="settings:changelog">
-                       <i class="fa-solid fa-book-open"></i>
+                    <a class="fab-action" href="https://discord.gg/BNPAc5kEJP" target="_blank" rel="noopener noreferrer" aria-label="discord" data-i18n-title="settings:discord">
+                      <i class="fa-brands fa-discord"></i>
                     </a>
                 </td>
                 <td>
-                    <a class="fab-action" href="https://github.com/sh4rkman/SquadCalc" target="_blank" rel="noopener noreferrer" aria-label="github"  data-i18n-title="settings:github">
+                    <a class="fab-action" href="https://github.com/sh4rkman/SquadCalc" target="_blank" rel="noopener noreferrer" aria-label="github" data-i18n-title="settings:github">
                        <i class="fa-brands fa-github"></i>
                     </a>
                 </td>
-                <td> 
-                    <a class="fab-action" href="https://github.com/sh4rkman/SquadCalc/issues" target="_blank" rel="noopener noreferrer" aria-label="Bugs" data-i18n-title="settings:bug">
-                        <i class="fa-solid fa-bug"></i>
-                    </a>
-                </td>
+                <td>
+                  <a class="fab-action" href="https://github.com/sh4rkman/SquadCalc/blob/master/CHANGELOG.md" target="_blank" rel="noopener noreferrer" aria-label="changelog" data-i18n-title="settings:changelog">
+                     <i class="fa-solid fa-file-lines"></i>
+                  </a>
+              </td>
+              <td>
+                <a class="fab-action" href="https://github.com/sh4rkman/SquadCalc/wiki" target="_blank" rel="noopener noreferrer" aria-label="wiki" data-i18n-title="settings:wiki">
+                  <i class="fa-solid fa-book-open-reader"></i>
+                </a>
+            </td>
             </tr>
         </tbody>
     </table>

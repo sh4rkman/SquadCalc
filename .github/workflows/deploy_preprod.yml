@@ -8,6 +8,16 @@ jobs:
     name: ssh/pull/build
     runs-on: ubuntu-latest
     steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    # Extract the version from package.json
+    - name: Get version from package.json
+      id: get_version
+      run: |
+        VERSION=$(jq -r '.version' package.json)
+        echo "VERSION=$VERSION" >> $GITHUB_ENV
+
     - name: Pull code & Build
       uses: appleboy/ssh-action@v1.0.3
       with:
@@ -16,17 +26,20 @@ jobs:
         username: ${{ secrets.USERNAME }}
         password: ${{ secrets.PASSWORD }}
         script: |
-         eval `ssh-agent -s`
-         ssh-add ~/.ssh/${{ secrets.SSH_PUBLIC_KEY_NAME }}
-         cd ${{ secrets.DEV_DIST }}
-         git pull origin dev
-         npm ci
-         npm run build
+          eval `ssh-agent -s`
+          ssh-add ~/.ssh/${{ secrets.SSH_PUBLIC_KEY_NAME }}
+          cd ${{ secrets.DEV_DIST }}
+          git pull origin dev
+          npm ci
+          npm run build
+
     - name: Discord notification
       env:
-        DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_BETA }}
         DISCORD_USERNAME: "Github Monitoring"
         DISCORD_AVATAR: "https://i.imgur.com/lPRYnJx.png"
       uses: Ilshidur/action-discord@master
       with:
-        args: 'The project {{ EVENT_PAYLOAD.repository.full_name }} has been deployed successfully on https://beta.squadcalc.app'
+        args: |
+          **${{ github.repository }}** has been deployed on beta.squadcalc.app
+          **Commit**: ${{ github.event.head_commit.message }}

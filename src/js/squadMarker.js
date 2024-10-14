@@ -56,6 +56,18 @@ export var squadWeaponMarker = squadMarker.extend({
             cursorClass = "crosshair";
         }
         
+        this.posPopUpOptions = {
+            autoPan: false,
+            autoClose: false,
+            closeButton: false,
+            closeOnEscapeKey: false,
+            bubblingMouseEvents: false,
+            interactive: false,
+            className: "posPopUpWeapon",
+            minWidth: 100,
+            offset: [0, -20],
+        };
+
         this.maxDistCircleOn = {
             radius: App.activeWeapon.getMaxDistance() * this.map.gameToMapScale,
             opacity: 0.7,
@@ -100,6 +112,9 @@ export var squadWeaponMarker = squadMarker.extend({
         this.rangeMarker = new Circle(latlng, this.maxDistCircleOn).addTo(this.map.markersGroup);
         this.miniCircle = new CircleMarker(latlng, this.miniCircleOptions).addTo(this.map.markersGroup);
         
+        // Initiate Position PopUp
+        this.posPopUp = new Popup(this.posPopUpOptions).setLatLng(latlng).addTo(this.map.markersGroup).close();
+
         if (!App.userSettings.weaponMinMaxRange) {
             this.minRangeMarker.setStyle(this.minMaxDistCircleOff);
             this.rangeMarker.setStyle(this.minMaxDistCircleOff);
@@ -164,6 +179,7 @@ export var squadWeaponMarker = squadMarker.extend({
         this.minRangeMarker.remove();
         this.rangeMarker.remove();
         this.miniCircle.remove();
+        this.posPopUp.remove();
 
         // Update remaining targets if they exists
         this.map.updateTargets();
@@ -211,6 +227,13 @@ export var squadWeaponMarker = squadMarker.extend({
         this.rangeMarker.setLatLng(e.latlng);
         this.minRangeMarker.setLatLng(e.latlng);
         this.miniCircle.setLatLng(e.latlng);
+
+        // Update Position PopUp Content
+        if (App.userSettings.weaponDrag) { 
+            this.posPopUp.setLatLng(e.latlng);
+            this.posPopUp.setContent(this.map.getKP(-e.latlng.lat, e.latlng.lng, 4)); 
+        }
+        
     },
 
 
@@ -291,6 +314,9 @@ export var squadWeaponMarker = squadMarker.extend({
             layer.twentyFiveDamageRadius.setStyle({opacity: 0, fillOpacity: 0});
             layer.hundredDamageRadius.setStyle({opacity: 0, fillOpacity: 0});
         }); 
+        
+        if (App.userSettings.weaponDrag) { this.posPopUp.openOn(this.map); }
+        
         this.miniCircle.setStyle({opacity: 1});
     },
 
@@ -301,6 +327,7 @@ export var squadWeaponMarker = squadMarker.extend({
         }
         $(".leaflet-marker-icon").css("cursor", "grab");
         this.miniCircle.setStyle({opacity: 0});
+        this.posPopUp.close();
         this.setOpacity(0);
         this.map.updateTargets();
 
@@ -334,6 +361,17 @@ export var squadTargetMarker = squadMarker.extend({
             cursorClass = "crosshair";
         }
 
+        this.posPopUpOptions = {
+            autoPan: false,
+            autoClose: false,
+            closeButton: false,
+            closeOnEscapeKey: false,
+            bubblingMouseEvents: false,
+            interactive: false,
+            className: "posPopUpTarget",
+            minWidth: 100,
+            offset: [0, -10],
+        };
         
         popUpOptions_weapon1 = {
             autoPan: false,
@@ -361,8 +399,8 @@ export var squadTargetMarker = squadMarker.extend({
 
         this.spreadOptionsOn = {
             opacity: 1,
-            fillOpacity: 0.1,
-            color: "#b22222",
+            fillOpacity: 0.2,
+            color: App.mainColor,
             weight: 1.3,
             className: cursorClass,
         };
@@ -378,7 +416,7 @@ export var squadTargetMarker = squadMarker.extend({
             opacity: 1,
             fillOpacity: 0,
             dashArray: "5,3",
-            color: "#b22222",
+            color: App.mainColor,
             weight: 1.3,
             className: cursorClass,
         };
@@ -388,7 +426,7 @@ export var squadTargetMarker = squadMarker.extend({
             opacity: 1,
             fillOpacity: 0,
             dashArray: "5,6",
-            color: "#b22222",
+            color: App.mainColor,
             weight: 1.3,
             className: cursorClass,
         };
@@ -396,7 +434,7 @@ export var squadTargetMarker = squadMarker.extend({
         this.miniCircleOptions = {
             radius: 4,
             opacity: 0,
-            color: "#b22222",
+            color: App.mainColor,
             fillOpacity: 0,
             weight: 1,
             autoPan: false,
@@ -422,6 +460,9 @@ export var squadTargetMarker = squadMarker.extend({
         this.calcMarker2 = new Popup(popUpOptions_weapon2).setLatLng(latlng).addTo(this.map.markersGroup);
         this.calcMarker1.setContent(this.getContent(this.firingSolution1, this.map.activeWeaponsMarkers.getLayers()[0].angleType)).openOn(this.map);
         
+        // posPopUp
+        this.posPopUp = new Popup(this.posPopUpOptions).setLatLng(latlng).addTo(this.map.markersGroup).close();
+
         // If two weapons already on the map
         if (this.map.activeWeaponsMarkers.getLayers().length === 2) {
             weaponPos = this.map.activeWeaponsMarkers.getLayers()[1].getLatLng();
@@ -448,8 +489,9 @@ export var squadTargetMarker = squadMarker.extend({
         this.on("dragStart", this._handleDragStart, this);
         this.on("dragEnd", this._handleDragEnd, this);
         this.on("contextmenu", this._handleContextMenu, this);
+        this.on("mouseover", this._handleMouseOver, this);
+        this.on("mouseout", this._handleMouseOut, this);
     },
-
 
 
     /**
@@ -463,6 +505,7 @@ export var squadTargetMarker = squadMarker.extend({
         this.miniCircle.remove();
         this.hundredDamageRadius.remove();
         this.twentyFiveDamageRadius.remove();
+        this.posPopUp.remove();
         this.removeFrom(this.map.activeTargetsMarkers);
         this.removeFrom(this.map.markersGroup);
         this.remove();
@@ -711,6 +754,13 @@ export var squadTargetMarker = squadMarker.extend({
         this.miniCircle.setLatLng(e.latlng);
         this.hundredDamageRadius.setLatLng(e.latlng);
         this.twentyFiveDamageRadius.setLatLng(e.latlng);
+        
+
+        // Update Position PopUp Content
+        if (App.userSettings.targetDrag) {
+            this.posPopUp.setLatLng(e.latlng);
+            this.posPopUp.setContent(this.map.getKP(-e.latlng.lat, e.latlng.lng, 4));
+        }
 
         // Update bearing/elevation/spread marker
         // On mobile, save performance
@@ -734,6 +784,9 @@ export var squadTargetMarker = squadMarker.extend({
             this.hundredDamageRadius.setStyle({opacity: 0, fillOpacity: 0});
             this.twentyFiveDamageRadius.setStyle({opacity: 0, fillOpacity: 0});
         }
+
+        if (App.userSettings.targetDrag){ this.posPopUp.openOn(this.map); }
+        
         this.miniCircle.setStyle({opacity: 1});
     },
 
@@ -746,7 +799,10 @@ export var squadTargetMarker = squadMarker.extend({
         }
 
         $(".leaflet-marker-icon").css("cursor", "grab");
+        
+        this.posPopUp.close();
         this.miniCircle.setStyle({opacity: 0});
+        
 
         // update one last time when drag end
         this.updateCalc();
@@ -831,6 +887,14 @@ export var squadTargetMarker = squadMarker.extend({
         this.delete();
     },
 
+    // On MouseOver/MouseOut, simulate a "RiseOnHover" effect on target texts
+    _handleMouseOver: function() {
+        this.calcMarker1.getElement().style.zIndex  = "10000";
+        this.calcMarker2.getElement().style.zIndex  = "10000";
+    },
+    _handleMouseOut: function() {
+        this.calcMarker1.getElement().style.zIndex  = "";
+        this.calcMarker2.getElement().style.zIndex  = "";
+    },
+
 });
-
-

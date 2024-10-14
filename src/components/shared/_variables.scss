@@ -4,6 +4,11 @@ $mainBGColor: #111;
 $mainTxtColor: #fff;
 $newColor: green;
 
+
+:root {
+    --main-color: #{$mainColor}; // Interpolation so i can use variable in JS
+}
+
 // Fonts
 $mainFont: montserrat;
 $logoFont: oswald;

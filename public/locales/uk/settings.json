@@ -3,12 +3,15 @@
     "mapOptions": "Опції карти",
         "showGrid": "сітку",
         "showKeypad": "клавіатуру під курсором",
-        "showMaxRange": "дальність зброї",
         "useClassicCursor": "классический слайдер",
         "mapAnimationSettings": "Анімації масштабування",
-        "experimentalWeapons": "Експериментальна зброя",
         "highquality": "Карта високої якості",
+    "weaponOptions": "Опції зброї",
+        "weaponDrag": "Сітка маркера",
+        "showMaxRange": "дальність зброї",
+        "experimentalWeapons": "Експериментальна зброя",
     "targetOptions": "Опції цілей",
+        "targetDrag": "Сітка маркера",
         "showSpread": "радіус розподілу",
         "showDamage": "радіуси ураження",
         "showAnimations": "анімації",
@@ -19,5 +22,6 @@
     "preview": "Попередній перегляд",
     "changelog": "Зміни",
     "github": "Переглянути код на Github",
-    "bug": "Повідомити про помилку"
+    "discord": "Офіційний Discord",
+    "wiki": "Вікі"
 }

@@ -1,3 +1,14 @@
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **32.2.0** *(2024-10-14)*
+
+<img src="https://img.shields.io/badge/-new-green"> New Options: "Show keypads while dragging". Enable to display current keypad while dragging weapon/target markers
+
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Reworked Setting tab on three columns : Map, Weapon and Target settings
+
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Target Texts are now rised over anything else when hovering a Marker (avoid confusion when trying to read text when two targets are close to each others)
+
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
 # <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **32.1.0** *(2024-10-13)*
 
 <img src="https://img.shields.io/badge/-new-green"> Added Narva (Flooded) to the map list
