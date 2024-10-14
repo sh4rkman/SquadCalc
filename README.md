@@ -8,9 +8,10 @@
 <div align="center">
     <a href="https://github.com/sh4rkman/SquadCalc?tab=MIT-1-ov-file#readme">  
       <img src="https://img.shields.io/github/license/Naereen/StrapDown.js.svg?style=for-the-badge" alt="Licence"></a>
-    <a href="https://squadcalc.app">
-      <img src="https://up.sharkman.info/api/badge/3/uptime/24?style=for-the-badge" alt="Uptime">
-    </a> 
+    <a href="https://discord.gg/BNPAc5kEJP">  
+      <img src="https://img.shields.io/badge/Discord-blue?style=for-the-badge" alt="Uptime"></a>
+    <a href="https://buymeacoffee.com/sharkman">  
+      <img src="https://img.shields.io/badge/Buy%20Me%20a%20Coffee-b12222?style=for-the-badge&logo=buy-me-a-coffee&logoColor=white" alt="Uptime"></a>
 </div>
 
 <div align="center">
@@ -39,7 +40,7 @@
    - [Advanced Information & Simulation](#advanced-informations--simulation)
    - [Advanced Customisation](#advanced-customisation)
 3. [Squad Mortar Overlay Compatibility](#squad-mortar-overlay-compatibility)
-4. [Weapons Support](#map--weapons-support)
+4. [Weapons Support](#weapons-support)
 
 
 </br>
