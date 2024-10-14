@@ -42,5 +42,4 @@ jobs:
       with:
         args: |
           **${{ github.repository }}** has been deployed on beta.squadcalc.app
-          **Commit Link**: ${{ github.event.head_commit.url }}
           **Commit**: ${{ github.event.head_commit.message }}

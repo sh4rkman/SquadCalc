@@ -31,5 +31,5 @@ jobs:
       with:
         args: |
           New version has been deployed on https://squadcalc.app !
-          **Commit Link**: ${{ github.event.head_commit.url }}
+          **Full Changelog**: https://github.com/sh4rkman/SquadCalc/blob/master/CHANGELOG.md
           **Commit**: ${{ github.event.head_commit.message }}
