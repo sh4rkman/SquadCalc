@@ -25,8 +25,11 @@ jobs:
     - name: Discord notification
       env:
         DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-        DISCORD_USERNAME: "Github Monitoring"
+        DISCORD_USERNAME: "Github bot"
         DISCORD_AVATAR: "https://i.imgur.com/lPRYnJx.png"
       uses: Ilshidur/action-discord@master
       with:
-        args: 'The project {{ EVENT_PAYLOAD.repository.full_name }} has been deployed successfully on https://squadcalc.app'
+        args: |
+          New version has been deployed on https://squadcalc.app !
+          **Commit Link**: ${{ github.event.head_commit.url }}
+          **Commit**: ${{ github.event.head_commit.message }}

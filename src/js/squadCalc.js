@@ -35,6 +35,7 @@ export default class SquadCalc {
         this.loadMinimap();
         this.loadWeapons();
         this.loadUI();
+        this.loadTheme();
         checkApiHealth();
         initWebSocket();
         console.log(`SquadCalc v${packageInfo.version} Loaded!`);
@@ -64,6 +65,13 @@ export default class SquadCalc {
             this.minimap.clear(); 
             this.minimap.draw(); 
         });
+    }
+
+    /**
+     * Retrieve some CSS variable so it can be used in plain JS
+     */
+    loadTheme() {
+        this.mainColor = getComputedStyle(document.documentElement).getPropertyValue("--main-color").trim();
     }
 
     loadMinimap(){
@@ -614,7 +622,7 @@ export default class SquadCalc {
 
         // remove the pointer cursor & tooltip
         $("#copy").removeClass("copy");
-        $("#settings").css({ "border-color": "firebrick" });
+        $("#settings").css({ "border-color": "var(--main-color)" });
         animateCSS($("#settings"), "shakeX");
 
     }

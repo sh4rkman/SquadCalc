@@ -70,7 +70,7 @@ export function drawLine() {
  * @param {number} [y] - vertical coordinates in pixel
  */
 export function explode(x, y, startAngle, endAngle) {
-    const colors = ["rgba(255, 255, 255, 0.1)"];
+    const colors = ["rgba(255, 255, 255, 0.3)"];
     const bubbles = 30;
     const r = (a, b, c) => parseFloat((Math.random() * ((a ? a : 1) - (b ? b : 0)) + (b ? b : 0)).toFixed(c ? c : 0));
     let particles = [];
@@ -96,8 +96,8 @@ export function explode(x, y, startAngle, endAngle) {
             radius: r(5, 20),
             color: colors[Math.floor(Math.random() * colors.length)],
             rotation: r(startAngle, endAngle, true),
-            speed: r(0.5,1),
-            friction: 0.97,
+            speed: r(0.5,1.5),
+            friction: 0.98,
             opacity: r(0.9, 0.9, true),
             yVel: 0,
             gravity: 0

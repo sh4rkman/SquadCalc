@@ -399,8 +399,8 @@ export var squadTargetMarker = squadMarker.extend({
 
         this.spreadOptionsOn = {
             opacity: 1,
-            fillOpacity: 0.1,
-            color: "#b22222",
+            fillOpacity: 0.2,
+            color: App.mainColor,
             weight: 1.3,
             className: cursorClass,
         };
@@ -416,7 +416,7 @@ export var squadTargetMarker = squadMarker.extend({
             opacity: 1,
             fillOpacity: 0,
             dashArray: "5,3",
-            color: "#b22222",
+            color: App.mainColor,
             weight: 1.3,
             className: cursorClass,
         };
@@ -426,7 +426,7 @@ export var squadTargetMarker = squadMarker.extend({
             opacity: 1,
             fillOpacity: 0,
             dashArray: "5,6",
-            color: "#b22222",
+            color: App.mainColor,
             weight: 1.3,
             className: cursorClass,
         };
@@ -434,7 +434,7 @@ export var squadTargetMarker = squadMarker.extend({
         this.miniCircleOptions = {
             radius: 4,
             opacity: 0,
-            color: "#b22222",
+            color: App.mainColor,
             fillOpacity: 0,
             weight: 1,
             autoPan: false,
@@ -489,8 +489,9 @@ export var squadTargetMarker = squadMarker.extend({
         this.on("dragStart", this._handleDragStart, this);
         this.on("dragEnd", this._handleDragEnd, this);
         this.on("contextmenu", this._handleContextMenu, this);
+        this.on("mouseover", this._handleMouseOver, this);
+        this.on("mouseout", this._handleMouseOut, this);
     },
-
 
 
     /**
@@ -884,6 +885,16 @@ export var squadTargetMarker = squadMarker.extend({
     // Delete targetMarker on right clic
     _handleContextMenu: function(){
         this.delete();
+    },
+
+    // On MouseOver/MouseOut, simulate a "RiseOnHover" effect on target texts
+    _handleMouseOver: function() {
+        this.calcMarker1.getElement().style.zIndex  = "10000";
+        this.calcMarker2.getElement().style.zIndex  = "10000";
+    },
+    _handleMouseOut: function() {
+        this.calcMarker1.getElement().style.zIndex  = "";
+        this.calcMarker2.getElement().style.zIndex  = "";
     },
 
 });

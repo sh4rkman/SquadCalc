@@ -4,6 +4,7 @@
 
 <img src="https://img.shields.io/badge/-%20improv%20-orange"> Reworked Setting tab on three columns : Map, Weapon and Target settings
 
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Target Texts are now rised over anything else when hovering a Marker (avoid confusion when trying to read text when two targets are close to each others)
 
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->

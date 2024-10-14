@@ -1,3 +1,4 @@
+import { App } from "../app.js";
 import targetIcon from "../img/icons/marker_target_enabled.webp";
 import targetIconDisabled from "../img/icons/marker_target_disabled.webp";
 import i18next from "i18next";
@@ -201,7 +202,7 @@ export default class Simulation {
         if (isNaN(this.firingSolution.velocity)) return;
 
         this.ctx.lineWidth = 5;
-        this.ctx.strokeStyle = "#b22222";
+        this.ctx.strokeStyle = App.mainColor;
         this.ctx.beginPath();
         this.ctx.moveTo(x, y);
 
