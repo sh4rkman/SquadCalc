@@ -44,6 +44,12 @@ export function loadSettings(){
 
     $(".btn-"+setting).addClass("active");
 
+    App.userSettings.weaponDrag = loadLocalSetting("settings-weapon-drag");
+    $("#weaponDragSetting").prop("checked", App.userSettings.weaponDrag);
+
+    App.userSettings.targetDrag = loadLocalSetting("settings-target-drag");
+    $("#targetDragSetting").prop("checked", App.userSettings.targetDrag);
+
     App.userSettings.experimentalWeapons = loadLocalSetting("settings-experimental-weapons", 0);
     $("#experimentalSetting").prop("checked", App.userSettings.experimentalWeapons);
 
@@ -218,6 +224,17 @@ $("#damageRadiusSetting").on("change", function() {
     updatePreview();
 });
 
+$("#targetDragSetting").on("change", function() {
+    var val = $("#targetDragSetting").is(":checked");
+    App.userSettings.targetDrag = val;
+    localStorage.setItem("settings-target-drag", +val);
+});
+
+$("#weaponDragSetting").on("change", function() {
+    var val = $("#weaponDragSetting").is(":checked");
+    App.userSettings.weaponDrag = val;
+    localStorage.setItem("settings-weapon-drag", +val);
+});
 
 $("#heightSetting").on("change", function() {
     if ($("#heightSetting").is(":checked")) {

@@ -12,7 +12,7 @@
         .leaflet-pane .leaflet-marker-pane .leaflet-marker-icon {
             cursor: grab;
         }
-        .kpPopup {
+        .kpPopup, .posPopUpTarget, .posPopUpWeapon {
             background: transparent;
             pointer-events: none;
             .leaflet-popup-tip,

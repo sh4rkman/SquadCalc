@@ -248,23 +248,23 @@ export var squadMinimap = Map.extend({
     },
 
     /**
-     * Calculates the keypad coordinates for a given latlng coordinate, e.g. "A5-3-7"
+     * Calculates the keypad coordinates for a given latlng coordinate
      * @param lat - latitude coordinate
      * @param lng - longitude coordinate
-     * @returns {string} keypad coordinates as string
+     * @param precision - Optionnal, current map zoom by default
+     * @returns {string} keypad coordinates as string, e.g. "A5-3-7"
      */
-    getKP: function(lat, lng) {
+    getKP: function(lat, lng, precision = Math.round(this.getZoom())) {
         // to minimize confusion
-        const x = lng;
-        const y = lat;
+        const x = lng * this.mapToGameScale;
+        const y = lat * this.mapToGameScale;
         const kp = 300 / 3 ** 0; // interval of main keypad, e.g "A5"
         const kpNumber = `0000${Math.floor(y / kp) + 1}`.slice(-2);
         const s1 = 300 / 3 ** 1; // interval of first sub keypad
         const s2 = 300 / 3 ** 2; // interval of second sub keypad
         const s3 = 300 / 3 ** 3; // interval of third sub keypad
         const s4 = 300 / 3 ** 4; // interval of third sub keypad
-        const precision = Math.round(this.getZoom());
-
+        
         // basic grid, e.g. B5
         const kpCharCode = 65 + Math.floor(x / kp);
         let kpLetter = String.fromCharCode(kpCharCode);
@@ -356,7 +356,7 @@ export var squadMinimap = Map.extend({
         }
 
         this.mouseLocationPopup.setLatLng(e.latlng).openOn(this);
-        this.mouseLocationPopup.setContent(`<p>${this.getKP(-e.latlng.lat * this.mapToGameScale, e.latlng.lng * this.mapToGameScale)}</p>`);
+        this.mouseLocationPopup.setContent(`<p>${this.getKP(-e.latlng.lat, e.latlng.lng)}</p>`);
     },
 
 
@@ -409,7 +409,7 @@ export var squadMinimap = Map.extend({
         // Make sure the user opened the popup by moving the mouse before zooming
         // ...or it throw error
         if (this.mouseLocationPopup._latlng){
-            this.mouseLocationPopup.setContent(`<p>${this.getKP(-this.mouseLocationPopup._latlng.lat * this.mapToGameScale, this.mouseLocationPopup._latlng.lng * this.mapToGameScale)}</p>`);
+            this.mouseLocationPopup.setContent(`<p>${this.getKP(-this.mouseLocationPopup._latlng.lat, this.mouseLocationPopup._latlng.lng)}</p>`);
         }
     },
 

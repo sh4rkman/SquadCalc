@@ -49,7 +49,7 @@
         }
     }
     #helpDialog {
-        font-size: 0.7em;
+        font-size: 0.65em;
         caption {
             margin: 5px 20px 15px 0;
         }
@@ -160,8 +160,13 @@
         }
         &#helpDialog{
             font-size: 0.8em;
-            max-width: 600px;
+            max-width: 1000px;
+            #userSettings {
+                margin: 0 2em;
+            }
             table {
+                width: 33%;
+                margin: 0 0 2em 0%;
                 td {
                     padding: 0;
                     border: none;
