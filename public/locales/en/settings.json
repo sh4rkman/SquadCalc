@@ -20,7 +20,8 @@
         "showTimeOfFlight": "Time of Flight",
         "showHeightDiff": "Height Difference",
     "preview": "Preview",
-    "changelog": "ChangeLog",
+    "discord": "Official Discord",
     "github": "View code on Github",
-    "bug": "Report a bug"
+    "changelog": "ChangeLog",
+    "wiki": "SquadCalc Wiki"
 }

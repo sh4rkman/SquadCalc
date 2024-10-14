@@ -41,6 +41,6 @@ jobs:
       uses: Ilshidur/action-discord@master
       with:
         args: |
-          The project **${{ github.event.repository.full_name }}** has been deployed successfully on https://beta.squadcalc.app
-          **Version**: ${{ env.VERSION }}  
+          New **${{ github.repository }}** version has been deployed
+          **Environnement**: BETA (https://beta.squadcalc.app)
           **Commit**: ${{ github.event.head_commit.message }}

@@ -22,5 +22,7 @@
     "preview": "Aperçu",
     "changelog": "Journal des modifications",
     "github": "Voir le code sur Github",
-    "bug": "Signaler un bug"
+    "bug": "Signaler un bug",
+    "discord": "Discord Officiel",
+    "wiki": "Wiki"
 }
