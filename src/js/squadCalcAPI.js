@@ -84,17 +84,15 @@ export async function fetchMarkersByMap(mapName, weapon) {
     const url = `${process.env.API_URL}/get/weapons?map=${encodeURIComponent(mapName)}&weapon=${encodeURIComponent(weapon)}`;
 
     try {
+
         const response = await fetch(url, {
             headers: { "X-App-Version": packageInfo.version },
         });
-
-        if (!response.ok) {
-            throw new Error("Network response was not ok");
-        }
-
+        
+        if (!response.ok) { throw new Error("Network response was not ok"); }
         const data = await response.json();
-        console.debug(`${mapName} data successfully fetched`);
         return data;
+
     } catch (error) {
         console.debug("Error fetching marker data:", error);
         throw error;
