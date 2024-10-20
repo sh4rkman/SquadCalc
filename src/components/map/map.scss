@@ -11,6 +11,9 @@
         z-index: 0;
         .leaflet-pane .leaflet-marker-pane .leaflet-marker-icon {
             cursor: grab;
+            &:active {
+                cursor: grabbing;
+            }
         }
         .kpPopup, .posPopUpTarget, .posPopUpWeapon {
             background: transparent;
@@ -27,6 +30,7 @@
                 height: 2em;
                 padding: 0;
                 text-align: center;
+                pointer-events: none;
             }
             &.leaflet-popup {
                 transition: none;
@@ -66,11 +70,9 @@
             }
         }
         .animatedWeaponMarker{
-            opacity: 0; 
             animation: weapon-appear 0.25s ease-in-out forwards 0s;
         }
         .animatedTargetMarker {
-            opacity: 0; 
             animation: target-appear 0.25s ease-in-out forwards 0s;
         }
         .gridText {

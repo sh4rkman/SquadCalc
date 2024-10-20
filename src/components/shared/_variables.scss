@@ -1,5 +1,5 @@
 // Colors
-$mainColor: #ef7800;
+$mainColor: firebrick;
 $mainBGColor: #111;
 $mainTxtColor: #fff;
 $newColor: green;
@@ -169,11 +169,9 @@ button:focus {
 @keyframes target-appear {
     0% {
         top: -600px;
-        opacity: 0;
     }
     100% {
         top: 0;
-        opacity: 1;
     }
 }
 

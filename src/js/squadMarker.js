@@ -1,11 +1,12 @@
 import { App } from "../app.js";
 import { ellipse } from "./libs/leaflet.ellipse.js";
-import { Marker, Circle, CircleMarker, Popup, Browser} from "leaflet";
+import { Marker, Circle, CircleMarker, Popup, Browser, polyline } from "leaflet";
 import { targetIcon1, targetIconAnimated1, targetIconDisabled } from "./squadIcon.js";
 import SquadSimulation from "./squadSimulation.js";
 import SquadFiringSolution from "./squadFiringSolution.js";
 import i18next from "i18next";
 import { sendMarkerData, sendTargetData } from "./squadCalcAPI.js";
+import { antPath } from "leaflet-ant-path";
 
 
 /*
@@ -47,7 +48,6 @@ export var squadWeaponMarker = squadMarker.extend({
         var circlesColor = "#00137f";
         var cursorClass;
 
-        //Util.setOptions(this, options);
         squadMarker.prototype.initialize.call(this, latlng, options, map);
 
         if (App.userSettings.cursor) {
@@ -92,6 +92,7 @@ export var squadWeaponMarker = squadMarker.extend({
             radius: 0,
             opacity: 0,
             fillOpacity: 0,
+            className: cursorClass,
         };
 
         this.miniCircleOptions = {
@@ -101,6 +102,7 @@ export var squadWeaponMarker = squadMarker.extend({
             fillOpacity: 0,
             weight: 1,
             autoPan: false,
+            className: cursorClass,
         };
 
 
@@ -236,7 +238,6 @@ export var squadWeaponMarker = squadMarker.extend({
             this.posPopUp.setLatLng(e.latlng);
             this.posPopUp.setContent(this.map.getKP(-e.latlng.lat, e.latlng.lng, 4)); 
         }
-        
     },
 
 
@@ -305,7 +306,7 @@ export var squadWeaponMarker = squadMarker.extend({
 
     _handleDragStart: function () {
 
-        $(".leaflet-marker-icon").css("cursor", "grabbing");
+        //$(".leaflet-marker-icon").css("cursor", "grabbing");
         this.map.mouseLocationPopup.close();
         this.map.off("mousemove", this.map._handleMouseMove);
 
@@ -328,10 +329,9 @@ export var squadWeaponMarker = squadMarker.extend({
         if (App.userSettings.keypadUnderCursor){
             this.map.on("mousemove", this.map._handleMouseMove);
         }
-        $(".leaflet-marker-icon").css("cursor", "grab");
         this.miniCircle.setStyle({opacity: 0});
         this.posPopUp.close();
-        this.setOpacity(0);
+        //this.setOpacity(0);
         this.map.updateTargets();
 
         // Report marker to squadcalc API if API is configured
@@ -354,6 +354,7 @@ export var squadTargetMarker = squadMarker.extend({
         var popUpOptions_weapon1;
         var popUpOptions_weapon2;
         var weaponPos;
+        var trajectoriesOptions;
 
         //Util.setOptions(this, options);
         squadMarker.prototype.initialize.call(this, latlng, options, map);
@@ -400,6 +401,17 @@ export var squadTargetMarker = squadMarker.extend({
             offset: [68, 0],
         };
 
+        trajectoriesOptions = { 
+            use: polyline, 
+            delay: 500, 
+            dashArray: [10, 30], 
+            weight: 2, 
+            color: "#FFFFFF", 
+            pulseColor: App.mainColor, 
+            opacity: 0, 
+            className: cursorClass 
+        };
+
         this.spreadOptionsOn = {
             opacity: 1,
             fillOpacity: 0.2,
@@ -441,7 +453,10 @@ export var squadTargetMarker = squadMarker.extend({
             fillOpacity: 0,
             weight: 1,
             autoPan: false,
+            className: cursorClass,
         };
+
+        this.isDragging = false;
 
         // Create marker
         this.addTo(this.map.activeTargetsMarkers);
@@ -463,6 +478,10 @@ export var squadTargetMarker = squadMarker.extend({
         this.calcMarker2 = new Popup(popUpOptions_weapon2).setLatLng(latlng).addTo(this.map.markersGroup);
         this.calcMarker1.setContent(this.getContent(this.firingSolution1, this.map.activeWeaponsMarkers.getLayers()[0].angleType)).openOn(this.map);
         
+        // Initiate Trajectories Paths
+        this.pathTrajectory1 = antPath([[0,0], [0,0]], trajectoriesOptions).addTo(this.map);
+        this.pathTrajectory2 = antPath([[0,0], [0,0]], trajectoriesOptions).addTo(this.map);
+
         // posPopUp
         this.posPopUp = new Popup(this.posPopUpOptions).setLatLng(latlng).addTo(this.map.markersGroup).close();
 
@@ -514,13 +533,17 @@ export var squadTargetMarker = squadMarker.extend({
         this.hundredDamageRadius.removeFrom(this.map.markersGroup).remove();
         this.twentyFiveDamageRadius.removeFrom(this.map.markersGroup).remove();
         this.posPopUp.removeFrom(this.map.markersGroup).remove();
-        this.removeFrom(this.map.markersGroup).removeFrom(this.map.activeTargetsMarkers);
-        this.remove();
+        this.pathTrajectory1.removeFrom(this.map.markersGroup).remove();
+        this.pathTrajectory2.removeFrom(this.map.markersGroup).remove();
         
+        // Remove the marker itself
+        this.removeFrom(this.map.markersGroup).removeFrom(this.map.activeTargetsMarkers).remove();
+    
+        // If that was the last Marker on the map, hide "delete all" buttons
         if (this.map.activeTargetsMarkers.getLayers().length === 0) {
             $(".btn-delete").hide();
         }
-        
+
     },
 
     getContent: function(firingSolution, angleType){
@@ -531,7 +554,7 @@ export var squadTargetMarker = squadMarker.extend({
         var elevation;
         var timeOfFlight;
 
-        // avoid -0
+        // Avoid "-0"
         if (Math.sign(heightDiff) === 1 || heightDiff == -0) {
             heightDiff = `+${Math.abs(heightDiff)}`;
         }
@@ -709,144 +732,21 @@ export var squadTargetMarker = squadMarker.extend({
         this.updateDamageRadius();
     },
 
-
-    _handleClick: function() {
-        const DIALOG = document.getElementById("calcInformation");
-        var simulation1;
-        var simulation2;
-        var weaponPos1;
-        var weaponPos2;
-        var heightPath1;
-        var heightPath2;
-              
-
-        $("#sim1").addClass("active");
-        $("#sim2").removeClass("active");
-        $("#canvasControls > .active").first().removeClass("active");
-
-        $("#canvasControls > button").first().addClass("active");
-
-        weaponPos1 = this.map.activeWeaponsMarkers.getLayers()[0].getLatLng();
-        heightPath1 = this._map.heightmap.getHeightPath(weaponPos1, this.getLatLng());
-        simulation1 = new SquadSimulation("#sim1", this.firingSolution1, heightPath1, this.map.activeWeaponsMarkers.getLayers()[0].angleType, App.activeWeapon.unit);
-        $("#canvasControls").css("display", "none");
-
-        if (this.map.activeWeaponsMarkers.getLayers().length === 2){
-            $("#canvasControls").css("display", "block");
-            weaponPos2 = this.map.activeWeaponsMarkers.getLayers()[1].getLatLng();
-            heightPath2 = this._map.heightmap.getHeightPath(weaponPos2, this.getLatLng());
-            simulation2 = new SquadSimulation("#sim2", this.firingSolution2, heightPath2, this.map.activeWeaponsMarkers.getLayers()[1].angleType, App.activeWeapon.unit);
-        }
-
-        // If the user close the modal, stop the animation
-        // ...or it does crazy stuff if he reopen it before the animation runs out
-        DIALOG.addEventListener("close", function(){
-            cancelAnimationFrame(simulation1.animationFrame);
-            if (simulation2){ cancelAnimationFrame(simulation2.animationFrame);}
-        });
-
-        DIALOG.showModal();
-    },
-    // Keep the marker on map & update calc while dragging
-    _handleDrag: function (e) {
-
-        // When dragging marker out of bounds, block it at the edge
-        e = this.keepOnMap(e);
-
-        // Update Position
-        this.setLatLng(e.latlng);
-        this.calcMarker1.setLatLng(e.latlng);
-        this.spreadMarker1.setLatLng(e.latlng);
-        this.calcMarker2.setLatLng(e.latlng);
-        this.spreadMarker2.setLatLng(e.latlng);
-        this.miniCircle.setLatLng(e.latlng);
-        this.hundredDamageRadius.setLatLng(e.latlng);
-        this.twentyFiveDamageRadius.setLatLng(e.latlng);
-        
-
-        // Update Position PopUp Content
-        if (App.userSettings.targetDrag) {
-            this.posPopUp.setLatLng(e.latlng);
-            this.posPopUp.setContent(this.map.getKP(-e.latlng.lat, e.latlng.lng, 4));
-        }
-
-        // Update bearing/elevation/spread marker
-        // On mobile, save performance
-        if (Browser.pointer){
-            this.updateCalc();
-        }
- 
-    },
-
-    // set "grabbing" cursor on grab start
-    _handleDragStart: function () {
-        $(".leaflet-marker-icon").css("cursor", "grabbing");
-        this.map.mouseLocationPopup.close();
-        this.map.off("mousemove", this.map._handleMouseMove);
-
-        if (!Browser.pointer){
-            this.calcMarker1.setContent("  ");
-            this.calcMarker2.setContent("  ");
-            this.spreadMarker1.setStyle({opacity: 0, fillOpacity: 0});
-            this.spreadMarker2.setStyle({opacity: 0, fillOpacity: 0});
-            this.hundredDamageRadius.setStyle({opacity: 0, fillOpacity: 0});
-            this.twentyFiveDamageRadius.setStyle({opacity: 0, fillOpacity: 0});
-        }
-
-        if (App.userSettings.targetDrag){ this.posPopUp.openOn(this.map); }
-        
-        this.miniCircle.setStyle({opacity: 1});
-    },
-
-    // Reset cursor on drag end
-    _handleDragEnd: function (e) {
-        var latlng = e.target.getLatLng();
-
-        if (App.userSettings.keypadUnderCursor){
-            this.map.on("mousemove", this.map._handleMouseMove);
-        }
-
-        $(".leaflet-marker-icon").css("cursor", "grab");
-        
-        this.posPopUp.close();
-        this.miniCircle.setStyle({opacity: 0});
-        
-
-        // update one last time when drag end
-        this.updateCalc();
-        this.updateIcon();
-
-        // Report target to squadcalc API if API is configured
-        if (process.env.API_URL) {
-            sendTargetData({
-                lat: latlng.lat,
-                lng: latlng.lng,
-                weapon: App.activeWeapon.name,
-                map: App.minimap.activeMap.name,
-            });
-        }
-    },
-
-   
     updateIcon: function(){
         var icon;
-
-        this.options.animate = false;
 
         if (this.map.activeWeaponsMarkers.getLayers().length === 1) {
             if (isNaN(this.firingSolution1.elevation.high.rad)){
                 icon = targetIconDisabled;
             } else {
-                if (this.options.animate){ icon = targetIconAnimated1; }
-                else { icon = targetIcon1; }
+                icon = targetIcon1;
             }
         }
         else {
             if (isNaN(this.firingSolution1.elevation.high.rad) && isNaN(this.firingSolution2.elevation.high.rad)){
                 icon = targetIconDisabled;
             } else {
-                if (this.options.animate){ icon =  targetIconAnimated1; }
-                else { icon = targetIcon1; }
+                icon = targetIcon1;
             }
         }
        
@@ -890,19 +790,194 @@ export var squadTargetMarker = squadMarker.extend({
         this.setIcon(icon);
     },
 
+    _handleClick: function() {
+        const DIALOG = document.getElementById("calcInformation");
+        var simulation1;
+        var simulation2;
+        var weaponPos1;
+        var weaponPos2;
+        var heightPath1;
+        var heightPath2;
+              
+        $("#sim1").addClass("active");
+        $("#sim2").removeClass("active");
+        $("#canvasControls > .active").first().removeClass("active");
+        $("#canvasControls > button").first().addClass("active");
+
+        weaponPos1 = this.map.activeWeaponsMarkers.getLayers()[0].getLatLng();
+        heightPath1 = this._map.heightmap.getHeightPath(weaponPos1, this.getLatLng());
+        simulation1 = new SquadSimulation("#sim1", this.firingSolution1, heightPath1, this.map.activeWeaponsMarkers.getLayers()[0].angleType, App.activeWeapon.unit);
+        $("#canvasControls").css("display", "none");
+
+        if (this.map.activeWeaponsMarkers.getLayers().length === 2){
+            $("#canvasControls").css("display", "block");
+            weaponPos2 = this.map.activeWeaponsMarkers.getLayers()[1].getLatLng();
+            heightPath2 = this._map.heightmap.getHeightPath(weaponPos2, this.getLatLng());
+            simulation2 = new SquadSimulation("#sim2", this.firingSolution2, heightPath2, this.map.activeWeaponsMarkers.getLayers()[1].angleType, App.activeWeapon.unit);
+        }
+
+        // If the user close the modal, stop the animation
+        // ...or it does crazy stuff if he reopen it before the animation runs out
+        DIALOG.addEventListener("close", function(){
+            cancelAnimationFrame(simulation1.animationFrame);
+            if (simulation2){ cancelAnimationFrame(simulation2.animationFrame);}
+        });
+
+        DIALOG.showModal();
+    },
+
+    // Keep the marker on map & update calc while dragging
+    _handleDrag: function (e) {
+
+        // When dragging marker out of bounds, block it at the edge
+        e = this.keepOnMap(e);
+
+        // Update Positions
+        this.setLatLng(e.latlng);
+        this.calcMarker1.setLatLng(e.latlng);
+        this.spreadMarker1.setLatLng(e.latlng);
+        this.calcMarker2.setLatLng(e.latlng);
+        this.spreadMarker2.setLatLng(e.latlng);
+        this.miniCircle.setLatLng(e.latlng);
+        this.hundredDamageRadius.setLatLng(e.latlng);
+        this.twentyFiveDamageRadius.setLatLng(e.latlng);
+
+        // Update TrajectoryPath
+        this.pathTrajectory1.setLatLngs([this.map.activeWeaponsMarkers.getLayers()[0].getLatLng(), e.latlng]).setStyle({ opacity: 0.8 });
+        if (this.map.activeWeaponsMarkers.getLayers()[1]) {
+            this.pathTrajectory2.setLatLngs([this.map.activeWeaponsMarkers.getLayers()[1].getLatLng(), e.latlng]).setStyle({ opacity: 0.8 });
+        }
+
+        // Update Position PopUp Content
+        if (App.userSettings.targetDrag) {
+            this.posPopUp.setLatLng(e.latlng);
+            this.posPopUp.setContent(this.map.getKP(-e.latlng.lat, e.latlng.lng, 4));
+        }
+
+        // Update bearing/elevation/spread marker
+        // On mobile, save performance
+        if (Browser.pointer){ this.updateCalc(); }
+ 
+    },
+
+    // set "grabbing" cursor on grab start
+    _handleDragStart: function () {
+        this.isDragging = true;
+        this.map.mouseLocationPopup.close();
+        this.map.off("mousemove", this.map._handleMouseMove);
+
+        if (!Browser.pointer){
+            this.calcMarker1.setContent("  ");
+            this.calcMarker2.setContent("  ");
+            this.spreadMarker1.setStyle({opacity: 0, fillOpacity: 0});
+            this.spreadMarker2.setStyle({opacity: 0, fillOpacity: 0});
+            this.hundredDamageRadius.setStyle({opacity: 0, fillOpacity: 0});
+            this.twentyFiveDamageRadius.setStyle({opacity: 0, fillOpacity: 0});
+        }
+
+        if (App.userSettings.targetDrag){ this.posPopUp.openOn(this.map); }
+        
+        this.miniCircle.setStyle({opacity: 1});
+    },
+
+    // Hide stuff, do a final update and send data to API
+    _handleDragEnd: function (e) {
+
+        if (App.userSettings.keypadUnderCursor){
+            this.map.on("mousemove", this.map._handleMouseMove);
+        }
+
+        // Hide PositionPopUp & MiniCircle
+        this.isDragging = false;
+        this.posPopUp.close();
+        this.miniCircle.setStyle({opacity: 0});
+        
+        // update one last time when drag end
+        this.updateCalc();
+        this.updateIcon();
+
+        // Report target to squadcalc API if API is configured
+        if (process.env.API_URL) {
+            sendTargetData({
+                lat: e.target.getLatLng().lat,
+                lng: e.target.getLatLng().lng,
+                weapon: App.activeWeapon.name,
+                map: App.minimap.activeMap.name,
+            });
+        }
+    },
+
     // Delete targetMarker on right clic
     _handleContextMenu: function(){
+
+        // Avoid other target keeping fading
+        clearTimeout(this.mouseOverTimeout);
+
+        // If they already faded, switch them back
+        this.map.activeTargetsMarkers.eachLayer((target) => {
+            target.on("mouseover", target._handleMouseOver, target);
+            target.on("mouseout", target._handleMouseOut, target);
+            target.setOpacity(1);
+            target.calcMarker1.openOn(this.map);
+            if (this.map.activeWeaponsMarkers.getLayers()[1]) target.calcMarker2.openOn(this.map);
+            target.updateSpread();
+            target.updateDamageRadius();
+        });
+
+        // We can now safely start deleting
         this.delete();
     },
 
-    // On MouseOver/MouseOut, simulate a "RiseOnHover" effect on target texts
+    // On Hovering for more than 500ms, show a trajectory path and hide other targets
     _handleMouseOver: function() {
-        this.calcMarker1.getElement().style.zIndex  = "10000";
-        this.calcMarker2.getElement().style.zIndex  = "10000";
+
+        this.mouseOverTimeout = setTimeout(() => {
+
+            // Update & show TrajectoryPath
+            this.pathTrajectory1.setLatLngs([this.map.activeWeaponsMarkers.getLayers()[0].getLatLng(), this._latlng]).setStyle({ opacity: 0.8 });
+            if (this.map.activeWeaponsMarkers.getLayers()[1]) {
+                this.pathTrajectory2.setLatLngs([this.map.activeWeaponsMarkers.getLayers()[1].getLatLng(), this._latlng]).setStyle({ opacity: 0.8 });
+            }
+
+            // Hide other targets
+            this.map.activeTargetsMarkers.eachLayer((target) => {
+                if (target != this) {
+                    target.off("mouseover");
+                    target.off("mouseout");
+                    target.setOpacity(0.65);
+                    target.calcMarker1.close();
+                    target.calcMarker2.close();
+                    target.spreadMarker1.setStyle( this.spreadOptionsOff);
+                    target.spreadMarker2.setStyle( this.spreadOptionsOff);
+                    target.hundredDamageRadius.setStyle({ opacity: 0 });
+                    target.twentyFiveDamageRadius.setStyle({ opacity: 0 });
+                }
+            });
+        }, 500);
     },
+
     _handleMouseOut: function() {
+
+        // Cancel the timeout if the user moves the mouse out before 1 second
+        clearTimeout(this.mouseOverTimeout);
+
         this.calcMarker1.getElement().style.zIndex  = "";
         this.calcMarker2.getElement().style.zIndex  = "";
+
+        if (!this.isDragging){
+            this.pathTrajectory1.setStyle({ opacity: 0 });
+            this.pathTrajectory2.setStyle({ opacity: 0 });
+            this.map.activeTargetsMarkers.eachLayer((target) => {
+                target.on("mouseover", target._handleMouseOver, target);
+                target.on("mouseout", target._handleMouseOut, target);
+                target.setOpacity(1);
+                target.calcMarker1.openOn(this.map);
+                target.calcMarker2.openOn(this.map);
+                target.updateCalc();
+                target.updateSpread();
+                target.updateDamageRadius();
+            });
+        }
     },
 
 });

@@ -30,6 +30,6 @@ jobs:
       uses: Ilshidur/action-discord@master
       with:
         args: |
-          New version has been deployed on https://squadcalc.app !
+          New version has been deployed on squadcalc.app !
           **Full Changelog**: https://github.com/sh4rkman/SquadCalc/blob/master/CHANGELOG.md
           **Commit**: ${{ github.event.head_commit.message }}

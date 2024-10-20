@@ -27,7 +27,7 @@ function loadLocalSetting(item, default_value = 1) {
 export function loadSettings(){
     var setting = localStorage.getItem("settings-map-mode");
     
-    App.userSettings.keypadUnderCursor = loadLocalSetting("settings-keypad-cursor");
+    App.userSettings.keypadUnderCursor = loadLocalSetting("settings-keypad-cursor", 0);
     if (matchMedia("(pointer:fine)").matches) {
         $("#keypadUnderCursorSetting").prop("checked", App.userSettings.keypadUnderCursor);
     }

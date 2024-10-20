@@ -389,7 +389,7 @@ export var squadMinimap = Map.extend({
 
             setTimeout(function() {
                 explode(e.containerPoint.x, e.containerPoint.y, -190, 10);
-                target.options.animate = false;
+                target.updateIcon(); // Update icon to remove the animation class, it was causing painfull DOM bug otherwise
             }, 250);
         }
     },
