@@ -7,17 +7,15 @@
 
 <div align="center">
     <a href="https://discord.gg/BNPAc5kEJP">  
-      <img src="https://img.shields.io/badge/Discord-111111?style=for-the-badge&logo=discord&logoColor=white" alt="Uptime"></a>
-    <a href="https://buymeacoffee.com/sharkman">  
-      <img src="https://img.shields.io/badge/COFEE-b12222?style=for-the-badge&logo=buy-me-a-coffee&logoColor=white" alt="Uptime"></a>
+      <img src="https://img.shields.io/badge/Discord-111?style=for-the-badge&logo=discord&logoColor=white" alt="discord"></a>
+    <a href="https://github.com/sh4rkman/SquadCalc/blob/master/CHANGELOG.md">  
+      <img src="https://img.shields.io/badge/CHANGELOG-111?style=for-the-badge&logo=github&logoColor=white" alt="changelog"></a>
+    <a href="https://github.com/sh4rkman/SquadCalc/wiki/Translating-SquadCalc">  
+      <img src="https://img.shields.io/badge/TRANSLATE-111?style=for-the-badge&logo=google-translate&logoColor=white" alt="translate"></a>
+    <a href="https://github.com/sh4rkman/SquadCalc/wiki">  
+      <img src="https://img.shields.io/badge/WIKI-111?style=for-the-badge&logo=github&logoColor=white" alt="wiki"></a>  
 </div>
 
-<div align="center">
-    <a href="https://github.com/sh4rkman/SquadCalc/issues/new">🪳 Report a Bug</a> &nbsp;&bull;&nbsp;
-    <a href="https://github.com/sh4rkman/SquadCalc/wiki/Translating-SquadCalc"> 📜 Help to Translate</a> &nbsp;&bull;&nbsp;
-    <a href="https://github.com/sh4rkman/SquadCalc/wiki">📖 Wiki</a> &nbsp;&bull;&nbsp;
-    <a href="https://github.com/sh4rkman/SquadCalc/blob/master/CHANGELOG.md">🆕 ChangeLog</a>
-</div>
 
 </br>
 </br>
@@ -27,6 +25,7 @@
 </br>
 
 # <div align="center">Table of Contents</div>
+
 1. [Screenshots](#screenshots)
 2. [Features](#features)
    - [Elevations Calculations](#elevations-calculations)
@@ -36,6 +35,7 @@
    - [Advanced Customisation](#advanced-customisation)
 3. [Squad Mortar Overlay Compatibility](#squad-mortar-overlay-compatibility)
 4. [Weapons Support](#weapons-support)
+4. [Support the project](#support-the-project)
 
 
 </br>
@@ -45,13 +45,11 @@
 </br>
 
 <div align="center">
-
-  ![image](./src/img/github/desktop_ui_1.webp)
-  ![image](./src/img/github/desktop_ui_2.webp)
-  ![image](./src/img/github/desktop_ui_3.webp)
-  ![image](./src/img/github/desktop_ui_4.webp)
-  ![image](./src/img/github/desktop_ui_0.webp)
-
+  <picture><img src="./src/img/github/desktop_ui_1.webp" alt="classic preview"></picture>
+  <picture><img src="./src/img/github/desktop_ui_2.webp" alt="topographic preview"></picture>
+  <picture><img src="./src/img/github/desktop_ui_3.webp" alt="weapon information preview"></picture>
+  <picture><img src="./src/img/github/desktop_ui_4.webp" alt="calculations information preview"></picture>
+  <picture><img src="./src/img/github/desktop_ui_0.webp" alt="legacy preview"></picture>
 </div>
 
 </br></br>
@@ -67,9 +65,7 @@ SquadCalc utilizes heightmaps extracted from the Squad SDK to precisely compute 
 ## **Map Layers**
 
 <div align="center">
-  <picture>
-    <img src="./src/img/github/layers.webp" alt="base map">
-  </picture>
+  <picture><img src="./src/img/github/layers.webp" alt="map layers"></picture>
 </div>
 
 ### Base map :
@@ -89,9 +85,7 @@ A mix of bump map, contour map with a touch of hypsometric colors for a complete
 If you're having trouble finding a good spot to place your mortar or weapons, activate the 'Frequent Locations' feature to see where other players commonly set theirs!
 
 <div align="center">
-  <picture>
-    <img src="./src/img/github/heatmap.webp" alt="target information">
-  </picture>
+  <picture><img src="./src/img/github/heatmap.webp" alt="commonly used spots"></picture>
 </div>
 
 ## **Advanced informations & Simulation**
@@ -115,7 +109,7 @@ Rather have a minimalist/non-clustered map ? you can too. Hop in settings to cus
 
 <div align="center">
   <picture>
-      <img src="./src/img/github/settings.webp">
+      <img src="./src/img/github/settings.webp" alt="settings">
   </picture>
 </div>
 
@@ -130,14 +124,12 @@ It allows :
 * Having ingame markers automatically merged into SquadCalc map to quickly place the right targets
 * Having an ingame overlay with the current SquadCalc calculations displayed in front of Squad
 
-### [>> Download Squad Mortar Overlay last current version here <<](https://github.com/Devil4ngle/SquadMortarOverlay/releases)
+### [>> Download Squad Mortar Overlay last version <<](https://github.com/Devil4ngle/SquadMortarOverlay/releases)
 
 </br>
 
 <div align="center">
-  <picture>
-      <img src="./src/img/github/squadmortaroverlay.webp">
-  </picture>
+  <picture><img src="./src/img/github/squadmortaroverlay.webp" alt="squad mortar overlay">></picture>
 </div>
 
 
@@ -156,3 +148,12 @@ It allows :
 |<img height="35" src="./src/img/icons/mlrs_white.png">| BM-21 Grad | 2045m |
 |<img height="35" src="./src/img/icons/m113a3_white.png">| M1064-A3 120mm | 2062m |
 |<img height="35" src="./src/img/icons/mk19_rws_white.png">| MK-19 RWS *(Experimental)* | 5647m |  
+
+
+</br></br>
+# Support the project
+</br>
+
+[![buy me a coffee](https://img.shields.io/badge/BUY%20ME%20A%20COFFEE-b12222?style=for-the-badge&logo=buy-me-a-coffee&logoColor=white)](https://buymeacoffee.com/sharkman)  
+
+[![help to translate](https://img.shields.io/badge/HELP%20TO%20TRANSLATE-111?style=for-the-badge&logo=google-translate&logoColor=white)](https://buymeacoffee.com/sharkman)

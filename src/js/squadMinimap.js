@@ -165,8 +165,8 @@ export var squadMinimap = Map.extend({
         }
         else {
             if (this.heatmap) {
-                this.removeLayer(this.heatmap);  // Remove the heatmap layer from the map
-                this.heatmap = null;  // Clear the reference to the heatmap
+                this.removeLayer(this.heatmap);
+                this.heatmap = null;
             }
         }
     },

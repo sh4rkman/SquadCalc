@@ -1,3 +1,13 @@
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **32.3.0** *(2024-10-20)*
+
+<img src="https://img.shields.io/badge/-new-green"> 🎃
+
+<img src="https://img.shields.io/badge/-%20dev%20-grey"> reworked changelog
+
+<img src="https://img.shields.io/badge/-%20dev%20-grey"> fixed memory leaks
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
 # <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **32.2.0** *(2024-10-14)*
 
 <img src="https://img.shields.io/badge/-new-green"> New Options: "Show keypads while dragging". Enable to display current keypad while dragging weapon/target markers
@@ -15,11 +25,11 @@
 
 <img src="https://img.shields.io/badge/-new-green"> Added Pacific Proving Grounds to the map list
 
-<img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed MK19 spash damage values
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed MK19 spash damage values
 
 <img src="https://img.shields.io/badge/-%20improv%20-orange"> Added a quick ping to Squad Mortar Overlay before opening websocket to it, avoid ugly error message in console when it's off (code by Devil4ngle)
 
-<img src="https://img.shields.io/badge/-%20dev%20-orange"> Splited HTML/SCSS into components 
+<img src="https://img.shields.io/badge/-%20dev%20-grey"> Splited HTML/SCSS into components 
 
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
@@ -37,7 +47,7 @@
 
 <img src="https://img.shields.io/badge/-%20improv%20-orange"> Slightly reduced font size in weapons/maps dropdown lists.
 
-<img src="https://img.shields.io/badge/-%20fix%20-orange"> Realigned Bearing/Distance in setting's preview
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Realigned Bearing/Distance in setting's preview
 
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
@@ -46,7 +56,7 @@
 
 # <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **31.2.0** *(2024-10-01)*
 
-<img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed "first zooms lags" due to map image not being properly decoded on Chrome
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed "first zooms lags" due to map image not being properly decoded on Chrome
 
 <img src="https://img.shields.io/badge/-%20improv%20-orange"> Added a quick ping to Squad Mortar Overlay before opening websocket to it, avoid ugly error message in console when it's off (code by Devil4ngle)
 
@@ -54,13 +64,13 @@
 
 <img src="https://img.shields.io/badge/-%20improv%20-orange"> Reduced heat points size/chroma on weapons heatmaps
 
-<img src="https://img.shields.io/badge/-%20dev%20-orange"> Splited HTML/SCSS into components 
+<img src="https://img.shields.io/badge/-%20dev%20-grey"> Splited HTML/SCSS into components 
 
-<img src="https://img.shields.io/badge/-%20dev%20-orange"> Simplified github actions workflows
+<img src="https://img.shields.io/badge/-%20dev%20-grey"> Simplified github actions workflows
 
-<img src="https://img.shields.io/badge/-%20dev%20-orange"> Linters : Removed w3c validator / Added htmlhint config
+<img src="https://img.shields.io/badge/-%20dev%20-grey"> Linters : Removed w3c validator / Added htmlhint config
 
-<img src="https://img.shields.io/badge/-%20dev%20-orange"> Project now use module syntax (imports/exports) pretty much everywhere
+<img src="https://img.shields.io/badge/-%20dev%20-grey"> Project now use module syntax (imports/exports) pretty much everywhere
 
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
@@ -76,13 +86,13 @@
 
 <img src="https://img.shields.io/badge/-%20improv%20-orange"> added a new tooltip on "show min/max distance" setting
 
-<img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed weird span when scrolling at Min and Max zoomLevel ([#201](https://github.com/sh4rkman/SquadCalc/issues/201))
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed weird span when scrolling at Min and Max zoomLevel ([#201](https://github.com/sh4rkman/SquadCalc/issues/201))
 
-<img src="https://img.shields.io/badge/-%20dev%20-orange"> Back to using CDN to serve Fonts/Icons
+<img src="https://img.shields.io/badge/-%20dev%20-grey"> Back to using CDN to serve Fonts/Icons
 
-<img src="https://img.shields.io/badge/-%20dev%20-orange"> Added support for Devil4ngle squadmortar by introducing activable websocket connection
+<img src="https://img.shields.io/badge/-%20dev%20-grey"> Added support for Devil4ngle squadmortar by introducing activable websocket connection
 
-<img src="https://img.shields.io/badge/-%20dev%20-orange"> moved non-squadcalc JS libraries to a separate folder `/src/js/libs/`
+<img src="https://img.shields.io/badge/-%20dev%20-grey"> moved non-squadcalc JS libraries to a separate folder `/src/js/libs/`
 
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
@@ -91,11 +101,11 @@
 
 # <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **31.0.1** *(2024-09-23)*
 
-<img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed faulty 'pointer' cursor when hovering settings row without any text
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed faulty 'pointer' cursor when hovering settings row without any text
 
-<img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed Skorpo basemap
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed Skorpo basemap
 
-<img src="https://img.shields.io/badge/-%20dev%20-orange"> Fixed environnement variables not correctly loaded
+<img src="https://img.shields.io/badge/-%20dev%20-grey"> Fixed environnement variables not correctly loaded
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
 
@@ -114,7 +124,7 @@
 
 <img src="https://img.shields.io/badge/-%20improv%20-orange"> Reduced size heatmap points
 
-<img src="https://img.shields.io/badge/-%20dev%20-orange"> Removed service worker caching for now to see if it fixes caching problems
+<img src="https://img.shields.io/badge/-%20dev%20-grey"> Removed service worker caching for now to see if it fixes caching problems
 
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
@@ -127,11 +137,11 @@
 
 <img src="https://img.shields.io/badge/-%20improv%20-orange"> Restyled tooltips
 
-<img src="https://img.shields.io/badge/-%20dev%20-orange"> Improved project bundling with webpack (now using webpack-copy-plugin instead of manual copy, using internal webpack ENV variable, less useless npm scripts, ...)
+<img src="https://img.shields.io/badge/-%20dev%20-grey"> Improved project bundling with webpack (now using webpack-copy-plugin instead of manual copy, using internal webpack ENV variable, less useless npm scripts, ...)
 
-<img src="https://img.shields.io/badge/-%20dev%20-orange"> Updated every dependencies
+<img src="https://img.shields.io/badge/-%20dev%20-grey"> Updated every dependencies
 
-<img src="https://img.shields.io/badge/-%20dev%20-orange"> removed playwright tests
+<img src="https://img.shields.io/badge/-%20dev%20-grey"> removed playwright tests
 
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
@@ -148,7 +158,7 @@
 
 # <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **29.0.2** *(2024-09-03)*
 
-<img src="https://img.shields.io/badge/-%20fix%20-orange"> Dragging Targets around the map doesn't call the post/target api hundreds of times anymore 
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Dragging Targets around the map doesn't call the post/target api hundreds of times anymore 
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
 
@@ -176,9 +186,9 @@
 
 # <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **28.0.5** *(2024-08-18)*
 
-<img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed some translations not updating when switching language on settings dialog 
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed some translations not updating when switching language on settings dialog 
 
-<img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed M1064 shell name not appearing on weapon dialog  
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed M1064 shell name not appearing on weapon dialog  
 
 <img src="https://img.shields.io/badge/-%20improv%20-orange"> (huge) Code reworking
 
@@ -187,13 +197,13 @@
 
 # <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **28.0.4** *(2024-07-31)*
 
-<img src="https://img.shields.io/badge/-%20fix%20-orange"> Added missing translations on legacy mode
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Added missing translations on legacy mode
 
-<img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed height calculations on legacy mode  
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed height calculations on legacy mode  
 
-<img src="https://img.shields.io/badge/-%20fix%20-orange"> Now hidding the classic cursor setting on touch screen 
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Now hidding the classic cursor setting on touch screen 
 
-<img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed gorodok heightmap/zscaling
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed gorodok heightmap/zscaling
 
 <img src="https://img.shields.io/badge/-%20improv%20-orange"> Code reworking
 
@@ -223,9 +233,9 @@
 
 # <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **28.0.1** *(2024-07-19)*
 
-<img src="https://img.shields.io/badge/-%20fix%20-orange"> Now avoid loading english translations if another language is set
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Now avoid loading english translations if another language is set
 
-<img src="https://img.shields.io/badge/-%20fix%20-orange"> Damage spreads now correctly disappear when target is out of range and spread radius is off
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Damage spreads now correctly disappear when target is out of range and spread radius is off
 
 <img src="https://img.shields.io/badge/-%20improv%20-orange"> Now translating site description for search engines
 
@@ -243,9 +253,9 @@
 
 <img src="https://img.shields.io/badge/-new-green"> Added the possibility to display height difference between weapon & target in target firing solution
 
-<img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed UB32 imprecision at high range (2050-2150m)
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed UB32 imprecision at high range (2050-2150m)
 
-<img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed a visual bug in map selector
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed a visual bug in map selector
 
 
 
@@ -259,13 +269,13 @@
 
 <img src="https://img.shields.io/badge/-%20improv%20-orange"> Damage radius now take into account the height of the explosion. Mostly impact M121 proximity rounds that explode at 10m from the ground, resulting on a much smaller kill zone.
 
-<img src="https://img.shields.io/badge/-%20fix%20-orange"> UB-32 & Technical UB-32 now have their own damage radius
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> UB-32 & Technical UB-32 now have their own damage radius
 
-<img src="https://img.shields.io/badge/-%20fix%20-orange"> Removed the ability to switch to high angle on UB-32 emplacement (both on legacy and map mode)
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Removed the ability to switch to high angle on UB-32 emplacement (both on legacy and map mode)
 
-<img src="https://img.shields.io/badge/-%20fix%20-orange"> Removed the ability to switch to high angle on regular mortar (legacy mode)
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Removed the ability to switch to high angle on regular mortar (legacy mode)
 
-<img src="https://img.shields.io/badge/-%20fix%20-orange"> tweaked font size of dialogs on mobile
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> tweaked font size of dialogs on mobile
 
 
 
@@ -295,9 +305,9 @@
 # <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">   **26.0.1** *(2024-06-30)*
 
 
-<img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed an issue where alt/shift-tabbing would focus map grid and pan the map out of the current view
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed an issue where alt/shift-tabbing would focus map grid and pan the map out of the current view
 
-<img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed UB32 precision with the new gravity introduced in 26.0.0
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed UB32 precision with the new gravity introduced in 26.0.0
 
 
 
@@ -312,9 +322,9 @@
 
 <img src="https://img.shields.io/badge/-new-green"> Out of range targets now have their own "grey" marker so you can spot at a glance if it's in range or not
 
-<img src="https://img.shields.io/badge/-%20fix%20-orange"> Reduced global gravity from 9.8 to 9.78. This should make every weapon shoots 1-3m shorter and be more accurate than before. See [#156](https://github.com/sh4rkman/SquadCalc/issues/156)
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Reduced global gravity from 9.8 to 9.78. This should make every weapon shoots 1-3m shorter and be more accurate than before. See [#156](https://github.com/sh4rkman/SquadCalc/issues/156)
 
-<img src="https://img.shields.io/badge/-%20fix%20-orange"> Changed mortars velocity from 109.89 to 110m/s (SDK value)
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Changed mortars velocity from 109.89 to 110m/s (SDK value)
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
 
@@ -322,7 +332,7 @@
 
 # <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">   **25.0.3** *(2024-06-24)*
 
-<img src="https://img.shields.io/badge/-%20fix%20-orange"> Changed M121 Velocity and MOA to 8.1 hotfix
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Changed M121 Velocity and MOA to 8.1 hotfix
 
 <img src="https://img.shields.io/badge/-%20improv%20-orange"> Renamed M1064 120mm to M1064-M121
 
@@ -337,7 +347,7 @@
 
 # <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">   **25.0.2** *(2024-06-12)*
 
-<img src="https://img.shields.io/badge/-%20fix%20-orange"> Corrected Yehorivka heightmap [#155](https://github.com/sh4rkman/SquadCalc/issues/155) (Thanks SuisQi!)
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Corrected Yehorivka heightmap [#155](https://github.com/sh4rkman/SquadCalc/issues/155) (Thanks SuisQi!)
 
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
@@ -361,7 +371,7 @@
 
 <img src="https://img.shields.io/badge/-new-green"> Now displaying a weapon number next to calcs when using several weapons
 
-<img src="https://img.shields.io/badge/-%20fix%20-orange"> fixed dead pixels on Kohat heightmap (thanks zfzr031 !)
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> fixed dead pixels on Kohat heightmap (thanks zfzr031 !)
 
 <img src="https://img.shields.io/badge/-%20improv%20-orange"> Scaled down Kohat heightmap
 
@@ -378,9 +388,9 @@
 
 <img src="https://img.shields.io/badge/-new-green"> Grid now display the letters and numbers next to every column and row
 
-<img src="https://img.shields.io/badge/-%20fix%20-orange"> fixed a bug where the grid was drawn a pixel too far
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> fixed a bug where the grid was drawn a pixel too far
 
-<img src="https://img.shields.io/badge/-%20fix%20-orange"> fixed a bug where mini-placing-circles were not properly destroyed and still hoverable
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> fixed a bug where mini-placing-circles were not properly destroyed and still hoverable
 
 
 
@@ -391,9 +401,9 @@
 
 <img src="https://img.shields.io/badge/-new-green"> Added a "loading" animation background on logo
 
-<img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed some bridges/buildings being covered with terrain on kohat/manicouagan terrain maps
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed some bridges/buildings being covered with terrain on kohat/manicouagan terrain maps
 
-<img src="https://img.shields.io/badge/-%20fix%20-orange"> fix [#142](https://github.com/sh4rkman/SquadCalc/issues/142)
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> fix [#142](https://github.com/sh4rkman/SquadCalc/issues/142)
 
 
 
@@ -406,9 +416,9 @@
 # <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **23.2.0** *(2024-05-06)*
 
 
-<img src="https://img.shields.io/badge/-%20fix%20-orange"> Layer preference is now properly restored when loading the page again
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Layer preference is now properly restored when loading the page again
 
-<img src="https://img.shields.io/badge/-%20fix%20-orange"> Bearing is displayed again with 1 digit after the decimal point (thanks ThaViking4 [#140](https://github.com/sh4rkman/SquadCalc/issues/140))
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Bearing is displayed again with 1 digit after the decimal point (thanks ThaViking4 [#140](https://github.com/sh4rkman/SquadCalc/issues/140))
 
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
@@ -423,9 +433,9 @@
 
 <img src="https://img.shields.io/badge/-new-green"> You can now preview calc informations for a second weapon if it's placed
 
-<img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed layer button appearing sometime in legacy mode
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed layer button appearing sometime in legacy mode
 
-<img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed calculation not taking heights in account in legacy mode when switching map on existing calcs
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed calculation not taking heights in account in legacy mode when switching map on existing calcs
 
 
 
@@ -467,7 +477,7 @@
 
 <img src="https://img.shields.io/badge/-new-green"> Added a button to clear all target markers
 
-<img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed a bug that prevented from placing markers near the bottom of the page
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed a bug that prevented from placing markers near the bottom of the page
 
 <img src="https://img.shields.io/badge/-%20improv%20-orange"> improved font caching/loading for faster experience (Largest Contentuful Paint went from 1.1s to 0.8s, and First Contentful Paint from 0.7s to 0.3s !)
 
@@ -477,7 +487,7 @@
 
 # <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **20.7.2** *(2024-04-15)*
 
-<img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed maps/tiles caching for better performance/fix caching problems when updating maps
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed maps/tiles caching for better performance/fix caching problems when updating maps
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
 
@@ -485,7 +495,7 @@
 
 # <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **20.7.1** *(2024-04-13)*
 
-<img src="https://img.shields.io/badge/-%20fix%20-orange"> Updated Skorpo map & heightmap (thanks peter5he1by! [#130](https://github.com/sh4rkman/SquadCalc/issues/130))
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Updated Skorpo map & heightmap (thanks peter5he1by! [#130](https://github.com/sh4rkman/SquadCalc/issues/130))
 
 
 
@@ -509,7 +519,7 @@
 
 # <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">   **20.5.1** *(2024-03-25)*
 
-<img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed changelog link
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed changelog link
 
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
@@ -528,7 +538,7 @@
 
 <img src="https://img.shields.io/badge/-new-green"> new loading page
 
-<img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed "Show keypads under cursor" setting appearing on mobile/touch screen
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed "Show keypads under cursor" setting appearing on mobile/touch screen
 
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
@@ -558,7 +568,7 @@
 
 <img src="https://img.shields.io/badge/-%20improv%20-orange"> Converted heightmaps to .webp format
 
-<img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed -again- slight borders appearing between tiles when moving map on chromium (still visible but barely)
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed -again- slight borders appearing between tiles when moving map on chromium (still visible but barely)
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
 
@@ -597,7 +607,7 @@
 
 <img src="https://img.shields.io/badge/-new-green"> Added a preview in settings popup to help visualizing how settings impact the map
 
-<img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed an issue with second weapon icons not being renamed correctly after deleting the first weapon
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed an issue with second weapon icons not being renamed correctly after deleting the first weapon
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
 
@@ -609,11 +619,11 @@
 
 <img src="https://img.shields.io/badge/-new-green"> Now displaying dispersion for UB32 weapon/deployable
 
-<img src="https://img.shields.io/badge/-%20fix%20-orange"> Corrected dead pixels on Sanxian heightmap + resized the file
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Corrected dead pixels on Sanxian heightmap + resized the file
 
-<img src="https://img.shields.io/badge/-%20fix%20-orange"> Corrected dead pixels on Skorpo
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Corrected dead pixels on Skorpo
 
-<img src="https://img.shields.io/badge/-%20fix%20-orange"> Corrected dead pixels on Gorodok (thanks Phir)
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Corrected dead pixels on Gorodok (thanks Phir)
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
 
@@ -624,7 +634,7 @@
 
 <img src="https://img.shields.io/badge/-new-green"> Added Sanxian
 
-<img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed dead pixels on AlBasrah, Belaya, Chora, Fools Road, Gorodok, Logar, Mestia, Narva, Sumari and Tallil heightmaps resulting on "Out of map" calculations
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed dead pixels on AlBasrah, Belaya, Chora, Fools Road, Gorodok, Logar, Mestia, Narva, Sumari and Tallil heightmaps resulting on "Out of map" calculations
 
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
@@ -633,11 +643,11 @@
 
 # <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **15.0.1** *(2023-12-07)*
 
-<img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed Weapons being able to be placed outside of map with right click ([#104](https://github.com/sh4rkman/SquadCalc/issues/104))
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed Weapons being able to be placed outside of map with right click ([#104](https://github.com/sh4rkman/SquadCalc/issues/104))
 
-<img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed Map/Settings buttons being offcentered on Safari/SteamBrowsers ([#105](https://github.com/sh4rkman/SquadCalc/issues/105))
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed Map/Settings buttons being offcentered on Safari/SteamBrowsers ([#105](https://github.com/sh4rkman/SquadCalc/issues/105))
 
-<img src="https://img.shields.io/badge/-%20fix%20-orange"> Enable calc text zoomanimation so it doesn't "jump" on the map while zooming/unzooming
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Enable calc text zoomanimation so it doesn't "jump" on the map while zooming/unzooming
 
 <img src="https://img.shields.io/badge/-%20improv%20-orange"> Map can now be unzoom further away, allowing to see whole map on mobile/small device
 
@@ -660,7 +670,7 @@
 
 <img src="https://img.shields.io/badge/-%20improv%20-orange"> Added a slight shadow outline on target markers so they are easier to see on red-ish background or on top of another marker
 
-<img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed image being cached improperly
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed image being cached improperly
 
 
 
@@ -678,9 +688,9 @@
 
 <img src="https://img.shields.io/badge/-%20improv%20-orange"> Reduced switchmode/settings buttons on mobile
 
-<img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed UB32 being inaccurate between 1500-1600m, thanks @Butterhead98 ([#102](https://github.com/sh4rkman/SquadCalc/issues/102))
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed UB32 being inaccurate between 1500-1600m, thanks @Butterhead98 ([#102](https://github.com/sh4rkman/SquadCalc/issues/102))
 
-<img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed social media buttons being blue in settings menu
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed social media buttons being blue in settings menu
 
 
 
@@ -719,11 +729,11 @@
 
 <img src="https://img.shields.io/badge/-%20improv%20-orange"> Reduced target marker size
 
-<img src="https://img.shields.io/badge/-%20fix%20-orange"> The switchmode icon is now correctly centered ([#101](https://github.com/sh4rkman/SquadCalc/issues/101))
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> The switchmode icon is now correctly centered ([#101](https://github.com/sh4rkman/SquadCalc/issues/101))
 
-<img src="https://img.shields.io/badge/-%20fix%20-orange"> Page now waits to be fully loaded before displaying content, avoiding flash of unstyled content. ([#99](https://github.com/sh4rkman/SquadCalc/issues/99))
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Page now waits to be fully loaded before displaying content, avoiding flash of unstyled content. ([#99](https://github.com/sh4rkman/SquadCalc/issues/99))
 
-<img src="https://img.shields.io/badge/-%20fix%20-orange"> On mapmode, calculations doesn't avoid mouse-grabbing the map anymore ([#97](https://github.com/sh4rkman/SquadCalc/issues/97))
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> On mapmode, calculations doesn't avoid mouse-grabbing the map anymore ([#97](https://github.com/sh4rkman/SquadCalc/issues/97))
 
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
@@ -735,9 +745,9 @@
 
 <img src="https://img.shields.io/badge/-%20improv%20-orange">A map (al basrah) is selected by default (legacy/mapmode) ([#93](https://github.com/sh4rkman/SquadCalc/issues/93))
 
-<img src="https://img.shields.io/badge/-%20fix%20-orange"> Grid is now fully covering the map ([#92](https://github.com/sh4rkman/SquadCalc/issues/92))
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Grid is now fully covering the map ([#92](https://github.com/sh4rkman/SquadCalc/issues/92))
 
-<img src="https://img.shields.io/badge/-%20fix%20-orange"> Updated Kokan map
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Updated Kokan map
 
 
 
@@ -748,7 +758,7 @@
 
 <img src="https://img.shields.io/badge/-new-green"> New interactive map mode ! You can know switch UI mode with the bottom right button to display a map where you can place and drag markers.
 
-<img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed a bug where in legacy mode calculations were displayed even if target was too close. ([#90](https://github.com/sh4rkman/SquadCalc/issues/90)) 
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed a bug where in legacy mode calculations were displayed even if target was too close. ([#90](https://github.com/sh4rkman/SquadCalc/issues/90)) 
 
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
@@ -772,7 +782,7 @@
 
 # <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **12.1.1** *(2023-11-02)*
 
-<img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed an issue on Chrome/Edge where calcs on heightmaps were slightly off ([#88](https://github.com/sh4rkman/SquadCalc/issues/88)) 
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed an issue on Chrome/Edge where calcs on heightmaps were slightly off ([#88](https://github.com/sh4rkman/SquadCalc/issues/88)) 
 
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
@@ -785,11 +795,11 @@
 
 <img src="https://img.shields.io/badge/-new-green"> You are now able to get negative elevation results for vehicles, it should cover situation where you can tilt a vehicle on a slope to hit a target under you.
 
-<img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed an issue on Safari/Webkit where focus was skipping from target to weapon input when editing weapon coordinates ([#69](https://github.com/sh4rkman/SquadCalc/issues/69) - thanks to TheGrimReaper13/PhiR)
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed an issue on Safari/Webkit where focus was skipping from target to weapon input when editing weapon coordinates ([#69](https://github.com/sh4rkman/SquadCalc/issues/69) - thanks to TheGrimReaper13/PhiR)
 
-<img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed an issue on Safari Mobile where keyboard is blinking when editing weapon coordinates (Thanks to PhiR)
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed an issue on Safari Mobile where keyboard is blinking when editing weapon coordinates (Thanks to PhiR)
 
-<img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed an issue where the tooltip encouraging clicking the results to copy them was covering the target input on mobile with on-screen keyboard open. Tooltip is now hidden on mobile
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed an issue where the tooltip encouraging clicking the results to copy them was covering the target input on mobile with on-screen keyboard open. Tooltip is now hidden on mobile
 
 <img src="https://img.shields.io/badge/-%20improv%20-orange"> Implementated an automated testing tool to detect issues and test on various browswers
 
@@ -807,9 +817,9 @@
 
 <img src="https://img.shields.io/badge/-new-green"> Reworked weapons in two categories : Deployables/Vehicles
 
-<img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed [#83](https://github.com/sh4rkman/SquadCalc/issues/83)
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed [#83](https://github.com/sh4rkman/SquadCalc/issues/83)
 
-<img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed [#84](https://github.com/sh4rkman/SquadCalc/issues/84)
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed [#84](https://github.com/sh4rkman/SquadCalc/issues/84)
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
 
@@ -828,7 +838,7 @@
 
 <img src="https://img.shields.io/badge/-new-green"> You can know switch between high/low angle with BM-21 Grad by clicking the elevation icon next to elevation number.
 
-<img src="https://img.shields.io/badge/-%20fix%20-orange"> Disabling French DLC mortar for now
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Disabling French DLC mortar for now
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
 
@@ -836,7 +846,7 @@
 
 # <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **11.1.2** *(2023-10-16)*
 
-<img src="https://img.shields.io/badge/-%20fix%20-orange"> Fontawesome Icons are now selfhosted
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fontawesome Icons are now selfhosted
 
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
@@ -845,9 +855,9 @@
 
 # <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **11.1.1** *(2023-05-11)*
 
-<img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed weapon image width for Steam Browser ([#71](https://github.com/sh4rkman/SquadCalc/issues/66))
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed weapon image width for Steam Browser ([#71](https://github.com/sh4rkman/SquadCalc/issues/66))
 
-<img src="https://img.shields.io/badge/-%20fix%20-orange"> Shooting animation is now hidden when screen size is too small
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Shooting animation is now hidden when screen size is too small
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
 
@@ -857,9 +867,9 @@
 
 <img src="https://img.shields.io/badge/-new-green"> Added a new fancy shooting animation
 
-<img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed weapon list so it doesn't need scrolling on mobile
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed weapon list so it doesn't need scrolling on mobile
 
-<img src="https://img.shields.io/badge/-%20fix%20-orange"> Reduced classic mortar icon size
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Reduced classic mortar icon size
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
 
@@ -900,9 +910,9 @@
 
 <img src="https://img.shields.io/badge/-new-green"> now auto-generating robots.txt in prod/dev building scripts
 
-<img src="https://img.shields.io/badge/-%20fix%20-orange"> fixed weapon selector list being offset
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> fixed weapon selector list being offset
 
-<img src="https://img.shields.io/badge/-%20fix%20-orange"> fixed [#66](https://github.com/sh4rkman/SquadCalc/issues/66)
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> fixed [#66](https://github.com/sh4rkman/SquadCalc/issues/66)
 
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
@@ -913,9 +923,9 @@
 
 <img src="https://img.shields.io/badge/-new-green"> added color on save button hover
 
-<img src="https://img.shields.io/badge/-%20fix%20-orange"> fixed saved calc being misplaced when resizing window
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> fixed saved calc being misplaced when resizing window
 
-<img src="https://img.shields.io/badge/-%20fix%20-orange"> updated readme still mentioning 'MSMC'
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> updated readme still mentioning 'MSMC'
 
 <img src="https://img.shields.io/badge/-dev-grey"> JS refactoring
 
@@ -940,11 +950,11 @@
 
 <img src="https://img.shields.io/badge/-new-green"> Added informative tooltips on results
 
-<img src="https://img.shields.io/badge/-%20fix%20-orange"> Removed an unecessary space when saving calcs to clipboard 
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Removed an unecessary space when saving calcs to clipboard 
 
-<img src="https://img.shields.io/badge/-%20fix%20-orange"> Copy to clipboard now working again on Steam Browser
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Copy to clipboard now working again on Steam Browser
 
-<img src="https://img.shields.io/badge/-%20fix%20-orange"> Saved calcs should now be correctly centered on all devices
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Saved calcs should now be correctly centered on all devices
 
 <img src="https://img.shields.io/badge/-dev-grey"> Code refactoring
 
@@ -955,14 +965,14 @@
 
 <img src="https://img.shields.io/badge/-new-green"> Added this changelog file
 
-<img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed caracter " ° " encoding when saving a Tehnical/Hellcanon/Grad-21 calc (Thanks @TheGrimReaper13 !)
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed caracter " ° " encoding when saving a Tehnical/Hellcanon/Grad-21 calc (Thanks @TheGrimReaper13 !)
 
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
 
 # <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge"> **9.0.1** *(2023-03-18)*
 
-<img src="https://img.shields.io/badge/-%20fix%20-orange"> Fixed Yehorivka heightmap's offset, heights calculations should be right for now (Thanks @TheGrimReaper13 !)
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed Yehorivka heightmap's offset, heights calculations should be right for now (Thanks @TheGrimReaper13 !)
 
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->

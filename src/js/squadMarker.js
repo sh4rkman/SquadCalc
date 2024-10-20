@@ -164,6 +164,9 @@ export var squadWeaponMarker = squadMarker.extend({
      */
     delete: function(){
 
+        // Unbind all custom event handlers
+        this.off();
+
         this.removeFrom(this.map.activeWeaponsMarkers);
 
         if (this.map.activeWeaponsMarkers.getLayers().length === 0) { 
@@ -174,12 +177,12 @@ export var squadWeaponMarker = squadMarker.extend({
         }
 
         // Delete the weapon marker and everything tied to it
+        this.minRangeMarker.removeFrom(this.map.markersGroup).remove();
+        this.rangeMarker.removeFrom(this.map.markersGroup).remove();
+        this.miniCircle.removeFrom(this.map.markersGroup).remove();
+        this.posPopUp.removeFrom(this.map.markersGroup).remove();
+        this.removeFrom(this.map.markersGroup).removeFrom(this.map.activeWeaponsMarkers);
         this.remove();
-        this.removeFrom(this.map.activeWeaponsMarkers);
-        this.minRangeMarker.remove();
-        this.rangeMarker.remove();
-        this.miniCircle.remove();
-        this.posPopUp.remove();
 
         // Update remaining targets if they exists
         this.map.updateTargets();
@@ -498,21 +501,26 @@ export var squadTargetMarker = squadMarker.extend({
      * Remove the target marker and every object tied
      */
     delete: function(){
-        this.spreadMarker1.remove();
-        this.spreadMarker2.remove();
-        this.calcMarker1.remove();
-        this.calcMarker2.remove();
-        this.miniCircle.remove();
-        this.hundredDamageRadius.remove();
-        this.twentyFiveDamageRadius.remove();
-        this.posPopUp.remove();
-        this.removeFrom(this.map.activeTargetsMarkers);
-        this.removeFrom(this.map.markersGroup);
-        this.remove();
 
+        // Unbind all custom event handlers
+        this.off();
+
+        // Remove everything attached from the map
+        this.spreadMarker1.removeFrom(this.map.markersGroup).remove();
+        this.spreadMarker2.removeFrom(this.map.markersGroup).remove();
+        this.calcMarker1.removeFrom(this.map.markersGroup).remove();
+        this.calcMarker2.removeFrom(this.map.markersGroup).remove();
+        this.miniCircle.removeFrom(this.map.markersGroup).remove();
+        this.hundredDamageRadius.removeFrom(this.map.markersGroup).remove();
+        this.twentyFiveDamageRadius.removeFrom(this.map.markersGroup).remove();
+        this.posPopUp.removeFrom(this.map.markersGroup).remove();
+        this.removeFrom(this.map.markersGroup).removeFrom(this.map.activeTargetsMarkers);
+        this.remove();
+        
         if (this.map.activeTargetsMarkers.getLayers().length === 0) {
             $(".btn-delete").hide();
         }
+        
     },
 
     getContent: function(firingSolution, angleType){
