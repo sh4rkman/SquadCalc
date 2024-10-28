@@ -70,10 +70,10 @@ export var squadMinimap = Map.extend({
         // Custom events handlers
         this.on("dblclick", this._handleDoubleCkick, this);
         this.on("contextmenu", this._handleContextMenu, this);
-        this.on("mouseout", this._handleMouseOut, this);
-    
-        if (App.userSettings.keypadUnderCursor){
+        
+        if (App.userSettings.keypadUnderCursor || !App.hasMouse){
             this.on("mousemove", this._handleMouseMove, this);
+            this.on("mouseout", this._handleMouseOut, this);
             this.on("zoomend", this._handleZoom, this);
         }
 
@@ -341,28 +341,8 @@ export var squadMinimap = Map.extend({
     },
 
     /**
-     * Mouse-Over
-     * Display and update hovered keypad under cursor
-     */
-    _handleMouseMove: function (e) {
-
-        // if no mouse support
-        if (!matchMedia("(pointer:fine)").matches) { return 1; }
-
-        // If out of bounds
-        if (e.latlng.lat > 0 ||  e.latlng.lat < -this.tilesSize || e.latlng.lng < 0 || e.latlng.lng > this.tilesSize) {
-            this.mouseLocationPopup.close();
-            return;
-        }
-
-        this.mouseLocationPopup.setLatLng(e.latlng).openOn(this);
-        this.mouseLocationPopup.setContent(`<p>${this.getKP(-e.latlng.lat, e.latlng.lng)}</p>`);
-    },
-
-
-    /**
      * Double-Click
-     * Create a new target, or weapon is no weapon exists
+     * Create a new target, or weapon is none exists
      */
     _handleDoubleCkick: function (e) {
         var target;
@@ -372,6 +352,7 @@ export var squadMinimap = Map.extend({
             return 1;
         }
 
+        // No weapon yet ? Create one
         if (this.activeWeaponsMarkers.getLayers().length === 0) {
             new squadWeaponMarker(e.latlng, {icon: mortarIcon}, this).addTo(this.markersGroup, this).addTo(this.activeWeaponsMarkers);
             return 0;
@@ -401,6 +382,23 @@ export var squadMinimap = Map.extend({
     _handleMouseOut: function() {
         this.mouseLocationPopup.close();
     },
+
+
+    /**
+     * Display and update hovered keypad under cursor
+     */
+    _handleMouseMove: function (e) {
+
+        // If out of bounds
+        if (e.latlng.lat > 0 ||  e.latlng.lat < -this.tilesSize || e.latlng.lng < 0 || e.latlng.lng > this.tilesSize) {
+            this.mouseLocationPopup.close();
+            return;
+        }
+
+        this.mouseLocationPopup.setLatLng(e.latlng).openOn(this);
+        this.mouseLocationPopup.setContent(`<p>${this.getKP(-e.latlng.lat, e.latlng.lng)}</p>`);
+    },
+
 
     /**
      * After each zoom, update keypadUnderMouse precision

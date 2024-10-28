@@ -2,6 +2,7 @@
  ************   HEIGHT ADJUSTMENTS   ***************
  ***************************************************/
 
+ @use '../shared/variables';
 
 /* -- L*568px -- */
 
@@ -18,6 +19,7 @@
             }
         }
     }
+
 }
 
 
@@ -54,6 +56,7 @@
             margin: 5px 20px 15px 0;
         }
     }
+
 }
 
 
@@ -149,65 +152,6 @@
             top: -2px;
         }
     }
-    dialog {
-        font-size: 0.7em;
-        table {
-            width: 44%;
-            margin: 0 3% 2em;
-        }
-        &#weaponInformation{
-            max-width: 600px;
-        }
-        &#helpDialog{
-            font-size: 0.8em;
-            max-width: 1000px;
-            #userSettings {
-                margin: 0 2em;
-            }
-            table {
-                width: 33%;
-                margin: 0 0 2em 0%;
-                td {
-                    padding: 0;
-                    border: none;
-                    &:nth-child(1) {
-                        padding-right: 0.75em;
-                    }
-                }
-            }
-            #preview {
-                width: 150px;
-                height: 150px;
-                #center {
-                    width: 150px;
-                    height: 150px;
-                    #markerPreview {
-                        width: 30px;
-                    }
-                    #gridPreview {
-                        width: 150px;
-                    }
-                    #maxRangePreview {
-                        width: 147px;
-                        margin-right: 3px;
-                        margin-top: 3px;
-                    }
-                    #damagePreview {
-                        width: 110px;
-                    }
-                }
-                #textPreview{
-                    margin-top: 55px;
-                    margin-left: 25px;
-                    .bearingPreview {
-                        font-size: 0.6em;
-                        text-align: right;
-                        float: right;
-                    }
-                }
-            }
-        }
-    }
     footer {
         .fabs {
             bottom: 1.5rem;
@@ -267,6 +211,94 @@
         .select2-container {
             font-size: 1em;
             min-width: 196px;
+        }
+    }
+    dialog {
+        font-size: 0.7em;
+        table {
+            width: 44%;
+            margin: 0 3% 2em;
+        }
+        &#weaponInformation{
+            max-width: 600px;
+        }
+        &#helpDialog{
+            font-size: 0.75em;
+            max-width: 1000px;
+            #userSettings {
+                margin: 0 2em;
+            }
+            table {
+                width: 33%;
+                margin: 0 0 2em 0%;
+                td {
+                    padding: 0;
+                    border: none;
+                    &:nth-child(1) {
+                        padding-right: 0.75em;
+                    }
+                }
+            }
+            #previewHolder {
+                display: block;
+            }
+            #preview {
+                outline: solid variables.$mainColor 3px;
+                margin: auto;
+                float: none;
+                width: 150px;
+                height: 150px;
+                #center {
+                    width: 150px;
+                    height: 150px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    #mapPreview {
+                        width: 100%;
+                    }
+                    #markerPreview {
+                        position: absolute;
+                        width: 30px;
+                    }
+                    #gridPreview {
+                        position: absolute;
+                        width: 150px;
+                    }
+                    #maxRangePreview {
+                        position: absolute;
+                        width: 147px;
+                        margin-right: 3px;
+                        margin-top: 3px;
+                    }
+                    #damagePreview {
+                        position: absolute;
+                        margin-top: 30px;
+                        width: 110px;
+                    }
+                    #spreadPreview {
+                        position: absolute;
+                        margin-top: 15px;
+                        width: 80px;
+                    }
+                }
+                #textPreview{
+                    @include variables.text-outline;
+                    margin-top: 55px;
+                    margin-left: 25px;
+                    position: absolute;
+                    z-index: 1;
+                    .bearingPreview {
+                        font-size: 0.6em;
+                        text-align: right;
+                        float: right;
+                        &:nth-child(3) {
+                            margin-top: 2px;
+                        }
+                    }
+                }
+
+            }
         }
     }
 }

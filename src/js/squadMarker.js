@@ -1,6 +1,6 @@
 import { App } from "../app.js";
 import { ellipse } from "./libs/leaflet.ellipse.js";
-import { Marker, Circle, CircleMarker, Popup, Browser, polyline } from "leaflet";
+import { Marker, Circle, CircleMarker, Popup, polyline } from "leaflet";
 import { targetIcon1, targetIconAnimated1, targetIconDisabled } from "./squadIcon.js";
 import SquadSimulation from "./squadSimulation.js";
 import SquadFiringSolution from "./squadFiringSolution.js";
@@ -843,9 +843,9 @@ export var squadTargetMarker = squadMarker.extend({
         this.twentyFiveDamageRadius.setLatLng(e.latlng);
 
         // Update TrajectoryPath
-        this.pathTrajectory1.setLatLngs([this.map.activeWeaponsMarkers.getLayers()[0].getLatLng(), e.latlng]).setStyle({ opacity: 0.8 });
+        this.pathTrajectory1.setLatLngs([this.map.activeWeaponsMarkers.getLayers()[0].getLatLng(), e.latlng]).setStyle({ opacity: 1 });
         if (this.map.activeWeaponsMarkers.getLayers()[1]) {
-            this.pathTrajectory2.setLatLngs([this.map.activeWeaponsMarkers.getLayers()[1].getLatLng(), e.latlng]).setStyle({ opacity: 0.8 });
+            this.pathTrajectory2.setLatLngs([this.map.activeWeaponsMarkers.getLayers()[1].getLatLng(), e.latlng]).setStyle({ opacity: 1 });
         }
 
         // Update Position PopUp Content
@@ -856,17 +856,17 @@ export var squadTargetMarker = squadMarker.extend({
 
         // Update bearing/elevation/spread marker
         // On mobile, save performance
-        if (Browser.pointer){ this.updateCalc(); }
+        if (App.hasMouse) { this.updateCalc(); }
  
     },
 
-    // set "grabbing" cursor on grab start
+    
     _handleDragStart: function () {
         this.isDragging = true;
         this.map.mouseLocationPopup.close();
         this.map.off("mousemove", this.map._handleMouseMove);
 
-        if (!Browser.pointer){
+        if (!App.hasMouse) {
             this.calcMarker1.setContent("  ");
             this.calcMarker2.setContent("  ");
             this.spreadMarker1.setStyle({opacity: 0, fillOpacity: 0});
@@ -934,25 +934,27 @@ export var squadTargetMarker = squadMarker.extend({
         this.mouseOverTimeout = setTimeout(() => {
 
             // Update & show TrajectoryPath
-            this.pathTrajectory1.setLatLngs([this.map.activeWeaponsMarkers.getLayers()[0].getLatLng(), this._latlng]).setStyle({ opacity: 0.8 });
+            this.pathTrajectory1.setLatLngs([this.map.activeWeaponsMarkers.getLayers()[0].getLatLng(), this._latlng]).setStyle({ opacity: 1 });
             if (this.map.activeWeaponsMarkers.getLayers()[1]) {
-                this.pathTrajectory2.setLatLngs([this.map.activeWeaponsMarkers.getLayers()[1].getLatLng(), this._latlng]).setStyle({ opacity: 0.8 });
+                this.pathTrajectory2.setLatLngs([this.map.activeWeaponsMarkers.getLayers()[1].getLatLng(), this._latlng]).setStyle({ opacity: 1 });
             }
 
             // Hide other targets
-            this.map.activeTargetsMarkers.eachLayer((target) => {
-                if (target != this) {
-                    target.off("mouseover");
-                    target.off("mouseout");
-                    target.setOpacity(0.65);
-                    target.calcMarker1.close();
-                    target.calcMarker2.close();
-                    target.spreadMarker1.setStyle( this.spreadOptionsOff);
-                    target.spreadMarker2.setStyle( this.spreadOptionsOff);
-                    target.hundredDamageRadius.setStyle({ opacity: 0 });
-                    target.twentyFiveDamageRadius.setStyle({ opacity: 0 });
-                }
-            });
+            if (!this.isDragging && App.userSettings.targetEmphasis){
+                this.map.activeTargetsMarkers.eachLayer((target) => {
+                    if (target != this) {
+                        target.off("mouseover");
+                        target.off("mouseout");
+                        target.setOpacity(0.65);
+                        target.calcMarker1.close();
+                        target.calcMarker2.close();
+                        target.spreadMarker1.setStyle(this.spreadOptionsOff);
+                        target.spreadMarker2.setStyle(this.spreadOptionsOff);
+                        target.hundredDamageRadius.setStyle({ opacity: 0 });
+                        target.twentyFiveDamageRadius.setStyle({ opacity: 0 });
+                    }
+                });
+            }
         }, 500);
     },
 

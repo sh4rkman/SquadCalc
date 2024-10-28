@@ -28,5 +28,7 @@
     "damageRadiusTooltip": "显示伤害半径和25点伤害的半径",
     "showKeypadTooltip": "在光标下显示数字键盘",
     "showSpreadTooltip": "显示目标周围可能的弹药散布区域",
-    "showMaxRangeTooltip": "显示最小（如果适用）和最大范围的蓝色圆圈。不考虑高度"
+    "showMaxRangeTooltip": "显示最小（如果适用）和最大范围的蓝色圆圈。不考虑高度",
+    "targetEmphasisTooltip": "通过淡出其他标记来强调悬停的标记",
+    "useClassicCursorTooltip": "用默认光标替换十字准星"
 }

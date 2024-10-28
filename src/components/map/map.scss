@@ -1,4 +1,4 @@
-@import "../shared/variables";
+@use "../shared/variables";
 
 #map_ui {
     position: relative;
@@ -7,7 +7,7 @@
     #map {
         height: 100%;
         width: 100%;
-        background: var(--themecolor, $mainBGColor);
+        background: var(--themecolor, variables.$mainBGColor);
         z-index: 0;
         .leaflet-pane .leaflet-marker-pane .leaflet-marker-icon {
             cursor: grab;
@@ -20,13 +20,13 @@
             pointer-events: none;
             .leaflet-popup-tip,
             .leaflet-popup-content-wrapper {
-                @extend %text-outline;
+                @include variables.text-outline;
                 @extend .unselectable;
-                font-family: $mainFont, Times, "Times New Roman", serif;
+                font-family: variables.$mainFont, Times, "Times New Roman", serif;
                 font-size: 1.2em;
                 background: transparent;
                 box-shadow: none;
-                color: $mainTxtColor;
+                color: variables.$mainTxtColor;
                 height: 2em;
                 padding: 0;
                 text-align: center;
@@ -37,11 +37,11 @@
             }
         }
         .calcPopup, .calcPopup2 {
-            @extend %text-outline;
+            @include variables.text-outline;
             @extend .unselectable;
             margin: 0;
             padding: 0;
-            font-family: $mainFont, Times, "Times New Roman", serif;
+            font-family: variables.$mainFont, Times, "Times New Roman", serif;
             pointer-events: none;
             font-size: 0.9em;
             height: 45px;
@@ -52,7 +52,7 @@
             .leaflet-popup-content-wrapper {
                 background: transparent;
                 box-shadow: none;
-                color: $mainTxtColor;
+                color: variables.$mainTxtColor;
             }
             .leaflet-popup-content{
                 margin: 0;
@@ -76,7 +76,7 @@
             animation: target-appear 0.25s ease-in-out forwards 0s;
         }
         .gridText {
-            @extend %text-outline;
+            @include variables.text-outline;
             font-size: 1.1em;
         }
     }
@@ -97,7 +97,7 @@
         width: 40px;
         height: 40px;
         margin: 0;
-        color: $mainBGColor;
+        color: variables.$mainBGColor;
         border-bottom:#979797 solid 1px;
         box-shadow: 0 2px 15px rgba(0,0,0,0.1);
         cursor: pointer;
@@ -106,10 +106,10 @@
             background-color: #979797;
         }
         &.active {
-            background-color: $mainColor;
-            border-top: $mainColor;
-            border-bottom: $mainColor;
-            color: $mainTxtColor;
+            background-color: variables.$mainColor;
+            border-top: variables.$mainColor;
+            border-bottom: variables.$mainColor;
+            color: variables.$mainTxtColor;
             .fa-mound{
                 background: white;
                 background-clip: text;
@@ -162,7 +162,7 @@
     height: 100vh; 
     width: 100vw; 
     display: table;
-    font-family: $logoFont;
+    font-family: variables.$logoFont;
     text-transform: uppercase;
     font-size: 7em;
     letter-spacing: 0;
@@ -179,7 +179,7 @@
         }
         span:nth-child(2) {
             padding: 0 15px 10px;
-            background: linear-gradient(to right, $mainColor 50%, $mainBGColor 50%);
+            background: linear-gradient(to right, variables.$mainColor 50%, variables.$mainBGColor 50%);
             background-size: 200% 100%;
             background-position: right bottom;
             animation: 1s ease-out 0.3s 1 forwards loading;
@@ -193,7 +193,7 @@
 
 #loader {
     @extend .logo;
-    background-color: $mainBGColor;
+    background-color: variables.$mainBGColor;
     z-index: 99;
 }
 

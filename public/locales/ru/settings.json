@@ -11,6 +11,7 @@
         "experimentalWeapons": "Экспер. оружие",
     "targetOptions": "Опции целей",
         "targetDrag": "Сетка маркера",
+        "targetEmphasis": "Выделить наведенный маркер",
         "showSpread": "Радиус разброса",
         "showDamage": "Радиусы урона",
         "showAnimations": "Анимации",

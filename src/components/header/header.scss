@@ -1,4 +1,4 @@
-@import "../shared/variables";
+@use "../shared/variables";
 
 /***************************************
 ************   HEADER   ***************
@@ -55,7 +55,7 @@
         font-weight: bold;
         line-height: 2.188em;
         text-transform: uppercase;
-        background-color: var(--themecolor, $mainBGColor);
+        background-color: var(--themecolor, variables.$mainBGColor);
         z-index: 1;
         select {
             -moz-appearance: none;
@@ -74,9 +74,9 @@
         background-color: transparent;
     }
     .select2-container {
-        @extend %text-outline;
+        @include variables.text-outline;
         background-color: transparent;
-        border-bottom: 1px solid $mainTxtColor;
+        border-bottom: 1px solid variables.$mainTxtColor;
         line-height: 2.188em;
         min-width: 200px;
         padding-bottom: 0.3em;
@@ -84,10 +84,10 @@
     }
     .select2-container--default {
         .select2-results__option--highlighted[aria-selected] {
-            background-color: $mainColor;
+            background-color: variables.$mainColor;
         }
         .select2-results__option--selected {
-            background-color: $mainColor;
+            background-color: variables.$mainColor;
             opacity: 0.5;
         }
         .select2-selection--single .select2-selection__rendered {
@@ -96,7 +96,7 @@
         .select2-selection--single {
             background-color: transparent;
             border: none;
-            color: $mainTxtColor;
+            color: variables.$mainTxtColor;
         }
     }
     span.select2-selection.select2-selection--single {

@@ -1,10 +1,10 @@
-@import "../shared/variables";
+@use "../shared/variables";
 
 #classic_ui {
     height: 40vh;
     #settings {
         border-radius: 5px;
-        border: 5px solid $mainTxtColor;
+        border: 5px solid variables.$mainTxtColor;
         font-size: 1.5em;
         font-weight: bold;
         margin: 0.7em auto;
@@ -22,7 +22,7 @@
                     transform: scale(0.7);
                 }
                 &:hover {
-                    color: $mainColor;
+                    color: variables.$mainColor;
                 }
             }
         }
@@ -30,7 +30,7 @@
             background-color: transparent;
             border: none;
             bottom: 0;
-            color: $mainTxtColor;
+            color: variables.$mainTxtColor;
             padding: 0 5px;
             position: absolute;
             right: 0;
@@ -45,7 +45,7 @@
                 transform: scale(0.7);
             }
             &:hover {
-                color: $mainColor;
+                color: variables.$mainColor;
             }
             &:focus {
                 outline: none;
@@ -67,10 +67,10 @@
         cursor: default;
         font-size: 0.7em;
         line-height: 2em;
-        color: $mainColor;
+        color: variables.$mainColor;
     }
     .error2 {
-        border-bottom: 3px solid $mainColor;
+        border-bottom: 3px solid variables.$mainColor;
     }
     #saved {
         font-size: 0.6em;
@@ -93,7 +93,7 @@
             cursor: pointer;
             transition: all 0.2s ease;
             &:hover {
-                color: $mainColor;
+                color: variables.$mainColor;
                 transform: scale(1.2);
             }
         }

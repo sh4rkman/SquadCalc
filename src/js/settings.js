@@ -4,6 +4,7 @@ import i18next from "i18next";
 import { animateCSS } from "./animations.js";
 
 /* eslint no-unused-vars: "off" */
+import mapIcon from "../img/icons/preview.webp";
 import speadIcon from "../img/icons/spread.png";
 import gridIcon from "../img/icons/grid.png";
 import maxRangeIcon from "../img/icons/maxrange.png";
@@ -28,12 +29,12 @@ export function loadSettings(){
     var setting = localStorage.getItem("settings-map-mode");
     
     App.userSettings.keypadUnderCursor = loadLocalSetting("settings-keypad-cursor", 0);
-    if (matchMedia("(pointer:fine)").matches) {
+    if (App.hasMouse) {
         $("#keypadUnderCursorSetting").prop("checked", App.userSettings.keypadUnderCursor);
     }
     else {
-        $("#keypadUnderCursorSettingRow").hide();
-        $(".cursorChoiceSettings").hide();
+        $("#keypadUnderCursorSetting").prop("disabled", true).prop("checked", false);
+        $("#cursorChoiceSettings").prop("disabled", true).prop("checked", false);
         App.userSettings.keypadUnderCursor = false;
     }
 
@@ -46,6 +47,9 @@ export function loadSettings(){
 
     App.userSettings.weaponDrag = loadLocalSetting("settings-weapon-drag");
     $("#weaponDragSetting").prop("checked", App.userSettings.weaponDrag);
+
+    App.userSettings.targetEmphasis = loadLocalSetting("settings-target-emphasis");
+    $("#targetEmphasisSetting").prop("checked", App.userSettings.targetEmphasis);
 
     App.userSettings.targetDrag = loadLocalSetting("settings-target-drag");
     $("#targetDragSetting").prop("checked", App.userSettings.targetDrag);
@@ -165,21 +169,15 @@ export function updatePreview(){
 
 
 $("#keypadUnderCursorSetting").on("change", function() {
-    var val;
-
-    // if no mouse support detected, disable the fonctionality
-    if (!matchMedia("(pointer:fine)").matches) {
-        App.userSettings.keypadUnderCursor = false;
-        return;
-    }
-
-    val = $("#keypadUnderCursorSetting").is(":checked");
+    var val = $("#keypadUnderCursorSetting").is(":checked");
 
     if (val){
         App.minimap.on("mousemove", App.minimap._handleMouseMove);
+        App.minimap.on("zoomend", App.minimap._handleZoom);
     }
     else {
         App.minimap.off("mousemove", App.minimap._handleMouseMove);
+        App.minimap.off("zoomend", App.minimap._handleZoom);
         App.minimap.mouseLocationPopup.close();
     }
     App.userSettings.keypadUnderCursor = val;
@@ -214,6 +212,12 @@ $("#mapAnimationSettings").on("change", function() {
     var val = $("#mapAnimationSettings").is(":checked");
     App.userSettings.smoothMap = val;
     localStorage.setItem("settings-smooth-map", +val);
+});
+
+$("#targetEmphasisSetting").on("change", function() {
+    var val = $("#targetEmphasisSetting").is(":checked");
+    App.userSettings.targetEmphasis = val;
+    localStorage.setItem("settings-target-emphasis", +val);
 });
 
 $("#damageRadiusSetting").on("change", function() {
@@ -363,8 +367,14 @@ $("#timeOfFlightSetting").on("change", function() {
 
 // Add an even listener on all settings label so it can also be clicked
 $(".toggleCheckbox").on("click", function() {
-    // Find the checkbox in the same row and toggle it
+
+    // Find the checkbox
     const checkbox = $(this).closest("tr").find("input[type='checkbox']");
+
+    // Check if the checkbox is disabled
+    if (checkbox.prop("disabled")) { return;}
+
+    // Toggle it
     checkbox.prop("checked", !checkbox.prop("checked")).trigger("change");
     animateCSS($(this).closest("td"), "headShake");
 });

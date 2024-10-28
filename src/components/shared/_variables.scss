@@ -86,7 +86,7 @@ button:focus {
 
 
 // Text-Shadows/Ouline
-%text-outline {
+@mixin text-outline {
     font-weight: bold;
     text-shadow: 1px 1px 0 #111,
     -1px 1px 0 #111,

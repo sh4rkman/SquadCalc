@@ -12,6 +12,7 @@
         "experimentalWeapons": "Експериментальна зброя",
     "targetOptions": "Опції цілей",
         "targetDrag": "Сітка маркера",
+        "targetEmphasis": "Підсвітити наведений маркер",
         "showSpread": "радіус розподілу",
         "showDamage": "радіуси ураження",
         "showAnimations": "анімації",
