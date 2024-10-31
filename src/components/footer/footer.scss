@@ -70,10 +70,11 @@ $toastDistanceFromBottom: 40px;
     background: white;
     box-shadow: 0 2px 15px rgba(0,0,0,0.1);
     z-index: 5;
-    bottom: -100px;
+    bottom: 0;
     left: 50%;
     transform: translateX(-50%);
     cursor: pointer;
+    visibility: hidden;
 }
 
 #icon-wrapper{
@@ -171,7 +172,7 @@ $toastDistanceFromBottom: 40px;
     visibility: visible;
     }
     to {
-    bottom: -25px;
+    bottom: 0;
     opacity: 0;
     transform: translateX(-50%) scale(0.5);
     visibility: hidden;
@@ -180,7 +181,7 @@ $toastDistanceFromBottom: 40px;
 
 @keyframes open {
     from {
-    bottom: -25px;
+    bottom: 0;
     opacity: 0;
     transform: translateX(-50%) scale(0.5);
     visibility: hidden;

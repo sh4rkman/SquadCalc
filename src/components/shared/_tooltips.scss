@@ -1,4 +1,4 @@
-@import './variables';
+@use './variables';
 
 /**************************************
 *  Tippy.js ToolTips customization
@@ -6,21 +6,21 @@
 
 .tippy-box {
     &[data-theme~='new'] {
-        background-color: $newColor;
-        color: $mainTxtColor;
+        background-color: variables.$newColor;
+        color: variables.$mainTxtColor;
         font-weight: bold;
         letter-spacing: 0.1rem;
         &[data-placement^='top']>.tippy-arrow::before {
-            border-top-color: $newColor;
+            border-top-color: variables.$newColor;
         }
         &[data-placement^='bottom']>.tippy-arrow::before {
-            border-bottom-color: $newColor;
+            border-bottom-color: variables.$newColor;
         }
         &[data-placement^='left']>.tippy-arrow::before {
-            border-left-color: $newColor;
+            border-left-color: variables.$newColor;
         }
         &[data-placement^='right']>.tippy-arrow::before {
-            border-right-color: $newColor;
+            border-right-color: variables.$newColor;
         }
     }
     &[data-theme~="results"] .tippy-content {
@@ -30,23 +30,23 @@
         font-weight: bold;
     }
     &[data-theme~='fab'] {
-        background-color: $mainColor;
+        background-color: variables.$mainColor;
         &[data-placement^='top']>.tippy-arrow::before {
-            border-top-color: $mainColor;
+            border-top-color: variables.$mainColor;
         }
         &[data-placement^='bottom']>.tippy-arrow::before {
-            border-bottom-color: $mainColor;
+            border-bottom-color: variables.$mainColor;
         }
         &[data-placement^='left']>.tippy-arrow::before {
-            border-left-color: $mainColor;
+            border-left-color: variables.$mainColor;
         }
         &[data-placement^='right']>.tippy-arrow::before {
-            border-right-color: $mainColor;
+            border-right-color: variables.$mainColor;
         }
     }
     &[data-theme~='menu'] {
-        background-color: $mainTxtColor;
-        color: $mainBGColor;
+        background-color: variables.$mainTxtColor;
+        color: variables.$mainBGColor;
         font-size: 14px;
         font-weight: 600;
         letter-spacing: .05em;
@@ -55,22 +55,22 @@
         border-radius: 5px;
         box-shadow: 0 2px 15px rgba(0,0,0,0.1);
         &[data-placement^='top']>.tippy-arrow::before {
-            border-top-color: $mainTxtColor;
+            border-top-color: variables.$mainTxtColor;
         }
         &[data-placement^='bottom']>.tippy-arrow::before {
-            border-bottom-color: $mainTxtColor;
+            border-bottom-color: variables.$mainTxtColor;
         }
         &[data-placement^='left']>.tippy-arrow::before {
-            border-left-color: $mainTxtColor;
+            border-left-color: variables.$mainTxtColor;
         }
         &[data-placement^='right']>.tippy-arrow::before {
-            border-right-color: $mainTxtColor;
+            border-right-color: variables.$mainTxtColor;
         }
     }
     &[data-theme~='preview'] {
-        @extend %text-outline;
+        @include variables.text-outline;
         background-color: transparent;
-        color: $mainTxtColor;
+        color: variables.$mainTxtColor;
         letter-spacing: 0.1rem;
         margin-top: 5px;
         &[data-placement^='bottom']>.tippy-arrow::before {

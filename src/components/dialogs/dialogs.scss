@@ -1,12 +1,12 @@
-@import '../shared/variables';
+@use '../shared/variables';
 
 dialog {
     width: calc(100% - 10%);
     text-align: left;
     border-radius: 10px;
     margin: auto;
-    background-color: $mainBGColor;
-    color: $mainTxtColor;
+    background-color: variables.$mainBGColor;
+    color: variables.$mainTxtColor;
     font-size: 0.6em;
     max-width: 700px;
     overflow: hidden;
@@ -25,7 +25,7 @@ dialog {
         transition: all 0.2s ease;
         cursor: pointer;
         &:hover {
-            color: $mainColor;
+            color: variables.$mainColor;
             transform: scale(0.9);
         }
     }
@@ -41,7 +41,7 @@ dialog {
         line-height: 1.5em;
         text-transform: uppercase;
         text-align: center;
-        background-color: var(--themecolor, $mainBGColor);
+        background-color: var(--themecolor, variables.$mainBGColor);
         z-index: 1;
         select {
             -moz-appearance: none;
@@ -59,9 +59,9 @@ dialog {
             background-color: transparent;
         }
         .select2-container {
-            @extend %text-outline;
+            @include variables.text-outline;
             background-color: transparent;
-            border-bottom: 1px solid $mainTxtColor;
+            border-bottom: 1px solid variables.$mainTxtColor;
             line-height: 2.188em;
             padding-bottom: 0.3em;
             text-transform: uppercase;
@@ -69,10 +69,10 @@ dialog {
     }
     .select2-container--default {
         .select2-results__option--highlighted[aria-selected] {
-            background-color: $mainColor;
+            background-color: variables.$mainColor;
         }
         .select2-results__option--selected {
-            background-color: $mainColor;
+            background-color: variables.$mainColor;
             opacity: 0.5;
         }
         .select2-selection--single .select2-selection__rendered {
@@ -81,7 +81,7 @@ dialog {
         .select2-selection--single {
             background-color: transparent;
             border: none;
-            color: $mainTxtColor;
+            color: variables.$mainTxtColor;
         }
     }
     span.select2-selection.select2-selection--single {
@@ -98,7 +98,7 @@ dialog {
         #angleChoiceSettings {
             input {
                 height: 15px;
-                accent-color: $mainColor;
+                accent-color: variables.$mainColor;
                 &:active:not([disabled]) {
                     transform: scale(0.7);
                 }
@@ -117,7 +117,7 @@ dialog {
                 text-align: center;
                 font-size: 1em;
                 border: 1px solid #ddd;
-                border-radius:4px;
+                border-radius: 4px;
                 display: inline-block;
                 vertical-align: middle;
             }
@@ -132,7 +132,8 @@ dialog {
         }
     }
     &#helpDialog {
-        max-width: 300px;
+        max-width: 350px;
+        font-size: 0.6em;
         h3 {
             font-size: 1.3em;
         }
@@ -153,15 +154,15 @@ dialog {
             }
             caption {
                 margin: 0 0 10px;
-                color: $mainTxtColor;
+                color: variables.$mainTxtColor;
                 font-style: normal;
                 font-weight: bold;
                 font-size: 1.3em;
                 text-align: left;
-                font-family: $mainFont, Times, "Times New Roman", serif;
+                font-family: variables.$mainFont, Times, "Times New Roman", serif;
             }
             &#links {
-                margin: 1.8em 0.3em 0.7em auto;
+                margin: 1em 0.3em 0.7em auto;
                 width: auto;
                 font-size: 1.4em;
                 float: right;
@@ -170,11 +171,11 @@ dialog {
                     padding: 0 0.5em;
                 }
                 a, a:visited {
-                    color: $mainTxtColor;
+                    color: variables.$mainTxtColor;
                 }
                 a:hover {
                     cursor: pointer;
-                    color: $mainColor;
+                    color: variables.$mainColor;
                     i {
                         transition: all 0.2s ease;
                         transform: scale(0.9);
@@ -182,59 +183,8 @@ dialog {
                 }
             }
         }
-        #preview {
-            outline: solid $mainColor 3px;
-            width: 100px;
-            height: 100px;
-            margin: auto;
-            float: none;
-            background-image: url("../../img/icons/preview.webp");
-            background-size: contain;
-            #center {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                width: 100px;
-                height: 100px;
-                #markerPreview {
-                    position: absolute;
-                    width: 25px;
-                }
-                #gridPreview {
-                    position: absolute;
-                    opacity: 1;
-                    width: 100px;
-                }
-                #maxRangePreview {
-                    position: absolute;
-                    width: 105px;
-                }
-                #damagePreview {
-                    position: absolute;
-                    margin-top: 30px;
-                    width: 80px;
-                }
-                #spreadPreview {
-                    position: absolute;
-                    margin-top: 15px;
-                    width: 80px;
-                }
-            }
-            #textPreview{
-                @extend %text-outline;
-                margin-top: 33px;
-                margin-left: 5px;
-                position: absolute;
-                z-index: 1;
-                .bearingPreview {
-                    font-size: 0.6em;
-                    text-align: right;
-                    float: right;
-                    &:nth-child(3) {
-                        margin-top: 2px;
-                    }
-                }
-            }
+        #previewHolder {
+            display: none;
         }
     }
 }
@@ -274,6 +224,13 @@ dialog {
     }
 }
 
+.new {
+    @extend .unselectable;
+    color: red;
+    text-transform: uppercase;
+    letter-spacing: 0;
+}
+
 #canvasControls{
     margin: 0 auto 1em;
     text-align: center;
@@ -281,11 +238,11 @@ dialog {
     display: none;
     button {
         height: 20px;
-        color: $mainBGColor;
+        color: variables.$mainBGColor;
         width: 45%;
         cursor: pointer;
         &.active {
-            background-color: $mainColor;
+            background-color: variables.$mainColor;
             color: white;
         }
     }
@@ -310,7 +267,7 @@ $bezier: cubic-bezier(0.65, 0.25, 0.56, 0.96);
     }
     input[type="checkbox"] + span,
     input[type="radio"] + span {
-        border: 2px solid $mainColor;
+        border: 2px solid variables.$mainColor;
         height: 1.5em;
         width: 1.5em;
         box-sizing: border-box;
@@ -319,7 +276,7 @@ $bezier: cubic-bezier(0.65, 0.25, 0.56, 0.96);
         background-color: white;
     }
     input[type="checkbox"]:checked + span {
-        border-color: $mainColor;
+        border-color: variables.$mainColor;
         transition: border-color 107ms $bezier;
         .mcui-check {
             opacity: 1;
@@ -330,9 +287,10 @@ $bezier: cubic-bezier(0.65, 0.25, 0.56, 0.96);
         }
     }
     input[type="checkbox"]:disabled + span {
-        background-color: $mainColor;
+        background-color: grey;
+        border: none;
     }
-    &:active:not([disabled]) {
+    input[type="checkbox"]:not(:disabled) + span:active {
         transform: scale(0.9);
     }
 }
@@ -341,7 +299,7 @@ $bezier: cubic-bezier(0.65, 0.25, 0.56, 0.96);
     height: 100%;
     width: 100%;
     transform: scale(1);
-    color: $mainColor;
+    color: variables.$mainColor;
     opacity: 0;
     &:hover:not([disabled]){
         cursor: pointer;

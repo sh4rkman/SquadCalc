@@ -12,6 +12,7 @@
         "experimentalWeapons": "Experimental weapons",
     "targetOptions": "Targets Options",
         "targetDrag": "Keypads while dragging",
+        "targetEmphasis": "Highlight hovered marker",
         "showSpread": "Spread Radius",
         "showDamage": "Damage Radiuses",
         "showAnimations": "Animations",

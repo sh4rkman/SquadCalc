@@ -28,5 +28,7 @@
     "damageRadiusTooltip": "Affiche les zones où 100 et 25 dégâts seront infligés",
     "showKeypadTooltip": "Affiche le numéro de grille (ex: \"B03-4-5\") sous le curseur de souris",
     "showSpreadTooltip": "Affiche la dispersion possible des projectiles autour des cibles",
-    "showMaxRangeTooltip": "Affiche des cercles bleus pour la portée minimale et maximale. Ne tient pas compte de l'altitude"
+    "showMaxRangeTooltip": "Affiche des cercles bleus pour la portée minimale et maximale. Ne tient pas compte de l'altitude",
+    "targetEmphasisTooltip": "Met en valeur une cible au survol de la souris en masquant les autres",
+    "useClassicCursorTooltip": "Remplace le réticule par le curseur par défaut de votre systeme"
 }

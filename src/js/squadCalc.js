@@ -10,7 +10,6 @@ import { tooltip_save, tooltip_copied } from "./tooltips.js";
 import { checkApiHealth, initWebSocket } from "./squadCalcAPI.js";
 import SquadFiringSolution from "./squadFiringSolution.js";
 import packageInfo from "../../package.json";
-import { Browser } from "leaflet";
 import i18next from "i18next";
 
 
@@ -25,6 +24,7 @@ export default class SquadCalc {
         this.debug = options.debug;
         this.userSettings = [];
         this.activeWeapon = "";
+        this.hasMouse = matchMedia("(pointer:fine)").matches;
     }
 
     init(){
@@ -260,7 +260,7 @@ export default class SquadCalc {
             }
         });
 
-        if (Browser.pointer) {
+        if (this.hasMouse) {
 
             $("#mapLayerMenu").find("button.btn-focus").on("click", () => {
                 $("header").hide();
@@ -433,6 +433,7 @@ export default class SquadCalc {
         this.minimap.updateWeapons();
         this.minimap.updateTargets();
 
+        // Refresh Heatmap
         this.minimap.toggleHeatmap();
     }
 

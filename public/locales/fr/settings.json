@@ -12,6 +12,7 @@
         "experimentalWeapons": "Armes expérimentales",
     "targetOptions": "Options des cibles",
         "targetDrag": "Grille pendant le déplacement",
+        "targetEmphasis": "Mise en valeur au survol",
         "showSpread": "Rayon de dispersion",
         "showDamage": "Rayons de dégâts",
         "showAnimations": "Animations",

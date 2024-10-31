@@ -12,6 +12,7 @@
         "experimentalWeapons": "实验武器",
     "targetOptions": "目标选项",
         "targetDrag": "拖动时的网格",
+        "targetEmphasis": "突出显示悬停的标记",
         "showSpread": "显示散布半径",
         "showDamage": "显示伤害半径",
         "showAnimations": "显示动画",

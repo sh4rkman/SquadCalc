@@ -1,5 +1,5 @@
 // Colors
-$mainColor: #ef7800;
+$mainColor: firebrick;
 $mainBGColor: #111;
 $mainTxtColor: #fff;
 $newColor: green;
@@ -86,7 +86,7 @@ button:focus {
 
 
 // Text-Shadows/Ouline
-%text-outline {
+@mixin text-outline {
     font-weight: bold;
     text-shadow: 1px 1px 0 #111,
     -1px 1px 0 #111,
@@ -169,11 +169,9 @@ button:focus {
 @keyframes target-appear {
     0% {
         top: -600px;
-        opacity: 0;
     }
     100% {
         top: 0;
-        opacity: 1;
     }
 }
 

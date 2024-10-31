@@ -116,6 +116,36 @@ tippy("span[data-i18n='settings:showKeypad']", {
     },
 });
 
+tippy("span[data-i18n='settings:targetEmphasis']", {
+    animation: "fade",
+    placement: "bottom",
+    allowHTML: true,
+    touch: false,
+    theme: "settingsTooltips",
+    hideOnClick: true,
+    delay: 50,
+    maxWidth: 200,
+    appendTo: helpDialog,
+    onShow(tip) {
+        tip.setContent(`${i18next.t("tooltips:targetEmphasisTooltip")}`);
+    },
+});
+
+tippy("span[data-i18n='settings:useClassicCursor']", {
+    animation: "fade",
+    placement: "bottom",
+    allowHTML: true,
+    touch: false,
+    theme: "settingsTooltips",
+    hideOnClick: true,
+    delay: 50,
+    maxWidth: 200,
+    appendTo: helpDialog,
+    onShow(tip) {
+        tip.setContent(`${i18next.t("tooltips:useClassicCursorTooltip")}`);
+    },
+});
+
 tippy("span[data-i18n='settings:showSpread']", {
     animation: "fade",
     placement: "bottom",

@@ -28,5 +28,7 @@
     "damageRadiusTooltip": "Display kill radius and 25 damage radius",
     "showKeypadTooltip": "Display the keypad currently hovered under the cursor",
     "showSpreadTooltip": "Display possible rounds' dispersion area around the targets",
-    "showMaxRangeTooltip": "Displays blue circles for minimum (if applicable) and maximum range. Does not account for elevation"
+    "showMaxRangeTooltip": "Displays blue circles for minimum (if applicable) and maximum range. Does not account for elevation",
+    "targetEmphasisTooltip": "Emphasize hovered marker by fading out others",
+    "useClassicCursorTooltip": "Replace crosshair with default cursor"
 }
