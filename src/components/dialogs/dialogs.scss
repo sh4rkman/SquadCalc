@@ -133,7 +133,7 @@ dialog {
     }
     &#helpDialog {
         max-width: 350px;
-        font-size: 0.7em;
+        font-size: 0.6em;
         h3 {
             font-size: 1.3em;
         }
@@ -162,7 +162,7 @@ dialog {
                 font-family: variables.$mainFont, Times, "Times New Roman", serif;
             }
             &#links {
-                margin: 1.8em 0.3em 0.7em auto;
+                margin: 1em 0.3em 0.7em auto;
                 width: auto;
                 font-size: 1.4em;
                 float: right;

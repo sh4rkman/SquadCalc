@@ -8,6 +8,8 @@
 
 <img src="https://img.shields.io/badge/-%20improv%20-orange"> Settings preview is now hidden on small screens to provide more space for settings
 
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Added new tooltip on "Use classic cursor" setting
+
 <img src="https://img.shields.io/badge/-%20improv%20-orange"> Settings will be displayed compacted on width smaller than 992px (previously 768px)
 
 <img src="https://img.shields.io/badge/-%20improv%20-orange"> Settings preview is now hidden on small screens to provide more space for settings

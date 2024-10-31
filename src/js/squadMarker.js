@@ -511,8 +511,12 @@ export var squadTargetMarker = squadMarker.extend({
         this.on("dragStart", this._handleDragStart, this);
         this.on("dragEnd", this._handleDragEnd, this);
         this.on("contextmenu", this._handleContextMenu, this);
-        this.on("mouseover", this._handleMouseOver, this);
-        this.on("mouseout", this._handleMouseOut, this);
+
+        if(App.hasMouse){
+            this.on("mouseover", this._handleMouseOver, this);
+            this.on("mouseout", this._handleMouseOut, this);
+        }
+
     },
 
 
@@ -842,22 +846,23 @@ export var squadTargetMarker = squadMarker.extend({
         this.hundredDamageRadius.setLatLng(e.latlng);
         this.twentyFiveDamageRadius.setLatLng(e.latlng);
 
+        // Update Position PopUp Content
+        if (App.userSettings.targetDrag) {
+            this.posPopUp.setLatLng(e.latlng).setContent(this.map.getKP(-e.latlng.lat, e.latlng.lng, 4));
+        }
+
+        // On mobile save performance
+        if (!App.hasMouse) return;
+
+        // Update bearing/elevation/spread marker
+        this.updateCalc(); 
+
         // Update TrajectoryPath
         this.pathTrajectory1.setLatLngs([this.map.activeWeaponsMarkers.getLayers()[0].getLatLng(), e.latlng]).setStyle({ opacity: 1 });
         if (this.map.activeWeaponsMarkers.getLayers()[1]) {
             this.pathTrajectory2.setLatLngs([this.map.activeWeaponsMarkers.getLayers()[1].getLatLng(), e.latlng]).setStyle({ opacity: 1 });
         }
-
-        // Update Position PopUp Content
-        if (App.userSettings.targetDrag) {
-            this.posPopUp.setLatLng(e.latlng);
-            this.posPopUp.setContent(this.map.getKP(-e.latlng.lat, e.latlng.lng, 4));
-        }
-
-        // Update bearing/elevation/spread marker
-        // On mobile, save performance
-        if (App.hasMouse) { this.updateCalc(); }
- 
+        
     },
 
     
