@@ -1,8 +1,22 @@
-# <img src="https://img.shields.io/badge/-major%20release-b22222?style=for-the-badge">  **33.0.0** *(2024-11-XX)*
+# <img src="https://img.shields.io/badge/-major%20release-b22222?style=for-the-badge">  **33.0.0** *(2024-11-01)*
 
 <img src="https://img.shields.io/badge/-new-green"> Dragging or hovering a target for more than 0.5s will create a line between the target and the placed weapons simulating the projectile path.
 
 <img src="https://img.shields.io/badge/-new-green"> Hovering a target for more than 0.5s will fade out other markers for clarity. Can be toggled off though settings.
+
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed Kokan/Goosebay/Foolroad gamma (thanks zfzr031 ! fix #206)
+
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed incorrect cursor sometimes appearing while dragging
+
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed incorrect cursor sometimes appearing when hovering the lower part of a marker
+
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Atempt to fix toast message sometimes shifting the window at launch
+
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Focus mode should now be correctly hidden on mobile devices
+
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> "Keypad Under Cursor" & "Use Classic Cursor" settings are now correctly disabled on mobile devices
+
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed slow image loading in settings preview
 
 <img src="https://img.shields.io/badge/-%20improv%20-orange"> Removed Halloween event theme
 
@@ -15,18 +29,6 @@
 <img src="https://img.shields.io/badge/-%20improv%20-orange"> Settings preview is now hidden on small screens to provide more space for settings
 
 <img src="https://img.shields.io/badge/-%20improv%20-orange"> Settings added this last two months has been marked as 'New'
-
-<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed incorrect cursor sometime appearing while dragging
-
-<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed incorrect cursor sometime appearing when hovering the lower part of a marker
-
-<img src="https://img.shields.io/badge/-%20fix%20-b22"> Atempt to fix toast message sometimes shifting the window at launch
-
-<img src="https://img.shields.io/badge/-%20fix%20-b22"> Focus mode should now be correctly hidden on mobile devices
-
-<img src="https://img.shields.io/badge/-%20fix%20-b22"> "Keypad Under Cursor" & "Use Classic Cursor" settings are now correctly disabled on mobile devices
-
-<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed slow image loading in settings preview
 
 <img src="https://img.shields.io/badge/-%20dev%20-grey"> Replaced deprecated sass import function (fix [#213](https://github.com/sh4rkman/SquadCalc/issues/213))
 

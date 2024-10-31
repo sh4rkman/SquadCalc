@@ -512,7 +512,7 @@ export var squadTargetMarker = squadMarker.extend({
         this.on("dragEnd", this._handleDragEnd, this);
         this.on("contextmenu", this._handleContextMenu, this);
 
-        if(App.hasMouse){
+        if (App.hasMouse){
             this.on("mouseover", this._handleMouseOver, this);
             this.on("mouseout", this._handleMouseOut, this);
         }
