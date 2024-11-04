@@ -71,7 +71,7 @@ export var squadMinimap = Map.extend({
         this.on("dblclick", this._handleDoubleCkick, this);
         this.on("contextmenu", this._handleContextMenu, this);
         
-        if (App.userSettings.keypadUnderCursor || !App.hasMouse){
+        if (App.userSettings.keypadUnderCursor && App.hasMouse){
             this.on("mousemove", this._handleMouseMove, this);
             this.on("mouseout", this._handleMouseOut, this);
             this.on("zoomend", this._handleZoom, this);
