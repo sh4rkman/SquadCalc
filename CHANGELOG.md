@@ -1,3 +1,16 @@
+
+
+
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **33.0.1** *(2024-11-04)*
+
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed Targets not working properly on Safari (thanks @Hooded_Lizard & @SOHNER)
+
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed Keypads appearing randomly on touch on mobile devices
+
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
+
 # <img src="https://img.shields.io/badge/-major%20release-b22222?style=for-the-badge">  **33.0.0** *(2024-11-01)*
 
 <img src="https://img.shields.io/badge/-new-green"> Dragging or hovering a target for more than 0.5s will create a line between the target and the placed weapons simulating the projectile path.
