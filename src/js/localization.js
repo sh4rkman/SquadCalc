@@ -97,4 +97,10 @@ function updateContent() {
         dropdownParent: $("#ammoSelector"),
         minimumResultsForSearch: -1,
     });
+
+    // $(".dropbtn5").select2("destroy").select2({
+    //     dropdownCssClass: "dropbtn",
+    //     dropdownParent: $("#layerSelector"),
+    //     minimumResultsForSearch: -1,
+    // });
 }

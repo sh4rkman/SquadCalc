@@ -9,7 +9,6 @@ import { fetchMarkersByMap } from "./squadCalcAPI.js";
 import webGLHeatmap from "./libs/leaflet-webgl-heatmap.js";
 import "leaflet-spin";
 import "./libs/webgl-heatmap.js";
-
 import "./libs/leaflet-smoothWheelZoom.js";
 
 
@@ -185,11 +184,18 @@ export var squadMinimap = Map.extend({
      * Reset map by clearing every Markers/Layers
      */
     clear: function(){
+
+        // Clear Every existing Makers
         this.markersGroup.clearLayers();
         this.activeWeaponsMarkers.clearLayers();
         this.activeTargetsMarkers.clearLayers();
-        this.setView([-this.tilesSize/2, this.tilesSize/2], 2);
+        if (this.layer) this.layer.clear();
+    
         $(".btn-delete").hide();
+
+        // Reset map
+        this.setView([-this.tilesSize/2, this.tilesSize/2], 2);
+
     },
 
     /**

@@ -228,3 +228,42 @@ function checkServerAvailability(timeout = 2000) {
         img.src = "http://127.0.0.1:12345";
     });
 }
+
+
+/**
+ * xxxxxxxxxxxxxxxxxxxxxx
+ * @param {string} mapName - The name of the map to fetch layers data for.
+ * @returns {Promise<Object>} A promise that resolves with the fetched marker data in JSON format.
+ * @throws {Error} Throws an error if the network request fails or the response is not OK.
+ */
+export async function fetchLayersByMap(mapName) {
+    const url = `${process.env.API_URL}/get/layers?map=${encodeURIComponent(mapName)}`;
+    try {
+        const response = await fetch(url, { headers: { "X-App-Version": packageInfo.version }, });
+        if (!response.ok) { throw new Error("Network response was not ok"); }
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.debug("Error fetching layers data:", error);
+        throw error;
+    }
+}
+
+/**
+ * xxxxxxxxxxxxxxxxxxxxxx
+ * @param {string} mapName - The name of the map to fetch layers data for.
+ * @returns {Promise<Object>} A promise that resolves with the fetched marker data in JSON format.
+ * @throws {Error} Throws an error if the network request fails or the response is not OK.
+ */
+export async function fetchLayerByName(layerName) {
+    const url = `${process.env.API_URL}/get/layer?map=${encodeURIComponent(layerName)}`;
+    try {
+        const response = await fetch(url, { headers: { "X-App-Version": packageInfo.version }, });
+        if (!response.ok) { throw new Error("Network response was not ok"); }
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.debug("Error fetching layers data:", error);
+        throw error;
+    }
+}

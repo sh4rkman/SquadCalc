@@ -27,9 +27,9 @@
         }
         &.ui {
             position: fixed;
-            top: 3.1em;
+            top: 6.3em;
         }
-        #ammoSelector{
+        #ammoSelector {
             padding-top: 1em;
         }
     }
@@ -44,13 +44,17 @@
             position: fixed;
             top: 0;
         }
+        #layerSelector {
+            padding-top: 1em;
+        }
     }
     .selectbox {
         padding: 0;
     }
     .dropbtn,
     .dropbtn2,
-    .dropbtn3 {
+    .dropbtn3,
+    .dropbtn5 {
         color: #fff;
         font-weight: bold;
         line-height: 2.188em;

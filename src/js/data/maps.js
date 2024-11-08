@@ -154,7 +154,7 @@ export const MAPS = [
         maxZoomLevel: 4,
     },
     { 
-        name: "Sanxian",
+        name: "Sanxian_Islands",
         size: 4600, 
         scaling: 0.1892, 
         mapURL: "/sanxian/",

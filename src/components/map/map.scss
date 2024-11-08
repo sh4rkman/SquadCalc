@@ -79,6 +79,52 @@
             @include variables.text-outline;
             font-size: 1.1em;
         }
+        .objText {
+            @include variables.light-text-outline;
+            font-size: 1em;
+            text-align: center;
+            font-family: oswald;
+        }
+        .flag {
+            @include variables.light-text-outline;
+            border: solid rgba(0, 0, 0, 0.5) 1px;
+            border-radius: px;
+            background-color: rgba(255, 255, 255, 0.5);
+            pointer-events: all;
+            font-size: 1.1em;
+            &.flag1 {
+                background-color: rgba(255, 0, 0, 1);   // Red with 70% opacity
+            }
+            &.flag2 {
+                background-color: rgba(0, 255, 0, 1);   // Green with 70% opacity
+            }
+            &.flag3 {
+                background-color: rgba(9, 9, 255, 1);   // Blue with 70% opacity
+            }
+            &.flag4 {
+                background-color: rgba(255, 0, 255, 1); // Purple with 70% opacity
+            }
+            &.flag5 {
+                background-color: rgba(255, 192, 203, 1); // Pink with 70% opacity
+            }
+            &.flag6 {
+                background-color: rgba(3, 48, 2, 1);    // Dark green with 70% opacity
+            }
+            &.flag7 {
+                background-color: rgba(214, 105, 22, 1); // Orange with 70% opacity
+            }
+            &.flag8 {
+                background-color: rgba(0, 0, 0, 1);     // Black with 70% opacity
+            }
+            &.selected {
+                background-color: green;
+            }
+            &:hover {
+               outline: solid 1px rgb(90, 90, 90);
+            }
+            
+        }
+
     }
 }
 

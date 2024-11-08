@@ -7,10 +7,12 @@ import { loadSettings } from "./settings.js";
 import { loadLanguage } from "./localization.js";
 import { animateCSS, animateCalc } from "./animations.js";
 import { tooltip_save, tooltip_copied } from "./tooltips.js";
-import { checkApiHealth, initWebSocket } from "./squadCalcAPI.js";
+import { checkApiHealth, initWebSocket, fetchLayersByMap, fetchLayerByName } from "./squadCalcAPI.js";
 import SquadFiringSolution from "./squadFiringSolution.js";
 import packageInfo from "../../package.json";
 import i18next from "i18next";
+import { SquadLayer } from "./squadLayer.js";
+
 
 
 export default class SquadCalc {
@@ -46,11 +48,20 @@ export default class SquadCalc {
      */
     loadMapSelector() {
         const MAP_SELECTOR = $(".dropbtn");
+        const LAYER_SELECTOR = $(".dropbtn5");
 
         // Initiate Maps Dropdown
         MAP_SELECTOR.select2({
             dropdownCssClass: "dropbtn",
             dropdownParent: $("#mapSelector"),
+            minimumResultsForSearch: -1, // Disable search
+        });
+
+        // Initiate Maps Dropdown
+        LAYER_SELECTOR.select2({
+            dropdownCssClass: "dropbtn",
+            dropdownParent: $("#layerSelector"),
+            placeholder: "Select a layer",
             minimumResultsForSearch: -1, // Disable search
         });
         
@@ -62,8 +73,43 @@ export default class SquadCalc {
         // Add event listener
         MAP_SELECTOR.on("change", (event) => {
             this.minimap.activeMap = MAPS.find((elem, index) => index == event.target.value);
+            this.loadLayers()
             this.minimap.clear(); 
             this.minimap.draw(); 
+        });
+
+        LAYER_SELECTOR.on("change", (event) => {
+            this.minimap.spin(true, this.minimap.spinOptions);
+            fetchLayerByName(event.target.value).then(layerData => {
+                if(this.minimap.layer) this.minimap.layer.clear();
+                this.minimap.layer = new SquadLayer(this.minimap, layerData);
+                this.minimap.spin(false);
+            }).catch(error => {
+                this.openToast("error", "error", "apiError");
+                this.minimap.spin(false);
+                console.debug("Error fetching layer data:", error);
+            });
+        });
+    }
+
+    /**
+     * Retrieve list of available layers name from squadcalc api
+     */
+    loadLayers() {
+        const LAYER_SELECTOR = $(".dropbtn5");
+        LAYER_SELECTOR.empty();
+        this.minimap.spin(true, this.minimap.spinOptions);
+        fetchLayersByMap(this.minimap.activeMap.name).then(layers => {
+            LAYER_SELECTOR.append('<option selected value="">BETA!</option>'); // Add placeholder option
+            layers.forEach(function(layer, i) {
+                LAYER_SELECTOR.append(`<option value=${layer.rawname}>${layer.niceName}</option>`);
+            });
+            this.minimap.spin(false);
+            
+        }).catch(error => {
+            this.minimap.spin(false);
+            this.openToast("error", "error", "apiError");
+            console.debug("Error fetching markers:", error);
         });
     }
 
@@ -81,6 +127,7 @@ export default class SquadCalc {
         $(".dropbtn").val(randMapId);
         this.minimap = new squadMinimap("map", tileSize, defaultMap);
         this.minimap.draw();
+        this.loadLayers();
     }
 
     /**
