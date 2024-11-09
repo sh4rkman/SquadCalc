@@ -9,11 +9,90 @@
         width: 100%;
         background: var(--themecolor, variables.$mainBGColor);
         z-index: 0;
+        .leaflet-interactive {
+            cursor: inherit;
+        }
         .leaflet-pane .leaflet-marker-pane .leaflet-marker-icon {
             cursor: grab;
             &:active {
                 cursor: grabbing;
             }
+        }
+        .objText {
+            @include variables.light-text-outline;
+            font-size: 1em;
+            text-align: center;
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+            font-weight: bolder;
+            letter-spacing: normal;
+        }
+        .leaflet-pane .leaflet-marker-pane .flag {
+            @include variables.light-text-outline;
+            background-color: rgba(255, 255, 255, 0.5);
+            //pointer-events: none;
+            font-size: 1.1em;
+            letter-spacing: normal;
+            $flag-opacity: 0.4;
+
+            cursor: inherit;
+            &:active {
+                cursor: inherit;
+            }
+            &.flag1 {
+                background-color: rgba(255, 0, 0, $flag-opacity+0.5);
+                outline: solid rgb(139, 0, 0) 1px;
+            }
+            &.flag2 {
+                background-color: rgba(0, 200, 200, $flag-opacity);
+                outline: solid green 1px;
+            }
+            &.flag3 {
+                background-color: rgba(9, 9, 255, $flag-opacity);
+                outline: solid rgb(0, 0, 255) 1px;
+            }
+            &.flag4 {
+                background-color: rgba(255, 0, 255, $flag-opacity);
+                outline: solid purple 1px;
+            }
+            &.flag5 {
+                background-color: rgba(255, 192, 203, $flag-opacity);
+                outline: solid pink 1px;
+            }
+            &.flag6 {
+                background-color: rgba(3, 48, 2, $flag-opacity);
+            }
+            &.flag7 {
+                background-color: rgba(214, 105, 22, $flag-opacity);
+            }
+            &.flag8 {
+                background-color: rgba(0, 0, 0, $flag-opacity);
+            }
+            &.main {
+                background-color: red;
+                text-transform: uppercase;
+            }
+            &.selected, &.next {
+                cursor: pointer;
+                pointer-events: all;
+                outline: solid 2px rgba(0, 0, 0, 0.8); // Hover outline default for both
+                &:hover {
+                    outline: solid 2px rgba(0, 0, 0, 0.8);
+                }
+            }
+            &.selected {
+                font-size: 1.1em;
+                background-color: green;
+                outline-color: rgb(0, 92, 0); // Initial outline color
+                &.main {
+                    text-transform: uppercase;
+                }
+            }
+            &.next {
+                background-color: red;
+                outline-color: rgba(204, 0, 0, 0.8); // Initial outline color
+            }
+
+            
         }
         .kpPopup, .posPopUpTarget, .posPopUpWeapon {
             background: transparent;
@@ -79,51 +158,7 @@
             @include variables.text-outline;
             font-size: 1.1em;
         }
-        .objText {
-            @include variables.light-text-outline;
-            font-size: 1em;
-            text-align: center;
-            font-family: oswald;
-        }
-        .flag {
-            @include variables.light-text-outline;
-            border: solid rgba(0, 0, 0, 0.5) 1px;
-            border-radius: px;
-            background-color: rgba(255, 255, 255, 0.5);
-            pointer-events: all;
-            font-size: 1.1em;
-            &.flag1 {
-                background-color: rgba(255, 0, 0, 1);   // Red with 70% opacity
-            }
-            &.flag2 {
-                background-color: rgba(0, 255, 0, 1);   // Green with 70% opacity
-            }
-            &.flag3 {
-                background-color: rgba(9, 9, 255, 1);   // Blue with 70% opacity
-            }
-            &.flag4 {
-                background-color: rgba(255, 0, 255, 1); // Purple with 70% opacity
-            }
-            &.flag5 {
-                background-color: rgba(255, 192, 203, 1); // Pink with 70% opacity
-            }
-            &.flag6 {
-                background-color: rgba(3, 48, 2, 1);    // Dark green with 70% opacity
-            }
-            &.flag7 {
-                background-color: rgba(214, 105, 22, 1); // Orange with 70% opacity
-            }
-            &.flag8 {
-                background-color: rgba(0, 0, 0, 1);     // Black with 70% opacity
-            }
-            &.selected {
-                background-color: green;
-            }
-            &:hover {
-               outline: solid 1px rgb(90, 90, 90);
-            }
-            
-        }
+     
 
     }
 }

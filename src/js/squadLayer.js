@@ -58,7 +58,7 @@ export class SquadLayer {
                 obj.location_y = (obj.location_y - this.offset_y) / 100
                 var latlng = [obj.location_y * -this.map.gameToMapScale, obj.location_x * -this.map.gameToMapScale]
                 var radius = obj.objects[0].sphereRadius/100 * this.map.gameToMapScale
-                var newFlag = new SquadObjective(latlng, radius, this, "" , obj);
+                var newFlag = new SquadObjective(latlng, radius, this, "" , obj, 1, obj);
                 newFlag.flag.off()
                 this.path.push(latlng)
             });
@@ -157,18 +157,28 @@ export class SquadLayer {
         if(flag.position <= this.currentPosition-1){
 
             backward = true;
+            this.selectedReachableClusters.pop();
 
             var positionToReduce = Math.abs(this.currentPosition - flag.position);
-
             console.error("# of Going backward : ", positionToReduce)
+
             if(flag === this.selectedFlags[0]) {positionToReduce--}
+            
             // Unselecting the same flag
             // Mains can't be unselected
             if(positionToReduce === 0) {
-                console.error("Unselecting the same flag")
-                if(flag != this.selectedFlags[0]) {positionToReduce++;}
+                console.log("Unselecting the same flag")
+                if(flag != this.selectedFlags[0]) {
+                    positionToReduce++;
+                }
+                else {
+                    console.log("Can't unselect main flag")
+                    return;
+                }
             }
-            this.selectedReachableClusters.pop();
+
+
+
             // Remove the selectedFlags from the end
             for(var i = 0; i < positionToReduce; i++){
                 this.selectedFlags.at(-1).unselect();
@@ -201,22 +211,6 @@ export class SquadLayer {
         // Set to track clusters that can be reached from the clicked flag
         const reachableClusters = new Set();
 
-        // DFS function to explore connections recursively
-        const dfs = (clusterName) => {
-            if (reachableClusters.has(clusterName)) return;  // If already visited, skip
-            reachableClusters.add(clusterName); // Mark this cluster as reachable
-
-            // Sometimes links are stored in clusters, sometimes in lanes
-            const links = this.layerData.capturePoints.lanes.links || this.layerData.capturePoints.clusters.links;
-
-            // Traverse each link to find connected clusters
-            links.forEach((link) => {
-                if (link.nodeA === clusterName && !reachableClusters.has(link.nodeB)) {
-                    dfs(link.nodeB);  // Traverse from nodeA to nodeB
-                }
-            });
-        };
-
         // Start DFS from each cluster associated with the clicked flag
         flag.clusters.forEach((cluster) => {
 
@@ -232,11 +226,11 @@ export class SquadLayer {
 
             // If the clicked flag is a main flag, use the objectDisplayName instead
             if(cluster.name === "Main"){
-                dfs(cluster.objectDisplayName);
+                this.dfs(cluster.objectDisplayName, reachableClusters);
                 return;
             }
 
-            dfs(cluster.name);
+            this.dfs(cluster.name, reachableClusters);
         });
 
 
@@ -290,18 +284,18 @@ export class SquadLayer {
 
 
 
-        console.warn("****************************************")
+        console.warn("*****************************************")
         console.warn("Showing Clusters in front of clicked flag")
-        console.warn("****************************************")
+        console.warn("*****************************************")
 
-        var nbNextFlags = [];
+        var nextFlags = [];
 
         // Show reachable clusters
         reachableClusters.forEach((clusterName) => {
             // Attempt to retrieve the cluster directly by name
             let cluster = this.layerData.objectives[clusterName];
 
-            // If the cluster is not found directly, search for a matching displayName
+            // If the cluster is not found directly, search for a matching displayName (mains)
             if (!cluster) {
                 cluster = Object.values(this.layerData.objectives).find(
                     (obj) => obj.objectDisplayName === clusterName
@@ -315,11 +309,11 @@ export class SquadLayer {
 
                     // If cluster is directly in front of the clicked flag, count the next flags
                     if(cluster.pointPosition === this.currentPosition+1){
-                        const nextFlags = this.flags.filter((f) => f.clusters.includes(cluster));
-                        nextFlags.forEach((flag) => {
+                        const futurFlags = this.flags.filter((f) => f.clusters.includes(cluster));
+                        futurFlags.forEach((flag) => {
                             // Only add if not already in the list
-                            if (!nbNextFlags.includes(flag)) {
-                                nbNextFlags.push(flag);
+                            if (!nextFlags.includes(flag)) {
+                                nextFlags.push(flag);
                             }
                         });
                     }
@@ -331,18 +325,54 @@ export class SquadLayer {
             }
         });
 
-        console.warn("Flags next step :", nbNextFlags)
+        console.warn("Flags next step :", nextFlags);
+
+        // Highlight the next flags with a proper class
+        nextFlags.forEach((flag) => {
+            var div = flag.flag._icon;
+            div.classList.add("next");
+            flag.flag.options.icon.options.className = "flag flag" + flag.position + " next";
+        });
+
+
 
         // Only one flag in front ? Click it
-        if(nbNextFlags.length === 1 && !backward){
-            this._handleFlagClick(nbNextFlags[0]);
+        if(nextFlags.length === 1 && !backward){
+            this._handleFlagClick(nextFlags[0]);
         }
 
 
     }
 
+
+    /**
+     * Deep First Search to find all reachable clusters from a given cluster
+     * @param {String} clusterName 
+     * @param {Array} reachableClusters - Set to store reachable clusters
+     */
+    dfs(clusterName, reachableClusters) {
+        if (reachableClusters.has(clusterName)) return;  // If already visited, skip
+        reachableClusters.add(clusterName); // Mark this cluster as reachable
+
+        // Sometimes links are stored in clusters, sometimes in lanes
+        const links = this.layerData.capturePoints.lanes.links || this.layerData.capturePoints.clusters.links;
+
+        // Traverse each link to find connected clusters
+        links.forEach((link) => {
+            if (link.nodeA === clusterName && !reachableClusters.has(link.nodeB)) {
+                this.dfs(link.nodeB, reachableClusters);  // Traverse from nodeA to nodeB
+            }
+        });
+    }
+
+
+    /**
+     * Unselects all flags and resets the layer
+     */
     _resetLayer() {
         this.currentPosition = 0;
+        this.selectedReachableClusters = [];
+        this.selectedFlags = [];
         this.flags.forEach((flag) => {
             flag.show();
             flag.unselect();
@@ -360,18 +390,12 @@ export class SquadLayer {
 
 
         flagsToShow.forEach((flagToShow) => {
-            //if(flagToShow.isHidden) {return}
-            //flagToShow.updatePosition(cluster.pointPosition-1);
             console.log("showing flag", flagToShow)
-
-            //console.log(`adding cluster ${cluster.name} to flag ${flagToShow.name}`)
-            //flagToShow.addCluster(cluster);
 
             const foundClusters = [];
 
+            // Filters the clusters that were reachable from the previous flag
             flagToShow.clusters.forEach((cluster) => {
-                // check if cluster is found in the selectedReachableClusters last entry
-                // create an array that hold the cluster founds in the selectedReachableClusters last entry
                 if(this.selectedReachableClusters.at(-1).has(cluster.name)){
                     foundClusters.push(cluster);
                 }
@@ -385,10 +409,11 @@ export class SquadLayer {
                 foundClusters[0].pointPosition
             ) -1;
 
-            console.log("new position to update", newPos)
+
             flagToShow.position = newPos;
             flagToShow.show();
 
+            console.log("new position updated", newPos)
         });
 
     }
@@ -433,7 +458,6 @@ export class SquadObjective {
 
         this.name = objCluster.name;
         this.objectName = objCluster.objectName;
-        //this.name = this.name + " (" + cluster.name.substring(0, 2) + ")";
         this.objCluster = objCluster
         this.layerGroup = layer.activeLayerMarkers;
         this.layer = layer
@@ -443,26 +467,28 @@ export class SquadObjective {
         this.isHidden = true;
         this.position = cluster.pointPosition;
 
-
-
-
         this.nameText = new Marker(latlng, {
             interactive: false,
             icon: new DivIcon({
                 className: "objText",
                 html: `${this.name}`,
                 iconSize: [300, 20],
-                iconAnchor: [150, 30]
+                iconAnchor: [150, 33]
             })
         }).addTo(this.layerGroup);
+
+
+        if(this.isMain) {
+
+        }
 
         this.flag = new Marker(latlng, {
             interactive: true,
             icon: new DivIcon({
                 className: `flag flag${this.position}`,
-                html: this.position-1,
-                iconSize: [42, 20],
-                iconAnchor: [21, 10]
+                html: 99,
+                iconSize: [46, 24],
+                iconAnchor: [23, 12]
             })
         }).addTo(this.layerGroup);
 
@@ -475,28 +501,47 @@ export class SquadObjective {
     select(){
 
         this.flag.removeFrom(this.layerGroup).remove();
+
+        if(!this.isMain) { 
+            var html = this.position;
+            var className = "flag selected";
+        } else {
+            var html= this.name;
+            var className = "flag selected main";
+        }
+
         this.flag = new Marker(this.latlng, {
             interactive: true,
             icon: new DivIcon({
-                className: `flag selected`,
-                html: this.position,
-                iconSize: [42, 20],
-                iconAnchor: [21, 10]
+                className: className,
+                html: html,
+                iconSize: [40, 18], // smaller when selected
+                iconAnchor: [20, 9] 
             })
         }).addTo(this.layerGroup);
+
         this.isSelected = true;
         this.flag.on('click', this._handleClick, this);
     }
 
     unselect(){
         this.flag.removeFrom(this.layerGroup).remove();
+
+        var html = "";
+
+        if(!this.isMain) { 
+            html = this.position; 
+        } else {
+            html= this.name;
+        }
+
         this.flag = new Marker(this.latlng, {
             interactive: true,
             icon: new DivIcon({
                 className: `flag flag${this.position}`,
-                html: this.position,
-                iconSize: [42, 20],
-                iconAnchor: [21, 10]
+                html: html,
+                iconSize: [40, 18], // smaller when selected
+                iconAnchor: [20, 9] 
             })
         }).addTo(this.layerGroup);
         this.isSelected = false;
@@ -511,18 +556,34 @@ export class SquadObjective {
 
     updatePosition() {
 
-        const lowestPointPosition = this.clusters.reduce((min, item) =>
+        const lowestPossiblePosition = this.clusters.reduce((min, item) =>
             item.pointPosition < min ? item.pointPosition : min,
             this.clusters[0].pointPosition
         );
 
-        this.position = lowestPointPosition - 1;
+        this.position = lowestPossiblePosition - 1;
 
+        // default parameters for AAS
+        var className = "flag";
+        var html = "";
+
+        // if RAAS/Invasion, add the flag number and a colored icon
+        if(this.layer.layerData.gamemode != "AAS") {
+            className += " flag" + this.position;
+            html = this.position;
+        }
+
+        if(this.isMain) { 
+            html = this.name;
+            className = className + " main";
+        }
+
+        // Refresh the flag icon
         this.flag.setIcon(new DivIcon({
-            className: `flag flag${this.position}`,
-            html: this.position,
-            iconSize: [42, 20],
-            iconAnchor: [21, 10]
+            className: className,
+            html: html,
+            iconSize: [40, 18],
+            iconAnchor: [23, 12]
         }));
 
     }
@@ -549,13 +610,6 @@ export class SquadObjective {
     }
 
     show(){
-        // console.warn("showing flag", this.name)
-
-        // if(pointPosition) {
-        //     this.position = pointPosition-1;
-        //     console.warn("his cluster position", pointPosition)
-        // }
-
 
         this.nameText.setOpacity(1).addTo(this.layerGroup);
         this.flag.setOpacity(1).addTo(this.layerGroup);
@@ -563,18 +617,8 @@ export class SquadObjective {
         this.isHidden = false;
 
         // when showing a flag
-
         this.flag.on('click', this._handleClick, this);
-
         this.flag.options.interactive = true;
-    }
-
-    /**
-     * xxxx
-     * @return {number} - xxxx
-     */
-    clear(){
-        this.layerGroup.clearLayers()
     }
 
 }
