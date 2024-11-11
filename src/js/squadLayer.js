@@ -140,7 +140,7 @@ export class SquadLayer {
         console.warn("**************************")
         console.log("  -> Selected Flag:", flag.objectName);
         console.log("  -> Clicked flag position", flag.position)
-        console.log("  -> Cluster", flag.objCluster.pointPosition)
+        console.log("  -> Flag Object:", flag);
         console.log("    **************************")
         console.log("  -> Current position", this.currentPosition)
         console.log("  -> Current selected Flags", this.selectedFlags)
@@ -167,36 +167,26 @@ export class SquadLayer {
 
 
 
-        if(flag.position > this.currentPosition) {
+        if(flag.position > this.currentPosition+1) {
             console.error("  -> Clicked Flag is in front, skipping..")
             return; 
         }
 
         // Going backward
-        if(flag.position <= this.currentPosition -1){
+        if(flag.position <= this.currentPosition){
 
             backward = true;
             this.selectedReachableClusters.pop();
 
-            var positionToReduce = this.currentPosition - flag.position;
+            var positionToReduce = (this.currentPosition - flag.position)+1;
             console.error("# of Going backward : ", positionToReduce)
 
-            if(flag === this.selectedFlags[0]) {positionToReduce--}
-            
-            // Unselecting the same flag
-            // Mains can't be unselected
-            if(positionToReduce === 0) {
-                console.log("Unselecting the same flag")
-                if(flag != this.selectedFlags[0]) {
-                    positionToReduce++;
-                }
-                else {
-                    console.log("Can't unselect main flag")
-                    this._resetLayer();
-                    return;
-                }
+            if(flag === this.selectedFlags[0]) {
+                console.log("Can't unselect main flag")
+                this._resetLayer();
+                return;
             }
-
+            
             // Remove the selectedFlags from the end
             for(var i = 0; i < positionToReduce; i++){
                 this.selectedFlags.at(-1).unselect();
@@ -224,7 +214,9 @@ export class SquadLayer {
         }
 
 
-
+        console.warn("**************************")
+        console.warn("       STARTING DFS       ")
+        console.warn("**************************")
 
         // Set to track clusters that can be reached from the clicked flag
         const reachableClusters = new Set();
@@ -235,7 +227,7 @@ export class SquadLayer {
             // Ignore clusters that are in front of the clicked for now
             //cluster.pointPosition = Math.abs(this.startPosition - cluster.pointPosition)
             if(cluster.pointPosition > this.currentPosition){
-                console.warn("Cluster is irrevelant! skipping..", cluster);
+                console.warn("Cluster is irrevelant! skipping DFS for now..", cluster);
                 return;
             }
            
@@ -255,6 +247,7 @@ export class SquadLayer {
             Array.from(reachableClusters).forEach((cluster) => {
                 if(!this.selectedReachableClusters.at(-1).has(cluster)){
                     reachableClusters.delete(cluster);
+                    console.log(" -> filtered because wasn't previously reachable :", cluster);
                 }
             });
         }
@@ -291,7 +284,7 @@ export class SquadLayer {
             console.log("   -> Cluster position", cluster.pointPosition)
             console.log("   -> Clicked flag position", flag.position)
             console.log("   -> Current position", this.currentPosition)
-            if (cluster.pointPosition > flag.position) {
+            if (cluster.pointPosition >= this.currentPosition) {
                 console.log("   -> Cluster is in front! Hiding.");
                 if (!flag.clusters.some(c => c.name === cluster.objectName)) {
                     this._hideCluster(cluster, flag);
@@ -307,6 +300,7 @@ export class SquadLayer {
         console.warn("*****************************************")
         console.warn("Showing Clusters in front of clicked flag")
         console.warn("*****************************************")
+
 
         // We will store the very next flags in this array
         var nextFlags = [];
@@ -325,13 +319,13 @@ export class SquadLayer {
 
             console.log("Cluster to show", cluster)
             console.log("   -> cluster.pointPosition", cluster.pointPosition)
-            console.log("   -> Flag position", flag.position+1)
+            console.log("   -> Flag position", flag.position)
             console.log("   -> Current position", this.currentPosition)
             //cluster.pointPosition = Math.abs(this.startPosition - cluster.pointPosition)
             //console.warn("cluster.pointPosition corrected", cluster.pointPosition)
 
             // If the cluster is in front of the clicked flag, show it
-            if(cluster.pointPosition > flag.position+1){
+            if(cluster.pointPosition > this.currentPosition){
                   
                 console.log("   -> Cluster in front, showing it !");
 
@@ -387,8 +381,8 @@ export class SquadLayer {
      */
     dfs(clusterName, reachableClusters) {
         if (reachableClusters.has(clusterName)) return;  // If already visited, skip
-        reachableClusters.add(clusterName); // Mark this cluster as reachable
-
+        reachableClusters.add(clusterName); // Mark this cluster as reachable)
+        console.debug("Added to reachableCluster :", clusterName);
         // Sometimes links are stored in clusters, sometimes in lanes
         const links = this.layerData.capturePoints.lanes.links || this.layerData.capturePoints.clusters.links;
 
@@ -415,9 +409,14 @@ export class SquadLayer {
     _resetLayer() {
         console.clear();
         console.log("Resetting layer");
+
         this.currentPosition = 0;
         this.selectedReachableClusters = [];
         this.selectedFlags = [];
+
+        this.path = [];
+        this.polyline.setLatLngs(this.path);
+
         this.flags.forEach((flag) => {
             flag.show();
             flag.unselect();
@@ -449,7 +448,7 @@ export class SquadLayer {
             var newPos = foundClusters.reduce((min, item) =>
                 item.pointPosition < min ? item.pointPosition : min,
                 foundClusters[0].pointPosition
-            ) -1;
+            );
 
 
             flagToShow.position = newPos;
@@ -508,6 +507,8 @@ export class SquadObjective {
         this.isMain = isMain;
         this.isHidden = true;
         this.position = cluster.pointPosition;
+
+        console.log("creating flag", this.name, "at position", this.position)
 
         this.nameText = new Marker(latlng, {
             interactive: false,
@@ -594,6 +595,7 @@ export class SquadObjective {
     }
 
     addCluster(cluster){
+        //cluster.pointPosition--;
         this.clusters.push(cluster);
         this.updatePosition();
     }
@@ -608,7 +610,7 @@ export class SquadObjective {
             this.clusters[0].pointPosition
         );
 
-        this.position = lowestPossiblePosition - 1;
+        this.position = lowestPossiblePosition;
 
         // default parameters for AAS
         var className = "flag";
