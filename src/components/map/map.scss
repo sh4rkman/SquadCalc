@@ -39,7 +39,7 @@
                 cursor: inherit;
             }
             &.flag1 {
-                background-color: rgba(255, 0, 0, $flag-opacity+0.5);
+                background-color: rgba(155, 0, 0, $flag-opacity);
                 outline: solid rgb(139, 0, 0) 1px;
             }
             &.flag2 {
@@ -211,7 +211,7 @@
             -webkit-background-clip: text;
         }
     }
-    .btn-helpmap::before {
+    #mapLayerMenuSeparator::before {
         content: "";
         pointer-events: none;
         position: absolute;
@@ -221,7 +221,7 @@
         height: 4px;
         transform: translateX(-50%); 
     }
-    .btn-helpmap {
+    #mapLayerMenuSeparator {
         margin-top: 30px;
     }
     .fa-stack {

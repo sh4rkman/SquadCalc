@@ -9,6 +9,7 @@
     "connectedTo": "Connected !",
     "error": "Error!",
     "apiError": "API isn't connected..",
+    "apiError_layers": "Can't fetch layers from API",
     "deleteTargets": "Delete all targets",
     "bearing": "Bearing",
     "whereToAim": "(where to aim)",

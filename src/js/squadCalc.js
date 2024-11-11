@@ -73,7 +73,7 @@ export default class SquadCalc {
         // Add event listener
         MAP_SELECTOR.on("change", (event) => {
             this.minimap.activeMap = MAPS.find((elem, index) => index == event.target.value);
-            this.loadLayers()
+            if (process.env.API_URL) { this.loadLayers(); }
             this.minimap.clear(); 
             this.minimap.draw(); 
         });
@@ -102,14 +102,14 @@ export default class SquadCalc {
         fetchLayersByMap(this.minimap.activeMap.name).then(layers => {
             LAYER_SELECTOR.append('<option selected value="">BETA!</option>'); // Add placeholder option
             layers.forEach(function(layer, i) {
-                LAYER_SELECTOR.append(`<option value=${layer.rawname}>${layer.niceName}</option>`);
+                LAYER_SELECTOR.append(`<option value=${layer.rawName}>${layer.shortName}</option>`);
             });
             this.minimap.spin(false);
             
         }).catch(error => {
             this.minimap.spin(false);
-            this.openToast("error", "error", "apiError");
-            console.debug("Error fetching markers:", error);
+            this.openToast("error", "error", "apiError_layers");
+            console.debug("Error fetching layers from API:", error);
         });
     }
 
@@ -127,7 +127,15 @@ export default class SquadCalc {
         $(".dropbtn").val(randMapId);
         this.minimap = new squadMinimap("map", tileSize, defaultMap);
         this.minimap.draw();
-        this.loadLayers();
+
+        // If no API if provided, hide the layer selector
+        if (process.env.API_URL) { 
+            this.loadLayers(); 
+        } else {
+            $("#layerSelector").hide();
+            $(".btn-helpmap").hide();
+        }
+
     }
 
     /**

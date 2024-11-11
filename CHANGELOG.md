@@ -1,3 +1,20 @@
+# <img src="https://img.shields.io/badge/-major%20release-b22222?style=for-the-badge">  **34.0.0** *(2024-XX-XX)*
+
+<img src="https://img.shields.io/badge/-new-green"> 
+
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> 
+
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Added a fadein animation on "delete on targets" button
+
+<img src="https://img.shields.io/badge/-%20dev%20-grey"> 
+
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
+
+
+
+
 # <img src="https://img.shields.io/badge/-major%20release-b22222?style=for-the-badge">  **33.0.0** *(2024-11-01)*
 
 <img src="https://img.shields.io/badge/-new-green"> Dragging or hovering a target for more than 0.5s will create a line between the target and the placed weapons simulating the projectile path.
