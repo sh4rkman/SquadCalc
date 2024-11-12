@@ -165,20 +165,22 @@ export class SquadLayer {
         //var correctedFlagPosition = Math.abs(this.startPosition - flag.position);
         //console.log("  -> Corrected flag position", Math.abs(this.startPosition - flag.position));
 
+        //flag.position = Math.abs(this.startPosition - flag.position)+1;
+        //console.error(flag.position)
 
 
-        if(flag.position > this.currentPosition+1) {
+        if(Math.abs(this.startPosition - flag.position)+1 > this.currentPosition+1) {
             console.error("  -> Clicked Flag is in front, skipping..")
             return; 
         }
 
         // Going backward
-        if(flag.position <= this.currentPosition){
+        if(Math.abs(this.startPosition - flag.position)+1 <= this.currentPosition){
 
             backward = true;
             this.selectedReachableClusters.pop();
 
-            var positionToReduce = (this.currentPosition - flag.position)+1;
+            var positionToReduce = (this.currentPosition - Math.abs(this.startPosition - flag.position));
             console.error("# of Going backward : ", positionToReduce)
 
             if(flag === this.selectedFlags[0]) {
@@ -226,7 +228,8 @@ export class SquadLayer {
 
             // Ignore clusters that are in front of the clicked for now
             //cluster.pointPosition = Math.abs(this.startPosition - cluster.pointPosition)
-            if(cluster.pointPosition > this.currentPosition){
+            //if(cluster.pointPosition > this.currentPosition){
+            if(Math.abs(this.startPosition - cluster.pointPosition)+1 > this.currentPosition){
                 console.warn("Cluster is irrevelant! skipping DFS for now..", cluster);
                 return;
             }
@@ -284,7 +287,7 @@ export class SquadLayer {
             console.log("   -> Cluster position", cluster.pointPosition)
             console.log("   -> Clicked flag position", flag.position)
             console.log("   -> Current position", this.currentPosition)
-            if (cluster.pointPosition >= this.currentPosition) {
+            if (Math.abs(this.startPosition - cluster.pointPosition)+1 >= this.currentPosition) {
                 console.log("   -> Cluster is in front! Hiding.");
                 if (!flag.clusters.some(c => c.name === cluster.objectName)) {
                     this._hideCluster(cluster, flag);
@@ -325,20 +328,14 @@ export class SquadLayer {
             //console.warn("cluster.pointPosition corrected", cluster.pointPosition)
 
             // If the cluster is in front of the clicked flag, show it
-            if(cluster.pointPosition > this.currentPosition){
+            if(Math.abs(this.startPosition - cluster.pointPosition) + 1 > this.currentPosition){
                   
                 console.log("   -> Cluster in front, showing it !");
 
                 this._showCluster(cluster);
                 
                 // If cluster is directly in front of the clicked flag, count the next flags
-                //console.warn("Cluster.position", cluster.pointPosition)
-                //console.warn("CurrentPosition (+1)", this.currentPosition+1)
-                //console.warn("this.startPosition", this.startPosition)
-                //console.warn(Math.abs(this.startPosition - cluster.pointPosition))
-
-                //if(Math.abs(this.startPosition - cluster.pointPosition) === this.currentPosition+1){
-                if(cluster.pointPosition === this.currentPosition+1){
+                if(Math.abs(this.startPosition - cluster.pointPosition) + 1 === this.currentPosition+1){
                     const futurFlags = this.flags.filter((f) => f.clusters.includes(cluster));
                     futurFlags.forEach((flag) => {
                         // Only add if not already in the list
@@ -413,13 +410,14 @@ export class SquadLayer {
         this.currentPosition = 0;
         this.selectedReachableClusters = [];
         this.selectedFlags = [];
+        this.reversed = false;
 
         this.path = [];
-        this.polyline.setLatLngs(this.path);
+        this.polyline.setLatLngs([]);
 
         this.flags.forEach((flag) => {
-            flag.show();
             flag.unselect();
+            if(!flag.isMain){ flag.hide(); }
         });
     }
 
@@ -444,11 +442,23 @@ export class SquadLayer {
 
             console.log("   -> filtered clusters from previous step", foundClusters)
 
-            // store the lowest foundsclusters pointPosition in var new pos
-            var newPos = foundClusters.reduce((min, item) =>
-                item.pointPosition < min ? item.pointPosition : min,
-                foundClusters[0].pointPosition
-            );
+            var newPos;
+
+            if(this.reversed){
+                // store the lowest foundsclusters pointPosition in var new pos
+                newPos = foundClusters.reduce((max, item) =>
+                    item.pointPosition > max ? item.pointPosition : max,
+                    foundClusters[0].pointPosition
+                );
+            } else {
+                // store the lowest foundsclusters pointPosition in var new pos
+                newPos = foundClusters.reduce((min, item) =>
+                    item.pointPosition < min ? item.pointPosition : min,
+                    foundClusters[0].pointPosition
+                );
+            }
+
+
 
 
             flagToShow.position = newPos;
@@ -543,12 +553,14 @@ export class SquadObjective {
         console.log("Selecting flag: ", this.name)
         this.flag.removeFrom(this.layerGroup).remove();
 
+        var position = Math.abs(this.layer.startPosition - this.position); 
+
         if(!this.isMain) { 
-            var html = this.position; 
+            var html = position; 
             var className = "flag selected";
         } else {
-            //var html= this.name;
-            var html = this.position; 
+            var html= this.name;
+            //var html = position; 
             var className = "flag selected main";
         }
 
@@ -571,20 +583,23 @@ export class SquadObjective {
         this.flag.removeFrom(this.layerGroup).remove();
 
         var html = "";
-        var position = this.position; 
+        var position = Math.abs(this.layer.startPosition - this.position); 
+        var className = "flag";
         //var position = this.position;
 
         if(!this.isMain) { 
             html = position;
+            className = className + " flag" + position;
         } else {
-            //html= this.name;
-            html = position;
+            html= this.name;
+            //html = position;
+            className = className + " main";
         }
 
         this.flag = new Marker(this.latlng, {
             interactive: true,
             icon: new DivIcon({
-                className: `flag flag${position}`,
+                className: className,
                 html: html,
                 iconSize: [40, 18], // smaller when selected
                 iconAnchor: [20, 9] 
@@ -609,6 +624,13 @@ export class SquadObjective {
             item.pointPosition < min ? item.pointPosition : min,
             this.clusters[0].pointPosition
         );
+
+        if(this.layer.reversed) {
+            lowestPossiblePosition = this.clusters.reduce((max, item) =>
+                item.pointPosition > max ? item.pointPosition : max,
+                this.clusters[0].pointPosition
+            );
+        }
 
         this.position = lowestPossiblePosition;
 

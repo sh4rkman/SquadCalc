@@ -33,7 +33,7 @@
             font-size: 1.1em;
             letter-spacing: normal;
             $flag-opacity: 0.4;
-
+            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.5);
             cursor: inherit;
             &:active {
                 cursor: inherit;
@@ -68,28 +68,47 @@
                 background-color: rgba(0, 0, 0, $flag-opacity);
             }
             &.main {
-                background-color: red;
+                background-color: firebrick;
                 text-transform: uppercase;
             }
-            &.selected, &.next {
+            &.selected, &.next, &.main {
                 cursor: pointer;
                 pointer-events: all;
-                outline: solid 2px rgba(0, 0, 0, 0.8); // Hover outline default for both
+                //outline: solid 2px rgba(0, 0, 0, 0.8); // Hover outline default for both
                 &:hover {
-                    outline: solid 2px rgba(0, 0, 0, 0.8);
+                    outline: solid 2px rgba(0, 0, 0, 0.3);
+                    box-shadow: 0px 8px 12px rgba(0, 0, 0, 1);
                 }
+
             }
             &.selected {
                 font-size: 1.1em;
                 background-color: green;
                 outline-color: rgb(0, 92, 0); // Initial outline color
+                //border-radius: 4px;
+                overflow: hidden;
                 &.main {
                     text-transform: uppercase;
+                    &::before {
+                        content: "";
+                        top: 0em;
+                        right: 0em;
+                    }
+                }
+                &::before {
+                    content: "✔";
+                    color: rgb(255, 255, 255);
+                    position: relative;
+                    font-size: 2em;
+                    //border:solid red 1px;
+                    top: 0.2em;
+                    right: 0.2em;
+                    line-height: 0%;
                 }
             }
             &.next {
-                background-color: red;
-                outline-color: rgba(204, 0, 0, 0.8); // Initial outline color
+                background-color: firebrick;
+                outline-color: firebrick; // Initial outline color
             }
 
             
