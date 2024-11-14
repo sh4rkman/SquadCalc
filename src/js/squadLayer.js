@@ -1,5 +1,5 @@
 
-import { DivIcon, Marker, Circle, LayerGroup, Polyline, Rectangle } from "leaflet";
+import { DivIcon, Marker, Circle, LayerGroup, Polyline, Rectangle, Icon, FeatureGroup } from "leaflet";
 
 export class SquadLayer {
 
@@ -21,12 +21,15 @@ export class SquadLayer {
         this.currentReachableClusters = new Set();
 
         this.mains = [];
+        this.mainZones = new FeatureGroup().addTo(this.map);
         this.flags = [];
+
 
         this.reversed = false;
 
 
-        //this.objNumber = "";
+        this.assets = [];
+
         this.layerData = layerData;
         this.activeLayerMarkers = new LayerGroup().addTo(this.map);
         this.polyline = new Polyline(this.path, {color: 'white', opacity: 0.7}).addTo(this.activeLayerMarkers)
@@ -34,6 +37,7 @@ export class SquadLayer {
         this.offset_x = Math.min(this.layerData.mapTextureCorners[0].location_x, this.layerData.mapTextureCorners[1].location_x)
         this.offset_y = Math.min(this.layerData.mapTextureCorners[0].location_y, this.layerData.mapTextureCorners[1].location_y)
         this.init();
+
 
         console.log(layerData)
     }
@@ -46,17 +50,47 @@ export class SquadLayer {
 
         // AAS
         if (this.layerData.gamemode === "AAS") {
+
+
+            const objectiveKeys = Object.keys(this.layerData.objectives);
+            const numFlags = objectiveKeys.length - 1;
+
             Object.values(this.layerData.objectives).forEach((obj, i) => {
                 obj.location_x = -(obj.location_x - this.offset_x) / 100
                 obj.location_y = (obj.location_y - this.offset_y) / 100
                 var latlng = [obj.location_y * -this.map.gameToMapScale, obj.location_x * -this.map.gameToMapScale]
-                var radius = obj.objects[0].sphereRadius/100 * this.map.gameToMapScale
+                var radius = obj.objects[0].sphereRadius/100 * this.map.gameToMapScale;
                 var newFlag = new SquadObjective(latlng, radius, this, "", obj, 0, obj);
-                newFlag.flag.off()
                 this.path.push(latlng)
+
+
+
+                // Ignore the first and last flags (Mains)
+                if(i === 0 || i === numFlags){ return; }
+
+                // Adding capzones to the flag object
+                // capzones can be composed of several circles
+                obj.objects.forEach((cap) => {
+                    var radiusCap = cap.sphereRadius / 100 * this.map.gameToMapScale;
+                    var location_x = -(cap.location_x - this.offset_x) / 100;
+                    var location_y = (cap.location_y - this.offset_y) / 100;
+                    var latlngCap = [location_y * -this.map.gameToMapScale, location_x * -this.map.gameToMapScale];
+                    
+                    newFlag.capZones.addLayer(new L.circle(latlngCap, {
+                        radius: radiusCap,
+                        color: 'firebrick',
+                        dashArray: "10,8",
+                        opacity: 0,
+                        weight: 2,
+                        fillOpacity: 0,
+                    }).addTo(this.activeLayerMarkers));
+
+                });
+
             });
 
             this.polyline.setLatLngs(this.path);
+            this.createAssets();
             return;
         }
 
@@ -85,15 +119,16 @@ export class SquadLayer {
                 var radius = objCluster.objects[0].sphereRadius/100 * this.map.gameToMapScale
                 //const pos = objCluster.pointPosition;
                 var newFlag = new SquadObjective(latlng, radius, this, "", objCluster, 1, objCluster)
+                console.log("Adding main flag", objCluster)
                 this.mains.push(newFlag);
                 this.flags.push(newFlag);
             } else {
 
                 objCluster.points.forEach((obj) => {
-                    const location_x = -(obj.location_x - this.offset_x) / 100;
-                    const location_y = (obj.location_y - this.offset_y) / 100;
+                    var location_x = -(obj.location_x - this.offset_x) / 100;
+                    var location_y = (obj.location_y - this.offset_y) / 100;
                     const latlng = [location_y * -this.map.gameToMapScale, location_x * -this.map.gameToMapScale];
-                    const radius = obj.objects[0].sphereRadius / 100 * this.map.gameToMapScale;
+                    
                     const pos = objCluster.pointPosition;
 
                     let flagExists = false;
@@ -111,9 +146,34 @@ export class SquadLayer {
                     });
 
                     if (!flagExists) {
+                        
                         const newFlag = new SquadObjective(latlng, radius, this, pos, obj, 0, objCluster);
                         this.flags.push(newFlag);
                         newFlag.hide();
+
+                        //newFlag.capZones = L.featureGroup([]);
+
+                        // Adding capzones to the flag object
+                        // capzones can be composed of several circles
+                        obj.objects.forEach((cap) => {
+                            var radiusCap = cap.sphereRadius / 100 * this.map.gameToMapScale;
+                            var location_x = -(cap.location_x - this.offset_x) / 100;
+                            var location_y = (cap.location_y - this.offset_y) / 100;
+                            var latlngCap = [location_y * -this.map.gameToMapScale, location_x * -this.map.gameToMapScale];
+                        
+                            newFlag.capZones.addLayer(new L.circle(latlngCap, {
+                                radius: radiusCap,
+                                color: 'firebrick',
+                                dashArray: "10,8",
+                                opacity: 0,
+                                weight: 2,
+                                fillOpacity: 0,
+                            }).addTo(this.activeLayerMarkers));
+
+                        });
+
+
+                
                     }
 
 
@@ -125,7 +185,101 @@ export class SquadLayer {
 
         });
 
-        console.log("flags: ", this.flags)
+        console.log("Creating assets")
+        this.createAssets();
+        //console.log("flags: ", this.flags)
+
+    }
+
+    createAssets() {
+
+        // Creating Helipads
+        this.layerData.assets.helipads.forEach((asset) => {
+            const location_x = -(asset.location_x - this.offset_x) / 100;
+            const location_y = (asset.location_y - this.offset_y) / 100;
+            const latlng = [location_y * -this.map.gameToMapScale, location_x * -this.map.gameToMapScale];
+
+            this.assets.push(new Marker(latlng, {
+                interactive: false,
+                zIndexOffset: -1000,
+                opacity: 0,
+                icon: L.divIcon({
+                    className: 'helipads',
+                    iconSize: [36, 36],
+                  })
+            }).addTo(this.activeLayerMarkers));
+
+        });
+
+    
+        // Creating Deployables
+        this.layerData.assets.deployables.forEach((asset) => {
+            const location_x = -(asset.location_x - this.offset_x) / 100;
+            const location_y = (asset.location_y - this.offset_y) / 100;
+            const latlng = [location_y * -this.map.gameToMapScale, location_x * -this.map.gameToMapScale];
+
+            // Repairs
+            if(asset.type === "Repair Station") {
+                this.assets.push(new Marker(latlng, {
+                    interactive: false,
+                    zIndexOffset: -1000,
+                    opacity: 0,
+                    icon: L.divIcon({
+                        className: 'repairStations',
+                        iconSize: [30, 30]
+                        })
+                }).addTo(this.activeLayerMarkers));
+            }
+
+            // Crates
+            if(asset.type === "Ammo Crate") {
+                this.assets.push(new Marker(latlng, {
+                    interactive: false,
+                    zIndexOffset: -1000,
+                    opacity: 0,
+                    icon: L.divIcon({
+                        className: 'ammocrates',
+                        iconSize: [25, 25]
+                        })
+                }).setOpacity(0).addTo(this.activeLayerMarkers));
+            }
+        });
+
+        // Creating protectionZones + noConstructionZones
+        this.layerData.mapAssets.protectionZones.forEach((asset) => {
+
+            const location_x = -(asset.objects[0].location_x - this.offset_x) / 100;
+            const location_y = (asset.objects[0].location_y - this.offset_y) / 100;
+            const latlng = [location_y * -this.map.gameToMapScale, location_x * -this.map.gameToMapScale];
+            const mainProtectionRadius = asset.objects[0].sphereRadius / 100 * this.map.gameToMapScale;
+            const noConstructionRadius = (asset.deployableLockDistance+asset.objects[0].sphereRadius) / 100 * this.map.gameToMapScale;
+
+            // Avoid rendering useless protection zones
+            if(noConstructionRadius < 1) { return; }
+
+            let noConsZone = new L.circle(latlng, {
+                radius: noConstructionRadius,
+                color: 'red',
+                opacity: 0,
+                weight: 1,
+                fillOpacity: 0,
+                dashArray: "10,8",
+            }).addTo(this.activeLayerMarkers);
+            
+            let noDeployZone = new L.circle(latlng, {
+                radius: mainProtectionRadius,
+                color: 'red',
+                opacity: 0,
+                weight: 1,
+                fillOpacity: 0,
+                className: 'mainZones'
+            }).addTo(this.activeLayerMarkers);
+                
+            this.mainZones.addLayer(noConsZone);
+            this.mainZones.addLayer(noDeployZone);
+
+        });
+
 
     }
 
@@ -358,13 +512,13 @@ export class SquadLayer {
         nextFlags.forEach((flag) => {
             var div = flag.flag._icon;
             div.classList.add("next");
-            flag.flag.options.icon.options.className = "flag flag" + flag.position + " next";
+            flag.flag.options.icon.options.className = "flag flag" + flag.position + " next animate__animated animate__bounce";
         });
 
 
         // Only one flag in front ? Click it
         if(nextFlags.length === 1 && !backward){
-            //this._handleFlagClick(nextFlags[0]);
+            this._handleFlagClick(nextFlags[0]);
         }
 
 
@@ -450,16 +604,27 @@ export class SquadLayer {
                     item.pointPosition > max ? item.pointPosition : max,
                     foundClusters[0].pointPosition
                 );
+
+                // use this code if want also check for the current position
+                // newPos = foundClusters.reduce((max, item) => {
+                //     // Check that the item's pointPosition is both less than the current min
+                //     // and greater than this.currentPosition
+                //     if (item.pointPosition > max && item.pointPosition < this.currentPosition) {
+                //         return item.pointPosition;
+                //     }
+                //     return max;
+                // }, foundClusters[0].pointPosition);
+
             } else {
-                // store the lowest foundsclusters pointPosition in var new pos
-                newPos = foundClusters.reduce((min, item) =>
-                    item.pointPosition < min ? item.pointPosition : min,
-                    foundClusters[0].pointPosition
-                );
+                newPos = foundClusters.reduce((min, item) => {
+                    // Check that the item's pointPosition is both less than the current min
+                    // and greater than this.currentPosition
+                    if (item.pointPosition < min && item.pointPosition > this.currentPosition) {
+                        return item.pointPosition;
+                    }
+                    return min;
+                }, foundClusters[0].pointPosition);
             }
-
-
-
 
             flagToShow.position = newPos;
             flagToShow.show();
@@ -514,39 +679,44 @@ export class SquadObjective {
         this.layer = layer
         this.latlng = latlng;
         this.clusters = [];
+        this.capZones = new LayerGroup().addTo(this.layerGroup);
         this.isMain = isMain;
         this.isHidden = true;
         this.position = cluster.pointPosition;
 
         console.log("creating flag", this.name, "at position", this.position)
 
+        var html = "";
+         if(!this.isMain){
+            html = this.name;
+        }
+
         this.nameText = new Marker(latlng, {
             interactive: false,
             icon: new DivIcon({
                 className: "objText",
-                html: `${this.name}`,
+                html: html,
                 iconSize: [300, 20],
-                iconAnchor: [150, 33]
+                iconAnchor: [150, 30]
             })
         }).addTo(this.layerGroup);
-
-
-        //var position = Math.abs(this.layer.startPosition - this.position);
 
         this.flag = new Marker(latlng, {
             interactive: true,
             icon: new DivIcon({
                 className: `flag flag${this.position}`,
                 html: 99,
-                iconSize: [46, 24],
-                iconAnchor: [23, 12]
+                iconSize: [40, 18],
+                iconAnchor: [20, 9] 
             })
         }).addTo(this.layerGroup);
 
+
         this.addCluster(cluster);
 
-
         this.flag.on('click', this._handleClick, this);
+        this.flag.on('mouseover', this._handleMouseOver, this);
+        this.flag.on('mouseout', this._handleMouseOut, this);
     }
 
     select(){
@@ -559,7 +729,7 @@ export class SquadObjective {
             var html = position; 
             var className = "flag selected";
         } else {
-            var html= this.name;
+            var html= "";
             //var html = position; 
             var className = "flag selected main";
         }
@@ -569,13 +739,18 @@ export class SquadObjective {
             icon: new DivIcon({
                 className: className,
                 html: html,
-                iconSize: [40, 18], // smaller when selected
+                iconSize: [40, 18], 
                 iconAnchor: [20, 9] 
             })
         }).addTo(this.layerGroup);
 
+
+
+
         this.isSelected = true;
         this.flag.on('click', this._handleClick, this);
+        this.flag.on('mouseover', this._handleMouseOver, this);
+        this.flag.on('mouseout', this._handleMouseOut, this);
     }
 
     unselect(){
@@ -591,7 +766,7 @@ export class SquadObjective {
             html = position;
             className = className + " flag" + position;
         } else {
-            html= this.name;
+            html= "";
             //html = position;
             className = className + " main";
         }
@@ -605,8 +780,12 @@ export class SquadObjective {
                 iconAnchor: [20, 9] 
             })
         }).addTo(this.layerGroup);
+
+
         this.isSelected = false;
         this.flag.on('click', this._handleClick, this);
+        this.flag.on('mouseover', this._handleMouseOver, this);
+        this.flag.on('mouseout', this._handleMouseOut, this);
     }
 
     addCluster(cluster){
@@ -646,7 +825,7 @@ export class SquadObjective {
         }
 
         if(this.isMain) { 
-            //html = this.name;
+            html = "";
             className = className + " main";
         }
 
@@ -655,7 +834,7 @@ export class SquadObjective {
             className: className,
             html: html,
             iconSize: [40, 18],
-            iconAnchor: [23, 12]
+            iconAnchor: [20, 9]
         }));
 
     }
@@ -664,8 +843,34 @@ export class SquadObjective {
         this.layer._handleFlagClick(this);
     }
 
+    _handleMouseOver() {
+        const map = this.layer.map;
+        const currentZoom = map.getZoom();
+        const mapSize = map.activeMap.size;
+    
+        // Calculate the threshold dynamically based on map size
+        const zoomThreshold = 1.039 * Math.pow(mapSize, 0.13);
+    
+        // Show markers only if the zoom level is high enough
+        if (currentZoom > zoomThreshold) {
+            // Adjust opacity when the threshold is met
+            this.capZones.eachLayer((cap) => {
+                cap.setStyle({ opacity: 1, fillOpacity: 0.1 });
+            });
+        }
+
+    }
+
+    _handleMouseOut(){
+        this.capZones.eachLayer((cap) => {
+            cap.setStyle({ opacity: 0, fillOpacity: 0 });
+        });
+    }
+
 
     hide(){
+
+
         this.nameText.removeFrom(this.layerGroup)
         this.flag.removeFrom(this.layerGroup)
         this.flag.options.interactive = false;
@@ -681,6 +886,7 @@ export class SquadObjective {
 
     show(){
         console.log("      -> Showing flag: ", this.name)
+
         this.nameText.setOpacity(1).addTo(this.layerGroup);
         this.flag.setOpacity(1).addTo(this.layerGroup);
         this.unselect();

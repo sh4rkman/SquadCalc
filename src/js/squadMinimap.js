@@ -73,8 +73,9 @@ export var squadMinimap = Map.extend({
         if (App.userSettings.keypadUnderCursor || !App.hasMouse){
             this.on("mousemove", this._handleMouseMove, this);
             this.on("mouseout", this._handleMouseOut, this);
-            this.on("zoomend", this._handleZoom, this);
         }
+
+        this.on("zoomend", this._handleZoom, this);
 
     },
 
@@ -85,6 +86,8 @@ export var squadMinimap = Map.extend({
 
         this.gameToMapScale = this.tilesSize / this.activeMap.size;
         this.mapToGameScale = this.activeMap.size / this.tilesSize;
+
+        console.log("Game to Map Scale:", this.gameToMapScale, "Map to Game Scale:", this.mapToGameScale);
 
         // Load Heightmap in canvas
         this.heightmap = new squadHeightmap(this);
@@ -412,8 +415,25 @@ export var squadMinimap = Map.extend({
     _handleZoom: function() {
         // Make sure the user opened the popup by moving the mouse before zooming
         // ...or it throw error
-        if (this.mouseLocationPopup._latlng){
-            this.mouseLocationPopup.setContent(`<p>${this.getKP(-this.mouseLocationPopup._latlng.lat, this.mouseLocationPopup._latlng.lng)}</p>`);
+        if (App.userSettings.keypadUnderCursor || !App.hasMouse){
+            if (this.mouseLocationPopup._latlng){
+                this.mouseLocationPopup.setContent(`<p>${this.getKP(-this.mouseLocationPopup._latlng.lat, this.mouseLocationPopup._latlng.lng)}</p>`);
+            }
+        }
+
+        if(this.layer) {
+            if(this.getZoom() > 3){
+                this.layer.assets.forEach(asset => {
+                    asset.setOpacity(1);
+                });
+                this.layer.mainZones.setStyle({opacity: 1, fillOpacity: 0.05});
+            } else {
+                this.layer.assets.forEach(asset => {
+                    asset.setOpacity(0);
+                });
+                this.layer.mainZones.setStyle({opacity: 0, fillOpacity: 0});
+            }
+
         }
     },
 

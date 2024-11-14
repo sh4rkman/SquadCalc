@@ -33,14 +33,10 @@
             font-size: 1.1em;
             letter-spacing: normal;
             $flag-opacity: 0.4;
-            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.75);
             cursor: inherit;
             &:active {
                 cursor: inherit;
-            }
-            &.flag1 {
-                background-color: rgba(155, 0, 0, $flag-opacity);
-                outline: solid rgb(139, 0, 0) 1px;
             }
             &.flag2 {
                 background-color: rgba(0, 200, 200, $flag-opacity);
@@ -68,12 +64,25 @@
                 background-color: rgba(0, 0, 0, $flag-opacity);
             }
             &.main {
-                background-color: firebrick;
-                text-transform: uppercase;
+                background-color: rgb(197, 0, 0);
+                outline-color: rgb(143, 0, 0);
+                font-size: 1.1em;
+                overflow: hidden;
+
+                &::before {
+                    content: "🏠";
+                    //font-size: 2em;
+                    position: relative;
+                    top: -0.2em;
+                    right: 0em;
+                    font-size: 1.6em;
+                }
             }
+            
             &.selected, &.next, &.main {
                 cursor: pointer;
                 pointer-events: all;
+                box-shadow: 0px 8px 12px rgba(0, 0, 0, 0.7);
                 //outline: solid 2px rgba(0, 0, 0, 0.8); // Hover outline default for both
                 &:hover {
                     outline: solid 2px rgba(0, 0, 0, 0.3);
@@ -83,18 +92,21 @@
             }
             &.selected {
                 font-size: 1.1em;
-                background-color: green;
-                outline-color: rgb(0, 92, 0); // Initial outline color
-                //border-radius: 4px;
+                background-color: rgba(0, 128, 0, 1);
                 overflow: hidden;
                 &.main {
-                    text-transform: uppercase;
+                    //font-size: 0.9em;
+                    //position: relative; // Needed for absolute positioning of the icon
                     &::before {
-                        content: "";
-                        top: 0em;
+                        content: "🏠";
+                        //font-size: 2em;
+                        position: relative;
+                        top: 0.2em;
                         right: 0em;
+                        font-size: 1.6em;
                     }
                 }
+                
                 &::before {
                     content: "✔";
                     color: rgb(255, 255, 255);
@@ -107,8 +119,8 @@
                 }
             }
             &.next {
-                background-color: firebrick;
-                outline-color: firebrick; // Initial outline color
+                background-color: rgb(197, 0, 0);
+                outline-color: rgb(143, 0, 0);; // Initial outline color
             }
 
             
@@ -297,3 +309,20 @@
     z-index: 99;
 }
 
+.helipads {
+    background: url('../../img/icons/deployable_helipad.webp') no-repeat center center;
+    background-size: contain;
+    transition: opacity 0.1s ease-in;
+}
+
+.repairStations {
+    background: url('../../img/icons/deployable_repairstation.webp') no-repeat center center;
+    background-size: contain;
+    transition: opacity 0.1s ease-in;
+}
+
+.ammocrates {
+    background: url('../../img/icons/deployable_ammocrate.webp') no-repeat center center;
+    background-size: contain;
+    transition: opacity 0.1s ease-in;
+}

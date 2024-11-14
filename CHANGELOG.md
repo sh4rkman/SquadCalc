@@ -1,12 +1,21 @@
 # <img src="https://img.shields.io/badge/-major%20release-b22222?style=for-the-badge">  **34.0.0** *(2024-XX-XX)*
 
-<img src="https://img.shields.io/badge/-new-green"> 
+<img src="https://img.shields.io/badge/-new-green"> **Lane Finder !**
+
+You can now select a layer to reveal the potential flags in AAS/RAAS/Invasion gamemodes.
+* Selecting a flag in RAAS/Invasion will automatically hide the unreachable ones
+* Next direct flags will be automatically colored red 🟥
+* If only one flag is reachable next step, SquadCalc will automatically advance into the layer until a choice have to be made
+* **Capzone** are displayed when hovering a flag when zoomed in enough
+* **Non deployable** and **Protection** mains zones are displayed when zooming in
+* **Game Assets** (Helipad, Repair station, ammobox) are displayed when zooming in
+
 
 <img src="https://img.shields.io/badge/-%20fix%20-b22"> 
 
 <img src="https://img.shields.io/badge/-%20improv%20-orange"> Added a fadein animation on "delete on targets" button
 
-<img src="https://img.shields.io/badge/-%20dev%20-grey"> 
+<img src="https://img.shields.io/badge/-%20dev%20-grey"> "Frequent weapon position" button is now hidden if no api is provided in a `.env` file
 
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
