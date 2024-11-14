@@ -1,4 +1,14 @@
 
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **33.0.2** *(2024-11-14)*
+
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> SquadCalc now attempt to connect to SquadMortarOverlay regulary (no need to refresh squadcalc if SMO is launched after squadcalc) - [#219](https://github.com/sh4rkman/SquadCalc/pull/219)
+
+<img src="https://img.shields.io/badge/-%20dev%20-grey"> Moved websockets code for SMO to its own file - [#219](https://github.com/sh4rkman/SquadCalc/pull/219)
+
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
+
 
 
 # <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **33.0.1** *(2024-11-04)*
