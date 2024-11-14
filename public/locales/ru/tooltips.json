@@ -6,6 +6,7 @@
     "focusMode": "Режим фокуса",
     "enterToExit": "Нажмите 'Enter', чтобы выйти",
     "squadMortarOverlay": "SquadMortarOverlay detected",
+    "mapUpdated": "Карта обновлена",
     "connectedTo": "Connected !",
     "error": "Ошибка!",
     "apiError": "API не подключен..",
