@@ -930,7 +930,7 @@ export var squadTargetMarker = squadMarker.extend({
         });
 
         // Reset layer opacity
-        if(this.map.layer) this.map.layer._setOpacity(1); 
+        if (this.map.layer) this.map.layer._setOpacity(1); 
 
         // We can now safely start deleting
         this.delete();
@@ -948,7 +948,7 @@ export var squadTargetMarker = squadMarker.extend({
             }
 
             // Hide the layer
-            if(this.map.layer) this.map.layer._setOpacity(0.5); 
+            if (this.map.layer) this.map.layer._setOpacity(0.5); 
 
             // Hide other targets
             if (!this.isDragging && App.userSettings.targetEmphasis){
@@ -978,7 +978,7 @@ export var squadTargetMarker = squadMarker.extend({
         this.calcMarker2.getElement().style.zIndex  = "";
 
         // Show the layer
-        if(this.map.layer) this.map.layer._setOpacity(1); 
+        if (this.map.layer) this.map.layer._setOpacity(1); 
 
         if (!this.isDragging){
             this.pathTrajectory1.setStyle({ opacity: 0 });

@@ -82,7 +82,7 @@ export default class SquadCalc {
         LAYER_SELECTOR.on("change", (event) => {
             this.minimap.spin(true, this.minimap.spinOptions);
             fetchLayerByName(event.target.value).then(layerData => {
-                if(this.minimap.layer) this.minimap.layer.clear();
+                if (this.minimap.layer) this.minimap.layer.clear();
                 this.minimap.layer = new SquadLayer(this.minimap, layerData);
                 this.minimap.spin(false);
             }).catch(error => {
@@ -101,7 +101,7 @@ export default class SquadCalc {
         LAYER_SELECTOR.empty();
         this.minimap.spin(true, this.minimap.spinOptions);
         fetchLayersByMap(this.minimap.activeMap.name).then(layers => {
-            if(layers.length === 0) { 
+            if (layers.length === 0) { 
                 this.minimap.spin(false);
                 $("#layerSelector").hide();
                 return;
@@ -109,8 +109,8 @@ export default class SquadCalc {
 
 
 
-            LAYER_SELECTOR.append('<option selected value="">BETA!</option>');
-            layers.forEach(function(layer, i) {
+            LAYER_SELECTOR.append("<option selected value=\"\">BETA!</option>");
+            layers.forEach(function(layer) {
                 LAYER_SELECTOR.append(`<option value=${layer.rawName}>${layer.shortName}</option>`);
             });
             this.minimap.spin(false);

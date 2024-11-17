@@ -419,13 +419,12 @@ export var squadMinimap = Map.extend({
             }
         }
 
-        if(this.layer) {
-            if(this.getZoom() > 3){
+        if (this.layer) {
+            if (this.getZoom() > 3){
                 this.layer.setMainZoneOpacity(true);
             } else {
                 this.layer.setMainZoneOpacity(false);
             }
-
         }
     },
 

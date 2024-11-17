@@ -1,5 +1,7 @@
 @use "../shared/variables";
 
+$flag-opacity: 0.4;
+
 #map_ui {
     position: relative;
     height: 100vh; 
@@ -31,7 +33,6 @@
             background-color: rgba(255, 255, 255, 0.5);
             font-size: 1.1em;
             letter-spacing: normal;
-            $flag-opacity: 0.4;
             outline: solid rgb(92, 92, 92) 1px;
             box-shadow: 0 8px 12px rgba(0, 0, 0, 0.75);
             cursor: inherit;
@@ -87,7 +88,7 @@
                     content: "🏠";
                     position: relative;
                     top: -0.2em;
-                    right: 0em;
+                    right: 0;
                     font-size: 1.6em;
                 }
             }
@@ -102,17 +103,17 @@
             &.main.selected {
                 &::before {
                     top: 0.2em;
-                    right: 0em;
+                    right: 0;
                     font-size: 1.6em;
                 }
             }
             &.selected, &.next, &.main {
                 cursor: pointer;
                 pointer-events: all;
-                box-shadow: 0px 8px 12px rgba(0, 0, 0, 0.7);
+                box-shadow: 0 8px 12px rgba(0, 0, 0, 0.7);
                 &:hover {
                     outline: solid 2px rgba(0, 0, 0, 0.3);
-                    box-shadow: 0px 8px 12px rgba(0, 0, 0, 1);
+                    box-shadow: 0 8px 12px rgba(0, 0, 0, 1);
                 }
             }
             &.next {
@@ -326,7 +327,7 @@
     @include variables.light-text-outline;
     font-size: 2em;
     text-align: center;
-    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-family: variables.$mainFont, Times, "Times New Roman", serif;
     font-weight: bolder;
     letter-spacing: normal;
 }
@@ -335,13 +336,12 @@
     @include variables.light-text-outline;
     font-size: 0.7em;
     text-align: center;
-    font-family: montserrat;
+    font-family: variables.$mainFont, Times, "Times New Roman", serif;
     font-style: italic;
-    letter-spacing: normal;
-    color: white;
+    color: rgb(255, 88, 88);
     width: 200px!important;
     margin-left: -100px!important;
-    margin-top: -12px!important;
+    margin-top: -11px!important;
     height: 10px!important;
     line-height: 100%;
     letter-spacing: 0.2em;

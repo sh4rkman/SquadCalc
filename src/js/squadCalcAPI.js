@@ -56,7 +56,7 @@ export function sendTargetData(targetData) {
  * @throws Will log an error if the network request fails or if the API response is not OK.
  */
 export const checkApiHealth = async () => {
-    if(!process.env.API_URL) { return; }
+    if (!process.env.API_URL) { return; }
     try {
         const response = await fetch(`${process.env.API_URL}/health`);
         if (response.ok) {

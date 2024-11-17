@@ -1,21 +1,29 @@
 # <img src="https://img.shields.io/badge/-major%20release-b22222?style=for-the-badge">  **34.0.0** *(2024-XX-XX)*
 
-<img src="https://img.shields.io/badge/-new-green"> **Lane Finder !**
+<img src="https://img.shields.io/badge/-new-green"> **Lane Finder !** You can now select a layer to reveal the potential flags/Cache in AAS/RAAS/Invasion/Destruction gamemodes.
 
-You can now select a layer to reveal the potential flags in AAS/RAAS/Invasion gamemodes.
+
+**Features :**  
+
 * Selecting a flag in RAAS/Invasion will automatically hide the unreachable ones
 * Next direct flags will be automatically colored red 🟥
 * If only one flag is reachable next step, SquadCalc will automatically advance into the layer until a choice have to be made
-* **Capzone** are displayed when hovering a flag when zoomed in enough
-* **Non deployable** and **Protection** mains zones are displayed when zooming in
+* **Capzone** are displayed when hovering a flag when zoomed in enough.
 * **Game Assets** (Helipad, Repair station, ammobox) are displayed when zooming in
+* **Known Bug :** The capzone / Main Protection Zone can be bigger than ingame reality (see [this issue](https://github.com/Squad-Wiki/squad-wiki-pipeline-map-data/issues/118) on Squad Wiki Pipeline map data repository)
 
+
+</br>
 
 <img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed ammo selector being misplaced on 2/4K resolution (thanks mahtoid!)
 
 <img src="https://img.shields.io/badge/-%20improv%20-orange"> Added a fadein animation on "delete on targets" button
 
 <img src="https://img.shields.io/badge/-%20dev%20-grey"> "Frequent weapon position" button is now hidden if no api is provided in a `.env` file
+
+<img src="https://img.shields.io/badge/-%20dev%20-grey"> API breaking change: Sanxian & Pacific prooving ground codeName changed
+
+<img src="https://img.shields.io/badge/-%20dev%20-grey"> API new routes: ``/api/get/layers`` & ``/api/get/layer``
 
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
