@@ -929,6 +929,9 @@ export var squadTargetMarker = squadMarker.extend({
             target.updateDamageRadius();
         });
 
+        // Reset layer opacity
+        if(this.map.layer) this.map.layer._setOpacity(1); 
+
         // We can now safely start deleting
         this.delete();
     },
@@ -943,6 +946,9 @@ export var squadTargetMarker = squadMarker.extend({
             if (this.map.activeWeaponsMarkers.getLayers()[1]) {
                 this.pathTrajectory2.setLatLngs([this.map.activeWeaponsMarkers.getLayers()[1].getLatLng(), this._latlng]).setStyle({ opacity: 1 });
             }
+
+            // Hide the layer
+            if(this.map.layer) this.map.layer._setOpacity(0.5); 
 
             // Hide other targets
             if (!this.isDragging && App.userSettings.targetEmphasis){
@@ -970,6 +976,9 @@ export var squadTargetMarker = squadMarker.extend({
 
         this.calcMarker1.getElement().style.zIndex  = "";
         this.calcMarker2.getElement().style.zIndex  = "";
+
+        // Show the layer
+        if(this.map.layer) this.map.layer._setOpacity(1); 
 
         if (!this.isDragging){
             this.pathTrajectory1.setStyle({ opacity: 0 });

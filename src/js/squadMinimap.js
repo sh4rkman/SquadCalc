@@ -87,8 +87,6 @@ export var squadMinimap = Map.extend({
         this.gameToMapScale = this.tilesSize / this.activeMap.size;
         this.mapToGameScale = this.activeMap.size / this.tilesSize;
 
-        console.log("Game to Map Scale:", this.gameToMapScale, "Map to Game Scale:", this.mapToGameScale);
-
         // Load Heightmap in canvas
         this.heightmap = new squadHeightmap(this);
 
@@ -423,15 +421,9 @@ export var squadMinimap = Map.extend({
 
         if(this.layer) {
             if(this.getZoom() > 3){
-                this.layer.assets.forEach(asset => {
-                    asset.setOpacity(1);
-                });
-                this.layer.mainZones.setStyle({opacity: 1, fillOpacity: 0.05});
+                this.layer.setMainZoneOpacity(true);
             } else {
-                this.layer.assets.forEach(asset => {
-                    asset.setOpacity(0);
-                });
-                this.layer.mainZones.setStyle({opacity: 0, fillOpacity: 0});
+                this.layer.setMainZoneOpacity(false);
             }
 
         }

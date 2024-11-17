@@ -29,10 +29,10 @@
         .leaflet-pane .leaflet-marker-pane .flag {
             @include variables.light-text-outline;
             background-color: rgba(255, 255, 255, 0.5);
-            //pointer-events: none;
             font-size: 1.1em;
             letter-spacing: normal;
             $flag-opacity: 0.4;
+            outline: solid rgb(92, 92, 92) 1px;
             box-shadow: 0 8px 12px rgba(0, 0, 0, 0.75);
             cursor: inherit;
             &:active {
@@ -40,90 +40,85 @@
             }
             &.flag2 {
                 background-color: rgba(0, 200, 200, $flag-opacity);
-                outline: solid green 1px;
+                outline: none;
             }
             &.flag3 {
                 background-color: rgba(9, 9, 255, $flag-opacity);
-                outline: solid rgb(0, 0, 255) 1px;
+                outline: none;
             }
             &.flag4 {
                 background-color: rgba(255, 0, 255, $flag-opacity);
-                outline: solid purple 1px;
+                outline: none;
             }
             &.flag5 {
                 background-color: rgba(255, 192, 203, $flag-opacity);
-                outline: solid pink 1px;
+                outline: none;
             }
             &.flag6 {
                 background-color: rgba(3, 48, 2, $flag-opacity);
+                outline: none;
             }
             &.flag7 {
                 background-color: rgba(214, 105, 22, $flag-opacity);
+                outline: none;
             }
             &.flag8 {
                 background-color: rgba(0, 0, 0, $flag-opacity);
+                outline: none;
             }
-            &.main {
-                background-color: rgb(197, 0, 0);
-                outline-color: rgb(143, 0, 0);
+            &.selected {
+                font-size: 1.1em;
+                background-color: rgba(0, 128, 0, 1);
+                overflow: hidden;
+                &::before {
+                    content: "✔";
+                    color: rgb(255, 255, 255);
+                    position: relative;
+                    font-size: 2em;
+                    top: 0.2em;
+                    right: 0.2em;
+                    line-height: 0%;
+                }
+            }
+            &.main  {
                 font-size: 1.1em;
                 overflow: hidden;
-
                 &::before {
                     content: "🏠";
-                    //font-size: 2em;
                     position: relative;
                     top: -0.2em;
                     right: 0em;
                     font-size: 1.6em;
                 }
             }
-            
+            &.main.selectable {
+                background-color: rgb(197, 0, 0);
+                outline-color: rgb(143, 0, 0);
+            }
+            &.main.unselectable {
+                pointer-events: none;
+                background-color: rgba(255, 255, 255, 0.5);
+            }
+            &.main.selected {
+                &::before {
+                    top: 0.2em;
+                    right: 0em;
+                    font-size: 1.6em;
+                }
+            }
             &.selected, &.next, &.main {
                 cursor: pointer;
                 pointer-events: all;
                 box-shadow: 0px 8px 12px rgba(0, 0, 0, 0.7);
-                //outline: solid 2px rgba(0, 0, 0, 0.8); // Hover outline default for both
                 &:hover {
                     outline: solid 2px rgba(0, 0, 0, 0.3);
                     box-shadow: 0px 8px 12px rgba(0, 0, 0, 1);
                 }
-
-            }
-            &.selected {
-                font-size: 1.1em;
-                background-color: rgba(0, 128, 0, 1);
-                overflow: hidden;
-                &.main {
-                    //font-size: 0.9em;
-                    //position: relative; // Needed for absolute positioning of the icon
-                    &::before {
-                        content: "🏠";
-                        //font-size: 2em;
-                        position: relative;
-                        top: 0.2em;
-                        right: 0em;
-                        font-size: 1.6em;
-                    }
-                }
-                
-                &::before {
-                    content: "✔";
-                    color: rgb(255, 255, 255);
-                    position: relative;
-                    font-size: 2em;
-                    //border:solid red 1px;
-                    top: 0.2em;
-                    right: 0.2em;
-                    line-height: 0%;
-                }
             }
             &.next {
                 background-color: rgb(197, 0, 0);
-                outline-color: rgb(143, 0, 0);; // Initial outline color
+                outline-color: rgb(143, 0, 0);
             }
-
-            
         }
         .kpPopup, .posPopUpTarget, .posPopUpWeapon {
             background: transparent;
@@ -324,5 +319,31 @@
 .ammocrates {
     background: url('../../img/icons/deployable_ammocrate.webp') no-repeat center center;
     background-size: contain;
+    transition: opacity 0.1s ease-in;
+}
+
+.destructionPhase {
+    @include variables.light-text-outline;
+    font-size: 2em;
+    text-align: center;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-weight: bolder;
+    letter-spacing: normal;
+}
+
+.protectionZonesTexts {
+    @include variables.light-text-outline;
+    font-size: 0.7em;
+    text-align: center;
+    font-family: montserrat;
+    font-style: italic;
+    letter-spacing: normal;
+    color: white;
+    width: 200px!important;
+    margin-left: -100px!important;
+    margin-top: -12px!important;
+    height: 10px!important;
+    line-height: 100%;
+    letter-spacing: 0.2em;
     transition: opacity 0.1s ease-in;
 }

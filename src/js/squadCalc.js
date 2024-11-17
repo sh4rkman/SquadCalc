@@ -49,6 +49,7 @@ export default class SquadCalc {
     loadMapSelector() {
         const MAP_SELECTOR = $(".dropbtn");
         const LAYER_SELECTOR = $(".dropbtn5");
+        LAYER_SELECTOR.hide();
 
         // Initiate Maps Dropdown
         MAP_SELECTOR.select2({
@@ -100,13 +101,22 @@ export default class SquadCalc {
         LAYER_SELECTOR.empty();
         this.minimap.spin(true, this.minimap.spinOptions);
         fetchLayersByMap(this.minimap.activeMap.name).then(layers => {
-            LAYER_SELECTOR.append('<option selected value="">BETA!</option>'); // Add placeholder option
+            if(layers.length === 0) { 
+                this.minimap.spin(false);
+                $("#layerSelector").hide();
+                return;
+            }
+
+
+
+            LAYER_SELECTOR.append('<option selected value="">BETA!</option>');
             layers.forEach(function(layer, i) {
                 LAYER_SELECTOR.append(`<option value=${layer.rawName}>${layer.shortName}</option>`);
             });
             this.minimap.spin(false);
-            
+            $("#layerSelector").show();
         }).catch(error => {
+            $("#layerSelector").hide();
             this.minimap.spin(false);
             this.openToast("error", "error", "apiError_layers");
             console.debug("Error fetching layers from API:", error);

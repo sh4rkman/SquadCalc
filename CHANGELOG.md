@@ -11,7 +11,7 @@ You can now select a layer to reveal the potential flags in AAS/RAAS/Invasion ga
 * **Game Assets** (Helipad, Repair station, ammobox) are displayed when zooming in
 
 
-<img src="https://img.shields.io/badge/-%20fix%20-b22"> 
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed ammo selector being misplaced on 2/4K resolution (thanks mahtoid!)
 
 <img src="https://img.shields.io/badge/-%20improv%20-orange"> Added a fadein animation on "delete on targets" button
 
