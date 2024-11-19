@@ -1,6 +1,6 @@
 @use "../shared/variables";
 
-$flag-opacity: 0.4;
+$flag-opacity: 0.3;
 
 #map_ui {
     position: relative;
@@ -30,25 +30,26 @@ $flag-opacity: 0.4;
         }
         .leaflet-pane .leaflet-marker-pane .flag {
             @include variables.light-text-outline;
-            background-color: rgba(255, 255, 255, 0.5);
-            font-size: 1.1em;
-            letter-spacing: normal;
+            background-color: rgba(255, 255, 255, 0.4);
+            font-size: 1.3em;
+            // letter-spacing: normal;
             outline: solid rgb(92, 92, 92) 1px;
             box-shadow: 0 8px 12px rgba(0, 0, 0, 0.75);
+            //pointer-events: none;
             cursor: inherit;
             &:active {
                 cursor: inherit;
             }
             &.flag2 {
-                background-color: rgba(0, 200, 200, $flag-opacity);
+                background-color: rgba(3, 48, 2, $flag-opacity);
                 outline: none;
             }
             &.flag3 {
-                background-color: rgba(9, 9, 255, $flag-opacity);
+                background-color: rgba(9, 9, 155, $flag-opacity);
                 outline: none;
             }
             &.flag4 {
-                background-color: rgba(255, 0, 255, $flag-opacity);
+                background-color: rgba(155, 155, 0, $flag-opacity);
                 outline: none;
             }
             &.flag5 {
@@ -68,8 +69,8 @@ $flag-opacity: 0.4;
                 outline: none;
             }
             &.selected {
-                font-size: 1.1em;
-                background-color: rgba(0, 128, 0, 1);
+                font-size: 1.3em;
+                background-color: rgba(0, 128, 0, 0.9);
                 overflow: hidden;
                 &::before {
                     content: "✔";
@@ -87,7 +88,6 @@ $flag-opacity: 0.4;
                 &::before {
                     content: "🏠";
                     position: relative;
-                    top: -0.2em;
                     right: 0;
                     font-size: 1.6em;
                 }
@@ -98,13 +98,13 @@ $flag-opacity: 0.4;
             }
             &.main.unselectable {
                 pointer-events: none;
-                background-color: rgba(255, 255, 255, 0.5);
+                background-color: rgba(255, 255, 255, 0.4);
             }
             &.main.selected {
                 &::before {
-                    top: 0.2em;
-                    right: 0;
-                    font-size: 1.6em;
+                    top: 0.4em;
+                    // right: 0;
+                    // font-size: 1.6em;
                 }
             }
             &.selected, &.next, &.main {
@@ -270,7 +270,7 @@ $flag-opacity: 0.4;
     height: 100vh; 
     width: 100vw; 
     display: table;
-    font-family: variables.$logoFont;
+    font-family: variables.$logoFont, Times, "Times New Roman", serif;
     text-transform: uppercase;
     font-size: 7em;
     letter-spacing: 0;

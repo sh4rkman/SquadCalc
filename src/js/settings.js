@@ -45,6 +45,12 @@ export function loadSettings(){
 
     $(".btn-"+setting).addClass("active");
 
+    App.userSettings.capZoneOnHover = loadLocalSetting("settings-capZone-onHover");
+    $("#capZoneOnHoverSetting").prop("checked", App.userSettings.capZoneOnHover);
+
+    App.userSettings.autoLane = loadLocalSetting("settings-auto-lane");
+    $("#autoLaneSetting").prop("checked", App.userSettings.autoLane);
+
     App.userSettings.weaponDrag = loadLocalSetting("settings-weapon-drag");
     $("#weaponDragSetting").prop("checked", App.userSettings.weaponDrag);
 
@@ -167,6 +173,40 @@ export function updatePreview(){
     }
 }
 
+
+$("#autoLaneSetting").on("change", function() {
+    var val = $("#autoLaneSetting").is(":checked");
+    App.userSettings.autoLane = val;
+    localStorage.setItem("settings-auto-lane", +val);
+});
+
+$("#capZoneOnHoverSettings").on("change", function() {
+    var val = $("#capZoneOnHoverSettings").is(":checked");
+    App.userSettings.capZoneOnHover = val;
+    localStorage.setItem("settings-capZone-onHover", +val);
+
+    // Hide/Show cap zones if the user is already zoomed in
+    if(!val){
+        // Show markers only if the zoom level is high enough
+        if ( App.minimap.getZoom() > App.minimap.detailedZoomThreshold){
+            // Adjust opacity when the threshold is met
+            App.minimap.layer.flags.forEach(flag => {
+                if(!flag.isHidden){
+                    flag.capZones.eachLayer((cap) => {
+                        cap.setStyle({ opacity: 1, fillOpacity: 0.3 });
+                    });
+                }
+            });
+        }
+    } else {
+        App.minimap.layer.flags.forEach(flag => {
+            flag.capZones.eachLayer((cap) => {
+                cap.setStyle({ opacity: 0, fillOpacity: 0 });
+            });
+        });
+    }
+
+});
 
 $("#keypadUnderCursorSetting").on("change", function() {
     var val = $("#keypadUnderCursorSetting").is(":checked");

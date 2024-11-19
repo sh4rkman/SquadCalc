@@ -54,6 +54,9 @@ export var squadMinimap = Map.extend({
         this.activeTargetsMarkers = new LayerGroup().addTo(this);
         this.activeWeaponsMarkers = new LayerGroup().addTo(this);
         this.grid = "";
+        this.gameToMapScale = "";
+        this.mapToGameScale = "";
+        this.detailedZoomThreshold = "";
         this.mousePos = "";
         this.mouseLocationPopup = new Popup({
             closeButton: false,
@@ -67,7 +70,7 @@ export var squadMinimap = Map.extend({
         });
 
         // Custom events handlers
-        this.on("dblclick", this._handleDoubleCkick, this);
+        this.on("dblclick", this._handleDoubleClick, this);
         this.on("contextmenu", this._handleContextMenu, this);
         
         if (App.userSettings.keypadUnderCursor || !App.hasMouse){
@@ -86,6 +89,8 @@ export var squadMinimap = Map.extend({
 
         this.gameToMapScale = this.tilesSize / this.activeMap.size;
         this.mapToGameScale = this.activeMap.size / this.tilesSize;
+        this.detailedZoomThreshold = 3 + (this.activeMap.size/7000);
+       
 
         // Load Heightmap in canvas
         this.heightmap = new squadHeightmap(this);
@@ -351,7 +356,7 @@ export var squadMinimap = Map.extend({
      * Double-Click
      * Create a new target, or weapon is none exists
      */
-    _handleDoubleCkick: function (e) {
+    _handleDoubleClick: function (e) {
         var target;
 
         // If out of bounds
@@ -411,6 +416,7 @@ export var squadMinimap = Map.extend({
      * After each zoom, update keypadUnderMouse precision
      */
     _handleZoom: function() {
+
         // Make sure the user opened the popup by moving the mouse before zooming
         // ...or it throw error
         if (App.userSettings.keypadUnderCursor || !App.hasMouse){
@@ -419,10 +425,29 @@ export var squadMinimap = Map.extend({
             }
         }
 
+        console.log("currentZoom", this.getZoom());
+
+
+        // If there is a layer selected, reveal main/capzone when enough zoomed in
         if (this.layer) {
-            if (this.getZoom() > 3){
+            if (this.getZoom() > this.detailedZoomThreshold){
+                if(!App.userSettings.capZoneOnHover) {
+                    this.layer.flags.forEach(flag => {
+                        if(!flag.isHidden){
+                            flag.capZones.eachLayer((cap) => {
+                                cap.setStyle({ opacity: 1, fillOpacity: 0.3 });
+                            });
+                        }
+                    });
+                }
                 this.layer.setMainZoneOpacity(true);
             } else {
+
+                this.layer.flags.forEach(flag => {
+                    flag.capZones.eachLayer((cap) => {
+                        cap.setStyle({ opacity: 0, fillOpacity: 0 });
+                    });
+                });
                 this.layer.setMainZoneOpacity(false);
             }
         }

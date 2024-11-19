@@ -96,25 +96,27 @@ export default LayerGroup.extend({
             return;
         }
         const currentZoom = Math.round(this.map.getZoom());
+        const mapZoomPadding = this.map.activeMap.size/4000;
 
         if (currentZoom >= 6) {
-            this.setLinesOpacity(this.s2Lines, 0.6);
-        } else if (currentZoom >= 5) {
-            this.setLinesOpacity(this.s1Lines, 0.3);
-            this.setLinesOpacity(this.s2Lines, 0.6);
+            this.setLinesWeight(this.kpLines, 4);
+        } else if (currentZoom >= 3 + mapZoomPadding) {
+
+            this.setLinesWeight(this.kpLines, 3);
+
+            this.setLinesOpacity(this.s1Lines, 0.8);
+            this.setLinesWeight(this.s1Lines, 1.5);
+
+            this.setLinesOpacity(this.s2Lines, 1);
+            this.setLinesWeight(this.s2Lines, 0.5);
+
         }
-        else if (currentZoom >= 4) {
+        else if (currentZoom >= 2 + mapZoomPadding) {
             this.setLinesWeight(this.kpLines, 2);
-            this.setLinesOpacity(this.kpLines, 1);
+            this.setLinesOpacity(this.kpLines, 0.7);
             this.setLinesOpacity(this.s1Lines, 0.3);
             this.setLinesOpacity(this.s2Lines, 0);
         } 
-        else if (currentZoom >= 2){
-            this.setLinesWeight(this.kpLines, 0.7);
-            this.setLinesOpacity(this.kpLines, 1);
-            this.setLinesOpacity(this.s1Lines, 0);
-            this.setLinesOpacity(this.s2Lines, 0);
-        }
         else {
             this.setLinesWeight(this.kpLines, 0.5);
             this.setLinesOpacity(this.kpLines, 1);

@@ -1,5 +1,8 @@
 {
     "SettingsTitle": "Настройки",
+        "map": "Карта",
+        "mortars": "Минометы",
+        "layer": "Полоса",
     "mapOptions": "Опции карты",
         "showGrid": "Показать сетку",
         "showKeypad": "Номер сетки под курсором",
@@ -19,6 +22,9 @@
         "showDistance": "Расстояние",
         "showTimeOfFlight": "Время полёта",
         "showHeightDiff": "Разница высот",
+    "LaneFinderOptions": "Опции поиска полос",
+        "autoLane": "Автовыбор одного флага",
+        "capZoneOnHover": "Зоны при наведении",
     "preview": "Предпросмотр",
     "changelog": "Изменения",
     "github": "Просмотреть код на Github",

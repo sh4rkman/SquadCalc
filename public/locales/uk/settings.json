@@ -1,5 +1,8 @@
 {
     "SettingsTitle": "Налаштування",
+        "map": "Мапа",
+        "mortars": "Міни",
+        "layer": "Смуга",
     "mapOptions": "Опції карти",
         "showGrid": "сітку",
         "showKeypad": "клавіатуру під курсором",
@@ -20,6 +23,9 @@
         "showDistance": "відстань",
         "showTimeOfFlight": "час польоту",
         "showHeightDiff": "різницю висот",
+    "LaneFinderOptions": "Параметри пошуку смуг",
+        "autoLane": "Автовибір одного прапора",
+        "capZoneOnHover": "Зони при наведенні",
     "preview": "Попередній перегляд",
     "changelog": "Зміни",
     "github": "Переглянути код на Github",

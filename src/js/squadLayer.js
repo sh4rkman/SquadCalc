@@ -1,17 +1,23 @@
 
 import { DivIcon, Marker, Circle, LayerGroup, Polyline, Polygon, Rectangle, FeatureGroup } from "leaflet";
+import { SquadObjective } from "./squadObjective.js";
+import { App } from "../app.js";
 
 export class SquadLayer {
 
     constructor(map, layerData) {
         this.map = map;
-        this.revealed = false;
+        this.activeLayerMarkers = new LayerGroup().addTo(this.map);
+        this.layerData = layerData;
+        this.offset_x = Math.min(this.layerData.mapTextureCorners[0].location_x, this.layerData.mapTextureCorners[1].location_x);
+        this.offset_y = Math.min(this.layerData.mapTextureCorners[0].location_y, this.layerData.mapTextureCorners[1].location_y);
 
         // Current position in the layer
         this.currentPosition = 0;
 
         // latlng's of the currently selected flags
         this.path = [];
+        this.polyline = new Polyline(this.path, {color: "white", opacity: 0.9}).addTo(this.activeLayerMarkers);
 
         // Currently selected flags
         this.selectedFlags = [];
@@ -24,24 +30,26 @@ export class SquadLayer {
         this.mainZones = {
             rectangles: [],
             texts: [],
+            assets: []
         };
         this.caches = new FeatureGroup().addTo(this.map);
         this.flags = [];
 
-
         this.reversed = false;
 
-        this.assets = [];
-
-        this.layerData = layerData;
-        this.activeLayerMarkers = new LayerGroup().addTo(this.map);
-        this.polyline = new Polyline(this.path, {color: "white", opacity: 0.7}).addTo(this.activeLayerMarkers);
-        this.currentIndex = 0;
-        this.offset_x = Math.min(this.layerData.mapTextureCorners[0].location_x, this.layerData.mapTextureCorners[1].location_x);
-        this.offset_y = Math.min(this.layerData.mapTextureCorners[0].location_y, this.layerData.mapTextureCorners[1].location_y);
         this.init();
 
-        if (this.map.getZoom() > 3){
+        // If already zoomed in, reveal capzones/main assets
+        if (this.map.getZoom() > this.map.detailedZoomThreshold) {
+            if(!App.userSettings.capZoneOnHover) {
+                this.flags.forEach(flag => {
+                    if(!flag.isHidden){
+                        flag.capZones.eachLayer((cap) => {
+                            cap.setStyle({ opacity: 1, fillOpacity: 0.3 });
+                        });
+                    }
+                });
+            }
             this.setMainZoneOpacity(true);
         }
 
@@ -133,7 +141,7 @@ export class SquadLayer {
 
             Object.values(this.layerData.objectives).forEach((obj, i) => {
 
-                let latlng = this.convertToLatLng(obj.location_x, obj.location_y);
+                const latlng = this.convertToLatLng(obj.location_x, obj.location_y);
 
                 // Ignore the first and last flags (Mains)
                 // We will draw their protection zones instead later
@@ -143,7 +151,7 @@ export class SquadLayer {
                     return;
                 }
 
-                let newFlag = new SquadObjective(latlng, this, obj, 0, obj);
+                const newFlag = new SquadObjective(latlng, this, obj, 0, obj);
                 this.path.push(latlng);
                 this.flags.push(newFlag);
 
@@ -161,19 +169,18 @@ export class SquadLayer {
 
         // RAAS / INVASION
 
-        // Find the # of objective in the layer
-        this.objNumber = Math.max(
-            ...Object.values(this.layerData.objectives)
-                .filter(obj => obj.pointPosition !== undefined)
-                .map(obj => obj.pointPosition)
-        );
-
+        // // Find the # of objectives in the layer
+        // this.objNumber = Math.max(
+        //     ...Object.values(this.layerData.objectives)
+        //         .filter(obj => obj.pointPosition !== undefined)
+        //         .map(obj => obj.pointPosition)
+        // );
 
         Object.values(this.layerData.objectives).forEach((objCluster) => {
 
             if (!objCluster.points) {
-                let latlng = this.convertToLatLng(objCluster.location_x, objCluster.location_y);
-                let newFlag = new SquadObjective(latlng, this, objCluster, 1, objCluster);
+                const latlng = this.convertToLatLng(objCluster.location_x, objCluster.location_y);
+                const newFlag = new SquadObjective(latlng, this, objCluster, 1, objCluster);
                 this.mains.push(newFlag);
                 this.flags.push(newFlag);
             } 
@@ -181,12 +188,10 @@ export class SquadLayer {
                 objCluster.points.forEach((obj) => {
 
                     let latlng = this.convertToLatLng(obj.location_x, obj.location_y);
-                    let pos = objCluster.pointPosition;
                     let flagExists = false;
-                    let roundedLatLng = latlng;
 
                     this.flags.forEach((flag) => {
-                        if (this.areLatLngsClose(flag.latlng, roundedLatLng)) {
+                        if (this.areLatLngsClose(flag.latlng, latlng)) {
                             console.debug(`adding cluster ${objCluster.name} to flag ${flag.name}`);
                             console.debug("new clustersList: ", flag.clusters);
                             flag.addCluster(objCluster);
@@ -243,10 +248,9 @@ export class SquadLayer {
     }
 
     createHelipads() {
-        // Creating Helipads
         this.layerData.assets.helipads.forEach((asset) => {
             const latlng = this.convertToLatLng(asset.location_x, asset.location_y);
-            this.assets.push(new Marker(latlng, {
+            this.mainZones.assets.push(new Marker(latlng, {
                 interactive: false,
                 zIndexOffset: -1000,
                 opacity: 0,
@@ -264,7 +268,7 @@ export class SquadLayer {
             const latlng = this.convertToLatLng(asset.location_x, asset.location_y);
             // Repairs
             if (asset.type === "Repair Station") {
-                this.assets.push(new Marker(latlng, {
+                this.mainZones.assets.push(new Marker(latlng, {
                     interactive: false,
                     zIndexOffset: -1000,
                     opacity: 0,
@@ -276,7 +280,7 @@ export class SquadLayer {
             }
             // Crates
             if (asset.type === "Ammo Crate") {
-                this.assets.push(new Marker(latlng, {
+                this.mainZones.assets.push(new Marker(latlng, {
                     interactive: false,
                     zIndexOffset: -1000,
                     opacity: 0,
@@ -321,13 +325,12 @@ export class SquadLayer {
         // Creating protectionZones + noConstructionZones
         this.layerData.mapAssets.protectionZones.forEach((asset) => {
 
-            // Ignore useless protection zones (<10m)
+            // Ignore useless/temporary protection zones (<10m)
             if (asset.objects[0].boxExtent.extent_x/100 < 10) return;
 
             // Center of the protection zone
             let location_x = -(asset.objects[0].location_x - this.offset_x) / 100;
             let location_y = (asset.objects[0].location_y - this.offset_y) / 100;
-
                
             let latlngSphereRadius = [location_y * -this.map.gameToMapScale, location_x * -this.map.gameToMapScale];
             let radiusTest = asset.objects[0].sphereRadius / 100 * this.map.gameToMapScale;
@@ -455,7 +458,7 @@ export class SquadLayer {
             text.setOpacity(textOpacity);
         });
 
-        this.assets.forEach(asset => {
+        this.mainZones.assets.forEach(asset => {
             asset.setOpacity(opacity);
         });
 
@@ -463,17 +466,17 @@ export class SquadLayer {
 
 
     _handleFlagClick(flag) {
-        var backward = false;
+        let backward = false;
 
-        // todo remove
         console.clear();
+        console.log(flag.objCluster);
+        console.log(flag.cluster);
         console.debug("**************************");
         console.debug("      NEW CLICKED FLAG    ");
         console.debug("**************************");
         console.debug("  -> Selected Flag:", flag.objectName);
         console.debug("  -> Clicked flag position", flag.position);
         console.debug("  -> Flag Object:", flag);
-        console.debug("    **************************");
         console.debug("  -> Current position", this.currentPosition);
         console.debug("  -> Current selected Flags", this.selectedFlags);
         console.debug("  -> Cluster History", this.selectedReachableClusters);
@@ -543,10 +546,10 @@ export class SquadLayer {
         // Set to track clusters that can be reached from the clicked flag
         const reachableClusters = new Set();
 
-        // Start DFS from each cluster associated with the clicked flag
+        // Start DFS from each clicked flag clusters
         flag.clusters.forEach((cluster) => {
 
-            // Ignore clusters that are in front of the clicked for now
+            // Ignore clusters that are in front of the clicked flag for now
             if (Math.abs(this.startPosition - cluster.pointPosition)+1 > this.currentPosition){
                 console.debug("Cluster is irrevelant! skipping DFS for now..", cluster);
                 return;
@@ -563,7 +566,7 @@ export class SquadLayer {
 
 
 
-        // Remove clusters that are not reachable from the previous flag
+        // Remove clusters that were not reachable from the previous flag
         if (this.selectedReachableClusters.length > 0){
             Array.from(reachableClusters).forEach((cluster) => {
                 if (!this.selectedReachableClusters.at(-1).has(cluster)){
@@ -620,7 +623,7 @@ export class SquadLayer {
 
         // Show reachable clusters
         reachableClusters.forEach((clusterName) => {
-            // Attempt to retrieve the cluster directly by name
+
             let cluster = this.layerData.objectives[clusterName];
 
             // If the cluster is not found directly, search for a matching displayName (mains)
@@ -637,9 +640,8 @@ export class SquadLayer {
 
             // If the cluster is in front of the clicked flag, show it
             if (Math.abs(this.startPosition - cluster.pointPosition) + 1 > this.currentPosition){
-                  
+        
                 console.debug("   -> Cluster in front, showing it !");
-
                 this._showCluster(cluster);
                 
                 // If cluster is directly in front of the clicked flag, count the next flags
@@ -661,17 +663,14 @@ export class SquadLayer {
 
         console.debug("Flags next step :", nextFlags);
 
-
         // Highlight the next flags with a proper class
         nextFlags.forEach((flag) => {
-            var div = flag.flag._icon;
-            div.classList.add("next");
+            flag.flag._icon.classList.add("next");
             flag.flag.options.icon.options.className = "flag flag" + flag.position + " next";
         });
 
-
         // Only one flag in front ? Click it
-        if (nextFlags.length === 1 && !backward){
+        if (nextFlags.length === 1 && !backward && App.userSettings.autoLane){
             this._handleFlagClick(nextFlags[0]);
         }
 
@@ -702,7 +701,6 @@ export class SquadLayer {
                     this.dfs(link.nodeB, reachableClusters);  // Traverse from nodeA to nodeB
                 }
             }
-
         });
     }
 
@@ -737,7 +735,7 @@ export class SquadLayer {
 
     /**
      * Set the opacity of the layer
-     * @param {number} value - The opacity value (0-1)
+     * @param {number} value - opacity value (0-1)
      */
     _setOpacity(value){
         this.polyline.setStyle({ opacity: value });
@@ -745,6 +743,7 @@ export class SquadLayer {
             flag._setOpacity(value);
         });
     }
+
 
     _showCluster(cluster) {
         if (cluster.name === "Main") return;
@@ -818,336 +817,6 @@ export class SquadLayer {
      */
     clear(){
         this.activeLayerMarkers.clearLayers();
-    }
-
-}
-
-
-
-
-
-export class SquadObjective {
-
-    constructor(latlng, layer, objCluster, isMain, cluster) {
-        var html = "";
-        this.name = objCluster.name;
-        this.objectName = objCluster.objectName;
-        this.objCluster = objCluster;
-        this.layerGroup = layer.activeLayerMarkers;
-        this.layer = layer;
-        this.latlng = latlng;
-        this.clusters = [];
-        this.capZones = new LayerGroup().addTo(this.layerGroup);
-        this.isMain = isMain;
-        this.isHidden = true;
-        this.position = cluster.pointPosition;
-
-
-        console.debug("creating flag", this.name, "at position", this.position);
-
-        if (!this.isMain){
-            html = this.name;
-        }
-
-        this.nameText = new Marker(latlng, {
-            interactive: false,
-            icon: new DivIcon({
-                className: "objText",
-                html: html,
-                iconSize: [300, 20],
-                iconAnchor: [150, 30]
-            })
-        }).addTo(this.layerGroup);
-
-        let className;
-
-        if (this.isMain){
-            if (this.layer.layerData.gamemode === "AAS" || this.layer.layerData.gamemode === "Destruction"){
-                className = "flag main unselectable";
-            } else {
-                className = "flag main selectable";
-            }
-        } else {
-            className = "flag flag" + this.position;
-        }
-
-
-        this.flag = new Marker(latlng, {
-            interactive: true,
-            icon: new DivIcon({
-                className: className,
-                html: 99,
-                iconSize: [40, 18],
-                iconAnchor: [20, 9] 
-            })
-        }).addTo(this.layerGroup);
-
-        this.addCluster(cluster);
-
-        this.flag.on("click", this._handleClick, this);
-        this.flag.on("mouseover", this._handleMouseOver, this);
-        this.flag.on("mouseout", this._handleMouseOut, this);
-    }
-
-    select(){
-        var position;
-        var html;
-        var className;
-
-        this.flag.removeFrom(this.layerGroup).remove();
-        console.debug("Selecting flag: ", this.name);
-
-        if (this.isMain) { 
-            html= "";
-            className = "flag selected main";
-        } 
-        else {
-            position = Math.abs(this.layer.startPosition - this.position); 
-            position = Math.abs(this.layer.startPosition - this.position); 
-        }
-
-        if (!this.isMain) { 
-            position = Math.abs(this.layer.startPosition - this.position); 
-        }
-
-        if (!this.isMain) { 
-            html = position; 
-            className = "flag selected";
-        }
-
-        this.flag = new Marker(this.latlng, {
-            interactive: true,
-            icon: new DivIcon({
-                className: className,
-                html: html,
-                iconSize: [40, 18], 
-                iconAnchor: [20, 9] 
-            })
-        }).addTo(this.layerGroup);
-
-        this.isSelected = true;
-        this.flag.on("click", this._handleClick, this);
-        this.flag.on("mouseover", this._handleMouseOver, this);
-        this.flag.on("mouseout", this._handleMouseOut, this);
-    }
-
-
-    createCapZone(cap){
-
-        var location_x = -(cap.location_x - this.layer.offset_x) / 100;
-        var location_y = (cap.location_y - this.layer.offset_y) / 100;
-        var boxExtentX = cap.boxExtent.location_x / 100;
-        var boxExtentY = cap.boxExtent.location_y / 100;
-        var latlngSphereRadius = [location_y * -this.layer.map.gameToMapScale, location_x * -this.layer.map.gameToMapScale];
-        var radiusTest = cap.sphereRadius / 100 * this.layer.map.gameToMapScale;
-
-        // define rectangle geographical bounds
-        var bound1 = [(location_y + boxExtentY) * -this.layer.map.gameToMapScale , (location_x + boxExtentX) * -this.layer.map.gameToMapScale];
-        var bound2 = [(location_y - boxExtentY) * -this.layer.map.gameToMapScale , (location_x - boxExtentX) * -this.layer.map.gameToMapScale];
-        var bounds = [bound1, bound2];
-
-        var distanceToCorner = Math.sqrt(Math.pow(bound1[0] - (location_y * -this.layer.map.gameToMapScale), 2) + Math.pow(bound1[1] - (location_x * -this.layer.map.gameToMapScale), 2));
-
-        var capzone;
-
-        if (radiusTest > distanceToCorner){
-            capzone = new Rectangle(bounds, {
-                color: "rgb(230, 230, 230)",
-                fillColor: "rgb(199, 199, 199)",
-                opacity: 0,
-                weight: 2,
-                fillOpacity: 0,
-            }).addTo(this.layer.activeLayerMarkers);
-            this.capZones.addLayer(capzone);
-
-            //Debug rectangle
-            // this.capZones.addLayer(
-            //     new L.Circle(latlngSphereRadius, {
-            //     opacity: 0.5,
-            //     color: "green",
-            //     radius: radiusTest,
-            // }).addTo(this.layer.activeLayerMarkers));
-        } 
-        else {
-
-            capzone = new Circle(latlngSphereRadius, {
-                color: "rgb(230, 230, 230)",
-                fillColor: "rgb(199, 199, 199)",
-                opacity: 0,
-                weight: 2,
-                fillOpacity: 0,
-                radius: radiusTest,
-            }).addTo(this.layer.activeLayerMarkers);
-            this.capZones.addLayer(capzone);
-    
-            // //debug
-            // capzone = new Rectangle(bounds, {
-            //     color: "green",
-            //     fillColor: "rgb(199, 199, 199)",
-            //     opacity: 1,
-            //     weight: 2,
-            //     fillOpacity: 0,
-            // }).addTo(this.layer.activeLayerMarkers)
-            // this.capZones.addLayer(capzone);
-    
-        }
-
-       
-
-    }
-
-
-
-    unselect(){
-        var html = "";
-        var position = Math.abs(this.layer.startPosition - this.position); 
-        var className = "flag";
-        //var position = this.position;
-
-        this.flag.removeFrom(this.layerGroup).remove();
-
-        if (this.isMain) { 
-            html= "";
-            if (this.layer.layerData.gamemode === "AAS" || this.layer.layerData.gamemode === "Destruction"){
-                className = "flag main unselectable";
-            } else {
-                className = "flag main selectable";
-            }
-        } else {
-            html = position;
-            className = className + " flag" + position;
-        }
-
-        this.flag = new Marker(this.latlng, {
-            interactive: true,
-            icon: new DivIcon({
-                className: className,
-                html: html,
-                iconSize: [40, 18], // smaller when selected
-                iconAnchor: [20, 9] 
-            })
-        }).addTo(this.layerGroup);
-
-
-        this.isSelected = false;
-        this.flag.on("click", this._handleClick, this);
-        this.flag.on("mouseover", this._handleMouseOver, this);
-        this.flag.on("mouseout", this._handleMouseOut, this);
-    }
-
-    addCluster(cluster){
-        this.clusters.push(cluster);
-        this.updatePosition();
-    }
-
-
-    updatePosition() {
-
-        let lowestPossiblePosition;
-
-        lowestPossiblePosition = this.clusters.reduce((min, item) =>
-            item.pointPosition < min ? item.pointPosition : min,
-        this.clusters[0].pointPosition
-        );
-
-        if (this.layer.reversed) {
-            lowestPossiblePosition = this.clusters.reduce((max, item) =>
-                item.pointPosition > max ? item.pointPosition : max,
-            this.clusters[0].pointPosition
-            );
-        }
-
-        this.position = lowestPossiblePosition;
-
-        // default parameters for AAS
-        let className = "flag";
-        let html = "";
-
-        // if RAAS/Invasion, add the flag number and a colored icon
-        if (this.layer.layerData.gamemode != "AAS") {
-            className += " flag" + this.position;
-            html = this.position;
-        }
-
-        if (this.isMain) { 
-            html = "";
-            if (this.layer.layerData.gamemode === "AAS" || this.layer.layerData.gamemode === "Destruction"){
-                className = "flag main unselectable";
-            } else {
-                className = "flag main selectable";
-            }
-        }
-
-        // Refresh the flag icon
-        this.flag.setIcon(new DivIcon({
-            className: className,
-            html: html,
-            iconSize: [40, 18],
-            iconAnchor: [20, 9]
-        }));
-
-    }
-
-    _handleClick(){
-        if (this.layer.layerData.gamemode === "Destruction" || this.layer.layerData.gamemode === "AAS") return;
-        this.layer._handleFlagClick(this);
-    }
-
-    _handleMouseOver() {
-        const map = this.layer.map;
-        const currentZoom = map.getZoom();
-        const mapSize = map.activeMap.size;
-    
-        // Calculate the threshold dynamically based on map size
-        const zoomThreshold = 1.039 * Math.pow(mapSize, 0.13);
-    
-        // Show markers only if the zoom level is high enough
-        if (currentZoom > zoomThreshold) {
-            // Adjust opacity when the threshold is met
-            this.capZones.eachLayer((cap) => {
-                cap.setStyle({ opacity: 1, fillOpacity: 0.3 });
-            });
-        }
-
-    }
-
-    _handleMouseOut(){
-        this.capZones.eachLayer((cap) => {
-            cap.setStyle({ opacity: 0, fillOpacity: 0 });
-        });
-    }
-
-
-    hide(){
-        this.nameText.removeFrom(this.layerGroup);
-        this.flag.removeFrom(this.layerGroup);
-        this.flag.options.interactive = false;
-        this.flag.off();
-        console.debug("      -> Hiding flag: ", this.name);
-        this.isHidden = true;
-    }
-
-    _setOpacity(value){
-        this.flag.setOpacity(value);
-        this.nameText.setOpacity(value);
-    }
-
-    delete(){
-        this.nameText.removeFrom(this.layerGroup).remove();
-        this.flag.removeFrom(this.layerGroup).remove();
-    }
-
-    show(){
-        console.debug("      -> Showing flag: ", this.name);
-
-        this.nameText.setOpacity(1).addTo(this.layerGroup);
-        this.flag.setOpacity(1).addTo(this.layerGroup);
-        this.unselect();
-        this.isHidden = false;
-
-        // when showing a flag
-        this.flag.on("click", this._handleClick, this);
-        this.flag.options.interactive = true;
     }
 
 }

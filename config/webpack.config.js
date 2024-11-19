@@ -58,6 +58,7 @@ export default async (env) => {
     },
     devServer: {
       open: true,
+      historyApiFallback: true,
       static: {
         directory: path.join(__dirname, '../public'),
         publicPath: '/',

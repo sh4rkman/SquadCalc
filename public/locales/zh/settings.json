@@ -1,5 +1,8 @@
 {
     "SettingsTitle": "设置",
+        "map": "地图",
+        "mortars": "迫击炮",
+        "layer": "车道",
     "mapOptions": "地图选项",
         "showGrid": "显示网格",
         "showKeypad": "在光标下显示键盘",
@@ -20,6 +23,9 @@
         "showDistance": "显示距离",
         "showTimeOfFlight": "显示飞行时间",
         "showHeightDiff": "显示高度差",
+    "LaneFinderOptions": "车道查找选项",
+        "autoLane": "自动选择单个旗帜",
+        "capZoneOnHover": "仅在悬停时显示占领区",
     "preview": "预览",
     "changelog": "更新日志",
     "github": "在GitHub上查看代码",

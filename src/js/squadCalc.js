@@ -397,11 +397,20 @@ export default class SquadCalc {
             $("input[type=radio][name=angleChoice]").off();
             $(".heightPadding input").off();
         });
+        
         $("#canvasControls button").on("click", (e) => {
             if ($(e.currentTarget).hasClass("active")){ return;}
             $("#canvasControls > .active").first().removeClass("active");
             $(e.currentTarget).addClass("active");
             $(".sim.active").removeClass("active");
+            $("#"+$(e.currentTarget).val()).addClass("active");
+        });
+
+        $("#settingsControls button").on("click", (e) => {
+            if ($(e.currentTarget).hasClass("active")){ return;}
+            $("#settingsControls > .active").first().removeClass("active");
+            $(e.currentTarget).addClass("active");
+            $(".panel.active").removeClass("active");
             $("#"+$(e.currentTarget).val()).addClass("active");
         });
 

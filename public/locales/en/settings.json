@@ -1,5 +1,8 @@
 {
     "SettingsTitle": "Settings",
+        "map": "Map",
+        "mortars": "Mortars",
+        "layer": "Layer",
     "mapOptions": "Map Options",
         "showGrid": "Show Grid",
         "showKeypad": "Keypads under Cursor",
@@ -20,6 +23,9 @@
         "showDistance": "Distance",
         "showTimeOfFlight": "Time of Flight",
         "showHeightDiff": "Height Difference",
+    "LaneFinderOptions": "Lane Finder Options",
+        "autoLane": "Auto-pick single flag",
+        "capZoneOnHover": "Only show capzones when hovering",
     "preview": "Preview",
     "discord": "Official Discord",
     "github": "View code on Github",

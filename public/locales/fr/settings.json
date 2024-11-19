@@ -1,5 +1,8 @@
 {
     "SettingsTitle": "Paramètres",
+        "map": "Carte",
+        "mortars": "Mortiers",
+        "layer": "Voie",
     "mapOptions": "Options de Carte",
         "showGrid": "Afficher la grille",
         "showKeypad": "Grille sous le curseur",
@@ -20,6 +23,9 @@
         "showDistance": "Distance",
         "showTimeOfFlight": "Temps de vol",
         "showHeightDiff": "Différence d'altitude",
+    "LaneFinderOptions": "Options de recherche de voie",
+        "autoLane": "Sélection automatique d'un seul drapeau",
+        "capZoneOnHover": "Ne montrer les zones de capture qu'au survol",
     "preview": "Aperçu",
     "changelog": "Journal des modifications",
     "github": "Voir le code sur Github",

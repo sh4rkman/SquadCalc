@@ -7,15 +7,20 @@
 
 * Selecting a flag in RAAS/Invasion will automatically hide the unreachable ones
 * Next direct flags will be automatically colored red 🟥
-* If only one flag is reachable next step, SquadCalc will automatically advance into the layer until a choice have to be made
-* **Capzone** are displayed when hovering a flag when zoomed in enough.
+* If only one flag is reachable next step, SquadCalc will automatically advance into the layer until a choice have to be made (can be disabled in settings)
+* **Capzone** are displayed when zoomed in enough (or o nly when hovering a flag can be disabled in settings)
 * **Game Assets** (Helipad, Repair station, ammobox) are displayed when zooming in
 * **Known Bug :** The capzone / Main Protection Zone can be bigger than ingame reality (see [this issue](https://github.com/Squad-Wiki/squad-wiki-pipeline-map-data/issues/118) on Squad Wiki Pipeline map data repository)
 
 
+
 </br>
 
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed logo not properly displaying on slow connection
+
 <img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed ammo selector being misplaced on 2/4K resolution (thanks mahtoid!)
+
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Gridline now takes map size into accounts when appearing/disapearing
 
 <img src="https://img.shields.io/badge/-%20improv%20-orange"> Added a fadein animation on "delete on targets" button
 
