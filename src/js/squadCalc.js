@@ -73,14 +73,32 @@ export default class SquadCalc {
 
         // Add event listener
         MAP_SELECTOR.on("change", (event) => {
-            this.minimap.activeMap = MAPS.find((elem, index) => index == event.target.value);
-            if (process.env.API_URL) { this.loadLayers(); }
+            const currentUrl = new URL(window.location);
+            $("#layerSelector").hide();
+            this.minimap.activeMap = MAPS.find((_, index) => index == event.target.value);
             this.minimap.clear(); 
-            this.minimap.draw(); 
+            this.minimap.draw();
+            currentUrl.searchParams.set("map", this.minimap.activeMap.name);
+            currentUrl.searchParams.delete("layer");
+            window.history.replaceState({}, "", currentUrl);
+
+            if (process.env.API_URL) { this.loadLayers(); }
+                
+
         });
 
         LAYER_SELECTOR.on("change", (event) => {
+            const currentUrl = new URL(window.location);
+            
+            // Get the selected option's text
+            const selectedLayerText = LAYER_SELECTOR.find(":selected").text().replaceAll(" ", "");
+        
+            // Update the "layer" query parameter in the URL with the selected option's text
+            currentUrl.searchParams.set("layer", selectedLayerText);
+            window.history.replaceState({}, "", currentUrl);
+
             this.minimap.spin(true, this.minimap.spinOptions);
+
             fetchLayerByName(event.target.value).then(layerData => {
                 if (this.minimap.layer) this.minimap.layer.clear();
                 this.minimap.layer = new SquadLayer(this.minimap, layerData);
@@ -98,23 +116,54 @@ export default class SquadCalc {
      */
     loadLayers() {
         const LAYER_SELECTOR = $(".dropbtn5");
+        const currentUrl = new URL(window.location);
+
         LAYER_SELECTOR.empty();
         this.minimap.spin(true, this.minimap.spinOptions);
+
         fetchLayersByMap(this.minimap.activeMap.name).then(layers => {
+
             if (layers.length === 0) { 
                 this.minimap.spin(false);
                 $("#layerSelector").hide();
+                const currentUrl = new URL(window.location);
+                currentUrl.searchParams.delete("layer");
+                window.history.replaceState({}, "", currentUrl);
                 return;
             }
 
-
-
             LAYER_SELECTOR.append("<option selected value=\"\">BETA!</option>");
+
             layers.forEach(function(layer) {
                 LAYER_SELECTOR.append(`<option value=${layer.rawName}>${layer.shortName}</option>`);
             });
+
+            // If URL has a "layer" parameter
+            if (currentUrl.searchParams.has("layer")) {
+                const urlLayerName = currentUrl.searchParams.get("layer").toLowerCase().replaceAll(" ", "");
+            
+                // Normalize option text by removing any extra spaces around the "V"
+                const matchingOption = LAYER_SELECTOR.find("option").filter(function() {
+                    const optionText = $(this).text().toLowerCase().replaceAll(" ", "");
+                    return optionText === urlLayerName;
+                });
+            
+                // If we find a matching option, set it as selected
+                if (matchingOption.length > 0) {
+                    matchingOption.prop("selected", true);
+                    LAYER_SELECTOR.trigger("change");
+                } 
+                else {
+                    // layer in url doesn't make sense, clean the url
+                    const currentUrl = new URL(window.location);
+                    currentUrl.searchParams.delete("layer");
+                    window.history.replaceState({}, "", currentUrl);
+                }
+            }
+
             this.minimap.spin(false);
             $("#layerSelector").show();
+
         }).catch(error => {
             $("#layerSelector").hide();
             this.minimap.spin(false);
@@ -132,11 +181,25 @@ export default class SquadCalc {
 
     loadMinimap(){
         const tileSize = 256;
-        const randMapId = Math.floor(Math.random() * MAPS.length);
-        const defaultMap = MAPS[randMapId];
-        $(".dropbtn").val(randMapId);
-        this.minimap = new squadMinimap("map", tileSize, defaultMap);
+        const currentUrl = new URL(window.location.href);
+        var mapIndex;
+
+        // try to retrieve map from URL
+        if (currentUrl.searchParams.has("map")) {
+            const urlMapName = currentUrl.searchParams.get("map").toLowerCase();
+            mapIndex = MAPS.findIndex(map => map.name.toLowerCase() === urlMapName);
+            if (mapIndex === -1) { mapIndex = Math.floor(Math.random() * MAPS.length); }
+        } 
+        else {
+            mapIndex = Math.floor(Math.random() * MAPS.length);
+        }
+    
+        $(".dropbtn").val(mapIndex);
+        this.minimap = new squadMinimap("map", tileSize, MAPS[mapIndex]);
         this.minimap.draw();
+
+        currentUrl.searchParams.set("map", this.minimap.activeMap.name);
+        window.history.replaceState({}, "", currentUrl);
 
         // If no API if provided, hide the layer selector
         if (process.env.API_URL) { 

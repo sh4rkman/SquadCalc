@@ -22,6 +22,8 @@
 
 <img src="https://img.shields.io/badge/-%20improv%20-orange"> Gridline now takes map size into accounts when appearing/disapearing
 
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Bigger gridlines now appears on top of smaller one for a better clarity
+
 <img src="https://img.shields.io/badge/-%20improv%20-orange"> Added a fadein animation on "delete on targets" button
 
 <img src="https://img.shields.io/badge/-%20dev%20-grey"> "Frequent weapon position" button is now hidden if no api is provided in a `.env` file

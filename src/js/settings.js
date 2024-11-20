@@ -186,12 +186,12 @@ $("#capZoneOnHoverSettings").on("change", function() {
     localStorage.setItem("settings-capZone-onHover", +val);
 
     // Hide/Show cap zones if the user is already zoomed in
-    if(!val){
+    if (!val){
         // Show markers only if the zoom level is high enough
         if ( App.minimap.getZoom() > App.minimap.detailedZoomThreshold){
             // Adjust opacity when the threshold is met
             App.minimap.layer.flags.forEach(flag => {
-                if(!flag.isHidden){
+                if (!flag.isHidden){
                     flag.capZones.eachLayer((cap) => {
                         cap.setStyle({ opacity: 1, fillOpacity: 0.3 });
                     });

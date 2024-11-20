@@ -33,6 +33,7 @@ export default LayerGroup.extend({
         weight: 1,
         interactive: false,
         clickable: false,
+        zIndex: 202,
     },
 
     lineStyleSUB1: {
@@ -42,6 +43,7 @@ export default LayerGroup.extend({
         weight: 2,
         interactive: false,
         clickable: false,
+        zIndex: 201,
     },
 
     lineStyleSUB2: {
@@ -51,6 +53,7 @@ export default LayerGroup.extend({
         weight: 0.8,
         interactive: false,
         clickable: false,
+        zIndex: 200,
     },
 
     initialize(map, options) {
@@ -274,11 +277,10 @@ export default LayerGroup.extend({
         }
 
 
-
-        // Add line and labels
-        this.kpLines.forEach(this.addLayer, this);
-        this.s1Lines.forEach(this.addLayer, this);
+        // Draw lines from smallest to largest so bigger lines are drawn over smaller ones
         this.s2Lines.forEach(this.addLayer, this);
+        this.s1Lines.forEach(this.addLayer, this);
+        this.kpLines.forEach(this.addLayer, this);
         this.labels.forEach(this.addLayer, this);
 
         // Make label unfocusable with tab to avoid users panning the map while alt-tabbing

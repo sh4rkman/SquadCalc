@@ -340,6 +340,7 @@ $bezier: cubic-bezier(0.65, 0.25, 0.56, 0.96);
         }
     }
 }
+
 .panel {
     display: none;
     &.active {
@@ -350,10 +351,9 @@ $bezier: cubic-bezier(0.65, 0.25, 0.56, 0.96);
 #previewHolder {
     display: block;
     margin-bottom: 5em;
-
     #preview {
         outline: solid variables.$mainColor 3px;
-        margin: 1em auto 0 auto;
+        margin: 1em auto 0;
         float: none;
         width: 150px;
         height: 150px;

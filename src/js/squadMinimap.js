@@ -431,9 +431,9 @@ export var squadMinimap = Map.extend({
         // If there is a layer selected, reveal main/capzone when enough zoomed in
         if (this.layer) {
             if (this.getZoom() > this.detailedZoomThreshold){
-                if(!App.userSettings.capZoneOnHover) {
+                if (!App.userSettings.capZoneOnHover) {
                     this.layer.flags.forEach(flag => {
-                        if(!flag.isHidden){
+                        if (!flag.isHidden){
                             flag.capZones.eachLayer((cap) => {
                                 cap.setStyle({ opacity: 1, fillOpacity: 0.3 });
                             });

@@ -41,9 +41,9 @@ export class SquadLayer {
 
         // If already zoomed in, reveal capzones/main assets
         if (this.map.getZoom() > this.map.detailedZoomThreshold) {
-            if(!App.userSettings.capZoneOnHover) {
+            if (!App.userSettings.capZoneOnHover) {
                 this.flags.forEach(flag => {
-                    if(!flag.isHidden){
+                    if (!flag.isHidden){
                         flag.capZones.eachLayer((cap) => {
                             cap.setStyle({ opacity: 1, fillOpacity: 0.3 });
                         });

@@ -263,7 +263,7 @@ export class SquadObjective {
     }
 
     _handleMouseOver() {
-        if(!App.userSettings.capZoneOnHover) return;
+        if (!App.userSettings.capZoneOnHover) return;
         
         // Show capzones only if the zoom level is high enough
         if (this.layer.map.getZoom() > this.layer.map.detailedZoomThreshold){
@@ -274,7 +274,7 @@ export class SquadObjective {
     }
 
     _handleMouseOut(){
-        if(!App.userSettings.capZoneOnHover) return;
+        if (!App.userSettings.capZoneOnHover) return;
         this.capZones.eachLayer((cap) => {
             cap.setStyle({ opacity: 0, fillOpacity: 0 });
         });
