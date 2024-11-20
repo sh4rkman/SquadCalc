@@ -107,3 +107,8 @@
         outline: none;
     }
 }
+
+.select2-container--default .select2-selection--single .select2-selection__clear {
+    float: left;
+    margin-right: 0;
+  }

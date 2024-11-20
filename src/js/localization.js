@@ -98,9 +98,14 @@ function updateContent() {
         minimumResultsForSearch: -1,
     });
 
-    // $(".dropbtn5").select2("destroy").select2({
-    //     dropdownCssClass: "dropbtn",
-    //     dropdownParent: $("#layerSelector"),
-    //     minimumResultsForSearch: -1,
-    // });
+    let placeholder = i18next.t("common:layerPlaceholder");
+
+    $(".dropbtn5").select2("destroy").select2({
+        dropdownCssClass: "dropbtn",
+        dropdownParent: $("#layerSelector"),
+        allowClear: true,
+        placeholder: placeholder,
+        minimumResultsForSearch: -1, // Disable search
+    });
+
 }

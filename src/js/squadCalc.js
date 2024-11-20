@@ -49,22 +49,12 @@ export default class SquadCalc {
     loadMapSelector() {
         const MAP_SELECTOR = $(".dropbtn");
         const LAYER_SELECTOR = $(".dropbtn5");
+
         LAYER_SELECTOR.hide();
 
-        // Initiate Maps Dropdown
-        MAP_SELECTOR.select2({
-            dropdownCssClass: "dropbtn",
-            dropdownParent: $("#mapSelector"),
-            minimumResultsForSearch: -1, // Disable search
-        });
-
-        // Initiate Maps Dropdown
-        LAYER_SELECTOR.select2({
-            dropdownCssClass: "dropbtn",
-            dropdownParent: $("#layerSelector"),
-            placeholder: "Select a layer",
-            minimumResultsForSearch: -1, // Disable search
-        });
+        // Initiate Maps&Layers Dropdown
+        MAP_SELECTOR.select2();
+        LAYER_SELECTOR.select2();
         
         // Load maps 
         MAPS.forEach(function(map, i) {
@@ -74,42 +64,64 @@ export default class SquadCalc {
         // Add event listener
         MAP_SELECTOR.on("change", (event) => {
             const currentUrl = new URL(window.location);
+
             $("#layerSelector").hide();
+
             this.minimap.activeMap = MAPS.find((_, index) => index == event.target.value);
             this.minimap.clear(); 
             this.minimap.draw();
+
+            // Update the URL
             currentUrl.searchParams.set("map", this.minimap.activeMap.name);
             currentUrl.searchParams.delete("layer");
             window.history.replaceState({}, "", currentUrl);
 
+            // Refresh layer selector if API is available
             if (process.env.API_URL) { this.loadLayers(); }
                 
-
         });
+
+        let abortController = null;
 
         LAYER_SELECTOR.on("change", (event) => {
             const currentUrl = new URL(window.location);
             
             // Get the selected option's text
             const selectedLayerText = LAYER_SELECTOR.find(":selected").text().replaceAll(" ", "");
-        
+
+            // User cleared the layer selector, remove the layer and clean the URL
+            if (selectedLayerText === "") {
+                currentUrl.searchParams.delete("layer");
+                window.history.replaceState({}, "", currentUrl);
+                if (abortController) { abortController.abort(); } // Abort the ongoing fetch request
+                if (this.minimap.layer) this.minimap.layer.clear();
+                return;
+            } 
+            
             // Update the "layer" query parameter in the URL with the selected option's text
             currentUrl.searchParams.set("layer", selectedLayerText);
             window.history.replaceState({}, "", currentUrl);
 
-            this.minimap.spin(true, this.minimap.spinOptions);
 
-            fetchLayerByName(event.target.value).then(layerData => {
+            // Initialize a new AbortController for the fetch request
+            abortController = new AbortController();
+            const signal = abortController.signal;
+            this.minimap.spin(true, this.minimap.spinOptions);
+            fetchLayerByName(event.target.value, { signal }).then(layerData => {
                 if (this.minimap.layer) this.minimap.layer.clear();
                 this.minimap.layer = new SquadLayer(this.minimap, layerData);
                 this.minimap.spin(false);
-            }).catch(error => {
-                this.openToast("error", "error", "apiError");
+            }).catch(error => {        
+                if (error.name !== "AbortError") {
+                    this.openToast("error", "error", "apiError");
+                    console.debug("Error fetching layer data:", error);
+                }   
                 this.minimap.spin(false);
-                console.debug("Error fetching layer data:", error);
             });
         });
+
     }
+
 
     /**
      * Retrieve list of available layers name from squadcalc api
@@ -132,7 +144,8 @@ export default class SquadCalc {
                 return;
             }
 
-            LAYER_SELECTOR.append("<option selected value=\"\">BETA!</option>");
+            // Empty option for placeholder
+            LAYER_SELECTOR.append("<option value=></option>");
 
             layers.forEach(function(layer) {
                 LAYER_SELECTOR.append(`<option value=${layer.rawName}>${layer.shortName}</option>`);
@@ -188,7 +201,11 @@ export default class SquadCalc {
         if (currentUrl.searchParams.has("map")) {
             const urlMapName = currentUrl.searchParams.get("map").toLowerCase();
             mapIndex = MAPS.findIndex(map => map.name.toLowerCase() === urlMapName);
-            if (mapIndex === -1) { mapIndex = Math.floor(Math.random() * MAPS.length); }
+            if (mapIndex === -1) { 
+                // user entered garbage, pick a random map & clean the url
+                mapIndex = Math.floor(Math.random() * MAPS.length); 
+                currentUrl.searchParams.delete("layer");
+            }
         } 
         else {
             mapIndex = Math.floor(Math.random() * MAPS.length);
@@ -198,6 +215,7 @@ export default class SquadCalc {
         this.minimap = new squadMinimap("map", tileSize, MAPS[mapIndex]);
         this.minimap.draw();
 
+        // Update the URL
         currentUrl.searchParams.set("map", this.minimap.activeMap.name);
         window.history.replaceState({}, "", currentUrl);
 

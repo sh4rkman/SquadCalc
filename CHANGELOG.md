@@ -12,9 +12,9 @@
 * **Game Assets** (Helipad, Repair station, ammobox) are displayed when zooming in
 * **Known Bug :** The capzone / Main Protection Zone can be bigger than ingame reality (see [this issue](https://github.com/Squad-Wiki/squad-wiki-pipeline-map-data/issues/118) on Squad Wiki Pipeline map data repository)
 
+<br> 
 
-
-</br>
+<img src="https://img.shields.io/badge/-new-green"> URL now hold the map & layer so it can be easily shared/bookmarked
 
 <img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed logo not properly displaying on slow connection
 
@@ -22,7 +22,7 @@
 
 <img src="https://img.shields.io/badge/-%20improv%20-orange"> Gridline now takes map size into accounts when appearing/disapearing
 
-<img src="https://img.shields.io/badge/-%20improv%20-orange"> Bigger gridlines now appears on top of smaller one for a better clarity
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Bigger gridlines now appears on top of smaller ones for a better clarity
 
 <img src="https://img.shields.io/badge/-%20improv%20-orange"> Added a fadein animation on "delete on targets" button
 

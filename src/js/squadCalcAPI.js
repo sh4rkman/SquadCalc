@@ -256,10 +256,14 @@ export async function fetchLayersByMap(mapName) {
  * @returns {Promise<Object>} A promise that resolves with the fetched marker data in JSON format.
  * @throws {Error} Throws an error if the network request fails or the response is not OK.
  */
-export async function fetchLayerByName(layerName) {
+export async function fetchLayerByName(layerName, options = {}) {
     const url = `${process.env.API_URL}/get/layer?name=${encodeURIComponent(layerName)}`;
+    const { signal } = options; 
     try {
-        const response = await fetch(url, { headers: { "X-App-Version": packageInfo.version }, });
+        const response = await fetch(url, {
+            headers: { "X-App-Version": packageInfo.version },
+            signal
+        });
         if (!response.ok) { throw new Error("Network response was not ok"); }
         const data = await response.json();
         return data;
