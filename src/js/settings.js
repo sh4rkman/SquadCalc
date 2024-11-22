@@ -45,7 +45,7 @@ export function loadSettings(){
 
     $(".btn-"+setting).addClass("active");
 
-    App.userSettings.capZoneOnHover = loadLocalSetting("settings-capZone-onHover");
+    App.userSettings.capZoneOnHover = loadLocalSetting("settings-capZone-onHover", 0);
     $("#capZoneOnHoverSetting").prop("checked", App.userSettings.capZoneOnHover);
 
     App.userSettings.autoLane = loadLocalSetting("settings-auto-lane");
@@ -100,16 +100,12 @@ export function loadSettings(){
     $("#cursorChoiceSettings").prop("checked", App.userSettings.cursor);
 
     if (App.userSettings.cursor) {
-        $("#preview").css("cursor", "default");
         $("#map").css("cursor", "default");
-        $(".crosshair").css("cursor", "default");
-        $(".default").css("cursor", "default");
+        $("#preview").css("cursor", "default");
     }
     else {
-        $("#preview").css("cursor", "crosshair");
         $("#map").css("cursor", "crosshair");
-        $(".default").css("cursor", "crosshair");
-        $(".crosshair").css("cursor", "crosshair");        
+        $("#preview").css("cursor", "crosshair");
     }
 
     // Add Events Listeners on cog button
@@ -189,21 +185,10 @@ $("#capZoneOnHoverSettings").on("change", function() {
     if (!val){
         // Show markers only if the zoom level is high enough
         if ( App.minimap.getZoom() > App.minimap.detailedZoomThreshold){
-            // Adjust opacity when the threshold is met
-            App.minimap.layer.flags.forEach(flag => {
-                if (!flag.isHidden){
-                    flag.capZones.eachLayer((cap) => {
-                        cap.setStyle({ opacity: 1, fillOpacity: 0.3 });
-                    });
-                }
-            });
+            App.minimap.layer.revealAllCapZones();
         }
     } else {
-        App.minimap.layer.flags.forEach(flag => {
-            flag.capZones.eachLayer((cap) => {
-                cap.setStyle({ opacity: 0, fillOpacity: 0 });
-            });
-        });
+        App.minimap.layer.hideAllCapZones();
     }
 
 });
@@ -323,16 +308,12 @@ $("#cursorChoiceSettings").on("change", function() {
     localStorage.setItem("settings-cursor", +val);
 
     if (val) {
-        $("#preview").css("cursor", "default");
         $("#map").css("cursor", "default");
-        $(".crosshair").css("cursor", "default");
-        $(".default").css("cursor", "default");
+        $("#preview").css("cursor", "default");
     }
     else {
-        $("#preview").css("cursor", "crosshair");
         $("#map").css("cursor", "crosshair");
-        $(".default").css("cursor", "crosshair");
-        $(".crosshair").css("cursor", "crosshair");
+        $("#preview").css("cursor", "crosshair");
     }
 });
 

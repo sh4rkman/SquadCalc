@@ -22,8 +22,8 @@ export var squadMarker = Marker.extend({
 
     // Constructor
     initialize: function (latlng, options, map) {
-        this.map = map;
         Marker.prototype.initialize.call(this, latlng, options);
+        this.map = map;
         this.on("dragstart", this._handleDragStart, this);
         this.on("dragend", this._handleDragEnd, this);
     },
@@ -34,27 +34,21 @@ export var squadMarker = Marker.extend({
      * @returns {e} - same event with corrected Latlng 
      */
     keepOnMap: function(e){
-        if (e.latlng.lng > this.map.tilesSize) {e.latlng.lng = this.map.tilesSize;}
-        if (e.latlng.lat < -this.map.tilesSize ) {e.latlng.lat = -this.map.tilesSize;}
+        if (e.latlng.lng > this.map.pixelSize) {e.latlng.lng = this.map.pixelSize;}
+        if (e.latlng.lat < -this.map.pixelSize ) {e.latlng.lat = -this.map.pixelSize;}
         if (e.latlng.lng < 0) {e.latlng.lng = 0;}
         if (e.latlng.lat > 0) {e.latlng.lat = 0;}
         return e;
     },
+
 });
 
 export var squadWeaponMarker = squadMarker.extend({
 
     initialize: function (latlng, options, map) {
         var circlesColor = "#00137f";
-        var cursorClass;
 
         squadMarker.prototype.initialize.call(this, latlng, options, map);
-
-        if (App.userSettings.cursor) {
-            cursorClass = "default";
-        } else {
-            cursorClass = "crosshair";
-        }
         
         this.posPopUpOptions = {
             autoPan: false,
@@ -75,7 +69,6 @@ export var squadWeaponMarker = squadMarker.extend({
             fillOpacity: 0,
             weight: 2,
             autoPan: false,
-            className: cursorClass,
         };
 
         this.minDistCircleOn = {
@@ -85,14 +78,12 @@ export var squadWeaponMarker = squadMarker.extend({
             fillOpacity: 0.2,
             weight: 1,
             autoPan: false,
-            className: cursorClass,
         };
 
         this.minMaxDistCircleOff = {
             radius: 0,
             opacity: 0,
             fillOpacity: 0,
-            className: cursorClass,
         };
 
         this.miniCircleOptions = {
@@ -102,7 +93,7 @@ export var squadWeaponMarker = squadMarker.extend({
             fillOpacity: 0,
             weight: 1,
             autoPan: false,
-            className: cursorClass,
+
         };
 
 
@@ -306,7 +297,6 @@ export var squadWeaponMarker = squadMarker.extend({
 
     _handleDragStart: function () {
 
-        //$(".leaflet-marker-icon").css("cursor", "grabbing");
         this.map.mouseLocationPopup.close();
         this.map.off("mousemove", this.map._handleMouseMove);
 
@@ -350,7 +340,6 @@ export var squadWeaponMarker = squadMarker.extend({
 export var squadTargetMarker = squadMarker.extend({
 
     initialize: function (latlng, options, map) {
-        var cursorClass;
         var popUpOptions_weapon1;
         var popUpOptions_weapon2;
         var weaponPos;
@@ -359,12 +348,6 @@ export var squadTargetMarker = squadMarker.extend({
         //Util.setOptions(this, options);
         squadMarker.prototype.initialize.call(this, latlng, options, map);
         
-        if (App.userSettings.cursor) {
-            cursorClass = "default";
-        } else {
-            cursorClass = "crosshair";
-        }
-
         this.posPopUpOptions = {
             autoPan: false,
             autoClose: false,
@@ -409,7 +392,6 @@ export var squadTargetMarker = squadMarker.extend({
             color: "#FFFFFF", 
             pulseColor: App.mainColor, 
             opacity: 0, 
-            className: cursorClass 
         };
 
         this.spreadOptionsOn = {
@@ -417,13 +399,11 @@ export var squadTargetMarker = squadMarker.extend({
             fillOpacity: 0.2,
             color: App.mainColor,
             weight: 1.3,
-            className: cursorClass,
         };
 
         this.spreadOptionsOff = {
             opacity: 0,
             fillOpacity: 0,
-            className: cursorClass,
         };
 
         this.hundredDamageCircleOn = {
@@ -433,7 +413,6 @@ export var squadTargetMarker = squadMarker.extend({
             dashArray: "5,3",
             color: App.mainColor,
             weight: 1.3,
-            className: cursorClass,
         };
 
         this.twentyFiveDamageCircleOn = {
@@ -443,7 +422,6 @@ export var squadTargetMarker = squadMarker.extend({
             dashArray: "5,6",
             color: App.mainColor,
             weight: 1.3,
-            className: cursorClass,
         };
 
         this.miniCircleOptions = {
@@ -453,7 +431,6 @@ export var squadTargetMarker = squadMarker.extend({
             fillOpacity: 0,
             weight: 1,
             autoPan: false,
-            className: cursorClass,
         };
 
         this.isDragging = false;

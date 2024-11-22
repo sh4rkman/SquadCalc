@@ -15,7 +15,7 @@ export default class SquadHeightmap {
         this.ctx = this.canvas.getContext("2d", {willReadFrequently: true});
         this.canvas.height = 1000;
         this.canvas.width = 1000;
-        this.heightmapScaling = this.canvas.height / this.map.tilesSize;
+        this.heightmapScaling = this.canvas.height / this.map.pixelSize;
 
         img.src = `maps${this.map.activeMap.mapURL}heightmap.webp`;
         img.onload = (function(heightmap){

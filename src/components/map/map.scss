@@ -256,14 +256,6 @@ $flag-opacity: 0.3;
     }
 }
 
-.crosshair {
-    cursor: crosshair;
-}
-
-.default {
-    cursor: default;
-}
-
 .logo {
     @extend .unselectable;
     position: fixed;

@@ -265,31 +265,36 @@ export class SquadObjective {
     _handleMouseOver() {
         if (!App.userSettings.capZoneOnHover) return;
         
-        // Show capzones only if the zoom level is high enough
         if (this.layer.map.getZoom() > this.layer.map.detailedZoomThreshold){
-            this.capZones.eachLayer((cap) => {
-                cap.setStyle({ opacity: 1, fillOpacity: 0.3 });
-            });
+            this.revealCapZones();
         }
     }
 
     _handleMouseOut(){
         if (!App.userSettings.capZoneOnHover) return;
+        this.hideCapZones();
+    }
+
+
+    revealCapZones(){
+        this.capZones.eachLayer((cap) => {
+            cap.setStyle({ opacity: 1, fillOpacity: 0.3 });
+        });
+    }
+
+    hideCapZones(){
         this.capZones.eachLayer((cap) => {
             cap.setStyle({ opacity: 0, fillOpacity: 0 });
         });
     }
 
-
     hide(){
+        console.debug("      -> Hiding flag: ", this.name);
         this.nameText.removeFrom(this.layerGroup);
         this.flag.removeFrom(this.layerGroup);
         this.flag.options.interactive = false;
-        this.capZones.eachLayer((cap) => {
-            cap.setStyle({ opacity: 0, fillOpacity: 0 });
-        });
+        this.hideCapZones();
         this.flag.off();
-        console.debug("      -> Hiding flag: ", this.name);
         this.isHidden = true;
     }
 
@@ -309,13 +314,13 @@ export class SquadObjective {
         this.flag.setOpacity(1).addTo(this.layerGroup);
         this.unselect();
         this.isHidden = false;
-    
-        // Show markers only if the zoom level is high enough
-        if (this.layer.map.getZoom() > this.detailedZoomThreshold){
-            this.capZones.eachLayer((cap) => {
-                cap.setStyle({ opacity: 1, fillOpacity: 0.3 });
-            });
+
+        if (App.userSettings.capZoneOnHover) return;
+        
+        if (this.layer.map.getZoom() > this.layer.map.detailedZoomThreshold){
+            this.revealCapZones();
         }
+        
     }
 
 }

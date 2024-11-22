@@ -41,18 +41,21 @@ export class SquadLayer {
 
         // If already zoomed in, reveal capzones/main assets
         if (this.map.getZoom() > this.map.detailedZoomThreshold) {
-            if (!App.userSettings.capZoneOnHover) {
-                this.flags.forEach(flag => {
-                    if (!flag.isHidden){
-                        flag.capZones.eachLayer((cap) => {
-                            cap.setStyle({ opacity: 1, fillOpacity: 0.3 });
-                        });
-                    }
-                });
-            }
+            this.revealAllCapzones();
             this.setMainZoneOpacity(true);
         }
 
+    }
+
+    revealAllCapzones() {
+        if (App.userSettings.capZoneOnHover) return;
+        this.flags.forEach(flag => {
+            if (!flag.isHidden){ flag.revealCapZones(); }
+        });
+    }
+
+    hideAllCapzones() {
+        this.flags.forEach(flag => { flag.hideCapZones(); });
     }
 
     /**
@@ -168,13 +171,6 @@ export class SquadLayer {
         }
 
         // RAAS / INVASION
-
-        // // Find the # of objectives in the layer
-        // this.objNumber = Math.max(
-        //     ...Object.values(this.layerData.objectives)
-        //         .filter(obj => obj.pointPosition !== undefined)
-        //         .map(obj => obj.pointPosition)
-        // );
 
         Object.values(this.layerData.objectives).forEach((objCluster) => {
 
@@ -315,8 +311,8 @@ export class SquadLayer {
 
         const keepOnMap = latlng => {
             latlng = {lat: latlng[0], lng: latlng[1]};
-            if (latlng.lng > this.map.tilesSize) {latlng.lng = this.map.tilesSize;}
-            if (latlng.lat < -this.map.tilesSize ) {latlng.lat = -this.map.tilesSize;}
+            if (latlng.lng > this.map.pixelSize) {latlng.lng = this.map.pixelSize;}
+            if (latlng.lat < -this.map.pixelSize ) {latlng.lat = -this.map.pixelSize;}
             if (latlng.lng < 0) {latlng.lng = 0;}
             if (latlng.lat > 0) {latlng.lat = 0;}
             return latlng;
@@ -469,8 +465,6 @@ export class SquadLayer {
         let backward = false;
 
         console.clear();
-        console.log(flag.objCluster);
-        console.log(flag.cluster);
         console.debug("**************************");
         console.debug("      NEW CLICKED FLAG    ");
         console.debug("**************************");

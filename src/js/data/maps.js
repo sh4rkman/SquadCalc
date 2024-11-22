@@ -147,14 +147,14 @@ export const MAPS = [
         maxZoomLevel: 4,
     },
     { 
-        name: "PacificProvingGrounds", 
+        name: "Pacific", 
         size: 4032, // OK
         scaling: 0.25852400000000003, 
         mapURL: "/pacific/",
         maxZoomLevel: 4,
     },
     { 
-        name: "Sanxian_Islands",
+        name: "Sanxian",
         size: 4600, 
         scaling: 0.1892, 
         mapURL: "/sanxian/",

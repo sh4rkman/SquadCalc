@@ -22,11 +22,16 @@ export default class SquadCalc {
      */
     constructor(options) {
         this.supportedLanguages = options.supportedLanguages;
+        this.MAPSIZE = options.mapSize;
         this.gravity = options.gravity;
         this.debug = options.debug;
         this.userSettings = [];
         this.activeWeapon = "";
         this.hasMouse = matchMedia("(pointer:fine)").matches;
+        this.MAP_SELECTOR = $(".dropbtn");
+        this.WEAPON_SELECTOR = $(".dropbtn2");
+        this.SHELL_SELECTOR = $(".dropbtn3");
+        this.LAYER_SELECTOR = $(".dropbtn5");
     }
 
     init(){
@@ -47,26 +52,23 @@ export default class SquadCalc {
      * Load the maps to the menu
      */
     loadMapSelector() {
-        const MAP_SELECTOR = $(".dropbtn");
-        const LAYER_SELECTOR = $(".dropbtn5");
-
-        LAYER_SELECTOR.hide();
 
         // Initiate Maps&Layers Dropdown
-        MAP_SELECTOR.select2();
-        LAYER_SELECTOR.select2();
+        this.MAP_SELECTOR.select2();
+        this.LAYER_SELECTOR.select2();
         
         // Load maps 
-        MAPS.forEach(function(map, i) {
-            MAP_SELECTOR.append(`<option data-i18n=maps:${map.name} value=${i}></option>`);
-        });
+        MAPS.forEach((map, i) => {
+            this.MAP_SELECTOR.append(`<option data-i18n=maps:${map.name} value=${i}></option>`);
+        });        
 
         // Add event listener
-        MAP_SELECTOR.on("change", (event) => {
+        this.MAP_SELECTOR.on("change", (event) => {
             const currentUrl = new URL(window.location);
 
-            $("#layerSelector").hide();
+            this.LAYER_SELECTOR.hide();
 
+            // Update the minimap with the selected map
             this.minimap.activeMap = MAPS.find((_, index) => index == event.target.value);
             this.minimap.clear(); 
             this.minimap.draw();
@@ -83,11 +85,9 @@ export default class SquadCalc {
 
         let abortController = null;
 
-        LAYER_SELECTOR.on("change", (event) => {
+        this.LAYER_SELECTOR.on("change", (event) => {
             const currentUrl = new URL(window.location);
-            
-            // Get the selected option's text
-            const selectedLayerText = LAYER_SELECTOR.find(":selected").text().replaceAll(" ", "");
+            const selectedLayerText = this.LAYER_SELECTOR.find(":selected").text().replaceAll(" ", "");
 
             // User cleared the layer selector, remove the layer and clean the URL
             if (selectedLayerText === "") {
@@ -98,10 +98,9 @@ export default class SquadCalc {
                 return;
             } 
             
-            // Update the "layer" query parameter in the URL with the selected option's text
+            // Update the the URL with the layer
             currentUrl.searchParams.set("layer", selectedLayerText);
             window.history.replaceState({}, "", currentUrl);
-
 
             // Initialize a new AbortController for the fetch request
             abortController = new AbortController();
@@ -127,17 +126,16 @@ export default class SquadCalc {
      * Retrieve list of available layers name from squadcalc api
      */
     loadLayers() {
-        const LAYER_SELECTOR = $(".dropbtn5");
         const currentUrl = new URL(window.location);
 
-        LAYER_SELECTOR.empty();
+        this.LAYER_SELECTOR.empty();
         this.minimap.spin(true, this.minimap.spinOptions);
 
         fetchLayersByMap(this.minimap.activeMap.name).then(layers => {
 
             if (layers.length === 0) { 
                 this.minimap.spin(false);
-                $("#layerSelector").hide();
+                this.LAYER_SELECTOR.hide();
                 const currentUrl = new URL(window.location);
                 currentUrl.searchParams.delete("layer");
                 window.history.replaceState({}, "", currentUrl);
@@ -145,18 +143,19 @@ export default class SquadCalc {
             }
 
             // Empty option for placeholder
-            LAYER_SELECTOR.append("<option value=></option>");
+            this.LAYER_SELECTOR.append("<option value=></option>");
 
-            layers.forEach(function(layer) {
-                LAYER_SELECTOR.append(`<option value=${layer.rawName}>${layer.shortName}</option>`);
+            layers.forEach((layer) => {
+                this.LAYER_SELECTOR.append(`<option value=${layer.rawName}>${layer.shortName}</option>`);
             });
+            
 
             // If URL has a "layer" parameter
             if (currentUrl.searchParams.has("layer")) {
                 const urlLayerName = currentUrl.searchParams.get("layer").toLowerCase().replaceAll(" ", "");
             
                 // Normalize option text by removing any extra spaces around the "V"
-                const matchingOption = LAYER_SELECTOR.find("option").filter(function() {
+                const matchingOption = this.LAYER_SELECTOR.find("option").filter(function() {
                     const optionText = $(this).text().toLowerCase().replaceAll(" ", "");
                     return optionText === urlLayerName;
                 });
@@ -164,7 +163,7 @@ export default class SquadCalc {
                 // If we find a matching option, set it as selected
                 if (matchingOption.length > 0) {
                     matchingOption.prop("selected", true);
-                    LAYER_SELECTOR.trigger("change");
+                    this.LAYER_SELECTOR.trigger("change");
                 } 
                 else {
                     // layer in url doesn't make sense, clean the url
@@ -175,10 +174,10 @@ export default class SquadCalc {
             }
 
             this.minimap.spin(false);
-            $("#layerSelector").show();
+            this.LAYER_SELECTOR.show();
 
         }).catch(error => {
-            $("#layerSelector").hide();
+            this.LAYER_SELECTOR.hide();
             this.minimap.spin(false);
             this.openToast("error", "error", "apiError_layers");
             console.debug("Error fetching layers from API:", error);
@@ -193,7 +192,6 @@ export default class SquadCalc {
     }
 
     loadMinimap(){
-        const tileSize = 256;
         const currentUrl = new URL(window.location.href);
         var mapIndex;
 
@@ -211,8 +209,8 @@ export default class SquadCalc {
             mapIndex = Math.floor(Math.random() * MAPS.length);
         }
     
-        $(".dropbtn").val(mapIndex);
-        this.minimap = new squadMinimap("map", tileSize, MAPS[mapIndex]);
+        this.MAP_SELECTOR.val(mapIndex);
+        this.minimap = new squadMinimap("map", this.MAPSIZE, MAPS[mapIndex]);
         this.minimap.draw();
 
         // Update the URL
@@ -223,7 +221,7 @@ export default class SquadCalc {
         if (process.env.API_URL) { 
             this.loadLayers(); 
         } else {
-            $("#layerSelector").hide();
+            this.LAYER_SELECTOR.hide();
             $(".btn-helpmap").hide();
         }
 
@@ -234,8 +232,6 @@ export default class SquadCalc {
      */
     loadWeapons() {
         const WEAPONSLENGTH = WEAPONS.length;
-        const WEAPON_SELECTOR = $(".dropbtn2");
-        const SHELL_SELECTOR = $(".dropbtn3");
 
         WEAPONS.forEach((weapon, index, arr) => {
             arr[index] = new Weapon(
@@ -264,14 +260,14 @@ export default class SquadCalc {
         });
         
         // Initiate Weapons & Shells Dropdown
-        WEAPON_SELECTOR.select2({
+        this.WEAPON_SELECTOR.select2({
             dropdownCssClass: "dropbtn2",
             dropdownParent: $("#weaponSelector"),
             minimumResultsForSearch: -1, // Disable search
             //placeholder: "SELECT A WEAPON"
         });
 
-        SHELL_SELECTOR.select2({
+        this.SHELL_SELECTOR.select2({
             dropdownCssClass: "dropbtn3",
             dropdownParent: $("#ammoSelector"),
             minimumResultsForSearch: -1, // Disable search
@@ -280,21 +276,21 @@ export default class SquadCalc {
 
         // Load Weapons
         for (let i = 0; i < WEAPONSTYPE.length; i += 1) {
-            WEAPON_SELECTOR.append(`<optgroup data-i18n-label=weapons:${WEAPONSTYPE[i]}>`);
+            this.WEAPON_SELECTOR.append(`<optgroup data-i18n-label=weapons:${WEAPONSTYPE[i]}>`);
             for (let y = 0; y < WEAPONSLENGTH; y += 1) {
                 if (WEAPONS[y].type === WEAPONSTYPE[i]) {
-                    WEAPON_SELECTOR.append(`<option data-i18n=weapons:${WEAPONS[y].name} value=${y}></option>`);
+                    this.WEAPON_SELECTOR.append(`<option data-i18n=weapons:${WEAPONS[y].name} value=${y}></option>`);
                 }
             }
-            WEAPON_SELECTOR.append("</optgroup>");
+            this.WEAPON_SELECTOR.append("</optgroup>");
         }
 
         // Add Experimental weapons if wanted by user settings
         this.toggleExperimentalWeapons();
 
         // Add Events Listeners
-        WEAPON_SELECTOR.on("change", () => { this.changeWeapon(); });
-        SHELL_SELECTOR.on("change", () => { this.activeWeapon.changeShell(); });
+        this.WEAPON_SELECTOR.on("change", () => { this.changeWeapon(); });
+        this.SHELL_SELECTOR.on("change", () => { this.activeWeapon.changeShell(); });
         
         this.getWeapon();
     }
@@ -303,28 +299,27 @@ export default class SquadCalc {
      * Add/Remove Experimental Weapons from Weapons dropdown list according to user settings
      */
     toggleExperimentalWeapons(){
-        const WEAPON_SELECTOR = $(".dropbtn2");
         const WEAPONSLENGTH = WEAPONS.length;
 
         if (this.userSettings.experimentalWeapons) {
 
-            WEAPON_SELECTOR.append(`<optgroup data-i18n-label=weapons:experimental label="${i18next.t("weapons:experimental")}">`);
+            this.WEAPON_SELECTOR.append(`<optgroup data-i18n-label=weapons:experimental label="${i18next.t("weapons:experimental")}">`);
             for (let y = 0; y < WEAPONSLENGTH; y += 1) {
                 if (WEAPONS[y].type === "experimental") {
-                    WEAPON_SELECTOR.append(`<option data-i18n=weapons:${WEAPONS[y].name} value=${y}>${i18next.t("weapons:" + WEAPONS[y].name)}</option>`);
+                    this.WEAPON_SELECTOR.append(`<option data-i18n=weapons:${WEAPONS[y].name} value=${y}>${i18next.t("weapons:" + WEAPONS[y].name)}</option>`);
                 }
             }
-            WEAPON_SELECTOR.append("</optgroup>");
+            this.WEAPON_SELECTOR.append("</optgroup>");
 
         } else {
 
-            let selectedValue = WEAPON_SELECTOR.val();
+            let selectedValue = this.WEAPON_SELECTOR.val();
             
             // Remove the experimental optgroup
-            WEAPON_SELECTOR.find("optgroup[data-i18n-label='weapons:experimental']").remove();
+            this.WEAPON_SELECTOR.find("optgroup[data-i18n-label='weapons:experimental']").remove();
             
             // Remove experimental options and check if the selected value is experimental
-            WEAPON_SELECTOR.find("option").filter(
+            this.WEAPON_SELECTOR.find("option").filter(
                 function() {
                     return WEAPONS[$(this).val()].type === "experimental";
                 }).each(function() {
@@ -336,7 +331,7 @@ export default class SquadCalc {
             
             // If the selected value was an experimental option, reset to Mortars
             if (selectedValue === null) {
-                WEAPON_SELECTOR.val(0).trigger("change");
+                this.WEAPON_SELECTOR.val(0).trigger("change");
             }
         }
 
@@ -566,7 +561,7 @@ export default class SquadCalc {
      * save current weapon into browser cache
      */
     changeWeapon() {
-        const WEAPON = $(".dropbtn2").val();
+        const WEAPON = this.WEAPON_SELECTOR.val();
     
         this.line.hide("none");
         localStorage.setItem("data-weapon", WEAPON);
