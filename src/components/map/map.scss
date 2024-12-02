@@ -1,6 +1,6 @@
 @use "../shared/variables";
 
-$flag-opacity: 0.3;
+$flag-opacity: 0.5;
 
 #map_ui {
     position: relative;
@@ -32,8 +32,7 @@ $flag-opacity: 0.3;
             @include variables.light-text-outline;
             background-color: rgba(255, 255, 255, 0.4);
             font-size: 1.3em;
-            // letter-spacing: normal;
-            outline: solid rgb(92, 92, 92) 1px;
+            outline: solid rgb(68, 68, 68) 1px;
             box-shadow: 0 8px 12px rgba(0, 0, 0, 0.75);
             // pointer-events: none;
             cursor: inherit;
@@ -53,11 +52,11 @@ $flag-opacity: 0.3;
                 outline: none;
             }
             &.flag5 {
-                background-color: rgba(255, 192, 203, $flag-opacity);
+                background-color: rgba(43, 255, 255, $flag-opacity);
                 outline: none;
             }
             &.flag6 {
-                background-color: rgba(3, 48, 2, $flag-opacity);
+                background-color: rgba(200, 48, 102, $flag-opacity);
                 outline: none;
             }
             &.flag7 {
@@ -251,8 +250,8 @@ $flag-opacity: 0.3;
     #mapLayerMenuSeparator {
         margin-top: 30px;
     }
-    .fa-stack {
-        font-size: 0.7em; 
+    .fa-magnifying-glass-location{
+        font-size: 1.3em;
     }
 }
 

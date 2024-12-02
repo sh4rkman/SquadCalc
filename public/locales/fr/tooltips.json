@@ -9,6 +9,7 @@
     "connectedTo": "Connecté !",
     "error": "Erreur !",
     "apiError": "L'API n'est pas connectée..",
+    "apiError_layers": "Impossible de récupérer les layers de l'API",
     "deleteTargets": "Supprimer toutes les cibles",
     "bearing": "Direction",
     "whereToAim": "(où viser)",
@@ -23,12 +24,13 @@
     "heightPaddingDesc": "Si l'arme est installé plus haut que le sol (par exemple, sur des bâtiments ou des ponts), utilisez ce champ pour spécifier la hauteur supplémentaire.",
     "smoothMapTooltip": "Ajoute des animations lors du zoom ou du déplacement sur la carte. Rechargement de la page nécessaire",
     "experimentalWeaponsTooltip": "Ajoute des armes à tir indirect non conventionnelles à la liste des armes, utilisez à vos risques et périls !",
-    "highqualityTooltip": "Remplace les images de carte de base par des images de très haute qualité, avec une résolution de 8k*8k pixels. Peut causer des problèmes de performance.",
-    "targetAnimationTooltip": "Les marqueurs des cibles apparaîtront avec une animation de 'chute'",
     "damageRadiusTooltip": "Affiche les zones où 100 et 25 dégâts seront infligés",
     "showKeypadTooltip": "Affiche le numéro de grille (ex: \"B03-4-5\") sous le curseur de souris",
     "showSpreadTooltip": "Affiche la dispersion possible des projectiles autour des cibles",
-    "showMaxRangeTooltip": "Affiche des cercles bleus pour la portée minimale et maximale. Ne tient pas compte de l'altitude",
+    "showMaxRangeTooltip": "Calcule la portée maximale dans chaque direction en tenant compte des hauteurs",  
     "targetEmphasisTooltip": "Met en valeur une cible au survol de la souris en masquant les autres",
-    "useClassicCursorTooltip": "Remplace le réticule par le curseur par défaut de votre systeme"
+    "useClassicCursorTooltip": "Remplace le réticule par le curseur par défaut de votre systeme",
+    "targetAnimationTooltip": "Désactiver pour remplacer l'icône des marqueurs par des cercles minimalistes",
+    "highqualityTooltip": "Remplacez les images de la carte par des images de très haute qualité, suréchantillonnées par IA, en 8k*8k pixels.",
+    "performanceWarning": "Peut causer des problèmes de performance"
 }

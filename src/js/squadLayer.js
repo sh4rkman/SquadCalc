@@ -36,7 +36,6 @@ export class SquadLayer {
         this.flags = [];
 
         this.reversed = false;
-
         this.init();
 
         // If already zoomed in, reveal capzones/main assets
@@ -47,16 +46,7 @@ export class SquadLayer {
 
     }
 
-    revealAllCapzones() {
-        if (App.userSettings.capZoneOnHover) return;
-        this.flags.forEach(flag => {
-            if (!flag.isHidden){ flag.revealCapZones(); }
-        });
-    }
 
-    hideAllCapzones() {
-        this.flags.forEach(flag => { flag.hideCapZones(); });
-    }
 
     /**
      * xxxx
@@ -210,15 +200,33 @@ export class SquadLayer {
 
         // Pre-select first main flag in invasion
         if (this.layerData.gamemode === "Invasion") {
+
+            //this._handleFlagClick(this.mains[0]);
+
             this.mains.forEach((main) => {
-                if (main.position === 1){ this._handleFlagClick(main); }
+                if (main.objectName === this.layerData.capturePoints.clusters.listOfMains[0].replaceAll(" ", "")){
+                    this._handleFlagClick(main);
+                }
             });
+
         }
 
         this.createAssets();
     }
 
 
+    revealAllCapzones() {
+        if (App.userSettings.capZoneOnHover) return;
+        this.flags.forEach(flag => {
+            if (!flag.isHidden){ flag.revealCapZones(); }
+        });
+    }
+
+    hideAllCapzones() {
+        this.flags.forEach(flag => { flag.hideCapZones(); });
+    }
+
+    
     /**
      * xxxx
      * @param {number} x - latitude in cm as found in the squadpipeline extraction
@@ -226,8 +234,19 @@ export class SquadLayer {
      * @returns {Array} - [latitude, longitude] in meters
      */ 
     convertToLatLng(x, y) {
-        return [ (y - this.offset_y) / 100 * -this.map.gameToMapScale, (x - this.offset_x) / 100 * this.map.gameToMapScale];
+        return [(y - this.offset_y) / 100 * -this.map.gameToMapScale, (x - this.offset_x) / 100 * this.map.gameToMapScale];
     }
+
+
+    /**
+     * Convert a coordinate from the game scale to the map scale
+     * @param {number} coord - coordinate in cm
+     * @returns {number} - coordinate in meters, scaled to the map
+     */
+    scaleToMap(coord) {
+        return coord / 100 * this.map.gameToMapScale;
+    }
+
 
     /**
      * Function to check if two latlngs are close to each other
@@ -236,20 +255,27 @@ export class SquadLayer {
      * @param {number} threshold - The distance threshold in meters (default 5)
      * @returns {boolean} - True if the distance is less than the threshold
      */
-    areLatLngsClose(latlng1, latlng2, threshold = 5) {
+    areLatLngsClose(latlng1, latlng2, threshold = 3) {
         const [x1, y1] = latlng1;
         const [x2, y2] = latlng2;
         const distance = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
         return distance < threshold;
     }
 
+
+    /**
+     * Create helipads on the map
+     * @param {Array} this.layerData.assets.helipads - Array of helipads
+     * @returns {void}
+     */
     createHelipads() {
         this.layerData.assets.helipads.forEach((asset) => {
             const latlng = this.convertToLatLng(asset.location_x, asset.location_y);
             this.mainZones.assets.push(new Marker(latlng, {
                 interactive: false,
+                keyboard: false,
                 zIndexOffset: -1000,
-                opacity: 0,
+                opacity: 1, //todo: change to 0 
                 icon: new DivIcon({
                     className: "helipads",
                     iconSize: [36, 36],
@@ -258,167 +284,300 @@ export class SquadLayer {
         });
     }
 
-    createDeployables() {
 
+    /**
+     * Create deployables on the map
+     * @param {Array} this.layerData.assets.deployables - Array of deployables
+     * @returns {void}
+     */
+    createDeployables() {
         this.layerData.assets.deployables.forEach((asset) => {
+
             const latlng = this.convertToLatLng(asset.location_x, asset.location_y);
-            // Repairs
+
             if (asset.type === "Repair Station") {
                 this.mainZones.assets.push(new Marker(latlng, {
                     interactive: false,
+                    keyboard: false,
                     zIndexOffset: -1000,
-                    opacity: 0,
+                    opacity: 1, //todo: change to 0
                     icon: new DivIcon({
                         className: "repairStations",
                         iconSize: [30, 30]
                     })
                 }).addTo(this.activeLayerMarkers));
             }
-            // Crates
+
             if (asset.type === "Ammo Crate") {
                 this.mainZones.assets.push(new Marker(latlng, {
                     interactive: false,
+                    keyboard: false,
                     zIndexOffset: -1000,
-                    opacity: 0,
+                    opacity: 1, //todo: change to 0
                     icon: new DivIcon({
                         className: "ammocrates",
                         iconSize: [25, 25]
                     })
-                }).setOpacity(0).addTo(this.activeLayerMarkers));
+                }).addTo(this.activeLayerMarkers));
             }
         });
     }
 
+
+    /**
+     * Rotate a Leaflet Rectangle around its center
+     * @param {Rectangle} rectangle - Rectangle to rotate
+     * @param {number} angle - The angle in degrees
+     * @param {Array} rotationCenter - The center of rotation [latitude, longitude]
+     * @returns {void}
+     */
     rotateRectangle(rectangle, angle) {
         const center = rectangle.getBounds().getCenter();
         const corners = rectangle.getLatLngs()[0];
         const radians = (Math.PI / 180) * angle;
-    
         const rotatedCorners = corners.map(corner => {
             const latDiff = corner.lat - center.lat;
             const lngDiff = corner.lng - center.lng;
-    
             return [
                 center.lat + (latDiff * Math.cos(radians) - lngDiff * Math.sin(radians)),
                 center.lng + (latDiff * Math.sin(radians) + lngDiff * Math.cos(radians))
             ];
         });
-    
         rectangle.setLatLngs(rotatedCorners);
     }
 
-    createProtectionZones() {
+    
+    /**
+     * Rotate a Leaflet Circle around a center point
+     * @param {Circle} circle - Leaflet circle to rotate
+     * @param {number} angle - The angle in degrees
+     * @param {Array} rotationCenter - The center of rotation [latitude, longitude]
+     * @returns {void}
+     */ 
+    rotateCircle(circle, angle, rotationCenter) {
+        const circleCenter = circle.getLatLng();
+        const radians = (Math.PI / 180) * angle; // Convert angle to radians
+        const latDiff = circleCenter.lat - rotationCenter.lat;
+        const lngDiff = circleCenter.lng - rotationCenter.lng;
+        const newCenter = [
+            rotationCenter.lat + (latDiff * Math.cos(radians) - lngDiff * Math.sin(radians)),
+            rotationCenter.lng + (latDiff * Math.sin(radians) + lngDiff * Math.cos(radians))
+        ];
+        circle.setLatLng(newCenter);
+    }
+    
 
-        const keepOnMap = latlng => {
-            latlng = {lat: latlng[0], lng: latlng[1]};
-            if (latlng.lng > this.map.pixelSize) {latlng.lng = this.map.pixelSize;}
-            if (latlng.lat < -this.map.pixelSize ) {latlng.lat = -this.map.pixelSize;}
-            if (latlng.lng < 0) {latlng.lng = 0;}
-            if (latlng.lat > 0) {latlng.lat = 0;}
-            return latlng;
-        };
+    /**
+     * Create protection zones and no construction zones
+     * @param {Array} this.layerData.mapAssets.protectionZones - Array of protection zones
+     */
+    createProtectionZones() {
+        const PZONECOLOR = "firebrick";
+
+        // const keepOnMap = latlng => {
+        //     latlng = {lat: latlng[0], lng: latlng[1]};
+        //     if (latlng.lng > this.map.pixelSize) {latlng.lng = this.map.pixelSize;}
+        //     if (latlng.lat < -this.map.pixelSize ) {latlng.lat = -this.map.pixelSize;}
+        //     if (latlng.lng < 0) {latlng.lng = 0;}
+        //     if (latlng.lat > 0) {latlng.lat = 0;}
+        //     return latlng;
+        // };
 
         // Creating protectionZones + noConstructionZones
-        this.layerData.mapAssets.protectionZones.forEach((asset) => {
+        this.layerData.mapAssets.protectionZones.forEach((pZone) => {
 
-            // Ignore useless/temporary protection zones (<10m)
-            if (asset.objects[0].boxExtent.extent_x/100 < 10) return;
+            //if (this.layerData.rawName != "Sumari_AAS_v1" && this.layerData.rawName != "Kohat_RAAS_v1") return;
 
             // Center of the protection zone
-            let location_x = -(asset.objects[0].location_x - this.offset_x) / 100;
-            let location_y = (asset.objects[0].location_y - this.offset_y) / 100;
+            let [location_y, location_x] = this.convertToLatLng(pZone.objects[0].location_x, pZone.objects[0].location_y);
+
+            // Protection Zone is a Rectangle/Capsule
+            // We're drawing capsule as a rectangle cause it's easier
+            if (pZone.objects[0].isBox || pZone.objects[0].isCapsule) {
+
+                // Radiis
+                let protectRadiusX = ( pZone.objects[0].boxExtent.extent_x / 100 ) * -this.map.gameToMapScale;
+                let protectRadiusY = ( pZone.objects[0].boxExtent.extent_y / 100 ) * -this.map.gameToMapScale;
+
+                let nodeploRadiusX = protectRadiusX + ( pZone.deployableLockDistance / 100 ) * -this.map.gameToMapScale;
+                let nodeploRadiusY = protectRadiusY + ( pZone.deployableLockDistance / 100 ) * -this.map.gameToMapScale;
+
+                // Bounds
+                let protectNWCorner = [(location_y + protectRadiusY) , (location_x + protectRadiusX)];
+                let protectSECorner = [(location_y - protectRadiusY), (location_x - protectRadiusX)];
+                let protectBounds = [protectNWCorner, protectSECorner];
+
+                let noDeployNWCorner = [(location_y + nodeploRadiusY) , (location_x + nodeploRadiusX)];
+                let noDeploySECorner = [(location_y - nodeploRadiusY), (location_x - nodeploRadiusX)];
+                let noDeployBounds = [noDeployNWCorner, noDeploySECorner];
+
+                let protectionZone = new Rectangle(protectBounds, {
+                    color: PZONECOLOR,
+                    opacity: 1,
+                    weight: 2,
+                    fillOpacity: 0.1,
+                }).addTo(this.activeLayerMarkers);
+
+                let noDeployZone = new Rectangle(noDeployBounds, {
+                    color: PZONECOLOR,
+                    dashArray: "10,20",
+                    opacity: 1,
+                    weight: 1,
+                    fillOpacity: 0.1,
+                }).addTo(this.activeLayerMarkers);
+
+                if (pZone.objects[0].boxExtent.rotation_z != 0){
+                    this.rotateRectangle(protectionZone, pZone.objects[0].boxExtent.rotation_z);
+                    this.rotateRectangle(noDeployZone, pZone.objects[0].boxExtent.rotation_z);
+                }
+
+                this.mainZones.rectangles.push(protectionZone);
+                this.mainZones.rectangles.push(noDeployZone);
+                return;
+            }
+
+            // Protection is a Sphere
+            if (pZone.objects[0].isSphere) {
+
+                // Center of the protection zone
+                let latlngSphere = [location_y, location_x];
+
+                // Protection & NoDeployementZone radiis
+                let protectRadius = pZone.objects[0].sphereRadius / 100 * this.map.gameToMapScale;
+                let noDeployRadius = (pZone.objects[0].sphereRadius + pZone.deployableLockDistance) / 100 * this.map.gameToMapScale;
+
+                let protectionZone = new Circle(latlngSphere, {
+                    color: "firebrick",
+                    opacity: 1,
+                    weight: 2,
+                    fillOpacity: 0.1,
+                    radius: protectRadius,
+                }).addTo(this.activeLayerMarkers);
+
+                let noDeployZone = new Circle(latlngSphere, {
+                    color: "firebrick",
+                    dashArray: "10,20",
+                    opacity: 1,
+                    weight: 1,
+                    fillOpacity: 0.1,
+                    radius: noDeployRadius,
+                }).addTo(this.activeLayerMarkers);
+
+                this.mainZones.rectangles.push(protectionZone);
+                this.mainZones.rectangles.push(noDeployZone);
+                return;
+            }
+
+            
+
+
+            //     // Ignore useless/temporary protection zones (<10m)
+            //     if (pZone.objects[0].boxExtent.extent_x/100 < 10) return;
+
+            //     // Center of the protection zone
+            //     //let location_x = -(asset.objects[0].location_x - this.offset_x) / 100;
+            //     //let location_y = (asset.objects[0].location_y - this.offset_y) / 100;
                
-            let latlngSphereRadius = [location_y * -this.map.gameToMapScale, location_x * -this.map.gameToMapScale];
-            let radiusTest = asset.objects[0].sphereRadius / 100 * this.map.gameToMapScale;
+            //     let latlngSphereRadius = [location_y * -this.map.gameToMapScale, location_x * -this.map.gameToMapScale];
+            //     let radiusTest = pZone.objects[0].sphereRadius / 100 * this.map.gameToMapScale;
 
-            // Compute the radiis of a rectangle for the protection zone
-            let boxExtentX = asset.objects[0].boxExtent.extent_x / 100;
-            let boxExtentY = asset.objects[0].boxExtent.extent_y / 100;
+            //     // Compute the radiis of a rectangle for the protection zone
+            //     let boxExtentX = pZone.objects[0].boxExtent.extent_x / 100;
+            //     let boxExtentY = pZone.objects[0].boxExtent.extent_y / 100;
 
-            let topLeftCorner = [(location_y + boxExtentY) * -this.map.gameToMapScale , (location_x + boxExtentX) * -this.map.gameToMapScale];
-            //let bottomRightCorner = [(location_y - boxExtentY) * -this.map.gameToMapScale , (location_x - boxExtentX) * -this.map.gameToMapScale];
+            //     let topLeftCorner = [(location_y + boxExtentY) * -this.map.gameToMapScale , (location_x + boxExtentX) * -this.map.gameToMapScale];
+            //     //let bottomRightCorner = [(location_y - boxExtentY) * -this.map.gameToMapScale , (location_x - boxExtentX) * -this.map.gameToMapScale];
 
-            let distanceToCorner = Math.sqrt(Math.pow(topLeftCorner[0] - (location_y * -this.map.gameToMapScale), 2) + Math.pow(topLeftCorner[1] - (location_x * -this.map.gameToMapScale), 2));
+            //     let distanceToCorner = Math.sqrt(Math.pow(topLeftCorner[0] - (location_y * -this.map.gameToMapScale), 2) + Math.pow(topLeftCorner[1] - (location_x * -this.map.gameToMapScale), 2));
 
-            // if the boxExtent is smaller than the sphereRadius, we draw a circle
-            if (radiusTest > distanceToCorner ){
+            
+            //     let bottomRightCorner = [(location_y - boxExtentY) * -this.map.gameToMapScale , (location_x - boxExtentX) * -this.map.gameToMapScale];
+            //     let bounds = [keepOnMap(topLeftCorner), keepOnMap(bottomRightCorner)];
 
-                let topLeftCorner = [(location_y + boxExtentY) * -this.map.gameToMapScale , (location_x + boxExtentX) * -this.map.gameToMapScale];
-                let bottomRightCorner = [(location_y - boxExtentY) * -this.map.gameToMapScale , (location_x - boxExtentX) * -this.map.gameToMapScale];
-                let bounds = [keepOnMap(topLeftCorner), keepOnMap(bottomRightCorner)];
+            //     // if the boxExtent is smaller than the sphereRadius, we draw a circle
+            //     if (radiusTest > distanceToCorner ){
 
-                this.mainZones.rectangles.push(
-                    new Rectangle(bounds, {
-                        color: "firebrick",
-                        opacity: 0,
-                        weight: 2,
-                        fillOpacity: 0,
-                    }).addTo(this.activeLayerMarkers));
+            //         this.mainZones.rectangles.push(
+            //             new Rectangle(bounds, {
+            //                 color: "firebrick",
+            //                 opacity: 0,
+            //                 weight: 2,
+            //                 fillOpacity: 0,
+            //             }).addTo(this.activeLayerMarkers));
                     
 
-                // Second rectangle for the noConstructionZone
-                let boxExtentX2 = (asset.objects[0].boxExtent.extent_x + asset.deployableLockDistance) / 100;
-                let boxExtentY2 = (asset.objects[0].boxExtent.extent_y + asset.deployableLockDistance) / 100;
-                let bound3 = [(location_y + boxExtentY2) * -this.map.gameToMapScale , (location_x + boxExtentX2) * -this.map.gameToMapScale];
-                let bound4 = [(location_y - boxExtentY2) * -this.map.gameToMapScale , (location_x - boxExtentX2) * -this.map.gameToMapScale];
-                let bounds2 = [keepOnMap(bound3), keepOnMap(bound4)];
+            //         // Second rectangle for the noConstructionZone
+            //         let boxExtentX2 = (pZone.objects[0].boxExtent.extent_x + pZone.deployableLockDistance) / 100;
+            //         let boxExtentY2 = (pZone.objects[0].boxExtent.extent_y + pZone.deployableLockDistance) / 100;
+            //         let bound3 = [(location_y + boxExtentY2) * -this.map.gameToMapScale , (location_x + boxExtentX2) * -this.map.gameToMapScale];
+            //         let bound4 = [(location_y - boxExtentY2) * -this.map.gameToMapScale , (location_x - boxExtentX2) * -this.map.gameToMapScale];
+            //         let bounds2 = [keepOnMap(bound3), keepOnMap(bound4)];
 
-                this.mainZones.rectangles.push(
-                    new Rectangle(bounds2, {
-                        color: "firebrick",
-                        dashArray: "10,20",
-                        opacity: 0,
-                        weight: 1,
-                        fillOpacity: 0,
-                    }).addTo(this.activeLayerMarkers));
+            //         this.mainZones.rectangles.push(
+            //             new Rectangle(bounds2, {
+            //                 color: "firebrick",
+            //                 dashArray: "10,20",
+            //                 opacity: 0,
+            //                 weight: 1,
+            //                 fillOpacity: 0,
+            //             }).addTo(this.activeLayerMarkers));
                 
 
-                // debug radius circle 
-                this.mainZones.rectangles.push(
-                    new Circle(latlngSphereRadius, {
-                        color: "blue",
-                        opacity: 0,
-                        weight: 0.5,
-                        fillOpacity: 0,
-                        radius: radiusTest,
-                    }).addTo(this.activeLayerMarkers));
-            }
-            else {
-                this.mainZones.rectangles.push(
-                    new Circle(latlngSphereRadius, {
-                        color: "firebrick",
-                        opacity: 0,
-                        weight: 2,
-                        fillOpacity: 0,
-                        radius: radiusTest,
-                    }).addTo(this.activeLayerMarkers));
+            //         // debug radius circle 
+            //         this.mainZones.rectangles.push(
+            //             new Circle(latlngSphereRadius, {
+            //                 color: "blue",
+            //                 opacity: 0,
+            //                 weight: 0.5,
+            //                 fillOpacity: 0,
+            //                 radius: radiusTest,
+            //             }).addTo(this.activeLayerMarkers));
+            //     }
+            //     else {
+            //         this.mainZones.rectangles.push(
+            //             new Circle(latlngSphereRadius, {
+            //                 color: "firebrick",
+            //                 opacity: 0,
+            //                 weight: 2,
+            //                 fillOpacity: 0,
+            //                 radius: radiusTest,
+            //             }).addTo(this.activeLayerMarkers));
 
-                let radiusTest2 = (asset.objects[0].sphereRadius + asset.deployableLockDistance) / 100 * this.map.gameToMapScale;
 
-                this.mainZones.rectangles.push(
-                    new Circle(latlngSphereRadius, {
-                        color: "firebrick",
-                        dashArray: "10,20",
-                        opacity: 0,
-                        weight: 1,
-                        fillOpacity: 0,
-                        radius: radiusTest2,
-                    }).addTo(this.activeLayerMarkers));
 
-            }
+            //         this.mainZones.rectangles.push(
+            //             new Circle(latlngSphereRadius, {
+            //                 color: "firebrick",
+            //                 dashArray: "10,20",
+            //                 opacity: 0,
+            //                 weight: 1,
+            //                 fillOpacity: 0,
+            //                 radius: radiusTest2,
+            //             }).addTo(this.activeLayerMarkers));
 
-            // Testing the rotation of the rectangle
-            // var rectangleTest = new Rectangle(bounds, {
-            //     color: "blue",
-            //     opacity: 0,
-            //     weight: 2,
-            //     fillOpacity: 0,
-            // }
-            // ).addTo(this.activeLayerMarkers) 
-            // this.mainZones.rectangles.push(rectangleTest);
-            // this.rotateRectangle(rectangleTest, -30);
 
-            // Same rectangle + asset.deployableLockDistance for the noConstructionZone
+            //         // Debug Rectangle
+            //         this.mainZones.rectangles.push(
+            //             new Rectangle(bounds, {
+            //                 color: "blue",
+            //                 opacity: 0,
+            //                 weight: 2,
+            //                 fillOpacity: 0,
+            //             }).addTo(this.activeLayerMarkers));
+            //     }
+
+            //     // Testing the rotation of the rectangle
+            //     // var rectangleTest = new Rectangle(bounds, {
+            //     //     color: "blue",
+            //     //     opacity: 0,
+            //     //     weight: 2,
+            //     //     fillOpacity: 0,
+            //     // }
+            //     // ).addTo(this.activeLayerMarkers) 
+            //     // this.mainZones.rectangles.push(rectangleTest);
+            //     // this.rotateRectangle(rectangleTest, -30);
+
+            //     // Same rectangle + asset.deployableLockDistance for the noConstructionZone
             
 
         });
@@ -428,7 +587,7 @@ export class SquadLayer {
     createAssets() {
         this.createHelipads();
         this.createDeployables();
-        //this.createProtectionZones()  
+        this.createProtectionZones();
     }
 
     setMainZoneOpacity(on){
@@ -464,7 +623,7 @@ export class SquadLayer {
     _handleFlagClick(flag) {
         let backward = false;
 
-        console.clear();
+        //console.clear();
         console.debug("**************************");
         console.debug("      NEW CLICKED FLAG    ");
         console.debug("**************************");
@@ -493,7 +652,7 @@ export class SquadLayer {
 
         // Going backward
         if (Math.abs(this.startPosition - flag.position)+1 <= this.currentPosition){
-
+        //if(false){
             backward = true;
             this.selectedReachableClusters.pop();
 
@@ -538,16 +697,16 @@ export class SquadLayer {
         console.debug("**************************");
 
         // Set to track clusters that can be reached from the clicked flag
-        const reachableClusters = new Set();
+        let reachableClusters = new Set();
 
         // Start DFS from each clicked flag clusters
         flag.clusters.forEach((cluster) => {
 
-            // Ignore clusters that are in front of the clicked flag for now
-            if (Math.abs(this.startPosition - cluster.pointPosition)+1 > this.currentPosition){
+            // Only start DFS from clusters that are from our current position
+            if (Math.abs(this.startPosition - cluster.pointPosition)+1 != this.currentPosition){
                 console.debug("Cluster is irrevelant! skipping DFS for now..", cluster);
                 return;
-            }
+            }        
            
             // If the clicked flag is a main flag, use the objectDisplayName instead
             if (cluster.name === "Main"){
@@ -575,6 +734,17 @@ export class SquadLayer {
         console.debug("         DFS ENDED        ");
         console.debug("**************************");
         console.debug("Reachable clusters:", Array.from(reachableClusters));
+
+        if (reachableClusters.size === 1 && this.currentPosition === 1){
+            if (flag.isMain){
+                console.debug("Already blocked");
+                console.debug("Trying again in the other direction");
+                this.reversed = !this.reversed;
+                reachableClusters.clear();
+                this.dfs(flag.clusters[0].objectDisplayName, reachableClusters);
+                //this.reversed = !this.reversed;
+            }
+        }
 
 
         // Store the clusters in case we need to backtrack later
@@ -629,7 +799,6 @@ export class SquadLayer {
 
             console.debug("Cluster to show", cluster.name);
             console.debug("   -> cluster.pointPosition", cluster.pointPosition);
-            console.debug("   -> Flag position", flag.position);
             console.debug("   -> Current position", this.currentPosition);
 
             // If the cluster is in front of the clicked flag, show it
@@ -679,7 +848,7 @@ export class SquadLayer {
     dfs(clusterName, reachableClusters) {
         if (reachableClusters.has(clusterName)) return;  // If already visited, skip
         reachableClusters.add(clusterName); // Mark this cluster as reachable)
-        console.debug("Added to reachableCluster :", clusterName);
+
         // Sometimes links are stored in clusters, sometimes in lanes
         const links = this.layerData.capturePoints.lanes.links || this.layerData.capturePoints.clusters.links;
 
@@ -703,7 +872,7 @@ export class SquadLayer {
      * Unselects all flags and resets the layer
      */
     _resetLayer() {
-        console.clear();
+        //console.clear();
         console.debug("Resetting layer");
 
         this.currentPosition = 0;
@@ -722,7 +891,9 @@ export class SquadLayer {
         // Pre-select first main flag in invasion
         if (this.layerData.gamemode === "Invasion") {
             this.mains.forEach((main) => {
-                if (main.position === 1){ this._handleFlagClick(main); }
+                if (main.objectName === this.layerData.capturePoints.clusters.listOfMains[0].replaceAll(" ", "")){
+                    this._handleFlagClick(main);
+                }
             });
         }
     }
@@ -746,6 +917,7 @@ export class SquadLayer {
             f.clusters.includes(cluster)
         );
 
+
         flagsToShow.forEach((flagToShow) => {
 
             const foundClusters = [];
@@ -757,27 +929,32 @@ export class SquadLayer {
                 }
             });
 
-            console.debug("   -> filtered clusters from previous step", foundClusters);
-
             let newPos;
 
             if (this.reversed){
-                // store the lowest foundsclusters pointPosition in var new pos
-                newPos = foundClusters.reduce((max, item) =>
-                    item.pointPosition > max ? item.pointPosition : max,
-                foundClusters[0].pointPosition
-                );
-            } else {
-                newPos = foundClusters.reduce((min, item) => {
-                    // Check that the item's pointPosition is both less than the current min
-                    // and greater than this.currentPosition
-                    if (item.pointPosition < min && item.pointPosition > this.currentPosition) {
-                        return item.pointPosition;
+                newPos = 0;
+                for (const item of foundClusters) {
+                    if (Math.abs(this.startPosition - item.pointPosition) >= this.currentPosition && item.pointPosition > newPos) {
+                        newPos = item.pointPosition;
                     }
-                    return min;
-                }, foundClusters[0].pointPosition);
+                }
+            } else {
+                newPos = Infinity;
+                for (const item of foundClusters) {
+                    if (item.pointPosition > this.currentPosition && item.pointPosition < newPos) {
+                        newPos = item.pointPosition;
+                    }
+                }
+                // Something went wrong, try the opposite
+                if (newPos === Infinity){
+                    newPos = 0;
+                    for (const item of foundClusters) {
+                        if (item.pointPosition <= this.currentPosition && item.pointPosition > newPos) {
+                            newPos = item.pointPosition;
+                        }
+                    }
+                }
             }
-
             flagToShow.position = newPos;
             flagToShow.show();
 

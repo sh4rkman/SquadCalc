@@ -26,7 +26,7 @@ function loadLocalSetting(item, default_value = 1) {
 
 
 export function loadSettings(){
-    var setting = localStorage.getItem("settings-map-mode");
+    //var setting = localStorage.getItem("settings-map-mode");
     
     App.userSettings.keypadUnderCursor = loadLocalSetting("settings-keypad-cursor", 0);
     if (App.hasMouse) {
@@ -38,12 +38,22 @@ export function loadSettings(){
         App.userSettings.keypadUnderCursor = false;
     }
 
-    if (setting === null || setting === ""){
-        setting = "basemap";
-        localStorage.setItem("settings-map-mode", setting);
+    // Load the last selected map mode
+    const currentUrl = new URL(window.location);
+    const mapMode = currentUrl.searchParams.get("type");
+
+    if ($(".btn-" + mapMode).length) {
+        $(".btn-"+mapMode).addClass("active");
+    } 
+    else {
+        // Default to the first button
+        $(".btn-basemap").addClass("active");
+        currentUrl.searchParams.delete("type");
+        window.history.replaceState({}, "", currentUrl);
     }
 
-    $(".btn-"+setting).addClass("active");
+
+    
 
     App.userSettings.capZoneOnHover = loadLocalSetting("settings-capZone-onHover", 0);
     $("#capZoneOnHoverSetting").prop("checked", App.userSettings.capZoneOnHover);
@@ -84,8 +94,8 @@ export function loadSettings(){
     App.userSettings.grid = loadLocalSetting("settings-grid");
     $("#gridSetting").prop("checked", App.userSettings.grid);
     
-    App.userSettings.weaponMinMaxRange = loadLocalSetting("settings-weapon-range");
-    $("#weaponRangeSettings").prop("checked", App.userSettings.weaponMinMaxRange);
+    App.userSettings.realMaxRange = loadLocalSetting("settings-real-max-range", 0);
+    $("#realMaxRangeSettings").prop("checked", App.userSettings.realMaxRange);
 
     App.userSettings.showBearing = loadLocalSetting("settings-show-bearing", 1);
     $("#bearingSetting").prop("checked", App.userSettings.showBearing);
@@ -125,12 +135,6 @@ export function updatePreview(){
         $("#spreadPreview").show();
     } else {
         $("#spreadPreview").hide();
-    }
-
-    if (App.userSettings.weaponMinMaxRange){
-        $("#maxRangePreview").show();
-    } else {
-        $("#maxRangePreview").hide();
     }
 
     if (App.userSettings.damageRadius){
@@ -180,17 +184,16 @@ $("#capZoneOnHoverSettings").on("change", function() {
     var val = $("#capZoneOnHoverSettings").is(":checked");
     App.userSettings.capZoneOnHover = val;
     localStorage.setItem("settings-capZone-onHover", +val);
+    
+    if (!App.minimap.layer) return;
+    if (App.minimap.getZoom() <= App.minimap.detailedZoomThreshold) return;
 
     // Hide/Show cap zones if the user is already zoomed in
     if (!val){
-        // Show markers only if the zoom level is high enough
-        if ( App.minimap.getZoom() > App.minimap.detailedZoomThreshold){
-            App.minimap.layer.revealAllCapZones();
-        }
+        App.minimap.layer.revealAllCapzones();
     } else {
-        App.minimap.layer.hideAllCapZones();
+        App.minimap.layer.hideAllCapzones();
     }
-
 });
 
 $("#keypadUnderCursorSetting").on("change", function() {
@@ -198,11 +201,11 @@ $("#keypadUnderCursorSetting").on("change", function() {
 
     if (val){
         App.minimap.on("mousemove", App.minimap._handleMouseMove);
-        App.minimap.on("zoomend", App.minimap._handleZoom);
+        //App.minimap.on("zoomend", App.minimap._handleZoom);
     }
     else {
         App.minimap.off("mousemove", App.minimap._handleMouseMove);
-        App.minimap.off("zoomend", App.minimap._handleZoom);
+        //App.minimap.off("zoomend", App.minimap._handleZoom);
         App.minimap.mouseLocationPopup.close();
     }
     App.userSettings.keypadUnderCursor = val;
@@ -294,12 +297,11 @@ $("#highQualitySetting").on("change", function() {
     App.minimap.changeLayer();
 });
 
-$("#weaponRangeSettings").on("change", function() {
-    var val =  $("#weaponRangeSettings").is(":checked");
-    App.userSettings.weaponMinMaxRange = val;
-    localStorage.setItem("settings-weapon-range", +val);
+$("#realMaxRangeSettings").on("change", function() {
+    var val =  $("#realMaxRangeSettings").is(":checked");
+    App.userSettings.realMaxRange = val;
+    localStorage.setItem("settings-real-max-range", +val);
     App.minimap.updateWeapons();
-    updatePreview();
 });
 
 $("#cursorChoiceSettings").on("change", function() {
@@ -322,8 +324,9 @@ $("#targetAnimationSettings").on("change", function() {
     App.userSettings.targetAnimation = val;
     localStorage.setItem("settings-target-animation", +val);
 
-    App.minimap.activeTargetsMarkers.eachLayer(function (weapon) {
-        weapon.updateIcon();
+    App.minimap.activeTargetsMarkers.eachLayer(function (target) {
+        target.updateCalcPopUps();
+        target.updateIcon();
     });
 });
 

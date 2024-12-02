@@ -24,12 +24,13 @@
     "heightPaddingDesc": "When placing the weapon above the ground (e.g., on buildings or bridges), use this field to specify the additional height.",
     "smoothMapTooltip": "Add smooth animations when zooming or panning the map. A page refresh is needed",
     "experimentalWeaponsTooltip": "Add non-conventional indirect fire weapons to the weapon list, use at your own risk!",
-    "highqualityTooltip": "Replace basemap images with very high quality, AI upscaled, 8k*8k pixels images. Can cause performance issues.",
-    "targetAnimationTooltip": "Targets' markers will appear with a 'falling' animation",
     "damageRadiusTooltip": "Display kill radius and 25 damage radius",
     "showKeypadTooltip": "Display the keypad currently hovered under the cursor",
     "showSpreadTooltip": "Display possible rounds' dispersion area around the targets",
-    "showMaxRangeTooltip": "Displays blue circles for minimum (if applicable) and maximum range. Does not account for elevation",
+    "showMaxRangeTooltip": "Compute max range in every direction taking heights into account",
     "targetEmphasisTooltip": "Emphasize hovered marker by fading out others",
-    "useClassicCursorTooltip": "Replace crosshair with default cursor"
+    "useClassicCursorTooltip": "Replace crosshair with default cursor",
+    "targetAnimationTooltip": "Disable to replace target markers icon with minimalistic circles",
+    "highqualityTooltip": "Replace basemap images with very high quality, AI upscaled, 8k*8k pixels images.",
+    "performanceWarning": "Can cause performance issues"
 }

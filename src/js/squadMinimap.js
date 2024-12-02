@@ -12,6 +12,12 @@ import "./libs/webgl-heatmap.js";
 import "./libs/leaflet-smoothWheelZoom.js";
 
 
+/**
+ * Squad Minimap
+ * Custom Leaflet Map for Squad, managing basemaps, mouse behaviours, and more
+ * @extends {Map} - Leaflet Map
+ * @class squadMinimap
+ */
 export var squadMinimap = Map.extend({
 
     /**
@@ -73,7 +79,7 @@ export var squadMinimap = Map.extend({
         this.on("dblclick", this._handleDoubleClick, this);
         this.on("contextmenu", this._handleContextMenu, this);
         
-        if (App.userSettings.keypadUnderCursor || !App.hasMouse){
+        if (App.userSettings.keypadUnderCursor && App.hasMouse){
             this.on("mousemove", this._handleMouseMove, this);
             this.on("mouseout", this._handleMouseOut, this);
         }
@@ -91,8 +97,7 @@ export var squadMinimap = Map.extend({
         this.mapToGameScale = this.activeMap.size / this.pixelSize;
         this.detailedZoomThreshold = 3 + (this.activeMap.size/7000);
        
-
-        // Load Heightmap in canvas
+        // Load Heightmap
         this.heightmap = new squadHeightmap(this);
 
         // remove existing grid and replace it
@@ -417,9 +422,7 @@ export var squadMinimap = Map.extend({
      */
     _handleZoom: function() {
 
-        // Make sure the user opened the popup by moving the mouse before zooming
-        // ...or it throw error
-        if (App.userSettings.keypadUnderCursor || !App.hasMouse){
+        if (App.userSettings.keypadUnderCursor && App.hasMouse){
             if (this.mouseLocationPopup._latlng){
                 this.mouseLocationPopup.setContent(`<p>${this.getKP(-this.mouseLocationPopup._latlng.lat, this.mouseLocationPopup._latlng.lng)}</p>`);
             }
@@ -428,12 +431,12 @@ export var squadMinimap = Map.extend({
         // If there is a layer selected, reveal main/capzone when enough zoomed in
         if (!this.layer) return;
 
-        if (this.getZoom() > this.detailedZoomThreshold){
+        if (this.getZoom() > this.detailedZoomThreshold*0.8){
             this.layer.revealAllCapzones();
-            this.layer.setMainZoneOpacity(true);
+            //this.layer.setMainZoneOpacity(true);
         } else {
             this.layer.hideAllCapzones();
-            this.layer.setMainZoneOpacity(false);
+            //this.layer.setMainZoneOpacity(false);
         }
 
     },

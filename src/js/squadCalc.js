@@ -66,8 +66,6 @@ export default class SquadCalc {
         this.MAP_SELECTOR.on("change", (event) => {
             const currentUrl = new URL(window.location);
 
-            this.LAYER_SELECTOR.hide();
-
             // Update the minimap with the selected map
             this.minimap.activeMap = MAPS.find((_, index) => index == event.target.value);
             this.minimap.clear(); 
@@ -127,15 +125,15 @@ export default class SquadCalc {
      */
     loadLayers() {
         const currentUrl = new URL(window.location);
-
+        $("#layerSelector").hide();
         this.LAYER_SELECTOR.empty();
+
         this.minimap.spin(true, this.minimap.spinOptions);
 
         fetchLayersByMap(this.minimap.activeMap.name).then(layers => {
 
             if (layers.length === 0) { 
                 this.minimap.spin(false);
-                this.LAYER_SELECTOR.hide();
                 const currentUrl = new URL(window.location);
                 currentUrl.searchParams.delete("layer");
                 window.history.replaceState({}, "", currentUrl);
@@ -174,7 +172,7 @@ export default class SquadCalc {
             }
 
             this.minimap.spin(false);
-            this.LAYER_SELECTOR.show();
+            $("#layerSelector").show();
 
         }).catch(error => {
             this.LAYER_SELECTOR.hide();
@@ -376,19 +374,33 @@ export default class SquadCalc {
         this.closeDialogOnClickOutside(helpDialog);
         $(".btn-delete").on("click", () => { this.minimap.deleteTargets();});
         $("#fabCheckbox2").on("change", () => { this.switchUI();});
+
+
         $("#mapLayerMenu").find("button.layers").on("click", (e) => {
+            const currentUrl = new URL(window.location);
             var val = $(e.currentTarget).attr("value");
+
             if (val === "helpmap") {
                 $(".btn-"+val).toggleClass("active");
                 this.minimap.toggleHeatmap();
                 return;
             }
+
             $("#mapLayerMenu").find(".layers").removeClass("active");
             $(".btn-"+val).addClass("active");
+
+            if (val === "basemap") {
+                currentUrl.searchParams.delete("type");
+            } else {
+                currentUrl.searchParams.set("type", val);
+            }
+            window.history.replaceState({}, "", currentUrl);
+
             localStorage.setItem("settings-map-mode", val);
             this.userSettings.layerMode = val;
             this.minimap.changeLayer();
         });
+
         $("#mapLayerMenu").find("button.btn-helpmap").on("click", () => {
             $(".btn-helpmap").toggleClass("active");
             this.minimap.toggleHeatmap();
@@ -489,6 +501,7 @@ export default class SquadCalc {
             $(".panel.active").removeClass("active");
             $("#"+$(e.currentTarget).val()).addClass("active");
         });
+
 
         this.show();
     }

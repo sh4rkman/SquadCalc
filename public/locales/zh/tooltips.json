@@ -9,6 +9,7 @@
     "connectedTo": "Connected !",
     "error": "错误！",
     "apiError": "API 未连接..",
+    "apiError_layers": "Can't fetch layers from API",
     "deleteTargets": "删除所有目标",
     "bearing": "方位",
     "whereToAim": "瞄哪里",
@@ -23,12 +24,13 @@
     "heightPaddingDesc": "当武器放置在地面以上时（例如在建筑物或桥梁上），使用此字段指定额外的高度。",
     "smoothMapTooltip": "在缩放或移动地图时添加平滑动画。需要重新加载页面",
     "experimentalWeaponsTooltip": "将非常规间接火力武器添加到武器列表，使用风险自负！",
-    "highqualityTooltip": "将底图图像替换为超高质量、AI放大的8k*8k像素图像。可能会导致性能问题。",
-    "targetAnimationTooltip": "目标标记将以‘下落’动画出现",
     "damageRadiusTooltip": "显示伤害半径和25点伤害的半径",
     "showKeypadTooltip": "在光标下显示数字键盘",
     "showSpreadTooltip": "显示目标周围可能的弹药散布区域",
-    "showMaxRangeTooltip": "显示最小（如果适用）和最大范围的蓝色圆圈。不考虑高度",
+    "showMaxRangeTooltip": "计算每个方向的最大范围，同时考虑高度",
     "targetEmphasisTooltip": "通过淡出其他标记来强调悬停的标记",
-    "useClassicCursorTooltip": "用默认光标替换十字准星"
+    "useClassicCursorTooltip": "用默认光标替换十字准星",
+    "targetAnimationTooltip": "禁用以将标记图标替换为简约的圆形",
+    "highqualityTooltip": "用非常高质量、AI放大的8k*8k像素图像替换地图图像。",
+    "performanceWarning": "可能会导致性能问题"
 }

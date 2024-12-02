@@ -4,6 +4,8 @@ import shadowIconImg from "../img/icons/marker_shadow.webp";
 
 import targetIconImgEnabled from "../img/icons/marker_target_enabled.webp";
 import targetIconImgDisabled from "../img/icons/marker_target_disabled.webp";
+import targetIconImgMinimal from "../img/icons/marker_target_mini.webp";
+import targetIconImgDisabledMinimal from "../img/icons/marker_target_disabled_mini.webp";
 
 import mortarIconImg from "../img/icons/marker_mortar.webp";
 import hellcannonMarker from "../img/icons/marker_hellcannon.webp";
@@ -117,6 +119,17 @@ export var mortarIcon2 = new Icon({
     className: "animatedWeaponMarker" 
 });
 
+export var targetIconMinimal = new Icon({
+    iconUrl: targetIconImgMinimal,
+    iconSize:     [30, 30], 
+    iconAnchor:   [15, 15],
+});
+
+export var targetIconMinimalDisabled = new Icon({
+    iconUrl: targetIconImgDisabledMinimal,
+    iconSize:     [30, 30], 
+    iconAnchor:   [15, 15],
+});
 
 export var targetIcon1 = new Icon({
     iconUrl: targetIconImgEnabled,
@@ -145,7 +158,7 @@ export var targetIconDisabledAnimated = new Icon({
     shadowAnchor: [12, 34], 
 });
 
-export var targetIconAnimated1 = new Icon({
+export var targetIconAnimated = new Icon({
     iconUrl: targetIconImgEnabled,
     shadowUrl: shadowIconImg,
     iconSize:     [28, 34], 

@@ -132,9 +132,10 @@ dialog {
         }
     }
     &#helpDialog {
-        width: 450px;
-        height: 530px;
-        font-size: 0.7em;
+        width: 94%;
+        height: 500px;
+        max-width: 600px;
+        font-size: 0.6em;
         h3 {
             font-size: 1.3em;
         }
@@ -349,8 +350,7 @@ $bezier: cubic-bezier(0.65, 0.25, 0.56, 0.96);
 }
 
 #previewHolder {
-    display: block;
-    margin-bottom: 5em;
+    border: solid transparent 1px;
     #preview {
         outline: solid variables.$mainColor 3px;
         margin: 1em auto 0;

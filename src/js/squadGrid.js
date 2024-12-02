@@ -103,7 +103,7 @@ export default LayerGroup.extend({
 
         if (currentZoom >= 6) {
             this.setLinesWeight(this.kpLines, 4);
-        } else if (currentZoom >= 3 + mapZoomPadding) {
+        } else if (currentZoom >= 3.7 + mapZoomPadding) {
 
             this.setLinesWeight(this.kpLines, 3);
 

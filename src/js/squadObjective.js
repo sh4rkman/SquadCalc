@@ -25,8 +25,10 @@ export class SquadObjective {
 
         this.nameText = new Marker(latlng, {
             interactive: false,
+            keyboard: false,
             icon: new DivIcon({
                 className: "objText",
+                keyboard: false,
                 html: html,
                 iconSize: [300, 20],
                 iconAnchor: [150, 32]
@@ -42,11 +44,6 @@ export class SquadObjective {
         this.flag.on("dblclick", this._handleDoubleClick, this);
         this.flag.on("mouseover", this._handleMouseOver, this);
         this.flag.on("mouseout", this._handleMouseOut, this);
-    }
-
-    // Catch double
-    _handleDoubleClick(){
-        return false;
     }
 
     select(){
@@ -77,6 +74,7 @@ export class SquadObjective {
 
         this.flag = new Marker(this.latlng, {
             interactive: true,
+            keyboard: false,
             icon: new DivIcon({
                 className: className,
                 html: html,
@@ -95,66 +93,109 @@ export class SquadObjective {
 
 
     createCapZone(cap){
+        const CZOPACITY = 0;
+        const CZFILLOPACITY = 0;
+        const CZCOLOR = "rgb(255, 255, 255)";
+        const CZWEIGHT = 2;
 
-        var location_x = -(cap.location_x - this.layer.offset_x) / 100;
-        var location_y = (cap.location_y - this.layer.offset_y) / 100;
-        var boxExtentX = cap.boxExtent.location_x / 100;
-        var boxExtentY = cap.boxExtent.location_y / 100;
-        var latlngSphereRadius = [location_y * -this.layer.map.gameToMapScale, location_x * -this.layer.map.gameToMapScale];
-        var radiusTest = cap.sphereRadius / 100 * this.layer.map.gameToMapScale;
+        // Capzone location whatever shape it has
+        let location_x = -(cap.location_x - this.layer.offset_x) / 100 * -this.layer.map.gameToMapScale;
+        let location_y = (cap.location_y - this.layer.offset_y) / 100 * -this.layer.map.gameToMapScale;
 
-        // define rectangle geographical bounds
-        var bound1 = [(location_y + boxExtentY) * -this.layer.map.gameToMapScale , (location_x + boxExtentX) * -this.layer.map.gameToMapScale];
-        var bound2 = [(location_y - boxExtentY) * -this.layer.map.gameToMapScale , (location_x - boxExtentX) * -this.layer.map.gameToMapScale];
-        var bounds = [bound1, bound2];
-
-        var distanceToCorner = Math.sqrt(Math.pow(bound1[0] - (location_y * -this.layer.map.gameToMapScale), 2) + Math.pow(bound1[1] - (location_x * -this.layer.map.gameToMapScale), 2));
-
-        var capzone;
-
-        if (radiusTest > distanceToCorner){
-            capzone = new Rectangle(bounds, {
-                color: "rgb(230, 230, 230)",
-                fillColor: "rgb(199, 199, 199)",
-                opacity: 0,
-                weight: 2,
-                fillOpacity: 0,
+        // Capzone is a Sphere
+        if (cap.isSphere) {
+            let latlng = [location_y , location_x];
+            let radius = cap.sphereRadius / 100 * this.layer.map.gameToMapScale;
+            let capZone = new Circle(latlng, {
+                radius: radius,
+                color: CZCOLOR,
+                opacity: CZOPACITY,
+                fillColor: CZCOLOR,
+                fillOpacity: CZFILLOPACITY,
+                weight: CZWEIGHT,
             }).addTo(this.layer.activeLayerMarkers);
-            this.capZones.addLayer(capzone);
-
-            //Debug rectangle
-            // this.capZones.addLayer(
-            //     new L.Circle(latlngSphereRadius, {
-            //     opacity: 0.5,
-            //     color: "green",
-            //     radius: radiusTest,
-            // }).addTo(this.layer.activeLayerMarkers));
-        } 
-        else {
-
-            capzone = new Circle(latlngSphereRadius, {
-                color: "rgb(230, 230, 230)",
-                fillColor: "rgb(199, 199, 199)",
-                opacity: 0,
-                weight: 2,
-                fillOpacity: 0,
-                radius: radiusTest,
-            }).addTo(this.layer.activeLayerMarkers);
-            this.capZones.addLayer(capzone);
-    
-            // //debug
-            // capzone = new Rectangle(bounds, {
-            //     color: "green",
-            //     fillColor: "rgb(199, 199, 199)",
-            //     opacity: 1,
-            //     weight: 2,
-            //     fillOpacity: 0,
-            // }).addTo(this.layer.activeLayerMarkers)
-            // this.capZones.addLayer(capzone);
-    
+            this.capZones.addLayer(capZone);
+            return;
         }
 
-       
+        // Capzone is a Rectangle/Capsule
+        if (cap.isBox || cap.isCapsule) {
+            let rectangleRadiusX;
+            let rectangleRadiusY;
+            let totalRotation = cap.boxExtent.rotation_z;
+
+            // If object is on his side (often the case for capsules) take x/y/z in account 
+            // Sometime it can be -89.98..
+            if (cap.boxExtent.rotation_y > -91 && cap.boxExtent.rotation_y < -89){
+                totalRotation = totalRotation + cap.boxExtent.rotation_x + cap.boxExtent.rotation_y;
+            }
+
+            // Cap radiis
+            if (cap.isBox) {
+                rectangleRadiusX = cap.boxExtent.extent_x / 100 * -this.layer.map.gameToMapScale;
+                rectangleRadiusY = cap.boxExtent.extent_y / 100 * -this.layer.map.gameToMapScale;
+            }
+            else if (cap.isCapsule) {
+                rectangleRadiusX = cap.capsuleRadius / 100 * -this.layer.map.gameToMapScale;
+                rectangleRadiusY = (cap.capsuleLength - cap.capsuleRadius) / 100 * -this.layer.map.gameToMapScale;
+            }
+
+            // Cap Zone bounds
+            let capNWCorner = [(location_y + rectangleRadiusY) , (location_x + rectangleRadiusX)];
+            let capSECorner = [(location_y - rectangleRadiusY), (location_x - rectangleRadiusX)];
+            let capBounds = [capNWCorner, capSECorner];
+
+            let capZone = new Rectangle(capBounds, {
+                color: CZCOLOR,
+                fillColor: CZCOLOR,
+                opacity: CZOPACITY,
+                weight: CZWEIGHT,
+                fillOpacity: CZFILLOPACITY,
+            }).addTo(this.layer.activeLayerMarkers);
+            this.capZones.addLayer(capZone);
+
+            // For capsules we'll need to create 2 circles aswell
+            if (cap.isCapsule) {
+                let latSphere1 = (capZone.getBounds().getNorthEast().lat + capZone.getBounds().getNorthWest().lat ) / 2;
+                let lngSphere1 = (capZone.getBounds().getNorthEast().lng + capZone.getBounds().getNorthWest().lng ) / 2;
+                let latlng1 = { lat: latSphere1, lng: lngSphere1 };
+
+                let latSphere2 = (capZone.getBounds().getSouthEast().lat + capZone.getBounds().getSouthWest().lat ) / 2;
+                let lngSphere2 = (capZone.getBounds().getSouthEast().lng + capZone.getBounds().getSouthWest().lng ) / 2;
+                let latlng2 = { lat: latSphere2, lng: lngSphere2 };
+
+                let circle1 = new Circle(latlng1, {
+                    radius: cap.capsuleRadius / 100 * this.layer.map.gameToMapScale,
+                    color: CZCOLOR,
+                    opacity: CZOPACITY,
+                    fillColor: CZCOLOR,
+                    fillOpacity: CZFILLOPACITY,
+                    weight: CZWEIGHT,
+                }).addTo(this.layer.activeLayerMarkers);
+                this.capZones.addLayer(circle1);
+
+                let circle2 = new Circle(latlng2, {
+                    radius: cap.capsuleRadius / 100 * this.layer.map.gameToMapScale,
+                    color: CZCOLOR,
+                    opacity: CZOPACITY,
+                    fillColor: CZCOLOR,
+                    fillOpacity: CZFILLOPACITY,
+                    weight: CZWEIGHT,
+                }).addTo(this.layer.activeLayerMarkers);
+                this.capZones.addLayer(circle2);
+
+
+                // Only rotate the circles if the capsule is not vertical
+                if (cap.capsuleLength != cap.capsuleRadius) {
+                    this.layer.rotateCircle(circle1, totalRotation, capZone.getCenter());
+                    this.layer.rotateCircle(circle2, totalRotation, capZone.getCenter());
+                }
+            }
+
+            this.layer.rotateRectangle(capZone, totalRotation);
+            //this.layer.rotateRectangle(capZone, cap.boxExtent.rotation_z);
+            this.capZones.addLayer(capZone);
+        }
 
     }
 
@@ -165,12 +206,7 @@ export class SquadObjective {
         var position = Math.abs(this.layer.startPosition - this.position); 
         var className = "flag";
 
-        //var position = this.position;
-
-        this.flag.removeFrom(this.layerGroup).remove();
-
         if (this.isMain) { 
-            html= "";
             if (this.layer.layerData.gamemode === "AAS" || this.layer.layerData.gamemode === "Destruction"){
                 className = "flag main unselectable";
             } else {
@@ -181,8 +217,10 @@ export class SquadObjective {
             className = className + " flag" + position;
         }
 
+        this.flag.removeFrom(this.layerGroup).remove();
         this.flag = new Marker(this.latlng, {
             interactive: true,
+            keyboard: false,
             icon: new DivIcon({
                 className: className,
                 html: html,
@@ -217,7 +255,7 @@ export class SquadObjective {
 
         if (this.layer.reversed) {
             lowestPossiblePosition = this.clusters.reduce((max, item) =>
-                item.pointPosition > max ? item.pointPosition : max,
+                item.pointPosition-1 > max ? item.pointPosition : max,
             this.clusters[0].pointPosition
             );
         }
@@ -257,9 +295,17 @@ export class SquadObjective {
         this.layer._handleFlagClick(this);
     }
 
+    
+    _handleDoubleClick(){
+        // Catch double clicks to prevent placing markers
+        return false;
+    }
+
     _handleContextMenu(){
         if (this.layer.layerData.gamemode === "Destruction" || this.layer.layerData.gamemode === "AAS") return;
-        this.layer._handleFlagClick(this);
+        if (this.isSelected){
+            this.layer._handleFlagClick(this);
+        }
     }
 
     _handleMouseOver() {
