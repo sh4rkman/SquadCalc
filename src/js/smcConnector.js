@@ -12,7 +12,7 @@ export async function initWebSocket() {
     while (!await checkServerAvailability()) {
         await sleep(5000);
     }
-    console.log('Trying to connect to SquadMortarOverlay')
+    console.debug("Trying to connect to SquadMortarOverlay");
     const socketMap = new WebSocket("ws://127.0.0.1:12345");
     const socketCoordinates = new WebSocket("ws://127.0.0.1:12346");
     setInterval(() => checkCoordinates(socketCoordinates), 1000);

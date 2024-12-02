@@ -66,11 +66,11 @@ export default class SquadFiringSolution {
 
         let elevation = padding + Math.atan((this.velocity ** 2 + angleFactor) / (this.gravity * dist));
 
-        if( this.radToDeg(elevation) < App.activeWeapon.minElevation[0] || this.radToDeg(elevation) > App.activeWeapon.minElevation[1]){
+        if (this.radToDeg(elevation) < App.activeWeapon.minElevation[0] || this.radToDeg(elevation) > App.activeWeapon.minElevation[1]){
             return NaN;
         }
 
-        return elevation
+        return elevation;
     }
 
 

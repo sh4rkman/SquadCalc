@@ -240,8 +240,8 @@ export var squadWeaponMarker = squadMarker.extend({
                 const currentVelocity = App.activeWeapon.getVelocity(mid);
                 const deltaLat = mid * Math.cos(directionRadian) * degreesPerMeter;
                 const deltaLng = mid * Math.sin(directionRadian) * degreesPerMeter;
-                var landingX = weaponPos.lat + deltaLat;
-                var landingY = weaponPos.lng + deltaLng;
+                let landingX = weaponPos.lat + deltaLat;
+                let landingY = weaponPos.lng + deltaLng;
                 const landingHeight = this.map.heightmap.getHeight({ lat: landingX, lng: landingY });
     
                 let hitObstacle = false;
@@ -278,8 +278,8 @@ export var squadWeaponMarker = squadMarker.extend({
                 }
             }
             if (!foundMaxDistance) {
-                var finalLat = weaponPos.lat + right * Math.cos(directionRadian) * degreesPerMeter;
-                var finalLng = weaponPos.lng + right * Math.sin(directionRadian) * degreesPerMeter;
+                let finalLat = weaponPos.lat + right * Math.cos(directionRadian) * degreesPerMeter;
+                let finalLng = weaponPos.lng + right * Math.sin(directionRadian) * degreesPerMeter;
                 if (finalLat < -this.map.pixelSize ) {finalLat = -this.map.pixelSize;}
                 if (finalLat > 0) {finalLat = 0;}
                 if (finalLng > this.map.pixelSize) {finalLng = this.map.pixelSize;}
@@ -898,12 +898,12 @@ export var squadTargetMarker = squadMarker.extend({
 
         if (this.map.activeWeaponsMarkers.getLayers()[0].angleType === "high"){
             elevation = this.firingSolution1.elevation.high.rad;
-            if(this.map.activeWeaponsMarkers.getLayers().length === 2){
+            if (this.map.activeWeaponsMarkers.getLayers().length === 2){
                 elevation2 = this.firingSolution2.elevation.high.rad;
             }
         } else {
             elevation = this.firingSolution1.elevation.low.rad;
-            if(this.map.activeWeaponsMarkers.getLayers().length === 2){
+            if (this.map.activeWeaponsMarkers.getLayers().length === 2){
                 elevation2 = this.firingSolution2.elevation.low.rad;
             }
         }
@@ -962,12 +962,12 @@ export var squadTargetMarker = squadMarker.extend({
 
         if (this.map.activeWeaponsMarkers.getLayers()[0].angleType === "high"){
             elevation = this.firingSolution1.elevation.high.rad;
-            if(this.map.activeWeaponsMarkers.getLayers().length === 2){
+            if (this.map.activeWeaponsMarkers.getLayers().length === 2){
                 elevation2 = this.firingSolution2.elevation.high.rad;
             }
         } else {
             elevation = this.firingSolution1.elevation.low.rad;
-            if(this.map.activeWeaponsMarkers.getLayers().length === 2){
+            if (this.map.activeWeaponsMarkers.getLayers().length === 2){
                 elevation2 = this.firingSolution2.elevation.low.rad;
             }
         }
