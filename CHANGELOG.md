@@ -1,3 +1,48 @@
+# <img src="https://img.shields.io/badge/-major%20release-b22222?style=for-the-badge">  **34.0.0** *(2024-XX-XX)*
+
+<img src="https://img.shields.io/badge/-new-green"> **Lane Finder !** You can now select a layer to reveal the potential flags/Cache in AAS/RAAS/Invasion/Destruction gamemodes.  
+* **Auto-picker**: If only one flag is reachable next step, SquadCalc will automatically advance into the layer (can be disabled in settings)
+* **Capzone:** Zoom in or hover a flag (can be set in settings) to reveal flags capzones
+* **Main Zones:** Display Main Protection & NoDeployement zones
+* **Game Assets:** Helipads, Repair stations, ammoboxes are displayed when zooming in
+* **Known Bug :** The capzone / Main Protection Zone can be bigger than ingame reality (see [this issue](https://github.com/Squad-Wiki/squad-wiki-pipeline-map-data/issues/118) on Squad Wiki Pipeline map data repository)  
+
+
+<img src="https://img.shields.io/badge/-new-green"> **Minimistic Icons**  
+You now have the choice between Large Animated Target Icons and small circles to help declustering the map when spaming targets. [#224](https://github.com/sh4rkman/SquadCalc/issues/224)  
+Option "Animated target icon" have been replaced with "Use Large Icons"  
+
+<img src="https://img.shields.io/badge/-new-green"> **Real Max Range** *(code by devil4ngle)*  
+You can now toggle "Real Max Range" in settings to make the max range circle take heights into account.  
+**CPU intensive**, be advised.
+
+<img src="https://img.shields.io/badge/-new-green"> **FOB Construction Radius** [#225](https://github.com/sh4rkman/SquadCalc/issues/225) *(thanks cytuk)*  
+A new circle now appear when hovering/dragging a deployable weapon showing the FOB Range radius.     
+Usefull if you are wondering where to place a radio for the weapon to be constructed here.
+
+<img src="https://img.shields.io/badge/-new-green"> **Sharable URL's** [#222](https://github.com/sh4rkman/SquadCalc/issues/222) *(thanks grey275)*  
+URL's now hold the map, layer and type of basemap so it can be easily shared/bookmarked 
+
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Reapplied -5° Offset to technical mortar [#227](https://github.com/sh4rkman/SquadCalc/issues/227) *(thanks zoslcne)*
+
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed faulty pixel on Sanxian heightmap [#229](https://github.com/sh4rkman/SquadCalc/issues/229) *(thanks zoslcne)*
+
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed ammo selector being misplaced on 2/4K resolution *(thanks mahtoid)*
+
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed logo not properly displaying on slow connection
+
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed calculations being done twice when placing a new marker
+
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Gridline now takes map size into accounts when appearing/disapearing [#221](https://github.com/sh4rkman/SquadCalc/issues/227)  
+
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Bigger gridlines now appears on top of smaller ones for a better clarity
+
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Added a fadein animation on "delete on targets" button
+
+<img src="https://img.shields.io/badge/-%20dev%20-grey"> "Frequent weapon position" button is now hidden if no api is provided in a `.env` file
+
+<img src="https://img.shields.io/badge/-%20dev%20-grey"> API new routes: ``/api/get/layers`` & ``/api/get/layer``
+=======
 
 # <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **33.0.2** *(2024-11-14)*
 
@@ -16,6 +61,7 @@
 <img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed Targets not working properly on Safari (thanks @Hooded_Lizard & @SOHNER)
 
 <img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed Keypads appearing randomly on touch on mobile devices
+
 
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->

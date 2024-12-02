@@ -1,30 +1,36 @@
-import { App } from "../app.js";
-
+/**
+ * Squad Heightmap
+ * Load an heightmap in memory and calculate heights for given LatLng Points
+ * @class squadHeightmap
+ */
 export default class SquadHeightmap {
 
     /**
-     * Initialize heightmap Canvas
-     * @param {string} [url] - heightmap URL
-     * @param {Array} [options]
+     * Load the heightmap for the given map
      * @param {L.map} [map]
      */
     constructor(map) {
-        var img = new Image();
         this.map = map;
-        this.canvas = document.getElementById("canvas");
-        this.ctx = this.canvas.getContext("2d", {willReadFrequently: true});
-        this.canvas.height = 1000;
-        this.canvas.width = 1000;
-        this.heightmapScaling = this.canvas.height / this.map.tilesSize;
-
-        img.src = `maps${this.map.activeMap.mapURL}heightmap.webp`;
-        img.onload = (function(heightmap){
-            return function() {
-                heightmap.ctx.drawImage(img, 0, 0, heightmap.canvas.width, heightmap.canvas.height);
-                App.shoot();
-            };
-        })(this);
+        this.width = 500;
+        this.heightmapScaling = this.width / this.map.pixelSize;
+        this.json = this.loadHeightmapJson(`maps${this.map.activeMap.mapURL}heightmap.json`);
     }
+
+
+    /**
+     * Load the heightmap from a JSON file
+     * @param {string} [url] - URL to the JSON file
+     */
+    async loadHeightmapJson(url) {
+        try {
+            const response = await fetch(url); // Fetch the JSON file
+            let data = await response.json();
+            this.json = data;
+        } catch (error) {
+            console.error("Failed to load heightmap:", error);
+        }
+    }
+
 
     /**
      * Calculate heights for a given LatLng Point
@@ -33,11 +39,18 @@ export default class SquadHeightmap {
      * @returns {integer} - height in meters
      */
     getHeight(latlng){
-        var color = this.ctx.getImageData(Math.round(latlng.lng * this.heightmapScaling), Math.round(latlng.lat * -this.heightmapScaling), 1, 1).data;
-        if (color[0] + color[2] === 0) return 0; // out of map
-        else return ( (255 + color[0] - color[2]) * this.map.activeMap.scaling );
+        var row = Math.round(latlng.lat * -this.heightmapScaling);
+        var col = Math.round(latlng.lng * this.heightmapScaling);
+        var height = 0; // Todo: Implement a better way to handle this, like returning infinity
+
+        if (this.json[row] && typeof this.json[row][col] !== "undefined") {
+            height = this.json[row][col];
+        }
+
+        return height;
     }
 
+    
     /**
      * Calculate a path of heights between two points
      * @param {LatLng} [mortarLatlng] - LatLng Point
@@ -45,11 +58,11 @@ export default class SquadHeightmap {
      * @returns {Array} - Array containing all the Heights between weapon and Target in meters
      */
     getHeightPath(mortarLatlng, targetLatlng, STEP = 100) {
-        var heightPath = [];
+        const END = {lat: targetLatlng.lat, lng: targetLatlng.lng};
         var start = {lat: mortarLatlng.lat, lng: mortarLatlng.lng};
-        var end = {lat:targetLatlng.lat, lng:targetLatlng.lng};
-        var latDiff =  end.lat - start.lat;
-        var lngDiff =  end.lng - start.lng;
+        var heightPath = [];
+        var latDiff =  END.lat - start.lat;
+        var lngDiff =  END.lng - start.lng;
         
         for (let i=0; i < STEP; i++){
             heightPath.push(this.getHeight(start));

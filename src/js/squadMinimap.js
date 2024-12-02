@@ -9,25 +9,30 @@ import { fetchMarkersByMap } from "./squadCalcAPI.js";
 import webGLHeatmap from "./libs/leaflet-webgl-heatmap.js";
 import "leaflet-spin";
 import "./libs/webgl-heatmap.js";
-
 import "./libs/leaflet-smoothWheelZoom.js";
 
 
+/**
+ * Squad Minimap
+ * Custom Leaflet Map for Squad, managing basemaps, mouse behaviours, and more
+ * @extends {Map} - Leaflet Map
+ * @class squadMinimap
+ */
 export var squadMinimap = Map.extend({
 
     /**
      * Initialize Map
      * @param {HTMLElement} [id] - id of the map in the HTML
-     * @param {Number} [tilesSize] - Size in pixel of the tiles
+     * @param {Number} [pixelSize] - Size in pixel of the tiles
      * @param {Object} [defaultMap] - squad map to initialize
      * @param {Array} [options]
      */
-    initialize: function (id, tilesSize, defaultMap, options) {
+    initialize: function (id, pixelSize, defaultMap, options) {
 
         options = {
             attributionControl: false,
             boxZoom: true,
-            center: [-tilesSize/2, tilesSize/2],
+            center: [-pixelSize/2, pixelSize/2],
             closePopupOnClick: false,
             crs: CRS.Simple,
             doubleClickZoom: false,
@@ -47,14 +52,17 @@ export var squadMinimap = Map.extend({
         Util.setOptions(this, options);
         Map.prototype.initialize.call(this, id, options);
         this.activeMap = defaultMap;
-        this.tilesSize = tilesSize;
-        this.imageBounds = [{lat: 0, lng:0}, {lat: -this.tilesSize, lng: this.tilesSize}];
+        this.pixelSize = pixelSize;
+        this.imageBounds = [{lat: 0, lng:0}, {lat: -this.pixelSize, lng: this.pixelSize}];
         this.spinOptions = {color: "white", scale: 1.5, width: 5, shadow: "5px 5px 5px transparent"};
         this.layerGroup = new LayerGroup().addTo(this);
         this.markersGroup = new LayerGroup().addTo(this);
         this.activeTargetsMarkers = new LayerGroup().addTo(this);
         this.activeWeaponsMarkers = new LayerGroup().addTo(this);
         this.grid = "";
+        this.gameToMapScale = "";
+        this.mapToGameScale = "";
+        this.detailedZoomThreshold = "";
         this.mousePos = "";
         this.mouseLocationPopup = new Popup({
             closeButton: false,
@@ -68,14 +76,15 @@ export var squadMinimap = Map.extend({
         });
 
         // Custom events handlers
-        this.on("dblclick", this._handleDoubleCkick, this);
+        this.on("dblclick", this._handleDoubleClick, this);
         this.on("contextmenu", this._handleContextMenu, this);
         
         if (App.userSettings.keypadUnderCursor && App.hasMouse){
             this.on("mousemove", this._handleMouseMove, this);
             this.on("mouseout", this._handleMouseOut, this);
-            this.on("zoomend", this._handleZoom, this);
         }
+
+        this.on("zoomend", this._handleZoom, this);
 
     },
 
@@ -84,16 +93,17 @@ export var squadMinimap = Map.extend({
      */
     draw: function(){
 
-        this.gameToMapScale = this.tilesSize / this.activeMap.size;
-        this.mapToGameScale = this.activeMap.size / this.tilesSize;
-
-        // Load Heightmap in canvas
+        this.gameToMapScale = this.pixelSize / this.activeMap.size;
+        this.mapToGameScale = this.activeMap.size / this.pixelSize;
+        this.detailedZoomThreshold = 3 + (this.activeMap.size/7000);
+       
+        // Load Heightmap
         this.heightmap = new squadHeightmap(this);
 
         // remove existing grid and replace it
         if (this.grid) this.grid.remove();
         this.grid = new squadGrid(this);
-        this.grid.setBounds([[0,0], [-this.tilesSize, this.tilesSize]]);
+        this.grid.setBounds([[0,0], [-this.pixelSize, this.pixelSize]]);
 
         // load map
         this.changeLayer();
@@ -185,11 +195,18 @@ export var squadMinimap = Map.extend({
      * Reset map by clearing every Markers/Layers
      */
     clear: function(){
+
+        // Clear Every existing Makers
         this.markersGroup.clearLayers();
         this.activeWeaponsMarkers.clearLayers();
         this.activeTargetsMarkers.clearLayers();
-        this.setView([-this.tilesSize/2, this.tilesSize/2], 2);
+        if (this.layer) this.layer.clear();
+    
         $(".btn-delete").hide();
+
+        // Reset map
+        this.setView([-this.pixelSize/2, this.pixelSize/2], 2);
+
     },
 
     /**
@@ -324,7 +341,7 @@ export var squadMinimap = Map.extend({
     _handleContextMenu: function(e) {
 
         // If out of bounds
-        if (e.latlng.lat > 0 ||  e.latlng.lat < -this.tilesSize || e.latlng.lng < 0 || e.latlng.lng > this.tilesSize) {
+        if (e.latlng.lat > 0 ||  e.latlng.lat < -this.pixelSize || e.latlng.lng < 0 || e.latlng.lng > this.pixelSize) {
             return 1;
         }
 
@@ -344,11 +361,11 @@ export var squadMinimap = Map.extend({
      * Double-Click
      * Create a new target, or weapon is none exists
      */
-    _handleDoubleCkick: function (e) {
+    _handleDoubleClick: function (e) {
         var target;
 
         // If out of bounds
-        if (e.latlng.lat > 0 ||  e.latlng.lat < -this.tilesSize || e.latlng.lng < 0 || e.latlng.lng > this.tilesSize) {
+        if (e.latlng.lat > 0 ||  e.latlng.lat < -this.pixelSize || e.latlng.lng < 0 || e.latlng.lng > this.pixelSize) {
             return 1;
         }
 
@@ -390,7 +407,7 @@ export var squadMinimap = Map.extend({
     _handleMouseMove: function (e) {
 
         // If out of bounds
-        if (e.latlng.lat > 0 ||  e.latlng.lat < -this.tilesSize || e.latlng.lng < 0 || e.latlng.lng > this.tilesSize) {
+        if (e.latlng.lat > 0 ||  e.latlng.lat < -this.pixelSize || e.latlng.lng < 0 || e.latlng.lng > this.pixelSize) {
             this.mouseLocationPopup.close();
             return;
         }
@@ -404,11 +421,24 @@ export var squadMinimap = Map.extend({
      * After each zoom, update keypadUnderMouse precision
      */
     _handleZoom: function() {
-        // Make sure the user opened the popup by moving the mouse before zooming
-        // ...or it throw error
-        if (this.mouseLocationPopup._latlng){
-            this.mouseLocationPopup.setContent(`<p>${this.getKP(-this.mouseLocationPopup._latlng.lat, this.mouseLocationPopup._latlng.lng)}</p>`);
+
+        if (App.userSettings.keypadUnderCursor && App.hasMouse){
+            if (this.mouseLocationPopup._latlng){
+                this.mouseLocationPopup.setContent(`<p>${this.getKP(-this.mouseLocationPopup._latlng.lat, this.mouseLocationPopup._latlng.lng)}</p>`);
+            }
         }
+
+        // If there is a layer selected, reveal main/capzone when enough zoomed in
+        if (!this.layer) return;
+
+        if (this.getZoom() > this.detailedZoomThreshold*0.8){
+            this.layer.revealAllCapzones();
+            //this.layer.setMainZoneOpacity(true);
+        } else {
+            this.layer.hideAllCapzones();
+            //this.layer.setMainZoneOpacity(false);
+        }
+
     },
 
 });

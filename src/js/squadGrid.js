@@ -33,6 +33,7 @@ export default LayerGroup.extend({
         weight: 1,
         interactive: false,
         clickable: false,
+        zIndex: 202,
     },
 
     lineStyleSUB1: {
@@ -42,6 +43,7 @@ export default LayerGroup.extend({
         weight: 2,
         interactive: false,
         clickable: false,
+        zIndex: 201,
     },
 
     lineStyleSUB2: {
@@ -51,6 +53,7 @@ export default LayerGroup.extend({
         weight: 0.8,
         interactive: false,
         clickable: false,
+        zIndex: 200,
     },
 
     initialize(map, options) {
@@ -96,25 +99,27 @@ export default LayerGroup.extend({
             return;
         }
         const currentZoom = Math.round(this.map.getZoom());
+        const mapZoomPadding = this.map.activeMap.size/4000;
 
         if (currentZoom >= 6) {
-            this.setLinesOpacity(this.s2Lines, 0.6);
-        } else if (currentZoom >= 5) {
-            this.setLinesOpacity(this.s1Lines, 0.3);
-            this.setLinesOpacity(this.s2Lines, 0.6);
+            this.setLinesWeight(this.kpLines, 4);
+        } else if (currentZoom >= 3.7 + mapZoomPadding) {
+
+            this.setLinesWeight(this.kpLines, 3);
+
+            this.setLinesOpacity(this.s1Lines, 0.8);
+            this.setLinesWeight(this.s1Lines, 1.5);
+
+            this.setLinesOpacity(this.s2Lines, 1);
+            this.setLinesWeight(this.s2Lines, 0.5);
+
         }
-        else if (currentZoom >= 4) {
+        else if (currentZoom >= 2 + mapZoomPadding) {
             this.setLinesWeight(this.kpLines, 2);
-            this.setLinesOpacity(this.kpLines, 1);
+            this.setLinesOpacity(this.kpLines, 0.7);
             this.setLinesOpacity(this.s1Lines, 0.3);
             this.setLinesOpacity(this.s2Lines, 0);
         } 
-        else if (currentZoom >= 2){
-            this.setLinesWeight(this.kpLines, 0.7);
-            this.setLinesOpacity(this.kpLines, 1);
-            this.setLinesOpacity(this.s1Lines, 0);
-            this.setLinesOpacity(this.s2Lines, 0);
-        }
         else {
             this.setLinesWeight(this.kpLines, 0.5);
             this.setLinesOpacity(this.kpLines, 1);
@@ -272,11 +277,10 @@ export default LayerGroup.extend({
         }
 
 
-
-        // Add line and labels
-        this.kpLines.forEach(this.addLayer, this);
-        this.s1Lines.forEach(this.addLayer, this);
+        // Draw lines from smallest to largest so bigger lines are drawn over smaller ones
         this.s2Lines.forEach(this.addLayer, this);
+        this.s1Lines.forEach(this.addLayer, this);
+        this.kpLines.forEach(this.addLayer, this);
         this.labels.forEach(this.addLayer, this);
 
         // Make label unfocusable with tab to avoid users panning the map while alt-tabbing

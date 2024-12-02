@@ -132,13 +132,16 @@ dialog {
         }
     }
     &#helpDialog {
-        max-width: 350px;
+        width: 94%;
+        height: 500px;
+        max-width: 600px;
         font-size: 0.6em;
         h3 {
             font-size: 1.3em;
         }
         table {
             border: none;
+            margin: 0 0 2em 3em;
             &.userSettings {
                 td {
                     padding: 0;
@@ -162,10 +165,13 @@ dialog {
                 font-family: variables.$mainFont, Times, "Times New Roman", serif;
             }
             &#links {
-                margin: 1em 0.3em 0.7em auto;
+                bottom: 0;
+                right: 0;
+                position:absolute;
                 width: auto;
                 font-size: 1.4em;
                 float: right;
+                margin: 0.5em;
                 td {
                     border: none;
                     padding: 0 0.5em;
@@ -182,9 +188,6 @@ dialog {
                     }
                 }
             }
-        }
-        #previewHolder {
-            display: none;
         }
     }
 }
@@ -231,7 +234,7 @@ dialog {
     letter-spacing: 0;
 }
 
-#canvasControls{
+#canvasControls {
     margin: 0 auto 1em;
     text-align: center;
     width: 100%;
@@ -318,5 +321,91 @@ $bezier: cubic-bezier(0.65, 0.25, 0.56, 0.96);
         polyline {
             stroke-dashoffset: 22.7714;
         }
+    }
+}
+
+
+#settingsControls {
+    margin: 0 auto 2em;
+    text-align: center;
+    width: 100%;
+    button {
+        height: 20px;
+        color: variables.$mainBGColor;
+        width: 30%;
+        margin-bottom: 1em;
+        cursor: pointer;
+        &.active {
+            background-color: variables.$mainColor;
+            color: white;
+        }
+    }
+}
+
+.panel {
+    display: none;
+    &.active {
+        display: block;
+    }
+}
+
+#previewHolder {
+    border: solid transparent 1px;
+    #preview {
+        outline: solid variables.$mainColor 3px;
+        margin: 1em auto 0;
+        float: none;
+        width: 150px;
+        height: 150px;
+        #center {
+            width: 150px;
+            height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            #mapPreview {
+                width: 100%;
+            }
+            #markerPreview {
+                position: absolute;
+                width: 30px;
+            }
+            #gridPreview {
+                position: absolute;
+                width: 150px;
+            }
+            #maxRangePreview {
+                position: absolute;
+                width: 147px;
+                margin-right: 3px;
+                margin-top: 3px;
+            }
+            #damagePreview {
+                position: absolute;
+                margin-top: 30px;
+                width: 110px;
+            }
+            #spreadPreview {
+                position: absolute;
+                margin-top: 15px;
+                width: 80px;
+            }
+        }
+        #textPreview{
+            @include variables.text-outline;
+            margin-top: 55px;
+            margin-left: 25px;
+            position: absolute;
+            z-index: 1;
+            .bearingPreview {
+                font-size: 0.6em;
+                text-align: right;
+                float: right;
+                &:nth-child(3) {
+                    margin-top: 2px;
+                }
+            }
+        }
+    
     }
 }

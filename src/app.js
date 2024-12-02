@@ -32,6 +32,7 @@ var options = {
         ["fr", "FR"]
     ],
     gravity: 9.78,
+    mapSize: 256,
     debug: false,
 };
 
