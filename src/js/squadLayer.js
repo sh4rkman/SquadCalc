@@ -735,6 +735,7 @@ export class SquadLayer {
         console.debug("**************************");
         console.debug("Reachable clusters:", Array.from(reachableClusters));
 
+        // Something went wrong, we are in the wrong direction
         if (reachableClusters.size === 1 && this.currentPosition === 1){
             if (flag.isMain){
                 console.debug("Already blocked");
@@ -742,7 +743,6 @@ export class SquadLayer {
                 this.reversed = !this.reversed;
                 reachableClusters.clear();
                 this.dfs(flag.clusters[0].objectDisplayName, reachableClusters);
-                //this.reversed = !this.reversed;
             }
         }
 

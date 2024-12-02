@@ -54,7 +54,7 @@ export default class SquadFiringSolution {
     getElevation(dist = 0, lowangle = false) {
         var padding = 0;
         var angleFactor;
-        var heightDiff = Math.max(0, isNaN(this.heightDiff) ? 0 : this.heightDiff);
+        var heightDiff = this.heightDiff;
         
         const P1 = Math.sqrt(this.velocity ** 4 - this.gravity * (this.gravity * dist ** 2 + 2 * heightDiff * this.velocity ** 2));
         

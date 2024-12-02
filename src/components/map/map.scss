@@ -1,6 +1,6 @@
 @use "../shared/variables";
 
-$flag-opacity: 0.5;
+$flag-opacity: 0.6;
 
 #map_ui {
     position: relative;
@@ -40,15 +40,15 @@ $flag-opacity: 0.5;
                 cursor: inherit;
             }
             &.flag2 {
-                background-color: rgba(3, 48, 2, $flag-opacity);
+                background-color: rgba(0, 255, 0, $flag-opacity);
                 outline: none;
             }
             &.flag3 {
-                background-color: rgba(9, 9, 155, $flag-opacity);
+                background-color: rgba(0, 0, 255, $flag-opacity);
                 outline: none;
             }
             &.flag4 {
-                background-color: rgba(155, 155, 0, $flag-opacity);
+                background-color: rgba(255, 255, 0, $flag-opacity);
                 outline: none;
             }
             &.flag5 {
@@ -60,7 +60,7 @@ $flag-opacity: 0.5;
                 outline: none;
             }
             &.flag7 {
-                background-color: rgba(214, 105, 22, $flag-opacity);
+                background-color: rgba(255, 105, 0, $flag-opacity);
                 outline: none;
             }
             &.flag8 {
