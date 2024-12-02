@@ -1,6 +1,6 @@
 {
   "name": "squadcalc",
-  "version": "33.0.2",
+  "version": "34.0.0",
   "description": "A Complete Mortar Calculator for Squad",
   "author": "Maxime 'sharkman' Boussard",
   "license": "MIT",
@@ -9,7 +9,9 @@
     "squad",
     "squadcalc",
     "mortar",
-    "calculator"
+    "calculator",
+    "lane",
+    "map"
   ],
   "repository": {
     "type": "git",

@@ -27,12 +27,9 @@ export class Weapon {
 
     /**
      * Calculate the weapon velocity based on the distance to the target.
-     * 
      * If the projectile has a deceleration phase, the function considers both the deceleration
      * and the post-deceleration velocity. 
-     * 
      * The deceleration code is black magic produced by https://github.com/Devil4ngle
-     * 
      * @param {number} [distance] - Distance between the mortar and the target from getDist().
      * @returns {number} - Calculated velocity of the weapon for the given distance.
      */
@@ -79,7 +76,7 @@ export class Weapon {
      */
     getMaxDistance() {
 
-        // If there's no deceleration
+        // If there's no deceleration (anything but UB32)
         if (this.decelerationDistance == 0) { 
             return (this.velocity ** 2) / App.gravity / this.gravityScale; 
         }
@@ -132,7 +129,3 @@ export class Weapon {
     }
 
 }
-
-
-
-

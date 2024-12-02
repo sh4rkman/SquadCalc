@@ -150,9 +150,22 @@ It allows :
 |<img height="35" src="./src/img/icons/mk19_rws_white.png">| MK-19 RWS *(Experimental)* | 5647m |  
 
 
-</br></br>
-# Support the project
+</br></br></br>
+# <div align="center">Attributions</div>
+</br>
+
+* Map System built on **[Leaflet JS](https://leafletjs.com/)**
+* Map Images, Icons are from SquadSDK by **[OffWorld Industries](https://www.offworldindustries.com/)**
+* Map Data is extracted thanks to **[Squad-Wiki Pipeline Map Data](https://github.com/Squad-Wiki/squad-wiki-pipeline-map-data)** SDK extractor Assets
+
+
+
+
+</br></br></br>
+# <div align="center">Support the project</div>
 </br>
 
 [![buy me a coffee](https://img.shields.io/badge/BUY%20ME%20A%20COFFEE-b12222?style=for-the-badge&logo=buy-me-a-coffee&logoColor=white)](https://buymeacoffee.com/sharkman)  
 [![help to translate](https://img.shields.io/badge/HELP%20TO%20TRANSLATE-111?style=for-the-badge&logo=google-translate&logoColor=white)](https://github.com/sh4rkman/SquadCalc/wiki/Translating-SquadCalc)
+
+

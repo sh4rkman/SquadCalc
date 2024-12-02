@@ -46,12 +46,12 @@
             }
         }
     }
-    #helpDialog {
-        font-size: 0.65em;
-        caption {
-            margin: 5px 20px 15px 0;
-        }
-    }
+    // #helpDialog {
+    //     font-size: 0.65em;
+    //     caption {
+    //         margin: 5px 20px 15px 0;
+    //     }
+    // }
 
 }
 
@@ -126,6 +126,9 @@
             }
             &.ui {
                 top: 0;
+            }
+            #layerSelector {
+                padding-top: 3em;
             }
         }
     }
@@ -206,7 +209,7 @@
     header {
         .select2-container {
             font-size: 1em;
-            min-width: 196px;
+            min-width: 205px;
         }
     }
     dialog {
@@ -218,83 +221,28 @@
         &#weaponInformation{
             max-width: 600px;
         }
-        &#helpDialog{
+         &#helpDialog{
             font-size: 0.7em;
-            max-width: 1000px;
-            #userSettings {
-                margin: 0 2em;
-            }
+            height: 530px;
+            width: 600px;
             table {
-                width: 33%;
-                margin: 0 0 2em 0%;
-                td {
-                    padding: 0;
-                    border: none;
-                    &:nth-child(1) {
-                        padding-right: 0.75em;
-                    }
-                }
-            }
-            #previewHolder {
-                display: block;
-            }
-            #preview {
-                outline: solid variables.$mainColor 3px;
-                margin: auto;
-                float: none;
-                width: 150px;
-                height: 150px;
-                #center {
-                    width: 150px;
-                    height: 150px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    #mapPreview {
-                        width: 100%;
-                    }
-                    #markerPreview {
-                        position: absolute;
-                        width: 30px;
-                    }
-                    #gridPreview {
-                        position: absolute;
-                        width: 150px;
-                    }
-                    #maxRangePreview {
-                        position: absolute;
-                        width: 147px;
-                        margin-right: 3px;
-                        margin-top: 3px;
-                    }
-                    #damagePreview {
-                        position: absolute;
-                        margin-top: 30px;
-                        width: 110px;
-                    }
-                    #spreadPreview {
-                        position: absolute;
-                        margin-top: 15px;
-                        width: 80px;
-                    }
-                }
-                #textPreview{
-                    @include variables.text-outline;
-                    margin-top: 55px;
-                    margin-left: 25px;
-                    position: absolute;
-                    z-index: 1;
-                    .bearingPreview {
-                        font-size: 0.6em;
-                        text-align: right;
-                        float: right;
-                        &:nth-child(3) {
-                            margin-top: 2px;
-                        }
-                    }
-                }
-
-            }
+               width: 100%;
+               margin: 0 0 2em 3em;
+        //     max-width: 1000px;
+        //     #userSettings {
+        //         margin: 0 2em;
+        //     }
+        //     table {
+        //         width: 33%;
+        //         margin: 0 0 2em 0%;
+        //         td {
+        //             padding: 0;
+        //             border: none;
+        //             &:nth-child(1) {
+        //                 padding-right: 0.75em;
+        //             }
+        //         }
+             }
         }
     }
 }
@@ -330,12 +278,20 @@
         header {
             .weaponSelector {
                 padding: 2em 0 0 1.5em;
+                #ammoSelector {
+                    padding-top: 5em;
+                }
             }
             .mapSelector {
                 padding: 2em 1.5em 0 0;
+                #layerSelector {
+                    padding-top: 5em;
+                }
             }
             #weaponSelector,
-            #mapSelector {
+            #mapSelector,
+            #ammoSelector,
+            #layerSelector {
                 .select2-container {
                     min-width: 350px;
                     padding-bottom: 1em;

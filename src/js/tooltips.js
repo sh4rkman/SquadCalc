@@ -67,7 +67,10 @@ tippy("span[data-i18n='settings:highquality']", {
     maxWidth: 275,
     appendTo: helpDialog,
     onShow(tip) {
-        tip.setContent(`${i18next.t("tooltips:highqualityTooltip")}`);
+        tip.setContent(`
+            ${i18next.t("tooltips:highqualityTooltip")} <br><br> 
+            <p class='perfWarning'>${i18next.t("tooltips:performanceWarning")}</p>
+        `);
     },
 });
 
@@ -161,7 +164,7 @@ tippy("span[data-i18n='settings:showSpread']", {
     },
 });
 
-tippy("span[data-i18n='settings:showMaxRange']", {
+tippy("span[data-i18n='settings:realMaxRange']", {
     animation: "fade",
     placement: "bottom",
     allowHTML: true,
@@ -172,7 +175,10 @@ tippy("span[data-i18n='settings:showMaxRange']", {
     maxWidth: 200,
     appendTo: helpDialog,
     onShow(tip) {
-        tip.setContent(`${i18next.t("tooltips:showMaxRangeTooltip")}`);
+        tip.setContent(`
+            ${i18next.t("tooltips:showMaxRangeTooltip")} <br><br>
+            <p class='perfWarning'>${i18next.t("tooltips:performanceWarning")}</p>
+        `);
     },
 });
 
