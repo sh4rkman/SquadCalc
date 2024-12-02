@@ -1,6 +1,4 @@
 import packageInfo from "../../package.json";
-import { App } from "../app.js";
-
 
 /**
  * Sends marker data to the API via a POST request.

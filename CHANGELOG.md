@@ -42,12 +42,29 @@ URL's now hold the map, layer and type of basemap so it can be easily shared/boo
 <img src="https://img.shields.io/badge/-%20dev%20-grey"> "Frequent weapon position" button is now hidden if no api is provided in a `.env` file
 
 <img src="https://img.shields.io/badge/-%20dev%20-grey"> API new routes: ``/api/get/layers`` & ``/api/get/layer``
+=======
+
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **33.0.2** *(2024-11-14)*
+
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> SquadCalc now attempt to connect to SquadMortarOverlay regulary (no need to refresh squadcalc if SMO is launched after squadcalc) - [#219](https://github.com/sh4rkman/SquadCalc/pull/219)
+
+<img src="https://img.shields.io/badge/-%20dev%20-grey"> Moved websockets code for SMO to its own file - [#219](https://github.com/sh4rkman/SquadCalc/pull/219)
 
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
 
 
 
+
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **33.0.1** *(2024-11-04)*
+
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed Targets not working properly on Safari (thanks @Hooded_Lizard & @SOHNER)
+
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed Keypads appearing randomly on touch on mobile devices
+
+
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
 
 
 # <img src="https://img.shields.io/badge/-major%20release-b22222?style=for-the-badge">  **33.0.0** *(2024-11-01)*

@@ -6,6 +6,7 @@
     "focusMode": "Focus Mode",
     "enterToExit": "Press 'ENTER' to exit",
     "squadMortarOverlay": "SquadMortarOverlay detected",
+    "mapUpdated": "Map Updated",
     "connectedTo": "Connected !",
     "error": "Error!",
     "apiError": "API isn't connected..",

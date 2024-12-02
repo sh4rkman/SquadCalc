@@ -6,6 +6,7 @@
     "focusMode": "专注模式",
     "enterToExit": "按 'Enter' 退出",
     "squadMortarOverlay": "SquadMortarOverlay detected",
+    "mapUpdated": "地图已更新",
     "connectedTo": "Connected !",
     "error": "错误！",
     "apiError": "API 未连接..",
