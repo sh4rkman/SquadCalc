@@ -103,17 +103,18 @@ export default async (env) => {
           crossorigin: 'use-credentials',
           icons: [
             {
-              src: path.resolve('./src/img/favicons/maskable_icon_x512.png'),
-              sizes: [96, 192, 256, 384, 512],
+              src: path.resolve('./src/img/favicons/favicon_512x512.png'),
+              sizes: [16, 32, 96, 192, 256, 384, 512],
               destination: path.join('src', 'img', 'favicons'),
-            },
-            {
-              src: path.resolve('./src/img/favicons/maskable_icon_x512.png'),
-              size: '1024x1024',
-              destination: path.join('src', 'img', 'favicons'),
-              ios: true,
               purpose: 'maskable'
             }
+            // {
+            //   src: path.resolve('./src/img/favicons/maskable_icon_x512.png'),
+            //   size: '1024x1024',
+            //   destination: path.join('src', 'img', 'favicons'),
+            //   ios: true,
+            //   purpose: 'maskable'
+            // }
           ],
           screenshots : [
             {
