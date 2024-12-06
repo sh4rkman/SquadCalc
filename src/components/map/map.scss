@@ -232,6 +232,11 @@ $flag-circle-opacity: 0.2;
         color: variables.$mainBGColor;
         border-bottom: #979797 solid 1px;
         box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+        // Fix for touch device greying out the button after use
+        -webkit-tap-highlight-color: transparent;
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        user-select: none;
         cursor: pointer;
         transition: all 0.2s ease-out;
         &:hover {
