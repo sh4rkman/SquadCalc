@@ -26,6 +26,8 @@
     "LaneFinderOptions": "Параметри пошуку смуг",
         "autoLane": "Автовибір одного прапора",
         "capZoneOnHover": "Зони при наведенні",
+        "revealLayerOnHover": "Показати шар при наведенні на прапор",
+        "circlesFlags": "Показати прапори у вигляді кіл",
     "preview": "Попередній перегляд",
     "changelog": "Зміни",
     "github": "Переглянути код на Github",

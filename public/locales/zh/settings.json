@@ -26,6 +26,8 @@
     "LaneFinderOptions": "车道查找选项",
         "autoLane": "自动选择单个旗帜",
         "capZoneOnHover": "仅在悬停时显示占领区",
+        "revealLayerOnHover": "悬停标志时显示图层",
+        "circlesFlags": "将标志显示为圆形",
     "preview": "预览",
     "changelog": "更新日志",
     "github": "在GitHub上查看代码",

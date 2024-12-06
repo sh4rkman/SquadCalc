@@ -1,5 +1,5 @@
 {
-    "squad": "SQUAD",
+    "squad": "⛄SQUAD",
     "calc": "CALC",
     "squadcalc": "SquadCalc",
     "desc": "A Complete Mortar Calculator for SQUAD !",
@@ -34,6 +34,5 @@
     "invalidTarget": "Invalid Target",
     "invalidMortarTarget": "Invalid Weapon & Target",
     "targetOutOfRange": "Target is out of range",
-    "targetTooClose" : "Target is too close",
     "layerPlaceholder": "Layer"
 }

@@ -25,6 +25,8 @@
     "LaneFinderOptions": "Опции поиска полос",
         "autoLane": "Автовыбор одного флага",
         "capZoneOnHover": "Зоны при наведении",
+        "revealLayerOnHover": "Показать слой при наведении на флаг",
+        "circlesFlags": "Показать флаги в виде кругов",
     "preview": "Предпросмотр",
     "changelog": "Изменения",
     "github": "Просмотреть код на Github",

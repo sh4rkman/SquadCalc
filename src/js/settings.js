@@ -2,6 +2,7 @@ import { App } from "../app.js";
 import { tooltip_coordPreview } from "./tooltips.js";
 import i18next from "i18next";
 import { animateCSS } from "./animations.js";
+import { showSnow } from "./libs/pure-snow.js";
 
 /* eslint no-unused-vars: "off" */
 import mapIcon from "../img/icons/preview.webp";
@@ -52,8 +53,18 @@ export function loadSettings(){
         window.history.replaceState({}, "", currentUrl);
     }
 
-
     
+    App.userSettings.snow = loadLocalSetting("settings-snow-event", 1);
+    if (App.userSettings.snow){
+        $(".btn-snow").addClass("active");
+        showSnow(true);
+    }
+
+    App.userSettings.circlesFlags = loadLocalSetting("settings-circles-flags");
+    $("#circlesFlagsSettings").prop("checked", App.userSettings.circlesFlags);
+    
+    App.userSettings.revealLayerOnHover = loadLocalSetting("settings-reveal-onHover");
+    $("#revealLayerOnHoverSetting").prop("checked", App.userSettings.revealLayerOnHover);
 
     App.userSettings.capZoneOnHover = loadLocalSetting("settings-capZone-onHover", 0);
     $("#capZoneOnHoverSetting").prop("checked", App.userSettings.capZoneOnHover);
@@ -173,6 +184,23 @@ export function updatePreview(){
     }
 }
 
+$("#circlesFlagsSettings").on("change", function() {
+    var val = $("#circlesFlagsSettings").is(":checked");
+    App.userSettings.circlesFlags = val;
+    localStorage.setItem("settings-circles-flags", +val);
+
+    if (App.minimap.layer){
+        App.minimap.layer.flags.forEach(flag => {
+            flag.updateIcon();
+        });
+    }
+});
+
+$("#revealLayerOnHoverSettings").on("change", function() {
+    var val = $("#revealLayerOnHoverSettings").is(":checked");
+    App.userSettings.revealLayerOnHover = val;
+    localStorage.setItem("settings-reveal-onHover", +val);
+});
 
 $("#autoLaneSetting").on("change", function() {
     var val = $("#autoLaneSetting").is(":checked");
@@ -328,6 +356,13 @@ $("#targetAnimationSettings").on("change", function() {
         target.updateCalcPopUps();
         target.updateIcon();
     });
+});
+
+$("#mapLayerMenu").find("button.btn-snow").on("click", () => {
+    var val = !$(".btn-snow").hasClass("active");
+    $(".btn-snow").toggleClass("active");
+    showSnow(val);
+    localStorage.setItem("settings-snow-event", +val);
 });
 
 $("#bearingOverDistanceSettings").on("change", function() {

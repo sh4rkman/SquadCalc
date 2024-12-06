@@ -75,7 +75,7 @@ export class SquadLayer {
             Object.values(this.layerData.capturePoints.points.objectives).forEach((main) => {
                 var latlng = this.convertToLatLng(main.location_x, main.location_y);
                 var newFlag = new SquadObjective(latlng, this, main, 1, main);
-                this.mains.push(newFlag);
+                this.flags.push(newFlag);
                 newFlag.flag.off();
                 newFlag.flag.options.interactive = false;
             });
@@ -200,15 +200,11 @@ export class SquadLayer {
 
         // Pre-select first main flag in invasion
         if (this.layerData.gamemode === "Invasion") {
-
-            //this._handleFlagClick(this.mains[0]);
-
             this.mains.forEach((main) => {
                 if (main.objectName === this.layerData.capturePoints.clusters.listOfMains[0].replaceAll(" ", "")){
                     this._handleFlagClick(main);
                 }
             });
-
         }
 
         this.createAssets();
@@ -468,118 +464,6 @@ export class SquadLayer {
                 return;
             }
 
-            
-
-
-            //     // Ignore useless/temporary protection zones (<10m)
-            //     if (pZone.objects[0].boxExtent.extent_x/100 < 10) return;
-
-            //     // Center of the protection zone
-            //     //let location_x = -(asset.objects[0].location_x - this.offset_x) / 100;
-            //     //let location_y = (asset.objects[0].location_y - this.offset_y) / 100;
-               
-            //     let latlngSphereRadius = [location_y * -this.map.gameToMapScale, location_x * -this.map.gameToMapScale];
-            //     let radiusTest = pZone.objects[0].sphereRadius / 100 * this.map.gameToMapScale;
-
-            //     // Compute the radiis of a rectangle for the protection zone
-            //     let boxExtentX = pZone.objects[0].boxExtent.extent_x / 100;
-            //     let boxExtentY = pZone.objects[0].boxExtent.extent_y / 100;
-
-            //     let topLeftCorner = [(location_y + boxExtentY) * -this.map.gameToMapScale , (location_x + boxExtentX) * -this.map.gameToMapScale];
-            //     //let bottomRightCorner = [(location_y - boxExtentY) * -this.map.gameToMapScale , (location_x - boxExtentX) * -this.map.gameToMapScale];
-
-            //     let distanceToCorner = Math.sqrt(Math.pow(topLeftCorner[0] - (location_y * -this.map.gameToMapScale), 2) + Math.pow(topLeftCorner[1] - (location_x * -this.map.gameToMapScale), 2));
-
-            
-            //     let bottomRightCorner = [(location_y - boxExtentY) * -this.map.gameToMapScale , (location_x - boxExtentX) * -this.map.gameToMapScale];
-            //     let bounds = [keepOnMap(topLeftCorner), keepOnMap(bottomRightCorner)];
-
-            //     // if the boxExtent is smaller than the sphereRadius, we draw a circle
-            //     if (radiusTest > distanceToCorner ){
-
-            //         this.mainZones.rectangles.push(
-            //             new Rectangle(bounds, {
-            //                 color: "firebrick",
-            //                 opacity: 0,
-            //                 weight: 2,
-            //                 fillOpacity: 0,
-            //             }).addTo(this.activeLayerMarkers));
-                    
-
-            //         // Second rectangle for the noConstructionZone
-            //         let boxExtentX2 = (pZone.objects[0].boxExtent.extent_x + pZone.deployableLockDistance) / 100;
-            //         let boxExtentY2 = (pZone.objects[0].boxExtent.extent_y + pZone.deployableLockDistance) / 100;
-            //         let bound3 = [(location_y + boxExtentY2) * -this.map.gameToMapScale , (location_x + boxExtentX2) * -this.map.gameToMapScale];
-            //         let bound4 = [(location_y - boxExtentY2) * -this.map.gameToMapScale , (location_x - boxExtentX2) * -this.map.gameToMapScale];
-            //         let bounds2 = [keepOnMap(bound3), keepOnMap(bound4)];
-
-            //         this.mainZones.rectangles.push(
-            //             new Rectangle(bounds2, {
-            //                 color: "firebrick",
-            //                 dashArray: "10,20",
-            //                 opacity: 0,
-            //                 weight: 1,
-            //                 fillOpacity: 0,
-            //             }).addTo(this.activeLayerMarkers));
-                
-
-            //         // debug radius circle 
-            //         this.mainZones.rectangles.push(
-            //             new Circle(latlngSphereRadius, {
-            //                 color: "blue",
-            //                 opacity: 0,
-            //                 weight: 0.5,
-            //                 fillOpacity: 0,
-            //                 radius: radiusTest,
-            //             }).addTo(this.activeLayerMarkers));
-            //     }
-            //     else {
-            //         this.mainZones.rectangles.push(
-            //             new Circle(latlngSphereRadius, {
-            //                 color: "firebrick",
-            //                 opacity: 0,
-            //                 weight: 2,
-            //                 fillOpacity: 0,
-            //                 radius: radiusTest,
-            //             }).addTo(this.activeLayerMarkers));
-
-
-
-            //         this.mainZones.rectangles.push(
-            //             new Circle(latlngSphereRadius, {
-            //                 color: "firebrick",
-            //                 dashArray: "10,20",
-            //                 opacity: 0,
-            //                 weight: 1,
-            //                 fillOpacity: 0,
-            //                 radius: radiusTest2,
-            //             }).addTo(this.activeLayerMarkers));
-
-
-            //         // Debug Rectangle
-            //         this.mainZones.rectangles.push(
-            //             new Rectangle(bounds, {
-            //                 color: "blue",
-            //                 opacity: 0,
-            //                 weight: 2,
-            //                 fillOpacity: 0,
-            //             }).addTo(this.activeLayerMarkers));
-            //     }
-
-            //     // Testing the rotation of the rectangle
-            //     // var rectangleTest = new Rectangle(bounds, {
-            //     //     color: "blue",
-            //     //     opacity: 0,
-            //     //     weight: 2,
-            //     //     fillOpacity: 0,
-            //     // }
-            //     // ).addTo(this.activeLayerMarkers) 
-            //     // this.mainZones.rectangles.push(rectangleTest);
-            //     // this.rotateRectangle(rectangleTest, -30);
-
-            //     // Same rectangle + asset.deployableLockDistance for the noConstructionZone
-            
-
         });
 
     }
@@ -645,14 +529,22 @@ export class SquadLayer {
         }
 
         // If the clicked flag is in front of the current position, skip
-        if (Math.abs(this.startPosition - flag.position)+1 > this.currentPosition+1) {
+        if (Math.abs(this.startPosition - flag.position) > this.currentPosition) {
+
+            // In RAAS, we can click on the oposite main flag to reset the layer
+            if (this.layerData.gamemode === "RAAS" && flag.isMain){
+                this._resetLayer();
+                this._handleFlagClick(flag);
+                return true;
+            }
+
             console.debug("  -> Clicked Flag is in front, skipping..");
             return false; 
         }
 
         // Going backward
         if (Math.abs(this.startPosition - flag.position)+1 <= this.currentPosition){
-        //if(false){
+
             backward = true;
             this.selectedReachableClusters.pop();
 
@@ -662,6 +554,12 @@ export class SquadLayer {
             if (flag === this.selectedFlags[0]) {
                 console.debug("Can't unselect main flag");
                 this._resetLayer();
+                return;
+            }
+
+            if (flag.isMain){
+                this._resetLayer();
+                this._handleFlagClick(flag);
                 return;
             }
             
@@ -830,6 +728,7 @@ export class SquadLayer {
         nextFlags.forEach((flag) => {
             flag.flag._icon.classList.add("next");
             flag.flag.options.icon.options.className = "flag flag" + flag.position + " next";
+            flag.isNext = true;
         });
 
         // Only one flag in front ? Click it
@@ -838,6 +737,109 @@ export class SquadLayer {
         }
 
     }
+
+
+    preview(flag) {
+
+        console.debug("**************************");
+        console.debug("       NEW PREVIEW        ");
+        console.debug("**************************");
+        console.debug("  -> Selected Flag:", flag.objectName);
+        console.debug("  -> Hovered flag position", flag.position);
+        console.debug("  -> Flag Object:", flag);
+        console.debug("  -> Current position", this.currentPosition);
+        console.debug("  -> Current selected Flags", this.selectedFlags);
+        console.debug("  -> Cluster History", this.selectedReachableClusters);
+        console.debug("**************************");
+        console.debug("       STARTING DFS       ");
+        console.debug("**************************");
+
+        // Set to track clusters that can be reached from the clicked flag
+        let reachableClusters = new Set();
+
+        // Start DFS from each clicked flag clusters
+        flag.clusters.forEach((cluster) => {
+            // Only start DFS from clusters that are from our current position
+            if (Math.abs(this.startPosition - cluster.pointPosition) != this.currentPosition){
+                console.debug("Cluster is irrevelant! skipping DFS for now..", cluster);
+                return;
+            }
+            this.dfs(cluster.name, reachableClusters);
+        });
+
+        // Remove clusters that were not reachable from the previous flag
+        if (this.selectedReachableClusters.length > 0){
+            Array.from(reachableClusters).forEach((cluster) => {
+                if (!this.selectedReachableClusters.at(-1).has(cluster)){
+                    reachableClusters.delete(cluster);
+                    console.debug(" -> filtered because wasn't previously reachable :", cluster);
+                }
+            });
+        }
+
+        // At this point, `reachableClusters` holds all clusters that are reachable from flag
+        console.debug("**************************");
+        console.debug("         DFS ENDED        ");
+        console.debug("**************************");
+        console.debug("Reachable clusters:", Array.from(reachableClusters));
+
+
+        /***************  RENDERING  ***************/
+        /* We can finally act on the flags now !  */
+        /***************  RENDERING  ***************/
+
+        console.debug("****************************************");
+        console.debug(" Fading Clusters in front of clicked flag");
+        console.debug("****************************************");
+
+        // Hide all clusters first, then selectively show reachable ones
+        Object.values(this.layerData.objectives).forEach((cluster) => {
+            console.debug("Should we fade cluster :", cluster.name);
+            console.debug("   -> Cluster position", cluster.pointPosition);
+            console.debug("   -> Clicked flag position", flag.position);
+            console.debug("   -> Current position", this.currentPosition+1);
+            if (Math.abs(this.startPosition - cluster.pointPosition) >= this.currentPosition) {
+                console.debug("   -> Cluster is in front! Hiding.");
+                this._changeClusterOpacity(cluster, flag, 0.15);  
+            } else {
+                // Ignore clusters that are behind us
+                console.debug("   -> Cluster behind, skipping it.");
+            }
+        });
+
+
+        console.debug("*****************************************");
+        console.debug("Showing Clusters in front of clicked flag");
+        console.debug("*****************************************");
+
+        // Show reachable clusters
+        reachableClusters.forEach((clusterName) => {
+
+            let cluster = this.layerData.objectives[clusterName];
+
+            // If the cluster is not found directly, search for a matching displayName (mains)
+            if (!cluster) {
+                cluster = Object.values(this.layerData.objectives).find(
+                    (obj) => obj.objectDisplayName === clusterName
+                );
+            }
+
+            console.debug("Cluster to show", cluster.name);
+            console.debug("   -> cluster.pointPosition", cluster.pointPosition);
+            console.debug("   -> Current position", this.currentPosition+1);
+
+            // If the cluster is in front of the clicked flag, show it
+            if (Math.abs(this.startPosition - cluster.pointPosition) > this.currentPosition){
+                console.debug("   -> Cluster in front, showing it !");
+                this._changeClusterOpacity(cluster, flag, 1);   
+            }
+            else {
+                console.debug("   -> Cluster behind, skipping it.");
+            }
+        });
+
+    }
+
 
 
     /**
@@ -980,6 +982,24 @@ export class SquadLayer {
         });
     }
 
+    _changeClusterOpacity(cluster, clickedFlag, value) {
+
+        console.debug("   -> Fading cluster", cluster);
+
+        if (cluster.name === "Main") return;
+
+        const flagsToHide = this.flags.filter((f) =>
+            f !== clickedFlag && f.clusters.includes(cluster)
+        );
+
+        // Show each flag that was found
+        flagsToHide.forEach((flagToHide) => {
+            if (!this.selectedFlags.includes(flagToHide)){
+                
+                flagToHide._setOpacity(value);
+            }
+        });
+    }
 
 
     /**

@@ -17,6 +17,7 @@ export class SquadObjective {
         this.isMain = isMain;
         this.isHidden = false;
         this.position = cluster.pointPosition;
+        this.isNext = false;
 
 
         console.debug("creating flag", this.name, "at position", this.position);
@@ -46,17 +47,31 @@ export class SquadObjective {
         this.flag.on("mouseout", this._handleMouseOut, this);
     }
 
+
+    updateIcon(){
+        if (this.isSelected){
+            this.select();
+        } else {
+            if (!this.isHidden) this.unselect();
+        }
+    }
+
     select(){
         var position;
         var html;
         var className;
 
+        this.isNext = false;
         this.flag.removeFrom(this.layerGroup).remove();
         console.debug("Selecting flag: ", this.name);
 
+        if (App.userSettings.circlesFlags){
+            className += " circle";
+        }
+
         if (this.isMain) { 
             html= "";
-            className = "flag selected main";
+            className += " flag selected main";
         } 
         else {
             position = Math.abs(this.layer.startPosition - this.position); 
@@ -65,11 +80,8 @@ export class SquadObjective {
 
         if (!this.isMain) { 
             position = Math.abs(this.layer.startPosition - this.position); 
-        }
-
-        if (!this.isMain) { 
             html = position; 
-            className = "flag selected";
+            className += " flag selected";
         }
 
         this.flag = new Marker(this.latlng, {
@@ -125,9 +137,13 @@ export class SquadObjective {
             let totalRotation = cap.boxExtent.rotation_z;
 
             // If object is on his side (often the case for capsules) take x/y/z in account 
-            // Sometime it can be -89.98..
-            if (cap.boxExtent.rotation_y > -91 && cap.boxExtent.rotation_y < -89){
-                totalRotation = totalRotation + cap.boxExtent.rotation_x + cap.boxExtent.rotation_y;
+            // Sometime it can be -89.98 or 90.04 so we need to take a range
+            if (Math.abs(cap.boxExtent.rotation_y) > 89 && Math.abs(cap.boxExtent.rotation_y) < 91) {
+                if (cap.boxExtent.rotation_y > 0) {
+                    totalRotation -= cap.boxExtent.rotation_x + cap.boxExtent.rotation_y;
+                } else {
+                    totalRotation += cap.boxExtent.rotation_x + cap.boxExtent.rotation_y;
+                }
             }
 
             // Cap radiis
@@ -206,15 +222,30 @@ export class SquadObjective {
         var position = Math.abs(this.layer.startPosition - this.position); 
         var className = "flag";
 
+        if (App.userSettings.circlesFlags){
+            className += " circle";
+        }
+
         if (this.isMain) { 
             if (this.layer.layerData.gamemode === "AAS" || this.layer.layerData.gamemode === "Destruction"){
-                className = "flag main unselectable";
+                className += " main unselectable";
             } else {
-                className = "flag main selectable";
+                className += " main selectable";
             }
         } else {
-            html = position;
-            className = className + " flag" + position;
+            if (this.layer.layerData.gamemode != "AAS" && this.layer.layerData.gamemode != "Destruction"){
+                html = position;
+                className += " flag" + position;
+            }
+        }
+
+        if (Math.abs(this.layer.startPosition - this.position) === this.layer.currentPosition){
+            if (this.layer.layerData.gamemode != "AAS" && this.layer.layerData.gamemode != "Destruction"){
+                className += " next"; 
+            }
+
+        } else {
+            this.isNext = false;
         }
 
         this.flag.removeFrom(this.layerGroup).remove();
@@ -231,11 +262,14 @@ export class SquadObjective {
 
 
         this.isSelected = false;
-        this.flag.on("click", this._handleClick, this);
-        this.flag.on("contextmenu", this._handleContextMenu, this);
-        this.flag.on("dblclick", this._handleDoubleClick, this);
-        this.flag.on("mouseover", this._handleMouseOver, this);
-        this.flag.on("mouseout", this._handleMouseOut, this);
+
+        if (this.layer.layerData.gamemode != "AAS" && this.layer.layerData.gamemode != "Destruction"){
+            this.flag.on("click", this._handleClick, this);
+            this.flag.on("contextmenu", this._handleContextMenu, this);
+            this.flag.on("dblclick", this._handleDoubleClick, this);
+            this.flag.on("mouseover", this._handleMouseOver, this);
+            this.flag.on("mouseout", this._handleMouseOut, this);
+        }
     }
 
     addCluster(cluster){
@@ -266,8 +300,12 @@ export class SquadObjective {
         let className = "flag";
         let html = "";
 
+        if (App.userSettings.circlesFlags){
+            className += " circle";
+        }
+
         // if RAAS/Invasion, add the flag number and a colored icon
-        if (this.layer.layerData.gamemode != "AAS") {
+        if (this.layer.layerData.gamemode != "AAS" && this.layer.layerData.gamemode != "Destruction") {
             className += " flag" + this.position;
             html = this.position;
         }
@@ -275,9 +313,9 @@ export class SquadObjective {
         if (this.isMain) { 
             html = "";
             if (this.layer.layerData.gamemode === "AAS" || this.layer.layerData.gamemode === "Destruction"){
-                className = "flag main unselectable";
+                className += " main unselectable";
             } else {
-                className = "flag main selectable";
+                className += " main selectable";
             }
         }
 
@@ -291,6 +329,7 @@ export class SquadObjective {
     }
 
     _handleClick(){
+        clearTimeout(this.mouseOverTimeout);
         if (this.layer.layerData.gamemode === "Destruction" || this.layer.layerData.gamemode === "AAS") return;
         this.layer._handleFlagClick(this);
     }
@@ -309,14 +348,33 @@ export class SquadObjective {
     }
 
     _handleMouseOver() {
-        if (!App.userSettings.capZoneOnHover) return;
-        
-        if (this.layer.map.getZoom() > this.layer.map.detailedZoomThreshold){
-            this.revealCapZones();
+
+        // On RAAS/Invasion, preview the lane on hover
+        if (this.layer.layerData.gamemode != "Destruction" && this.layer.layerData.gamemode != "AAS") {
+            if (this.isNext && App.userSettings.revealLayerOnHover) {
+                this.mouseOverTimeout = setTimeout(() => {
+                    this.layer.preview(this);
+                }, 250);
+            }
         }
+
+        // If the user has the capzones on hover setting enabled, show them
+        if (App.userSettings.capZoneOnHover) {
+            if (this.layer.map.getZoom() > this.layer.map.detailedZoomThreshold){
+                this.revealCapZones();
+            }
+        }
+
     }
 
     _handleMouseOut(){
+        // Cancel the timeout if the user moves the mouse out before 1 second
+        clearTimeout(this.mouseOverTimeout);
+
+        this.layer.flags.forEach((flag) => {
+            flag._setOpacity(1);
+        });
+
         if (!App.userSettings.capZoneOnHover) return;
         this.hideCapZones();
     }

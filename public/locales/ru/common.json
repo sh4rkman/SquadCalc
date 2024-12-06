@@ -1,5 +1,5 @@
 {
-    "squad": "SQUAD",
+    "squad": "⛄SQUAD",
     "calc": "CALC",
     "squadcalc": "Отрядный расчёт",
     "desc": "Полный калькулятор минометов для SQUAD!",
@@ -34,6 +34,6 @@
     "invalidTarget": "Неверная цель",
     "invalidMortarTarget": "Инвалидное оружие и мишень",
     "targetOutOfRange": "Цель находится вне зоны действия",
-    "targetTooClose" : "Цель слишком близко",
+
     "layerPlaceholder": "Layer"
 }

@@ -14,8 +14,6 @@ import packageInfo from "../../package.json";
 import i18next from "i18next";
 import { SquadLayer } from "./squadLayer.js";
 
-
-
 export default class SquadCalc {
 
     /**
@@ -406,6 +404,8 @@ export default class SquadCalc {
             $(".btn-helpmap").toggleClass("active");
             this.minimap.toggleHeatmap();
         });
+
+
         // Hack for Chrome to avoid lag when zooming inside the map
         // Force a decode each time focus a acquired again
         $(document).on("visibilitychange", () => {
@@ -446,6 +446,7 @@ export default class SquadCalc {
                         $("footer").hide();
                         $("#background").hide();
                         $("#mapLayerMenu").hide();
+
                         this.openToast("success", "focusMode", "enterToExit");
                     }
                 }
@@ -680,20 +681,8 @@ export default class SquadCalc {
             elevation = elevation.deg;
         }
 
-        if (this.activeWeapon.getAngleType() === -1) {
-            if (elevation > this.activeWeapon.minElevation[1]) {
-                this.showError(`<span data-i18n=common:targetTooClose>${i18next.t("common:targetTooClose")}</span> : ${firingSolution.distance.toFixed(0)}<span data-i18n=common:m>${i18next.t("common:m")}</span>`, "target");
-                return 1;
-            }
-        } else {
-            if (elevation < this.activeWeapon.minElevation[0]) {
-                this.showError(`<span data-i18n=common:targetTooClose>${i18next.t("common:targetTooClose")}</span> : ${firingSolution.distance.toFixed(0)}<span data-i18n=common:m>${i18next.t("common:m")}</span>`, "target");
-                return 1;
-            }  
-        }
-        
-        // If Target too far, display it and exit function
-        if (Number.isNaN(elevation)) {
+        // If Target too close/far
+        if (isNaN(elevation)) {
             this.showError(`<span data-i18n=common:targetOutOfRange>${i18next.t("common:targetOutOfRange")}</span> : ${firingSolution.distance.toFixed(0)}<span data-i18n=common:m>${i18next.t("common:m")}</span>`, "target");
             return 1;
         }

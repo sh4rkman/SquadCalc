@@ -1,5 +1,5 @@
 {
-    "squad": "SQUAD",
+    "squad": "⛄SQUAD",
     "calc": "CALC",
     "squadcalc": "SquadCalc",
     "desc": "Un calculateur de mortier complet pour SQUAD !",
@@ -34,6 +34,5 @@
     "invalidTarget": "Cible invalide",
     "invalidMortarTarget": "Arme & Cible invalides",
     "targetOutOfRange": "Cible hors de portée",
-    "targetTooClose" : "Cible trop proche",
     "layerPlaceholder": "Layer"
 }

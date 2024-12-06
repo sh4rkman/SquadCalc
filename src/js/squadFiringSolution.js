@@ -54,18 +54,21 @@ export default class SquadFiringSolution {
     getElevation(dist = 0, lowangle = false) {
         var padding = 0;
         var angleFactor;
-        var heightDiff = this.heightDiff;
         
-        const P1 = Math.sqrt(this.velocity ** 4 - this.gravity * (this.gravity * dist ** 2 + 2 * heightDiff * this.velocity ** 2));
-        
-        if (App.activeWeapon.name === "Tech.Mortar"){
-            // The technical mortar is bugged : the ingame range metter is off by 5°
-            // Ugly fix until OWI correct it
-            padding = -0.0872665;
+        const P1 = Math.sqrt(this.velocity ** 4 - this.gravity * (this.gravity * dist ** 2 + 2 * this.heightDiff * this.velocity ** 2));
+        angleFactor = lowangle ? -P1 : P1;
+
+        // The technical mortar is bugged : the ingame range metter is off by 5°
+        // Ugly fix until OWI correct it
+        if (App.activeWeapon.name === "Tech.Mortar"){ padding = -0.0872665; }
+
+        let elevation = padding + Math.atan((this.velocity ** 2 + angleFactor) / (this.gravity * dist));
+
+        if (this.radToDeg(elevation) < App.activeWeapon.minElevation[0] || this.radToDeg(elevation) > App.activeWeapon.minElevation[1]){
+            return NaN;
         }
 
-        angleFactor = lowangle ? -P1 : P1;
-        return padding + Math.atan((this.velocity ** 2 + angleFactor) / (this.gravity * dist));
+        return elevation;
     }
 
 

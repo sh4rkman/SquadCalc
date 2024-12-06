@@ -179,11 +179,8 @@ export var squadWeaponMarker = squadMarker.extend({
         var radiusMin = App.activeWeapon.minDistance * this.map.gameToMapScale;
 
         this.angleType = App.activeWeapon.angleType;
-
         this.minRangeMarker.setRadius(radiusMin);
         this.rangeMarker.setRadius(radiusMax);
-
-
 
         // Update MinRange circle opacity
         if (this.minRangeMarker.getRadius() != 0) {
@@ -194,43 +191,59 @@ export var squadWeaponMarker = squadMarker.extend({
 
         if (App.userSettings.realMaxRange) { 
             this.rangeMarker.setStyle(this.minMaxDistCircleOff);
-            this.updateWeaponMaxRange(true);
-        }
-        else {
+            this.updateWeaponMaxRange();
+        } else {
             this.rangeMarker.setStyle(this.maxDistCircleOn);
             if (this.precisionRangeMarker) { this.precisionRangeMarker.remove(); }
         }
         
-
         this.updateIcon();
     },
 
-    updateWeaponMaxRange: function (precison = true) {
-        let turnDirectionAngle = 1;
-        let turnLaunchAngle = 0.2;
-        let maxRangeTreshold = 1;
+    updateWeaponMaxRange: function (options = {}) {
 
-        if (!precison){
-            turnDirectionAngle = 20;
-            turnLaunchAngle = 3;
-            maxRangeTreshold = 50;
-            if (this.updateInProgress) return;
-            this.updateInProgress = true;
-            setTimeout(() => this.updateInProgress = false, 20);
-        }
+        // Default options if not provided
+        const {
+            turnDirectionAngle = 1,
+            turnLaunchAngle = 0.2,
+            maxRangeTreshold = 1
+        } = options;
+
+        const weaponPos = this.getLatLng();
+        const G = App.gravity * App.activeWeapon.gravityScale;
+        const estimatedMaxDistance = App.activeWeapon.getMaxDistance();
+        const degreesPerMeter = this.map.gameToMapScale;
+        const weaponHeight = this.map.heightmap.getHeight(weaponPos) + this.heightPadding;
+        const points = [];
+
+        // We'll work with radians from now on
+        const maxAngle = (360 * Math.PI) / 180;
+        const turnAngleStep = (turnDirectionAngle * Math.PI) / 180;
+
+        // By default, we'll try to find the max range between 40° and 50° elevation
+        var launchElevation = 30;
+        var maxElevation = 60;
 
         if (this.precisionRangeMarker) { this.precisionRangeMarker.remove(); }
 
-        const weaponPos = this.getLatLng();
-        const G = 9.78 * App.activeWeapon.gravityScale;
-        const estimatedMaxDistance = App.activeWeapon.getMaxDistance();
-        const degreesPerMeter = this.map.gameToMapScale;
-        const points = [];
-        let weaponHeight = this.map.heightmap.getHeight(weaponPos);
-        weaponHeight = weaponHeight + this.heightPadding;
-        
-        for (let angle = 0; angle < 360; angle += turnDirectionAngle) {
-            const directionRadian = (angle * Math.PI) / 180;
+        if (App.activeWeapon.angleType === "high") {
+            // The weapon is capped above 40°
+            // ex: for regular mortars we set the range to 45-55°
+            if (App.activeWeapon.minElevation[0] > launchElevation) {
+                launchElevation = App.activeWeapon.minElevation[0]; 
+                maxElevation = launchElevation + 10;
+            }
+        } else {
+            // The weapon is capped below 40°
+            // ex: for Emplacement UB-32 we set the range to 25-35°
+            if (App.activeWeapon.minElevation[1] < launchElevation) { 
+                maxElevation = App.activeWeapon.minElevation[1];
+                launchElevation = maxElevation -10;
+            }
+        }
+
+        // Start iterating at 360° for every turnDirectionAngle
+        for (let angle = 0; angle < maxAngle; angle += turnAngleStep) {
             let left = estimatedMaxDistance - 500;
             let right = estimatedMaxDistance + 500;
             let foundMaxDistance = false;
@@ -238,17 +251,16 @@ export var squadWeaponMarker = squadMarker.extend({
             while (right - left > maxRangeTreshold) {
                 const mid = Math.floor((left + right) / 2);
                 const currentVelocity = App.activeWeapon.getVelocity(mid);
-                const deltaLat = mid * Math.cos(directionRadian) * degreesPerMeter;
-                const deltaLng = mid * Math.sin(directionRadian) * degreesPerMeter;
-                const landingX = weaponPos.lat + deltaLat;
-                const landingY = weaponPos.lng + deltaLng;
+                const deltaLat = mid * Math.cos(angle) * degreesPerMeter;
+                const deltaLng = mid * Math.sin(angle) * degreesPerMeter;
+                let landingX = weaponPos.lat + deltaLat;
+                let landingY = weaponPos.lng + deltaLng;
                 const landingHeight = this.map.heightmap.getHeight({ lat: landingX, lng: landingY });
-    
                 let hitObstacle = false;
                 let noHit = false;
-    
-                for (let launchAngle = 35; launchAngle <= 60; launchAngle += turnLaunchAngle) {
-                    const launchAngleRadians = (launchAngle * Math.PI) / 180;
+                
+                for (let launchAngle = launchElevation; launchAngle <= maxElevation; launchAngle += turnLaunchAngle) {
+                    const launchAngleRadians = ((launchAngle) * Math.PI) / 180;
                     const time = mid / (currentVelocity * Math.cos(launchAngleRadians));
                     const yVel = currentVelocity * Math.sin(launchAngleRadians);
                     const currentHeight = weaponHeight + yVel * time - 0.5 * G * time * time;
@@ -269,17 +281,26 @@ export var squadWeaponMarker = squadMarker.extend({
                 }
     
                 if (right - left <= maxRangeTreshold) {
+                    if (landingX < -this.map.pixelSize ) landingX = -this.map.pixelSize;
+                    if (landingY > this.map.pixelSize) landingY = this.map.pixelSize;
+                    if (landingX > 0) landingX = 0;
+                    if (landingY < 0) landingY = 0;
                     points.push([landingX, landingY]);
                     foundMaxDistance = true;
                 }
             }
             if (!foundMaxDistance) {
-                const finalLat = weaponPos.lat + right * Math.cos(directionRadian) * degreesPerMeter;
-                const finalLng = weaponPos.lng + right * Math.sin(directionRadian) * degreesPerMeter;
+                let finalLat = weaponPos.lat + right * Math.cos(angle) * degreesPerMeter;
+                let finalLng = weaponPos.lng + right * Math.sin(angle) * degreesPerMeter;
+                if (finalLat < -this.map.pixelSize ) {finalLat = -this.map.pixelSize;}
+                if (finalLat > 0) {finalLat = 0;}
+                if (finalLng > this.map.pixelSize) {finalLng = this.map.pixelSize;}
+                if (finalLng < 0) {finalLng = 0;}
                 points.push([finalLat, finalLng]);
             }
         }
 
+        // Final Polygon
         this.precisionRangeMarker = new Polygon(points, {color: "blue"}).addTo(this.map.markersGroup);
         this.precisionRangeMarker.setStyle(this.maxDistCircleOn);
     },
@@ -297,7 +318,11 @@ export var squadWeaponMarker = squadMarker.extend({
         this.miniCircle.setLatLng(e.latlng);
         this.fobCircle.setLatLng(e.latlng);
 
-        if (App.userSettings.realMaxRange) { this.updateWeaponMaxRange(false); }
+        if (App.userSettings.realMaxRange) { 
+            this.updateWeaponMaxRange({ 
+                turnLaunchAngle: 1, maxRangeTreshold: 50,  turnDirectionAngle : 20 
+            });
+        }
 
         // Update Position PopUp Content
         if (App.userSettings.weaponDrag) { 
@@ -400,7 +425,7 @@ export var squadWeaponMarker = squadMarker.extend({
         }
 
         if (App.userSettings.realMaxRange) {
-            this.updateWeaponMaxRange(true);
+            this.updateWeaponMaxRange();
         }
 
         // FOB range / mini-circle and position disapear on dragend
@@ -610,7 +635,7 @@ export var squadTargetMarker = squadMarker.extend({
         this.twentyFiveDamageRadius = new ellipse(latlng, [0, 0], 0, this.twentyFiveDamageCircleOn).addTo(this.map.markersGroup);
         this.updateDamageRadius();
 
-        this.createIcon();
+        this.updateIcon(true);
 
         // Custom events handlers
         this.on("click", this._handleClick, this);
@@ -742,7 +767,7 @@ export var squadTargetMarker = squadMarker.extend({
     */
     updateSpread: function(){
         var spreadParameters;
-        var layers = this.map.activeWeaponsMarkers.getLayers();
+        var weapons = this.map.activeWeaponsMarkers.getLayers();
         var gameToMapScale = this.map.gameToMapScale;
     
         // No spread wanted, return
@@ -753,8 +778,10 @@ export var squadTargetMarker = squadMarker.extend({
         }
     
         const setSpreadMarker = (marker, firingSolution, layerIndex) => {
-            if (!isNaN(firingSolution.elevation.high.rad)) {
-                const angleType = layers[layerIndex].angleType;
+            const angleType = weapons[layerIndex].angleType;
+            const elevation = angleType === "high" ? firingSolution.elevation.high.rad : firingSolution.elevation.low.rad;
+
+            if (!isNaN(elevation)) {
                 spreadParameters = angleType === "high" ? firingSolution.spreadParameters.high : firingSolution.spreadParameters.low;
                 marker.setRadius([(spreadParameters.semiMajorAxis * gameToMapScale) / 2, (spreadParameters.semiMinorAxis * gameToMapScale) / 2]);
                 marker.setTilt(firingSolution.bearing);
@@ -768,7 +795,7 @@ export var squadTargetMarker = squadMarker.extend({
         setSpreadMarker(this.spreadMarker1, this.firingSolution1, 0);
     
         // Spread for Weapon2
-        if (layers.length === 2) {
+        if (weapons.length === 2) {
             setSpreadMarker(this.spreadMarker2, this.firingSolution2, 1);
         } else {
             this.spreadMarker2.setStyle(this.spreadOptionsOff);
@@ -879,46 +906,65 @@ export var squadTargetMarker = squadMarker.extend({
 
 
     /**
-     * Update a target icon considering the firing solutions
+     * Set/Update the target icon according to it's firing solutions and user settings
+     * @param {Boolean} animated - If the icon should be animated when set
      */
-    updateIcon: function(){
+    updateIcon: function(animated = false){
         var icon;
+        var elevation;
+        var elevation2;
+
+        if (this.map.activeWeaponsMarkers.getLayers()[0].angleType === "high"){
+            elevation = this.firingSolution1.elevation.high.rad;
+            if (this.map.activeWeaponsMarkers.getLayers().length === 2){
+                elevation2 = this.firingSolution2.elevation.high.rad;
+            }
+        } else {
+            elevation = this.firingSolution1.elevation.low.rad;
+            if (this.map.activeWeaponsMarkers.getLayers().length === 2){
+                elevation2 = this.firingSolution2.elevation.low.rad;
+            }
+        }
 
         if (this.map.activeWeaponsMarkers.getLayers().length === 1) {
-            if (isNaN(this.firingSolution1.elevation.high.rad)){
+            if (isNaN(elevation)){
                 if (App.userSettings.targetAnimation){ 
                     icon = targetIconDisabled;
-                }
-                else { 
+                } else { 
                     icon = targetIconMinimalDisabled;
                 }
             } else {
                 if (App.userSettings.targetAnimation){ 
-                    icon = targetIcon1;
-                }
-                else { 
+                    if (animated){
+                        icon = targetIconAnimated;
+                    } else {
+                        icon = targetIcon1;
+                    }
+                } else { 
                     icon = targetIconMinimal;
                 }
             }
         }
         else {
-            if (isNaN(this.firingSolution1.elevation.high.rad) && isNaN(this.firingSolution2.elevation.high.rad)){
+            if (isNaN(elevation) && isNaN(elevation2)){
                 if (App.userSettings.targetAnimation){ 
                     icon = targetIconDisabled;
-                }
-                else { 
+                } else { 
                     icon = targetIconMinimalDisabled;
                 }
             } else {
-                if (App.userSettings.targetAnimation){ 
-                    icon = targetIcon1;
-                }
-                else { 
+                if (App.userSettings.targetAnimation){
+                    if (animated){
+                        icon = targetIconAnimated;
+                    } else {
+                        icon = targetIcon1;
+                    }
+                } else { 
                     icon = targetIconMinimal;
                 }
             }
         }
-       
+        
         // hack leaflet to avoid unwanted click event
         // https://github.com/Leaflet/Leaflet/issues/5067
         setTimeout((function (this2) {
@@ -926,53 +972,7 @@ export var squadTargetMarker = squadMarker.extend({
                 this2.setIcon(icon);
             };
         })(this));
-    },
 
-    /**
-     * Create a target icon considering the firing solutions
-     */
-    createIcon: function(){
-        var icon;
-
-        if (this.map.activeWeaponsMarkers.getLayers().length === 1) {
-            if (isNaN(this.firingSolution1.elevation.low.rad)){
-                if (App.userSettings.targetAnimation){ 
-                    icon = targetIconDisabled;
-                }
-                else { 
-                    icon = targetIconMinimalDisabled;
-                }
-            }
-            else {
-                if (App.userSettings.targetAnimation){ 
-                    icon = targetIconAnimated;
-                }
-                else { 
-                    //icon = targetIcon1; 
-                    icon = targetIconMinimal;
-                }
-            }
-        }
-        else {
-            if (isNaN(this.firingSolution1.elevation.high.rad) && isNaN(this.firingSolution2.elevation.high.rad)){
-                if (App.userSettings.targetAnimation){ 
-                    icon = targetIconDisabled;
-                }
-                else { 
-                    icon = targetIconMinimalDisabled;
-                }
-            }
-            else {
-                if (App.userSettings.targetAnimation){ 
-                    icon = targetIconAnimated;
-                }
-                else { 
-                    icon = targetIconMinimal;
-                }
-            }
-        }
-        
-        this.setIcon(icon);
     },
 
     _handleClick: function() {

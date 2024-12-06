@@ -1,12 +1,39 @@
-# <img src="https://img.shields.io/badge/-major%20release-b22222?style=for-the-badge">  **34.0.0** *(2024-XX-XX)*
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **34.0.1** *(2024-12-06)*
+
+<img src="https://img.shields.io/badge/-new-green"> ⛄
+
+<img src="https://img.shields.io/badge/-new-green"> 🔵 Circles Icon for flags
+You can now toggle flags icon between circles & rectangles in settings.
+
+<img src="https://img.shields.io/badge/-new-green"> 🔎Layer Preview
+Without clicking a flag, you can preview what would happen by hovering it
+
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Clicking the enemy main in RAAS now reset layer and switch sides even if you are have already selected flags.
+
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Real Max Range "Circle" now stops at map borders
+
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Real Max Range "Circle" now stops at weapon angle boundaries (e.g it won't show ranges that are not reachable because you have to go below 800mil)
+
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed markers displaying elevation that couldn't be reached by weapons emplacements with a minimum and a maximum elevation (fix #226)
+
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed some rare capzones being misoriented on Harju RAAS v1/v2 (fix #233)
+
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed Map Buttons sometimes appearing behind map & layer selectors on small screens (fix #235)
+
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed FavIcon
+
+
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
+# <img src="https://img.shields.io/badge/-major%20release-b22222?style=for-the-badge">  **34.0.0** *(2024-12-02)*
 
 <img src="https://img.shields.io/badge/-new-green"> **Lane Finder !** You can now select a layer to reveal the potential flags/Cache in AAS/RAAS/Invasion/Destruction gamemodes.  
 * **Auto-picker**: If only one flag is reachable next step, SquadCalc will automatically advance into the layer (can be disabled in settings)
 * **Capzone:** Zoom in or hover a flag (can be set in settings) to reveal flags capzones
 * **Main Zones:** Display Main Protection & NoDeployement zones
 * **Game Assets:** Helipads, Repair stations, ammoboxes are displayed when zooming in
-* **Known Bug :** The capzone / Main Protection Zone can be bigger than ingame reality (see [this issue](https://github.com/Squad-Wiki/squad-wiki-pipeline-map-data/issues/118) on Squad Wiki Pipeline map data repository)  
-
+* **Known Bug :** capzone can sometimes be very, very small.
 
 <img src="https://img.shields.io/badge/-new-green"> **Minimistic Icons**  
 You now have the choice between Large Animated Target Icons and small circles to help declustering the map when spaming targets. [#224](https://github.com/sh4rkman/SquadCalc/issues/224)  
@@ -42,7 +69,10 @@ URL's now hold the map, layer and type of basemap so it can be easily shared/boo
 <img src="https://img.shields.io/badge/-%20dev%20-grey"> "Frequent weapon position" button is now hidden if no api is provided in a `.env` file
 
 <img src="https://img.shields.io/badge/-%20dev%20-grey"> API new routes: ``/api/get/layers`` & ``/api/get/layer``
-=======
+
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
 
 # <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **33.0.2** *(2024-11-14)*
 
@@ -52,8 +82,6 @@ URL's now hold the map, layer and type of basemap so it can be easily shared/boo
 
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
-
-
 
 
 # <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **33.0.1** *(2024-11-04)*
