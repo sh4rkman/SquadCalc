@@ -133,7 +133,7 @@ dialog {
     }
     &#helpDialog {
         width: 94%;
-        height: 500px;
+        height: 480px;
         max-width: 600px;
         font-size: 0.6em;
         h3 {
@@ -169,9 +169,9 @@ dialog {
                 right: 0;
                 position:absolute;
                 width: auto;
-                font-size: 1.4em;
+                font-size: 1.6em;
                 float: right;
-                margin: 0.5em;
+                margin: 0 0.5em 0.5em 0;
                 td {
                     border: none;
                     padding: 0 0.5em;

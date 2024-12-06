@@ -14,8 +14,6 @@ import packageInfo from "../../package.json";
 import i18next from "i18next";
 import { SquadLayer } from "./squadLayer.js";
 
-
-
 export default class SquadCalc {
 
     /**
@@ -406,6 +404,8 @@ export default class SquadCalc {
             $(".btn-helpmap").toggleClass("active");
             this.minimap.toggleHeatmap();
         });
+
+
         // Hack for Chrome to avoid lag when zooming inside the map
         // Force a decode each time focus a acquired again
         $(document).on("visibilitychange", () => {
@@ -446,6 +446,7 @@ export default class SquadCalc {
                         $("footer").hide();
                         $("#background").hide();
                         $("#mapLayerMenu").hide();
+
                         this.openToast("success", "focusMode", "enterToExit");
                     }
                 }

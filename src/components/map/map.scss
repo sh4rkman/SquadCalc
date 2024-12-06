@@ -1,6 +1,39 @@
 @use "../shared/variables";
 
-$flag-opacity: 0.6;
+// Global variables
+$flag-opacity: 0.8;
+$flag-circle-opacity: 0.2;
+
+// Mixins for repeated styles
+@mixin flag-color($bg-color, $outline-color) {
+    background-color: rgba($bg-color, $flag-opacity); 
+    &.circle {
+        outline: solid $outline-color 3px;
+        background-color: rgba($bg-color, $flag-circle-opacity);
+    }
+}
+
+@mixin popup-base-styles {
+    background: transparent;
+    pointer-events: none;
+    .leaflet-popup-tip,
+    .leaflet-popup-content-wrapper {
+        @include variables.text-outline;
+        @extend .unselectable;
+        font-family: variables.$mainFont, Times, "Times New Roman", serif;
+        font-size: 1.2em;
+        background: transparent;
+        box-shadow: none;
+        color: variables.$mainTxtColor;
+        height: 2em;
+        padding: 0;
+        text-align: center;
+        pointer-events: none;
+    }
+    &.leaflet-popup {
+        transition: none;
+    }
+}
 
 #map_ui {
     position: relative;
@@ -32,41 +65,38 @@ $flag-opacity: 0.6;
             @include variables.light-text-outline;
             background-color: rgba(255, 255, 255, 0.4);
             font-size: 1.3em;
+            border: solid rgba(0, 0, 0, 0.4) 1px;
             outline: solid rgb(68, 68, 68) 1px;
             box-shadow: 0 8px 12px rgba(0, 0, 0, 0.75);
-            // pointer-events: none;
+            transition: opacity 0.25s ease-in-out;
+            border-radius: 2px;
             cursor: inherit;
+            &.circle {
+                border-radius: 15px;
+                margin-left: -14px!important;
+                width: 30px!important;
+                height: 30px!important;
+                align-content: center;
+                font-size: 1.5em;
+                letter-spacing: 0;
+                outline: solid rgb(68, 68, 68) 1px;
+                &.selected {
+                    background-color: rgba(0, 128, 0, 0.5);
+                    outline: solid rgb(0, 128, 0) 3px;
+                    &::before {
+                        content: "✔";
+                    }
+                }
+            }
             &:active {
                 cursor: inherit;
             }
-            &.flag2 {
-                background-color: rgba(0, 255, 0, $flag-opacity);
-                outline: none;
-            }
-            &.flag3 {
-                background-color: rgba(0, 0, 255, $flag-opacity);
-                outline: none;
-            }
-            &.flag4 {
-                background-color: rgba(255, 255, 0, $flag-opacity);
-                outline: none;
-            }
-            &.flag5 {
-                background-color: rgba(43, 255, 255, $flag-opacity);
-                outline: none;
-            }
-            &.flag6 {
-                background-color: rgba(200, 48, 102, $flag-opacity);
-                outline: none;
-            }
-            &.flag7 {
-                background-color: rgba(255, 105, 0, $flag-opacity);
-                outline: none;
-            }
-            &.flag8 {
-                background-color: rgba(0, 0, 0, $flag-opacity);
-                outline: none;
-            }
+            &.flag2 { @include flag-color(rgb(0, 255, 0), rgb(68, 255, 68)); }
+            &.flag3 { @include flag-color(rgb(0, 0, 255), rgb(0, 0, 255)); }
+            &.flag4 { @include flag-color(rgb(255, 255, 0), rgb(255, 255, 0)); }
+            &.flag5 { @include flag-color(rgb(43, 255, 255), rgb(43, 255, 255)); }
+            &.flag6 { @include flag-color(rgb(200, 48, 102), rgb(200, 48, 102)); }
+            &.flag7 { @include flag-color(rgb(255, 105, 0), rgb(255, 105, 0)); }
             &.selected {
                 font-size: 1.3em;
                 background-color: rgba(0, 128, 0, 0.9);
@@ -80,20 +110,34 @@ $flag-opacity: 0.6;
                     right: 0.2em;
                     line-height: 0%;
                 }
+                &.circle {
+                    &::before {
+                        content: "";
+                    }
+                    &.main {
+                        &::before {
+                            content: "☃️";
+                        }
+                    }
+                    &:hover {
+                        box-shadow: 0 2px 12px rgba(0, 0, 0, 1);
+                    }
+                }
             }
-            &.main  {
+            &.main {
                 font-size: 1.1em;
                 overflow: hidden;
                 &::before {
-                    content: "🏠";
+                    content: "⛄";
                     position: relative;
                     right: 0;
-                    font-size: 1.6em;
+                    font-size: 2em;
                 }
             }
             &.main.selectable {
-                background-color: rgb(197, 0, 0);
+                background-color: rgba(197, 0, 0);
                 outline-color: rgb(143, 0, 0);
+                outline-width: 3px;
             }
             &.main.unselectable {
                 pointer-events: none;
@@ -102,8 +146,6 @@ $flag-opacity: 0.6;
             &.main.selected {
                 &::before {
                     top: 0.4em;
-                    // right: 0;
-                    // font-size: 1.6em;
                 }
             }
             &.selected, &.next, &.main {
@@ -111,35 +153,23 @@ $flag-opacity: 0.6;
                 pointer-events: all;
                 box-shadow: 0 8px 12px rgba(0, 0, 0, 0.7);
                 &:hover {
-                    outline: solid 2px rgba(0, 0, 0, 0.3);
-                    box-shadow: 0 8px 12px rgba(0, 0, 0, 1);
+                    outline-width: 3px;
+                    box-shadow: 0 2px 12px rgba(0, 0, 0, 1);
                 }
             }
             &.next {
-                background-color: rgb(197, 0, 0);
-                outline-color: rgb(143, 0, 0);
+                background-color: rgba(197, 0, 0);
+                &.circle {
+                    background-color: rgba(197, 0, 0);
+                    border: none;
+                    outline-color: rgb(143, 0, 0);
+                    outline-width: 3px;
+                    letter-spacing: 0;
+                }
             }
         }
         .kpPopup, .posPopUpTarget, .posPopUpWeapon {
-            background: transparent;
-            pointer-events: none;
-            .leaflet-popup-tip,
-            .leaflet-popup-content-wrapper {
-                @include variables.text-outline;
-                @extend .unselectable;
-                font-family: variables.$mainFont, Times, "Times New Roman", serif;
-                font-size: 1.2em;
-                background: transparent;
-                box-shadow: none;
-                color: variables.$mainTxtColor;
-                height: 2em;
-                padding: 0;
-                text-align: center;
-                pointer-events: none;
-            }
-            &.leaflet-popup {
-                transition: none;
-            }
+            @include popup-base-styles;
         }
         .calcPopup, .calcPopup2 {
             @include variables.text-outline;
@@ -159,7 +189,7 @@ $flag-opacity: 0.6;
                 box-shadow: none;
                 color: variables.$mainTxtColor;
             }
-            .leaflet-popup-content{
+            .leaflet-popup-content {
                 margin: 0;
                 line-height: 1;
             }
@@ -174,7 +204,7 @@ $flag-opacity: 0.6;
                 }
             }
         }
-        .animatedWeaponMarker{
+        .animatedWeaponMarker {
             animation: weapon-appear 0.25s ease-in-out forwards 0s;
         }
         .animatedTargetMarker {
@@ -184,32 +214,27 @@ $flag-opacity: 0.6;
             @include variables.text-outline;
             font-size: 1.1em;
         }
-     
-
     }
 }
 
-
-#mapLayerMenu{
+#mapLayerMenu {
     position: absolute;
     right: 2%;
-    top: 40%;
-    transform: translateY(-50%);
+    top: 20%;
     width: 54px;
     z-index: 3;
-    height: 340px;
-    overflow-y: auto;
+    height: auto;
     .btn {
         position: relative;
         width: 40px;
         height: 40px;
         margin: 0;
         color: variables.$mainBGColor;
-        border-bottom:#979797 solid 1px;
+        border-bottom: #979797 solid 1px;
         box-shadow: 0 2px 15px rgba(0,0,0,0.1);
         cursor: pointer;
         transition: all 0.2s ease-out;
-        &:hover{
+        &:hover {
             background-color: #979797;
         }
         &.active {
@@ -217,7 +242,7 @@ $flag-opacity: 0.6;
             border-top: variables.$mainColor;
             border-bottom: variables.$mainColor;
             color: variables.$mainTxtColor;
-            .fa-mound{
+            .fa-mound {
                 background: white;
                 background-clip: text;
                 -webkit-text-fill-color: transparent;
@@ -237,20 +262,10 @@ $flag-opacity: 0.6;
             -webkit-background-clip: text;
         }
     }
-    #mapLayerMenuSeparator::before {
-        content: "";
-        pointer-events: none;
-        position: absolute;
-        top: -20px;
-        left: 50%;
-        width: 70%;
-        height: 4px;
-        transform: translateX(-50%); 
+    .mapLayerMenuSeparator {
+        margin-top: 10px;
     }
-    #mapLayerMenuSeparator {
-        margin-top: 30px;
-    }
-    .fa-magnifying-glass-location{
+    .fa-magnifying-glass-location {
         font-size: 1.3em;
     }
 }
@@ -267,7 +282,7 @@ $flag-opacity: 0.6;
     letter-spacing: 0;
     span {
         font-weight: bolder;
-        line-height : 1.3em;
+        line-height: 1.3em;
         display: table-cell;
         vertical-align: middle;
         span {

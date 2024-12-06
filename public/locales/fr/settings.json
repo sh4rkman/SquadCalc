@@ -26,6 +26,8 @@
     "LaneFinderOptions": "Options de recherche de voie",
         "autoLane": "Sélection automatique des drapeaux seuls",
         "capZoneOnHover": "Ne montrer les zones de capture qu'au survol",
+        "revealLayerOnHover": "Révéler le layer au survol des drapeaux",
+        "circlesFlags": "Drapeaux en forme de cercles",
     "preview": "Aperçu",
     "changelog": "Journal des modifications",
     "github": "Voir le code sur Github",

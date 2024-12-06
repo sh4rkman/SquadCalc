@@ -26,6 +26,8 @@
     "LaneFinderOptions": "Lane Finder Options",
         "autoLane": "Auto-pick single flag",
         "capZoneOnHover": "Only show capzones when hovering",
+        "revealLayerOnHover" : "Reveal layer when hovering a flag",
+        "circlesFlags": "Show flag as circles",
     "preview": "Preview",
     "discord": "Official Discord",
     "github": "View code on Github",

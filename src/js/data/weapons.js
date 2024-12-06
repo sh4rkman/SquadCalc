@@ -24,7 +24,7 @@ export var WEAPONS = [
         deceleration: 0,
         decelerationTime: 0,
         gravityScale: 1,
-        minElevation: [45, 88.8],
+        minElevation: [45, 88.875],
         unit: "mil",
         logo: classicLogo,
         marker: mortarIcon,

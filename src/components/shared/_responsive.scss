@@ -46,13 +46,6 @@
             }
         }
     }
-    // #helpDialog {
-    //     font-size: 0.65em;
-    //     caption {
-    //         margin: 5px 20px 15px 0;
-    //     }
-    // }
-
 }
 
 
@@ -140,15 +133,17 @@
             }
         }
     }
-    #mapLayerMenu{
-        .btn {
-            font-size: 1.4em;
-            width: 50px;
-            height: 50px;
-        }
-        .question-shift {
-            position: relative;
-            top: -2px;
+
+    @media (height >= 40em) {
+        #mapLayerMenu{
+            .btn {
+                font-size: 1.4em;
+                width: 50px;
+                height: 50px;
+            }
+            .mapLayerMenuSeparator {
+                margin-top: 30px;
+            }
         }
     }
     footer {

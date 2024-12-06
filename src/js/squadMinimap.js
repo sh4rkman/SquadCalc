@@ -10,7 +10,7 @@ import webGLHeatmap from "./libs/leaflet-webgl-heatmap.js";
 import "leaflet-spin";
 import "./libs/webgl-heatmap.js";
 import "./libs/leaflet-smoothWheelZoom.js";
-
+import { createSnow } from "./libs/pure-snow.js";
 
 /**
  * Squad Minimap
@@ -85,6 +85,9 @@ export var squadMinimap = Map.extend({
         }
 
         this.on("zoomend", this._handleZoom, this);
+
+        createSnow(); // creates snowflakes and generate css for them
+        //showSnow(false); // snow can be disabled using showSnow function
 
     },
 
