@@ -66,7 +66,6 @@ $flag-circle-opacity: 0.2;
             background-color: rgba(255, 255, 255, 0.4);
             font-size: 1.3em;
             border: solid rgba(0, 0, 0, 0.4) 1px;
-            outline: solid rgb(68, 68, 68) 1px;
             box-shadow: 0 8px 12px rgba(0, 0, 0, 0.75);
             transition: opacity 0.25s ease-in-out;
             border-radius: 2px;
@@ -79,7 +78,6 @@ $flag-circle-opacity: 0.2;
                 align-content: center;
                 font-size: 1.5em;
                 letter-spacing: 0;
-                outline: solid rgb(68, 68, 68) 1px;
                 &.selected {
                     background-color: rgba(0, 128, 0, 0.5);
                     outline: solid rgb(0, 128, 0) 3px;
@@ -118,6 +116,11 @@ $flag-circle-opacity: 0.2;
                         &::before {
                             content: "☃️";
                         }
+                    }
+                    &.main.unselectable {
+                        pointer-events: none;
+                        background-color: rgba(255, 255, 255, 0.4);
+                        outline-color: rgb(68, 68, 68);
                     }
                     &:hover {
                         box-shadow: 0 2px 12px rgba(0, 0, 0, 1);
@@ -232,10 +235,6 @@ $flag-circle-opacity: 0.2;
         color: variables.$mainBGColor;
         border-bottom: #979797 solid 1px;
         box-shadow: 0 2px 15px rgba(0,0,0,0.1);
-        // Fix for touch device greying out the button after use
-        -webkit-tap-highlight-color: transparent;
-        -webkit-touch-callout: none;
-        -webkit-user-select: none;
         user-select: none;
         cursor: pointer;
         transition: all 0.2s ease-out;
@@ -253,6 +252,12 @@ $flag-circle-opacity: 0.2;
                 -webkit-text-fill-color: transparent;
                 -webkit-background-clip: text;
             }
+        }
+        &:visited,
+        &:focus,
+        &:active {
+            outline: none;
+            -webkit-tap-highlight-color: transparent;
         }
         .fa-mound {
             font-size: 1.5em;

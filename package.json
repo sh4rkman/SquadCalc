@@ -29,6 +29,7 @@
     "start": "webpack serve -c ./config/webpack.config.js",
     "build": "webpack -c ./config/webpack.config.js",
     "lint": "stylelint -c ./config/.stylelintrc.json ./src/**/*.scss && htmlhint --config ./config/.htmlhintrc.json --nocolor ./src/ && jshint ./src/ && eslint -c ./config/.eslintrc.js ./src/",
+    "convertHeightmapsToJson": "npx src/js/tests/convertHeightmapsToJson.mjs",
     "mapinfo": "node src/js/tests/mapdata.js info",
     "weaponInfo": "node src/js/tests/calcMortarTech.js info"
   },
@@ -60,6 +61,7 @@
     "sass": "^1.78.0",
     "sass-loader": "^16.0.1",
     "select2": "^4.1.0-rc.0",
+    "sharp": "^0.33.5",
     "style-loader": "^4.0.0",
     "stylelint": "^16.9.0",
     "stylelint-config-standard-scss": "^13.1.0",

@@ -995,7 +995,6 @@ export class SquadLayer {
         // Show each flag that was found
         flagsToHide.forEach((flagToHide) => {
             if (!this.selectedFlags.includes(flagToHide)){
-                
                 flagToHide._setOpacity(value);
             }
         });

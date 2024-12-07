@@ -1,3 +1,28 @@
+
+
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **34.1.0** *(2024-12-07)*
+
+
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Clicking the enemy main in RAAS now reset layer and switch sides even if you are have already selected flags
+
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> "Reveal Layer" settings is now correctly ticked by default
+
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed simulations for emplaced UB32
+
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed RealMaxRange for emplaced UB32 (fix #241)
+
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed Damage radiis not showing on emplaced UB32 (fix #242)
+
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Snowflakes don't block mouseclicks anymore (...)
+
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed incorrect cursor on enemy main in Invasion (fix #237)
+
+<img src="https://img.shields.io/badge/-%20dev%20-grey"> Added a script to convert heightmaps to .json in /js/tests/ (fix #240)
+
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
+
 # <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **34.0.1** *(2024-12-06)*
 
 <img src="https://img.shields.io/badge/-new-green"> ⛄
