@@ -1,4 +1,4 @@
-// Script made By Endebert to calulate map/heightmap properties
+// Script made By Endebert to calculate map/heightmap properties
 // -> https://github.com/Endebert/squadmc-maps
 /* jshint ignore:start */
 /* eslint-disable */

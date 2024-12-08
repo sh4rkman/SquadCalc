@@ -227,7 +227,7 @@ export class SquadObjective {
         }
 
         if (this.isMain) { 
-            if (this.layer.layerData.gamemode === "AAS" || this.layer.layerData.gamemode === "Destruction"){
+            if (this.layer.layerData.gamemode === "AAS" || this.layer.layerData.gamemode === "Destruction" || this.layer.layerData.gamemode === "Invasion"){
                 className += " main unselectable";
             } else {
                 className += " main selectable";
@@ -304,18 +304,20 @@ export class SquadObjective {
             className += " circle";
         }
 
-        // if RAAS/Invasion, add the flag number and a colored icon
-        if (this.layer.layerData.gamemode != "AAS" && this.layer.layerData.gamemode != "Destruction") {
-            className += " flag" + this.position;
-            html = this.position;
-        }
+
 
         if (this.isMain) { 
             html = "";
-            if (this.layer.layerData.gamemode === "AAS" || this.layer.layerData.gamemode === "Destruction"){
+            if (this.layer.layerData.gamemode === "AAS" || this.layer.layerData.gamemode === "Destruction" || this.layer.layerData.gamemode === "Invasion"){
                 className += " main unselectable";
             } else {
                 className += " main selectable";
+            }
+        } else {
+            // if RAAS/Invasion, add the flag number and a colored icon
+            if (this.layer.layerData.gamemode != "AAS" && this.layer.layerData.gamemode != "Destruction") {
+                className += " flag" + this.position;
+                html = this.position;
             }
         }
 

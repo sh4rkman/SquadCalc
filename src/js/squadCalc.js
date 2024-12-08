@@ -13,6 +13,7 @@ import SquadFiringSolution from "./squadFiringSolution.js";
 import packageInfo from "../../package.json";
 import i18next from "i18next";
 import { SquadLayer } from "./squadLayer.js";
+import { showSnow } from "./libs/pure-snow.js";
 
 export default class SquadCalc {
 
@@ -479,6 +480,8 @@ export default class SquadCalc {
 
         } else {
             $(".btn-focus").hide();
+            $(".btn-snow").hide();
+            showSnow(false);
         }
 
       

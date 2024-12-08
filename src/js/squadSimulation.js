@@ -39,7 +39,9 @@ export default class Simulation {
         this.div.find(".infTHeight").first().text(this.firingSolution.targetHeight.toFixed(1)+i18next.t("common:m"));
         this.div.find(".infDHeight").first().text(this.firingSolution.heightDiff.toFixed(1)+i18next.t("common:m"));
 
-        if (isNaN(this.firingSolution.elevation.high.rad)) {
+        console.log(this.firingSolution);
+
+        if (isNaN(this.firingSolution.elevation.high.rad) && isNaN(this.firingSolution.elevation.low.rad)) {
             this.div.find(".infElevation").first().text("---");
             this.div.find(".infTimeOfFlight").first().text("---");
             this.div.find(".infSpread").first().text("---");
@@ -156,7 +158,7 @@ export default class Simulation {
         this.ctx.translate(0, this.canvas.height);
         this.ctx.scale(1, -1);
                
-        if (isNaN(this.firingSolution.elevation.high.rad)) {
+        if (isNaN(this.firingSolution.elevation.high.rad) && isNaN(this.firingSolution.elevation.low.rad)) {
             image.src = targetIconDisabled;
         } 
         else {
@@ -180,26 +182,30 @@ export default class Simulation {
      * @param {Function} [callback] - Function to call after the projectile is drawn.
      */
     drawTrajectory(callback) {
-        const MAXANGLE = 0.785398; // 45° in radians
+        const MAXANGLE = 45;
+        const MAXANGLE_UB32 = 35;
         const G = this.firingSolution.gravity * this.yScaling;
 
-        let elevation;
         let xVel;
         let yVel;
         let x = this.padding;
         let y = this.firingSolution.weaponHeight * this.yScaling + this.yOffset;
+        let elevation = this.angleType === "high" ? this.firingSolution.elevation.high.rad : this.firingSolution.elevation.low.rad;
 
-        if (isNaN(this.firingSolution.elevation.high.rad)) {
-            // If no firing solution, simulate a max distance shot 
-            elevation = MAXANGLE;
-        } else {
-            elevation = this.angleType === "high" ? this.firingSolution.elevation.high.rad : this.firingSolution.elevation.low.rad;
+        // If no firing solution, simulate a max distance shot 
+        if (isNaN(elevation)) {
+            if (this.firingSolution.activeWeapon.name === "UB-32"){
+                elevation = this.firingSolution.degToRad(MAXANGLE_UB32);
+            }
+            else {
+                elevation = this.firingSolution.degToRad(MAXANGLE);
+            }
         }
 
         xVel = Math.cos(elevation) * this.firingSolution.velocity * this.xScaling;
         yVel = Math.sin(elevation) * this.firingSolution.velocity * this.yScaling;
 
-        if (isNaN(this.firingSolution.velocity)) return;
+        //if (isNaN(this.firingSolution.velocity)) return;
 
         this.ctx.lineWidth = 5;
         this.ctx.strokeStyle = App.mainColor;

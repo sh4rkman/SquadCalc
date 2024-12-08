@@ -64,7 +64,7 @@ export function loadSettings(){
     $("#circlesFlagsSettings").prop("checked", App.userSettings.circlesFlags);
     
     App.userSettings.revealLayerOnHover = loadLocalSetting("settings-reveal-onHover");
-    $("#revealLayerOnHoverSetting").prop("checked", App.userSettings.revealLayerOnHover);
+    $("#revealLayerOnHoverSettings").prop("checked", App.userSettings.revealLayerOnHover);
 
     App.userSettings.capZoneOnHover = loadLocalSetting("settings-capZone-onHover", 0);
     $("#capZoneOnHoverSetting").prop("checked", App.userSettings.capZoneOnHover);
