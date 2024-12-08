@@ -914,62 +914,33 @@ export var squadTargetMarker = squadMarker.extend({
      * Set/Update the target icon according to it's firing solutions and user settings
      * @param {Boolean} animated - If the icon should be animated when set
      */
-    updateIcon: function(animated = false){
-        var icon;
-        var elevation;
-        var elevation2;
-
-        if (this.map.activeWeaponsMarkers.getLayers()[0].angleType === "high"){
-            elevation = this.firingSolution1.elevation.high.rad;
-            if (this.map.activeWeaponsMarkers.getLayers().length === 2){
-                elevation2 = this.firingSolution2.elevation.high.rad;
-            }
+    updateIcon: function (animated = false) {
+        const layers = this.map.activeWeaponsMarkers.getLayers();
+        const angleType = layers[0].angleType;
+        const elevationKey = angleType === "high" ? "high" : "low";
+    
+        const elevation = this.firingSolution1.elevation[elevationKey]?.rad;
+        const elevation2 =
+            layers.length === 2 ? this.firingSolution2.elevation[elevationKey]?.rad : null;
+    
+        const isSingleLayer = layers.length === 1;
+        const bothElevationsInvalid = isNaN(elevation) && isNaN(elevation2);
+    
+        const targetAnimation = App.userSettings.targetAnimation;
+    
+        // Determine the base icon type
+        if (isSingleLayer && isNaN(elevation)) {
+            icon = targetAnimation ? targetIconDisabled : targetIconMinimalDisabled;
+        } else if (!isSingleLayer && bothElevationsInvalid) {
+            icon = targetAnimation ? targetIconDisabled : targetIconMinimalDisabled;
         } else {
-            elevation = this.firingSolution1.elevation.low.rad;
-            if (this.map.activeWeaponsMarkers.getLayers().length === 2){
-                elevation2 = this.firingSolution2.elevation.low.rad;
-            }
-        }
-
-        if (this.map.activeWeaponsMarkers.getLayers().length === 1) {
-            if (isNaN(elevation)){
-                if (App.userSettings.targetAnimation){ 
-                    icon = targetIconDisabled;
-                } else { 
-                    icon = targetIconMinimalDisabled;
-                }
+            if (targetAnimation) {
+                icon = animated ? targetIconAnimated : targetIcon1;
             } else {
-                if (App.userSettings.targetAnimation){ 
-                    if (animated){
-                        icon = targetIconAnimated;
-                    } else {
-                        icon = targetIcon1;
-                    }
-                } else { 
-                    icon = targetIconMinimal;
-                }
+                icon = targetIconMinimal;
             }
         }
-        else {
-            if (isNaN(elevation) && isNaN(elevation2)){
-                if (App.userSettings.targetAnimation){ 
-                    icon = targetIconDisabled;
-                } else { 
-                    icon = targetIconMinimalDisabled;
-                }
-            } else {
-                if (App.userSettings.targetAnimation){
-                    if (animated){
-                        icon = targetIconAnimated;
-                    } else {
-                        icon = targetIcon1;
-                    }
-                } else { 
-                    icon = targetIconMinimal;
-                }
-            }
-        }
-        
+     
         // hack leaflet to avoid unwanted click event
         // https://github.com/Leaflet/Leaflet/issues/5067
         setTimeout((function (this2) {

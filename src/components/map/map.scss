@@ -235,10 +235,6 @@ $flag-circle-opacity: 0.2;
         color: variables.$mainBGColor;
         border-bottom: #979797 solid 1px;
         box-shadow: 0 2px 15px rgba(0,0,0,0.1);
-        user-select: none;
-        -webkit-appearance: none;
-        -moz-appearance: none;
-        appearance: none;
         cursor: pointer;
         transition: all 0.2s ease-out;
         &:hover {
@@ -255,16 +251,6 @@ $flag-circle-opacity: 0.2;
                 -webkit-text-fill-color: transparent;
                 -webkit-background-clip: text;
             }
-        }
-        &:visited,
-        &:focus,
-        &:active {
-            outline: none;
-            -webkit-tap-highlight-color: transparent;
-        }
-        // Explicitly reset background color after touch
-        &:not(.active):focus {
-            background-color: transparent;
         }
         .fa-mound {
             font-size: 1.5em;
@@ -369,4 +355,10 @@ $flag-circle-opacity: 0.2;
     line-height: 100%;
     letter-spacing: 0.2em;
     transition: opacity 0.1s ease-in;
+}
+// Disable hover styles for touch devices
+@media (hover: none) and (pointer: coarse) {
+    .btn:hover {
+        background-color: unset; // Remove hover color on touch
+    }
 }
