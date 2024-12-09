@@ -41,9 +41,8 @@ export class SquadLayer {
         // If already zoomed in, reveal capzones/main assets
         if (this.map.getZoom() > this.map.detailedZoomThreshold) {
             this.revealAllCapzones();
-            this.setMainZoneOpacity(true);
         }
-
+        this.setMainZoneOpacity(true);
     }
 
 
@@ -192,7 +191,7 @@ export class SquadLayer {
                         // Adding capzones to the flag object
                         obj.objects.forEach((cap) => {
                             newFlag.createCapZone(cap);
-                        });        
+                        });
                     }
                 });
             }
@@ -383,6 +382,10 @@ export class SquadLayer {
         this.layerData.mapAssets.protectionZones.forEach((pZone) => {
 
             //if (this.layerData.rawName != "Sumari_AAS_v1" && this.layerData.rawName != "Kohat_RAAS_v1") return;
+
+
+            // Skip small protection zones
+            if (pZone.objects[0].boxExtent.extent_x < 1000) return;
 
             // Center of the protection zone
             let [location_y, location_x] = this.convertToLatLng(pZone.objects[0].location_x, pZone.objects[0].location_y);
@@ -599,23 +602,12 @@ export class SquadLayer {
 
         // Start DFS from each clicked flag clusters
         flag.clusters.forEach((cluster) => {
-
             // Only start DFS from clusters that are from our current position
-            if (Math.abs(this.startPosition - cluster.pointPosition)+1 != this.currentPosition){
-                console.debug("Cluster is irrevelant! skipping DFS for now..", cluster);
-                return;
+            if (Math.abs(this.startPosition - cluster.pointPosition)+1 == this.currentPosition){
+                const clusterName = cluster.name === "Main" ? cluster.objectDisplayName : cluster.name;
+                this.dfs(clusterName, reachableClusters);
             }        
-           
-            // If the clicked flag is a main flag, use the objectDisplayName instead
-            if (cluster.name === "Main"){
-                this.dfs(cluster.objectDisplayName, reachableClusters);
-                return;
-            }
-
-            this.dfs(cluster.name, reachableClusters);
         });
-
-
 
         // Remove clusters that were not reachable from the previous flag
         if (this.selectedReachableClusters.length > 0){
@@ -760,11 +752,9 @@ export class SquadLayer {
         // Start DFS from each clicked flag clusters
         flag.clusters.forEach((cluster) => {
             // Only start DFS from clusters that are from our current position
-            if (Math.abs(this.startPosition - cluster.pointPosition) != this.currentPosition){
-                console.debug("Cluster is irrevelant! skipping DFS for now..", cluster);
-                return;
+            if (Math.abs(this.startPosition - cluster.pointPosition) === this.currentPosition){
+                this.dfs(cluster.name, reachableClusters);
             }
-            this.dfs(cluster.name, reachableClusters);
         });
 
         // Remove clusters that were not reachable from the previous flag
@@ -800,7 +790,7 @@ export class SquadLayer {
             console.debug("   -> Current position", this.currentPosition+1);
             if (Math.abs(this.startPosition - cluster.pointPosition) >= this.currentPosition) {
                 console.debug("   -> Cluster is in front! Hiding.");
-                this._changeClusterOpacity(cluster, flag, 0.15);  
+                this._fadeOutCluster(cluster, flag);  
             } else {
                 // Ignore clusters that are behind us
                 console.debug("   -> Cluster behind, skipping it.");
@@ -831,7 +821,7 @@ export class SquadLayer {
             // If the cluster is in front of the clicked flag, show it
             if (Math.abs(this.startPosition - cluster.pointPosition) > this.currentPosition){
                 console.debug("   -> Cluster in front, showing it !");
-                this._changeClusterOpacity(cluster, flag, 1);   
+                this._fadeInCluster(cluster, flag);   
             }
             else {
                 console.debug("   -> Cluster behind, skipping it.");
@@ -995,12 +985,52 @@ export class SquadLayer {
         // Show each flag that was found
         flagsToHide.forEach((flagToHide) => {
             if (!this.selectedFlags.includes(flagToHide)){
-                
                 flagToHide._setOpacity(value);
             }
         });
     }
 
+    _fadeInCluster(cluster, clickedFlag) {
+
+        console.debug("   -> Fading cluster", cluster);
+
+        if (cluster.name === "Main") return;
+
+        const flagsToHide = this.flags.filter((f) =>
+            f !== clickedFlag && f.clusters.includes(cluster)
+        );
+
+        // Show each flag that was found
+        flagsToHide.forEach((flagToHide) => {
+            if (!this.selectedFlags.includes(flagToHide)){
+                flagToHide._setOpacity(1);
+                if (!App.userSettings.capZoneOnHover) {
+                    if (this.map.getZoom() > this.map.detailedZoomThreshold){
+                        flagToHide.revealCapZones();
+                    }
+                }
+            }
+        });
+    }
+
+    _fadeOutCluster(cluster, clickedFlag) {
+
+        console.debug("   -> Fading cluster", cluster);
+
+        if (cluster.name === "Main") return;
+
+        const flagsToHide = this.flags.filter((f) =>
+            f !== clickedFlag && f.clusters.includes(cluster)
+        );
+
+        // Show each flag that was found
+        flagsToHide.forEach((flagToHide) => {
+            if (!this.selectedFlags.includes(flagToHide)){
+                flagToHide._setOpacity(0.15);
+                flagToHide.hideCapZones();
+            }
+        });
+    }
 
     /**
      * xxxx

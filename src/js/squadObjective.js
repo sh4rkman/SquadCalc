@@ -13,12 +13,11 @@ export class SquadObjective {
         this.layer = layer;
         this.latlng = latlng;
         this.clusters = [];
-        this.capZones = new LayerGroup().addTo(this.layerGroup);
+        this.capZones = new LayerGroup();
         this.isMain = isMain;
         this.isHidden = false;
         this.position = cluster.pointPosition;
         this.isNext = false;
-
 
         console.debug("creating flag", this.name, "at position", this.position);
 
@@ -125,6 +124,7 @@ export class SquadObjective {
                 fillColor: CZCOLOR,
                 fillOpacity: CZFILLOPACITY,
                 weight: CZWEIGHT,
+                className: "capZone"
             }).addTo(this.layer.activeLayerMarkers);
             this.capZones.addLayer(capZone);
             return;
@@ -167,9 +167,10 @@ export class SquadObjective {
                 opacity: CZOPACITY,
                 weight: CZWEIGHT,
                 fillOpacity: CZFILLOPACITY,
+                className: "capZone"
             }).addTo(this.layer.activeLayerMarkers);
             this.capZones.addLayer(capZone);
-
+        
             // For capsules we'll need to create 2 circles aswell
             if (cap.isCapsule) {
                 let latSphere1 = (capZone.getBounds().getNorthEast().lat + capZone.getBounds().getNorthWest().lat ) / 2;
@@ -187,6 +188,7 @@ export class SquadObjective {
                     fillColor: CZCOLOR,
                     fillOpacity: CZFILLOPACITY,
                     weight: CZWEIGHT,
+                    className: "capZone"
                 }).addTo(this.layer.activeLayerMarkers);
                 this.capZones.addLayer(circle1);
 
@@ -197,9 +199,9 @@ export class SquadObjective {
                     fillColor: CZCOLOR,
                     fillOpacity: CZFILLOPACITY,
                     weight: CZWEIGHT,
+                    className: "capZone"
                 }).addTo(this.layer.activeLayerMarkers);
                 this.capZones.addLayer(circle2);
-
 
                 // Only rotate the circles if the capsule is not vertical
                 if (cap.capsuleLength != cap.capsuleRadius) {
@@ -209,12 +211,10 @@ export class SquadObjective {
             }
 
             this.layer.rotateRectangle(capZone, totalRotation);
-            //this.layer.rotateRectangle(capZone, cap.boxExtent.rotation_z);
             this.capZones.addLayer(capZone);
         }
 
     }
-
 
 
     unselect(){
@@ -227,10 +227,10 @@ export class SquadObjective {
         }
 
         if (this.isMain) { 
-            if (this.layer.layerData.gamemode === "AAS" || this.layer.layerData.gamemode === "Destruction"){
-                className += " main unselectable";
-            } else {
+            if (this.layer.layerData.gamemode === "RAAS"){
                 className += " main selectable";
+            } else {
+                className += " main unselectable";
             }
         } else {
             if (this.layer.layerData.gamemode != "AAS" && this.layer.layerData.gamemode != "Destruction"){
@@ -243,7 +243,6 @@ export class SquadObjective {
             if (this.layer.layerData.gamemode != "AAS" && this.layer.layerData.gamemode != "Destruction"){
                 className += " next"; 
             }
-
         } else {
             this.isNext = false;
         }
@@ -281,41 +280,36 @@ export class SquadObjective {
     updatePosition() {
 
         let lowestPossiblePosition;
-
-        lowestPossiblePosition = this.clusters.reduce((min, item) =>
-            item.pointPosition < min ? item.pointPosition : min,
-        this.clusters[0].pointPosition
-        );
-
-        if (this.layer.reversed) {
-            lowestPossiblePosition = this.clusters.reduce((max, item) =>
-                item.pointPosition-1 > max ? item.pointPosition : max,
-            this.clusters[0].pointPosition
-            );
-        }
-
-        this.position = lowestPossiblePosition;
-
-        // default parameters for AAS
         let className = "flag";
         let html = "";
 
+        if (this.layer.reversed) {
+            lowestPossiblePosition = this.clusters.reduce((max, item) => {
+                return item.pointPosition - 1 > max ? item.pointPosition : max;
+            }, this.clusters[0].pointPosition);
+        } else {
+            lowestPossiblePosition = this.clusters.reduce((min, item) => {
+                return item.pointPosition < min ? item.pointPosition : min;
+            }, this.clusters[0].pointPosition);
+        }
+        
+        this.position = lowestPossiblePosition;
+    
         if (App.userSettings.circlesFlags){
             className += " circle";
         }
 
-        // if RAAS/Invasion, add the flag number and a colored icon
-        if (this.layer.layerData.gamemode != "AAS" && this.layer.layerData.gamemode != "Destruction") {
-            className += " flag" + this.position;
-            html = this.position;
-        }
-
         if (this.isMain) { 
-            html = "";
-            if (this.layer.layerData.gamemode === "AAS" || this.layer.layerData.gamemode === "Destruction"){
+            if (this.layer.layerData.gamemode === "AAS" || this.layer.layerData.gamemode === "Destruction" || this.layer.layerData.gamemode === "Invasion"){
                 className += " main unselectable";
             } else {
                 className += " main selectable";
+            }
+        } else {
+            // if RAAS/Invasion, add the flag number and a colored icon
+            if (this.layer.layerData.gamemode != "AAS" && this.layer.layerData.gamemode != "Destruction") {
+                className += " flag" + this.position;
+                html = this.position;
             }
         }
 
@@ -371,12 +365,20 @@ export class SquadObjective {
         // Cancel the timeout if the user moves the mouse out before 1 second
         clearTimeout(this.mouseOverTimeout);
 
+        if (App.userSettings.capZoneOnHover) this.hideCapZones();
+
         this.layer.flags.forEach((flag) => {
+            if (flag.isHidden) return;
+
             flag._setOpacity(1);
+            if (!App.userSettings.capZoneOnHover) {
+                if (this.layer.map.getZoom() > this.layer.map.detailedZoomThreshold){
+                    flag.revealCapZones();
+                }
+            }
         });
 
-        if (!App.userSettings.capZoneOnHover) return;
-        this.hideCapZones();
+
     }
 
 
@@ -386,18 +388,19 @@ export class SquadObjective {
         });
     }
 
+
     hideCapZones(){
         this.capZones.eachLayer((cap) => {
             cap.setStyle({ opacity: 0, fillOpacity: 0 });
         });
     }
 
+
     hide(){
         console.debug("      -> Hiding flag: ", this.name);
         this.nameText.removeFrom(this.layerGroup);
         this.flag.removeFrom(this.layerGroup);
         this.flag.options.interactive = false;
-        this.hideCapZones();
         this.flag.off();
         this.isHidden = true;
     }

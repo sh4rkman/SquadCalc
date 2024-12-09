@@ -11,6 +11,7 @@ body {
     background: linear-gradient(white, white);
     /* Workaround for Chromium's selective color inversion */
     border-radius: 50%;
+    pointer-events: none;
     filter: drop-shadow(0 0 10px white);
     z-index: 9999;
 }

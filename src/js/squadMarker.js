@@ -236,11 +236,14 @@ export var squadWeaponMarker = squadMarker.extend({
         } else {
             // The weapon is capped below 40°
             // ex: for Emplacement UB-32 we set the range to 25-35°
-            if (App.activeWeapon.minElevation[1] < launchElevation) { 
+            if (App.activeWeapon.minElevation[1] < 45) { 
                 maxElevation = App.activeWeapon.minElevation[1];
                 launchElevation = maxElevation -10;
             }
         }
+
+        console.log("Launch Elevation: ", launchElevation);
+        console.log("Max Elevation: ", maxElevation);
 
         // Start iterating at 360° for every turnDirectionAngle
         for (let angle = 0; angle < maxAngle; angle += turnAngleStep) {
@@ -630,7 +633,7 @@ export var squadTargetMarker = squadMarker.extend({
         this.spreadMarker2 = new ellipse(latlng, [0, 0], 0, this.spreadOptionsOff).addTo(this.map.markersGroup);
         this.updateSpread();
 
-        // Initiate Spread Ellipse
+        // Initiate Damage Ellipse
         this.hundredDamageRadius = new ellipse(latlng, [0, 0], 0, this.hundredDamageCircleOn).addTo(this.map.markersGroup);
         this.twentyFiveDamageRadius = new ellipse(latlng, [0, 0], 0, this.twentyFiveDamageCircleOn).addTo(this.map.markersGroup);
         this.updateDamageRadius();
@@ -737,7 +740,7 @@ export var squadTargetMarker = squadMarker.extend({
             } else {
                 elevation = elevation.deg.toFixed(1);
             }
-            timeOfFlight = `${timeOfFlight.toFixed(1)}<span data-i18n="common:m">${i18next.t("common:s")}</span>`;
+            timeOfFlight = `${timeOfFlight.toFixed(0)}<span data-i18n="common:m">${i18next.t("common:s")}</span>`;
         }
 
         content = `<span class=calcNumber></span></br><span>${elevation}</span>`;
@@ -809,6 +812,7 @@ export var squadTargetMarker = squadMarker.extend({
     updateDamageRadius: function(){
         const RADIUS100 = App.activeWeapon.hundredDamageRadius * this.map.gameToMapScale;
         const RADIUS25 = App.activeWeapon.twentyFiveDamageRadius * this.map.gameToMapScale;
+        const hasFiringSolution1 = !isNaN(this.firingSolution1.elevation.high.rad) || !isNaN(this.firingSolution1.elevation.low.rad);
         var baseRadiiX = this.spreadMarker1.getRadius().x;
         var baseRadiiY = this.spreadMarker1.getRadius().y;
         var baseBearing = 0;
@@ -823,18 +827,19 @@ export var squadTargetMarker = squadMarker.extend({
         if (App.userSettings.spreadRadius){
 
             if (this.map.activeWeaponsMarkers.getLayers().length == 2) {
-
-                if (isNaN(this.firingSolution1.elevation.high.rad) && isNaN(this.firingSolution2.elevation.high.rad)) {
+                const hasFiringSolution2 = !isNaN(this.firingSolution2.elevation.high.rad) || !isNaN(this.firingSolution2.elevation.low.rad);
+                
+                if (!hasFiringSolution1 && !hasFiringSolution2) {
                     this.hundredDamageRadius.setStyle(this.spreadOptionsOff);
                     this.twentyFiveDamageRadius.setStyle(this.spreadOptionsOff);
                     return;
                 }
 
-                if (isNaN(this.firingSolution1.elevation.high.rad)) {
+                if (!hasFiringSolution1) {
                     baseRadiiX = this.spreadMarker2.getRadius().x;
                     baseRadiiY = this.spreadMarker2.getRadius().y;
                     baseBearing = this.firingSolution2.bearing;
-                } else if (isNaN(this.firingSolution2.elevation.high.rad)) {
+                } else if (!hasFiringSolution2) {
                     baseRadiiX = this.spreadMarker1.getRadius().x;
                     baseRadiiY = this.spreadMarker1.getRadius().y;
                     baseBearing = this.firingSolution1.bearing;
@@ -846,7 +851,7 @@ export var squadTargetMarker = squadMarker.extend({
                 }
 
             } else {
-                if (isNaN(this.firingSolution1.elevation.high.rad)) {
+                if (!hasFiringSolution1) {
                     this.hundredDamageRadius.setStyle(this.spreadOptionsOff);
                     this.twentyFiveDamageRadius.setStyle(this.spreadOptionsOff);
                     return;
@@ -859,15 +864,15 @@ export var squadTargetMarker = squadMarker.extend({
             this.hundredDamageRadius.setRadius([baseRadiiX + RADIUS100, baseRadiiY + RADIUS100]);
             this.twentyFiveDamageRadius.setRadius([baseRadiiX + RADIUS25, baseRadiiY + RADIUS25]);
         } else {
-
+            const hasFiringSolution2 = !isNaN(this.firingSolution2.elevation.high.rad) || !isNaN(this.firingSolution2.elevation.low.rad);
             if (this.map.activeWeaponsMarkers.getLayers().length == 2) {
-                if (isNaN(this.firingSolution1.elevation.high.rad) && isNaN(this.firingSolution2.elevation.high.rad)) {
+                if (!hasFiringSolution1 && !hasFiringSolution2) {
                     this.hundredDamageRadius.setStyle(this.spreadOptionsOff);
                     this.twentyFiveDamageRadius.setStyle(this.spreadOptionsOff);
                     return;
                 }
             } else {
-                if (isNaN(this.firingSolution1.elevation.high.rad)) {
+                if (!hasFiringSolution1) {
                     this.hundredDamageRadius.setStyle(this.spreadOptionsOff);
                     this.twentyFiveDamageRadius.setStyle(this.spreadOptionsOff);
                     return;
@@ -909,62 +914,33 @@ export var squadTargetMarker = squadMarker.extend({
      * Set/Update the target icon according to it's firing solutions and user settings
      * @param {Boolean} animated - If the icon should be animated when set
      */
-    updateIcon: function(animated = false){
-        var icon;
-        var elevation;
-        var elevation2;
+    updateIcon: function (animated = false) {
+        const layers = this.map.activeWeaponsMarkers.getLayers();
+        const angleType = layers[0].angleType;
+        const elevationKey = angleType === "high" ? "high" : "low";
+    
+        const elevation = this.firingSolution1.elevation[elevationKey]?.rad;
+        const elevation2 =
+            layers.length === 2 ? this.firingSolution2.elevation[elevationKey]?.rad : null;
+    
+        const isSingleLayer = layers.length === 1;
+        const bothElevationsInvalid = isNaN(elevation) && isNaN(elevation2);
+        const targetAnimation = App.userSettings.targetAnimation;
+        let icon;
 
-        if (this.map.activeWeaponsMarkers.getLayers()[0].angleType === "high"){
-            elevation = this.firingSolution1.elevation.high.rad;
-            if (this.map.activeWeaponsMarkers.getLayers().length === 2){
-                elevation2 = this.firingSolution2.elevation.high.rad;
-            }
+        // Determine the base icon type
+        if (isSingleLayer && isNaN(elevation)) {
+            icon = targetAnimation ? targetIconDisabled : targetIconMinimalDisabled;
+        } else if (!isSingleLayer && bothElevationsInvalid) {
+            icon = targetAnimation ? targetIconDisabled : targetIconMinimalDisabled;
         } else {
-            elevation = this.firingSolution1.elevation.low.rad;
-            if (this.map.activeWeaponsMarkers.getLayers().length === 2){
-                elevation2 = this.firingSolution2.elevation.low.rad;
-            }
-        }
-
-        if (this.map.activeWeaponsMarkers.getLayers().length === 1) {
-            if (isNaN(elevation)){
-                if (App.userSettings.targetAnimation){ 
-                    icon = targetIconDisabled;
-                } else { 
-                    icon = targetIconMinimalDisabled;
-                }
+            if (targetAnimation) {
+                icon = animated ? targetIconAnimated : targetIcon1;
             } else {
-                if (App.userSettings.targetAnimation){ 
-                    if (animated){
-                        icon = targetIconAnimated;
-                    } else {
-                        icon = targetIcon1;
-                    }
-                } else { 
-                    icon = targetIconMinimal;
-                }
+                icon = targetIconMinimal;
             }
         }
-        else {
-            if (isNaN(elevation) && isNaN(elevation2)){
-                if (App.userSettings.targetAnimation){ 
-                    icon = targetIconDisabled;
-                } else { 
-                    icon = targetIconMinimalDisabled;
-                }
-            } else {
-                if (App.userSettings.targetAnimation){
-                    if (animated){
-                        icon = targetIconAnimated;
-                    } else {
-                        icon = targetIcon1;
-                    }
-                } else { 
-                    icon = targetIconMinimal;
-                }
-            }
-        }
-        
+     
         // hack leaflet to avoid unwanted click event
         // https://github.com/Leaflet/Leaflet/issues/5067
         setTimeout((function (this2) {
