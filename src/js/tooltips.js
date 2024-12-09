@@ -6,8 +6,20 @@ export var tooltip_save;
 export var tooltip_copied;
 export var tooltip_coordPreview;
 
-
 const helpDialog = document.querySelector("#helpDialog");
+
+const commonToolipsSettings = {
+    animation: "fade",
+    placement: "right",
+    allowHTML: true,
+    touch: false,
+    theme: "settingsTooltips",
+    hideOnClick: true,
+    delay: 50,
+    maxWidth: 200,
+    appendTo: helpDialog,
+};
+
 
 tippy("#settings", {
     allowHTML: true,
@@ -27,45 +39,21 @@ tooltip_copied = document.querySelector("#settings")._tippy;
 tooltip_copied.disable();
 
 tippy("span[data-i18n='settings:showDamage']", {
-    animation: "fade",
-    placement: "bottom",
-    allowHTML: true,
-    touch: false,
-    theme: "settingsTooltips",
-    hideOnClick: true,
-    maxWidth: 200,
-    delay: 50,
-    appendTo: helpDialog,
+    ...commonToolipsSettings,
     onShow(tip) {
         tip.setContent(`${i18next.t("tooltips:damageRadiusTooltip")}`);
     },
 });
 
 tippy("span[data-i18n='settings:mapAnimationSettings']", {
-    animation: "fade",
-    placement: "bottom",
-    allowHTML: true,
-    touch: false,
-    theme: "settingsTooltips",
-    hideOnClick: true,
-    delay: 50,
-    maxWidth: 200,
-    appendTo: helpDialog,
+    ...commonToolipsSettings,
     onShow(tip) {
         tip.setContent(`${i18next.t("tooltips:smoothMapTooltip")}`);
     },
 });
 
 tippy("span[data-i18n='settings:highquality']", {
-    animation: "fade",
-    placement: "bottom",
-    allowHTML: true,
-    touch: false,
-    theme: "settingsTooltips",
-    hideOnClick: true,
-    delay: 50,
-    maxWidth: 275,
-    appendTo: helpDialog,
+    ...commonToolipsSettings,
     onShow(tip) {
         tip.setContent(`
             ${i18next.t("tooltips:highqualityTooltip")} <br><br> 
@@ -75,105 +63,49 @@ tippy("span[data-i18n='settings:highquality']", {
 });
 
 tippy("span[data-i18n='settings:experimentalWeapons']", {
-    animation: "fade",
-    placement: "bottom",
-    allowHTML: true,
-    touch: false,
-    theme: "settingsTooltips",
-    hideOnClick: true,
-    delay: 50,
-    maxWidth: 275,
-    appendTo: helpDialog,
+    ...commonToolipsSettings,
     onShow(tip) {
         tip.setContent(`${i18next.t("tooltips:experimentalWeaponsTooltip")}`);
     },
 });
 
 tippy("span[data-i18n='settings:showAnimations']", {
-    animation: "fade",
-    placement: "bottom",
-    allowHTML: true,
-    touch: false,
-    theme: "settingsTooltips",
-    hideOnClick: true,
-    delay: 50,
-    maxWidth: 200,
-    appendTo: helpDialog,
+    ...commonToolipsSettings,
     onShow(tip) {
         tip.setContent(`${i18next.t("tooltips:targetAnimationTooltip")}`);
     },
 });
 
 tippy("span[data-i18n='settings:showKeypad']", {
-    animation: "fade",
-    placement: "bottom",
-    allowHTML: true,
-    touch: false,
-    theme: "settingsTooltips",
-    hideOnClick: true,
-    delay: 50,
-    maxWidth: 200,
-    appendTo: helpDialog,
+    ...commonToolipsSettings,
     onShow(tip) {
         tip.setContent(`${i18next.t("tooltips:showKeypadTooltip")}`);
     },
 });
 
 tippy("span[data-i18n='settings:targetEmphasis']", {
-    animation: "fade",
-    placement: "bottom",
-    allowHTML: true,
-    touch: false,
-    theme: "settingsTooltips",
-    hideOnClick: true,
-    delay: 50,
-    maxWidth: 200,
-    appendTo: helpDialog,
+    ...commonToolipsSettings,
     onShow(tip) {
         tip.setContent(`${i18next.t("tooltips:targetEmphasisTooltip")}`);
     },
 });
 
 tippy("span[data-i18n='settings:useClassicCursor']", {
-    animation: "fade",
-    placement: "bottom",
-    allowHTML: true,
-    touch: false,
-    theme: "settingsTooltips",
-    hideOnClick: true,
-    delay: 50,
-    maxWidth: 200,
-    appendTo: helpDialog,
+    ...commonToolipsSettings,
     onShow(tip) {
         tip.setContent(`${i18next.t("tooltips:useClassicCursorTooltip")}`);
     },
 });
 
 tippy("span[data-i18n='settings:showSpread']", {
-    animation: "fade",
-    placement: "bottom",
-    allowHTML: true,
-    touch: false,
-    theme: "settingsTooltips",
-    hideOnClick: true,
-    delay: 50,
-    maxWidth: 200,
-    appendTo: helpDialog,
+    ...commonToolipsSettings,
     onShow(tip) {
         tip.setContent(`${i18next.t("tooltips:showSpreadTooltip")}`);
     },
 });
 
 tippy("span[data-i18n='settings:realMaxRange']", {
-    animation: "fade",
-    placement: "bottom",
-    allowHTML: true,
-    touch: false,
-    theme: "settingsTooltips",
-    hideOnClick: true,
-    delay: 50,
-    maxWidth: 200,
-    appendTo: helpDialog,
+    ...commonToolipsSettings,
     onShow(tip) {
         tip.setContent(`
             ${i18next.t("tooltips:showMaxRangeTooltip")} <br><br>

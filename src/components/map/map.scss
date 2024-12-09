@@ -76,14 +76,11 @@ $flag-circle-opacity: 0.2;
                 width: 30px!important;
                 height: 30px!important;
                 align-content: center;
-                font-size: 1.5em;
                 letter-spacing: 0;
+                outline: solid 3px rgb(104, 104, 104);
                 &.selected {
-                    background-color: rgba(0, 128, 0, 0.5);
-                    outline: solid rgb(0, 128, 0) 3px;
-                    &::before {
-                        content: "✔";
-                    }
+                    background-color: rgba(0, 128, 0, 1);
+                    outline-color: rgb(0, 90, 0);
                 }
             }
             &:active {
@@ -164,7 +161,6 @@ $flag-circle-opacity: 0.2;
                 background-color: rgba(197, 0, 0);
                 &.circle {
                     background-color: rgba(197, 0, 0);
-                    border: none;
                     outline-color: rgb(143, 0, 0);
                     outline-width: 3px;
                     letter-spacing: 0;
@@ -214,8 +210,31 @@ $flag-circle-opacity: 0.2;
             animation: target-appear 0.25s ease-in-out forwards 0s;
         }
         .gridText {
-            @include variables.text-outline;
+            @include variables.light-text-outline;
             font-size: 1.1em;
+        }
+        .helipads {
+            background: url('../../img/icons/deployable_helipad.webp') no-repeat center center;
+            background-size: contain;
+            transition: opacity 0.1s ease-in;
+        }
+        .repairStations {
+            background: url('../../img/icons/deployable_repairstation.webp') no-repeat center center;
+            background-size: contain;
+            transition: opacity 0.1s ease-in;
+        }
+        .ammocrates {
+            background: url('../../img/icons/deployable_ammocrate.webp') no-repeat center center;
+            background-size: contain;
+            transition: opacity 0.1s ease-in;
+        }
+        .destructionPhase {
+            @include variables.light-text-outline;
+            font-size: 2em;
+            text-align: center;
+            font-family: variables.$mainFont, Times, "Times New Roman", serif;
+            font-weight: bolder;
+            letter-spacing: normal;
         }
     }
 }
@@ -314,51 +333,6 @@ $flag-circle-opacity: 0.2;
     z-index: 99;
 }
 
-.helipads {
-    background: url('../../img/icons/deployable_helipad.webp') no-repeat center center;
-    background-size: contain;
-    transition: opacity 0.1s ease-in;
-}
-
-.repairStations {
-    background: url('../../img/icons/deployable_repairstation.webp') no-repeat center center;
-    background-size: contain;
-    transition: opacity 0.1s ease-in;
-}
-
-.ammocrates {
-    background: url('../../img/icons/deployable_ammocrate.webp') no-repeat center center;
-    background-size: contain;
-    transition: opacity 0.1s ease-in;
-}
-
-.destructionPhase {
-    @include variables.light-text-outline;
-    font-size: 2em;
-    text-align: center;
-    font-family: variables.$mainFont, Times, "Times New Roman", serif;
-    font-weight: bolder;
-    letter-spacing: normal;
-}
-
-.protectionZonesTexts {
-    @include variables.light-text-outline;
-    font-size: 0.7em;
-    text-align: center;
-    font-family: variables.$mainFont, Times, "Times New Roman", serif;
-    font-style: italic;
-    color: rgb(255, 88, 88);
-    width: 200px!important;
-    margin-left: -100px!important;
-    margin-top: -11px!important;
-    height: 10px!important;
-    line-height: 100%;
-    letter-spacing: 0.2em;
-    transition: opacity 0.1s ease-in;
-}
-// Disable hover styles for touch devices
-@media (hover: none) and (pointer: coarse) {
-    .btn:hover {
-        background-color: unset; // Remove hover color on touch
-    }
+.capZone {
+    transition: opacity 0.25s ease-in-out, fill-opacity 0.25s ease-in-out;
 }

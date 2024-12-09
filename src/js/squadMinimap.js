@@ -87,7 +87,6 @@ export var squadMinimap = Map.extend({
         this.on("zoomend", this._handleZoom, this);
 
         createSnow(); // creates snowflakes and generate css for them
-        //showSnow(false); // snow can be disabled using showSnow function
 
     },
 
@@ -98,7 +97,7 @@ export var squadMinimap = Map.extend({
 
         this.gameToMapScale = this.pixelSize / this.activeMap.size;
         this.mapToGameScale = this.activeMap.size / this.pixelSize;
-        this.detailedZoomThreshold = 3 + (this.activeMap.size/7000);
+        this.detailedZoomThreshold = ( 3 + (this.activeMap.size/7000) ) * 0.8;
        
         // Load Heightmap
         this.heightmap = new squadHeightmap(this);
@@ -434,7 +433,7 @@ export var squadMinimap = Map.extend({
         // If there is a layer selected, reveal main/capzone when enough zoomed in
         if (!this.layer) return;
 
-        if (this.getZoom() > this.detailedZoomThreshold*0.8){
+        if (this.getZoom() > this.detailedZoomThreshold){
             this.layer.revealAllCapzones();
             //this.layer.setMainZoneOpacity(true);
         } else {

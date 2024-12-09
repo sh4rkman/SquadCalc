@@ -740,7 +740,7 @@ export var squadTargetMarker = squadMarker.extend({
             } else {
                 elevation = elevation.deg.toFixed(1);
             }
-            timeOfFlight = `${timeOfFlight.toFixed(1)}<span data-i18n="common:m">${i18next.t("common:s")}</span>`;
+            timeOfFlight = `${timeOfFlight.toFixed(0)}<span data-i18n="common:m">${i18next.t("common:s")}</span>`;
         }
 
         content = `<span class=calcNumber></span></br><span>${elevation}</span>`;
@@ -925,9 +925,9 @@ export var squadTargetMarker = squadMarker.extend({
     
         const isSingleLayer = layers.length === 1;
         const bothElevationsInvalid = isNaN(elevation) && isNaN(elevation2);
-    
         const targetAnimation = App.userSettings.targetAnimation;
-    
+        let icon;
+
         // Determine the base icon type
         if (isSingleLayer && isNaN(elevation)) {
             icon = targetAnimation ? targetIconDisabled : targetIconMinimalDisabled;

@@ -1,24 +1,31 @@
 
 
-# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **34.1.0** *(2024-12-07)*
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **34.1.0** *(2024-12-09)*
 
 
-<img src="https://img.shields.io/badge/-%20improv%20-orange"> Clicking the enemy main in RAAS now reset layer and switch sides even if you are have already selected flags
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Clicking the enemy main in RAAS now resets the layer and switches sides even if you’ve already selected flags
 
-<img src="https://img.shields.io/badge/-%20fix%20-b22"> "Reveal Layer" settings is now correctly ticked by default
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Time of flight is now rounded when displayed next to markers to improve readability
 
-<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed simulations for emplaced UB32
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Previewing a layer now also hides faded-out flags' cap zones
 
-<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed RealMaxRange for emplaced UB32 (fix #241)
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> "Reveal Layer" settings are now correctly checked by default
 
-<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed Damage radiis not showing on emplaced UB32 (fix #242)
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed simulations for the emplaced UB32
 
-<img src="https://img.shields.io/badge/-%20fix%20-b22"> Snowflakes don't block mouseclicks anymore (...)
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed RealMaxRange for the emplaced UB32 (fix #241)
 
-<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed incorrect cursor on enemy main in Invasion (fix #237)
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed damage radii not showing on the emplaced UB32 (fix #242)
+
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Snowflakes no longer block mouse clicks
+
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed incorrect cursor on the enemy main in Invasion (fix #237)
+
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed Qalat, Compound 16, Lavender Farm, Riverside, Vineyard, and Police Station cap zones on Anvil RAAS v1, RAAS v2, and Invasion v1
+
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed Radio Station cap zones on Chora AAS v1 and AAS v2
 
 <img src="https://img.shields.io/badge/-%20dev%20-grey"> Added a script to convert heightmaps to .json in /js/tests/ (fix #240)
-
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
 
