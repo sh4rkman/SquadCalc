@@ -109,6 +109,16 @@ export class SquadObjective {
         const CZCOLOR = "rgb(255, 255, 255)";
         const CZWEIGHT = 2;
 
+        const CZOPTIONS = {
+            color: CZCOLOR,
+            opacity: CZOPACITY,
+            fillColor: CZCOLOR,
+            fillOpacity: CZFILLOPACITY,
+            weight: CZWEIGHT,
+            className: "capZone"
+        }
+
+
         // Capzone location whatever shape it has
         let location_x = -(cap.location_x - this.layer.offset_x) / 100 * -this.layer.map.gameToMapScale;
         let location_y = (cap.location_y - this.layer.offset_y) / 100 * -this.layer.map.gameToMapScale;
@@ -119,12 +129,7 @@ export class SquadObjective {
             let radius = cap.sphereRadius / 100 * this.layer.map.gameToMapScale;
             let capZone = new Circle(latlng, {
                 radius: radius,
-                color: CZCOLOR,
-                opacity: CZOPACITY,
-                fillColor: CZCOLOR,
-                fillOpacity: CZFILLOPACITY,
-                weight: CZWEIGHT,
-                className: "capZone"
+                ...CZOPTIONS,
             }).addTo(this.layer.activeLayerMarkers);
             this.capZones.addLayer(capZone);
             return;
@@ -161,14 +166,7 @@ export class SquadObjective {
             let capSECorner = [(location_y - rectangleRadiusY), (location_x - rectangleRadiusX)];
             let capBounds = [capNWCorner, capSECorner];
 
-            let capZone = new Rectangle(capBounds, {
-                color: CZCOLOR,
-                fillColor: CZCOLOR,
-                opacity: CZOPACITY,
-                weight: CZWEIGHT,
-                fillOpacity: CZFILLOPACITY,
-                className: "capZone"
-            }).addTo(this.layer.activeLayerMarkers);
+            let capZone = new Rectangle(capBounds, {...CZOPTIONS}).addTo(this.layer.activeLayerMarkers);
             this.capZones.addLayer(capZone);
         
             // For capsules we'll need to create 2 circles aswell
@@ -183,23 +181,13 @@ export class SquadObjective {
 
                 let circle1 = new Circle(latlng1, {
                     radius: cap.capsuleRadius / 100 * this.layer.map.gameToMapScale,
-                    color: CZCOLOR,
-                    opacity: CZOPACITY,
-                    fillColor: CZCOLOR,
-                    fillOpacity: CZFILLOPACITY,
-                    weight: CZWEIGHT,
-                    className: "capZone"
+                    ...CZOPTIONS,
                 }).addTo(this.layer.activeLayerMarkers);
                 this.capZones.addLayer(circle1);
 
                 let circle2 = new Circle(latlng2, {
                     radius: cap.capsuleRadius / 100 * this.layer.map.gameToMapScale,
-                    color: CZCOLOR,
-                    opacity: CZOPACITY,
-                    fillColor: CZCOLOR,
-                    fillOpacity: CZFILLOPACITY,
-                    weight: CZWEIGHT,
-                    className: "capZone"
+                    ...CZOPTIONS,
                 }).addTo(this.layer.activeLayerMarkers);
                 this.capZones.addLayer(circle2);
 
@@ -369,7 +357,6 @@ export class SquadObjective {
 
         this.layer.flags.forEach((flag) => {
             if (flag.isHidden) return;
-
             flag._setOpacity(1);
             if (!App.userSettings.capZoneOnHover) {
                 if (this.layer.map.getZoom() > this.layer.map.detailedZoomThreshold){
@@ -402,6 +389,7 @@ export class SquadObjective {
         this.flag.removeFrom(this.layerGroup);
         this.flag.options.interactive = false;
         this.flag.off();
+        this.hideCapZones();
         this.isHidden = true;
     }
 
