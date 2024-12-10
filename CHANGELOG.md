@@ -1,3 +1,14 @@
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **34.1.1** *(2024-12-11)*
+
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed some aeras around weapons/maps selectors where it was impossible to click on map/markers
+
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed Souk capzone on Sumari RAAS v1
+
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed Police Station capzones on Anvil Invasion v1
+
+
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
 
 
 # <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **34.1.0** *(2024-12-09)*

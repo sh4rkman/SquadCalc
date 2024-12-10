@@ -116,7 +116,7 @@ export class SquadObjective {
             fillOpacity: CZFILLOPACITY,
             weight: CZWEIGHT,
             className: "capZone"
-        }
+        };
 
 
         // Capzone location whatever shape it has

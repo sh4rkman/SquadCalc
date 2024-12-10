@@ -96,6 +96,7 @@
             // fix to top left corner
             left: 1em;
             position: fixed;
+            width: auto;
             .select2-container {
                 float: left;
                 font-size: 1em;
@@ -113,6 +114,7 @@
             right: 1em;
             top: 0;
             margin-top: 0;
+            width: auto;
             .select2-container {
                 float: right;
                 font-size: 1em;
