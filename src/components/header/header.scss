@@ -12,6 +12,7 @@
     .weaponSelector {
         z-index: 4;
         padding-top: 1em;
+        pointer-events: none;
         .select2-results__options {
             font-weight: 600;
             line-height: 1.1em;
@@ -36,6 +37,7 @@
     .mapSelector {
         padding-top: 1em;
         z-index: 5;
+        pointer-events: none;
         .select2-results__options {
             line-height: 0.7em;
             font-size: 0.9em;
@@ -79,6 +81,7 @@
     }
     .select2-container {
         @include variables.text-outline;
+        pointer-events: all;
         background-color: transparent;
         border-bottom: 1px solid variables.$mainTxtColor;
         line-height: 2.188em;

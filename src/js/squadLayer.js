@@ -609,21 +609,8 @@ export class SquadLayer {
             }        
         });
 
-        // Remove clusters that were not reachable from the previous flag
-        if (this.selectedReachableClusters.length > 0){
-            Array.from(reachableClusters).forEach((cluster) => {
-                if (!this.selectedReachableClusters.at(-1).has(cluster)){
-                    reachableClusters.delete(cluster);
-                    console.debug(" -> filtered because wasn't previously reachable :", cluster);
-                }
-            });
-        }
-
-        // At this point, `reachableClusters` holds all clusters that are reachable
-        console.debug("**************************");
-        console.debug("         DFS ENDED        ");
-        console.debug("**************************");
-        console.debug("Reachable clusters:", Array.from(reachableClusters));
+        //Remove clusters that were not reachable from the previous flag
+        reachableClusters = this._filterClusters(reachableClusters);
 
         // Something went wrong, we are in the wrong direction
         if (reachableClusters.size === 1 && this.currentPosition === 1){
@@ -731,6 +718,31 @@ export class SquadLayer {
     }
 
 
+    /**
+     * Remove clusters that were not reachable from the previous position
+     * @param {Set} reachableClusters - Set of reachable clusters
+     * @returns {Array} - List of reachable clusters
+     */
+    _filterClusters(reachableClusters) {
+        if (this.selectedReachableClusters.length > 0){
+            Array.from(reachableClusters).forEach((cluster) => {
+                if (!this.selectedReachableClusters.at(-1).has(cluster)){
+                    reachableClusters.delete(cluster);
+                    console.debug(" -> filtered because wasn't previously reachable :", cluster);
+                }
+            });
+        }
+
+        console.debug("**************************");
+        console.debug("         DFS ENDED        ");
+        console.debug("**************************");
+        console.debug("Reachable clusters:", Array.from(reachableClusters));
+
+        return reachableClusters;
+    }
+     
+     
+
     preview(flag) {
 
         console.debug("**************************");
@@ -757,22 +769,8 @@ export class SquadLayer {
             }
         });
 
-        // Remove clusters that were not reachable from the previous flag
-        if (this.selectedReachableClusters.length > 0){
-            Array.from(reachableClusters).forEach((cluster) => {
-                if (!this.selectedReachableClusters.at(-1).has(cluster)){
-                    reachableClusters.delete(cluster);
-                    console.debug(" -> filtered because wasn't previously reachable :", cluster);
-                }
-            });
-        }
-
-        // At this point, `reachableClusters` holds all clusters that are reachable from flag
-        console.debug("**************************");
-        console.debug("         DFS ENDED        ");
-        console.debug("**************************");
-        console.debug("Reachable clusters:", Array.from(reachableClusters));
-
+        reachableClusters = this._filterClusters(reachableClusters);
+      
 
         /***************  RENDERING  ***************/
         /* We can finally act on the flags now !  */
@@ -968,24 +966,6 @@ export class SquadLayer {
         flagsToHide.forEach((flagToHide) => {
             if (!this.selectedFlags.includes(flagToHide)){
                 flagToHide.hide();
-            }
-        });
-    }
-
-    _changeClusterOpacity(cluster, clickedFlag, value) {
-
-        console.debug("   -> Fading cluster", cluster);
-
-        if (cluster.name === "Main") return;
-
-        const flagsToHide = this.flags.filter((f) =>
-            f !== clickedFlag && f.clusters.includes(cluster)
-        );
-
-        // Show each flag that was found
-        flagsToHide.forEach((flagToHide) => {
-            if (!this.selectedFlags.includes(flagToHide)){
-                flagToHide._setOpacity(value);
             }
         });
     }

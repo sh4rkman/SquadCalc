@@ -26,16 +26,16 @@
 
 # <div align="center">Table of Contents</div>
 
-1. [Screenshots](#screenshots)
-2. [Features](#features)
-   - [Elevations Calculations](#elevations-calculations)
-   - [Map Layers](#map-layers)
-   - [Commonly Used Spot](#commonly-used-spot)
-   - [Advanced Information & Simulation](#advanced-informations--simulation)
-   - [Advanced Customisation](#advanced-customisation)
-3. [Squad Mortar Overlay Compatibility](#squad-mortar-overlay-compatibility)
-4. [Weapons Support](#weapons-support)
-4. [Support the project](#support-the-project)
+
+- [Screenshots](#screenshots)  
+- [Mortar Calculator](#features)
+  - [Elevations Calculations](#elevations-calculations)
+  - [Commonly Used Spot](#commonly-used-spot)
+  - [Advanced Customisation & Informations](#Advanced-Customisation--Informations)
+  - [Map Layers](#map-layers)
+  - [Squad Mortar Overlay Compatibility](#squad-mortar-overlay-compatibility)
+- [Attributions](#Attributions)
+- [Support the project](#support-the-project)
 
 
 </br>
@@ -45,8 +45,10 @@
 </br>
 
 <div align="center">
-  <picture><img src="./src/img/github/desktop_ui_1.webp" alt="classic preview"></picture>
+  <picture><img src="./src/img/github/desktop_ui_1.webp" alt="classic preview"></picture>  
+  <picture><img src="./src/img/github/desktop_ui_5.webp" alt="Lane Finder preview"></picture>
   <picture><img src="./src/img/github/desktop_ui_2.webp" alt="topographic preview"></picture>
+    <picture><img src="./src/img/github/desktop_ui_6.webp" alt="capzone/mains preview"></picture>
   <picture><img src="./src/img/github/desktop_ui_3.webp" alt="weapon information preview"></picture>
   <picture><img src="./src/img/github/desktop_ui_4.webp" alt="calculations information preview"></picture>
   <picture><img src="./src/img/github/desktop_ui_0.webp" alt="legacy preview"></picture>
@@ -65,7 +67,7 @@ SquadCalc utilizes heightmaps extracted from the Squad SDK to precisely compute 
 ## **Map Layers**
 
 <div align="center">
-  <picture><img src="./src/img/github/layers.webp" alt="map layers"></picture>
+  <picture><img width="50%" src="./src/img/github/layers.webp" alt="map layers"></picture>
 </div>
 
 ### Base map :
@@ -82,34 +84,29 @@ A mix of bump map, contour map with a touch of hypsometric colors for a complete
 
 ## **Commonly used spot**
 
-If you're having trouble finding a good spot to place your mortar or weapons, activate the 'Frequent Locations' feature to see where other players commonly set theirs!
+Squadcalc is logging up to 15000 weapon positions for each map and each weapons, thus allowing to create a dynamic heatmap of where other players commonly set their weapons. If you're having trouble finding a good spot to place your mortar or weapons, activate the 'Frequent Locations' feature !
 
 <div align="center">
-  <picture><img src="./src/img/github/heatmap.webp" alt="commonly used spots"></picture>
+  <picture><img width="60%" src="./src/img/github/heatmap.webp" alt="commonly used spots"></picture>
 </div>
 
-## **Advanced informations & Simulation**
 
-Get a better and complete understanding of your shots and visualise a simulation of the projectile path and the terrain between you and your targets. 
-You can even see if terrain is going to block your projectiles when using low angle weapons ! (UB/GRAD) 
-
-<div align="center">
-  <picture>
-    <img src="./src/img/github/simulation.webp" alt="target information">
-  </picture>
-  <picture>
-    <img src="./src/img/github/weaponInformation.webp" alt="weapon information">
-  </picture>
-</div>
-
-## **Advanced customisation**
+## **Advanced Customisation & Informations**
 
 Want to see Spread radius, time of flight, distance AND bearing for each targets ? You can.  
 Rather have a minimalist/non-clustered map ? you can too. Hop in settings to customise everything.
 
+Get a better and complete understanding of your shots and visualise a simulation of the projectile path and the terrain between you and your targets. You can even see if terrain is going to block your projectiles when using low angle weapons ! (UB/GRAD) 
+
 <div align="center">
   <picture>
-      <img src="./src/img/github/settings.webp" alt="settings">
+      <img width="60%" src="./src/img/github/settings.webp" alt="settings">
+  </picture>
+    <picture>
+    <img width="46%" src="./src/img/github/simulation.webp" alt="target information">
+  </picture>
+  <picture>
+    <img width="40%" src="./src/img/github/weaponInformation.webp" alt="weapon information">
   </picture>
 </div>
 
@@ -124,30 +121,13 @@ It allows :
 * Having ingame markers automatically merged into SquadCalc map to quickly place the right targets
 * Having an ingame overlay with the current SquadCalc calculations displayed in front of Squad
 
-### [>> Download Squad Mortar Overlay last version <<](https://github.com/Devil4ngle/SquadMortarOverlay/releases)
+### <div align="center">[> Download Squad Mortar Overlay <](https://github.com/Devil4ngle/SquadMortarOverlay/releases)</div>
 
 </br>
 
 <div align="center">
-  <picture><img src="./src/img/github/squadmortaroverlay.webp" alt="squad mortar overlay">></picture>
+  <picture><img width="60%" src="./src/img/github/squadmortaroverlay.webp" alt="squad mortar overlay">></picture>
 </div>
-
-
-
-</br></br></br>
-# <div align="center">Weapons Support</div>
-</br>
-
-|ICON |       **NAME**   | Range |
-|--------|-------|-------|
-|<img height="35" src="./src/img/icons/mortar.png">| Mortar | 1237m |
-|<img height="35" src="./src/img/icons/ub32_deployable.png">| UB-32 | 2245m |
-|<img height="35" src="./src/img/icons/hellcannon_white.png">| Hell Canon | 923m |
-|<img height="35" src="./src/img/icons/technical_mortar_white.png">| Technicals Mortars | 1237m |
-|<img height="30" src="./src/img/icons/ub32_white.png">| Technicals/BRDM UB-32 | 2245m |
-|<img height="35" src="./src/img/icons/mlrs_white.png">| BM-21 Grad | 2045m |
-|<img height="35" src="./src/img/icons/m113a3_white.png">| M1064-A3 120mm | 2062m |
-|<img height="35" src="./src/img/icons/mk19_rws_white.png">| MK-19 RWS *(Experimental)* | 5647m |  
 
 
 </br></br></br>
@@ -157,6 +137,7 @@ It allows :
 * Map System built on **[Leaflet JS](https://leafletjs.com/)**
 * Map Images, Icons are from SquadSDK by **[OffWorld Industries](https://www.offworldindustries.com/)**
 * Map Data is extracted thanks to **[Squad-Wiki Pipeline Map Data](https://github.com/Squad-Wiki/squad-wiki-pipeline-map-data)** SDK extractor Assets
+* Thanks to everyone supporting the project with kinds words, clever suggestions, and better code than mine
 
 
 

@@ -242,9 +242,6 @@ export var squadWeaponMarker = squadMarker.extend({
             }
         }
 
-        console.log("Launch Elevation: ", launchElevation);
-        console.log("Max Elevation: ", maxElevation);
-
         // Start iterating at 360° for every turnDirectionAngle
         for (let angle = 0; angle < maxAngle; angle += turnAngleStep) {
             let left = estimatedMaxDistance - 500;
@@ -304,7 +301,7 @@ export var squadWeaponMarker = squadMarker.extend({
         }
 
         // Final Polygon
-        this.precisionRangeMarker = new Polygon(points, {color: "blue"}).addTo(this.map.markersGroup);
+        this.precisionRangeMarker = new Polygon(points).addTo(this.map.markersGroup);
         this.precisionRangeMarker.setStyle(this.maxDistCircleOn);
     },
 
@@ -406,10 +403,8 @@ export var squadWeaponMarker = squadMarker.extend({
         this.map.activeTargetsMarkers.eachLayer(function (layer) {
             layer.calcMarker1.setContent("  ");
             layer.calcMarker2.setContent("  ");
-            layer.spreadMarker1.setStyle({opacity: 0, fillOpacity: 0});
-            layer.spreadMarker2.setStyle({opacity: 0, fillOpacity: 0});
-            layer.twentyFiveDamageRadius.setStyle({opacity: 0, fillOpacity: 0});
-            layer.hundredDamageRadius.setStyle({opacity: 0, fillOpacity: 0});
+            layer.disableSpreadRadii();
+            layer.disableDamageRadii();
         }); 
         
         if (App.activeWeapon.type === "deployables") {
@@ -507,18 +502,6 @@ export var squadTargetMarker = squadMarker.extend({
         //Util.setOptions(this, options);
         squadMarker.prototype.initialize.call(this, latlng, options, map);
         
-        this.posPopUpOptions = {
-            autoPan: false,
-            autoClose: false,
-            closeButton: false,
-            closeOnEscapeKey: false,
-            bubblingMouseEvents: false,
-            interactive: false,
-            className: "posPopUpTarget",
-            minWidth: 100,
-            offset: [0, -10],
-        };
-        
         popUpOptions_weapon1 = {
             autoPan: false,
             autoClose: false,
@@ -526,19 +509,19 @@ export var squadTargetMarker = squadMarker.extend({
             closeOnEscapeKey: false,
             bubblingMouseEvents: false,
             interactive: false,
-            className: "calcPopup",
             minWidth: 100,
+            className: "calcPopup",
         };
 
         popUpOptions_weapon2 = {
-            closeButton: false,
-            className: "calcPopup2",
-            autoClose: false,
-            closeOnEscapeKey: false,
-            autoPan: false,
-            bubblingMouseEvents: false,
-            interactive: false,
-            minWidth: 100,
+            ...popUpOptions_weapon1,
+            className: "calcPopup2"
+        };
+
+        this.posPopUpOptions = {
+            ...popUpOptions_weapon1,
+            offset: [0, -10],
+            className: "posPopUpTarget"
         };
 
         trajectoriesOptions = { 
@@ -775,8 +758,7 @@ export var squadTargetMarker = squadMarker.extend({
     
         // No spread wanted, return
         if (!App.userSettings.spreadRadius) {
-            this.spreadMarker1.setStyle(this.spreadOptionsOff);
-            this.spreadMarker2.setStyle(this.spreadOptionsOff);
+            this.disableSpreadRadii();
             return;
         }
     
@@ -806,88 +788,85 @@ export var squadTargetMarker = squadMarker.extend({
     },
 
 
+    disableDamageRadii: function() {
+        this.hundredDamageRadius.setStyle(this.spreadOptionsOff);
+        this.twentyFiveDamageRadius.setStyle(this.spreadOptionsOff);
+    },
+
+    disableSpreadRadii: function() {
+        this.spreadMarker1.setStyle(this.spreadOptionsOff);
+        this.spreadMarker2.setStyle(this.spreadOptionsOff);
+    },
+
     /*
     * Update target damage radius ellipses according to it's firing solutions
     */
-    updateDamageRadius: function(){
-        const RADIUS100 = App.activeWeapon.hundredDamageRadius * this.map.gameToMapScale;
-        const RADIUS25 = App.activeWeapon.twentyFiveDamageRadius * this.map.gameToMapScale;
-        const hasFiringSolution1 = !isNaN(this.firingSolution1.elevation.high.rad) || !isNaN(this.firingSolution1.elevation.low.rad);
-        var baseRadiiX = this.spreadMarker1.getRadius().x;
-        var baseRadiiY = this.spreadMarker1.getRadius().y;
-        var baseBearing = 0;
-
-        // If user didn't activate damage radius
+    updateDamageRadius: function() {
+        // If damage radius is disabled, turn off the circles and exit
         if (!App.userSettings.damageRadius) {
-            this.hundredDamageRadius.setStyle(this.spreadOptionsOff);
-            this.twentyFiveDamageRadius.setStyle(this.spreadOptionsOff);
+            this.disableDamageRadii();
             return;
         }
-
-        if (App.userSettings.spreadRadius){
-
-            if (this.map.activeWeaponsMarkers.getLayers().length == 2) {
-                const hasFiringSolution2 = !isNaN(this.firingSolution2.elevation.high.rad) || !isNaN(this.firingSolution2.elevation.low.rad);
-                
-                if (!hasFiringSolution1 && !hasFiringSolution2) {
-                    this.hundredDamageRadius.setStyle(this.spreadOptionsOff);
-                    this.twentyFiveDamageRadius.setStyle(this.spreadOptionsOff);
-                    return;
-                }
-
-                if (!hasFiringSolution1) {
-                    baseRadiiX = this.spreadMarker2.getRadius().x;
-                    baseRadiiY = this.spreadMarker2.getRadius().y;
-                    baseBearing = this.firingSolution2.bearing;
-                } else if (!hasFiringSolution2) {
-                    baseRadiiX = this.spreadMarker1.getRadius().x;
-                    baseRadiiY = this.spreadMarker1.getRadius().y;
-                    baseBearing = this.firingSolution1.bearing;
-                } else {
-                    // If there is two firing solutions, just draw a circle with the biggest radius found in the spreads
-                    // Not perfectly accurate but that will do
-                    baseRadiiX = Math.max(this.spreadMarker1.getRadius().x, this.spreadMarker2.getRadius().x, this.spreadMarker1.getRadius().y, this.spreadMarker2.getRadius().y);
-                    baseRadiiY = baseRadiiX;
-                }
-
-            } else {
-                if (!hasFiringSolution1) {
-                    this.hundredDamageRadius.setStyle(this.spreadOptionsOff);
-                    this.twentyFiveDamageRadius.setStyle(this.spreadOptionsOff);
-                    return;
-                }
+    
+        // Calculate damage radii based on map scale
+        const RADIUS100 = App.activeWeapon.hundredDamageRadius * this.map.gameToMapScale;
+        const RADIUS25 = App.activeWeapon.twentyFiveDamageRadius * this.map.gameToMapScale;
+    
+        // Check if first firing solution is valid
+        const hasFiringSolution1 = !isNaN(this.firingSolution1.elevation.high.rad) || !isNaN(this.firingSolution1.elevation.low.rad);
+    
+        // Default to first marker and bearing
+        let baseRadiiX = this.spreadMarker1.getRadius().x;
+        let baseRadiiY = this.spreadMarker1.getRadius().y;
+        let baseBearing = this.firingSolution1.bearing;
+    
+        // If two markers exist, do some additional checks
+        if (this.map.activeWeaponsMarkers.getLayers().length == 2) {
+            const hasFiringSolution2 = !isNaN(this.firingSolution2.elevation.high.rad) || 
+                                        !isNaN(this.firingSolution2.elevation.low.rad);
+    
+            // If no valid solutions, turn off circles
+            if (!hasFiringSolution1 && !hasFiringSolution2) {
+                this.disableDamageRadii();
+                return;
+            }
+    
+            // Adjust radii and bearing based on which solutions are valid
+            if (!hasFiringSolution1) {
+                baseRadiiX = this.spreadMarker2.getRadius().x;
+                baseRadiiY = this.spreadMarker2.getRadius().y;
+                baseBearing = this.firingSolution2.bearing;
+            } else if (!hasFiringSolution2) {
                 baseRadiiX = this.spreadMarker1.getRadius().x;
                 baseRadiiY = this.spreadMarker1.getRadius().y;
                 baseBearing = this.firingSolution1.bearing;
-            }
-
-            this.hundredDamageRadius.setRadius([baseRadiiX + RADIUS100, baseRadiiY + RADIUS100]);
-            this.twentyFiveDamageRadius.setRadius([baseRadiiX + RADIUS25, baseRadiiY + RADIUS25]);
-        } else {
-            const hasFiringSolution2 = !isNaN(this.firingSolution2.elevation.high.rad) || !isNaN(this.firingSolution2.elevation.low.rad);
-            if (this.map.activeWeaponsMarkers.getLayers().length == 2) {
-                if (!hasFiringSolution1 && !hasFiringSolution2) {
-                    this.hundredDamageRadius.setStyle(this.spreadOptionsOff);
-                    this.twentyFiveDamageRadius.setStyle(this.spreadOptionsOff);
-                    return;
-                }
             } else {
-                if (!hasFiringSolution1) {
-                    this.hundredDamageRadius.setStyle(this.spreadOptionsOff);
-                    this.twentyFiveDamageRadius.setStyle(this.spreadOptionsOff);
-                    return;
-                }
+                // If there are two firing solutions, draw a circle with the biggest radius found in the spreads
+                baseRadiiX = Math.max(
+                    this.spreadMarker1.getRadius().x, 
+                    this.spreadMarker2.getRadius().x, 
+                    this.spreadMarker1.getRadius().y, 
+                    this.spreadMarker2.getRadius().y
+                );
+                baseRadiiY = baseRadiiX;
             }
-
-            this.hundredDamageRadius.setRadius([RADIUS100, RADIUS100]);
-            this.twentyFiveDamageRadius.setRadius([RADIUS25, RADIUS25]);
+        } else if (!hasFiringSolution1) {
+            // If only one marker but no valid solution, turn off circles
+            this.disableDamageRadii();
+            return;
         }
-
+    
+        // Determine radii based on spread radius setting
+        const hundredRadii = App.userSettings.spreadRadius ? [baseRadiiX + RADIUS100, baseRadiiY + RADIUS100] : [RADIUS100, RADIUS100];
+        const twentyFiveRadii = App.userSettings.spreadRadius ? [baseRadiiX + RADIUS25, baseRadiiY + RADIUS25] : [RADIUS25, RADIUS25];
+    
+        // Set radii, styles, and tilt
+        this.hundredDamageRadius.setRadius(hundredRadii);
+        this.twentyFiveDamageRadius.setRadius(twentyFiveRadii);
         this.hundredDamageRadius.setStyle(this.hundredDamageCircleOn);
         this.twentyFiveDamageRadius.setStyle(this.twentyFiveDamageCircleOn);
         this.hundredDamageRadius.setTilt(baseBearing);
         this.twentyFiveDamageRadius.setTilt(baseBearing);
-        
     },
 
     /*
@@ -1031,10 +1010,8 @@ export var squadTargetMarker = squadMarker.extend({
         if (!App.hasMouse) {
             this.calcMarker1.setContent("  ");
             this.calcMarker2.setContent("  ");
-            this.spreadMarker1.setStyle({opacity: 0, fillOpacity: 0});
-            this.spreadMarker2.setStyle({opacity: 0, fillOpacity: 0});
-            this.hundredDamageRadius.setStyle({opacity: 0, fillOpacity: 0});
-            this.twentyFiveDamageRadius.setStyle({opacity: 0, fillOpacity: 0});
+            this.spreadMarker2.disableSpreadRadii();
+            this.disableDamageRadii();
         }
 
         if (App.userSettings.targetDrag){ this.posPopUp.openOn(this.map); }
@@ -1116,9 +1093,8 @@ export var squadTargetMarker = squadMarker.extend({
                         target.setOpacity(0.65);
                         target.calcMarker1.close();
                         target.calcMarker2.close();
-                        target.spreadMarker1.setStyle(this.spreadOptionsOff);
-                        target.spreadMarker2.setStyle(this.spreadOptionsOff);
-                        target.hundredDamageRadius.setStyle({ opacity: 0 });
+                        target.disableSpreadRadii();
+                        target.disableDamageRadii();
                         target.twentyFiveDamageRadius.setStyle({ opacity: 0 });
                     }
                 });
@@ -1146,7 +1122,6 @@ export var squadTargetMarker = squadMarker.extend({
                 target.setOpacity(1);
                 target.calcMarker1.openOn(this.map);
                 target.calcMarker2.openOn(this.map);
-                //target.updateCalc();
                 target.updateSpread();
                 target.updateDamageRadius();
             });
