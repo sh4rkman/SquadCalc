@@ -5,10 +5,18 @@
 **************************************/
 
 /****************
-   * Weapon Selector
-   *****************/
+* Weapon Selector
+*****************/
 
-   header {
+header {
+    position: relative;
+    width: 100%;
+    z-index: 1;
+    top: 0;
+    pointer-events: none;
+    &.ui {
+        position: fixed;
+    }
     .weaponSelector {
         z-index: 4;
         padding-top: 1em;
@@ -26,10 +34,6 @@
             padding-left: 15px;
             font-size: 1.1em;
         }
-        &.ui {
-            position: fixed;
-            top: 6.3em;
-        }
         #ammoSelector {
             padding-top: 1em;
         }
@@ -38,15 +42,17 @@
         padding-top: 1em;
         z-index: 5;
         pointer-events: none;
+        position: relative;
         .select2-results__options {
             line-height: 0.7em;
             font-size: 0.9em;
         }
-        &.ui {
-            position: fixed;
-            top: 0;
+        #mapSelector {
+            z-index: 2;
+            position: relative;
         }
         #layerSelector {
+            z-index: 1;
             padding-top: 1em;
         }
     }
@@ -62,7 +68,6 @@
         line-height: 2.188em;
         text-transform: uppercase;
         background-color: var(--themecolor, variables.$mainBGColor);
-        z-index: 1;
         select {
             -moz-appearance: none;
             -webkit-appearance: none;
@@ -114,4 +119,4 @@
 .select2-container--default .select2-selection--single .select2-selection__clear {
     float: left;
     margin-right: 0;
-  }
+}

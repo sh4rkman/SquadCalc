@@ -1,3 +1,21 @@
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **34.1.2** *(2024-12-XX)*
+
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Hovering a flag while zooming in doesn't reveal hidden flags capzones anymore
+
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Removed an empty space appearing when no layers were available on mobile
+
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed empty space between map buttons that couldn't be used
+
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Damage radiuses option is now activated by default
+
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Removed the ability to right-click on different buttons
+
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Changelog rework for lane finder
+
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
+
 # <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **34.1.1** *(2024-12-11)*
 
 <img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed some aeras around weapons/maps selectors where it was impossible to click on map/markers

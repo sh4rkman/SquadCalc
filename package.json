@@ -1,7 +1,7 @@
 {
   "name": "squadcalc",
-  "version": "34.1.1",
-  "description": "A Complete Mortar Calculator for Squad",
+  "version": "34.1.2",
+  "description": "A Complete Mortar Calculator and Map Lane Finder for Squad",
   "author": "Maxime 'sharkman' Boussard",
   "license": "MIT",
   "type": "module",
