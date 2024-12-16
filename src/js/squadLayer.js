@@ -213,7 +213,7 @@ export class SquadLayer {
     revealAllCapzones() {
         if (App.userSettings.capZoneOnHover) return;
         this.flags.forEach(flag => {
-            if (!flag.isHidden){ flag.revealCapZones(); }
+            if (!flag.isHidden && !flag.isFadeOut){ flag.revealCapZones(); }
         });
     }
 
@@ -983,7 +983,7 @@ export class SquadLayer {
         // Show each flag that was found
         flagsToHide.forEach((flagToHide) => {
             if (!this.selectedFlags.includes(flagToHide)){
-                flagToHide._setOpacity(1);
+                flagToHide._fadeIn();
                 if (!App.userSettings.capZoneOnHover) {
                     if (this.map.getZoom() > this.map.detailedZoomThreshold){
                         flagToHide.revealCapZones();
@@ -1006,7 +1006,7 @@ export class SquadLayer {
         // Show each flag that was found
         flagsToHide.forEach((flagToHide) => {
             if (!this.selectedFlags.includes(flagToHide)){
-                flagToHide._setOpacity(0.15);
+                flagToHide._fadeOut();
                 flagToHide.hideCapZones();
             }
         });

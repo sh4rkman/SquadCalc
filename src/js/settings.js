@@ -93,7 +93,7 @@ export function loadSettings(){
     App.userSettings.spreadRadius = loadLocalSetting("settings-spread-radius");
     $("#spreadRadiusSetting").prop("checked", App.userSettings.spreadRadius);
 
-    App.userSettings.damageRadius = loadLocalSetting("settings-damage-radius", 0);
+    App.userSettings.damageRadius = loadLocalSetting("settings-damage-radius");
     $("#damageRadiusSetting").prop("checked", App.userSettings.damageRadius);
 
     App.userSettings.showHeight = loadLocalSetting("settings-show-height", 0);
@@ -108,7 +108,7 @@ export function loadSettings(){
     App.userSettings.realMaxRange = loadLocalSetting("settings-real-max-range", 0);
     $("#realMaxRangeSettings").prop("checked", App.userSettings.realMaxRange);
 
-    App.userSettings.showBearing = loadLocalSetting("settings-show-bearing", 1);
+    App.userSettings.showBearing = loadLocalSetting("settings-show-bearing");
     $("#bearingSetting").prop("checked", App.userSettings.showBearing);
 
     App.userSettings.showDistance = loadLocalSetting("settings-show-distance", 0);

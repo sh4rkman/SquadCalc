@@ -541,8 +541,7 @@ export default class SquadCalc {
 
         $("#map_ui").addClass("hidden");
         $("#classic_ui").removeClass("hidden");
-        $(".weaponSelector").removeClass("ui");
-        $(".mapSelector").removeClass("ui");
+        $("header").removeClass("ui");
         $("#switchUIbutton").removeClass("fa-xmarks-lines").addClass("fa-map");
         $(".btn-delete").hide();
         $("#mapLayerMenu").hide();
@@ -565,8 +564,7 @@ export default class SquadCalc {
     loadMapUIMode(){
         $("#classic_ui").addClass("hidden");
         $("#map_ui").removeClass("hidden");
-        $(".weaponSelector").addClass("ui");
-        $(".mapSelector").addClass("ui");
+        $("header").addClass("ui");
         $("#switchUIbutton").removeClass("fa-map").addClass("fa-xmarks-lines");
         $("#mapLayerMenu").show();
         this.ui = 1;

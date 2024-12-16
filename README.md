@@ -20,7 +20,7 @@
 </br>
 </br>
 
-[squadcalc.app](https://squadcalc.app/) is a mortar *(and more)* calculator designed for the game <a href="https://joinsquad.com/">Squad</a> !  
+[squadcalc.app](https://squadcalc.app/) is a mortar calculator and lane finder for the game <a href="https://joinsquad.com/">Squad</a> !  
 
 </br>
 
@@ -28,12 +28,20 @@
 
 
 - [Screenshots](#screenshots)  
-- [Mortar Calculator](#features)
-  - [Elevations Calculations](#elevations-calculations)
-  - [Commonly Used Spot](#commonly-used-spot)
-  - [Advanced Customisation & Informations](#Advanced-Customisation--Informations)
-  - [Map Layers](#map-layers)
-  - [Squad Mortar Overlay Compatibility](#squad-mortar-overlay-compatibility)
+- [Features](#features)
+  - [Mortar Calculator](#mortar-calculator)
+    - [Elevations Calculations](#elevations-calculations)
+    - [Spread & Damage Radiuses](#Spread-and-Damages-radiuses)
+    - [Commonly Used Spot](#commonly-used-spot)
+    - [Squad Mortar Overlay Compatibility](#squad-mortar-overlay-compatibility)
+  - [Lane Finder](#lane-finder)
+    - [Lane preview](#lane-preview)
+    - [Capzones](#capzones)
+    - [Auto Complete](#Auto-Complete)
+  - [Others](#Others)
+      - [Advanced Customisation & Informations](#Advanced-Customisation--Informations)
+      - [Map Layers](#map-layers)
+
 - [Attributions](#Attributions)
 - [Support the project](#support-the-project)
 
@@ -56,30 +64,28 @@
 
 </br></br>
 
-# <div align="center">Features</div>
+# <div align="center"><b>Features</b></div>
+
+</br>
+
+# <div align="center"><b>Mortar Calculator</b></div>
 
 
 ## **Elevations Calculations**
 
-SquadCalc utilizes heightmaps extracted from the Squad SDK to precisely compute the elevation difference between mortars and targets, automatically adjusting the elevation settings. [Check out the Wiki](https://github.com/sh4rkman/SquadCalc/wiki/Deducing-Altitude) to understand how it works.
+SquadCalc utilizes heightmaps extracted from the Squad SDK to precisely compute the elevation difference between mortars and targets, automatically adjusting the elevation settings.  [Check out the Wiki](https://github.com/sh4rkman/SquadCalc/wiki/Deducing-Altitude) to understand how it works.
 
+## **Spread and Damages radiuses**
 
-## **Map Layers**
+Reduce teamkilling and maximize your damage by visualizing the spread of your shells and the range of their explosions.  
+Check out the Wiki on [Spread](https://github.com/sh4rkman/SquadCalc/wiki/Deducing-Spread) and [Damage](https://github.com/sh4rkman/SquadCalc/wiki/Deducing-Damage-Radius) to understand how it works.
 
 <div align="center">
-  <picture><img width="50%" src="./src/img/github/layers.webp" alt="map layers"></picture>
+  <picture>
+      <img width="50%" src="./src/img/github/radiuses.webp" alt="settings">
+  </picture>
 </div>
 
-### Base map :
-The classic, straight from the game base map.  
-Also avaiblable in AI Upscaled 8192x8192 pixels though the Settings. 
-
-### Terrain map :
-Base map enhanced with bumpmap from SDK's heightmap. Add a better comprehension of terrain.  
-Also known as "why the fuck is it not the default ingame map?"
-
-### Topographic map :
-A mix of bump map, contour map with a touch of hypsometric colors for a complete understanding of map reliefs.
 
 
 ## **Commonly used spot**
@@ -90,6 +96,56 @@ Squadcalc is logging up to 15000 weapon positions for each map and each weapons,
   <picture><img width="60%" src="./src/img/github/heatmap.webp" alt="commonly used spots"></picture>
 </div>
 
+</br></br>
+## **Squad Mortar Overlay Compatibility**
+
+SquadCalc is compatible with [Squad Mortar Overlay](https://github.com/Devil4ngle/SquadMortarOverlay), made by [Devil4ngle](https://github.com/Devil4ngle).  
+Squad Mortar Overlay is a program capturing screenshots from your ingame map and overlaying it with SquadCalc.  
+
+It allows :
+* Having ingame markers automatically merged into SquadCalc map to quickly place the right targets
+* Having an ingame overlay with the current SquadCalc calculations displayed in front of Squad
+
+
+</br>
+
+### <div align="center">[> Download Squad Mortar Overlay <](https://github.com/Devil4ngle/SquadMortarOverlay/releases)</div>
+
+
+</br></br>
+
+# <div align="center"><b>Lane Finder</b></div>
+
+<div align="center">
+  <picture><img width="60%" src="./src/img/github/layer-finder.gif" alt="capzones"></picture>
+</div>
+
+
+## **Lane preview**
+
+Hover over a flag to preview how selecting it would affect the layer.  
+This allows you to quickly scan how the layer looks at the start of the game, for example.
+
+## **Capzones**
+
+SquadCalc lets you extract data for each flag from the SDK and view it in detail.  
+It helps you find the perfect location for a FOB, the best route to sneak into a cap zone, or even where to fire mortars effectively.
+
+<div align="center">
+  <picture><img width="60%" src="./src/img/github/capzones.webp" alt="capzones">></picture>
+</div>
+
+## **Auto Complete**
+
+SquadCalc will automatically complete the layer if there is only one possible incoming flag, saving you a few clicks.
+
+<div align="center">
+  <picture><img width="50%" src="./src/img/github/autocomplete.gif" alt="autocomplete"></picture>
+</div>
+
+</br></br>
+
+# <div align="center"><b>Others</b></div>
 
 ## **Advanced Customisation & Informations**
 
@@ -111,23 +167,25 @@ Get a better and complete understanding of your shots and visualise a simulation
 </div>
 
 
-</br></br>
-# <div align="center">Squad Mortar Overlay Compatibility</div>
-
-SquadCalc is compatible with [Squad Mortar Overlay](https://github.com/Devil4ngle/SquadMortarOverlay), made by [Devil4ngle](https://github.com/Devil4ngle).  
-Squad Mortar Overlay is a program capturing screenshots from your ingame map and overlaying it with SquadCalc.  
-
-It allows :
-* Having ingame markers automatically merged into SquadCalc map to quickly place the right targets
-* Having an ingame overlay with the current SquadCalc calculations displayed in front of Squad
-
-### <div align="center">[> Download Squad Mortar Overlay <](https://github.com/Devil4ngle/SquadMortarOverlay/releases)</div>
-
 </br>
 
+## **Map Layers**
+
 <div align="center">
-  <picture><img width="60%" src="./src/img/github/squadmortaroverlay.webp" alt="squad mortar overlay">></picture>
+  <picture><img width="50%" src="./src/img/github/layers.webp" alt="map layers"></picture>
 </div>
+
+### Base map :
+The classic, straight from the game base map.  
+Also avaiblable in AI Upscaled 8192x8192 pixels though the Settings. 
+
+### Terrain map :
+Base map enhanced with bumpmap from SDK's heightmap. Add a better comprehension of terrain.  
+Also known as "why the fuck is it not the default ingame map?"
+
+### Topographic map :
+A mix of bump map, contour map with a touch of hypsometric colors for a complete understanding of map reliefs.
+
 
 
 </br></br></br>

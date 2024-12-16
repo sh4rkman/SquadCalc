@@ -83,6 +83,18 @@ export class SquadObjective {
             className += " flag selected";
         }
 
+        this.updateMarker(className, html);
+
+        this.isSelected = true;
+        this.flag.on("click", this._handleClick, this);
+        this.flag.on("contextmenu", this._handleContextMenu, this);
+        this.flag.on("dblclick", this._handleDoubleClick, this);
+        this.flag.on("mouseover", this._handleMouseOver, this);
+        this.flag.on("mouseout", this._handleMouseOut, this);
+    }
+
+
+    updateMarker(className, html){
         this.flag = new Marker(this.latlng, {
             interactive: true,
             keyboard: false,
@@ -93,13 +105,6 @@ export class SquadObjective {
                 iconAnchor: [22, 11]
             })
         }).addTo(this.layerGroup);
-
-        this.isSelected = true;
-        this.flag.on("click", this._handleClick, this);
-        this.flag.on("contextmenu", this._handleContextMenu, this);
-        this.flag.on("dblclick", this._handleDoubleClick, this);
-        this.flag.on("mouseover", this._handleMouseOver, this);
-        this.flag.on("mouseout", this._handleMouseOut, this);
     }
 
 
@@ -236,17 +241,7 @@ export class SquadObjective {
         }
 
         this.flag.removeFrom(this.layerGroup).remove();
-        this.flag = new Marker(this.latlng, {
-            interactive: true,
-            keyboard: false,
-            icon: new DivIcon({
-                className: className,
-                html: html,
-                iconSize: [44, 22],
-                iconAnchor: [22, 11]
-            })
-        }).addTo(this.layerGroup);
-
+        this.updateMarker(className, html);
 
         this.isSelected = false;
 
@@ -357,7 +352,8 @@ export class SquadObjective {
 
         this.layer.flags.forEach((flag) => {
             if (flag.isHidden) return;
-            flag._setOpacity(1);
+            flag._fadeIn();
+            flag.isFadeOut = false;
             if (!App.userSettings.capZoneOnHover) {
                 if (this.layer.map.getZoom() > this.layer.map.detailedZoomThreshold){
                     flag.revealCapZones();
@@ -396,6 +392,19 @@ export class SquadObjective {
     _setOpacity(value){
         this.flag.setOpacity(value);
         this.nameText.setOpacity(value);
+    }
+
+
+    _fadeIn(){
+        this.flag.setOpacity(1);
+        this.nameText.setOpacity(1);
+        this.isFadeOut = false;
+    }
+
+    _fadeOut(){
+        this.flag.setOpacity(0.15);
+        this.nameText.setOpacity(0.15);
+        this.isFadeOut = true;
     }
 
     delete(){
