@@ -76,9 +76,8 @@ export default class SquadCalc {
             currentUrl.searchParams.delete("layer");
             window.history.replaceState({}, "", currentUrl);
 
-            // Refresh layer selector if API is available
-            if (process.env.API_URL) { this.loadLayers(); }
-                
+            // Refresh layer selector
+            this.loadLayers(); 
         });
 
         let abortController = null;
@@ -215,13 +214,7 @@ export default class SquadCalc {
         currentUrl.searchParams.set("map", this.minimap.activeMap.name);
         window.history.replaceState({}, "", currentUrl);
 
-        // If no API if provided, hide the layer selector
-        if (process.env.API_URL) { 
-            this.loadLayers(); 
-        } else {
-            this.LAYER_SELECTOR.hide();
-            $(".btn-helpmap").hide();
-        }
+        this.loadLayers(); 
 
     }
 
@@ -454,35 +447,35 @@ export default class SquadCalc {
 
             });
 
-            
-            let countdown;
-            
-            const closeToast = () => {
-                document.querySelector("#toast").style.animation = "close 0.3s cubic-bezier(.87,-1,.57,.97) forwards";
-                document.querySelector("#timer").classList.remove("timer-animation");
-                clearTimeout(countdown);
-            };
-            
-            this.openToast = (type, title, text) => {
-                const toast = document.querySelector("#toast");
-                clearTimeout(countdown);
-                toast.classList = [type];
-                toast.style.animation = "open 0.3s cubic-bezier(.47,.02,.44,2) forwards";
-                document.querySelector("#timer").classList.add("timer-animation");
-                toast.querySelector("h4").setAttribute("data-i18n", `tooltips:${title}`);
-                toast.querySelector("h4").innerHTML = i18next.t(`tooltips:${title}`);
-                toast.querySelector("p").setAttribute("data-i18n", `tooltips:${text}`);
-                toast.querySelector("p").innerHTML = i18next.t(`tooltips:${text}`);
-                countdown = setTimeout(() => { closeToast(); }, 5000);
-            };
-
-            document.querySelector("#toast").addEventListener("click", closeToast);
 
         } else {
             $(".btn-focus").hide();
             $(".btn-snow").hide();
             showSnow(false);
         }
+
+        let countdown;
+            
+        const closeToast = () => {
+            document.querySelector("#toast").style.animation = "close 0.3s cubic-bezier(.87,-1,.57,.97) forwards";
+            document.querySelector("#timer").classList.remove("timer-animation");
+            clearTimeout(countdown);
+        };
+        
+        this.openToast = (type, title, text) => {
+            const toast = document.querySelector("#toast");
+            clearTimeout(countdown);
+            toast.classList = [type];
+            toast.style.animation = "open 0.3s cubic-bezier(.47,.02,.44,2) forwards";
+            document.querySelector("#timer").classList.add("timer-animation");
+            toast.querySelector("h4").setAttribute("data-i18n", `tooltips:${title}`);
+            toast.querySelector("h4").innerHTML = i18next.t(`tooltips:${title}`);
+            toast.querySelector("p").setAttribute("data-i18n", `tooltips:${text}`);
+            toast.querySelector("p").innerHTML = i18next.t(`tooltips:${text}`);
+            countdown = setTimeout(() => { closeToast(); }, 5000);
+        };
+
+        document.querySelector("#toast").addEventListener("click", closeToast);
 
       
         weaponInformation.addEventListener("close", function(){
