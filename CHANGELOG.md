@@ -1,4 +1,19 @@
-# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **34.1.2** *(2024-12-XX)*
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **34.1.3** *(2024-12-17)*
+
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed markers being undraggable on mobile
+
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed toasts not showing on mobile
+
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Replaced Albasrah basemap with a better encoded version
+
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Damage radiuses option is now activated by default
+
+
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
+
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **34.1.2** *(2024-12-16)*
 
 <img src="https://img.shields.io/badge/-%20fix%20-b22"> Hovering a flag while zooming in doesn't reveal hidden flags capzones anymore
 

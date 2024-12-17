@@ -126,15 +126,13 @@ export var squadWeaponMarker = squadMarker.extend({
 
         this.getIcon();
 
-        // Report marker to squadcalc API if API is configured
-        if (process.env.API_URL) {
-            sendMarkerData({
-                lat: this._latlng.lat,
-                lng: this._latlng.lng,
-                weapon: App.activeWeapon.name,
-                map: App.minimap.activeMap.name,
-            });
-        }
+        // Report marker to squadcalc API
+        sendMarkerData({
+            lat: this._latlng.lat,
+            lng: this._latlng.lng,
+            weapon: App.activeWeapon.name,
+            map: App.minimap.activeMap.name,
+        });
 
         if (App.userSettings.realMaxRange) {
             this.updateWeaponMaxRange(true);
@@ -434,16 +432,14 @@ export var squadWeaponMarker = squadMarker.extend({
 
         this.map.updateTargets();
 
-        // Report marker to squadcalc API if API is configured
-        if (process.env.API_URL) {
-            sendMarkerData({
-                lat: this._latlng.lat,
-                lng: this._latlng.lng,
-                weapon: App.activeWeapon.name,
-                map: App.minimap.activeMap.name,
-            });
-        }
-
+        // Report marker to squadcalc API
+        sendMarkerData({
+            lat: this._latlng.lat,
+            lng: this._latlng.lng,
+            weapon: App.activeWeapon.name,
+            map: App.minimap.activeMap.name,
+        });
+        
     },
 
     _handleMouseOver: function(){
@@ -580,15 +576,14 @@ export var squadTargetMarker = squadMarker.extend({
         this.miniCircle = new CircleMarker(latlng, this.miniCircleOptions).addTo(this.map.markersGroup);
         this.firingSolution1 = new SquadFiringSolution(this.map.activeWeaponsMarkers.getLayers()[0].getLatLng(), this.getLatLng(), this.map, this.map.activeWeaponsMarkers.getLayers()[0].heightPadding);
         
-        // Report target to squadcalc API if API is configured
-        if (process.env.API_URL) {
-            sendTargetData({
-                lat: latlng.lat,
-                lng: latlng.lng,
-                weapon: App.activeWeapon.name,
-                map: App.minimap.activeMap.name,
-            });
-        }
+        // Report target to squadcalc API
+        sendTargetData({
+            lat: latlng.lat,
+            lng: latlng.lng,
+            weapon: App.activeWeapon.name,
+            map: App.minimap.activeMap.name,
+        });
+        
 
         // Calc PopUps
         this.calcMarker1 = new Popup(popUpOptions_weapon1).setLatLng(latlng).addTo(this.map.markersGroup);
@@ -1010,7 +1005,7 @@ export var squadTargetMarker = squadMarker.extend({
         if (!App.hasMouse) {
             this.calcMarker1.setContent("  ");
             this.calcMarker2.setContent("  ");
-            this.spreadMarker2.disableSpreadRadii();
+            this.disableSpreadRadii();
             this.disableDamageRadii();
         }
 
@@ -1035,15 +1030,13 @@ export var squadTargetMarker = squadMarker.extend({
         this.updateCalc();
         this.updateIcon();
 
-        // Report target to squadcalc API if API is configured
-        if (process.env.API_URL) {
-            sendTargetData({
-                lat: e.target.getLatLng().lat,
-                lng: e.target.getLatLng().lng,
-                weapon: App.activeWeapon.name,
-                map: App.minimap.activeMap.name,
-            });
-        }
+        // Report target to squadcalc API
+        sendTargetData({
+            lat: e.target.getLatLng().lat,
+            lng: e.target.getLatLng().lng,
+            weapon: App.activeWeapon.name,
+            map: App.minimap.activeMap.name,
+        });
     },
 
     // Delete targetMarker on right clic
