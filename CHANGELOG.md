@@ -1,3 +1,17 @@
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **34.1.4** *(2024-12-17)*
+
+<img src="https://img.shields.io/badge/-%20other%20-grey"> Removed Christmas theme
+
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Security fixes
+
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Heatmaps should be scaled better on very small/large maps (fix #249)
+
+
+
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
+
 # <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **34.1.3** *(2024-12-17)*
 
 <img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed markers being undraggable on mobile

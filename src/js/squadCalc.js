@@ -13,7 +13,6 @@ import SquadFiringSolution from "./squadFiringSolution.js";
 import packageInfo from "../../package.json";
 import i18next from "i18next";
 import { SquadLayer } from "./squadLayer.js";
-import { showSnow } from "./libs/pure-snow.js";
 
 export default class SquadCalc {
 
@@ -450,8 +449,6 @@ export default class SquadCalc {
 
         } else {
             $(".btn-focus").hide();
-            $(".btn-snow").hide();
-            showSnow(false);
         }
 
         let countdown;
@@ -919,11 +916,8 @@ export default class SquadCalc {
      * @param {input} i - input to resize
      */
     resizeInput(i) {
-        if (i.value.length === 0) {
-            $("#ruler").html(i.placeholder);
-        } else {
-            $("#ruler").html(i.value);
-        }
+        const content = i.value.length === 0 ? i.placeholder : i.value;
+        $("#ruler").text(content); // Use text() to escape content safely
         i.style.width = `${$("#ruler").width() * 1.05}px`;
     }
 
@@ -952,7 +946,7 @@ export default class SquadCalc {
         }
         $(".saved_list").append(
             `<p class=savedrow>
-                <input maxlength=20 spellcheck=false placeholder=${encodeURI($("#target-location").val())} class=friendlyname></input>
+                <input maxlength=20 spellcheck=false placeholder="${$("<div>").text($("#target-location").val()).html()}" class=friendlyname></input>
                 <span class=savespan> 
                     ➜ ${$("#bearing").text()} - ${$("#elevation").text()}
                 </span>

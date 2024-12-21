@@ -2,7 +2,6 @@ import { App } from "../app.js";
 import { tooltip_coordPreview } from "./tooltips.js";
 import i18next from "i18next";
 import { animateCSS } from "./animations.js";
-import { showSnow } from "./libs/pure-snow.js";
 
 /* eslint no-unused-vars: "off" */
 import mapIcon from "../img/icons/preview.webp";
@@ -54,12 +53,6 @@ export function loadSettings(){
     }
 
     
-    App.userSettings.snow = loadLocalSetting("settings-snow-event", 1);
-    if (App.userSettings.snow){
-        $(".btn-snow").addClass("active");
-        showSnow(true);
-    }
-
     App.userSettings.circlesFlags = loadLocalSetting("settings-circles-flags");
     $("#circlesFlagsSettings").prop("checked", App.userSettings.circlesFlags);
     
@@ -356,13 +349,6 @@ $("#targetAnimationSettings").on("change", function() {
         target.updateCalcPopUps();
         target.updateIcon();
     });
-});
-
-$("#mapLayerMenu").find("button.btn-snow").on("click", () => {
-    var val = !$(".btn-snow").hasClass("active");
-    $(".btn-snow").toggleClass("active");
-    showSnow(val);
-    localStorage.setItem("settings-snow-event", +val);
 });
 
 $("#bearingOverDistanceSettings").on("change", function() {

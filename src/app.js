@@ -14,7 +14,6 @@ import "./components/legacyui/legacyui.scss";
 import "./components/dialogs/dialogs.scss";
 import "./components/shared/_tooltips.scss";
 import "./components/shared/_responsive.scss";
-import "./components/shared/snow.scss";
 
 // JS
 import SquadCalc from "./js/squadCalc.js";
