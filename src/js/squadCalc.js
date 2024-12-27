@@ -439,9 +439,13 @@ export default class SquadCalc {
                         $("footer").hide();
                         $("#background").hide();
                         $("#mapLayerMenu").hide();
-
                         this.openToast("success", "focusMode", "enterToExit");
                     }
+                }
+
+                // DELETE = REMOVE ALL MARKERS
+                if (e.code === "Delete") {
+                    this.minimap.deleteTargets();
                 }
 
             });
