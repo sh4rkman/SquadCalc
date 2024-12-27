@@ -101,18 +101,12 @@ export default LayerGroup.extend({
         const currentZoom = Math.round(this.map.getZoom());
         const mapZoomPadding = this.map.activeMap.size/4000;
 
-        if (currentZoom >= 6) {
-            this.setLinesWeight(this.kpLines, 4);
-        } else if (currentZoom >= 3.7 + mapZoomPadding) {
-
+        if (currentZoom >= 3.7 + mapZoomPadding) {
             this.setLinesWeight(this.kpLines, 3);
-
             this.setLinesOpacity(this.s1Lines, 0.8);
             this.setLinesWeight(this.s1Lines, 1.5);
-
             this.setLinesOpacity(this.s2Lines, 1);
             this.setLinesWeight(this.s2Lines, 0.5);
-
         }
         else if (currentZoom >= 2 + mapZoomPadding) {
             this.setLinesWeight(this.kpLines, 2);
@@ -218,7 +212,7 @@ export default LayerGroup.extend({
                 // Create
                 let top2 = {lat: this.bounds.getNorth(), lng: x-(kp/2)};
 
-                if (x!=0) {
+                if (x != 0) {
                     this.labels.push(new Marker(top2, {
                         interactive: false,
                         icon: new DivIcon({
@@ -242,8 +236,8 @@ export default LayerGroup.extend({
         }
 
         // horizontal keypad lines, almost the same as for vertical lines
-        const startY = Math.ceil(this.bounds.getNorth() / interval) * interval;
-        const endY = Math.floor(this.bounds.getSouth() / interval) * interval;
+        const startY = this.bounds.getNorth();
+        const endY = this.bounds.getSouth();
 
         for (let y = startY, z = 0; y >= endY; y -= interval) {
             const left = {lat: y, lng: this.bounds.getWest()};

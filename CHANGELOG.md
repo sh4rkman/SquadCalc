@@ -1,3 +1,22 @@
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **34.1.4** *(2024-12-27)*
+
+
+<img src="https://img.shields.io/badge/-new-green"> New keyboard shortcut : press delete to clear all targets on the map (fix #250)
+
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed KP-gridlines sometimes being drawn outside of map bounds (fix #251)
+
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed KP-gridlines somestimes not appearing when zooming too fast
+
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Heatmaps should be scaled better on very small/large maps (fix #249)
+
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Security enhancements
+
+<img src="https://img.shields.io/badge/-%20other%20-grey"> Removed Christmas theme
+
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
+
 # <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **34.1.3** *(2024-12-17)*
 
 <img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed markers being undraggable on mobile

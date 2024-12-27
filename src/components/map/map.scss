@@ -111,7 +111,7 @@ $flag-circle-opacity: 0.2;
                     }
                     &.main {
                         &::before {
-                            content: "☃️";
+                            content: "🏠";
                         }
                     }
                     &.main.unselectable {
@@ -128,7 +128,7 @@ $flag-circle-opacity: 0.2;
                 font-size: 1.1em;
                 overflow: hidden;
                 &::before {
-                    content: "⛄";
+                    content: "🏠";
                     position: relative;
                     right: 0;
                     font-size: 2em;

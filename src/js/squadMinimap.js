@@ -10,7 +10,6 @@ import webGLHeatmap from "./libs/leaflet-webgl-heatmap.js";
 import "leaflet-spin";
 import "./libs/webgl-heatmap.js";
 import "./libs/leaflet-smoothWheelZoom.js";
-import { createSnow } from "./libs/pure-snow.js";
 
 /**
  * Squad Minimap
@@ -86,8 +85,6 @@ export var squadMinimap = Map.extend({
 
         this.on("zoomend", this._handleZoom, this);
 
-        createSnow(); // creates snowflakes and generate css for them
-
     },
 
     /**
@@ -159,10 +156,10 @@ export var squadMinimap = Map.extend({
             fetchMarkersByMap(App.minimap.activeMap.name, App.activeWeapon.name)
                 .then(markers => {
                     this.heatmap = new webGLHeatmap({
-                        size: 5,
+                        size: 2 + 20 * this.gameToMapScale,
                         units: "m",
                         opacity: 0.5,
-                        alphaRange: 0.5,
+                        alphaRange: 0.3,
                     });
                     this.heatmap.setData(markers);
                     this.addLayer(this.heatmap);

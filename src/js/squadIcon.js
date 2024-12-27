@@ -2,8 +2,8 @@ import { Icon } from "leaflet";
 
 import shadowIconImg from "../img/icons/marker_shadow.webp";
 
-import targetIconImgEnabled from "../img/icons/marker_target_enabled_xmas.webp";
-import targetIconImgDisabled from "../img/icons/marker_target_disabled_xmas.webp";
+import targetIconImgEnabled from "../img/icons/marker_target_enabled.webp";
+import targetIconImgDisabled from "../img/icons/marker_target_disabled.webp";
 import targetIconImgMinimal from "../img/icons/marker_target_mini.webp";
 import targetIconImgDisabledMinimal from "../img/icons/marker_target_disabled_mini.webp";
 
