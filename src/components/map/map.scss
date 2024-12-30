@@ -240,9 +240,9 @@ $flag-circle-opacity: 0.2;
 }
 
 /* Disable hover on touch devices */
-@media (hover: none) {
+@media (pointer: coarse) {
     button:hover {
-        background-color: initial; 
+        background-color: initial;
     }
 }
 
