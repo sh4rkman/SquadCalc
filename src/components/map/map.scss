@@ -239,6 +239,13 @@ $flag-circle-opacity: 0.2;
     }
 }
 
+/* Disable hover on touch devices */
+@media (hover: none) {
+    button:hover {
+        background-color: initial; 
+    }
+}
+
 #mapLayerMenu {
     position: absolute;
     right: 2%;
@@ -261,15 +268,13 @@ $flag-circle-opacity: 0.2;
         display: flex;
         align-items: center;
         justify-content: center;
+        background-color: white;
         &:hover {
             background-color: #979797;
             svg {
                 transition: all 0.1s ease-in;
                 transform: scale(1.1);
             }
-        }
-        &:visited {
-            background-color: red;
         }
         &.active {
             background-color: variables.$mainColor;
