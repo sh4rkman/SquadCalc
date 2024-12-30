@@ -239,13 +239,6 @@ $flag-circle-opacity: 0.2;
     }
 }
 
-/* Disable hover on touch devices */
-@media (pointer: coarse) {
-    button:hover {
-        background-color: initial;
-    }
-}
-
 #mapLayerMenu {
     position: absolute;
     right: 2%;

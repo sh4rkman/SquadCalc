@@ -467,6 +467,15 @@ export default class SquadCalc {
 
         } else {
             $(".btn-focus").hide();
+
+            // Adjust hover styles for touch devices
+            const styleTag = document.createElement("style");
+            styleTag.innerHTML = `
+                btn:hover {
+                    background-color: white !important;
+                }
+            `;
+            document.head.appendChild(styleTag);
         }
 
         let countdown;
