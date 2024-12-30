@@ -28,7 +28,7 @@ tippy("#settings", {
     theme: "new",
     trigger: "manual",
     onShow(tip) {
-        tip.setContent(`<i class=fa fa-check></i>${i18next.t("tooltips:copied")}`);
+        tip.setContent(`${i18next.t("tooltips:copied")}`);
         setTimeout(() => {
             tip.hide();
             tip.disable();
@@ -49,16 +49,6 @@ tippy("span[data-i18n='settings:mapAnimationSettings']", {
     ...commonToolipsSettings,
     onShow(tip) {
         tip.setContent(`${i18next.t("tooltips:smoothMapTooltip")}`);
-    },
-});
-
-tippy("span[data-i18n='settings:highquality']", {
-    ...commonToolipsSettings,
-    onShow(tip) {
-        tip.setContent(`
-            ${i18next.t("tooltips:highqualityTooltip")} <br><br> 
-            <p class='perfWarning'>${i18next.t("tooltips:performanceWarning")}</p>
-        `);
     },
 });
 
@@ -123,6 +113,18 @@ tippy("#bearingNum", {
     theme: "results",
     onShow(tip) {
         tip.setContent(`${i18next.t("tooltips:bearing")}</br><span class=tooltipsubtext>${i18next.t("tooltips:whereToAim")}</span>`);
+    },
+});
+
+tippy(".btn-hd", {
+    animation: "fade",
+    placement: "left",
+    touch: false,
+    theme: "menu",
+    onShow(tip) {
+        tip.setContent(`
+            ${i18next.t("settings:highquality")}
+        `);
     },
 });
 
@@ -199,7 +201,7 @@ tippy("#elevationNum", {
     },
 });
 
-tippy("#savebutton i", {
+tippy("#savebutton svg", {
     animation: "fade",
     allowHTML: true,
     interactiveDebounce: 75,
@@ -210,7 +212,7 @@ tippy("#savebutton i", {
         tip.setContent(`${i18next.t("tooltips:save")}</br><span class=tooltipsubtext> ${i18next.t("tooltips:resultLater")}</span>`);
     },
 });
-tooltip_save = document.querySelector("#savebutton i")._tippy;
+tooltip_save = document.querySelector("#savebutton svg")._tippy;
 
 tippy("#preview", {
     animation: false,

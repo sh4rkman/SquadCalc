@@ -32,6 +32,5 @@
     "targetEmphasisTooltip": "Met en valeur une cible au survol de la souris en masquant les autres",
     "useClassicCursorTooltip": "Remplace le réticule par le curseur par défaut de votre systeme",
     "targetAnimationTooltip": "Désactiver pour remplacer l'icône des marqueurs par des cercles minimalistes",
-    "highqualityTooltip": "Remplacez les images de la carte par des images de très haute qualité, suréchantillonnées par IA, en 8k*8k pixels.",
     "performanceWarning": "Peut causer des problèmes de performance"
 }

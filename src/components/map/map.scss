@@ -258,39 +258,43 @@ $flag-circle-opacity: 0.2;
         box-shadow: 0 2px 15px rgba(0,0,0,0.1);
         cursor: pointer;
         transition: all 0.2s ease-out;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         &:hover {
             background-color: #979797;
+            svg {
+                transition: all 0.1s ease-in;
+                transform: scale(1.1);
+            }
+        }
+        &:visited {
+            background-color: red;
         }
         &.active {
             background-color: variables.$mainColor;
             border-top: variables.$mainColor;
             border-bottom: variables.$mainColor;
-            color: variables.$mainTxtColor;
-            .fa-mound {
-                background: white;
-                background-clip: text;
-                -webkit-text-fill-color: transparent;
-                -webkit-background-clip: text;
+            svg path {
+                fill: white;
             }
         }
-        .fa-mound {
-            font-size: 1.5em;
-            background: -webkit-gradient(linear, left top, left bottom,
-             from(#d66916),
-             color-stop(0.3, #c27942),
-             color-stop(0.4, #c7c875),
-             color-stop(0.5, #629c61),
-             to(#162015));
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-            -webkit-background-clip: text;
+        svg {
+            height: 1.2em;
+            width: 1.2em;
+            fill: variables.$mainBGColor;
+        }
+        &.btn-topomap svg {
+            width: 1.6em;
+            height: 1.6em;
+        }
+        &.btn-delete svg {
+            width: 1em;
+            height: 1em;
         }
     }
     .mapLayerMenuSeparator {
         margin-top: 10px;
-    }
-    .fa-magnifying-glass-location {
-        font-size: 1.3em;
     }
 }
 

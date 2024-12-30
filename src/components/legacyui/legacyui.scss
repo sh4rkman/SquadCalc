@@ -14,17 +14,34 @@
             font-size: 50%;
             margin: -10px; // ugly hack
         }
+        svg {
+            fill: white;
+            height: 0.7em;
+            width: 0.7em;
+
+        }
+        #bearing svg {
+            transform: rotate(-45deg);
+            padding-bottom: 5px;
+        }
         #highlow {
             background-color: transparent;
-            .active {
+            padding: 0 5px;
+            &.active {
                 cursor: pointer;
                 &:active {
                     transform: scale(0.7);
                 }
                 &:hover {
-                    color: variables.$mainColor;
+                    svg {
+                        fill: variables.$mainColor;
+                    }
                 }
             }
+            path {
+                pointer-events: none;
+            }
+
         }
         #savebutton {
             background-color: transparent;
@@ -35,21 +52,32 @@
             position: absolute;
             right: 0;
             transition: all 0.1s ease-out;
-            i {
+            svg {
                 cursor:pointer;
-                font-size: 0.5em;
+                font-size: 0.8em;
                 position: relative;
                 margin: 0;
+                transition: all 0.3s ease-out;
+                &:hover {
+                    fill: variables.$mainColor;
+                }
             }
             &:active {
                 transform: scale(0.7);
             }
-            &:hover {
-                color: variables.$mainColor;
-            }
             &:focus {
                 outline: none;
             }
+        }
+    }
+    .saved_list svg {
+        fill: variables.$mainTxtColor;
+        height: 1em;
+        width: 1em;
+        &:hover {
+            fill: variables.$mainColor;
+            cursor: pointer;
+            transform: scale(1.1);
         }
     }
     .copy {
@@ -87,14 +115,6 @@
             font-weight: bold;
             &:hover {
                 cursor: pointer;
-            }
-        }
-        i {
-            cursor: pointer;
-            transition: all 0.2s ease;
-            &:hover {
-                color: variables.$mainColor;
-                transform: scale(1.2);
             }
         }
         #ruler {

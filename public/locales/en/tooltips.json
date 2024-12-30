@@ -32,6 +32,5 @@
     "targetEmphasisTooltip": "Emphasize hovered marker by fading out others",
     "useClassicCursorTooltip": "Replace crosshair with default cursor",
     "targetAnimationTooltip": "Disable to replace target markers icon with minimalistic circles",
-    "highqualityTooltip": "Replace basemap images with very high quality, AI upscaled, 8k*8k pixels images.",
     "performanceWarning": "Can cause performance issues"
 }

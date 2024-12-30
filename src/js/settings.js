@@ -52,6 +52,7 @@ export function loadSettings(){
         window.history.replaceState({}, "", currentUrl);
     }
 
+
     
     App.userSettings.circlesFlags = loadLocalSetting("settings-circles-flags");
     $("#circlesFlagsSettings").prop("checked", App.userSettings.circlesFlags);
@@ -78,7 +79,7 @@ export function loadSettings(){
     $("#experimentalSetting").prop("checked", App.userSettings.experimentalWeapons);
 
     App.userSettings.highQualityImages = loadLocalSetting("settings-highquality-images", 0);
-    $("#highQualitySetting").prop("checked", App.userSettings.highQualityImages);
+    if (App.userSettings.highQualityImages) $(".btn-hd").addClass("active");
 
     App.userSettings.smoothMap = loadLocalSetting("settings-smooth-map", 0);
     $("#mapAnimationSettings").prop("checked", App.userSettings.smoothMap);
@@ -310,13 +311,6 @@ $("#experimentalSetting").on("change", function() {
     App.toggleExperimentalWeapons();
 });
 
-
-$("#highQualitySetting").on("change", function() {
-    var val =  $("#highQualitySetting").is(":checked");
-    App.userSettings.highQualityImages = val;
-    localStorage.setItem("settings-highquality-images", +val);
-    App.minimap.changeLayer();
-});
 
 $("#realMaxRangeSettings").on("change", function() {
     var val =  $("#realMaxRangeSettings").is(":checked");

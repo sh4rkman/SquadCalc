@@ -1,7 +1,28 @@
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **34.2.4** *(2025-XX-XX)*
+
+
+<img src="https://img.shields.io/badge/-new-green"> **Added a new "HD" buttons to use very high quality maps** *(was previously in settings)*  
+SquadCalc now also serve very high quality (8192px*8192px) terrain & topographic images if asked to.  
+**Performance can be strongly affected**, specifically while in game and using Steam Browser which seems to offer the worst performances even on very high end machines for whatever reason.
+
+<img src="https://img.shields.io/badge/-new-green"> **New keyboard shortcut:** press backspace to remove the last target placed on the map
+
+<img src="https://img.shields.io/badge/-new-green"> **New Settings tab listing shortcut:** a new tab in settings allow you to browse the available keyboard shortcuts for squadcalc. Not customizable (yet?).
+
+
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed a bug where layer wasn't correctly removed when switching map
+
+<img src="https://img.shields.io/badge/-%20dev%20-grey"> Now using .svg icons to speed things up and get rid of CDN.
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
+
+
+
 # <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **34.1.4** *(2024-12-27)*
 
 
-<img src="https://img.shields.io/badge/-new-green"> New keyboard shortcut : press delete to clear all targets on the map (fix #250)
+<img src="https://img.shields.io/badge/-new-green"> **New keyboard shortcut:** press delete to clear all targets on the map (fix #250)
 
 <img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed KP-gridlines sometimes being drawn outside of map bounds (fix #251)
 

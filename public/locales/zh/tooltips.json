@@ -32,6 +32,5 @@
     "targetEmphasisTooltip": "通过淡出其他标记来强调悬停的标记",
     "useClassicCursorTooltip": "用默认光标替换十字准星",
     "targetAnimationTooltip": "禁用以将标记图标替换为简约的圆形",
-    "highqualityTooltip": "用非常高质量、AI放大的8k*8k像素图像替换地图图像。",
     "performanceWarning": "可能会导致性能问题"
 }

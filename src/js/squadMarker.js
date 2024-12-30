@@ -659,6 +659,9 @@ export var squadTargetMarker = squadMarker.extend({
         // Unbind all custom event handlers
         this.off();
 
+        // Remove the marker from targets array history
+        this.map.targets = this.map.targets.filter(target => target !== this);
+
         // Remove everything attached from the map
         this.spreadMarker1.removeFrom(this.map.markersGroup).remove();
         this.spreadMarker2.removeFrom(this.map.markersGroup).remove();
