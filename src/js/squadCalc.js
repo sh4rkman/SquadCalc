@@ -345,6 +345,13 @@ export default class SquadCalc {
             this.loadMapUIMode();
         }
 
+
+        $(document).on("change", ".dropbtn6", (event) => {
+            this.userSettings.fontSize = event.target.value;
+            localStorage.setItem("settings-font-size", this.userSettings.fontSize);
+            this.changeFontSize();
+        });
+
         // Add Events listeners
 
         // LEGACY MODE
@@ -531,22 +538,22 @@ export default class SquadCalc {
 
         switch (this.userSettings.fontSize) {
         case 1:
-            fontSize = "0.8";
+            fontSize = 0.8;
             break;
         case 2:
-            fontSize = "0.9";
+            fontSize = 0.9;
             break;    
         case 3:
-            fontSize = "1";
+            fontSize = 1;
             break;
         case 4:
-            fontSize = "1.1";
+            fontSize = 1.1;
             break;
         case 5:
-            fontSize = "1.2";
+            fontSize = 1.2;
             break;
         default:
-            fontSize = "1";
+            fontSize = 1;
             break;
         }
 

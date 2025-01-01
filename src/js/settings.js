@@ -59,7 +59,13 @@ export function loadSettings(){
         fontSize = 3;
     }
     App.userSettings.fontSize = fontSize;
-    $(".fontSizeSelector input").val(fontSize);
+
+    $(".dropbtn6").select2({
+        dropdownCssClass: "dropbtn6",
+        dropdownParent: $("#helpDialog"),
+        minimumResultsForSearch: -1, // Disable search
+    });
+    $(".dropbtn6").val(fontSize).trigger("change");;
 
     App.userSettings.circlesFlags = loadLocalSetting("settings-circles-flags");
     $("#circlesFlagsSettings").prop("checked", App.userSettings.circlesFlags);
