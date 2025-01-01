@@ -29,7 +29,6 @@
     "showKeypadTooltip": "在光标下显示数字键盘",
     "showSpreadTooltip": "显示目标周围可能的弹药散布区域",
     "showMaxRangeTooltip": "计算每个方向的最大范围，同时考虑高度",
-    "targetEmphasisTooltip": "通过淡出其他标记来强调悬停的标记",
     "useClassicCursorTooltip": "用默认光标替换十字准星",
     "targetAnimationTooltip": "禁用以将标记图标替换为简约的圆形",
     "performanceWarning": "可能会导致性能问题"

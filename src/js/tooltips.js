@@ -73,13 +73,6 @@ tippy("span[data-i18n='settings:showKeypad']", {
     },
 });
 
-tippy("span[data-i18n='settings:targetEmphasis']", {
-    ...commonToolipsSettings,
-    onShow(tip) {
-        tip.setContent(`${i18next.t("tooltips:targetEmphasisTooltip")}`);
-    },
-});
-
 tippy("span[data-i18n='settings:useClassicCursor']", {
     ...commonToolipsSettings,
     onShow(tip) {
@@ -104,7 +97,6 @@ tippy("span[data-i18n='settings:realMaxRange']", {
     },
 });
 
-
 tippy("#bearingNum", {
     animation: "fade",
     placement: "bottom",
@@ -116,11 +108,42 @@ tippy("#bearingNum", {
     },
 });
 
-tippy(".btn-hd", {
+
+/* ******************* */
+/* Map Button tooltips */
+/* ******************* */
+
+const commonMapMenuToolipsSettings = {
     animation: "fade",
     placement: "left",
     touch: false,
     theme: "menu",
+    delay: [500, 0],
+};
+
+tippy(".btn-basemap", {
+    ...commonMapMenuToolipsSettings,
+    onShow(tip) {
+        tip.setContent(i18next.t("tooltips:basemode"));
+    },
+});
+
+tippy(".btn-terrainmap", {
+    ...commonMapMenuToolipsSettings,
+    onShow(tip) {
+        tip.setContent(i18next.t("tooltips:terrainmode"));
+    },
+});
+
+tippy(".btn-topomap", {
+    ...commonMapMenuToolipsSettings,
+    onShow(tip) {
+        tip.setContent(i18next.t("tooltips:topographicmode"));
+    },
+});
+
+tippy(".btn-hd", {
+    ...commonMapMenuToolipsSettings,
     onShow(tip) {
         tip.setContent(`
             ${i18next.t("settings:highquality")}
@@ -128,64 +151,24 @@ tippy(".btn-hd", {
     },
 });
 
-tippy(".btn-delete", {
-    animation: "fade",
-    placement: "left",
-    touch: false,
-    theme: "menu",
+tippy(".btn-helpmap", {
+    ...commonMapMenuToolipsSettings,
     onShow(tip) {
-        tip.setContent(i18next.t("tooltips:deleteTargets"));
+        tip.setContent(i18next.t("tooltips:helpmode"));
     },
 });
 
 tippy(".btn-focus", {
-    animation: "fade",
-    placement: "left",
-    touch: false,
-    theme: "menu",
+    ...commonMapMenuToolipsSettings,
     onShow(tip) {
         tip.setContent(i18next.t("tooltips:focusMode"));
     },
 });
 
-tippy(".btn-basemap", {
-    animation: "fade",
-    placement: "left",
-    theme: "menu",
-    touch: false,
+tippy(".btn-delete", {
+    ...commonMapMenuToolipsSettings,
     onShow(tip) {
-        tip.setContent(i18next.t("tooltips:basemode"));
-    },
-});
-
-tippy(".btn-terrainmap", {
-    animation: "fade",
-    placement: "left",
-    theme: "menu",
-    touch: false,
-    onShow(tip) {
-        tip.setContent(i18next.t("tooltips:terrainmode"));
-    },
-});
-
-
-tippy(".btn-topomap", {
-    animation: "fade",
-    placement: "left",
-    theme: "menu",
-    touch: false,
-    onShow(tip) {
-        tip.setContent(i18next.t("tooltips:topographicmode"));
-    },
-});
-
-tippy(".btn-helpmap", {
-    animation: "fade",
-    placement: "left",
-    theme: "menu",
-    touch: false,
-    onShow(tip) {
-        tip.setContent(i18next.t("tooltips:helpmode"));
+        tip.setContent(i18next.t("tooltips:deleteTargets"));
     },
 });
 

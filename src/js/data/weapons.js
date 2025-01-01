@@ -1,14 +1,14 @@
 import classicLogo from "../../img/icons/mortar.png";
-import hellcannonLogo from "../../img/icons/hellcannon_white.png";
-import ub322Logo from "../../img/icons/ub32_deployable.png";
-import technicalLogo from "../../img/icons/technical_mortar_white.png";
-import mlrsLogo from "../../img/icons/mlrs_white.png";
-import ub32Logo from "../../img/icons/ub32_white.png";
-import m113Logo from "../../img/icons/m113a3_white.png";
-import mk19rwsLogo from "../../img/icons/mk19_rws_white.png";
+import hellcannonLogo from "../../img/icons/weapons/hellcannon_white.png";
+import ub322Logo from "../../img/icons/weapons/ub32_deployable.png";
+import technicalLogo from "../../img/icons/weapons/technical_mortar_white.png";
+import mlrsLogo from "../../img/icons/weapons/mlrs_white.png";
+import ub32Logo from "../../img/icons/weapons/ub32_white.png";
+import m113Logo from "../../img/icons/weapons/m113a3_white.png";
+import mk19rwsLogo from "../../img/icons/weapons/mk19_rws_white.png";
 
 /* eslint no-unused-vars: "off" */
-import target from "../../img/icons/target.png";
+import target from "../../img/icons/target.png"; 
 import markerIconPng from "leaflet/dist/images/marker-icon.png";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";
 import markerIconx2 from "leaflet/dist/images/marker-icon-2x.png";

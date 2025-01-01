@@ -406,7 +406,13 @@ export default class SquadCalc {
             this.minimap.changeLayer();
         });
 
+        $(".fontSizeSelector input").on("change", (event) => {
+            this.userSettings.fontSize = Math.max(1, Math.min($(event.target).val(), 5)); // ensure 1 < value < 3
+            localStorage.setItem("settings-font-size", this.userSettings.fontSize);
+            this.changeFontSize();
+        });
 
+        this.changeFontSize();
 
         // Hack for Chrome to avoid lag when zooming inside the map
         // Force a decode each time focus a acquired again
@@ -467,15 +473,6 @@ export default class SquadCalc {
 
         } else {
             $(".btn-focus").hide();
-
-            // Adjust hover styles for touch devices
-            const styleTag = document.createElement("style");
-            styleTag.innerHTML = `
-                btn:hover {
-                    background-color: white !important;
-                }
-            `;
-            document.head.appendChild(styleTag);
         }
 
         let countdown;
@@ -526,6 +523,39 @@ export default class SquadCalc {
 
 
         this.show();
+    }
+
+    changeFontSize(){
+        var fontSize;
+        this.userSettings.fontSize = parseInt(this.userSettings.fontSize, 10) || 1;
+
+        switch (this.userSettings.fontSize) {
+        case 1:
+            fontSize = "0.8";
+            break;
+        case 2:
+            fontSize = "0.9";
+            break;    
+        case 3:
+            fontSize = "1";
+            break;
+        case 4:
+            fontSize = "1.1";
+            break;
+        case 5:
+            fontSize = "1.2";
+            break;
+        default:
+            fontSize = "1";
+            break;
+        }
+
+        const root = document.documentElement;
+        root.style.setProperty("--font-size-objtext", `${fontSize}em`);
+        root.style.setProperty("-size-text-preview", `${fontSize}em`);
+        root.style.setProperty("--font-size-calc-popup", `${fontSize - 0.1}em`);
+        $("#textPreview").css("font-size", `${fontSize}em`);
+
     }
 
     /**

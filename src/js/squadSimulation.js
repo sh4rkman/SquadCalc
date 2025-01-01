@@ -1,6 +1,6 @@
 import { App } from "../app.js";
-import targetIcon from "../img/icons/marker_target_enabled.webp";
-import targetIconDisabled from "../img/icons/marker_target_disabled.webp";
+import targetIcon from "../img/icons/markers/marker_target_enabled.webp";
+import targetIconDisabled from "../img/icons/markers/marker_target_disabled.webp";
 import i18next from "i18next";
 
 export default class Simulation {

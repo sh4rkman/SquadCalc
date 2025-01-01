@@ -29,7 +29,6 @@
     "showKeypadTooltip": "Display the keypad currently hovered under the cursor",
     "showSpreadTooltip": "Display possible rounds' dispersion area around the targets",
     "showMaxRangeTooltip": "Compute max range in every direction taking heights into account",
-    "targetEmphasisTooltip": "Emphasize hovered marker by fading out others",
     "useClassicCursorTooltip": "Replace crosshair with default cursor",
     "targetAnimationTooltip": "Disable to replace target markers icon with minimalistic circles",
     "performanceWarning": "Can cause performance issues"

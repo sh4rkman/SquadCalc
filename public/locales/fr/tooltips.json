@@ -29,7 +29,6 @@
     "showKeypadTooltip": "Affiche le numéro de grille (ex: \"B03-4-5\") sous le curseur de souris",
     "showSpreadTooltip": "Affiche la dispersion possible des projectiles autour des cibles",
     "showMaxRangeTooltip": "Calcule la portée maximale dans chaque direction en tenant compte des hauteurs",  
-    "targetEmphasisTooltip": "Met en valeur une cible au survol de la souris en masquant les autres",
     "useClassicCursorTooltip": "Remplace le réticule par le curseur par défaut de votre systeme",
     "targetAnimationTooltip": "Désactiver pour remplacer l'icône des marqueurs par des cercles minimalistes",
     "performanceWarning": "Peut causer des problèmes de performance"

@@ -1,18 +1,34 @@
-# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **34.2.4** *(2025-XX-XX)*
+# <img src="https://img.shields.io/badge/-major%20release-b22222?style=for-the-badge">  **35.0.0** *(2025-01-01)*
 
+<img src="https://img.shields.io/badge/-new-green"> **Custom font size:** you can now change the size of the texts appearing on the map to your liking (Fixes #254)
 
-<img src="https://img.shields.io/badge/-new-green"> **Added a new "HD" buttons to use very high quality maps** *(was previously in settings)*  
-SquadCalc now also serve very high quality (8192px*8192px) terrain & topographic images if asked to.  
-**Performance can be strongly affected**, specifically while in game and using Steam Browser which seems to offer the worst performances even on very high end machines for whatever reason.
+<img src="https://img.shields.io/badge/-new-green"> Added new "HD" buttons to use very high-quality maps (previously located in Settings)
+SquadCalc now serves very high-quality (8192px × 8192px) terrain and topographic images upon request.
+Performance may be significantly affected, especially when using the Steam browser, which appears to deliver the worst performance—even on high-end machines, for reasons unknown.
+(Fixes #253)
 
-<img src="https://img.shields.io/badge/-new-green"> **New keyboard shortcut:** press backspace to remove the last target placed on the map
+<img src="https://img.shields.io/badge/-new-green"> New keyboard shortcut: Press Backspace to remove the last target placed on the map.
 
-<img src="https://img.shields.io/badge/-new-green"> **New Settings tab listing shortcut:** a new tab in settings allow you to browse the available keyboard shortcuts for squadcalc. Not customizable (yet?).
+<img src="https://img.shields.io/badge/-new-green"> New Settings tab listing shortcuts: A new tab in Settings allows you to browse all available keyboard shortcuts for SquadCalc. Not customizable (yet?).
 
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed a bug where layers weren't correctly removed when switching maps.
 
-<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed a bug where layer wasn't correctly removed when switching map
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed circle flags being slightly off-center.
 
-<img src="https://img.shields.io/badge/-%20dev%20-grey"> Now using .svg icons to speed things up and get rid of CDN.
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed a visual bug in calculation popups when adding and removing a second weapon.
+
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> The "Emphasis markers on hover" option is now activated by default, and the corresponding setting has been removed.
+
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Removed ant-lines connecting weapons to targets when hovering over a marker.
+
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Main icons now use regular image icons instead of emojis.
+
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> The Settings preview now displays the selected marker type (Big or Minimalistic).
+
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Added various button animations.
+
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Now using .svg icons to improve speed and eliminate dependency on CDNs.
+
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
 

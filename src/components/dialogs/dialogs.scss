@@ -1,5 +1,9 @@
 @use '../shared/variables';
 
+:root {
+    --font-size-text-preview: 1em;
+}
+
 dialog {
     width: calc(100% - 10%);
     text-align: left;
@@ -148,6 +152,21 @@ dialog {
         font-size: 0.6em;
         h3 {
             font-size: 1.3em;
+        }
+        #fontSize {
+            width: 100%;
+            height: auto;
+            display: inline-block;
+            .fontSizeSettings {
+                width: auto;
+                margin: 0 0 0 3em;
+                td {           
+                    &:nth-child(1) {
+                        width: auto;
+                        padding-right: 1em;
+                    }
+                }
+            }
         }
         table {
             border: none;
@@ -434,21 +453,23 @@ $bezier: cubic-bezier(0.65, 0.25, 0.56, 0.96);
 }
 
 #previewHolder {
-    border: solid transparent 1px;
+    display: inline;
+    top: 0;
     #preview {
         outline: solid variables.$mainColor 3px;
         margin: 1em auto 0;
         float: none;
-        width: 150px;
-        height: 150px;
+        width: 120px;
+        height: 120px;
         #center {
-            width: 150px;
-            height: 150px;
+            width: 100%;
+            height: 120px;
             display: flex;
             align-items: center;
             justify-content: center;
             #mapPreview {
-                width: 100%;
+                width: 120px;
+                height: 120px;
             }
             #markerPreview {
                 position: absolute;
@@ -456,31 +477,32 @@ $bezier: cubic-bezier(0.65, 0.25, 0.56, 0.96);
             }
             #gridPreview {
                 position: absolute;
-                width: 150px;
+                width: 120px;
+                height: 120px;
             }
             #maxRangePreview {
                 position: absolute;
-                width: 147px;
+                width: 120px;
                 margin-right: 3px;
                 margin-top: 3px;
             }
             #damagePreview {
                 position: absolute;
-                margin-top: 30px;
-                width: 110px;
+                margin-top: 16px;
+                width: 90px;
             }
             #spreadPreview {
                 position: absolute;
-                margin-top: 15px;
                 width: 80px;
             }
         }
         #textPreview{
             @include variables.text-outline;
-            margin-top: 55px;
-            margin-left: 25px;
+            margin-top: 40px;
+            margin-left: 75px;
             position: absolute;
             z-index: 1;
+            font-size: var(--font-size-text-preview);
             .bearingPreview {
                 font-size: 0.6em;
                 text-align: right;
