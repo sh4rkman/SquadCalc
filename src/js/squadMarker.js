@@ -1,12 +1,12 @@
 import { App } from "../app.js";
 import { ellipse } from "./libs/leaflet.ellipse.js";
-import { Marker, Circle, CircleMarker, Popup, polyline, Polygon } from "leaflet";
+import { Marker, Circle, CircleMarker, Popup, Polygon } from "leaflet";
 import { targetIcon1, targetIconAnimated, targetIconDisabled,targetIconMinimal ,targetIconMinimalDisabled } from "./squadIcon.js";
 import SquadSimulation from "./squadSimulation.js";
 import SquadFiringSolution from "./squadFiringSolution.js";
 import i18next from "i18next";
 import { sendMarkerData, sendTargetData } from "./squadCalcAPI.js";
-import { antPath } from "leaflet-ant-path";
+import { animateCSS } from "./animations.js";
 
 
 /*
@@ -493,7 +493,6 @@ export var squadTargetMarker = squadMarker.extend({
         var popUpOptions_weapon1;
         var popUpOptions_weapon2;
         var weaponPos;
-        var trajectoriesOptions;
 
         //Util.setOptions(this, options);
         squadMarker.prototype.initialize.call(this, latlng, options, map);
@@ -518,16 +517,6 @@ export var squadTargetMarker = squadMarker.extend({
             ...popUpOptions_weapon1,
             offset: [0, -10],
             className: "posPopUpTarget"
-        };
-
-        trajectoriesOptions = { 
-            use: polyline, 
-            delay: 500, 
-            dashArray: [10, 30], 
-            weight: 2, 
-            color: "#FFFFFF", 
-            pulseColor: App.mainColor, 
-            opacity: 0, 
         };
 
         this.spreadOptionsOn = {
@@ -590,10 +579,6 @@ export var squadTargetMarker = squadMarker.extend({
         this.calcMarker2 = new Popup(popUpOptions_weapon2).setLatLng(latlng).addTo(this.map.markersGroup);
         this.updateCalcPopUps();
         this.calcMarker1.setContent(this.getContent(this.firingSolution1, this.map.activeWeaponsMarkers.getLayers()[0].angleType)).openOn(this.map);
-        
-        // Initiate Trajectories Paths
-        this.pathTrajectory1 = antPath([[0,0], [0,0]], trajectoriesOptions).addTo(this.map);
-        this.pathTrajectory2 = antPath([[0,0], [0,0]], trajectoriesOptions).addTo(this.map);
 
         // posPopUp
         this.posPopUp = new Popup(this.posPopUpOptions).setLatLng(latlng).addTo(this.map.markersGroup).close();
@@ -659,6 +644,9 @@ export var squadTargetMarker = squadMarker.extend({
         // Unbind all custom event handlers
         this.off();
 
+        // Remove the marker from targets array history
+        this.map.targets = this.map.targets.filter(target => target !== this);
+
         // Remove everything attached from the map
         this.spreadMarker1.removeFrom(this.map.markersGroup).remove();
         this.spreadMarker2.removeFrom(this.map.markersGroup).remove();
@@ -668,15 +656,15 @@ export var squadTargetMarker = squadMarker.extend({
         this.hundredDamageRadius.removeFrom(this.map.markersGroup).remove();
         this.twentyFiveDamageRadius.removeFrom(this.map.markersGroup).remove();
         this.posPopUp.removeFrom(this.map.markersGroup).remove();
-        this.pathTrajectory1.removeFrom(this.map.markersGroup).remove();
-        this.pathTrajectory2.removeFrom(this.map.markersGroup).remove();
         
         // Remove the marker itself
         this.removeFrom(this.map.markersGroup).removeFrom(this.map.activeTargetsMarkers).remove();
     
         // If that was the last Marker on the map, hide "delete all" buttons
         if (this.map.activeTargetsMarkers.getLayers().length === 0) {
-            $(".btn-delete").hide();
+            animateCSS($(".btn-delete"), "fadeOutRight").then(() => {
+                $(".btn-delete").hide();
+            });
         }
 
     },
@@ -987,12 +975,6 @@ export var squadTargetMarker = squadMarker.extend({
 
         // Update bearing/elevation/spread marker
         this.updateCalc(); 
-
-        // Update TrajectoryPath
-        this.pathTrajectory1.setLatLngs([this.map.activeWeaponsMarkers.getLayers()[0].getLatLng(), e.latlng]).setStyle({ opacity: 1 });
-        if (this.map.activeWeaponsMarkers.getLayers()[1]) {
-            this.pathTrajectory2.setLatLngs([this.map.activeWeaponsMarkers.getLayers()[1].getLatLng(), e.latlng]).setStyle({ opacity: 1 });
-        }
         
     },
 
@@ -1068,17 +1050,11 @@ export var squadTargetMarker = squadMarker.extend({
 
         this.mouseOverTimeout = setTimeout(() => {
 
-            // Update & show TrajectoryPath
-            this.pathTrajectory1.setLatLngs([this.map.activeWeaponsMarkers.getLayers()[0].getLatLng(), this._latlng]).setStyle({ opacity: 1 });
-            if (this.map.activeWeaponsMarkers.getLayers()[1]) {
-                this.pathTrajectory2.setLatLngs([this.map.activeWeaponsMarkers.getLayers()[1].getLatLng(), this._latlng]).setStyle({ opacity: 1 });
-            }
-
             // Hide the layer
             if (this.map.layer) this.map.layer._setOpacity(0.5); 
 
             // Hide other targets
-            if (!this.isDragging && App.userSettings.targetEmphasis){
+            if (!this.isDragging){
                 this.map.activeTargetsMarkers.eachLayer((target) => {
                     if (target != this) {
                         target.off("mouseover");
@@ -1107,14 +1083,12 @@ export var squadTargetMarker = squadMarker.extend({
         if (this.map.layer) this.map.layer._setOpacity(1); 
 
         if (!this.isDragging){
-            this.pathTrajectory1.setStyle({ opacity: 0 });
-            this.pathTrajectory2.setStyle({ opacity: 0 });
             this.map.activeTargetsMarkers.eachLayer((target) => {
                 target.on("mouseover", target._handleMouseOver, target);
                 target.on("mouseout", target._handleMouseOut, target);
                 target.setOpacity(1);
                 target.calcMarker1.openOn(this.map);
-                target.calcMarker2.openOn(this.map);
+                if (this.map.activeWeaponsMarkers.getLayers()[1]) target.calcMarker2.openOn(this.map);
                 target.updateSpread();
                 target.updateDamageRadius();
             });

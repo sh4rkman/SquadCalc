@@ -12,25 +12,50 @@
 
     <div id="mapLayerMenu" oncontextmenu="return false;">
 
-        <button type="button" class="btn btn-basemap layers hidable" value="basemap" aria-label="Switch to base map">
-            <i class="fa-solid fa-map"></i>
-        </button>
-        <button type="button" class="btn btn-terrainmap layers hidable" value="terrainmap" aria-label="Switch to terrain map">
-            <i class="fa-solid fa-mountain-sun"></i>
-        </button>
-        <button type="button" class="btn btn-topomap layers hidable" value="topomap" aria-label="Switch to topographic map">
-            <i class="fa-solid fa-mound"></i>
+        <button type="button" class="btn btn-basemap layers animate__animated animate__fadeInRight" value="basemap" aria-label="Switch to base map">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path d="M384 476.1L192 421.2l0-385.3L384 90.8l0 385.3zm32-1.2l0-386.5L543.1 37.5c15.8-6.3 32.9 5.3 32.9 22.3l0 334.8c0 9.8-6 18.6-15.1 22.3L416 474.8zM15.1 95.1L160 37.2l0 386.5L32.9 474.5C17.1 480.8 0 469.2 0 452.2L0 117.4c0-9.8 6-18.6 15.1-22.3z"/></svg>
         </button>
 
+        <button type="button" class="btn btn-terrainmap layers animate__animated animate__fadeInRight" value="terrainmap" aria-label="Switch to terrain map">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><path d="M560 160A80 80 0 1 0 560 0a80 80 0 1 0 0 160zM55.9 512l325.2 0 75 0 122.8 0c33.8 0 61.1-27.4 61.1-61.1c0-11.2-3.1-22.2-8.9-31.8l-132-216.3C495 196.1 487.8 192 480 192s-15 4.1-19.1 10.7l-48.2 79L286.8 81c-6.6-10.6-18.3-17-30.8-17s-24.1 6.4-30.8 17L8.6 426.4C3 435.3 0 445.6 0 456.1C0 487 25 512 55.9 512z"/></svg>
+        </button>
+
+        <button type="button" class="btn btn-topomap layers animate__animated animate__fadeInRight" value="topomap" aria-label="Switch to topographic map">
+            <svg id="topomap" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">
+                <defs>
+                    <linearGradient id="topomapGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" style="stop-color: #d66916;"/>
+                        <stop offset="30%" style="stop-color: #c27942;"/>
+                        <stop offset="40%" style="stop-color: #c7c875;"/>
+                        <stop offset="50%" style="stop-color: #629c61;"/>
+                        <stop offset="100%" style="stop-color: #162015;"/>
+                    </linearGradient>
+                </defs>
+                <path d="M144.1 179.2C173.8 127.7 228.6 96 288 96s114.2 31.7 143.9 83.2L540.4 368c12.3 21.3-3.1 48-27.7 48H63.3c-24.6 0-40-26.6-27.7-48L144.1 179.2z" fill="url(#topomapGradient)"/>
+            </svg>
+        </button>
+        
+
         <div class="mapLayerMenuSeparator">
-            <button type="button" class="btn btn-helpmap others hidable" value="helpmap" aria-label="See where players usually place weapons">
-                <i class="fa-solid fa-magnifying-glass-location"></i>
+            <button type="button" class="btn btn-hd others animate__animated animate__fadeInRight" aria-label="High definition images">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">
+                    <path d="M0 96C0 60.7 28.7 32 64 32l448 0c35.3 0 64 28.7 64 64l0 320c0 35.3-28.7 64-64 64L64 480c-35.3 0-64-28.7-64-64L0 96zm304 88l0 144c0 13.3 10.7 24 24 24l56 0c53 0 96-43 96-96s-43-96-96-96l-56 0c-13.3 0-24 10.7-24 24zm80 24c26.5 0 48 21.5 48 48s-21.5 48-48 48l-32 0 0-96 32 0zM160 184c0-13.3-10.7-24-24-24s-24 10.7-24 24l0 72 0 72c0 13.3 10.7 24 24 24s24-10.7 24-24l0-48 64 0 0 48c0 13.3 10.7 24 24 24s24-10.7 24-24l0-72 0-72c0-13.3-10.7-24-24-24s-24 10.7-24 24l0 48-64 0 0-48z"/>
+                </svg>
             </button>
-            <button type="button" class="btn btn-focus others" aria-label="fullscreen">
-                <i class="fa-solid fa-expand"></i>
+            <button type="button" class="btn btn-helpmap others animate__animated animate__fadeInRight" value="helpmap" aria-label="See where players usually place weapons">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                    <path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM288 176c0-44.2-35.8-80-80-80s-80 35.8-80 80c0 48.8 46.5 111.6 68.6 138.6c6 7.3 16.8 7.3 22.7 0c22.1-27 68.6-89.8 68.6-138.6zm-112 0a32 32 0 1 1 64 0 32 32 0 1 1 -64 0z"/>
+                </svg>
             </button>
-            <button type="button" class="btn btn-delete others hidable animate__animated animate__fadeInDown" aria-label="delete all targets">
-                <i class="fa-solid fa-trash"></i>
+            <button type="button" class="btn btn-focus others animate__animated animate__fadeInRight" aria-label="fullscreen">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+                    <path d="M32 32C14.3 32 0 46.3 0 64l0 96c0 17.7 14.3 32 32 32s32-14.3 32-32l0-64 64 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L32 32zM64 352c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 96c0 17.7 14.3 32 32 32l96 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-64 0 0-64zM320 32c-17.7 0-32 14.3-32 32s14.3 32 32 32l64 0 0 64c0 17.7 14.3 32 32 32s32-14.3 32-32l0-96c0-17.7-14.3-32-32-32l-96 0zM448 352c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 64-64 0c-17.7 0-32 14.3-32 32s14.3 32 32 32l96 0c17.7 0 32-14.3 32-32l0-96z"/>
+                </svg>
+            </button>
+            <button type="button" class="btn btn-delete others animate__animated animate__fadeInRight" aria-label="delete all targets">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+                    <path d="M163.8 0L284.2 0c12.1 0 23.2 6.8 28.6 17.7L320 32l96 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 96C14.3 96 0 81.7 0 64S14.3 32 32 32l96 0 7.2-14.3C140.6 6.8 151.7 0 163.8 0zM32 128l384 0 0 320c0 35.3-28.7 64-64 64L96 512c-35.3 0-64-28.7-64-64l0-320zM143 239c-9.4 9.4-9.4 24.6 0 33.9l47 47-47 47c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l47-47 47 47c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-47-47 47-47c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-47 47-47-47c-9.4-9.4-24.6-9.4-33.9 0z"/>
+                </svg>
             </button>
         </div>
 

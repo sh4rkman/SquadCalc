@@ -56,6 +56,7 @@ export var squadMinimap = Map.extend({
         this.spinOptions = {color: "white", scale: 1.5, width: 5, shadow: "5px 5px 5px transparent"};
         this.layerGroup = new LayerGroup().addTo(this);
         this.markersGroup = new LayerGroup().addTo(this);
+        this.targets = [];
         this.activeTargetsMarkers = new LayerGroup().addTo(this);
         this.activeWeaponsMarkers = new LayerGroup().addTo(this);
         this.grid = "";
@@ -101,6 +102,8 @@ export var squadMinimap = Map.extend({
 
         // remove existing grid and replace it
         if (this.grid) this.grid.remove();
+        if (this.layer) this.layer = "";
+
         this.grid = new squadGrid(this);
         this.grid.setBounds([[0,0], [-this.pixelSize, this.pixelSize]]);
 
@@ -118,7 +121,7 @@ export var squadMinimap = Map.extend({
 
         // Image URL
         const baseUrl = `maps${this.activeMap.mapURL}${LAYERMODE}`;
-        const suffix = (LAYERMODE === "basemap" && App.userSettings.highQualityImages) ? "_hq" : "";
+        const suffix = App.userSettings.highQualityImages ? "_hq" : "";
         const newImageUrl = `${baseUrl}${suffix}.webp`;
         
         // Show spinner
@@ -375,6 +378,7 @@ export var squadMinimap = Map.extend({
         }
 
         target = new squadTargetMarker(e.latlng, {animate: App.userSettings.targetAnimation}, this).addTo(this.markersGroup);
+        this.targets.push(target);
         $(".btn-delete").show();
 
         if (App.userSettings.targetAnimation){

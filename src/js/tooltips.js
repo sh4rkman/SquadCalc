@@ -28,7 +28,7 @@ tippy("#settings", {
     theme: "new",
     trigger: "manual",
     onShow(tip) {
-        tip.setContent(`<i class=fa fa-check></i>${i18next.t("tooltips:copied")}`);
+        tip.setContent(`${i18next.t("tooltips:copied")}`);
         setTimeout(() => {
             tip.hide();
             tip.disable();
@@ -52,16 +52,6 @@ tippy("span[data-i18n='settings:mapAnimationSettings']", {
     },
 });
 
-tippy("span[data-i18n='settings:highquality']", {
-    ...commonToolipsSettings,
-    onShow(tip) {
-        tip.setContent(`
-            ${i18next.t("tooltips:highqualityTooltip")} <br><br> 
-            <p class='perfWarning'>${i18next.t("tooltips:performanceWarning")}</p>
-        `);
-    },
-});
-
 tippy("span[data-i18n='settings:experimentalWeapons']", {
     ...commonToolipsSettings,
     onShow(tip) {
@@ -80,13 +70,6 @@ tippy("span[data-i18n='settings:showKeypad']", {
     ...commonToolipsSettings,
     onShow(tip) {
         tip.setContent(`${i18next.t("tooltips:showKeypadTooltip")}`);
-    },
-});
-
-tippy("span[data-i18n='settings:targetEmphasis']", {
-    ...commonToolipsSettings,
-    onShow(tip) {
-        tip.setContent(`${i18next.t("tooltips:targetEmphasisTooltip")}`);
     },
 });
 
@@ -114,7 +97,6 @@ tippy("span[data-i18n='settings:realMaxRange']", {
     },
 });
 
-
 tippy("#bearingNum", {
     animation: "fade",
     placement: "bottom",
@@ -126,64 +108,67 @@ tippy("#bearingNum", {
     },
 });
 
-tippy(".btn-delete", {
-    animation: "fade",
-    placement: "left",
-    touch: false,
-    theme: "menu",
-    onShow(tip) {
-        tip.setContent(i18next.t("tooltips:deleteTargets"));
-    },
-});
 
-tippy(".btn-focus", {
+/* ******************* */
+/* Map Button tooltips */
+/* ******************* */
+
+const commonMapMenuToolipsSettings = {
     animation: "fade",
     placement: "left",
     touch: false,
     theme: "menu",
-    onShow(tip) {
-        tip.setContent(i18next.t("tooltips:focusMode"));
-    },
-});
+    delay: [500, 0],
+};
 
 tippy(".btn-basemap", {
-    animation: "fade",
-    placement: "left",
-    theme: "menu",
-    touch: false,
+    ...commonMapMenuToolipsSettings,
     onShow(tip) {
         tip.setContent(i18next.t("tooltips:basemode"));
     },
 });
 
 tippy(".btn-terrainmap", {
-    animation: "fade",
-    placement: "left",
-    theme: "menu",
-    touch: false,
+    ...commonMapMenuToolipsSettings,
     onShow(tip) {
         tip.setContent(i18next.t("tooltips:terrainmode"));
     },
 });
 
-
 tippy(".btn-topomap", {
-    animation: "fade",
-    placement: "left",
-    theme: "menu",
-    touch: false,
+    ...commonMapMenuToolipsSettings,
     onShow(tip) {
         tip.setContent(i18next.t("tooltips:topographicmode"));
     },
 });
 
+tippy(".btn-hd", {
+    ...commonMapMenuToolipsSettings,
+    onShow(tip) {
+        tip.setContent(`
+            ${i18next.t("settings:highquality")}
+        `);
+    },
+});
+
 tippy(".btn-helpmap", {
-    animation: "fade",
-    placement: "left",
-    theme: "menu",
-    touch: false,
+    ...commonMapMenuToolipsSettings,
     onShow(tip) {
         tip.setContent(i18next.t("tooltips:helpmode"));
+    },
+});
+
+tippy(".btn-focus", {
+    ...commonMapMenuToolipsSettings,
+    onShow(tip) {
+        tip.setContent(i18next.t("tooltips:focusMode"));
+    },
+});
+
+tippy(".btn-delete", {
+    ...commonMapMenuToolipsSettings,
+    onShow(tip) {
+        tip.setContent(i18next.t("tooltips:deleteTargets"));
     },
 });
 
@@ -199,7 +184,7 @@ tippy("#elevationNum", {
     },
 });
 
-tippy("#savebutton i", {
+tippy("#savebutton svg", {
     animation: "fade",
     allowHTML: true,
     interactiveDebounce: 75,
@@ -210,7 +195,7 @@ tippy("#savebutton i", {
         tip.setContent(`${i18next.t("tooltips:save")}</br><span class=tooltipsubtext> ${i18next.t("tooltips:resultLater")}</span>`);
     },
 });
-tooltip_save = document.querySelector("#savebutton i")._tippy;
+tooltip_save = document.querySelector("#savebutton svg")._tippy;
 
 tippy("#preview", {
     animation: false,

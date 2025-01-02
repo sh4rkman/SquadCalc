@@ -105,7 +105,14 @@ function updateContent() {
         dropdownParent: $("#layerSelector"),
         allowClear: true,
         placeholder: placeholder,
-        minimumResultsForSearch: -1, // Disable search
+        minimumResultsForSearch: -1,
+    });
+
+    $(".dropbtn6").select2("destroy").select2({
+        dropdownCssClass: "dropbtn6",
+        dropdownParent: $("#helpDialog"),
+        minimumResultsForSearch: -1,
+        width: "fit-content",
     });
 
 }

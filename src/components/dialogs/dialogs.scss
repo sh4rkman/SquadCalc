@@ -1,5 +1,9 @@
 @use '../shared/variables';
 
+:root {
+    --font-size-text-preview: 1em;
+}
+
 dialog {
     width: calc(100% - 10%);
     text-align: left;
@@ -22,11 +26,21 @@ dialog {
         right: 8px;
         top: 8px;
         background-color: transparent;
-        transition: all 0.2s ease;
+        transition: all 0.4s ease-in-out;
         cursor: pointer;
+        width: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        svg {
+            fill: white;
+        }
         &:hover {
             color: variables.$mainColor;
-            transform: scale(0.9);
+            transform: rotate(135deg);
+            svg {
+                fill: variables.$mainColor;
+            }
         }
     }
     #lngSelector {
@@ -35,7 +49,7 @@ dialog {
         top: 8px;
         font-weight: bold;
     }
-    .dropbtn4 {
+    .dropbtn4, .dropbtn6 {
         color: #fff;
         font-weight: bold;
         line-height: 1.5em;
@@ -43,6 +57,8 @@ dialog {
         text-align: center;
         background-color: var(--themecolor, variables.$mainBGColor);
         z-index: 1;
+        width: max-content;
+        min-width: max-content;
         select {
             -moz-appearance: none;
             -webkit-appearance: none;
@@ -76,6 +92,7 @@ dialog {
             opacity: 0.5;
         }
         .select2-selection--single .select2-selection__rendered {
+            text-transform: uppercase;
             color: #fff;
         }
         .select2-selection--single {
@@ -139,9 +156,32 @@ dialog {
         h3 {
             font-size: 1.3em;
         }
+        #fontSize {
+            width: 100%;
+            height: auto;
+            display: inline-block;
+            .fontSizeSettings {
+                width: auto;
+                margin: 0 0 0 3em;
+                td {           
+                    &:nth-child(1) {
+                        width: auto;
+                        padding-right: 1em;
+                    }
+                }
+            }
+        }
         table {
             border: none;
             margin: 0 0 2em 3em;
+            &.shortcuts {
+                padding-top: 4em;
+                td {           
+                    &:nth-child(1) {
+                        padding: 10px 20px 10px 0;
+                    }
+                }
+            }
             &.userSettings {
                 td {
                     padding: 0;
@@ -154,6 +194,10 @@ dialog {
             .toggleCheckbox {
                 @extend .unselectable;
                 cursor: pointer;
+                &:hover {
+                    transition: text-shadow 0.3s ease, color 0.3s ease;
+                    text-shadow: 0 0 4px #ffffff75;
+                }
             }
             caption {
                 margin: 0 0 10px;
@@ -167,24 +211,27 @@ dialog {
             &#links {
                 bottom: 0;
                 right: 0;
-                position:absolute;
+                position: absolute;
                 width: auto;
                 font-size: 1.6em;
                 float: right;
                 margin: 0 0.5em 0.5em 0;
                 td {
                     border: none;
-                    padding: 0 0.5em;
+                    padding: 0 0.4em;
                 }
-                a, a:visited {
-                    color: variables.$mainTxtColor;
+                a {
+                    margin: 0;
                 }
-                a:hover {
-                    cursor: pointer;
-                    color: variables.$mainColor;
-                    i {
+                svg {
+                    height: 1.1em;
+                    width: 1.1em;
+                    fill: variables.$mainTxtColor;
+                    &:hover {
+                        cursor: pointer;
                         transition: all 0.2s ease;
                         transform: scale(0.9);
+                        fill: variables.$mainColor;
                     }
                 }
             }
@@ -326,19 +373,80 @@ $bezier: cubic-bezier(0.65, 0.25, 0.56, 0.96);
 
 
 #settingsControls {
-    margin: 0 auto 2em;
+    margin: 0 0 1.3em;
     text-align: center;
     width: 100%;
     button {
-        height: 20px;
         color: variables.$mainBGColor;
-        width: 30%;
+        width: 23%;
         margin-bottom: 1em;
+        vertical-align: middle;
+        height: 20px;
         cursor: pointer;
+        transition: background-color 0.3s ease;
+        span {
+            vertical-align: middle;
+            display: inline-flex;
+        }
+        &:hover {
+            background-color: grey;
+        }
         &.active {
             background-color: variables.$mainColor;
             color: white;
+            padding-bottom: 0;
+            height: 30px;
+            svg {
+                display: inline-block;
+                fill: variables.$mainTxtColor;
+            }
         }
+        svg {
+            height: 1.5em;
+            width: 1.5em;
+            display: none;
+            fill: variables.$mainBGColor;
+            &#flagsvg{
+                height: 1.2em;
+                width: 1.2em;
+            }
+        }
+    }
+}
+
+
+.keyHolder {
+    color: variables.$mainBGColor;
+    padding: 6px 5px;
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+    font-weight: bold;
+    letter-spacing: 0.05em;
+    text-align: center;
+    align-content: center;
+    background-color: #f5f5f5;
+    border: 1px solid white;
+    outline: 3px solid #ccc;
+    border-radius: 4px;
+    user-select: none;
+    width: 100px;
+    margin: 20px auto;
+    display: grid;
+    &.enter-key {
+        height: 60px;
+        width: 50px;
+    }
+    &.delete-key {
+        letter-spacing: 0;
+        padding: 0;
+        font-size: 11px;
+        width: 40px;
+        height: 40px;
+    }
+    svg {
+        width: 1em;
+        height: 1em;
+        margin: auto;
     }
 }
 
@@ -350,21 +458,23 @@ $bezier: cubic-bezier(0.65, 0.25, 0.56, 0.96);
 }
 
 #previewHolder {
-    border: solid transparent 1px;
+    display: inline;
+    top: 0;
     #preview {
         outline: solid variables.$mainColor 3px;
         margin: 1em auto 0;
         float: none;
-        width: 150px;
-        height: 150px;
+        width: 120px;
+        height: 120px;
         #center {
-            width: 150px;
-            height: 150px;
+            width: 100%;
+            height: 120px;
             display: flex;
             align-items: center;
             justify-content: center;
             #mapPreview {
-                width: 100%;
+                width: 120px;
+                height: 120px;
             }
             #markerPreview {
                 position: absolute;
@@ -372,31 +482,32 @@ $bezier: cubic-bezier(0.65, 0.25, 0.56, 0.96);
             }
             #gridPreview {
                 position: absolute;
-                width: 150px;
+                width: 120px;
+                height: 120px;
             }
             #maxRangePreview {
                 position: absolute;
-                width: 147px;
+                width: 120px;
                 margin-right: 3px;
                 margin-top: 3px;
             }
             #damagePreview {
                 position: absolute;
-                margin-top: 30px;
-                width: 110px;
+                margin-top: 16px;
+                width: 90px;
             }
             #spreadPreview {
                 position: absolute;
-                margin-top: 15px;
                 width: 80px;
             }
         }
         #textPreview{
             @include variables.text-outline;
-            margin-top: 55px;
-            margin-left: 25px;
+            margin-top: 40px;
+            margin-left: 75px;
             position: absolute;
             z-index: 1;
+            font-size: var(--font-size-text-preview);
             .bearingPreview {
                 font-size: 0.6em;
                 text-align: right;

@@ -31,7 +31,7 @@ export class SquadObjective {
                 keyboard: false,
                 html: html,
                 iconSize: [300, 20],
-                iconAnchor: [150, 32]
+                iconAnchor: [150, 38]
             })
         }).addTo(this.layerGroup);
 

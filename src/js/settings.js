@@ -4,12 +4,13 @@ import i18next from "i18next";
 import { animateCSS } from "./animations.js";
 
 /* eslint no-unused-vars: "off" */
-import mapIcon from "../img/icons/preview.webp";
-import speadIcon from "../img/icons/spread.png";
-import gridIcon from "../img/icons/grid.png";
-import maxRangeIcon from "../img/icons/maxrange.png";
-import damageRangeIcon from "../img/icons/damage.png";
-
+import mapIcon from "../img/icons/preview/preview.webp";
+import speadIcon from "../img/icons/preview/spread.png";
+import gridIcon from "../img/icons/preview/grid.png";
+import maxRangeIcon from "../img/icons/preview/maxrange.png";
+import damageRangeIcon from "../img/icons/preview/damage.png";
+import miniTargetIcon from "../img/icons/markers/marker_target_mini.webp";
+import targetIcon from "../img/icons/markers/marker_target_enabled.webp";
 
 function loadLocalSetting(item, default_value = 1) {
 
@@ -26,7 +27,6 @@ function loadLocalSetting(item, default_value = 1) {
 
 
 export function loadSettings(){
-    //var setting = localStorage.getItem("settings-map-mode");
     
     App.userSettings.keypadUnderCursor = loadLocalSetting("settings-keypad-cursor", 0);
     if (App.hasMouse) {
@@ -52,7 +52,21 @@ export function loadSettings(){
         window.history.replaceState({}, "", currentUrl);
     }
 
-    
+
+    let fontSize = localStorage.getItem("settings-font-size");
+    if (fontSize === null || isNaN(fontSize) || fontSize === ""){
+        localStorage.setItem("settings-font-size", 3);
+        fontSize = 3;
+    }
+    App.userSettings.fontSize = fontSize;
+
+    $(".dropbtn6").select2({
+        dropdownCssClass: "dropbtn6",
+        dropdownParent: $("#helpDialog"),
+        minimumResultsForSearch: -1, // Disable search
+    });
+    $(".dropbtn6").val(fontSize).trigger("change");;
+
     App.userSettings.circlesFlags = loadLocalSetting("settings-circles-flags");
     $("#circlesFlagsSettings").prop("checked", App.userSettings.circlesFlags);
     
@@ -68,9 +82,6 @@ export function loadSettings(){
     App.userSettings.weaponDrag = loadLocalSetting("settings-weapon-drag");
     $("#weaponDragSetting").prop("checked", App.userSettings.weaponDrag);
 
-    App.userSettings.targetEmphasis = loadLocalSetting("settings-target-emphasis");
-    $("#targetEmphasisSetting").prop("checked", App.userSettings.targetEmphasis);
-
     App.userSettings.targetDrag = loadLocalSetting("settings-target-drag");
     $("#targetDragSetting").prop("checked", App.userSettings.targetDrag);
 
@@ -78,7 +89,7 @@ export function loadSettings(){
     $("#experimentalSetting").prop("checked", App.userSettings.experimentalWeapons);
 
     App.userSettings.highQualityImages = loadLocalSetting("settings-highquality-images", 0);
-    $("#highQualitySetting").prop("checked", App.userSettings.highQualityImages);
+    if (App.userSettings.highQualityImages) $(".btn-hd").addClass("active");
 
     App.userSettings.smoothMap = loadLocalSetting("settings-smooth-map", 0);
     $("#mapAnimationSettings").prop("checked", App.userSettings.smoothMap);
@@ -94,6 +105,14 @@ export function loadSettings(){
 
     App.userSettings.targetAnimation = loadLocalSetting("settings-target-animation");
     $("#targetAnimationSettings").prop("checked", App.userSettings.targetAnimation);
+    if (App.userSettings.targetAnimation) {
+        $("#markerPreview").attr("src", targetIcon);
+        $("#markerPreview").css("margin-top", "0px");
+    } 
+    else {
+        $("#markerPreview").attr("src", miniTargetIcon);
+        $("#markerPreview").css("margin-top", "20px");
+    }
 
     App.userSettings.grid = loadLocalSetting("settings-grid");
     $("#gridSetting").prop("checked", App.userSettings.grid);
@@ -263,12 +282,6 @@ $("#mapAnimationSettings").on("change", function() {
     localStorage.setItem("settings-smooth-map", +val);
 });
 
-$("#targetEmphasisSetting").on("change", function() {
-    var val = $("#targetEmphasisSetting").is(":checked");
-    App.userSettings.targetEmphasis = val;
-    localStorage.setItem("settings-target-emphasis", +val);
-});
-
 $("#damageRadiusSetting").on("change", function() {
     var val = $("#damageRadiusSetting").is(":checked");
     App.userSettings.damageRadius = val;
@@ -311,13 +324,6 @@ $("#experimentalSetting").on("change", function() {
 });
 
 
-$("#highQualitySetting").on("change", function() {
-    var val =  $("#highQualitySetting").is(":checked");
-    App.userSettings.highQualityImages = val;
-    localStorage.setItem("settings-highquality-images", +val);
-    App.minimap.changeLayer();
-});
-
 $("#realMaxRangeSettings").on("change", function() {
     var val =  $("#realMaxRangeSettings").is(":checked");
     App.userSettings.realMaxRange = val;
@@ -344,6 +350,15 @@ $("#targetAnimationSettings").on("change", function() {
     var val = $("#targetAnimationSettings").is(":checked");
     App.userSettings.targetAnimation = val;
     localStorage.setItem("settings-target-animation", +val);
+
+    if (App.userSettings.targetAnimation) {
+        $("#markerPreview").attr("src", targetIcon);
+        $("#markerPreview").css("margin-top", "0px");
+    } 
+    else {
+        $("#markerPreview").attr("src", miniTargetIcon);
+        $("#markerPreview").css("margin-top", "20px");
+    }
 
     App.minimap.activeTargetsMarkers.eachLayer(function (target) {
         target.updateCalcPopUps();

@@ -1,23 +1,23 @@
 import { Icon } from "leaflet";
 
-import shadowIconImg from "../img/icons/marker_shadow.webp";
+import shadowIconImg from "../img/icons/markers/marker_shadow.webp";
 
-import targetIconImgEnabled from "../img/icons/marker_target_enabled.webp";
-import targetIconImgDisabled from "../img/icons/marker_target_disabled.webp";
-import targetIconImgMinimal from "../img/icons/marker_target_mini.webp";
-import targetIconImgDisabledMinimal from "../img/icons/marker_target_disabled_mini.webp";
+import targetIconImgEnabled from "../img/icons/markers/marker_target_enabled.webp";
+import targetIconImgDisabled from "../img/icons/markers/marker_target_disabled.webp";
+import targetIconImgMinimal from "../img/icons/markers/marker_target_mini.webp";
+import targetIconImgDisabledMinimal from "../img/icons/markers/marker_target_disabled_mini.webp";
 
-import mortarIconImg from "../img/icons/marker_mortar.webp";
-import hellcannonMarker from "../img/icons/marker_hellcannon.webp";
-import ub32Marker from "../img/icons/marker_ub32.webp";
-import tmortarMarker from "../img/icons/marker_tmortar.webp";
-import tub32Marker from "../img/icons/marker_tub32.webp";
-import gradMarker from "../img/icons/marker_grad.webp";
-import M121Marker from "../img/icons/marker_m121.webp";
-import Mk19Marker from "../img/icons/marker_mk19.webp";
+import mortarIconImg from "../img/icons/markers/marker_mortar.webp";
+import hellcannonMarker from "../img/icons/markers/marker_hellcannon.webp";
+import ub32Marker from "../img/icons/markers/marker_ub32.webp";
+import tmortarMarker from "../img/icons/markers/marker_tmortar.webp";
+import tub32Marker from "../img/icons/markers/marker_tub32.webp";
+import gradMarker from "../img/icons/markers/marker_grad.webp";
+import M121Marker from "../img/icons/markers/marker_m121.webp";
+import Mk19Marker from "../img/icons/markers/marker_mk19.webp";
 
-import mortarIconImg1 from "../img/icons/marker_mortar_1.webp";
-import mortarIconImg2 from "../img/icons/marker_mortar_2.webp";
+import mortarIconImg1 from "../img/icons/markers/marker_mortar_1.webp";
+import mortarIconImg2 from "../img/icons/markers/marker_mortar_2.webp";
 
 export var mortarIcon = new Icon({
     iconUrl: mortarIconImg,

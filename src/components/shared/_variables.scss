@@ -153,21 +153,30 @@ button:focus {
     opacity: 0 !important;
 }
 
-.animate__animated.animate__fadeInDown {
-    --animate-duration: 0.2s;
+.animate__animated {
+    &.animate__fadeInDown {
+        --animate-duration: 0.2s;
+    }
+    &.animate__fadeInRight {
+        --animate-duration: 0.2s;
+        svg {
+            --animate-duration: 0.5s;
+        }
+    }
+    &.animate__fadeIn {
+        --animate-duration: 1s;
+    }
+    &.animate__shakeX {
+        --animate-duration: 0.5s;
+    }
+    &.animate__headShake {
+        --animate-duration: 0.4s;
+    }
+    &.animate__zoomIn {
+        --animate-duration: 0.15s;
+    }
 }
 
-.animate__animated.animate__shakeX {
-    --animate-duration: 0.5s;
-}
-
-.animate__animated.animate__headShake {
-    --animate-duration: 0.4s;
-}
-
-.animate__animated.animate__zoomIn {
-    --animate-duration: 0.15s;
-}
 
 /**************************************
 *  Animations

@@ -1,5 +1,10 @@
 @use "../shared/variables";
 
+:root {
+    --font-size-objtext: 1em;
+    --font-size-calc-popup: 0.9em;
+}
+
 // Global variables
 $flag-opacity: 0.8;
 $flag-circle-opacity: 0.2;
@@ -56,10 +61,13 @@ $flag-circle-opacity: 0.2;
         .objText {
             @include variables.light-text-outline;
             font-size: 1em;
+            font-size: var(--font-size-objtext);
             text-align: center;
-            font-family: Verdana, Geneva, Tahoma, sans-serif;
-            font-weight: bolder;
-            letter-spacing: normal;
+            font-family: roboto, Verdana, Geneva, Tahoma, sans-serif;
+            letter-spacing: 0.01em;
+            line-height: normal;
+            align-content: center;
+            display: grid;
         }
         .leaflet-pane .leaflet-marker-pane .flag {
             @include variables.light-text-outline;
@@ -68,14 +76,17 @@ $flag-circle-opacity: 0.2;
             border: solid rgba(0, 0, 0, 0.4) 1px;
             box-shadow: 0 8px 12px rgba(0, 0, 0, 0.75);
             transition: opacity 0.25s ease-in-out;
+            font-family: variables.$mainFont, Verdana, Geneva, Tahoma, sans-serif;
             border-radius: 2px;
             cursor: inherit;
             &.circle {
                 border-radius: 15px;
-                margin-left: -14px!important;
+                margin-left: -15px!important;
+                margin-top: -15px!important;
                 width: 30px!important;
                 height: 30px!important;
                 align-content: center;
+                display: grid;
                 letter-spacing: 0;
                 outline: solid 3px rgb(104, 104, 104);
                 &.selected {
@@ -110,9 +121,7 @@ $flag-circle-opacity: 0.2;
                         content: "";
                     }
                     &.main {
-                        &::before {
-                            content: "🏠";
-                        }
+                        background-color: rgba(0, 128, 0, 1);
                     }
                     &.main.unselectable {
                         pointer-events: none;
@@ -125,13 +134,14 @@ $flag-circle-opacity: 0.2;
                 }
             }
             &.main {
-                font-size: 1.1em;
                 overflow: hidden;
-                &::before {
-                    content: "🏠";
-                    position: relative;
-                    right: 0;
-                    font-size: 2em;
+                &.main {
+                    background: url('../../img/icons/deployables/main.webp') no-repeat center center;
+                    background-size: 50%;
+                    transition: opacity 0.1s ease-in;
+                    &.circle {
+                        background-size: 80%;
+                    }
                 }
             }
             &.main.selectable {
@@ -144,8 +154,9 @@ $flag-circle-opacity: 0.2;
                 background-color: rgba(255, 255, 255, 0.4);
             }
             &.main.selected {
+                background-color: rgba(0, 128, 0, 0.9);
                 &::before {
-                    top: 0.4em;
+                    content: "";
                 }
             }
             &.selected, &.next, &.main {
@@ -177,7 +188,7 @@ $flag-circle-opacity: 0.2;
             padding: 0;
             font-family: variables.$mainFont, Times, "Times New Roman", serif;
             pointer-events: none;
-            font-size: 0.9em;
+            font-size: var(--font-size-calc-popup);
             height: 45px;
             .bearingUiCalc {
                 font-size: 0.7em;
@@ -214,17 +225,17 @@ $flag-circle-opacity: 0.2;
             font-size: 1.1em;
         }
         .helipads {
-            background: url('../../img/icons/deployable_helipad.webp') no-repeat center center;
+            background: url('../../img/icons/deployables/deployable_helipad.webp') no-repeat center center;
             background-size: contain;
             transition: opacity 0.1s ease-in;
         }
         .repairStations {
-            background: url('../../img/icons/deployable_repairstation.webp') no-repeat center center;
+            background: url('../../img/icons/deployables/deployable_repairstation.webp') no-repeat center center;
             background-size: contain;
             transition: opacity 0.1s ease-in;
         }
         .ammocrates {
-            background: url('../../img/icons/deployable_ammocrate.webp') no-repeat center center;
+            background: url('../../img/icons/deployables/deployable_ammocrate.webp') no-repeat center center;
             background-size: contain;
             transition: opacity 0.1s ease-in;
         }
@@ -258,39 +269,40 @@ $flag-circle-opacity: 0.2;
         box-shadow: 0 2px 15px rgba(0,0,0,0.1);
         cursor: pointer;
         transition: all 0.2s ease-out;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: white;
         &:hover {
             background-color: #979797;
+            svg {
+                transform: scale(1.1);
+            }
         }
         &.active {
             background-color: variables.$mainColor;
             border-top: variables.$mainColor;
             border-bottom: variables.$mainColor;
-            color: variables.$mainTxtColor;
-            .fa-mound {
-                background: white;
-                background-clip: text;
-                -webkit-text-fill-color: transparent;
-                -webkit-background-clip: text;
+            svg path {
+                fill: white;
             }
         }
-        .fa-mound {
-            font-size: 1.5em;
-            background: -webkit-gradient(linear, left top, left bottom,
-             from(#d66916),
-             color-stop(0.3, #c27942),
-             color-stop(0.4, #c7c875),
-             color-stop(0.5, #629c61),
-             to(#162015));
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-            -webkit-background-clip: text;
+        svg {
+            height: 1.2em;
+            width: 1.2em;
+            fill: variables.$mainBGColor;
+        }
+        &.btn-topomap svg {
+            width: 1.6em;
+            height: 1.6em;
+        }
+        &.btn-delete svg {
+            width: 1em;
+            height: 1em;
         }
     }
     .mapLayerMenuSeparator {
         margin-top: 10px;
-    }
-    .fa-magnifying-glass-location {
-        font-size: 1.3em;
     }
 }
 

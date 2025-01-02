@@ -10,13 +10,15 @@ import LeaderLine from "leader-line-new";
 export function animateCSS($element, animation, prefix = "animate__") {
     return new Promise((resolve) => {
         const animationName = `${prefix}${animation}`;
-
+        const hasAnimationClass = $element.hasClass(`${prefix}animated`);
+        
         $element.addClass(`${prefix}animated ${animationName}`);
 
         function handleAnimationEnd(event) {
             // Remove the classes from the jQuery object
             event.stopPropagation();
-            $element.removeClass(`${prefix}animated ${animationName}`);
+            $element.removeClass(`${animationName}`);
+            if (!hasAnimationClass) $element.removeClass(`${prefix}animated`);
             resolve("Animation ended");
         }
 

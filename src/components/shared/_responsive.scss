@@ -209,30 +209,16 @@
             width: 44%;
             margin: 0 3% 2em;
         }
-        &#weaponInformation{
+        &#weaponInformation {
             max-width: 600px;
         }
-         &#helpDialog{
+         &#helpDialog {
             font-size: 0.7em;
             height: 530px;
             width: 600px;
             table {
-               width: 100%;
+               width: 90%;
                margin: 0 0 2em 3em;
-        //     max-width: 1000px;
-        //     #userSettings {
-        //         margin: 0 2em;
-        //     }
-        //     table {
-        //         width: 33%;
-        //         margin: 0 0 2em 0%;
-        //         td {
-        //             padding: 0;
-        //             border: none;
-        //             &:nth-child(1) {
-        //                 padding-right: 0.75em;
-        //             }
-        //         }
              }
         }
     }

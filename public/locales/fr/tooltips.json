@@ -22,16 +22,14 @@
     "spreadDesc": "En raison de l'imprécision de la minute d'angle (MOA) de l'arme et de la longueur du projectile, les tirs peuvent se disperser selon un schéma elliptique.",
     "moaDesc": "Une minute d'angle (MOA) en artillerie mesure l'imprécision de l'arme, indiquant la dispersion des tirs. Une MOA équivaut à 1/60e de degré.",
     "velocityDesc": "La vélocité est la vitesse à laquelle un projectile quitte le canon d'une arme à feu, mesurée immédiatement après sa sortie. Elle affecte la portée et la précision du tir.",
-    "heightPaddingDesc": "Si l'arme est installé plus haut que le sol (par exemple, sur des bâtiments ou des ponts), utilisez ce champ pour spécifier la hauteur supplémentaire.",
+    "heightPaddingDesc": "Si l'arme est installée plus haut que le sol (sur des bâtiments ou des ponts), utilisez ce champ pour spécifier la hauteur supplémentaire.",
     "smoothMapTooltip": "Ajoute des animations lors du zoom ou du déplacement sur la carte. Rechargement de la page nécessaire",
     "experimentalWeaponsTooltip": "Ajoute des armes à tir indirect non conventionnelles à la liste des armes, utilisez à vos risques et périls !",
     "damageRadiusTooltip": "Affiche les zones où 100 et 25 dégâts seront infligés",
     "showKeypadTooltip": "Affiche le numéro de grille (ex: \"B03-4-5\") sous le curseur de souris",
     "showSpreadTooltip": "Affiche la dispersion possible des projectiles autour des cibles",
     "showMaxRangeTooltip": "Calcule la portée maximale dans chaque direction en tenant compte des hauteurs",  
-    "targetEmphasisTooltip": "Met en valeur une cible au survol de la souris en masquant les autres",
     "useClassicCursorTooltip": "Remplace le réticule par le curseur par défaut de votre systeme",
     "targetAnimationTooltip": "Désactiver pour remplacer l'icône des marqueurs par des cercles minimalistes",
-    "highqualityTooltip": "Remplacez les images de la carte par des images de très haute qualité, suréchantillonnées par IA, en 8k*8k pixels.",
     "performanceWarning": "Peut causer des problèmes de performance"
 }

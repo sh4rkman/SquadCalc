@@ -6,7 +6,7 @@ import { createLine, drawLine } from "./animations.js";
 import { loadSettings } from "./settings.js";
 import { loadLanguage } from "./localization.js";
 import { animateCSS, animateCalc } from "./animations.js";
-import { tooltip_save, tooltip_copied } from "./tooltips.js";
+import { tooltip_save } from "./tooltips.js";
 import { checkApiHealth, fetchLayersByMap, fetchLayerByName } from "./squadCalcAPI.js";
 import { initWebSocket } from "./smcConnector.js";
 import SquadFiringSolution from "./squadFiringSolution.js";
@@ -345,6 +345,13 @@ export default class SquadCalc {
             this.loadMapUIMode();
         }
 
+
+        $(document).on("change", ".dropbtn6", (event) => {
+            this.userSettings.fontSize = event.target.value;
+            localStorage.setItem("settings-font-size", this.userSettings.fontSize);
+            this.changeFontSize();
+        });
+
         // Add Events listeners
 
         // LEGACY MODE
@@ -398,6 +405,21 @@ export default class SquadCalc {
             this.minimap.toggleHeatmap();
         });
 
+        $("#mapLayerMenu").find("button.btn-hd").on("click", () => {
+            var val = !$(".btn-hd").hasClass("active");
+            $(".btn-hd").toggleClass("active");
+            this.userSettings.highQualityImages = val;
+            localStorage.setItem("settings-highquality-images", +val);
+            this.minimap.changeLayer();
+        });
+
+        $(".fontSizeSelector input").on("change", (event) => {
+            this.userSettings.fontSize = Math.max(1, Math.min($(event.target).val(), 5)); // ensure 1 < value < 3
+            localStorage.setItem("settings-font-size", this.userSettings.fontSize);
+            this.changeFontSize();
+        });
+
+        this.changeFontSize();
 
         // Hack for Chrome to avoid lag when zooming inside the map
         // Force a decode each time focus a acquired again
@@ -422,12 +444,12 @@ export default class SquadCalc {
                 // Disable Shortkeys in legacy mode
                 if (this.ui == 0) { return; }
 
+                // Disable Shortkeys when currently in a dialog
+                if (weaponInformation.open || calcInformation.open || helpDialog.open) { return; }
+
                 // ENTER = FOCUS MODE
                 if (e.key === "Enter") {
-
-                    // A dialog is open, user probably just wants to close it
-                    if (weaponInformation.open || calcInformation.open || helpDialog.open) { return; }
-                    
+                  
                     if ($("header").is(":hidden")) { // Quit focus mode
                         $("header").show();
                         $("footer").show();
@@ -446,6 +468,11 @@ export default class SquadCalc {
                 // DELETE = REMOVE ALL MARKERS
                 if (e.code === "Delete") {
                     this.minimap.deleteTargets();
+                }
+
+                // BACKSPACE = REMOVE LAST CREATED TARGET MARKER
+                if (e.code === "Backspace") {
+                    if (this.minimap.targets.length > 0) this.minimap.targets.at(-1).delete();
                 }
 
             });
@@ -505,6 +532,39 @@ export default class SquadCalc {
         this.show();
     }
 
+    changeFontSize(){
+        var fontSize;
+        this.userSettings.fontSize = parseInt(this.userSettings.fontSize, 10) || 1;
+
+        switch (this.userSettings.fontSize) {
+        case 1:
+            fontSize = 0.8;
+            break;
+        case 2:
+            fontSize = 0.9;
+            break;    
+        case 3:
+            fontSize = 1;
+            break;
+        case 4:
+            fontSize = 1.1;
+            break;
+        case 5:
+            fontSize = 1.2;
+            break;
+        default:
+            fontSize = 1;
+            break;
+        }
+
+        const root = document.documentElement;
+        root.style.setProperty("--font-size-objtext", `${fontSize}em`);
+        root.style.setProperty("-size-text-preview", `${fontSize}em`);
+        root.style.setProperty("--font-size-calc-popup", `${fontSize - 0.1}em`);
+        $("#textPreview").css("font-size", `${fontSize}em`);
+
+    }
+
     /**
      * Reveal the page
      */
@@ -523,20 +583,19 @@ export default class SquadCalc {
      * @returns {integer} - height in meters
      */
     switchUI(){
+        
+        const newSvg = $("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 576 512'><path d='M384 476.1L192 421.2l0-385.3L384 90.8l0 385.3zm32-1.2l0-386.5L543.1 37.5c15.8-6.3 32.9 5.3 32.9 22.3l0 334.8c0 9.8-6 18.6-15.1 22.3L416 474.8zM15.1 95.1L160 37.2l0 386.5L32.9 474.5C17.1 480.8 0 469.2 0 452.2L0 117.4c0-9.8 6-18.6 15.1-22.3z'/></svg>");
+        $(".fab1").empty().append(newSvg);
 
         if (this.ui == 0){
             this.loadMapUIMode();
-            if (this.minimap.activeTargetsMarkers.getLayers().length > 0) {
-                $(".btn-delete").show();
-                $("#mapLayerMenu").show();
-            }
+            if (this.minimap.activeTargetsMarkers.getLayers().length > 0) $(".btn-delete").show();
             return;
         }
 
         $("#map_ui").addClass("hidden");
         $("#classic_ui").removeClass("hidden");
         $("header").removeClass("ui");
-        $("#switchUIbutton").removeClass("fa-xmarks-lines").addClass("fa-map");
         $(".btn-delete").hide();
         $("#mapLayerMenu").hide();
         this.ui = 0;
@@ -559,7 +618,10 @@ export default class SquadCalc {
         $("#classic_ui").addClass("hidden");
         $("#map_ui").removeClass("hidden");
         $("header").addClass("ui");
-        $("#switchUIbutton").removeClass("fa-map").addClass("fa-xmarks-lines");
+
+        const LEGACYICONSVG = $("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 640 512'><path d='M32 32C14.3 32 0 46.3 0 64S14.3 96 32 96l576 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L32 32zm0 384c-17.7 0-32 14.3-32 32s14.3 32 32 32l576 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L32 416zM7 167c-9.4 9.4-9.4 24.6 0 33.9l55 55L7 311c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l55-55 55 55c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-55-55 55-55c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-55 55L41 167c-9.4-9.4-24.6-9.4-33.9 0zM265 167c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l55 55-55 55c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l55-55 55 55c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-55-55 55-55c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-55 55-55-55zM455 167c-9.4 9.4-9.4 24.6 0 33.9l55 55-55 55c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l55-55 55 55c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-55-55 55-55c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-55 55-55-55c-9.4-9.4-24.6-9.4-33.9 0z'/></svg>");
+        $(".fab1").empty().append(LEGACYICONSVG);
+
         $("#mapLayerMenu").show();
         this.ui = 1;
         this.line.hide("none");
@@ -695,17 +757,15 @@ export default class SquadCalc {
         animateCalc($("#bearingNum").html(), bearing.toFixed(1), 500, "bearingNum");
         animateCalc($("#elevationNum").html(), elevation.toFixed(this.activeWeapon.elevationPrecision), 500, "elevationNum");
 
-        $("elevation").html($("<i class=\"fas fa-drafting-compass fa-rotate-180 resultIcons\"></i>"));
-
         if (this.activeWeapon.getAngleType() === -1) {
-            $("#highlow").html($("<i class=\"fa-solid fa-sort-amount-up resultIcons\"></i>"));
+            $("#highlowicon").css({ transform: "rotate(0deg)"});
         }
         else {
-            $("#highlow").html($("<i class=\"fa-solid fa-sort-amount-down resultIcons\"></i>"));
+            $("#highlowicon").css({transform: "rotate(180deg)"});
         }
 
         if (this.activeWeapon.name != "Mortar" && this.activeWeapon.name != "UB-32") {
-            $("#highlow i").addClass("active");
+            $("#highlow").addClass("active");
         }
 
         // show actions button
@@ -791,7 +851,7 @@ export default class SquadCalc {
         $("#elevation").removeClass("hidden").addClass("pure-u-10-24");
         $("#errorMsg").addClass("pure-u-4-24").removeClass("errorMsg").removeClass("pure-u-1").html("-");
         $("#savebutton").addClass("hidden");
-        $("#highlow i").removeClass("active");
+        $("#highlow").removeClass("active");
 
         // draw pointer cursor on results
         $("#copy").addClass("copy");
@@ -804,9 +864,9 @@ export default class SquadCalc {
         var text2copy;
 
         if (COPY_ZONE.prev().val().length === 0) {
-            text2copy = COPY_ZONE.prev().attr("placeholder") + COPY_ZONE.text();
+            text2copy = COPY_ZONE.prev().attr("placeholder").trim() + COPY_ZONE.text().trim();
         } else {
-            text2copy = COPY_ZONE.prev().val() + COPY_ZONE.text();
+            text2copy = COPY_ZONE.prev().val().trim() + COPY_ZONE.text().trim();
         }
 
         this.copy(text2copy);
@@ -945,16 +1005,18 @@ export default class SquadCalc {
      * Save current calc to save list
      */
     saveCalc() {
-        if ($(".saved_list p").length === 4) {
-            $(".saved_list p").first().remove();
-        }
+
+        if ($(".saved_list p").length === 4) $(".saved_list p").first().remove();
+        
         $(".saved_list").append(
             `<p class=savedrow>
-                <input maxlength=20 spellcheck=false placeholder="${$("<div>").text($("#target-location").val()).html()}" class=friendlyname></input>
+                <input maxlength=20 spellcheck=false placeholder="${$("#target-location").val()}" class=friendlyname></input>
                 <span class=savespan> 
-                    ➜ ${$("#bearing").text()} - ${$("#elevation").text()}
+                    ➜ ${$("#bearingNum").text()} - ${$("#elevationNum").text()}
                 </span>
-                <i class="fa fa-times-circle fa-fw del" aria-hidden=true></i>
+                <span class="del">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM160 128l41.4 0 11.3-11.3c3-3 7.1-4.7 11.3-4.7l64 0c4.2 0 8.3 1.7 11.3 4.7L310.6 128l41.4 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-192 0c-8.8 0-16-7.2-16-16s7.2-16 16-16zm0 64l192 0L338.4 354.7c-1.4 16.6-15.2 29.3-31.9 29.3l-101.1 0c-16.6 0-30.5-12.8-31.9-29.3L160 192z"/></svg>
+                </span>
             </p>`
         );
 
@@ -976,8 +1038,8 @@ export default class SquadCalc {
         // If calcs aren't ready, do nothing
         if (!$(".copy").hasClass("copy")) { return 1; }
 
-        if ($(e.target).hasClass("fa-sort-amount-down") || $(e.target).hasClass("fa-sort-amount-up") ) {
-            if ($(e.target).hasClass("active")) {
+        if (e.target.id === "highlowicon" || e.target.id === "highlow") {
+            if ($("#highlow").hasClass("active")) {
                 this.changeHighLow();
             }
             return 1;
@@ -985,20 +1047,21 @@ export default class SquadCalc {
 
         animateCSS($(".copy"), "headShake");
 
-        this.copy(`${$("#target-location").val()} ➜ ${$("#bearing").text()} - ${$("#elevation").text()}`);
+        this.copy(`${$("#target-location").val()} ➜ ${$("#bearingNum").text()} - ${$("#elevationNum").text()}`);
+        this.openToast("success", "copied", "");
 
-        // the user understood he can click2copy, remove the tooltip
-        localStorage.setItem("InfoToolTips_copy", true);
-        tooltip_copied.enable();
-        tooltip_copied.show();
     }
 
     /**
      * Toggle high/low angles
      */
     changeHighLow(){
-        const isLowAngle = $("#highlow").find(".fa-sort-amount-up").length > 0;
-        this.activeWeapon.angleType = isLowAngle ? "low" : "high";
+        const transformValue = $("#highlowicon").css("transform");
+        if (transformValue === "none" || transformValue === "matrix(1, 0, 0, 1, 0, 0)") {
+            this.activeWeapon.angleType = "low";
+        } else {
+            this.activeWeapon.angleType = "high";
+        }
         this.shoot();
     }
 
