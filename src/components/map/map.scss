@@ -85,6 +85,7 @@ $flag-circle-opacity: 0.2;
                 width: 30px!important;
                 height: 30px!important;
                 align-content: center;
+                display: grid;
                 letter-spacing: 0;
                 outline: solid 3px rgb(104, 104, 104);
                 &.selected {
