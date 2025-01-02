@@ -431,6 +431,7 @@ $bezier: cubic-bezier(0.65, 0.25, 0.56, 0.96);
     user-select: none;
     width: 100px;
     margin: 20px auto;
+    display: grid;
     &.enter-key {
         height: 60px;
         width: 50px;
@@ -445,6 +446,7 @@ $bezier: cubic-bezier(0.65, 0.25, 0.56, 0.96);
     svg {
         width: 1em;
         height: 1em;
+        margin: auto;
     }
 }
 
