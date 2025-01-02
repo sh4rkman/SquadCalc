@@ -67,6 +67,7 @@ $flag-circle-opacity: 0.2;
             letter-spacing: 0.01em;
             line-height: normal;
             align-content: center;
+            display: grid;
         }
         .leaflet-pane .leaflet-marker-pane .flag {
             @include variables.light-text-outline;
