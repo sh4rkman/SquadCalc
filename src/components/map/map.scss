@@ -120,7 +120,7 @@ $flag-circle-opacity: 0.2;
                         content: "";
                     }
                     &.main {
-                        background-color: rgba(0, 128, 0, 0.9);
+                        background-color: rgba(0, 128, 0, 1);
                     }
                     &.main.unselectable {
                         pointer-events: none;
