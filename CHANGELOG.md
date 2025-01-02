@@ -1,11 +1,11 @@
-# <img src="https://img.shields.io/badge/-major%20release-b22222?style=for-the-badge">  **35.0.0** *(2025-01-01)*
+# <img src="https://img.shields.io/badge/-major%20release-b22222?style=for-the-badge">  **35.0.0** *(2025-01-02)*
 
-<img src="https://img.shields.io/badge/-new-green"> **Custom font size:** you can now change the size of the texts appearing on the map to your liking (Fixes #254)
+<img src="https://img.shields.io/badge/-new-green"> **Custom font size:** you can now change the size of the texts appearing on the map to your liking (Fixes [#254](https://github.com/sh4rkman/SquadCalc/issues/254))
 
 <img src="https://img.shields.io/badge/-new-green"> Added new "HD" buttons to use very high-quality maps (previously located in Settings)
 SquadCalc now serves very high-quality (8192px × 8192px) terrain and topographic images upon request.
 Performance may be significantly affected, especially when using the Steam browser, which appears to deliver the worst performance—even on high-end machines, for reasons unknown.
-(Fixes #253)
+(Fixes [#253](https://github.com/sh4rkman/SquadCalc/issues/253))
 
 <img src="https://img.shields.io/badge/-new-green"> New keyboard shortcut: Press Backspace to remove the last target placed on the map.
 
@@ -15,7 +15,11 @@ Performance may be significantly affected, especially when using the Steam brows
 
 <img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed circle flags being slightly off-center.
 
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed flag numbers being off-centered on some browsers.
+
 <img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed a visual bug in calculation popups when adding and removing a second weapon.
+
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed a typo in french locales
 
 <img src="https://img.shields.io/badge/-%20improv%20-orange"> The "Emphasis markers on hover" option is now activated by default, and the corresponding setting has been removed.
 
