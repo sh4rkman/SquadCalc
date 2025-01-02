@@ -11,12 +11,13 @@ const helpDialog = document.querySelector("#helpDialog");
 const commonToolipsSettings = {
     animation: "fade",
     placement: "right",
+    offset: [0, 20],
     allowHTML: true,
     touch: false,
     theme: "settingsTooltips",
     hideOnClick: true,
     delay: 50,
-    maxWidth: 200,
+    maxWidth: 200, 
     appendTo: helpDialog,
 };
 
@@ -96,6 +97,26 @@ tippy("span[data-i18n='settings:realMaxRange']", {
         `);
     },
 });
+
+tippy("span[data-i18n='settings:copyNextFlags']", {
+    ...commonToolipsSettings,
+    onShow(tip) {
+        tip.setContent(`
+            ${i18next.t("tooltips:showMaxRangeTooltip")}
+        `);
+    },
+});
+
+tippy("span[data-i18n='settings:copyTarget']", {
+    ...commonToolipsSettings,
+    onShow(tip) {
+        tip.setContent(`
+            ${i18next.t("tooltips:showMaxRangeTooltip")}
+        `);
+    },
+});
+
+
 
 tippy("#bearingNum", {
     animation: "fade",

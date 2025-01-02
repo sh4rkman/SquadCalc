@@ -65,7 +65,13 @@ export function loadSettings(){
         dropdownParent: $("#helpDialog"),
         minimumResultsForSearch: -1, // Disable search
     });
-    $(".dropbtn6").val(fontSize).trigger("change");;
+    $(".dropbtn6").val(fontSize).trigger("change");
+
+    App.userSettings.copyNextFlags = loadLocalSetting("settings-copy-next-flags", 0);
+    $("#copyNextFlagsSettings").prop("checked", App.userSettings.copyNextFlags);
+
+    App.userSettings.copyTarget = loadLocalSetting("settings-copy-target", 0);
+    $("#targetCopySetting").prop("checked", App.userSettings.copyTarget);
 
     App.userSettings.circlesFlags = loadLocalSetting("settings-circles-flags");
     $("#circlesFlagsSettings").prop("checked", App.userSettings.circlesFlags);
@@ -329,6 +335,18 @@ $("#realMaxRangeSettings").on("change", function() {
     App.userSettings.realMaxRange = val;
     localStorage.setItem("settings-real-max-range", +val);
     App.minimap.updateWeapons();
+});
+
+$("#targetCopySetting").on("change", function() {
+    var val =  $("#targetCopySetting").is(":checked");
+    App.userSettings.copyTarget = val;
+    localStorage.setItem("settings-copy-target", +val);
+});
+
+$("#copyNextFlagsSettings").on("change", function() {
+    var val =  $("#copyNextFlagsSettings").is(":checked");
+    App.userSettings.copyNextFlags = val;
+    localStorage.setItem("settings-copy-next-flags", +val);
 });
 
 $("#cursorChoiceSettings").on("change", function() {

@@ -217,7 +217,7 @@ export var squadMinimap = Map.extend({
     updateTargets: function(){
         // Update existent targets
         this.activeTargetsMarkers.eachLayer(function (target) {
-            target.updateCalc(target.latlng);
+            target.updateCalc(true);
             target.updateIcon();
         });
     },

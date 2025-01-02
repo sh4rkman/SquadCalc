@@ -217,9 +217,9 @@
 
 
     <table class="userSettings">
-        <caption data-i18n="settings:targetOptions"></caption>
-        <tbody>
 
+      <caption data-i18n="settings:targetOptions"></caption>
+        <tbody>
           <tr class="targetAnimationSettings">
             <td>
                 <label class="mcui-checkbox">
@@ -236,19 +236,36 @@
             </td>
           </tr>
 
-          <tr class="targetDragSetting">
+          <tr>
             <td>
                 <label class="mcui-checkbox">
-                    <input id="targetDragSetting" type="checkbox">
-                    <span>
-                      <svg class="mcui-check" viewBox="-2 -2 35 35" aria-hidden="true">
-                        <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
-                      </svg>
-                    </span>
-                  </label>
+                  <input id="targetDragSetting" type="checkbox">
+                  <span>
+                    <svg class="mcui-check" viewBox="-2 -2 35 35" aria-hidden="true">
+                      <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
+                    </svg>
+                  </span>
+                </label>
             </td>
             <td>
               <span data-i18n="settings:targetDrag" class="toggleCheckbox"></span>
+            </td>
+          </tr>
+
+          <tr>
+            <td>
+                <label class="mcui-checkbox">
+                  <input id="targetCopySetting" type="checkbox">
+                  <span>
+                    <svg class="mcui-check" viewBox="-2 -2 35 35" aria-hidden="true">
+                      <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
+                    </svg>
+                  </span>
+                </label>
+            </td>
+            <td>
+              <span data-i18n="settings:copyTarget" class="toggleCheckbox"></span>
+              <sup class="new">new</sup>
             </td>
           </tr>
 
@@ -280,64 +297,71 @@
               <td><span data-i18n="settings:showDamage" class="toggleCheckbox"></span></td>
           </tr>
 
-          <tr>
-              <td>
-                  <label class="mcui-checkbox">
-                      <input id="bearingSetting" type="checkbox">
-                      <span>
-                        <svg class="mcui-check" viewBox="-2 -2 35 35" aria-hidden="true">
-                          <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
-                        </svg>
-                      </span>
-                    </label>
-              </td>
-              <td><span data-i18n="settings:showBearing" class="toggleCheckbox"></span></td>
-          </tr>
-
-          <tr>
-              <td>
-                  <label class="mcui-checkbox">
-                      <input id="distanceSetting" type="checkbox">
-                      <span>
-                        <svg class="mcui-check" viewBox="-2 -2 35 35" aria-hidden="true">
-                          <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
-                        </svg>
-                      </span>
-                    </label>
-              </td>
-              <td><span data-i18n="settings:showDistance" class="toggleCheckbox"></span></td>
-          </tr>
-
-          <tr>
-              <td>
-                  <label class="mcui-checkbox">
-                      <input id="timeOfFlightSetting" type="checkbox">
-                      <span>
-                        <svg class="mcui-check" viewBox="-2 -2 35 35" aria-hidden="true">
-                          <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
-                        </svg>
-                      </span>
-                    </label>
-              </td>
-              <td><span data-i18n="settings:showTimeOfFlight" class="toggleCheckbox"></span></td>
-          </tr>
-
-          <tr>
-              <td>
-                  <label class="mcui-checkbox">
-                      <input id="heightSetting" type="checkbox">
-                      <span>
-                        <svg class="mcui-check" viewBox="-2 -2 35 35" aria-hidden="true">
-                          <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
-                        </svg>
-                      </span>
-                    </label>
-              </td>
-              <td><span data-i18n="settings:showHeightDiff" class="toggleCheckbox"></span></td>
-          </tr>
-
         </tbody>
     </table>
+
+    <table class="userSettings">
+      <!-- <caption data-i18n="settings:weaponOptions"></caption> -->
+      <tbody>
+        <h4>Texts</h4>
+        <tr>
+          <td>
+              <label class="mcui-checkbox">
+                  <input id="bearingSetting" type="checkbox">
+                  <span>
+                    <svg class="mcui-check" viewBox="-2 -2 35 35" aria-hidden="true">
+                      <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
+                    </svg>
+                  </span>
+                </label>
+          </td>
+          <td><span data-i18n="settings:showBearing" class="toggleCheckbox"></span></td>
+      </tr>
+
+      <tr>
+          <td>
+              <label class="mcui-checkbox">
+                  <input id="distanceSetting" type="checkbox">
+                  <span>
+                    <svg class="mcui-check" viewBox="-2 -2 35 35" aria-hidden="true">
+                      <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
+                    </svg>
+                  </span>
+                </label>
+          </td>
+          <td><span data-i18n="settings:showDistance" class="toggleCheckbox"></span></td>
+      </tr>
+
+      <tr>
+          <td>
+              <label class="mcui-checkbox">
+                  <input id="timeOfFlightSetting" type="checkbox">
+                  <span>
+                    <svg class="mcui-check" viewBox="-2 -2 35 35" aria-hidden="true">
+                      <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
+                    </svg>
+                  </span>
+                </label>
+          </td>
+          <td><span data-i18n="settings:showTimeOfFlight" class="toggleCheckbox"></span></td>
+      </tr>
+
+      <tr>
+          <td>
+              <label class="mcui-checkbox">
+                  <input id="heightSetting" type="checkbox">
+                  <span>
+                    <svg class="mcui-check" viewBox="-2 -2 35 35" aria-hidden="true">
+                      <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
+                    </svg>
+                  </span>
+                </label>
+          </td>
+          <td><span data-i18n="settings:showHeightDiff" class="toggleCheckbox"></span></td>
+      </tr>
+
+      </tbody>
+  </table>
 
     </div>
 
@@ -398,16 +422,33 @@
           <tr class="circlesFlags">
             <td>
                 <label class="mcui-checkbox">
-                    <input id="circlesFlagsSettings" type="checkbox">
-                    <span>
-                      <svg class="mcui-check" viewBox="-2 -2 35 35" aria-hidden="true">
-                        <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
-                      </svg>
-                    </span>
-                  </label>
+                  <input id="circlesFlagsSettings" type="checkbox">
+                  <span>
+                    <svg class="mcui-check" viewBox="-2 -2 35 35" aria-hidden="true">
+                      <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
+                    </svg>
+                  </span>
+                </label>
             </td>
             <td>
               <span data-i18n="settings:circlesFlags" class="toggleCheckbox"></span>
+            </td>
+          </tr>
+
+          <tr class="copyNextFlagsSettings">
+            <td>
+                <label class="mcui-checkbox">
+                  <input id="copyNextFlagsSettings" type="checkbox">
+                  <span>
+                    <svg class="mcui-check" viewBox="-2 -2 35 35" aria-hidden="true">
+                      <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
+                    </svg>
+                  </span>
+                </label>
+            </td>
+            <td>
+              <span data-i18n="settings:copyNextFlags" class="toggleCheckbox"></span>
+              <sup class="new">new</sup>
             </td>
           </tr>
 

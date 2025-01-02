@@ -34,5 +34,6 @@
     "invalidTarget": "Cible invalide",
     "invalidMortarTarget": "Arme & Cible invalides",
     "targetOutOfRange": "Cible hors de portée",
-    "layerPlaceholder": "Layer"
+    "layerPlaceholder": "Layer",
+    "nextFlags": "Prochains points"
 }

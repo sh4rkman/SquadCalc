@@ -564,7 +564,6 @@ export var squadTargetMarker = squadMarker.extend({
         this.addTo(this.map.activeTargetsMarkers);
         this.miniCircle = new CircleMarker(latlng, this.miniCircleOptions).addTo(this.map.markersGroup);
         this.firingSolution1 = new SquadFiringSolution(this.map.activeWeaponsMarkers.getLayers()[0].getLatLng(), this.getLatLng(), this.map, this.map.activeWeaponsMarkers.getLayers()[0].heightPadding);
-        
         // Report target to squadcalc API
         sendTargetData({
             lat: latlng.lat,
@@ -577,18 +576,23 @@ export var squadTargetMarker = squadMarker.extend({
         // Calc PopUps
         this.calcMarker1 = new Popup(popUpOptions_weapon1).setLatLng(latlng).addTo(this.map.markersGroup);
         this.calcMarker2 = new Popup(popUpOptions_weapon2).setLatLng(latlng).addTo(this.map.markersGroup);
-        this.updateCalcPopUps();
-        this.calcMarker1.setContent(this.getContent(this.firingSolution1, this.map.activeWeaponsMarkers.getLayers()[0].angleType)).openOn(this.map);
-
         // posPopUp
         this.posPopUp = new Popup(this.posPopUpOptions).setLatLng(latlng).addTo(this.map.markersGroup).close();
+        this.updateCalcPopUps();
+
+        const [html1, clipboard1] = this.getContent(this.firingSolution1, this.map.activeWeaponsMarkers.getLayers()[0].angleType);
+        this.calcMarker1.setContent(html1).openOn(this.map);
+        if (App.userSettings.copyTarget) App.copy(clipboard1);
+        
 
         // If two weapons already on the map
         if (this.map.activeWeaponsMarkers.getLayers().length === 2) {
             weaponPos = this.map.activeWeaponsMarkers.getLayers()[1].getLatLng();
             this.firingSolution2 = new SquadFiringSolution(weaponPos, this.getLatLng(), this.map, this.map.activeWeaponsMarkers.getLayers()[1].heightPadding);
-            this.calcMarker1.setContent(`1. ${this.getContent(this.firingSolution1, this.map.activeWeaponsMarkers.getLayers()[0].angleType)}`);
-            this.calcMarker2.setContent(`2. ${this.getContent(this.firingSolution2, this.map.activeWeaponsMarkers.getLayers()[1].angleType)}`).openOn(this.map);
+            this.calcMarker1.setContent(`1. ${html1}`);
+            const [html2, clipboard2] = this.getContent(this.firingSolution2, this.map.activeWeaponsMarkers.getLayers()[1].angleType);
+            this.calcMarker2.setContent(`2. ${html2}`).openOn(this.map);
+            if (App.userSettings.copyTarget) App.copy(`${clipboard1} / ${clipboard2}`);
         }
 
         // Initiate Spread Ellipse
@@ -727,7 +731,8 @@ export var squadTargetMarker = squadMarker.extend({
             content += `<br><span class=bearingUiCalc>${heightDiff}<span data-i18n="common:m">${i18next.t("common:m")}</span></span>`;
         }
 
-        return content;
+        return [content, `${i18next.t("common:elevation")}: ${elevation} - ${i18next.t("common:bearing")}: ${BEARING.toFixed(1)}°`];
+
     },
 
 
@@ -855,20 +860,26 @@ export var squadTargetMarker = squadMarker.extend({
     /*
     * Update target calculationPopups according to it's firing solutions
     */
-    updateCalc: function(){
+    updateCalc: function(copy = false){
+        var clipboard;
 
         this.firingSolution1 = new SquadFiringSolution(this.map.activeWeaponsMarkers.getLayers()[0].getLatLng(), this.getLatLng(), this.map, this.map.activeWeaponsMarkers.getLayers()[0].heightPadding);
-        this.calcMarker1.setContent(this.getContent(this.firingSolution1, this.map.activeWeaponsMarkers.getLayers()[0].angleType));
+        const [html1, clipboard1] = this.getContent(this.firingSolution1, this.map.activeWeaponsMarkers.getLayers()[0].angleType);
+        this.calcMarker1.setContent(html1);
+        clipboard = clipboard1;
 
         if (this.map.activeWeaponsMarkers.getLayers().length === 2) {
             this.firingSolution2 = new SquadFiringSolution(this.map.activeWeaponsMarkers.getLayers()[1].getLatLng(), this.getLatLng(), this.map, this.map.activeWeaponsMarkers.getLayers()[1].heightPadding);
-            this.calcMarker1.setContent(`1. ${this.getContent(this.firingSolution1, this.map.activeWeaponsMarkers.getLayers()[0].angleType)}`);
-            this.calcMarker2.setContent(`2. ${this.getContent(this.firingSolution2, this.map.activeWeaponsMarkers.getLayers()[1].angleType)}`).openOn(this.map);
+            const [html2, clipboard2] = this.getContent(this.firingSolution2, this.map.activeWeaponsMarkers.getLayers()[1].angleType);
+            this.calcMarker1.setContent(`1. ${html1}`);
+            this.calcMarker2.setContent(`2. ${html2}`).openOn(this.map);
+            clipboard = `1. ${clipboard} / 2. ${clipboard2}`;
         } else {
             this.calcMarker2.close();
         }
         this.updateSpread();
         this.updateDamageRadius();
+        if (copy && App.userSettings.copyTarget) { App.copy(clipboard); }
     },
 
 
@@ -999,9 +1010,7 @@ export var squadTargetMarker = squadMarker.extend({
     // Hide stuff, do a final update and send data to API
     _handleDragEnd: function (e) {
 
-        if (App.userSettings.keypadUnderCursor){
-            this.map.on("mousemove", this.map._handleMouseMove);
-        }
+        if (App.userSettings.keypadUnderCursor) this.map.on("mousemove", this.map._handleMouseMove);
 
         // Hide PositionPopUp & MiniCircle
         this.isDragging = false;
@@ -1009,7 +1018,7 @@ export var squadTargetMarker = squadMarker.extend({
         this.miniCircle.setStyle({opacity: 0});
         
         // update one last time when drag end
-        this.updateCalc();
+        this.updateCalc(true);
         this.updateIcon();
 
         // Report target to squadcalc API
