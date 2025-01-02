@@ -76,7 +76,7 @@ $flag-circle-opacity: 0.2;
             border: solid rgba(0, 0, 0, 0.4) 1px;
             box-shadow: 0 8px 12px rgba(0, 0, 0, 0.75);
             transition: opacity 0.25s ease-in-out;
-            font-family: roboto, Verdana, Geneva, Tahoma, sans-serif;
+            font-family: variables.$mainFont, Verdana, Geneva, Tahoma, sans-serif;
             border-radius: 2px;
             cursor: inherit;
             &.circle {
