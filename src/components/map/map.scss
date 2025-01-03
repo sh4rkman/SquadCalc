@@ -79,6 +79,8 @@ $flag-circle-opacity: 0.2;
             font-family: variables.$mainFont, Verdana, Geneva, Tahoma, sans-serif;
             border-radius: 2px;
             cursor: inherit;
+            align-content: center;
+            display: grid;
             &.circle {
                 border-radius: 15px;
                 margin-left: -15px!important;
@@ -107,6 +109,7 @@ $flag-circle-opacity: 0.2;
                 font-size: 1.3em;
                 background-color: rgba(0, 128, 0, 0.9);
                 overflow: hidden;
+                display: block;
                 &::before {
                     content: "✔";
                     color: rgb(255, 255, 255);
@@ -117,6 +120,7 @@ $flag-circle-opacity: 0.2;
                     line-height: 0%;
                 }
                 &.circle {
+                    display: grid;
                     &::before {
                         content: "";
                     }
