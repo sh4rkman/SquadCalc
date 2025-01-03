@@ -60,12 +60,12 @@ $flag-circle-opacity: 0.2;
         }
         .objText {
             @include variables.light-text-outline;
-            font-size: 1em;
+            //font-size: 1em;
             font-size: var(--font-size-objtext);
-            text-align: center;
+            //text-align: center;
             font-family: roboto, Verdana, Geneva, Tahoma, sans-serif;
-            letter-spacing: 0.01em;
-            line-height: normal;
+            letter-spacing: 0.02em;
+            //line-height: normal;
             align-content: center;
             display: grid;
         }
@@ -228,20 +228,18 @@ $flag-circle-opacity: 0.2;
             @include variables.light-text-outline;
             font-size: 1.1em;
         }
-        .helipads {
-            background: url('../../img/icons/deployables/deployable_helipad.webp') no-repeat center center;
+        .helipads, .repairStations, .ammocrates {
             background-size: contain;
             transition: opacity 0.1s ease-in;
-        }
-        .repairStations {
-            background: url('../../img/icons/deployables/deployable_repairstation.webp') no-repeat center center;
-            background-size: contain;
-            transition: opacity 0.1s ease-in;
-        }
-        .ammocrates {
-            background: url('../../img/icons/deployables/deployable_ammocrate.webp') no-repeat center center;
-            background-size: contain;
-            transition: opacity 0.1s ease-in;
+            &.helipads {
+                background: url('../../img/icons/deployables/deployable_helipad.webp') no-repeat center center;
+            }
+            &.repairStations {
+                background: url('../../img/icons/deployables/deployable_repairstation.webp') no-repeat center center;
+            }
+            &.ammocrates {
+                background: url('../../img/icons/deployables/deployable_ammocrate.webp') no-repeat center center;
+            }
         }
         .destructionPhase {
             @include variables.light-text-outline;
