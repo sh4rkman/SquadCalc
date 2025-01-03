@@ -231,15 +231,15 @@ $flag-circle-opacity: 0.2;
         .helipads, .repairStations, .ammocrates {
             background-size: contain;
             transition: opacity 0.1s ease-in;
-            &.helipads {
-                background: url('../../img/icons/deployables/deployable_helipad.webp') no-repeat center center;
-            }
-            &.repairStations {
-                background: url('../../img/icons/deployables/deployable_repairstation.webp') no-repeat center center;
-            }
-            &.ammocrates {
-                background: url('../../img/icons/deployables/deployable_ammocrate.webp') no-repeat center center;
-            }
+        }
+        .helipads {
+            background: url('../../img/icons/deployables/deployable_helipad.webp') no-repeat center center;
+        }
+        .repairStations {
+            background: url('../../img/icons/deployables/deployable_repairstation.webp') no-repeat center center;
+        }
+        .ammocrates {
+            background: url('../../img/icons/deployables/deployable_ammocrate.webp') no-repeat center center;
         }
         .destructionPhase {
             @include variables.light-text-outline;
