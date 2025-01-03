@@ -228,18 +228,20 @@ $flag-circle-opacity: 0.2;
             @include variables.light-text-outline;
             font-size: 1.1em;
         }
-        .helipads, .repairStations, .ammocrates {
+        .helipads {
+            background: url('../../img/icons/deployables/deployable_helipad.webp') no-repeat center center;
             background-size: contain;
             transition: opacity 0.1s ease-in;
         }
-        .helipads {
-            background: url('../../img/icons/deployables/deployable_helipad.webp') no-repeat center center;
-        }
         .repairStations {
             background: url('../../img/icons/deployables/deployable_repairstation.webp') no-repeat center center;
+            background-size: contain;
+            transition: opacity 0.1s ease-in;
         }
         .ammocrates {
             background: url('../../img/icons/deployables/deployable_ammocrate.webp') no-repeat center center;
+            background-size: contain;
+            transition: opacity 0.1s ease-in;
         }
         .destructionPhase {
             @include variables.light-text-outline;
