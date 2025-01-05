@@ -7,7 +7,7 @@ import { mortarIcon, mortarIcon1, mortarIcon2 } from "./squadIcon.js";
 import { explode } from "./animations.js";
 import { fetchMarkersByMap } from "./squadCalcAPI.js";
 import webGLHeatmap from "./libs/leaflet-webgl-heatmap.js";
-//import "leaflet-edgebuffer";
+import "leaflet-edgebuffer";
 import "leaflet-spin";
 import "./libs/webgl-heatmap.js";
 import "./libs/leaflet-smoothWheelZoom.js";
@@ -116,63 +116,36 @@ export var squadMinimap = Map.extend({
     /**
      * remove existing layer and replace it
      */
-    changeLayer: function () {
+    changeLayer: function(){
         const LAYERMODE = $("#mapLayerMenu .active").attr("value");
         const OLDLAYER = this.activeLayer;
-        var tileContainer;
 
-        // Image URL or Tile Layer URL
+        // Image URL
         const baseUrl = `maps${this.activeMap.mapURL}${LAYERMODE}`;
-        const imageUrl = `${baseUrl}.webp`;
-        const tileUrl = `${baseUrl}_hq/{z}_{x}_{y}.webp`;
-
+        const suffix = App.userSettings.highQualityImages ? "_hq" : "";
+        const newImageUrl = `${baseUrl}${suffix}.webp`;
+        
         // Show spinner
         this.spin(true, this.spinOptions);
 
-        if (App.userSettings.highQualityImages) {
-            // Use Tile Layer
-            this.activeLayer = new tileLayer(tileUrl, {
-                bounds: this.imageBounds,
-                minNativeZoom: 0,
-                maxNativeZoom : 5,
-                //edgeBufferTiles: 4,
-                tileSize: 256,
-                updateWhenZooming: false, // Disable unnecessary tile updates during zoom
-                updateWhenIdle: true,
-            });
-        } else {
-            // Use Image Overlay
-            this.activeLayer = new imageOverlay(imageUrl, this.imageBounds);
-        }
-
+        // Add the new layer but keep it hidden initially
+        this.activeLayer = new imageOverlay(newImageUrl, this.imageBounds);
         this.activeLayer.addTo(this.layerGroup);
+        $(this.activeLayer.getElement()).css("opacity", 0);
+        this.decode();
 
-        if (!App.userSettings.highQualityImages) {
-            // Fade in Image Overlay
-            $(this.activeLayer.getElement()).css("opacity", 0);
-            //this.decode(); // If necessary for image overlay
-        }
-        else {
-            tileContainer = $(this.activeLayer.getContainer());
-            tileContainer.css("opacity", 0); // Set initial opacity to 0
-        }
-
+        // When the new image is loaded, fade it in & remove spinner
         this.activeLayer.on("load", () => {
             this.spin(false);
-
-            if (!App.userSettings.highQualityImages) {
-                // Animate fade-in for Image Overlay
-                $(this.activeLayer.getElement()).animate({ opacity: 1 }, 500, () => {
-                    if (OLDLAYER) OLDLAYER.remove();
-                });
-            } else {
+            $(this.activeLayer.getElement()).animate({opacity: 1}, 500, () => {
+                // Remove the old layer after the fade-in is complete
                 if (OLDLAYER) OLDLAYER.remove();
-            }
-
-            // Show grid and heatmap if applicable
-            if (App.userSettings.grid) this.showGrid();
-            this.toggleHeatmap();
+                // Show grid and heatmap
+                if (App.userSettings.grid) this.showGrid();
+                this.toggleHeatmap();
+            });
         });
+
     },
 
 
