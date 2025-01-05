@@ -156,10 +156,6 @@ dialog {
         h3 {
             font-size: 1.3em;
         }
-        h4 {
-            padding: 0 2.5em 0.5em;
-            font-size: 1.1em;
-        }
         #fontSize {
             width: 100%;
             height: auto;
@@ -175,9 +171,14 @@ dialog {
                 }
             }
         }
+        #panel2 {
+            table {
+                font-size: 0.95em;
+            }
+        }
         table {
             border: none;
-            margin: 0 0 2em 3em;
+            margin: 0 0 1.5em 3em;
             &.shortcuts {
                 padding-top: 4em;
                 td {           

@@ -42,6 +42,7 @@
     "css-minimizer-webpack-plugin": "^7.0.0",
     "dotenv-webpack": "^8.1.0",
     "eslint": "^9.17.0",
+    "fs-extra": "^11.2.0",
     "html-loader": "^5.1.0",
     "html-webpack-plugin": "^5.6.3",
     "htmlhint": "^1.1.4",
@@ -54,6 +55,8 @@
     "leaflet-loader": "^0.0.3",
     "leaflet-spin": "^1.1.2",
     "mini-css-extract-plugin": "^2.9.2",
+    "mkdirp": "^3.0.1",
+    "path": "^0.12.7",
     "postcss": ">=8.4.49",
     "purecss": "^3.0.0",
     "robotstxt-webpack-plugin": "^8.0.0",
@@ -71,5 +74,11 @@
     "webpack-merge": "^6.0.1",
     "webpack-pwa-manifest": "^4.3.0",
     "workbox-webpack-plugin": "^7.3.0"
+  },
+  "overrides": {
+    "phin": "^3.7.1"
+  },
+  "dependencies": {
+    "leaflet-edgebuffer": "^1.0.6"
   }
 }

@@ -70,6 +70,9 @@ export function loadSettings(){
     App.userSettings.copyNextFlags = loadLocalSetting("settings-copy-next-flags", 0);
     $("#copyNextFlagsSettings").prop("checked", App.userSettings.copyNextFlags);
 
+    App.userSettings.lowAndHigh = loadLocalSetting("settings-low-high", 0);
+    $("#lowAndHighSetting").prop("checked", App.userSettings.lowAndHigh);
+    
     App.userSettings.copyTarget = loadLocalSetting("settings-copy-target", 0);
     $("#targetCopySetting").prop("checked", App.userSettings.copyTarget);
 
@@ -342,6 +345,14 @@ $("#targetCopySetting").on("change", function() {
     App.userSettings.copyTarget = val;
     localStorage.setItem("settings-copy-target", +val);
 });
+
+$("#lowAndHighSetting").on("change", function() {
+    var val =  $("#lowAndHighSetting").is(":checked");
+    App.userSettings.lowAndHigh = val;
+    localStorage.setItem("settings-low-high", +val);
+    App.minimap.updateTargets();
+});
+
 
 $("#copyNextFlagsSettings").on("change", function() {
     var val =  $("#copyNextFlagsSettings").is(":checked");

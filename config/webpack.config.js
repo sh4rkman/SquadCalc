@@ -63,6 +63,12 @@ export default async (env) => {
         directory: path.join(__dirname, '../public'),
         publicPath: '/',
       },
+      watchFiles: {
+        paths: ['src/**/*'], // Watch only the source directory
+        options: {
+          ignored: path.join(__dirname, '../public'),
+        },
+      },
     },
     plugins: [
         new Dotenv(),

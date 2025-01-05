@@ -31,5 +31,11 @@
     "showMaxRangeTooltip": "计算每个方向的最大范围，同时考虑高度",
     "useClassicCursorTooltip": "用默认光标替换十字准星",
     "targetAnimationTooltip": "禁用以将标记图标替换为简约的圆形",
-    "performanceWarning": "可能会导致性能问题"
+    "performanceWarning": "可能会导致性能问题",
+    "markerDragTooltip": "拖动时显示网格",
+    "copyNextFlagsTooltip": "单击旗帜时，自动将下一个旗帜添加到剪贴板",
+    "copyTargetTooltip": "放置/拖动目标后，自动将计算复制到剪贴板",
+    "autoLaneTooltip": "如果下一层只有一个旗帜可用，squadcalc 将自动尝试前进到下一层",
+    "capZoneOnHoverTooltip": "不是始终显示占领区域，而是仅在悬停在旗帜上时显示",
+    "revealLayerOnHoverTooltip": "悬停在旗帜上将使不可到达的旗帜变暗，如果单击该旗帜，则会发生"
 }

@@ -16,11 +16,10 @@ const commonToolipsSettings = {
     touch: false,
     theme: "settingsTooltips",
     hideOnClick: true,
-    delay: 50,
+    delay: 200,
     maxWidth: 200, 
     appendTo: helpDialog,
 };
-
 
 tippy("#settings", {
     allowHTML: true,
@@ -67,6 +66,21 @@ tippy("span[data-i18n='settings:showAnimations']", {
     },
 });
 
+tippy("span[data-i18n='settings:weaponDrag']", {
+    ...commonToolipsSettings,
+    onShow(tip) {
+        tip.setContent(`${i18next.t("tooltips:markerDragTooltip")}`);
+    },
+});
+
+tippy("span[data-i18n='settings:targetDrag']", {
+    ...commonToolipsSettings,
+    onShow(tip) {
+        tip.setContent(`${i18next.t("tooltips:markerDragTooltip")}`);
+    },
+});
+
+
 tippy("span[data-i18n='settings:showKeypad']", {
     ...commonToolipsSettings,
     onShow(tip) {
@@ -102,7 +116,7 @@ tippy("span[data-i18n='settings:copyNextFlags']", {
     ...commonToolipsSettings,
     onShow(tip) {
         tip.setContent(`
-            ${i18next.t("tooltips:showMaxRangeTooltip")}
+            ${i18next.t("tooltips:copyNextFlagsTooltip")}
         `);
     },
 });
@@ -111,10 +125,38 @@ tippy("span[data-i18n='settings:copyTarget']", {
     ...commonToolipsSettings,
     onShow(tip) {
         tip.setContent(`
-            ${i18next.t("tooltips:showMaxRangeTooltip")}
+            ${i18next.t("tooltips:copyTargetTooltip")}
         `);
     },
 });
+
+tippy("span[data-i18n='settings:autoLane']", {
+    ...commonToolipsSettings,
+    onShow(tip) {
+        tip.setContent(`
+            ${i18next.t("tooltips:autoLaneTooltip")}
+        `);
+    },
+});
+
+tippy("span[data-i18n='settings:capZoneOnHover']", {
+    ...commonToolipsSettings,
+    onShow(tip) {
+        tip.setContent(`
+            ${i18next.t("tooltips:capZoneOnHoverTooltip")}
+        `);
+    },
+});
+
+tippy("span[data-i18n='settings:revealLayerOnHover']", {
+    ...commonToolipsSettings,
+    onShow(tip) {
+        tip.setContent(`
+            ${i18next.t("tooltips:revealLayerOnHoverTooltip")}
+        `);
+    },
+});
+
 
 
 

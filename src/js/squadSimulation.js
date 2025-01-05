@@ -24,8 +24,23 @@ export default class Simulation {
         this.drawGrid();
         this.drawGroundLevel();
         this.drawTrajectory(function(this2) {
+
+            if (App.userSettings.lowAndHigh &&
+                App.activeWeapon.name != "Mortar" &&
+                 App.activeWeapon.name != "UB-32" &&
+                  App.activeWeapon.name != "M1064M121" &&
+                   App.activeWeapon.name != "Mk19") {  
+                
+                if (this2.angleType === "low") {
+                    this2.angleType = "high";
+                } else {
+                    this2.angleType = "low";
+                }
+                this2.drawTrajectory();
+            }
             this2.drawCanvasIcons();
         });
+
         
     }
 
@@ -39,7 +54,6 @@ export default class Simulation {
         this.div.find(".infTHeight").first().text(this.firingSolution.targetHeight.toFixed(1)+i18next.t("common:m"));
         this.div.find(".infDHeight").first().text(this.firingSolution.heightDiff.toFixed(1)+i18next.t("common:m"));
 
-        console.log(this.firingSolution);
 
         if (isNaN(this.firingSolution.elevation.high.rad) && isNaN(this.firingSolution.elevation.low.rad)) {
             this.div.find(".infElevation").first().text("---");
@@ -47,21 +61,68 @@ export default class Simulation {
             this.div.find(".infSpread").first().text("---");
         } else {
 
-            if (this.angleType === "high"){
-                this.div.find(".infTimeOfFlight").first().text(this.firingSolution.timeOfFlight.high.toFixed(1)+i18next.t("common:s"));
-                this.div.find(".infSpread").first().text(`H:${this.firingSolution.spreadParameters.high.semiMajorAxis.toFixed(1) + i18next.t("common:m")} V:${this.firingSolution.spreadParameters.high.semiMinorAxis.toFixed(1) + i18next.t("common:m")}`);
-                if (this.activeWeaponUnit === "mil"){
-                    this.div.find(".infElevation").first().text(`${this.firingSolution.elevation.high.mil.toFixed(1)}mil`);
+            if (App.userSettings.lowAndHigh &&
+                App.activeWeapon.name != "Mortar" &&
+                 App.activeWeapon.name != "UB-32" &&
+                  App.activeWeapon.name != "M1064M121" &&
+                   App.activeWeapon.name != "Mk19") {
+
+                let elevationlow = this.firingSolution.elevation.low;
+                let elevationhigh = this.firingSolution.elevation.high;
+                let timeOfFlightlow = this.firingSolution.timeOfFlight.low;
+                let timeOfFlighthigh = this.firingSolution.timeOfFlight.high;
+
+                if (isNaN(elevationlow.rad)){
+                    elevationlow = "---";
+                    timeOfFlightlow = "---";
                 } else {
-                    this.div.find(".infElevation").first().text(this.firingSolution.elevation.high.deg.toFixed(2)+i18next.t("common:°"));
+                    if (this.activeWeaponUnit === "mil"){
+                        elevationlow = `${elevationlow.mil.toFixed(1)}mil`;
+                    } else {
+                        elevationlow = elevationlow.deg.toFixed(2)+i18next.t("common:°");
+                    }
+                    timeOfFlightlow = this.firingSolution.timeOfFlight.low.toFixed(1)+i18next.t("common:s");
                 }
-            } else {
-                this.div.find(".infTimeOfFlight").first().text(this.firingSolution.timeOfFlight.low.toFixed(1)+i18next.t("common:s"));
-                this.div.find(".infSpread").first().text(`H:${this.firingSolution.spreadParameters.low.semiMajorAxis.toFixed(1) + i18next.t("common:m")} V:${this.firingSolution.spreadParameters.low.semiMinorAxis.toFixed(1) + i18next.t("common:m")}`);
-                if (this.activeWeaponUnit === "mil"){
-                    this.div.find(".infElevation").first().text(`${this.firingSolution.elevation.low.mil.toFixed(1)}mil`);
+
+                if (isNaN(elevationhigh.rad)){
+                    elevationhigh = "---";
+                    timeOfFlighthigh = "---";
                 } else {
-                    this.div.find(".infElevation").first().text(this.firingSolution.elevation.low.deg.toFixed(2)+i18next.t("common:°"));
+                    if (this.activeWeaponUnit === "mil"){
+                        elevationhigh = `${elevationhigh.mil.toFixed(1)}mil`;
+                    } else {
+                        elevationhigh = elevationhigh.deg.toFixed(2)+i18next.t("common:°");
+                    }
+                    timeOfFlighthigh = this.firingSolution.timeOfFlight.high.toFixed(1)+i18next.t("common:s");
+                }
+
+                
+
+                this.div.find(".infElevation").first().text(`${elevationlow} / ${elevationhigh}`);
+                this.div.find(".infTimeOfFlight").first().text(`${timeOfFlightlow} / ${timeOfFlighthigh}`);
+                this.div.find(".infSpread").first().text(`
+                    H:${this.firingSolution.spreadParameters.low.semiMajorAxis.toFixed(0)}/${this.firingSolution.spreadParameters.high.semiMajorAxis.toFixed(0) + i18next.t("common:m")} 
+                    V:${Math.max(this.firingSolution.spreadParameters.low.semiMinorAxis, this.firingSolution.spreadParameters.high.semiMinorAxis).toFixed(0) + i18next.t("common:m")}
+                `); // Vertical spread is almost the same for both angles, so we take the highest value and call it a day
+
+            } else {
+
+                if (this.angleType === "high"){
+                    this.div.find(".infTimeOfFlight").first().text(this.firingSolution.timeOfFlight.high.toFixed(1)+i18next.t("common:s"));
+                    this.div.find(".infSpread").first().text(`H:${this.firingSolution.spreadParameters.high.semiMajorAxis.toFixed(1) + i18next.t("common:m")} V:${this.firingSolution.spreadParameters.high.semiMinorAxis.toFixed(1) + i18next.t("common:m")}`);
+                    if (this.activeWeaponUnit === "mil"){
+                        this.div.find(".infElevation").first().text(`${this.firingSolution.elevation.high.mil.toFixed(1)}mil`);
+                    } else {
+                        this.div.find(".infElevation").first().text(this.firingSolution.elevation.high.deg.toFixed(2)+i18next.t("common:°"));
+                    }
+                } else {
+                    this.div.find(".infTimeOfFlight").first().text(this.firingSolution.timeOfFlight.low.toFixed(1)+i18next.t("common:s"));
+                    this.div.find(".infSpread").first().text(`H:${this.firingSolution.spreadParameters.low.semiMajorAxis.toFixed(1) + i18next.t("common:m")} V:${this.firingSolution.spreadParameters.low.semiMinorAxis.toFixed(1) + i18next.t("common:m")}`);
+                    if (this.activeWeaponUnit === "mil"){
+                        this.div.find(".infElevation").first().text(`${this.firingSolution.elevation.low.mil.toFixed(1)}mil`);
+                    } else {
+                        this.div.find(".infElevation").first().text(this.firingSolution.elevation.low.deg.toFixed(2)+i18next.t("common:°"));
+                    }
                 }
             }
         }

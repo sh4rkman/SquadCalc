@@ -720,7 +720,6 @@ export class SquadLayer {
             App.copy(i18next.t("common:nextFlags") + " : " + nextFlagsNamesArray.join("/"));
         }  
        
-
         // Only one flag in front ? Click it
         if (nextFlags.length === 1 && !backward && App.userSettings.autoLane){
             this._handleFlagClick(nextFlags[0]);

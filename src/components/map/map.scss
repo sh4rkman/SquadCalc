@@ -60,12 +60,9 @@ $flag-circle-opacity: 0.2;
         }
         .objText {
             @include variables.light-text-outline;
-            //font-size: 1em;
             font-size: var(--font-size-objtext);
-            //text-align: center;
             font-family: roboto, Verdana, Geneva, Tahoma, sans-serif;
             letter-spacing: 0.02em;
-            //line-height: normal;
             align-content: center;
             display: grid;
         }
