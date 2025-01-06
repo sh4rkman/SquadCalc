@@ -58,8 +58,6 @@ const generateTiles = async (imagePath, outputDir, baseImageName, maxZoom = 5) =
                         .resize(TILESIZE, TILESIZE)
                         .webp({ quality: WEBPQUALITY })
                         .toFile(tilePath);
-
-                    //console.log(`Tile saved at: ${tilePath}`);
                 }
             }
         }
@@ -114,7 +112,6 @@ const processAllMaps = async (mapsRootDir, maxZoom) => {
                 console.log(`Skipping non-folder: ${folder}`);
             }
         }
-
         const endTime = Date.now(); // Record the end time
         const elapsedTime = ((endTime - startTime) / 1000).toFixed(2); // Convert to seconds
         console.log(`All maps processed in ${elapsedTime} seconds.`);

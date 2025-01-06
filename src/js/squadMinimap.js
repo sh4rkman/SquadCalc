@@ -109,42 +109,54 @@ export var squadMinimap = Map.extend({
         this.grid.setBounds([[0,0], [-this.pixelSize, this.pixelSize]]);
 
         // load map
-        this.changeLayer();
+        this.changeLayer(true);
     },
 
 
     /**
      * remove existing layer and replace it
      */
-    changeLayer: function(){
+    changeLayer: function(changemap = false) {
         const LAYERMODE = $("#mapLayerMenu .active").attr("value");
         const OLDLAYER = this.activeLayer;
-
-        // Image URL
-        const baseUrl = `maps${this.activeMap.mapURL}${LAYERMODE}`;
-        const suffix = App.userSettings.highQualityImages ? "_hq" : "";
-        const newImageUrl = `${baseUrl}${suffix}.webp`;
-        
+    
         // Show spinner
         this.spin(true, this.spinOptions);
 
         // Add the new layer but keep it hidden initially
-        this.activeLayer = new imageOverlay(newImageUrl, this.imageBounds);
-        this.activeLayer.addTo(this.layerGroup);
-        $(this.activeLayer.getElement()).css("opacity", 0);
-        this.decode();
-
-        // When the new image is loaded, fade it in & remove spinner
+        if (App.userSettings.highQualityImages) {
+            // Use TileLayer for high-quality images
+            let tilePath = `${process.env.API_URL}/img${this.activeMap.mapURL}${LAYERMODE}_hq/{z}_{x}_{y}.webp`;
+            this.activeLayer = new tileLayer(tilePath, {
+                bounds: this.imageBounds,
+                minNativeZoom: 0,
+                maxNativeZoom : 5,
+                edgeBufferTiles: 4,
+                tileSize: 256,
+            });
+            this.activeLayer.addTo(this.layerGroup);
+        } else {
+            // Use ImageOverlay for standard images
+            let imgPath = `maps${this.activeMap.mapURL}${LAYERMODE}.webp`;
+            this.activeLayer = new imageOverlay(imgPath, this.imageBounds);
+            this.activeLayer.addTo(this.layerGroup);
+            //$(this.activeLayer.getElement()).css("opacity", 0);
+        }
+    
+        // Decode if necessary
+        //this.decode();
+    
+        // When the new image (or tile) is loaded, fade it in & remove spinner
         this.activeLayer.on("load", () => {
             this.spin(false);
-            $(this.activeLayer.getElement()).animate({opacity: 1}, 500, () => {
-                // Remove the old layer after the fade-in is complete
-                if (OLDLAYER) OLDLAYER.remove();
-                // Show grid and heatmap
-                if (App.userSettings.grid) this.showGrid();
-                this.toggleHeatmap();
-            });
+            if (OLDLAYER) OLDLAYER.remove();
         });
+
+        // Show grid and heatmap
+        if (changemap) {
+            if (App.userSettings.grid) this.showGrid();
+            this.toggleHeatmap();
+        }
 
     },
 

@@ -64,10 +64,7 @@ export default async (env) => {
         publicPath: '/',
       },
       watchFiles: {
-        paths: ['src/**/*'], // Watch only the source directory
-        options: {
-          ignored: path.join(__dirname, '../public'),
-        },
+        paths: ['src/**/*'],
       },
     },
     plugins: [
