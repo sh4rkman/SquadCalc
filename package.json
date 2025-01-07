@@ -29,7 +29,6 @@
     "start": "webpack serve -c ./config/webpack.config.js",
     "build": "webpack -c ./config/webpack.config.js",
     "lint": "stylelint -c ./config/.stylelintrc.json ./src/**/*.scss && htmlhint --config ./config/.htmlhintrc.json --nocolor ./src/ && jshint ./src/ && eslint -c ./config/.eslintrc.js ./src/",
-    "convertHeightmapsToJson": "npx src/js/tests/convertHeightmapsToJson.mjs",
     "mapinfo": "node src/js/tests/mapdata.js info",
     "weaponInfo": "node src/js/tests/calcMortarTech.js info"
   },
@@ -52,6 +51,7 @@
     "jshint": "^2.13.6",
     "leader-line-new": "^1.1.9",
     "leaflet": "^1.9.4",
+    "leaflet-edgebuffer": "^1.0.6",
     "leaflet-loader": "^0.0.3",
     "leaflet-spin": "^1.1.2",
     "mini-css-extract-plugin": "^2.9.2",
@@ -77,8 +77,5 @@
   },
   "overrides": {
     "phin": "^3.7.1"
-  },
-  "dependencies": {
-    "leaflet-edgebuffer": "^1.0.6"
   }
 }

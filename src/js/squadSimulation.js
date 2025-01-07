@@ -23,23 +23,26 @@ export default class Simulation {
         this.clear();
         this.drawGrid();
         this.drawGroundLevel();
-        this.drawTrajectory(function(this2) {
-
+        this.drawTrajectory(function() {
             if (App.userSettings.lowAndHigh &&
-                App.activeWeapon.name != "Mortar" &&
-                 App.activeWeapon.name != "UB-32" &&
-                  App.activeWeapon.name != "M1064M121" &&
-                   App.activeWeapon.name != "Mk19") {  
-                
-                if (this2.angleType === "low") {
-                    this2.angleType = "high";
+                App.activeWeapon.name !== "Mortar" &&
+                App.activeWeapon.name !== "UB-32" &&
+                App.activeWeapon.name !== "M1064M121" &&
+                App.activeWeapon.name !== "Mk19") {
+        
+                if (this.angleType === "low") {
+                    this.angleType = "high";
                 } else {
-                    this2.angleType = "low";
+                    this.angleType = "low";
                 }
-                this2.drawTrajectory();
+                this.drawTrajectory(function() {
+                    this.drawCanvasIcons();
+                }.bind(this));
+            } else {
+                this.drawCanvasIcons();
             }
-            this2.drawCanvasIcons();
-        });
+        }.bind(this));
+        
 
         
     }

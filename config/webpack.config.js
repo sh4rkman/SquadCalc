@@ -45,14 +45,10 @@ export default async (env) => {
         rules: [
             { test: /\.(png|svg|jpg|jpeg|gif|webp)$/i, type: 'asset/resource', },
             { test: /\.(sc|sa|c)ss$/i, use: ['style-loader', 'css-loader', 'sass-loader'],},
-            { test: /\.(html)$/,
+            { 
+              test: /\.(html)$/,
               include: path.join(__dirname, ''),
-              use: {
-                loader: 'html-loader',
-                options: {
-                  interpolate: true
-                }
-              }
+              use: { loader: 'html-loader', options: { interpolate: true } }
             }
         ],
     },
@@ -183,14 +179,6 @@ export default async (env) => {
             /robots\.txt/, // robots.txt
             /\.webp$/,
           ],
-          runtimeCaching: [
-          {
-            urlPattern: new RegExp(/\/maps\/[^\/]+\/[^\/]+\/[1-5]/),
-            handler: 'StaleWhileRevalidate',
-            options: {
-              cacheName: 'squadcalc-tiles',
-            },
-          }],
         })
     ],
     performance: {

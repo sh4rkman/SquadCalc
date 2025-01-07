@@ -25,6 +25,7 @@
         "showDamage": "显示伤害半径",
         "showAnimations": "使用大图标",
         "copyTarget": "自动复制目标",
+        "lowAndHigh": "显示低角度和高角度",
         "showBearing": "显示方位",
         "showDistance": "显示距离",
         "showTimeOfFlight": "显示飞行时间",

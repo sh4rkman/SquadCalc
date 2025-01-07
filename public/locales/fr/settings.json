@@ -25,6 +25,7 @@
         "showDamage": "Rayons de dégâts",
         "showAnimations": "Grandes icônes",
         "copyTarget": "Copier automatiquement les cibles",
+        "lowAndHigh": "Afficher les angles bas et hauts",
         "showBearing": "Angle d'orientation",
         "showDistance": "Distance",
         "showTimeOfFlight": "Temps de vol",

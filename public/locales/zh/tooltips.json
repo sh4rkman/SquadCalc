@@ -35,6 +35,7 @@
     "markerDragTooltip": "拖动时显示网格",
     "copyNextFlagsTooltip": "单击旗帜时，自动将下一个旗帜添加到剪贴板",
     "copyTargetTooltip": "放置/拖动目标后，自动将计算复制到剪贴板",
+    "lowAndHighTooltip": "显示可以以高角度和低角度射击的武器的两种角度",
     "autoLaneTooltip": "如果下一层只有一个旗帜可用，squadcalc 将自动尝试前进到下一层",
     "capZoneOnHoverTooltip": "不是始终显示占领区域，而是仅在悬停在旗帜上时显示",
     "revealLayerOnHoverTooltip": "悬停在旗帜上将使不可到达的旗帜变暗，如果单击该旗帜，则会发生"

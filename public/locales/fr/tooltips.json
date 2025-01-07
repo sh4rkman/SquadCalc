@@ -35,6 +35,7 @@
     "markerDragTooltip": "Affiche la grille lors du déplacement",
     "copyNextFlagsTooltip": "Lorsque vous cliquez sur un drapeau, ajoute automatiquement les drapeaux suivants au presse-papiers",
     "copyTargetTooltip": "Après avoir placé/déplacé une cible, copie automatiquement les calculs dans le presse-papiers",
+    "lowAndHighTooltip": "Afficher à la fois l'angle haut et bas pour les armes permettant de tirer dans les deux modes",
     "autoLaneTooltip": "Si un seul drapeau est disponible à l'étape suivante du layer, squadcalc essaiera automatiquement d'avancer dans le layer",
     "capZoneOnHoverTooltip": "Au lieu d'afficher les zones de capture en permanence, ne les affiche que lorsque vous survolez un drapeau",
     "revealLayerOnHoverTooltip": "Le survol d'un drapeau fera disparaître les drapeaux inaccessibles si ce drapeau était cliqué"

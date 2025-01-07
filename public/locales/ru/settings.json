@@ -25,6 +25,7 @@
         "showDamage": "Радиусы урона",
         "showAnimations": "Использовать большие значки",
         "copyTarget": "Автокопирование целей",
+        "lowAndHigh": "Показать низкие и высокие углы",
         "showBearing": "Пеленг",
         "showDistance": "Расстояние",
         "showTimeOfFlight": "Время полёта",
