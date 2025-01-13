@@ -10,6 +10,7 @@ import "leaflet/dist/leaflet.css";
 import "./components/header/header.scss";
 import "./components/footer/footer.scss";
 import "./components/map/map.scss";
+import "./components/contextMenu/contextMenu.scss";
 import "./components/legacyui/legacyui.scss";
 import "./components/dialogs/dialogs.scss";
 import "./components/shared/_tooltips.scss";

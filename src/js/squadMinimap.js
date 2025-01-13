@@ -3,7 +3,7 @@ import squadGrid from "./squadGrid.js";
 import squadHeightmap from "./squadHeightmaps.js";
 import { App } from "../app.js";
 import { squadWeaponMarker, squadTargetMarker } from "./squadMarker.js";
-import { mortarIcon, mortarIcon1, mortarIcon2 } from "./squadIcon.js";
+import { mortarIcon } from "./squadIcon.js";
 import { explode } from "./animations.js";
 import { fetchMarkersByMap } from "./squadCalcAPI.js";
 import webGLHeatmap from "./libs/leaflet-webgl-heatmap.js";
@@ -11,6 +11,9 @@ import "leaflet-edgebuffer";
 import "leaflet-spin";
 import "./libs/webgl-heatmap.js";
 import "./libs/leaflet-smoothWheelZoom.js";
+import "tippy.js/dist/tippy.css";
+import squadContextMenu from "./squadContextMenu.js";
+import 'leaflet-polylinedecorator';
 
 /**
  * Squad Minimap
@@ -75,6 +78,7 @@ export var squadMinimap = Map.extend({
             closeOnClick: false,
             interactive: false,
         });
+        this.contextMenu = new squadContextMenu();
 
         // Custom events handlers
         this.on("dblclick", this._handleDoubleClick, this);
@@ -96,7 +100,7 @@ export var squadMinimap = Map.extend({
 
         this.gameToMapScale = this.pixelSize / this.activeMap.size;
         this.mapToGameScale = this.activeMap.size / this.pixelSize;
-        this.detailedZoomThreshold = ( 3 + (this.activeMap.size/7000) ) * 0.8;
+        this.detailedZoomThreshold = ( 3 + (this.activeMap.size / 7000) ) * 0.8;
        
         // Load Heightmap
         this.heightmap = new squadHeightmap(this);
@@ -119,7 +123,7 @@ export var squadMinimap = Map.extend({
     changeLayer: function(changemap = false) {
         const LAYERMODE = $("#mapLayerMenu .active").attr("value");
         const OLDLAYER = this.activeLayer;
-    
+
         // Show spinner
         this.spin(true, this.spinOptions);
 
@@ -354,22 +358,16 @@ export var squadMinimap = Map.extend({
      * Place a new WeaponMarker on the minimap
      */
     _handleContextMenu: function(e) {
-
         // If out of bounds
         if (e.latlng.lat > 0 ||  e.latlng.lat < -this.pixelSize || e.latlng.lng < 0 || e.latlng.lng > this.pixelSize) {
             return 1;
         }
 
-        if (this.activeWeaponsMarkers.getLayers().length === 0) {
-            new squadWeaponMarker(e.latlng, {icon: mortarIcon}, this).addTo(this.markersGroup).addTo(this.activeWeaponsMarkers);
-            return 0;
-        } else {
-            if (this.activeWeaponsMarkers.getLayers().length === 1) {
-                new squadWeaponMarker(e.latlng, {icon: mortarIcon2}, this).addTo(this.markersGroup).addTo(this.activeWeaponsMarkers);
-                this.activeWeaponsMarkers.getLayers()[0].setIcon(mortarIcon1);
-                this.updateTargets();
-            }
-        }
+        console.log(e)
+
+        this.contextMenu.open(e);
+        //mainContextMenu.e = e;
+        //mainContextMenu.show();
     },
 
     /**

@@ -5,8 +5,9 @@ import { targetIcon1, targetIconAnimated, targetIconDisabled, targetIconMinimal,
 import SquadSimulation from "./squadSimulation.js";
 import SquadFiringSolution from "./squadFiringSolution.js";
 import i18next from "i18next";
-import { sendMarkerData, sendTargetData } from "./squadCalcAPI.js";
+import { sendMarkerData, sendTargetData, sendFOBData } from "./squadCalcAPI.js";
 import { animateCSS } from "./animations.js";
+
 
 
 /*
@@ -1175,5 +1176,184 @@ export var squadTargetMarker = squadMarker.extend({
             });
         }
     },
+
+});
+
+
+export var squadStratMarker = squadMarker.extend({
+
+    initialize: function (latlng, options, map) {
+        const CONSTRUCTIONCOLOR = "#00E8FF";
+        const EXCLUSIONCOLOR = "white";   
+
+        squadMarker.prototype.initialize.call(this, latlng, options, map);
+        
+        this.posPopUpOptions = {
+            autoPan: false,
+            autoClose: false,
+            closeButton: false,
+            closeOnEscapeKey: false,
+            bubblingMouseEvents: false,
+            interactive: false,
+            className: "posPopUpWeapon",
+            minWidth: 100,
+            offset: [0, 0],
+        };
+
+        if (options.color) {
+            this.maxDistCircleOn = {
+                radius: 300 * this.map.gameToMapScale,
+                opacity: 0.5,
+                color: options.color,
+                fillOpacity: 0,
+                weight: 5,
+                autoPan: false,
+            };
+            this.minDistCircleOn = {
+                radius: 0,
+                opacity: 0,
+                fillOpacity: 0,
+                weight: 0,
+            };
+        } else {
+            this.maxDistCircleOn = {
+                radius: App.minimap.activeMap.radiusExclusion * this.map.gameToMapScale,
+                opacity: 0.5,
+                color: EXCLUSIONCOLOR,
+                fillOpacity: 0,
+                weight: 3,
+                autoPan: false,
+            };
+            this.minDistCircleOn = {
+                radius: 150 * this.map.gameToMapScale,
+                opacity: 0.5,
+                color: CONSTRUCTIONCOLOR,
+                fillOpacity: 0,
+                weight: 4,
+                autoPan: false,
+            };
+        }
+
+
+
+        // Create the min/max range markers
+        if (this.options.circles) {
+            this.constructionRange = new Circle(latlng, this.minDistCircleOn);
+            this.exclusionRange = new Circle(latlng, this.maxDistCircleOn);
+        }
+
+        if (this.options.circles && !this.options.circlesOnHover) {
+            this.constructionRange.addTo(this.map.markersGroup);
+            this.exclusionRange.addTo(this.map.markersGroup);
+        }
+
+        // Initiate Position PopUp
+        this.posPopUp = new Popup(this.posPopUpOptions).setLatLng(latlng).addTo(this.map.markersGroup).close();
+
+
+        // Report marker to squadcalc API
+        sendFOBData({
+            lat: this._latlng.lat,
+            lng: this._latlng.lng,
+            weapon: "FOB",
+            map: App.minimap.activeMap.name,
+        });
+
+        // Custom events handlers
+        //this.on("click", this._handleClick, this);
+        this.on("drag", this._handleDrag, this);
+        this.on("dragStart", this._handleDragStart, this);
+        this.on("dragEnd", this._handleDragEnd, this);
+        //this.on("dblclick", this._handleDblclick, this);
+        this.on("mouseover", this._handleMouseOver, this);
+        this.on("mouseout", this._handleMouseOut, this);
+        this.on("contextmenu", this._handleContextMenu, this);
+    },
+
+    /**
+     * Remove the Weapon marker and every object tied
+     * @param {this}
+     */
+    delete: function(){
+
+        // Unbind all custom event handlers
+        this.off();
+
+        // Delete the weapon marker and everything tied to it
+        if (this.options.circles) {
+            this.constructionRange.removeFrom(this.map.markersGroup).remove();
+            this.exclusionRange.removeFrom(this.map.markersGroup).remove();
+        }
+        this.posPopUp.removeFrom(this.map.markersGroup).remove();
+        this.removeFrom(this.map.markersGroup);
+        this.remove();
+    },
+
+    _handleContextMenu: function(e){
+        this.delete(e);
+    },
+
+    _handleDrag: function (e) {
+        e = this.keepOnMap(e);
+        this.setLatLng(e.latlng);
+
+        if (this.options.circles) {
+            this.constructionRange.setLatLng(e.latlng);
+            this.exclusionRange.setLatLng(e.latlng);
+        }
+
+        this.posPopUp.setLatLng(e.latlng);
+        this.posPopUp.setContent(this.map.getKP(-e.latlng.lat, e.latlng.lng, 4)); 
+    },
+
+    _handleDragStart: function () {
+
+        this.map.mouseLocationPopup.close();
+        this.map.off("mousemove", this.map._handleMouseMove);
+
+        this.map.activeTargetsMarkers.eachLayer(function (layer) {
+            layer.calcMarker1.setContent("  ");
+            layer.calcMarker2.setContent("  ");
+            layer.disableSpreadRadii();
+            layer.disableDamageRadii();
+        }); 
+        
+        this.posPopUp.openOn(this.map);
+    },
+
+    _handleDragEnd: function () {
+
+        if (App.userSettings.keypadUnderCursor){
+            this.map.on("mousemove", this.map._handleMouseMove);
+        }
+
+      
+        this.posPopUp.close();
+
+        this.map.updateTargets();
+
+        // Report marker to squadcalc API
+        sendFOBData({
+            lat: this._latlng.lat,
+            lng: this._latlng.lng,
+            weapon: "FOB",
+            map: App.minimap.activeMap.name,
+        });
+        
+    },
+
+    _handleMouseOver: function(){
+        if(this.options.circlesOnHover){
+            this.constructionRange.addTo(this.map.markersGroup);
+            this.exclusionRange.addTo(this.map.markersGroup);
+        }
+    },
+
+    _handleMouseOut: function(){
+        if(this.options.circlesOnHover){
+            this.constructionRange.removeFrom(this.map.markersGroup);
+            this.exclusionRange.removeFrom(this.map.markersGroup);
+        }
+    }
 
 });

@@ -20,6 +20,16 @@ export async function initWebSocket() {
     socketMap.addEventListener("open", () => {
         console.log("Connected to SquadMortarOverlay.exe");
         App.openToast("success", "connectedTo", "squadMortarOverlay");
+
+        // HD Maps are not compatible with squadmortaroverlay
+        if ($(".btn-hd").hasClass("active")) {
+            App.userSettings.highQualityImages = false;
+            $(".btn-hd").removeClass("active");
+            App.minimap.spin(false);
+            App.minimap.changeLayer();
+        }
+        $(".btn-hd").prop("disabled", true);
+        
     });
 
     socketMap.addEventListener("message", async (event) => {

@@ -9,7 +9,7 @@ export function loadLanguage(LANGUAGES) {
 
     i18next.use(HttpApi).init({
         fallbackLng: false,
-        ns: ["tooltips","settings", "maps", "weapons", "common"],
+        ns: ["tooltips","settings", "maps", "weapons", "common", "deployables"],
         debug: false,
         backend: {
             loadPath: "./locales/{{lng}}/{{ns}}.json",

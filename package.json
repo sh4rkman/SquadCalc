@@ -53,6 +53,7 @@
     "leaflet": "^1.9.4",
     "leaflet-edgebuffer": "^1.0.6",
     "leaflet-loader": "^0.0.3",
+    "leaflet-polylinedecorator": "^1.6.0",
     "leaflet-spin": "^1.1.2",
     "mini-css-extract-plugin": "^2.9.2",
     "mkdirp": "^3.0.1",

@@ -3,6 +3,7 @@ import { DivIcon, Marker, Circle, LayerGroup, Polyline, Polygon, Rectangle, Feat
 import { SquadObjective } from "./squadObjective.js";
 import { App } from "../app.js";
 import i18next from "i18next";
+import "./libs/leaflet-measure-path.js";
 
 export class SquadLayer {
 
@@ -18,7 +19,15 @@ export class SquadLayer {
 
         // latlng's of the currently selected flags
         this.path = [];
-        this.polyline = new Polyline(this.path, {color: "white", opacity: 0.9}).addTo(this.activeLayerMarkers);
+        this.polyline = new Polyline(this.path, {
+            color: "white",
+            opacity: 0.9,
+            showMeasurements: App.userSettings.showFlagsDistance,
+            measurementOptions: {
+                showTotalDistance: false,
+                minPixelDistance: 50,
+            }
+        }).addTo(this.activeLayerMarkers);
 
         // Currently selected flags
         this.selectedFlags = [];

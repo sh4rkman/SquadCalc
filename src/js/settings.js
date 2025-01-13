@@ -67,6 +67,9 @@ export function loadSettings(){
     });
     $(".dropbtn6").val(fontSize).trigger("change");
 
+    App.userSettings.showFlagsDistance = loadLocalSetting("settings-show-flags-distance", 1);
+    $("#showFlagsDistanceSettings").prop("checked", App.userSettings.showFlagsDistance);
+
     App.userSettings.copyNextFlags = loadLocalSetting("settings-copy-next-flags", 0);
     $("#copyNextFlagsSettings").prop("checked", App.userSettings.copyNextFlags);
 
@@ -222,6 +225,20 @@ $("#revealLayerOnHoverSettings").on("change", function() {
     App.userSettings.revealLayerOnHover = val;
     localStorage.setItem("settings-reveal-onHover", +val);
 });
+
+$("#showFlagsDistanceSettings").on("change", function() {
+    var val = $("#showFlagsDistanceSettings").is(":checked");
+    App.userSettings.showFlagsDistance = val;
+    localStorage.setItem("settings-show-flags-distance", +val);
+    if (App.minimap.layer){
+        if(val){
+            App.minimap.layer.polyline.showMeasurements();
+        } else {
+            App.minimap.layer.polyline.hideMeasurements();
+        }
+    }
+});
+
 
 $("#autoLaneSetting").on("change", function() {
     var val = $("#autoLaneSetting").is(":checked");

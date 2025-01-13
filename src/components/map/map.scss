@@ -51,6 +51,9 @@ $flag-circle-opacity: 0.2;
         z-index: 0;
         .leaflet-interactive {
             cursor: inherit;
+            &.mapArrow {
+                cursor: pointer;
+            }
         }
         .leaflet-pane .leaflet-marker-pane .leaflet-marker-icon {
             cursor: grab;
@@ -226,17 +229,17 @@ $flag-circle-opacity: 0.2;
             font-size: 1.1em;
         }
         .helipads {
-            background: url('../../img/icons/deployables/deployable_helipad.webp') no-repeat center center;
+            background: url('../../../public/icons/ally/deployables/deployable_helipad.webp') no-repeat center center;
             background-size: contain;
             transition: opacity 0.1s ease-in;
         }
         .repairStations {
-            background: url('../../img/icons/deployables/deployable_repairstation.webp') no-repeat center center;
+            background: url('../../../public/icons/ally/deployables/deployable_repairstation.webp') no-repeat center center;
             background-size: contain;
             transition: opacity 0.1s ease-in;
         }
         .ammocrates {
-            background: url('../../img/icons/deployables/deployable_ammocrate.webp') no-repeat center center;
+            background: url('../../../public/icons/ally/deployables/deployable_ammocrate.webp') no-repeat center center;
             background-size: contain;
             transition: opacity 0.1s ease-in;
         }
@@ -277,7 +280,7 @@ $flag-circle-opacity: 0.2;
         &:hover {
             background-color: #979797;
             svg {
-                transform: scale(1.1);
+                transform: scale(1.05);
             }
         }
         &.active {
@@ -286,6 +289,13 @@ $flag-circle-opacity: 0.2;
             border-bottom: variables.$mainColor;
             svg path {
                 fill: white;
+            }
+        }
+        &:disabled {
+            pointer-events: none;
+            background-color: #888888;
+            svg path {
+                fill: #383838;
             }
         }
         svg {
@@ -351,4 +361,23 @@ $flag-circle-opacity: 0.2;
 
 .capZone {
     transition: opacity 0.25s ease-in-out, fill-opacity 0.25s ease-in-out;
+}
+
+
+
+.leaflet-measure-path-measurement {
+    @include variables.light-text-outline;
+    font-family: variables.$mainFont, Times, "Times New Roman", serif;
+    position: absolute;
+    font-size: var(--font-size-objtext);
+    color: white;
+    white-space: nowrap;
+    transform-origin: 0;   
+}
+
+.leaflet-measure-path-measurement > div {
+    position: relative;
+    margin-top: -25%;
+    left: -50%;
+    pointer-events: none;
 }

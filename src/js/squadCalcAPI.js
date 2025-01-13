@@ -1,7 +1,7 @@
 import packageInfo from "../../package.json";
 
 /**
- * Sends marker data to the API via a POST request.
+ * Sends weapon data to the API via a POST request.
  * @param {Object} markerData - The data object to be sent to the API.
  * @returns {Promise<void>} A promise that resolves if the data is successfully sent, or logs an error if not.
  * @throws {Error} Logs details of any network or HTTP errors encountered during the request.
@@ -14,6 +14,29 @@ export function sendMarkerData(markerData) {
             "X-App-Version": packageInfo.version
         },
         body: JSON.stringify(markerData)
+    }).then(response => {
+        if (!response.ok) {
+            console.debug("HTTP error:", response.status);
+        }
+    }).catch(error => {
+        console.debug("Error sending marker data:", error);
+    });
+}
+
+/**
+ * Sends FOB marker data to the API via a POST request.
+ * @param {Object} markerData - The data object to be sent to the API.
+ * @returns {Promise<void>} A promise that resolves if the data is successfully sent, or logs an error if not.
+ * @throws {Error} Logs details of any network or HTTP errors encountered during the request.
+ */
+export function sendFOBData(FOBData) {
+    fetch(`${process.env.API_URL}/post/fobs`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-App-Version": packageInfo.version
+        },
+        body: JSON.stringify(FOBData)
     }).then(response => {
         if (!response.ok) {
             console.debug("HTTP error:", response.status);

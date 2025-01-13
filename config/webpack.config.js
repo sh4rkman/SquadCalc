@@ -60,7 +60,7 @@ export default async (env) => {
         publicPath: '/',
       },
       watchFiles: {
-        paths: ['src/**/*'],
+        //paths: ['src/**/*'],
       },
     },
     plugins: [

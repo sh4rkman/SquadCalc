@@ -7,6 +7,7 @@ import { loadSettings } from "./settings.js";
 import { loadLanguage } from "./localization.js";
 import { animateCSS, animateCalc } from "./animations.js";
 import { tooltip_save } from "./tooltips.js";
+import "./squadContextMenu.js";
 import { checkApiHealth, fetchLayersByMap, fetchLayerByName } from "./squadCalcAPI.js";
 import { initWebSocket } from "./smcConnector.js";
 import SquadFiringSolution from "./squadFiringSolution.js";
