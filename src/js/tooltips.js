@@ -45,10 +45,17 @@ tippy("span[data-i18n='settings:lowAndHigh']", {
     },
 });
 
-tippy("span[data-i18n='settings:showDamage']", {
+tippy("span[data-i18n='settings:lowAndHigh']", {
     ...commonToolipsSettings,
     onShow(tip) {
-        tip.setContent(`${i18next.t("tooltips:damageRadiusTooltip")}`);
+        tip.setContent(`${i18next.t("tooltips:lowAndHighTooltip")}`);
+    },
+});
+
+tippy("span[data-i18n='settings:contextMenu']", {
+    ...commonToolipsSettings,
+    onShow(tip) {
+        tip.setContent(`${i18next.t("tooltips:contextMenuTooltip")}`);
     },
 });
 

@@ -3,7 +3,7 @@ import squadGrid from "./squadGrid.js";
 import squadHeightmap from "./squadHeightmaps.js";
 import { App } from "../app.js";
 import { squadWeaponMarker, squadTargetMarker } from "./squadMarker.js";
-import { mortarIcon } from "./squadIcon.js";
+import { mortarIcon, mortarIcon1, mortarIcon2 } from "./squadIcon.js";
 import { explode } from "./animations.js";
 import { fetchMarkersByMap } from "./squadCalcAPI.js";
 import webGLHeatmap from "./libs/leaflet-webgl-heatmap.js";
@@ -13,7 +13,7 @@ import "./libs/webgl-heatmap.js";
 import "./libs/leaflet-smoothWheelZoom.js";
 import "tippy.js/dist/tippy.css";
 import squadContextMenu from "./squadContextMenu.js";
-import 'leaflet-polylinedecorator';
+import "leaflet-polylinedecorator";
 
 /**
  * Squad Minimap
@@ -353,6 +353,18 @@ export var squadMinimap = Map.extend({
         }
     },
 
+    createWeapon(latlng){
+        if (App.minimap.activeWeaponsMarkers.getLayers().length === 0) {
+            new squadWeaponMarker(latlng, {icon: mortarIcon}, App.minimap).addTo(App.minimap.markersGroup).addTo(App.minimap.activeWeaponsMarkers);
+        } else {
+            if (App.minimap.activeWeaponsMarkers.getLayers().length === 1) {
+                new squadWeaponMarker(latlng, {icon: mortarIcon2}, App.minimap).addTo(App.minimap.markersGroup).addTo(App.minimap.activeWeaponsMarkers);
+                App.minimap.activeWeaponsMarkers.getLayers()[0].setIcon(mortarIcon1);
+                App.minimap.updateTargets();
+            }
+        }
+    },
+
     /**
      * Right-Click
      * Place a new WeaponMarker on the minimap
@@ -363,11 +375,11 @@ export var squadMinimap = Map.extend({
             return 1;
         }
 
-        console.log(e)
-
-        this.contextMenu.open(e);
-        //mainContextMenu.e = e;
-        //mainContextMenu.show();
+        if (App.userSettings.contextMenu) {
+            this.contextMenu.open(e);
+        } else {
+            this.createWeapon(e.latlng);
+        }
     },
 
     /**

@@ -1,10 +1,9 @@
 import tippy, {followCursor} from "tippy.js";
 import "tippy.js/dist/tippy.css";
 import { App } from "../app.js";
-import { squadWeaponMarker, squadStratMarker } from "./squadMarker.js";
-import {
-    mortarIcon, mortarIcon1, mortarIcon2,
-} from "./squadIcon.js";
+import { Icon, Polyline, PolylineDecorator, Symbol, DomEvent } from "leaflet";
+import { squadStratMarker } from "./squadMarker.js";
+
 
 
 export default class SquadContextMenu {
@@ -24,7 +23,7 @@ export default class SquadContextMenu {
             duration: 0,
             arrow: false,
             offset: [0, -15],
-            onHide: (tip) => {
+            onHide: () => {
                 $(".ctxButton").off("click");
                 document.removeEventListener("contextmenu", this.handleContextMenu);
             },
@@ -68,15 +67,7 @@ export default class SquadContextMenu {
 
                         // Add additional options for specific markers
                         if (icon === "middleContext") { 
-                            if (App.minimap.activeWeaponsMarkers.getLayers().length === 0) {
-                                new squadWeaponMarker(tip.e.latlng, {icon: mortarIcon}, App.minimap).addTo(App.minimap.markersGroup).addTo(App.minimap.activeWeaponsMarkers);
-                            } else {
-                                if (App.minimap.activeWeaponsMarkers.getLayers().length === 1) {
-                                    new squadWeaponMarker(tip.e.latlng, {icon: mortarIcon2}, App.minimap).addTo(App.minimap.markersGroup).addTo(App.minimap.activeWeaponsMarkers);
-                                    App.minimap.activeWeaponsMarkers.getLayers()[0].setIcon(mortarIcon1);
-                                    App.minimap.updateTargets();
-                                }
-                            }
+                            App.minimap.createWeapon(tip.e.latlng);
                             this.close();
                             return;
                         }
@@ -92,7 +83,7 @@ export default class SquadContextMenu {
                             if (team === "ally") { markerOptions.color = "#ffc400"; }
                             else { markerOptions.color = "#f23534"; }
                         }
-                        markerOptions.icon = new L.Icon({
+                        markerOptions.icon = new Icon({
                             iconUrl: `/icons/${team}/${category}/${icon}.webp`,
                             iconSize: iconSize,
                             iconAnchor: [iconSize[0]/2, iconSize[1]/2]
@@ -117,8 +108,6 @@ export default class SquadContextMenu {
                     arrow: false,
                     position: "top",
                     offset: [0, 15],
-                    onHide: (tip) => {
-                    },
                     onShow: (tip) => {
                         tip.setContent(
                             `<div class="contextmenu"">
@@ -135,9 +124,6 @@ export default class SquadContextMenu {
                         
                         setTimeout(() => {
 
-                            let polyline;
-                            let isDrawing = false;
-
                             $(".weaponContext").on("click", (event) => {
                                 tip.hide();
                                 let isDrawing = false;
@@ -152,11 +138,11 @@ export default class SquadContextMenu {
                                     if (polyline) {
                                         polyline.setLatLngs([this.mainContextMenu.e.latlng, endLatLng]);
                                         polylineDecorator.removeFrom(App.minimap.markersGroup);
-                                        polylineDecorator = new L.polylineDecorator(polyline, {
+                                        polylineDecorator = new PolylineDecorator(polyline, {
                                             patterns: [ {
-                                                offset: '100%',
+                                                offset: "100%",
                                                 repeat: 0,
-                                                symbol: L.Symbol.arrowHead({
+                                                symbol: new Symbol.arrowHead({
                                                     pixelSize: 15,
                                                     polygon: false,
                                                     fill: true,
@@ -175,7 +161,7 @@ export default class SquadContextMenu {
                                         let arrowOptions = {
                                             color: color,
                                             weight: 3,
-                                            className: 'mapArrow',
+                                            className: "mapArrow",
                                             showMeasurements: true,
                                             measurementOptions: {
                                                 showTotalDistance: false,
@@ -183,50 +169,50 @@ export default class SquadContextMenu {
                                                 showOnHover: true,
                                             }
                                         };
-                                        polyline = L.polyline([this.mainContextMenu.e.latlng, endLatLng], arrowOptions).addTo(App.minimap.markersGroup);
-                                        polylineDecorator = new L.polylineDecorator(polyline, {
+                                        polyline = new Polyline([this.mainContextMenu.e.latlng, endLatLng], arrowOptions).addTo(App.minimap.markersGroup);
+                                        polylineDecorator = new PolylineDecorator(polyline, {
                                             patterns: [
-                                                {offset: '100%', repeat: 0, symbol: L.Symbol.arrowHead({pixelSize: 100, polygon: false, pathOptions: {stroke: true}})}
+                                                {offset: "100%", repeat: 0, symbol: new Symbol.arrowHead({pixelSize: 100, polygon: false, pathOptions: {stroke: true}})}
                                             ]
                                         }).addTo(App.minimap.markersGroup);
 
-                                        polyline.on('mouseover', (e) => {
+                                        polyline.on("mouseover", () => {
                                             //polyline.hideMeasurements()
                                         });
                                         
                                         // Add a contextmenu event listener to cancel drawing
-                                        polyline.once('contextmenu', (e) => {
+                                        polyline.once("contextmenu", (e) => {
                                             
                                             App.minimap.removeLayer(polyline); // Remove the polyline from the map
                                             App.minimap.removeLayer(polylineDecorator);
                                             polylineDecorator.removeFrom(App.minimap.markersGroup);
                                             polyline = null;
                                             isDrawing = false;
-                                            App.minimap.off('mousemove', handleMouseMove);
-                                            L.DomEvent.preventDefault(e);
-                                            L.DomEvent.stopPropagation(e);
-                                            L.DomEvent.stop(e);
+                                            App.minimap.off("mousemove", handleMouseMove);
+                                            DomEvent.preventDefault(e);
+                                            DomEvent.stopPropagation(e);
+                                            DomEvent.stop(e);
                                             
                                         });
                                     }
                                 };
                             
-                                const handleClick = (e) => {
+                                const handleClick = () => {
                                     if (isDrawing) {
                                         // Finalize the polyline
-                                        App.minimap.off('mousemove', handleMouseMove); // Stop updating the polyline
+                                        App.minimap.off("mousemove", handleMouseMove); // Stop updating the polyline
                                         isDrawing = false; // Stop the drawing process
                                     }
                                 };
                             
-                                const handleRightClick = (e) => {
+                                const handleRightClick = () => {
                                     // Cancel the drawing process on right-click
                                     if (isDrawing) {
                                         App.minimap.removeLayer(polyline); // Remove the polyline from the map
                                         polylineDecorator.removeFrom(App.minimap.markersGroup);
                                         polyline = null; // Reset the polyline reference
                                         isDrawing = false; // Stop the drawing process
-                                        App.minimap.off('mousemove', handleMouseMove);
+                                        App.minimap.off("mousemove", handleMouseMove);
                                     }
                                     
                                 };
@@ -234,12 +220,12 @@ export default class SquadContextMenu {
                                 // Start drawing process when weaponContext is clicked
                                 if (!isDrawing) {
                                     isDrawing = true;
-                                    App.minimap.on('mousemove', handleMouseMove); // Add the mousemove listener
-                                    App.minimap.once('click', handleClick); // Add a one-time click listener to finalize the polyline
+                                    App.minimap.on("mousemove", handleMouseMove); // Add the mousemove listener
+                                    App.minimap.once("click", handleClick); // Add a one-time click listener to finalize the polyline
                                 }
                             
                                 // Add a right-click (contextmenu) listener to cancel the drawing process
-                                App.minimap.on('contextmenu', handleRightClick);
+                                App.minimap.on("contextmenu", handleRightClick);
                             });
                             
 
@@ -273,13 +259,13 @@ export default class SquadContextMenu {
             arrow: false,
             interactiveBorder: 0,
             theme: "contextmenu",
-        }
+        };
 
         tippy(document.querySelector(".fob"), {
             ...GLOBALOPTIONS,
             offset: [57, 3],
             onShow(tip) {
-                const template = document.getElementById('ally_deployables_html');
+                const template = document.getElementById("ally_deployables_html");
                 const clone = document.importNode(template.content, true);
                 tip.setContent(clone);
             }
@@ -289,7 +275,7 @@ export default class SquadContextMenu {
             ...GLOBALOPTIONS,
             offset: [28, 3],
             onShow(tip) {
-                const template = document.getElementById('ally_vehicles_html');
+                const template = document.getElementById("ally_vehicles_html");
                 const clone = document.importNode(template.content, true);
                 tip.setContent(clone);
             }
@@ -299,7 +285,7 @@ export default class SquadContextMenu {
             ...GLOBALOPTIONS,
             offset: [-1, 3],
             onShow(tip) {
-                const template = document.getElementById('ally_infantry_html');
+                const template = document.getElementById("ally_infantry_html");
                 const clone = document.importNode(template.content, true);
                 tip.setContent(clone);
             },
@@ -309,7 +295,7 @@ export default class SquadContextMenu {
             ...GLOBALOPTIONS,
             offset: [57, 3],
             onShow(tip) {
-                const template = document.getElementById('enemy_deployables_html');
+                const template = document.getElementById("enemy_deployables_html");
                 const clone = document.importNode(template.content, true);
                 tip.setContent(clone);
             },
@@ -319,7 +305,7 @@ export default class SquadContextMenu {
             ...GLOBALOPTIONS,
             offset: [0, 3],
             onShow(tip) {
-                const template = document.getElementById('enemy_infantry_html');
+                const template = document.getElementById("enemy_infantry_html");
                 const clone = document.importNode(template.content, true);
                 tip.setContent(clone);
             }
@@ -329,11 +315,11 @@ export default class SquadContextMenu {
             ...GLOBALOPTIONS,
             offset: [28, 3],
             onShow(tip) {
-                const template = document.getElementById('enemy_vehicles_html');
+                const template = document.getElementById("enemy_vehicles_html");
                 const clone = document.importNode(template.content, true);
                 tip.setContent(clone);
             }
         });
 
-    }; 
+    }
 }

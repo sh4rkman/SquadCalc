@@ -207,6 +207,9 @@ export default async (env) => {
                   format: {
                       comments: false,
                   },
+                  compress: {
+                    pure_funcs: ['console.debug'], // Removes console.debug
+                  },
               },
           }),
       ] : [],

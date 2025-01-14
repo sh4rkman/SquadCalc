@@ -22,12 +22,14 @@ export class SquadLayer {
         this.polyline = new Polyline(this.path, {
             color: "white",
             opacity: 0.9,
-            showMeasurements: App.userSettings.showFlagsDistance,
+            showMeasurements: true,
             measurementOptions: {
                 showTotalDistance: false,
                 minPixelDistance: 50,
             }
         }).addTo(this.activeLayerMarkers);
+
+        if (!App.userSettings.showFlagsDistance) this.polyline.hideMeasurements();
 
         // Currently selected flags
         this.selectedFlags = [];

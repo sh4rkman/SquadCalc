@@ -1343,14 +1343,14 @@ export var squadStratMarker = squadMarker.extend({
     },
 
     _handleMouseOver: function(){
-        if(this.options.circlesOnHover){
+        if (this.options.circlesOnHover){
             this.constructionRange.addTo(this.map.markersGroup);
             this.exclusionRange.addTo(this.map.markersGroup);
         }
     },
 
     _handleMouseOut: function(){
-        if(this.options.circlesOnHover){
+        if (this.options.circlesOnHover){
             this.constructionRange.removeFrom(this.map.markersGroup);
             this.exclusionRange.removeFrom(this.map.markersGroup);
         }

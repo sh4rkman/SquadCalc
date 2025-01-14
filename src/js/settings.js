@@ -67,7 +67,10 @@ export function loadSettings(){
     });
     $(".dropbtn6").val(fontSize).trigger("change");
 
-    App.userSettings.showFlagsDistance = loadLocalSetting("settings-show-flags-distance", 1);
+    App.userSettings.contextMenu = loadLocalSetting("settings-context-menu");
+    $("#contextMenuSettings").prop("checked", App.userSettings.contextMenu);
+
+    App.userSettings.showFlagsDistance = loadLocalSetting("settings-show-flags-distance");
     $("#showFlagsDistanceSettings").prop("checked", App.userSettings.showFlagsDistance);
 
     App.userSettings.copyNextFlags = loadLocalSetting("settings-copy-next-flags", 0);
@@ -208,6 +211,12 @@ export function updatePreview(){
     }
 }
 
+$("#contextMenuSettings").on("change", function() {
+    var val = $("#contextMenuSettings").is(":checked");
+    App.userSettings.contextMenu = val;
+    localStorage.setItem("settings-context-menu", +val);
+});
+
 $("#circlesFlagsSettings").on("change", function() {
     var val = $("#circlesFlagsSettings").is(":checked");
     App.userSettings.circlesFlags = val;
@@ -231,8 +240,13 @@ $("#showFlagsDistanceSettings").on("change", function() {
     App.userSettings.showFlagsDistance = val;
     localStorage.setItem("settings-show-flags-distance", +val);
     if (App.minimap.layer){
-        if(val){
-            App.minimap.layer.polyline.showMeasurements();
+        if (val){
+            App.minimap.layer.polyline.showMeasurements({
+                measurementOptions: {
+                    showTotalDistance: false,
+                    minPixelDistance: 50,
+                }
+            });
         } else {
             App.minimap.layer.polyline.hideMeasurements();
         }

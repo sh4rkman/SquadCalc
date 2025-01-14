@@ -293,7 +293,7 @@ $flag-circle-opacity: 0.2;
         }
         &:disabled {
             pointer-events: none;
-            background-color: #888888;
+            background-color: #888;
             svg path {
                 fill: #383838;
             }
