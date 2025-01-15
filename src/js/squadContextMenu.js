@@ -72,11 +72,11 @@ export default class SquadContextMenu {
                             return;
                         }
                         if (icon === "deployable_fob_blue") { markerOptions.circles = true; }
-                        if (icon === "deployable_fob") { 
-                            markerOptions.circles = true;
-                            markerOptions.circlesOnHover = true;
-                            markerOptions.color = "#f23534";
-                        }
+                        // if (icon === "deployable_fob") { 
+                        //     markerOptions.circles = true;
+                        //     markerOptions.circlesOnHover = true;
+                        //     markerOptions.color = "#f23534";
+                        // }
                         if (icon === "deployable_hab_activated") { iconSize = [38, 38]; }
                         if (icon === "T_strategic_uav") { 
                             markerOptions.circles = true;
