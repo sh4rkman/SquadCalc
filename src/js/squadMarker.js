@@ -5,7 +5,7 @@ import { targetIcon1, targetIconAnimated, targetIconDisabled, targetIconMinimal,
 import SquadSimulation from "./squadSimulation.js";
 import SquadFiringSolution from "./squadFiringSolution.js";
 import i18next from "i18next";
-import { sendMarkerData, sendTargetData, sendFOBData } from "./squadCalcAPI.js";
+import { sendMarkerData, sendTargetData } from "./squadCalcAPI.js";
 import { animateCSS } from "./animations.js";
 
 
@@ -1252,12 +1252,12 @@ export var squadStratMarker = squadMarker.extend({
 
 
         // Report marker to squadcalc API
-        sendFOBData({
-            lat: this._latlng.lat,
-            lng: this._latlng.lng,
-            weapon: "FOB",
-            map: App.minimap.activeMap.name,
-        });
+        // sendFOBData({
+        //     lat: this._latlng.lat,
+        //     lng: this._latlng.lng,
+        //     weapon: "FOB",
+        //     map: App.minimap.activeMap.name,
+        // });
 
         // Custom events handlers
         //this.on("click", this._handleClick, this);
@@ -1290,6 +1290,24 @@ export var squadStratMarker = squadMarker.extend({
     },
 
     _handleContextMenu: function(e){
+
+        // Avoid other target keeping fading
+        clearTimeout(this.mouseOverTimeout);
+
+        // If they already faded, switch them back
+        this.map.activeTargetsMarkers.eachLayer((target) => {
+            target.on("mouseover", target._handleMouseOver, target);
+            target.on("mouseout", target._handleMouseOut, target);
+            target.setOpacity(1);
+            target.calcMarker1.openOn(this.map);
+            if (this.map.activeWeaponsMarkers.getLayers()[1]) target.calcMarker2.openOn(this.map);
+            target.updateSpread();
+            target.updateDamageRadius();
+        });
+
+        // Reset layer opacity
+        if (this.map.layer) this.map.layer._setOpacity(1); 
+
         this.delete(e);
     },
 
@@ -1327,18 +1345,18 @@ export var squadStratMarker = squadMarker.extend({
             this.map.on("mousemove", this.map._handleMouseMove);
         }
 
-      
+        this.isDragging = false;
         this.posPopUp.close();
 
-        this.map.updateTargets();
+        //this.map.updateTargets();
 
         // Report marker to squadcalc API
-        sendFOBData({
-            lat: this._latlng.lat,
-            lng: this._latlng.lng,
-            weapon: "FOB",
-            map: App.minimap.activeMap.name,
-        });
+        // sendFOBData({
+        //     lat: this._latlng.lat,
+        //     lng: this._latlng.lng,
+        //     weapon: "FOB",
+        //     map: App.minimap.activeMap.name,
+        // });
         
     },
 
@@ -1347,6 +1365,28 @@ export var squadStratMarker = squadMarker.extend({
             this.constructionRange.addTo(this.map.markersGroup);
             this.exclusionRange.addTo(this.map.markersGroup);
         }
+
+        this.mouseOverTimeout = setTimeout(() => {
+
+            // Hide the layer
+            if (this.map.layer) this.map.layer._setOpacity(0.5); 
+
+            // Hide other targets
+            if (!this.isDragging){
+                this.map.activeTargetsMarkers.eachLayer((target) => {
+                    if (target != this) {
+                        target.off("mouseover");
+                        target.off("mouseout");
+                        target.setOpacity(0.65);
+                        target.calcMarker1.close();
+                        target.calcMarker2.close();
+                        target.disableSpreadRadii();
+                        target.disableDamageRadii();
+                        target.twentyFiveDamageRadius.setStyle({ opacity: 0 });
+                    }
+                });
+            }
+        }, 500);
     },
 
     _handleMouseOut: function(){
@@ -1354,6 +1394,12 @@ export var squadStratMarker = squadMarker.extend({
             this.constructionRange.removeFrom(this.map.markersGroup);
             this.exclusionRange.removeFrom(this.map.markersGroup);
         }
+
+        // Cancel the timeout if the user moves the mouse out before 1 second
+        clearTimeout(this.mouseOverTimeout);
+
+        // Show the layer
+        if (this.map.layer) this.map.layer._setOpacity(1); 
     }
 
 });

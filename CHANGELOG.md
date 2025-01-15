@@ -1,3 +1,34 @@
+# <img src="https://img.shields.io/badge/-major%20release-b22222?style=for-the-badge">  **36.0.0** *(2025-01-15)*
+
+<img src="https://img.shields.io/badge/-new-green"> **Squad Map Markers:** Right-click on the map to open a context menu that lets you place markers, helping you strategize for future games.
+
+<img src="https://img.shields.io/badge/-new-green"> **Auto-Copy Targets:** Enable this setting to automatically copy the calculations of the most recently placed or moved target to the clipboard, making it easy to share them in-game using Ctrl+V.
+
+<img src="https://img.shields.io/badge/-new-green"> **Auto-Copy Next Flags:** Enable this setting to automatically copy the name of the next flag when clicking a flag in a RAAS/Invasion layer, making it easy to share in-game using Ctrl+V.
+
+<img src="https://img.shields.io/badge/-new-green"> **Display Low & High Angles:** Enable this setting to display both low- and high-angle solutions on the marker for weapons that support both. (Thanks, Matador, for the suggestion. Fix #258)
+
+<img src="https://img.shields.io/badge/-new-green"> **Flags Distance:** In AAS/RAAS/Invasion, a new setting allows you to show or hide the distance between flags.
+
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> HD maps (8k × 8k) are now tiled for better performance and efficiency.
+
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Added various tooltips to settings.
+
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Added various animations.
+
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed Yehorivka heightmaps being twice the size they should be. (Fix #259)
+
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> The heatmap is no longer redrawn each time the layer is changed on the same map.
+
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed flag numbers being off-center on rectangular flags.
+
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed seconds being displayed as meters in some languages.
+
+
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
+
 # <img src="https://img.shields.io/badge/-major%20release-b22222?style=for-the-badge">  **35.0.0** *(2025-01-02)*
 
 <img src="https://img.shields.io/badge/-new-green"> **Custom font size:** you can now change the size of the texts appearing on the map to your liking (Fixes [#254](https://github.com/sh4rkman/SquadCalc/issues/254))
