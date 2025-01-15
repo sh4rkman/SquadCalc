@@ -65,7 +65,22 @@ export function loadSettings(){
         dropdownParent: $("#helpDialog"),
         minimumResultsForSearch: -1, // Disable search
     });
-    $(".dropbtn6").val(fontSize).trigger("change");;
+    $(".dropbtn6").val(fontSize).trigger("change");
+
+    App.userSettings.contextMenu = loadLocalSetting("settings-context-menu");
+    $("#contextMenuSettings").prop("checked", App.userSettings.contextMenu);
+
+    App.userSettings.showFlagsDistance = loadLocalSetting("settings-show-flags-distance");
+    $("#showFlagsDistanceSettings").prop("checked", App.userSettings.showFlagsDistance);
+
+    App.userSettings.copyNextFlags = loadLocalSetting("settings-copy-next-flags", 0);
+    $("#copyNextFlagsSettings").prop("checked", App.userSettings.copyNextFlags);
+
+    App.userSettings.lowAndHigh = loadLocalSetting("settings-low-high", 0);
+    $("#lowAndHighSetting").prop("checked", App.userSettings.lowAndHigh);
+    
+    App.userSettings.copyTarget = loadLocalSetting("settings-copy-target", 0);
+    $("#targetCopySetting").prop("checked", App.userSettings.copyTarget);
 
     App.userSettings.circlesFlags = loadLocalSetting("settings-circles-flags");
     $("#circlesFlagsSettings").prop("checked", App.userSettings.circlesFlags);
@@ -196,6 +211,12 @@ export function updatePreview(){
     }
 }
 
+$("#contextMenuSettings").on("change", function() {
+    var val = $("#contextMenuSettings").is(":checked");
+    App.userSettings.contextMenu = val;
+    localStorage.setItem("settings-context-menu", +val);
+});
+
 $("#circlesFlagsSettings").on("change", function() {
     var val = $("#circlesFlagsSettings").is(":checked");
     App.userSettings.circlesFlags = val;
@@ -213,6 +234,25 @@ $("#revealLayerOnHoverSettings").on("change", function() {
     App.userSettings.revealLayerOnHover = val;
     localStorage.setItem("settings-reveal-onHover", +val);
 });
+
+$("#showFlagsDistanceSettings").on("change", function() {
+    var val = $("#showFlagsDistanceSettings").is(":checked");
+    App.userSettings.showFlagsDistance = val;
+    localStorage.setItem("settings-show-flags-distance", +val);
+    if (App.minimap.layer){
+        if (val){
+            App.minimap.layer.polyline.showMeasurements({
+                measurementOptions: {
+                    showTotalDistance: false,
+                    minPixelDistance: 50,
+                }
+            });
+        } else {
+            App.minimap.layer.polyline.hideMeasurements();
+        }
+    }
+});
+
 
 $("#autoLaneSetting").on("change", function() {
     var val = $("#autoLaneSetting").is(":checked");
@@ -329,6 +369,26 @@ $("#realMaxRangeSettings").on("change", function() {
     App.userSettings.realMaxRange = val;
     localStorage.setItem("settings-real-max-range", +val);
     App.minimap.updateWeapons();
+});
+
+$("#targetCopySetting").on("change", function() {
+    var val =  $("#targetCopySetting").is(":checked");
+    App.userSettings.copyTarget = val;
+    localStorage.setItem("settings-copy-target", +val);
+});
+
+$("#lowAndHighSetting").on("change", function() {
+    var val =  $("#lowAndHighSetting").is(":checked");
+    App.userSettings.lowAndHigh = val;
+    localStorage.setItem("settings-low-high", +val);
+    App.minimap.updateTargets();
+});
+
+
+$("#copyNextFlagsSettings").on("change", function() {
+    var val =  $("#copyNextFlagsSettings").is(":checked");
+    App.userSettings.copyNextFlags = val;
+    localStorage.setItem("settings-copy-next-flags", +val);
 });
 
 $("#cursorChoiceSettings").on("change", function() {

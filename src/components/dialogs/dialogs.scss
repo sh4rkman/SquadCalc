@@ -171,9 +171,14 @@ dialog {
                 }
             }
         }
+        #panel2 {
+            table {
+                font-size: 0.95em;
+            }
+        }
         table {
             border: none;
-            margin: 0 0 2em 3em;
+            margin: 0 0 1.5em 3em;
             &.shortcuts {
                 padding-top: 4em;
                 td {           

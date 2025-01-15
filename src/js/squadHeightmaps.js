@@ -47,6 +47,7 @@ export default class SquadHeightmap {
             height = this.json[row][col];
         }
 
+        if (this.map.activeMap.seaLevel) return height + this.map.activeMap.seaLevel;
         return height;
     }
 

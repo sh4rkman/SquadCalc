@@ -34,5 +34,6 @@
     "invalidTarget": "Недійсна ціль",
     "invalidMortarTarget": "Непридатна зброя та мішень",
     "targetOutOfRange": "Ціль поза зоною досяжності",
-    "layerPlaceholder": "Layer"   
+    "layerPlaceholder": "Layer",
+    "nextFlags": "Наступні прапори"
 }

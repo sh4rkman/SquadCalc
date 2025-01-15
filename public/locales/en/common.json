@@ -34,5 +34,6 @@
     "invalidTarget": "Invalid Target",
     "invalidMortarTarget": "Invalid Weapon & Target",
     "targetOutOfRange": "Target is out of range",
-    "layerPlaceholder": "Layer"
+    "layerPlaceholder": "Layer",
+    "nextFlags": "Next Flags"
 }

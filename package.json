@@ -1,6 +1,6 @@
 {
   "name": "squadcalc",
-  "version": "35.0.0",
+  "version": "36.0.0",
   "description": "A Complete Mortar Calculator and Map Lane Finder for Squad",
   "author": "Maxime 'sharkman' Boussard",
   "license": "MIT",
@@ -29,7 +29,6 @@
     "start": "webpack serve -c ./config/webpack.config.js",
     "build": "webpack -c ./config/webpack.config.js",
     "lint": "stylelint -c ./config/.stylelintrc.json ./src/**/*.scss && htmlhint --config ./config/.htmlhintrc.json --nocolor ./src/ && jshint ./src/ && eslint -c ./config/.eslintrc.js ./src/",
-    "convertHeightmapsToJson": "npx src/js/tests/convertHeightmapsToJson.mjs",
     "mapinfo": "node src/js/tests/mapdata.js info",
     "weaponInfo": "node src/js/tests/calcMortarTech.js info"
   },
@@ -42,6 +41,7 @@
     "css-minimizer-webpack-plugin": "^7.0.0",
     "dotenv-webpack": "^8.1.0",
     "eslint": "^9.17.0",
+    "fs-extra": "^11.2.0",
     "html-loader": "^5.1.0",
     "html-webpack-plugin": "^5.6.3",
     "htmlhint": "^1.1.4",
@@ -51,9 +51,13 @@
     "jshint": "^2.13.6",
     "leader-line-new": "^1.1.9",
     "leaflet": "^1.9.4",
+    "leaflet-edgebuffer": "^1.0.6",
     "leaflet-loader": "^0.0.3",
+    "leaflet-polylinedecorator": "^1.6.0",
     "leaflet-spin": "^1.1.2",
     "mini-css-extract-plugin": "^2.9.2",
+    "mkdirp": "^3.0.1",
+    "path": "^0.12.7",
     "postcss": ">=8.4.49",
     "purecss": "^3.0.0",
     "robotstxt-webpack-plugin": "^8.0.0",
@@ -71,5 +75,8 @@
     "webpack-merge": "^6.0.1",
     "webpack-pwa-manifest": "^4.3.0",
     "workbox-webpack-plugin": "^7.3.0"
+  },
+  "overrides": {
+    "phin": "^3.7.1"
   }
 }

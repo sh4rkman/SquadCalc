@@ -51,6 +51,9 @@ $flag-circle-opacity: 0.2;
         z-index: 0;
         .leaflet-interactive {
             cursor: inherit;
+            &.mapArrow {
+                cursor: pointer;
+            }
         }
         .leaflet-pane .leaflet-marker-pane .leaflet-marker-icon {
             cursor: grab;
@@ -60,12 +63,9 @@ $flag-circle-opacity: 0.2;
         }
         .objText {
             @include variables.light-text-outline;
-            font-size: 1em;
             font-size: var(--font-size-objtext);
-            text-align: center;
             font-family: roboto, Verdana, Geneva, Tahoma, sans-serif;
-            letter-spacing: 0.01em;
-            line-height: normal;
+            letter-spacing: 0.02em;
             align-content: center;
             display: grid;
         }
@@ -79,6 +79,8 @@ $flag-circle-opacity: 0.2;
             font-family: variables.$mainFont, Verdana, Geneva, Tahoma, sans-serif;
             border-radius: 2px;
             cursor: inherit;
+            align-content: center;
+            display: grid;
             &.circle {
                 border-radius: 15px;
                 margin-left: -15px!important;
@@ -107,6 +109,7 @@ $flag-circle-opacity: 0.2;
                 font-size: 1.3em;
                 background-color: rgba(0, 128, 0, 0.9);
                 overflow: hidden;
+                display: block;
                 &::before {
                     content: "✔";
                     color: rgb(255, 255, 255);
@@ -117,6 +120,7 @@ $flag-circle-opacity: 0.2;
                     line-height: 0%;
                 }
                 &.circle {
+                    display: grid;
                     &::before {
                         content: "";
                     }
@@ -225,17 +229,17 @@ $flag-circle-opacity: 0.2;
             font-size: 1.1em;
         }
         .helipads {
-            background: url('../../img/icons/deployables/deployable_helipad.webp') no-repeat center center;
+            background: url('../../../public/icons/ally/deployables/deployable_helipad.webp') no-repeat center center;
             background-size: contain;
             transition: opacity 0.1s ease-in;
         }
         .repairStations {
-            background: url('../../img/icons/deployables/deployable_repairstation.webp') no-repeat center center;
+            background: url('../../../public/icons/ally/deployables/deployable_repairstation.webp') no-repeat center center;
             background-size: contain;
             transition: opacity 0.1s ease-in;
         }
         .ammocrates {
-            background: url('../../img/icons/deployables/deployable_ammocrate.webp') no-repeat center center;
+            background: url('../../../public/icons/ally/deployables/deployable_ammocrate.webp') no-repeat center center;
             background-size: contain;
             transition: opacity 0.1s ease-in;
         }
@@ -276,7 +280,7 @@ $flag-circle-opacity: 0.2;
         &:hover {
             background-color: #979797;
             svg {
-                transform: scale(1.1);
+                transform: scale(1.05);
             }
         }
         &.active {
@@ -285,6 +289,13 @@ $flag-circle-opacity: 0.2;
             border-bottom: variables.$mainColor;
             svg path {
                 fill: white;
+            }
+        }
+        &:disabled {
+            pointer-events: none;
+            background-color: #888;
+            svg path {
+                fill: #383838;
             }
         }
         svg {
@@ -350,4 +361,23 @@ $flag-circle-opacity: 0.2;
 
 .capZone {
     transition: opacity 0.25s ease-in-out, fill-opacity 0.25s ease-in-out;
+}
+
+
+
+.leaflet-measure-path-measurement {
+    @include variables.light-text-outline;
+    font-family: variables.$mainFont, Times, "Times New Roman", serif;
+    position: absolute;
+    font-size: var(--font-size-objtext);
+    color: white;
+    white-space: nowrap;
+    transform-origin: 0;   
+}
+
+.leaflet-measure-path-measurement > div {
+    position: relative;
+    margin-top: -25%;
+    left: -50%;
+    pointer-events: none;
 }

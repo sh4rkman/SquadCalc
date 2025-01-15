@@ -1,4 +1,4 @@
-import {imageOverlay, Map, CRS, svg, Util, LayerGroup, Popup } from "leaflet";
+import {imageOverlay, tileLayer, Map, CRS, svg, Util, LayerGroup, Popup } from "leaflet";
 import squadGrid from "./squadGrid.js";
 import squadHeightmap from "./squadHeightmaps.js";
 import { App } from "../app.js";
@@ -7,9 +7,13 @@ import { mortarIcon, mortarIcon1, mortarIcon2 } from "./squadIcon.js";
 import { explode } from "./animations.js";
 import { fetchMarkersByMap } from "./squadCalcAPI.js";
 import webGLHeatmap from "./libs/leaflet-webgl-heatmap.js";
+import "leaflet-edgebuffer";
 import "leaflet-spin";
 import "./libs/webgl-heatmap.js";
 import "./libs/leaflet-smoothWheelZoom.js";
+import "tippy.js/dist/tippy.css";
+import squadContextMenu from "./squadContextMenu.js";
+import "leaflet-polylinedecorator";
 
 /**
  * Squad Minimap
@@ -74,6 +78,7 @@ export var squadMinimap = Map.extend({
             closeOnClick: false,
             interactive: false,
         });
+        this.contextMenu = new squadContextMenu();
 
         // Custom events handlers
         this.on("dblclick", this._handleDoubleClick, this);
@@ -95,7 +100,7 @@ export var squadMinimap = Map.extend({
 
         this.gameToMapScale = this.pixelSize / this.activeMap.size;
         this.mapToGameScale = this.activeMap.size / this.pixelSize;
-        this.detailedZoomThreshold = ( 3 + (this.activeMap.size/7000) ) * 0.8;
+        this.detailedZoomThreshold = ( 3 + (this.activeMap.size / 7000) ) * 0.8;
        
         // Load Heightmap
         this.heightmap = new squadHeightmap(this);
@@ -108,42 +113,54 @@ export var squadMinimap = Map.extend({
         this.grid.setBounds([[0,0], [-this.pixelSize, this.pixelSize]]);
 
         // load map
-        this.changeLayer();
+        this.changeLayer(true);
     },
 
 
     /**
      * remove existing layer and replace it
      */
-    changeLayer: function(){
+    changeLayer: function(changemap = false) {
         const LAYERMODE = $("#mapLayerMenu .active").attr("value");
         const OLDLAYER = this.activeLayer;
 
-        // Image URL
-        const baseUrl = `maps${this.activeMap.mapURL}${LAYERMODE}`;
-        const suffix = App.userSettings.highQualityImages ? "_hq" : "";
-        const newImageUrl = `${baseUrl}${suffix}.webp`;
-        
         // Show spinner
         this.spin(true, this.spinOptions);
 
         // Add the new layer but keep it hidden initially
-        this.activeLayer = new imageOverlay(newImageUrl, this.imageBounds);
-        this.activeLayer.addTo(this.layerGroup);
-        $(this.activeLayer.getElement()).css("opacity", 0);
-        this.decode();
-
-        // When the new image is loaded, fade it in & remove spinner
+        if (App.userSettings.highQualityImages) {
+            // Use TileLayer for high-quality images
+            let tilePath = `${process.env.API_URL}/img${this.activeMap.mapURL}${LAYERMODE}_hq/{z}_{x}_{y}.webp`;
+            this.activeLayer = new tileLayer(tilePath, {
+                bounds: this.imageBounds,
+                minNativeZoom: 0,
+                maxNativeZoom : 5,
+                edgeBufferTiles: 4,
+                tileSize: 256,
+            });
+            this.activeLayer.addTo(this.layerGroup);
+        } else {
+            // Use ImageOverlay for standard images
+            let imgPath = `maps${this.activeMap.mapURL}${LAYERMODE}.webp`;
+            this.activeLayer = new imageOverlay(imgPath, this.imageBounds);
+            this.activeLayer.addTo(this.layerGroup);
+            //$(this.activeLayer.getElement()).css("opacity", 0);
+        }
+    
+        // Decode if necessary
+        //this.decode();
+    
+        // When the new image (or tile) is loaded, fade it in & remove spinner
         this.activeLayer.on("load", () => {
             this.spin(false);
-            $(this.activeLayer.getElement()).animate({opacity: 1}, 500, () => {
-                // Remove the old layer after the fade-in is complete
-                if (OLDLAYER) OLDLAYER.remove();
-                // Show grid and heatmap
-                if (App.userSettings.grid) this.showGrid();
-                this.toggleHeatmap();
-            });
+            if (OLDLAYER) OLDLAYER.remove();
         });
+
+        // Show grid and heatmap
+        if (changemap) {
+            if (App.userSettings.grid) this.showGrid();
+            this.toggleHeatmap();
+        }
 
     },
 
@@ -217,7 +234,7 @@ export var squadMinimap = Map.extend({
     updateTargets: function(){
         // Update existent targets
         this.activeTargetsMarkers.eachLayer(function (target) {
-            target.updateCalc(target.latlng);
+            target.updateCalc(true);
             target.updateIcon();
         });
     },
@@ -336,26 +353,32 @@ export var squadMinimap = Map.extend({
         }
     },
 
+    createWeapon(latlng){
+        if (App.minimap.activeWeaponsMarkers.getLayers().length === 0) {
+            new squadWeaponMarker(latlng, {icon: mortarIcon}, App.minimap).addTo(App.minimap.markersGroup).addTo(App.minimap.activeWeaponsMarkers);
+        } else {
+            if (App.minimap.activeWeaponsMarkers.getLayers().length === 1) {
+                new squadWeaponMarker(latlng, {icon: mortarIcon2}, App.minimap).addTo(App.minimap.markersGroup).addTo(App.minimap.activeWeaponsMarkers);
+                App.minimap.activeWeaponsMarkers.getLayers()[0].setIcon(mortarIcon1);
+                App.minimap.updateTargets();
+            }
+        }
+    },
+
     /**
      * Right-Click
      * Place a new WeaponMarker on the minimap
      */
     _handleContextMenu: function(e) {
-
         // If out of bounds
         if (e.latlng.lat > 0 ||  e.latlng.lat < -this.pixelSize || e.latlng.lng < 0 || e.latlng.lng > this.pixelSize) {
             return 1;
         }
 
-        if (this.activeWeaponsMarkers.getLayers().length === 0) {
-            new squadWeaponMarker(e.latlng, {icon: mortarIcon}, this).addTo(this.markersGroup).addTo(this.activeWeaponsMarkers);
-            return 0;
+        if (App.userSettings.contextMenu) {
+            this.contextMenu.open(e);
         } else {
-            if (this.activeWeaponsMarkers.getLayers().length === 1) {
-                new squadWeaponMarker(e.latlng, {icon: mortarIcon2}, this).addTo(this.markersGroup).addTo(this.activeWeaponsMarkers);
-                this.activeWeaponsMarkers.getLayers()[0].setIcon(mortarIcon1);
-                this.updateTargets();
-            }
+            this.createWeapon(e.latlng);
         }
     },
 

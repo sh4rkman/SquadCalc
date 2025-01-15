@@ -2,6 +2,8 @@
 import { DivIcon, Marker, Circle, LayerGroup, Polyline, Polygon, Rectangle, FeatureGroup } from "leaflet";
 import { SquadObjective } from "./squadObjective.js";
 import { App } from "../app.js";
+import i18next from "i18next";
+import "./libs/leaflet-measure-path.js";
 
 export class SquadLayer {
 
@@ -17,7 +19,17 @@ export class SquadLayer {
 
         // latlng's of the currently selected flags
         this.path = [];
-        this.polyline = new Polyline(this.path, {color: "white", opacity: 0.9}).addTo(this.activeLayerMarkers);
+        this.polyline = new Polyline(this.path, {
+            color: "white",
+            opacity: 0.9,
+            showMeasurements: true,
+            measurementOptions: {
+                showTotalDistance: false,
+                minPixelDistance: 50,
+            }
+        }).addTo(this.activeLayerMarkers);
+
+        if (!App.userSettings.showFlagsDistance) this.polyline.hideMeasurements();
 
         // Currently selected flags
         this.selectedFlags = [];
@@ -703,20 +715,27 @@ export class SquadLayer {
 
         console.debug("Flags next step :", nextFlags);
 
+
+        let nextFlagsNamesArray = [];
+
         // Highlight the next flags with a proper class
         nextFlags.forEach((flag) => {
             flag.flag._icon.classList.add("next");
             flag.flag.options.icon.options.className = "flag flag" + flag.position + " next";
             flag.isNext = true;
+            nextFlagsNamesArray.push(flag.name);
         });
 
+        // Copy the next flags names to the clipboard
+        if (App.userSettings.copyNextFlags) {
+            App.copy(i18next.t("common:nextFlags") + " : " + nextFlagsNamesArray.join("/"));
+        }  
+       
         // Only one flag in front ? Click it
         if (nextFlags.length === 1 && !backward && App.userSettings.autoLane){
             this._handleFlagClick(nextFlags[0]);
         }
-
     }
-
 
     /**
      * Remove clusters that were not reachable from the previous position

@@ -34,6 +34,6 @@
     "invalidTarget": "Неверная цель",
     "invalidMortarTarget": "Инвалидное оружие и мишень",
     "targetOutOfRange": "Цель находится вне зоны действия",
-
-    "layerPlaceholder": "Layer"
+    "layerPlaceholder": "Layer",
+    "nextFlags": "Следующие флаги"
 }

@@ -11,15 +11,15 @@ const helpDialog = document.querySelector("#helpDialog");
 const commonToolipsSettings = {
     animation: "fade",
     placement: "right",
+    offset: [0, 20],
     allowHTML: true,
     touch: false,
     theme: "settingsTooltips",
     hideOnClick: true,
-    delay: 50,
-    maxWidth: 200,
+    delay: 200,
+    maxWidth: 200, 
     appendTo: helpDialog,
 };
-
 
 tippy("#settings", {
     allowHTML: true,
@@ -38,10 +38,24 @@ tippy("#settings", {
 tooltip_copied = document.querySelector("#settings")._tippy;
 tooltip_copied.disable();
 
-tippy("span[data-i18n='settings:showDamage']", {
+tippy("span[data-i18n='settings:lowAndHigh']", {
     ...commonToolipsSettings,
     onShow(tip) {
-        tip.setContent(`${i18next.t("tooltips:damageRadiusTooltip")}`);
+        tip.setContent(`${i18next.t("tooltips:lowAndHighTooltip")}`);
+    },
+});
+
+tippy("span[data-i18n='settings:lowAndHigh']", {
+    ...commonToolipsSettings,
+    onShow(tip) {
+        tip.setContent(`${i18next.t("tooltips:lowAndHighTooltip")}`);
+    },
+});
+
+tippy("span[data-i18n='settings:contextMenu']", {
+    ...commonToolipsSettings,
+    onShow(tip) {
+        tip.setContent(`${i18next.t("tooltips:contextMenuTooltip")}`);
     },
 });
 
@@ -65,6 +79,21 @@ tippy("span[data-i18n='settings:showAnimations']", {
         tip.setContent(`${i18next.t("tooltips:targetAnimationTooltip")}`);
     },
 });
+
+tippy("span[data-i18n='settings:weaponDrag']", {
+    ...commonToolipsSettings,
+    onShow(tip) {
+        tip.setContent(`${i18next.t("tooltips:markerDragTooltip")}`);
+    },
+});
+
+tippy("span[data-i18n='settings:targetDrag']", {
+    ...commonToolipsSettings,
+    onShow(tip) {
+        tip.setContent(`${i18next.t("tooltips:markerDragTooltip")}`);
+    },
+});
+
 
 tippy("span[data-i18n='settings:showKeypad']", {
     ...commonToolipsSettings,
@@ -96,6 +125,54 @@ tippy("span[data-i18n='settings:realMaxRange']", {
         `);
     },
 });
+
+tippy("span[data-i18n='settings:copyNextFlags']", {
+    ...commonToolipsSettings,
+    onShow(tip) {
+        tip.setContent(`
+            ${i18next.t("tooltips:copyNextFlagsTooltip")}
+        `);
+    },
+});
+
+tippy("span[data-i18n='settings:copyTarget']", {
+    ...commonToolipsSettings,
+    onShow(tip) {
+        tip.setContent(`
+            ${i18next.t("tooltips:copyTargetTooltip")}
+        `);
+    },
+});
+
+tippy("span[data-i18n='settings:autoLane']", {
+    ...commonToolipsSettings,
+    onShow(tip) {
+        tip.setContent(`
+            ${i18next.t("tooltips:autoLaneTooltip")}
+        `);
+    },
+});
+
+tippy("span[data-i18n='settings:capZoneOnHover']", {
+    ...commonToolipsSettings,
+    onShow(tip) {
+        tip.setContent(`
+            ${i18next.t("tooltips:capZoneOnHoverTooltip")}
+        `);
+    },
+});
+
+tippy("span[data-i18n='settings:revealLayerOnHover']", {
+    ...commonToolipsSettings,
+    onShow(tip) {
+        tip.setContent(`
+            ${i18next.t("tooltips:revealLayerOnHoverTooltip")}
+        `);
+    },
+});
+
+
+
 
 tippy("#bearingNum", {
     animation: "fade",

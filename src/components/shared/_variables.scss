@@ -177,6 +177,12 @@ button:focus {
     }
 }
 
+#helpDialog.animate__animated {
+    &.animate__fadeIn {
+        --animate-duration: 3.1s;
+        
+    }
+}
 
 /**************************************
 *  Animations

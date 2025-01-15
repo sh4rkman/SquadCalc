@@ -7,6 +7,7 @@ import { loadSettings } from "./settings.js";
 import { loadLanguage } from "./localization.js";
 import { animateCSS, animateCalc } from "./animations.js";
 import { tooltip_save } from "./tooltips.js";
+import "./squadContextMenu.js";
 import { checkApiHealth, fetchLayersByMap, fetchLayerByName } from "./squadCalcAPI.js";
 import { initWebSocket } from "./smcConnector.js";
 import SquadFiringSolution from "./squadFiringSolution.js";
@@ -414,7 +415,7 @@ export default class SquadCalc {
         });
 
         $(".fontSizeSelector input").on("change", (event) => {
-            this.userSettings.fontSize = Math.max(1, Math.min($(event.target).val(), 5)); // ensure 1 < value < 3
+            this.userSettings.fontSize = Math.max(1, Math.min($(event.target).val(), 5));
             localStorage.setItem("settings-font-size", this.userSettings.fontSize);
             this.changeFontSize();
         });
@@ -423,11 +424,11 @@ export default class SquadCalc {
 
         // Hack for Chrome to avoid lag when zooming inside the map
         // Force a decode each time focus a acquired again
-        $(document).on("visibilitychange", () => {
-            if (document.visibilityState === "visible") {
-                this.minimap.decode();
-            }
-        });
+        // $(document).on("visibilitychange", () => {
+        //     if (document.visibilityState === "visible") {
+        //         this.minimap.decode();
+        //     }
+        // });
 
         if (this.hasMouse) {
 
