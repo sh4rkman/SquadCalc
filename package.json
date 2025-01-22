@@ -78,5 +78,8 @@
   },
   "overrides": {
     "phin": "^3.7.1"
+  },
+  "dependencies": {
+    "uuid": "^11.0.5"
   }
 }

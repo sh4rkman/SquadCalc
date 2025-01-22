@@ -3,8 +3,11 @@ import { Icon } from "leaflet";
 import shadowIconImg from "../img/icons/markers/marker_shadow.webp";
 
 import targetIconImgEnabled from "../img/icons/markers/marker_target_enabled.webp";
+import targetIconSessionImgEnabled from "../img/icons/markers/marker_target_session_enabled.webp";
+
 import targetIconImgDisabled from "../img/icons/markers/marker_target_disabled.webp";
 import targetIconImgMinimal from "../img/icons/markers/marker_target_mini.webp";
+import targetIconSessionImgMinimal from "../img/icons/markers/marker_target_session_mini.webp";
 import targetIconImgDisabledMinimal from "../img/icons/markers/marker_target_disabled_mini.webp";
 
 import mortarIconImg from "../img/icons/markers/marker_mortar.webp";
@@ -125,6 +128,12 @@ export var targetIconMinimal = new Icon({
     iconAnchor:   [15, 15],
 });
 
+export var targetIconSessionMinimal = new Icon({
+    iconUrl: targetIconSessionImgMinimal,
+    iconSize:     [30, 30], 
+    iconAnchor:   [15, 15],
+});
+
 export var targetIconMinimalDisabled = new Icon({
     iconUrl: targetIconImgDisabledMinimal,
     iconSize:     [30, 30], 
@@ -133,6 +142,15 @@ export var targetIconMinimalDisabled = new Icon({
 
 export var targetIcon1 = new Icon({
     iconUrl: targetIconImgEnabled,
+    shadowUrl: shadowIconImg,
+    iconSize:     [28, 34], 
+    shadowSize:   [38, 34],
+    iconAnchor:   [14, 34],
+    shadowAnchor: [12, 34], 
+});
+
+export var targetSessionIcon1 = new Icon({
+    iconUrl: targetIconSessionImgEnabled,
     shadowUrl: shadowIconImg,
     iconSize:     [28, 34], 
     shadowSize:   [38, 34],

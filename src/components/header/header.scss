@@ -38,6 +38,7 @@ header {
             padding-top: 1em;
         }
     }
+
     .mapSelector {
         padding-top: 1em;
         z-index: 5;
@@ -47,10 +48,19 @@ header {
             line-height: 0.7em;
             font-size: 0.9em;
         }
+        
+        .select2-container--disabled {
+            background-color: transparent;
+            .select2-selection__rendered {
+                background-color: transparent;
+            }
+        }
+
         #mapSelector {
             z-index: 2;
             position: relative;
         }
+
         #layerSelector {
             z-index: 1;
             padding-top: 1em;
@@ -115,7 +125,14 @@ header {
         outline: none;
     }
 }
-
+.select2-container--default.select2-container--disabled .select2-selection--single {
+    background-color: transparent;
+    cursor: not-allowed;
+    .select2-selection__rendered {
+        color: lightgray;
+        font-style: italic;
+    }
+}
 .select2-container--default .select2-selection--single .select2-selection__clear {
     float: left;
     margin-right: 0;

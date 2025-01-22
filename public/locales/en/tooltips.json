@@ -39,6 +39,13 @@
     "autoLaneTooltip": "If only one flag is available on layer's next step, squadcalc will automatically try to avance to the next lane",
     "capZoneOnHoverTooltip": "Instead of showing capzones at all times, only show them when hovering over a flag",
     "contextMenuTooltip": "Right click on the map reveal a context menu allowing you to place markers",
-    "revealLayerOnHoverTooltip": "Hovering a flag will fade out the unreachable flags if this flag happens to be clicked"
-    
+    "revealLayerOnHoverTooltip": "Hovering a flag will fade out the unreachable flags if this flag happens to be clicked",
+    "sessionCreated": "Session created !",
+    "sessionClosed": "Session closed",
+    "sessionJoined": "Session joined !",
+    "shareSession": "Share the URL to a friend",
+    "someoneLeft": "Someone left 🏃🏼‍➡️",
+    "someoneJoined": "🏃🏼‍➡️ Someone joined !",
+    "youAreAlone": "You are alone in this session",
+    "hostOnly": "Only the session host can change the map"
 }

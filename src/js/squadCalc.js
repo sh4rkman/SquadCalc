@@ -1,6 +1,7 @@
 import { MAPS } from "./data/maps.js";
 import { WEAPONS, WEAPONSTYPE } from "./data/weapons.js";
 import { squadMinimap } from "./squadMinimap.js";
+import SquadSession from "./squadSession.js";
 import { Weapon } from "./squadWeapons.js";
 import { createLine, drawLine } from "./animations.js";
 import { loadSettings } from "./settings.js";
@@ -8,12 +9,13 @@ import { loadLanguage } from "./localization.js";
 import { animateCSS, animateCalc } from "./animations.js";
 import { tooltip_save } from "./tooltips.js";
 import "./squadContextMenu.js";
+
 import { checkApiHealth, fetchLayersByMap, fetchLayerByName } from "./squadCalcAPI.js";
 import { initWebSocket } from "./smcConnector.js";
 import SquadFiringSolution from "./squadFiringSolution.js";
 import packageInfo from "../../package.json";
 import i18next from "i18next";
-import { SquadLayer } from "./squadLayer.js";
+import SquadLayer from "./squadLayer.js";
 
 export default class SquadCalc {
 
@@ -32,6 +34,7 @@ export default class SquadCalc {
         this.WEAPON_SELECTOR = $(".dropbtn2");
         this.SHELL_SELECTOR = $(".dropbtn3");
         this.LAYER_SELECTOR = $(".dropbtn5");
+        this.session = false;
     }
 
     init(){
@@ -78,6 +81,18 @@ export default class SquadCalc {
 
             // Refresh layer selector
             this.loadLayers(); 
+
+            const skipUpdate = event.skipUpdate || false;
+
+            if (!skipUpdate && this.session.ws && this.session.ws.readyState === WebSocket.OPEN) {
+                this.session.ws.send(
+                    JSON.stringify({
+                        type: 'UPDATE_MAP',
+                        activeMap: this.MAP_SELECTOR.val(),
+                    })
+                );
+                console.debug(`Sent map update for map #${this.MAP_SELECTOR.val()}`);
+            }
         });
 
         let abortController = null;
@@ -439,6 +454,22 @@ export default class SquadCalc {
                 $("#mapLayerMenu").hide();
                 this.openToast("success", "focusMode", "enterToExit");
             });
+
+            $("#mapLayerMenu").find("button.btn-session").on("click", () => {
+                if ($(".btn-session").hasClass("active")) {
+                        if (this.session) this.session.ws.close(); 
+                        
+                        // Update UI
+                        $(".btn-session").removeClass("active");
+                        this.openToast('error', 'Session quit', 'You have quit the session.');
+                    
+                } else {
+                    // Create session
+                    this.session = new SquadSession();
+                    $(".btn-session").addClass("active");
+                }
+            });
+            
     
             $(document).on("keydown", (e) => {
 
@@ -500,7 +531,7 @@ export default class SquadCalc {
             toast.querySelector("h4").setAttribute("data-i18n", `tooltips:${title}`);
             toast.querySelector("h4").innerHTML = i18next.t(`tooltips:${title}`);
             toast.querySelector("p").setAttribute("data-i18n", `tooltips:${text}`);
-            toast.querySelector("p").innerHTML = i18next.t(`tooltips:${text}`);
+            toast.querySelector("p").innerHTML = i18next.t(`tooltips:${text}`);                
             countdown = setTimeout(() => { closeToast(); }, 5000);
         };
 
@@ -1114,5 +1145,52 @@ export default class SquadCalc {
         lng += interval / 2;
 
         return { lat: lat, lng: lng };
+    }
+
+    getAppState() {
+        var weapons = [];
+        var targets = [];
+        var markers = [];
+        var arrows = [];
+        const activeWeapon = this.WEAPON_SELECTOR.val();
+        const activeMap = this.MAP_SELECTOR.val();
+    
+        this.minimap.activeWeaponsMarkers.eachLayer(weapon => {
+            weapons.push({
+                lat: weapon._latlng.lat,
+                lng: weapon._latlng.lng,
+                uid: weapon.uid
+            });
+        });
+    
+        this.minimap.activeTargetsMarkers.eachLayer(target => {
+            targets.push({
+                lat: target._latlng.lat,
+                lng: target._latlng.lng,
+                uid: target.uid
+            });
+        });
+    
+        this.minimap.activeMarkers.eachLayer(marker => {
+            markers.push({
+                lat: marker._latlng.lat,
+                lng: marker._latlng.lng,
+                uid: marker.uid,
+                team: marker.team,
+                category: marker.category,
+                icon: marker.icontype
+            });
+        });
+
+        this.minimap.activeArrows.forEach(arrow => {
+            console.log(arrow);
+            arrows.push({
+                uid: arrow.uid,
+                latlngs: arrow.polyline.getLatLngs(),
+                color: arrow.color,
+            });
+        });
+    
+        return { weapons, targets, markers, arrows, activeWeapon, activeMap };
     }
 }

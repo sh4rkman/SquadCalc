@@ -5,7 +5,7 @@ import { App } from "../app.js";
 import i18next from "i18next";
 import "./libs/leaflet-measure-path.js";
 
-export class SquadLayer {
+export default class SquadLayer {
 
     constructor(map, layerData) {
         this.map = map;

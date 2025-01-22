@@ -1,4 +1,6 @@
 import packageInfo from "../../package.json";
+import { App } from "../app.js";
+import SquadSession from "./squadSession.js";
 
 /**
  * Sends weapon data to the API via a POST request.
@@ -85,6 +87,12 @@ export const checkApiHealth = async () => {
             const data = await response.json();
             if (data.status === "OK") {
                 console.log(`Connected to ${process.env.API_URL}`);
+                const urlParams = new URLSearchParams(window.location.search);
+                const sessionId = urlParams.get('session');
+                if (sessionId) {
+                    $(".btn-session").addClass("active");
+                    App.session = new SquadSession(sessionId);
+                }
             }
         } else {
             console.error(`Not connected to ${process.env.API_URL}`);

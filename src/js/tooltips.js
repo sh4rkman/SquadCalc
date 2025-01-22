@@ -249,6 +249,24 @@ tippy(".btn-delete", {
     },
 });
 
+export var hostOnlyTooltip = tippy("#mapSelector", {
+
+    touch: false,
+    theme: "menu",
+    offset: [0, 20],
+    allowHTML: true,
+    touch: false,
+    hideOnClick: true,
+    delay: [500, 100],
+    maxWidth: 230, 
+    followCursor: true,
+    plugins: [followCursor],
+    onShow(tip) {
+        tip.setContent(i18next.t("tooltips:hostOnly"));
+    },
+})[0];
+hostOnlyTooltip.disable();
+
 
 tippy("#elevationNum", {
     animation: "fade",
