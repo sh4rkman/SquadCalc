@@ -8,7 +8,7 @@ export default class SquadSession {
 
     constructor(sessionId) {
         const WS_URL = process.env.API_URL.replace(/^http/, "ws");
-        console.log(WS_URL)
+        console.log(WS_URL+"/")
         this.ws = new WebSocket(WS_URL);
         this.wsActiveUsers = 1;
 
