@@ -21,7 +21,11 @@ export default class SquadSession {
     // Send JOIN_SESSION if sessionId exists, otherwise send CREATE_SESSION
     _open = (sessionId) => {
         const message = sessionId 
-            ? { type: 'JOIN_SESSION', sessionId }
+            ? { 
+                type: 'JOIN_SESSION',
+                sessionId,
+                mapState: App.getAppState()
+            }
             : { type: 'CREATE_SESSION',
                 mapState: App.getAppState()
             };
