@@ -73,6 +73,10 @@ export default class SquadSession {
 
         case "SESSION_CREATED": {
             console.debug("New Session created : " + data.sessionId);
+
+            $("#sessionUsers").html(1);
+            $("#sessionUsers").css("display", "flex");
+
             App.updateUrlParams({ session: data.sessionId });
             App.openToast("success", "sessionCreated", "shareSession", true);
             break;
@@ -105,12 +109,10 @@ export default class SquadSession {
             // Update UI for joining the session
             App.openToast("success", "sessionJoined", "");
 
+            // Show participants count
             $("#sessionUsers").html(data.sessionUsers);
-            if (data.sessionUsers > 1) {
-                $("#sessionUsers").css("display", "flex");
-            } else {
-                $("#sessionUsers").css("display", "none");
-            }
+            $("#sessionUsers").css("display", "flex");
+
             this.wsActiveUsers = data.sessionUsers;
             break;
         }
@@ -124,11 +126,6 @@ export default class SquadSession {
         case "ACTIVE_MEMBERS_UPDATED": {
             console.debug("New Session Users Count: ", data.sessionUsers);
             $("#sessionUsers").html(data.sessionUsers);
-            if (data.sessionUsers > 1) {
-                $("#sessionUsers").css("display", "flex");
-            } else {
-                $("#sessionUsers").css("display", "none");
-            }
 
             // Only one left in the session
             if (data.sessionUsers === 1) {
