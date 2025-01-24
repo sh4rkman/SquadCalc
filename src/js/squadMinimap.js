@@ -1,8 +1,8 @@
-import {imageOverlay, tileLayer, Map, CRS, svg, Util, LayerGroup, Popup } from "leaflet";
+import {imageOverlay, tileLayer, Map, CRS, svg, Util, LayerGroup, Popup, Icon } from "leaflet";
 import squadGrid from "./squadGrid.js";
 import squadHeightmap from "./squadHeightmaps.js";
 import { App } from "../app.js";
-import { squadWeaponMarker, squadTargetMarker } from "./squadMarker.js";
+import { squadWeaponMarker, squadTargetMarker, squadStratMarker } from "./squadMarker.js";
 import { mortarIcon, mortarIcon1, mortarIcon2 } from "./squadIcon.js";
 import { explode } from "./animations.js";
 import { fetchMarkersByMap } from "./squadCalcAPI.js";
@@ -14,6 +14,8 @@ import "./libs/leaflet-smoothWheelZoom.js";
 import "tippy.js/dist/tippy.css";
 import squadContextMenu from "./squadContextMenu.js";
 import "leaflet-polylinedecorator";
+import { Polyline, PolylineDecorator, Symbol, DomEvent } from "leaflet";
+import { v4 as uuidv4 } from "uuid";
 
 /**
  * Squad Minimap
@@ -63,6 +65,9 @@ export var squadMinimap = Map.extend({
         this.targets = [];
         this.activeTargetsMarkers = new LayerGroup().addTo(this);
         this.activeWeaponsMarkers = new LayerGroup().addTo(this);
+        this.activeMarkers = new LayerGroup().addTo(this);
+        this.activeArrowsGroup = new LayerGroup().addTo(this);
+        this.activeArrows = [];
         this.grid = "";
         this.gameToMapScale = "";
         this.mapToGameScale = "";
@@ -173,7 +178,7 @@ export var squadMinimap = Map.extend({
         if ($(".btn-helpmap").hasClass("active")){
             this.spin(true, this.spinOptions);
             if (this.heatmap) this.heatmap.remove();
-            fetchMarkersByMap(App.minimap.activeMap.name, App.activeWeapon.name)
+            fetchMarkersByMap(this.activeMap.name, App.activeWeapon.name)
                 .then(markers => {
                     this.heatmap = new webGLHeatmap({
                         size: 2 + 20 * this.gameToMapScale,
@@ -217,8 +222,10 @@ export var squadMinimap = Map.extend({
 
         // Clear Every existing Makers
         this.markersGroup.clearLayers();
+        this.activeMarkers.clearLayers();
         this.activeWeaponsMarkers.clearLayers();
         this.activeTargetsMarkers.clearLayers();
+        this.activeArrowsGroup.clearLayers();
         if (this.layer) this.layer.clear();
     
         $(".btn-delete").hide();
@@ -353,16 +360,141 @@ export var squadMinimap = Map.extend({
         }
     },
 
-    createWeapon(latlng){
-        if (App.minimap.activeWeaponsMarkers.getLayers().length === 0) {
-            new squadWeaponMarker(latlng, {icon: mortarIcon}, App.minimap).addTo(App.minimap.markersGroup).addTo(App.minimap.activeWeaponsMarkers);
+    /**
+     * Add a new weapon marker to the minimap
+     * @param {LatLng} latlng - coordinates of the new weapon
+     * @param {String} uid - Optional - unique identifier of the weapon if created by the session
+     **/
+    createWeapon(latlng, uid = false){
+        let newMarker;
+        if (this.activeWeaponsMarkers.getLayers().length === 0) {
+            newMarker = new squadWeaponMarker(latlng, {icon: mortarIcon, uid: uid}, this).addTo(this.markersGroup).addTo(this.activeWeaponsMarkers);
         } else {
-            if (App.minimap.activeWeaponsMarkers.getLayers().length === 1) {
-                new squadWeaponMarker(latlng, {icon: mortarIcon2}, App.minimap).addTo(App.minimap.markersGroup).addTo(App.minimap.activeWeaponsMarkers);
-                App.minimap.activeWeaponsMarkers.getLayers()[0].setIcon(mortarIcon1);
-                App.minimap.updateTargets();
+            if (this.activeWeaponsMarkers.getLayers().length === 1) {
+                newMarker = new squadWeaponMarker(latlng, {icon: mortarIcon2, uid: uid}, this).addTo(this.markersGroup).addTo(this.activeWeaponsMarkers);
+                this.activeWeaponsMarkers.getLayers()[0].setIcon(mortarIcon1);
+                this.updateTargets();
             }
         }
+
+        // If in a session, broadcast the new weapon with a unique identifier
+        if (!uid && App.session.ws && App.session.ws.readyState === WebSocket.OPEN) {
+            console.debug("Creating new weapon with uid", newMarker.uid);
+            App.session.ws.send(
+                JSON.stringify({
+                    type: "ADDING_WEAPON",
+                    lat: latlng.lat,
+                    lng: latlng.lng,
+                    uid: newMarker.uid,
+                })
+            );
+        }
+
+    },
+
+    /**
+     * Add a new target marker to the minimap
+     * @param {LatLng} latlng - coordinates of the new target
+     * @param {Event} e - event that triggered the creation
+     * @param {String} uid - Optional - unique identifier of the target if created by the session
+     */
+    createTarget(latlng, e, uid = false){
+
+
+        var target = new squadTargetMarker(latlng, {animate: App.userSettings.targetAnimation, uid: uid}, this).addTo(this.markersGroup);
+        
+        console.debug("Creating new target with uid", target.uid);
+        if (!uid && App.session.ws && App.session.ws.readyState === WebSocket.OPEN) {
+            console.debug("sending new target with uid", target.uid);
+            App.session.ws.send(
+                JSON.stringify({
+                    type: "ADDING_TARGET",
+                    lat: latlng.lat,
+                    lng: latlng.lng,
+                    uid: target.uid,
+                })
+            );
+        }
+
+        this.targets.push(target);
+        $(".btn-delete").show();
+
+        if (App.userSettings.targetAnimation){
+            if (this.activeWeaponsMarkers.getLayers().length === 1) {
+                if (isNaN(target.firingSolution1.elevation.high.rad)){ return; }
+            } else {
+                if (isNaN(target.firingSolution1.elevation.high.rad) && isNaN(target.firingSolution2.elevation.high.rad)){ return; }
+            }
+
+            setTimeout(function() {
+                if (e) explode(e.containerPoint.x, e.containerPoint.y, -190, 10);
+                target.updateIcon(); // Update icon to remove the animation class, it was causing painfull DOM bug otherwise
+            }, 250);
+        }
+    },
+
+    createMarker(latlng, team, category, icon, uid = false) {
+        let markerOptions = { icon: "", circlesOnHover: false, team: team, category: category, icontype: icon, uid: uid };
+        var iconSize = [30, 30];
+
+        if (icon === "deployable_mortars" || icon === "deployable_hellcannon") {
+            let range = 0;
+            if (icon === "deployable_mortars") range = 1237;
+            if (icon === "deployable_hellcannon") range = 923;
+
+            markerOptions.circles1Size = range * this.gameToMapScale;
+            markerOptions.circlesOnHover = true;
+            markerOptions.circles1Weight = 2;
+            if (team === "ally") { markerOptions.circles1Color = "white"; }
+            else { markerOptions.circles1Color = "#f23534"; }
+        }
+
+        if (icon === "deployable_fob_blue") {
+            markerOptions.circlesOnHover = false;
+            markerOptions.circles1Color = "#00E8FF";
+            markerOptions.circles1Size = 150 * this.gameToMapScale;
+            markerOptions.circles2Color = "white";
+            markerOptions.circles2Size = this.activeMap.radiusExclusion * this.gameToMapScale;
+        }
+        if (icon === "deployable_fob") { 
+            markerOptions.circlesOnHover = false;
+            markerOptions.circles1Color = "#f23534";
+            markerOptions.circles1Size = 150 * this.gameToMapScale;
+            markerOptions.circles2Color = "white";
+            markerOptions.circles2Size = this.activeMap.radiusExclusion * this.gameToMapScale;
+        }
+        if (icon === "deployable_hab_activated") { iconSize = [38, 38]; }
+        if (icon === "T_strategic_uav") { 
+            markerOptions.circles1Size = 300 * this.gameToMapScale;
+            if (team === "ally") { markerOptions.circles1Color = "#ffc400"; }
+            else { markerOptions.circles1Color = "#f23534"; }
+        }
+        markerOptions.icon = new Icon({
+            iconUrl: `/icons/${team}/${category}/${icon}.webp`,
+            iconSize: iconSize,
+            iconAnchor: [iconSize[0]/2, iconSize[1]/2]
+        });
+        
+        // Create marker and close context menu
+        let newMarker = new squadStratMarker(latlng, markerOptions, this).addTo(this.activeMarkers);
+
+        if (!uid && App.session.ws && App.session.ws.readyState === WebSocket.OPEN) {
+            console.debug("Creating a marker with uid", newMarker.uid);
+        
+            // Send the MOVING_WEAPON event to the server
+            App.session.ws.send(
+                JSON.stringify({
+                    type: "ADDING_MARKER",
+                    uid: newMarker.uid,
+                    lat: latlng.lat,
+                    lng: latlng.lng,
+                    team: team,
+                    category: category,
+                    icon: icon
+                })
+            );
+        }
+        
     },
 
     /**
@@ -387,7 +519,6 @@ export var squadMinimap = Map.extend({
      * Create a new target, or weapon is none exists
      */
     _handleDoubleClick: function (e) {
-        var target;
 
         // If out of bounds
         if (e.latlng.lat > 0 ||  e.latlng.lat < -this.pixelSize || e.latlng.lng < 0 || e.latlng.lng > this.pixelSize) {
@@ -396,27 +527,13 @@ export var squadMinimap = Map.extend({
 
         // No weapon yet ? Create one
         if (this.activeWeaponsMarkers.getLayers().length === 0) {
-            new squadWeaponMarker(e.latlng, {icon: mortarIcon}, this).addTo(this.markersGroup, this).addTo(this.activeWeaponsMarkers);
+            this.createWeapon(e.latlng);
             return 0;
         }
 
-        target = new squadTargetMarker(e.latlng, {animate: App.userSettings.targetAnimation}, this).addTo(this.markersGroup);
-        this.targets.push(target);
-        $(".btn-delete").show();
-
-        if (App.userSettings.targetAnimation){
-            if (this.activeWeaponsMarkers.getLayers().length === 1) {
-                if (isNaN(target.firingSolution1.elevation.high.rad)){ return; }
-            } else {
-                if (isNaN(target.firingSolution1.elevation.high.rad) && isNaN(target.firingSolution2.elevation.high.rad)){ return; }
-            }
-
-            setTimeout(function() {
-                explode(e.containerPoint.x, e.containerPoint.y, -190, 10);
-                target.updateIcon(); // Update icon to remove the animation class, it was causing painfull DOM bug otherwise
-            }, 250);
-        }
+        this.createTarget(e.latlng, e);
     },
+
 
     /**
      * Mouse-Out of minimap
@@ -467,5 +584,145 @@ export var squadMinimap = Map.extend({
 
     },
 
+
+    createArrow: function (color, uid = false) {
+        let isDrawing = false;
+        let arrow = null;
+    
+        const handleMouseMove = (e) => {
+            if (!isDrawing) return;
+    
+            const endLatLng = e.latlng;
+    
+            if (arrow) {
+                // Update the arrow's polyline positions
+                arrow.polyline.setLatLngs([arrow.startLatLng, endLatLng]);
+                arrow.polylineDecorator.setPaths([arrow.polyline.getLatLngs()]);
+            } else {
+                // Create a new arrow on first movement
+                const startLatLng = this.contextMenu.mainContextMenu.e.latlng;
+                arrow = new MapArrow(this, color, startLatLng, endLatLng, uid);
+            }
+        };
+    
+        const handleClick = () => {
+            if (isDrawing && arrow) {
+                isDrawing = false; // Stop the drawing process
+                this.off("mousemove", handleMouseMove); // Remove the mousemove listener
+    
+                if (!arrow.uid) {
+                    arrow.uid = uuidv4(); // Assign a unique ID if not already provided
+                }
+    
+                // Send the arrow to the WebSocket server
+                if (App.session.ws && App.session.ws.readyState === WebSocket.OPEN) {
+                    console.debug("sending new arrow with uid", arrow.uid);
+                    App.session.ws.send(
+                        JSON.stringify({
+                            type: "ADDING_ARROW",
+                            uid: arrow.uid,
+                            color: color,
+                            latlngs: arrow.polyline.getLatLngs(),
+                        })
+                    );
+                }
+            }
+        };
+    
+        const handleRightClick = () => {
+            if (isDrawing && arrow) {
+                // Cancel drawing and remove the arrow
+                arrow.removeArrow(); // Custom method to clean up the arrow
+                arrow = null; // Reset the arrow reference
+                isDrawing = false;
+                this.off("mousemove", handleMouseMove);
+            }
+        };
+    
+        // Initialize the arrow drawing process
+        if (!isDrawing) {
+            isDrawing = true;
+            this.on("mousemove", handleMouseMove); // Start tracking mouse movement
+            this.once("click", handleClick); // Finalize the arrow on click
+            this.on("contextmenu", handleRightClick); // Cancel on right-click
+        }
+    }
+    
+
+
+    
+
+
 });
 
+export class MapArrow {
+    constructor(map, color, startLatLng, endLatLng, uid = null) {
+        this.map = map;
+        this.color = color;
+        this.markersGroup = map.markersGroup;
+        this.startLatLng = startLatLng;
+        this.endLatLng = endLatLng;
+        this.uid = uid || uuidv4();
+        this.polyline = null;
+        this.polylineDecorator = null;
+        this.arrowPattern = {
+            patterns: [{
+                offset: "100%",
+                repeat: 0,
+                symbol: new Symbol.arrowHead({
+                    pixelSize: 15,
+                    polygon: false,
+                    fill: true,
+                    yawn: 70,
+                    pathOptions: {
+                        stroke: true,
+                        color: color,
+                        weight: 3,
+                        fillColor: color,
+                        fillOpacity: 1,
+                    }
+                })
+            }]
+        };
+        this.createArrow();
+        console.debug("Creating new arrow with uid", this.uid);
+        App.minimap.activeArrows.push(this);
+    }
+
+    // Creates the arrow on the map
+    createArrow() {
+        const arrowOptions = {
+            color: this.color,
+            weight: 3,
+            className: "mapArrow",
+        };
+
+        const latlngs = [this.startLatLng, this.endLatLng];
+        this.polyline = new Polyline(latlngs, arrowOptions).addTo(App.minimap.activeArrowsGroup);
+        this.polylineDecorator = new PolylineDecorator(this.polyline, this.arrowPattern).addTo(App.minimap.activeArrowsGroup);
+        this.polyline.uid = this.uid;
+
+        // Add a contextmenu event listener for deletion
+        this.polyline.on("contextmenu", (e) => {
+            this.removeArrow();
+            DomEvent.preventDefault(e);
+            DomEvent.stopPropagation(e);
+        });
+    }
+
+    // Removes the arrow from the map
+    removeArrow(broadcast = true) {
+        if (broadcast && App.session.ws && App.session.ws.readyState === WebSocket.OPEN) {
+            console.debug("Deleting new arrow with uid", this.uid);
+            App.session.ws.send(
+                JSON.stringify({
+                    type: "DELETE_ARROW",
+                    uid: this.uid,
+                })
+            );
+        }
+        App.minimap.activeArrows = App.minimap.activeArrows.filter(activeArrow => activeArrow !== this);
+        this.map.removeLayer(this.polyline);
+        this.map.removeLayer(this.polylineDecorator);
+    }
+}

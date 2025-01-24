@@ -18,6 +18,10 @@ $flag-circle-opacity: 0.2;
     }
 }
 
+.circles {
+    pointer-events: none!important;
+}
+
 @mixin popup-base-styles {
     background: transparent;
     pointer-events: none;
@@ -311,6 +315,26 @@ $flag-circle-opacity: 0.2;
             width: 1em;
             height: 1em;
         }
+        &.btn-session {
+            z-index: 1;
+            #sessionUsers {
+                display: none;
+                position: absolute;
+                bottom: -8px;
+                right: -8px;
+                background-color: variables.$mainColor;
+                color: variables.$mainTxtColor;
+                outline: solid rgba(95, 14, 14, 0.425) 1px;
+                border-radius: 50%;
+                justify-content: center;
+                line-height: 20px;
+                width: 20px;
+                height: 20px;
+                font-size: 12px;
+            }
+            
+        }
+        
     }
     .mapLayerMenuSeparator {
         margin-top: 10px;

@@ -1,4 +1,6 @@
-import packageInfo from "../../package.json";
+import { App } from "../app.js";
+import { createSessionTooltips, leaveSessionTooltips } from "./tooltips.js";
+import SquadSession from "./squadSession.js";
 
 /**
  * Sends weapon data to the API via a POST request.
@@ -11,7 +13,7 @@ export function sendMarkerData(markerData) {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            "X-App-Version": packageInfo.version
+            "X-App-Version": App.version
         },
         body: JSON.stringify(markerData)
     }).then(response => {
@@ -34,7 +36,7 @@ export function sendFOBData(FOBData) {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            "X-App-Version": packageInfo.version
+            "X-App-Version": App.version
         },
         body: JSON.stringify(FOBData)
     }).then(response => {
@@ -57,7 +59,7 @@ export function sendTargetData(targetData) {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            "X-App-Version": packageInfo.version
+            "X-App-Version": App.version
         },
         body: JSON.stringify(targetData)
     })
@@ -85,6 +87,14 @@ export const checkApiHealth = async () => {
             const data = await response.json();
             if (data.status === "OK") {
                 console.log(`Connected to ${process.env.API_URL}`);
+                const urlParams = new URLSearchParams(window.location.search);
+                const sessionId = urlParams.get("session");
+                if (sessionId) {
+                    $(".btn-session").addClass("active");
+                    createSessionTooltips.disable();
+                    leaveSessionTooltips.enable();
+                    App.session = new SquadSession(sessionId);
+                }
             }
         } else {
             console.error(`Not connected to ${process.env.API_URL}`);
@@ -109,7 +119,7 @@ export async function fetchMarkersByMap(mapName, weapon) {
     try {
 
         const response = await fetch(url, {
-            headers: { "X-App-Version": packageInfo.version },
+            headers: { "X-App-Version": App.version },
         });
         
         if (!response.ok) { throw new Error("Network response was not ok"); }
@@ -132,7 +142,7 @@ export async function fetchMarkersByMap(mapName, weapon) {
 export async function fetchLayersByMap(mapName) {
     const url = `${process.env.API_URL}/get/layers?map=${encodeURIComponent(mapName)}`;
     try {
-        const response = await fetch(url, { headers: { "X-App-Version": packageInfo.version }, });
+        const response = await fetch(url, { headers: { "X-App-Version": App.version }, });
         if (!response.ok) { throw new Error("Network response was not ok"); }
         const data = await response.json();
         return data;
@@ -153,7 +163,7 @@ export async function fetchLayerByName(layerName, options = {}) {
     const { signal } = options; 
     try {
         const response = await fetch(url, {
-            headers: { "X-App-Version": packageInfo.version },
+            headers: { "X-App-Version": App.version },
             signal
         });
         if (!response.ok) { throw new Error("Network response was not ok"); }

@@ -39,6 +39,7 @@
     - [Capzones](#capzones)
     - [Auto Complete](#Auto-Complete)
   - [Others](#Others)
+      - [Shared Sessions](#Shared-Sessions)
       - [Advanced Customisation & Informations](#Advanced-Customisation--Informations)
       - [Map Layers](#map-layers)
 
@@ -146,6 +147,21 @@ SquadCalc will automatically complete the layer if there is only one possible in
 </br></br>
 
 # <div align="center"><b>Others</b></div>
+
+## **Shared Sessions**
+
+Start a shared session and invite your friends!  
+
+Collaborate on a single map, sharing markers, weapons, and targets in real time.
+Synchronize your mortar targets more efficiently, strategize together, and develop tactics seamlessly.
+
+Sessions works up to 10 participants.
+
+<div align="center">
+  <picture><img width="100%" src="./src/img/github/sessions.webp" alt="map layers"></picture>
+</div>
+  
+
 
 ## **Advanced Customisation & Informations**
 

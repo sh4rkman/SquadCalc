@@ -7,14 +7,22 @@ import { loadSettings } from "./settings.js";
 import { loadLanguage } from "./localization.js";
 import { animateCSS, animateCalc } from "./animations.js";
 import { tooltip_save } from "./tooltips.js";
-import "./squadContextMenu.js";
 import { checkApiHealth, fetchLayersByMap, fetchLayerByName } from "./squadCalcAPI.js";
 import { initWebSocket } from "./smcConnector.js";
+import { createSessionTooltips, leaveSessionTooltips } from "./tooltips.js";
+
+import SquadSession from "./squadSession.js";
 import SquadFiringSolution from "./squadFiringSolution.js";
 import packageInfo from "../../package.json";
 import i18next from "i18next";
-import { SquadLayer } from "./squadLayer.js";
+import SquadLayer from "./squadLayer.js";
 
+
+
+/**
+ * Main class for SquadCalc
+ * @classdesc Holds all the main functions
+ */
 export default class SquadCalc {
 
     /**
@@ -32,10 +40,14 @@ export default class SquadCalc {
         this.WEAPON_SELECTOR = $(".dropbtn2");
         this.SHELL_SELECTOR = $(".dropbtn3");
         this.LAYER_SELECTOR = $(".dropbtn5");
+        this.session = false;
+        this.version = packageInfo.version;
     }
 
     init(){
         loadLanguage(this.supportedLanguages);
+        // TODO load settings in constructor: this.userSettings = loadSettings();
+        // must rework settings as a class properly
         loadSettings();
         createLine();
         this.loadMapSelector();
@@ -45,7 +57,7 @@ export default class SquadCalc {
         this.loadTheme();
         checkApiHealth();
         initWebSocket();
-        console.log(`SquadCalc v${packageInfo.version} Loaded!`);
+        console.log(`SquadCalc v${this.version} Loaded!`);
     }
 
     /**
@@ -64,7 +76,6 @@ export default class SquadCalc {
 
         // Add event listener
         this.MAP_SELECTOR.on("change", (event) => {
-            const currentUrl = new URL(window.location);
 
             // Update the minimap with the selected map
             this.minimap.activeMap = MAPS.find((_, index) => index == event.target.value);
@@ -72,32 +83,40 @@ export default class SquadCalc {
             this.minimap.draw();
 
             // Update the URL
-            currentUrl.searchParams.set("map", this.minimap.activeMap.name);
-            currentUrl.searchParams.delete("layer");
-            window.history.replaceState({}, "", currentUrl);
+            this.updateUrlParams({ map: this.minimap.activeMap.name, layer: null });
 
             // Refresh layer selector
-            this.loadLayers(); 
+            this.loadLayers();
+
+            // Broadcast the map change to the session if needed
+            const broadcast = event.broadcast ?? true;
+
+            if (broadcast && this.session.ws && this.session.ws.readyState === WebSocket.OPEN) {
+                this.session.ws.send(
+                    JSON.stringify({
+                        type: "UPDATE_MAP",
+                        activeMap: this.MAP_SELECTOR.val(),
+                    })
+                );
+                console.debug(`Sent map update for map #${this.MAP_SELECTOR.val()}`);
+            }
         });
 
         let abortController = null;
 
         this.LAYER_SELECTOR.on("change", (event) => {
-            const currentUrl = new URL(window.location);
             const selectedLayerText = this.LAYER_SELECTOR.find(":selected").text().replaceAll(" ", "");
 
             // User cleared the layer selector, remove the layer and clean the URL
             if (selectedLayerText === "") {
-                currentUrl.searchParams.delete("layer");
-                window.history.replaceState({}, "", currentUrl);
+                this.updateUrlParams({ layer: null });
                 if (abortController) { abortController.abort(); } // Abort the ongoing fetch request
                 if (this.minimap.layer) this.minimap.layer.clear();
                 return;
             } 
             
-            // Update the the URL with the layer
-            currentUrl.searchParams.set("layer", selectedLayerText);
-            window.history.replaceState({}, "", currentUrl);
+            // Update the the URL
+            this.updateUrlParams({ layer: selectedLayerText });
 
             // Initialize a new AbortController for the fetch request
             abortController = new AbortController();
@@ -133,9 +152,7 @@ export default class SquadCalc {
 
             if (layers.length === 0) { 
                 this.minimap.spin(false);
-                const currentUrl = new URL(window.location);
-                currentUrl.searchParams.delete("layer");
-                window.history.replaceState({}, "", currentUrl);
+                this.updateUrlParams({ layer: null });
                 return;
             }
 
@@ -164,9 +181,7 @@ export default class SquadCalc {
                 } 
                 else {
                     // layer in url doesn't make sense, clean the url
-                    const currentUrl = new URL(window.location);
-                    currentUrl.searchParams.delete("layer");
-                    window.history.replaceState({}, "", currentUrl);
+                    this.updateUrlParams({ layer: null });
                 }
             }
 
@@ -199,7 +214,7 @@ export default class SquadCalc {
             if (mapIndex === -1) { 
                 // user entered garbage, pick a random map & clean the url
                 mapIndex = Math.floor(Math.random() * MAPS.length); 
-                currentUrl.searchParams.delete("layer");
+                this.updateUrlParams({ layer: null });
             }
         } 
         else {
@@ -210,10 +225,8 @@ export default class SquadCalc {
         this.minimap = new squadMinimap("map", this.MAPSIZE, MAPS[mapIndex]);
         this.minimap.draw();
 
-        // Update the URL
-        currentUrl.searchParams.set("map", this.minimap.activeMap.name);
-        window.history.replaceState({}, "", currentUrl);
-
+        // Update the URL & Layer
+        this.updateUrlParams({ map: this.minimap.activeMap.name });
         this.loadLayers(); 
 
     }
@@ -254,15 +267,13 @@ export default class SquadCalc {
         this.WEAPON_SELECTOR.select2({
             dropdownCssClass: "dropbtn2",
             dropdownParent: $("#weaponSelector"),
-            minimumResultsForSearch: -1, // Disable search
-            //placeholder: "SELECT A WEAPON"
+            minimumResultsForSearch: -1,
         });
 
         this.SHELL_SELECTOR.select2({
             dropdownCssClass: "dropbtn3",
             dropdownParent: $("#ammoSelector"),
-            minimumResultsForSearch: -1, // Disable search
-            //placeholder: "SELECT A WEAPON"
+            minimumResultsForSearch: -1,
         });
 
         // Load Weapons
@@ -342,10 +353,7 @@ export default class SquadCalc {
             localStorage.setItem("data-ui", 1);  
         }
 
-        if (this.ui == 1){
-            this.loadMapUIMode();
-        }
-
+        if (this.ui == 1) this.loadMapUIMode();
 
         $(document).on("change", ".dropbtn6", (event) => {
             this.userSettings.fontSize = event.target.value;
@@ -375,9 +383,27 @@ export default class SquadCalc {
         $(".btn-delete").on("click", () => { this.minimap.deleteTargets();});
         $("#fabCheckbox2").on("change", () => { this.switchUI();});
 
+        $("#mapLayerMenu").find("button.btn-session").on("click", () => {
+            if ($(".btn-session").hasClass("active")) {
+                if (this.session) this.session.ws.close(); 
+                    
+                // Update UI
+                $(".btn-session").removeClass("active");
+                leaveSessionTooltips.disable();
+                createSessionTooltips.enable();
+                this.openToast("error", "Session quit", "You have quit the session.");
+                
+            } else {
+                // Create session
+                this.session = new SquadSession();
+                $(".btn-session").addClass("active");
+                createSessionTooltips.disable();
+                leaveSessionTooltips.enable();
+            }
+        });
 
         $("#mapLayerMenu").find("button.layers").on("click", (e) => {
-            const currentUrl = new URL(window.location);
+
             var val = $(e.currentTarget).attr("value");
 
             if (val === "helpmap") {
@@ -390,11 +416,10 @@ export default class SquadCalc {
             $(".btn-"+val).addClass("active");
 
             if (val === "basemap") {
-                currentUrl.searchParams.delete("type");
+                this.updateUrlParams({ type: null });
             } else {
-                currentUrl.searchParams.set("type", val);
+                this.updateUrlParams({ type: val });
             }
-            window.history.replaceState({}, "", currentUrl);
 
             localStorage.setItem("settings-map-mode", val);
             this.userSettings.layerMode = val;
@@ -439,6 +464,9 @@ export default class SquadCalc {
                 $("#mapLayerMenu").hide();
                 this.openToast("success", "focusMode", "enterToExit");
             });
+
+
+            
     
             $(document).on("keydown", (e) => {
 
@@ -500,11 +528,24 @@ export default class SquadCalc {
             toast.querySelector("h4").setAttribute("data-i18n", `tooltips:${title}`);
             toast.querySelector("h4").innerHTML = i18next.t(`tooltips:${title}`);
             toast.querySelector("p").setAttribute("data-i18n", `tooltips:${text}`);
-            toast.querySelector("p").innerHTML = i18next.t(`tooltips:${text}`);
+            toast.querySelector("p").innerHTML = i18next.t(`tooltips:${text}`);    
             countdown = setTimeout(() => { closeToast(); }, 5000);
         };
 
-        document.querySelector("#toast").addEventListener("click", closeToast);
+        // Global click listener for toast
+        document.querySelector("#toast").addEventListener("click", () => {
+            const toast = document.querySelector("#toast");
+            const title = toast.querySelector("h4").getAttribute("data-i18n");  // Get data-i18n attribute
+        
+            // Handle click based on the title of the toast
+            if (title === "tooltips:sessionCreated") {
+                closeToast();  // Close current toast
+                this.copy(window.location.href);  // Copy the session ID
+                this.openToast("success", "copied", "");  // Open the new toast
+            } else {
+                closeToast();  // Close other toasts
+            }
+        });
 
       
         weaponInformation.addEventListener("close", function(){
@@ -1096,7 +1137,7 @@ export default class SquadCalc {
                 // opposite of calculations in getKP()
                 const SUB = Number(PARTS[i]);
                 if (Number.isNaN(SUB)) {
-                    console.log(`invalid keypad string: ${FORMATTED_KEYPAD}`);
+                    console.debug(`invalid keypad string: ${FORMATTED_KEYPAD}`);
                 }
                 const subX = (SUB - 1) % 3;
                 const subY = 2 - (Math.ceil(SUB / 3) - 1);
@@ -1115,4 +1156,84 @@ export default class SquadCalc {
 
         return { lat: lat, lng: lng };
     }
+
+    getAppState() {
+        var weapons = [];
+        var targets = [];
+        var markers = [];
+        var arrows = [];
+        const activeWeapon = this.WEAPON_SELECTOR.val();
+        const activeMap = this.MAP_SELECTOR.val();
+        const version = this.version;
+    
+        this.minimap.activeWeaponsMarkers.eachLayer(weapon => {
+            weapons.push({
+                lat: weapon._latlng.lat,
+                lng: weapon._latlng.lng,
+                uid: weapon.uid
+            });
+        });
+        this.minimap.activeTargetsMarkers.eachLayer(target => {
+            targets.push({
+                lat: target._latlng.lat,
+                lng: target._latlng.lng,
+                uid: target.uid
+            });
+        });
+        this.minimap.activeMarkers.eachLayer(marker => {
+            markers.push({
+                lat: marker._latlng.lat,
+                lng: marker._latlng.lng,
+                uid: marker.uid,
+                team: marker.team,
+                category: marker.category,
+                icon: marker.icontype
+            });
+        });
+        this.minimap.activeArrows.forEach(arrow => {
+            arrows.push({
+                uid: arrow.uid,
+                latlngs: arrow.polyline.getLatLngs(),
+                color: arrow.color,
+            });
+        });
+    
+        return { weapons, targets, markers, arrows, activeWeapon, activeMap, version };
+    }
+
+    updateUrlParams(updates = {}) {
+
+        const urlParams = new URLSearchParams(window.location.search);
+    
+        // Apply updates (add or update parameters)
+        for (const [key, value] of Object.entries(updates)) {
+            if (value !== null && value !== undefined) {
+                urlParams.set(key, value);
+            } else {
+                urlParams.delete(key); // Remove the param if value is null or undefined
+            }
+        }
+       
+        // Sort the parameters based on the desired order
+        const sortedParams = new URLSearchParams();
+        
+        // First, add params in the order defined in paramOrder
+        ["map", "layer", "type", "session"].forEach((param) => {
+            if (urlParams.has(param)) sortedParams.set(param, urlParams.get(param));
+        });
+    
+        // Add any remaining parameters that aren't in the paramOrder
+        for (const [key, value] of urlParams.entries()) {
+            if (!sortedParams.has(key)) sortedParams.set(key, value);
+        }
+      
+        // Update the URL
+        const newUrl = `${window.location.pathname}?${sortedParams.toString()}`;
+        window.history.replaceState({}, "", newUrl);
+    }
+    
+    
+    
+    
+
 }

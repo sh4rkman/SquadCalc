@@ -174,7 +174,7 @@
                     gl = canvas.getContext("webgl");
                 }
             } catch (_error) { 
-                console.log(_error);
+                console.debug(_error);
             }
             if (gl != null) {
                 singleFloatExt = gl.getExtension("OES_texture_float");

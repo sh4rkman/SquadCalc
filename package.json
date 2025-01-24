@@ -1,6 +1,6 @@
 {
   "name": "squadcalc",
-  "version": "36.0.0",
+  "version": "37.0.0",
   "description": "A Complete Mortar Calculator and Map Lane Finder for Squad",
   "author": "Maxime 'sharkman' Boussard",
   "license": "MIT",
@@ -78,5 +78,8 @@
   },
   "overrides": {
     "phin": "^3.7.1"
+  },
+  "dependencies": {
+    "uuid": "^11.0.5"
   }
 }
