@@ -48,8 +48,7 @@ export function loadSettings(){
     else {
         // Default to the first button
         $(".btn-basemap").addClass("active");
-        currentUrl.searchParams.delete("type");
-        window.history.replaceState({}, "", currentUrl);
+        App.updateUrlParams({type: null});
     }
 
 

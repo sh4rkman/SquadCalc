@@ -1,3 +1,24 @@
+# <img src="https://img.shields.io/badge/-major%20release-b22222?style=for-the-badge">  **37.0.0** *(2025-01-24)*
+
+<img src="https://img.shields.io/badge/-new-green"> **Sessions !**
+
+Introducing the session system: You can now create collaborative sessions and share a unique link with friends. This allows multiple users to place markers together on a shared map in real time. Whether you’re strategizing, planning, or simply collaborating, the session system makes teamwork easier and more interactive!
+
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Reordered marker categories in the context menu.
+
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Improved the map list display on devices with small screen heights (fix #266).
+
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed arrow markers not working on Chromium-based browsers (fix #268, thanks @devil4ngle!).
+
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed a bug where hovering over a marker would cause target text to fade out permanently (fix #267, thanks @dkanrjteh!).
+
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed an issue where arrow markers would "blink" when displayed for the first time (fix #265).
+
+
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
+
 # <img src="https://img.shields.io/badge/-major%20release-b22222?style=for-the-badge">  **36.0.0** *(2025-01-15)*
 
 <img src="https://img.shields.io/badge/-new-green"> **Squad Map Markers:** Right-click on the map to open a context menu that lets you place markers, helping you strategize for future games.

@@ -16,8 +16,13 @@ import SquadFiringSolution from "./squadFiringSolution.js";
 import packageInfo from "../../package.json";
 import i18next from "i18next";
 import SquadLayer from "./squadLayer.js";
-import { App } from "../app.js";
 
+
+
+/**
+ * Main class for SquadCalc
+ * @classdesc Holds all the main functions
+ */
 export default class SquadCalc {
 
     /**
@@ -41,6 +46,8 @@ export default class SquadCalc {
 
     init(){
         loadLanguage(this.supportedLanguages);
+        // TODO load settings in constructor: this.userSettings = loadSettings();
+        // must rework settings as a class properly
         loadSettings();
         createLine();
         this.loadMapSelector();
@@ -50,7 +57,7 @@ export default class SquadCalc {
         this.loadTheme();
         checkApiHealth();
         initWebSocket();
-        console.log(`SquadCalc v${App.version} Loaded!`);
+        console.log(`SquadCalc v${this.version} Loaded!`);
     }
 
     /**
@@ -69,7 +76,6 @@ export default class SquadCalc {
 
         // Add event listener
         this.MAP_SELECTOR.on("change", (event) => {
-            const currentUrl = new URL(window.location);
 
             // Update the minimap with the selected map
             this.minimap.activeMap = MAPS.find((_, index) => index == event.target.value);
@@ -77,9 +83,7 @@ export default class SquadCalc {
             this.minimap.draw();
 
             // Update the URL
-            currentUrl.searchParams.set("map", this.minimap.activeMap.name);
-            currentUrl.searchParams.delete("layer");
-            window.history.replaceState({}, "", currentUrl);
+            this.updateUrlParams({ map: this.minimap.activeMap.name, layer: null });
 
             // Refresh layer selector
             this.loadLayers();
@@ -101,21 +105,18 @@ export default class SquadCalc {
         let abortController = null;
 
         this.LAYER_SELECTOR.on("change", (event) => {
-            const currentUrl = new URL(window.location);
             const selectedLayerText = this.LAYER_SELECTOR.find(":selected").text().replaceAll(" ", "");
 
             // User cleared the layer selector, remove the layer and clean the URL
             if (selectedLayerText === "") {
-                currentUrl.searchParams.delete("layer");
-                window.history.replaceState({}, "", currentUrl);
+                this.updateUrlParams({ layer: null });
                 if (abortController) { abortController.abort(); } // Abort the ongoing fetch request
                 if (this.minimap.layer) this.minimap.layer.clear();
                 return;
             } 
             
-            // Update the the URL with the layer
-            currentUrl.searchParams.set("layer", selectedLayerText);
-            window.history.replaceState({}, "", currentUrl);
+            // Update the the URL
+            this.updateUrlParams({ layer: selectedLayerText });
 
             // Initialize a new AbortController for the fetch request
             abortController = new AbortController();
@@ -151,9 +152,7 @@ export default class SquadCalc {
 
             if (layers.length === 0) { 
                 this.minimap.spin(false);
-                const currentUrl = new URL(window.location);
-                currentUrl.searchParams.delete("layer");
-                window.history.replaceState({}, "", currentUrl);
+                this.updateUrlParams({ layer: null });
                 return;
             }
 
@@ -182,9 +181,7 @@ export default class SquadCalc {
                 } 
                 else {
                     // layer in url doesn't make sense, clean the url
-                    const currentUrl = new URL(window.location);
-                    currentUrl.searchParams.delete("layer");
-                    window.history.replaceState({}, "", currentUrl);
+                    this.updateUrlParams({ layer: null });
                 }
             }
 
@@ -217,7 +214,7 @@ export default class SquadCalc {
             if (mapIndex === -1) { 
                 // user entered garbage, pick a random map & clean the url
                 mapIndex = Math.floor(Math.random() * MAPS.length); 
-                currentUrl.searchParams.delete("layer");
+                this.updateUrlParams({ layer: null });
             }
         } 
         else {
@@ -228,10 +225,8 @@ export default class SquadCalc {
         this.minimap = new squadMinimap("map", this.MAPSIZE, MAPS[mapIndex]);
         this.minimap.draw();
 
-        // Update the URL
-        currentUrl.searchParams.set("map", this.minimap.activeMap.name);
-        window.history.replaceState({}, "", currentUrl);
-
+        // Update the URL & Layer
+        this.updateUrlParams({ map: this.minimap.activeMap.name });
         this.loadLayers(); 
 
     }
@@ -408,7 +403,7 @@ export default class SquadCalc {
         });
 
         $("#mapLayerMenu").find("button.layers").on("click", (e) => {
-            const currentUrl = new URL(window.location);
+
             var val = $(e.currentTarget).attr("value");
 
             if (val === "helpmap") {
@@ -421,11 +416,10 @@ export default class SquadCalc {
             $(".btn-"+val).addClass("active");
 
             if (val === "basemap") {
-                currentUrl.searchParams.delete("type");
+                this.updateUrlParams({ type: null });
             } else {
-                currentUrl.searchParams.set("type", val);
+                this.updateUrlParams({ type: val });
             }
-            window.history.replaceState({}, "", currentUrl);
 
             localStorage.setItem("settings-map-mode", val);
             this.userSettings.layerMode = val;
@@ -546,7 +540,7 @@ export default class SquadCalc {
             // Handle click based on the title of the toast
             if (title === "tooltips:sessionCreated") {
                 closeToast();  // Close current toast
-                App.copy(window.location.href);  // Copy the session ID
+                this.copy(window.location.href);  // Copy the session ID
                 this.openToast("success", "copied", "");  // Open the new toast
             } else {
                 closeToast();  // Close other toasts
@@ -1206,4 +1200,40 @@ export default class SquadCalc {
     
         return { weapons, targets, markers, arrows, activeWeapon, activeMap, version };
     }
+
+    updateUrlParams(updates = {}) {
+
+        const urlParams = new URLSearchParams(window.location.search);
+    
+        // Apply updates (add or update parameters)
+        for (const [key, value] of Object.entries(updates)) {
+            if (value !== null && value !== undefined) {
+                urlParams.set(key, value);
+            } else {
+                urlParams.delete(key); // Remove the param if value is null or undefined
+            }
+        }
+       
+        // Sort the parameters based on the desired order
+        const sortedParams = new URLSearchParams();
+        
+        // First, add params in the order defined in paramOrder
+        ["map", "layer", "type", "session"].forEach((param) => {
+            if (urlParams.has(param)) sortedParams.set(param, urlParams.get(param));
+        });
+    
+        // Add any remaining parameters that aren't in the paramOrder
+        for (const [key, value] of urlParams.entries()) {
+            if (!sortedParams.has(key)) sortedParams.set(key, value);
+        }
+      
+        // Update the URL
+        const newUrl = `${window.location.pathname}?${sortedParams.toString()}`;
+        window.history.replaceState({}, "", newUrl);
+    }
+    
+    
+    
+    
+
 }

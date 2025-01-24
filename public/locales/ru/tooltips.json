@@ -51,5 +51,6 @@
     "createSession": "Создать общую сессию",
     "leaveSession": "Покинуть сессию",
     "outdatedVersion": "Устаревшая версия",
-    "pleaseupdate": "Пожалуйста, обновите страницу"
+    "pleaseupdate": "Пожалуйста, обновите страницу",
+    "sessionFull": "Сессия заполнена"
 }

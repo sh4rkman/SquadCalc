@@ -1140,10 +1140,7 @@ export var squadTargetMarker = squadMarker.extend({
     _handleDragEnd: function (e) {
 
         if (App.session.ws && App.session.ws.readyState === WebSocket.OPEN) {
-            console.debug("moving a target while in a room");
-        
             const newLatLng = this.getLatLng();
-        
             // Send the MOVING_WEAPON event to the server
             App.session.ws.send(
                 JSON.stringify({
@@ -1153,7 +1150,6 @@ export var squadTargetMarker = squadMarker.extend({
                     uid: this.uid,
                 })
             );
-        
         }
 
         if (App.userSettings.keypadUnderCursor) this.map.on("mousemove", this.map._handleMouseMove);

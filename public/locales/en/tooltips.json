@@ -51,5 +51,6 @@
     "createSession": "Create a shared session",
     "leaveSession": "Leave session",
     "outdatedVersion": "Outdated version",
-    "pleaseupdate": "Please refresh your page"
+    "pleaseupdate": "Please refresh your page",
+    "sessionFull": "Session is full"
 }

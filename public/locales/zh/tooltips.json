@@ -51,5 +51,6 @@
     "createSession": "创建共享会话",
     "leaveSession": "离开会话",
     "outdatedVersion": "版本过时",
-    "pleaseupdate": "请刷新您的页面"
+    "pleaseupdate": "请刷新您的页面",
+    "sessionFull": "会话已满"
 }

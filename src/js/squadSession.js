@@ -28,8 +28,9 @@ export default class SquadSession {
         const urlParams = new URLSearchParams(window.location.search);
         urlParams.delete("session"); // Remove the session parameter if it exists
         const newUrl = `${window.location.pathname}?${urlParams.toString()}`;
-        window.history.pushState({}, "", newUrl); // Update the URL without reloading the page
-        console.log("here! new url : " + newUrl);
+        window.history.replaceState({}, "", newUrl); // Update the URL without reloading the page
+        App.updateUrlParams({ session: null });
+
         // Update UI
         $(".btn-session").removeClass("active");
         leaveSessionTooltips.disable();
@@ -40,7 +41,11 @@ export default class SquadSession {
         if (event.code === 1008) {
             console.error("Your app version is outdated. Please update to the latest version.");
             App.openToast("error", "outdatedVersion", "pleaseupdate");
-        } else {
+        }
+        else if (event.code === 4001) {
+            App.openToast("error", "sessionFull", "");
+        }
+        else {
             App.openToast("error", "sessionClosed", "");
         }
 
@@ -68,10 +73,7 @@ export default class SquadSession {
 
         case "SESSION_CREATED": {
             console.debug("New Session created : " + data.sessionId);
-            const urlParams = new URLSearchParams(window.location.search);
-            urlParams.set("session", data.sessionId); // Add or update the session parameter
-            const newUrl = `${window.location.pathname}?${urlParams.toString()}`;
-            window.history.pushState({}, "", newUrl); // Update the URL without reloading the page
+            App.updateUrlParams({ session: data.sessionId });
             App.openToast("success", "sessionCreated", "shareSession", true);
             break;
         }

@@ -51,5 +51,6 @@
     "createSession": "Створити спільну сесію",
     "leaveSession": "Покинути сесію",
     "outdatedVersion": "Застаріла версія",
-    "pleaseupdate": "Будь ласка, оновіть сторінку"
+    "pleaseupdate": "Будь ласка, оновіть сторінку",
+    "sessionFull": "Сесія заповнена"
 }
