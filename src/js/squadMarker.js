@@ -7,7 +7,7 @@ import SquadFiringSolution from "./squadFiringSolution.js";
 import i18next from "i18next";
 import { sendMarkerData, sendTargetData } from "./squadCalcAPI.js";
 import { animateCSS } from "./animations.js";
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 
 
 /*
@@ -204,7 +204,7 @@ export var squadWeaponMarker = squadMarker.extend({
             this.updateWeaponMaxRange();
         } else {
             this.rangeMarker.setStyle(this.maxDistCircleOn);
-            if (this.precisionRangeMarker) { this.precisionRangeMarker.remove(); }
+            if (this.precisionRangeMarker) this.precisionRangeMarker.remove();
         }
         
         this.updateIcon();
@@ -311,14 +311,15 @@ export var squadWeaponMarker = squadMarker.extend({
         }
 
         // Final Polygon
-        this.precisionRangeMarker = new Polygon(points).addTo(this.map.markersGroup);
-        this.precisionRangeMarker.setStyle(this.maxDistCircleOn);
+        this.precisionRangeMarker = new Polygon(points, this.maxDistCircleOn).addTo(this.map.markersGroup);
+        //this.precisionRangeMarker.setStyle();
     },
 
 
-    _handleContextMenu: function(e){
+    _handleContextMenu: function(){
         this.delete();
     },
+
 
     _handleDrag: function (e) {
         e = this.keepOnMap(e);
@@ -328,10 +329,15 @@ export var squadWeaponMarker = squadMarker.extend({
         this.miniCircle.setLatLng(e.latlng);
         this.fobCircle.setLatLng(e.latlng);
 
-        if (App.userSettings.realMaxRange) { 
-            this.updateWeaponMaxRange({ 
-                turnLaunchAngle: 1, maxRangeTreshold: 50,  turnDirectionAngle : 20 
-            });
+        if (App.userSettings.realMaxRange) {
+            if (e.session) {
+                this.updateWeaponMaxRange();
+            }
+            else {
+                this.updateWeaponMaxRange({ 
+                    turnLaunchAngle: 1, maxRangeTreshold: 50,  turnDirectionAngle : 20 
+                });
+            }
         }
 
         // Update Position PopUp Content
@@ -426,7 +432,7 @@ export var squadWeaponMarker = squadMarker.extend({
         if (App.userSettings.weaponDrag) { this.posPopUp.openOn(this.map); }
     },
 
-    _handleDragEnd: function () {
+    _handleDragEnd: function (broadcast = true) {
 
         if (App.session.ws && App.session.ws.readyState === WebSocket.OPEN) {
 
@@ -434,14 +440,16 @@ export var squadWeaponMarker = squadMarker.extend({
             const newLatLng = this.getLatLng();
 
             // Send the MOVING_WEAPON event to the server
-            App.session.ws.send(
-                JSON.stringify({
-                    type: 'MOVING_WEAPON',
-                    uid: this.uid,
-                    lat: newLatLng.lat,
-                    lng: newLatLng.lng,
-                })
-            );
+            if (broadcast) {
+                App.session.ws.send(
+                    JSON.stringify({
+                        type: "MOVING_WEAPON",
+                        uid: this.uid,
+                        lat: newLatLng.lat,
+                        lng: newLatLng.lng,
+                    })
+                );
+            }
 
             console.debug(`Sent move request for weapon ${this.uid}, new position: (${newLatLng.lat}, ${newLatLng.lng})`);
         }
@@ -492,8 +500,8 @@ export var squadWeaponMarker = squadMarker.extend({
 
         // Broadcast the deletion to the session
         if (broadcast && App.session.ws && App.session.ws.readyState === WebSocket.OPEN) {
-            App.session.ws.send(JSON.stringify({ type: 'DELETE_WEAPON', uid: this.uid }));
-            console.log(`Sent delete request for weapon ${this.uid}`);
+            App.session.ws.send(JSON.stringify({ type: "DELETE_WEAPON", uid: this.uid }));
+            console.debug(`Sent delete request for weapon ${this.uid}`);
         }
 
         this.off();
@@ -688,7 +696,7 @@ export var squadTargetMarker = squadMarker.extend({
 
         
         if (broadcast && App.session.ws && App.session.ws.readyState === WebSocket.OPEN) {
-            App.session.ws.send(JSON.stringify({ type: 'DELETE_TARGET', uid: this.uid}));
+            App.session.ws.send(JSON.stringify({ type: "DELETE_TARGET", uid: this.uid}));
             console.debug(`Sent delete request for target with UID: ${this.uid}`);
         }
 
@@ -1023,8 +1031,8 @@ export var squadTargetMarker = squadMarker.extend({
         } else if (!isSingleLayer && bothElevationsInvalid) {
             icon = targetAnimation ? targetIconDisabled : targetIconMinimalDisabled;
         } else {
-            if(this.fromSession){
-                if (targetAnimation) icon = targetSessionIcon1
+            if (this.fromSession){
+                if (targetAnimation) icon = targetSessionIcon1;
                 else icon = targetIconSessionMinimal;
             }
             else {
@@ -1139,7 +1147,7 @@ export var squadTargetMarker = squadMarker.extend({
             // Send the MOVING_WEAPON event to the server
             App.session.ws.send(
                 JSON.stringify({
-                    type: 'MOVING_TARGET',
+                    type: "MOVING_TARGET",
                     lat: newLatLng.lat,
                     lng: newLatLng.lng,
                     uid: this.uid,
@@ -1288,16 +1296,12 @@ export var squadStratMarker = squadMarker.extend({
         // Create the min/max range markers
         if (options.circles1Size) {
             this.constructionRange = new Circle(latlng, this.minDistCircleOn);
-            if(!options.circlesOnHover) {
-                this.constructionRange.addTo(this.map.markersGroup);
-            }
+            if (!options.circlesOnHover) this.constructionRange.addTo(this.map.markersGroup);
         }
 
         if (options.circles2Size) {
             this.exclusionRange = new Circle(latlng, this.maxDistCircleOn);
-            if(!options.circlesOnHover) {
-                this.exclusionRange.addTo(this.map.markersGroup);
-            }
+            if (!options.circlesOnHover) this.exclusionRange.addTo(this.map.markersGroup);
         }
 
 
@@ -1349,8 +1353,8 @@ export var squadStratMarker = squadMarker.extend({
 
         // Broadcast to the session
         if (broadcast && App.session.ws && App.session.ws.readyState === WebSocket.OPEN) {
-            App.session.ws.send(JSON.stringify({ type: 'DELETE_MARKER', uid: this.uid }));
-            console.log(`Sent delete request for marker with UID: ${this.uid}`);
+            App.session.ws.send(JSON.stringify({ type: "DELETE_MARKER", uid: this.uid }));
+            console.debug(`Sent delete request for marker with UID: ${this.uid}`);
         }
 
         // If they already faded, switch them back
@@ -1424,16 +1428,14 @@ export var squadStratMarker = squadMarker.extend({
                 // Send the MOVING_MARKER event to the server
                 App.session.ws.send(
                     JSON.stringify({
-                        type: 'MOVING_MARKER',
+                        type: "MOVING_MARKER",
                         uid: uid,
                         lat: newLatLng.lat,
                         lng: newLatLng.lng,
                     })
                 );
 
-                console.log(`Sent move request for marker with UID: ${uid}, new position: (${newLatLng.lat}, ${newLatLng.lng})`);
-            } else {
-                console.error("Failed to find the marker UID.");
+                console.debug(`Sent move request for marker with UID: ${uid}, new position: (${newLatLng.lat}, ${newLatLng.lng})`);
             }
         }
         

@@ -204,21 +204,18 @@ tippy(".btn-basemap", {
         tip.setContent(i18next.t("tooltips:basemode"));
     },
 });
-
 tippy(".btn-terrainmap", {
     ...commonMapMenuToolipsSettings,
     onShow(tip) {
         tip.setContent(i18next.t("tooltips:terrainmode"));
     },
 });
-
 tippy(".btn-topomap", {
     ...commonMapMenuToolipsSettings,
     onShow(tip) {
         tip.setContent(i18next.t("tooltips:topographicmode"));
     },
 });
-
 tippy(".btn-hd", {
     ...commonMapMenuToolipsSettings,
     onShow(tip) {
@@ -227,20 +224,32 @@ tippy(".btn-hd", {
         `);
     },
 });
-
 tippy(".btn-helpmap", {
     ...commonMapMenuToolipsSettings,
     onShow(tip) {
         tip.setContent(i18next.t("tooltips:helpmode"));
     },
 });
-
 tippy(".btn-focus", {
     ...commonMapMenuToolipsSettings,
     onShow(tip) {
         tip.setContent(i18next.t("tooltips:focusMode"));
     },
 });
+
+export const createSessionTooltips = tippy(".btn-session", {
+    ...commonMapMenuToolipsSettings,
+    onShow(tip) {
+        tip.setContent(i18next.t("tooltips:createSession"));
+    },
+})[0];
+export const leaveSessionTooltips =  tippy(".btn-session", {
+    ...commonMapMenuToolipsSettings,
+    onShow(tip) {
+        tip.setContent(i18next.t("tooltips:leaveSession"));
+    },
+})[0];
+leaveSessionTooltips.disable();
 
 tippy(".btn-delete", {
     ...commonMapMenuToolipsSettings,
@@ -249,23 +258,21 @@ tippy(".btn-delete", {
     },
 });
 
-export var hostOnlyTooltip = tippy("#mapSelector", {
-
-    touch: false,
-    theme: "menu",
-    offset: [0, 20],
-    allowHTML: true,
-    touch: false,
-    hideOnClick: true,
-    delay: [500, 100],
-    maxWidth: 230, 
-    followCursor: true,
-    plugins: [followCursor],
-    onShow(tip) {
-        tip.setContent(i18next.t("tooltips:hostOnly"));
-    },
-})[0];
-hostOnlyTooltip.disable();
+// export var hostOnlyTooltip = tippy("#mapSelector", {
+//     theme: "menu",
+//     offset: [0, 20],
+//     allowHTML: true,
+//     touch: false,
+//     hideOnClick: true,
+//     delay: [500, 100],
+//     maxWidth: 230, 
+//     followCursor: true,
+//     plugins: [followCursor],
+//     onShow(tip) {
+//         tip.setContent(i18next.t("tooltips:hostOnly"));
+//     },
+// })[0];
+// hostOnlyTooltip.disable();
 
 
 tippy("#elevationNum", {

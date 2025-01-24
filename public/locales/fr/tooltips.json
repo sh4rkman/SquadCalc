@@ -17,7 +17,7 @@
     "elevation": "Elévation",
     "howFar": "(A quelle distance ça tirera)",
     "save": "Sauvegarder",
-    "copied": "Copié !",
+    "copied": "Ajouté au presse-papiers 📋",
     "resultLater": "(les résultats pour plus tard)",
     "spreadDesc": "En raison de l'imprécision de la minute d'angle (MOA) de l'arme et de la longueur du projectile, les tirs peuvent se disperser selon un schéma elliptique.",
     "moaDesc": "Une minute d'angle (MOA) en artillerie mesure l'imprécision de l'arme, indiquant la dispersion des tirs. Une MOA équivaut à 1/60e de degré.",
@@ -39,5 +39,17 @@
     "lowAndHighTooltip": "Afficher à la fois l'angle haut et bas pour les armes permettant de tirer dans les deux modes",
     "autoLaneTooltip": "Si un seul drapeau est disponible à l'étape suivante du layer, squadcalc essaiera automatiquement d'avancer dans le layer",
     "capZoneOnHoverTooltip": "Au lieu d'afficher les zones de capture en permanence, ne les affiche que lorsque vous survolez un drapeau",
-    "revealLayerOnHoverTooltip": "Le survol d'un drapeau fera disparaître les drapeaux inaccessibles si ce drapeau était cliqué"
+    "revealLayerOnHoverTooltip": "Le survol d'un drapeau fera disparaître les drapeaux inaccessibles si ce drapeau était cliqué",
+    "sessionCreated": "Session créée !",
+    "sessionClosed": "Session fermée",
+    "sessionJoined": "Session rejointe !",
+    "shareSession": "Cliquez ici pour copier le lien dans le presse-papiers",
+    "someoneLeft": "Quelqu'un est parti 🏃🏼‍➡️",
+    "someoneJoined": "🏃🏼‍➡️ Quelqu'un a rejoint !",
+    "youAreAlone": "Vous êtes seul dans cette session",
+    "hostOnly": "Seul l'hôte de la session peut changer la carte",
+    "createSession": "Créer une session partagée",
+    "leaveSession": "Quitter la session",
+    "outdatedVersion": "Version obsolète",
+    "pleaseupdate": "Veuillez rafraîchir votre page"
 }

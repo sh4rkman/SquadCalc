@@ -1,21 +1,22 @@
 import { MAPS } from "./data/maps.js";
 import { WEAPONS, WEAPONSTYPE } from "./data/weapons.js";
 import { squadMinimap } from "./squadMinimap.js";
-import SquadSession from "./squadSession.js";
 import { Weapon } from "./squadWeapons.js";
 import { createLine, drawLine } from "./animations.js";
 import { loadSettings } from "./settings.js";
 import { loadLanguage } from "./localization.js";
 import { animateCSS, animateCalc } from "./animations.js";
 import { tooltip_save } from "./tooltips.js";
-import "./squadContextMenu.js";
-
 import { checkApiHealth, fetchLayersByMap, fetchLayerByName } from "./squadCalcAPI.js";
 import { initWebSocket } from "./smcConnector.js";
+import { createSessionTooltips, leaveSessionTooltips } from "./tooltips.js";
+
+import SquadSession from "./squadSession.js";
 import SquadFiringSolution from "./squadFiringSolution.js";
 import packageInfo from "../../package.json";
 import i18next from "i18next";
 import SquadLayer from "./squadLayer.js";
+import { App } from "../app.js";
 
 export default class SquadCalc {
 
@@ -35,6 +36,7 @@ export default class SquadCalc {
         this.SHELL_SELECTOR = $(".dropbtn3");
         this.LAYER_SELECTOR = $(".dropbtn5");
         this.session = false;
+        this.version = packageInfo.version;
     }
 
     init(){
@@ -48,7 +50,7 @@ export default class SquadCalc {
         this.loadTheme();
         checkApiHealth();
         initWebSocket();
-        console.log(`SquadCalc v${packageInfo.version} Loaded!`);
+        console.log(`SquadCalc v${App.version} Loaded!`);
     }
 
     /**
@@ -80,14 +82,15 @@ export default class SquadCalc {
             window.history.replaceState({}, "", currentUrl);
 
             // Refresh layer selector
-            this.loadLayers(); 
+            this.loadLayers();
 
-            const skipUpdate = event.skipUpdate || false;
+            // Broadcast the map change to the session if needed
+            const broadcast = event.broadcast ?? true;
 
-            if (!skipUpdate && this.session.ws && this.session.ws.readyState === WebSocket.OPEN) {
+            if (broadcast && this.session.ws && this.session.ws.readyState === WebSocket.OPEN) {
                 this.session.ws.send(
                     JSON.stringify({
-                        type: 'UPDATE_MAP',
+                        type: "UPDATE_MAP",
                         activeMap: this.MAP_SELECTOR.val(),
                     })
                 );
@@ -269,15 +272,13 @@ export default class SquadCalc {
         this.WEAPON_SELECTOR.select2({
             dropdownCssClass: "dropbtn2",
             dropdownParent: $("#weaponSelector"),
-            minimumResultsForSearch: -1, // Disable search
-            //placeholder: "SELECT A WEAPON"
+            minimumResultsForSearch: -1,
         });
 
         this.SHELL_SELECTOR.select2({
             dropdownCssClass: "dropbtn3",
             dropdownParent: $("#ammoSelector"),
-            minimumResultsForSearch: -1, // Disable search
-            //placeholder: "SELECT A WEAPON"
+            minimumResultsForSearch: -1,
         });
 
         // Load Weapons
@@ -357,10 +358,7 @@ export default class SquadCalc {
             localStorage.setItem("data-ui", 1);  
         }
 
-        if (this.ui == 1){
-            this.loadMapUIMode();
-        }
-
+        if (this.ui == 1) this.loadMapUIMode();
 
         $(document).on("change", ".dropbtn6", (event) => {
             this.userSettings.fontSize = event.target.value;
@@ -390,6 +388,24 @@ export default class SquadCalc {
         $(".btn-delete").on("click", () => { this.minimap.deleteTargets();});
         $("#fabCheckbox2").on("change", () => { this.switchUI();});
 
+        $("#mapLayerMenu").find("button.btn-session").on("click", () => {
+            if ($(".btn-session").hasClass("active")) {
+                if (this.session) this.session.ws.close(); 
+                    
+                // Update UI
+                $(".btn-session").removeClass("active");
+                leaveSessionTooltips.disable();
+                createSessionTooltips.enable();
+                this.openToast("error", "Session quit", "You have quit the session.");
+                
+            } else {
+                // Create session
+                this.session = new SquadSession();
+                $(".btn-session").addClass("active");
+                createSessionTooltips.disable();
+                leaveSessionTooltips.enable();
+            }
+        });
 
         $("#mapLayerMenu").find("button.layers").on("click", (e) => {
             const currentUrl = new URL(window.location);
@@ -455,20 +471,7 @@ export default class SquadCalc {
                 this.openToast("success", "focusMode", "enterToExit");
             });
 
-            $("#mapLayerMenu").find("button.btn-session").on("click", () => {
-                if ($(".btn-session").hasClass("active")) {
-                        if (this.session) this.session.ws.close(); 
-                        
-                        // Update UI
-                        $(".btn-session").removeClass("active");
-                        this.openToast('error', 'Session quit', 'You have quit the session.');
-                    
-                } else {
-                    // Create session
-                    this.session = new SquadSession();
-                    $(".btn-session").addClass("active");
-                }
-            });
+
             
     
             $(document).on("keydown", (e) => {
@@ -531,11 +534,24 @@ export default class SquadCalc {
             toast.querySelector("h4").setAttribute("data-i18n", `tooltips:${title}`);
             toast.querySelector("h4").innerHTML = i18next.t(`tooltips:${title}`);
             toast.querySelector("p").setAttribute("data-i18n", `tooltips:${text}`);
-            toast.querySelector("p").innerHTML = i18next.t(`tooltips:${text}`);                
+            toast.querySelector("p").innerHTML = i18next.t(`tooltips:${text}`);    
             countdown = setTimeout(() => { closeToast(); }, 5000);
         };
 
-        document.querySelector("#toast").addEventListener("click", closeToast);
+        // Global click listener for toast
+        document.querySelector("#toast").addEventListener("click", () => {
+            const toast = document.querySelector("#toast");
+            const title = toast.querySelector("h4").getAttribute("data-i18n");  // Get data-i18n attribute
+        
+            // Handle click based on the title of the toast
+            if (title === "tooltips:sessionCreated") {
+                closeToast();  // Close current toast
+                App.copy(window.location.href);  // Copy the session ID
+                this.openToast("success", "copied", "");  // Open the new toast
+            } else {
+                closeToast();  // Close other toasts
+            }
+        });
 
       
         weaponInformation.addEventListener("close", function(){
@@ -1127,7 +1143,7 @@ export default class SquadCalc {
                 // opposite of calculations in getKP()
                 const SUB = Number(PARTS[i]);
                 if (Number.isNaN(SUB)) {
-                    console.log(`invalid keypad string: ${FORMATTED_KEYPAD}`);
+                    console.debug(`invalid keypad string: ${FORMATTED_KEYPAD}`);
                 }
                 const subX = (SUB - 1) % 3;
                 const subY = 2 - (Math.ceil(SUB / 3) - 1);
@@ -1154,6 +1170,7 @@ export default class SquadCalc {
         var arrows = [];
         const activeWeapon = this.WEAPON_SELECTOR.val();
         const activeMap = this.MAP_SELECTOR.val();
+        const version = this.version;
     
         this.minimap.activeWeaponsMarkers.eachLayer(weapon => {
             weapons.push({
@@ -1162,7 +1179,6 @@ export default class SquadCalc {
                 uid: weapon.uid
             });
         });
-    
         this.minimap.activeTargetsMarkers.eachLayer(target => {
             targets.push({
                 lat: target._latlng.lat,
@@ -1170,7 +1186,6 @@ export default class SquadCalc {
                 uid: target.uid
             });
         });
-    
         this.minimap.activeMarkers.eachLayer(marker => {
             markers.push({
                 lat: marker._latlng.lat,
@@ -1181,9 +1196,7 @@ export default class SquadCalc {
                 icon: marker.icontype
             });
         });
-
         this.minimap.activeArrows.forEach(arrow => {
-            console.log(arrow);
             arrows.push({
                 uid: arrow.uid,
                 latlngs: arrow.polyline.getLatLngs(),
@@ -1191,6 +1204,6 @@ export default class SquadCalc {
             });
         });
     
-        return { weapons, targets, markers, arrows, activeWeapon, activeMap };
+        return { weapons, targets, markers, arrows, activeWeapon, activeMap, version };
     }
 }

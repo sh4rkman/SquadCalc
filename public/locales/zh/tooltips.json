@@ -17,7 +17,7 @@
     "elevation": "密位",
     "howFar": "打多远",
     "save": "保存",
-    "copied": "复制成功！",
+    "copied": "已添加到剪贴板 📋",
     "resultLater": "结果稍后",
     "spreadDesc": "由于武器的角分 (MOA) 不精确性和弹道长度，射击会在椭圆形的模式下散布。",
     "moaDesc": "角分 (MOA) 在炮兵中衡量武器的不精确性，表示射击的散布范围。一角分等于1/60度。",
@@ -39,5 +39,17 @@
     "lowAndHighTooltip": "显示可以以高角度和低角度射击的武器的两种角度",
     "autoLaneTooltip": "如果下一层只有一个旗帜可用，squadcalc 将自动尝试前进到下一层",
     "capZoneOnHoverTooltip": "不是始终显示占领区域，而是仅在悬停在旗帜上时显示",
-    "revealLayerOnHoverTooltip": "悬停在旗帜上将使不可到达的旗帜变暗，如果单击该旗帜，则会发生"
+    "revealLayerOnHoverTooltip": "悬停在旗帜上将使不可到达的旗帜变暗，如果单击该旗帜，则会发生",
+    "sessionCreated": "会话已创建！",
+    "sessionClosed": "会话已关闭",
+    "sessionJoined": "会话已加入！",
+    "shareSession": "单击此处将链接复制到剪贴板",
+    "someoneLeft": "有人离开了 🏃🏼‍➡️",
+    "someoneJoined": "🏃🏼‍➡️ 有人加入！",
+    "youAreAlone": "您在此会话中独自一人",
+    "hostOnly": "只有会话主机才能更改地图",
+    "createSession": "创建共享会话",
+    "leaveSession": "离开会话",
+    "outdatedVersion": "版本过时",
+    "pleaseupdate": "请刷新您的页面"
 }

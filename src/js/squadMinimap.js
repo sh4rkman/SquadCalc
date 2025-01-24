@@ -15,7 +15,7 @@ import "tippy.js/dist/tippy.css";
 import squadContextMenu from "./squadContextMenu.js";
 import "leaflet-polylinedecorator";
 import { Polyline, PolylineDecorator, Symbol, DomEvent } from "leaflet";
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 
 /**
  * Squad Minimap
@@ -222,6 +222,7 @@ export var squadMinimap = Map.extend({
 
         // Clear Every existing Makers
         this.markersGroup.clearLayers();
+        this.activeMarkers.clearLayers();
         this.activeWeaponsMarkers.clearLayers();
         this.activeTargetsMarkers.clearLayers();
         this.activeArrowsGroup.clearLayers();
@@ -378,10 +379,10 @@ export var squadMinimap = Map.extend({
 
         // If in a session, broadcast the new weapon with a unique identifier
         if (!uid && App.session.ws && App.session.ws.readyState === WebSocket.OPEN) {
-            console.debug("Creating new weapon with uid", newMarker.uid)
+            console.debug("Creating new weapon with uid", newMarker.uid);
             App.session.ws.send(
                 JSON.stringify({
-                    type: 'ADDING_WEAPON',
+                    type: "ADDING_WEAPON",
                     lat: latlng.lat,
                     lng: latlng.lng,
                     uid: newMarker.uid,
@@ -407,7 +408,7 @@ export var squadMinimap = Map.extend({
             console.debug("sending new target with uid", target.uid);
             App.session.ws.send(
                 JSON.stringify({
-                    type: 'ADDING_TARGET',
+                    type: "ADDING_TARGET",
                     lat: latlng.lat,
                     lng: latlng.lng,
                     uid: target.uid,
@@ -453,7 +454,7 @@ export var squadMinimap = Map.extend({
             markerOptions.circles1Color = "#00E8FF";
             markerOptions.circles1Size = 150 * this.gameToMapScale;
             markerOptions.circles2Color = "white";
-            markerOptions.circles2Size = this.activeMap.radiusExclusion * this.gameToMapScale
+            markerOptions.circles2Size = this.activeMap.radiusExclusion * this.gameToMapScale;
         }
         if (icon === "deployable_fob") { 
             markerOptions.circlesOnHover = false;
@@ -475,7 +476,7 @@ export var squadMinimap = Map.extend({
         });
         
         // Create marker and close context menu
-        var newMarker = new squadStratMarker(latlng, markerOptions, this).addTo(this.activeMarkers);
+        let newMarker = new squadStratMarker(latlng, markerOptions, this).addTo(this.activeMarkers);
 
         if (!uid && App.session.ws && App.session.ws.readyState === WebSocket.OPEN) {
             console.debug("Creating a marker with uid", newMarker.uid);
@@ -483,7 +484,7 @@ export var squadMinimap = Map.extend({
             // Send the MOVING_WEAPON event to the server
             App.session.ws.send(
                 JSON.stringify({
-                    type: 'ADDING_MARKER',
+                    type: "ADDING_MARKER",
                     uid: newMarker.uid,
                     lat: latlng.lat,
                     lng: latlng.lng,
@@ -518,7 +519,6 @@ export var squadMinimap = Map.extend({
      * Create a new target, or weapon is none exists
      */
     _handleDoubleClick: function (e) {
-        var target;
 
         // If out of bounds
         if (e.latlng.lat > 0 ||  e.latlng.lat < -this.pixelSize || e.latlng.lng < 0 || e.latlng.lng > this.pixelSize) {
@@ -527,7 +527,6 @@ export var squadMinimap = Map.extend({
 
         // No weapon yet ? Create one
         if (this.activeWeaponsMarkers.getLayers().length === 0) {
-            //new squadWeaponMarker(e.latlng, {icon: mortarIcon}, this).addTo(this.markersGroup, this).addTo(this.activeWeaponsMarkers);
             this.createWeapon(e.latlng);
             return 0;
         }
@@ -620,7 +619,7 @@ export var squadMinimap = Map.extend({
                     console.debug("sending new arrow with uid", arrow.uid);
                     App.session.ws.send(
                         JSON.stringify({
-                            type: 'ADDING_ARROW',
+                            type: "ADDING_ARROW",
                             uid: arrow.uid,
                             color: color,
                             latlngs: arrow.polyline.getLatLngs(),
@@ -717,7 +716,7 @@ export class MapArrow {
             console.debug("Deleting new arrow with uid", this.uid);
             App.session.ws.send(
                 JSON.stringify({
-                    type: 'DELETE_ARROW',
+                    type: "DELETE_ARROW",
                     uid: this.uid,
                 })
             );

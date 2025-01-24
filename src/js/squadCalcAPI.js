@@ -1,5 +1,6 @@
 import packageInfo from "../../package.json";
 import { App } from "../app.js";
+import { createSessionTooltips, leaveSessionTooltips } from "./tooltips.js";
 import SquadSession from "./squadSession.js";
 
 /**
@@ -88,9 +89,11 @@ export const checkApiHealth = async () => {
             if (data.status === "OK") {
                 console.log(`Connected to ${process.env.API_URL}`);
                 const urlParams = new URLSearchParams(window.location.search);
-                const sessionId = urlParams.get('session');
+                const sessionId = urlParams.get("session");
                 if (sessionId) {
                     $(".btn-session").addClass("active");
+                    createSessionTooltips.disable();
+                    leaveSessionTooltips.enable();
                     App.session = new SquadSession(sessionId);
                 }
             }

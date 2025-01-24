@@ -17,7 +17,7 @@
     "elevation": "elevation",
     "howFar": "(how far it will shoot)",
     "save": "Save",
-    "copied": "Copied !",
+    "copied": "Added to clipboard 📋",
     "resultLater": "(the results for later)",
     "spreadDesc": "Due to the weapon's minute of angle (MOA) imprecision and the length of the projectile, shots can spread in an elliptical pattern.",
     "moaDesc": "A minute of angle (MOA) in artillery measures weapon imprecision, indicating the spread of shots. One MOA equals 1/60th of a degree.",
@@ -43,9 +43,13 @@
     "sessionCreated": "Session created !",
     "sessionClosed": "Session closed",
     "sessionJoined": "Session joined !",
-    "shareSession": "Share the URL to a friend",
+    "shareSession": "Click here to copy link to clipboard",
     "someoneLeft": "Someone left 🏃🏼‍➡️",
     "someoneJoined": "🏃🏼‍➡️ Someone joined !",
     "youAreAlone": "You are alone in this session",
-    "hostOnly": "Only the session host can change the map"
+    "hostOnly": "Only the session host can change the map",
+    "createSession": "Create a shared session",
+    "leaveSession": "Leave session",
+    "outdatedVersion": "Outdated version",
+    "pleaseupdate": "Please refresh your page"
 }

@@ -41,15 +41,16 @@ export default class SquadContextMenu {
                         <button class="ctxButton middleContextButton">
                             <span class="middleContext" data-icon="middleContext"></span>
                         </button>
-                        <button class="ctxButton enemyFOBButton">
-                            <span class="enemyfob" data-team="enemy" data-category="deployables" data-icon="deployable_fob"></span>
+                        <button class="ctxButton enemyButton">
+                            <span class="enemy" data-team="enemy" data-category="infantry" data-icon="map_genericinfantry"></span>
                         </button>
                         <button class="ctxButton enemyVehiclesButton">
                             <span class="enemyVehicles" data-team="enemy" data-category="vehicles" data-icon="map_truck_logistics"></span>
                         </button>
-                        <button class="ctxButton enemyButton">
-                            <span class="enemy" data-team="enemy" data-category="infantry" data-icon="map_genericinfantry"></span>
+                        <button class="ctxButton enemyFOBButton">
+                            <span class="enemyfob" data-team="enemy" data-category="deployables" data-icon="deployable_fob"></span>
                         </button>
+
                     </div>`
                 );
 
