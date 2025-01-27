@@ -82,14 +82,21 @@ export default class SquadCalc {
             this.minimap.clear(); 
             this.minimap.draw();
 
+            // Broadcast the map change to the session if needed
+            const broadcast = event.broadcast ?? true;
+
             // Update the URL
-            this.updateUrlParams({ map: this.minimap.activeMap.name, layer: null });
+            if (broadcast) {
+                this.updateUrlParams({ map: this.minimap.activeMap.name, layer: null });
+            } else {
+                this.updateUrlParams({ map: this.minimap.activeMap.name });
+            }
+            
 
             // Refresh layer selector
             this.loadLayers();
 
-            // Broadcast the map change to the session if needed
-            const broadcast = event.broadcast ?? true;
+
 
             if (broadcast && this.session.ws && this.session.ws.readyState === WebSocket.OPEN) {
                 this.session.ws.send(
@@ -385,8 +392,13 @@ export default class SquadCalc {
 
         $("#mapLayerMenu").find("button.btn-session").on("click", () => {
             if ($(".btn-session").hasClass("active")) {
-                if (this.session) this.session.ws.close(); 
-                    
+                
+                // Quit session
+                if (this.session) {
+                    this.session.ws.close();
+                    this.session = false;
+                }
+                
                 // Update UI
                 $(".btn-session").removeClass("active");
                 leaveSessionTooltips.disable();
@@ -402,9 +414,9 @@ export default class SquadCalc {
             }
         });
 
-        $("#mapLayerMenu").find("button.layers").on("click", (e) => {
+        $("#mapLayerMenu").find("button.layers").on("click", (event) => {
 
-            var val = $(e.currentTarget).attr("value");
+            var val = $(event.currentTarget).attr("value");
 
             if (val === "helpmap") {
                 $(".btn-"+val).toggleClass("active");
@@ -468,7 +480,7 @@ export default class SquadCalc {
 
             
     
-            $(document).on("keydown", (e) => {
+            $(document).on("keydown", (event) => {
 
                 // Disable Shortkeys in legacy mode
                 if (this.ui == 0) { return; }
@@ -477,8 +489,7 @@ export default class SquadCalc {
                 if (weaponInformation.open || calcInformation.open || helpDialog.open) { return; }
 
                 // ENTER = FOCUS MODE
-                if (e.key === "Enter") {
-                  
+                if (event.key === "Enter") {
                     if ($("header").is(":hidden")) { // Quit focus mode
                         $("header").show();
                         $("footer").show();
@@ -495,12 +506,12 @@ export default class SquadCalc {
                 }
 
                 // DELETE = REMOVE ALL MARKERS
-                if (e.code === "Delete") {
+                if (event.code === "Delete") {
                     this.minimap.deleteTargets();
                 }
 
                 // BACKSPACE = REMOVE LAST CREATED TARGET MARKER
-                if (e.code === "Backspace") {
+                if (event.code === "Backspace") {
                     if (this.minimap.targets.length > 0) this.minimap.targets.at(-1).delete();
                 }
 
@@ -512,9 +523,11 @@ export default class SquadCalc {
         }
 
         let countdown;
-            
+
         const closeToast = () => {
-            document.querySelector("#toast").style.animation = "close 0.3s cubic-bezier(.87,-1,.57,.97) forwards";
+            const toast = document.querySelector("#toast");
+            if (!toast) return;
+            toast.style.animation = "close 0.3s cubic-bezier(.87,-1,.57,.97) forwards";
             document.querySelector("#timer").classList.remove("timer-animation");
             clearTimeout(countdown);
         };
@@ -522,31 +535,42 @@ export default class SquadCalc {
         this.openToast = (type, title, text) => {
             const toast = document.querySelector("#toast");
             clearTimeout(countdown);
+        
+            // Reset timer animation by forcing reflow
+            const timer = document.querySelector("#timer");
+            timer.classList.remove("timer-animation");
+            void timer.offsetWidth; // Trigger reflow
+            timer.classList.add("timer-animation");
+        
             toast.classList = [type];
             toast.style.animation = "open 0.3s cubic-bezier(.47,.02,.44,2) forwards";
-            document.querySelector("#timer").classList.add("timer-animation");
+        
             toast.querySelector("h4").setAttribute("data-i18n", `tooltips:${title}`);
             toast.querySelector("h4").innerHTML = i18next.t(`tooltips:${title}`);
             toast.querySelector("p").setAttribute("data-i18n", `tooltips:${text}`);
-            toast.querySelector("p").innerHTML = i18next.t(`tooltips:${text}`);    
-            countdown = setTimeout(() => { closeToast(); }, 5000);
+            toast.querySelector("p").innerHTML = i18next.t(`tooltips:${text}`);
+        
+            // Start a new countdown
+            countdown = setTimeout(() => {
+                closeToast();
+            }, 5000);
         };
 
         // Global click listener for toast
-        document.querySelector("#toast").addEventListener("click", () => {
+        document.querySelector("#toast").addEventListener("click", (event) => {
             const toast = document.querySelector("#toast");
             const title = toast.querySelector("h4").getAttribute("data-i18n");  // Get data-i18n attribute
-        
-            // Handle click based on the title of the toast
-            if (title === "tooltips:sessionCreated") {
-                closeToast();  // Close current toast
-                this.copy(window.location.href);  // Copy the session ID
-                this.openToast("success", "copied", "");  // Open the new toast
-            } else {
-                closeToast();  // Close other toasts
-            }
-        });
+            
+            // close current toast
+            closeToast();
 
+            // Open another toast and copy current URL
+            if (title === "tooltips:sessionCreated" && event.target.tagName != "BUTTON") {
+                this.copy(window.location.href);
+                this.openToast("success", "copied", "");
+            }
+
+        });
       
         weaponInformation.addEventListener("close", function(){
             // Remove listeners when closing weapon information to avoid stacking
@@ -554,22 +578,21 @@ export default class SquadCalc {
             $(".heightPadding input").off();
         });
         
-        $("#canvasControls button").on("click", (e) => {
-            if ($(e.currentTarget).hasClass("active")){ return;}
+        $("#canvasControls button").on("click", (event) => {
+            if ($(event.currentTarget).hasClass("active")){ return;}
             $("#canvasControls > .active").first().removeClass("active");
-            $(e.currentTarget).addClass("active");
+            $(event.currentTarget).addClass("active");
             $(".sim.active").removeClass("active");
-            $("#"+$(e.currentTarget).val()).addClass("active");
+            $("#"+$(event.currentTarget).val()).addClass("active");
         });
 
-        $("#settingsControls button").on("click", (e) => {
-            if ($(e.currentTarget).hasClass("active")){ return;}
+        $("#settingsControls button").on("click", (event) => {
+            if ($(event.currentTarget).hasClass("active")){ return;}
             $("#settingsControls > .active").first().removeClass("active");
-            $(e.currentTarget).addClass("active");
+            $(event.currentTarget).addClass("active");
             $(".panel.active").removeClass("active");
-            $("#"+$(e.currentTarget).val()).addClass("active");
+            $("#"+$(event.currentTarget).val()).addClass("active");
         });
-
 
         this.show();
     }
@@ -818,13 +841,13 @@ export default class SquadCalc {
 
     /**
      * Filter invalid key pressed by the user
-     * @param {string} e - keypress event
+     * @param {event} event - keypress event
      * @returns {event} - empty event if we don't want the user input
      */
-    filterInput(e) {
+    filterInput(event) {
         var chrTyped;
         var chrCode = 0;
-        var evt = e ? e : event;
+        var evt = event;
 
         if (evt.charCode !== null) {
             chrCode = evt.charCode;
@@ -840,11 +863,11 @@ export default class SquadCalc {
             chrTyped = String.fromCharCode(chrCode);
         }
 
-        //Letters, Digits, special keys & backspace [\b] work as usual:
+        // Letters, Digits, special keys & backspace [\b] work as usual:
         if (chrTyped.match(/\d|[\b]|SPECIAL|[A-Za-z]/)) { return true; }
         if (evt.altKey || evt.ctrlKey || chrCode < 28) { return true; }
 
-        //Any other input Prevent the default response:
+        // Any other input Prevent the default response:
         if (evt.preventDefault) { evt.preventDefault(); }
         evt.returnValue = false;
         return false;
@@ -1073,14 +1096,14 @@ export default class SquadCalc {
 
     /**
      * Copy current calc to clipboard
-     * @param {event} e - click event that triggered copy
+     * @param {event} event - click event that triggered copy
      */
-    copyCalc(e) {
+    copyCalc(event) {
         
         // If calcs aren't ready, do nothing
         if (!$(".copy").hasClass("copy")) { return 1; }
 
-        if (e.target.id === "highlowicon" || e.target.id === "highlow") {
+        if (event.target.id === "highlowicon" || event.target.id === "highlow") {
             if ($("#highlow").hasClass("active")) {
                 this.changeHighLow();
             }
@@ -1202,35 +1225,43 @@ export default class SquadCalc {
     }
 
     updateUrlParams(updates = {}) {
-
         const urlParams = new URLSearchParams(window.location.search);
-    
+
         // Apply updates (add or update parameters)
         for (const [key, value] of Object.entries(updates)) {
             if (value !== null && value !== undefined) {
                 urlParams.set(key, value);
+                
             } else {
-                urlParams.delete(key); // Remove the param if value is null or undefined
+                urlParams.delete(key);
             }
         }
-       
-        // Sort the parameters based on the desired order
-        const sortedParams = new URLSearchParams();
-        
-        // First, add params in the order defined in paramOrder
-        ["map", "layer", "type", "session"].forEach((param) => {
-            if (urlParams.has(param)) sortedParams.set(param, urlParams.get(param));
-        });
     
-        // Add any remaining parameters that aren't in the paramOrder
+        // Define the desired parameter order
+        const paramOrder = ["map", "layer", "type", "session"];
+    
+        // Create a new URLSearchParams object for the sorted parameters
+        const sortedParams = new URLSearchParams();
+
+        // Add parameters in the order defined by paramOrder
+        paramOrder.forEach((param) => {
+            if (urlParams.has(param)) {
+                sortedParams.set(param, urlParams.get(param));
+                urlParams.delete(param);
+            }
+        });
+
+        // Add any remaining parameters (not in paramOrder)
         for (const [key, value] of urlParams.entries()) {
-            if (!sortedParams.has(key)) sortedParams.set(key, value);
+            sortedParams.set(key, value);
         }
-      
-        // Update the URL
+
+        // Construct the new URL
         const newUrl = `${window.location.pathname}?${sortedParams.toString()}`;
         window.history.replaceState({}, "", newUrl);
     }
+    
+    
     
     
     

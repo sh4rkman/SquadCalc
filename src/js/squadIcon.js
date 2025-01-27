@@ -124,18 +124,24 @@ export var mortarIcon2 = new Icon({
 
 export var targetIconMinimal = new Icon({
     iconUrl: targetIconImgMinimal,
+    shadowUrl: shadowIconImg,
+    shadowSize: [0, 0], // hack to avoid 404
     iconSize:     [30, 30], 
     iconAnchor:   [15, 15],
 });
 
 export var targetIconSessionMinimal = new Icon({
     iconUrl: targetIconSessionImgMinimal,
+    shadowUrl: shadowIconImg,
+    shadowSize: [0, 0], // hack to avoid 404
     iconSize:     [30, 30], 
     iconAnchor:   [15, 15],
 });
 
 export var targetIconMinimalDisabled = new Icon({
     iconUrl: targetIconImgDisabledMinimal,
+    shadowUrl: shadowIconImg,
+    shadowSize: [0, 0], // hack to avoid 404
     iconSize:     [30, 30], 
     iconAnchor:   [15, 15],
 });

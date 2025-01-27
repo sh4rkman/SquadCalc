@@ -52,5 +52,7 @@
     "leaveSession": "Quitter la session",
     "outdatedVersion": "Version obsolète",
     "pleaseupdate": "Veuillez rafraîchir votre page",
-    "sessionFull": "La session est pleine"
+    "sessionFull": "La session est pleine",
+    "invalidSession": "SessionID invalide",
+    "invalidSessionRules": "l'ID de session doit être composé de 6 à 20 caractères"
 }

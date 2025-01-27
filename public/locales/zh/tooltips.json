@@ -52,5 +52,7 @@
     "leaveSession": "离开会话",
     "outdatedVersion": "版本过时",
     "pleaseupdate": "请刷新您的页面",
-    "sessionFull": "会话已满"
+    "sessionFull": "会话已满",
+    "invalidSession": "无效的 SessionID",
+    "invalidSessionRules": "SessionID 必须由 6 到 20 个字符组成"
 }

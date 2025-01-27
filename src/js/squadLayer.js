@@ -37,7 +37,6 @@ export default class SquadLayer {
 
         // Hold the availables clusters at all time
         this.currentReachableClusters = new Set();
-
         this.mains = [];
         this.mainZones = {
             rectangles: [],
@@ -46,14 +45,12 @@ export default class SquadLayer {
         };
         this.caches = new FeatureGroup().addTo(this.map);
         this.flags = [];
-
         this.reversed = false;
         this.init();
 
         // If already zoomed in, reveal capzones/main assets
-        if (this.map.getZoom() > this.map.detailedZoomThreshold) {
-            this.revealAllCapzones();
-        }
+        if (this.map.getZoom() > this.map.detailedZoomThreshold) this.revealAllCapzones();
+
         this.setMainZoneOpacity(true);
     }
 
@@ -104,8 +101,8 @@ export default class SquadLayer {
 
                     obj.splinePoints.forEach((point) => {
                         var latlng = this.convertToLatLng(point.location_x, point.location_y);
-                        totalLat += ( (point.location_y - this.offset_y) / 100 * -this.map.gameToMapScale );
-                        totalLng += ( (point.location_x - this.offset_x) / 100 * this.map.gameToMapScale );
+                        totalLat += ((point.location_y - this.offset_y) / 100 * -this.map.gameToMapScale);
+                        totalLng += ((point.location_x - this.offset_x) / 100 * this.map.gameToMapScale);
                         latlngs.push(latlng);
                     });
             
@@ -282,7 +279,7 @@ export default class SquadLayer {
                 interactive: false,
                 keyboard: false,
                 zIndexOffset: -1000,
-                opacity: 1, //todo: change to 0 
+                opacity: 1,
                 icon: new DivIcon({
                     className: "helipads",
                     iconSize: [36, 36],
@@ -298,16 +295,21 @@ export default class SquadLayer {
      * @returns {void}
      */
     createDeployables() {
+
+        let assetsMarkerParams = {
+            interactive: false,
+            keyboard: false,
+            zIndexOffset: -1000,
+            opacity: 1,
+        };
+
         this.layerData.assets.deployables.forEach((asset) => {
 
             const latlng = this.convertToLatLng(asset.location_x, asset.location_y);
 
             if (asset.type === "Repair Station") {
                 this.mainZones.assets.push(new Marker(latlng, {
-                    interactive: false,
-                    keyboard: false,
-                    zIndexOffset: -1000,
-                    opacity: 1, //todo: change to 0
+                    ...assetsMarkerParams,
                     icon: new DivIcon({
                         className: "repairStations",
                         iconSize: [30, 30]
@@ -317,10 +319,7 @@ export default class SquadLayer {
 
             if (asset.type === "Ammo Crate") {
                 this.mainZones.assets.push(new Marker(latlng, {
-                    interactive: false,
-                    keyboard: false,
-                    zIndexOffset: -1000,
-                    opacity: 1, //todo: change to 0
+                    ...assetsMarkerParams,
                     icon: new DivIcon({
                         className: "ammocrates",
                         iconSize: [25, 25]
@@ -392,9 +391,6 @@ export default class SquadLayer {
 
         // Creating protectionZones + noConstructionZones
         this.layerData.mapAssets.protectionZones.forEach((pZone) => {
-
-            //if (this.layerData.rawName != "Sumari_AAS_v1" && this.layerData.rawName != "Kohat_RAAS_v1") return;
-
 
             // Skip small protection zones
             if (pZone.objects[0].boxExtent.extent_x < 1000) return;

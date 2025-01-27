@@ -52,5 +52,7 @@
     "leaveSession": "Leave session",
     "outdatedVersion": "Outdated version",
     "pleaseupdate": "Please refresh your page",
-    "sessionFull": "Session is full"
+    "sessionFull": "Session is full",
+    "invalidSession": "Invalid SessionID",
+    "invalidSessionRules": "SessionID must be 6-20 alphanumeric characters"
 }

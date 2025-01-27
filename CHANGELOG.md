@@ -1,3 +1,28 @@
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **37.1.0** *(2025-01-27)*
+
+
+<img src="https://img.shields.io/badge/-new-green"> **Sessions Pings**: left clicking the map while in a session display a ping on the map for everyone in the session. Pings also happens when other participants act on markers (addition, deletions, ...)
+
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Sharing a session URL now correctly preserve the layer shared
+
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Clicking the close button of the "Session created" toast doesn't copy the session ID anymore (fix 272)
+
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Leaving a session now correctly re-color other peoples markers the spreads and damage zones in red (fix 270)
+
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed 404 errors in console about missing markers/shadows (fix 273)
+
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Opening several toasts now correctly restart the timer/closing animation
+
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed background-color inside the contextmenus for Chromium based browser (fix 275)
+
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Sessions ID are now restricted to 6-20 characters. Added a toast message if attempting to create a invalid session ID.
+
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> the distance texts between flag now fadeout while dragging targets/markers (fix 264)
+
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
+
 # <img src="https://img.shields.io/badge/-major%20release-b22222?style=for-the-badge">  **37.0.0** *(2025-01-24)*
 
 <img src="https://img.shields.io/badge/-new-green"> **Sessions !**
@@ -7,6 +32,8 @@ Introducing the session system: You can now create collaborative sessions and sh
 <img src="https://img.shields.io/badge/-%20improv%20-orange"> Reordered marker categories in the context menu.
 
 <img src="https://img.shields.io/badge/-%20improv%20-orange"> Improved the map list display on devices with small screen heights (fix #266).
+
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Standardized URL parameters order (Map>Layer>type>Session)
 
 <img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed arrow markers not working on Chromium-based browsers (fix #268, thanks @devil4ngle!).
 

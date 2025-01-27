@@ -52,5 +52,7 @@
     "leaveSession": "Покинути сесію",
     "outdatedVersion": "Застаріла версія",
     "pleaseupdate": "Будь ласка, оновіть сторінку",
-    "sessionFull": "Сесія заповнена"
+    "sessionFull": "Сесія заповнена",
+    "invalidSession": "Недійсний SessionID",
+    "invalidSessionRules": "SessionID повинен містити від 6 до 20 символів"
 }
