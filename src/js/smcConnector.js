@@ -101,31 +101,20 @@ async function setupWebSockets() {
 
         // Add error and close event handlers for both sockets
         socketMap.addEventListener("close", handleDisconnect);
-        socketMap.addEventListener("error", handleError);
+        socketMap.addEventListener("error", handleDisconnect);
         socketCoordinates.addEventListener("close", handleDisconnect);
-        socketCoordinates.addEventListener("error", handleError);
+        socketCoordinates.addEventListener("error", handleDisconnect);
     } catch (error) {
         console.error("Error setting up WebSocket connections:", error);
-        handleDisconnect(null);
+        handleDisconnect();
     }
 }
 
 /**
  * Handles WebSocket disconnection events
- * @param {Event} event - The close event
  */
-function handleDisconnect(event) {
+function handleDisconnect() {
     startConnectionAttempts();
-}
-
-/**
- * Handles WebSocket error events
- * @param {Event} error - The error event
- */
-function handleError(error) {
-    if (!isConnecting) {
-        handleDisconnect(null);
-    }
 }
 
 /**
