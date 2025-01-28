@@ -13,7 +13,7 @@ let connectionInterval = null;
  * @returns {Promise<void>} A promise that resolves when initialization is complete
  */
 export async function initWebSocket() {
-    //if (process.env.WEBSOCKET != "true") { return; }
+    if (process.env.WEBSOCKET != "true") { return; }
     if (isConnecting) return;
     startConnectionAttempts();
 }
