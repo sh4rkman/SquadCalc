@@ -24,11 +24,10 @@ export async function initWebSocket() {
 function startConnectionAttempts() {
     if (!isConnecting) {
         isConnecting = true;
-        // Clean up any existing connections
         cleanup();
-        // Start connection attempts
         connectionInterval = setInterval(async () => {
-            if (await checkServerAvailability()) {
+            const isAvailable = await checkServerAvailability();
+            if (isAvailable) {
                 await setupWebSockets();
             }
         }, 5000);
@@ -75,7 +74,7 @@ async function setupWebSockets() {
         socketMap.addEventListener("message", async (event) => {
             if (event.data === "Map") {
                 if (socketMap.readyState === WebSocket.OPEN) {
-                    socketMap.send(App.minimap.activeMap.mapURL);
+                    socketMap.send(App.minimap.activeMap.name);
                 }
             }
 
@@ -105,7 +104,6 @@ async function setupWebSockets() {
         socketCoordinates.addEventListener("close", handleDisconnect);
         socketCoordinates.addEventListener("error", handleDisconnect);
     } catch (error) {
-        console.error("Error setting up WebSocket connections:", error);
         handleDisconnect();
     }
 }
@@ -160,23 +158,36 @@ function checkCoordinates(socketCoordinates) {
 }
 
 /**
- * Checks the availability of a SquadMortarOverlay.exe by attempting to load a fake image from it
- * @param {number} [timeout] - The maximum time to wait for response
- * @returns {Promise<boolean>} A promise that resolves to `true` if the SquadMortarOverlay.exe is running
+ * Checks if the server is available
+ * @param {number} [timeout=2000] - Timeout in milliseconds
+ * @returns {Promise<boolean>} True if server is available, false otherwise
  */
 async function checkServerAvailability(timeout = 2000) {
+    // Using XMLHttpRequest instead of fetch to avoid console errors
     return new Promise((resolve) => {
-        const img = new Image();
-        const timer = setTimeout(() => {
-            img.src = "";
-            resolve(false);
-        }, timeout);
+        const xhr = new XMLHttpRequest();
 
-        img.onload = img.onerror = () => {
-            clearTimeout(timer);
-            resolve(true);
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4) {
+                resolve(xhr.status === 200);
+            }
         };
 
-        img.src = "http://127.0.0.1:12345";
+        // Suppress error event
+        xhr.onerror = () => {
+            resolve(false);
+        };
+
+        xhr.ontimeout = () => {
+            resolve(false);
+        };
+
+        try {
+            xhr.open('GET', 'http://127.0.0.1:12347/health', true);
+            xhr.timeout = timeout;
+            xhr.send();
+        } catch (e) {
+            resolve(false);
+        }
     });
 }
