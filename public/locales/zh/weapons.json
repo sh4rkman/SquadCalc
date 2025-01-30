@@ -1,15 +1,15 @@
 {
-    "deployables": "可部署",
+    "deployables": "武器工事",
         "Mortar": "迫击炮",
-        "UB-32": "火箭巢",
-        "HellCannon": "煤气罐罐",
-    "vehicles": "车辆",
+        "UB-32": "UB32火箭巢",
+        "HellCannon": "地狱加农(煤气罐)",
+    "vehicles": "载具",
         "Tech.Mortar": "迫击炮皮卡",
         "Tech.UB-32": "火箭巢车",
-        "BM-21Grad": "冰雹",
+        "BM-21Grad": "BM21-冰雹",
         "M1064M121": "M1064 M121",
-            "impact": "触发式",
+            "impact": "高爆",
             "nearSurface": "空爆",
-    "experimental": "实验",
+    "experimental": "实验性武器",
         "Mk19": "MK19-遥控武器站"
 }
