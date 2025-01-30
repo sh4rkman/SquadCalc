@@ -88,7 +88,7 @@ export function loadSettings(){
     $("#revealLayerOnHoverSettings").prop("checked", App.userSettings.revealLayerOnHover);
 
     App.userSettings.capZoneOnHover = loadLocalSetting("settings-capZone-onHover", 0);
-    $("#capZoneOnHoverSetting").prop("checked", App.userSettings.capZoneOnHover);
+    $("#capZoneOnHoverSettings").prop("checked", App.userSettings.capZoneOnHover);
 
     App.userSettings.autoLane = loadLocalSetting("settings-auto-lane");
     $("#autoLaneSetting").prop("checked", App.userSettings.autoLane);

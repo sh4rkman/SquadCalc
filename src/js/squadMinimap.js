@@ -68,7 +68,7 @@ export var squadMinimap = Map.extend({
         this.activeArrows = [];
         this.layerGroup = new LayerGroup().addTo(this);
         this.markersGroup = new LayerGroup().addTo(this);
-        this.targets = [];
+        this.history = [];
         //this.grid = "";
         //this.gameToMapScale = "";
         //this.mapToGameScale = "";
@@ -97,7 +97,7 @@ export var squadMinimap = Map.extend({
             this._singleClickTimeout = setTimeout(() => {
                 this._handleclick(event);
                 this._singleClickTimeout = null;
-            }, 125);
+            }, 175);
         });
         
         this.on("dblclick", (event) => {
@@ -249,6 +249,7 @@ export var squadMinimap = Map.extend({
         if (this.layer) this.layer.clear();
     
         $(".btn-delete").hide();
+        $(".btn-undo").hide();
 
         // Reset map
         this.setView([-this.pixelSize/2, this.pixelSize/2], 2);
@@ -277,6 +278,7 @@ export var squadMinimap = Map.extend({
         });
     },
 
+
     /**
      * Delete every target markers on the map
      */
@@ -285,6 +287,40 @@ export var squadMinimap = Map.extend({
             target.delete();
         });
     },
+
+
+    /**
+     * Delete every Contextmenu markers on the map
+     */
+    deleteMarkers: function(){
+        this.activeMarkers.eachLayer(function (marker) {
+            marker.delete();
+        });
+    },
+
+
+    /**
+     * Delete every Contextmenu markers on the map
+     */
+    deleteArrows: function(){
+        this.activeArrows.forEach(arrow => {
+            arrow.delete();
+        });
+    },
+
+
+    /**
+     * Return true if there is at least one marker on the map
+     * @returns {Boolean}
+     */
+    hasMarkers: function(){
+        return (
+            this.activeArrows.length > 0 ||
+            this.activeMarkers.getLayers().length > 0 ||
+            this.activeTargetsMarkers.getLayers().length > 0
+        );
+    },
+
 
     /**
      * Recalc and update every target marker on the minimap
@@ -435,8 +471,11 @@ export var squadMinimap = Map.extend({
             );
         }
 
-        this.targets.push(target);
+        // Add Item to history
+        this.history.push(target);
+
         $(".btn-delete").show();
+        $(".btn-undo").show();
 
         if (App.userSettings.targetAnimation){
             if (this.activeWeaponsMarkers.getLayers().length === 1) {
@@ -496,6 +535,12 @@ export var squadMinimap = Map.extend({
         
         // Create marker and close context menu
         let newMarker = new squadStratMarker(latlng, markerOptions, this).addTo(this.activeMarkers);
+
+        // Add Item to history
+        this.history.push(newMarker);
+
+        $(".btn-delete").show();
+        $(".btn-undo").show();
 
         if (!uid && App.session.ws && App.session.ws.readyState === WebSocket.OPEN) {
             console.debug("Creating a marker with uid", newMarker.uid);
@@ -649,10 +694,8 @@ export var squadMinimap = Map.extend({
                 isDrawing = false; // Stop the drawing process
                 this.off("mousemove", handleMouseMove); // Remove the mousemove listener
     
-                if (!arrow.uid) {
-                    arrow.uid = uuidv4(); // Assign a unique ID if not already provided
-                }
-    
+                if (!arrow.uid) arrow.uid = uuidv4();
+                
                 // Send the arrow to the WebSocket server
                 if (App.session.ws && App.session.ws.readyState === WebSocket.OPEN) {
                     console.debug("sending new arrow with uid", arrow.uid);
@@ -671,7 +714,7 @@ export var squadMinimap = Map.extend({
         const handleRightClick = () => {
             if (isDrawing && arrow) {
                 // Cancel drawing and remove the arrow
-                arrow.removeArrow(); // Custom method to clean up the arrow
+                arrow.delete(); // Custom method to clean up the arrow
                 arrow = null; // Reset the arrow reference
                 isDrawing = false;
                 this.off("mousemove", handleMouseMove);
@@ -686,15 +729,11 @@ export var squadMinimap = Map.extend({
             this.on("contextmenu", handleRightClick); // Cancel on right-click
         }
     }
-    
-
-
-    
-
 
 });
 
 export class MapArrow {
+    
     constructor(map, color, startLatLng, endLatLng, uid = null) {
         this.map = map;
         this.color = color;
@@ -724,8 +763,8 @@ export class MapArrow {
             }]
         };
         this.createArrow();
+        this.map.activeArrows.push(this);
         console.debug("Creating new arrow with uid", this.uid);
-        App.minimap.activeArrows.push(this);
     }
 
     // Creates the arrow on the map
@@ -737,20 +776,28 @@ export class MapArrow {
         };
 
         const latlngs = [this.startLatLng, this.endLatLng];
-        this.polyline = new Polyline(latlngs, arrowOptions).addTo(App.minimap.activeArrowsGroup);
+        this.polyline = new Polyline(latlngs, arrowOptions).addTo(this.map.activeArrowsGroup);
         this.polylineDecorator = new PolylineDecorator(this.polyline, this.arrowPattern).addTo(App.minimap.activeArrowsGroup);
         this.polyline.uid = this.uid;
 
         // Add a contextmenu event listener for deletion
         this.polyline.on("contextmenu", (event) => {
-            this.removeArrow();
+            this.delete();
             DomEvent.preventDefault(event);
             DomEvent.stopPropagation(event);
         });
+
+        // Add Item to history
+        this.map.history.push(this);
+
+        $(".btn-delete").show();
+        $(".btn-undo").show();
     }
 
+
     // Removes the arrow from the map
-    removeArrow(broadcast = true) {
+    delete(broadcast = true) {
+
         if (broadcast && App.session.ws && App.session.ws.readyState === WebSocket.OPEN) {
             console.debug("Deleting new arrow with uid", this.uid);
             App.session.ws.send(
@@ -760,8 +807,23 @@ export class MapArrow {
                 })
             );
         }
-        App.minimap.activeArrows = App.minimap.activeArrows.filter(activeArrow => activeArrow !== this);
+
+        this.map.activeArrows = this.map.activeArrows.filter(activeArrow => activeArrow !== this);
         this.map.removeLayer(this.polyline);
         this.map.removeLayer(this.polylineDecorator);
+
+        // remove from this.map.activeArrowsGroup
+        
+        this.polyline.removeFrom(this.map.activeArrowsGroup).remove();
+        this.polylineDecorator.removeFrom(this.map.activeArrowsGroup).remove();
+
+        // Remove the marker from targets array history
+        this.map.history = this.map.history.filter(object => object !== this);
+
+        // If that was the last Marker on the map, hide "delete all" buttons
+        if (!this.map.hasMarkers()) {
+            $(".btn-delete").hide();
+            $(".btn-undo").hide();
+        }
     }
 }

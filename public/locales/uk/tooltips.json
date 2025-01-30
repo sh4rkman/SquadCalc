@@ -11,7 +11,7 @@
     "error": "Помилка!",
     "apiError": "API не підключено..",
     "apiError_layers": "Can't fetch layers from API",
-    "deleteTargets": "Видалити всі цілі",
+    "deleteTargets": "Видалити всі цілі та маркери",
     "bearing": "Підшипник",
     "whereToAim": "(куди прицілюватися)",
     "elevation": "Висота",
@@ -54,5 +54,9 @@
     "pleaseupdate": "Будь ласка, оновіть сторінку",
     "sessionFull": "Сесія заповнена",
     "invalidSession": "Недійсний SessionID",
-    "invalidSessionRules": "SessionID повинен містити від 6 до 20 символів"
+    "invalidSessionRules": "SessionID повинен містити від 6 до 20 символів",
+    "undo": "Скасувати",
+    "backspace": "Backspace",
+    "enter": "Enter",
+    "delete": "Delete"
 }

@@ -31,7 +31,7 @@ export class SquadObjective {
                 keyboard: false,
                 html: html,
                 iconSize: [300, 20],
-                iconAnchor: [150, 38],
+                iconAnchor: App.userSettings.circlesFlags ? [150, 38] : [150, 32],
                 shadowUrl: "../img/icons/markers/marker_shadow.webp",
                 shadowSize: [0, 0],
             })
@@ -113,6 +113,24 @@ export class SquadObjective {
                 iconAnchor: [22, 11]
             })
         }).addTo(this.layerGroup);
+
+
+        if (!this.isMain){ html = this.name;}
+        this.nameText.removeFrom(this.layerGroup).remove();
+        this.nameText = new Marker(this.latlng, {
+            interactive: false,
+            keyboard: false,
+            icon: new DivIcon({
+                className: "objText",
+                keyboard: false,
+                html: html,
+                iconSize: [300, 20],
+                iconAnchor: App.userSettings.circlesFlags ? [150, 38] : [150, 32],
+                shadowUrl: "../img/icons/markers/marker_shadow.webp",
+                shadowSize: [0, 0],
+            })
+        }).addTo(this.layerGroup);
+
     }
 
 

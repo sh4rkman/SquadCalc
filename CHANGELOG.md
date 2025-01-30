@@ -1,23 +1,41 @@
-# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **37.1.0** *(2025-01-27)*
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **37.1.0** *(2025-01-30)*
 
 
-<img src="https://img.shields.io/badge/-new-green"> **Sessions Pings**: left clicking the map while in a session display a ping on the map for everyone in the session. Pings also happens when other participants act on markers (addition, deletions, ...)
+<img src="https://img.shields.io/badge/-new-green"> Session Pings: Left-clicking the map while in a session displays a ping for everyone in the session. Pings also occur when other participants interact with markers (adding, deleting, etc.).
 
-<img src="https://img.shields.io/badge/-%20fix%20-b22"> Sharing a session URL now correctly preserve the layer shared
+<img src="https://img.shields.io/badge/-%20Translations%20-blue"> Improved ZH-CH translations by @Guducat (Thanks! Fix #281).
 
-<img src="https://img.shields.io/badge/-%20fix%20-b22"> Clicking the close button of the "Session created" toast doesn't copy the session ID anymore (fix 272)
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Sharing a session URL now correctly preserves the shared layer.
 
-<img src="https://img.shields.io/badge/-%20fix%20-b22"> Leaving a session now correctly re-color other peoples markers the spreads and damage zones in red (fix 270)
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Clicking the close button on the "Session Created" toast no longer copies the session ID (Fix #272).
 
-<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed 404 errors in console about missing markers/shadows (fix 273)
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Leaving a session now correctly re-colors other players' markers, as well as the spread and damage zones, in red (Fix #270).
 
-<img src="https://img.shields.io/badge/-%20fix%20-b22"> Opening several toasts now correctly restart the timer/closing animation
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Closing SquadMortarOverlay now correctly re-enables the HD map button.
 
-<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed background-color inside the contextmenus for Chromium based browser (fix 275)
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Opening multiple toasts now correctly restarts the timer and closing animation.
 
-<img src="https://img.shields.io/badge/-%20improv%20-orange"> Sessions ID are now restricted to 6-20 characters. Added a toast message if attempting to create a invalid session ID.
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Flag names are now properly adjusted when using rectangular flags.
 
-<img src="https://img.shields.io/badge/-%20improv%20-orange"> the distance texts between flag now fadeout while dragging targets/markers (fix 264)
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed the missing Logar Valley topographic HD map.
+
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed background color inside context menus for Chromium-based browsers (Fix #275).
+
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> The "Cap Zones on Hover" setting is now properly checked if previously selected (Fix #277, thanks @matoid!).
+
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Session IDs are now restricted to 6–20 characters. A toast message has been added for invalid session ID attempts.
+
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Distance text between flags now fades out while dragging targets/markers (Fix #264).
+
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Added a "Undo" button in addition of the backspace shortcut. Undo now also remove the last marker/arrow dropped on the map.
+
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> The "Delete All" button and shortcuts now also remove every markers/arrows on the map.
+
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Buttons that have shortcuts are now displaying it in their tooltips
+
+<img src="https://img.shields.io/badge/-%20dev%20-grey"> Removed 750MB of unused HD map files.
+
+<img src="https://img.shields.io/badge/-%20dev%20-grey"> Improved connector for SquadMortarOverlay v2.4.0 (#278 by @devil4ngle).
 
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->

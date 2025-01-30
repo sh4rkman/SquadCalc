@@ -105,6 +105,7 @@ async function setupWebSockets() {
         socketCoordinates.addEventListener("error", handleDisconnect);
     } catch (error) {
         handleDisconnect();
+        console.debug("Error setting up WebSocket connections", error);
     }
 }
 
@@ -112,6 +113,7 @@ async function setupWebSockets() {
  * Handles WebSocket disconnection events
  */
 function handleDisconnect() {
+    $(".btn-hd").prop("disabled", false);
     startConnectionAttempts();
 }
 
@@ -183,10 +185,11 @@ async function checkServerAvailability(timeout = 2000) {
         };
 
         try {
-            xhr.open('GET', 'http://127.0.0.1:12347/health', true);
+            xhr.open("GET", "http://127.0.0.1:12347/health", true);
             xhr.timeout = timeout;
             xhr.send();
-        } catch (e) {
+        } catch (error) {
+            console.debug("Error checking server availability", error);
             resolve(false);
         }
     });

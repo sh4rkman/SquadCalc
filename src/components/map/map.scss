@@ -203,6 +203,7 @@ $flag-circle-opacity: 0.2;
             }
             .leaflet-popup-tip,
             .leaflet-popup-content-wrapper {
+                pointer-events: none;
                 background: transparent;
                 box-shadow: none;
                 color: variables.$mainTxtColor;
@@ -284,7 +285,7 @@ $flag-circle-opacity: 0.2;
         &:hover {
             background-color: #979797;
             svg {
-                transform: scale(1.05);
+                transform: scale(1.1);
             }
         }
         &.active {
@@ -303,17 +304,12 @@ $flag-circle-opacity: 0.2;
             }
         }
         svg {
-            height: 1.2em;
-            width: 1.2em;
+            height: 1em;
             fill: variables.$mainBGColor;
         }
         &.btn-topomap svg {
-            width: 1.6em;
-            height: 1.6em;
-        }
-        &.btn-delete svg {
-            width: 1em;
-            height: 1em;
+            width: 1.4em;
+            height: 1.4em;
         }
         &.btn-session {
             z-index: 1;
@@ -332,6 +328,9 @@ $flag-circle-opacity: 0.2;
                 height: 20px;
                 font-size: 12px;
                 letter-spacing: 0;
+            }
+            svg {
+                height: 0.8em;
             }
         }
         

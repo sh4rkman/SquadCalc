@@ -192,6 +192,7 @@ tippy("#bearingNum", {
 
 const commonMapMenuToolipsSettings = {
     animation: "fade",
+    allowHTML: true,
     placement: "left",
     touch: false,
     theme: "menu",
@@ -233,7 +234,12 @@ tippy(".btn-helpmap", {
 tippy(".btn-focus", {
     ...commonMapMenuToolipsSettings,
     onShow(tip) {
-        tip.setContent(i18next.t("tooltips:focusMode"));
+        tip.setContent(
+            `
+            <div>${i18next.t("tooltips:focusMode")}</div>
+            <div class="tooltipsubtext">${i18next.t("tooltips:enter")}</div>
+            `
+        );
     },
 });
 
@@ -251,10 +257,28 @@ export const leaveSessionTooltips =  tippy(".btn-session", {
 })[0];
 leaveSessionTooltips.disable();
 
+
+tippy(".btn-undo", {
+    ...commonMapMenuToolipsSettings,
+    onShow(tip) {
+        tip.setContent(
+            `
+            <div>${i18next.t("tooltips:undo")}</div>
+            <div class="tooltipsubtext">${i18next.t("tooltips:backspace")}</div>
+            `
+        );
+    },
+});
+
 tippy(".btn-delete", {
     ...commonMapMenuToolipsSettings,
     onShow(tip) {
-        tip.setContent(i18next.t("tooltips:deleteTargets"));
+        tip.setContent(
+            `
+            <div>${i18next.t("tooltips:deleteTargets")}</div>
+            <div class="tooltipsubtext">${i18next.t("tooltips:delete")}</div>
+            `
+        );
     },
 });
 

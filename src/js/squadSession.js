@@ -182,7 +182,7 @@ export default class SquadSession {
         case "DELETE_ARROW": {
             App.minimap.activeArrows.forEach((arrow) => {
                 if (arrow.uid === data.uid) {
-                    arrow.removeArrow(false);
+                    arrow.delete(false);
                     return;
                 }
             });
@@ -201,6 +201,7 @@ export default class SquadSession {
         }
         case "ADDING_TARGET": {
             App.minimap.createTarget(new LatLng(data.lat, data.lng), false, data.uid);
+            App.minimap.visualClick.triggerVisualClick(new LatLng(data.lat, data.lng), "cyan");
             break;
         }
         case "ADDING_MARKER": {

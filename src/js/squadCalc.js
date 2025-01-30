@@ -225,9 +225,10 @@ export default class SquadCalc {
             }
         } 
         else {
+            // pick a random map
             mapIndex = Math.floor(Math.random() * MAPS.length);
         }
-    
+        
         this.MAP_SELECTOR.val(mapIndex);
         this.minimap = new squadMinimap("map", this.MAPSIZE, MAPS[mapIndex]);
         this.minimap.draw();
@@ -352,6 +353,7 @@ export default class SquadCalc {
         const helpDialog = document.querySelector("#helpDialog");
 
         $(".btn-delete").hide();
+        $(".btn-undo").hide();
         $("#mapLayerMenu").hide();
         this.ui = localStorage.getItem("data-ui");
 
@@ -387,7 +389,17 @@ export default class SquadCalc {
         this.closeDialogOnClickOutside(calcInformation);
         this.closeDialogOnClickOutside(weaponInformation);
         this.closeDialogOnClickOutside(helpDialog);
-        $(".btn-delete").on("click", () => { this.minimap.deleteTargets();});
+        
+        $(".btn-delete").on("click", () => {
+            this.minimap.deleteTargets();
+            this.minimap.deleteMarkers();
+            this.minimap.deleteArrows();
+        });
+
+        $(".btn-undo").on("click", () => {
+            if (this.minimap.history.length > 0) this.minimap.history.at(-1).delete();
+        });
+
         $("#fabCheckbox2").on("change", () => { this.switchUI();});
 
         $("#mapLayerMenu").find("button.btn-session").on("click", () => {
@@ -506,13 +518,17 @@ export default class SquadCalc {
                 }
 
                 // DELETE = REMOVE ALL MARKERS
-                if (event.code === "Delete") {
-                    this.minimap.deleteTargets();
+                if (event.key === "Delete") {
+                    if (this.minimap.history.length > 0) {
+                        this.minimap.history.forEach((item) => {
+                            item.delete();
+                        });
+                    }
                 }
 
                 // BACKSPACE = REMOVE LAST CREATED TARGET MARKER
-                if (event.code === "Backspace") {
-                    if (this.minimap.targets.length > 0) this.minimap.targets.at(-1).delete();
+                if (event.key === "Backspace") {
+                    if (this.minimap.history.length > 0) this.minimap.history.at(-1).delete();
                 }
 
             });
@@ -654,7 +670,10 @@ export default class SquadCalc {
 
         if (this.ui == 0){
             this.loadMapUIMode();
-            if (this.minimap.activeTargetsMarkers.getLayers().length > 0) $(".btn-delete").show();
+            if (this.minimap.hasMarkers()) {
+                $(".btn-delete").show();
+                $(".btn-undo").show();
+            }
             return;
         }
 
@@ -662,6 +681,7 @@ export default class SquadCalc {
         $("#classic_ui").removeClass("hidden");
         $("header").removeClass("ui");
         $(".btn-delete").hide();
+        $(".btn-undo").hide();
         $("#mapLayerMenu").hide();
         this.ui = 0;
         localStorage.setItem("data-ui", 0);

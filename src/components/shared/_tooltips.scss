@@ -47,7 +47,7 @@
     &[data-theme~='menu'] {
         background-color: variables.$mainTxtColor;
         color: variables.$mainBGColor;
-        font-size: 14px;
+        font-size: 13px;
         font-weight: 600;
         letter-spacing: .05em;
         line-height: 1.2em;
@@ -65,6 +65,15 @@
         }
         &[data-placement^='right']>.tippy-arrow::before {
             border-right-color: variables.$mainTxtColor;
+        }
+        .tooltipsubtext {
+            padding: 0;
+            margin: 0;
+            font-size: 0.85em;
+            color: rgb(90, 90, 90);
+        }
+        &:has(.tooltipsubtext) {
+            padding: 6px 12px 0;
         }
     }
     &[data-theme~='preview'] {

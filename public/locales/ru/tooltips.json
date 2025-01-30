@@ -11,7 +11,7 @@
     "error": "Ошибка!",
     "apiError": "API не подключен..",
     "apiError_layers": "Can't fetch layers from API",
-    "deleteTargets": "Удалить все цели",
+    "deleteTargets": "Удалить все цели и маркеры",
     "bearing": "Пеленг",
     "whereToAim": "(куда целиться)",
     "elevation": "Высота над уровнем моря",
@@ -54,5 +54,9 @@
     "pleaseupdate": "Пожалуйста, обновите страницу",
     "sessionFull": "Сессия заполнена",
     "invalidSession": "Недопустимый SessionID",
-    "invalidSessionRules": "SessionID должен содержать от 6 до 20 символов"
+    "invalidSessionRules": "SessionID должен содержать от 6 до 20 символов",
+    "undo": "Отменить",
+    "backspace": "Backspace",
+    "enter": "Enter",
+    "delete": "Delete"
 }

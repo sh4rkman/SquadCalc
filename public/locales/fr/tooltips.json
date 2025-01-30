@@ -11,7 +11,7 @@
     "error": "Erreur !",
     "apiError": "L'API n'est pas connectée..",
     "apiError_layers": "Impossible de récupérer les layers de l'API",
-    "deleteTargets": "Supprimer toutes les cibles",
+    "deleteTargets": "Supprimer les cibles et marqueurs",
     "bearing": "Direction",
     "whereToAim": "(où viser)",
     "elevation": "Elévation",
@@ -54,5 +54,9 @@
     "pleaseupdate": "Veuillez rafraîchir votre page",
     "sessionFull": "La session est pleine",
     "invalidSession": "SessionID invalide",
-    "invalidSessionRules": "l'ID de session doit être composé de 6 à 20 caractères"
+    "invalidSessionRules": "l'ID de session doit être composé de 6 à 20 caractères",
+    "undo": "Annuler",
+    "backspace": "Backspace",
+    "enter": "Enter",
+    "delete": "Delete"
 }

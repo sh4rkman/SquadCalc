@@ -7,9 +7,7 @@ import SquadSimulation from "./squadSimulation.js";
 import SquadFiringSolution from "./squadFiringSolution.js";
 import i18next from "i18next";
 import { sendMarkerData, sendTargetData } from "./squadCalcAPI.js";
-import { animateCSS } from "./animations.js";
 import { v4 as uuidv4 } from "uuid";
-
 
 /*
  * Global Squad Marker Class 
@@ -700,7 +698,6 @@ export var squadTargetMarker = squadMarker.extend({
      */
     delete: function(broadcast = true){
 
-        
         if (broadcast && App.session.ws && App.session.ws.readyState === WebSocket.OPEN) {
             App.session.ws.send(JSON.stringify({ type: "DELETE_TARGET", uid: this.uid}));
             console.debug(`Sent delete request for target with UID: ${this.uid}`);
@@ -710,7 +707,7 @@ export var squadTargetMarker = squadMarker.extend({
         this.off();
 
         // Remove the marker from targets array history
-        this.map.targets = this.map.targets.filter(target => target !== this);
+        this.map.history = this.map.history.filter(object => object !== this);
 
         // Remove everything attached from the map
         this.spreadMarker1.removeFrom(this.map.markersGroup).remove();
@@ -726,13 +723,11 @@ export var squadTargetMarker = squadMarker.extend({
         // Remove the marker itself
         this.removeFrom(this.map.markersGroup).removeFrom(this.map.activeTargetsMarkers).remove();
     
-        // If that was the last Marker on the map, hide "delete all" buttons
-        if (this.map.activeTargetsMarkers.getLayers().length === 0) {
-            animateCSS($(".btn-delete"), "fadeOutRight").then(() => {
-                $(".btn-delete").hide();
-            });
+        // If that was the last Marker on the map, hide "delete/undo" buttons
+        if (!this.map.hasMarkers()) {
+            $(".btn-delete").hide();
+            $(".btn-undo").hide();
         }
-
     },
 
 
@@ -1145,14 +1140,13 @@ export var squadTargetMarker = squadMarker.extend({
     // Hide stuff, do a final update and send data to API
     _handleDragEnd: function (event) {
 
+        // Send the MOVING_WEAPON event to the server
         if (App.session.ws && App.session.ws.readyState === WebSocket.OPEN) {
-            const newLatLng = this.getLatLng();
-            // Send the MOVING_WEAPON event to the server
             App.session.ws.send(
                 JSON.stringify({
                     type: "MOVING_TARGET",
-                    lat: newLatLng.lat,
-                    lng: newLatLng.lng,
+                    lat: this.getLatLng().lat,
+                    lng: this.getLatLng().lng,
                     uid: this.uid,
                 })
             );
@@ -1345,29 +1339,40 @@ export var squadStratMarker = squadMarker.extend({
     },
 
     /**
-     * Remove the Weapon marker and every object tied
+     * Remove the contextmenu marker and every object tied
      * @param {this}
      */
-    delete: function(){
-        // Delete the weapon marker and everything tied to it
-        if (this.options.circles1Size) this.constructionRange.removeFrom(this.map.markersGroup).remove();
-        if (this.options.circles2Size) this.exclusionRange.removeFrom(this.map.markersGroup).remove();           
-        this.posPopUp.removeFrom(this.map.markersGroup).remove();
-        this.off();
-        this.removeFrom(this.map.markersGroup).removeFrom(this.map.activeMarkers);
-        this.remove();
-    },
-
-    _handleContextMenu: function(event, broadcast = true) {
-
-        // Avoid other target keeping fading
-        clearTimeout(this.mouseOverTimeout);
+    delete: function(broadcast = true){
 
         // Broadcast to the session
         if (broadcast && App.session.ws && App.session.ws.readyState === WebSocket.OPEN) {
             App.session.ws.send(JSON.stringify({ type: "DELETE_MARKER", uid: this.uid }));
             console.debug(`Sent delete request for marker with UID: ${this.uid}`);
         }
+
+        // Remove the marker from targets array history
+        this.map.history = this.map.history.filter(object => object !== this);
+
+        // Delete the weapon marker and everything tied to it
+        if (this.options.circles1Size) this.constructionRange.removeFrom(this.map.markersGroup).remove();
+        if (this.options.circles2Size) this.exclusionRange.removeFrom(this.map.markersGroup).remove();           
+        this.posPopUp.removeFrom(this.map.markersGroup).remove();
+        this.off();
+        this.removeFrom(this.map.markersGroup).removeFrom(this.map.activeMarkers);
+
+        // If that was the last Marker on the map, hide "delete all" buttons
+        if (!this.map.hasMarkers()) {
+            $(".btn-delete").hide();
+            $(".btn-undo").hide();
+        }
+
+        this.remove();
+    },
+
+    _handleContextMenu: function() {
+
+        // Avoid other target keeping fading
+        clearTimeout(this.mouseOverTimeout);
 
         // If they already faded, switch them back
         this.map.activeTargetsMarkers.eachLayer((target) => {
@@ -1383,7 +1388,7 @@ export var squadStratMarker = squadMarker.extend({
         // Reset layer opacity
         if (this.map.layer) this.map.layer._setOpacity(1); 
         
-        this.delete(event);
+        this.delete();
     },
 
     _handleDrag: function (event) {
