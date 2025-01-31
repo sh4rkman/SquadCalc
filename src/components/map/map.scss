@@ -30,7 +30,7 @@ $flag-circle-opacity: 0.2;
         @include variables.text-outline;
         @extend .unselectable;
         font-family: variables.$mainFont, Times, "Times New Roman", serif;
-        font-size: 1.2em;
+        font-size: calc(var(--font-size-objtext) + 0.1em);
         background: transparent;
         box-shadow: none;
         color: variables.$mainTxtColor;
@@ -72,6 +72,9 @@ $flag-circle-opacity: 0.2;
             letter-spacing: 0.02em;
             align-content: center;
             display: grid;
+        }
+        .subkp {
+            font-size: 0.7em;
         }
         .leaflet-pane .leaflet-marker-pane .flag {
             @include variables.light-text-outline;
@@ -496,4 +499,3 @@ $flag-circle-opacity: 0.2;
 
 
 .leaflet-pane.leaflet-ie10-visual-click-pane-pane { z-index: 300; }
-

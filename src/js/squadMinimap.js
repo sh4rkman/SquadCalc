@@ -1,4 +1,4 @@
-import {imageOverlay, tileLayer, Map, CRS, svg, Util, LayerGroup, Popup, Icon, LatLngBounds } from "leaflet";
+import {imageOverlay, tileLayer, Map, CRS, svg, Util, LayerGroup, Popup, Icon, LatLngBounds, latLng } from "leaflet";
 import squadGrid from "./squadGrid.js";
 import squadHeightmap from "./squadHeightmaps.js";
 import { App } from "../app.js";
@@ -561,6 +561,17 @@ export var squadMinimap = Map.extend({
         
     },
 
+    
+    /**
+     * Update Mouse Location Content
+     * @param {latLng} latlng - coordinates of the mouse
+     */
+    updateMouseLocationPopup(latlng){
+        let kp = this.getKP(-latlng.lat, latlng.lng)
+        this.mouseLocationPopup.setLatLng(latlng).openOn(this);
+        this.mouseLocationPopup.setContent(`<span>${kp.substring(0, 7)}</span><span class="subkp">${kp.substring(7, 11)}</span>`);
+    },
+
 
     /**
      * Map onClick event handler
@@ -639,8 +650,7 @@ export var squadMinimap = Map.extend({
             return 1;
         } 
 
-        this.mouseLocationPopup.setLatLng(event.latlng).openOn(this);
-        this.mouseLocationPopup.setContent(`<p>${this.getKP(-event.latlng.lat, event.latlng.lng)}</p>`);
+        this.updateMouseLocationPopup(event.latlng);
     },
 
 
@@ -651,19 +661,17 @@ export var squadMinimap = Map.extend({
 
         if (App.userSettings.keypadUnderCursor && App.hasMouse){
             if (this.mouseLocationPopup._latlng){
-                this.mouseLocationPopup.setContent(`<p>${this.getKP(-this.mouseLocationPopup._latlng.lat, this.mouseLocationPopup._latlng.lng)}</p>`);
+                this.updateMouseLocationPopup(new latLng(this.mouseLocationPopup._latlng.lat, this.mouseLocationPopup._latlng.lng));
             }
         }
 
-        // If there is a layer selected, reveal main/capzone when enough zoomed in
+        // If there is a layer selected, reveal capzone when enough zoomed in
         if (!this.layer) return;
 
         if (this.getZoom() > this.detailedZoomThreshold){
             this.layer.revealAllCapzones();
-            //this.layer.setMainZoneOpacity(true);
         } else {
             this.layer.hideAllCapzones();
-            //this.layer.setMainZoneOpacity(false);
         }
 
     },
