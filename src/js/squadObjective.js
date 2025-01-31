@@ -31,12 +31,20 @@ export class SquadObjective {
                 keyboard: false,
                 html: html,
                 iconSize: [300, 20],
-                iconAnchor: [150, 38]
+                iconAnchor: App.userSettings.circlesFlags ? [150, 38] : [150, 32],
+                shadowUrl: "../img/icons/markers/marker_shadow.webp",
+                shadowSize: [0, 0],
             })
         }).addTo(this.layerGroup);
 
-        // Initiate marker, no icon needed yet
-        this.flag = new Marker(latlng).addTo(this.layerGroup);
+
+        // Temporary icon to avoid 404s on leaflet shadow marker
+        let tempIcon = new DivIcon({
+            shadowUrl: "../img/icons/markers/marker_shadow.webp",
+            shadowSize: [0, 0],
+        });
+
+        this.flag = new Marker(latlng, {icon : tempIcon}).addTo(this.layerGroup);
         this.addCluster(cluster);
 
         this.flag.on("click", this._handleClick, this);
@@ -105,6 +113,24 @@ export class SquadObjective {
                 iconAnchor: [22, 11]
             })
         }).addTo(this.layerGroup);
+
+
+        if (!this.isMain){ html = this.name;}
+        this.nameText.removeFrom(this.layerGroup).remove();
+        this.nameText = new Marker(this.latlng, {
+            interactive: false,
+            keyboard: false,
+            icon: new DivIcon({
+                className: "objText",
+                keyboard: false,
+                html: html,
+                iconSize: [300, 20],
+                iconAnchor: App.userSettings.circlesFlags ? [150, 38] : [150, 32],
+                shadowUrl: "../img/icons/markers/marker_shadow.webp",
+                shadowSize: [0, 0],
+            })
+        }).addTo(this.layerGroup);
+
     }
 
 

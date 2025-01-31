@@ -1,3 +1,46 @@
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **37.1.0** *(2025-01-30)*
+
+
+<img src="https://img.shields.io/badge/-new-green"> Session Pings: Left-clicking the map while in a session displays a ping for everyone in the session. Pings also occur when other participants interact with markers (adding, deleting, etc.).
+
+<img src="https://img.shields.io/badge/-%20Translations%20-blue"> Improved ZH-CH translations by @Guducat (Thanks! Fix #281).
+
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Sharing a session URL now correctly preserves the shared layer.
+
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Clicking the close button on the "Session Created" toast no longer copies the session ID (Fix #272).
+
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Leaving a session now correctly re-colors other players' markers, as well as the spread and damage zones, in red (Fix #270).
+
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Closing SquadMortarOverlay now correctly re-enables the HD map button.
+
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Opening multiple toasts now correctly restarts the timer and closing animation.
+
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Flag names are now properly adjusted when using rectangular flags.
+
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed the missing Logar Valley topographic HD map.
+
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed background color inside context menus for Chromium-based browsers (Fix #275).
+
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> The "Cap Zones on Hover" setting is now properly checked if previously selected (Fix #277, thanks @matoid!).
+
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Session IDs are now restricted to 6–20 characters. A toast message has been added for invalid session ID attempts.
+
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Distance text between flags now fades out while dragging targets/markers (Fix #264).
+
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Added a "Undo" button in addition of the backspace shortcut. Undo now also remove the last marker/arrow dropped on the map.
+
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> The "Delete All" button and shortcuts now also remove every markers/arrows on the map.
+
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Buttons that have shortcuts are now displaying it in their tooltips
+
+<img src="https://img.shields.io/badge/-%20dev%20-grey"> Removed 750MB of unused HD map files.
+
+<img src="https://img.shields.io/badge/-%20dev%20-grey"> Improved connector for SquadMortarOverlay v2.4.0 (#278 by @devil4ngle).
+
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
+
 # <img src="https://img.shields.io/badge/-major%20release-b22222?style=for-the-badge">  **37.0.0** *(2025-01-24)*
 
 <img src="https://img.shields.io/badge/-new-green"> **Sessions !**
@@ -7,6 +50,8 @@ Introducing the session system: You can now create collaborative sessions and sh
 <img src="https://img.shields.io/badge/-%20improv%20-orange"> Reordered marker categories in the context menu.
 
 <img src="https://img.shields.io/badge/-%20improv%20-orange"> Improved the map list display on devices with small screen heights (fix #266).
+
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Standardized URL parameters order (Map>Layer>type>Session)
 
 <img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed arrow markers not working on Chromium-based browsers (fix #268, thanks @devil4ngle!).
 

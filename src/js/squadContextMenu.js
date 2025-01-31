@@ -123,8 +123,8 @@ export default class SquadContextMenu {
         });
     }
 
-    open(e){
-        this.mainContextMenu.e = e;
+    open(event) {
+        this.mainContextMenu.e = event;
         this.mainContextMenu.show();
         this.weaponContextMenu.show();
     }

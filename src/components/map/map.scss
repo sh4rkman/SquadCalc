@@ -203,6 +203,7 @@ $flag-circle-opacity: 0.2;
             }
             .leaflet-popup-tip,
             .leaflet-popup-content-wrapper {
+                pointer-events: none;
                 background: transparent;
                 box-shadow: none;
                 color: variables.$mainTxtColor;
@@ -284,7 +285,7 @@ $flag-circle-opacity: 0.2;
         &:hover {
             background-color: #979797;
             svg {
-                transform: scale(1.05);
+                transform: scale(1.1);
             }
         }
         &.active {
@@ -303,17 +304,12 @@ $flag-circle-opacity: 0.2;
             }
         }
         svg {
-            height: 1.2em;
-            width: 1.2em;
+            height: 1em;
             fill: variables.$mainBGColor;
         }
         &.btn-topomap svg {
-            width: 1.6em;
-            height: 1.6em;
-        }
-        &.btn-delete svg {
-            width: 1em;
-            height: 1em;
+            width: 1.4em;
+            height: 1.4em;
         }
         &.btn-session {
             z-index: 1;
@@ -324,15 +320,18 @@ $flag-circle-opacity: 0.2;
                 right: -8px;
                 background-color: variables.$mainColor;
                 color: variables.$mainTxtColor;
-                outline: solid rgba(95, 14, 14, 0.425) 1px;
+                outline: solid #7a1818 1px;
                 border-radius: 50%;
                 justify-content: center;
                 line-height: 20px;
                 width: 20px;
                 height: 20px;
                 font-size: 12px;
+                letter-spacing: 0;
             }
-            
+            svg {
+                height: 0.8em;
+            }
         }
         
     }
@@ -396,7 +395,7 @@ $flag-circle-opacity: 0.2;
     font-size: var(--font-size-objtext);
     color: white;
     white-space: nowrap;
-    transform-origin: 0;   
+    transform-origin: 0;
 }
 
 .leaflet-measure-path-measurement > div {
@@ -405,3 +404,96 @@ $flag-circle-opacity: 0.2;
     left: -50%;
     pointer-events: none;
 }
+
+
+/*
+* Heavily based on the CSS for https://github.com/mapshakers/leaflet-icon-pulse
+*
+* Modified to get rid of the opaque circle, and tweaked the pulse to be subtler.
+*/
+
+.leaflet-visualclick-icon {
+    border-radius: 10%;
+    pointer-events: none;
+}
+
+.leaflet-visualclick-icon::after {
+    content: "";
+    border-radius: 100%;
+    height: 50px;
+    width: 50px;
+    position: absolute;
+    margin-left: -25px;
+    margin-top: -25px;
+    pointer-events: none;
+    animation: visualclick-pulsate 0.5s ease-out;
+    animation-iteration-count: 1;
+    animation-delay: 0s;
+    opacity: 0;
+}
+
+.leaflet-visualclick-icon.white::after {
+    box-shadow: inset 0 0 25px 5px #E1E3E4, 0 0 10px -1px #C5C5C5;
+}
+
+.leaflet-visualclick-icon.cyan::after {
+    box-shadow: inset 0 0 25px 5px #1960b1, 0 0 10px -1px #11447e;
+}
+
+.leaflet-visualclick-icon.firebrick::after {
+    box-shadow: inset 0 0 25px 5px firebrick, 0 0 10px -1px rgb(133, 25, 25);
+}
+
+.leaflet-visualclick-icon-touch.white::after {
+    box-shadow: inset 0 0 25px -1px #E1E3E4, 0 0 10px -1px #C5C5C5;
+}
+
+.leaflet-visualclick-icon-touch.cyan::after {
+    box-shadow: inset 0 0 25px -1px #1960b1, 0 0 10px -1px #11447e;
+}
+
+.leaflet-visualclick-icon-touch::after {
+    content: "";
+    border-radius: 100%;
+    height: 140px;
+    width: 140px;
+    position: absolute;
+    margin-left: -70px;
+    margin-top: -70px;
+    pointer-events: none;
+    box-shadow: inset 0 0 25px -1px #E1E3E4, 0 0 10px -1px #C5C5C5;
+    animation: visualclick-pulsate-touch 0.7s ease-out;
+    animation-iteration-count: 1;
+    animation-delay: 0s;
+    opacity: 0;
+}
+
+@keyframes visualclick-pulsate {
+    0% {
+        transform: scale(0.2);
+        opacity: 1;
+    }
+    30% {
+        opacity: 0.8;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 0;
+    }
+}
+
+
+@keyframes visualclick-pulsate-touch {
+    from {
+        transform: scale(1);
+        opacity: 0.8;
+    }
+    to {
+        transform: scale(0.2);
+        opacity: 0.0;
+    }
+}
+
+
+.leaflet-pane.leaflet-ie10-visual-click-pane-pane { z-index: 300; }
+

@@ -2,7 +2,7 @@
     "squad": "SQUAD",
     "calc": "CALC",
     "squadcalc": "SquadCalc",
-    "desc": "全面的SQUAD迫击炮计算器",
+    "desc": "多功能SQUAD迫击炮计算器",
     "weaponInf": "武器信息",
         "name": "名称",
         "range": "射程",
@@ -34,6 +34,6 @@
     "invalidTarget": "无效的目标",
     "invalidMortarTarget": "取消武器和目标",
     "targetOutOfRange": "目标超出范围",
-    "layerPlaceholder": "层",
+    "layerPlaceholder": "地图版本",
     "nextFlags": "下一个点"  
 }

@@ -10,7 +10,6 @@
         cursor: pointer;
         align-items: center;
         display: flex;
-        backdrop-filter: blur(2px);
         &:hover {
             background-color: rgba(0, 0, 0, 0.7);
         }
@@ -29,35 +28,37 @@
         width: 25px;
         height: 25px;   
     }
-}
-  
-.contextmenuVert {
-    width: 140px;
-    height: auto;
-    display: flex;
-    flex-wrap: wrap;
-    background-color: rgba(0, 0, 0, 0.6);
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    .ctxButton {
+    .contextmenuVert {
+        width: 140px;
+        height: auto;
+        display: flex;
+        flex-wrap: wrap;
+        background-color: rgba(0, 0, 0, 0.6);
         margin: 0;
-        padding: 2px 0.5px;
-        background-color: transparent;
-        transition: background-color 0.2s;
-        span {
+        padding: 0;
+        overflow: hidden;
+        backdrop-filter: blur(2px);
+        .ctxButton {
             margin: 0;
-            padding: 0;
-            height: 27px;
-            width: 27px;
-        }
-        &:hover {
-            background-color: rgba(0, 0, 0, 0.7);
-            transform: scale(1.2);
-            z-index: 1;
+            padding: 2px 0.5px;
+            background-color: transparent;
+            transition: background-color 0.2s;
+            span {
+                margin: 0;
+                padding: 0;
+                height: 27px;
+                width: 27px;
+            }
+            &:hover {
+                background-color: rgba(0, 0, 0, 0.7);
+                transform: scale(1.2);
+                z-index: 1;
+            }
         }
     }
 }
+  
+
 
 
 

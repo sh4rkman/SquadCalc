@@ -1,5 +1,11 @@
 import { App } from "../app.js";
 
+let prevCoorArray = "";
+let isConnecting = false;
+let socketMap = null;
+let socketCoordinates = null;
+let connectionInterval = null;
+
 /**
  * Initializes WebSocket connections for map and coordinate data communication
  * Creates two WebSocket connections - one for map data and one for coordinates
@@ -7,36 +13,73 @@ import { App } from "../app.js";
  * @returns {Promise<void>} A promise that resolves when initialization is complete
  */
 export async function initWebSocket() {
-    // Disable WebSockets if not activated
     if (process.env.WEBSOCKET != "true") { return; }
-    while (!await checkServerAvailability()) {
-        await sleep(5000);
+    if (isConnecting) return;
+    startConnectionAttempts();
+}
+
+/**
+ * Starts the connection attempt cycle
+ */
+function startConnectionAttempts() {
+    if (!isConnecting) {
+        isConnecting = true;
+        cleanup();
+        connectionInterval = setInterval(async () => {
+            const isAvailable = await checkServerAvailability();
+            if (isAvailable) {
+                await setupWebSockets();
+            }
+        }, 5000);
     }
-    console.debug("Trying to connect to SquadMortarOverlay");
-    const socketMap = new WebSocket("ws://127.0.0.1:12345");
-    const socketCoordinates = new WebSocket("ws://127.0.0.1:12346");
-    setInterval(() => checkCoordinates(socketCoordinates), 1000);
+}
 
-    socketMap.addEventListener("open", () => {
-        console.log("Connected to SquadMortarOverlay.exe");
-        App.openToast("success", "connectedTo", "squadMortarOverlay");
+/**
+ * Cleans up existing connections and intervals
+ */
+function cleanup() {
+    if (socketMap) socketMap.close();
+    if (socketCoordinates) socketCoordinates.close();
+    if (connectionInterval) clearInterval(connectionInterval);
+    socketMap = null;
+    socketCoordinates = null;
+}
 
-        // HD Maps are not compatible with squadmortaroverlay
-        if ($(".btn-hd").hasClass("active")) {
-            App.userSettings.highQualityImages = false;
-            $(".btn-hd").removeClass("active");
-            App.minimap.spin(false);
-            App.minimap.changeLayer();
-        }
-        $(".btn-hd").prop("disabled", true);
-        
-    });
+/**
+ * Sets up WebSocket connections and their event listeners
+ */
+async function setupWebSockets() {
+    try {
+        socketMap = new WebSocket("ws://127.0.0.1:12345");
+        socketCoordinates = new WebSocket("ws://127.0.0.1:12346");
 
-    socketMap.addEventListener("message", async (event) => {
-        if (event.data === "Map") {
-            if (socketMap.readyState === WebSocket.OPEN) {
+        setInterval(() => checkCoordinates(socketCoordinates), 1000);
+
+        socketMap.addEventListener("open", () => {
+            console.log("Connected to SquadMortarOverlay.exe");
+            App.openToast("success", "connectedTo", "squadMortarOverlay");
+            isConnecting = false;
+            clearInterval(connectionInterval);
+
+            // HD Maps are not compatible with squadmortaroverlay
+            if ($(".btn-hd").hasClass("active")) {
+                App.userSettings.highQualityImages = false;
+                $(".btn-hd").removeClass("active");
+                App.minimap.spin(false);
+                App.minimap.changeLayer();
+            }
+            $(".btn-hd").prop("disabled", true);
+        });
+
+        socketMap.addEventListener("message", async (event) => {
+            if (event.data === "Map") {
+                if (socketMap.readyState === WebSocket.OPEN) {
+                    socketMap.send(App.minimap.activeMap.name);
+                }
+            }
+
+            if (event.data === "MapData") {
                 let imageUrl = "maps" + App.minimap.activeMap.mapURL + "basemap.webp";
-                // Fetch the image and send its binary data
                 const response = await fetch(imageUrl);
                 const imageBlob = await response.blob();
                 const reader = new FileReader();
@@ -47,25 +90,31 @@ export async function initWebSocket() {
                 reader.readAsArrayBuffer(imageBlob);
                 App.minimap.changeLayer();
             }
-        }
-    });
 
-    socketMap.addEventListener("message", (event) => {
-        if (event.data instanceof Blob) {
-            const url = URL.createObjectURL(event.data);
-            App.minimap.activeLayer.setUrl(url);
-            App.openToast("success", "mapUpdated", "");
-        }
-    });
+            if (event.data instanceof Blob) {
+                const url = URL.createObjectURL(event.data);
+                App.minimap.activeLayer.setUrl(url);
+                App.openToast("success", "mapUpdated", "");
+            }
+        });
+
+        // Add error and close event handlers for both sockets
+        socketMap.addEventListener("close", handleDisconnect);
+        socketMap.addEventListener("error", handleDisconnect);
+        socketCoordinates.addEventListener("close", handleDisconnect);
+        socketCoordinates.addEventListener("error", handleDisconnect);
+    } catch (error) {
+        handleDisconnect();
+        console.debug("Error setting up WebSocket connections", error);
+    }
 }
 
 /**
- * Utility function to create a promise that resolves after specified milliseconds
- * @param {number} ms - The number of milliseconds to sleep
- * @returns {Promise<void>} A promise that resolves after the specified delay
+ * Handles WebSocket disconnection events
  */
-async function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+function handleDisconnect() {
+    $(".btn-hd").prop("disabled", false);
+    startConnectionAttempts();
 }
 
 /**
@@ -76,7 +125,6 @@ async function sleep(ms) {
  */
 function checkCoordinates(socketCoordinates) {
     let coorArray = "";
-    let prevCoorArray = "";
     if (App.minimap.activeTargetsMarkers) {
         App.minimap.activeTargetsMarkers.eachLayer(function (target) {
             const BEARING = target.firingSolution1.bearing;
@@ -103,32 +151,46 @@ function checkCoordinates(socketCoordinates) {
             coorArray = coorArray + `${elevation} | ${BEARING.toFixed(1)}°`;
         });
     }
-    if (coorArray !== prevCoorArray) {
+    if (coorArray != prevCoorArray) {
         prevCoorArray = coorArray;
-        if (socketCoordinates.readyState === WebSocket.OPEN) {
+        if (socketCoordinates && socketCoordinates.readyState === WebSocket.OPEN) {
             socketCoordinates.send(coorArray);
         }
     }
 }
 
 /**
- * Checks the availability of a SquadMortarOverlay.exe by attempting to load a fake image from it
- * @param {number} [timeout] - The maximum time to wait for response
- * @returns {Promise<boolean>} A promise that resolves to `true` if the SquadMortarOverlay.exe is running
+ * Checks if the server is available
+ * @param {number} [timeout=2000] - Timeout in milliseconds
+ * @returns {Promise<boolean>} True if server is available, false otherwise
  */
 async function checkServerAvailability(timeout = 2000) {
+    // Using XMLHttpRequest instead of fetch to avoid console errors
     return new Promise((resolve) => {
-        const img = new Image();
-        const timer = setTimeout(() => {
-            img.src = "";
-            resolve(false);
-        }, timeout);
+        const xhr = new XMLHttpRequest();
 
-        img.onload = img.onerror = () => {
-            clearTimeout(timer);
-            resolve(true);
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4) {
+                resolve(xhr.status === 200);
+            }
         };
 
-        img.src = "http://127.0.0.1:12345";
+        // Suppress error event
+        xhr.onerror = () => {
+            resolve(false);
+        };
+
+        xhr.ontimeout = () => {
+            resolve(false);
+        };
+
+        try {
+            xhr.open("GET", "http://127.0.0.1:12347/health", true);
+            xhr.timeout = timeout;
+            xhr.send();
+        } catch (error) {
+            console.debug("Error checking server availability", error);
+            resolve(false);
+        }
     });
 }

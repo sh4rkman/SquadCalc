@@ -1,4 +1,4 @@
-import {imageOverlay, tileLayer, Map, CRS, svg, Util, LayerGroup, Popup, Icon } from "leaflet";
+import {imageOverlay, tileLayer, Map, CRS, svg, Util, LayerGroup, Popup, Icon, LatLngBounds } from "leaflet";
 import squadGrid from "./squadGrid.js";
 import squadHeightmap from "./squadHeightmaps.js";
 import { App } from "../app.js";
@@ -36,6 +36,7 @@ export var squadMinimap = Map.extend({
 
         options = {
             attributionControl: false,
+            //visualClick: true,
             boxZoom: true,
             center: [-pixelSize/2, pixelSize/2],
             closePopupOnClick: false,
@@ -58,21 +59,20 @@ export var squadMinimap = Map.extend({
         Map.prototype.initialize.call(this, id, options);
         this.activeMap = defaultMap;
         this.pixelSize = pixelSize;
-        this.imageBounds = [{lat: 0, lng:0}, {lat: -this.pixelSize, lng: this.pixelSize}];
+        this.imageBounds = new LatLngBounds({lat: 0, lng:0}, {lat: -this.pixelSize, lng: this.pixelSize});
         this.spinOptions = {color: "white", scale: 1.5, width: 5, shadow: "5px 5px 5px transparent"};
-        this.layerGroup = new LayerGroup().addTo(this);
-        this.markersGroup = new LayerGroup().addTo(this);
-        this.targets = [];
         this.activeTargetsMarkers = new LayerGroup().addTo(this);
         this.activeWeaponsMarkers = new LayerGroup().addTo(this);
         this.activeMarkers = new LayerGroup().addTo(this);
         this.activeArrowsGroup = new LayerGroup().addTo(this);
         this.activeArrows = [];
-        this.grid = "";
-        this.gameToMapScale = "";
-        this.mapToGameScale = "";
-        this.detailedZoomThreshold = "";
-        this.mousePos = "";
+        this.layerGroup = new LayerGroup().addTo(this);
+        this.markersGroup = new LayerGroup().addTo(this);
+        this.history = [];
+        //this.grid = "";
+        //this.gameToMapScale = "";
+        //this.mapToGameScale = "";
+        //this.detailedZoomThreshold = "";
         this.mouseLocationPopup = new Popup({
             closeButton: false,
             className: "kpPopup",
@@ -86,15 +86,35 @@ export var squadMinimap = Map.extend({
         this.contextMenu = new squadContextMenu();
 
         // Custom events handlers
-        this.on("dblclick", this._handleDoubleClick, this);
-        this.on("contextmenu", this._handleContextMenu, this);
+        //this.on("click", this._handleclick);
+        //this.on("dblclick", this._handleDoubleClick, this);
+
+
+        this.on("click", (event) => {
+            // Clear any existing timeout to prevent overlapping
+            if (this._singleClickTimeout) clearTimeout(this._singleClickTimeout);
         
+            this._singleClickTimeout = setTimeout(() => {
+                this._handleclick(event);
+                this._singleClickTimeout = null;
+            }, 175);
+        });
+        
+        this.on("dblclick", (event) => {
+            if (this._singleClickTimeout) {
+                clearTimeout(this._singleClickTimeout);
+                this._singleClickTimeout = null;
+            }
+            this._handleDoubleClick(event);
+        });
+
+        this.on("contextmenu", this._handleContextMenu, this);
+        this.on("zoomend", this._handleZoom, this);
+
         if (App.userSettings.keypadUnderCursor && App.hasMouse){
             this.on("mousemove", this._handleMouseMove, this);
             this.on("mouseout", this._handleMouseOut, this);
         }
-
-        this.on("zoomend", this._handleZoom, this);
 
     },
 
@@ -229,6 +249,7 @@ export var squadMinimap = Map.extend({
         if (this.layer) this.layer.clear();
     
         $(".btn-delete").hide();
+        $(".btn-undo").hide();
 
         // Reset map
         this.setView([-this.pixelSize/2, this.pixelSize/2], 2);
@@ -257,6 +278,7 @@ export var squadMinimap = Map.extend({
         });
     },
 
+
     /**
      * Delete every target markers on the map
      */
@@ -265,6 +287,40 @@ export var squadMinimap = Map.extend({
             target.delete();
         });
     },
+
+
+    /**
+     * Delete every Contextmenu markers on the map
+     */
+    deleteMarkers: function(){
+        this.activeMarkers.eachLayer(function (marker) {
+            marker.delete();
+        });
+    },
+
+
+    /**
+     * Delete every Contextmenu markers on the map
+     */
+    deleteArrows: function(){
+        this.activeArrows.forEach(arrow => {
+            arrow.delete();
+        });
+    },
+
+
+    /**
+     * Return true if there is at least one marker on the map
+     * @returns {Boolean}
+     */
+    hasMarkers: function(){
+        return (
+            this.activeArrows.length > 0 ||
+            this.activeMarkers.getLayers().length > 0 ||
+            this.activeTargetsMarkers.getLayers().length > 0
+        );
+    },
+
 
     /**
      * Recalc and update every target marker on the minimap
@@ -398,8 +454,7 @@ export var squadMinimap = Map.extend({
      * @param {Event} e - event that triggered the creation
      * @param {String} uid - Optional - unique identifier of the target if created by the session
      */
-    createTarget(latlng, e, uid = false){
-
+    createTarget(latlng, event, uid = false){
 
         var target = new squadTargetMarker(latlng, {animate: App.userSettings.targetAnimation, uid: uid}, this).addTo(this.markersGroup);
         
@@ -416,8 +471,11 @@ export var squadMinimap = Map.extend({
             );
         }
 
-        this.targets.push(target);
+        // Add Item to history
+        this.history.push(target);
+
         $(".btn-delete").show();
+        $(".btn-undo").show();
 
         if (App.userSettings.targetAnimation){
             if (this.activeWeaponsMarkers.getLayers().length === 1) {
@@ -426,8 +484,8 @@ export var squadMinimap = Map.extend({
                 if (isNaN(target.firingSolution1.elevation.high.rad) && isNaN(target.firingSolution2.elevation.high.rad)){ return; }
             }
 
-            setTimeout(function() {
-                if (e) explode(e.containerPoint.x, e.containerPoint.y, -190, 10);
+            setTimeout(() => {
+                if (event) explode(event.containerPoint.x, event.containerPoint.y, -190, 10);
                 target.updateIcon(); // Update icon to remove the animation class, it was causing painfull DOM bug otherwise
             }, 250);
         }
@@ -478,6 +536,12 @@ export var squadMinimap = Map.extend({
         // Create marker and close context menu
         let newMarker = new squadStratMarker(latlng, markerOptions, this).addTo(this.activeMarkers);
 
+        // Add Item to history
+        this.history.push(newMarker);
+
+        $(".btn-delete").show();
+        $(".btn-undo").show();
+
         if (!uid && App.session.ws && App.session.ws.readyState === WebSocket.OPEN) {
             console.debug("Creating a marker with uid", newMarker.uid);
         
@@ -497,41 +561,61 @@ export var squadMinimap = Map.extend({
         
     },
 
-    /**
-     * Right-Click
-     * Place a new WeaponMarker on the minimap
-     */
-    _handleContextMenu: function(e) {
-        // If out of bounds
-        if (e.latlng.lat > 0 ||  e.latlng.lat < -this.pixelSize || e.latlng.lng < 0 || e.latlng.lng > this.pixelSize) {
-            return 1;
-        }
 
-        if (App.userSettings.contextMenu) {
-            this.contextMenu.open(e);
-        } else {
-            this.createWeapon(e.latlng);
+    /**
+     * Map onClick event handler
+     * If in Session, create a visual ping and send it to the session
+     * @param {event} event
+     */
+    _handleclick: function(event) {
+        if (App.session.ws && App.session.ws.readyState === WebSocket.OPEN) {
+            if (this.imageBounds.contains(event.latlng)){
+                this.visualClick.triggerVisualClick(event.latlng);
+                App.session.ws.send(
+                    JSON.stringify({
+                        type: "PING",
+                        latlng: event.latlng,
+                    })
+                );
+            }
         }
     },
+
+    
+    /**
+     * Right-Click
+     * Place a new WeaponMarker / Open ContextMenu
+     */
+    _handleContextMenu: function(event) {
+
+        // If out of bounds
+        if (!this.imageBounds.contains(event.latlng)) return 1;
+
+        if (App.userSettings.contextMenu) {
+            this.contextMenu.open(event);
+            return 0;
+        }
+
+        this.createWeapon(event.latlng);
+    },
+
 
     /**
      * Double-Click
      * Create a new target, or weapon is none exists
      */
-    _handleDoubleClick: function (e) {
+    _handleDoubleClick: function (event) {
 
         // If out of bounds
-        if (e.latlng.lat > 0 ||  e.latlng.lat < -this.pixelSize || e.latlng.lng < 0 || e.latlng.lng > this.pixelSize) {
-            return 1;
-        }
+        if (!this.imageBounds.contains(event.latlng)) return 1;
 
         // No weapon yet ? Create one
         if (this.activeWeaponsMarkers.getLayers().length === 0) {
-            this.createWeapon(e.latlng);
+            this.createWeapon(event.latlng);
             return 0;
         }
 
-        this.createTarget(e.latlng, e);
+        this.createTarget(event.latlng, event);
     },
 
 
@@ -547,16 +631,16 @@ export var squadMinimap = Map.extend({
     /**
      * Display and update hovered keypad under cursor
      */
-    _handleMouseMove: function (e) {
+    _handleMouseMove: function (event) {
 
         // If out of bounds
-        if (e.latlng.lat > 0 ||  e.latlng.lat < -this.pixelSize || e.latlng.lng < 0 || e.latlng.lng > this.pixelSize) {
+        if (!this.imageBounds.contains(event.latlng)) {
             this.mouseLocationPopup.close();
-            return;
-        }
+            return 1;
+        } 
 
-        this.mouseLocationPopup.setLatLng(e.latlng).openOn(this);
-        this.mouseLocationPopup.setContent(`<p>${this.getKP(-e.latlng.lat, e.latlng.lng)}</p>`);
+        this.mouseLocationPopup.setLatLng(event.latlng).openOn(this);
+        this.mouseLocationPopup.setContent(`<p>${this.getKP(-event.latlng.lat, event.latlng.lng)}</p>`);
     },
 
 
@@ -589,10 +673,10 @@ export var squadMinimap = Map.extend({
         let isDrawing = false;
         let arrow = null;
     
-        const handleMouseMove = (e) => {
+        const handleMouseMove = (event) => {
             if (!isDrawing) return;
     
-            const endLatLng = e.latlng;
+            const endLatLng = event.latlng;
     
             if (arrow) {
                 // Update the arrow's polyline positions
@@ -610,10 +694,8 @@ export var squadMinimap = Map.extend({
                 isDrawing = false; // Stop the drawing process
                 this.off("mousemove", handleMouseMove); // Remove the mousemove listener
     
-                if (!arrow.uid) {
-                    arrow.uid = uuidv4(); // Assign a unique ID if not already provided
-                }
-    
+                if (!arrow.uid) arrow.uid = uuidv4();
+                
                 // Send the arrow to the WebSocket server
                 if (App.session.ws && App.session.ws.readyState === WebSocket.OPEN) {
                     console.debug("sending new arrow with uid", arrow.uid);
@@ -632,7 +714,7 @@ export var squadMinimap = Map.extend({
         const handleRightClick = () => {
             if (isDrawing && arrow) {
                 // Cancel drawing and remove the arrow
-                arrow.removeArrow(); // Custom method to clean up the arrow
+                arrow.delete(); // Custom method to clean up the arrow
                 arrow = null; // Reset the arrow reference
                 isDrawing = false;
                 this.off("mousemove", handleMouseMove);
@@ -647,15 +729,11 @@ export var squadMinimap = Map.extend({
             this.on("contextmenu", handleRightClick); // Cancel on right-click
         }
     }
-    
-
-
-    
-
 
 });
 
 export class MapArrow {
+    
     constructor(map, color, startLatLng, endLatLng, uid = null) {
         this.map = map;
         this.color = color;
@@ -685,8 +763,8 @@ export class MapArrow {
             }]
         };
         this.createArrow();
+        this.map.activeArrows.push(this);
         console.debug("Creating new arrow with uid", this.uid);
-        App.minimap.activeArrows.push(this);
     }
 
     // Creates the arrow on the map
@@ -698,20 +776,28 @@ export class MapArrow {
         };
 
         const latlngs = [this.startLatLng, this.endLatLng];
-        this.polyline = new Polyline(latlngs, arrowOptions).addTo(App.minimap.activeArrowsGroup);
+        this.polyline = new Polyline(latlngs, arrowOptions).addTo(this.map.activeArrowsGroup);
         this.polylineDecorator = new PolylineDecorator(this.polyline, this.arrowPattern).addTo(App.minimap.activeArrowsGroup);
         this.polyline.uid = this.uid;
 
         // Add a contextmenu event listener for deletion
-        this.polyline.on("contextmenu", (e) => {
-            this.removeArrow();
-            DomEvent.preventDefault(e);
-            DomEvent.stopPropagation(e);
+        this.polyline.on("contextmenu", (event) => {
+            this.delete();
+            DomEvent.preventDefault(event);
+            DomEvent.stopPropagation(event);
         });
+
+        // Add Item to history
+        this.map.history.push(this);
+
+        $(".btn-delete").show();
+        $(".btn-undo").show();
     }
 
+
     // Removes the arrow from the map
-    removeArrow(broadcast = true) {
+    delete(broadcast = true) {
+
         if (broadcast && App.session.ws && App.session.ws.readyState === WebSocket.OPEN) {
             console.debug("Deleting new arrow with uid", this.uid);
             App.session.ws.send(
@@ -721,8 +807,23 @@ export class MapArrow {
                 })
             );
         }
-        App.minimap.activeArrows = App.minimap.activeArrows.filter(activeArrow => activeArrow !== this);
+
+        this.map.activeArrows = this.map.activeArrows.filter(activeArrow => activeArrow !== this);
         this.map.removeLayer(this.polyline);
         this.map.removeLayer(this.polylineDecorator);
+
+        // remove from this.map.activeArrowsGroup
+        
+        this.polyline.removeFrom(this.map.activeArrowsGroup).remove();
+        this.polylineDecorator.removeFrom(this.map.activeArrowsGroup).remove();
+
+        // Remove the marker from targets array history
+        this.map.history = this.map.history.filter(object => object !== this);
+
+        // If that was the last Marker on the map, hide "delete all" buttons
+        if (!this.map.hasMarkers()) {
+            $(".btn-delete").hide();
+            $(".btn-undo").hide();
+        }
     }
 }

@@ -1,24 +1,28 @@
 import { App } from "../app.js";
 import { ellipse } from "./libs/leaflet.ellipse.js";
+import "./libs/leaflet-visual-click.js";
 import { Marker, Circle, CircleMarker, Popup, Polygon } from "leaflet";
 import { targetIcon1, targetIconAnimated, targetIconDisabled, targetIconMinimal, targetSessionIcon1, targetIconSessionMinimal, targetIconMinimalDisabled } from "./squadIcon.js";
 import SquadSimulation from "./squadSimulation.js";
 import SquadFiringSolution from "./squadFiringSolution.js";
 import i18next from "i18next";
 import { sendMarkerData, sendTargetData } from "./squadCalcAPI.js";
-import { animateCSS } from "./animations.js";
 import { v4 as uuidv4 } from "uuid";
-
 
 /*
  * Global Squad Marker Class 
 */
 export var squadMarker = Marker.extend({
+
     options: {
         draggable: true,
         riseOnHover: true,
         keyboard: false,
         animate: true,
+        // icon: new DivIcon({
+        //     shadowUrl: "../img/icons/markers/marker_shadow.webp",
+        //     shadowSize: [0, 0],
+        // })
     },
 
     // Constructor
@@ -38,15 +42,15 @@ export var squadMarker = Marker.extend({
 
     /**
      * Force a given event to stay inside the map bounds
-     * @param {e} [event] - event
-     * @returns {e} - same event with corrected Latlng 
+     * @param {event} [event] - event
+     * @returns {event} - same event with corrected Latlng 
      */
-    keepOnMap: function(e){
-        if (e.latlng.lng > this.map.pixelSize) {e.latlng.lng = this.map.pixelSize;}
-        if (e.latlng.lat < -this.map.pixelSize ) {e.latlng.lat = -this.map.pixelSize;}
-        if (e.latlng.lng < 0) {e.latlng.lng = 0;}
-        if (e.latlng.lat > 0) {e.latlng.lat = 0;}
-        return e;
+    keepOnMap: function(event){
+        if (event.latlng.lng > this.map.pixelSize) {event.latlng.lng = this.map.pixelSize;}
+        if (event.latlng.lat < -this.map.pixelSize) {event.latlng.lat = -this.map.pixelSize;}
+        if (event.latlng.lng < 0) {event.latlng.lng = 0;}
+        if (event.latlng.lat > 0) {event.latlng.lat = 0;}
+        return event;
     },
 
 });
@@ -291,7 +295,7 @@ export var squadWeaponMarker = squadMarker.extend({
                 }
     
                 if (right - left <= maxRangeTreshold) {
-                    if (landingX < -this.map.pixelSize ) landingX = -this.map.pixelSize;
+                    if (landingX < -this.map.pixelSize) landingX = -this.map.pixelSize;
                     if (landingY > this.map.pixelSize) landingY = this.map.pixelSize;
                     if (landingX > 0) landingX = 0;
                     if (landingY < 0) landingY = 0;
@@ -302,7 +306,7 @@ export var squadWeaponMarker = squadMarker.extend({
             if (!foundMaxDistance) {
                 let finalLat = weaponPos.lat + right * Math.cos(angle) * degreesPerMeter;
                 let finalLng = weaponPos.lng + right * Math.sin(angle) * degreesPerMeter;
-                if (finalLat < -this.map.pixelSize ) {finalLat = -this.map.pixelSize;}
+                if (finalLat < -this.map.pixelSize) {finalLat = -this.map.pixelSize;}
                 if (finalLat > 0) {finalLat = 0;}
                 if (finalLng > this.map.pixelSize) {finalLng = this.map.pixelSize;}
                 if (finalLng < 0) {finalLng = 0;}
@@ -321,16 +325,16 @@ export var squadWeaponMarker = squadMarker.extend({
     },
 
 
-    _handleDrag: function (e) {
-        e = this.keepOnMap(e);
-        this.setLatLng(e.latlng);
-        this.rangeMarker.setLatLng(e.latlng);
-        this.minRangeMarker.setLatLng(e.latlng);
-        this.miniCircle.setLatLng(e.latlng);
-        this.fobCircle.setLatLng(e.latlng);
+    _handleDrag: function (event) {
+        event = this.keepOnMap(event);
+        this.setLatLng(event.latlng);
+        this.rangeMarker.setLatLng(event.latlng);
+        this.minRangeMarker.setLatLng(event.latlng);
+        this.miniCircle.setLatLng(event.latlng);
+        this.fobCircle.setLatLng(event.latlng);
 
         if (App.userSettings.realMaxRange) {
-            if (e.session) {
+            if (event.session) {
                 this.updateWeaponMaxRange();
             }
             else {
@@ -342,8 +346,8 @@ export var squadWeaponMarker = squadMarker.extend({
 
         // Update Position PopUp Content
         if (App.userSettings.weaponDrag) { 
-            this.posPopUp.setLatLng(e.latlng);
-            this.posPopUp.setContent(this.map.getKP(-e.latlng.lat, e.latlng.lng, 4)); 
+            this.posPopUp.setLatLng(event.latlng);
+            this.posPopUp.setContent(this.map.getKP(-event.latlng.lat, event.latlng.lng, 4)); 
         }
     },
 
@@ -694,7 +698,6 @@ export var squadTargetMarker = squadMarker.extend({
      */
     delete: function(broadcast = true){
 
-        
         if (broadcast && App.session.ws && App.session.ws.readyState === WebSocket.OPEN) {
             App.session.ws.send(JSON.stringify({ type: "DELETE_TARGET", uid: this.uid}));
             console.debug(`Sent delete request for target with UID: ${this.uid}`);
@@ -704,7 +707,7 @@ export var squadTargetMarker = squadMarker.extend({
         this.off();
 
         // Remove the marker from targets array history
-        this.map.targets = this.map.targets.filter(target => target !== this);
+        this.map.history = this.map.history.filter(object => object !== this);
 
         // Remove everything attached from the map
         this.spreadMarker1.removeFrom(this.map.markersGroup).remove();
@@ -720,13 +723,11 @@ export var squadTargetMarker = squadMarker.extend({
         // Remove the marker itself
         this.removeFrom(this.map.markersGroup).removeFrom(this.map.activeTargetsMarkers).remove();
     
-        // If that was the last Marker on the map, hide "delete all" buttons
-        if (this.map.activeTargetsMarkers.getLayers().length === 0) {
-            animateCSS($(".btn-delete"), "fadeOutRight").then(() => {
-                $(".btn-delete").hide();
-            });
+        // If that was the last Marker on the map, hide "delete/undo" buttons
+        if (!this.map.hasMarkers()) {
+            $(".btn-delete").hide();
+            $(".btn-undo").hide();
         }
-
     },
 
 
@@ -1060,7 +1061,7 @@ export var squadTargetMarker = squadMarker.extend({
         var weaponPos2;
         var heightPath1;
         var heightPath2;
-              
+
         $("#sim1").addClass("active");
         $("#sim2").removeClass("active");
         $("#canvasControls > .active").first().removeClass("active");
@@ -1089,25 +1090,25 @@ export var squadTargetMarker = squadMarker.extend({
     },
 
     // Keep the marker on map & update calc while dragging
-    _handleDrag: function (e) {
+    _handleDrag: function (event) {
 
         // When dragging marker out of bounds, block it at the edge
-        e = this.keepOnMap(e);
+        event = this.keepOnMap(event);
 
         // Update Positions
-        this.setLatLng(e.latlng);
-        this.calcMarker1.setLatLng(e.latlng);
-        this.spreadMarker1.setLatLng(e.latlng);
-        this.spreadMarker11.setLatLng(e.latlng);
-        this.calcMarker2.setLatLng(e.latlng);
-        this.spreadMarker2.setLatLng(e.latlng);
-        this.miniCircle.setLatLng(e.latlng);
-        this.hundredDamageRadius.setLatLng(e.latlng);
-        this.twentyFiveDamageRadius.setLatLng(e.latlng);
+        this.setLatLng(event.latlng);
+        this.calcMarker1.setLatLng(event.latlng);
+        this.spreadMarker1.setLatLng(event.latlng);
+        this.spreadMarker11.setLatLng(event.latlng);
+        this.calcMarker2.setLatLng(event.latlng);
+        this.spreadMarker2.setLatLng(event.latlng);
+        this.miniCircle.setLatLng(event.latlng);
+        this.hundredDamageRadius.setLatLng(event.latlng);
+        this.twentyFiveDamageRadius.setLatLng(event.latlng);
 
         // Update Position PopUp Content
         if (App.userSettings.targetDrag) {
-            this.posPopUp.setLatLng(e.latlng).setContent(this.map.getKP(-e.latlng.lat, e.latlng.lng, 4));
+            this.posPopUp.setLatLng(event.latlng).setContent(this.map.getKP(-event.latlng.lat, event.latlng.lng, 4));
         }
 
         // On mobile save performance
@@ -1137,16 +1138,15 @@ export var squadTargetMarker = squadMarker.extend({
     },
 
     // Hide stuff, do a final update and send data to API
-    _handleDragEnd: function (e) {
+    _handleDragEnd: function (event) {
 
+        // Send the MOVING_WEAPON event to the server
         if (App.session.ws && App.session.ws.readyState === WebSocket.OPEN) {
-            const newLatLng = this.getLatLng();
-            // Send the MOVING_WEAPON event to the server
             App.session.ws.send(
                 JSON.stringify({
                     type: "MOVING_TARGET",
-                    lat: newLatLng.lat,
-                    lng: newLatLng.lng,
+                    lat: this.getLatLng().lat,
+                    lng: this.getLatLng().lng,
                     uid: this.uid,
                 })
             );
@@ -1165,8 +1165,8 @@ export var squadTargetMarker = squadMarker.extend({
 
         // Report target to squadcalc API
         sendTargetData({
-            lat: e.target.getLatLng().lat,
-            lng: e.target.getLatLng().lng,
+            lat: event.target.getLatLng().lat,
+            lng: event.target.getLatLng().lng,
             weapon: App.activeWeapon.name,
             map: App.minimap.activeMap.name,
         });
@@ -1196,13 +1196,16 @@ export var squadTargetMarker = squadMarker.extend({
         this.delete();
     },
 
-    // On Hovering for more than 500ms, show a trajectory path and hide other targets
+    // On Hovering for more than 500ms hide other targets
     _handleMouseOver: function() {
 
         this.mouseOverTimeout = setTimeout(() => {
 
             // Hide the layer
-            if (this.map.layer) this.map.layer._setOpacity(0.5); 
+            if (this.map.layer){
+                this.map.layer._setOpacity(0.5);
+                this.map.layer.polyline.hideMeasurements();
+            } 
 
             // Hide other targets
             if (!this.isDragging){
@@ -1231,7 +1234,18 @@ export var squadTargetMarker = squadMarker.extend({
         this.calcMarker2.getElement().style.zIndex  = "";
 
         // Show the layer
-        if (this.map.layer) this.map.layer._setOpacity(1); 
+        if (this.map.layer) {
+            this.map.layer._setOpacity(1);
+            if (App.userSettings.showFlagsDistance) {
+                App.minimap.layer.polyline.showMeasurements({
+                    measurementOptions: {
+                        showTotalDistance: false,
+                        minPixelDistance: 50,
+                    }
+                }); 
+            }
+        } 
+
 
         if (!this.isDragging){
             this.map.activeTargetsMarkers.eachLayer((target) => {
@@ -1325,33 +1339,40 @@ export var squadStratMarker = squadMarker.extend({
     },
 
     /**
-     * Remove the Weapon marker and every object tied
+     * Remove the contextmenu marker and every object tied
      * @param {this}
      */
-    delete: function(){
-        
-        // Delete the weapon marker and everything tied to it
-        if (this.options.circles1Size) this.constructionRange.removeFrom(this.map.markersGroup).remove();
-        if (this.options.circles2Size) this.exclusionRange.removeFrom(this.map.markersGroup).remove();           
-
-        this.posPopUp.removeFrom(this.map.markersGroup).remove();
-        this.off();
-        this.removeFrom(this.map.markersGroup).removeFrom(this.map.activeMarkers);
-        this.remove();
-
-        
-    },
-
-    _handleContextMenu: function(e, broadcast = true) {
-
-        // Avoid other target keeping fading
-        clearTimeout(this.mouseOverTimeout);
+    delete: function(broadcast = true){
 
         // Broadcast to the session
         if (broadcast && App.session.ws && App.session.ws.readyState === WebSocket.OPEN) {
             App.session.ws.send(JSON.stringify({ type: "DELETE_MARKER", uid: this.uid }));
             console.debug(`Sent delete request for marker with UID: ${this.uid}`);
         }
+
+        // Remove the marker from targets array history
+        this.map.history = this.map.history.filter(object => object !== this);
+
+        // Delete the weapon marker and everything tied to it
+        if (this.options.circles1Size) this.constructionRange.removeFrom(this.map.markersGroup).remove();
+        if (this.options.circles2Size) this.exclusionRange.removeFrom(this.map.markersGroup).remove();           
+        this.posPopUp.removeFrom(this.map.markersGroup).remove();
+        this.off();
+        this.removeFrom(this.map.markersGroup).removeFrom(this.map.activeMarkers);
+
+        // If that was the last Marker on the map, hide "delete all" buttons
+        if (!this.map.hasMarkers()) {
+            $(".btn-delete").hide();
+            $(".btn-undo").hide();
+        }
+
+        this.remove();
+    },
+
+    _handleContextMenu: function() {
+
+        // Avoid other target keeping fading
+        clearTimeout(this.mouseOverTimeout);
 
         // If they already faded, switch them back
         this.map.activeTargetsMarkers.eachLayer((target) => {
@@ -1367,16 +1388,16 @@ export var squadStratMarker = squadMarker.extend({
         // Reset layer opacity
         if (this.map.layer) this.map.layer._setOpacity(1); 
         
-        this.delete(e);
+        this.delete();
     },
 
-    _handleDrag: function (e) {
-        e = this.keepOnMap(e);
-        this.setLatLng(e.latlng);
-        if (this.options.circles1Size) this.constructionRange.setLatLng(e.latlng); 
-        if (this.options.circles2Size) this.exclusionRange.setLatLng(e.latlng);
-        this.posPopUp.setLatLng(e.latlng);
-        this.posPopUp.setContent(this.map.getKP(-e.latlng.lat, e.latlng.lng, 4)); 
+    _handleDrag: function (event) {
+        event = this.keepOnMap(event);
+        this.setLatLng(event.latlng);
+        if (this.options.circles1Size) this.constructionRange.setLatLng(event.latlng); 
+        if (this.options.circles2Size) this.exclusionRange.setLatLng(event.latlng);
+        this.posPopUp.setLatLng(event.latlng);
+        this.posPopUp.setContent(this.map.getKP(-event.latlng.lat, event.latlng.lng, 4)); 
     },
 
     _handleDragStart: function () {
@@ -1446,7 +1467,11 @@ export var squadStratMarker = squadMarker.extend({
 
         this.mouseOverTimeout = setTimeout(() => {
 
-            if (this.map.layer) this.map.layer._setOpacity(0.5); // Hide the layer
+            // Hide the layer
+            if (this.map.layer){
+                this.map.layer._setOpacity(0.5);
+                this.map.layer.polyline.hideMeasurements();
+            } 
 
             if (!this.isDragging){
                 // Hide other targets
@@ -1478,7 +1503,17 @@ export var squadStratMarker = squadMarker.extend({
         clearTimeout(this.mouseOverTimeout);
 
         // Show the layer
-        if (this.map.layer) this.map.layer._setOpacity(1); 
+        if (this.map.layer) {
+            this.map.layer._setOpacity(1); 
+            if (App.userSettings.showFlagsDistance) {
+                App.minimap.layer.polyline.showMeasurements({
+                    measurementOptions: {
+                        showTotalDistance: false,
+                        minPixelDistance: 50,
+                    }
+                }); 
+            }
+        }
 
         if (!this.isDragging){
             this.map.activeTargetsMarkers.eachLayer((target) => {

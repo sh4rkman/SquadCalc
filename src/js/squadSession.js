@@ -4,14 +4,13 @@ import { LatLng } from "leaflet";
 import  { MapArrow }  from "./squadMinimap.js";
 import { createSessionTooltips, leaveSessionTooltips } from "./tooltips.js";
 
+
 export default class SquadSession {
 
     constructor(sessionId) {
         const WS_URL = process.env.API_URL.replace(/^http/, "ws");
         this.ws = new WebSocket(`${WS_URL}/`);
         this.wsActiveUsers = 1;
-
-        // WEB SOCKET EVENT HANDLERS
         this.ws.onopen = () => { this._open(sessionId); };
         this.ws.onclose = (event) => { this._close(event); };
         this.ws.onmessage = (message) => { this._handleMessage(message); };
@@ -25,10 +24,6 @@ export default class SquadSession {
 
     _close(event) {
         // Remove the session query parameter from the URL
-        const urlParams = new URLSearchParams(window.location.search);
-        urlParams.delete("session"); // Remove the session parameter if it exists
-        const newUrl = `${window.location.pathname}?${urlParams.toString()}`;
-        window.history.replaceState({}, "", newUrl); // Update the URL without reloading the page
         App.updateUrlParams({ session: null });
 
         // Update UI
@@ -37,24 +32,30 @@ export default class SquadSession {
         createSessionTooltips.enable();
         $("#sessionUsers").css("display", "none");
 
+        // Open a toast message based on the close event
 
-        if (event.code === 1008) {
+        if (event.code === 4001) {
+            App.openToast("error", "sessionFull", "");
+        }
+        else if (event.code === 4002) {
+            console.error("The provided session is invalid (6 characters minimum).");
+            App.openToast("error", "invalidSession", "invalidSessionRules");
+        }
+        else if (event.code === 4003) {
             console.error("Your app version is outdated. Please update to the latest version.");
             App.openToast("error", "outdatedVersion", "pleaseupdate");
-        }
-        else if (event.code === 4001) {
-            App.openToast("error", "sessionFull", "");
         }
         else {
             App.openToast("error", "sessionClosed", "");
         }
 
-
-
-        // todo : reverse all circles to red
+        // Reverse all targets created by other session member to default color
         App.minimap.activeTargetsMarkers.eachLayer((target) => {
             if (target.fromSession) {
                 target.fromSession = false;
+                target.spreadOptionsOn = { color: App.mainColor };
+                target.hundredDamageCircleOn = { color: App.mainColor };
+                target.twentyFiveDamageCircleOn  = { color: App.mainColor };
                 target.updateIcon();
                 target.updateSpread();
                 target.updateDamageRadius();
@@ -62,8 +63,8 @@ export default class SquadSession {
         });
 
         // Enable Map Selector back
-        App.MAP_SELECTOR.prop("disabled", false);
-        //hostOnlyTooltip.disable();
+        // App.MAP_SELECTOR.prop("disabled", false);
+        // hostOnlyTooltip.disable();
     }
 
     _handleMessage(message) {
@@ -73,10 +74,8 @@ export default class SquadSession {
 
         case "SESSION_CREATED": {
             console.debug("New Session created : " + data.sessionId);
-
             $("#sessionUsers").html(1);
             $("#sessionUsers").css("display", "flex");
-
             App.updateUrlParams({ session: data.sessionId });
             App.openToast("success", "sessionCreated", "shareSession", true);
             break;
@@ -131,8 +130,8 @@ export default class SquadSession {
             if (data.sessionUsers === 1) {
                 App.openToast("info", "someoneLeft", "youAreAlone");
                 // Enable Map Selector back
-                App.MAP_SELECTOR.prop("disabled", false);
-                //hostOnlyTooltip.disable();
+                // App.MAP_SELECTOR.prop("disabled", false);
+                // hostOnlyTooltip.disable();
             } else {
                 if (data.sessionUsers > this.wsActiveUsers) {
                     App.openToast("info", "someoneJoined", "");
@@ -154,37 +153,37 @@ export default class SquadSession {
             App.minimap.activeWeaponsMarkers.eachLayer((weapon) => {
                 if (weapon.uid === data.uid) {
                     weapon.delete(false);
-                    console.debug(`Deleted weapon with UID: ${data.uid}`);
+                    App.minimap.visualClick.triggerVisualClick(weapon.getLatLng(), "cyan");
+                    return;
                 }
             });
             break;
         }
-
         case "DELETE_TARGET": {
             App.minimap.activeTargetsMarkers.eachLayer((target) => {
                 if (target.uid === data.uid) {
                     target.delete(false);
-                    console.debug(`Deleted target with UID: ${data.uid}`);
+                    App.minimap.visualClick.triggerVisualClick(target.getLatLng(), "cyan");
+                    return;
                 }
             });
             break;
         }
-
         case "DELETE_MARKER": {
             App.minimap.activeMarkers.eachLayer((marker) => {
                 if (marker.uid === data.uid) {
                     marker.delete(false);
-                    console.debug(`Deleted marker with UID: ${data.uid}`);
+                    App.minimap.visualClick.triggerVisualClick(marker.getLatLng(), "cyan");
+                    return;
                 }
             });
             break;
         }
-
         case "DELETE_ARROW": {
             App.minimap.activeArrows.forEach((arrow) => {
                 if (arrow.uid === data.uid) {
-                    arrow.removeArrow(false);
-                    console.debug(`Deleted arrow with UID: ${data.uid}`);
+                    arrow.delete(false);
+                    return;
                 }
             });
             break;
@@ -196,26 +195,23 @@ export default class SquadSession {
         /**********************************************************************/
 
         case "ADDING_WEAPON": {
-            console.debug("Received weapon: ", data.uid);
             App.minimap.createWeapon(new LatLng(data.lat, data.lng), data.uid);
+            App.minimap.visualClick.triggerVisualClick(new LatLng(data.lat, data.lng), "cyan");
             break;
         }
-
         case "ADDING_TARGET": {
-            console.debug("Received target: ", data.uid);
             App.minimap.createTarget(new LatLng(data.lat, data.lng), false, data.uid);
+            App.minimap.visualClick.triggerVisualClick(new LatLng(data.lat, data.lng), "cyan");
             break;
         }
-
         case "ADDING_MARKER": {
-            console.debug("Received marker: ", data.uid);
             App.minimap.createMarker(new LatLng(data.lat, data.lng), data.team, data.category, data.icon, data.uid);
+            App.minimap.visualClick.triggerVisualClick(new LatLng(data.lat, data.lng), "cyan");
             break;
         }
-
         case "ADDING_ARROW": {
-            console.debug("Received marker: ", data.uid);
             new MapArrow(App.minimap, data.color, data.latlngs[0], data.latlngs[1], data.uid);
+            App.minimap.visualClick.triggerVisualClick(data.latlngs[0], "cyan");
             break;
         }
 
@@ -226,32 +222,30 @@ export default class SquadSession {
         case "MOVING_WEAPON": {
             App.minimap.activeWeaponsMarkers.eachLayer((weapon) => {
                 if (weapon.uid === data.uid) {
-                    const simulatedEvent = { latlng: new LatLng(data.lat, data.lng), session: true };
-                    weapon._handleDrag(simulatedEvent); // Call the drag handler to update position
+                    weapon._handleDrag({ latlng: new LatLng(data.lat, data.lng), session: true });
+                    App.minimap.visualClick.triggerVisualClick(new LatLng(data.lat, data.lng), "cyan");
                     App.minimap.updateTargets();
-                    console.debug(`Updated position for weapon with UID: ${data.uid}`);
+                    return;
                 }
             });
             break;
         }
-
         case "MOVING_TARGET": {
             App.minimap.activeTargetsMarkers.eachLayer((target) => {
                 if (target.uid === data.uid) {
-                    const simulatedEvent = { latlng: new LatLng(data.lat, data.lng) };
-                    target._handleDrag(simulatedEvent); // Call the drag handler to update position
-                    console.debug(`Moved target with UID: ${data.uid} to new position: (${data.lat}, ${data.lng})`);
-                }
+                    target._handleDrag({ latlng: new LatLng(data.lat, data.lng) });
+                    App.minimap.visualClick.triggerVisualClick(new LatLng(data.lat, data.lng), "cyan");
+                    return;
+                } 
             });
             break;
         }
-
         case "MOVING_MARKER": {
             App.minimap.activeMarkers.eachLayer((marker) => {
                 if (marker.uid === data.uid) {
-                    const simulatedEvent = { latlng: new LatLng(data.lat, data.lng) };
-                    marker._handleDrag(simulatedEvent);
-                    console.debug(`Moved marker with UID: ${data.uid} to new position: (${data.lat}, ${data.lng})`);
+                    marker._handleDrag({ latlng: new LatLng(data.lat, data.lng) });
+                    App.minimap.visualClick.triggerVisualClick(new LatLng(data.lat, data.lng), "cyan");
+                    return;
                 }
             });
             break;
@@ -264,6 +258,11 @@ export default class SquadSession {
         case "UPDATE_MAP": {
             // Trigger a map change with a custom event to skip the update
             App.MAP_SELECTOR.val(data.activeMap).trigger($.Event("change", { broadcast: false }));
+            break;
+        }
+
+        case "PING": {
+            App.minimap.visualClick.triggerVisualClick(data.latlng, "cyan");
             break;
         }
 
