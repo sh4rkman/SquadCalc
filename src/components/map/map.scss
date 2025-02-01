@@ -74,7 +74,8 @@ $flag-circle-opacity: 0.2;
             display: grid;
         }
         .subkp {
-            font-size: 0.7em;
+            font-size: 0.65em;
+            letter-spacing: 0.05em;
         }
         .leaflet-pane .leaflet-marker-pane .flag {
             @include variables.light-text-outline;
@@ -259,6 +260,26 @@ $flag-circle-opacity: 0.2;
             font-weight: bolder;
             letter-spacing: normal;
         }
+        .capZone {
+            transition: opacity 0.25s ease-in-out, fill-opacity 0.25s ease-in-out;
+        }
+        .leaflet-measure-path-measurement {
+            @include variables.light-text-outline;
+            font-family: variables.$mainFont, Times, "Times New Roman", serif;
+            position: absolute;
+            font-size: var(--font-size-objtext);
+            color: white;
+            white-space: nowrap;
+            transform-origin: 0;
+        }
+        
+        .leaflet-measure-path-measurement > div {
+            position: relative;
+            margin-top: -25%;
+            left: -50%;
+            pointer-events: none;
+        }
+        
     }
 }
 
@@ -333,7 +354,7 @@ $flag-circle-opacity: 0.2;
                 letter-spacing: 0;
             }
             svg {
-                height: 0.8em;
+                height: 0.9em;
             }
         }
         
@@ -385,28 +406,8 @@ $flag-circle-opacity: 0.2;
     top: 0;
 }
 
-.capZone {
-    transition: opacity 0.25s ease-in-out, fill-opacity 0.25s ease-in-out;
-}
 
 
-
-.leaflet-measure-path-measurement {
-    @include variables.light-text-outline;
-    font-family: variables.$mainFont, Times, "Times New Roman", serif;
-    position: absolute;
-    font-size: var(--font-size-objtext);
-    color: white;
-    white-space: nowrap;
-    transform-origin: 0;
-}
-
-.leaflet-measure-path-measurement > div {
-    position: relative;
-    margin-top: -25%;
-    left: -50%;
-    pointer-events: none;
-}
 
 
 /*

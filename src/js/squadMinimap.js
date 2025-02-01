@@ -169,16 +169,24 @@ export var squadMinimap = Map.extend({
             let imgPath = `maps${this.activeMap.mapURL}${LAYERMODE}.webp`;
             this.activeLayer = new imageOverlay(imgPath, this.imageBounds);
             this.activeLayer.addTo(this.layerGroup);
-            //$(this.activeLayer.getElement()).css("opacity", 0);
+            $(this.activeLayer.getElement()).css("opacity", 0);
         }
     
-        // Decode if necessary
-        //this.decode();
-    
-        // When the new image (or tile) is loaded, fade it in & remove spinner
+
         this.activeLayer.on("load", () => {
-            this.spin(false);
-            if (OLDLAYER) OLDLAYER.remove();
+            
+            if (App.userSettings.highQualityImages) {
+                if (OLDLAYER) OLDLAYER.remove();
+                this.spin(false);
+            }
+            else {
+                // Animate the opacity of the new layer
+                $(this.activeLayer.getElement()).fadeTo(700, 1, () => {
+                    if (OLDLAYER) OLDLAYER.remove();
+                    this.spin(false);
+                });
+            }
+
         });
 
         // Show grid and heatmap
@@ -561,15 +569,15 @@ export var squadMinimap = Map.extend({
         
     },
 
-    
+
     /**
      * Update Mouse Location Content
      * @param {latLng} latlng - coordinates of the mouse
      */
     updateMouseLocationPopup(latlng){
-        let kp = this.getKP(-latlng.lat, latlng.lng)
+        const KP = this.getKP(-latlng.lat, latlng.lng);
         this.mouseLocationPopup.setLatLng(latlng).openOn(this);
-        this.mouseLocationPopup.setContent(`<span>${kp.substring(0, 7)}</span><span class="subkp">${kp.substring(7, 11)}</span>`);
+        this.mouseLocationPopup.setContent(`<span>${KP.substring(0, 7)}</span><span class="subkp">${KP.substring(7, 11)}</span>`);
     },
 
 

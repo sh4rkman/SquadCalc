@@ -1,5 +1,19 @@
-# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **37.1.0** *(2025-01-30)*
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **37.1.1** *(2025-02-01)*
 
+
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Under-Cursor Keypads sub-digits are now smaller for clarity (fix #283, thanks Flandflard!)
+
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Under-Cursor Keypads, and Markers position Keypads now scale with the font size set in settings
+
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Added a FadeIn animation when switching layers 
+
+
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
+
+
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **37.1.0** *(2025-01-31)*
 
 <img src="https://img.shields.io/badge/-new-green"> Session Pings: Left-clicking the map while in a session displays a ping for everyone in the session. Pings also occur when other participants interact with markers (adding, deleting, etc.).
 
