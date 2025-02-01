@@ -36,7 +36,6 @@ export var squadMinimap = Map.extend({
 
         options = {
             attributionControl: false,
-            //visualClick: true,
             boxZoom: true,
             center: [-pixelSize/2, pixelSize/2],
             closePopupOnClick: false,

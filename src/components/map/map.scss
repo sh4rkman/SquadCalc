@@ -272,14 +272,58 @@ $flag-circle-opacity: 0.2;
             white-space: nowrap;
             transform-origin: 0;
         }
-        
         .leaflet-measure-path-measurement > div {
             position: relative;
             margin-top: -25%;
             left: -50%;
             pointer-events: none;
         }
-        
+        .leaflet-visualclick-icon {
+            border-radius: 10%;
+            pointer-events: none;
+            &::after {
+                content: "";
+                border-radius: 100%;
+                height: 50px;
+                width: 50px;
+                margin-left: -25px;
+                margin-top: -25px;
+                position: absolute;
+                pointer-events: none;
+                animation: visualclick-pulsate 0.5s ease-out;
+                animation-iteration-count: 1;
+                animation-delay: 0s;
+                opacity: 0;
+            }
+            &.white::after {
+                box-shadow: inset 0 0 25px 5px #E1E3E4, 0 0 10px -1px #C5C5C5;
+            }
+            &.cyan::after {
+                box-shadow: inset 0 0 25px 5px #1960b1, 0 0 10px -1px #11447e;
+            }
+        }
+        .leaflet-visualclick-icon-touch {
+            &::after {
+                content: "";
+                border-radius: 100%;
+                height: 50px;
+                width: 50px;
+                margin-left: -25px;
+                margin-top: -25px;
+                position: absolute;
+                pointer-events: none;
+                animation: visualclick-pulsate-touch 0.5s ease-out;
+                animation-iteration-count: 1;
+                animation-delay: 0s;
+                opacity: 0;
+            }
+            &.white::after {
+                box-shadow: inset 0 0 25px 5px #E1E3E4, 0 0 10px -1px #C5C5C5;
+            }
+            &.cyan::after {
+                box-shadow: inset 0 0 25px -1px #1960b1, 0 0 10px -1px #11447e;
+            }
+        }
     }
 }
 
@@ -404,72 +448,6 @@ $flag-circle-opacity: 0.2;
     background-color: variables.$mainBGColor;
     z-index: 99;
     top: 0;
-}
-
-
-
-
-
-/*
-* Heavily based on the CSS for https://github.com/mapshakers/leaflet-icon-pulse
-*
-* Modified to get rid of the opaque circle, and tweaked the pulse to be subtler.
-*/
-
-.leaflet-visualclick-icon {
-    border-radius: 10%;
-    pointer-events: none;
-}
-
-.leaflet-visualclick-icon::after {
-    content: "";
-    border-radius: 100%;
-    height: 50px;
-    width: 50px;
-    position: absolute;
-    margin-left: -25px;
-    margin-top: -25px;
-    pointer-events: none;
-    animation: visualclick-pulsate 0.5s ease-out;
-    animation-iteration-count: 1;
-    animation-delay: 0s;
-    opacity: 0;
-}
-
-.leaflet-visualclick-icon.white::after {
-    box-shadow: inset 0 0 25px 5px #E1E3E4, 0 0 10px -1px #C5C5C5;
-}
-
-.leaflet-visualclick-icon.cyan::after {
-    box-shadow: inset 0 0 25px 5px #1960b1, 0 0 10px -1px #11447e;
-}
-
-.leaflet-visualclick-icon.firebrick::after {
-    box-shadow: inset 0 0 25px 5px firebrick, 0 0 10px -1px rgb(133, 25, 25);
-}
-
-.leaflet-visualclick-icon-touch.white::after {
-    box-shadow: inset 0 0 25px -1px #E1E3E4, 0 0 10px -1px #C5C5C5;
-}
-
-.leaflet-visualclick-icon-touch.cyan::after {
-    box-shadow: inset 0 0 25px -1px #1960b1, 0 0 10px -1px #11447e;
-}
-
-.leaflet-visualclick-icon-touch::after {
-    content: "";
-    border-radius: 100%;
-    height: 140px;
-    width: 140px;
-    position: absolute;
-    margin-left: -70px;
-    margin-top: -70px;
-    pointer-events: none;
-    box-shadow: inset 0 0 25px -1px #E1E3E4, 0 0 10px -1px #C5C5C5;
-    animation: visualclick-pulsate-touch 0.7s ease-out;
-    animation-iteration-count: 1;
-    animation-delay: 0s;
-    opacity: 0;
 }
 
 @keyframes visualclick-pulsate {

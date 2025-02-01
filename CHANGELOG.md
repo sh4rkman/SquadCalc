@@ -7,6 +7,9 @@
 
 <img src="https://img.shields.io/badge/-%20improv%20-orange"> Added a FadeIn animation when switching layers 
 
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Disabled shortcuts panel in settings (shortcuts keys can now be found directly on buttons tooltips)
+
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed pings being oversized on mobile
 
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->

@@ -383,10 +383,10 @@ $bezier: cubic-bezier(0.65, 0.25, 0.56, 0.96);
     width: 100%;
     button {
         color: variables.$mainBGColor;
-        width: 23%;
+        width: 29%;
         margin-bottom: 1em;
         vertical-align: middle;
-        height: 20px;
+        height: 18px;
         cursor: pointer;
         transition: background-color 0.3s ease;
         span {
@@ -398,9 +398,9 @@ $bezier: cubic-bezier(0.65, 0.25, 0.56, 0.96);
         }
         &.active {
             background-color: variables.$mainColor;
-            color: white;
+            color: variables.$mainTxtColor;
             padding-bottom: 0;
-            height: 30px;
+            height: 25px;
             svg {
                 display: inline-block;
                 fill: variables.$mainTxtColor;
