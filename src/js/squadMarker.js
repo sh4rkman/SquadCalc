@@ -1208,20 +1208,8 @@ export var squadTargetMarker = squadMarker.extend({
             } 
 
             // Hide other targets
-            if (!this.isDragging){
-                this.map.activeTargetsMarkers.eachLayer((target) => {
-                    if (target != this) {
-                        target.off("mouseover");
-                        target.off("mouseout");
-                        target.setOpacity(0.65);
-                        target.calcMarker1.close();
-                        target.calcMarker2.close();
-                        target.disableSpreadRadii();
-                        target.disableDamageRadii();
-                        target.twentyFiveDamageRadius.setStyle({ opacity: 0 });
-                    }
-                });
-            }
+            if (!this.isDragging) this.map.fadeOtherTargets(this);
+
         }, 500);
     },
 
@@ -1473,21 +1461,7 @@ export var squadStratMarker = squadMarker.extend({
                 this.map.layer.polyline.hideMeasurements();
             } 
 
-            if (!this.isDragging){
-                // Hide other targets
-                this.map.activeTargetsMarkers.eachLayer((target) => {
-                    if (target != this) {
-                        target.off("mouseover");
-                        target.off("mouseout");
-                        target.setOpacity(0.65);
-                        target.calcMarker1.close();
-                        target.calcMarker2.close();
-                        target.disableSpreadRadii();
-                        target.disableDamageRadii();
-                        target.twentyFiveDamageRadius.setStyle({ opacity: 0 });
-                    }
-                });
-            }
+            if (!this.isDragging) this.map.fadeOtherTargets();
 
         }, 500);
 

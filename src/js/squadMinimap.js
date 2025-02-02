@@ -274,6 +274,27 @@ export var squadMinimap = Map.extend({
         });
     },
 
+    
+    /**
+     * Fade Out existing targets except the hovered one
+     * @param {squadTargetMarker} hoveredTarget - Target that is hovered
+     */
+    fadeOtherTargets: function(hoveredTarget){
+        this.activeTargetsMarkers.eachLayer((target) => {
+            if (target != hoveredTarget) {
+                target.off("mouseover");
+                target.off("mouseout");
+                target.setOpacity(0.65);
+                target.calcMarker1.close();
+                target.calcMarker2.close();
+                target.disableSpreadRadii();
+                target.disableDamageRadii();
+                target.twentyFiveDamageRadius.setStyle({ opacity: 0 });
+            }
+        });
+    },
+
+
     /**
     * Recalc and update every target spread circle
     */
@@ -339,6 +360,7 @@ export var squadMinimap = Map.extend({
         });
     },
 
+
     /**
      * add Grid to minimap layers
      */
@@ -346,12 +368,14 @@ export var squadMinimap = Map.extend({
         this.grid.addTo(this.layerGroup);
     },
 
+
     /**
      * Hide Grid from minimap layers
      */
     hideGrid: function(){
         this.grid.removeFrom(this.layerGroup);
     },
+
 
     /**
      * Calculates the keypad coordinates for a given latlng coordinate
