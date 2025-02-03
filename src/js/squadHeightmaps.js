@@ -39,9 +39,9 @@ export default class SquadHeightmap {
      * @returns {integer} - height in meters
      */
     getHeight(latlng){
-        var row = Math.round(latlng.lat * -this.heightmapScaling);
-        var col = Math.round(latlng.lng * this.heightmapScaling);
-        var height = 0; // Todo: Implement a better way to handle this, like returning infinity
+        const row = Math.round(latlng.lat * -this.heightmapScaling);
+        const col = Math.round(latlng.lng * this.heightmapScaling);
+        let height = 0; // Todo: Implement a better way to handle this, like returning infinity
 
         if (this.json[row] && typeof this.json[row][col] !== "undefined") {
             height = this.json[row][col];
@@ -60,15 +60,15 @@ export default class SquadHeightmap {
      */
     getHeightPath(mortarLatlng, targetLatlng, STEP = 100) {
         const END = {lat: targetLatlng.lat, lng: targetLatlng.lng};
-        var start = {lat: mortarLatlng.lat, lng: mortarLatlng.lng};
-        var heightPath = [];
-        var latDiff =  END.lat - start.lat;
-        var lngDiff =  END.lng - start.lng;
+        const START = {lat: mortarLatlng.lat, lng: mortarLatlng.lng};
+        const heightPath = [];
+        const latDiff =  END.lat - START.lat;
+        const lngDiff =  END.lng - START.lng;
         
         for (let i=0; i < STEP; i++){
-            heightPath.push(this.getHeight(start));
-            start.lat += latDiff/STEP;
-            start.lng += lngDiff/STEP;
+            heightPath.push(this.getHeight(START));
+            START.lat += latDiff/STEP;
+            START.lng += lngDiff/STEP;
         }
     
         return heightPath;

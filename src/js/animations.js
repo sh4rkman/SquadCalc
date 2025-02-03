@@ -74,7 +74,7 @@ export function drawLine() {
 export function explode(x, y, startAngle, endAngle) {
     const colors = ["rgba(255, 255, 255, 0.3)"];
     const bubbles = 30;
-    const r = (a, b, c) => parseFloat((Math.random() * ((a ? a : 1) - (b ? b : 0)) + (b ? b : 0)).toFixed(c ? c : 0));
+    const r = (a, b, c) => parseFloat((Math.random() * ((a || 1) - (b || 0)) + (b || 0)).toFixed(c || 0));
     let particles = [];
     let ratio = window.devicePixelRatio;
     let c = document.createElement("canvas");
@@ -146,10 +146,10 @@ function render(particles, ctx, width, height) {
 }
 
 
-export function animateCalc(target, goal, duration, destination) {
+export function animateCalc(goal, duration, destination) {
     // Ensure target is a number
     const element = $(`#${destination}`);
-    target = element.html();
+    let target = element.html();
     target = isNaN(element.html()) ? 0 : Number(element.html());
 
     const increment = Math.abs(goal - target) / (duration / 16);

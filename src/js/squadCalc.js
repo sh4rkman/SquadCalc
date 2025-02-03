@@ -2,14 +2,12 @@ import { MAPS } from "./data/maps.js";
 import { WEAPONS, WEAPONSTYPE } from "./data/weapons.js";
 import { squadMinimap } from "./squadMinimap.js";
 import { Weapon } from "./squadWeapons.js";
-import { createLine, drawLine } from "./animations.js";
+import { createLine, drawLine, animateCSS, animateCalc } from "./animations.js";
 import { loadSettings } from "./settings.js";
 import { loadLanguage } from "./localization.js";
-import { animateCSS, animateCalc } from "./animations.js";
-import { tooltip_save } from "./tooltips.js";
+import { tooltip_save, createSessionTooltips, leaveSessionTooltips } from "./tooltips.js";
 import { checkApiHealth, fetchLayersByMap, fetchLayerByName } from "./squadCalcAPI.js";
 import { initWebSocket } from "./smcConnector.js";
-import { createSessionTooltips, leaveSessionTooltips } from "./tooltips.js";
 
 import SquadSession from "./squadSession.js";
 import SquadFiringSolution from "./squadFiringSolution.js";
@@ -212,7 +210,7 @@ export default class SquadCalc {
 
     loadMinimap(){
         const currentUrl = new URL(window.location.href);
-        var mapIndex;
+        let mapIndex;
 
         // try to retrieve map from URL
         if (currentUrl.searchParams.has("map")) {
@@ -243,7 +241,6 @@ export default class SquadCalc {
      * Load weapons into html
      */
     loadWeapons() {
-        const WEAPONSLENGTH = WEAPONS.length;
 
         WEAPONS.forEach((weapon, index, arr) => {
             arr[index] = new Weapon(
@@ -285,15 +282,16 @@ export default class SquadCalc {
         });
 
         // Load Weapons
-        for (let i = 0; i < WEAPONSTYPE.length; i += 1) {
-            this.WEAPON_SELECTOR.append(`<optgroup data-i18n-label=weapons:${WEAPONSTYPE[i]}>`);
-            for (let y = 0; y < WEAPONSLENGTH; y += 1) {
-                if (WEAPONS[y].type === WEAPONSTYPE[i]) {
-                    this.WEAPON_SELECTOR.append(`<option data-i18n=weapons:${WEAPONS[y].name} value=${y}></option>`);
+        for (const type of WEAPONSTYPE) {
+            this.WEAPON_SELECTOR.append(`<optgroup data-i18n-label=weapons:${type}>`);
+            for (const [index, weapon] of WEAPONS.entries()) {
+                if (weapon.type === type) {
+                    this.WEAPON_SELECTOR.append(`<option data-i18n=weapons:${weapon.name} value=${index}></option>`);
                 }
             }
             this.WEAPON_SELECTOR.append("</optgroup>");
         }
+
 
         // Add Experimental weapons if wanted by user settings
         this.toggleExperimentalWeapons();
@@ -428,25 +426,19 @@ export default class SquadCalc {
 
         $("#mapLayerMenu").find("button.layers").on("click", (event) => {
 
-            var val = $(event.currentTarget).attr("value");
+            const VAL = $(event.currentTarget).attr("value");
 
-            if (val === "helpmap") {
-                $(".btn-"+val).toggleClass("active");
+            if (VAL === "helpmap") {
+                $(".btn-"+VAL).toggleClass("active");
                 this.minimap.toggleHeatmap();
                 return;
             }
 
             $("#mapLayerMenu").find(".layers").removeClass("active");
-            $(".btn-"+val).addClass("active");
-
-            if (val === "basemap") {
-                this.updateUrlParams({ type: null });
-            } else {
-                this.updateUrlParams({ type: val });
-            }
-
-            localStorage.setItem("settings-map-mode", val);
-            this.userSettings.layerMode = val;
+            $(".btn-"+VAL).addClass("active");
+            this.updateUrlParams({ type: VAL === "basemap" ? null : VAL });
+            localStorage.setItem("settings-map-mode", VAL);
+            this.userSettings.layerMode = VAL;
             this.minimap.changeLayer();
         });
 
@@ -456,10 +448,10 @@ export default class SquadCalc {
         });
 
         $("#mapLayerMenu").find("button.btn-hd").on("click", () => {
-            var val = !$(".btn-hd").hasClass("active");
+            const VAL = !$(".btn-hd").hasClass("active");
             $(".btn-hd").toggleClass("active");
-            this.userSettings.highQualityImages = val;
-            localStorage.setItem("settings-highquality-images", +val);
+            this.userSettings.highQualityImages = VAL;
+            localStorage.setItem("settings-highquality-images", +VAL);
             this.minimap.changeLayer();
         });
 
@@ -614,7 +606,7 @@ export default class SquadCalc {
     }
 
     changeFontSize(){
-        var fontSize;
+        let fontSize;
         this.userSettings.fontSize = parseInt(this.userSettings.fontSize, 10) || 1;
 
         switch (this.userSettings.fontSize) {
@@ -690,9 +682,9 @@ export default class SquadCalc {
 
     closeDialogOnClickOutside(dialog) {
         dialog.addEventListener("click", function(event) {
-            var rect = dialog.getBoundingClientRect();
-            var isInDialog = (rect.top <= event.clientY && event.clientY <= rect.top + rect.height &&
-                              rect.left <= event.clientX && event.clientX <= rect.left + rect.width);
+            const RECT = dialog.getBoundingClientRect();
+            const isInDialog = (RECT.top <= event.clientY && event.clientY <= RECT.top + RECT.height &&
+                              RECT.left <= event.clientX && event.clientX <= RECT.left + RECT.width);
             if (!isInDialog) {
                 dialog.close();
             }
@@ -748,7 +740,7 @@ export default class SquadCalc {
      * get last selected weapon from user cache and apply it
      */
     getWeapon() {
-        var weapon = localStorage.getItem("data-weapon");
+        let weapon = localStorage.getItem("data-weapon");
         if (weapon === null || isNaN(weapon) || weapon === "") { weapon = 0; }
         $(".dropbtn2").val(weapon);
         this.changeWeapon();
@@ -759,22 +751,18 @@ export default class SquadCalc {
      * @returns {target} elevation + bearing
      */
     shoot(inputChanged = "") {
-        var startA;
-        var startB;
-        var elevation;
-        var firingSolution;
         const MORTAR_LOC = $("#mortar-location");
         const TARGET_LOC = $("#target-location");
-        var a = MORTAR_LOC.val();
-        var b = TARGET_LOC.val();
-        var aPos;
-        var bPos;
+        const a = MORTAR_LOC.val();
+        const b = TARGET_LOC.val();
+        let aPos;
+        let bPos;
 
         this.resetCalc();
 
         // store current cursor positions on input
-        startA = MORTAR_LOC[0].selectionStart;
-        startB = TARGET_LOC[0].selectionStart;
+        let startA = MORTAR_LOC[0].selectionStart;
+        let startB = TARGET_LOC[0].selectionStart;
 
         // format keypads
         MORTAR_LOC.val(this.formatKeyPad(a));
@@ -809,19 +797,11 @@ export default class SquadCalc {
         aPos = {lat: -aPos.lng * this.minimap.gameToMapScale, lng: aPos.lat * this.minimap.gameToMapScale};
         bPos = {lat: -bPos.lng * this.minimap.gameToMapScale, lng: bPos.lat * this.minimap.gameToMapScale};
 
-        firingSolution = new SquadFiringSolution(aPos, bPos, this.minimap, 0);
+        let firingSolution = new SquadFiringSolution(aPos, bPos, this.minimap, 0);
 
-        if (this.activeWeapon.getAngleType() === -1) {
-            elevation = firingSolution.elevation.high;
-        } else {
-            elevation = firingSolution.elevation.low;
-        }
-
-        if (this.activeWeapon.unit === "mil") {
-            elevation = elevation.mil;
-        } else {
-            elevation = elevation.deg;
-        }
+        let elevation = this.activeWeapon.getAngleType() === -1 ? firingSolution.elevation.high : firingSolution.elevation.low;
+        elevation = this.activeWeapon.unit === "mil" ? elevation.mil : elevation.deg;
+    
 
         // If Target too close/far
         if (isNaN(elevation)) {
@@ -839,8 +819,8 @@ export default class SquadCalc {
      */
     insertCalc(bearing, elevation) {
 
-        animateCalc($("#bearingNum").html(), bearing.toFixed(1), 500, "bearingNum");
-        animateCalc($("#elevationNum").html(), elevation.toFixed(this.activeWeapon.elevationPrecision), 500, "elevationNum");
+        animateCalc(bearing.toFixed(1), 500, "bearingNum");
+        animateCalc(elevation.toFixed(this.activeWeapon.elevationPrecision), 500, "elevationNum");
 
         if (this.activeWeapon.getAngleType() === -1) {
             $("#highlowicon").css({ transform: "rotate(0deg)"});
@@ -865,33 +845,19 @@ export default class SquadCalc {
      * @returns {event} - empty event if we don't want the user input
      */
     filterInput(event) {
-        var chrTyped;
-        var chrCode = 0;
-        var evt = event;
-
-        if (evt.charCode !== null) {
-            chrCode = evt.charCode;
-        } else if (evt.which !== null) {
-            chrCode = evt.which;
-        } else if (evt.keyCode !== null) {
-            chrCode = evt.keyCode;
+        const chrCode = event.charCode || event.which || event.keyCode || 0;
+        const chrTyped = chrCode === 0 ? "SPECIAL KEY" : String.fromCharCode(chrCode);
+    
+        // Letters, Digits, special keys & backspace [\b] work as usual
+        if (/\d|\b|SPECIAL|[A-Za-z]/.test(chrTyped) || event.altKey || event.ctrlKey || chrCode < 28) {
+            return true;
         }
-
-        if (chrCode === 0) {
-            chrTyped = "SPECIAL KEY";
-        } else {
-            chrTyped = String.fromCharCode(chrCode);
-        }
-
-        // Letters, Digits, special keys & backspace [\b] work as usual:
-        if (chrTyped.match(/\d|[\b]|SPECIAL|[A-Za-z]/)) { return true; }
-        if (evt.altKey || evt.ctrlKey || chrCode < 28) { return true; }
-
-        // Any other input Prevent the default response:
-        if (evt.preventDefault) { evt.preventDefault(); }
-        evt.returnValue = false;
+    
+        // Prevent the default action for any other input
+        event.preventDefault();
         return false;
     }
+    
 
     /**
      * Display error in html & console
@@ -918,8 +884,8 @@ export default class SquadCalc {
         $("#copy").removeClass("copy");
         $("#settings").css({ "border-color": "var(--main-color)" });
         animateCSS($("#settings"), "shakeX");
-
     }
+
 
     /**
      * Reset UI to default
@@ -946,7 +912,7 @@ export default class SquadCalc {
      * Copy Saved calcs to clipboard
      */
     copySave(COPY_ZONE) {
-        var text2copy;
+        let text2copy;
 
         if (COPY_ZONE.prev().val().length === 0) {
             text2copy = COPY_ZONE.prev().attr("placeholder").trim() + COPY_ZONE.text().trim();
@@ -981,7 +947,6 @@ export default class SquadCalc {
      * @returns {string} formatted string
      */
     formatKeyPad(text) {
-        var i = 3;
         const TEXTPARTS = [];
 
         // If empty string, return
@@ -991,6 +956,7 @@ export default class SquadCalc {
         TEXTPARTS.push(TEXTND.slice(0, 3));
 
         // iteration through sub-keypads
+        let i = 3;
         while (i < TEXTND.length) {
             TEXTPARTS.push(TEXTND.slice(i, i + 1));
             i += 1;
@@ -1031,19 +997,11 @@ export default class SquadCalc {
         // and ajust the cursor considering MSMC added/removed a '-'
 
         if (startA >= 3) {
-            if (a > MORTAR_LENGTH) {
-                startA -= 1;
-            } else {
-                startA += 1;
-            }
+            startA += (a > MORTAR_LENGTH) ? -1 : 1;
         }
-
+        
         if (startB >= 3) {
-            if (b > TARGET_LENGTH) {
-                startB -= 1;
-            } else {
-                startB += 1;
-            }
+            startB += (b > TARGET_LENGTH) ? -1 : 1;
         }
         
         if (inputChanged === "weapon") {
@@ -1161,10 +1119,10 @@ export default class SquadCalc {
     getPos(kp) {
         const FORMATTED_KEYPAD = this.formatKeyPad(kp);
         const PARTS = FORMATTED_KEYPAD.split("-");
-        var interval;
-        var lat = 0;
-        var lng = 0;
-        var i = 0;
+        let interval;
+        let lat = 0;
+        let lng = 0;
+        let i = 0;
 
         while (i < PARTS.length) {
             if (i === 0) {
@@ -1201,10 +1159,10 @@ export default class SquadCalc {
     }
 
     getAppState() {
-        var weapons = [];
-        var targets = [];
-        var markers = [];
-        var arrows = [];
+        const weapons = [];
+        const targets = [];
+        const markers = [];
+        const arrows = [];
         const activeWeapon = this.WEAPON_SELECTOR.val();
         const activeMap = this.MAP_SELECTOR.val();
         const version = this.version;

@@ -1,4 +1,4 @@
-# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **37.1.1** *(2025-02-01)*
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **37.1.1** *(2025-02-03)*
 
 
 <img src="https://img.shields.io/badge/-%20improv%20-orange"> Under-Cursor Keypads sub-digits are now smaller for clarity (fix #283, thanks Flandflard!)
@@ -7,9 +7,15 @@
 
 <img src="https://img.shields.io/badge/-%20improv%20-orange"> Added a FadeIn animation when switching layers 
 
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Target position keypads are a little higher when several weapons are on the map
+
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Added a slight fade-in animation on markers
+
 <img src="https://img.shields.io/badge/-%20improv%20-orange"> Disabled shortcuts panel in settings (shortcuts keys can now be found directly on buttons tooltips)
 
 <img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed pings being oversized on mobile
+
+<img src="https://img.shields.io/badge/-%20dev%20-grey"> Refactoring
 
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->

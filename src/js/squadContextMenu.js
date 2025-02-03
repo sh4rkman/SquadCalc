@@ -3,8 +3,6 @@ import "tippy.js/dist/tippy.css";
 import { App } from "../app.js";
 
 
-
-
 export default class SquadContextMenu {
 
     constructor() {

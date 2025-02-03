@@ -154,7 +154,6 @@ export default class SquadSession {
                 if (weapon.uid === data.uid) {
                     weapon.delete(false);
                     App.minimap.visualClick.triggerVisualClick(weapon.getLatLng(), "cyan");
-                    return;
                 }
             });
             break;
@@ -164,7 +163,6 @@ export default class SquadSession {
                 if (target.uid === data.uid) {
                     target.delete(false);
                     App.minimap.visualClick.triggerVisualClick(target.getLatLng(), "cyan");
-                    return;
                 }
             });
             break;
@@ -174,7 +172,6 @@ export default class SquadSession {
                 if (marker.uid === data.uid) {
                     marker.delete(false);
                     App.minimap.visualClick.triggerVisualClick(marker.getLatLng(), "cyan");
-                    return;
                 }
             });
             break;
@@ -183,7 +180,6 @@ export default class SquadSession {
             App.minimap.activeArrows.forEach((arrow) => {
                 if (arrow.uid === data.uid) {
                     arrow.delete(false);
-                    return;
                 }
             });
             break;
@@ -225,7 +221,6 @@ export default class SquadSession {
                     weapon._handleDrag({ latlng: new LatLng(data.lat, data.lng), session: true });
                     App.minimap.visualClick.triggerVisualClick(new LatLng(data.lat, data.lng), "cyan");
                     App.minimap.updateTargets();
-                    return;
                 }
             });
             break;
@@ -235,7 +230,6 @@ export default class SquadSession {
                 if (target.uid === data.uid) {
                     target._handleDrag({ latlng: new LatLng(data.lat, data.lng) });
                     App.minimap.visualClick.triggerVisualClick(new LatLng(data.lat, data.lng), "cyan");
-                    return;
                 } 
             });
             break;
@@ -245,7 +239,6 @@ export default class SquadSession {
                 if (marker.uid === data.uid) {
                     marker._handleDrag({ latlng: new LatLng(data.lat, data.lng) });
                     App.minimap.visualClick.triggerVisualClick(new LatLng(data.lat, data.lng), "cyan");
-                    return;
                 }
             });
             break;

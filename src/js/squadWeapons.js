@@ -98,9 +98,9 @@ export class Weapon {
      * https://github.com/sh4rkman/SquadCalc/wiki/Deducing-Damage-Radius
      */
     calculateDistanceForDamage(maxDamage, startRadius, endRadius, falloff, distanceFromImpact, targetDamage) {
-        var characterSize = 1.8;
-        var radius = endRadius - (Math.pow(targetDamage / maxDamage, 1 / falloff) * (endRadius - startRadius));
-        return Math.sqrt(-Math.pow(distanceFromImpact - characterSize, 2 ) + Math.pow(radius, 2));
+        const PLAYERSIZE = 1.8;
+        const RADIUS = endRadius - (Math.pow(targetDamage / maxDamage, 1 / falloff) * (endRadius - startRadius));
+        return Math.sqrt(-Math.pow(distanceFromImpact - PLAYERSIZE, 2 ) + Math.pow(RADIUS, 2));
     }
 
     /**
@@ -109,8 +109,8 @@ export class Weapon {
      * @returns {void} 
      */
     changeShell(){
-        var shell = $(".dropbtn3").val();
-        if ($(".dropbtn2").val() != 6) { return;}
+        const shell = $(".dropbtn3").val();
+        if ($(".dropbtn2").val() != 6) return;
     
         const weaponData = WEAPONS[6].shells[shell];
 
