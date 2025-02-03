@@ -4,7 +4,6 @@ import { App } from "../app.js";
 export class SquadObjective {
 
     constructor(latlng, layer, objCluster, isMain, cluster) {
-        var html = "";
         this.name = objCluster.name;
         this.objectName = objCluster.objectName;
         this.objCluster = objCluster;
@@ -20,7 +19,7 @@ export class SquadObjective {
         this.isNext = false;
 
         console.debug("creating flag", this.name, "at position", this.position);
-
+        let html = "";
         if (!this.isMain){ html = this.name;}
 
         this.nameText = new Marker(latlng, {
@@ -64,31 +63,21 @@ export class SquadObjective {
     }
 
     select(){
-        var position;
-        var html;
-        var className;
+        let position = null;
+        let html = "";
+        let className = "flag selected";
 
         this.isNext = false;
         this.flag.removeFrom(this.layerGroup).remove();
         console.debug("Selecting flag: ", this.name);
 
-        if (App.userSettings.circlesFlags){
-            className += " circle";
-        }
-
-        if (this.isMain) { 
-            html= "";
-            className += " flag selected main";
-        } 
-        else {
-            position = Math.abs(this.layer.startPosition - this.position); 
-            position = Math.abs(this.layer.startPosition - this.position); 
-        }
-
-        if (!this.isMain) { 
-            position = Math.abs(this.layer.startPosition - this.position); 
-            html = position; 
-            className += " flag selected";
+        if (App.userSettings.circlesFlags) className += " circle";
+    
+        if (this.isMain) {
+            className += " main";
+        } else {
+            position = Math.abs(this.layer.startPosition - this.position);
+            html = position;
         }
 
         this.updateMarker(className, html);
@@ -237,13 +226,11 @@ export class SquadObjective {
 
 
     unselect(){
-        var html = "";
-        var position = Math.abs(this.layer.startPosition - this.position); 
-        var className = "flag";
+        let html = "";
+        let position = Math.abs(this.layer.startPosition - this.position); 
+        let className = "flag";
 
-        if (App.userSettings.circlesFlags){
-            className += " circle";
-        }
+        if (App.userSettings.circlesFlags) className += " circle";
 
         if (this.isMain) { 
             if (this.layer.layerData.gamemode === "RAAS"){
@@ -256,15 +243,13 @@ export class SquadObjective {
                 html = position;
                 className += " flag" + position;
             }
-        }
+        } 
 
         if (Math.abs(this.layer.startPosition - this.position) === this.layer.currentPosition){
             if (this.layer.layerData.gamemode != "AAS" && this.layer.layerData.gamemode != "Destruction"){
                 className += " next"; 
             }
-        } else {
-            this.isNext = false;
-        }
+        } else this.isNext = false;
 
         this.flag.removeFrom(this.layerGroup).remove();
         this.updateMarker(className, html);
@@ -280,6 +265,7 @@ export class SquadObjective {
         }
     }
 
+    
     addCluster(cluster){
         this.clusters.push(cluster);
         this.updatePosition();

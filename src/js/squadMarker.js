@@ -12,17 +12,13 @@ import { v4 as uuidv4 } from "uuid";
 /*
  * Global Squad Marker Class 
 */
-export var squadMarker = Marker.extend({
+export const squadMarker = Marker.extend({
 
     options: {
         draggable: true,
         riseOnHover: true,
         keyboard: false,
         animate: true,
-        // icon: new DivIcon({
-        //     shadowUrl: "../img/icons/markers/marker_shadow.webp",
-        //     shadowSize: [0, 0],
-        // })
     },
 
     // Constructor
@@ -55,7 +51,7 @@ export var squadMarker = Marker.extend({
 
 });
 
-export var squadWeaponMarker = squadMarker.extend({
+export const squadWeaponMarker = squadMarker.extend({
 
     initialize: function (latlng, options, map) {
         const CIRCLESCOLOR = "#00137f";
@@ -189,12 +185,12 @@ export var squadWeaponMarker = squadMarker.extend({
      */
     updateWeapon: function(){
 
-        var radiusMax = App.activeWeapon.getMaxDistance() * this.map.gameToMapScale;
-        var radiusMin = App.activeWeapon.minDistance * this.map.gameToMapScale;
+        const MAXRADIUS = App.activeWeapon.getMaxDistance() * this.map.gameToMapScale;
+        const MINRADIUS = App.activeWeapon.minDistance * this.map.gameToMapScale;
 
         this.angleType = App.activeWeapon.angleType;
-        this.minRangeMarker.setRadius(radiusMin);
-        this.rangeMarker.setRadius(radiusMax);
+        this.minRangeMarker.setRadius(MINRADIUS);
+        this.rangeMarker.setRadius(MAXRADIUS);
 
         // Update MinRange circle opacity
         if (this.minRangeMarker.getRadius() != 0) {
@@ -235,8 +231,8 @@ export var squadWeaponMarker = squadMarker.extend({
         const turnAngleStep = (turnDirectionAngle * Math.PI) / 180;
 
         // By default, we'll try to find the max range between 40° and 50° elevation
-        var launchElevation = 30;
-        var maxElevation = 60;
+        let launchElevation = 30;
+        let maxElevation = 60;
 
         if (this.precisionRangeMarker) { this.precisionRangeMarker.remove(); }
 
@@ -316,7 +312,6 @@ export var squadWeaponMarker = squadMarker.extend({
 
         // Final Polygon
         this.precisionRangeMarker = new Polygon(points, this.maxDistCircleOn).addTo(this.map.markersGroup);
-        //this.precisionRangeMarker.setStyle();
     },
 
 
@@ -354,18 +349,13 @@ export var squadWeaponMarker = squadMarker.extend({
 
     _handleClick: function(weapon) {
         const DIALOG = document.getElementById("weaponInformation");
-        var name = App.activeWeapon.name;
+
+
+        let name = i18next.t("weapons:" + App.activeWeapon.name);
+        if (App.activeWeapon.name === "M1064M121")  name += ` (${$(".dropbtn3 option:selected").text()})`;
 
         // Logo
         $(".weaponIcon").first().attr("src", App.activeWeapon.logo);
-
-        // Informations
-        if (App.activeWeapon.name === "M1064M121") {
-            name = `${i18next.t("weapons:"+name)} (${$(".dropbtn3 option:selected" ).text()})`;
-        }  else {
-            name = `${i18next.t("weapons:"+name)}`;
-        }
-        
         $(".infName").first().text(name);
         $(".infRange").first().text(`${App.activeWeapon.minDistance + i18next.t("common:m")} - ${App.activeWeapon.maxDistance.toFixed(0) + i18next.t("common:m")}`);
         $(".infMOA").first().text(`${App.activeWeapon.moa} (${(App.activeWeapon.moa / 60).toFixed(1) + i18next.t("common:°")})`);
@@ -533,19 +523,15 @@ export var squadWeaponMarker = squadMarker.extend({
 });
 
 
-export var squadTargetMarker = squadMarker.extend({
+export const squadTargetMarker = squadMarker.extend({
 
     initialize: function (latlng, options, map) {
-        var popUpOptions_weapon1;
-        var popUpOptions_weapon2;
-        var weaponPos;
 
-        //Util.setOptions(this, options);
         squadMarker.prototype.initialize.call(this, latlng, options, map);
 
         if (options.uid) this.fromSession = true;
         
-        popUpOptions_weapon1 = {
+        let popUpOptions_weapon1 = {
             autoPan: false,
             autoClose: false,
             closeButton: false,
@@ -556,14 +542,13 @@ export var squadTargetMarker = squadMarker.extend({
             className: "calcPopup",
         };
 
-        popUpOptions_weapon2 = {
+        let popUpOptions_weapon2 = {
             ...popUpOptions_weapon1,
             className: "calcPopup2"
         };
 
         this.posPopUpOptions = {
             ...popUpOptions_weapon1,
-            offset: [0, -10],
             className: "posPopUpTarget"
         };
 
@@ -639,8 +624,7 @@ export var squadTargetMarker = squadMarker.extend({
 
         // If two weapons already on the map
         if (this.map.activeWeaponsMarkers.getLayers().length === 2) {
-            weaponPos = this.map.activeWeaponsMarkers.getLayers()[1].getLatLng();
-            this.firingSolution2 = new SquadFiringSolution(weaponPos, this.getLatLng(), this.map, this.map.activeWeaponsMarkers.getLayers()[1].heightPadding);
+            this.firingSolution2 = new SquadFiringSolution(this.map.activeWeaponsMarkers.getLayers()[1].getLatLng(), this.getLatLng(), this.map, this.map.activeWeaponsMarkers.getLayers()[1].heightPadding);
             this.calcMarker1.setContent(`1. ${html1}`);
             const [html2, clipboard2] = this.getContent(this.firingSolution2, this.map.activeWeaponsMarkers.getLayers()[1].angleType);
             this.calcMarker2.setContent(`2. ${html2}`).openOn(this.map);
@@ -667,7 +651,7 @@ export var squadTargetMarker = squadMarker.extend({
         this.on("dragEnd", this._handleDragEnd, this);
         this.on("contextmenu", this._handleContextMenu, this);
 
-        if (App.hasMouse){
+        if (App.hasMouse) {
             this.on("mouseover", this._handleMouseOver, this);
             this.on("mouseout", this._handleMouseOut, this);
         }
@@ -732,116 +716,65 @@ export var squadTargetMarker = squadMarker.extend({
 
 
     /**
-     * Return the HTML content for the calculation popups
+     * Returns the HTML content for the calculation popups
      * @param {SquadFiringSolution} firingSolution 
      * @param {String} angleType 
-     * @returns {String} - HTML content for the calculation popups
+     * @returns {String[]} - [HTML content, summary text]
      */
-    getContent: function(firingSolution, angleType){
+    getContent: function (firingSolution, angleType) {
         const DIST = firingSolution.distance;
         const BEARING = firingSolution.bearing;
-        var heightDiff = firingSolution.heightDiff.toFixed(0);
-        var content;
-        var elevation;
-        var timeOfFlight;
+        let heightDiff = firingSolution.heightDiff.toFixed(0);
 
         // Avoid "-0"
-        if (Math.sign(heightDiff) === 1 || heightDiff == -0) {
+        if (heightDiff == -0 || Math.sign(heightDiff) === 1) {
             heightDiff = `+${Math.abs(heightDiff)}`;
         }
 
-        if (App.userSettings.lowAndHigh &&
-             App.activeWeapon.name != "Mortar" &&
-              App.activeWeapon.name != "UB-32" &&
-               App.activeWeapon.name != "M1064M121" &&
-                App.activeWeapon.name != "Mk19") {  
-           
-            
-            let elevationlow = firingSolution.elevation.low;
-            let elevationhigh = firingSolution.elevation.high;
-            let timeOfFlightlow = firingSolution.timeOfFlight.low.toFixed(0);
-            let timeOfFlighthigh = firingSolution.timeOfFlight.high.toFixed(0);
+        /**
+         * Formats elevation and time of flight values
+         * @param {Object} elevationData 
+         * @param {Number} timeOfFlight 
+         * @returns {[string, string]} - [elevation, timeOfFlight]
+         */
+        const formatElevationData = (elevationData, timeOfFlight) => {
+            if (isNaN(elevationData?.rad)) return ["---", "---"];
+            const elevation = App.activeWeapon.unit === "mil" ? elevationData.mil.toFixed(0) : elevationData.deg.toFixed(1);
+            const formattedTime = `${timeOfFlight.toFixed(0)}<span data-i18n="common:s">${i18next.t("common:s")}</span>`;
+            return [elevation, formattedTime];
+        };
 
-            if (isNaN(elevationlow.rad)) {
-                elevationlow = "---";
-                timeOfFlightlow = "---";
-            } else {
-                if (App.activeWeapon.unit === "mil"){
-                    elevationlow = elevationlow.mil.toFixed(0);
-                } else {
-                    elevationlow = elevationlow.deg.toFixed(1);
-                }
-                timeOfFlightlow = `${timeOfFlightlow}<span data-i18n="common:s">${i18next.t("common:s")}</span>`;
-            }
+        let elevation, timeOfFlight;
 
-            if (isNaN(elevationhigh.rad)) {
-                elevationhigh = "---";
-                timeOfFlighthigh = "---";
-            } else {
-                if (App.activeWeapon.unit === "mil"){
-                    elevationhigh = elevationhigh.mil.toFixed(0);
-                } else {
-                    elevationhigh = elevationhigh.deg.toFixed(1);
-                }
-                timeOfFlighthigh = `${timeOfFlighthigh}<span data-i18n="common:s">${i18next.t("common:s")}</span>`;
-            }
-
-            elevation = elevationlow + " / " + elevationhigh;
-            timeOfFlight = timeOfFlightlow + " / " + timeOfFlighthigh;
-        } 
-        else {
-            if (angleType === "high"){
-                elevation = firingSolution.elevation.high;
-                timeOfFlight = firingSolution.timeOfFlight.high;
-            } else {
-                elevation = firingSolution.elevation.low;
-                timeOfFlight = firingSolution.timeOfFlight.low;
-            }
-    
-            if (isNaN(elevation.rad)) {
-                elevation = "---";
-                timeOfFlight = "---";
-            } else {
-                if (App.activeWeapon.unit === "mil"){
-                    elevation = elevation.mil.toFixed(0);
-                } else {
-                    elevation = elevation.deg.toFixed(1);
-                }
-                timeOfFlight = `${timeOfFlight.toFixed(0)}<span data-i18n="common:s">${i18next.t("common:s")}</span>`;
-            }
+        if (App.userSettings.lowAndHigh && !["Mortar", "UB-32", "M1064M121", "Mk19"].includes(App.activeWeapon.name)) {
+            const [elevationLow, timeLow] = formatElevationData(firingSolution.elevation.low, firingSolution.timeOfFlight.low);
+            const [elevationHigh, timeHigh] = formatElevationData(firingSolution.elevation.high, firingSolution.timeOfFlight.high);
+            elevation = `${elevationLow} / ${elevationHigh}`;
+            timeOfFlight = `${timeLow} / ${timeHigh}`;
+        } else {
+            const selectedElevation = angleType === "high" ? firingSolution.elevation.high : firingSolution.elevation.low;
+            const selectedTimeOfFlight = angleType === "high" ? firingSolution.timeOfFlight.high : firingSolution.timeOfFlight.low;
+            [elevation, timeOfFlight] = formatElevationData(selectedElevation, selectedTimeOfFlight);
         }
 
+        let content = `<span class=calcNumber></span></br><span>${elevation}</span>`;
 
-        content = `<span class=calcNumber></span></br><span>${elevation}</span>`;
-
-        if (App.userSettings.showBearing) {
-            content += `<br><span class=bearingUiCalc>${BEARING.toFixed(1)}<span data-i18n="common:°">${i18next.t("common:°")}</span></span>`;
-        }
-
-        if (App.userSettings.showTimeOfFlight) {
-            content += `<br><span class=bearingUiCalc>${timeOfFlight}</span>`;
-        } 
-
-        if (App.userSettings.showDistance) {
-            content += `<br><span class=bearingUiCalc>${DIST.toFixed(0)}<span data-i18n="common:m">${i18next.t("common:m")}</span></span>`;
-        }
-        
-        if (App.userSettings.showHeight) {
-            content += `<br><span class=bearingUiCalc>${heightDiff}<span data-i18n="common:m">${i18next.t("common:m")}</span></span>`;
-        }
-
+        if (App.userSettings.showBearing) content += `<br><span class=bearingUiCalc>${BEARING.toFixed(1)}<span data-i18n="common:°">${i18next.t("common:°")}</span></span>`;
+        if (App.userSettings.showTimeOfFlight) content += `<br><span class=bearingUiCalc>${timeOfFlight}</span>`;
+        if (App.userSettings.showDistance) content += `<br><span class=bearingUiCalc>${DIST.toFixed(0)}<span data-i18n="common:m">${i18next.t("common:m")}</span></span>`;
+        if (App.userSettings.showHeight) content += `<br><span class=bearingUiCalc>${heightDiff}<span data-i18n="common:m">${i18next.t("common:m")}</span></span>`;
         return [content, `${i18next.t("common:elevation")}: ${elevation} - ${i18next.t("common:bearing")}: ${BEARING.toFixed(1)}°`];
-
     },
+
 
 
     /*
     * Update target spread ellipses according to it's firing solutions
     */
     updateSpread: function(){
-        var spreadParameters;
-        var weapons = this.map.activeWeaponsMarkers.getLayers();
-        var gameToMapScale = this.map.gameToMapScale;
+        let spreadParameters;
+        const weapons = this.map.activeWeaponsMarkers.getLayers();
+        const gameToMapScale = this.map.gameToMapScale;
     
         // No spread wanted, return
         if (!App.userSettings.spreadRadius) {
@@ -851,7 +784,7 @@ export var squadTargetMarker = squadMarker.extend({
     
         const setSpreadMarker = (marker, firingSolution, layerIndex, reverse = false) => {
             const angleType = weapons[layerIndex].angleType;
-            var elevation;
+            let elevation;
             if (reverse) {
                 elevation = angleType === "high" ? firingSolution.elevation.low.rad : firingSolution.elevation.high.rad;
             } else {
@@ -986,7 +919,7 @@ export var squadTargetMarker = squadMarker.extend({
     * Update target calculationPopups according to it's firing solutions
     */
     updateCalc: function(copy = false){
-        var clipboard;
+        let clipboard;
 
         this.firingSolution1 = new SquadFiringSolution(this.map.activeWeaponsMarkers.getLayers()[0].getLatLng(), this.getLatLng(), this.map, this.map.activeWeaponsMarkers.getLayers()[0].heightPadding);
         const [html1, clipboard1] = this.getContent(this.firingSolution1, this.map.activeWeaponsMarkers.getLayers()[0].angleType);
@@ -1004,7 +937,7 @@ export var squadTargetMarker = squadMarker.extend({
         }
         this.updateSpread();
         this.updateDamageRadius();
-        if (copy && App.userSettings.copyTarget) { App.copy(clipboard); }
+        if (copy && App.userSettings.copyTarget) App.copy(clipboard);
     },
 
 
@@ -1013,36 +946,30 @@ export var squadTargetMarker = squadMarker.extend({
      * @param {Boolean} animated - If the icon should be animated when set
      */
     updateIcon: function (animated = false) {
-        const layers = this.map.activeWeaponsMarkers.getLayers();
-        const angleType = layers[0].angleType;
+        const weapons = this.map.activeWeaponsMarkers.getLayers();
+        const angleType = weapons[0].angleType;
         const elevationKey = angleType === "high" ? "high" : "low";
     
         const elevation = this.firingSolution1.elevation[elevationKey]?.rad;
-        const elevation2 =
-            layers.length === 2 ? this.firingSolution2.elevation[elevationKey]?.rad : null;
+        const elevation2 = weapons.length === 2 ? this.firingSolution2.elevation[elevationKey]?.rad : null;
     
-        const isSingleLayer = layers.length === 1;
+        const isSingleWeapon = weapons.length === 1;
         const bothElevationsInvalid = isNaN(elevation) && isNaN(elevation2);
         const targetAnimation = App.userSettings.targetAnimation;
         let icon;
 
         // Determine the base icon type
-        if (isSingleLayer && isNaN(elevation)) {
+        if (isSingleWeapon && isNaN(elevation)) {
             icon = targetAnimation ? targetIconDisabled : targetIconMinimalDisabled;
-        } else if (!isSingleLayer && bothElevationsInvalid) {
+        } else if (!isSingleWeapon && bothElevationsInvalid) {
             icon = targetAnimation ? targetIconDisabled : targetIconMinimalDisabled;
-        } else {
-            if (this.fromSession){
-                if (targetAnimation) icon = targetSessionIcon1;
-                else icon = targetIconSessionMinimal;
-            }
-            else {
-                if (targetAnimation) icon = animated ? targetIconAnimated : targetIcon1;
-                else icon = targetIconMinimal;
-            }
-
+        } else if (this.fromSession){
+            if (targetAnimation) icon = targetSessionIcon1;
+            else icon = targetIconSessionMinimal;
         }
-     
+        else if (targetAnimation) icon = animated ? targetIconAnimated : targetIcon1;
+        else icon = targetIconMinimal;
+        
         // hack leaflet to avoid unwanted click event
         // https://github.com/Leaflet/Leaflet/issues/5067
         setTimeout((function (this2) {
@@ -1055,21 +982,18 @@ export var squadTargetMarker = squadMarker.extend({
 
     _handleClick: function() {
         const DIALOG = document.getElementById("calcInformation");
-        var simulation1;
-        var simulation2;
-        var weaponPos1;
-        var weaponPos2;
-        var heightPath1;
-        var heightPath2;
+        let simulation2;
+        let weaponPos2;
+        let heightPath2;
 
         $("#sim1").addClass("active");
         $("#sim2").removeClass("active");
         $("#canvasControls > .active").first().removeClass("active");
         $("#canvasControls > button").first().addClass("active");
 
-        weaponPos1 = this.map.activeWeaponsMarkers.getLayers()[0].getLatLng();
-        heightPath1 = this._map.heightmap.getHeightPath(weaponPos1, this.getLatLng());
-        simulation1 = new SquadSimulation("#sim1", this.firingSolution1, heightPath1, this.map.activeWeaponsMarkers.getLayers()[0].angleType, App.activeWeapon.unit);
+        const weaponPos1 = this.map.activeWeaponsMarkers.getLayers()[0].getLatLng();
+        const heightPath1 = this._map.heightmap.getHeightPath(weaponPos1, this.getLatLng());
+        const simulation1 = new SquadSimulation("#sim1", this.firingSolution1, heightPath1, this.map.activeWeaponsMarkers.getLayers()[0].angleType, App.activeWeapon.unit);
         $("#canvasControls").css("display", "none");
 
         if (this.map.activeWeaponsMarkers.getLayers().length === 2){
@@ -1132,7 +1056,12 @@ export var squadTargetMarker = squadMarker.extend({
             this.disableDamageRadii();
         }
 
-        if (App.userSettings.targetDrag){ this.posPopUp.openOn(this.map); }
+        if (App.userSettings.targetDrag) {
+            // Set a different offset when several weapons are on the map
+            let offset = this.map.activeWeaponsMarkers.getLayers()[1] ? [0, -20] : [0, -10];
+            this.posPopUp.options.offset = offset;
+            this.posPopUp.openOn(this.map); 
+        }
         
         this.miniCircle.setStyle({opacity: 1});
     },
@@ -1208,20 +1137,8 @@ export var squadTargetMarker = squadMarker.extend({
             } 
 
             // Hide other targets
-            if (!this.isDragging){
-                this.map.activeTargetsMarkers.eachLayer((target) => {
-                    if (target != this) {
-                        target.off("mouseover");
-                        target.off("mouseout");
-                        target.setOpacity(0.65);
-                        target.calcMarker1.close();
-                        target.calcMarker2.close();
-                        target.disableSpreadRadii();
-                        target.disableDamageRadii();
-                        target.twentyFiveDamageRadius.setStyle({ opacity: 0 });
-                    }
-                });
-            }
+            if (!this.isDragging) this.map.fadeOtherTargets(this);
+
         }, 500);
     },
 
@@ -1263,7 +1180,7 @@ export var squadTargetMarker = squadMarker.extend({
 });
 
 
-export var squadStratMarker = squadMarker.extend({
+export const squadStratMarker = squadMarker.extend({
 
     initialize: function (latlng, options, map) {
 
@@ -1283,7 +1200,7 @@ export var squadStratMarker = squadMarker.extend({
             interactive: false,
             className: "posPopUpWeapon",
             minWidth: 100,
-            offset: [0, 0],
+            offset: [0, 10],
         };
         this.maxDistCircleOn = {
             radius: options.circles2Size || 0,
@@ -1332,7 +1249,6 @@ export var squadStratMarker = squadMarker.extend({
         this.on("drag", this._handleDrag, this);
         this.on("dragStart", this._handleDragStart, this);
         this.on("dragEnd", this._handleDragEnd, this);
-        //this.on("dblclick", this._handleDblclick, this);
         this.on("mouseover", this._handleMouseOver, this);
         this.on("mouseout", this._handleMouseOut, this);
         this.on("contextmenu", this._handleContextMenu, this);
@@ -1473,21 +1389,7 @@ export var squadStratMarker = squadMarker.extend({
                 this.map.layer.polyline.hideMeasurements();
             } 
 
-            if (!this.isDragging){
-                // Hide other targets
-                this.map.activeTargetsMarkers.eachLayer((target) => {
-                    if (target != this) {
-                        target.off("mouseover");
-                        target.off("mouseout");
-                        target.setOpacity(0.65);
-                        target.calcMarker1.close();
-                        target.calcMarker2.close();
-                        target.disableSpreadRadii();
-                        target.disableDamageRadii();
-                        target.twentyFiveDamageRadius.setStyle({ opacity: 0 });
-                    }
-                });
-            }
+            if (!this.isDragging) this.map.fadeOtherTargets();
 
         }, 500);
 

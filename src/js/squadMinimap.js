@@ -1,4 +1,4 @@
-import {imageOverlay, tileLayer, Map, CRS, svg, Util, LayerGroup, Popup, Icon, LatLngBounds } from "leaflet";
+import {imageOverlay, tileLayer, Map, CRS, svg, Util, LayerGroup, Popup, Icon, LatLngBounds, latLng, Polyline, PolylineDecorator, Symbol, DomEvent } from "leaflet";
 import squadGrid from "./squadGrid.js";
 import squadHeightmap from "./squadHeightmaps.js";
 import { App } from "../app.js";
@@ -14,7 +14,6 @@ import "./libs/leaflet-smoothWheelZoom.js";
 import "tippy.js/dist/tippy.css";
 import squadContextMenu from "./squadContextMenu.js";
 import "leaflet-polylinedecorator";
-import { Polyline, PolylineDecorator, Symbol, DomEvent } from "leaflet";
 import { v4 as uuidv4 } from "uuid";
 
 /**
@@ -23,7 +22,7 @@ import { v4 as uuidv4 } from "uuid";
  * @extends {Map} - Leaflet Map
  * @class squadMinimap
  */
-export var squadMinimap = Map.extend({
+export const squadMinimap = Map.extend({
 
     /**
      * Initialize Map
@@ -34,9 +33,8 @@ export var squadMinimap = Map.extend({
      */
     initialize: function (id, pixelSize, defaultMap, options) {
 
-        options = {
+        let customOptions = {
             attributionControl: false,
-            //visualClick: true,
             boxZoom: true,
             center: [-pixelSize/2, pixelSize/2],
             closePopupOnClick: false,
@@ -55,7 +53,7 @@ export var squadMinimap = Map.extend({
             zoomAnimation: App.userSettings.smoothMap,
         };
 
-        Util.setOptions(this, options);
+        Util.setOptions(this, customOptions);
         Map.prototype.initialize.call(this, id, options);
         this.activeMap = defaultMap;
         this.pixelSize = pixelSize;
@@ -69,10 +67,6 @@ export var squadMinimap = Map.extend({
         this.layerGroup = new LayerGroup().addTo(this);
         this.markersGroup = new LayerGroup().addTo(this);
         this.history = [];
-        //this.grid = "";
-        //this.gameToMapScale = "";
-        //this.mapToGameScale = "";
-        //this.detailedZoomThreshold = "";
         this.mouseLocationPopup = new Popup({
             closeButton: false,
             className: "kpPopup",
@@ -169,16 +163,24 @@ export var squadMinimap = Map.extend({
             let imgPath = `maps${this.activeMap.mapURL}${LAYERMODE}.webp`;
             this.activeLayer = new imageOverlay(imgPath, this.imageBounds);
             this.activeLayer.addTo(this.layerGroup);
-            //$(this.activeLayer.getElement()).css("opacity", 0);
+            $(this.activeLayer.getElement()).css("opacity", 0);
         }
     
-        // Decode if necessary
-        //this.decode();
-    
-        // When the new image (or tile) is loaded, fade it in & remove spinner
+
         this.activeLayer.on("load", () => {
-            this.spin(false);
-            if (OLDLAYER) OLDLAYER.remove();
+            
+            if (App.userSettings.highQualityImages) {
+                if (OLDLAYER) OLDLAYER.remove();
+                this.spin(false);
+            }
+            else {
+                // Animate the opacity of the new layer
+                $(this.activeLayer.getElement()).fadeTo(700, 1, () => {
+                    if (OLDLAYER) OLDLAYER.remove();
+                    this.spin(false);
+                });
+            }
+
         });
 
         // Show grid and heatmap
@@ -217,11 +219,9 @@ export var squadMinimap = Map.extend({
                     console.debug("Error fetching markers:", error);
                 });
         }
-        else {
-            if (this.heatmap) {
-                this.removeLayer(this.heatmap);
-                this.heatmap = null;
-            }
+        else if (this.heatmap) {
+            this.removeLayer(this.heatmap);
+            this.heatmap = null;
         }
     },
 
@@ -266,6 +266,27 @@ export var squadMinimap = Map.extend({
             target.updateIcon();
         });
     },
+
+
+    /**
+     * Fade Out existing targets except the hovered one
+     * @param {squadTargetMarker} hoveredTarget - Target that is hovered
+     */
+    fadeOtherTargets: function(hoveredTarget){
+        this.activeTargetsMarkers.eachLayer((target) => {
+            if (target != hoveredTarget) {
+                target.off("mouseover");
+                target.off("mouseout");
+                target.setOpacity(0.65);
+                target.calcMarker1.close();
+                target.calcMarker2.close();
+                target.disableSpreadRadii();
+                target.disableDamageRadii();
+                target.twentyFiveDamageRadius.setStyle({ opacity: 0 });
+            }
+        });
+    },
+
 
     /**
     * Recalc and update every target spread circle
@@ -332,6 +353,7 @@ export var squadMinimap = Map.extend({
         });
     },
 
+
     /**
      * add Grid to minimap layers
      */
@@ -339,12 +361,14 @@ export var squadMinimap = Map.extend({
         this.grid.addTo(this.layerGroup);
     },
 
+
     /**
      * Hide Grid from minimap layers
      */
     hideGrid: function(){
         this.grid.removeFrom(this.layerGroup);
     },
+
 
     /**
      * Calculates the keypad coordinates for a given latlng coordinate
@@ -425,12 +449,10 @@ export var squadMinimap = Map.extend({
         let newMarker;
         if (this.activeWeaponsMarkers.getLayers().length === 0) {
             newMarker = new squadWeaponMarker(latlng, {icon: mortarIcon, uid: uid}, this).addTo(this.markersGroup).addTo(this.activeWeaponsMarkers);
-        } else {
-            if (this.activeWeaponsMarkers.getLayers().length === 1) {
-                newMarker = new squadWeaponMarker(latlng, {icon: mortarIcon2, uid: uid}, this).addTo(this.markersGroup).addTo(this.activeWeaponsMarkers);
-                this.activeWeaponsMarkers.getLayers()[0].setIcon(mortarIcon1);
-                this.updateTargets();
-            }
+        } else if (this.activeWeaponsMarkers.getLayers().length === 1) {
+            newMarker = new squadWeaponMarker(latlng, {icon: mortarIcon2, uid: uid}, this).addTo(this.markersGroup).addTo(this.activeWeaponsMarkers);
+            this.activeWeaponsMarkers.getLayers()[0].setIcon(mortarIcon1);
+            this.updateTargets();
         }
 
         // If in a session, broadcast the new weapon with a unique identifier
@@ -456,7 +478,7 @@ export var squadMinimap = Map.extend({
      */
     createTarget(latlng, event, uid = false){
 
-        var target = new squadTargetMarker(latlng, {animate: App.userSettings.targetAnimation, uid: uid}, this).addTo(this.markersGroup);
+        let target = new squadTargetMarker(latlng, {animate: App.userSettings.targetAnimation, uid: uid}, this).addTo(this.markersGroup);
         
         console.debug("Creating new target with uid", target.uid);
         if (!uid && App.session.ws && App.session.ws.readyState === WebSocket.OPEN) {
@@ -479,11 +501,10 @@ export var squadMinimap = Map.extend({
 
         if (App.userSettings.targetAnimation){
             if (this.activeWeaponsMarkers.getLayers().length === 1) {
-                if (isNaN(target.firingSolution1.elevation.high.rad)){ return; }
-            } else {
-                if (isNaN(target.firingSolution1.elevation.high.rad) && isNaN(target.firingSolution2.elevation.high.rad)){ return; }
-            }
-
+                if (isNaN(target.firingSolution1.elevation.high.rad)) return;
+            } else if (isNaN(target.firingSolution1.elevation.high.rad) && isNaN(target.firingSolution2.elevation.high.rad)) {
+                return;
+            } 
             setTimeout(() => {
                 if (event) explode(event.containerPoint.x, event.containerPoint.y, -190, 10);
                 target.updateIcon(); // Update icon to remove the animation class, it was causing painfull DOM bug otherwise
@@ -493,7 +514,7 @@ export var squadMinimap = Map.extend({
 
     createMarker(latlng, team, category, icon, uid = false) {
         let markerOptions = { icon: "", circlesOnHover: false, team: team, category: category, icontype: icon, uid: uid };
-        var iconSize = [30, 30];
+        let iconSize = [30, 30];
 
         if (icon === "deployable_mortars" || icon === "deployable_hellcannon") {
             let range = 0;
@@ -503,8 +524,7 @@ export var squadMinimap = Map.extend({
             markerOptions.circles1Size = range * this.gameToMapScale;
             markerOptions.circlesOnHover = true;
             markerOptions.circles1Weight = 2;
-            if (team === "ally") { markerOptions.circles1Color = "white"; }
-            else { markerOptions.circles1Color = "#f23534"; }
+            markerOptions.circles1Color = team === "ally" ? "white" : "#f23534";
         }
 
         if (icon === "deployable_fob_blue") {
@@ -524,13 +544,13 @@ export var squadMinimap = Map.extend({
         if (icon === "deployable_hab_activated") { iconSize = [38, 38]; }
         if (icon === "T_strategic_uav") { 
             markerOptions.circles1Size = 300 * this.gameToMapScale;
-            if (team === "ally") { markerOptions.circles1Color = "#ffc400"; }
-            else { markerOptions.circles1Color = "#f23534"; }
+            markerOptions.circles1Color = team === "ally" ? "#ffc400" : "#f23534";
         }
         markerOptions.icon = new Icon({
             iconUrl: `/icons/${team}/${category}/${icon}.webp`,
             iconSize: iconSize,
-            iconAnchor: [iconSize[0]/2, iconSize[1]/2]
+            iconAnchor: [iconSize[0]/2, iconSize[1]/2],
+            className: "squadMarker",
         });
         
         // Create marker and close context menu
@@ -539,8 +559,7 @@ export var squadMinimap = Map.extend({
         // Add Item to history
         this.history.push(newMarker);
 
-        $(".btn-delete").show();
-        $(".btn-undo").show();
+        $(".btn-delete, .btn-undo").show();
 
         if (!uid && App.session.ws && App.session.ws.readyState === WebSocket.OPEN) {
             console.debug("Creating a marker with uid", newMarker.uid);
@@ -559,6 +578,17 @@ export var squadMinimap = Map.extend({
             );
         }
         
+    },
+
+
+    /**
+     * Update Mouse Location Content
+     * @param {latLng} latlng - coordinates of the mouse
+     */
+    updateMouseLocationPopup(latlng){
+        const KP = this.getKP(-latlng.lat, latlng.lng);
+        this.mouseLocationPopup.setLatLng(latlng).openOn(this);
+        this.mouseLocationPopup.setContent(`<span>${KP.substring(0, 7)}</span><span class="subkp">${KP.substring(7, 11)}</span>`);
     },
 
 
@@ -639,8 +669,7 @@ export var squadMinimap = Map.extend({
             return 1;
         } 
 
-        this.mouseLocationPopup.setLatLng(event.latlng).openOn(this);
-        this.mouseLocationPopup.setContent(`<p>${this.getKP(-event.latlng.lat, event.latlng.lng)}</p>`);
+        this.updateMouseLocationPopup(event.latlng);
     },
 
 
@@ -651,19 +680,17 @@ export var squadMinimap = Map.extend({
 
         if (App.userSettings.keypadUnderCursor && App.hasMouse){
             if (this.mouseLocationPopup._latlng){
-                this.mouseLocationPopup.setContent(`<p>${this.getKP(-this.mouseLocationPopup._latlng.lat, this.mouseLocationPopup._latlng.lng)}</p>`);
+                this.updateMouseLocationPopup(new latLng(this.mouseLocationPopup._latlng.lat, this.mouseLocationPopup._latlng.lng));
             }
         }
 
-        // If there is a layer selected, reveal main/capzone when enough zoomed in
+        // If there is a layer selected, reveal capzone when enough zoomed in
         if (!this.layer) return;
 
         if (this.getZoom() > this.detailedZoomThreshold){
             this.layer.revealAllCapzones();
-            //this.layer.setMainZoneOpacity(true);
         } else {
             this.layer.hideAllCapzones();
-            //this.layer.setMainZoneOpacity(false);
         }
 
     },

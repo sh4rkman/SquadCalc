@@ -67,7 +67,7 @@ export default class SquadLayer {
 
             // Creating the Caches
             Object.values(this.layerData.capturePoints.objectiveSpawnLocations).forEach((cache) => {
-                var latlng = this.convertToLatLng(cache.location_x, cache.location_y);
+                const latlng = this.convertToLatLng(cache.location_x, cache.location_y);
                 const radius = 1.5 * this.map.gameToMapScale;
                 this.caches.addLayer(new Circle(latlng, {
                     radius: radius,
@@ -81,8 +81,8 @@ export default class SquadLayer {
 
             // Creating the Mains
             Object.values(this.layerData.capturePoints.points.objectives).forEach((main) => {
-                var latlng = this.convertToLatLng(main.location_x, main.location_y);
-                var newFlag = new SquadObjective(latlng, this, main, 1, main);
+                const latlng = this.convertToLatLng(main.location_x, main.location_y);
+                const newFlag = new SquadObjective(latlng, this, main, 1, main);
                 this.flags.push(newFlag);
                 newFlag.flag.off();
                 newFlag.flag.options.interactive = false;
@@ -94,13 +94,13 @@ export default class SquadLayer {
 
                 phases.phaseObjectives.forEach((obj) => {
 
-                    var latlngs = [];
+                    const latlngs = [];
                     let totalLat = 0;
                     let totalLng = 0;
-                    var center;
+                    let center;
 
                     obj.splinePoints.forEach((point) => {
-                        var latlng = this.convertToLatLng(point.location_x, point.location_y);
+                        let latlng = this.convertToLatLng(point.location_x, point.location_y);
                         totalLat += ((point.location_y - this.offset_y) / 100 * -this.map.gameToMapScale);
                         totalLng += ((point.location_x - this.offset_x) / 100 * this.map.gameToMapScale);
                         latlngs.push(latlng);
@@ -380,15 +380,6 @@ export default class SquadLayer {
     createProtectionZones() {
         const PZONECOLOR = "firebrick";
 
-        // const keepOnMap = latlng => {
-        //     latlng = {lat: latlng[0], lng: latlng[1]};
-        //     if (latlng.lng > this.map.pixelSize) {latlng.lng = this.map.pixelSize;}
-        //     if (latlng.lat < -this.map.pixelSize ) {latlng.lat = -this.map.pixelSize;}
-        //     if (latlng.lng < 0) {latlng.lng = 0;}
-        //     if (latlng.lat > 0) {latlng.lat = 0;}
-        //     return latlng;
-        // };
-
         // Creating protectionZones + noConstructionZones
         this.layerData.mapAssets.protectionZones.forEach((pZone) => {
 
@@ -472,7 +463,6 @@ export default class SquadLayer {
 
                 this.mainZones.rectangles.push(protectionZone);
                 this.mainZones.rectangles.push(noDeployZone);
-                return;
             }
 
         });
@@ -486,19 +476,10 @@ export default class SquadLayer {
     }
 
     setMainZoneOpacity(on){
-        var opacity;
-        var textOpacity;
-        var fillOpacity;
+        const opacity = on ? 1 : 0;
+        const textOpacity = on ? 1 : 0;
+        const fillOpacity = on ? 0.1 : 0;
 
-        if (on){
-            opacity = 1;
-            textOpacity = 1;
-            fillOpacity = 0.1;
-        } else {
-            opacity = 0;
-            textOpacity = 0;
-            fillOpacity = 0;
-        }
 
         this.mainZones.rectangles.forEach((rectangle) => {
             rectangle.setStyle({ fillOpacity: fillOpacity, opacity: opacity });
@@ -518,7 +499,6 @@ export default class SquadLayer {
     _handleFlagClick(flag) {
         let backward = false;
 
-        //console.clear();
         console.debug("**************************");
         console.debug("      NEW CLICKED FLAG    ");
         console.debug("**************************");
@@ -709,8 +689,18 @@ export default class SquadLayer {
             }
         });
 
-        console.debug("Flags next step :", nextFlags);
+        this.handleNextFlags(nextFlags, backward);
+    }
 
+    
+    /**
+     * Handle next flags behaviour
+     * Hightlight the next flags / Copy their names to the clipboard / Click the next flag if only one
+     * @param {Array} nextFlags - Array of next flags
+     * @param {boolean} backward - True if we are going backward
+     */
+    handleNextFlags(nextFlags, backward) {
+        console.debug("Flags next step :", nextFlags);
 
         let nextFlagsNamesArray = [];
 
@@ -732,6 +722,7 @@ export default class SquadLayer {
             this._handleFlagClick(nextFlags[0]);
         }
     }
+
 
     /**
      * Remove clusters that were not reachable from the previous position
@@ -864,10 +855,8 @@ export default class SquadLayer {
                     this.dfs(link.nodeA, reachableClusters);  // Traverse from nodeB to nodeA
                 }
             }
-            else {
-                if (link.nodeA === clusterName && !reachableClusters.has(link.nodeB)) {
-                    this.dfs(link.nodeB, reachableClusters);  // Traverse from nodeA to nodeB
-                }
+            else if (link.nodeA === clusterName && !reachableClusters.has(link.nodeB)) {
+                this.dfs(link.nodeB, reachableClusters);  // Traverse from nodeA to nodeB
             }
         });
     }
@@ -877,20 +866,18 @@ export default class SquadLayer {
      * Unselects all flags and resets the layer
      */
     _resetLayer() {
-        //console.clear();
         console.debug("Resetting layer");
 
         this.currentPosition = 0;
         this.selectedReachableClusters = [];
         this.selectedFlags = [];
         this.reversed = false;
-
         this.path = [];
         this.polyline.setLatLngs([]);
 
         this.flags.forEach((flag) => {
             flag.unselect();
-            if (!flag.isMain){ flag.hide(); }
+            if (!flag.isMain) flag.hide();
         });
 
         // Pre-select first main flag in invasion

@@ -52,8 +52,8 @@ export default class SquadFiringSolution {
      * @returns {number || NaN} radian angle if target in range, NaN otherwise
     */
     getElevation(dist = 0, lowangle = false) {
-        var padding = 0;
-        var angleFactor;
+        let padding = 0;
+        let angleFactor;
         
         const P1 = Math.sqrt(this.velocity ** 4 - this.gravity * (this.gravity * dist ** 2 + 2 * this.heightDiff * this.velocity ** 2));
         angleFactor = lowangle ? -P1 : P1;
@@ -80,7 +80,7 @@ export default class SquadFiringSolution {
     getBearing() {
         const latDelta = (this.targetLatLng.lat - this.weaponLatLng.lat) * -this.map.mapToGameScale;
         const lngDelta = (this.targetLatLng.lng - this.weaponLatLng.lng) * this.map.mapToGameScale;
-        var bearing = Math.atan2(latDelta, lngDelta) * 180 / Math.PI + 90;
+        let bearing = Math.atan2(latDelta, lngDelta) * 180 / Math.PI + 90;
         if (bearing < 0) { bearing += 360; } // Avoid Negative Angle by adding a whole rotation
         return bearing;
     }

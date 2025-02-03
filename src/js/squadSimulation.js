@@ -72,8 +72,8 @@ export default class Simulation {
 
                 let elevationlow = this.firingSolution.elevation.low;
                 let elevationhigh = this.firingSolution.elevation.high;
-                let timeOfFlightlow = this.firingSolution.timeOfFlight.low;
-                let timeOfFlighthigh = this.firingSolution.timeOfFlight.high;
+                let timeOfFlightlow;
+                let timeOfFlighthigh;
 
                 if (isNaN(elevationlow.rad)){
                     elevationlow = "---";
@@ -143,7 +143,7 @@ export default class Simulation {
      * Draw a grid on canvas representing distances
      */
     drawGrid(){
-        var step;
+        let step;
 
         if (this.firingSolution.distance > 1200) { step = 500; } else { step = 300; }
 
@@ -187,7 +187,7 @@ export default class Simulation {
     drawGroundLevel(){
         const xScaling = ( this.canvas.width - (2 * this.padding) ) / ( this.heightPath.length - 1 );
         const groundColor = "#111";
-        var ground = new Path2D();
+        const ground = new Path2D();
         
         this.ctx.lineWidth = 1;
 
@@ -268,8 +268,6 @@ export default class Simulation {
 
         xVel = Math.cos(elevation) * this.firingSolution.velocity * this.xScaling;
         yVel = Math.sin(elevation) * this.firingSolution.velocity * this.yScaling;
-
-        //if (isNaN(this.firingSolution.velocity)) return;
 
         this.ctx.lineWidth = 5;
         this.ctx.strokeStyle = App.mainColor;

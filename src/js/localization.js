@@ -44,7 +44,7 @@ export function loadLanguage(LANGUAGES) {
 function getLanguage(LANGUAGES){
     const browserLanguage = navigator.language.split("-")[0].toLowerCase();
     const supportedLanguagesCodes = LANGUAGES.map(pair => pair[0]);
-    var language = localStorage.getItem("settings-language");
+    let language = localStorage.getItem("settings-language");
 
     // If nothing in localstorage, try to find what language navigator is using
     if (language === null || language === ""){
