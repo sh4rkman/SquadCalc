@@ -187,6 +187,7 @@ export var WEAPONS = [
         decelerationTime : 0,
         gravityScale: 1,
         minElevation: [-45, 85.3],
+        heightOffset: 3,
         unit: "deg",
         logo: mk19rwsLogo,
         marker: mk19Icon,
@@ -202,3 +203,4 @@ export var WEAPONS = [
         damageFallOff: 1,
     }
 ];
+

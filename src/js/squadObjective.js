@@ -71,7 +71,7 @@ export class SquadObjective {
         this.flag.removeFrom(this.layerGroup).remove();
         console.debug("Selecting flag: ", this.name);
 
-        if (App.userSettings.circlesFlags) className += " circle";
+        if (App.userSettings.circlesFlags) className += " circleFlag";
     
         if (this.isMain) {
             className += " main";
@@ -230,7 +230,7 @@ export class SquadObjective {
         let position = Math.abs(this.layer.startPosition - this.position); 
         let className = "flag";
 
-        if (App.userSettings.circlesFlags) className += " circle";
+        if (App.userSettings.circlesFlags) className += " circleFlag";
 
         if (this.isMain) { 
             if (this.layer.layerData.gamemode === "RAAS"){
@@ -291,7 +291,7 @@ export class SquadObjective {
         this.position = lowestPossiblePosition;
     
         if (App.userSettings.circlesFlags){
-            className += " circle";
+            className += " circleFlag";
         }
 
         if (this.isMain) { 

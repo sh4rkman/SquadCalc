@@ -4,7 +4,7 @@
 .contextmenu {
     display: flex;
     padding: 0;
-    .ctxButton {
+    .ctxButton, .shapeButton {
         margin: 2px;
         background-color: rgba(0, 0, 0, 0.5);
         cursor: pointer;
@@ -38,7 +38,7 @@
         padding: 0;
         overflow: hidden;
         backdrop-filter: blur(2px);
-        .ctxButton {
+        .ctxButton, .shapeButton {
             margin: 0;
             padding: 2px 0.5px;
             background-color: transparent;
@@ -57,9 +57,6 @@
         }
     }
 }
-  
-
-
 
 
 // COMMON
@@ -69,22 +66,31 @@
     background-size: contain;
 }
 
-.arrowBlue, .arrowRed {
-    background: url('../../../public/icons/shared/ctx/arrow.webp') no-repeat center center;
+.arrow, .rectangle, .circle {
     background-size: contain;
-    &.arrowBlue {
+    background-repeat: no-repeat;
+    background-position: center center;
+    &.arrow { background-image: url('../../../public/icons/shared/ctx/arrow.webp'); }
+    &.rectangle { background-image: url('../../../public/icons/shared/ctx/rectangle.webp'); }
+    &.circle { background-image: url('../../../public/icons/shared/ctx/circle.webp'); }
+    &.blue {
         background-color: #00137e;
-        &:hover {
-            background-color: #000844;
-        }
+        &:hover { background-color: #000844; }
     }
-    &.arrowRed {
+    &.red {
         background-color: #bb2623;
-        &:hover {
-            background-color: #6b1716;
-        }
+        &:hover { background-color: #6b1716; }
+    }
+    &.green {
+        background-color: #007f00;
+        &:hover { background-color: #005200; }
+    }
+    &.black {
+        background-color: #141414;
+        &:hover { background-color: #000; }
     }
 }
+
 
 // ALLY INFANTRY
 

@@ -1,3 +1,18 @@
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **37.2.0** *(2025-02-05)*
+
+
+<img src="https://img.shields.io/badge/-new-green"> Added Circles and Rectangles Markers (fix #285)
+
+<img src="https://img.shields.io/badge/-new-green"> Shapes/Arrows are now available in Blue/Red/Green/Black
+
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed enemy markers context menu positions (fix #286)
+
+<img src="https://img.shields.io/badge/-%20dev%20-grey"> Code Refactoring
+
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
+
 # <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **37.1.1** *(2025-02-03)*
 
 

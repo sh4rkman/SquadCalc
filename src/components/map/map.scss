@@ -12,7 +12,7 @@ $flag-circle-opacity: 0.2;
 // Mixins for repeated styles
 @mixin flag-color($bg-color, $outline-color) {
     background-color: rgba($bg-color, $flag-opacity); 
-    &.circle {
+    &.circleFlag {
         outline: solid $outline-color 3px;
         background-color: rgba($bg-color, $flag-circle-opacity);
     }
@@ -55,7 +55,7 @@ $flag-circle-opacity: 0.2;
         z-index: 0;
         .leaflet-interactive {
             cursor: inherit;
-            &.mapArrow {
+            &.mapArrow, &.mapRectangle, &.mapCircle {
                 cursor: pointer;
             }
         }
@@ -89,7 +89,7 @@ $flag-circle-opacity: 0.2;
             cursor: inherit;
             align-content: center;
             display: grid;
-            &.circle {
+            &.circleFlag {
                 border-radius: 15px;
                 margin-left: -15px!important;
                 margin-top: -15px!important;
@@ -127,7 +127,7 @@ $flag-circle-opacity: 0.2;
                     right: 0.2em;
                     line-height: 0%;
                 }
-                &.circle {
+                &.circleFlag {
                     display: grid;
                     &::before {
                         content: "";
@@ -136,9 +136,9 @@ $flag-circle-opacity: 0.2;
                         background-color: rgba(0, 128, 0, 1);
                     }
                     &.main.unselectable {
-                        pointer-events: none;
-                        background-color: rgba(255, 255, 255, 0.4);
-                        outline-color: rgb(68, 68, 68);
+                        // pointer-events: none;
+                        // background-color: rgba(255, 255, 255, 0.4);
+                        // outline-color: rgb(68, 68, 68);
                     }
                     &:hover {
                         box-shadow: 0 2px 12px rgba(0, 0, 0, 1);
@@ -151,7 +151,7 @@ $flag-circle-opacity: 0.2;
                     background: url('../../img/icons/deployables/main.webp') no-repeat center center;
                     background-size: 50%;
                     transition: opacity 0.1s ease-in;
-                    &.circle {
+                    &.circleFlag {
                         background-size: 80%;
                     }
                 }
@@ -182,7 +182,7 @@ $flag-circle-opacity: 0.2;
             }
             &.next {
                 background-color: rgba(197, 0, 0);
-                &.circle {
+                &.circleFlag {
                     background-color: rgba(197, 0, 0);
                     outline-color: rgb(143, 0, 0);
                     outline-width: 3px;
@@ -257,8 +257,8 @@ $flag-circle-opacity: 0.2;
             font-size: 2em;
             text-align: center;
             font-family: variables.$mainFont, Times, "Times New Roman", serif;
-            font-weight: bolder;
-            letter-spacing: normal;
+            // font-weight: bolder;
+            // letter-spacing: normal;
         }
         .capZone {
             transition: opacity 0.25s ease-in-out, fill-opacity 0.25s ease-in-out;

@@ -1,7 +1,7 @@
 import { Icon } from "leaflet";
 
 import shadowIconImg from "../img/icons/markers/marker_shadow.webp";
-import markerShadow from "leaflet/dist/images/marker-shadow.png";
+import DEFAULTSHADOW from "leaflet/dist/images/marker-shadow.png";
 
 import targetIconImgEnabled from "../img/icons/markers/marker_target_enabled.webp";
 import targetIconSessionImgEnabled from "../img/icons/markers/marker_target_session_enabled.webp";
@@ -125,7 +125,7 @@ export const mortarIcon2 = new Icon({
 
 export const targetIconMinimal = new Icon({
     iconUrl: targetIconImgMinimal,
-    shadowUrl: shadowIconImg,
+    shadowUrl: DEFAULTSHADOW,
     shadowSize: [0, 0], // hack to avoid 404
     iconSize:     [30, 30], 
     iconAnchor:   [15, 15],
@@ -133,7 +133,7 @@ export const targetIconMinimal = new Icon({
 
 export const targetIconSessionMinimal = new Icon({
     iconUrl: targetIconSessionImgMinimal,
-    shadowUrl: shadowIconImg,
+    shadowUrl: DEFAULTSHADOW,
     shadowSize: [0, 0], // hack to avoid 404
     iconSize:     [30, 30], 
     iconAnchor:   [15, 15],
@@ -141,7 +141,7 @@ export const targetIconSessionMinimal = new Icon({
 
 export const targetIconMinimalDisabled = new Icon({
     iconUrl: targetIconImgDisabledMinimal,
-    shadowUrl: shadowIconImg,
+    shadowUrl: DEFAULTSHADOW,
     shadowSize: [0, 0], // hack to avoid 404
     iconSize:     [30, 30], 
     iconAnchor:   [15, 15],
