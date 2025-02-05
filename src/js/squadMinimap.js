@@ -1,9 +1,10 @@
-import {imageOverlay, tileLayer, Map, CRS, svg, Util, LayerGroup, Popup, Icon, LatLngBounds, latLng, Polyline, PolylineDecorator, Symbol, DomEvent } from "leaflet";
+import {imageOverlay, tileLayer, Map, CRS, svg, Util, LayerGroup, Popup, Icon, LatLngBounds, latLng } from "leaflet";
 import squadGrid from "./squadGrid.js";
 import squadHeightmap from "./squadHeightmaps.js";
 import { App } from "../app.js";
 import { squadWeaponMarker, squadTargetMarker, squadStratMarker } from "./squadMarker.js";
 import { mortarIcon, mortarIcon1, mortarIcon2 } from "./squadIcon.js";
+import  { MapArrow, MapCircle, MapRectangle }  from "./squadShapes.js";
 import { explode } from "./animations.js";
 import { fetchMarkersByMap } from "./squadCalcAPI.js";
 import webGLHeatmap from "./libs/leaflet-webgl-heatmap.js";
@@ -63,7 +64,11 @@ export const squadMinimap = Map.extend({
         this.activeWeaponsMarkers = new LayerGroup().addTo(this);
         this.activeMarkers = new LayerGroup().addTo(this);
         this.activeArrowsGroup = new LayerGroup().addTo(this);
+        this.activeRectanglesGroup = new LayerGroup().addTo(this);
         this.activeArrows = [];
+        this.activeRectangles = [];
+        this.activeCirclesGroup = new LayerGroup().addTo(this);
+        this.activeCircles = [];
         this.layerGroup = new LayerGroup().addTo(this);
         this.markersGroup = new LayerGroup().addTo(this);
         this.history = [];
@@ -246,6 +251,8 @@ export const squadMinimap = Map.extend({
         this.activeWeaponsMarkers.clearLayers();
         this.activeTargetsMarkers.clearLayers();
         this.activeArrowsGroup.clearLayers();
+        this.activeRectanglesGroup.clearLayers();
+        this.activeCirclesGroup.clearLayers();
         if (this.layer) this.layer.clear();
     
         $(".btn-delete").hide();
@@ -321,11 +328,31 @@ export const squadMinimap = Map.extend({
 
 
     /**
-     * Delete every Contextmenu markers on the map
+     * Delete every Contextmenu Circle on the map
+     */
+    deleteCircles: function(){
+        this.activeCircles.forEach(function (circle) {
+            circle.delete();
+        });
+    },
+
+
+    /**
+     * Delete every Contextmenu Arrows on the map
      */
     deleteArrows: function(){
         this.activeArrows.forEach(arrow => {
             arrow.delete();
+        });
+    },
+
+
+    /**
+     * Delete every Contextmenu markers on the map
+     */
+    deleteRectangles: function(){
+        this.activeRectangles.forEach(rectangle => {
+            rectangle.delete();
         });
     },
 
@@ -338,7 +365,9 @@ export const squadMinimap = Map.extend({
         return (
             this.activeArrows.length > 0 ||
             this.activeMarkers.getLayers().length > 0 ||
-            this.activeTargetsMarkers.getLayers().length > 0
+            this.activeTargetsMarkers.getLayers().length > 0 ||
+            this.activeRectangles.length > 0 ||
+            this.activeCircles.length > 0
         );
     },
 
@@ -755,102 +784,119 @@ export const squadMinimap = Map.extend({
             this.once("click", handleClick); // Finalize the arrow on click
             this.on("contextmenu", handleRightClick); // Cancel on right-click
         }
+    },
+
+
+    createRectangle: function (color, uid = false) {
+        let isDrawing = true;
+        let rectangle = null;
+        const startLatLng = this.contextMenu.mainContextMenu.e.latlng;
+    
+        const handleMouseMove = (event) => {
+            if (!isDrawing) return;
+    
+            const endLatLng = event.latlng;
+    
+            if (rectangle) {
+                rectangle.rectangle.setBounds([startLatLng, endLatLng]);
+            } else {
+                rectangle = new MapRectangle(this, color, startLatLng, endLatLng, uid);
+            }
+        };
+    
+        const handleClick = () => {
+            if (isDrawing && rectangle) {
+                isDrawing = false;
+                this.off("mousemove", handleMouseMove);
+    
+                if (!rectangle.uid) rectangle.uid = uuidv4();
+
+                // Send rectangle data via WebSocket
+                if (App.session.ws && App.session.ws.readyState === WebSocket.OPEN) {
+                    console.debug("Sending new rectangle with uid", rectangle.uid);
+                    App.session.ws.send(
+                        JSON.stringify({
+                            type: "ADDING_RECTANGLE",
+                            uid: rectangle.uid,
+                            color: color,
+                            bounds: rectangle.rectangle.getBounds(),
+                        })
+                    );
+                }
+            }
+        };
+    
+        const handleRightClick = () => {
+            if (isDrawing && rectangle) {
+                // Cancel the drawing process and remove the rectangle
+                rectangle.delete();
+                rectangle = null;
+                isDrawing = false;
+                this.off("mousemove", handleMouseMove);
+            }
+        };
+    
+        // Start tracking mouse movement immediately
+        this.on("mousemove", handleMouseMove);
+        this.once("click", handleClick);
+        this.on("contextmenu", handleRightClick);
+    },
+
+    createCircle: function (color, uid = false) {
+        let isDrawing = true;
+        let circle = null;
+        const startLatLng = this.contextMenu.mainContextMenu.e.latlng;
+        
+        const handleMouseMove = (event) => {
+
+            if (!isDrawing) return;
+        
+            // Calculate the lat/lng difference
+            const latDelta = (event.latlng.lat - startLatLng.lat);
+            const lngDelta = (event.latlng.lng - startLatLng.lng);
+            const radius = Math.hypot(latDelta, lngDelta);
+
+            if (circle) circle.circle.setRadius(radius);
+            else circle = new MapCircle(this, color, startLatLng, radius, uid);
+        };
+    
+        const handleClick = () => {
+            if (isDrawing && circle) {
+                isDrawing = false;
+                this.off("mousemove", handleMouseMove);
+    
+                if (!circle.uid) circle.uid = uuidv4();
+    
+                // Send circle data via WebSocket
+                if (App.session.ws && App.session.ws.readyState === WebSocket.OPEN) {
+                    console.debug("Sending new circle with uid", circle.uid);
+                    App.session.ws.send(
+                        JSON.stringify({
+                            type: "ADDING_CIRCLE",
+                            uid: circle.uid,
+                            color: color,
+                            latlng: circle.circle.getLatLng(),
+                            radius: circle.circle.getRadius(),
+                        })
+                    );
+                }
+            }
+        };
+    
+        const handleRightClick = () => {
+            if (isDrawing && circle) {
+                // Cancel the drawing process and remove the circle
+                circle.delete();
+                circle = null;
+                isDrawing = false;
+                this.off("mousemove", handleMouseMove);
+            }
+        };
+    
+        // Start tracking mouse movement immediately
+        this.on("mousemove", handleMouseMove);
+        this.once("click", handleClick);
+        this.on("contextmenu", handleRightClick);
     }
 
 });
-
-export class MapArrow {
-    
-    constructor(map, color, startLatLng, endLatLng, uid = null) {
-        this.map = map;
-        this.color = color;
-        this.markersGroup = map.markersGroup;
-        this.startLatLng = startLatLng;
-        this.endLatLng = endLatLng;
-        this.uid = uid || uuidv4();
-        this.polyline = null;
-        this.polylineDecorator = null;
-        this.arrowPattern = {
-            patterns: [{
-                offset: "100%",
-                repeat: 0,
-                symbol: new Symbol.arrowHead({
-                    pixelSize: 15,
-                    polygon: false,
-                    fill: true,
-                    yawn: 70,
-                    pathOptions: {
-                        stroke: true,
-                        color: color,
-                        weight: 3,
-                        fillColor: color,
-                        fillOpacity: 1,
-                    }
-                })
-            }]
-        };
-        this.createArrow();
-        this.map.activeArrows.push(this);
-        console.debug("Creating new arrow with uid", this.uid);
-    }
-
-    // Creates the arrow on the map
-    createArrow() {
-        const arrowOptions = {
-            color: this.color,
-            weight: 3,
-            className: "mapArrow",
-        };
-
-        const latlngs = [this.startLatLng, this.endLatLng];
-        this.polyline = new Polyline(latlngs, arrowOptions).addTo(this.map.activeArrowsGroup);
-        this.polylineDecorator = new PolylineDecorator(this.polyline, this.arrowPattern).addTo(App.minimap.activeArrowsGroup);
-        this.polyline.uid = this.uid;
-
-        // Add a contextmenu event listener for deletion
-        this.polyline.on("contextmenu", (event) => {
-            this.delete();
-            DomEvent.preventDefault(event);
-            DomEvent.stopPropagation(event);
-        });
-
-        // Add Item to history
-        this.map.history.push(this);
-
-        $(".btn-delete").show();
-        $(".btn-undo").show();
-    }
-
-
-    // Removes the arrow from the map
-    delete(broadcast = true) {
-
-        if (broadcast && App.session.ws && App.session.ws.readyState === WebSocket.OPEN) {
-            console.debug("Deleting new arrow with uid", this.uid);
-            App.session.ws.send(
-                JSON.stringify({
-                    type: "DELETE_ARROW",
-                    uid: this.uid,
-                })
-            );
-        }
-
-        this.map.activeArrows = this.map.activeArrows.filter(activeArrow => activeArrow !== this);
-        this.map.removeLayer(this.polyline);
-        this.map.removeLayer(this.polylineDecorator);
-
-        // remove from this.map.activeArrowsGroup
-        
-        this.polyline.removeFrom(this.map.activeArrowsGroup).remove();
-        this.polylineDecorator.removeFrom(this.map.activeArrowsGroup).remove();
-
-        // Remove the marker from targets array history
-        this.map.history = this.map.history.filter(object => object !== this);
-
-        // If that was the last Marker on the map, hide "delete all" buttons
-        if (!this.map.hasMarkers()) {
-            $(".btn-delete").hide();
-            $(".btn-undo").hide();
-        }
-    }
-}

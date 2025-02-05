@@ -909,7 +909,6 @@ export default class SquadLayer {
             f.clusters.includes(cluster)
         );
 
-
         flagsToShow.forEach((flagToShow) => {
 
             const foundClusters = [];
@@ -949,7 +948,6 @@ export default class SquadLayer {
             }
             flagToShow.position = newPos;
             flagToShow.show();
-
         });
 
     }

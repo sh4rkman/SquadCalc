@@ -1,7 +1,7 @@
 
 import { App } from "../app.js";
 import { LatLng } from "leaflet";
-import  { MapArrow }  from "./squadMinimap.js";
+import  { MapArrow, MapCircle, MapRectangle }  from "./squadShapes.js";
 import { createSessionTooltips, leaveSessionTooltips } from "./tooltips.js";
 
 
@@ -104,6 +104,12 @@ export default class SquadSession {
             data.mapState.arrows.forEach(arrow => {
                 new MapArrow(App.minimap, arrow.color, arrow.latlngs[0], arrow.latlngs[1], arrow.uid);
             });
+            data.mapState.circles.forEach(circle => {
+                new MapCircle(App.minimap, circle.color, circle.latlng, circle.radius, circle.uid);
+            });
+            data.mapState.rectangles.forEach(rectangle => {
+                new MapRectangle(App.minimap, rectangle.color, rectangle.bounds._southWest, rectangle.bounds._northEast, rectangle.uid);
+            });
 
             // Update UI for joining the session
             App.openToast("success", "sessionJoined", "");
@@ -184,6 +190,22 @@ export default class SquadSession {
             });
             break;
         }
+        case "DELETE_CIRCLE": {
+            App.minimap.activeCircles.forEach((circle) => {
+                if (circle.uid === data.uid) {
+                    circle.delete(false);
+                }
+            });
+            break;
+        }
+        case "DELETE_RECTANGLE": {
+            App.minimap.activeRectangles.forEach((rectangle) => {
+                if (rectangle.uid === data.uid) {
+                    rectangle.delete(false);
+                }
+            });
+            break;
+        }
 
 
         /**********************************************************************/
@@ -208,6 +230,17 @@ export default class SquadSession {
         case "ADDING_ARROW": {
             new MapArrow(App.minimap, data.color, data.latlngs[0], data.latlngs[1], data.uid);
             App.minimap.visualClick.triggerVisualClick(data.latlngs[0], "cyan");
+            break;
+        }
+        case "ADDING_CIRCLE": {
+            new MapCircle(App.minimap, data.color, data.latlng, data.radius, data.uid);
+            App.minimap.visualClick.triggerVisualClick(data.latlng, "cyan");
+            break;
+        }
+        case "ADDING_RECTANGLE": {
+            console.log(data.bounds);
+            new MapRectangle(App.minimap, data.color, data.bounds._northEast, data.bounds._southWest, data.uid);
+            App.minimap.visualClick.triggerVisualClick(data.bounds._northEast, "cyan");
             break;
         }
 

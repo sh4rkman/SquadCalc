@@ -8,7 +8,6 @@ import { loadLanguage } from "./localization.js";
 import { tooltip_save, createSessionTooltips, leaveSessionTooltips } from "./tooltips.js";
 import { checkApiHealth, fetchLayersByMap, fetchLayerByName } from "./squadCalcAPI.js";
 import { initWebSocket } from "./smcConnector.js";
-
 import SquadSession from "./squadSession.js";
 import SquadFiringSolution from "./squadFiringSolution.js";
 import packageInfo from "../../package.json";
@@ -350,9 +349,8 @@ export default class SquadCalc {
         const weaponInformation = document.querySelector("#weaponInformation");
         const helpDialog = document.querySelector("#helpDialog");
 
-        $(".btn-delete").hide();
-        $(".btn-undo").hide();
-        $("#mapLayerMenu").hide();
+        $(".btn-delete, .btn-undo, #mapLayerMenu").hide();
+
         this.ui = localStorage.getItem("data-ui");
 
         if (this.ui === null || isNaN(this.ui) || this.ui === ""){
@@ -392,6 +390,8 @@ export default class SquadCalc {
             this.minimap.deleteTargets();
             this.minimap.deleteMarkers();
             this.minimap.deleteArrows();
+            this.minimap.deleteRectangles();
+            this.minimap.deleteCircles();
         });
 
         $(".btn-undo").on("click", () => {
@@ -1163,6 +1163,8 @@ export default class SquadCalc {
         const targets = [];
         const markers = [];
         const arrows = [];
+        const circles = [];
+        const rectangles = [];
         const activeWeapon = this.WEAPON_SELECTOR.val();
         const activeMap = this.MAP_SELECTOR.val();
         const version = this.version;
@@ -1198,8 +1200,16 @@ export default class SquadCalc {
                 color: arrow.color,
             });
         });
+        this.minimap.activeCircles.forEach(circle => {
+            circles.push({
+                uid: circle.uid,
+                latlng: circle.circle.getLatLng(),
+                color: circle.color,
+                radius: circle.circle.getRadius(),
+            });
+        });
     
-        return { weapons, targets, markers, arrows, activeWeapon, activeMap, version };
+        return { weapons, targets, markers, arrows, circles, rectangles, activeWeapon, activeMap, version };
     }
 
     updateUrlParams(updates = {}) {

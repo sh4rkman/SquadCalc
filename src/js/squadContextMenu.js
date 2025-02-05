@@ -8,7 +8,7 @@ export default class SquadContextMenu {
     constructor() {
 
         document.addEventListener("contextmenu", this.handleContextMenu);
-
+        
         this.mainContextMenu = tippy(document.querySelector("#map"), {
             allowHTML: true,
             theme: "contextmenu",
@@ -27,25 +27,25 @@ export default class SquadContextMenu {
             onShow: (tip) => {
                 tip.setContent(
                     `<div class="contextmenu"">
-                        <button class="ctxButton fobbutton">
+                        <button class="ctxButton">
                             <span class="fob" data-team="ally" data-category="deployables" data-icon="deployable_fob_blue"></span>
                         </button>
-                        <button class="ctxButton friendlyButton">
+                        <button class="ctxButton">
                             <span class="friendly" data-team="ally" data-category="vehicles" data-icon="map_truck_logistics"></span>
                         </button>
-                        <button class="ctxButton friendlyInfButton">
+                        <button class="ctxButton">
                              <span class="friendlyInf" data-team="ally" data-category="infantry" data-icon="map_genericinfantry"></span>
                         </button>
                         <button class="ctxButton middleContextButton">
                             <span class="middleContext" data-icon="middleContext"></span>
                         </button>
-                        <button class="ctxButton enemyButton">
+                        <button class="ctxButton">
                             <span class="enemy" data-team="enemy" data-category="infantry" data-icon="map_genericinfantry"></span>
                         </button>
-                        <button class="ctxButton enemyVehiclesButton">
+                        <button class="ctxButton">
                             <span class="enemyVehicles" data-team="enemy" data-category="vehicles" data-icon="map_truck_logistics"></span>
                         </button>
-                        <button class="ctxButton enemyFOBButton">
+                        <button class="ctxButton">
                             <span class="enemyfob" data-team="enemy" data-category="deployables" data-icon="deployable_fob"></span>
                         </button>
 
@@ -56,6 +56,7 @@ export default class SquadContextMenu {
                 setTimeout(() => {
         
                     $(".ctxButton").on("click", (event) => {
+
                         const target = event.originalEvent.target;
 
                         // Add additional options for specific markers
@@ -70,52 +71,69 @@ export default class SquadContextMenu {
                     });
 
                 }, 0);
-                
-                this.weaponContextMenu = tippy(document.querySelector("#map"), {
-                    allowHTML: true,
-                    theme: "contextmenu",
-                    interactive: true,
-                    trigger: "manual",
-                    showOnCreate: false,
-                    followCursor: "initial",
-                    plugins: [followCursor],
-                    duration: 0,
-                    arrow: false,
-                    position: "top",
-                    offset: [0, 15],
-                    onShow: (tip) => {
-                        tip.setContent(
-                            `<div class="contextmenu"">
-                                <button class="ctxButton weaponContext">
-                                    <span class="arrowBlue weaponContext"></span>
-                                </button>   
-                            </div>
-                            <div class="contextmenu"">
-                                <button class="ctxButton weaponContext">
-                                    <span class="arrowRed weaponContext"></span>
-                                </button>   
-                            </div>`
-                        );
-                        
-                        setTimeout(() => {
 
-                            $(".weaponContext").on("click", (event) => {
-                                tip.hide();
-                                
-                                // Use event.target instead of event.originalEvent.originalTarget
-                                let targetElement = event.target;
-                            
-                                // Check if the clicked element or its ancestor has the 'arrowBlue' class
-                                let isBlueArrow = targetElement.classList.contains("arrowBlue") ||
-                                                  targetElement.closest(".arrowBlue") !== null;
-                            
-                                let color = isBlueArrow ? "blue" : "#ee1b14";
-                                App.minimap.createArrow(color);
-                            });
-                            
-                        }, 0);
-                    }
-                });
+            }
+        });
+
+        this.weaponContextMenu = tippy(document.querySelector("#map"), {
+            allowHTML: true,
+            theme: "contextmenu",
+            interactive: true,
+            trigger: "manual",
+            showOnCreate: false,
+            followCursor: "initial",
+            plugins: [followCursor],
+            duration: 0,
+            arrow: false,
+            position: "top",
+            offset: [0, 15],
+            onHide: () => {
+                $(".shapeButton").off("click");
+            },
+            onShow: (tip) => {
+                tip.setContent(
+                    `
+                    <div class="contextmenu">
+                        <button class="shapeButton">
+                            <span class="circle blue"></span>
+                        </button>
+                    </div>
+                    <div class="contextmenu">
+                        <button class="shapeButton">
+                            <span class="rectangle blue"></span>
+                        </button>   
+                    </div>
+                    <div class="contextmenu">
+                        <button class="shapeButton">
+                            <span class="arrow blue"></span>
+                        </button>
+                    </div>
+                    `
+                );
+                
+                setTimeout(() => {
+                    $(".shapeButton").on("click", (event) => {
+                        let targetElement = event.target.closest(".shapeButton span"); // Ensure we get the <span> inside the button
+                    
+                        if (!targetElement) return;
+                                       
+                        // Extract the shape type (arrow, rectangle, circle)
+                        const shape = ["arrow", "rectangle", "circle"].find(type => targetElement.classList.contains(type));
+                    
+                        // Extract the color (any other class that isn't the shape itself)
+                        const color = [...targetElement.classList].find(cls => cls !== shape);
+                    
+                        if (shape && color) {
+                            // Call the corresponding method dynamically
+                            const methodName = `create${shape.charAt(0).toUpperCase() + shape.slice(1)}`;
+                            if (typeof App.minimap[methodName] === "function") {
+                                App.minimap[methodName](color);
+                            }
+                        }
+                    
+                        this.close();
+                    });
+                }, 0);
 
             }
         });
@@ -176,7 +194,7 @@ export default class SquadContextMenu {
         
         tippy(document.querySelector(".enemyfob"), {
             ...GLOBALOPTIONS,
-            offset: [57, 3],
+            offset: [0, 3],
             onShow(tip) {
                 const template = document.getElementById("enemy_deployables_html");
                 const clone = document.importNode(template.content, true);
@@ -186,7 +204,7 @@ export default class SquadContextMenu {
 
         tippy(document.querySelector(".enemy"), {
             ...GLOBALOPTIONS,
-            offset: [0, 3],
+            offset: [57, 3],
             onShow(tip) {
                 const template = document.getElementById("enemy_infantry_html");
                 const clone = document.importNode(template.content, true);
@@ -203,6 +221,41 @@ export default class SquadContextMenu {
                 tip.setContent(clone);
             }
         });
+
+        tippy(document.querySelector(".arrow.blue"), {
+            ...GLOBALOPTIONS,
+            placement: "right",
+            offset: [0, 3],
+            onShow(tip) {
+
+                const template = document.getElementById("arrows_html");
+                const clone = document.importNode(template.content, true);
+                tip.setContent(clone);
+            }
+        });
+
+        tippy(document.querySelector(".rectangle.blue"), {
+            ...GLOBALOPTIONS,
+            placement: "right",
+            offset: [0, 3],
+            onShow(tip) {
+                const template = document.getElementById("rectangles_html");
+                const clone = document.importNode(template.content, true);
+                tip.setContent(clone);
+            }
+        });
+
+        tippy(document.querySelector(".circle.blue"), {
+            ...GLOBALOPTIONS,
+            placement: "right",
+            offset: [0, 3],
+            onShow(tip) {
+                const template = document.getElementById("circles_html");
+                const clone = document.importNode(template.content, true);
+                tip.setContent(clone);
+            }
+        });
+
 
     }
 }
