@@ -58,5 +58,6 @@
     "undo": "Отменить",
     "backspace": "Backspace",
     "enter": "Enter",
-    "delete": "Delete"
+    "delete": "Delete",
+    "toggleLayer": "Показать/скрыть слой"
 }

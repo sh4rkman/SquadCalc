@@ -217,12 +217,16 @@ tippy(".btn-topomap", {
         tip.setContent(i18next.t("tooltips:topographicmode"));
     },
 });
+tippy(".btn-layer", {
+    ...commonMapMenuToolipsSettings,
+    onShow(tip) {
+        tip.setContent(i18next.t("tooltips:toggleLayer"));
+    },
+});
 tippy(".btn-hd", {
     ...commonMapMenuToolipsSettings,
     onShow(tip) {
-        tip.setContent(`
-            ${i18next.t("settings:highquality")}
-        `);
+        tip.setContent(i18next.t("settings:highquality"));
     },
 });
 tippy(".btn-helpmap", {

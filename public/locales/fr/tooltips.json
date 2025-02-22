@@ -58,5 +58,6 @@
     "undo": "Annuler",
     "backspace": "Backspace",
     "enter": "Enter",
-    "delete": "Delete"
+    "delete": "Delete",
+    "toggleLayer": "Afficher/Masquer le layer"
 }

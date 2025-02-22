@@ -62,6 +62,7 @@ export class SquadObjective {
         }
     }
 
+    
     select(){
         let position = null;
         let html = "";
@@ -338,6 +339,8 @@ export class SquadObjective {
 
     _handleMouseOver() {
 
+        if(!this.layer.isVisible) return;
+
         // On RAAS/Invasion, preview the lane on hover
         if (this.layer.layerData.gamemode != "Destruction" && this.layer.layerData.gamemode != "AAS") {
             if (this.isNext && App.userSettings.revealLayerOnHover) {
@@ -359,6 +362,8 @@ export class SquadObjective {
     _handleMouseOut(){
         // Cancel the timeout if the user moves the mouse out before 1 second
         clearTimeout(this.mouseOverTimeout);
+
+        if(!this.layer.isVisible) return;
 
         if (App.userSettings.capZoneOnHover) this.hideCapZones();
 
@@ -404,6 +409,15 @@ export class SquadObjective {
     _setOpacity(value){
         this.flag.setOpacity(value);
         this.nameText.setOpacity(value);
+
+        // if opacity = 0, this.flag can't be clicked
+        // css cursor is set to default on hover
+
+        if (value === 0){
+            $(".flag").css("pointer-events", "none");
+        } else {
+            $(".flag").css("pointer-events", "all");
+        }
     }
 
 

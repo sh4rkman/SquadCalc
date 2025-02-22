@@ -58,5 +58,6 @@
     "undo": "撤销",
     "backspace": "Backspace",
     "enter": "Enter",
-    "delete": "Delete"
+    "delete": "Delete",
+    "toggleLayer": "显示/隐藏图层"
 }
