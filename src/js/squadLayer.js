@@ -1018,7 +1018,7 @@ export default class SquadLayer {
             this.polyline.hideMeasurements();
             this.isVisible = false;
             $(".btn-layer").removeClass("active");
-            this.hideAllCapzones()
+            this.hideAllCapzones();
             this.setMainZoneOpacity(false);
         }
         else {

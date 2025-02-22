@@ -401,7 +401,7 @@ export default class SquadCalc {
         });
 
         $(".btn-layer").on("click", () => {
-           this.minimap.layer.toggleVisibility();
+            this.minimap.layer.toggleVisibility();
         });
 
         $("#fabCheckbox2").on("change", () => { this.switchUI();});
