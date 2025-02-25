@@ -1118,9 +1118,6 @@ export const squadTargetMarker = squadMarker.extend({
             target.updateDamageRadius();
         });
 
-        // Reset layer opacity
-        if (this.map.layer) this.map.layer._setOpacity(1); 
-
         // We can now safely start deleting
         this.delete();
     },
@@ -1129,16 +1126,8 @@ export const squadTargetMarker = squadMarker.extend({
     _handleMouseOver: function() {
 
         this.mouseOverTimeout = setTimeout(() => {
-
-            // Hide the layer
-            if (this.map.layer){
-                this.map.layer._setOpacity(0.5);
-                this.map.layer.polyline.hideMeasurements();
-            } 
-
             // Hide other targets
             if (!this.isDragging) this.map.fadeOtherTargets(this);
-
         }, 500);
     },
 
@@ -1149,20 +1138,6 @@ export const squadTargetMarker = squadMarker.extend({
 
         this.calcMarker1.getElement().style.zIndex  = "";
         this.calcMarker2.getElement().style.zIndex  = "";
-
-        // Show the layer
-        if (this.map.layer) {
-            this.map.layer._setOpacity(1);
-            if (App.userSettings.showFlagsDistance) {
-                App.minimap.layer.polyline.showMeasurements({
-                    measurementOptions: {
-                        showTotalDistance: false,
-                        minPixelDistance: 50,
-                    }
-                }); 
-            }
-        } 
-
 
         if (!this.isDragging){
             this.map.activeTargetsMarkers.eachLayer((target) => {
@@ -1300,9 +1275,6 @@ export const squadStratMarker = squadMarker.extend({
             target.updateSpread();
             target.updateDamageRadius();
         });
-
-        // Reset layer opacity
-        if (this.map.layer) this.map.layer._setOpacity(1); 
         
         this.delete();
     },
@@ -1382,15 +1354,7 @@ export const squadStratMarker = squadMarker.extend({
         }
 
         this.mouseOverTimeout = setTimeout(() => {
-
-            // Hide the layer
-            if (this.map.layer){
-                this.map.layer._setOpacity(0.5);
-                this.map.layer.polyline.hideMeasurements();
-            } 
-
             if (!this.isDragging) this.map.fadeOtherTargets();
-
         }, 500);
 
     },
@@ -1403,19 +1367,6 @@ export const squadStratMarker = squadMarker.extend({
 
         // Cancel the timeout if the user moves the mouse out before 1 second
         clearTimeout(this.mouseOverTimeout);
-
-        // Show the layer
-        if (this.map.layer) {
-            this.map.layer._setOpacity(1); 
-            if (App.userSettings.showFlagsDistance) {
-                App.minimap.layer.polyline.showMeasurements({
-                    measurementOptions: {
-                        showTotalDistance: false,
-                        minPixelDistance: 50,
-                    }
-                }); 
-            }
-        }
 
         if (!this.isDragging){
             this.map.activeTargetsMarkers.eachLayer((target) => {

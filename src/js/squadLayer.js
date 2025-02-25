@@ -13,7 +13,7 @@ export default class SquadLayer {
         this.layerData = layerData;
         this.offset_x = Math.min(this.layerData.mapTextureCorners[0].location_x, this.layerData.mapTextureCorners[1].location_x);
         this.offset_y = Math.min(this.layerData.mapTextureCorners[0].location_y, this.layerData.mapTextureCorners[1].location_y);
-
+        this.isVisible = true;
         // Current position in the layer
         this.currentPosition = 0;
 
@@ -220,9 +220,9 @@ export default class SquadLayer {
 
 
     revealAllCapzones() {
-        if (App.userSettings.capZoneOnHover) return;
+        if (App.userSettings.capZoneOnHover || !this.isVisible) return;
         this.flags.forEach(flag => {
-            if (!flag.isHidden && !flag.isFadeOut){ flag.revealCapZones(); }
+            if (!flag.isHidden && !flag.isFadeOut) flag.revealCapZones();
         });
     }
 
@@ -1010,6 +1010,33 @@ export default class SquadLayer {
                 flagToHide.hideCapZones();
             }
         });
+    }
+
+    toggleVisibility() {
+        if (this.isVisible) {
+            this._setOpacity(0);
+            this.polyline.hideMeasurements();
+            this.isVisible = false;
+            $(".btn-layer").removeClass("active");
+            this.hideAllCapzones();
+            this.setMainZoneOpacity(false);
+        }
+        else {
+            this._setOpacity(1);
+            this.setMainZoneOpacity(true);
+            if (App.userSettings.showFlagsDistance) {
+                this.polyline.showMeasurements({
+                    measurementOptions: {
+                        showTotalDistance: false,
+                        minPixelDistance: 50,
+                    }
+                });
+            }
+            $(".btn-layer").addClass("active");
+            this.isVisible = true;
+            if (this.map.getZoom() > this.map.detailedZoomThreshold) this.revealAllCapzones();
+
+        }
     }
 
     /**

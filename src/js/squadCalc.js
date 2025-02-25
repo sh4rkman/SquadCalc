@@ -116,8 +116,9 @@ export default class SquadCalc {
                 this.updateUrlParams({ layer: null });
                 if (abortController) { abortController.abort(); } // Abort the ongoing fetch request
                 if (this.minimap.layer) this.minimap.layer.clear();
+                $(".btn-layer").hide();
                 return;
-            } 
+            }
             
             // Update the the URL
             this.updateUrlParams({ layer: selectedLayerText });
@@ -129,6 +130,7 @@ export default class SquadCalc {
             fetchLayerByName(event.target.value, { signal }).then(layerData => {
                 if (this.minimap.layer) this.minimap.layer.clear();
                 this.minimap.layer = new SquadLayer(this.minimap, layerData);
+                $(".btn-layer").addClass("active").show();
                 this.minimap.spin(false);
             }).catch(error => {        
                 if (error.name !== "AbortError") {
@@ -349,7 +351,7 @@ export default class SquadCalc {
         const weaponInformation = document.querySelector("#weaponInformation");
         const helpDialog = document.querySelector("#helpDialog");
 
-        $(".btn-delete, .btn-undo, #mapLayerMenu").hide();
+        $(".btn-delete, .btn-undo, .btn-layer, #mapLayerMenu").hide();
 
         this.ui = localStorage.getItem("data-ui");
 
@@ -396,6 +398,10 @@ export default class SquadCalc {
 
         $(".btn-undo").on("click", () => {
             if (this.minimap.history.length > 0) this.minimap.history.at(-1).delete();
+        });
+
+        $(".btn-layer").on("click", () => {
+            this.minimap.layer.toggleVisibility();
         });
 
         $("#fabCheckbox2").on("change", () => { this.switchUI();});
@@ -1212,6 +1218,20 @@ export default class SquadCalc {
         return { weapons, targets, markers, arrows, circles, rectangles, activeWeapon, activeMap, version };
     }
 
+    
+    /**
+     * Updates the URL search parameters by applying the provided updates.
+     *
+     * This function reads the current URL's search parameters and applies the given key-value updates:
+     * - If a value is not null or undefined, the corresponding parameter gets added or updated.
+     * - If a value is null or undefined, the parameter is removed.
+     *
+     * After updating, the function reorganizes the parameters based on a defined order 
+     * (["map", "layer", "type", "session"]) to ensure consistency.
+     *
+     * @param {Object} updates - An object with keys and values to update in the URL. 
+     * For example: { map: "newMap", session: "abc123", layer: null }
+     */
     updateUrlParams(updates = {}) {
         const urlParams = new URLSearchParams(window.location.search);
 
@@ -1224,35 +1244,24 @@ export default class SquadCalc {
                 urlParams.delete(key);
             }
         }
-    
-        // Define the desired parameter order
-        const paramOrder = ["map", "layer", "type", "session"];
-    
+       
         // Create a new URLSearchParams object for the sorted parameters
         const sortedParams = new URLSearchParams();
 
         // Add parameters in the order defined by paramOrder
-        paramOrder.forEach((param) => {
+        ["map", "layer", "type", "session"].forEach((param) => {
             if (urlParams.has(param)) {
                 sortedParams.set(param, urlParams.get(param));
                 urlParams.delete(param);
             }
         });
 
-        // Add any remaining parameters (not in paramOrder)
-        for (const [key, value] of urlParams.entries()) {
-            sortedParams.set(key, value);
-        }
+        // Add any remaining parameters
+        for (const [key, value] of urlParams.entries()) sortedParams.set(key, value);
 
         // Construct the new URL
         const newUrl = `${window.location.pathname}?${sortedParams.toString()}`;
         window.history.replaceState({}, "", newUrl);
     }
     
-    
-    
-    
-    
-    
-
 }

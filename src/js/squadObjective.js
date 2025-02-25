@@ -62,6 +62,7 @@ export class SquadObjective {
         }
     }
 
+
     select(){
         let position = null;
         let html = "";
@@ -373,7 +374,6 @@ export class SquadObjective {
             }
         });
 
-
     }
 
 
@@ -404,6 +404,15 @@ export class SquadObjective {
     _setOpacity(value){
         this.flag.setOpacity(value);
         this.nameText.setOpacity(value);
+
+        // if opacity = 0, this.flag can't be clicked
+        // css cursor is set to default on hover
+
+        if (value === 0){
+            $(".flag").css("pointer-events", "none");
+        } else {
+            $(".flag").css("pointer-events", "all");
+        }
     }
 
 

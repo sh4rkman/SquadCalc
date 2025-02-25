@@ -1,5 +1,10 @@
-# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **37.2.0** *(2025-02-05)*
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **37.3.0** *(2025-02-23)*
 
+<img src="https://img.shields.io/badge/-new-green"> Added a button to Show/Hide flags while a layer is selected (Thanks @Syntax for the suggestion, fix #289)
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **37.2.0** *(2025-02-05)*
 
 <img src="https://img.shields.io/badge/-new-green"> Added Circles and Rectangles Markers (fix #285)
 
@@ -14,7 +19,6 @@
 
 
 # <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **37.1.1** *(2025-02-03)*
-
 
 <img src="https://img.shields.io/badge/-%20improv%20-orange"> Under-Cursor Keypads sub-digits are now smaller for clarity (fix #283, thanks Flandflard!)
 

@@ -225,6 +225,7 @@ $("#circlesFlagsSettings").on("change", function() {
         App.minimap.layer.flags.forEach(flag => {
             flag.updateIcon();
         });
+        if (!App.minimap.layer.isVisible) App.minimap.layer.toggleVisibility();
     }
 });
 
