@@ -85,27 +85,27 @@ export const squadMinimap = Map.extend({
         this.contextMenu = new squadContextMenu();
 
         // Custom events handlers
-        //this.on("click", this._handleclick);
-        //this.on("dblclick", this._handleDoubleClick, this);
+        this.on("click", this._handleclick);
+        this.on("dblclick", this._handleDoubleClick, this);
 
 
-        this.on("click", (event) => {
-            // Clear any existing timeout to prevent overlapping
-            //if (this._singleClickTimeout) clearTimeout(this._singleClickTimeout);
+        // this.on("click", (event) => {
+        //     // Clear any existing timeout to prevent overlapping
+        //     //if (this._singleClickTimeout) clearTimeout(this._singleClickTimeout);
         
-            //this._singleClickTimeout = setTimeout(() => {
-                this._handleclick(event);
-                //this._singleClickTimeout = null;
-            //}, 175);
-        });
+        //     //this._singleClickTimeout = setTimeout(() => {
+        //         this._handleclick(event);
+        //         //this._singleClickTimeout = null;
+        //     //}, 175);
+        // });
         
-        this.on("dblclick", (event) => {
-            //if (this._singleClickTimeout) {
-                //clearTimeout(this._singleClickTimeout);
-                //this._singleClickTimeout = null;
-            //}
-            this._handleDoubleClick(event);
-        });
+        // this.on("dblclick", (event) => {
+        //     //if (this._singleClickTimeout) {
+        //         //clearTimeout(this._singleClickTimeout);
+        //         //this._singleClickTimeout = null;
+        //     //}
+        //     this._handleDoubleClick(event);
+        // });
 
         this.on("contextmenu", this._handleContextMenu, this);
         this.on("zoomend", this._handleZoom, this);
