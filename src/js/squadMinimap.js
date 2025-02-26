@@ -665,6 +665,7 @@ export const squadMinimap = Map.extend({
      */
     _handleDoubleClick: function (event) {
 
+        alert("double click");
         // If out of bounds
         if (!this.imageBounds.contains(event.latlng)) return 1;
 
