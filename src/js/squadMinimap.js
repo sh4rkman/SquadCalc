@@ -75,6 +75,7 @@ export const squadMinimap = Map.extend({
         this.mouseLocationPopup = new Popup({
             closeButton: false,
             className: "kpPopup",
+            doubleClickZoom: false,
             autoClose: false,
             closeOnEscapeKey: false,
             offset: [0, 75],
@@ -85,7 +86,7 @@ export const squadMinimap = Map.extend({
         this.contextMenu = new squadContextMenu();
 
         // Custom events handlers
-        //this.on("click", this._handleclick);
+        this.on("click", this._handleclick);
         this.on("dblclick", this._handleDoubleClick, this);
 
 
