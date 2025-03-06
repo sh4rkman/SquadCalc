@@ -91,19 +91,19 @@ export const squadMinimap = Map.extend({
 
         this.on("click", (event) => {
             // Clear any existing timeout to prevent overlapping
-            //if (this._singleClickTimeout) clearTimeout(this._singleClickTimeout);
+            if (this._singleClickTimeout) clearTimeout(this._singleClickTimeout);
         
-            //this._singleClickTimeout = setTimeout(() => {
+            this._singleClickTimeout = setTimeout(() => {
                 this._handleclick(event);
-                //this._singleClickTimeout = null;
-            //}, 175);
+                this._singleClickTimeout = null;
+            }, 175);
         });
         
         this.on("dblclick", (event) => {
-            //if (this._singleClickTimeout) {
-                //clearTimeout(this._singleClickTimeout);
-                //this._singleClickTimeout = null;
-            //}
+            if (this._singleClickTimeout) {
+                clearTimeout(this._singleClickTimeout);
+                this._singleClickTimeout = null;
+            }
             this._handleDoubleClick(event);
         });
 
