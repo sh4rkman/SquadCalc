@@ -707,7 +707,7 @@ export default class SquadCalc {
 
         $("#mapLayerMenu").show();
         this.ui = 1;
-        this.line.hide("none");
+        //this.line.hide("none");
         localStorage.setItem("data-ui", 1);
         this.minimap.invalidateSize();
     }
@@ -718,7 +718,7 @@ export default class SquadCalc {
     changeWeapon() {
         const WEAPON = this.WEAPON_SELECTOR.val();
     
-        this.line.hide("none");
+        //this.line.hide("none");
         localStorage.setItem("data-weapon", WEAPON);
         this.activeWeapon = WEAPONS[WEAPON];
     
@@ -1044,9 +1044,9 @@ export default class SquadCalc {
             this.resizeInput($(element)[0]);
         });
 
-        if ($(window).width() <= mobileWidth) {
-            this.line.hide("none");
-        }
+        // if ($(window).width() <= mobileWidth) {
+        //     this.line.hide("none");
+        // }
     }
 
 
