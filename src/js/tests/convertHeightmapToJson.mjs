@@ -1,6 +1,7 @@
 // Script by sharkman to convert heightmaps from .webp to .json
 // Each pixel are converted to a height value based on the color of the pixel
 // using json allow to avoid browser/extension blocking canvas data extraction
+// usage : node ./src/js/tests/convertHeightmapToJson.mjs
 
 import { createRequire } from "module";
 const require = createRequire(import.meta.url);
