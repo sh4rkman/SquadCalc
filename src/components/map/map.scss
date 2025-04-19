@@ -338,16 +338,17 @@ $flag-circle-opacity: 0.2;
     z-index: 99999;
     pointer-events: none;
     transition: opacity 0.3s ease;
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
     .dropOverlayInner {
-        border: solid 10px variables.$mainColor;
-        margin: 100px; // or any margin you want
-        padding: 1em; // optional, for spacing inside
+        border: dashed 15px variables.$mainColor;
+        padding: 1em;
         .dropSubTxt {
             font-size: 0.5em;
             font-style: italic;
         }
     }
-  }
+}
   
 
 #mapLayerMenu {
