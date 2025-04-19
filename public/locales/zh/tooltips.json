@@ -59,5 +59,11 @@
     "backspace": "Backspace",
     "enter": "Enter",
     "delete": "Delete",
-    "toggleLayer": "显示/隐藏图层"
+    "toggleLayer": "显示/隐藏图层",
+    "fileNotSupported": "不支持的文件",
+    "openIssue": "如果你认为这是一个漏洞，请在 Github 或 Discord 上报告问题",
+    "mapSaved": "地图已保存到文件",
+    "dragToImport": "你可以将此文件拖放到地图上以稍后加载",
+    "importSuccess": "地图导入成功",
+    "download": "将地图保存到文件"
 }

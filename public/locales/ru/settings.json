@@ -10,6 +10,7 @@
         "mapAnimationSettings": "Анимация панорамирования и зума",
         "highquality": "HQ карты",
         "contextMenu": "Расширенное контекстное меню",
+        "markerSize": "Размер маркера",
         "fontSize": "Размер шрифта",
             "verySmall": "Очень маленький",
             "small": "Маленький",

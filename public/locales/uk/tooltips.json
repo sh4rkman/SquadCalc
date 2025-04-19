@@ -59,5 +59,11 @@
     "backspace": "Backspace",
     "enter": "Enter",
     "delete": "Delete",
-    "toggleLayer": "Показати/приховати шар"
+    "fileNotSupported": "Цей файл не підтримується",
+    "toggleLayer": "Показати/приховати шар",
+    "openIssue": "Сообщите о проблеме на GitHub или Discord, если считаете это багом",
+    "mapSaved": "Карта сохранена в файл",
+    "dragToImport": "Вы можете перетащить этот файл на карту, чтобы загрузить его позже",
+    "importSuccess": "Карта успешно импортирована",
+    "download": "Сохранить карту в файл"
 }

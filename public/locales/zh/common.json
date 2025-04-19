@@ -35,5 +35,7 @@
     "invalidMortarTarget": "取消武器和目标",
     "targetOutOfRange": "目标超出范围",
     "layerPlaceholder": "地图版本",
-    "nextFlags": "下一个点"  
+    "nextFlags": "下一个点",
+    "dropTxt": "拖放存档文件到这里",
+    "dropSubTxt": "当前地图将被清除"
 }

@@ -35,5 +35,7 @@
     "invalidMortarTarget": "Непридатна зброя та мішень",
     "targetOutOfRange": "Ціль поза зоною досяжності",
     "layerPlaceholder": "Layer",
-    "nextFlags": "Наступні прапори"
+    "nextFlags": "Наступні прапори",
+    "dropTxt": "ПЕРЕТЯГНІТЬ ФАЙЛ ЗБЕРЕЖЕННЯ СЮДИ",
+    "dropSubTxt": "поточна карта буде стерта"
 }

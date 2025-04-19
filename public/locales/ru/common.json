@@ -35,5 +35,7 @@
     "invalidMortarTarget": "Инвалидное оружие и мишень",
     "targetOutOfRange": "Цель находится вне зоны действия",
     "layerPlaceholder": "Layer",
-    "nextFlags": "Следующие флаги"
+    "nextFlags": "Следующие флаги",
+    "dropTxt": "ПЕРЕТАЩИТЕ ФАЙЛ СОХРАНЕНИЯ СЮДА",
+    "dropSubTxt": "текущая карта будет стерта"
 }
