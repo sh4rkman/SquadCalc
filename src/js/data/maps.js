@@ -192,6 +192,5 @@ export const MAPS = [
         scaling: 0.3332, 
         mapURL: "/yehorivka/", 
         radiusExclusion: FOBEXCLUSIONS.medium,
-        //seaLevel: 60,
     }
 ];

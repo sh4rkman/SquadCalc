@@ -2,7 +2,7 @@ import { App } from "../app.js";
 import { WEAPONS } from "./data/weapons.js";
 
 export class Weapon {
-    constructor(name, velocity, deceleration, decelerationTime, gravityScale, minElevation, unit, logo, marker, logoCannonPos, type, angleType, elevationPrecision, minDistance, moa, maxDamage, startRadius, endRadius, distanceFromImpact, falloff, shells = []) {
+    constructor(name, velocity, deceleration, decelerationTime, gravityScale, minElevation, unit, logo, marker, logoCannonPos, type, angleType, elevationPrecision, minDistance, moa, maxDamage, startRadius, endRadius, distanceFromImpact, falloff, shells = [], heightOffset = 0) {
         this.name = name;
         this.velocity = velocity;
         this.deceleration = deceleration;
@@ -23,6 +23,7 @@ export class Weapon {
         this.hundredDamageRadius = this.calculateDistanceForDamage(maxDamage, startRadius, endRadius, falloff, distanceFromImpact, 100);
         this.twentyFiveDamageRadius = this.calculateDistanceForDamage(maxDamage, startRadius, endRadius, falloff, distanceFromImpact, 25);
         this.shells = shells;
+        this.heightOffset = heightOffset;
     }
 
     /**

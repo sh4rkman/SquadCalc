@@ -135,11 +135,6 @@ $flag-circle-opacity: 0.2;
                     &.main {
                         background-color: rgba(0, 128, 0, 1);
                     }
-                    &.main.unselectable {
-                        // pointer-events: none;
-                        // background-color: rgba(255, 255, 255, 0.4);
-                        // outline-color: rgb(68, 68, 68);
-                    }
                     &:hover {
                         box-shadow: 0 2px 12px rgba(0, 0, 0, 1);
                     }
@@ -257,8 +252,6 @@ $flag-circle-opacity: 0.2;
             font-size: 2em;
             text-align: center;
             font-family: variables.$mainFont, Times, "Times New Roman", serif;
-            // font-weight: bolder;
-            // letter-spacing: normal;
         }
         .capZone {
             transition: opacity 0.25s ease-in-out, fill-opacity 0.25s ease-in-out;
@@ -329,6 +322,33 @@ $flag-circle-opacity: 0.2;
         }
     }
 }
+
+#dropOverlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    color: variables.$mainTxtColor;
+    font-size: 3rem;
+    font-weight: bold;
+    font-family: variables.$logoFont, Times, "Times New Roman", serif;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    z-index: 99999;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    .dropOverlayInner {
+        border: solid 10px variables.$mainColor;
+        margin: 100px; // or any margin you want
+        padding: 1em; // optional, for spacing inside
+        .dropSubTxt {
+            font-size: 0.5em;
+            font-style: italic;
+        }
+    }
+  }
+  
 
 #mapLayerMenu {
     position: absolute;

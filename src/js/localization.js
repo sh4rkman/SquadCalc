@@ -115,4 +115,11 @@ function updateContent() {
         width: "fit-content",
     });
 
+    $(".dropbtn7").select2("destroy").select2({
+        dropdownCssClass: "dropbtn7",
+        dropdownParent: $("#helpDialog"),
+        minimumResultsForSearch: -1,
+        width: "fit-content",
+    });
+
 }

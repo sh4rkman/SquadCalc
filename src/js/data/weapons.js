@@ -38,6 +38,7 @@ export var WEAPONS = [
         explosionRadius: [0, 40],
         explosionDistanceFromImpact: 1,
         damageFallOff: 7,
+        heightOffset: 1,
     },
     {
         name: "UB-32",
@@ -59,6 +60,7 @@ export var WEAPONS = [
         explosionRadius: [5, 18],
         explosionDistanceFromImpact: 0.2,
         damageFallOff: 1,
+        heightOffset: 1,
     },
     {
         name: "HellCannon",
@@ -80,6 +82,7 @@ export var WEAPONS = [
         explosionRadius: [1, 50],
         explosionDistanceFromImpact: 2,
         damageFallOff: 1,
+        heightOffset: 1.5,
     },
     {
         name: "Tech.Mortar",
@@ -101,6 +104,7 @@ export var WEAPONS = [
         explosionRadius: [0, 40],
         explosionDistanceFromImpact: 0.5,
         damageFallOff: 7,
+        heightOffset: 2.5,
     },
     {
         name: "Tech.UB-32",
@@ -122,6 +126,7 @@ export var WEAPONS = [
         explosionRadius: [5, 18],
         explosionDistanceFromImpact: 0.2,
         damageFallOff: 1,
+        heightOffset: 2.5,
     },
     {
         name: "BM-21Grad",
@@ -143,6 +148,7 @@ export var WEAPONS = [
         explosionRadius: [1, 35],
         explosionDistanceFromImpact: 2,
         damageFallOff: 1,
+        heightOffset: 3,
     },
     {
         name: "M1064M121",
@@ -164,6 +170,7 @@ export var WEAPONS = [
         explosionRadius: [10, 60],
         explosionDistanceFromImpact: 10,
         damageFallOff: 1.3,
+        heightOffset: 3,
         shells : [{
             moa: 40,
             explosionDamage: 400,
@@ -187,7 +194,6 @@ export var WEAPONS = [
         decelerationTime : 0,
         gravityScale: 1,
         minElevation: [-45, 85.3],
-        heightOffset: 3,
         unit: "deg",
         logo: mk19rwsLogo,
         marker: mk19Icon,
@@ -201,6 +207,7 @@ export var WEAPONS = [
         explosionRadius: [1, 15],
         explosionDistanceFromImpact: 0.08,
         damageFallOff: 1,
+        heightOffset: 2.5,
     }
 ];
 

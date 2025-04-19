@@ -49,7 +49,6 @@
     "i18next-http-backend": "^3.0.1",
     "jquery": "^3.7.1",
     "jshint": "^2.13.6",
-    "leader-line-new": "^1.1.9",
     "leaflet": "^1.9.4",
     "leaflet-edgebuffer": "^1.0.6",
     "leaflet-loader": "^0.0.3",

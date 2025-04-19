@@ -2,12 +2,14 @@ import { MAPS } from "./data/maps.js";
 import { WEAPONS, WEAPONSTYPE } from "./data/weapons.js";
 import { squadMinimap } from "./squadMinimap.js";
 import { Weapon } from "./squadWeapons.js";
-import { createLine, drawLine, animateCSS, animateCalc } from "./animations.js";
+import { animateCSS, animateCalc } from "./animations.js";
 import { loadSettings } from "./settings.js";
 import { loadLanguage } from "./localization.js";
 import { tooltip_save, createSessionTooltips, leaveSessionTooltips } from "./tooltips.js";
 import { checkApiHealth, fetchLayersByMap, fetchLayerByName } from "./squadCalcAPI.js";
 import { initWebSocket } from "./smcConnector.js";
+import { LatLng } from "leaflet";
+import  { MapArrow, MapCircle, MapRectangle }  from "./squadShapes.js";
 import SquadSession from "./squadSession.js";
 import SquadFiringSolution from "./squadFiringSolution.js";
 import packageInfo from "../../package.json";
@@ -46,7 +48,6 @@ export default class SquadCalc {
         // TODO load settings in constructor: this.userSettings = loadSettings();
         // must rework settings as a class properly
         loadSettings();
-        createLine();
         this.loadMapSelector();
         this.loadMinimap();
         this.loadWeapons();
@@ -265,7 +266,8 @@ export default class SquadCalc {
                 weapon.explosionRadius[1],
                 weapon.explosionDistanceFromImpact,
                 weapon.damageFallOff,
-                weapon.shells
+                weapon.shells,
+                weapon.heightOffset
             );
         });
         
@@ -351,7 +353,7 @@ export default class SquadCalc {
         const weaponInformation = document.querySelector("#weaponInformation");
         const helpDialog = document.querySelector("#helpDialog");
 
-        $(".btn-delete, .btn-undo, .btn-layer, #mapLayerMenu").hide();
+        $(".btn-delete, .btn-download, .btn-undo, .btn-layer, #mapLayerMenu").hide();
 
         this.ui = localStorage.getItem("data-ui");
 
@@ -366,6 +368,12 @@ export default class SquadCalc {
             this.userSettings.fontSize = event.target.value;
             localStorage.setItem("settings-font-size", this.userSettings.fontSize);
             this.changeFontSize();
+        });
+
+        $(document).on("change", ".dropbtn7", (event) => {
+            this.userSettings.markerSize = event.target.value;
+            localStorage.setItem("settings-marker-size", this.userSettings.markerSize);
+            this.changeIconsSize();
         });
 
         // Add Events listeners
@@ -388,12 +396,137 @@ export default class SquadCalc {
         this.closeDialogOnClickOutside(weaponInformation);
         this.closeDialogOnClickOutside(helpDialog);
         
+        const overlay = document.getElementById("dropOverlay");
+        let dragCounter = 0;
+        
+        document.addEventListener("dragenter", (e) => {
+            e.preventDefault();
+            dragCounter++;
+            overlay.style.display = "flex";
+        });
+        
+        document.addEventListener("dragleave", (e) => {
+            e.preventDefault();
+            dragCounter--;
+            if (dragCounter === 0) {
+                overlay.style.display = "none";
+            }
+        });
+        
+        document.addEventListener("dragover", (e) => {
+            e.preventDefault(); // Needed to allow dropping
+        });
+        
+        document.addEventListener("drop", (e) => {
+            e.preventDefault();
+            dragCounter = 0;
+            overlay.style.display = "none";
+            // Handle dropped files here
+        });
+          
+        window.addEventListener("drop", e => {
+            e.preventDefault();
+          
+            if (this.ui == 0) return; // Don't handle drop in legacy mode
+
+            const files = e.dataTransfer.files;
+            const file = files?.[0];
+            if (!file) return;
+          
+            const reader = new FileReader();
+          
+            reader.onload = (event) => {
+                const content = event.target.result;
+          
+                // Optional: try parsing as JSON
+                try {
+                    const data = JSON.parse(content);
+                    console.debug("Parsed JSON:", data);
+
+                    $(".dropbtn").val(data.activeMap).trigger($.Event("change", { broadcast: true }));
+
+                    $(document).one("heightmap:loaded", () => {
+                        try {
+                            data.weapons.forEach(weapon => {
+                                this.minimap.createWeapon(new LatLng(weapon.lat, weapon.lng));        
+                            });
+                            data.targets.forEach(target => {
+                                this.minimap.createTarget(new LatLng(target.lat, target.lng), false);
+                            });
+                            data.markers.forEach(marker => {
+                                this.minimap.createMarker(new LatLng(marker.lat, marker.lng), marker.team, marker.category, marker.icon);
+                            });
+                            data.arrows.forEach(arrow => {
+                                let newArrow = new MapArrow(this.minimap, arrow.color, arrow.latlngs[0], arrow.latlngs[1]);
+                                if (this.session.ws && this.session.ws.readyState === WebSocket.OPEN) {
+                                    console.debug("sending new arrow with uid", arrow.uid);
+                                    this.session.ws.send(
+                                        JSON.stringify({
+                                            type: "ADDING_ARROW",
+                                            uid: newArrow.uid,
+                                            color: newArrow.color,
+                                            latlngs: newArrow.polyline.getLatLngs(),
+                                        })
+                                    );
+                                }
+                            });
+                            data.circles.forEach(circle => {
+                                let newCircle = new MapCircle(this.minimap, circle.color, circle.latlng, circle.radius);
+                                if (this.session.ws && this.session.ws.readyState === WebSocket.OPEN) {
+                                    console.debug("Sending new circle with uid", circle.uid);
+                                    this.session.ws.send(
+                                        JSON.stringify({
+                                            type: "ADDING_CIRCLE",
+                                            uid: newCircle.uid,
+                                            color: newCircle.color,
+                                            latlng: newCircle.circle.getLatLng(),
+                                            radius: newCircle.circle.getRadius(),
+                                        })
+                                    );
+                                }
+                            });
+                            data.rectangles.forEach(rectangle => {
+                                let newRect = new MapRectangle(this.minimap, rectangle.color, rectangle.bounds._southWest, rectangle.bounds._northEast);
+                                if (this.session.ws && this.session.ws.readyState === WebSocket.OPEN) {
+                                    console.debug("Sending new rectangle with uid", rectangle.uid);
+                                    this.session.ws.send(
+                                        JSON.stringify({
+                                            type: "ADDING_RECTANGLE",
+                                            uid: newRect.uid,
+                                            color: newRect.color,
+                                            bounds: newRect.rectangle.getBounds(),
+                                        })
+                                    );
+                                }
+                            });
+
+                            this.openToast("success", "importSuccess", "");
+                        
+                        } catch (err) {
+                            console.error("Error while creating markers:", err);
+                            this.openToast("error", "fileNotSupported", "openIssue");
+                        }
+                    });
+
+                } catch (err) {
+                    console.error("Not valid JSON", err);
+                    this.openToast("error", "fileNotSupported", "");
+                }
+            };
+          
+            reader.readAsText(file);
+        });
+
         $(".btn-delete").on("click", () => {
             this.minimap.deleteTargets();
             this.minimap.deleteMarkers();
             this.minimap.deleteArrows();
             this.minimap.deleteRectangles();
             this.minimap.deleteCircles();
+        });
+
+        $(".btn-download").on("click", () => {
+            this.saveMapState();
         });
 
         $(".btn-undo").on("click", () => {
@@ -419,7 +552,7 @@ export default class SquadCalc {
                 $(".btn-session").removeClass("active");
                 leaveSessionTooltips.disable();
                 createSessionTooltips.enable();
-                this.openToast("error", "Session quit", "You have quit the session.");
+                //this.openToast("error", "Session quit", "You have quit the session.");
                 
             } else {
                 // Create session
@@ -529,6 +662,12 @@ export default class SquadCalc {
                     if (this.minimap.history.length > 0) this.minimap.history.at(-1).delete();
                 }
 
+                // CTRL + S = SAVE CURRENT MAP TO A FILE
+                if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "s") {
+                    event.preventDefault();
+                    if (this.minimap.hasMarkers()) this.saveMapState();
+                }
+
             });
 
 
@@ -611,6 +750,12 @@ export default class SquadCalc {
         this.show();
     }
 
+    changeIconsSize(){
+        this.minimap.activeMarkers.eachLayer((marker) => {
+            marker.updateIconSize();
+        });
+    }
+
     changeFontSize(){
         let fontSize;
         this.userSettings.fontSize = parseInt(this.userSettings.fontSize, 10) || 1;
@@ -668,18 +813,15 @@ export default class SquadCalc {
 
         if (this.ui == 0){
             this.loadMapUIMode();
-            if (this.minimap.hasMarkers()) {
-                $(".btn-delete").show();
-                $(".btn-undo").show();
-            }
+            if (this.minimap.hasMarkers()) $(".btn-delete, .btn-undo, .btn-download").show();
             return;
         }
 
         $("#map_ui").addClass("hidden");
         $("#classic_ui").removeClass("hidden");
         $("header").removeClass("ui");
-        $(".btn-delete").hide();
-        $(".btn-undo").hide();
+        //$(".btn-delete").hide();
+        //$(".btn-undo").hide();
         $("#mapLayerMenu").hide();
         this.ui = 0;
         localStorage.setItem("data-ui", 0);
@@ -731,8 +873,6 @@ export default class SquadCalc {
     
         $("#mortarImg").attr("src", this.activeWeapon.logo);
         this.shoot();
-    
-        if (this.ui === 0) { drawLine(); }
     
         // Update Minimap marker
         this.minimap.updateWeapons();
@@ -1038,15 +1178,11 @@ export default class SquadCalc {
      * Resize every saved name
      */
     resizeInputsOnResize() {
-        const mobileWidth = 767;
 
         $(".saved_list :input").each((index, element) => {
             this.resizeInput($(element)[0]);
         });
 
-        // if ($(window).width() <= mobileWidth) {
-        //     this.line.hide("none");
-        // }
     }
 
 
@@ -1214,10 +1350,38 @@ export default class SquadCalc {
                 radius: circle.circle.getRadius(),
             });
         });
+        this.minimap.activeRectangles.forEach(rectangle => {
+            rectangles.push({
+                uid: rectangle.uid,
+                color: rectangle.color,
+                bounds: rectangle.rectangle.getBounds(),
+            });
+        });
     
         return { weapons, targets, markers, arrows, circles, rectangles, activeWeapon, activeMap, version };
     }
 
+    saveMapState() {
+        const now = new Date();
+        const formattedDate =
+        now.getFullYear().toString() +
+        String(now.getMonth() + 1).padStart(2, "0") +
+        String(now.getDate()).padStart(2, "0") + "_" +
+        String(now.getHours()).padStart(2, "0") +
+        String(now.getMinutes()).padStart(2, "0");
+        const data = this.getAppState();
+        // serve as a JSON file with data
+        const blob = new Blob([JSON.stringify(data)], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `${this.minimap.activeMap.name}_${formattedDate}.squadcalc`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        this.openToast("success", "mapSaved", "dragToImport");
+    }
     
     /**
      * Updates the URL search parameters by applying the provided updates.

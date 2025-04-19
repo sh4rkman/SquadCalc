@@ -65,9 +65,9 @@ export const squadMinimap = Map.extend({
         this.activeMarkers = new LayerGroup().addTo(this);
         this.activeArrowsGroup = new LayerGroup().addTo(this);
         this.activeRectanglesGroup = new LayerGroup().addTo(this);
+        this.activeCirclesGroup = new LayerGroup().addTo(this);
         this.activeArrows = [];
         this.activeRectangles = [];
-        this.activeCirclesGroup = new LayerGroup().addTo(this);
         this.activeCircles = [];
         this.layerGroup = new LayerGroup().addTo(this);
         this.markersGroup = new LayerGroup().addTo(this);
@@ -253,10 +253,13 @@ export const squadMinimap = Map.extend({
         this.activeArrowsGroup.clearLayers();
         this.activeRectanglesGroup.clearLayers();
         this.activeCirclesGroup.clearLayers();
+        this.activeArrows = [];
+        this.activeRectangles = [];
+        this.activeCircles = [];
+
         if (this.layer) this.layer.clear();
     
-        $(".btn-delete").hide();
-        $(".btn-undo").hide();
+        $(".btn-delete, .btn-undo, .btn-download").hide();
 
         // Reset map
         this.setView([-this.pixelSize/2, this.pixelSize/2], 2);
@@ -525,8 +528,7 @@ export const squadMinimap = Map.extend({
         // Add Item to history
         this.history.push(target);
 
-        $(".btn-delete").show();
-        $(".btn-undo").show();
+        $(".btn-delete, .btn-undo, .btn-download").show();
 
         if (App.userSettings.targetAnimation){
             if (this.activeWeaponsMarkers.getLayers().length === 1) {
@@ -543,7 +545,9 @@ export const squadMinimap = Map.extend({
 
     createMarker(latlng, team, category, icon, uid = false) {
         let markerOptions = { icon: "", circlesOnHover: false, team: team, category: category, icontype: icon, uid: uid };
-        let iconSize = [30, 30];
+        let markerSizeSetting = App.userSettings.markerSize; 
+        let iconSizeValue = 20 + (markerSizeSetting - 1) * 5;
+        let iconSize = [iconSizeValue, iconSizeValue];
 
         if (icon === "deployable_mortars" || icon === "deployable_hellcannon") {
             let range = 0;
@@ -588,7 +592,7 @@ export const squadMinimap = Map.extend({
         // Add Item to history
         this.history.push(newMarker);
 
-        $(".btn-delete, .btn-undo").show();
+        $(".btn-delete, .btn-undo, .btn-download").show();
 
         if (!uid && App.session.ws && App.session.ws.readyState === WebSocket.OPEN) {
             console.debug("Creating a marker with uid", newMarker.uid);

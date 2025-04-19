@@ -60,8 +60,7 @@ export class MapArrow {
         // Add Item to history
         this.map.history.push(this);
 
-        $(".btn-delete").show();
-        $(".btn-undo").show();
+        $(".btn-delete, .btn-undo, .btn-download").show();
     }
 
 
@@ -91,10 +90,7 @@ export class MapArrow {
         this.map.history = this.map.history.filter(object => object !== this);
 
         // If that was the last Marker on the map, hide "delete all" buttons
-        if (!this.map.hasMarkers()) {
-            $(".btn-delete").hide();
-            $(".btn-undo").hide();
-        }
+        if (!this.map.hasMarkers()) $(".btn-delete, .btn-undo, .btn-download").hide();
     }
 }
 
@@ -137,8 +133,7 @@ export class MapRectangle {
         // Add Item to history
         this.map.history.push(this);
 
-        $(".btn-delete").show();
-        $(".btn-undo").show();
+        $(".btn-delete, .btn-undo, .btn-download").show();
     }
 
     // Removes the rectangle from the map
@@ -161,10 +156,7 @@ export class MapRectangle {
         this.map.history = this.map.history.filter(object => object !== this);
 
         // If no more markers, hide "delete all" buttons
-        if (!this.map.hasMarkers()) {
-            $(".btn-delete").hide();
-            $(".btn-undo").hide();
-        }
+        if (!this.map.hasMarkers()) $(".btn-delete, .btn-undo, .btn-download").hide();
     }
 }
 
@@ -205,8 +197,7 @@ export class MapCircle {
         // Add Item to history
         this.map.history.push(this);
 
-        $(".btn-delete").show();
-        $(".btn-undo").show();
+        $(".btn-delete, .btn-undo, .btn-download").show();
     }
 
     // Removes the circle from the map
@@ -231,9 +222,6 @@ export class MapCircle {
         this.map.history = this.map.history.filter(object => object !== this);
 
         // If that was the last Circle on the map, hide "delete all" buttons
-        if (!this.map.hasMarkers()) {
-            $(".btn-delete").hide();
-            $(".btn-undo").hide();
-        }
+        if (!this.map.hasMarkers()) $(".btn-delete, .btn-undo, .btn-download").hide();
     }
 }

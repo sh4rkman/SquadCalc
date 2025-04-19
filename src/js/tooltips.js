@@ -274,6 +274,18 @@ tippy(".btn-undo", {
     },
 });
 
+tippy(".btn-download", {
+    ...commonMapMenuToolipsSettings,
+    onShow(tip) {
+        tip.setContent(
+            `
+            <div>${i18next.t("tooltips:download")}</div>
+            <div class="tooltipsubtext">CTRL+S</div>
+            `
+        );
+    },
+});
+
 tippy(".btn-delete", {
     ...commonMapMenuToolipsSettings,
     onShow(tip) {

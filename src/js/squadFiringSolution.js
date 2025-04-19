@@ -55,7 +55,7 @@ export default class SquadFiringSolution {
         let padding = 0;
         let angleFactor;
         
-        const P1 = Math.sqrt(this.velocity ** 4 - this.gravity * (this.gravity * dist ** 2 + 2 * this.heightDiff * this.velocity ** 2));
+        const P1 = Math.sqrt(this.velocity ** 4 - this.gravity * (this.gravity * dist ** 2 + 2 * (this.heightDiff - App.activeWeapon.heightOffset) * this.velocity ** 2));
         angleFactor = lowangle ? -P1 : P1;
 
         // The technical mortar is bugged : the ingame range metter is off by 5°
@@ -178,19 +178,5 @@ export default class SquadFiringSolution {
     degToMil(deg) {
         return deg / (360 / 6400);
     }
-
-
-    /**
-     * Calculates the length of the projectile path in air, neglecting heights difference
-     * UNUSED FOR NOW
-     * https://en.wikipedia.org/wiki/Projectile_motion#Total_Path_Length_of_the_Trajectory
-     * @param {number} [angle] - angle of the initial shot in radian
-     * @returns {number} - projectile path length in meters
-     */
-    // getProjectilePathDistance(angle){
-    //     const p1 = this.velocity**2 / this.gravity;
-    //     const p2 = Math.sin(angle) + Math.cos(angle)**2 * Math.atanh(Math.sin(angle));
-    //     return Math.abs(p1 * p2);
-    // }
     
 }

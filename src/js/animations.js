@@ -1,7 +1,3 @@
-import { App } from "../app.js";
-import LeaderLine from "leader-line-new";
-
-
 /**
  * Give a animate.css class to a given element (https://animate.style/)
  * @param {text} [element] - jQuery Object to animate
@@ -25,45 +21,6 @@ export function animateCSS($element, animation, prefix = "animate__") {
         // Use the on() method to attach the event handler
         $element.on("animationend", handleAnimationEnd);
     });
-}
-
-/**
- * Initiate a animated line between weapon and target images
- */
-export function createLine() {
-    const lineOptions = {
-        color: "rgba(255, 255, 255, 0.7)",
-        path: "arc",
-        startSocket: "top",
-        endSocket: "top",
-        slash: true,
-        endPlug: "behind",
-        size: 1,
-        dash: { len: 10, gap: 8 },
-    };
-
-    // App.line = new LeaderLine(
-    //     LeaderLine.pointAnchor(
-    //         document.getElementById("mortarImg"), { x: App.activeWeapon.logoCannonPos, y: "-30%" }
-    //     ),
-    //     LeaderLine.pointAnchor(
-    //         document.getElementById("targetImg"), { x: "-30%", y: "-30%" }
-    //     ),
-    //     lineOptions
-    // ).hide("none");
-}
-
-/**
- * Draw the animated line
- */
-export function drawLine() {
-    if ($(window).width() > 767) {
-        setTimeout(function() {
-            //App.line.start = LeaderLine.pointAnchor(document.getElementById("mortarImg"), { x: App.activeWeapon.logoCannonPos, y: "-30%" });
-            //App.line.show("draw", { duration: 2000 });
-            //explode($(".leader-line").position().left, $(".leader-line").position().top, -135, 45);
-        }, 1200);
-    }
 }
 
 /**
