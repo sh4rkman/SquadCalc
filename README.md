@@ -203,6 +203,16 @@ Also known as "why the fuck is it not the default ingame map?"
 A mix of bump map, contour map with a touch of hypsometric colors for a complete understanding of map reliefs.
 
 
+## **Import/Export your maps**
+
+</br>
+<div align="center">
+  <picture><img width="50%" src="./src/img/github/import_export.webp" alt="map layers"></picture>
+</div>
+</br>
+You can export your map and marker to a offline file that can be reimported later : simply drag&drop the file into squadcalc and retrieve back your markers. These same files can be easily shared with your teammates.
+
+
 
 </br></br></br>
 # <div align="center">Attributions</div>
