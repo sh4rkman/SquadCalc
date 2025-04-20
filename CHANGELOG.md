@@ -8,6 +8,8 @@
 
 <img src="https://img.shields.io/badge/-%20translations%20-blue"> Improved ZH-CH translations by Guducat (Thanks!)
 
+<img src="https://img.shields.io/badge/-%20translations%20-blue"> Improved ru-RU translations by sitroz (Thanks!)
+
 <img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed existing markers not taking the heightmap into account when joining a session (fix [#301](https://github.com/sh4rkman/SquadCalc/issues/301), thanks modern-nm!)
 
 <img src="https://img.shields.io/badge/-%20fix%20-b22"> Hiding the layer now also works with Destruction layers (fix [#291](https://github.com/sh4rkman/SquadCalc/issues/291))
