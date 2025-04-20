@@ -26,6 +26,7 @@ export default class SquadHeightmap {
             const response = await fetch(url); // Fetch the JSON file
             let data = await response.json();
             this.json = data;
+            $(document).trigger("heightmap:loaded");
         } catch (error) {
             console.error("Failed to load heightmap:", error);
         }
@@ -46,8 +47,7 @@ export default class SquadHeightmap {
         if (this.json[row] && typeof this.json[row][col] !== "undefined") {
             height = this.json[row][col];
         }
-
-        if (this.map.activeMap.seaLevel) return height + this.map.activeMap.seaLevel;
+        
         return height;
     }
 

@@ -203,15 +203,35 @@ Also known as "why the fuck is it not the default ingame map?"
 A mix of bump map, contour map with a touch of hypsometric colors for a complete understanding of map reliefs.
 
 
+## **Import/Export Your Maps**
+
+<br>
+
+<div align="center">
+  <picture>
+    <img width="50%" src="./src/img/github/import_export.webp" alt="Map Import/Export Preview">
+  </picture>
+</div>
+
+<br>
+
+Easily export your map and markers to an offline file for backup or sharing. To restore them later, just drag and drop the file into SquadCalc—your markers will be instantly loaded. These files are also perfect for sharing with teammates to ensure everyone’s on the same page.
+
+
+
 
 </br></br></br>
 # <div align="center">Attributions</div>
 </br>
 
-* Map System built on **[Leaflet JS](https://leafletjs.com/)**
-* Map Images, Icons are from SquadSDK by **[OffWorld Industries](https://www.offworldindustries.com/)**
-* Map Data is extracted thanks to **[Squad-Wiki Pipeline Map Data](https://github.com/Squad-Wiki/squad-wiki-pipeline-map-data)** SDK extractor Assets
-* Thanks to everyone supporting the project with kinds words, clever suggestions, and better code than mine
+* 🗺️ Map System built on **[Leaflet JS](https://leafletjs.com/)**
+* 🖼️ Map Images, Icons are from SquadSDK by **[OffWorld Industries](https://www.offworldindustries.com/)**
+* 🧮 Map Data is extracted thanks to **[Squad-Wiki Pipeline Map Data](https://github.com/Squad-Wiki/squad-wiki-pipeline-map-data)** SDK extractor Assets
+* 👌🏼 Thanks to everyone supporting the project with kinds words, clever suggestions, and better code than mine
+  * MK19 implementation by [Ferrariic](https://github.com/Ferrariic)
+  * SquadMortarOverlay connector by [Devil4ngle](https://github.com/Devil4ngle)
+  * ZH Translations by [Guducat](https://github.com/Guducat)
+  * RU Translations by sitroz
 
 
 

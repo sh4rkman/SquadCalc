@@ -1,7 +1,7 @@
 import { App } from "../app.js";
 import { ellipse } from "./libs/leaflet.ellipse.js";
 import "./libs/leaflet-visual-click.js";
-import { Marker, Circle, CircleMarker, Popup, Polygon } from "leaflet";
+import { Marker, Circle, CircleMarker, Popup, Polygon, Icon } from "leaflet";
 import { targetIcon1, targetIconAnimated, targetIconDisabled, targetIconMinimal, targetSessionIcon1, targetIconSessionMinimal, targetIconMinimalDisabled } from "./squadIcon.js";
 import SquadSimulation from "./squadSimulation.js";
 import SquadFiringSolution from "./squadFiringSolution.js";
@@ -597,7 +597,7 @@ export const squadTargetMarker = squadMarker.extend({
         this.addTo(this.map.activeTargetsMarkers);
         this.miniCircle = new CircleMarker(latlng, this.miniCircleOptions).addTo(this.map.markersGroup);
         this.firingSolution1 = new SquadFiringSolution(this.map.activeWeaponsMarkers.getLayers()[0].getLatLng(), this.getLatLng(), this.map, this.map.activeWeaponsMarkers.getLayers()[0].heightPadding);
-        
+
         // Report target to squadcalc API
         if (!options.uid) {
             sendTargetData({
@@ -708,10 +708,7 @@ export const squadTargetMarker = squadMarker.extend({
         this.removeFrom(this.map.markersGroup).removeFrom(this.map.activeTargetsMarkers).remove();
     
         // If that was the last Marker on the map, hide "delete/undo" buttons
-        if (!this.map.hasMarkers()) {
-            $(".btn-delete").hide();
-            $(".btn-undo").hide();
-        }
+        if (!this.map.hasMarkers()) $(".btn-delete, .btn-undo, .btn-download").hide();
     },
 
 
@@ -1164,6 +1161,7 @@ export const squadStratMarker = squadMarker.extend({
         this.team = options.team;
         this.category = options.category;
         this.icontype = options.icontype;
+        this.options2 = options;
 
       
         this.posPopUpOptions = {
@@ -1229,6 +1227,20 @@ export const squadStratMarker = squadMarker.extend({
         this.on("contextmenu", this._handleContextMenu, this);
     },
 
+    updateIconSize: function () {
+        const markerSizeSetting = App.userSettings.markerSize;
+        const iconSizeValue = 20 + (markerSizeSetting - 1) * 5;
+    
+        const newIcon = new Icon({
+            iconUrl: this.options2.icon.options.iconUrl,
+            iconSize: [iconSizeValue, iconSizeValue],
+            iconAnchor: [iconSizeValue / 2, iconSizeValue / 2],
+            className: this.options2.iconClassName || "",
+        });
+    
+        this.setIcon(newIcon);
+    },
+
     /**
      * Remove the contextmenu marker and every object tied
      * @param {this}
@@ -1252,10 +1264,7 @@ export const squadStratMarker = squadMarker.extend({
         this.removeFrom(this.map.markersGroup).removeFrom(this.map.activeMarkers);
 
         // If that was the last Marker on the map, hide "delete all" buttons
-        if (!this.map.hasMarkers()) {
-            $(".btn-delete").hide();
-            $(".btn-undo").hide();
-        }
+        if (!this.map.hasMarkers()) $(".btn-delete, .btn-undo, .btn-download").hide();
 
         this.remove();
     },

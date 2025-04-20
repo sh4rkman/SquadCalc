@@ -87,17 +87,19 @@ export default class SquadSession {
             // Update MAP with custom event to skip the broadcast
             App.MAP_SELECTOR.val(data.mapState.activeMap).trigger($.Event("change", { broadcast: false }));
 
-            // Disable Map Selector for participants
-            // App.MAP_SELECTOR.prop('disabled', true);
-            // hostOnlyTooltip.enable();
-                
             // Create every existing marker in the session
-            data.mapState.weapons.forEach(weapon => {
-                App.minimap.createWeapon(new LatLng(weapon.lat, weapon.lng), weapon.uid);        
-            });       
-            data.mapState.targets.forEach(target => {
-                App.minimap.createTarget(new LatLng(target.lat, target.lng), false, target.uid);
+
+            // Wait for the heightmap to be loaded before creating the markers
+            // Otherwise, the markers will be created with the default height of 0
+            $(document).one("heightmap:loaded", () => {
+                data.mapState.weapons.forEach(weapon => {
+                    App.minimap.createWeapon(new LatLng(weapon.lat, weapon.lng), weapon.uid);        
+                });
+                data.mapState.targets.forEach(target => {
+                    App.minimap.createTarget(new LatLng(target.lat, target.lng), false, target.uid);
+                });
             });
+
             data.mapState.markers.forEach(marker => {
                 App.minimap.createMarker(new LatLng(marker.lat, marker.lng), marker.team, marker.category, marker.icon, marker.uid);
             });

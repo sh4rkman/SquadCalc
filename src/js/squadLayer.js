@@ -44,6 +44,8 @@ export default class SquadLayer {
             assets: []
         };
         this.caches = new FeatureGroup().addTo(this.map);
+        this.phaseNumber = new FeatureGroup().addTo(this.map);
+        this.phaseAeras = new FeatureGroup().addTo(this.map);
         this.flags = [];
         this.reversed = false;
         this.init();
@@ -75,7 +77,7 @@ export default class SquadLayer {
                     fillColor: "white",
                     opacity: 1,
                     weight: 1.5,
-                    fillOpacity: 0.4,
+                    fillOpacity: 1,
                 }).addTo(this.activeLayerMarkers));
             });
 
@@ -111,8 +113,8 @@ export default class SquadLayer {
                         color: "red",
                         dashArray: "10,8",
                         weight: 1,
-                        fillOpacity: 0.05,
-                    }).addTo(this.activeLayerMarkers);
+                        fillOpacity: 0,
+                    }).addTo(this.phaseAeras);
 
                     // This is the centroid where we'll place the phase number
                     center = [totalLat / latlngs.length, totalLng / latlngs.length];
@@ -126,7 +128,7 @@ export default class SquadLayer {
                             iconSize: [50, 50],
                             iconAnchor: [25, 25]
                         })
-                    }).addTo(this.activeLayerMarkers);
+                    }).addTo(this.phaseNumber);
                 });
             });
 
@@ -469,11 +471,13 @@ export default class SquadLayer {
 
     }
 
+    
     createAssets() {
         this.createHelipads();
         this.createDeployables();
         this.createProtectionZones();
     }
+
 
     setMainZoneOpacity(on){
         const opacity = on ? 1 : 0;
@@ -895,10 +899,32 @@ export default class SquadLayer {
      * @param {number} value - opacity value (0-1)
      */
     _setOpacity(value){
+        
+        // Polyline opacity
         this.polyline.setStyle({ opacity: value });
+
+        // Flags opacity
         this.flags.forEach((flag) => {
             flag._setOpacity(value);
         });
+
+        // Caches opacity
+        if (this.layerData.gamemode === "Destruction") {
+
+            this.caches.eachLayer((layer) => {
+                layer.setStyle({ fillOpacity: value, opacity: value });
+            });
+
+            this.phaseNumber.eachLayer((layer) => {
+                layer.setOpacity(value);
+            }); 
+
+            this.phaseAeras.eachLayer((layer) => {
+                layer.setStyle({ opacity: value });
+            }); 
+        }
+
+        
     }
 
 
@@ -1045,6 +1071,8 @@ export default class SquadLayer {
      */
     clear(){
         this.activeLayerMarkers.clearLayers();
+        this.phaseNumber.clearLayers();
+        this.phaseAeras.clearLayers();
     }
 
 }

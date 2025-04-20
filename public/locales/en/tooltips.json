@@ -59,5 +59,11 @@
     "sessionFull": "Session is full",
     "invalidSession": "Invalid SessionID",
     "invalidSessionRules": "SessionID must be 6-20 alphanumeric characters",
-    "toggleLayer": "Show/Hide layer"
+    "toggleLayer": "Show/Hide layer",
+    "fileNotSupported": "File not supported",
+    "openIssue": "Report an issue on Github/Discord if you think this is a bug",
+    "mapSaved": "Map saved to file",
+    "dragToImport": "You can drag and drop this file on the map to load it later",
+    "importSuccess": "Map imported successfully",
+    "download": "Save the map to file"
 }

@@ -59,5 +59,11 @@
     "backspace": "Backspace",
     "enter": "Enter",
     "delete": "Delete",
-    "toggleLayer": "Afficher/Masquer le layer"
+    "toggleLayer": "Afficher/Masquer le layer",
+    "fileNotSupported": "Fichier non pris en charge",
+    "openIssue": "Signalez un problème sur Github/Discord si vous pensez qu'il s'agit d'un bug",
+    "mapSaved": "Carte sauvegardée",
+    "dragToImport": "Vous pouvez faire glisser et déposer ce fichier sur la carte pour le charger plus tard",
+    "importSuccess": "Carte importée avec succès",
+    "download": "Enregistrer la carte"
 }

@@ -1,8 +1,31 @@
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **37.4.0** *(2025-04-20)*
+
+<img src="https://img.shields.io/badge/-new-green"> **Markers export/import:** You can now export the current state of the map to a file that can be shared or dragged & dropped back later, recreating the markers. ([#298](https://github.com/sh4rkman/SquadCalc/issues/298))
+
+<img src="https://img.shields.io/badge/-new-green"> **Custom Markers Size:** You can change the default size of the map markers ([#294](https://github.com/sh4rkman/SquadCalc/issues/294))
+
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Calculations now take the height of the weapon into account (fix [#287](https://github.com/sh4rkman/SquadCalc/issues/287))
+
+<img src="https://img.shields.io/badge/-%20translations%20-blue"> Improved ZH-CH translations by Guducat (Thanks!)
+
+<img src="https://img.shields.io/badge/-%20translations%20-blue"> Improved ru-RU translations by sitroz (Thanks!)
+
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed existing markers not taking the heightmap into account when joining a session (fix [#301](https://github.com/sh4rkman/SquadCalc/issues/301), thanks modern-nm!)
+
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Hiding the layer now also works with Destruction layers (fix [#291](https://github.com/sh4rkman/SquadCalc/issues/291))
+
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed rectangle markers not being synced in a session when created before a session is created
+
+
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
+
 # <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **37.3.1** *(2025-04-02)*
 
-<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed SquadCalc not loading on Firefox > 137.0 (fix #292, thanks mrbeatbox!)
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed SquadCalc not loading on Firefox > 137.0 (fix [#292](https://github.com/sh4rkman/SquadCalc/issues/292), thanks mrbeatbox!)
 
-<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed Kohat heightmap (fix #297, thanks ZFZR031!)
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed Kohat heightmap (fix [#297](https://github.com/sh4rkman/SquadCalc/issues/297), thanks ZFZR031!)
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
 
@@ -10,17 +33,18 @@
 
 # <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **37.3.0** *(2025-02-23)*
 
-<img src="https://img.shields.io/badge/-new-green"> Added a button to Show/Hide flags while a layer is selected (Thanks @Syntax for the suggestion, fix #289)
+<img src="https://img.shields.io/badge/-new-green"> Added a button to Show/Hide flags while a layer is selected (Thanks @Syntax for the suggestion, fix [#289](https://github.com/sh4rkman/SquadCalc/issues/289))
+
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
 
 # <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **37.2.0** *(2025-02-05)*
 
-<img src="https://img.shields.io/badge/-new-green"> Added Circles and Rectangles Markers (fix #285)
+<img src="https://img.shields.io/badge/-new-green"> Added Circles and Rectangles Markers (fix [#285](https://github.com/sh4rkman/SquadCalc/issues/285))
 
 <img src="https://img.shields.io/badge/-new-green"> Shapes/Arrows are now available in Blue/Red/Green/Black
 
-<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed enemy markers context menu positions (fix #286)
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed enemy markers context menu positions (fix [#286](https://github.com/sh4rkman/SquadCalc/issues/286))
 
 <img src="https://img.shields.io/badge/-%20dev%20-grey"> Code Refactoring
 
@@ -30,7 +54,7 @@
 
 # <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **37.1.1** *(2025-02-03)*
 
-<img src="https://img.shields.io/badge/-%20improv%20-orange"> Under-Cursor Keypads sub-digits are now smaller for clarity (fix #283, thanks Flandflard!)
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Under-Cursor Keypads sub-digits are now smaller for clarity (fix [#283](https://github.com/sh4rkman/SquadCalc/issues/283), thanks Flandflard!)
 
 <img src="https://img.shields.io/badge/-%20improv%20-orange"> Under-Cursor Keypads, and Markers position Keypads now scale with the font size set in settings
 
@@ -55,13 +79,13 @@
 
 <img src="https://img.shields.io/badge/-new-green"> Session Pings: Left-clicking the map while in a session displays a ping for everyone in the session. Pings also occur when other participants interact with markers (adding, deleting, etc.).
 
-<img src="https://img.shields.io/badge/-%20Translations%20-blue"> Improved ZH-CH translations by @Guducat (Thanks! Fix #281).
+<img src="https://img.shields.io/badge/-%20Translations%20-blue"> Improved ZH-CH translations by @Guducat (Thanks! Fix [#281](https://github.com/sh4rkman/SquadCalc/issues/281)).
 
 <img src="https://img.shields.io/badge/-%20fix%20-b22"> Sharing a session URL now correctly preserves the shared layer.
 
-<img src="https://img.shields.io/badge/-%20fix%20-b22"> Clicking the close button on the "Session Created" toast no longer copies the session ID (Fix #272).
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Clicking the close button on the "Session Created" toast no longer copies the session ID (Fix [#272](https://github.com/sh4rkman/SquadCalc/issues/272)).
 
-<img src="https://img.shields.io/badge/-%20fix%20-b22"> Leaving a session now correctly re-colors other players' markers, as well as the spread and damage zones, in red (Fix #270).
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Leaving a session now correctly re-colors other players' markers, as well as the spread and damage zones, in red (Fix [#270](https://github.com/sh4rkman/SquadCalc/issues/270)).
 
 <img src="https://img.shields.io/badge/-%20fix%20-b22"> Closing SquadMortarOverlay now correctly re-enables the HD map button.
 
@@ -71,13 +95,13 @@
 
 <img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed the missing Logar Valley topographic HD map.
 
-<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed background color inside context menus for Chromium-based browsers (Fix #275).
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed background color inside context menus for Chromium-based browsers (Fix [#275](https://github.com/sh4rkman/SquadCalc/issues/275)).
 
-<img src="https://img.shields.io/badge/-%20fix%20-b22"> The "Cap Zones on Hover" setting is now properly checked if previously selected (Fix #277, thanks @matoid!).
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> The "Cap Zones on Hover" setting is now properly checked if previously selected (Fix [#277](https://github.com/sh4rkman/SquadCalc/issues/277), thanks @matoid!).
 
 <img src="https://img.shields.io/badge/-%20improv%20-orange"> Session IDs are now restricted to 6–20 characters. A toast message has been added for invalid session ID attempts.
 
-<img src="https://img.shields.io/badge/-%20improv%20-orange"> Distance text between flags now fades out while dragging targets/markers (Fix #264).
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Distance text between flags now fades out while dragging targets/markers (Fix [#264](https://github.com/sh4rkman/SquadCalc/issues/264)).
 
 <img src="https://img.shields.io/badge/-%20improv%20-orange"> Added a "Undo" button in addition of the backspace shortcut. Undo now also remove the last marker/arrow dropped on the map.
 
@@ -101,15 +125,15 @@ Introducing the session system: You can now create collaborative sessions and sh
 
 <img src="https://img.shields.io/badge/-%20improv%20-orange"> Reordered marker categories in the context menu.
 
-<img src="https://img.shields.io/badge/-%20improv%20-orange"> Improved the map list display on devices with small screen heights (fix #266).
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Improved the map list display on devices with small screen heights (fix [#266](https://github.com/sh4rkman/SquadCalc/issues/266)).
 
 <img src="https://img.shields.io/badge/-%20improv%20-orange"> Standardized URL parameters order (Map>Layer>type>Session)
 
-<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed arrow markers not working on Chromium-based browsers (fix #268, thanks @devil4ngle!).
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed arrow markers not working on Chromium-based browsers (fix [#268](https://github.com/sh4rkman/SquadCalc/issues/268), thanks @devil4ngle!).
 
-<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed a bug where hovering over a marker would cause target text to fade out permanently (fix #267, thanks @dkanrjteh!).
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed a bug where hovering over a marker would cause target text to fade out permanently (fix [#267](https://github.com/sh4rkman/SquadCalc/issues/267), thanks @dkanrjteh!).
 
-<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed an issue where arrow markers would "blink" when displayed for the first time (fix #265).
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed an issue where arrow markers would "blink" when displayed for the first time (fix [#265](https://github.com/sh4rkman/SquadCalc/issues/265)).
 
 
 

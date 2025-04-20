@@ -35,5 +35,7 @@
     "invalidMortarTarget": "Arme & Cible invalides",
     "targetOutOfRange": "Cible hors de portée",
     "layerPlaceholder": "Layer",
-    "nextFlags": "Prochains points"
+    "nextFlags": "Prochains points",
+    "dropTxt": "DEPOSER UN FICHIER DE SAUVEGARDE ICI",
+    "dropSubTxt": "la carte actuelle sera effacée"
 }

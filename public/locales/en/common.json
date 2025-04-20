@@ -35,5 +35,7 @@
     "invalidMortarTarget": "Invalid Weapon & Target",
     "targetOutOfRange": "Target is out of range",
     "layerPlaceholder": "Layer",
-    "nextFlags": "Next Flags"
+    "nextFlags": "Next Flags",
+    "dropTxt": "DROP A SAVE FILE HERE",
+    "dropSubTxt": "current map will be erased"
 }

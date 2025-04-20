@@ -66,6 +66,20 @@ export function loadSettings(){
     });
     $(".dropbtn6").val(fontSize).trigger("change");
 
+
+    let markerSize = localStorage.getItem("settings-marker-size");
+    if (markerSize === null || isNaN(fontSize) || fontSize === ""){
+        localStorage.setItem("settings-marker-size", 3);
+        markerSize = 3;
+    }
+    App.userSettings.markerSize = markerSize;
+    $(".dropbtn7").select2({
+        dropdownCssClass: "dropbtn7",
+        dropdownParent: $("#helpDialog"),
+        minimumResultsForSearch: -1, // Disable search
+    });
+    $(".dropbtn7").val(markerSize).trigger("change");
+
     App.userSettings.contextMenu = loadLocalSetting("settings-context-menu");
     $("#contextMenuSettings").prop("checked", App.userSettings.contextMenu);
 
