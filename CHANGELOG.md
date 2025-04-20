@@ -1,4 +1,4 @@
-# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **37.4.0** *(2025-04-XX)*
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **37.4.0** *(2025-04-20)*
 
 <img src="https://img.shields.io/badge/-new-green"> **Markers export/import:** You can now export the current state of the map to a file that can be shared or dragged & dropped back later, recreating the markers. ([#298](https://github.com/sh4rkman/SquadCalc/issues/298))
 
