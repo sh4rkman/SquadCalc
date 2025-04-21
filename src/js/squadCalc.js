@@ -421,7 +421,6 @@ export default class SquadCalc {
             e.preventDefault();
             dragCounter = 0;
             overlay.style.display = "none";
-            // Handle dropped files here
         });
           
         window.addEventListener("drop", e => {
@@ -438,7 +437,7 @@ export default class SquadCalc {
             reader.onload = (event) => {
                 const content = event.target.result;
           
-                // Optional: try parsing as JSON
+                // Try parsing as JSON
                 try {
                     const data = JSON.parse(content);
                     console.debug("Parsed JSON:", data);
@@ -447,12 +446,17 @@ export default class SquadCalc {
 
                     $(document).one("heightmap:loaded", () => {
                         try {
-                            data.weapons.forEach(weapon => {
-                                this.minimap.createWeapon(new LatLng(weapon.lat, weapon.lng));        
-                            });
-                            data.targets.forEach(target => {
-                                this.minimap.createTarget(new LatLng(target.lat, target.lng), false);
-                            });
+
+                            // Make sure there is weapons before trying to create targets
+                            if (Array.isArray(data.weapons) && data.weapons.length > 0) {
+                                data.weapons.forEach(weapon => {
+                                    this.minimap.createWeapon(new LatLng(weapon.lat, weapon.lng));        
+                                });
+                                data.targets.forEach(target => {
+                                    this.minimap.createTarget(new LatLng(target.lat, target.lng), false);
+                                });
+                            }
+
                             data.markers.forEach(marker => {
                                 this.minimap.createMarker(new LatLng(marker.lat, marker.lng), marker.team, marker.category, marker.icon);
                             });
@@ -503,13 +507,13 @@ export default class SquadCalc {
                             this.openToast("success", "importSuccess", "");
                         
                         } catch (err) {
-                            console.error("Error while creating markers:", err);
+                            console.debug("Error while creating markers:", err);
                             this.openToast("error", "fileNotSupported", "openIssue");
                         }
                     });
 
                 } catch (err) {
-                    console.error("Not valid JSON", err);
+                    console.debug("Not valid JSON", err);
                     this.openToast("error", "fileNotSupported", "");
                 }
             };
