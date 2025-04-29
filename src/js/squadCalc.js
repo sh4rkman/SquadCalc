@@ -516,7 +516,7 @@ export default class SquadCalc {
 
         // Prevent focus
         $(document).off("mousedown", '.btn-pined, .pinnedVehicles');
-        $(document).on("mousedown", '.btn-pined, .pinnedVehicles', (event) => {event.preventDefault()});
+        $(document).on("mousedown", '.btn-pined, .pinnedVehicles', (event) => {event.preventDefault();});
 
         $(document).off("click", ".pinnedVehicles");
         $(document).on("click", ".pinnedVehicles", (event) => {
@@ -1079,8 +1079,6 @@ export default class SquadCalc {
             });
 
 
-            
-    
             $(document).on("keydown", (event) => {
 
                 // Disable Shortkeys in legacy mode

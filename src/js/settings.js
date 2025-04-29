@@ -89,7 +89,6 @@ export function loadSettings(){
         $("#disableSoundsSettings").prop('disabled', true);
     }
 
-
     App.userSettings.disableSounds = loadLocalSetting("settings-disable-sounds", 0);
     $("#disableSoundsSettings").prop("checked", App.userSettings.disableSounds);
 
