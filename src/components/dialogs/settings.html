@@ -562,12 +562,12 @@
         </tbody>
       </table>
 
-      <table class="userSettings">
+      <table class="userSettings factionSettings">
         <caption data-i18n="settings:factionsOptions"></caption>
 
         <tbody>
 
-          <tr class="">
+          <tr class="enableFactionsTooltip">
             <td>
                 <label class="mcui-checkbox">
                     <input id="enableFactionsSettings" type="checkbox">
@@ -580,6 +580,23 @@
             </td>
             <td>
               <span data-i18n="settings:enableFactions" class="toggleCheckbox"></span>
+              <sup class="new">new</sup>
+            </td>
+          </tr>
+
+          <tr class="">
+            <td>
+                <label class="mcui-checkbox">
+                    <input id="defaultFactionsSettings" type="checkbox">
+                    <span>
+                      <svg class="mcui-check" viewBox="-2 -2 35 35" aria-hidden="true">
+                        <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
+                      </svg>
+                    </span>
+                  </label>
+            </td>
+            <td>
+              <span data-i18n="settings:defaultFactions" class="toggleCheckbox"></span>
               <sup class="new">new</sup>
             </td>
           </tr>
@@ -617,6 +634,7 @@
               <sup class="new">new</sup>
             </td>
           </tr>
+
 
         </tbody>
       </table>

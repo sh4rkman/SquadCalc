@@ -171,6 +171,35 @@ tippy("span[data-i18n='settings:revealLayerOnHover']", {
     },
 });
 
+tippy("span[data-i18n='settings:enableFactions']", {
+    ...commonToolipsSettings,
+    onShow(tip) {
+        tip.setContent(`
+            ${i18next.t("tooltips:enableFactionsTooltip")}
+        `);
+    },
+});
+
+tippy("span[data-i18n='settings:defaultFactions']", {
+    ...commonToolipsSettings,
+    onShow(tip) {
+        tip.setContent(`
+            ${i18next.t("tooltips:defaultFactionsTooltip")}
+        `);
+    },
+});
+
+tippy("span[data-i18n='settings:hideLowRespawn']", {
+    ...commonToolipsSettings,
+    onShow(tip) {
+        tip.setContent(`
+            ${i18next.t("tooltips:hideLowRespawnTooltip")}
+        `);
+    },
+});
+
+
+
 tippy("#bearingNum", {
     animation: "fade",
     placement: "bottom",

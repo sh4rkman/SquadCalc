@@ -8,7 +8,7 @@ import { loadLanguage } from "./localization.js";
 import { tooltip_save, createSessionTooltips, leaveSessionTooltips } from "./tooltips.js";
 import { checkApiHealth, fetchLayersByMap, fetchLayerByName } from "./squadCalcAPI.js";
 import { initWebSocket } from "./smcConnector.js";
-import { LatLng } from "leaflet";
+import { LatLng, DivIcon } from "leaflet";
 import  { MapArrow, MapCircle, MapRectangle }  from "./squadShapes.js";
 import SquadSession from "./squadSession.js";
 import SquadFiringSolution from "./squadFiringSolution.js";
@@ -16,6 +16,8 @@ import packageInfo from "../../package.json";
 import i18next from "i18next";
 import SquadLayer from "./squadLayer.js";
 import { App } from "../app.js";
+import tippy from "tippy.js";
+import "tippy.js/dist/tippy.css";
 
 
 
@@ -207,9 +209,28 @@ export default class SquadCalc {
                 }
             });
 
-            // Add the new one
-            const newClass = "country_" + event.target.value;
-            iconEl.classList.add(newClass);
+            const value = event.target.value;
+            const iconAnchor = App.userSettings.circlesFlags ? [150, 38] : [150, 32];
+            const isValid = value !== "";
+            
+            // Update the icon class if a new value is selected
+            if (isValid) {
+                iconEl.classList.add(`country_${value}`);
+            }
+            
+            // Update Main 1 Name with either selected faction or default name
+            this.minimap.layer.mains[0].nameText.setIcon(
+                new DivIcon({
+                    className: "objText main",
+                    keyboard: false,
+                    html: isValid ? `${value} Main` : "Team 1 Main",
+                    iconSize: [300, 20],
+                    iconAnchor,
+                    shadowUrl: "../img/icons/markers/marker_shadow.webp",
+                    shadowSize: [0, 0],
+                })
+            );
+
 
         });
 
@@ -249,16 +270,33 @@ export default class SquadCalc {
                 }
             });
 
-            // Add the new one
-            const newClass = "country_" + event.target.value;
-            iconEl.classList.add(newClass);
-
+            const value = event.target.value;
+            const iconAnchor = App.userSettings.circlesFlags ? [150, 38] : [150, 32];
+            const isValid = value !== "";
+            
+            // Update the icon class if a new value is selected
+            if (isValid) {
+                iconEl.classList.add(`country_${value}`);
+            }
+            
+            // Update Main 2 Name with either selected faction or default name
+            this.minimap.layer.mains[1].nameText.setIcon(
+                new DivIcon({
+                    className: "objText main",
+                    keyboard: false,
+                    html: isValid ? `${value} Main` : "Team 2 Main",
+                    iconSize: [300, 20],
+                    iconAnchor,
+                    shadowUrl: "../img/icons/markers/marker_shadow.webp",
+                    shadowSize: [0, 0],
+                })
+            );
         });
 
         $(".dropbtn9").off("change").on("change", (event) => {
             // Empty the vehicles container
             $("#team1Vehicles").empty();
-            if ( $("#team1PinButton").hasClass("active") ) this.unpinFaction();
+            if ($("#team1PinButton").hasClass("active")) this.unpinFaction();
         
             const selectedUnit = factionData.factions.team1factions.find(
                 (unit) => unit.unitObjectName === event.target.value
@@ -361,18 +399,19 @@ export default class SquadCalc {
         });
 
 
-
-        const team1DefaultFaction = factionData.teamConfigs.team1.defaultFactionUnit.split("_")[0];
-        const team2DefaultFaction = factionData.teamConfigs.team2.defaultFactionUnit.split("_")[0];
-        
-        $(".dropbtn8").val(team1DefaultFaction).trigger("change");
-        $(".dropbtn10").val(team2DefaultFaction).trigger("change");
-
+        if (App.userSettings.defaultFactions) {
+            const team1DefaultFaction = factionData.teamConfigs.team1.defaultFactionUnit.split("_")[0];
+            const team2DefaultFaction = factionData.teamConfigs.team2.defaultFactionUnit.split("_")[0];
+            $(".dropbtn8").val(team1DefaultFaction).trigger("change");
+            $(".dropbtn10").val(team2DefaultFaction).trigger("change");
+        } else {
+            $(".dropbtn8").val("").trigger("change");
+            $(".dropbtn10").val("").trigger("change");
+        }
 
         $(".btn-pin").off("click").on("click", (event) => {
             
             if ($(event.currentTarget).hasClass("active")) {
-                console.log("already active, removing pin");
                 this.unpinFaction();
                 $(event.currentTarget).removeClass("active");
                 $("#factionsButton button").empty().append(`
@@ -515,8 +554,8 @@ export default class SquadCalc {
         }
 
         // Prevent focus
-        $(document).off("mousedown", '.btn-pined, .pinnedVehicles');
-        $(document).on("mousedown", '.btn-pined, .pinnedVehicles', (event) => {event.preventDefault();});
+        $(document).off("mousedown", ".btn-pined, .pinnedVehicles");
+        $(document).on("mousedown", ".btn-pined, .pinnedVehicles", (event) => {event.preventDefault();});
 
         $(document).off("click", ".pinnedVehicles");
         $(document).on("click", ".pinnedVehicles", (event) => {
@@ -535,7 +574,7 @@ export default class SquadCalc {
             }
         
             $vehicleDiv.addClass("active");
-            let respawnTime = $vehicleDiv.data("respawntime") * 1; // minutes to seconds
+            let respawnTime = $vehicleDiv.data("respawntime") * 60; // minutes to seconds
             let vehIcon = $vehicleDiv.data("vehicon");
         
             $nameDiv.text(formatTime(respawnTime));
@@ -978,7 +1017,7 @@ export default class SquadCalc {
         });
 
         $(".btn-download").on("click", () => {
-            this.saveMapState();
+            this.saveMapStateToFile();
         });
 
         $(".btn-undo").on("click", () => {
@@ -1082,10 +1121,10 @@ export default class SquadCalc {
             $(document).on("keydown", (event) => {
 
                 // Disable Shortkeys in legacy mode
-                if (this.ui == 0) { return; }
+                if (this.ui == 0) return;
 
                 // Disable Shortkeys when currently in a dialog
-                if (weaponInformation.open || calcInformation.open || helpDialog.open) { return; }
+                if (weaponInformation.open || calcInformation.open || helpDialog.open || factionsDialog.open) return;
 
                 // ENTER = FOCUS MODE
                 if (event.key === "Enter") {
@@ -1125,7 +1164,7 @@ export default class SquadCalc {
                 // CTRL + S = SAVE CURRENT MAP TO A FILE
                 if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "s") {
                     event.preventDefault();
-                    if (this.minimap.hasMarkers()) this.saveMapState();
+                    if (this.minimap.hasMarkers()) this.saveMapStateToFile();
                 }
 
             });
@@ -1803,16 +1842,15 @@ export default class SquadCalc {
         return { weapons, targets, markers, arrows, circles, rectangles, activeWeapon, activeMap, version };
     }
 
-    saveMapState() {
+    saveMapStateToFile() {
         const now = new Date();
+        const data = this.getAppState();
         const formattedDate =
         now.getFullYear().toString() +
         String(now.getMonth() + 1).padStart(2, "0") +
         String(now.getDate()).padStart(2, "0") + "_" +
         String(now.getHours()).padStart(2, "0") +
         String(now.getMinutes()).padStart(2, "0");
-        const data = this.getAppState();
-        // serve as a JSON file with data
         const blob = new Blob([JSON.stringify(data)], { type: "application/json" });
         const url = URL.createObjectURL(blob);
         const a = document.createElement("a");
@@ -1824,6 +1862,7 @@ export default class SquadCalc {
         URL.revokeObjectURL(url);
         this.openToast("success", "mapSaved", "dragToImport");
     }
+
     
     /**
      * Updates the URL search parameters by applying the provided updates.

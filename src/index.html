@@ -1,83 +1,83 @@
 <!doctype html>
-<html lang="en" translate="no">
+    <html lang="en" translate="no">
 
-<head>
+        <head>
 
-    <title data-i18n="common:squadcalc">SquadCalc</title>
+            <title data-i18n="common:squadcalc">SquadCalc</title>
 
-    <meta data-i18n-content="common:desc" name="description" content="">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1">
-    <meta name="theme-color" content="#111">
-    <meta charset="utf-8">
+            <meta data-i18n-content="common:desc" name="description" content="">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1">
+            <meta name="theme-color" content="#111">
+            <meta charset="utf-8">
 
-    <!-- SOCIAL MEDIA -->
-    <meta property="og:title" content="SquadCalc">
-    <meta data-i18n-content="common:desc" property="og:description" content="">
-    <meta property="og:image" content="https://i.imgur.com/MIYQv6D.png">
-    <meta property="og:url" content="https://squadcalc.app">
-    <meta name="twitter:card" content="https://i.imgur.com/MIYQv6D.png">
+            <!-- SOCIAL MEDIA -->
+            <meta property="og:title" content="SquadCalc">
+            <meta data-i18n-content="common:desc" property="og:description" content="">
+            <meta property="og:image" content="https://i.imgur.com/MIYQv6D.png">
+            <meta property="og:url" content="https://squadcalc.app">
+            <meta name="twitter:card" content="https://i.imgur.com/MIYQv6D.png">
 
-    <!-- FAVICON -->
-    <link rel="shortcut icon" type="image/x-icon" href="./src/img/favicons/icon_96x96.png">
+            <!-- FAVICON -->
+            <link rel="shortcut icon" type="image/x-icon" href="./src/img/favicons/icon_96x96.png">
 
-    <!-- FONT/ICON -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Oswald:wght@700&family=Roboto:wght@600&display=swap" rel="stylesheet">
+            <!-- FONT/ICON -->
+            <link rel="preconnect" href="https://fonts.googleapis.com">
+            <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+            <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Oswald:wght@700&family=Roboto:wght@600&display=swap" rel="stylesheet">
 
 
-    <!-- FUCK IE / REGISTER SW -->
-    <script>
-        if (navigator.appName.indexOf("Internet Explorer") != -1 || navigator.userAgent.match(/Trident.*rv[ :]*11\./)) {
-            window.location = "https://choosebrowser.com/";
-        }
+            <!-- FUCK IE / REGISTER SW -->
+            <script>
+                if (navigator.appName.indexOf("Internet Explorer") != -1 || navigator.userAgent.match(/Trident.*rv[ :]*11\./)) {
+                    window.location = "https://choosebrowser.com/";
+                }
 
-        if ("serviceWorker" in navigator) {
-            // Unregister the service worker
-            navigator.serviceWorker.getRegistrations().then((registrations) => {
-                registrations.forEach((registration) => {
-                    registration.unregister();
-                });
-            }).catch((error) => {
-                console.error(`Error during service worker unregistration: ${error}`);
-            });
-
-            // Clear any related caches
-            if (window.caches) {
-                caches.keys().then((cacheNames) => {
-                    cacheNames.forEach((cacheName) => {
-                        caches.delete(cacheName);
+                if ("serviceWorker" in navigator) {
+                    // Unregister the service worker
+                    navigator.serviceWorker.getRegistrations().then((registrations) => {
+                        registrations.forEach((registration) => {
+                            registration.unregister();
+                        });
+                    }).catch((error) => {
+                        console.error(`Error during service worker unregistration: ${error}`);
                     });
-                });
-            }
-        }
-        
-    </script>
 
-</head>
+                    // Clear any related caches
+                    if (window.caches) {
+                        caches.keys().then((cacheNames) => {
+                            cacheNames.forEach((cacheName) => {
+                                caches.delete(cacheName);
+                            });
+                        });
+                    }
+                }
+                
+            </script>
 
-<body style="visibility: hidden;">
+        </head>
 
-    
-    <!-- HEADER / LOADER -->
-    <%= require('html-loader!./components/header/header.html').default %>
+        <body style="visibility: hidden;">
 
-    <!-- LEGACY/MAP MODE -->
-    <%= require('html-loader!./components/legacyui/legacyui.html').default %>
-    <%= require('html-loader!./components/map/map.html').default %>
+            
+            <!-- HEADER / LOADER -->
+            <%= require('html-loader!./components/header/header.html').default %>
 
-    <!-- DIALOGS -->
-    <%= require('html-loader!./components/dialogs/weapon.html').default %>
-    <%= require('html-loader!./components/dialogs/target.html').default %>
-    <%= require('html-loader!./components/dialogs/settings.html').default %>
-    <%= require('html-loader!./components/dialogs/factions.html').default %>
+            <!-- LEGACY/MAP MODE -->
+            <%= require('html-loader!./components/legacyui/legacyui.html').default %>
+            <%= require('html-loader!./components/map/map.html').default %>
 
-    <!-- CONTEXTMENU -->
-    <%= require('html-loader!./components/contextMenu/contextMenu.html').default %>
+            <!-- DIALOGS -->
+            <%= require('html-loader!./components/dialogs/weapon.html').default %>
+            <%= require('html-loader!./components/dialogs/target.html').default %>
+            <%= require('html-loader!./components/dialogs/settings.html').default %>
+            <%= require('html-loader!./components/dialogs/factions.html').default %>
 
-    <!-- FOOTER / TOAST / HEIGHTMAP -->
-    <%= require('html-loader!./components/footer/footer.html').default %>
+            <!-- CONTEXTMENU -->
+            <%= require('html-loader!./components/contextMenu/contextMenu.html').default %>
 
-</body>
+            <!-- FOOTER / TOAST / HEIGHTMAP -->
+            <%= require('html-loader!./components/footer/footer.html').default %>
 
-</html>
+        </body>
+
+    </html>
