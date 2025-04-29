@@ -171,9 +171,6 @@ tippy("span[data-i18n='settings:revealLayerOnHover']", {
     },
 });
 
-
-
-
 tippy("#bearingNum", {
     animation: "fade",
     placement: "bottom",
@@ -244,6 +241,19 @@ tippy(".btn-focus", {
             <div class="tooltipsubtext">${i18next.t("tooltips:enter")}</div>
             `
         );
+    },
+});
+tippy("#factionsButton", {
+    ...commonMapMenuToolipsSettings,
+    onShow(tip) {
+        tip.setContent(i18next.t("tooltips:factions&Vehicles"));
+    },
+});
+
+tippy(".copy-vehicle-btn", {
+    ...commonMapMenuToolipsSettings,
+    onShow(tip) {
+        tip.setContent(i18next.t("tooltips:factions&Vehicles"));
     },
 });
 

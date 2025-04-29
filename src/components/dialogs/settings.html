@@ -429,6 +429,72 @@
 
         <tbody>
 
+          <tr class="">
+            <td>
+                <label class="mcui-checkbox">
+                  <input id="showMainZonesSettings" type="checkbox">
+                  <span>
+                    <svg class="mcui-check" viewBox="-2 -2 35 35" aria-hidden="true">
+                      <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
+                    </svg>
+                  </span>
+                </label>
+            </td>
+            <td>
+              <span data-i18n="settings:showMainZones" class="toggleCheckbox"></span>
+              <sup class="new">new</sup>
+            </td>
+          </tr>
+
+          <tr class="">
+            <td>
+                <label class="mcui-checkbox">
+                  <input id="showMainAssetsSettings" type="checkbox">
+                  <span>
+                    <svg class="mcui-check" viewBox="-2 -2 35 35" aria-hidden="true">
+                      <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
+                    </svg>
+                  </span>
+                </label>
+            </td>
+            <td>
+              <span data-i18n="settings:showMainAssets" class="toggleCheckbox"></span>
+              <sup class="new">new</sup>
+            </td>
+          </tr>
+
+          <tr class="circlesFlags">
+            <td>
+                <label class="mcui-checkbox">
+                  <input id="circlesFlagsSettings" type="checkbox">
+                  <span>
+                    <svg class="mcui-check" viewBox="-2 -2 35 35" aria-hidden="true">
+                      <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
+                    </svg>
+                  </span>
+                </label>
+            </td>
+            <td>
+              <span data-i18n="settings:circlesFlags" class="toggleCheckbox"></span>
+            </td>
+          </tr>
+
+          <tr class="showFlagsDistanceSettings">
+            <td>
+                <label class="mcui-checkbox">
+                  <input id="showFlagsDistanceSettings" type="checkbox">
+                  <span>
+                    <svg class="mcui-check" viewBox="-2 -2 35 35" aria-hidden="true">
+                      <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
+                    </svg>
+                  </span>
+                </label>
+            </td>
+            <td>
+              <span data-i18n="settings:showFlagsDistance" class="toggleCheckbox"></span>
+            </td>
+          </tr>
+
           <tr class="autoLaneSetting">
             <td>
                 <label class="mcui-checkbox">
@@ -477,22 +543,6 @@
             </td>
           </tr>
 
-          <tr class="circlesFlags">
-            <td>
-                <label class="mcui-checkbox">
-                  <input id="circlesFlagsSettings" type="checkbox">
-                  <span>
-                    <svg class="mcui-check" viewBox="-2 -2 35 35" aria-hidden="true">
-                      <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
-                    </svg>
-                  </span>
-                </label>
-            </td>
-            <td>
-              <span data-i18n="settings:circlesFlags" class="toggleCheckbox"></span>
-            </td>
-          </tr>
-
           <tr class="copyNextFlagsSettings">
             <td>
                 <label class="mcui-checkbox">
@@ -509,63 +559,62 @@
             </td>
           </tr>
 
-          <tr class="showFlagsDistanceSettings">
-            <td>
-                <label class="mcui-checkbox">
-                  <input id="showFlagsDistanceSettings" type="checkbox">
-                  <span>
-                    <svg class="mcui-check" viewBox="-2 -2 35 35" aria-hidden="true">
-                      <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
-                    </svg>
-                  </span>
-                </label>
-            </td>
-            <td>
-              <span data-i18n="settings:showFlagsDistance" class="toggleCheckbox"></span>
-            </td>
-          </tr>
-
         </tbody>
       </table>
-    </div>
 
-    <div id="panel4" class="panel">
+      <table class="userSettings">
+        <caption data-i18n="settings:factionsOptions"></caption>
 
-      <table class="shortcuts">
-       
         <tbody>
 
-          <tr class="capZoneOnHoverSettings">
+          <tr class="">
             <td>
-                <div class="keyHolder enter-key">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M448 64c0-17.7 14.3-32 32-32s32 14.3 32 32l0 160c0 53-43 96-96 96l-306.7 0 73.4 73.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3l128-128c12.5-12.5 32.8-12.5 45.3 0s12.5 32.8 0 45.3L109.3 256 416 256c17.7 0 32-14.3 32-32l0-160z"/></svg>
-                  <p>Enter</p>
-                </div>
+                <label class="mcui-checkbox">
+                    <input id="enableFactionsSettings" type="checkbox">
+                    <span>
+                      <svg class="mcui-check" viewBox="-2 -2 35 35" aria-hidden="true">
+                        <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
+                      </svg>
+                    </span>
+                  </label>
             </td>
             <td>
-              <span data-i18n="settings:enter"></span>
-            </td>
-          </tr>
-          
-          <tr>
-            <td>
-                <div class="keyHolder">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.2 288 416 288c17.7 0 32-14.3 32-32s-14.3-32-32-32l-306.7 0L214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg>
-                    Backspace
-                </div>
-               
-            </td>
-            <td>
-              <span data-i18n="settings:deleteLastTarget"></span>
+              <span data-i18n="settings:enableFactions" class="toggleCheckbox"></span>
+              <sup class="new">new</sup>
             </td>
           </tr>
 
-          <tr>
+          <tr class="">
             <td>
-                  <div class="keyHolder delete-key">Delete</div>
+                <label class="mcui-checkbox">
+                    <input id="hideLowRespawnSettings" type="checkbox">
+                    <span>
+                      <svg class="mcui-check" viewBox="-2 -2 35 35" aria-hidden="true">
+                        <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
+                      </svg>
+                    </span>
+                  </label>
             </td>
             <td>
-              <span data-i18n="tooltips:deleteTargets"></span>
+              <span data-i18n="settings:hideLowRespawn" class="toggleCheckbox"></span>
+              <sup class="new">new</sup>
+            </td>
+          </tr>
+
+          <tr class="">
+            <td>
+                <label class="mcui-checkbox">
+                    <input id="disableSoundsSettings" type="checkbox">
+                    <span>
+                      <svg class="mcui-check" viewBox="-2 -2 35 35" aria-hidden="true">
+                        <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
+                      </svg>
+                    </span>
+                  </label>
+            </td>
+            <td>
+              <span data-i18n="settings:disableSounds" class="toggleCheckbox"></span>
+              <sup class="new">new</sup>
             </td>
           </tr>
 

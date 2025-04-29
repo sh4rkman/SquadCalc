@@ -43,7 +43,7 @@
     "sessionCreated": "Session created !",
     "sessionClosed": "Session closed",
     "sessionJoined": "Session joined !",
-    "shareSession": "Click here to copy link to clipboard",
+    "shareSession": "Click here to copy link to clipboard and share it with your friends !",
     "someoneLeft": "Someone left 🏃🏼‍➡️",
     "someoneJoined": "🏃🏼‍➡️ Someone joined !",
     "youAreAlone": "You are alone in this session",
@@ -65,5 +65,6 @@
     "mapSaved": "Map saved to file",
     "dragToImport": "You can drag and drop this file on the map to load it later",
     "importSuccess": "Map imported successfully",
-    "download": "Save the map to file"
+    "download": "Save the map to file",
+    "factions&Vehicles": "Factions and Vehicles"
 }

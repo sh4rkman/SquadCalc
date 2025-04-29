@@ -23,7 +23,7 @@ export function loadLanguage(LANGUAGES) {
     LANG_SELECTOR.select2({
         dropdownCssClass: "dropbtn4",
         dropdownParent: $("#helpDialog"),
-        minimumResultsForSearch: -1, // Disable search
+        minimumResultsForSearch: -1,
     });
 
     LANGUAGES.forEach(function(lng) {
@@ -98,13 +98,14 @@ function updateContent() {
         minimumResultsForSearch: -1,
     });
 
-    let placeholder = i18next.t("common:layerPlaceholder");
+    let layerPlaceholder = i18next.t("common:layerPlaceholder");
+    let factionPlaceholder = i18next.t("common:factionPlaceholder");
 
     $(".dropbtn5").select2("destroy").select2({
         dropdownCssClass: "dropbtn",
         dropdownParent: $("#layerSelector"),
         allowClear: true,
-        placeholder: placeholder,
+        placeholder: layerPlaceholder,
         minimumResultsForSearch: -1,
     });
 
@@ -122,4 +123,21 @@ function updateContent() {
         width: "fit-content",
     });
 
+    $(".dropbtn9").select2("destroy").select2({
+        dropdownCssClass: "dropbtn",
+        dropdownParent: $("#faction1"),
+        //allowClear: true,
+        placeholder: factionPlaceholder,
+        minimumResultsForSearch: -1,
+        //matcher: matchCustom,
+    });
+
+    // $(".dropbtn11").select2("destroy").select2({
+    //     dropdownCssClass: "dropbtn",
+    //     dropdownParent: $("#faction2"),
+    //     //allowClear: true,
+    //     placeholder: factionPlaceholder,
+    //     minimumResultsForSearch: -1,
+    //     //matcher: matchCustom,
+    // });
 }

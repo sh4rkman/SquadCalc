@@ -62,7 +62,7 @@ export function loadSettings(){
     $(".dropbtn6").select2({
         dropdownCssClass: "dropbtn6",
         dropdownParent: $("#helpDialog"),
-        minimumResultsForSearch: -1, // Disable search
+        minimumResultsForSearch: -1,
     });
     $(".dropbtn6").val(fontSize).trigger("change");
 
@@ -79,6 +79,28 @@ export function loadSettings(){
         minimumResultsForSearch: -1, // Disable search
     });
     $(".dropbtn7").val(markerSize).trigger("change");
+
+
+    App.userSettings.enableFactions = loadLocalSetting("settings-enable-factions");
+    $("#enableFactionsSettings").prop("checked", App.userSettings.enableFactions);
+
+    if (!App.userSettings.enableFactions) {
+        $("#hideLowRespawnSettings").prop('disabled', true);
+        $("#disableSoundsSettings").prop('disabled', true);
+    }
+
+
+    App.userSettings.disableSounds = loadLocalSetting("settings-disable-sounds", 0);
+    $("#disableSoundsSettings").prop("checked", App.userSettings.disableSounds);
+
+    App.userSettings.hideLowRespawn = loadLocalSetting("settings-hide-lowrespawn", 0);
+    $("#hideLowRespawnSettings").prop("checked", App.userSettings.hideLowRespawn);
+
+    App.userSettings.showMainZones = loadLocalSetting("settings-show-mainzones");
+    $("#showMainZonesSettings").prop("checked", App.userSettings.showMainZones);
+    
+    App.userSettings.showMainAssets = loadLocalSetting("settings-show-mainAssets");
+    $("#showMainAssetsSettings").prop("checked", App.userSettings.showMainAssets);
 
     App.userSettings.contextMenu = loadLocalSetting("settings-context-menu");
     $("#contextMenuSettings").prop("checked", App.userSettings.contextMenu);
@@ -223,6 +245,108 @@ export function updatePreview(){
         tooltip_coordPreview.disable();
     }
 }
+
+
+$("#showMainZonesSettings").on("change", function() {
+    var val = $("#showMainZonesSettings").is(":checked");
+    App.userSettings.showMainZones = val;
+    localStorage.setItem("settings-show-mainzones", +val);
+
+    App.minimap.layer.mainZones.rectangles.forEach((rectangle) => {
+        if (!val) {
+            rectangle.setStyle({ fillOpacity: 0, opacity: 0 });
+        } else {
+            rectangle.setStyle({ fillOpacity: 0.1, opacity: 1 });
+        }  
+    });
+});
+
+
+$("#showMainAssetsSettings").on("change", function() {
+    var val = $("#showMainAssetsSettings").is(":checked");
+    App.userSettings.showMainAssets = val;
+    localStorage.setItem("settings-show-mainAssets", +val);
+
+    App.minimap.layer.mainZones.assets.forEach(asset => {
+        if (!val) {
+            asset.setOpacity(0);
+        } else {
+            asset.setOpacity(1);
+        }
+    });
+});
+
+$("#disableSoundsSettings").on("change", function() {
+    var val = $("#disableSoundsSettings").is(":checked");
+    App.userSettings.disableSounds = val;
+    localStorage.setItem("settings-disable-sounds", +val);
+});
+
+$("#hideLowRespawnSettings").on("change", function() {
+    var val = $("#hideLowRespawnSettings").is(":checked");
+    App.userSettings.hideLowRespawn = val;
+    localStorage.setItem("settings-hide-lowrespawn", +val);
+
+    if ($(".btn-pin.active").length == 0 ) return;
+
+    // Clear all pinned vehicles & remove timers
+
+    $("#pinnedVehiclesTab .pinnedVehicles").each(function() {
+        const $vehicleDiv = $(this);
+        const timerId = $vehicleDiv.data("timerId");
+        if (timerId) clearInterval(timerId);
+        $vehicleDiv.removeClass("active");
+        $vehicleDiv.removeData("timerId");
+    });
+    $("#pinnedVehiclesTab").empty();
+
+    let factionData, country, faction;
+
+    if ($(".btn-pin.active")[0]?.id === "team1PinButton") {
+        factionData = App.minimap.layer.layerData.factions.team1factions;
+        country = $(".dropbtn8").val();
+        faction = $(".dropbtn9").val();
+    } else {
+        factionData = App.minimap.layer.layerData.factions.team2factions;
+        country = $(".dropbtn10").val();
+        faction = $(".dropbtn11").val();
+    }
+
+    App.pinFaction(factionData, country, faction);
+
+});
+
+
+
+$("#enableFactionsSettings").on("change", function() {
+    var val = $("#enableFactionsSettings").is(":checked");
+    App.userSettings.enableFactions = val;
+    localStorage.setItem("settings-enable-factions", +val);
+    if (!val){
+        $("#factionsTab").hide();
+        $("#hideLowRespawnSettings").prop('disabled', true);
+        $("#disableSoundsSettings").prop('disabled', true);
+        
+        App.minimap.layer.mains[0].flag._icon.classList.forEach(className => {
+            if (className.startsWith("country_")) {
+                App.minimap.layer.mains[0].flag._icon.classList.remove(className);
+            }
+        });
+        App.minimap.layer.mains[1].flag._icon.classList.forEach(className => {
+            if (className.startsWith("country_")) {
+                App.minimap.layer.mains[1].flag._icon.classList.remove(className);
+            }
+        });
+    } else {
+        $("#hideLowRespawnSettings").prop('disabled', false);
+        $("#disableSoundsSettings").prop('disabled', false);
+        if (App.minimap.layer) {
+            App.loadFaction(App.minimap.layer.layerData);
+            $("#factionsTab").show();
+        }
+    }
+});
+
 
 $("#contextMenuSettings").on("change", function() {
     var val = $("#contextMenuSettings").is(":checked");

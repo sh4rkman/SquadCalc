@@ -15,6 +15,8 @@ import SquadFiringSolution from "./squadFiringSolution.js";
 import packageInfo from "../../package.json";
 import i18next from "i18next";
 import SquadLayer from "./squadLayer.js";
+import { App } from "../app.js";
+
 
 
 
@@ -39,6 +41,7 @@ export default class SquadCalc {
         this.WEAPON_SELECTOR = $(".dropbtn2");
         this.SHELL_SELECTOR = $(".dropbtn3");
         this.LAYER_SELECTOR = $(".dropbtn5");
+        this.FACTION_SELECTOR = $(".dropbtn9");
         this.session = false;
         this.version = packageInfo.version;
     }
@@ -66,6 +69,8 @@ export default class SquadCalc {
         // Initiate Maps&Layers Dropdown
         this.MAP_SELECTOR.select2();
         this.LAYER_SELECTOR.select2();
+        this.FACTION_SELECTOR.select2();
+        $(".dropbtn8").select2();
         
         // Load maps 
         MAPS.forEach((map, i) => {
@@ -90,11 +95,8 @@ export default class SquadCalc {
                 this.updateUrlParams({ map: this.minimap.activeMap.name });
             }
             
-
             // Refresh layer selector
             this.loadLayers();
-
-
 
             if (broadcast && this.session.ws && this.session.ws.readyState === WebSocket.OPEN) {
                 this.session.ws.send(
@@ -118,8 +120,12 @@ export default class SquadCalc {
                 if (abortController) { abortController.abort(); } // Abort the ongoing fetch request
                 if (this.minimap.layer) this.minimap.layer.clear();
                 $(".btn-layer").hide();
+                $("#factionsTab").hide();
                 return;
             }
+
+            $(".dropbtn8").empty();
+            $(".dropbtn10").empty();
             
             // Update the the URL
             this.updateUrlParams({ layer: selectedLayerText });
@@ -132,28 +138,467 @@ export default class SquadCalc {
                 if (this.minimap.layer) this.minimap.layer.clear();
                 this.minimap.layer = new SquadLayer(this.minimap, layerData);
                 $(".btn-layer").addClass("active").show();
+                if (process.env.DISABLE_FACTIONS != "true" && App.userSettings.enableFactions) {
+                    this.loadFaction(layerData);
+                    $("#factionsTab").show();
+                }
                 this.minimap.spin(false);
-            }).catch(error => {        
+            }).catch(error => {
                 if (error.name !== "AbortError") {
                     this.openToast("error", "error", "apiError");
                     console.debug("Error fetching layer data:", error);
-                }   
+                }
+                $("#factionsTab").hide();
                 this.minimap.spin(false);
             });
         });
-
     }
 
+    loadFaction(factionData) {
+
+        $(".dropbtn8").empty();
+        $(".dropbtn10").empty();
+
+        factionData.teamConfigs.factions.team1Units.forEach((faction) => {
+            $(".dropbtn8").append(`<option value=${faction.factionID}>${faction.factionID}</option>`);
+        });
+
+        factionData.teamConfigs.factions.team2Units.forEach((faction) => {
+            $(".dropbtn10").append(`<option value=${faction.factionID}>${faction.factionID}</option>`);
+        });
+
+
+        $(".dropbtn8").off("change").on("change", (event) => {
+
+            //empty the unit type selector
+            $(".dropbtn9").empty();
+            $("#team1Vehicles").empty();
+
+            if ( $("#team1PinButton").hasClass("active") ) this.unpinFaction();
+            
+            factionData.teamConfigs.factions.team1Units.forEach((faction) => {
+                if (faction.factionID == event.target.value) {
+                    for (const unit of factionData.factions.team1factions) {
+                        if (unit.unitObjectName === faction.defaultUnit) {
+                            $(".dropbtn9").append(`<option value=${faction.defaultUnit}>${unit.displayName}</option>`);
+                            break;
+                        }
+                    }
+                    for (const type of faction.types) {
+                        for (const unit of factionData.factions.team1factions) {
+                            if (unit.unitObjectName === type.unit) {
+                                $(".dropbtn9").append(`<option value=${type.unit}>${unit.displayName}</option>`);
+                                break;
+                            }
+                        }
+                    }
+
+                }
+            });
+            // Set the default value to the first option
+            $(".dropbtn9").val($(".dropbtn9 option:first").val()).trigger("change");
+
+            const iconEl = this.minimap.layer.mains[0].flag._icon;
+
+            // Remove any old country_XXX class
+            iconEl.classList.forEach(className => {
+                if (className.startsWith("country_")) {
+                    iconEl.classList.remove(className);
+                }
+            });
+
+            // Add the new one
+            const newClass = "country_" + event.target.value;
+            iconEl.classList.add(newClass);
+
+        });
+
+        $(".dropbtn10").off("change").on("change", (event) => {
+            //empty the unit type selector
+            $(".dropbtn11").empty();
+            $("#team2Vehicles").empty();
+            if ( $("#team2PinButton").hasClass("active") ) this.unpinFaction();
+
+            factionData.teamConfigs.factions.team2Units.forEach((faction) => {
+                if (faction.factionID == event.target.value) {
+                    for (const unit of factionData.factions.team2factions) {
+                        if (unit.unitObjectName === faction.defaultUnit) {
+                            $(".dropbtn11").append(`<option value=${faction.defaultUnit}>${unit.displayName}</option>`);
+                            break;
+                        }
+                    }
+                    for (const type of faction.types) {
+                        for (const unit of factionData.factions.team2factions) {
+                            if (unit.unitObjectName === type.unit) {
+                                $(".dropbtn11").append(`<option value=${type.unit}>${unit.displayName}</option>`);
+                                break;
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Set the default value to the first option
+            $(".dropbtn11").val($(".dropbtn11 option:first").val()).trigger("change");
+            const iconEl = this.minimap.layer.mains[1].flag._icon;
+
+            // Remove any old country_XXX class
+            iconEl.classList.forEach(className => {
+                if (className.startsWith("country_")) {
+                    iconEl.classList.remove(className);
+                }
+            });
+
+            // Add the new one
+            const newClass = "country_" + event.target.value;
+            iconEl.classList.add(newClass);
+
+        });
+
+        $(".dropbtn9").off("change").on("change", (event) => {
+            // Empty the vehicles container
+            $("#team1Vehicles").empty();
+            if ( $("#team1PinButton").hasClass("active") ) this.unpinFaction();
+        
+            const selectedUnit = factionData.factions.team1factions.find(
+                (unit) => unit.unitObjectName === event.target.value
+            );
+        
+            if (selectedUnit) {
+                selectedUnit.vehicles.forEach((vehicle) => {
+                    const delayInfo = vehicle.delay > 0 ? `Delay: ${vehicle.delay} min` : "";
+                    $("#team1Vehicles").append(`
+                        <div class="vehicle-card animate__animated animate__fadeIn animate__faster">
+                            <div class="vehicle-icon">
+                                <img src='/icons/ally/vehicles/${vehicle.icon}.webp' alt='${vehicle.type}' class='vehicle-icon-img'>
+                            </div>
+                            <div class="vehicle-icon">
+                                <div class="vehicle-count">×${vehicle.count}</div>
+                            </div>
+                            <div class="vehicle-info">
+                                <div class="vehicle-meta">
+                                    <span class="respawn">Respawn: ${vehicle.respawnTime} min</span>
+                                    <span class="count-delay"> ${delayInfo}</span>
+                                </div>
+                                <div class="vehicle-type">${vehicle.type}</div>
+                            </div>
+                        </div>
+                    `);
+                });
+        
+                // Handle click-to-copy
+                $(".vehicle-type").off("click").on("click", (event) => {
+                    navigator.clipboard.writeText(`CreateSquad ${event.target.innerText}`);
+                    animateCSS($(event.target), "fadeIn");
+                    const originalText = event.target.innerText;
+                    event.target.innerText = i18next.t("tooltips:copied");
+                    setTimeout(() => {
+                        animateCSS($(event.target), "fadeIn");
+                        event.target.innerText = originalText;
+                    }, 2000);
+                });
+            } else {
+                console.warn("No matching unit found for", event.target.value);
+            }
+        });
+        
+
+        // <button class="vehicle-icon">
+        //     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+        //         <path fill="currentColor" d="M224 0c-17.7 0-32 14.3-32 32l0 19.2C119 66 64 130.6 64 208l0 18.8c0 47-17.3 92.4-48.5 127.6l-7.4 8.3c-8.4 9.4-10.4 22.9-5.3 34.4S19.4 416 32 416l384 0c12.6 0 24-7.4 29.2-18.9s3.1-25-5.3-34.4l-7.4-8.3C401.3 319.2 384 273.9 384 226.8l0-18.8c0-77.4-55-142-128-156.8L256 32c0-17.7-14.3-32-32-32zm45.3 493.3c12-12 18.7-28.3 18.7-45.3l-64 0-64 0c0 17 6.7 33.3 18.7 45.3s28.3 18.7 45.3 18.7s33.3-6.7 45.3-18.7z"/>
+        //     </svg>
+        // </button>
+        // <button class="vehicle-icon copy-vehicle-btn">
+        //     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+        //         <path fill="currentColor" d="M208 0L332.1 0c12.7 0 24.9 5.1 33.9 14.1l67.9 67.9c9 9 14.1 21.2 14.1 33.9L448 336c0 26.5-21.5 48-48 48l-192 0c-26.5 0-48-21.5-48-48l0-288c0-26.5 21.5-48 48-48zM48 128l80 0 0 64-64 0 0 256 192 0 0-32 64 0 0 48c0 26.5-21.5 48-48 48L48 512c-26.5 0-48-21.5-48-48L0 176c0-26.5 21.5-48 48-48z"/>
+        //     </svg>
+        // </button>
+
+        $(".dropbtn11").off("change").on("change", (event) => {
+            // Empty the vehicles container
+            $("#team2Vehicles").empty();
+            if ( $("#team2PinButton").hasClass("active") ) this.unpinFaction();
+
+            const selectedUnit = factionData.factions.team2factions.find(
+                (unit) => unit.unitObjectName === event.target.value
+            );
+        
+            if (selectedUnit) {
+                selectedUnit.vehicles.forEach((vehicle) => {
+                    const delayInfo = vehicle.delay > 0 ? `Delay: ${vehicle.delay} min` : "";
+                    $("#team2Vehicles").append(`
+                        <div class="vehicle-card animate__animated animate__fadeIn animate__faster">
+                            <div class="vehicle-icon">
+                                <img src="/icons/ally/vehicles/${vehicle.icon}.webp" alt='${vehicle.type}' class='vehicle-icon-img'>
+                            </div>
+                            <div class="vehicle-icon">
+                                <div class="vehicle-count">×${vehicle.count}</div>
+                            </div>
+                            <div class="vehicle-info">
+                                <div class="vehicle-type">${vehicle.type}</div>
+                                <div class="vehicle-meta">
+                                    <span class="respawn">Respawn: ${vehicle.respawnTime} min</span>
+                                    <span class="count-delay">${delayInfo}</span>
+                                </div>
+                            </div>
+                        </div>
+                    `);
+                });
+        
+                $(".vehicle-type").off("click").on("click", (event) => {
+                    navigator.clipboard.writeText(`CreateSquad ${event.target.innerText}`);
+                    animateCSS($(event.target), "fadeIn");
+                    const originalText = event.target.innerText;
+                    event.target.innerText = i18next.t("tooltips:copied");
+                    setTimeout(() => {
+                        animateCSS($(event.target), "fadeIn");
+                        event.target.innerText = originalText;
+                    }, 2000);
+                });
+            } else {
+                console.warn("No matching unit found for", event.target.value);
+            }
+        });
+
+
+
+        const team1DefaultFaction = factionData.teamConfigs.team1.defaultFactionUnit.split("_")[0];
+        const team2DefaultFaction = factionData.teamConfigs.team2.defaultFactionUnit.split("_")[0];
+        
+        $(".dropbtn8").val(team1DefaultFaction).trigger("change");
+        $(".dropbtn10").val(team2DefaultFaction).trigger("change");
+
+
+        $(".btn-pin").off("click").on("click", (event) => {
+            
+            if ($(event.currentTarget).hasClass("active")) {
+                console.log("already active, removing pin");
+                this.unpinFaction();
+                $(event.currentTarget).removeClass("active");
+                $("#factionsButton button").empty().append(`
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">
+                        <path fill="currentColor" d="M265.2 192c25.4 0 49.8 7.1 70.8 19.9L336 512l-192 0 0-174.3L90.4 428.3c-11.2 19-35.8 25.3-54.8 14.1s-25.3-35.8-14.1-54.8L97.7 258.8c24.5-41.4 69-66.8 117.1-66.8l50.4 0zM160 80a80 80 0 1 1 160 0A80 80 0 1 1 160 80zM448 0c8.8 0 16 7.2 16 16l0 116.3c9.6 5.5 16 15.9 16 27.7l0 109.3 16-5.3 0-56c0-8.8 7.2-16 16-16l16 0c8.8 0 16 7.2 16 16l0 84.5c0 6.9-4.4 13-10.9 15.2L480 325.3l0 26.7 48 0c8.8 0 16 7.2 16 16l0 16c0 8.8-7.2 16-16 16l-44 0 23 92.1c2.5 10.1-5.1 19.9-15.5 19.9L432 512c-8.8 0-16-7.2-16-16l0-96-16 0c-17.7 0-32-14.3-32-32l0-144c0-17.7 14.3-32 32-32l0-32c0-11.8 6.4-22.2 16-27.7L416 32c-8.8 0-16-7.2-16-16s7.2-16 16-16l16 0 16 0z"/>
+                    </svg>
+                `);
+                return;
+            }
+            this.unpinFaction();
+
+            $(".btn-pin").removeClass("active").text("Pin to map");
+
+            let country;
+            let faction;
+            let teamfaction;
+            
+            if (event.currentTarget.id === "team1PinButton") {
+                country = $(".dropbtn8").val();
+                faction = $(".dropbtn9").val();
+                teamfaction = factionData.factions.team1factions;
+            } else {
+                country = $(".dropbtn10").val();
+                faction = $(".dropbtn11").val();
+                teamfaction = factionData.factions.team2factions;
+            }
+
+            // if country of faction is empty or null, return
+            if (country === null || faction === null) return;
+            if (country === "" || faction === "") return;
+
+            $(event.currentTarget).addClass("active").text("Pinned");
+
+            this.pinFaction(teamfaction, country, faction);
+    
+        });
+
+        let factionPlaceholder = i18next.t("common:factionPlaceholder");
+
+        function formatFlags(state, isSelection = false) {
+            if (!state.id) {
+                return state.text;
+            }
+        
+            const baseUrl = "/icons/flags/";
+            const imgHtml = `<img src="${baseUrl}${state.element.value}.webp" class="img-flag" />`;
+        
+            if (isSelection) {
+                return $(`<span class="countryFlags">${imgHtml}</span>`);
+            }
+        
+            return $(`
+                <span class="countryFlags">
+                    ${imgHtml}
+                    <span class="flag-label">${state.text}</span>
+                </span>
+            `);
+        }
+
+        // Initialize Select2 with the structured data
+
+        $(".dropbtn8").select2({
+            //data: selectData.results,
+            dropdownCssClass: "dropbtn",
+            dropdownParent: $("#country1"),
+            allowClear: true,
+            placeholder: factionPlaceholder,
+            minimumResultsForSearch: -1,
+            templateResult: function(state) {
+                return formatFlags(state, false); // dropdown list
+            },
+            templateSelection: function(state) {
+                return formatFlags(state, true);  // selected option
+            },
+        });
+
+        $(".dropbtn10").select2({
+            //data: selectData.results,
+            dropdownCssClass: "dropbtn",
+            dropdownParent: $("#country2"),
+            allowClear: true,
+            placeholder: factionPlaceholder,
+            minimumResultsForSearch: -1,
+            templateResult: function(state) {
+                return formatFlags(state, false); // dropdown list
+            },
+            templateSelection: function(state) {
+                return formatFlags(state, true);  // selected option
+            },
+        });
+
+        $(".dropbtn9").select2({
+            dropdownCssClass: "dropbtn",
+            dropdownParent: $("#faction1"),
+            placeholder: factionPlaceholder,
+            minimumResultsForSearch: -1,
+        });
+
+        $(".dropbtn11").select2({
+            dropdownCssClass: "dropbtn",
+            dropdownParent: $("#faction2"),
+            placeholder: factionPlaceholder,
+            minimumResultsForSearch: -1,
+        });
+
+        $("#factionSelector").show();
+    }
+
+
+
+    pinFaction(teamfaction, country, faction) {
+
+        $("#factionsButton button").empty().append(`
+            <img src="/icons/flags/${country}.webp" alt="Faction Icon" class="faction-img" />
+        `);
+        
+        const selectedUnit = teamfaction.find(
+            (unit) => unit.unitObjectName === faction
+        );
+
+        if (selectedUnit) {
+            selectedUnit.vehicles.forEach((vehicle) => {
+
+                for (let i = 0; i < vehicle.count; i++){
+                    
+                    // Filter out vehicles with respawn time < 10 minutes
+                    if (App.userSettings.hideLowRespawn && vehicle.respawnTime < 5) return;
+
+                    $("#pinnedVehiclesTab").append(`
+                        <div class="pinnedVehicles animate__animated animate__fadeInLeft" data-vehiclename="${vehicle.type}" data-vehtype="${vehicle.vehType}" data-vehicon="${vehicle.icon}" data-respawntime="${vehicle.respawnTime}">
+                            <button type="button" class="btn-pined" aria-label="Select Factions">
+                                <img src="/icons/ally/vehicles/${vehicle.icon}.webp" alt="Faction Icon" class="faction-img" />
+                            </button>
+                            <div class="pinedVehiclesName">${vehicle.type}</div>
+                        </div>
+                    `);
+                }
+            });
+            
+        }
+
+        // Prevent focus
+        $(document).off("mousedown", '.btn-pined, .pinnedVehicles');
+        $(document).on("mousedown", '.btn-pined, .pinnedVehicles', (event) => {event.preventDefault()});
+
+        $(document).off("click", ".pinnedVehicles");
+        $(document).on("click", ".pinnedVehicles", (event) => {
+            const $vehicleDiv = $(event.currentTarget);
+            const $nameDiv = $vehicleDiv.find(".pinedVehiclesName");
+            let vehicleName = $vehicleDiv.data("vehiclename");
+
+            if ($vehicleDiv.hasClass("active")) {
+                // If active, cancel the timer and reset
+                const timerId = $vehicleDiv.data("timerId");
+                if (timerId) clearInterval(timerId);
+                $nameDiv.text(vehicleName);
+                $vehicleDiv.removeClass("active");
+                $vehicleDiv.removeData("timerId");
+                return;
+            }
+        
+            $vehicleDiv.addClass("active");
+            let respawnTime = $vehicleDiv.data("respawntime") * 1; // minutes to seconds
+            let vehIcon = $vehicleDiv.data("vehicon");
+        
+            $nameDiv.text(formatTime(respawnTime));
+        
+            const timerId = setInterval(() => {
+                respawnTime--;
+        
+                if (respawnTime > 0) {
+                    $nameDiv.text(formatTime(respawnTime));
+                } else {
+                    $nameDiv.text(vehicleName);
+                    clearInterval(timerId);
+                    $vehicleDiv.removeClass("active");
+                    $vehicleDiv.removeData("timerId");
+                    this.openToast("warning", "Vehicle respawned", "");
+                    // TODO: support for every language
+                    // use https://luvvoice.com/ if you want to add voice support for your language
+                    if (!this.userSettings.disableSounds) new Audio(`/sounds/en/${vehIcon}.mp3`).play();    
+                }
+            }, 1000);
+        
+            $vehicleDiv.data("timerId", timerId);
+        });
+        
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${minutes}:${secs.toString().padStart(2, "0")}`;
+        }
+    }
+
+
+    unpinFaction() {
+
+        // Clear any active timers
+        $("#pinnedVehiclesTab .pinnedVehicles").each(function() {
+            const $vehicleDiv = $(this);
+            const timerId = $vehicleDiv.data("timerId");
+            if (timerId) clearInterval(timerId);
+            $vehicleDiv.removeClass("active");
+            $vehicleDiv.removeData("timerId");
+        });
+    
+        // Now clear the pinned vehicles tab and reset buttons
+        $("#pinnedVehiclesTab").empty();
+        $(".btn-pin").removeClass("active").text("Pin to map");
+        $("#factionsButton button").empty().append(`
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">
+                <path fill="currentColor" d="M265.2 192c25.4 0 49.8 7.1 70.8 19.9L336 512l-192 0 0-174.3L90.4 428.3c-11.2 19-35.8 25.3-54.8 14.1s-25.3-35.8-14.1-54.8L97.7 258.8c24.5-41.4 69-66.8 117.1-66.8l50.4 0zM160 80a80 80 0 1 1 160 0A80 80 0 1 1 160 80zM448 0c8.8 0 16 7.2 16 16l0 116.3c9.6 5.5 16 15.9 16 27.7l0 109.3 16-5.3 0-56c0-8.8 7.2-16 16-16l16 0c8.8 0 16 7.2 16 16l0 84.5c0 6.9-4.4 13-10.9 15.2L480 325.3l0 26.7 48 0c8.8 0 16 7.2 16 16l0 16c0 8.8-7.2 16-16 16l-44 0 23 92.1c2.5 10.1-5.1 19.9-15.5 19.9L432 512c-8.8 0-16-7.2-16-16l0-96-16 0c-17.7 0-32-14.3-32-32l0-144c0-17.7 14.3-32 32-32l0-32c0-11.8 6.4-22.2 16-27.7L416 32c-8.8 0-16-7.2-16-16s7.2-16 16-16l16 0 16 0z"/>
+            </svg>
+        `);
+    }
+    
 
     /**
      * Retrieve list of available layers name from squadcalc api
      */
     loadLayers() {
+        this.minimap.spin(true, this.minimap.spinOptions);
         const currentUrl = new URL(window.location);
         $("#layerSelector").hide();
+        $("#factionSelector").hide();
         this.LAYER_SELECTOR.empty();
-
-        this.minimap.spin(true, this.minimap.spinOptions);
 
         fetchLayersByMap(this.minimap.activeMap.name).then(layers => {
 
@@ -196,7 +641,8 @@ export default class SquadCalc {
             $("#layerSelector").show();
 
         }).catch(error => {
-            this.LAYER_SELECTOR.hide();
+            $("#layerSelector").hide();
+            $("#factionSelector").hide();
             this.minimap.spin(false);
             this.openToast("error", "error", "apiError_layers");
             console.debug("Error fetching layers from API:", error);
@@ -352,6 +798,7 @@ export default class SquadCalc {
         const calcInformation = document.querySelector("#calcInformation");
         const weaponInformation = document.querySelector("#weaponInformation");
         const helpDialog = document.querySelector("#helpDialog");
+        const factionsDialog = document.querySelector("#factionsDialog");
 
         $(".btn-delete, .btn-download, .btn-undo, .btn-layer, #mapLayerMenu").hide();
 
@@ -395,6 +842,7 @@ export default class SquadCalc {
         this.closeDialogOnClickOutside(calcInformation);
         this.closeDialogOnClickOutside(weaponInformation);
         this.closeDialogOnClickOutside(helpDialog);
+        this.closeDialogOnClickOutside(factionsDialog);
         
         const overlay = document.getElementById("dropOverlay");
         let dragCounter = 0;
@@ -543,6 +991,11 @@ export default class SquadCalc {
 
         $("#fabCheckbox2").on("change", () => { this.switchUI();});
 
+        $("#factionsButton").on("click", () => {
+            document.querySelector("#factionsDialog").showModal();
+        });
+        
+
         $("#mapLayerMenu").find("button.btn-session").on("click", () => {
             if ($(".btn-session").hasClass("active")) {
                 
@@ -569,6 +1022,7 @@ export default class SquadCalc {
 
         $("#mapLayerMenu").find("button.layers").on("click", (event) => {
 
+            if ($(event.currentTarget).hasClass("active")) { return; }
             const VAL = $(event.currentTarget).attr("value");
 
             if (VAL === "helpmap") {
@@ -642,12 +1096,16 @@ export default class SquadCalc {
                         $("footer").show();
                         $("#mapLayerMenu").show();
                         $("#background").show();
+                        if (this.minimap.layer && this.userSettings.enableFactions) {
+                            $("#factionsButton").show();
+                        }
                         closeToast();
                     } else {
                         $("header").hide();
                         $("footer").hide();
                         $("#background").hide();
                         $("#mapLayerMenu").hide();
+                        $("#factionsButton").hide();
                         this.openToast("success", "focusMode", "enterToExit");
                     }
                 }
@@ -723,7 +1181,7 @@ export default class SquadCalc {
 
             // Open another toast and copy current URL
             if (title === "tooltips:sessionCreated" && event.target.tagName != "BUTTON") {
-                this.copy(window.location.href);
+                navigator.clipboard.writeText(window.location.href);
                 this.openToast("success", "copied", "");
             }
 
@@ -1070,25 +1528,8 @@ export default class SquadCalc {
             text2copy = COPY_ZONE.prev().val().trim() + COPY_ZONE.text().trim();
         }
 
-        this.copy(text2copy);
+        navigator.clipboard.writeText(text2copy);
         animateCSS(COPY_ZONE.parent(), "headShake");
-    }
-
-
-    /**
-     * Copy string to clipboard
-     * execCommand is deprecated but navigator.clipboard doesn't work in steam browser :(
-     */
-    copy(string) {
-        const el = document.createElement("textarea");
-        el.value = string;
-        el.setAttribute("readonly", "");
-        el.style.position = "absolute";
-        el.style.left = "-9999px";
-        document.body.appendChild(el);
-        el.select();
-        document.execCommand("copy");
-        document.body.removeChild(el);
     }
 
     /**
@@ -1235,8 +1676,7 @@ export default class SquadCalc {
         }
 
         animateCSS($(".copy"), "headShake");
-
-        this.copy(`${$("#target-location").val()} ➜ ${$("#bearingNum").text()} - ${$("#elevationNum").text()}`);
+        navigator.clipboard.writeText(`${$("#target-location").val()} ➜ ${$("#bearingNum").text()} - ${$("#elevationNum").text()}`);
         this.openToast("success", "copied", "");
 
     }

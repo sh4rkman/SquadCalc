@@ -157,7 +157,7 @@ button:focus {
     &.animate__fadeInDown {
         --animate-duration: 0.2s;
     }
-    &.animate__fadeInRight {
+    &.animate__fadeInRight, &.animate__fadeInLeft {
         --animate-duration: 0.2s;
         svg {
             --animate-duration: 0.5s;
