@@ -85,8 +85,8 @@ export const squadMinimap = Map.extend({
         this.contextMenu = new squadContextMenu();
 
         // Custom events handlers
-        //this.on("click", this._handleclick);
-        //this.on("dblclick", this._handleDoubleClick, this);
+        this.on("click", this._handleclick());
+        this.on("dblclick", function(e) { this._handleDoubleClick(e); });
 
 
         this.on("click", (event) => {
@@ -99,13 +99,13 @@ export const squadMinimap = Map.extend({
             }, 175);
         });
         
-        this.on("dblclick", (event) => {
-            if (this._singleClickTimeout) {
-                clearTimeout(this._singleClickTimeout);
-                this._singleClickTimeout = null;
-            }
-            this._handleDoubleClick(event);
-        });
+        // this.on("dblclick", (event) => {
+        //     if (this._singleClickTimeout) {
+        //         clearTimeout(this._singleClickTimeout);
+        //         this._singleClickTimeout = null;
+        //     }
+        //     this._handleDoubleClick(event);
+        // });
 
         this.on("contextmenu", this._handleContextMenu, this);
         this.on("zoomend", this._handleZoom, this);
@@ -258,6 +258,13 @@ export const squadMinimap = Map.extend({
         this.activeCircles = [];
 
         if (this.layer) this.layer.clear();
+
+        $(".dropbtn8").empty();
+        $(".dropbtn9").empty();
+        $(".dropbtn10").empty();
+        $(".dropbtn11").empty();
+        $("#factionsTab").hide();
+        App.unpinFaction();
     
         $(".btn-delete, .btn-undo, .btn-download").hide();
 

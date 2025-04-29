@@ -76,6 +76,10 @@ export class SquadObjective {
     
         if (this.isMain) {
             className += " main";
+            if (process.env.DISABLE_FACTIONS != "true" && App.userSettings.enableFactions) {
+                if (this.objectName === "00-Team1Main") className += ` country_${$(".dropbtn8").val()}`;
+                else className += ` country_${$(".dropbtn10").val()}`;
+            }
         } else {
             position = Math.abs(this.layer.startPosition - this.position);
             html = position;
@@ -238,6 +242,10 @@ export class SquadObjective {
                 className += " main selectable";
             } else {
                 className += " main unselectable";
+            }
+            if (process.env.DISABLE_FACTIONS != "true" && App.userSettings.enableFactions) {
+                if (this.objectName === "00-Team1Main") className += ` country_${$(".dropbtn8").val()}`;
+                else className += ` country_${$(".dropbtn10").val()}`;
             }
         } else {
             if (this.layer.layerData.gamemode != "AAS" && this.layer.layerData.gamemode != "Destruction"){

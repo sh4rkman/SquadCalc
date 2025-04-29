@@ -86,6 +86,7 @@ export default class SquadLayer {
                 const latlng = this.convertToLatLng(main.location_x, main.location_y);
                 const newFlag = new SquadObjective(latlng, this, main, 1, main);
                 this.flags.push(newFlag);
+                this.mains.push(newFlag);
                 newFlag.flag.off();
                 newFlag.flag.options.interactive = false;
             });
@@ -150,7 +151,9 @@ export default class SquadLayer {
                 // We will draw their protection zones instead later
                 if (i === 0 || i === numFlags){
                     this.path.push(latlng);
-                    this.flags.push(new SquadObjective(latlng, this, obj, 1, obj));
+                    let newFlag = new SquadObjective(latlng, this, obj, 1, obj);
+                    this.flags.push(newFlag);
+                    this.mains.push(newFlag);
                     return;
                 }
 
@@ -468,7 +471,6 @@ export default class SquadLayer {
             }
 
         });
-
     }
 
     
@@ -484,9 +486,12 @@ export default class SquadLayer {
         const textOpacity = on ? 1 : 0;
         const fillOpacity = on ? 0.1 : 0;
 
-
         this.mainZones.rectangles.forEach((rectangle) => {
-            rectangle.setStyle({ fillOpacity: fillOpacity, opacity: opacity });
+            if (!App.userSettings.showMainZones) {
+                rectangle.setStyle({ fillOpacity: 0, opacity: 0 });
+            } else {
+                rectangle.setStyle({ fillOpacity: fillOpacity, opacity: opacity });
+            }  
         });
 
         this.mainZones.texts.forEach((text) => {
@@ -718,7 +723,7 @@ export default class SquadLayer {
 
         // Copy the next flags names to the clipboard
         if (App.userSettings.copyNextFlags) {
-            App.copy(i18next.t("common:nextFlags") + " : " + nextFlagsNamesArray.join("/"));
+            navigator.clipboard.writeText(i18next.t("common:nextFlags") + " : " + nextFlagsNamesArray.join("/"));
         }  
        
         // Only one flag in front ? Click it

@@ -285,6 +285,21 @@
     background-size: contain;
 }
 
+.mapTrackedapcArtillery {
+    background: url('../../../public/icons/ally/vehicles/T_map_trackedapc_artillery.webp') no-repeat center center;
+    background-size: contain;
+}
+
+.mapTrackedapcLogistics {
+    background: url('../../../public/icons/ally/vehicles/T_map_trackedapc_logistics.webp') no-repeat center center;
+    background-size: contain;
+}
+
+.mapTrackedapcMSV {
+    background: url('../../../public/icons/ally/vehicles/T_map_trackedapc_msv.webp') no-repeat center center;
+    background-size: contain;
+}
+
 .mapTrackedapc {
     background: url('../../../public/icons/ally/vehicles/map_trackedapc.webp') no-repeat center center;
     background-size: contain;
@@ -519,6 +534,21 @@
 
 .enemymapAntiair {
     background: url('../../../public/icons/enemy/vehicles/map_antiair.webp') no-repeat center center;
+    background-size: contain;
+}
+
+.enemymapTrackedapcArtillery {
+    background: url('../../../public/icons/enemy/vehicles/T_map_trackedapc_artillery.webp') no-repeat center center;
+    background-size: contain;
+}
+
+.enemymapTrackedapcLogistics {
+    background: url('../../../public/icons/enemy/vehicles/T_map_trackedapc_logistics.webp') no-repeat center center;
+    background-size: contain;
+}
+
+.enemymapTrackedapcMSV {
+    background: url('../../../public/icons/enemy/vehicles/T_map_trackedapc_msv.webp') no-repeat center center;
     background-size: contain;
 }
 
