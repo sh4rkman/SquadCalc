@@ -66,5 +66,9 @@
     "dragToImport": "You can drag and drop this file on the map to load it later",
     "importSuccess": "Map imported successfully",
     "download": "Save the map to file",
-    "factions&Vehicles": "Factions and Vehicles"
+    "factions&Vehicles": "Factions and Vehicles",
+    "enableFactionsTooltip": "After selecting a layer, enable Factions and Vehicles features",
+    "defaultFactionsTooltip": "After picking a Layer, pre-select it's default factions",
+    "hideLowRespawnTooltip": "When pinning a faction to the map, only show Vehicles with a 10mn or more respawn time",
+    "vehicleTimerTooltip": "Click on a vehicle to mark it as destroyed and set a respawn timer"
 }

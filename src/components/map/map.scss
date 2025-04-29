@@ -72,6 +72,9 @@ $flag-circle-opacity: 0.2;
             letter-spacing: 0.02em;
             align-content: center;
             display: grid;
+            &.main {
+                text-transform: uppercase;
+            }
         }
         .subkp {
             font-size: 0.65em;
@@ -193,12 +196,20 @@ $flag-circle-opacity: 0.2;
                             background: url('../../../public/icons/flags/circles/PLAAGF.webp') no-repeat center center;
                             background-size: 210%;
                         }
+                        &.country_USA {
+                            background: url('../../../public/icons/flags/circles/USA.webp') no-repeat center center;
+                            background-size: 210%;
+                        }
                         &.country_USMC {
                             background: url('../../../public/icons/flags/circles/USMC.webp') no-repeat center center;
                             background-size: 210%;
                         }
                         &.country_VDV {
                             background: url('../../../public/icons/flags/circles/VDV.webp') no-repeat center center;
+                            background-size: 210%;
+                        }
+                        &.country_WPMC {
+                            background: url('../../../public/icons/flags/circles/WPMC.webp') no-repeat center center;
                             background-size: 210%;
                         }
                     }

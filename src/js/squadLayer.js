@@ -482,7 +482,7 @@ export default class SquadLayer {
 
 
     setMainZoneOpacity(on){
-        const opacity = on ? 1 : 0;
+        var opacity = on ? 1 : 0;
         const textOpacity = on ? 1 : 0;
         const fillOpacity = on ? 0.1 : 0;
 
@@ -497,6 +497,8 @@ export default class SquadLayer {
         this.mainZones.texts.forEach((text) => {
             text.setOpacity(textOpacity);
         });
+
+        if (!App.userSettings.showMainAssets) opacity = 0;
 
         this.mainZones.assets.forEach(asset => {
             asset.setOpacity(opacity);

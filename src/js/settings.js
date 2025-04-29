@@ -85,9 +85,17 @@ export function loadSettings(){
     $("#enableFactionsSettings").prop("checked", App.userSettings.enableFactions);
 
     if (!App.userSettings.enableFactions) {
-        $("#hideLowRespawnSettings").prop('disabled', true);
-        $("#disableSoundsSettings").prop('disabled', true);
+        $("#hideLowRespawnSettings").prop("disabled", true);
+        $("#disableSoundsSettings").prop("disabled", true);
+        $("#defaultFactionsSettings").prop("disabled", true);
     }
+
+    if (process.env.DISABLE_FACTIONS === "true") {
+        $(".factionSettings").hide();
+    }
+
+    App.userSettings.defaultFactions = loadLocalSetting("settings-default-factions");
+    $("#defaultFactionsSettings").prop("checked", App.userSettings.defaultFactions);
 
     App.userSettings.disableSounds = loadLocalSetting("settings-disable-sounds", 0);
     $("#disableSoundsSettings").prop("checked", App.userSettings.disableSounds);
@@ -98,7 +106,7 @@ export function loadSettings(){
     App.userSettings.showMainZones = loadLocalSetting("settings-show-mainzones");
     $("#showMainZonesSettings").prop("checked", App.userSettings.showMainZones);
     
-    App.userSettings.showMainAssets = loadLocalSetting("settings-show-mainAssets");
+    App.userSettings.showMainAssets = loadLocalSetting("settings-show-mainassets");
     $("#showMainAssetsSettings").prop("checked", App.userSettings.showMainAssets);
 
     App.userSettings.contextMenu = loadLocalSetting("settings-context-menu");
@@ -246,6 +254,13 @@ export function updatePreview(){
 }
 
 
+$("#defaultFactionsSettings").on("change", function() {
+    var val = $("#defaultFactionsSettings").is(":checked");
+    App.userSettings.defaultFactions = val;
+    localStorage.setItem("settings-default-factions", +val);
+});
+
+
 $("#showMainZonesSettings").on("change", function() {
     var val = $("#showMainZonesSettings").is(":checked");
     App.userSettings.showMainZones = val;
@@ -264,7 +279,7 @@ $("#showMainZonesSettings").on("change", function() {
 $("#showMainAssetsSettings").on("change", function() {
     var val = $("#showMainAssetsSettings").is(":checked");
     App.userSettings.showMainAssets = val;
-    localStorage.setItem("settings-show-mainAssets", +val);
+    localStorage.setItem("settings-show-mainassets", +val);
 
     App.minimap.layer.mainZones.assets.forEach(asset => {
         if (!val) {
@@ -323,8 +338,9 @@ $("#enableFactionsSettings").on("change", function() {
     localStorage.setItem("settings-enable-factions", +val);
     if (!val){
         $("#factionsTab").hide();
-        $("#hideLowRespawnSettings").prop('disabled', true);
-        $("#disableSoundsSettings").prop('disabled', true);
+        $("#hideLowRespawnSettings").prop("disabled", true);
+        $("#disableSoundsSettings").prop("disabled", true);
+        $("#defaultFactionsSettings").prop("disabled", true);
         
         App.minimap.layer.mains[0].flag._icon.classList.forEach(className => {
             if (className.startsWith("country_")) {
@@ -337,8 +353,9 @@ $("#enableFactionsSettings").on("change", function() {
             }
         });
     } else {
-        $("#hideLowRespawnSettings").prop('disabled', false);
-        $("#disableSoundsSettings").prop('disabled', false);
+        $("#hideLowRespawnSettings").prop("disabled", false);
+        $("#disableSoundsSettings").prop("disabled", false);
+        $("#defaultFactionsSettings").prop("disabled", false);
         if (App.minimap.layer) {
             App.loadFaction(App.minimap.layer.layerData);
             $("#factionsTab").show();

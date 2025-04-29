@@ -77,8 +77,16 @@ export class SquadObjective {
         if (this.isMain) {
             className += " main";
             if (process.env.DISABLE_FACTIONS != "true" && App.userSettings.enableFactions) {
-                if (this.objectName === "00-Team1Main") className += ` country_${$(".dropbtn8").val()}`;
-                else className += ` country_${$(".dropbtn10").val()}`;
+                if (this.objectName === "00-Team1Main") {
+                    if ($(".dropbtn8").val() != null) {
+                        className += ` country_${$(".dropbtn8").val()}`;
+                    }
+                }
+                else {
+                    if ($(".dropbtn8").val() != null) {
+                        className += ` country_${$(".dropbtn10").val()}`;
+                    }
+                }
             }
         } else {
             position = Math.abs(this.layer.startPosition - this.position);
@@ -97,6 +105,9 @@ export class SquadObjective {
 
 
     updateMarker(className, html){
+
+        let nameTextClassName = "objText";
+
         this.flag = new Marker(this.latlng, {
             interactive: true,
             keyboard: false,
@@ -109,13 +120,38 @@ export class SquadObjective {
         }).addTo(this.layerGroup);
 
 
-        if (!this.isMain){ html = this.name;}
+        if (!this.isMain){ 
+            html = this.name;
+        } else {
+
+            nameTextClassName += " main";
+
+            if (process.env.DISABLE_FACTIONS != "true" && App.userSettings.enableFactions) {
+                if (this.objectName === "00-Team1Main") {
+                    if ($(".dropbtn8").val() != null) {
+                        html = `${$(".dropbtn8").val()} Main`;
+                    } else {
+                        html = "Team 1 Main";
+                    }
+                } else {
+                    if ($(".dropbtn10").val() != null) {
+                        html = `${$(".dropbtn10").val()} Main`;
+                    } else {
+                        html = "Team 2 Main";
+                    }
+                }
+            } else {
+                if (this.objectName === "00-Team1Main") html = "Team 1 Main";
+                else html = "Team 2 Main";
+            }
+        }
+
         this.nameText.removeFrom(this.layerGroup).remove();
         this.nameText = new Marker(this.latlng, {
             interactive: false,
             keyboard: false,
             icon: new DivIcon({
-                className: "objText",
+                className: nameTextClassName,
                 keyboard: false,
                 html: html,
                 iconSize: [300, 20],

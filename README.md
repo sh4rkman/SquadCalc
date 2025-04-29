@@ -193,7 +193,6 @@ Get a better and complete understanding of your shots and visualise a simulation
 
 ### Base map :
 The classic, straight from the game base map.  
-Also avaiblable in AI Upscaled 8192x8192 pixels though the Settings. 
 
 ### Terrain map :
 Base map enhanced with bumpmap from SDK's heightmap. Add a better comprehension of terrain.  
@@ -203,14 +202,24 @@ Also known as "why the fuck is it not the default ingame map?"
 A mix of bump map, contour map with a touch of hypsometric colors for a complete understanding of map reliefs.
 
 
+## **Ultra HD Maps**
+
+<div align="center">
+  <picture><img width="80%" src="./src/img/github/hdmaps.webp" alt="map layers"></picture>
+  <div align="center">UHD Maps vs regular ingame map image</div>
+</div>
+
+
+<br>
+
+With a single click, you can switch the map to a high-definition version powered by AI upscaling. The HD maps are 8192×8192 resolution images, letting you explore every part of the map in ultra-sharp detail right within the Leaflet interface.
+
 ## **Import/Export Your Maps**
 
 <br>
 
 <div align="center">
-  <picture>
-    <img width="50%" src="./src/img/github/import_export.webp" alt="Map Import/Export Preview">
-  </picture>
+  <picture><img width="50%" src="./src/img/github/import_export.webp" alt="Map Import/Export Preview"></picture>
 </div>
 
 <br>
@@ -227,7 +236,7 @@ Easily export your map and markers to an offline file for backup or sharing. To 
 * 🗺️ Map System built on **[Leaflet JS](https://leafletjs.com/)**
 * 🖼️ Map Images, Icons are from SquadSDK by **[OffWorld Industries](https://www.offworldindustries.com/)**
 * 🧮 Map Data is extracted thanks to **[Squad-Wiki Pipeline Map Data](https://github.com/Squad-Wiki/squad-wiki-pipeline-map-data)** SDK extractor Assets
-* 🗣️ AI Text-To-Speech made with **[LuvVoice](https://luvvoice.com/)** 
+* 🗣️ AI Text-To-Speech made with **[Luvvoice](https://luvvoice.com/)** 
 * 👌🏼 Thanks to everyone supporting the project with kinds words, clever suggestions, and better code than mine
   * MK19 implementation by [Ferrariic](https://github.com/Ferrariic)
   * SquadMortarOverlay connector by [Devil4ngle](https://github.com/Devil4ngle)
