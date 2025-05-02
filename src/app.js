@@ -30,7 +30,8 @@ var options = {
         ["zh", "中文"],
         ["uk", "UKR"],
         ["ru", "РУС"],
-        ["fr", "FR"]
+        ["fr", "FR"],
+        ["de", "DE"]
     ],
     gravity: 9.78,
     mapSize: 256,
