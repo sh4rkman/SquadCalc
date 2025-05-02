@@ -1,5 +1,6 @@
 import i18next from "i18next";
 import HttpApi from "i18next-http-backend";
+import { App } from "../app.js";
 
 /**
  * Update every label with the correct localization text
@@ -9,7 +10,15 @@ export function loadLanguage(LANGUAGES) {
 
     i18next.use(HttpApi).init({
         fallbackLng: false,
-        ns: ["tooltips","settings", "maps", "weapons", "common"],
+        ns: [
+            "tooltips",
+            "settings",
+            "maps",
+            "weapons",
+            "common",
+            "factions",
+            "units",
+        ],
         debug: false,
         backend: {
             loadPath: "./locales/{{lng}}/{{ns}}.json",
@@ -80,6 +89,8 @@ function updateContent() {
         });
     });
 
+    if (App.minimap.layer) App.minimap.layer.polyline.updateMeasurements();
+   
     $(".dropbtn").select2("destroy").select2({
         dropdownCssClass: "dropbtn",
         dropdownParent: $("#mapSelector"),
@@ -99,7 +110,8 @@ function updateContent() {
     });
 
     let layerPlaceholder = i18next.t("common:layerPlaceholder");
-    let factionPlaceholder = i18next.t("common:factionPlaceholder");
+    let factionPlaceholder = i18next.t("common:faction");
+    let unitPlaceholder = i18next.t("common:unit");
 
     $(".dropbtn5").select2("destroy").select2({
         dropdownCssClass: "dropbtn",
@@ -123,21 +135,45 @@ function updateContent() {
         width: "fit-content",
     });
 
-    $(".dropbtn9").select2("destroy").select2({
-        dropdownCssClass: "dropbtn",
-        dropdownParent: $("#faction1"),
-        //allowClear: true,
-        placeholder: factionPlaceholder,
-        minimumResultsForSearch: -1,
-        //matcher: matchCustom,
-    });
 
-    // $(".dropbtn11").select2("destroy").select2({
-    //     dropdownCssClass: "dropbtn",
-    //     dropdownParent: $("#faction2"),
-    //     //allowClear: true,
-    //     placeholder: factionPlaceholder,
-    //     minimumResultsForSearch: -1,
-    //     //matcher: matchCustom,
-    // });
+    if(App.minimap.layer) {
+        $(".dropbtn8").select2("destroy").select2({
+            dropdownCssClass: "dropbtn",
+            dropdownParent: $("#faction1"),
+            allowClear: true,
+            placeholder: factionPlaceholder,
+            minimumResultsForSearch: -1,
+            templateResult: (state) => App.minimap.layer.factions.formatFactions(state, false),
+            templateSelection: (state) => App.minimap.layer.factions.formatFactions(state, true),
+        });
+
+        $(".dropbtn9").select2("destroy").select2({
+            dropdownCssClass: "dropbtn",
+            dropdownParent: $("#unit1"),
+            placeholder: unitPlaceholder,
+            minimumResultsForSearch: -1,
+            templateResult: (state) => App.minimap.layer.factions.formatUnits(state, false),
+            templateSelection: (state) => App.minimap.layer.factions.formatUnits(state, true),
+        });
+
+        $(".dropbtn10").select2("destroy").select2({
+            dropdownCssClass: "dropbtn",
+            dropdownParent: $("#faction2"),
+            allowClear: true,
+            placeholder: factionPlaceholder,
+            minimumResultsForSearch: -1,
+            templateResult: (state) => App.minimap.layer.factions.formatFactions(state, false),
+            templateSelection: (state) => App.minimap.layer.factions.formatFactions(state, true),
+        });
+
+        $(".dropbtn11").select2("destroy").select2({
+            dropdownCssClass: "dropbtn",
+            dropdownParent: $("#unit2"),
+            placeholder: unitPlaceholder,
+            minimumResultsForSearch: -1,
+            templateResult: (state) => App.minimap.layer.factions.formatUnits(state, false),
+            templateSelection: (state) => App.minimap.layer.factions.formatUnits(state, true),
+        });
+    }
+    
 }

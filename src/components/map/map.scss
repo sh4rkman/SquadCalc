@@ -84,7 +84,7 @@ $flag-circle-opacity: 0.2;
             @include variables.light-text-outline;
             background-color: rgba(255, 255, 255, 0.4);
             font-size: 1.3em;
-            border: solid rgba(0, 0, 0, 0.4) 1px;
+            border: solid rgba(0, 0, 0, 0.5) 1px;
             box-shadow: 0 8px 12px rgba(0, 0, 0, 0.75);
             transition: opacity 0.25s ease-in-out;
             font-family: variables.$mainFont, Verdana, Geneva, Tahoma, sans-serif;
@@ -168,6 +168,9 @@ $flag-circle-opacity: 0.2;
                     transition: opacity 0.1s ease-in;
                     &.circleFlag {
                         background-size: 80%;
+                        &.country_ADF {
+                            background-size: 210%;
+                        }
                         &.country_TLF {
                             background: url('../../../public/icons/flags/circles/TLF.webp') no-repeat center center;
                             background-size: 210%;
@@ -371,6 +374,9 @@ $flag-circle-opacity: 0.2;
             background-size: contain;
             transition: opacity 0.1s ease-in;
         }
+        .unplayable-area {
+            transition: fill-opacity 0.2s ease-in;
+        }
         .destructionPhase {
             @include variables.light-text-outline;
             font-size: 2em;
@@ -477,12 +483,15 @@ $flag-circle-opacity: 0.2;
 
 #pinnedVehiclesTab {
     @extend .unselectable;
+    flex-direction: column;
     width: auto;
-    max-height: 70vh;
+    max-height: 75vh;
     margin-top: 1em;
-    overflow-y: scroll;
     scrollbar-width: none;
     -ms-overflow-style: none;
+    display: block;
+    overflow-y: scroll;
+    overflow-x: visible;
     .pinnedVehicles {
         display: flex;
         flex-direction: row;
@@ -491,59 +500,79 @@ $flag-circle-opacity: 0.2;
         padding: 2px;
         z-index: 1;
         margin-top: 4px;
-        width: 35px;
         font-size: 0.8em;
         cursor: pointer;
-        transition: width 1s ease, background 0.3s ease, border-color 0.3s ease;
         margin-bottom: 5px;
         background: #292929;
         border-left: none;
-        &:active, &.active {
+        width: fit-content;
+        max-width: 35px;
+        overflow: hidden;
+        transition: background 0.3s ease, border-color 0.3s ease;
+        white-space: nowrap;
+        &:active,
+        &.active {
             background: linear-gradient(135deg, firebrick, #ec392f);
             border-color: firebrick;
-            box-shadow: 0 0 3px rgba(255, 69, 0, 0.7);
+            box-shadow: 0 0 4px rgba(0, 0, 0, 1);
+            min-width: 90px;
+            font-size: 1em;
+            .pinedVehiclesName {
+                display: none;
+            }
         }
         .btn-pined {
             width: 30px;
             height: 30px;
             margin-right: 8px;
             background: transparent;
-            // border: solid green 1px;
             display: flex;
             align-items: center;
             justify-content: center;
+            color: white;
             img {
                 cursor: pointer;
                 width: 30px;
                 height: 30px;
             }
-
         }
-        .pinedVehiclesName {
-            display: none;
-            font-size: 14px;
+        .pinedVehiclesMeta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-right: 5px;
-            color: white;
             white-space: nowrap;
+            .pinedVehiclesName {
+                letter-spacing: 1px;
+                flex-shrink: 1;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+            .pinedVehiclesTimer {
+                flex-shrink: 0;
+                font-size: 0.85em;
+                text-align: left;
+                white-space: nowrap;
+            }
+        }
+        &.active,
+        &:hover {
+            max-width: 250px;
+            .pinedVehiclesMeta {
+                display: block;
+            }
+        }
+        &:hover  {
+            font-size: 0.8em;
+            .pinedVehiclesName {
+                display: block;
+            }
         }
     }
-    .pinnedVehicles:hover {
-        width: auto;
-        max-width: 250px;
-        .pinedVehiclesName {
-            display: block;
-            font-size: 1em;
-        }
-    }
-    .pinnedVehicles.active {
-        width: 90px;
-        max-width: 250px;
-        .pinedVehiclesName {
-            display: block;
-            font-size: 1em;
-        }
-    }
+    
 }
+
 
 #factionsTab {
     display: none;
@@ -556,19 +585,24 @@ $flag-circle-opacity: 0.2;
 
 #factionsButton {
     width: 70px;
+    padding: 0.5em;
+    border: none;
     border-radius: 0 10px 10px 0;
-    border-left: none;
-    background-color: white;
-    z-index: 1;
-    left: 0;
+    background: white;
+    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8);
     cursor: pointer;
+    transition: background-color 0.2s ease, box-shadow 0.2s ease;
+    font-weight: bold;
+    text-align: center;
+    z-index: 1;
+    position: absolute;
+    left: 0;
     &:hover {
-        background-color: rgb(202, 202, 202);
-        // width: 100%;
-        // height: 50%;
+        background-color: #b4b4b4;
+        box-shadow: 2px 2px 6px rgba(0, 0, 0, 1);
     }
     button {
-        margin: 2px 5px 2px 0;
+        margin: 2px 5px 0 0;
         width: 40px;
         height: 33px;
         background-color: transparent;
@@ -581,9 +615,7 @@ $flag-circle-opacity: 0.2;
         }
         img {
             height: 70%;
-            // border: solid rgb(109, 109, 109) 0.1px;
             box-shadow: 0 0 2px rgb(0, 0, 0);
-            // top: auto;
         }
     }
 }

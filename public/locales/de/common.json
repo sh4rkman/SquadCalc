@@ -37,5 +37,13 @@
     "layerPlaceholder": "Layer",
     "nextFlags": "Nächste Flaggen",
     "dropTxt": "SPEICHERDATEI HIER ABLEGEN",
-    "dropSubTxt": "aktuelle Karte wird überschrieben"
+    "dropSubTxt": "aktuelle Karte wird überschrieben",
+    "faction": "Faction",
+    "unit": "Unit",
+    "respawn": "Respawn",
+    "delayed": "Delayed",
+    "team1": "Team 1",
+    "team2": "Team 2",
+    "pinToMap": "Pin to map",
+    "pinned": "Pinned"
 }

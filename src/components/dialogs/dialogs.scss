@@ -4,6 +4,48 @@
     --font-size-text-preview: 1em;
 }
 
+.unit-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    .unit-logo {
+        border: rgb(56, 56, 56) 1px solid;
+        width: 30px;
+        height: 30px;
+        flex-shrink: 0;
+        object-fit: contain;
+        border-radius: 6px;
+        padding: 2px;
+        &.selection {
+            border: none;
+        }
+    }
+    .unit-texts {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        flex: 1;
+        min-width: 0;
+    }
+    .unit-type {
+        font-weight: bold;
+        font-size: 13px;
+        line-height: 1.5em;
+        margin-top: 0.3em;
+    }
+    .unit-name {
+        @include variables.light-text-outline;
+        color: #ccc;
+        font-size: 9px;
+        line-height: 1.3em;
+        font-style: italic;
+        text-transform: capitalize;
+    }
+}
+
+
+  
+
 #pinButtons {
     display: flex;
     justify-content: space-between;
@@ -31,7 +73,7 @@
 
 .countryFlags {
     .img-flag {
-        width: 60px;
+        width: 50px;
         border: solid rgba(255, 255, 255, 0.336) 0.1px;
         box-shadow: 0 0 5px rgb(37, 37, 37);
     }
@@ -46,6 +88,7 @@
     border-radius: 0;
     h2 {
         text-align: center;
+        font-size: 2em;
     }
     #factionMenu {
         width: 100%;
@@ -57,7 +100,6 @@
         justify-content: center;
         gap: 2em;
         #team1, #team2 {
-            // border: green 1px solid;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -69,12 +111,13 @@
             .selectors {
                 display: flex;
                 flex-direction: row;
+                align-items: center;
+                padding-top: 5px;
             }
-            .countrySelector {
+            .factionSelector {
                 width: 100px;
-                //  border: solid yellow 1px;
                 .select2-container {
-                    min-width: 100px;
+                    min-width: 80px;
                 }
             }
         }
@@ -83,7 +126,6 @@
         width: 100%;
         display: flex;
         flex-direction: row;
-        // border: blue 1px solid;
         overflow-y: scroll;
         max-height: 75%;
         .vehicle-card {
@@ -108,11 +150,6 @@
             background: rgba(255, 255, 255, 0.05);
             border-radius: 0.25em;
             margin-right: 0.75em;
-            // svg {
-            //     margin: auto;
-            //     color:white;
-            //     width: 40%;
-            // }
             img {
                 width: 100%;
             }
@@ -216,12 +253,11 @@
             outline: none;
         }
     }
-    .factionSelector .select2-results__option {
+    .unitSelector .select2-results__option {
         word-break: break-word;
         line-height: 2;
-        
     }
-    .factionSelector .select2-container--default {
+    .unitSelector .select2-container--default {
         letter-spacing: 0.5px;
     }
     .select2 {
@@ -276,7 +312,7 @@ dialog {
     color: variables.$mainTxtColor;
     font-size: 0.6em;
     max-width: 700px;
-    overflow: hidden;
+    overflow: visible;
     &#factionsDialog {
         max-width: 1600px;
         max-height: 100%;
@@ -382,6 +418,9 @@ dialog {
         border-collapse: collapse;
         margin: 0 0 2em 2em;
         width: 90%;        
+    }
+    &#calcInformation {
+        overflow:hidden;
     }
     &#weaponInformation {
         max-width: 350px;
