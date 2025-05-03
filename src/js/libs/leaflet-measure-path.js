@@ -7,6 +7,7 @@
 
 import { App } from "../../app.js";
 import L from "leaflet";
+import i18next from "i18next";
 
 (function() {
     "use strict";
@@ -81,9 +82,9 @@ import L from "leaflet";
         } else {
             if (d > 1000) {
                 d = d / 1000;
-                unit = "km";
+                unit = i18next.t("common:km");
             } else {
-                unit = "m";
+                unit = i18next.t("common:m");
             }
         }
 

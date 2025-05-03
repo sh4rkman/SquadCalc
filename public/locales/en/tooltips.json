@@ -70,5 +70,7 @@
     "enableFactionsTooltip": "After selecting a layer, enable Factions and Vehicles features",
     "defaultFactionsTooltip": "After picking a Layer, pre-select it's default factions",
     "hideLowRespawnTooltip": "When pinning a faction to the map, only show Vehicles with a 10mn or more respawn time",
-    "vehicleTimerTooltip": "Click on a vehicle to mark it as destroyed and set a respawn timer"
+    "vehicleTimerTooltip": "Click on a vehicle to mark it as destroyed and set a respawn timer",
+    "showMainAssetsTooltip": "Show repair stations, ammo crates and other main assets on the map",
+    "showMainZonesTooltip": "Show protection and no-deploy zones for each main"
 }

@@ -15,9 +15,11 @@
         "low": "低",
         "addHeight": "额外高度",
         "meters": "米",
+        "km": "千米",
         "m": "米",
         "s": "秒",
         "°": "°",
+        "min": "分",
     "targetInf": "目标信息",
         "weapon1": "武器 1",
         "weapon2": "武器 2",
@@ -37,5 +39,13 @@
     "layerPlaceholder": "地图版本",
     "nextFlags": "下一个点",
     "dropTxt": "拖放存档文件到这里",
-    "dropSubTxt": "当前地图将被清除"
+    "dropSubTxt": "当前地图将被清除",
+    "faction": "阵营",
+    "unit": "单位",
+    "respawn": "重生",
+    "delayed": "延迟",
+    "team1": "队伍 1",
+    "team2": "队伍 2",
+    "pinToMap": "固定到地图",
+    "pinned": "已固定"
 }

@@ -230,6 +230,7 @@ export const squadMinimap = Map.extend({
         }
     },
 
+
     /**
      * Force the Browser to decode of the current map image
      * Hack for Chrome lag when first zooming inside a 4k image
@@ -240,12 +241,13 @@ export const squadMinimap = Map.extend({
         IMG.decode();
     },
 
+
     /**
      * Reset map by clearing every Markers/Layers
      */
     clear: function(){
 
-        // Clear Every existing Makers
+        // Clear Every existing Markers
         this.markersGroup.clearLayers();
         this.activeMarkers.clearLayers();
         this.activeWeaponsMarkers.clearLayers();
@@ -259,20 +261,15 @@ export const squadMinimap = Map.extend({
 
         if (this.layer) this.layer.clear();
 
-        $(".dropbtn8").empty();
-        $(".dropbtn9").empty();
-        $(".dropbtn10").empty();
-        $(".dropbtn11").empty();
-        $("#factionsTab").hide();
-        App.unpinFaction();
-    
-        $(".btn-delete, .btn-undo, .btn-download").hide();
+        // Empty and clear buttons of DOM elements
+        $(".dropbtn8, .dropbtn9, .dropbtn10, .dropbtn11").empty();
+        $("#factionsTab, .btn-delete, .btn-undo, .btn-download").hide();
 
-        // Reset map
+        // Reset map view
         this.setView([-this.pixelSize/2, this.pixelSize/2], 2);
-
     },
 
+    
     /**
      * Recalc and update every target marker on the minimap
      */

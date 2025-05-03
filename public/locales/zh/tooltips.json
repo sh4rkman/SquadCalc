@@ -65,5 +65,6 @@
     "mapSaved": "地图已保存到文件",
     "dragToImport": "你可以将此文件拖放到地图上以稍后加载",
     "importSuccess": "地图导入成功",
-    "download": "将地图保存到文件"
+    "download": "将地图保存到文件",
+    "factions&Vehicles": "阵营和载具"
 }

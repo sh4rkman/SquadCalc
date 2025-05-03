@@ -134,11 +134,12 @@ export default class SquadLayer {
             });
 
             this.createAssets();
+            this.createBorders();
             return;
         }
 
         // AAS
-        if (this.layerData.gamemode === "AAS") {
+        if (this.layerData.gamemode === "AAS" || this.layerData.gamemode === "Skirmish") {
 
             const objectiveKeys = Object.keys(this.layerData.objectives);
             const numFlags = objectiveKeys.length - 1;
@@ -170,6 +171,7 @@ export default class SquadLayer {
 
             this.polyline.setLatLngs(this.path);
             this.createAssets();
+            this.createBorders();
             return;
         }
 
@@ -221,6 +223,7 @@ export default class SquadLayer {
         }
 
         this.createAssets();
+        this.createBorders();
     }
 
 
@@ -334,6 +337,42 @@ export default class SquadLayer {
         });
     }
 
+
+    createBorders() {
+        const MAPBOUNDS = [
+            [0, 0],
+            [0, this.map.pixelSize],
+            [-this.map.pixelSize, this.map.pixelSize],
+            [-this.map.pixelSize, 0],
+            [0, 0]
+        ];
+
+        // There's no border but the map bounds
+        if (this.layerData.border.length === 2) return;
+
+        let borderPath = [];
+
+        this.layerData.border.forEach((border) => {
+            // keep the latlng within the map bounds
+            var latlng = this.convertToLatLng(border.location_x, border.location_y);
+            if (latlng[1] > this.map.pixelSize) {latlng[1] = this.map.pixelSize;}
+            if (latlng[0] < -this.map.pixelSize) {latlng[0] = -this.map.pixelSize;}
+            if (latlng[1] < 0) {latlng[1] = 0;}
+            if (latlng[0] > 0) {latlng[0] = 0;}
+            borderPath.push(latlng);
+        });
+
+        let opacity = 0.75;
+
+        if (!App.userSettings.showMapBorders) opacity = 0;
+
+        this.borders = new Polygon([MAPBOUNDS, borderPath], {
+            color: "#111",
+            fillOpacity: opacity,
+            weight: 0,
+            className: "unplayable-area",
+        }).addTo(this.activeLayerMarkers);
+    }
 
     /**
      * Rotate a Leaflet Rectangle around its center
@@ -724,9 +763,9 @@ export default class SquadLayer {
         });
 
         // Copy the next flags names to the clipboard
-        if (App.userSettings.copyNextFlags) {
-            navigator.clipboard.writeText(i18next.t("common:nextFlags") + " : " + nextFlagsNamesArray.join("/"));
-        }  
+        // if (App.userSettings.copyNextFlags) {
+        //     navigator.clipboard.writeText(i18next.t("common:nextFlags") + " : " + nextFlagsNamesArray.join("/"));
+        // }  
        
         // Only one flag in front ? Click it
         if (nextFlags.length === 1 && !backward && App.userSettings.autoLane){
@@ -1053,6 +1092,7 @@ export default class SquadLayer {
             $(".btn-layer").removeClass("active");
             this.hideAllCapzones();
             this.setMainZoneOpacity(false);
+            if (this.borders && App.userSettings.showMapBorders) this.borders.setStyle({ opacity: 0, fillOpacity: 0 });
         }
         else {
             this._setOpacity(1);
@@ -1068,7 +1108,7 @@ export default class SquadLayer {
             $(".btn-layer").addClass("active");
             this.isVisible = true;
             if (this.map.getZoom() > this.map.detailedZoomThreshold) this.revealAllCapzones();
-
+            if (this.borders && App.userSettings.showMapBorders) this.borders.setStyle({ opacity: 0, fillOpacity: 0.75 });
         }
     }
 
@@ -1080,6 +1120,7 @@ export default class SquadLayer {
         this.activeLayerMarkers.clearLayers();
         this.phaseNumber.clearLayers();
         this.phaseAeras.clearLayers();
+        this.factions.unpinUnit();
     }
 
 }

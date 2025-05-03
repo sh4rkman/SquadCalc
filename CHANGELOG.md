@@ -1,12 +1,18 @@
-# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **38.0.0** *(2025-XX-XX)*
+# <img src="https://img.shields.io/badge/-major%20release-b22222?style=for-the-badge">  **38.0.0** *(2025-XX-XX)*
 
-<img src="https://img.shields.io/badge/-new-green"> 
+<img src="https://img.shields.io/badge/-new-green"> **Factions and Destroyed Vehicles tracking !** When selecting a layer you can now select the two actives factions and units and see their vehicles list, respawn time and delay. You can also pin a Unit list to the map to keep it under your eyes and mark them as destroyed : a timer will then run and a sound notification will tell you when it respawns. ([#304](https://github.com/sh4rkman/SquadCalc/issues/304))
+
+<img src="https://img.shields.io/badge/-new-green"> Selecting a layer now also display the playable aera if any (invisible walls inside real map borders). Can be toggled off in `Settings > Layer Settings` ([#310](https://github.com/sh4rkman/SquadCalc/issues/310))
 
 <img src="https://img.shields.io/badge/-new-green"> Added Tracked MSV, Tracked logistics and Traked Artillery icons to context menu icons list
 
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Distance units between flags are now correctly translated
+
 <img src="https://img.shields.io/badge/-%20fix%20-b22"> Clicking a already selected type of terrain doesn't try to load the image again
 
-<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed flags border disapearing when cliking an unselectable flag
+<img src="https://img.shields.io/badge/-%20fix%20-b22"> Fixed borders disapearing when clicking an unselectable flag
+
+<img src="https://img.shields.io/badge/-%20translations%20-blue"> Added German translations by [f0xcb](https://github.com/f0xcb) (Thanks!)
 
 
 

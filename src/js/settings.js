@@ -94,6 +94,9 @@ export function loadSettings(){
         $(".factionSettings").hide();
     }
 
+    App.userSettings.showMapBorders = loadLocalSetting("settings-show-map-borders");
+    $("#showMapBordersSettings").prop("checked", App.userSettings.showMapBorders);
+
     App.userSettings.defaultFactions = loadLocalSetting("settings-default-factions");
     $("#defaultFactionsSettings").prop("checked", App.userSettings.defaultFactions);
 
@@ -115,8 +118,8 @@ export function loadSettings(){
     App.userSettings.showFlagsDistance = loadLocalSetting("settings-show-flags-distance");
     $("#showFlagsDistanceSettings").prop("checked", App.userSettings.showFlagsDistance);
 
-    App.userSettings.copyNextFlags = loadLocalSetting("settings-copy-next-flags", 0);
-    $("#copyNextFlagsSettings").prop("checked", App.userSettings.copyNextFlags);
+    // App.userSettings.copyNextFlags = loadLocalSetting("settings-copy-next-flags", 0);
+    // $("#copyNextFlagsSettings").prop("checked", App.userSettings.copyNextFlags);
 
     App.userSettings.lowAndHigh = loadLocalSetting("settings-low-high", 0);
     $("#lowAndHighSetting").prop("checked", App.userSettings.lowAndHigh);
@@ -253,6 +256,17 @@ export function updatePreview(){
     }
 }
 
+$("#showMapBordersSettings").on("change", function() {
+    var val = $("#showMapBordersSettings").is(":checked");
+    App.userSettings.showMapBorders = val;
+    localStorage.setItem("settings-show-map-borders", +val);
+
+    if (val) {
+        if (App.minimap.layer.borders) App.minimap.layer.borders.setStyle({ opacity: 0, fillOpacity: 0.75 });
+    } else {
+        if (App.minimap.layer.borders) App.minimap.layer.borders.setStyle({ opacity: 0, fillOpacity: 0 });
+    }
+});
 
 $("#defaultFactionsSettings").on("change", function() {
     var val = $("#defaultFactionsSettings").is(":checked");
@@ -326,7 +340,7 @@ $("#hideLowRespawnSettings").on("change", function() {
         faction = $(".dropbtn11").val();
     }
 
-    App.pinFaction(factionData, country, faction);
+    App.minimap.layer.factions.pinUnit(factionData, country, faction);
 
 });
 
@@ -357,7 +371,7 @@ $("#enableFactionsSettings").on("change", function() {
         $("#disableSoundsSettings").prop("disabled", false);
         $("#defaultFactionsSettings").prop("disabled", false);
         if (App.minimap.layer) {
-            App.loadFaction(App.minimap.layer.layerData);
+            App.minimap.layer.factions.loadFaction(App.minimap.layer.layerData, App.minimap);
             $("#factionsTab").show();
         }
     }
@@ -539,11 +553,11 @@ $("#lowAndHighSetting").on("change", function() {
 });
 
 
-$("#copyNextFlagsSettings").on("change", function() {
-    var val =  $("#copyNextFlagsSettings").is(":checked");
-    App.userSettings.copyNextFlags = val;
-    localStorage.setItem("settings-copy-next-flags", +val);
-});
+// $("#copyNextFlagsSettings").on("change", function() {
+//     var val =  $("#copyNextFlagsSettings").is(":checked");
+//     App.userSettings.copyNextFlags = val;
+//     localStorage.setItem("settings-copy-next-flags", +val);
+// });
 
 $("#cursorChoiceSettings").on("change", function() {
     var val =  $("#cursorChoiceSettings").is(":checked");

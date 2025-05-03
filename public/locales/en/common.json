@@ -15,9 +15,11 @@
         "low": "low",
         "addHeight": "ADDITIONAL HEIGHT",
         "meters": "meters",
+        "km": "km",
         "m": "m",
         "s": "s",
         "°": "°",
+        "min": "min",
     "targetInf": "Target Informations",
         "weapon1": "Weapon 1",
         "weapon2": "Weapon 2",
@@ -38,5 +40,12 @@
     "nextFlags": "Next Flags",
     "dropTxt": "DROP A SAVE FILE HERE",
     "dropSubTxt": "current map will be erased",
-    "factionPlaceholder": "Faction"
+    "faction": "Faction",
+    "unit": "Unit",
+    "respawn": "Respawn",
+    "delayed": "Delayed",
+    "team1": "Team 1",
+    "team2": "Team 2",
+    "pinToMap": "Pin to map",
+    "pinned": "Pinned"
 }
