@@ -1,14 +1,29 @@
 
 import { App } from "../app.js";
-import i18next from "i18next";
 import { DivIcon } from "leaflet";
+import { animateCSS } from "./animations.js";
+import i18next from "i18next";
+
 
 export default class SquadFactions {
 
     constructor(layerData, minimap) {
         this.layerData = layerData;
         this.minimap = minimap;
+        this.FACTION1_SELECTOR = $(".dropbtn8");
+        this.FACTION2_SELECTOR = $(".dropbtn10");
+        this.UNIT1_SELECTOR = $(".dropbtn9");
+        this.UNIT2_SELECTOR = $(".dropbtn11");
         this.loadFaction(layerData);
+    }
+
+
+    resetFactionsButton() {
+        $("#factionsButton button").empty().append(`
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512">
+                <path fill="currentColor" d="M176 8c-6.6 0-12.4 4-14.9 10.1l-29.4 74L55.6 68.9c-6.3-1.9-13.1 .2-17.2 5.3s-4.6 12.2-1.4 17.9l39.5 69.1L10.9 206.4c-5.4 3.7-8 10.3-6.5 16.7s6.7 11.2 13.1 12.2l78.7 12.2L90.6 327c-.5 6.5 3.1 12.7 9 15.5s12.9 1.8 17.8-2.6l35.3-32.5 9.5-35.4 10.4-38.6c8-29.9 30.5-52.1 57.9-60.9l41-59.2c11.3-16.3 26.4-28.9 43.5-37.2c-.4-.6-.8-1.2-1.3-1.8c-4.1-5.1-10.9-7.2-17.2-5.3L220.3 92.1l-29.4-74C188.4 12 182.6 8 176 8zM367.7 161.5l135.6 36.3c6.5 1.8 11.3 7.4 11.8 14.2l4.6 56.5-201.5-54 32.2-46.6c3.8-5.6 10.8-8.1 17.3-6.4zm-69.9-30l-47.9 69.3c-21.6 3-40.3 18.6-46.3 41l-10.4 38.6-16.6 61.8-8.3 30.9c-4.6 17.1 5.6 34.6 22.6 39.2l15.5 4.1c17.1 4.6 34.6-5.6 39.2-22.6l8.3-30.9 247.3 66.3-8.3 30.9c-4.6 17.1 5.6 34.6 22.6 39.2l15.5 4.1c17.1 4.6 34.6-5.6 39.2-22.6l8.3-30.9L595 388l10.4-38.6c6-22.4-2.5-45.2-19.6-58.7l-6.8-84c-2.7-33.7-26.4-62-59-70.8L384.2 99.7c-32.7-8.8-67.3 4-86.5 31.8zm-17 131a24 24 0 1 1 -12.4 46.4 24 24 0 1 1 12.4-46.4zm217.9 83.2A24 24 0 1 1 545 358.1a24 24 0 1 1 -46.4-12.4z"/>
+            </svg>
+        `);
     }
 
 
@@ -26,12 +41,10 @@ export default class SquadFactions {
 
 
     formatUnits(option, isSelection = false) {
-
         if (!option.id) return option.text;
         const $element = $(option.element);
         const type = $element.data("type");
         const name = $element.data("name");
-    
         return $(`
             <div class="unit-option">
                 <img src="/icons/units/${type}.webp" class="unit-logo${isSelection ? " selection" : ""}" alt="${option.text}" />
@@ -63,11 +76,11 @@ export default class SquadFactions {
                 $("#pinnedVehiclesTab").append(`
                     <div class="pinnedVehicles animate__animated animate__fadeInLeft" data-vehiclename="${vehicle.type}" data-vehtype="${vehicle.vehType}" data-vehicon="${vehicle.icon}" data-respawntime="${vehicle.respawnTime}">
                         <button type="button" class="btn-pined" aria-label="Select Factions">
-                            <img src="/icons/ally/vehicles/${vehicle.icon}.webp" alt="Faction Icon" class="faction-img" />
+                            <img src="/icons/ally/vehicles/${vehicle.icon}.webp" alt="Faction Icon"/>
                         </button>
                         <div class="pinedVehiclesMeta">
                             <div class="pinedVehiclesName">${vehicle.type}</div>
-                            <div class="pinedVehiclesTimer">${vehicle.respawnTime}<span class="unit" data-i18n="common:min">${i18next.t("common:min")}</span></div>
+                            <div class="pinedVehiclesTimer">${vehicle.respawnTime}<span class="" data-i18n="common:min">${i18next.t("common:min")}</span></div>
                         </div>
                     </div>
                 `);
@@ -136,7 +149,6 @@ export default class SquadFactions {
 
 
     unpinUnit() {
-    
         // Clear any active timers
         $("#pinnedVehiclesTab .pinnedVehicles").each(function() {
             const $vehicleDiv = $(this);
@@ -149,32 +161,28 @@ export default class SquadFactions {
         // Now clear the pinned vehicles tab and reset buttons
         $("#pinnedVehiclesTab").empty();
         $(".btn-pin").removeClass("active").text(i18next.t("common:pinToMap")).attr("data-i18n", "common:pinToMap");
-        $("#factionsButton button").empty().append(`
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">
-                <path fill="currentColor" d="M265.2 192c25.4 0 49.8 7.1 70.8 19.9L336 512l-192 0 0-174.3L90.4 428.3c-11.2 19-35.8 25.3-54.8 14.1s-25.3-35.8-14.1-54.8L97.7 258.8c24.5-41.4 69-66.8 117.1-66.8l50.4 0zM160 80a80 80 0 1 1 160 0A80 80 0 1 1 160 80zM448 0c8.8 0 16 7.2 16 16l0 116.3c9.6 5.5 16 15.9 16 27.7l0 109.3 16-5.3 0-56c0-8.8 7.2-16 16-16l16 0c8.8 0 16 7.2 16 16l0 84.5c0 6.9-4.4 13-10.9 15.2L480 325.3l0 26.7 48 0c8.8 0 16 7.2 16 16l0 16c0 8.8-7.2 16-16 16l-44 0 23 92.1c2.5 10.1-5.1 19.9-15.5 19.9L432 512c-8.8 0-16-7.2-16-16l0-96-16 0c-17.7 0-32-14.3-32-32l0-144c0-17.7 14.3-32 32-32l0-32c0-11.8 6.4-22.2 16-27.7L416 32c-8.8 0-16-7.2-16-16s7.2-16 16-16l16 0 16 0z"/>
-            </svg>
-        `);
+        this.resetFactionsButton();
     }
 
 
     loadFaction(factionData) {
 
-        $(".dropbtn8").empty();
-        $(".dropbtn10").empty();
+        $(".dropbtn8, .dropbtn10").empty();
+        this.resetFactionsButton();
 
         factionData.teamConfigs.factions.team1Units.forEach((faction) => {
-            $(".dropbtn8").append(`<option data-i18n=factions:${faction.factionID} value=${faction.factionID}></option>`);
+            this.FACTION1_SELECTOR.append(`<option data-i18n=factions:${faction.factionID} value=${faction.factionID}></option>`);
         });
 
         factionData.teamConfigs.factions.team2Units.forEach((faction) => {
-            $(".dropbtn10").append(`<option data-i18n=factions:${faction.factionID} value=${faction.factionID}></option>`);
+            this.FACTION2_SELECTOR.append(`<option data-i18n=factions:${faction.factionID} value=${faction.factionID}></option>`);
         });
 
 
-        $(".dropbtn8").off("change").on("change", (event) => {
+        this.FACTION1_SELECTOR.off("change").on("change", (event) => {
 
             //empty the unit type selector
-            $(".dropbtn9").empty();
+            this.UNIT1_SELECTOR.empty();
             $("#team1Vehicles").empty();
 
             if ( $("#team1PinButton").hasClass("active") ) this.unpinUnit();
@@ -183,15 +191,14 @@ export default class SquadFactions {
                 if (faction.factionID == event.target.value) {
                     for (const unit of factionData.factions.team1factions) {
                         if (unit.unitObjectName === faction.defaultUnit) {
-                            $(".dropbtn9").append(`<option value="${faction.defaultUnit}" data-type="${unit.type}" data-name="${unit.displayName}"></option>`);
+                            this.UNIT1_SELECTOR.append(`<option value="${faction.defaultUnit}" data-type="${unit.type}" data-name="${unit.displayName}"></option>`);
                             break;
                         }
                     }
                     for (const type of faction.types) {
                         for (const unit of factionData.factions.team1factions) {
                             if (unit.unitObjectName === type.unit) {
-
-                                $(".dropbtn9").append(`<option value="${type.unit}" data-type="${unit.type}" data-name="${unit.displayName}"></option>`);
+                                this.UNIT1_SELECTOR.append(`<option value="${type.unit}" data-type="${unit.type}" data-name="${unit.displayName}"></option>`);
                                 break;
                             }
                         }
@@ -199,7 +206,7 @@ export default class SquadFactions {
                 }
             });
             // Set the default value to the first option
-            $(".dropbtn9").val($(".dropbtn9 option:first").val()).trigger("change");
+            this.UNIT1_SELECTOR.val($(".dropbtn9 option:first").val()).trigger("change");
 
             const iconEl = this.minimap.layer.mains[0].flag._icon;
 
@@ -232,13 +239,11 @@ export default class SquadFactions {
                 })
             );
 
-            
-
         });
 
-        $(".dropbtn10").off("change").on("change", (event) => {
+        this.FACTION2_SELECTOR.off("change").on("change", (event) => {
             //empty the unit type selector
-            $(".dropbtn11").empty();
+            this.UNIT2_SELECTOR.empty();
             $("#team2Vehicles").empty();
             if ( $("#team2PinButton").hasClass("active") ) this.unpinUnit();
 
@@ -246,14 +251,14 @@ export default class SquadFactions {
                 if (faction.factionID == event.target.value) {
                     for (const unit of factionData.factions.team2factions) {
                         if (unit.unitObjectName === faction.defaultUnit) {
-                            $(".dropbtn11").append(`<option value="${faction.defaultUnit}" data-type="${unit.type}" data-name="${unit.displayName}"></option>`);
+                            this.UNIT2_SELECTOR.append(`<option value="${faction.defaultUnit}" data-type="${unit.type}" data-name="${unit.displayName}"></option>`);
                             break;
                         }
                     }
                     for (const type of faction.types) {
                         for (const unit of factionData.factions.team2factions) {
                             if (unit.unitObjectName === type.unit) {
-                                $(".dropbtn11").append(`<option value="${type.unit}" data-type="${unit.type}" data-name="${unit.displayName}"></option>`);
+                                this.UNIT2_SELECTOR.append(`<option value="${type.unit}" data-type="${unit.type}" data-name="${unit.displayName}"></option>`);
                                 break;
                             }
                         }
@@ -262,7 +267,7 @@ export default class SquadFactions {
             });
 
             // Set the default value to the first option
-            $(".dropbtn11").val($(".dropbtn11 option:first").val()).trigger("change");
+            this.UNIT2_SELECTOR.val($(".dropbtn11 option:first").val()).trigger("change");
             const iconEl = this.minimap.layer.mains[1].flag._icon;
 
             // Remove any old country_XXX class
@@ -295,7 +300,7 @@ export default class SquadFactions {
             );
         });
 
-        $(".dropbtn9").off("change").on("change", (event) => {
+        this.UNIT1_SELECTOR.off("change").on("change", (event) => {
             // Empty the vehicles container
             $("#team1Vehicles").empty();
             if ($("#team1PinButton").hasClass("active")) this.unpinUnit();
@@ -356,7 +361,7 @@ export default class SquadFactions {
             });
         });
 
-        $(".dropbtn11").off("change").on("change", (event) => {
+        this.UNIT2_SELECTOR.off("change").on("change", (event) => {
             // Empty the vehicles container
             $("#team2Vehicles").empty();
             if ( $("#team2PinButton").hasClass("active") ) this.unpinUnit();
@@ -420,11 +425,11 @@ export default class SquadFactions {
             if (App.userSettings.defaultFactions) {
                 const team1DefaultFaction = factionData.teamConfigs.team1.defaultFactionUnit.split("_")[0];
                 const team2DefaultFaction = factionData.teamConfigs.team2.defaultFactionUnit.split("_")[0];
-                $(".dropbtn8").val(team1DefaultFaction).trigger("change");
-                $(".dropbtn10").val(team2DefaultFaction).trigger("change");
+                this.FACTION1_SELECTOR.val(team1DefaultFaction).trigger("change");
+                this.FACTION2_SELECTOR.val(team2DefaultFaction).trigger("change");
             } else {
-                $(".dropbtn8").val("").trigger("change");
-                $(".dropbtn10").val("").trigger("change");
+                this.FACTION1_SELECTOR.val("").trigger("change");
+                this.FACTION2_SELECTOR.val("").trigger("change");
             }
         }
 
@@ -433,11 +438,7 @@ export default class SquadFactions {
             if ($(event.currentTarget).hasClass("active")) {
                 this.unpinUnit();
                 $(event.currentTarget).removeClass("active");
-                $("#factionsButton button").empty().append(`
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">
-                        <path fill="currentColor" d="M265.2 192c25.4 0 49.8 7.1 70.8 19.9L336 512l-192 0 0-174.3L90.4 428.3c-11.2 19-35.8 25.3-54.8 14.1s-25.3-35.8-14.1-54.8L97.7 258.8c24.5-41.4 69-66.8 117.1-66.8l50.4 0zM160 80a80 80 0 1 1 160 0A80 80 0 1 1 160 80zM448 0c8.8 0 16 7.2 16 16l0 116.3c9.6 5.5 16 15.9 16 27.7l0 109.3 16-5.3 0-56c0-8.8 7.2-16 16-16l16 0c8.8 0 16 7.2 16 16l0 84.5c0 6.9-4.4 13-10.9 15.2L480 325.3l0 26.7 48 0c8.8 0 16 7.2 16 16l0 16c0 8.8-7.2 16-16 16l-44 0 23 92.1c2.5 10.1-5.1 19.9-15.5 19.9L432 512c-8.8 0-16-7.2-16-16l0-96-16 0c-17.7 0-32-14.3-32-32l0-144c0-17.7 14.3-32 32-32l0-32c0-11.8 6.4-22.2 16-27.7L416 32c-8.8 0-16-7.2-16-16s7.2-16 16-16l16 0 16 0z"/>
-                    </svg>
-                `);
+                this.resetFactionsButton();
                 return;
             }
             this.unpinUnit();
@@ -450,12 +451,12 @@ export default class SquadFactions {
             let teamfaction;
             
             if (event.currentTarget.id === "team1PinButton") {
-                country = $(".dropbtn8").val();
-                faction = $(".dropbtn9").val();
+                country = this.FACTION1_SELECTOR.val();
+                faction = this.UNIT1_SELECTOR.val();
                 teamfaction = factionData.factions.team1factions;
             } else {
-                country = $(".dropbtn10").val();
-                faction = $(".dropbtn11").val();
+                country = this.FACTION2_SELECTOR.val();
+                faction = this.UNIT2_SELECTOR.val();
                 teamfaction = factionData.factions.team2factions;
             }
 
@@ -475,7 +476,7 @@ export default class SquadFactions {
 
         // Initialize Select2 with the structured data
 
-        $(".dropbtn8").select2({
+        this.FACTION1_SELECTOR.select2({
             dropdownCssClass: "dropbtn",
             dropdownParent: $("#faction1"),
             allowClear: true,
@@ -485,7 +486,7 @@ export default class SquadFactions {
             templateSelection: (state) => this.formatFactions(state, true),
         });
 
-        $(".dropbtn10").select2({
+        this.FACTION2_SELECTOR.select2({
             dropdownCssClass: "dropbtn",
             dropdownParent: $("#faction2"),
             allowClear: true,
@@ -495,7 +496,7 @@ export default class SquadFactions {
             templateSelection: (state) => this.formatFactions(state, true),
         });
 
-        $(".dropbtn9").select2({
+        this.UNIT1_SELECTOR.select2({
             dropdownCssClass: "dropbtn",
             dropdownParent: $("#unit1"),
             placeholder: unitPlaceholder,
@@ -504,7 +505,7 @@ export default class SquadFactions {
             templateSelection: (state) => this.formatUnits(state, true),
         });
 
-        $(".dropbtn11").select2({
+        this.UNIT2_SELECTOR.select2({
             dropdownCssClass: "dropbtn",
             dropdownParent: $("#unit2"),
             placeholder: unitPlaceholder,

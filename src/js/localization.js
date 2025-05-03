@@ -136,7 +136,7 @@ function updateContent() {
     });
 
 
-    if(App.minimap.layer) {
+    if (App.minimap.layer) {
         $(".dropbtn8").select2("destroy").select2({
             dropdownCssClass: "dropbtn",
             dropdownParent: $("#faction1"),

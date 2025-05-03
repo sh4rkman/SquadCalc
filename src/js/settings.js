@@ -118,8 +118,8 @@ export function loadSettings(){
     App.userSettings.showFlagsDistance = loadLocalSetting("settings-show-flags-distance");
     $("#showFlagsDistanceSettings").prop("checked", App.userSettings.showFlagsDistance);
 
-    App.userSettings.copyNextFlags = loadLocalSetting("settings-copy-next-flags", 0);
-    $("#copyNextFlagsSettings").prop("checked", App.userSettings.copyNextFlags);
+    // App.userSettings.copyNextFlags = loadLocalSetting("settings-copy-next-flags", 0);
+    // $("#copyNextFlagsSettings").prop("checked", App.userSettings.copyNextFlags);
 
     App.userSettings.lowAndHigh = loadLocalSetting("settings-low-high", 0);
     $("#lowAndHighSetting").prop("checked", App.userSettings.lowAndHigh);
@@ -553,11 +553,11 @@ $("#lowAndHighSetting").on("change", function() {
 });
 
 
-$("#copyNextFlagsSettings").on("change", function() {
-    var val =  $("#copyNextFlagsSettings").is(":checked");
-    App.userSettings.copyNextFlags = val;
-    localStorage.setItem("settings-copy-next-flags", +val);
-});
+// $("#copyNextFlagsSettings").on("change", function() {
+//     var val =  $("#copyNextFlagsSettings").is(":checked");
+//     App.userSettings.copyNextFlags = val;
+//     localStorage.setItem("settings-copy-next-flags", +val);
+// });
 
 $("#cursorChoiceSettings").on("change", function() {
     var val =  $("#cursorChoiceSettings").is(":checked");

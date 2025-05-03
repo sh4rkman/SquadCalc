@@ -763,9 +763,9 @@ export default class SquadLayer {
         });
 
         // Copy the next flags names to the clipboard
-        if (App.userSettings.copyNextFlags) {
-            navigator.clipboard.writeText(i18next.t("common:nextFlags") + " : " + nextFlagsNamesArray.join("/"));
-        }  
+        // if (App.userSettings.copyNextFlags) {
+        //     navigator.clipboard.writeText(i18next.t("common:nextFlags") + " : " + nextFlagsNamesArray.join("/"));
+        // }  
        
         // Only one flag in front ? Click it
         if (nextFlags.length === 1 && !backward && App.userSettings.autoLane){

@@ -486,12 +486,11 @@ $flag-circle-opacity: 0.2;
     flex-direction: column;
     width: auto;
     max-height: 75vh;
-    margin-top: 1em;
+    margin-top: 0.5em;
     scrollbar-width: none;
     -ms-overflow-style: none;
     display: block;
-    overflow-y: scroll;
-    overflow-x: visible;
+    overflow: scroll;
     .pinnedVehicles {
         display: flex;
         flex-direction: row;
@@ -595,7 +594,6 @@ $flag-circle-opacity: 0.2;
     font-weight: bold;
     text-align: center;
     z-index: 1;
-    position: absolute;
     left: 0;
     &:hover {
         background-color: #b4b4b4;
@@ -615,6 +613,7 @@ $flag-circle-opacity: 0.2;
         }
         img {
             height: 70%;
+            background-color: #111;
             box-shadow: 0 0 2px rgb(0, 0, 0);
         }
     }

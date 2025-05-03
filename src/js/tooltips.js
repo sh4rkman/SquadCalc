@@ -17,7 +17,7 @@ const commonToolipsSettings = {
     theme: "settingsTooltips",
     hideOnClick: true,
     delay: 200,
-    maxWidth: 200, 
+    maxWidth: 250, 
     appendTo: helpDialog,
 };
 
@@ -126,14 +126,14 @@ tippy("span[data-i18n='settings:realMaxRange']", {
     },
 });
 
-tippy("span[data-i18n='settings:copyNextFlags']", {
-    ...commonToolipsSettings,
-    onShow(tip) {
-        tip.setContent(`
-            ${i18next.t("tooltips:copyNextFlagsTooltip")}
-        `);
-    },
-});
+// tippy("span[data-i18n='settings:copyNextFlags']", {
+//     ...commonToolipsSettings,
+//     onShow(tip) {
+//         tip.setContent(`
+//             ${i18next.t("tooltips:copyNextFlagsTooltip")}
+//         `);
+//     },
+// });
 
 tippy("span[data-i18n='settings:copyTarget']", {
     ...commonToolipsSettings,
@@ -167,6 +167,24 @@ tippy("span[data-i18n='settings:revealLayerOnHover']", {
     onShow(tip) {
         tip.setContent(`
             ${i18next.t("tooltips:revealLayerOnHoverTooltip")}
+        `);
+    },
+});
+
+tippy("span[data-i18n='settings:showMainZones']", {
+    ...commonToolipsSettings,
+    onShow(tip) {
+        tip.setContent(`
+            ${i18next.t("tooltips:showMainZonesTooltip")}
+        `);
+    },
+});
+
+tippy("span[data-i18n='settings:showMainAssets']", {
+    ...commonToolipsSettings,
+    onShow(tip) {
+        tip.setContent(`
+            ${i18next.t("tooltips:showMainAssetsTooltip")}
         `);
     },
 });
