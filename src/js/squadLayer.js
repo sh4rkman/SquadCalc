@@ -2,7 +2,6 @@
 import { DivIcon, Marker, Circle, LayerGroup, Polyline, Polygon, Rectangle, FeatureGroup } from "leaflet";
 import { SquadObjective } from "./squadObjective.js";
 import { App } from "../app.js";
-import i18next from "i18next";
 import "./libs/leaflet-measure-path.js";
 
 export default class SquadLayer {
