@@ -138,22 +138,6 @@ $flag-circle-opacity: 0.2;
                     }
                     &.main {
                         background-color: rgba(0, 128, 0, 1);
-                        &.RGF {
-                            background: url('../../../public/icons/flags/RGF.webp') no-repeat center center;
-                            background-size: cover;
-                        }
-                        &.BAF {
-                            background: url('../../../public/icons/flags/BAF.webp') no-repeat center center;
-                            background-size: cover;
-                        }
-                        &.INS {
-                            background: url('../../../public/icons/flags/INS.webp') no-repeat center center;
-                            background-size: cover;
-                        }
-                        &.ADF {
-                            background: url('../../../public/icons/flags/ADF.webp') no-repeat center center;
-                            background-size: cover;
-                        }
                     }
                     &:hover {
                         box-shadow: 0 2px 12px rgba(0, 0, 0, 1);
@@ -169,6 +153,7 @@ $flag-circle-opacity: 0.2;
                     &.circleFlag {
                         background-size: 80%;
                         &.country_ADF {
+                            background: url('../../../public/icons/flags/circles/ADF.webp') no-repeat center center;
                             background-size: 210%;
                         }
                         &.country_TLF {

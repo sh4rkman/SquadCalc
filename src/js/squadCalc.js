@@ -12,12 +12,9 @@ import { LatLng } from "leaflet";
 import  { MapArrow, MapCircle, MapRectangle }  from "./squadShapes.js";
 import SquadSession from "./squadSession.js";
 import SquadFiringSolution from "./squadFiringSolution.js";
-import SquadFactions from "./squadFactions.js";
 import packageInfo from "../../package.json";
 import i18next from "i18next";
 import SquadLayer from "./squadLayer.js";
-import { App } from "../app.js";
-
 
 
 
@@ -142,17 +139,11 @@ export default class SquadCalc {
                 if (this.minimap.layer) this.minimap.layer.clear();
                 this.minimap.layer = new SquadLayer(this.minimap, layerData);
                 $(".btn-layer").addClass("active").show();
-                if (process.env.DISABLE_FACTIONS != "true") {
-                    this.minimap.layer.factions = new SquadFactions(layerData, this.minimap);
-                    //this.loadFaction(layerData);
-                    console.log(layerData);
-                    if (App.userSettings.enableFactions)$("#factionsTab").show();
-                }
                 this.minimap.spin(false);
             }).catch(error => {
                 if (error.name !== "AbortError") {
                     this.openToast("error", "error", "apiError");
-                    console.debug("Error fetching layer data:", error);
+                    console.error("Error fetching layer data:", error);
                 }
                 $("#factionsTab").hide();
                 this.minimap.spin(false);
