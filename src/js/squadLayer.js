@@ -3,6 +3,7 @@ import { DivIcon, Marker, Circle, LayerGroup, Polyline, Polygon, Rectangle, Feat
 import { SquadObjective } from "./squadObjective.js";
 import { App } from "../app.js";
 import "./libs/leaflet-measure-path.js";
+import SquadFactions from "./squadFactions.js";
 
 export default class SquadLayer {
 
@@ -215,17 +216,25 @@ export default class SquadLayer {
         // Pre-select first main flag in invasion
         if (this.layerData.gamemode === "Invasion") {
             this.mains.forEach((main) => {
-                if (main.objectName === this.layerData.capturePoints.clusters.listOfMains[0].replaceAll(" ", "")){
+                // Invaders are always Team 1
+                if (main.objectName.toLowerCase().includes("team1")){
                     this._handleFlagClick(main);
+                    return;
                 }
             });
         }
 
         this.createAssets();
         this.createBorders();
+        if (process.env.DISABLE_FACTIONS != "true") {
+            this.factions = new SquadFactions(this);
+            if (App.userSettings.enableFactions) $("#factionsTab").show();
+        }
     }
 
-
+    /**
+     * Reveal all capzones on the map
+     */
     revealAllCapzones() {
         if (App.userSettings.capZoneOnHover || !this.isVisible) return;
         this.flags.forEach(flag => {
@@ -233,13 +242,17 @@ export default class SquadLayer {
         });
     }
 
+
+    /**
+     * Hide all capzones on the map
+     */
     hideAllCapzones() {
         this.flags.forEach(flag => { flag.hideCapZones(); });
     }
 
     
     /**
-     * xxxx
+     * Convert a SDK coordinate to a Leaflet LatLng coordinate
      * @param {number} x - latitude in cm as found in the squadpipeline extraction
      * @param {number} y - longitude in cm as found in the squadpipeline extraction
      * @returns {Array} - [latitude, longitude] in meters
@@ -1119,7 +1132,8 @@ export default class SquadLayer {
         this.activeLayerMarkers.clearLayers();
         this.phaseNumber.clearLayers();
         this.phaseAeras.clearLayers();
-        this.factions.unpinUnit();
+        if (this.factions) this.factions.unpinUnit();
+        $(".btn-layer").removeClass("active").hide();
     }
 
 }

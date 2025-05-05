@@ -65,5 +65,14 @@
     "mapSaved": "Karte in Datei gespeichert",
     "dragToImport": "Du kannst diese Datei auf die Karte ziehen, um sie später zu laden",
     "importSuccess": "Karte erfolgreich importiert",
-    "download": "Karte als Datei speichern"
+    "download": "Karte als Datei speichern",
+    "factions&Vehicles": "Fraktionen und Fahrzeuge",
+    "enableFactionsTooltip": "Nach Auswahl einer Ebene Fraktionen und Fahrzeuge aktivieren",
+    "defaultFactionsTooltip": "Nach Auswahl einer Ebene die Standardfraktionen vorauswählen",
+    "hideLowRespawnTooltip": "Beim Anheften einer Fraktion auf der Karte nur Fahrzeuge mit einer Respawn-Zeit von 10 Minuten oder mehr anzeigen",
+    "vehicleTimerTooltip": "Klicken Sie auf ein Fahrzeug, um es als zerstört zu markieren und einen Respawn-Timer zu starten",
+    "showMainAssetsTooltip": "Reparaturstationen, Munitionskisten und andere Hauptressourcen auf der Karte anzeigen",
+    "showMainZonesTooltip": "Schutz- und Deploy-Verbotszonen für jede Hauptbasis anzeigen",
+    "clickToCopy": "Zum Kopieren des `CreateSquad`-Befehls klicken",
+    "vehicleRespawned": "Fahrzeug wieder erschienen"
 }
