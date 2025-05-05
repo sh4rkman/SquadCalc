@@ -330,12 +330,14 @@ $("#hideLowRespawnSettings").on("change", function() {
 
     let factionData, country, faction;
 
+    console.log(App.minimap.layer)
+
     if ($(".btn-pin.active")[0]?.id === "team1PinButton") {
-        factionData = App.minimap.layer.layerData.factions.team1factions;
+        factionData = App.minimap.layer.layerData.units.team1Units;
         country = $(".dropbtn8").val();
         faction = $(".dropbtn9").val();
     } else {
-        factionData = App.minimap.layer.layerData.factions.team2factions;
+        factionData = App.minimap.layer.layerData.units.team2Units;
         country = $(".dropbtn10").val();
         faction = $(".dropbtn11").val();
     }
