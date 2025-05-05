@@ -50,6 +50,11 @@ export default class SquadLayer {
         this.reversed = false;
         this.init();
 
+        if (process.env.DISABLE_FACTIONS != "true") {
+            this.factions = new SquadFactions(this);
+            if (App.userSettings.enableFactions) $("#factionsTab").show();
+        }
+
         // If already zoomed in, reveal capzones/main assets
         if (this.map.getZoom() > this.map.detailedZoomThreshold) this.revealAllCapzones();
 
@@ -226,10 +231,6 @@ export default class SquadLayer {
 
         this.createAssets();
         this.createBorders();
-        if (process.env.DISABLE_FACTIONS != "true") {
-            this.factions = new SquadFactions(this);
-            if (App.userSettings.enableFactions) $("#factionsTab").show();
-        }
     }
 
     /**
