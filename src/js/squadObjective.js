@@ -1,11 +1,12 @@
 import { DivIcon, Marker, Circle, LayerGroup, Rectangle } from "leaflet";
 import { App } from "../app.js";
+import i18next from "i18next";
 
 export class SquadObjective {
 
     constructor(latlng, layer, objCluster, isMain, cluster) {
         this.name = objCluster.name;
-        this.objectName = objCluster.objectName;
+        this.objectName = objCluster.objectName.replaceAll(" ", "");
         this.objCluster = objCluster;
         this.cluster = cluster;
         this.layerGroup = layer.activeLayerMarkers;
@@ -76,6 +77,14 @@ export class SquadObjective {
     
         if (this.isMain) {
             className += " main";
+            if (process.env.DISABLE_FACTIONS != "true" && App.userSettings.enableFactions) {
+                if (this.objectName.replaceAll(" ", "") === "00-Team1Main") {
+                    if ($(".dropbtn8").val() != null) className += ` country_${$(".dropbtn8").val()}`;
+                }
+                else {
+                    if ($(".dropbtn10").val() != null) className += ` country_${$(".dropbtn10").val()}`;
+                }
+            }
         } else {
             position = Math.abs(this.layer.startPosition - this.position);
             html = position;
@@ -93,6 +102,9 @@ export class SquadObjective {
 
 
     updateMarker(className, html){
+
+        let nameTextClassName = "objText";
+
         this.flag = new Marker(this.latlng, {
             interactive: true,
             keyboard: false,
@@ -105,13 +117,38 @@ export class SquadObjective {
         }).addTo(this.layerGroup);
 
 
-        if (!this.isMain){ html = this.name;}
+        if (!this.isMain){ 
+            html = this.name;
+        } else {
+
+            nameTextClassName += " main";
+
+            if (process.env.DISABLE_FACTIONS != "true" && App.userSettings.enableFactions) {
+                if (this.objectName === "00-Team1Main") {
+                    if ($(".dropbtn8").val() != null) {
+                        html = $(".dropbtn8").val();
+                    } else {
+                        html = i18next.t("common:team1");
+                    }
+                } else {
+                    if ($(".dropbtn10").val() != null) {
+                        html = $(".dropbtn10").val();
+                    } else {
+                        html = i18next.t("common:team2");
+                    }
+                }
+            } else {
+                if (this.objectName === "00-Team1Main") html = i18next.t("common:team1");
+                else html = i18next.t("common:team2");
+            }
+        }
+
         this.nameText.removeFrom(this.layerGroup).remove();
         this.nameText = new Marker(this.latlng, {
             interactive: false,
             keyboard: false,
             icon: new DivIcon({
-                className: "objText",
+                className: nameTextClassName,
                 keyboard: false,
                 html: html,
                 iconSize: [300, 20],
@@ -239,15 +276,19 @@ export class SquadObjective {
             } else {
                 className += " main unselectable";
             }
+            if (process.env.DISABLE_FACTIONS != "true" && App.userSettings.enableFactions) {
+                if (this.objectName === "00-Team1Main") className += ` country_${$(".dropbtn8").val()}`;
+                else className += ` country_${$(".dropbtn10").val()}`;
+            }
         } else {
-            if (this.layer.layerData.gamemode != "AAS" && this.layer.layerData.gamemode != "Destruction"){
+            if (this.layer.layerData.gamemode != "AAS" && this.layer.layerData.gamemode != "Destruction" && this.layer.layerData.gamemode != "Skirmish"){
                 html = position;
                 className += " flag" + position;
             }
         } 
 
         if (Math.abs(this.layer.startPosition - this.position) === this.layer.currentPosition){
-            if (this.layer.layerData.gamemode != "AAS" && this.layer.layerData.gamemode != "Destruction"){
+            if (this.layer.layerData.gamemode != "AAS" && this.layer.layerData.gamemode != "Destruction" && this.layer.layerData.gamemode != "Skirmish"){
                 className += " next"; 
             }
         } else this.isNext = false;
@@ -257,7 +298,7 @@ export class SquadObjective {
 
         this.isSelected = false;
 
-        if (this.layer.layerData.gamemode != "AAS" && this.layer.layerData.gamemode != "Destruction"){
+        if (this.layer.layerData.gamemode != "AAS" && this.layer.layerData.gamemode != "Destruction" && this.layer.layerData.gamemode != "Skirmish"){
             this.flag.on("click", this._handleClick, this);
             this.flag.on("contextmenu", this._handleContextMenu, this);
             this.flag.on("dblclick", this._handleDoubleClick, this);
@@ -296,14 +337,14 @@ export class SquadObjective {
         }
 
         if (this.isMain) { 
-            if (this.layer.layerData.gamemode === "AAS" || this.layer.layerData.gamemode === "Destruction" || this.layer.layerData.gamemode === "Invasion"){
+            if (this.layer.layerData.gamemode === "AAS" || this.layer.layerData.gamemode === "Destruction" || this.layer.layerData.gamemode === "Invasion" || this.layer.layerData.gamemode === "Skirmish"){
                 className += " main unselectable";
             } else {
                 className += " main selectable";
             }
         } else {
             // if RAAS/Invasion, add the flag number and a colored icon
-            if (this.layer.layerData.gamemode != "AAS" && this.layer.layerData.gamemode != "Destruction") {
+            if (this.layer.layerData.gamemode != "AAS" && this.layer.layerData.gamemode != "Destruction" && this.layer.layerData.gamemode != "Skirmish") {
                 className += " flag" + this.position;
                 html = this.position;
             }

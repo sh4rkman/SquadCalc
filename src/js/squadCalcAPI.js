@@ -174,3 +174,26 @@ export async function fetchLayerByName(layerName, options = {}) {
         throw error;
     }
 }
+
+/**
+ * xxxxxxxxxxxxxxxxxxxxxx
+ * @param {string} mapName - The name of the map to fetch layers data for.
+ * @returns {Promise<Object>} A promise that resolves with the fetched marker data in JSON format.
+ * @throws {Error} Throws an error if the network request fails or the response is not OK.
+ */
+export async function fetchUnitByName(unitName, options = {}) {
+    const url = `${process.env.API_URL}/get/unit?name=${encodeURIComponent(unitName)}`;
+    const { signal } = options;
+    try {
+        const response = await fetch(url, {
+            headers: { "X-App-Version": App.version },
+            signal
+        });
+        if (!response.ok) { throw new Error("Network response was not ok"); }
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.debug("Error fetching Unit data:", error);
+        throw error;
+    }
+}

@@ -34,7 +34,7 @@
     - [Spread & Damage Radiuses](#Spread-and-Damages-radiuses)
     - [Commonly Used Spot](#commonly-used-spot)
     - [Squad Mortar Overlay Compatibility](#squad-mortar-overlay-compatibility)
-  - [Lane Finder](#lane-finder)
+  - [Layer Info](#lane-finder)
     - [Lane preview](#lane-preview)
     - [Capzones](#capzones)
     - [Auto Complete](#Auto-Complete)
@@ -60,7 +60,7 @@
     <picture><img src="./src/img/github/desktop_ui_6.webp" alt="capzone/mains preview"></picture>
   <picture><img src="./src/img/github/desktop_ui_3.webp" alt="weapon information preview"></picture>
   <picture><img src="./src/img/github/desktop_ui_4.webp" alt="calculations information preview"></picture>
-  <picture><img src="./src/img/github/desktop_ui_0.webp" alt="legacy preview"></picture>
+  <!-- <picture><img src="./src/img/github/desktop_ui_0.webp" alt="legacy preview"></picture> -->
 </div>
 
 </br></br>
@@ -115,34 +115,67 @@ It allows :
 
 </br></br>
 
-# <div align="center"><b>Lane Finder</b></div>
+# <div align="center"><b>Layer Info</b></div>
 
 <div align="center">
-  <picture><img width="60%" src="./src/img/github/layer-finder.gif" alt="capzones"></picture>
+  <picture><img width="70%" src="./src/img/github/layer-finder.gif" alt="capzones"></picture>
 </div>
 
 
-## **Lane preview**
+## **Lanes/Flags preview**
 
 Hover over a flag to preview how selecting it would affect the layer.  
 This allows you to quickly scan how the layer looks at the start of the game, for example.
 
-## **Capzones**
 
-SquadCalc lets you extract data for each flag from the SDK and view it in detail.  
+### **Capzones**
+
+SquadCalc lets you see each precise flag capzone extracted from the game SDK and view it in detail.  
 It helps you find the perfect location for a FOB, the best route to sneak into a cap zone, or even where to fire mortars effectively.
 
 <div align="center">
-  <picture><img width="60%" src="./src/img/github/capzones.webp" alt="capzones">></picture>
+  <picture><img width="80%" src="./src/img/github/capzones.webp" alt="capzones"></picture>
 </div>
 
-## **Auto Complete**
+### **Main Protection & No-deploy zone**
+
+Plan your radios and mortars : squadcalc display every mains protection zones (no vehicles shooting) and no-deploy (radios, mortars, emplacement).
+
+<div align="center">
+  <picture><img width="70%" src="./src/img/github/mains.webp" alt="capzones"></picture>
+</div>
+
+### **Real map borders**
+
+Each layer can have have it's own playable aera : squadcalc shows the exact invisible map limits.
+
+<div align="center">
+  <picture><img width="70%" src="./src/img/github/borders.webp" alt="autocomplete"></picture>
+</div>
+
+### **Autocomplete**
 
 SquadCalc will automatically complete the layer if there is only one possible incoming flag, saving you a few clicks.
 
+
+## **Factions, Units and Vehicles list**
+
+Browse every layer available factions, units, and vehicles :
+
 <div align="center">
-  <picture><img width="50%" src="./src/img/github/autocomplete.gif" alt="autocomplete"></picture>
+  <picture><img width="70%" src="./src/img/github/units.webp" alt="autocomplete"></picture>
 </div>
+
+<br>
+
+You can also pin the enemy vehicles list to your map and set timers when you destroy them : you will receive a sound notification when they respawn !
+
+<div align="center">
+  <picture><img width="70%" src="./src/img/github/timer.webp" alt="autocomplete"></picture>
+</div>
+
+
+
 
 </br></br>
 
@@ -161,6 +194,7 @@ Sessions works up to 10 participants.
   <picture><img width="100%" src="./src/img/github/sessions.webp" alt="map layers"></picture>
 </div>
   
+
 
 
 ## **Advanced Customisation & Informations**
@@ -193,7 +227,6 @@ Get a better and complete understanding of your shots and visualise a simulation
 
 ### Base map :
 The classic, straight from the game base map.  
-Also avaiblable in AI Upscaled 8192x8192 pixels though the Settings. 
 
 ### Terrain map :
 Base map enhanced with bumpmap from SDK's heightmap. Add a better comprehension of terrain.  
@@ -203,14 +236,24 @@ Also known as "why the fuck is it not the default ingame map?"
 A mix of bump map, contour map with a touch of hypsometric colors for a complete understanding of map reliefs.
 
 
+## **Ultra HD Maps**
+
+<div align="center">
+  <picture><img width="80%" src="./src/img/github/hdmaps.webp" alt="map layers"></picture>
+  <div align="center">UHD Maps vs regular ingame map image</div>
+</div>
+
+
+<br>
+
+With a single click, you can switch the map to a high-definition version powered by AI upscaling. The HD maps are 8192×8192 resolution images, letting you explore every part of the map in ultra-sharp detail right within the Leaflet interface.
+
 ## **Import/Export Your Maps**
 
 <br>
 
 <div align="center">
-  <picture>
-    <img width="50%" src="./src/img/github/import_export.webp" alt="Map Import/Export Preview">
-  </picture>
+  <picture><img width="50%" src="./src/img/github/import_export.webp" alt="Map Import/Export Preview"></picture>
 </div>
 
 <br>
@@ -226,12 +269,14 @@ Easily export your map and markers to an offline file for backup or sharing. To 
 
 * 🗺️ Map System built on **[Leaflet JS](https://leafletjs.com/)**
 * 🖼️ Map Images, Icons are from SquadSDK by **[OffWorld Industries](https://www.offworldindustries.com/)**
-* 🧮 Map Data is extracted thanks to **[Squad-Wiki Pipeline Map Data](https://github.com/Squad-Wiki/squad-wiki-pipeline-map-data)** SDK extractor Assets
+* 🧮 Layers/Factions Data are extracted thanks to **[Squad-Wiki Pipeline Map Data](https://github.com/Squad-Wiki/squad-wiki-pipeline-map-data)** SDK extractor Assets
+* 🗣️ AI Text-To-Speech made with **[Luvvoice](https://luvvoice.com/)** 
 * 👌🏼 Thanks to everyone supporting the project with kinds words, clever suggestions, and better code than mine
   * MK19 implementation by [Ferrariic](https://github.com/Ferrariic)
   * SquadMortarOverlay connector by [Devil4ngle](https://github.com/Devil4ngle)
   * ZH Translations by [Guducat](https://github.com/Guducat)
   * RU Translations by sitroz
+  * GE Translations by [f0xcb](https://github.com/f0xcb) 
 
 
 

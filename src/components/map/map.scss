@@ -72,6 +72,9 @@ $flag-circle-opacity: 0.2;
             letter-spacing: 0.02em;
             align-content: center;
             display: grid;
+            &.main {
+                text-transform: uppercase;
+            }
         }
         .subkp {
             font-size: 0.65em;
@@ -81,7 +84,7 @@ $flag-circle-opacity: 0.2;
             @include variables.light-text-outline;
             background-color: rgba(255, 255, 255, 0.4);
             font-size: 1.3em;
-            border: solid rgba(0, 0, 0, 0.4) 1px;
+            border: solid rgba(0, 0, 0, 0.5) 1px;
             box-shadow: 0 8px 12px rgba(0, 0, 0, 0.75);
             transition: opacity 0.25s ease-in-out;
             font-family: variables.$mainFont, Verdana, Geneva, Tahoma, sans-serif;
@@ -99,6 +102,7 @@ $flag-circle-opacity: 0.2;
                 display: grid;
                 letter-spacing: 0;
                 outline: solid 3px rgb(104, 104, 104);
+                pointer-events: none;
                 &.selected {
                     background-color: rgba(0, 128, 0, 1);
                     outline-color: rgb(0, 90, 0);
@@ -148,6 +152,114 @@ $flag-circle-opacity: 0.2;
                     transition: opacity 0.1s ease-in;
                     &.circleFlag {
                         background-size: 80%;
+                        &.country_ADF {
+                            background: url('../../../public/icons/flags/circles/ADF.webp') no-repeat center center;
+                            background-size: 210%;
+                        }
+                        &.country_TLF {
+                            background: url('../../../public/icons/flags/circles/TLF.webp') no-repeat center center;
+                            background-size: 210%;
+                        }
+                        &.country_CAF {
+                            background: url('../../../public/icons/flags/circles/CAF.webp') no-repeat center center;
+                            background-size: 210%;
+                        }
+                        &.country_IMF {
+                            background: url('../../../public/icons/flags/circles/IMF.webp') no-repeat center center;
+                            background-size: 210%;
+                        }
+                        &.country_INS {
+                            background: url('../../../public/icons/flags/circles/INS.webp') no-repeat center center;
+                            background-size: 210%;
+                        }
+                        &.country_PLA {
+                            background: url('../../../public/icons/flags/circles/PLA.webp') no-repeat center center;
+                            background-size: 210%;
+                        }
+                        &.country_PLANMC {
+                            background: url('../../../public/icons/flags/circles/PLANMC.webp') no-repeat center center;
+                            background-size: 210%;
+                        }
+                        &.country_PLAAGF {
+                            background: url('../../../public/icons/flags/circles/PLAAGF.webp') no-repeat center center;
+                            background-size: 210%;
+                        }
+                        &.country_USA {
+                            background: url('../../../public/icons/flags/circles/USA.webp') no-repeat center center;
+                            background-size: 210%;
+                        }
+                        &.country_USMC {
+                            background: url('../../../public/icons/flags/circles/USMC.webp') no-repeat center center;
+                            background-size: 210%;
+                        }
+                        &.country_VDV {
+                            background: url('../../../public/icons/flags/circles/VDV.webp') no-repeat center center;
+                            background-size: 210%;
+                        }
+                        &.country_WPMC {
+                            background: url('../../../public/icons/flags/circles/WPMC.webp') no-repeat center center;
+                            background-size: 210%;
+                        }
+                    }
+                    &.country_ADF {
+                        background: url('../../../public/icons/flags/ADF.webp') no-repeat center center;
+                        background-size: cover;
+                    }
+                    &.country_BAF {
+                        background: url('../../../public/icons/flags/BAF.webp') no-repeat center center;
+                        background-size: cover;
+                    }
+                    &.country_CAF {
+                        background: url('../../../public/icons/flags/CAF.webp') no-repeat center center;
+                        background-size: cover;
+                    }
+                    &.country_IMF {
+                        background: url('../../../public/icons/flags/IMF.webp') no-repeat center center;
+                        background-size: cover;
+                    }
+                    &.country_INS {
+                        background: url('../../../public/icons/flags/INS.webp') no-repeat center center;
+                        background-size: cover;
+                    }
+                    &.country_MEA {
+                        background: url('../../../public/icons/flags/MEA.webp') no-repeat center center;
+                        background-size: cover;
+                    }
+                    &.country_PLA {
+                        background: url('../../../public/icons/flags/PLA.webp') no-repeat center center;
+                        background-size: cover;
+                    }
+                    &.country_RGF {
+                        background: url('../../../public/icons/flags/RGF.webp') no-repeat center center;
+                        background-size: cover;
+                    }
+                    &.country_USA {
+                        background: url('../../../public/icons/flags/USA.webp') no-repeat center center;
+                        background-size: cover;
+                    }
+                    &.country_USMC {
+                        background: url('../../../public/icons/flags/USMC.webp') no-repeat center center;
+                        background-size: cover;
+                    }
+                    &.country_VDV {
+                        background: url('../../../public/icons/flags/VDV.webp') no-repeat center center;
+                        background-size: cover;
+                    }
+                    &.country_PLANMC {
+                        background: url('../../../public/icons/flags/PLANMC.webp') no-repeat center center;
+                        background-size: cover;
+                    }
+                    &.country_PLAAGF {
+                        background: url('../../../public/icons/flags/PLAAGF.webp') no-repeat center center;
+                        background-size: cover;
+                    }
+                    &.country_TLF {
+                        background: url('../../../public/icons/flags/TLF.webp') no-repeat center center;
+                        background-size: cover;
+                    }
+                    &.country_WPMC {
+                        background: url('../../../public/icons/flags/WPMC.webp') no-repeat center center;
+                        background-size: cover;
                     }
                 }
             }
@@ -246,6 +358,9 @@ $flag-circle-opacity: 0.2;
             background: url('../../../public/icons/ally/deployables/deployable_ammocrate.webp') no-repeat center center;
             background-size: contain;
             transition: opacity 0.1s ease-in;
+        }
+        .unplayable-area {
+            transition: fill-opacity 0.2s ease-in;
         }
         .destructionPhase {
             @include variables.light-text-outline;
@@ -349,7 +464,145 @@ $flag-circle-opacity: 0.2;
         }
     }
 }
-  
+
+
+#pinnedVehiclesTab {
+    @extend .unselectable;
+    flex-direction: column;
+    width: auto;
+    max-height: 75vh;
+    margin-top: 0.5em;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    display: block;
+    overflow: scroll;
+    .pinnedVehicles {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        border-radius: 0 4px 4px 0;
+        padding: 2px;
+        z-index: 1;
+        margin-top: 4px;
+        font-size: 0.8em;
+        cursor: pointer;
+        margin-bottom: 5px;
+        background: #292929;
+        border-left: none;
+        width: fit-content;
+        max-width: 35px;
+        overflow: hidden;
+        transition: background 0.3s ease, border-color 0.3s ease;
+        white-space: nowrap;
+        &:active,
+        &.active {
+            background: linear-gradient(135deg, firebrick, #ec392f);
+            border-color: firebrick;
+            box-shadow: 0 0 4px rgba(0, 0, 0, 1);
+            min-width: 90px;
+            font-size: 1em;
+            .pinedVehiclesName {
+                display: none;
+            }
+        }
+        .btn-pined {
+            width: 30px;
+            height: 30px;
+            margin-right: 8px;
+            background: transparent;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            img {
+                cursor: pointer;
+                width: 30px;
+                height: 30px;
+            }
+        }
+        .pinedVehiclesMeta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-right: 5px;
+            white-space: nowrap;
+            .pinedVehiclesName {
+                letter-spacing: 1px;
+                flex-shrink: 1;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+            .pinedVehiclesTimer {
+                flex-shrink: 0;
+                font-size: 0.85em;
+                text-align: left;
+                white-space: nowrap;
+            }
+        }
+        &.active,
+        &:hover {
+            max-width: 250px;
+            .pinedVehiclesMeta {
+                display: block;
+            }
+        }
+        &:hover  {
+            font-size: 0.8em;
+            .pinedVehiclesName {
+                display: block;
+            }
+        }
+    }
+    
+}
+
+
+#factionsTab {
+    display: none;
+    top: 20%;
+    width: auto;
+    height: auto;
+    z-index: 1;
+    position: absolute;
+}
+
+#factionsButton {
+    width: 70px;
+    padding: 0.5em;
+    border: none;
+    border-radius: 0 10px 10px 0;
+    background: white;
+    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8);
+    cursor: pointer;
+    transition: background-color 0.2s ease, box-shadow 0.2s ease;
+    font-weight: bold;
+    text-align: center;
+    z-index: 1;
+    left: 0;
+    &:hover {
+        background-color: #b4b4b4;
+        box-shadow: 2px 2px 6px rgba(0, 0, 0, 1);
+    }
+    button {
+        margin: 2px 5px 0 0;
+        width: 40px;
+        height: 33px;
+        background-color: transparent;
+        color: #111;
+        top: auto;
+        cursor: pointer;
+        svg {
+            margin-top: 3px;
+            height: 80%;
+        }
+        img {
+            height: 70%;
+            background-color: #111;
+            box-shadow: 0 0 2px rgb(0, 0, 0);
+        }
+    }
+}
 
 #mapLayerMenu {
     position: absolute;
@@ -435,8 +688,8 @@ $flag-circle-opacity: 0.2;
 .logo {
     @extend .unselectable;
     position: fixed;
-    height: 100vh; 
-    width: 100vw; 
+    height: 100vh;
+    width: 100vw;
     display: table;
     font-family: variables.$logoFont, Times, "Times New Roman", serif;
     text-transform: uppercase;

@@ -2,8 +2,8 @@
 import { DivIcon, Marker, Circle, LayerGroup, Polyline, Polygon, Rectangle, FeatureGroup } from "leaflet";
 import { SquadObjective } from "./squadObjective.js";
 import { App } from "../app.js";
-import i18next from "i18next";
 import "./libs/leaflet-measure-path.js";
+import SquadFactions from "./squadFactions.js";
 
 export default class SquadLayer {
 
@@ -50,6 +50,11 @@ export default class SquadLayer {
         this.reversed = false;
         this.init();
 
+        if (process.env.DISABLE_FACTIONS != "true") {
+            this.factions = new SquadFactions(this);
+            if (App.userSettings.enableFactions) $("#factionsTab").show();
+        }
+
         // If already zoomed in, reveal capzones/main assets
         if (this.map.getZoom() > this.map.detailedZoomThreshold) this.revealAllCapzones();
 
@@ -86,6 +91,7 @@ export default class SquadLayer {
                 const latlng = this.convertToLatLng(main.location_x, main.location_y);
                 const newFlag = new SquadObjective(latlng, this, main, 1, main);
                 this.flags.push(newFlag);
+                this.mains.push(newFlag);
                 newFlag.flag.off();
                 newFlag.flag.options.interactive = false;
             });
@@ -133,11 +139,12 @@ export default class SquadLayer {
             });
 
             this.createAssets();
+            this.createBorders();
             return;
         }
 
         // AAS
-        if (this.layerData.gamemode === "AAS") {
+        if (this.layerData.gamemode === "AAS" || this.layerData.gamemode === "Skirmish") {
 
             const objectiveKeys = Object.keys(this.layerData.objectives);
             const numFlags = objectiveKeys.length - 1;
@@ -150,7 +157,9 @@ export default class SquadLayer {
                 // We will draw their protection zones instead later
                 if (i === 0 || i === numFlags){
                     this.path.push(latlng);
-                    this.flags.push(new SquadObjective(latlng, this, obj, 1, obj));
+                    let newFlag = new SquadObjective(latlng, this, obj, 1, obj);
+                    this.flags.push(newFlag);
+                    this.mains.push(newFlag);
                     return;
                 }
 
@@ -167,6 +176,7 @@ export default class SquadLayer {
 
             this.polyline.setLatLngs(this.path);
             this.createAssets();
+            this.createBorders();
             return;
         }
 
@@ -211,16 +221,21 @@ export default class SquadLayer {
         // Pre-select first main flag in invasion
         if (this.layerData.gamemode === "Invasion") {
             this.mains.forEach((main) => {
-                if (main.objectName === this.layerData.capturePoints.clusters.listOfMains[0].replaceAll(" ", "")){
+                // Invaders are always Team 1
+                if (main.objectName.toLowerCase().includes("team1")){
                     this._handleFlagClick(main);
+                    return;
                 }
             });
         }
 
         this.createAssets();
+        this.createBorders();
     }
 
-
+    /**
+     * Reveal all capzones on the map
+     */
     revealAllCapzones() {
         if (App.userSettings.capZoneOnHover || !this.isVisible) return;
         this.flags.forEach(flag => {
@@ -228,13 +243,17 @@ export default class SquadLayer {
         });
     }
 
+
+    /**
+     * Hide all capzones on the map
+     */
     hideAllCapzones() {
         this.flags.forEach(flag => { flag.hideCapZones(); });
     }
 
     
     /**
-     * xxxx
+     * Convert a SDK coordinate to a Leaflet LatLng coordinate
      * @param {number} x - latitude in cm as found in the squadpipeline extraction
      * @param {number} y - longitude in cm as found in the squadpipeline extraction
      * @returns {Array} - [latitude, longitude] in meters
@@ -331,6 +350,42 @@ export default class SquadLayer {
         });
     }
 
+
+    createBorders() {
+        const MAPBOUNDS = [
+            [0, 0],
+            [0, this.map.pixelSize],
+            [-this.map.pixelSize, this.map.pixelSize],
+            [-this.map.pixelSize, 0],
+            [0, 0]
+        ];
+
+        // There's no border but the map bounds
+        if (this.layerData.border.length === 2) return;
+
+        let borderPath = [];
+
+        this.layerData.border.forEach((border) => {
+            // keep the latlng within the map bounds
+            var latlng = this.convertToLatLng(border.location_x, border.location_y);
+            if (latlng[1] > this.map.pixelSize) {latlng[1] = this.map.pixelSize;}
+            if (latlng[0] < -this.map.pixelSize) {latlng[0] = -this.map.pixelSize;}
+            if (latlng[1] < 0) {latlng[1] = 0;}
+            if (latlng[0] > 0) {latlng[0] = 0;}
+            borderPath.push(latlng);
+        });
+
+        let opacity = 0.75;
+
+        if (!App.userSettings.showMapBorders) opacity = 0;
+
+        this.borders = new Polygon([MAPBOUNDS, borderPath], {
+            color: "#111",
+            fillOpacity: opacity,
+            weight: 0,
+            className: "unplayable-area",
+        }).addTo(this.activeLayerMarkers);
+    }
 
     /**
      * Rotate a Leaflet Rectangle around its center
@@ -468,7 +523,6 @@ export default class SquadLayer {
             }
 
         });
-
     }
 
     
@@ -480,18 +534,23 @@ export default class SquadLayer {
 
 
     setMainZoneOpacity(on){
-        const opacity = on ? 1 : 0;
+        var opacity = on ? 1 : 0;
         const textOpacity = on ? 1 : 0;
         const fillOpacity = on ? 0.1 : 0;
 
-
         this.mainZones.rectangles.forEach((rectangle) => {
-            rectangle.setStyle({ fillOpacity: fillOpacity, opacity: opacity });
+            if (!App.userSettings.showMainZones) {
+                rectangle.setStyle({ fillOpacity: 0, opacity: 0 });
+            } else {
+                rectangle.setStyle({ fillOpacity: fillOpacity, opacity: opacity });
+            }  
         });
 
         this.mainZones.texts.forEach((text) => {
             text.setOpacity(textOpacity);
         });
+
+        if (!App.userSettings.showMainAssets) opacity = 0;
 
         this.mainZones.assets.forEach(asset => {
             asset.setOpacity(opacity);
@@ -717,9 +776,9 @@ export default class SquadLayer {
         });
 
         // Copy the next flags names to the clipboard
-        if (App.userSettings.copyNextFlags) {
-            App.copy(i18next.t("common:nextFlags") + " : " + nextFlagsNamesArray.join("/"));
-        }  
+        // if (App.userSettings.copyNextFlags) {
+        //     navigator.clipboard.writeText(i18next.t("common:nextFlags") + " : " + nextFlagsNamesArray.join("/"));
+        // }  
        
         // Only one flag in front ? Click it
         if (nextFlags.length === 1 && !backward && App.userSettings.autoLane){
@@ -1046,6 +1105,7 @@ export default class SquadLayer {
             $(".btn-layer").removeClass("active");
             this.hideAllCapzones();
             this.setMainZoneOpacity(false);
+            if (this.borders && App.userSettings.showMapBorders) this.borders.setStyle({ opacity: 0, fillOpacity: 0 });
         }
         else {
             this._setOpacity(1);
@@ -1061,7 +1121,7 @@ export default class SquadLayer {
             $(".btn-layer").addClass("active");
             this.isVisible = true;
             if (this.map.getZoom() > this.map.detailedZoomThreshold) this.revealAllCapzones();
-
+            if (this.borders && App.userSettings.showMapBorders) this.borders.setStyle({ opacity: 0, fillOpacity: 0.75 });
         }
     }
 
@@ -1073,6 +1133,8 @@ export default class SquadLayer {
         this.activeLayerMarkers.clearLayers();
         this.phaseNumber.clearLayers();
         this.phaseAeras.clearLayers();
+        if (this.factions) this.factions.unpinUnit();
+        $(".btn-layer").removeClass("active").hide();
     }
 
 }

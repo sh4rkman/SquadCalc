@@ -53,10 +53,40 @@
    ************   WIDTH ADJUSTMENTS  ***************
    ***************************************************/
 
-
-/* L<768px */
-
 @media screen and (width <= 48em) {
+    .unit-logo {
+        display: none;
+    }
+    .countryFlags {
+        .img-flag {
+            width: 40px;
+        }
+    }
+    #factionsDialog {
+        #factionVehicles {
+            .vehicle-card {
+                .vehicle-icon {
+                    width: 22px;
+                    height: 22px;
+                }
+            }
+        }
+        #factionMenu {
+            #team1, #team2 {
+                .selectors {
+                    flex-direction: column;
+                    .unitSelector {
+                        padding-top: 5px;
+                    }
+                    .factionSelector {
+                        .select2-container {
+                            min-width: 70px;
+                        }
+                    }
+                }
+            }
+        }
+    }
     /* -- H < 568px -- */
     @media (height >= 35em) {
         #classic_ui {
@@ -70,6 +100,8 @@
                 margin: 1.5em auto;
             }
         }
+
+
     }
     /* -- H < 800px -- */
     @media (height >= 50em) {
@@ -86,6 +118,65 @@
     }
 }
 
+/* -- WIDTH < 568px -- */
+@media screen and (width <= 35em) {
+    #factionsDialog {
+        #factionVehicles {
+            .vehicle-card {
+                padding: 0.3em;
+                .vehicle-icon {
+                    width: 22px;
+                    height: 22px;
+                    margin-right: 0.5em;
+                }
+                .vehicle-info {
+                    font-size: 0.8em;
+                }
+            }
+            .vehicle-info {
+                font-size: 0.8em;
+            }
+            #team1Vehicles {
+                .vehicle-card {
+                    .vehicle-icon {
+                        margin-left: 0.5em;
+                    }
+                }
+            }
+        }
+    }
+}
+
+/* -- WIDTH < 512px -- */
+@media screen and (width <= 32em) {
+    #factionsDialog {
+        #factionVehicles {
+            .vehicle-card {
+                padding: 0.3em;
+                .vehicle-icon {
+                    //display: none;
+                    width: 15px;
+                    height: 15px;
+                    margin-right: 0.2em;
+                    .vehicle-count {
+                        font-size: 1em;
+                    }
+                }
+                .vehicle-info {
+                    font-size: 0.6em;
+                }
+            }
+            #team1Vehicles {
+                .vehicle-card {
+                    .vehicle-icon {
+                        margin-left: 0.2em;
+                        margin-right: 0;
+                    }
+                }
+            }
+        }
+    }
+} 
 
 /* ≥ 768px */
 

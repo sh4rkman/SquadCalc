@@ -85,7 +85,6 @@ export default class SquadContextMenu {
             plugins: [followCursor],
             duration: 0,
             arrow: false,
-            position: "top",
             offset: [0, 15],
             onHide: () => {
                 $(".shapeButton").off("click");

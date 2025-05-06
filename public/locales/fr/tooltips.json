@@ -65,5 +65,14 @@
     "mapSaved": "Carte sauvegardée",
     "dragToImport": "Vous pouvez faire glisser et déposer ce fichier sur la carte pour le charger plus tard",
     "importSuccess": "Carte importée avec succès",
-    "download": "Enregistrer la carte"
+    "download": "Enregistrer la carte",
+    "factions&Vehicles": "Factions et Véhicules",
+    "enableFactionsTooltip": "Après avoir sélectionné une couche, activez les factions et les véhicules",
+    "defaultFactionsTooltip": "Après avoir choisi une couche, présélectionnez ses factions par défaut",
+    "hideLowRespawnTooltip": "Attacher à la carte uniquement les véhicules avec un temps de réapparition de plus de 10min",
+    "vehicleTimerTooltip": "Cliquez sur un véhicule pour le marquer comme détruit et démarrer un minuteur de respawn",
+    "showMainAssetsTooltip": "Affiche les stations de réparation, caisses de munitions et autres construction des bases principales sur la carte",
+    "showMainZonesTooltip": "Afficher les zones de protection et d'interdiction de déploiement pour chaque base principale",
+    "clickToCopy": "Cliquez pour copier la commande `CreateSquad`",
+    "vehicleRespawned": "Véhicule réapparu"
 }

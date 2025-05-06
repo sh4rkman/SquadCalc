@@ -65,5 +65,14 @@
     "mapSaved": "地图已保存到文件",
     "dragToImport": "你可以将此文件拖放到地图上以稍后加载",
     "importSuccess": "地图导入成功",
-    "download": "将地图保存到文件"
+    "download": "将地图保存到文件",
+    "factions&Vehicles": "阵营与载具",
+    "enableFactionsTooltip": "选择图层后，启用阵营和载具功能",
+    "defaultFactionsTooltip": "选择图层后，预设默认阵营",
+    "hideLowRespawnTooltip": "在地图上固定阵营时，仅显示重生时间为10分钟或更长的载具",
+    "vehicleTimerTooltip": "点击载具将其标记为已摧毁并设置重生计时器",
+    "showMainAssetsTooltip": "在地图上显示维修站、弹药箱和其他主要资源",
+    "showMainZonesTooltip": "显示每个主基地的保护区和禁止部署区域",
+    "clickToCopy": "点击复制 `CreateSquad` 命令",
+    "vehicleRespawned": "载具已重生"
 }

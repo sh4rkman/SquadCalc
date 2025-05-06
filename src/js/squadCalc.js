@@ -39,6 +39,7 @@ export default class SquadCalc {
         this.WEAPON_SELECTOR = $(".dropbtn2");
         this.SHELL_SELECTOR = $(".dropbtn3");
         this.LAYER_SELECTOR = $(".dropbtn5");
+        this.FACTION_SELECTOR = $(".dropbtn9");
         this.session = false;
         this.version = packageInfo.version;
     }
@@ -66,6 +67,11 @@ export default class SquadCalc {
         // Initiate Maps&Layers Dropdown
         this.MAP_SELECTOR.select2();
         this.LAYER_SELECTOR.select2();
+        this.FACTION_SELECTOR.select2();
+        $(".dropbtn8").select2();
+        $(".dropbtn9").select2();
+        $(".dropbtn10").select2();
+        $(".dropbtn11").select2();
         
         // Load maps 
         MAPS.forEach((map, i) => {
@@ -90,11 +96,8 @@ export default class SquadCalc {
                 this.updateUrlParams({ map: this.minimap.activeMap.name });
             }
             
-
             // Refresh layer selector
             this.loadLayers();
-
-
 
             if (broadcast && this.session.ws && this.session.ws.readyState === WebSocket.OPEN) {
                 this.session.ws.send(
@@ -118,8 +121,12 @@ export default class SquadCalc {
                 if (abortController) { abortController.abort(); } // Abort the ongoing fetch request
                 if (this.minimap.layer) this.minimap.layer.clear();
                 $(".btn-layer").hide();
+                $("#factionsTab").hide();
                 return;
             }
+
+            $(".dropbtn8").empty();
+            $(".dropbtn10").empty();
             
             // Update the the URL
             this.updateUrlParams({ layer: selectedLayerText });
@@ -133,27 +140,25 @@ export default class SquadCalc {
                 this.minimap.layer = new SquadLayer(this.minimap, layerData);
                 $(".btn-layer").addClass("active").show();
                 this.minimap.spin(false);
-            }).catch(error => {        
+            }).catch(error => {
                 if (error.name !== "AbortError") {
                     this.openToast("error", "error", "apiError");
-                    console.debug("Error fetching layer data:", error);
-                }   
+                    console.error("Error fetching layer data:", error);
+                }
+                $("#factionsTab").hide();
                 this.minimap.spin(false);
             });
         });
-
     }
-
 
     /**
      * Retrieve list of available layers name from squadcalc api
      */
     loadLayers() {
+        this.minimap.spin(true, this.minimap.spinOptions);
         const currentUrl = new URL(window.location);
         $("#layerSelector").hide();
         this.LAYER_SELECTOR.empty();
-
-        this.minimap.spin(true, this.minimap.spinOptions);
 
         fetchLayersByMap(this.minimap.activeMap.name).then(layers => {
 
@@ -196,7 +201,7 @@ export default class SquadCalc {
             $("#layerSelector").show();
 
         }).catch(error => {
-            this.LAYER_SELECTOR.hide();
+            $("#layerSelector").hide();
             this.minimap.spin(false);
             this.openToast("error", "error", "apiError_layers");
             console.debug("Error fetching layers from API:", error);
@@ -352,6 +357,7 @@ export default class SquadCalc {
         const calcInformation = document.querySelector("#calcInformation");
         const weaponInformation = document.querySelector("#weaponInformation");
         const helpDialog = document.querySelector("#helpDialog");
+        const factionsDialog = document.querySelector("#factionsDialog");
 
         $(".btn-delete, .btn-download, .btn-undo, .btn-layer, #mapLayerMenu").hide();
 
@@ -395,6 +401,7 @@ export default class SquadCalc {
         this.closeDialogOnClickOutside(calcInformation);
         this.closeDialogOnClickOutside(weaponInformation);
         this.closeDialogOnClickOutside(helpDialog);
+        this.closeDialogOnClickOutside(factionsDialog);
         
         const overlay = document.getElementById("dropOverlay");
         let dragCounter = 0;
@@ -421,7 +428,6 @@ export default class SquadCalc {
             e.preventDefault();
             dragCounter = 0;
             overlay.style.display = "none";
-            // Handle dropped files here
         });
           
         window.addEventListener("drop", e => {
@@ -438,7 +444,7 @@ export default class SquadCalc {
             reader.onload = (event) => {
                 const content = event.target.result;
           
-                // Optional: try parsing as JSON
+                // Try parsing as JSON
                 try {
                     const data = JSON.parse(content);
                     console.debug("Parsed JSON:", data);
@@ -447,12 +453,17 @@ export default class SquadCalc {
 
                     $(document).one("heightmap:loaded", () => {
                         try {
-                            data.weapons.forEach(weapon => {
-                                this.minimap.createWeapon(new LatLng(weapon.lat, weapon.lng));        
-                            });
-                            data.targets.forEach(target => {
-                                this.minimap.createTarget(new LatLng(target.lat, target.lng), false);
-                            });
+
+                            // Make sure there is weapons before trying to create targets
+                            if (Array.isArray(data.weapons) && data.weapons.length > 0) {
+                                data.weapons.forEach(weapon => {
+                                    this.minimap.createWeapon(new LatLng(weapon.lat, weapon.lng));        
+                                });
+                                data.targets.forEach(target => {
+                                    this.minimap.createTarget(new LatLng(target.lat, target.lng), false);
+                                });
+                            }
+
                             data.markers.forEach(marker => {
                                 this.minimap.createMarker(new LatLng(marker.lat, marker.lng), marker.team, marker.category, marker.icon);
                             });
@@ -503,13 +514,13 @@ export default class SquadCalc {
                             this.openToast("success", "importSuccess", "");
                         
                         } catch (err) {
-                            console.error("Error while creating markers:", err);
+                            console.debug("Error while creating markers:", err);
                             this.openToast("error", "fileNotSupported", "openIssue");
                         }
                     });
 
                 } catch (err) {
-                    console.error("Not valid JSON", err);
+                    console.debug("Not valid JSON", err);
                     this.openToast("error", "fileNotSupported", "");
                 }
             };
@@ -526,7 +537,7 @@ export default class SquadCalc {
         });
 
         $(".btn-download").on("click", () => {
-            this.saveMapState();
+            this.saveMapStateToFile();
         });
 
         $(".btn-undo").on("click", () => {
@@ -538,6 +549,11 @@ export default class SquadCalc {
         });
 
         $("#fabCheckbox2").on("change", () => { this.switchUI();});
+
+        $("#factionsButton").on("click", () => {
+            document.querySelector("#factionsDialog").showModal();
+        });
+        
 
         $("#mapLayerMenu").find("button.btn-session").on("click", () => {
             if ($(".btn-session").hasClass("active")) {
@@ -565,6 +581,7 @@ export default class SquadCalc {
 
         $("#mapLayerMenu").find("button.layers").on("click", (event) => {
 
+            if ($(event.currentTarget).hasClass("active")) { return; }
             const VAL = $(event.currentTarget).attr("value");
 
             if (VAL === "helpmap") {
@@ -621,15 +638,13 @@ export default class SquadCalc {
             });
 
 
-            
-    
             $(document).on("keydown", (event) => {
 
                 // Disable Shortkeys in legacy mode
-                if (this.ui == 0) { return; }
+                if (this.ui == 0) return;
 
                 // Disable Shortkeys when currently in a dialog
-                if (weaponInformation.open || calcInformation.open || helpDialog.open) { return; }
+                if (weaponInformation.open || calcInformation.open || helpDialog.open || factionsDialog.open) return;
 
                 // ENTER = FOCUS MODE
                 if (event.key === "Enter") {
@@ -638,12 +653,16 @@ export default class SquadCalc {
                         $("footer").show();
                         $("#mapLayerMenu").show();
                         $("#background").show();
+                        if (this.minimap.layer && this.userSettings.enableFactions) {
+                            $("#factionsButton").show();
+                        }
                         closeToast();
                     } else {
                         $("header").hide();
                         $("footer").hide();
                         $("#background").hide();
                         $("#mapLayerMenu").hide();
+                        $("#factionsButton").hide();
                         this.openToast("success", "focusMode", "enterToExit");
                     }
                 }
@@ -665,7 +684,7 @@ export default class SquadCalc {
                 // CTRL + S = SAVE CURRENT MAP TO A FILE
                 if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "s") {
                     event.preventDefault();
-                    if (this.minimap.hasMarkers()) this.saveMapState();
+                    if (this.minimap.hasMarkers()) this.saveMapStateToFile();
                 }
 
             });
@@ -719,7 +738,7 @@ export default class SquadCalc {
 
             // Open another toast and copy current URL
             if (title === "tooltips:sessionCreated" && event.target.tagName != "BUTTON") {
-                this.copy(window.location.href);
+                navigator.clipboard.writeText(window.location.href);
                 this.openToast("success", "copied", "");
             }
 
@@ -1066,25 +1085,8 @@ export default class SquadCalc {
             text2copy = COPY_ZONE.prev().val().trim() + COPY_ZONE.text().trim();
         }
 
-        this.copy(text2copy);
+        navigator.clipboard.writeText(text2copy);
         animateCSS(COPY_ZONE.parent(), "headShake");
-    }
-
-
-    /**
-     * Copy string to clipboard
-     * execCommand is deprecated but navigator.clipboard doesn't work in steam browser :(
-     */
-    copy(string) {
-        const el = document.createElement("textarea");
-        el.value = string;
-        el.setAttribute("readonly", "");
-        el.style.position = "absolute";
-        el.style.left = "-9999px";
-        document.body.appendChild(el);
-        el.select();
-        document.execCommand("copy");
-        document.body.removeChild(el);
     }
 
     /**
@@ -1231,8 +1233,7 @@ export default class SquadCalc {
         }
 
         animateCSS($(".copy"), "headShake");
-
-        this.copy(`${$("#target-location").val()} ➜ ${$("#bearingNum").text()} - ${$("#elevationNum").text()}`);
+        navigator.clipboard.writeText(`${$("#target-location").val()} ➜ ${$("#bearingNum").text()} - ${$("#elevationNum").text()}`);
         this.openToast("success", "copied", "");
 
     }
@@ -1361,16 +1362,15 @@ export default class SquadCalc {
         return { weapons, targets, markers, arrows, circles, rectangles, activeWeapon, activeMap, version };
     }
 
-    saveMapState() {
+    saveMapStateToFile() {
         const now = new Date();
+        const data = this.getAppState();
         const formattedDate =
         now.getFullYear().toString() +
         String(now.getMonth() + 1).padStart(2, "0") +
         String(now.getDate()).padStart(2, "0") + "_" +
         String(now.getHours()).padStart(2, "0") +
         String(now.getMinutes()).padStart(2, "0");
-        const data = this.getAppState();
-        // serve as a JSON file with data
         const blob = new Blob([JSON.stringify(data)], { type: "application/json" });
         const url = URL.createObjectURL(blob);
         const a = document.createElement("a");
@@ -1382,6 +1382,7 @@ export default class SquadCalc {
         URL.revokeObjectURL(url);
         this.openToast("success", "mapSaved", "dragToImport");
     }
+
     
     /**
      * Updates the URL search parameters by applying the provided updates.

@@ -17,7 +17,7 @@ const commonToolipsSettings = {
     theme: "settingsTooltips",
     hideOnClick: true,
     delay: 200,
-    maxWidth: 200, 
+    maxWidth: 250, 
     appendTo: helpDialog,
 };
 
@@ -126,14 +126,14 @@ tippy("span[data-i18n='settings:realMaxRange']", {
     },
 });
 
-tippy("span[data-i18n='settings:copyNextFlags']", {
-    ...commonToolipsSettings,
-    onShow(tip) {
-        tip.setContent(`
-            ${i18next.t("tooltips:copyNextFlagsTooltip")}
-        `);
-    },
-});
+// tippy("span[data-i18n='settings:copyNextFlags']", {
+//     ...commonToolipsSettings,
+//     onShow(tip) {
+//         tip.setContent(`
+//             ${i18next.t("tooltips:copyNextFlagsTooltip")}
+//         `);
+//     },
+// });
 
 tippy("span[data-i18n='settings:copyTarget']", {
     ...commonToolipsSettings,
@@ -171,6 +171,50 @@ tippy("span[data-i18n='settings:revealLayerOnHover']", {
     },
 });
 
+tippy("span[data-i18n='settings:showMainZones']", {
+    ...commonToolipsSettings,
+    onShow(tip) {
+        tip.setContent(`
+            ${i18next.t("tooltips:showMainZonesTooltip")}
+        `);
+    },
+});
+
+tippy("span[data-i18n='settings:showMainAssets']", {
+    ...commonToolipsSettings,
+    onShow(tip) {
+        tip.setContent(`
+            ${i18next.t("tooltips:showMainAssetsTooltip")}
+        `);
+    },
+});
+
+tippy("span[data-i18n='settings:enableFactions']", {
+    ...commonToolipsSettings,
+    onShow(tip) {
+        tip.setContent(`
+            ${i18next.t("tooltips:enableFactionsTooltip")}
+        `);
+    },
+});
+
+tippy("span[data-i18n='settings:defaultFactions']", {
+    ...commonToolipsSettings,
+    onShow(tip) {
+        tip.setContent(`
+            ${i18next.t("tooltips:defaultFactionsTooltip")}
+        `);
+    },
+});
+
+tippy("span[data-i18n='settings:hideLowRespawn']", {
+    ...commonToolipsSettings,
+    onShow(tip) {
+        tip.setContent(`
+            ${i18next.t("tooltips:hideLowRespawnTooltip")}
+        `);
+    },
+});
 
 
 
@@ -244,6 +288,19 @@ tippy(".btn-focus", {
             <div class="tooltipsubtext">${i18next.t("tooltips:enter")}</div>
             `
         );
+    },
+});
+tippy("#factionsButton", {
+    ...commonMapMenuToolipsSettings,
+    onShow(tip) {
+        tip.setContent(i18next.t("tooltips:factions&Vehicles"));
+    },
+});
+
+tippy(".copy-vehicle-btn", {
+    ...commonMapMenuToolipsSettings,
+    onShow(tip) {
+        tip.setContent(i18next.t("tooltips:factions&Vehicles"));
     },
 });
 

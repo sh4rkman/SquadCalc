@@ -85,8 +85,8 @@ export const squadMinimap = Map.extend({
         this.contextMenu = new squadContextMenu();
 
         // Custom events handlers
-        //this.on("click", this._handleclick);
-        //this.on("dblclick", this._handleDoubleClick, this);
+        this.on("click", this._handleclick());
+        this.on("dblclick", function(e) { this._handleDoubleClick(e); });
 
 
         this.on("click", (event) => {
@@ -99,13 +99,13 @@ export const squadMinimap = Map.extend({
             }, 175);
         });
         
-        this.on("dblclick", (event) => {
-            if (this._singleClickTimeout) {
-                clearTimeout(this._singleClickTimeout);
-                this._singleClickTimeout = null;
-            }
-            this._handleDoubleClick(event);
-        });
+        // this.on("dblclick", (event) => {
+        //     if (this._singleClickTimeout) {
+        //         clearTimeout(this._singleClickTimeout);
+        //         this._singleClickTimeout = null;
+        //     }
+        //     this._handleDoubleClick(event);
+        // });
 
         this.on("contextmenu", this._handleContextMenu, this);
         this.on("zoomend", this._handleZoom, this);
@@ -230,6 +230,7 @@ export const squadMinimap = Map.extend({
         }
     },
 
+
     /**
      * Force the Browser to decode of the current map image
      * Hack for Chrome lag when first zooming inside a 4k image
@@ -240,12 +241,13 @@ export const squadMinimap = Map.extend({
         IMG.decode();
     },
 
+
     /**
      * Reset map by clearing every Markers/Layers
      */
     clear: function(){
 
-        // Clear Every existing Makers
+        // Clear Every existing Markers
         this.markersGroup.clearLayers();
         this.activeMarkers.clearLayers();
         this.activeWeaponsMarkers.clearLayers();
@@ -258,14 +260,16 @@ export const squadMinimap = Map.extend({
         this.activeCircles = [];
 
         if (this.layer) this.layer.clear();
-    
-        $(".btn-delete, .btn-undo, .btn-download").hide();
 
-        // Reset map
+        // Empty and clear buttons of DOM elements
+        $(".dropbtn8, .dropbtn9, .dropbtn10, .dropbtn11").empty();
+        $("#factionsTab, .btn-delete, .btn-undo, .btn-download").hide();
+
+        // Reset map view
         this.setView([-this.pixelSize/2, this.pixelSize/2], 2);
-
     },
 
+    
     /**
      * Recalc and update every target marker on the minimap
      */

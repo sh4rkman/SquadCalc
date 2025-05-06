@@ -37,5 +37,13 @@
     "layerPlaceholder": "Layer",
     "nextFlags": "Prochains points",
     "dropTxt": "DEPOSER UN FICHIER DE SAUVEGARDE ICI",
-    "dropSubTxt": "la carte actuelle sera effacée"
+    "dropSubTxt": "la carte actuelle sera effacée",
+    "faction": "Faction",
+    "unit": "Unité",
+    "respawn": "Réapparition",
+    "delayed": "Retardé",
+    "team1": "Équipe 1",
+    "team2": "Équipe 2",
+    "pinToMap": "Épingler sur la carte",
+    "pinned": "Épinglé"
 }
