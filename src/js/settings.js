@@ -2,6 +2,7 @@ import { App } from "../app.js";
 import { tooltip_coordPreview } from "./tooltips.js";
 import i18next from "i18next";
 import { animateCSS } from "./animations.js";
+import SquadFactions from "./squadFactions.js";
 
 /* eslint no-unused-vars: "off" */
 import mapIcon from "../img/icons/preview/preview.webp";
@@ -330,8 +331,6 @@ $("#hideLowRespawnSettings").on("change", function() {
 
     let factionData, country, faction;
 
-    console.log(App.minimap.layer)
-
     if ($(".btn-pin.active")[0]?.id === "team1PinButton") {
         factionData = App.minimap.layer.layerData.units.team1Units;
         country = $(".dropbtn8").val();
@@ -372,8 +371,9 @@ $("#enableFactionsSettings").on("change", function() {
         $("#hideLowRespawnSettings").prop("disabled", false);
         $("#disableSoundsSettings").prop("disabled", false);
         $("#defaultFactionsSettings").prop("disabled", false);
+
         if (App.minimap.layer) {
-            App.minimap.layer.factions.loadFaction(App.minimap.layer.layerData, App.minimap);
+            App.minimap.layer.factions = new SquadFactions(App.minimap.layer);
             $("#factionsTab").show();
         }
     }
