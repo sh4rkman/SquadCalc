@@ -371,26 +371,7 @@ export default class SquadFactions {
                         </div>
                     </div>
                 `);
-                console.log()
             });
-    
-
-            // tippy("#team1Vehicles .vehicle-type", {
-            //     animation: "fade",
-            //     placement: "bottom",
-            //     offset: [0, 20],
-            //     //allowHTML: true,
-            //     touch: false,
-            //     theme: "factionCopy",
-            //     hideOnClick: true,
-            //     maxWidth: 180,
-            //     appendTo: document.querySelector("#factionsDialog"),
-            //     onShow(tip) {
-            //         tip.setContent(`
-            //             ${i18next.t("clickToCopy", { ns: "tooltips" })}
-            //         `);
-            //     },
-            // });
 
             // Handle click-to-copy
             $(".vehicle-type").off("click").on("click", (event) => { this.copyVehicleName(event); });
