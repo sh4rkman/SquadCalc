@@ -121,7 +121,7 @@ export default class SquadFactions {
 
         $(document).off("click", ".pinnedVehicles");
         $(document).on("click", ".pinnedVehicles", (event) => {
-            const SECONDSINAMINUTE = 1;
+            const SECONDSINAMINUTE = 60;
             const $vehicleDiv = $(event.currentTarget);
             const $timerDiv = $vehicleDiv.find(".pinedVehiclesTimer");
             const baseRespawnTime = $vehicleDiv.data("respawntime") * SECONDSINAMINUTE;
@@ -153,7 +153,7 @@ export default class SquadFactions {
                     $timerDiv.empty().append(`
                         ${baseRespawnTime}<span class="unit" data-i18n="common:min">${i18next.t("common:min")}</span>
                     `);
-                    App.openToast("warning", "vehicleRespawned", vehName);
+                    App.openToast("warning", "vehicleRespawned", "");
         
                     if (!App.userSettings.disableSounds) {
                         const LANG = localStorage.getItem("settings-language");
