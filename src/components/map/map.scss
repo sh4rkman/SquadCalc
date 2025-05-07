@@ -568,7 +568,7 @@ $flag-circle-opacity: 0.2;
 }
 
 #factionsButton {
-    width: 70px;
+    width: 50px;
     padding: 0.5em;
     border: none;
     border-radius: 0 10px 10px 0;
@@ -586,7 +586,7 @@ $flag-circle-opacity: 0.2;
     }
     button {
         margin: 2px 5px 0 0;
-        width: 40px;
+        width: 30px;
         height: 33px;
         background-color: transparent;
         color: #111;
@@ -597,7 +597,8 @@ $flag-circle-opacity: 0.2;
             height: 80%;
         }
         img {
-            height: 70%;
+            width: 33px;
+            height: 20px;
             background-color: #111;
             box-shadow: 0 0 2px rgb(0, 0, 0);
         }

@@ -1,4 +1,17 @@
-# <img src="https://img.shields.io/badge/-major%20release-b22222?style=for-the-badge">  **38.0.0** *(2025-XX-XX)*
+
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **38.1.0** *(2025-05-07)*
+
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Sound Notifications & Vehicles Localization Support (fix [#320](https://github.com/sh4rkman/SquadCalc/issues/320))
+
+<img src="https://img.shields.io/badge/-bug%20fix%20-b22"> Vehicles timers continue to run in background on mobile when phone is locked (sounds notifications won't play !) (fix [#319](https://github.com/sh4rkman/SquadCalc/issues/319))
+
+<img src="https://img.shields.io/badge/-bug%20fix%20-b22"> Security fixes
+
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
+
+# <img src="https://img.shields.io/badge/-major%20release-b22222?style=for-the-badge">  **38.0.0** *(2025-05-06)*
 
 <img src="https://img.shields.io/badge/-new%20feature-green"> **Factions and Destroyed Vehicles Tracking!**  
 When selecting a layer, you can now choose the two active factions and their units to view their vehicle lists, respawn times, and delays. You can also pin a unit list to the map to keep it in view and mark vehicles as destroyed—a timer will start, and a sound notification will alert you when they respawn. ([#304](https://github.com/sh4rkman/SquadCalc/issues/304))

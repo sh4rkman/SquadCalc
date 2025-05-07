@@ -18,6 +18,7 @@ export function loadLanguage(LANGUAGES) {
             "common",
             "factions",
             "units",
+            "vehicles",
         ],
         debug: false,
         backend: {
@@ -75,15 +76,19 @@ function getLanguage(LANGUAGES){
 function updateContent() {
     document.querySelectorAll("[data-i18n], [data-i18n-title], [data-i18n-content], [data-i18n-label], [data-i18n-aria-label], [data-i18n-alt]").forEach(element => {
         if (element.hasAttribute("data-i18n")) {
-            const key = element.getAttribute("data-i18n");
-            element.textContent = i18next.t(key);
+            const rawKey = element.getAttribute("data-i18n");
+            const [namespace, ...rest] = rawKey.split(":");
+            const key = rest.join(":"); // in case ":" appears in the key
+            element.textContent = i18next.t(key, { ns: namespace });
         }
-        
+    
         Array.from(element.attributes).forEach(attribute => {
             if (attribute.name.startsWith("data-i18n-")) {
-                const key = attribute.value;
+                const rawKey = attribute.value;
                 const attributeName = attribute.name.substring("data-i18n-".length);
-                const translatedValue = i18next.t(key);
+                const [namespace, ...rest] = rawKey.split(":");
+                const key = rest.join(":");
+                const translatedValue = i18next.t(key, { ns: namespace });
                 element.setAttribute(attributeName, translatedValue);
             }
         });

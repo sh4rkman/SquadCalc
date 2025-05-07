@@ -1,4 +1,6 @@
 name: Deploy Prod
+permissions:
+  contents: read
 on:
   push:
     branches: [ master ]
