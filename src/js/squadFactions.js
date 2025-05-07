@@ -81,9 +81,12 @@ export default class SquadFactions {
      * */
     pinUnit(teamfaction, country, faction) {
     
-        $("#factionsButton button").empty().append(`
-            <img src="/icons/flags/${country}.webp" alt="Faction Icon" class="faction-img" />
-        `);
+        const $img = $("<img>", {
+            src: `/icons/flags/${country}.webp`,
+            alt: "Faction Icon",
+            class: "faction-img"
+        });
+        $("#factionsButton button").empty().append($img);
         
         const selectedUnit = teamfaction.find((unit) => unit.unitObjectName === faction);
 
@@ -101,9 +104,10 @@ export default class SquadFactions {
                             <img src="/icons/ally/vehicles/${vehicle.icon}.webp" alt="Faction Icon"/>
                         </button>
                         <div class="pinedVehiclesMeta">
-                            <div class="pinedVehiclesName">${vehicle.type}</div>
+                            <div class="pinedVehiclesName" data-i18n="vehicles:${vehicle.type}">${i18next.t(vehicle.type, { ns: "vehicles" })}</div>
                             <div class="pinedVehiclesTimer">${vehicle.respawnTime}<span class="" data-i18n="common:min">${i18next.t("common:min")}</span></div>
                         </div>
+                        <div class="vehicle-type" 
                     </div>
                 `);
             }
@@ -117,48 +121,49 @@ export default class SquadFactions {
 
         $(document).off("click", ".pinnedVehicles");
         $(document).on("click", ".pinnedVehicles", (event) => {
-            const SECONDSINAMINUTE = 60;
+            const SECONDSINAMINUTE = 1;
             const $vehicleDiv = $(event.currentTarget);
             const $timerDiv = $vehicleDiv.find(".pinedVehiclesTimer");
-            let respawnTime = $vehicleDiv.data("respawntime") * SECONDSINAMINUTE;
-
+            const baseRespawnTime = $vehicleDiv.data("respawntime") * SECONDSINAMINUTE;
+        
             if ($vehicleDiv.hasClass("active")) {
-                // If active, cancel the timer and reset
                 const timerId = $vehicleDiv.data("timerId");
                 if (timerId) clearInterval(timerId);
                 $timerDiv.empty().append(`
-                    ${respawnTime}<span class="unit" data-i18n="common:min">${i18next.t("common:min")}</span>
+                    ${baseRespawnTime}<span class="unit" data-i18n="common:min">${i18next.t("common:min")}</span>
                 `);
-                $vehicleDiv.removeClass("active");
-                $vehicleDiv.removeData("timerId");
+                $vehicleDiv.removeClass("active").removeData("timerId endTime");
                 return;
             }
         
             $vehicleDiv.addClass("active");
-            
-            let vehIcon = $vehicleDiv.data("vehicon");
+            const vehIcon = $vehicleDiv.data("vehicon");
+            const vehName = $vehicleDiv.data("vehiclename");
         
-            $timerDiv.text(formatTime(respawnTime));
+            const endTime = Date.now() + baseRespawnTime * 1000;
+            $vehicleDiv.data("endTime", endTime);
         
-            const timerId = setInterval(() => {
-                respawnTime--;
-        
-                if (respawnTime > 0) {
-                    $timerDiv.text(formatTime(respawnTime));
+            function updateTimer() {
+                const remaining = Math.max(0, Math.round((endTime - Date.now()) / 1000));
+                if (remaining > 0) {
+                    $timerDiv.text(formatTime(remaining));
                 } else {
                     clearInterval(timerId);
-                    $vehicleDiv.removeClass("active");
-                    $vehicleDiv.removeData("timerId");
+                    $vehicleDiv.removeClass("active").removeData("timerId endTime");
                     $timerDiv.empty().append(`
-                        ${$vehicleDiv.data("respawntime") * SECONDSINAMINUTE}<span class="unit" data-i18n="common:min">${i18next.t("common:min")}</span>
+                        ${baseRespawnTime}<span class="unit" data-i18n="common:min">${i18next.t("common:min")}</span>
                     `);
-                    App.openToast("warning", "vehicleRespawned", "");
-                    // TODO: support for every language
-                    // use https://luvvoice.com/ if you want to add voice support for your language
-                    if (!App.userSettings.disableSounds) new Audio(`/sounds/en/${vehIcon}.mp3`).play();    
-                }
-            }, 1000);
+                    App.openToast("warning", "vehicleRespawned", vehName);
         
+                    if (!App.userSettings.disableSounds) {
+                        const LANG = localStorage.getItem("settings-language");
+                        new Audio(`/sounds/${LANG}/${vehIcon}.mp3`).play();  
+                    }
+                }
+            }
+        
+            updateTimer();
+            const timerId = setInterval(updateTimer, 1000);
             $vehicleDiv.data("timerId", timerId);
         });
         
@@ -362,10 +367,11 @@ export default class SquadFactions {
                                 </span>
                                 <span class="count-delay"> ${delayInfo}</span>
                             </div>
-                            <div class="vehicle-type">${vehicle.type}</div>
+                            <div class="vehicle-type" data-i18n="vehicles:${vehicle.type}">${i18next.t(vehicle.type, { ns: "vehicles" })}</div>
                         </div>
                     </div>
                 `);
+                console.log()
             });
     
 
@@ -424,7 +430,7 @@ export default class SquadFactions {
                             <div class="vehicle-count">×${vehicle.count}</div>
                         </div>
                         <div class="vehicle-info">
-                            <div class="vehicle-type">${vehicle.type}</div>
+                            <div class="vehicle-type" data-i18n="vehicles:${vehicle.type}">${i18next.t(vehicle.type, { ns: "vehicles" })}</div>
                             <div class="vehicle-meta">
                                 <span class="respawn">
                                     <span data-i18n="common:respawn">${i18next.t("common:respawn")}</span>

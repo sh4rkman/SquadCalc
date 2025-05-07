@@ -1,4 +1,6 @@
 name: Deploy pre-prod
+permissions:
+  contents: read
 on:
   push:
     branches: [ dev ]
