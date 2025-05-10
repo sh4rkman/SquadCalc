@@ -42,11 +42,10 @@ export default class Simulation {
                 this.drawCanvasIcons();
             }
         }.bind(this));
-        
-
-        
     }
 
+
+    
     /**
      * Populate the simulation table with info
      */

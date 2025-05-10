@@ -138,7 +138,6 @@ export default class SquadFactions {
         
             $vehicleDiv.addClass("active");
             const vehIcon = $vehicleDiv.data("vehicon");
-            const vehName = $vehicleDiv.data("vehiclename");
         
             const endTime = Date.now() + baseRespawnTime * 1000;
             $vehicleDiv.data("endTime", endTime);

@@ -93,11 +93,15 @@ export default class SquadSession {
             // Otherwise, the markers will be created with the default height of 0
             $(document).one("heightmap:loaded", () => {
                 data.mapState.weapons.forEach(weapon => {
-                    App.minimap.createWeapon(new LatLng(weapon.lat, weapon.lng), weapon.uid);        
+                    App.minimap.createWeapon(new LatLng(weapon.lat, weapon.lng), weapon.uid, weapon.heightPadding);        
                 });
                 data.mapState.targets.forEach(target => {
                     App.minimap.createTarget(new LatLng(target.lat, target.lng), false, target.uid);
                 });
+            });
+
+            $(document).one("layers:loaded", () => {
+                App.LAYER_SELECTOR.val(data.mapState.activeLayer).trigger($.Event("change", { broadcast: false }));
             });
 
             data.mapState.markers.forEach(marker => {
@@ -215,7 +219,7 @@ export default class SquadSession {
         /**********************************************************************/
 
         case "ADDING_WEAPON": {
-            App.minimap.createWeapon(new LatLng(data.lat, data.lng), data.uid);
+            App.minimap.createWeapon(new LatLng(data.lat, data.lng), data.uid, data.heightPadding);
             App.minimap.visualClick.triggerVisualClick(new LatLng(data.lat, data.lng), "cyan");
             break;
         }
@@ -240,7 +244,6 @@ export default class SquadSession {
             break;
         }
         case "ADDING_RECTANGLE": {
-            console.log(data.bounds);
             new MapRectangle(App.minimap, data.color, data.bounds._northEast, data.bounds._southWest, data.uid);
             App.minimap.visualClick.triggerVisualClick(data.bounds._northEast, "cyan");
             break;
@@ -254,6 +257,7 @@ export default class SquadSession {
             App.minimap.activeWeaponsMarkers.eachLayer((weapon) => {
                 if (weapon.uid === data.uid) {
                     weapon._handleDrag({ latlng: new LatLng(data.lat, data.lng), session: true });
+                    weapon.heightPadding = data.heightPadding;
                     App.minimap.visualClick.triggerVisualClick(new LatLng(data.lat, data.lng), "cyan");
                     App.minimap.updateTargets();
                 }
@@ -270,6 +274,7 @@ export default class SquadSession {
             break;
         }
         case "MOVING_MARKER": {
+            
             App.minimap.activeMarkers.eachLayer((marker) => {
                 if (marker.uid === data.uid) {
                     marker._handleDrag({ latlng: new LatLng(data.lat, data.lng) });
@@ -286,6 +291,12 @@ export default class SquadSession {
         case "UPDATE_MAP": {
             // Trigger a map change with a custom event to skip the update
             App.MAP_SELECTOR.val(data.activeMap).trigger($.Event("change", { broadcast: false }));
+            break;
+        }
+
+        case "UPDATE_LAYER": {
+            // Trigger a layer change with a custom event to skip the update
+            App.LAYER_SELECTOR.val(data.layer).trigger($.Event("change", { broadcast: false }));
             break;
         }
 

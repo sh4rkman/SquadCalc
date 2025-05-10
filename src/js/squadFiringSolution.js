@@ -12,7 +12,7 @@ export default class SquadFiringSolution {
         this.distance = this.getDist();
         this.bearing = this.getBearing(this.weaponLatLng, this.targetLatLng);
         this.velocity = App.activeWeapon.getVelocity(this.distance);
-        this.weaponHeight = this.map.heightmap.getHeight(weaponLatLng) + heightPadding;
+        this.weaponHeight = this.map.heightmap.getHeight(weaponLatLng) + parseFloat(heightPadding);
         this.targetHeight = this.map.heightmap.getHeight(targetLatLng);
         this.heightDiff =  this.targetHeight - this.weaponHeight;
         this.elevation = {low: [], high: []};

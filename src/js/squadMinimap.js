@@ -273,10 +273,10 @@ export const squadMinimap = Map.extend({
     /**
      * Recalc and update every target marker on the minimap
      */
-    updateTargets: function(){
+    updateTargets: function(copy = false){
         // Update existent targets
         this.activeTargetsMarkers.eachLayer(function (target) {
-            target.updateCalc(true);
+            target.updateCalc(copy);
             target.updateIcon();
         });
     },
@@ -481,12 +481,12 @@ export const squadMinimap = Map.extend({
      * @param {LatLng} latlng - coordinates of the new weapon
      * @param {String} uid - Optional - unique identifier of the weapon if created by the session
      **/
-    createWeapon(latlng, uid = false){
+    createWeapon(latlng, uid = false, heightPadding = 0){
         let newMarker;
         if (this.activeWeaponsMarkers.getLayers().length === 0) {
-            newMarker = new squadWeaponMarker(latlng, {icon: mortarIcon, uid: uid}, this).addTo(this.markersGroup).addTo(this.activeWeaponsMarkers);
+            newMarker = new squadWeaponMarker(latlng, {icon: mortarIcon, uid: uid, heightPadding: heightPadding}, this).addTo(this.markersGroup).addTo(this.activeWeaponsMarkers);
         } else if (this.activeWeaponsMarkers.getLayers().length === 1) {
-            newMarker = new squadWeaponMarker(latlng, {icon: mortarIcon2, uid: uid}, this).addTo(this.markersGroup).addTo(this.activeWeaponsMarkers);
+            newMarker = new squadWeaponMarker(latlng, {icon: mortarIcon2, uid: uid, heightPadding: heightPadding}, this).addTo(this.markersGroup).addTo(this.activeWeaponsMarkers);
             this.activeWeaponsMarkers.getLayers()[0].setIcon(mortarIcon1);
             this.updateTargets();
         }
@@ -500,6 +500,7 @@ export const squadMinimap = Map.extend({
                     lat: latlng.lat,
                     lng: latlng.lng,
                     uid: newMarker.uid,
+                    heightPadding: heightPadding,
                 })
             );
         }

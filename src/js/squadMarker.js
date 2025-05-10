@@ -119,7 +119,7 @@ export const squadWeaponMarker = squadMarker.extend({
 
 
         this.angleType = App.activeWeapon.angleType;
-        this.heightPadding = 0;
+        this.heightPadding = options.heightPadding || 0;
 
         // Create the min/max range markers
         this.minRangeMarker = new Circle(latlng, this.minDistCircleOn).addTo(this.map.markersGroup);
@@ -390,13 +390,27 @@ export const squadWeaponMarker = squadMarker.extend({
         weapon = weapon.sourceTarget;
         $("input[type=radio][name=angleChoice]").on("change", weapon, function() {
             weapon.angleType = this.value;
-            App.minimap.updateTargets();
+            this.map.updateTargets();
         });
 
-        $(".heightPadding input").on("change", weapon, function() {
-            this.value = Math.max(0, Math.min(this.value, 100)); // ensure 0 < value < 100
-            weapon.heightPadding = parseFloat(this.value);
-            App.minimap.updateTargets();
+        $(".heightPadding input").on("change", weapon, (e) => {
+            const input = e.currentTarget;
+            input.value = Math.max(0, Math.min(input.value, 100));
+            weapon.heightPadding = parseFloat(input.value);
+            this.map.updateTargets();
+        
+            // Update the marker in the session
+            if (App.session.ws && App.session.ws.readyState === WebSocket.OPEN) {
+                App.session.ws.send(
+                    JSON.stringify({
+                        type: "MOVING_WEAPON",
+                        uid: this.uid,
+                        lat: this._latlng.lat,
+                        lng: this._latlng.lng,
+                        heightPadding: input.value,
+                    })
+                );
+            }
         });
 
         DIALOG.showModal();
@@ -441,6 +455,7 @@ export const squadWeaponMarker = squadMarker.extend({
                         uid: this.uid,
                         lat: newLatLng.lat,
                         lng: newLatLng.lng,
+                        heightPadding: this.heightPadding,
                     })
                 );
             }
@@ -619,7 +634,7 @@ export const squadTargetMarker = squadMarker.extend({
 
         const [html1, clipboard1] = this.getContent(this.firingSolution1, this.map.activeWeaponsMarkers.getLayers()[0].angleType);
         this.calcMarker1.setContent(html1).openOn(this.map);
-        if (App.userSettings.copyTarget) navigator.clipboard.writeText(clipboard1);
+        if (App.userSettings.copyTarget && !options.uid) navigator.clipboard.writeText(clipboard1);
         
 
         // If two weapons already on the map
@@ -628,8 +643,7 @@ export const squadTargetMarker = squadMarker.extend({
             this.calcMarker1.setContent(`1. ${html1}`);
             const [html2, clipboard2] = this.getContent(this.firingSolution2, this.map.activeWeaponsMarkers.getLayers()[1].angleType);
             this.calcMarker2.setContent(`2. ${html2}`).openOn(this.map);
-            if (App.userSettings.copyTarget) navigator.clipboard.writeText(`${clipboard1} / ${clipboard2}`);
-            
+            if (App.userSettings.copyTarget && !options.uid) navigator.clipboard.writeText(`${clipboard1} / ${clipboard2}`);  
         }
 
         // Initiate Spread Ellipse
@@ -918,7 +932,6 @@ export const squadTargetMarker = squadMarker.extend({
     */
     updateCalc: function(copy = false){
         let clipboard;
-
         this.firingSolution1 = new SquadFiringSolution(this.map.activeWeaponsMarkers.getLayers()[0].getLatLng(), this.getLatLng(), this.map, this.map.activeWeaponsMarkers.getLayers()[0].heightPadding);
         const [html1, clipboard1] = this.getContent(this.firingSolution1, this.map.activeWeaponsMarkers.getLayers()[0].angleType);
         this.calcMarker1.setContent(html1);
@@ -1318,14 +1331,6 @@ export const squadStratMarker = squadMarker.extend({
         this.isDragging = false;
         this.posPopUp.close();
         this.map.updateTargets();
-
-        // Report marker to squadcalc API
-        // sendFOBData({
-        //     lat: this._latlng.lat,
-        //     lng: this._latlng.lng,
-        //     weapon: "FOB",
-        //     map: App.minimap.activeMap.name,
-        // });
 
         if (App.session.ws && App.session.ws.readyState === WebSocket.OPEN) {
 

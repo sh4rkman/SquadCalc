@@ -114,6 +114,7 @@ export default class SquadCalc {
 
         this.LAYER_SELECTOR.on("change", (event) => {
             const selectedLayerText = this.LAYER_SELECTOR.find(":selected").text().replaceAll(" ", "");
+            const broadcast = event.broadcast ?? true;
 
             // User cleared the layer selector, remove the layer and clean the URL
             if (selectedLayerText === "") {
@@ -122,6 +123,15 @@ export default class SquadCalc {
                 if (this.minimap.layer) this.minimap.layer.clear();
                 $(".btn-layer").hide();
                 $("#factionsTab").hide();
+                if (broadcast && this.session.ws && this.session.ws.readyState === WebSocket.OPEN) {
+                    this.session.ws.send(
+                        JSON.stringify({
+                            type: "UPDATE_LAYER",
+                            layer: event.target.value,
+                        })
+                    );
+                    console.debug(`Sent layer update for layer #${event.target.value}`);
+                }
                 return;
             }
 
@@ -139,6 +149,20 @@ export default class SquadCalc {
                 if (this.minimap.layer) this.minimap.layer.clear();
                 this.minimap.layer = new SquadLayer(this.minimap, layerData);
                 $(".btn-layer").addClass("active").show();
+
+                // Broadcast the map change to the session if needed
+
+
+                if (broadcast && this.session.ws && this.session.ws.readyState === WebSocket.OPEN) {
+                    this.session.ws.send(
+                        JSON.stringify({
+                            type: "UPDATE_LAYER",
+                            layer: event.target.value,
+                        })
+                    );
+                    console.debug(`Sent layer update for layer #${event.target.value}`);
+                }
+
                 this.minimap.spin(false);
             }).catch(error => {
                 if (error.name !== "AbortError") {
@@ -199,6 +223,7 @@ export default class SquadCalc {
 
             this.minimap.spin(false);
             $("#layerSelector").show();
+            $(document).trigger("layers:loaded");
 
         }).catch(error => {
             $("#layerSelector").hide();
@@ -517,6 +542,10 @@ export default class SquadCalc {
                             console.debug("Error while creating markers:", err);
                             this.openToast("error", "fileNotSupported", "openIssue");
                         }
+                    });
+
+                    $(document).one("layers:loaded", () => {
+                        this.LAYER_SELECTOR.val(data.activeLayer).trigger($.Event("change", { broadcast: true }));
                     });
 
                 } catch (err) {
@@ -1310,12 +1339,14 @@ export default class SquadCalc {
         const rectangles = [];
         const activeWeapon = this.WEAPON_SELECTOR.val();
         const activeMap = this.MAP_SELECTOR.val();
+        const activeLayer = this.LAYER_SELECTOR.val();
         const version = this.version;
     
         this.minimap.activeWeaponsMarkers.eachLayer(weapon => {
             weapons.push({
                 lat: weapon._latlng.lat,
                 lng: weapon._latlng.lng,
+                heightPadding: weapon.heightPadding,
                 uid: weapon.uid
             });
         });
@@ -1359,7 +1390,7 @@ export default class SquadCalc {
             });
         });
     
-        return { weapons, targets, markers, arrows, circles, rectangles, activeWeapon, activeMap, version };
+        return { weapons, targets, markers, arrows, circles, rectangles, activeWeapon, activeMap, activeLayer, version };
     }
 
     saveMapStateToFile() {

@@ -1,9 +1,26 @@
 
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **38.2.0** *(2025-XX-XX)*
+
+<img src="https://img.shields.io/badge/-bug%20fix%20-b22"> Changing layer while in a session now broadcast the layer change to others session members
+
+<img src="https://img.shields.io/badge/-bug%20fix%20-b22"> Additional weapons heights are now correctly shared between session members (Thanks Petro!) fix [#322](https://github.com/sh4rkman/SquadCalc/issues/322)
+
+<img src="https://img.shields.io/badge/-bug%20fix%20-b22"> SquadCalc won't try to copy to clipboard targets when moving a weapon when "auto-copy target to clipboard" setting is activated
+
+<img src="https://img.shields.io/badge/-bug%20fix%20-b22"> SquadCalc won't try to copy to clipboard targets created by session members when "auto-copy target to clipboard" setting is activated
+
+<img src="https://img.shields.io/badge/-bug%20fix%20-b22"> Fixed some console errors when switching language
+
+<img src="https://img.shields.io/badge/-bug%20fix%20-b22"> Added missing german vehicles translation file
+
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
 # <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **38.1.0** *(2025-05-07)*
 
 <img src="https://img.shields.io/badge/-%20improv%20-orange"> Sound Notifications & Vehicles Localization Support (fix [#320](https://github.com/sh4rkman/SquadCalc/issues/320))
 
-<img src="https://img.shields.io/badge/-bug%20fix%20-b22"> Vehicles timers continue to run in background on mobile when phone is locked (sounds notifications won't play !) (fix [#319](https://github.com/sh4rkman/SquadCalc/issues/319))
+<img src="https://img.shields.io/badge/-bug%20fix%20-b22"> Vehicles timers will try to continue to run in background on mobile when phone is locked (sounds notifications won't play !) (fix [#319](https://github.com/sh4rkman/SquadCalc/issues/319))
 
 <img src="https://img.shields.io/badge/-bug%20fix%20-b22"> Security fixes
 
