@@ -377,6 +377,9 @@ export default class SquadFactions {
         });
 
         this.UNIT2_SELECTOR.off("change").on("change", (event) => {
+
+            console.log("unit2 change", event.target.value);
+
             // Empty the vehicles container
             $("#team2Vehicles").empty();
             if ( $("#team2PinButton").hasClass("active") ) this.unpinUnit();

@@ -223,7 +223,7 @@ export default class SquadLayer {
             this.mains.forEach((main) => {
                 // Invaders are always Team 1
                 if (main.objectName.toLowerCase().includes("team1")){
-                    this._handleFlagClick(main);
+                    this._handleFlagClick(main, false);
                     return;
                 }
             });
@@ -559,7 +559,7 @@ export default class SquadLayer {
     }
 
 
-    _handleFlagClick(flag) {
+    _handleFlagClick(flag, broadcast = true) {
         let backward = false;
 
         console.debug("**************************");
@@ -587,8 +587,18 @@ export default class SquadLayer {
 
             // In RAAS, we can click on the oposite main flag to reset the layer
             if (this.layerData.gamemode === "RAAS" && flag.isMain){
+                if (broadcast && App.session.ws && App.session.ws.readyState === WebSocket.OPEN) {
+                    App.session.ws.send(
+                        JSON.stringify({
+                            type: "CLICK_LAYER",
+                            flag: flag.objectName,
+                            selectedFlags: [],
+                        })
+                    );
+                    console.debug(`Sent layer click update for flag #${flag.objectName}`);
+                }
                 this._resetLayer();
-                this._handleFlagClick(flag);
+                this._handleFlagClick(flag, false);
                 return true;
             }
 
@@ -607,6 +617,16 @@ export default class SquadLayer {
 
             if (flag === this.selectedFlags[0]) {
                 console.debug("Can't unselect main flag");
+                if (broadcast && App.session.ws && App.session.ws.readyState === WebSocket.OPEN) {
+                    App.session.ws.send(
+                        JSON.stringify({
+                            type: "CLICK_LAYER",
+                            flag: flag.objectName,
+                            selectedFlags: [],
+                        })
+                    );
+                    console.debug(`Sent layer click update for flag #${flag.objectName}`);
+                }
                 this._resetLayer();
                 return;
             }
@@ -630,6 +650,21 @@ export default class SquadLayer {
 
             // update the path and DFS from the last selected flag
             this.polyline.setLatLngs(this.path);
+
+            if (broadcast && App.session.ws && App.session.ws.readyState === WebSocket.OPEN) {
+                let selectedFlags = [];
+                this.selectedFlags.forEach(flag => {
+                    selectedFlags.push(flag.objectName);
+                });
+                App.session.ws.send(
+                    JSON.stringify({
+                        type: "CLICK_LAYER",
+                        flag: flag.objectName,
+                        selectedFlags: selectedFlags,
+                    })
+                );
+            }
+
             flag = this.selectedFlags.at(-1);
         }
         // Going forward
@@ -641,8 +676,21 @@ export default class SquadLayer {
             // Update the path
             this.path.push(flag.latlng);
             this.polyline.setLatLngs(this.path);
-        }
 
+            if (broadcast && App.session.ws && App.session.ws.readyState === WebSocket.OPEN) {
+                let selectedFlags = [];
+                this.selectedFlags.forEach(flag => {
+                    selectedFlags.push(flag.objectName);
+                });
+                App.session.ws.send(
+                    JSON.stringify({
+                        type: "CLICK_LAYER",
+                        flag: flag.objectName,
+                        selectedFlags: selectedFlags,
+                    })
+                );
+            }
+        }
 
         console.debug("**************************");
         console.debug("       STARTING DFS       ");
@@ -781,8 +829,9 @@ export default class SquadLayer {
         // }  
        
         // Only one flag in front ? Click it
-        if (nextFlags.length === 1 && !backward && App.userSettings.autoLane){
-            this._handleFlagClick(nextFlags[0]);
+        //if (nextFlags.length === 1 && !backward && App.userSettings.autoLane){
+        if (nextFlags.length === 1 && !backward){
+            this._handleFlagClick(nextFlags[0], false);
         }
     }
 
@@ -947,7 +996,7 @@ export default class SquadLayer {
         if (this.layerData.gamemode === "Invasion") {
             this.mains.forEach((main) => {
                 if (main.objectName === this.layerData.capturePoints.clusters.listOfMains[0].replaceAll(" ", "")){
-                    this._handleFlagClick(main);
+                    this._handleFlagClick(main, false);
                 }
             });
         }

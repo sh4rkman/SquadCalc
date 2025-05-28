@@ -30,7 +30,7 @@ export default class SquadSession {
         $(".btn-session").removeClass("active");
         leaveSessionTooltips.disable();
         createSessionTooltips.enable();
-        $("#sessionUsers").css("display", "none");
+        $("#sessionActions").css("display", "none");
 
         // Open a toast message based on the close event
 
@@ -74,8 +74,8 @@ export default class SquadSession {
 
         case "SESSION_CREATED": {
             console.debug("New Session created : " + data.sessionId);
-            $("#sessionUsers").html(1);
-            $("#sessionUsers").css("display", "flex");
+            $(".btn-session-users").html(1);
+            $("#sessionActions").css("display", "flex");
             App.updateUrlParams({ session: data.sessionId });
             App.openToast("success", "sessionCreated", "shareSession", true);
             break;
@@ -84,11 +84,12 @@ export default class SquadSession {
         case "SESSION_JOINED": {
             console.debug("Successfully joined session: " + data.sessionId);
 
+            console.log("session joined", data.mapState)
+
             // Update MAP with custom event to skip the broadcast
             App.MAP_SELECTOR.val(data.mapState.activeMap).trigger($.Event("change", { broadcast: false }));
 
             // Create every existing marker in the session
-
             // Wait for the heightmap to be loaded before creating the markers
             // Otherwise, the markers will be created with the default height of 0
             $(document).one("heightmap:loaded", () => {
@@ -102,6 +103,26 @@ export default class SquadSession {
 
             $(document).one("layers:loaded", () => {
                 App.LAYER_SELECTOR.val(data.mapState.activeLayer).trigger($.Event("change", { broadcast: false }));
+                
+                $(document).on("layer:loaded", () => {
+
+                    // Click flags
+                    data.mapState.selectedFlags.forEach(flag => {
+                        App.minimap.layer.flags.forEach((layerFlag) => {
+                            if (layerFlag.objectName === flag) {
+                                if (layerFlag.isSelected) return;
+                                App.minimap.layer._handleFlagClick(layerFlag, false);
+                                return;
+                            }
+                        });
+                    });
+
+                    // Load Factions and Units
+                    App.FACTION1_SELECTOR.val(data.mapState.teams[0][0]).trigger($.Event("change", { broadcast: false }));
+                    App.FACTION2_SELECTOR.val(data.mapState.teams[1][0]).trigger($.Event("change", { broadcast: false }));
+                    App.UNIT1_SELECTOR.val(data.mapState.teams[0][1]).trigger($.Event("change", { broadcast: false }));
+                    App.UNIT2_SELECTOR.val(data.mapState.teams[1][1]).trigger($.Event("change", { broadcast: false }));
+                });
             });
 
             data.mapState.markers.forEach(marker => {
@@ -121,8 +142,8 @@ export default class SquadSession {
             App.openToast("success", "sessionJoined", "");
 
             // Show participants count
-            $("#sessionUsers").html(data.sessionUsers);
-            $("#sessionUsers").css("display", "flex");
+            $(".btn-session-users").html(data.sessionUsers);
+            $("#sessionActions").css("display", "flex");
 
             this.wsActiveUsers = data.sessionUsers;
             break;
@@ -136,7 +157,7 @@ export default class SquadSession {
 
         case "ACTIVE_MEMBERS_UPDATED": {
             console.debug("New Session Users Count: ", data.sessionUsers);
-            $("#sessionUsers").html(data.sessionUsers);
+            $(".btn-session-users").html(data.sessionUsers);
 
             // Only one left in the session
             if (data.sessionUsers === 1) {
@@ -288,14 +309,25 @@ export default class SquadSession {
         /*                                OTHERS                              */ 
         /**********************************************************************/
 
+        // Trigger a map change with a custom event to skip the update
         case "UPDATE_MAP": {
-            // Trigger a map change with a custom event to skip the update
             App.MAP_SELECTOR.val(data.activeMap).trigger($.Event("change", { broadcast: false }));
             break;
         }
 
+        case "CLICK_LAYER": {
+            if (!App.minimap.layer) return;
+            App.minimap.layer.flags.forEach((flag) => {
+                if (flag.objectName === data.flag) {
+                    App.minimap.layer._handleFlagClick(flag, false);
+                    return;
+                }
+            });
+            break;
+        }
+
+        // Trigger a layer change with a custom event to skip the update
         case "UPDATE_LAYER": {
-            // Trigger a layer change with a custom event to skip the update
             App.LAYER_SELECTOR.val(data.layer).trigger($.Event("change", { broadcast: false }));
             break;
         }

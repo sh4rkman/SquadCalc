@@ -54,7 +54,12 @@ export default async (env) => {
     },
     devServer: {
       open: true,
-      historyApiFallback: true,
+      historyApiFallback: {
+        rewrites: [
+          { from: /./, to: '/404.html' },
+        ],
+        disableDotRule: true,
+      },
       static: {
         directory: path.join(__dirname, '../public'),
         publicPath: '/',
@@ -73,13 +78,19 @@ export default async (env) => {
               removeAttributeQuotes: true,
           } : false
         }),
+        new HtmlWebpackPlugin({
+          template: './src/404.html',
+          filename: '404.html',
+        }),
         new CopyWebpackPlugin({
           patterns: [
             {
               from: path.resolve(__dirname, '../public'),
               to: path.resolve(__dirname, '../dist'),
             },
-            { from: "./src/img/github/", to: "./src/img/github/" },
+            { from: "./src/img/github/",
+              to: "./src/img/github/", 
+            },
           ],
         }),
         new webpack.ProvidePlugin({
@@ -167,19 +178,19 @@ export default async (env) => {
             },
           ]
         }),
-        new workbox.GenerateSW({
-          swDest: "./sw.js",
-          skipWaiting: true,
-          clientsClaim: true,
-          maximumFileSizeToCacheInBytes: 10000000,
-          exclude: [
-            /manifest\.json$/, // web app manifest
-            /\.map$/, // source maps
-            /\/favicons\//, // favicon
-            /robots\.txt/, // robots.txt
-            /\.webp$/,
-          ],
-        })
+        // new workbox.GenerateSW({
+        //   swDest: "./sw.js",
+        //   skipWaiting: true,
+        //   clientsClaim: true,
+        //   maximumFileSizeToCacheInBytes: 10000000,
+        //   exclude: [
+        //     /manifest\.json$/, // web app manifest
+        //     /\.map$/, // source maps
+        //     /\/favicons\//, // favicon
+        //     /robots\.txt/, // robots.txt
+        //     /\.webp$/,
+        //   ],
+        // })
     ],
     performance: {
         hints: false,

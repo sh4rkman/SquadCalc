@@ -613,6 +613,33 @@ $flag-circle-opacity: 0.2;
     z-index: 1;
     height: auto;
     pointer-events: none;
+    #sessionActions {
+        display: none;
+        flex-direction: row;
+        width: 44px;
+        .btn {
+            &.btn-session-lock  {
+                height: auto;
+                width: 50%;
+                pointer-events: none;
+                svg {
+                    width: 0.5em;
+                }
+            }
+            &.btn-session-users {
+                pointer-events: none;
+                height: auto;
+                width: 50%;
+                font-size: 1em;
+                background-color: firebrick;
+                border-color: firebrick;;
+                color: white;
+                svg {
+                    width: 0.5em;
+                }
+            }
+        }
+    }
     .btn {
         pointer-events: all;
         position: relative;
@@ -659,27 +686,11 @@ $flag-circle-opacity: 0.2;
         }
         &.btn-session {
             z-index: 1;
-            #sessionUsers {
-                display: none;
-                position: absolute;
-                bottom: -8px;
-                right: -8px;
-                background-color: variables.$mainColor;
-                color: variables.$mainTxtColor;
-                outline: solid #7a1818 1px;
-                border-radius: 50%;
-                justify-content: center;
-                line-height: 20px;
-                width: 20px;
-                height: 20px;
-                font-size: 12px;
-                letter-spacing: 0;
-            }
+            margin-top: 1em;
             svg {
                 height: 0.9em;
             }
         }
-        
     }
     .mapLayerMenuSeparator {
         margin-top: 10px;

@@ -39,7 +39,10 @@ export default class SquadCalc {
         this.WEAPON_SELECTOR = $(".dropbtn2");
         this.SHELL_SELECTOR = $(".dropbtn3");
         this.LAYER_SELECTOR = $(".dropbtn5");
-        this.FACTION_SELECTOR = $(".dropbtn9");
+        this.FACTION1_SELECTOR = $(".dropbtn8");
+        this.FACTION2_SELECTOR = $(".dropbtn10");
+        this.UNIT1_SELECTOR = $(".dropbtn9");
+        this.UNIT2_SELECTOR = $(".dropbtn11");
         this.session = false;
         this.version = packageInfo.version;
     }
@@ -67,7 +70,7 @@ export default class SquadCalc {
         // Initiate Maps&Layers Dropdown
         this.MAP_SELECTOR.select2();
         this.LAYER_SELECTOR.select2();
-        this.FACTION_SELECTOR.select2();
+        this.FACTION1_SELECTOR.select2();
         $(".dropbtn8").select2();
         $(".dropbtn9").select2();
         $(".dropbtn10").select2();
@@ -151,8 +154,6 @@ export default class SquadCalc {
                 $(".btn-layer").addClass("active").show();
 
                 // Broadcast the map change to the session if needed
-
-
                 if (broadcast && this.session.ws && this.session.ws.readyState === WebSocket.OPEN) {
                     this.session.ws.send(
                         JSON.stringify({
@@ -162,7 +163,8 @@ export default class SquadCalc {
                     );
                     console.debug(`Sent layer update for layer #${event.target.value}`);
                 }
-
+                $(document).trigger("layer:loaded");
+                
                 this.minimap.spin(false);
             }).catch(error => {
                 if (error.name !== "AbortError") {
@@ -213,7 +215,7 @@ export default class SquadCalc {
                 // If we find a matching option, set it as selected
                 if (matchingOption.length > 0) {
                     matchingOption.prop("selected", true);
-                    this.LAYER_SELECTOR.trigger("change");
+                    this.LAYER_SELECTOR.trigger($.Event("change", { broadcast: false }));
                 } 
                 else {
                     // layer in url doesn't make sense, clean the url
@@ -546,6 +548,25 @@ export default class SquadCalc {
 
                     $(document).one("layers:loaded", () => {
                         this.LAYER_SELECTOR.val(data.activeLayer).trigger($.Event("change", { broadcast: true }));
+                        $(document).on("layer:loaded", () => {
+
+
+                            data.selectedFlags.forEach(flag => {
+                                this.minimap.layer.flags.forEach((layerFlag) => {
+                                    if (layerFlag.objectName === flag) {
+                                        if (layerFlag.isSelected) return;
+                                        this.minimap.layer._handleFlagClick(layerFlag);
+                                        return;
+                                    }
+                                });
+                            });
+
+                            // Load Factions and Units
+                            this.FACTION1_SELECTOR.val(data.teams[0][0]).trigger($.Event("change", { broadcast: false }));
+                            this.FACTION2_SELECTOR.val(data.teams[1][0]).trigger($.Event("change", { broadcast: false }));
+                            this.UNIT1_SELECTOR.val(data.teams[0][1]).trigger($.Event("change", { broadcast: false }));
+                            this.UNIT2_SELECTOR.val(data.teams[1][1]).trigger($.Event("change", { broadcast: false }));
+                        });
                     });
 
                 } catch (err) {
@@ -765,9 +786,16 @@ export default class SquadCalc {
             // close current toast
             closeToast();
 
-            // Open another toast and copy current URL
-            if (title === "tooltips:sessionCreated" && event.target.tagName != "BUTTON") {
-                navigator.clipboard.writeText(window.location.href);
+            if (title === "tooltips:sessionCreated" && event.target.tagName !== "BUTTON") {
+                const url = new URL(window.location.href);
+                const map = url.searchParams.get("map");
+                const session = url.searchParams.get("session");
+        
+                const params = new URLSearchParams();
+                if (map) params.set("map", map);
+                if (session) params.set("session", session);
+                const newUrl = `${url.origin}/?${params.toString()}`;
+                navigator.clipboard.writeText(newUrl);
                 this.openToast("success", "copied", "");
             }
 
@@ -1340,6 +1368,10 @@ export default class SquadCalc {
         const activeWeapon = this.WEAPON_SELECTOR.val();
         const activeMap = this.MAP_SELECTOR.val();
         const activeLayer = this.LAYER_SELECTOR.val();
+        const team1 = [this.FACTION1_SELECTOR.val(), this.UNIT1_SELECTOR.val()];
+        const team2 = [this.FACTION2_SELECTOR.val(), this.UNIT2_SELECTOR.val()];
+        const teams = [team1, team2];
+        const selectedFlags = [];
         const version = this.version;
     
         this.minimap.activeWeaponsMarkers.eachLayer(weapon => {
@@ -1389,8 +1421,14 @@ export default class SquadCalc {
                 bounds: rectangle.rectangle.getBounds(),
             });
         });
+
+        if (this.minimap.layer) {
+            this.minimap.layer.selectedFlags.forEach(flag => {
+                selectedFlags.push(flag.objectName);
+            });
+        }
     
-        return { weapons, targets, markers, arrows, circles, rectangles, activeWeapon, activeMap, activeLayer, version };
+        return { weapons, targets, markers, arrows, circles, rectangles, activeWeapon, activeMap, activeLayer, selectedFlags, teams, version };
     }
 
     saveMapStateToFile() {

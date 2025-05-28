@@ -13,6 +13,7 @@
 
 <img src="https://img.shields.io/badge/-bug%20fix%20-b22"> Added missing german vehicles translation file
 
+<img src="https://img.shields.io/badge/-%20other%20-grey"> Added 404 custom page
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
 
