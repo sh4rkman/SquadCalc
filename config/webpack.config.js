@@ -30,7 +30,10 @@ export default async (env) => {
 
   return {
 
-    entry: './src/app.js',
+    entry: {
+      main: './src/app.js',
+      '404-style': './src/components/404/404.scss',
+    },
     stats: { warnings: false},
     mode: env.WEBPACK_BUILD ? 'production' : 'development',
     devtool: env.WEBPACK_BUILD ? false : 'inline-source-map',
@@ -81,6 +84,7 @@ export default async (env) => {
         new HtmlWebpackPlugin({
           template: './src/404.html',
           filename: '404.html',
+          chunks: ['404-style'], 
         }),
         new CopyWebpackPlugin({
           patterns: [

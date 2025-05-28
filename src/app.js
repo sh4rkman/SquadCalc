@@ -13,7 +13,6 @@ import "./components/map/map.scss";
 import "./components/contextMenu/contextMenu.scss";
 import "./components/legacyui/legacyui.scss";
 import "./components/dialogs/dialogs.scss";
-import "./components/404/404.scss";
 import "./components/shared/_tooltips.scss";
 import "./components/shared/_responsive.scss";
 
