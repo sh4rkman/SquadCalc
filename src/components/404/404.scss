@@ -30,7 +30,6 @@
         .btn {
             background-color: transparent;
             border: 2px solid white;
-            font-weight: 500;
             color: white;
             padding: 0.6rem 1.2rem;
             text-decoration: none;
@@ -41,4 +40,21 @@
             }
         }
     }
+}
+
+@media screen and (width <= 32em) {
+
+    #errorContainer {
+        h1 {
+            font-size: 6rem;
+        }
+        h2 {
+            font-size: 1em;
+        }
+        .actions {
+            font-size: 0.6rem;
+            width: 40px;
+        }
+    }
+
 }
