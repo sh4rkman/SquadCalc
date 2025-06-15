@@ -137,9 +137,6 @@ export function loadSettings(){
     App.userSettings.capZoneOnHover = loadLocalSetting("settings-capZone-onHover", 0);
     $("#capZoneOnHoverSettings").prop("checked", App.userSettings.capZoneOnHover);
 
-    App.userSettings.autoLane = loadLocalSetting("settings-auto-lane");
-    $("#autoLaneSetting").prop("checked", App.userSettings.autoLane);
-
     App.userSettings.weaponDrag = loadLocalSetting("settings-weapon-drag");
     $("#weaponDragSetting").prop("checked", App.userSettings.weaponDrag);
 
@@ -421,13 +418,6 @@ $("#showFlagsDistanceSettings").on("change", function() {
             App.minimap.layer.polyline.hideMeasurements();
         }
     }
-});
-
-
-$("#autoLaneSetting").on("change", function() {
-    var val = $("#autoLaneSetting").is(":checked");
-    App.userSettings.autoLane = val;
-    localStorage.setItem("settings-auto-lane", +val);
 });
 
 $("#capZoneOnHoverSettings").on("change", function() {

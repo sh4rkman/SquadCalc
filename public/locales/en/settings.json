@@ -33,7 +33,6 @@
         "showTimeOfFlight": "Time of Flight",
         "showHeightDiff": "Height Difference",
     "LaneFinderOptions": "Layers Options", 
-        "autoLane": "Auto-pick single flag",
         "capZoneOnHover": "Only show capzones when hovering",
         "revealLayerOnHover" : "Reveal layer when hovering a flag",
         "circlesFlags": "Show Flags as circles",

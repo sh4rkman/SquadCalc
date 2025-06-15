@@ -36,7 +36,6 @@
     "copyNextFlagsTooltip": "When clicking a flag, automatically add the next flags to clipboard",
     "copyTargetTooltip": "After placing/dragging a target, automatically copy the calculations to clipboard",
     "lowAndHighTooltip": "Show both high and low angle for weapons that can shoot in both modes",
-    "autoLaneTooltip": "If only one flag is available on layer's next step, squadcalc will automatically select it",
     "capZoneOnHoverTooltip": "Instead of showing capzones at all times, only show them when hovering over a flag",
     "contextMenuTooltip": "Right click on the map reveal a context menu allowing you to place markers",
     "revealLayerOnHoverTooltip": "Hovering a flag will fade out the unreachable flags if this flag happens to be clicked",

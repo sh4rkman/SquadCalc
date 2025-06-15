@@ -198,7 +198,7 @@ export default class SquadFactions {
      * * @param {Array} FACTIONS - The layer factions
      * * @param {jQuery} SELECTOR - The jQuery selector to load the units into
      * */
-    loadUnits(FACTION, UNITS, FACTIONS, SELECTOR) {
+    loadUnits(FACTION, UNITS, FACTIONS, SELECTOR, broadcast = false) {
 
         // Clear the selector
         SELECTOR.empty();
@@ -224,7 +224,7 @@ export default class SquadFactions {
         });
 
         // Set the default value to the first option
-        SELECTOR.val(SELECTOR.find("option:first").val()).trigger("change");
+        SELECTOR.val(SELECTOR.find("option:first").val()).trigger($.Event("change", { broadcast: broadcast }));
     }
 
 
@@ -310,21 +310,55 @@ export default class SquadFactions {
             // Reset UI
             $("#team1Vehicles").empty();
             if ( $("#team1PinButton").hasClass("active") ) this.unpinUnit();
+
+            // Broadcast the Unit change to the session if needed
+            const broadcast = event.broadcast ?? true;
+
             // Update Unit selector and main icon
-            this.loadUnits(event.target.value, factionData.units.team1Units, factionData.teamConfigs.factions.team1Units, this.UNIT1_SELECTOR);
+            this.loadUnits(event.target.value, factionData.units.team1Units, factionData.teamConfigs.factions.team1Units, this.UNIT1_SELECTOR, broadcast);
             this.updateMainIcon("team1", event.target.value);
+
+            if (broadcast && App.session.ws && App.session.ws.readyState === WebSocket.OPEN) {
+                App.session.ws.send(
+                    JSON.stringify({
+                        type: "UPDATE_FACTION",
+                        teamIndex: 0,
+                        faction: event.target.value,
+
+                    })
+                );
+            }
         });
 
         this.FACTION2_SELECTOR.off("change").on("change", (event) => {
             // Reset UI
             $("#team2Vehicles").empty();
             if ( $("#team2PinButton").hasClass("active") ) this.unpinUnit();
+
+
+            // Broadcast the Faction change to the session if needed
+            const broadcast = event.broadcast ?? true;
+
             // Update Unit selector and main icon
-            this.loadUnits(event.target.value, factionData.units.team2Units, factionData.teamConfigs.factions.team2Units, this.UNIT2_SELECTOR);
+            this.loadUnits(event.target.value, factionData.units.team2Units, factionData.teamConfigs.factions.team2Units, this.UNIT2_SELECTOR, broadcast);
             this.updateMainIcon("team2", event.target.value);
+
+            if (broadcast && App.session.ws && App.session.ws.readyState === WebSocket.OPEN) {
+                App.session.ws.send(
+                    JSON.stringify({
+                        type: "UPDATE_FACTION",
+                        teamIndex: 1,
+                        faction: event.target.value,
+
+                    })
+                );
+            }
         });
 
         this.UNIT1_SELECTOR.off("change").on("change", (event) => {
+
+            console.log("unit1 change", event);
+
             // Reset UI
             $("#team1Vehicles").empty();
             if ($("#team1PinButton").hasClass("active")) this.unpinUnit();
@@ -335,6 +369,21 @@ export default class SquadFactions {
                 console.warn("No matching unit found for", event.target.value);
                 return;
             }
+
+            // Broadcast the map change to the session if needed
+            const broadcast = event.broadcast ?? true;
+            console.log("unit1 change", event.target.value);
+            if (broadcast && App.session.ws && App.session.ws.readyState === WebSocket.OPEN) {
+                console.log("broadcasting unit1 change", event.target.value);
+                App.session.ws.send(
+                    JSON.stringify({
+                        type: "UPDATE_UNIT",
+                        teamIndex: 0,
+                        unit: event.target.value,
+                    })
+                );
+            }
+
 
             selectedUnit.vehicles.forEach((vehicle) => {
 
@@ -391,6 +440,20 @@ export default class SquadFactions {
                 return;
             }
 
+            // Broadcast the map change to the session if needed
+            const broadcast = event.broadcast ?? true;
+
+            if (broadcast && App.session.ws && App.session.ws.readyState === WebSocket.OPEN) {
+                console.log("broadcasting unit2 change", event.target.value);
+                App.session.ws.send(
+                    JSON.stringify({
+                        type: "UPDATE_UNIT",
+                        teamIndex: 1,
+                        unit: event.target.value,
+                    })
+                );
+            }
+
             selectedUnit.vehicles.forEach((vehicle) => {
                 
                 let delayInfo = "";
@@ -436,11 +499,11 @@ export default class SquadFactions {
             if (App.userSettings.defaultFactions) {
                 const team1DefaultFaction = factionData.teamConfigs.team1.defaultFactionUnit.split("_")[0];
                 const team2DefaultFaction = factionData.teamConfigs.team2.defaultFactionUnit.split("_")[0];
-                this.FACTION1_SELECTOR.val(team1DefaultFaction).trigger("change");
-                this.FACTION2_SELECTOR.val(team2DefaultFaction).trigger("change");
+                this.FACTION1_SELECTOR.val(team1DefaultFaction).trigger($.Event("change", { broadcast: false }));
+                this.FACTION2_SELECTOR.val(team2DefaultFaction).trigger($.Event("change", { broadcast: false }));
             } else {
-                this.FACTION1_SELECTOR.val("").trigger("change");
-                this.FACTION2_SELECTOR.val("").trigger("change");
+                this.FACTION1_SELECTOR.val("").trigger($.Event("change", { broadcast: false }));
+                this.FACTION2_SELECTOR.val("").trigger($.Event("change", { broadcast: false }));
             }
         }
 

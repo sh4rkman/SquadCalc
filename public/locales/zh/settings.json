@@ -41,7 +41,6 @@
         "hideLowRespawn": "仅跟踪高重生时间的载具",
         "disableSounds": "禁用重生通知音效",
     "LaneFinderOptions": "猜点选项",
-        "autoLane": "自动选择既定的目标点",
         "capZoneOnHover": "仅在鼠标悬停时显示可拉点区域",
         "revealLayerOnHover": "隐藏互斥点位",
         "circlesFlags": "圆形目标点标记",

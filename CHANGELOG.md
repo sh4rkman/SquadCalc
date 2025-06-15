@@ -3,17 +3,23 @@
 
 <img src="https://img.shields.io/badge/-bug%20fix%20-b22"> Changing layer while in a session now broadcast the layer change to others session members
 
+<img src="https://img.shields.io/badge/-bug%20fix%20-b22"> Changing factions/units while in a session now broadcast the change to others session members
+
 <img src="https://img.shields.io/badge/-bug%20fix%20-b22"> Additional weapons heights are now correctly shared between session members (Thanks Petro!) fix [#322](https://github.com/sh4rkman/SquadCalc/issues/322)
 
 <img src="https://img.shields.io/badge/-bug%20fix%20-b22"> SquadCalc won't try to copy to clipboard targets when moving a weapon when "auto-copy target to clipboard" setting is activated
 
 <img src="https://img.shields.io/badge/-bug%20fix%20-b22"> SquadCalc won't try to copy to clipboard targets created by session members when "auto-copy target to clipboard" setting is activated
 
-<img src="https://img.shields.io/badge/-bug%20fix%20-b22"> Fixed some console errors when switching language
+<img src="https://img.shields.io/badge/-bug%20fix%20-b22"> Fixed some hidden console errors when switching language
 
-<img src="https://img.shields.io/badge/-bug%20fix%20-b22"> Added missing german vehicles translation file
+<img src="https://img.shields.io/badge/-bug%20fix%20-b22"> Added missing vehicles translation file for german
 
-<img src="https://img.shields.io/badge/-%20other%20-grey"> Added 404 custom page
+<img src="https://img.shields.io/badge/-bug%20fix%20-b22"> Fixed typo in vehicles translations file for russian
+
+<img src="https://img.shields.io/badge/-%20other%20-grey"> "Auto pick single flag" feature is now activated by default : SquadCalc will automatically pick a flag if it's the only available option. Setting have been removed.
+
+<img src="https://img.shields.io/badge/-%20other%20-grey"> Added a brand new 404 page
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
 

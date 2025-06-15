@@ -144,15 +144,6 @@ tippy("span[data-i18n='settings:copyTarget']", {
     },
 });
 
-tippy("span[data-i18n='settings:autoLane']", {
-    ...commonToolipsSettings,
-    onShow(tip) {
-        tip.setContent(`
-            ${i18next.t("tooltips:autoLaneTooltip")}
-        `);
-    },
-});
-
 tippy("span[data-i18n='settings:capZoneOnHover']", {
     ...commonToolipsSettings,
     onShow(tip) {

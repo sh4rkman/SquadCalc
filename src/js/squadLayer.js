@@ -829,7 +829,6 @@ export default class SquadLayer {
         // }  
        
         // Only one flag in front ? Click it
-        //if (nextFlags.length === 1 && !backward && App.userSettings.autoLane){
         if (nextFlags.length === 1 && !backward){
             this._handleFlagClick(nextFlags[0], false);
         }

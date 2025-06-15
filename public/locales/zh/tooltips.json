@@ -37,7 +37,6 @@
     "copyNextFlagsTooltip": "在点击目标点后，自动复制所有可能的下一个点的名称到剪贴板",
     "copyTargetTooltip": "放置/拖动目标后，自动将计算结果复制到剪贴板",
     "lowAndHighTooltip": "显示可以以高角度和低角度射击的武器的两种角度",
-    "autoLaneTooltip": "如果下一个点是既定的，squadcalc 将自动选择下一个点",
     "capZoneOnHoverTooltip": "(放大时)不始终显示可以拉点的区域，仅在鼠标悬停在点上时显示",
     "revealLayerOnHoverTooltip": "鼠标悬停在点上将隐藏互斥的其他点",
     "sessionCreated": "会话已创建！",

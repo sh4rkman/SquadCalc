@@ -33,7 +33,6 @@
         "showTimeOfFlight": "Flugzeit",
         "showHeightDiff": "Höhenunterschied",
     "LaneFinderOptions": "Routen-Finder-Optionen",
-        "autoLane": "Einzelne Flagge automatisch auswählen",
         "capZoneOnHover": "Eroberungszonen nur beim Überfahren anzeigen",
         "revealLayerOnHover" : "Layer anzeigen, wenn der Mauszeiger über einer Flagge steht",
         "circlesFlags": "Flaggen als Kreise anzeigen",

@@ -33,7 +33,6 @@
         "showTimeOfFlight": "Показать время полёта",
         "showHeightDiff": "Показать разницу высот",
     "LaneFinderOptions": "Опции поиска полос",
-        "autoLane": "Автовыбор одного флага",
         "capZoneOnHover": "Зоны при наведении",
         "revealLayerOnHover": "Показать слой при наведении на флаг",
         "circlesFlags": "Показать флаги в виде кругов",

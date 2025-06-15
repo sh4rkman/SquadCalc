@@ -84,8 +84,6 @@ export default class SquadSession {
         case "SESSION_JOINED": {
             console.debug("Successfully joined session: " + data.sessionId);
 
-            console.log("session joined", data.mapState)
-
             // Update MAP with custom event to skip the broadcast
             App.MAP_SELECTOR.val(data.mapState.activeMap).trigger($.Event("change", { broadcast: false }));
 
@@ -104,7 +102,7 @@ export default class SquadSession {
             $(document).one("layers:loaded", () => {
                 App.LAYER_SELECTOR.val(data.mapState.activeLayer).trigger($.Event("change", { broadcast: false }));
                 
-                $(document).on("layer:loaded", () => {
+                $(document).one("layer:loaded", () => {
 
                     // Click flags
                     data.mapState.selectedFlags.forEach(flag => {
@@ -308,6 +306,25 @@ export default class SquadSession {
         /**********************************************************************/
         /*                                OTHERS                              */ 
         /**********************************************************************/
+
+        case "UPDATE_FACTION": {
+            if (data.teamIndex === 0) {
+                App.minimap.layer.factions.FACTION1_SELECTOR.val(data.faction).trigger($.Event("change", { broadcast: false }));
+            } else if (data.teamIndex === 1) {
+                App.minimap.layer.factions.FACTION2_SELECTOR.val(data.faction).trigger($.Event("change", { broadcast: false }));
+            }
+            break;
+        }
+
+
+        case "UPDATE_UNIT": {
+            if (data.teamIndex === 0) {
+                App.minimap.layer.factions.UNIT1_SELECTOR.val(data.faction).trigger($.Event("change", { broadcast: false }));
+            } else if (data.teamIndex === 1) {
+                App.minimap.layer.factions.UNIT2_SELECTOR.val(data.faction).trigger($.Event("change", { broadcast: false }));
+            }
+            break;
+        }
 
         // Trigger a map change with a custom event to skip the update
         case "UPDATE_MAP": {
