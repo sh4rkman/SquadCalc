@@ -357,8 +357,6 @@ export default class SquadFactions {
 
         this.UNIT1_SELECTOR.off("change").on("change", (event) => {
 
-            console.log("unit1 change", event);
-
             // Reset UI
             $("#team1Vehicles").empty();
             if ($("#team1PinButton").hasClass("active")) this.unpinUnit();
@@ -372,9 +370,8 @@ export default class SquadFactions {
 
             // Broadcast the map change to the session if needed
             const broadcast = event.broadcast ?? true;
-            console.log("unit1 change", event.target.value);
+
             if (broadcast && App.session.ws && App.session.ws.readyState === WebSocket.OPEN) {
-                console.log("broadcasting unit1 change", event.target.value);
                 App.session.ws.send(
                     JSON.stringify({
                         type: "UPDATE_UNIT",
@@ -427,8 +424,6 @@ export default class SquadFactions {
 
         this.UNIT2_SELECTOR.off("change").on("change", (event) => {
 
-            console.log("unit2 change", event.target.value);
-
             // Empty the vehicles container
             $("#team2Vehicles").empty();
             if ( $("#team2PinButton").hasClass("active") ) this.unpinUnit();
@@ -444,7 +439,6 @@ export default class SquadFactions {
             const broadcast = event.broadcast ?? true;
 
             if (broadcast && App.session.ws && App.session.ws.readyState === WebSocket.OPEN) {
-                console.log("broadcasting unit2 change", event.target.value);
                 App.session.ws.send(
                     JSON.stringify({
                         type: "UPDATE_UNIT",
