@@ -203,7 +203,7 @@ export default class SquadCalc {
             
 
             // If URL has a "layer" parameter
-            if (currentUrl.searchParams.has("layer")) {
+            if (currentUrl.searchParams.has("layer") && !currentUrl.searchParams.has("session")) {
                 const urlLayerName = currentUrl.searchParams.get("layer").toLowerCase().replaceAll(" ", "");
             
                 // Normalize option text by removing any extra spaces around the "V"

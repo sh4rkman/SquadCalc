@@ -4,7 +4,27 @@
 /* eslint-disable */
 
 const MAPDATA = [
-
+    {
+      name: "albasrah_2025",
+      url: "/maps/albasrah_2025/{z}_{x}_{y}.jpg",
+      heightmap: {
+        url: "/heightmaps/albasrah_2025.jpg",
+        tile: "/heightmaps/albasrah_2025/{z}_{x}_{y}.jpg",
+      },
+      locations: [
+      ],
+      extra: { // extra information taken from SquadSDK and exported heightmap, used to scale + crop heightmaps
+        // check printMapExtras() function for more information
+        scale: [1, 1, 1], // x, y & z scale from SquadSDK (in meters)
+        levels: [291, 873],
+        minimap: [ // taken from blueprints in SquadSDK
+          [-2000, -2000],
+          [2000, 2000],
+        ],
+        hDim: [4081, 4081], // dimensions of exported heightmap
+        lOrigin: [-2040, -2040], // origin of landscape in SquadSDK (sometimes extracted by placing actor in corner)
+      },
+    },
     {
       name: "sanxianIslands",
       url: "/maps/sanxianIslands/{z}_{x}_{y}.jpg",

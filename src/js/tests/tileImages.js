@@ -4,12 +4,12 @@ import sharp from 'sharp';
 import { mkdirp } from 'mkdirp';
 import console from 'console';
 
-const ZOOMLEVEL = 5;
-const TILESIZE = 256;
-const WEBPQUALITY = 90;
+const ZOOMLEVEL = 5;        
+const TILESIZE = 256;    // in pixels
+const WEBPQUALITY = 90;  // 100 is lossless
 
 // Function to generate tiles
-const generateTiles = async (imagePath, outputDir, baseImageName, maxZoom = 5) => {
+const generateTiles = async (imagePath, file, outputDir, baseImageName, maxZoom = 5) => {
     try {
         // Create the base folder for the image (e.g., basemap_hq)
         const baseFolderPath = path.join(outputDir, baseImageName);
@@ -62,7 +62,7 @@ const generateTiles = async (imagePath, outputDir, baseImageName, maxZoom = 5) =
             }
         }
 
-        console.log(`  -> ${imagePath} have been tiled successfully.`);
+        console.log(`  -> ${file} have been tiled successfully.`);
     } catch (error) {
         console.error(`Error generating tiles for ${imagePath}:`, error);
     }
@@ -73,10 +73,11 @@ const processImagesInFolder = async (folderPath, maxZoom = 5) => {
     try {
         const files = await fs.readdir(folderPath);
 
+        if (files.length == 0) console.log("No file found");          
+
         // Loop through all files in the folder
         for (const file of files) {
             const filePath = path.join(folderPath, file);
-
             // If the file is a directory, process it recursively
             const stats = await fs.stat(filePath);
             if (stats.isDirectory()) {
@@ -84,7 +85,8 @@ const processImagesInFolder = async (folderPath, maxZoom = 5) => {
             } else if (stats.isFile() && file.match(/(basemap_hq|topomap_hq|terrainmap_hq)\.webp$/)) {
                 // If the file matches one of the target image names, process it
                 const baseImageName = file.replace('.webp', ''); // Remove the .webp extension
-                await generateTiles(filePath, folderPath, baseImageName, maxZoom); // Save tiles in the same folder as base image
+                console.log("  -> tiling ", file);
+                await generateTiles(filePath, file, folderPath, baseImageName, maxZoom); // Save tiles in the same folder as base image
             }
         }
     } catch (error) {
@@ -124,5 +126,6 @@ const processAllMaps = async (mapsRootDir, maxZoom) => {
 const mapsDir = path.resolve('./public/maps');
 processAllMaps(mapsDir, ZOOMLEVEL);
 
-//const mapsDir = path.resolve('./public/maps/albasrah');
-//processImagesInFolder(mapsDir, ZOOMLEVEL);
+// Or call it on a single map folder
+// const mapsDir = path.resolve('./public/maps/albasrah');
+// processImagesInFolder(mapsDir, ZOOMLEVEL);

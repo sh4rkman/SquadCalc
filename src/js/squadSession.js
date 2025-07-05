@@ -99,16 +99,22 @@ export default class SquadSession {
                 });
             });
 
+            if (App.minimap.layer) App.minimap.layer._resetLayer();
+
             $(document).one("layers:loaded", () => {
                 App.LAYER_SELECTOR.val(data.mapState.activeLayer).trigger($.Event("change", { broadcast: false }));
                 
                 $(document).one("layer:loaded", () => {
-
+                    App.minimap.layer._resetLayer();
                     // Click flags
+                    console.debug("Clicking flags for session: ", data.mapState.selectedFlags);
                     data.mapState.selectedFlags.forEach(flag => {
+                        console.debug("looking for flag: ", flag);
+                        console.debug("Flags: ", App.minimap.layer.flags);
                         App.minimap.layer.flags.forEach((layerFlag) => {
                             if (layerFlag.objectName === flag) {
                                 if (layerFlag.isSelected) return;
+                                console.debug("found, clicking it now");
                                 App.minimap.layer._handleFlagClick(layerFlag, false);
                                 return;
                             }

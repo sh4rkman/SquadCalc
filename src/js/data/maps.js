@@ -6,11 +6,18 @@ const FOBEXCLUSIONS = {
 export const MAPS = [
     { 
         name: "AlBasrah", 
-        size: 3040, // OK
-        scaling: 0.01294, // OK
+        size: 4000,
+        scaling: 0.0582,
         mapURL: "/albasrah/",
         radiusExclusion: FOBEXCLUSIONS.medium,
     },
+    // { 
+    //     name: "AlBasrah", 
+    //     size: 3040, // OK
+    //     scaling: 0.01294, // OK
+    //     mapURL: "/albasrah/",
+    //     radiusExclusion: FOBEXCLUSIONS.medium,
+    // },
     { 
         name: "Anvil", 
         size: 3060, //OK

@@ -708,7 +708,7 @@ export default class SquadLayer {
             }        
         });
 
-        //Remove clusters that were not reachable from the previous flag
+        // Remove clusters that were not reachable from the previous flag
         reachableClusters = this._filterClusters(reachableClusters);
 
         // Something went wrong, we are in the wrong direction

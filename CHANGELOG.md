@@ -1,11 +1,13 @@
 
 # <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **38.2.0** *(2025-XX-XX)*
 
-<img src="https://img.shields.io/badge/-bug%20fix%20-b22"> Changing layer while in a session now broadcast the layer change to others session members
+<img src="https://img.shields.io/badge/-bug%20fix%20-b22"> Changing layer while in a session now broadcast the layer change to others session members. (fix [#305](https://github.com/sh4rkman/SquadCalc/issues/324))
 
-<img src="https://img.shields.io/badge/-bug%20fix%20-b22"> Changing factions/units while in a session now broadcast the change to others session members
+<img src="https://img.shields.io/badge/-bug%20fix%20-b22"> Changing factions/units while in a session now broadcast the change to others session members (fix [#305](https://github.com/sh4rkman/SquadCalc/issues/324))
 
-<img src="https://img.shields.io/badge/-bug%20fix%20-b22"> Additional weapons heights are now correctly shared between session members (Thanks Petro!) fix [#322](https://github.com/sh4rkman/SquadCalc/issues/322)
+<img src="https://img.shields.io/badge/-bug%20fix%20-b22"> Additional weapons heights are now correctly shared between session members (Thanks aiphton! fix [#322](https://github.com/sh4rkman/SquadCalc/issues/322))
+
+<img src="https://img.shields.io/badge/-bug%20fix%20-b22"> Vehicles respawn timers doesn't appear in seconds after being started/aborted (Thanks Petro! fix [#324](https://github.com/sh4rkman/SquadCalc/issues/324))
 
 <img src="https://img.shields.io/badge/-bug%20fix%20-b22"> SquadCalc won't try to copy to clipboard targets when moving a weapon when "auto-copy target to clipboard" setting is activated
 
@@ -15,7 +17,7 @@
 
 <img src="https://img.shields.io/badge/-bug%20fix%20-b22"> Added missing vehicles translation file for german
 
-<img src="https://img.shields.io/badge/-bug%20fix%20-b22"> Fixed typo in vehicles translations file for russian
+<img src="https://img.shields.io/badge/-bug%20fix%20-b22"> Fixed typo in vehicles translations file for russian (thanks kimochi)
 
 <img src="https://img.shields.io/badge/-%20other%20-grey"> "Auto pick single flag" feature is now activated by default : SquadCalc will automatically pick a flag if it's the only available option. Setting have been removed.
 
