@@ -182,19 +182,19 @@ export default async (env) => {
             },
           ]
         }),
-        // new workbox.GenerateSW({
-        //   swDest: "./sw.js",
-        //   skipWaiting: true,
-        //   clientsClaim: true,
-        //   maximumFileSizeToCacheInBytes: 10000000,
-        //   exclude: [
-        //     /manifest\.json$/, // web app manifest
-        //     /\.map$/, // source maps
-        //     /\/favicons\//, // favicon
-        //     /robots\.txt/, // robots.txt
-        //     /\.webp$/,
-        //   ],
-        // })
+        new workbox.GenerateSW({
+          swDest: "./sw.js",
+          skipWaiting: true,
+          clientsClaim: true,
+          maximumFileSizeToCacheInBytes: 10000000,
+          exclude: [
+            /manifest\.json$/, // web app manifest
+            /\.map$/, // source maps
+            /\/favicons\//, // favicon
+            /robots\.txt/, // robots.txt
+            /\.webp$/,
+          ],
+        })
     ],
     performance: {
         hints: false,
