@@ -225,7 +225,8 @@ export default class SquadCalc {
 
             this.minimap.spin(false);
             $("#layerSelector").show();
-            $(document).trigger("layers:loaded");
+
+            if (!currentUrl.searchParams.has("session")) $(document).trigger("layers:loaded");
 
         }).catch(error => {
             $("#layerSelector").hide();
@@ -256,9 +257,9 @@ export default class SquadCalc {
                 this.updateUrlParams({ layer: null });
             }
         } 
-        else {
-            // pick a random map
-            mapIndex = Math.floor(Math.random() * MAPS.length);
+        else { 
+            // mapIndex = Math.floor(Math.random() * MAPS.length); // pick a random map
+            mapIndex = 0; // New Basrah
         }
         
         this.MAP_SELECTOR.val(mapIndex);

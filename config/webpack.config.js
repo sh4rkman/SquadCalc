@@ -192,6 +192,7 @@ export default async (env) => {
             /\/favicons\//, // favicon
             /robots\.txt/, // robots.txt
             /\.webp$/,
+            /\.mp3$/,
           ],
         })
     ],

@@ -62,6 +62,7 @@ export const squadMinimap = Map.extend({
         this.spinOptions = {color: "white", scale: 1.5, width: 5, shadow: "5px 5px 5px transparent"};
         this.activeTargetsMarkers = new LayerGroup().addTo(this);
         this.activeWeaponsMarkers = new LayerGroup().addTo(this);
+        this.targetGrids = new LayerGroup().addTo(this);
         this.activeMarkers = new LayerGroup().addTo(this);
         this.activeArrowsGroup = new LayerGroup().addTo(this);
         this.activeRectanglesGroup = new LayerGroup().addTo(this);
@@ -85,7 +86,7 @@ export const squadMinimap = Map.extend({
         this.contextMenu = new squadContextMenu();
 
         // Custom events handlers
-        this.on("click", this._handleclick());
+        this.on("click", function(e) { this._handleclick(e); });
         this.on("dblclick", function(e) { this._handleDoubleClick(e); });
 
 
@@ -252,6 +253,7 @@ export const squadMinimap = Map.extend({
         this.activeMarkers.clearLayers();
         this.activeWeaponsMarkers.clearLayers();
         this.activeTargetsMarkers.clearLayers();
+        this.targetGrids.clearLayers();
         this.activeArrowsGroup.clearLayers();
         this.activeRectanglesGroup.clearLayers();
         this.activeCirclesGroup.clearLayers();

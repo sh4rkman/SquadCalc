@@ -42,7 +42,6 @@ export default class SquadFiringSolution {
         return Math.hypot(latDelta, lngDelta);
     }
 
-
     /**
      * Calculates the angle the mortar needs to be set in order
      * to hit the target at the desired distance and vertical delta.
@@ -60,7 +59,7 @@ export default class SquadFiringSolution {
 
         // The technical mortar is bugged : the ingame range metter is off by 5°
         // Ugly fix until OWI correct it
-        if (App.activeWeapon.name === "Tech.Mortar"){ padding = -0.0872665; }
+        if (App.activeWeapon.name === "Tech.Mortar") padding = -0.0872665;
 
         let elevation = padding + Math.atan((this.velocity ** 2 + angleFactor) / (this.gravity * dist));
 
@@ -83,6 +82,46 @@ export default class SquadFiringSolution {
         let bearing = Math.atan2(latDelta, lngDelta) * 180 / Math.PI + 90;
         if (bearing < 0) { bearing += 360; } // Avoid Negative Angle by adding a whole rotation
         return bearing;
+    }
+
+    /**
+     * Calculates the horizontal distance a projectile will travel given a launch angle,
+     * initial velocity, and vertical height difference between origin and target.
+     * 
+     * This function solves the vertical motion equation using the quadratic formula
+     * to find the total flight time (t) required to reach the specified height difference.
+     * It then uses that time to compute the horizontal distance.
+     * 
+     * VERY imprecise at low angles and high heights diff
+     * 
+     * @param {number} angle - Launch angle in degrees (from horizontal).
+     * @returns {number} Horizontal distance the projectile will travel (in meters).
+     */
+    getProjectileDistance(angle) {
+        if (App.activeWeapon.name === "Tech.Mortar") angle += 5;
+
+        const angleRad = angle * Math.PI / 180;
+        const vx = this.velocity * Math.cos(angleRad);
+        const vy = this.velocity * Math.sin(angleRad);
+
+        const a = 0.5 * this.gravity;
+        const b = -vy;
+        const c = this.heightDiff;
+
+        const discriminant = b * b - 4 * a * c;
+
+        if (discriminant < 0) return 0; // No real solution, target unreachable
+
+        const sqrtDisc = Math.sqrt(discriminant);
+        const denom = 2 * a;
+        const t1 = (-b + sqrtDisc) / denom;
+        const t2 = (-b - sqrtDisc) / denom;
+
+        const t = t1 > 0 ? t1 : (t2 > 0 ? t2 : 0);
+        if (t < 0) return 0;
+
+        const distance = vx * t;
+        return Math.max(0, distance);
     }
 
 
@@ -136,7 +175,10 @@ export default class SquadFiringSolution {
      */
     getTimeOfFlight(angle){
         const t = this.velocity * Math.sin(angle) + Math.sqrt( (Math.pow(this.velocity, 2) * Math.pow(Math.sin(angle), 2)) + (2 * this.gravity * -this.heightDiff));
-        return t / this.gravity;
+        const timeOfFlight = t / this.gravity;
+        // In extreme cases ToF can be NaN (low angle, close range)
+        // Ugly hack to return 0.4s instead as a projectile always have some travel time
+        return Number.isNaN(timeOfFlight) ? 0.4 : timeOfFlight;
     }
 
 
@@ -179,4 +221,13 @@ export default class SquadFiringSolution {
         return deg / (360 / 6400);
     }
     
+    /**
+     * Converts NATO mils into degrees
+     * @param {number} mil - NATO mils
+     * @returns {number} degrees
+     */
+    milToDeg(mil) {
+        return mil * (360 / 6400);
+    }
+
 }

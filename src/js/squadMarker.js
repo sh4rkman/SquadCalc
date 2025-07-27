@@ -8,6 +8,7 @@ import SquadFiringSolution from "./squadFiringSolution.js";
 import i18next from "i18next";
 import { sendMarkerData, sendTargetData } from "./squadCalcAPI.js";
 import { v4 as uuidv4 } from "uuid";
+import TargetGrid from "./squadTargetGrid.js";
 
 /*
  * Global Squad Marker Class 
@@ -315,7 +316,9 @@ export const squadWeaponMarker = squadMarker.extend({
     },
 
 
-    _handleContextMenu: function(){
+    _handleContextMenu: function(e){
+        e.originalEvent.preventDefault();
+        e.originalEvent.stopPropagation();
         this.delete();
     },
 
@@ -388,8 +391,8 @@ export const squadWeaponMarker = squadMarker.extend({
 
         // Add listener that update angle/height & refresh targets
         weapon = weapon.sourceTarget;
-        $("input[type=radio][name=angleChoice]").on("change", weapon, function() {
-            weapon.angleType = this.value;
+        $("input[type=radio][name=angleChoice]").on("change", weapon, (e) => {
+            weapon.angleType = e.target.value;
             this.map.updateTargets();
         });
 
@@ -623,6 +626,8 @@ export const squadTargetMarker = squadMarker.extend({
             });
         }
         
+        // Initialise the target Grid
+        this.grid = new TargetGrid(this.map, this.firingSolution1);
 
         // Calc PopUps
         this.calcMarker1 = new Popup(popUpOptions_weapon1).setLatLng(latlng).addTo(this.map.markersGroup);
@@ -673,7 +678,7 @@ export const squadTargetMarker = squadMarker.extend({
 
     },
 
-
+    
     /**
      * Update the Calculation PopUps position
      * according to marker type selected in user settings (Large/Minimal)
@@ -718,6 +723,8 @@ export const squadTargetMarker = squadMarker.extend({
         this.hundredDamageRadius.removeFrom(this.map.markersGroup).remove();
         this.twentyFiveDamageRadius.removeFrom(this.map.markersGroup).remove();
         this.posPopUp.removeFrom(this.map.markersGroup).remove();
+
+        this.grid.clear();
         
         // Remove the marker itself
         this.removeFrom(this.map.markersGroup).removeFrom(this.map.activeTargetsMarkers).remove();
@@ -937,6 +944,10 @@ export const squadTargetMarker = squadMarker.extend({
         this.calcMarker1.setContent(html1);
         clipboard = clipboard1;
 
+        // Refresh targetGrids
+        this.grid.clear();
+        this.grid = new TargetGrid(this.map, this.firingSolution1);
+
         if (this.map.activeWeaponsMarkers.getLayers().length === 2) {
             this.firingSolution2 = new SquadFiringSolution(this.map.activeWeaponsMarkers.getLayers()[1].getLatLng(), this.getLatLng(), this.map, this.map.activeWeaponsMarkers.getLayers()[1].heightPadding);
             const [html2, clipboard2] = this.getContent(this.firingSolution2, this.map.activeWeaponsMarkers.getLayers()[1].angleType);
@@ -1040,6 +1051,7 @@ export const squadTargetMarker = squadMarker.extend({
         this.miniCircle.setLatLng(event.latlng);
         this.hundredDamageRadius.setLatLng(event.latlng);
         this.twentyFiveDamageRadius.setLatLng(event.latlng);
+        this.grid.clear();
 
         // Update Position PopUp Content
         if (App.userSettings.targetDrag) {
@@ -1113,7 +1125,7 @@ export const squadTargetMarker = squadMarker.extend({
     },
 
     // Delete targetMarker on right clic
-    _handleContextMenu: function(){
+    _handleContextMenu: function(e){
 
         // Avoid other target keeping fading
         clearTimeout(this.mouseOverTimeout);
@@ -1130,11 +1142,14 @@ export const squadTargetMarker = squadMarker.extend({
         });
 
         // We can now safely start deleting
+        e.originalEvent.preventDefault();
+        e.originalEvent.stopPropagation();
         this.delete();
     },
 
     // On Hovering for more than 500ms hide other targets
     _handleMouseOver: function() {
+        this.grid.show();
 
         this.mouseOverTimeout = setTimeout(() => {
             // Hide other targets
@@ -1151,6 +1166,7 @@ export const squadTargetMarker = squadMarker.extend({
         this.calcMarker2.getElement().style.zIndex  = "";
 
         if (!this.isDragging){
+            //this.grid.hide();
             this.map.activeTargetsMarkers.eachLayer((target) => {
                 target.on("mouseover", target._handleMouseOver, target);
                 target.on("mouseout", target._handleMouseOut, target);

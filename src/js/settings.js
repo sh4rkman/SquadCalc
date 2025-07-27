@@ -158,6 +158,9 @@ export function loadSettings(){
     App.userSettings.damageRadius = loadLocalSetting("settings-damage-radius");
     $("#damageRadiusSetting").prop("checked", App.userSettings.damageRadius);
 
+    App.userSettings.targetGrid = loadLocalSetting("settings-target-grid");
+    $("#targetGridSetting").prop("checked", App.userSettings.targetGrid);
+
     App.userSettings.showHeight = loadLocalSetting("settings-show-height", 0);
     $("#heightSetting").prop("checked", App.userSettings.showHeight);
 
@@ -489,6 +492,15 @@ $("#damageRadiusSetting").on("change", function() {
     App.minimap.updateTargetsSpreads(); // Update every targets to add/remove spread radius
     updatePreview();
 });
+
+$("#targetGridSetting").on("change", function() {
+    var val = $("#targetGridSetting").is(":checked");
+    App.userSettings.targetGrid = val;
+    localStorage.setItem("settings-target-grid", +val);
+    App.minimap.updateTargets();
+});
+
+
 
 $("#targetDragSetting").on("change", function() {
     var val = $("#targetDragSetting").is(":checked");
