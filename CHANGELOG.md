@@ -1,27 +1,41 @@
 
-# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **38.2.0** *(2025-XX-XX)*
+# <img src="https://img.shields.io/badge/-major%20release-b22222?style=for-the-badge">  **39.0.0** *(2025-XX-XX)*
 
-<img src="https://img.shields.io/badge/-bug%20fix%20-b22"> Changing layer while in a session now broadcast the layer change to others session members. (fix [#305](https://github.com/sh4rkman/SquadCalc/issues/324))
+<img src="https://img.shields.io/badge/-new%20features-green">
 
-<img src="https://img.shields.io/badge/-bug%20fix%20-b22"> Changing factions/units while in a session now broadcast the change to others session members (fix [#305](https://github.com/sh4rkman/SquadCalc/issues/324))
+- **New Albasrah!**  
+  Every layer, faction, image, heightmap, and related data has been updated. Feel free to report a bug if you spot one.
 
-<img src="https://img.shields.io/badge/-bug%20fix%20-b22"> Additional weapons heights are now correctly shared between session members (Thanks aiphton! fix [#322](https://github.com/sh4rkman/SquadCalc/issues/322))
+- **Target Deviation Grids!**  
+  fsdfdsfdsfdsfsdf
 
-<img src="https://img.shields.io/badge/-bug%20fix%20-b22"> Vehicles respawn timers doesn't appear in seconds after being started/aborted (Thanks Petro! fix [#324](https://github.com/sh4rkman/SquadCalc/issues/324))
 
-<img src="https://img.shields.io/badge/-bug%20fix%20-b22"> SquadCalc won't try to copy to clipboard targets when moving a weapon when "auto-copy target to clipboard" setting is activated
+<img src="https://img.shields.io/badge/-bug%20fixes-b22">
 
-<img src="https://img.shields.io/badge/-bug%20fix%20-b22"> SquadCalc won't try to copy to clipboard targets created by session members when "auto-copy target to clipboard" setting is activated
+- Fixed Skorpo real size (fixing the grid misplacement aswell)
+- Fixed a Skorpo heightmap being slightly misrotated (Thanks ZFZR031! fix [#295](https://github.com/sh4rkman/SquadCalc/issues/295))
+- SquadCalc is now installable again as a Progressive Web App (Thanks Acemantura! fix [#328](https://github.com/sh4rkman/SquadCalc/issues/328))
+- Additional weapon heights are now correctly shared between session members (Thanks aiphton! fix [#322](https://github.com/sh4rkman/SquadCalc/issues/322))
+- Vehicle respawn timers no longer appear in seconds after being started/aborted (Thanks Petro! fix [#324](https://github.com/sh4rkman/SquadCalc/issues/324))
+- Changing layer while in a session now broadcasts the layer change to other session members (fix [#305](https://github.com/sh4rkman/SquadCalc/issues/324))
+- Changing factions/units while in a session now broadcasts the change to other session members (fix [#305](https://github.com/sh4rkman/SquadCalc/issues/324))
+- SquadCalc no longer tries to copy target to clipboard when moving a weapon if "auto-copy target to clipboard" is enabled
+- SquadCalc no longer tries to copy targets created by session members to clipboard when "auto-copy target to clipboard" is enabled
+- Fixed a rare calculation error when shooting at very close range and high elevation with BM21-Grad (fix [#329](https://github.com/sh4rkman/SquadCalc/issues/329))
+- Fixed hidden console errors when switching language
+- Added missing vehicle translation file for German
+- Fixed typo in vehicle translations file for Russian (Thanks kimochi)
+- Right-clicking a marker no longer triggers a console error
 
-<img src="https://img.shields.io/badge/-bug%20fix%20-b22"> Fixed some hidden console errors when switching language
 
-<img src="https://img.shields.io/badge/-bug%20fix%20-b22"> Added missing vehicles translation file for german
+<img src="https://img.shields.io/badge/-%20other-grey">
 
-<img src="https://img.shields.io/badge/-bug%20fix%20-b22"> Fixed typo in vehicles translations file for russian (thanks kimochi)
+- "Auto pick single flag" feature is now activated by default: SquadCalc will automatically pick a flag if it's the only available option. The setting has been removed.
+- Improved contrast of the target compact icons
+- Improved map & heightmap caching to speedup image loading
+- Reduced button and selector sizes on mobile to be more compact
+- Added a brand new 404 page
 
-<img src="https://img.shields.io/badge/-%20other%20-grey"> "Auto pick single flag" feature is now activated by default : SquadCalc will automatically pick a flag if it's the only available option. Setting have been removed.
-
-<img src="https://img.shields.io/badge/-%20other%20-grey"> Added a brand new 404 page
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
 
