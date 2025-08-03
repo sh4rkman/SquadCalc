@@ -181,18 +181,19 @@ export default async (env) => {
             },
           ]
         }),
-        new workbox.GenerateSW({
-          swDest: "./sw.js",
-          skipWaiting: true,
-          clientsClaim: true,
-          maximumFileSizeToCacheInBytes: 10000000,
+        new workbox.InjectManifest({
+          swSrc: './src/js/sw.js',
+          swDest: './sw.js',
+          maximumFileSizeToCacheInBytes: 10 * 1024 * 1024,
           exclude: [
-            /manifest\.json$/, // web app manifest
-            /\.map$/, // source maps
-            /\/favicons\//, // favicon
-            /robots\.txt/, // robots.txt
+            /manifest\.json$/,
+            /\.map$/,
+            /\/favicons\//,
+            /robots\.txt/,
             /\.webp$/,
             /\.mp3$/,
+            /\.json$/,
+            /\.gif$/,
           ],
         })
     ],

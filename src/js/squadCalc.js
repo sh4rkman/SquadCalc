@@ -1,4 +1,4 @@
-import { MAPS } from "./data/maps.js";
+import { MAPS, initMapsProperties } from "./data/maps.js";
 import { WEAPONS, WEAPONSTYPE } from "./data/weapons.js";
 import { squadMinimap } from "./squadMinimap.js";
 import { Weapon } from "./squadWeapons.js";
@@ -47,10 +47,9 @@ export default class SquadCalc {
         this.version = packageInfo.version;
     }
 
-    init(){
+    init() {
         loadLanguage(this.supportedLanguages);
-        // TODO load settings in constructor: this.userSettings = loadSettings();
-        // must rework settings as a class properly
+        initMapsProperties();
         loadSettings();
         this.loadMapSelector();
         this.loadMinimap();

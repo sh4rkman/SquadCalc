@@ -236,7 +236,6 @@ export default class SquadFactions {
     updateMainIcon(teamKey, FACTION) {
 
         var mainFlag;
-        
         this.squadLayer.mains.forEach((main) => {
             if (main.objectName.toLowerCase().includes(teamKey)) {
                 mainFlag = main;

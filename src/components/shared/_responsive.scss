@@ -205,6 +205,7 @@
             .select2-container {
                 float: right;
                 font-size: 1em;
+                padding-bottom: 0.3em;
             }
             #layerSelector {
                 padding-top: 3em;
@@ -222,10 +223,14 @@
 
     @media (height >= 40em) {
         #mapLayerMenu{
+            right: 2%;
             .btn {
                 font-size: 1.4em;
                 width: 44px;
                 height: 44px;
+                &.btn-session {
+                    margin-top: 1em;
+                }
             }
             #sessionActions {
                 width: 44px;

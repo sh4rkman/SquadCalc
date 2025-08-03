@@ -250,6 +250,12 @@ export function updatePreview(){
         $("#gridPreview").hide();
     }
 
+    if (App.userSettings.targetGrid){
+        $("#targetGridPreview").show();
+    } else {
+        $("#targetGridPreview").hide();
+    }
+
     if (App.userSettings.keypadUnderCursor){
         tooltip_coordPreview.enable();
     } else {
@@ -498,9 +504,8 @@ $("#targetGridSetting").on("change", function() {
     App.userSettings.targetGrid = val;
     localStorage.setItem("settings-target-grid", +val);
     App.minimap.updateTargets();
+    updatePreview();
 });
-
-
 
 $("#targetDragSetting").on("change", function() {
     var val = $("#targetDragSetting").is(":checked");

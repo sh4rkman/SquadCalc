@@ -84,6 +84,7 @@ export default class SquadFiringSolution {
         return bearing;
     }
 
+    
     /**
      * Calculates the horizontal distance a projectile will travel given a launch angle,
      * initial velocity, and vertical height difference between origin and target.
@@ -174,11 +175,11 @@ export default class SquadFiringSolution {
      * @returns {number} - time of flight in seconds
      */
     getTimeOfFlight(angle){
-        const t = this.velocity * Math.sin(angle) + Math.sqrt( (Math.pow(this.velocity, 2) * Math.pow(Math.sin(angle), 2)) + (2 * this.gravity * -this.heightDiff));
-        const timeOfFlight = t / this.gravity;
-        // In extreme cases ToF can be NaN (low angle, close range)
-        // Ugly hack to return 0.4s instead as a projectile always have some travel time
-        return Number.isNaN(timeOfFlight) ? 0.4 : timeOfFlight;
+        // In extreme cases ToF can be NaN (low angle, high heights)
+        // if it does just aproximate without taking heights in account this time
+        var t = this.velocity * Math.sin(angle) + Math.sqrt( (Math.pow(this.velocity, 2) * Math.pow(Math.sin(angle), 2)) + (2 * this.gravity * -this.heightDiff));
+        if (isNaN(t))  t = this.velocity * Math.sin(angle) + Math.sqrt( (Math.pow(this.velocity, 2) * Math.pow(Math.sin(angle), 2)));
+        return t / this.gravity;;
     }
 
 
@@ -187,7 +188,7 @@ export default class SquadFiringSolution {
      * @param {number} rad - radians
      * @returns {number} degrees
      */
-    radToDeg(rad) {
+    radToDeg(rad){
         return (rad * 180) / Math.PI;
     }
 
@@ -197,7 +198,7 @@ export default class SquadFiringSolution {
      * @param {number} rad - radians
      * @returns {number} NATO mils
      */
-    radToMil(rad) {
+    radToMil(rad){
         return this.degToMil(this.radToDeg(rad));
     }
 
@@ -207,7 +208,7 @@ export default class SquadFiringSolution {
      * @param {number} deg - degrees
      * @returns {number} radians
      */
-    degToRad(deg) {
+    degToRad(deg){
         return (deg * Math.PI) / 180;
     }
 
@@ -217,7 +218,7 @@ export default class SquadFiringSolution {
      * @param {number} deg - degrees
      * @returns {number} NATO mils
      */
-    degToMil(deg) {
+    degToMil(deg){
         return deg / (360 / 6400);
     }
     
@@ -226,7 +227,7 @@ export default class SquadFiringSolution {
      * @param {number} mil - NATO mils
      * @returns {number} degrees
      */
-    milToDeg(mil) {
+    milToDeg(mil){
         return mil * (360 / 6400);
     }
 

@@ -11,10 +11,8 @@ export default class SquadLayer {
         this.map = map;
         this.activeLayerMarkers = new LayerGroup().addTo(this.map);
         this.layerData = layerData;
-        this.offset_x = Math.min(this.layerData.mapTextureCorners[0].location_x, this.layerData.mapTextureCorners[1].location_x);
-        this.offset_y = Math.min(this.layerData.mapTextureCorners[0].location_y, this.layerData.mapTextureCorners[1].location_y);
+        [this.offset_x, this.offset_y] = this.getLayerOffsets(this.layerData.mapTextureCorners);
         this.isVisible = true;
-        // Current position in the layer
         this.currentPosition = 0;
 
         // latlng's of the currently selected flags
@@ -60,7 +58,6 @@ export default class SquadLayer {
 
         this.setMainZoneOpacity(true);
     }
-
 
 
     /**
@@ -144,18 +141,31 @@ export default class SquadLayer {
         }
 
         // AAS
-        if (this.layerData.gamemode === "AAS" || this.layerData.gamemode === "Skirmish") {
+        if (
+            this.layerData.gamemode === "AAS" ||
+            this.layerData.gamemode === "Skirmish" ||
+            this.layerData.gamemode === "Seed"
+        ) {
+            const pointsOrder = this.layerData.capturePoints?.points?.pointsOrder;
+            const objectives = this.layerData.objectives;
 
-            const objectiveKeys = Object.keys(this.layerData.objectives);
-            const numFlags = objectiveKeys.length - 1;
+            let orderedObjectives = [];
 
-            Object.values(this.layerData.objectives).forEach((obj, i) => {
+            // Sort objectives according to their order in layerData.capturePoints.points.pointsOrder
+            
+            const nameToObjective = Object.values(objectives).reduce((acc, obj) => {
+                acc[obj.objectDisplayName] = obj;
+                return acc;
+            }, {});
 
+            orderedObjectives = pointsOrder.map(name => nameToObjective[name]).filter(Boolean);
+
+
+            orderedObjectives.forEach((obj, i) => {
                 const latlng = this.convertToLatLng(obj.location_x, obj.location_y);
 
-                // Ignore the first and last flags (Mains)
-                // We will draw their protection zones instead later
-                if (i === 0 || i === numFlags){
+                // Identify and process mains
+                if (obj.name === "Main") {
                     this.path.push(latlng);
                     let newFlag = new SquadObjective(latlng, this, obj, 1, obj);
                     this.flags.push(newFlag);
@@ -167,11 +177,9 @@ export default class SquadLayer {
                 this.path.push(latlng);
                 this.flags.push(newFlag);
 
-                // Adding capzones to the flag object
-                obj.objects.forEach((cap) => {
+                obj.objects.forEach(cap => {
                     newFlag.createCapZone(cap);
                 });
-
             });
 
             this.polyline.setLatLngs(this.path);
@@ -232,6 +240,22 @@ export default class SquadLayer {
         this.createAssets();
         this.createBorders();
     }
+
+
+    /**
+     * Calculates the X and Y offsets needed to align a layer object to the Map
+     *
+     * @param {Array<{location_x: number, location_y: number}>} mapTextureCorners array of layers two corner
+     * @returns {[number, number]} array containing the calculated X and Y offsets
+     */
+    getLayerOffsets(mapTextureCorners) {
+        let layerOriginX = Math.min(mapTextureCorners[0].location_x, mapTextureCorners[1].location_x);
+        let layerOriginY = Math.min(mapTextureCorners[0].location_y, mapTextureCorners[1].location_y)
+        let layerOffsetToMapX = (this.map.activeMap.SDK_data.minimap.corner0[0] * 100) - layerOriginX;
+        let layerOffsetToMapY = (this.map.activeMap.SDK_data.minimap.corner0[1] * 100) - layerOriginY;
+        return [layerOriginX + layerOffsetToMapX, layerOriginY + layerOffsetToMapY];
+    }
+
 
     /**
      * Reveal all capzones on the map

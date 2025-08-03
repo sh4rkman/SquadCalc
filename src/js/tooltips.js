@@ -116,6 +116,13 @@ tippy("span[data-i18n='settings:showSpread']", {
     },
 });
 
+tippy("span[data-i18n='settings:targetGrid']", {
+    ...commonToolipsSettings,
+    onShow(tip) {
+        tip.setContent(`${i18next.t("tooltips:targetGridTooltip")}`);
+    },
+});
+
 tippy("span[data-i18n='settings:realMaxRange']", {
     ...commonToolipsSettings,
     onShow(tip) {

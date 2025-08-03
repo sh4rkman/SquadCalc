@@ -607,9 +607,9 @@ $flag-circle-opacity: 0.2;
 
 #mapLayerMenu {
     position: absolute;
-    right: 2%;
+    right: 0%;
     top: 20%;
-    width: 54px;
+    width: 40px;
     z-index: 1;
     height: auto;
     pointer-events: none;
@@ -686,14 +686,11 @@ $flag-circle-opacity: 0.2;
         }
         &.btn-session {
             z-index: 1;
-            margin-top: 1em;
+            margin-top: 0em;
             svg {
                 height: 0.9em;
             }
         }
-    }
-    .mapLayerMenuSeparator {
-        margin-top: 10px;
     }
 }
 

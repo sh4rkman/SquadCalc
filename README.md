@@ -268,7 +268,7 @@ Easily export your map and markers to an offline file for backup or sharing. To 
 
 * 🗺️ Map System built on **[Leaflet JS](https://leafletjs.com/)**
 * 🖼️ Map Images, Marker Icons are from SquadSDK by **[OffWorld Industries](https://www.offworldindustries.com/)**
-* 🧮 Layers/Factions Data are extracted thanks to **[Squad-Wiki Pipeline Map Data](https://github.com/Squad-Wiki/squad-wiki-pipeline-map-data)** SDK extractor Assets
+* 🧮 Layers & Factions Data are extracted thanks to **[Squad-Wiki Pipeline Map Data](https://github.com/Squad-Wiki/squad-wiki-pipeline-map-data)** SDK extractor tools *(Special thanks to [Shanomac99](https://github.com/Shanomac99))*
 * 🗣️ AI Text-To-Speech made with **[Luvvoice](https://luvvoice.com/)** 
 * 🔣 Icons by **[FontAwesome](https://fontawesome.com/icons)**
 * 👌🏼 Thanks to everyone supporting the project with kinds words, clever suggestions, and better code than mine

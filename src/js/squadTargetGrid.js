@@ -3,33 +3,28 @@ import { Polyline, LayerGroup } from "leaflet";
 
 export default class TargetGrid {
     
+    static ANGLE_DEV = 12;
+    static ANGLE_STEP = 2;
+    static lineOptions = { color: "Lime", weight: 2, opacity: 0.7 };
+
     constructor(map, firingSolution) {
         this.map = map;
         this.firingSolution = firingSolution;
         this.elevation = App.minimap.activeWeaponsMarkers.getLayers()[0].angleType === "high" ? firingSolution.elevation.high.mil : firingSolution.elevation.low.mil;
-        
-        this.ANGLE_DEV = 10;
-        this.ANGLE_STEP = 1;
-        if (this.firingSolution.activeWeapon.unit === "deg") {
-            this.ELEVATION_DEVIATION = this.firingSolution.degToMil(0.5) * 6;
-            this.ELEVATION_STEP = this.firingSolution.degToMil(0.5);
-        } else {
-            this.ELEVATION_DEVIATION = 30;
-            this.ELEVATION_STEP = 5;
-        }
-
-        this.lineOptions = { color: "DarkGreen", weight: 2, opacity: 0.7 };
         this.linesGroup = new LayerGroup();
+
+        // Weapon in degree have 6*1deg elevation lines, others hav 4* 10miliradians
+        if (this.firingSolution.activeWeapon.unit === "deg") {
+            this.ELEVATION_DEVIATION = this.firingSolution.degToMil(1) * 6;
+            this.ELEVATION_STEP = this.firingSolution.degToMil(1);
+        } else {
+            this.ELEVATION_DEVIATION = 60;
+            this.ELEVATION_STEP = 10;
+        }
 
         if (App.userSettings.targetGrid) {
             this.build();
             this.show();
-
-            // Tell the user about the new functionality
-            // if (localStorage.getItem("tips-targetGrid") === null) {
-            //     App.openToast("success", "New target grid", "you can disable it in settings")
-            //     localStorage.setItem("tips-targetGrid", "seen");
-            // }
         }
     }
 
@@ -52,7 +47,7 @@ export default class TargetGrid {
         const REVERSEDIST = this.firingSolution.getProjectileDistance(this.firingSolution.milToDeg(this.elevation));
         const QUADRATICDIST = this.firingSolution.distance;
         const AVGDELTA = QUADRATICDIST - REVERSEDIST;
-
+        const BASEANGLE = this.firingSolution.bearing - 90; // face north
         const weaponLatLng = this.map.activeWeaponsMarkers.getLayers()[0].getLatLng();
 
         const startRadius = (this.firingSolution.getProjectileDistance(this.firingSolution.milToDeg(this.elevation - this.ELEVATION_DEVIATION/2)) + AVGDELTA) * this.map.gameToMapScale;
@@ -63,21 +58,24 @@ export default class TargetGrid {
         for (let i = this.elevation - this.ELEVATION_DEVIATION/2; i <= this.elevation + this.ELEVATION_DEVIATION/2 + 1; i = i+ this.ELEVATION_STEP) {
             let aproxDist = this.firingSolution.getProjectileDistance(this.firingSolution.milToDeg(i));
             let finalDist = (aproxDist + AVGDELTA) * this.map.gameToMapScale;
-            this.linesGroup.addLayer(this.drawArc(weaponLatLng, this.firingSolution.bearing, -this.ANGLE_DEV/2, this.ANGLE_DEV/2, finalDist));
+            this.linesGroup.addLayer(this.drawArc(weaponLatLng, BASEANGLE, -TargetGrid.ANGLE_DEV/2, TargetGrid.ANGLE_DEV/2, finalDist));
         }
-
 
         // Start drawing vertical segment
-        const baseAngle = this.firingSolution.bearing - 90; // face North
-        for (let i= -this.ANGLE_DEV/2; i <= this.ANGLE_DEV/2; i= i + this.ANGLE_STEP) {
-            this.linesGroup.addLayer(this.drawSegmentAtAngle(weaponLatLng, baseAngle + i, startRadius, endRadius));
+        for (let i= -TargetGrid.ANGLE_DEV/2; i <= TargetGrid.ANGLE_DEV/2; i= i + TargetGrid.ANGLE_STEP) {
+            this.linesGroup.addLayer(this.drawSegmentAtAngle(weaponLatLng, BASEANGLE + i, startRadius, endRadius));
         }
 
+        // Tell the user about the new functionality
+        //if (localStorage.getItem("tips-targetGrid") === null) {
+            App.openToast("success", "tips-target-title", "tips-target-subtitle")
+            localStorage.setItem("tips-targetGrid", "seen");
+        //}
     }
 
     drawArc(centerLatLng, bearingDeg, startOffset, endOffset, radius, segments = 64) {
         const points = [];
-        const baseAngle = bearingDeg - 90;
+        const baseAngle = bearingDeg;
         const step = (endOffset - startOffset) / segments;
 
         for (let offset = startOffset; offset <= endOffset; offset += step) {
@@ -87,11 +85,11 @@ export default class TargetGrid {
             points.push([centerLatLng.lat - dy, centerLatLng.lng + dx]);
         }
 
-        return new Polyline(points, this.lineOptions);
+        return new Polyline(points, TargetGrid.lineOptions);
     }
 
     drawSegmentAtAngle(originLatLng, angleDeg, innerRadius, outerRadius) {
-        const angleRad = angleDeg * Math.PI / 180;
+        const angleRad = (angleDeg) * Math.PI / 180;
         const dx = Math.cos(angleRad);
         const dy = Math.sin(angleRad);
 
@@ -106,7 +104,7 @@ export default class TargetGrid {
             originLatLng.lng + dx * outerRadius,
         ];
 
-        return new Polyline([startLatLng, endLatLng], this.lineOptions);
+        return new Polyline([startLatLng, endLatLng], TargetGrid.lineOptions);
     }
 
     show(){

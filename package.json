@@ -1,6 +1,6 @@
 {
   "name": "squadcalc",
-  "version": "38.2.0",
+  "version": "39.0.0",
   "description": "A Complete Mortar Calculator and Map Lane Finder for Squad",
   "author": "Maxime 'sharkman' Boussard",
   "license": "MIT",
@@ -29,7 +29,7 @@
     "start": "webpack serve -c ./config/webpack.config.js",
     "build": "webpack -c ./config/webpack.config.js",
     "lint": "stylelint -c ./config/.stylelintrc.json ./src/**/*.scss && htmlhint --config ./config/.htmlhintrc.json --nocolor ./src/ && jshint ./src/ && eslint -c ./config/.eslintrc.js ./src/",
-    "mapinfo": "node src/js/tests/mapdata.js info",
+    "mapinfo": "node src/js/data/maps.js mapinfo",
     "weaponInfo": "node src/js/tests/calcMortarTech.js info"
   },
   "devDependencies": {

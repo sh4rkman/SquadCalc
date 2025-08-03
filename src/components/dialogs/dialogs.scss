@@ -820,6 +820,12 @@ $bezier: cubic-bezier(0.65, 0.25, 0.56, 0.96);
                 margin-right: 3px;
                 margin-top: 3px;
             }
+            #targetGridPreview {
+                position: absolute;
+                width: 120px;
+                margin-right: 3px;
+                margin-top: 3px;
+            }
             #damagePreview {
                 position: absolute;
                 margin-top: 16px;
