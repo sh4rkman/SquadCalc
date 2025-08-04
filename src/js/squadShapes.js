@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from "uuid";
 import { App } from "../app.js";
-import { Polyline, PolylineDecorator, Symbol, DomEvent, Circle, Rectangle } from "leaflet";
+import { Polyline, /*PolylineDecorator, Symbol,*/ DomEvent, Circle, Rectangle } from "leaflet";
 
 export class MapArrow {
     
@@ -13,25 +13,25 @@ export class MapArrow {
         this.uid = uid || uuidv4();
         this.polyline = null;
         this.polylineDecorator = null;
-        this.arrowPattern = {
-            patterns: [{
-                offset: "100%",
-                repeat: 0,
-                symbol: new Symbol.arrowHead({
-                    pixelSize: 15,
-                    polygon: false,
-                    fill: true,
-                    yawn: 70,
-                    pathOptions: {
-                        stroke: true,
-                        color: color,
-                        weight: 3,
-                        fillColor: color,
-                        fillOpacity: 1,
-                    }
-                })
-            }]
-        };
+        // this.arrowPattern = {
+        //     patterns: [{
+        //         offset: "100%",
+        //         repeat: 0,
+        //         symbol: new Symbol.arrowHead({
+        //             pixelSize: 15,
+        //             polygon: false,
+        //             fill: true,
+        //             yawn: 70,
+        //             pathOptions: {
+        //                 stroke: true,
+        //                 color: color,
+        //                 weight: 3,
+        //                 fillColor: color,
+        //                 fillOpacity: 1,
+        //             }
+        //         })
+        //     }]
+        // };
         this.createArrow();
         this.map.activeArrows.push(this);
         console.debug("Creating new arrow with uid", this.uid);
@@ -47,7 +47,7 @@ export class MapArrow {
 
         const latlngs = [this.startLatLng, this.endLatLng];
         this.polyline = new Polyline(latlngs, arrowOptions).addTo(this.map.activeArrowsGroup);
-        this.polylineDecorator = new PolylineDecorator(this.polyline, this.arrowPattern).addTo(App.minimap.activeArrowsGroup);
+        //this.polylineDecorator = new PolylineDecorator(this.polyline, this.arrowPattern).addTo(App.minimap.activeArrowsGroup);
         this.polyline.uid = this.uid;
 
         // Add a contextmenu event listener for deletion
@@ -79,12 +79,12 @@ export class MapArrow {
 
         this.map.activeArrows = this.map.activeArrows.filter(activeArrow => activeArrow !== this);
         this.map.removeLayer(this.polyline);
-        this.map.removeLayer(this.polylineDecorator);
+        //this.map.removeLayer(this.polylineDecorator);
 
         // remove from this.map.activeArrowsGroup
         
         this.polyline.removeFrom(this.map.activeArrowsGroup).remove();
-        this.polylineDecorator.removeFrom(this.map.activeArrowsGroup).remove();
+        //this.polylineDecorator.removeFrom(this.map.activeArrowsGroup).remove();
 
         // Remove the marker from targets array history
         this.map.history = this.map.history.filter(object => object !== this);

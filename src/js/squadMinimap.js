@@ -1,4 +1,4 @@
-import {imageOverlay, tileLayer, Map, CRS, svg, Util, LayerGroup, Popup, Icon, LatLngBounds, latLng } from "leaflet";
+import {ImageOverlay, TileLayer, Map, CRS, SVG, Util, LayerGroup, Popup, Icon, LatLngBounds, LatLng } from "leaflet";
 import squadGrid from "./squadGrid.js";
 import squadHeightmap from "./squadHeightmaps.js";
 import { App } from "../app.js";
@@ -9,12 +9,12 @@ import { explode } from "./animations.js";
 import { fetchMarkersByMap } from "./squadCalcAPI.js";
 import webGLHeatmap from "./libs/leaflet-webgl-heatmap.js";
 import "leaflet-edgebuffer";
-import "leaflet-spin";
 import "./libs/webgl-heatmap.js";
+import "./libs/leaflet-spin.js";
 import "./libs/leaflet-smoothWheelZoom.js";
 import "tippy.js/dist/tippy.css";
 import squadContextMenu from "./squadContextMenu.js";
-import "leaflet-polylinedecorator";
+//import "./libs/leaflet-polylineDecorator.js";
 import { v4 as uuidv4 } from "uuid";
 
 /**
@@ -43,7 +43,7 @@ export const squadMinimap = Map.extend({
             doubleClickZoom: false,
             maxZoom: 8,
             minZoom: 1,
-            renderer: svg({padding: 3}),
+            renderer: new SVG({padding: 3}),
             zoom: 2,
             zoomControl: false,
             zoomSnap: 0,
@@ -112,7 +112,7 @@ export const squadMinimap = Map.extend({
         this.on("zoomend", this._handleZoom, this);
 
         if (App.userSettings.keypadUnderCursor && App.hasMouse){
-            this.on("mousemove", this._handleMouseMove, this);
+            this.on("pointermove", this._handleMouseMove, this);
             this.on("mouseout", this._handleMouseOut, this);
         }
 
@@ -156,7 +156,7 @@ export const squadMinimap = Map.extend({
         if (App.userSettings.highQualityImages) {
             // Use TileLayer for high-quality images
             let tilePath = `${process.env.API_URL}/img${this.activeMap.mapURL}${LAYERMODE}_hq/{z}_{x}_{y}.webp`;
-            this.activeLayer = new tileLayer(tilePath, {
+            this.activeLayer = new TileLayer(tilePath, {
                 bounds: this.imageBounds,
                 minNativeZoom: 0,
                 maxNativeZoom : 5,
@@ -167,7 +167,7 @@ export const squadMinimap = Map.extend({
         } else {
             // Use ImageOverlay for standard images
             let imgPath = `maps${this.activeMap.mapURL}${LAYERMODE}.webp`;
-            this.activeLayer = new imageOverlay(imgPath, this.imageBounds);
+            this.activeLayer = new ImageOverlay(imgPath, this.imageBounds);
             this.activeLayer.addTo(this.layerGroup);
             $(this.activeLayer.getElement()).css("opacity", 0);
         }
@@ -720,7 +720,7 @@ export const squadMinimap = Map.extend({
 
         if (App.userSettings.keypadUnderCursor && App.hasMouse){
             if (this.mouseLocationPopup._latlng){
-                this.updateMouseLocationPopup(new latLng(this.mouseLocationPopup._latlng.lat, this.mouseLocationPopup._latlng.lng));
+                this.updateMouseLocationPopup(new LatLng(this.mouseLocationPopup._latlng.lat, this.mouseLocationPopup._latlng.lng));
             }
         }
 
@@ -748,7 +748,7 @@ export const squadMinimap = Map.extend({
             if (arrow) {
                 // Update the arrow's polyline positions
                 arrow.polyline.setLatLngs([arrow.startLatLng, endLatLng]);
-                arrow.polylineDecorator.setPaths([arrow.polyline.getLatLngs()]);
+                //arrow.polylineDecorator.setPaths([arrow.polyline.getLatLngs()]);
             } else {
                 // Create a new arrow on first movement
                 const startLatLng = this.contextMenu.mainContextMenu.e.latlng;
@@ -759,7 +759,7 @@ export const squadMinimap = Map.extend({
         const handleClick = () => {
             if (isDrawing && arrow) {
                 isDrawing = false; // Stop the drawing process
-                this.off("mousemove", handleMouseMove); // Remove the mousemove listener
+                this.off("pointermove", handleMouseMove); // Remove the mousemove listener
     
                 if (!arrow.uid) arrow.uid = uuidv4();
                 
@@ -784,14 +784,14 @@ export const squadMinimap = Map.extend({
                 arrow.delete(); // Custom method to clean up the arrow
                 arrow = null; // Reset the arrow reference
                 isDrawing = false;
-                this.off("mousemove", handleMouseMove);
+                this.off("pointermove", handleMouseMove);
             }
         };
     
         // Initialize the arrow drawing process
         if (!isDrawing) {
             isDrawing = true;
-            this.on("mousemove", handleMouseMove); // Start tracking mouse movement
+            this.on("pointermove", handleMouseMove); // Start tracking mouse movement
             this.once("click", handleClick); // Finalize the arrow on click
             this.on("contextmenu", handleRightClick); // Cancel on right-click
         }
@@ -818,7 +818,7 @@ export const squadMinimap = Map.extend({
         const handleClick = () => {
             if (isDrawing && rectangle) {
                 isDrawing = false;
-                this.off("mousemove", handleMouseMove);
+                this.off("pointermove", handleMouseMove);
     
                 if (!rectangle.uid) rectangle.uid = uuidv4();
 
@@ -843,12 +843,12 @@ export const squadMinimap = Map.extend({
                 rectangle.delete();
                 rectangle = null;
                 isDrawing = false;
-                this.off("mousemove", handleMouseMove);
+                this.off("pointermove", handleMouseMove);
             }
         };
     
         // Start tracking mouse movement immediately
-        this.on("mousemove", handleMouseMove);
+        this.on("pointermove", handleMouseMove);
         this.once("click", handleClick);
         this.on("contextmenu", handleRightClick);
     },
@@ -857,7 +857,6 @@ export const squadMinimap = Map.extend({
         let isDrawing = true;
         let circle = null;
         const startLatLng = this.contextMenu.mainContextMenu.e.latlng;
-        
         const handleMouseMove = (event) => {
 
             if (!isDrawing) return;
@@ -874,7 +873,7 @@ export const squadMinimap = Map.extend({
         const handleClick = () => {
             if (isDrawing && circle) {
                 isDrawing = false;
-                this.off("mousemove", handleMouseMove);
+                this.off("pointermove", handleMouseMove);
     
                 if (!circle.uid) circle.uid = uuidv4();
     
@@ -900,12 +899,12 @@ export const squadMinimap = Map.extend({
                 circle.delete();
                 circle = null;
                 isDrawing = false;
-                this.off("mousemove", handleMouseMove);
+                this.off("pointermove", handleMouseMove);
             }
         };
     
         // Start tracking mouse movement immediately
-        this.on("mousemove", handleMouseMove);
+        this.on("pointermove", handleMouseMove);
         this.once("click", handleClick);
         this.on("contextmenu", handleRightClick);
     }

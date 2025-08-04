@@ -9,9 +9,9 @@ import mk19rwsLogo from "../../img/icons/weapons/mk19_rws_white.png";
 
 /* eslint no-unused-vars: "off" */
 import target from "../../img/icons/target.png"; 
-import markerIconPng from "leaflet/dist/images/marker-icon.png";
-import markerShadow from "leaflet/dist/images/marker-shadow.png";
-import markerIconx2 from "leaflet/dist/images/marker-icon-2x.png";
+// import markerIconPng from "leaflet/dist/images/marker-icon.png";
+// import markerShadow from "leaflet/dist/images/marker-shadow.png";
+// import markerIconx2 from "leaflet/dist/images/marker-icon-2x.png";
 
 import { mortarIcon, hellIcon, ub32Icon, tMortarIcon, tub32Icon, gradIcon, m121Icon, mk19Icon} from "../squadIcon.js";
 

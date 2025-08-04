@@ -179,7 +179,7 @@ export default class SquadFiringSolution {
         // if it does just aproximate without taking heights in account this time
         var t = this.velocity * Math.sin(angle) + Math.sqrt( (Math.pow(this.velocity, 2) * Math.pow(Math.sin(angle), 2)) + (2 * this.gravity * -this.heightDiff));
         if (isNaN(t))  t = this.velocity * Math.sin(angle) + Math.sqrt( (Math.pow(this.velocity, 2) * Math.pow(Math.sin(angle), 2)));
-        return t / this.gravity;;
+        return t / this.gravity;
     }
 
 

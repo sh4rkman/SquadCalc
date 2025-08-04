@@ -1,5 +1,6 @@
 import { App } from "../app.js";
 import { ellipse } from "./libs/leaflet.ellipse.js";
+import "./libs/leaflet-spin.js"
 import "./libs/leaflet-visual-click.js";
 import { Marker, Circle, CircleMarker, Popup, Polygon, Icon } from "leaflet";
 import { targetIcon1, targetIconAnimated, targetIconDisabled, targetIconMinimal, targetSessionIcon1, targetIconSessionMinimal, targetIconMinimalDisabled } from "./squadIcon.js";
@@ -425,7 +426,7 @@ export const squadWeaponMarker = squadMarker.extend({
     _handleDragStart: function () {
 
         this.map.mouseLocationPopup.close();
-        this.map.off("mousemove", this.map._handleMouseMove);
+        this.map.off("pointermove", this.map._handleMouseMove);
 
         this.map.activeTargetsMarkers.eachLayer(function (layer) {
             layer.calcMarker1.setContent("  ");
@@ -468,7 +469,7 @@ export const squadWeaponMarker = squadMarker.extend({
         
 
         if (App.userSettings.keypadUnderCursor){
-            this.map.on("mousemove", this.map._handleMouseMove);
+            this.map.on("pointermove", this.map._handleMouseMove);
         }
 
         if (App.userSettings.realMaxRange) {
@@ -1070,7 +1071,7 @@ export const squadTargetMarker = squadMarker.extend({
     _handleDragStart: function () {
         this.isDragging = true;
         this.map.mouseLocationPopup.close();
-        this.map.off("mousemove", this.map._handleMouseMove);
+        this.map.off("pointermove", this.map._handleMouseMove);
 
         if (!App.hasMouse) {
             this.calcMarker1.setContent("  ");
@@ -1104,7 +1105,7 @@ export const squadTargetMarker = squadMarker.extend({
             );
         }
 
-        if (App.userSettings.keypadUnderCursor) this.map.on("mousemove", this.map._handleMouseMove);
+        if (App.userSettings.keypadUnderCursor) this.map.on("pointermove", this.map._handleMouseMove);
 
         // Hide PositionPopUp & MiniCircle
         this.isDragging = false;
@@ -1330,7 +1331,7 @@ export const squadStratMarker = squadMarker.extend({
     _handleDragStart: function () {
 
         this.map.mouseLocationPopup.close();
-        this.map.off("mousemove", this.map._handleMouseMove);
+        this.map.off("pointermove", this.map._handleMouseMove);
         this.map.activeTargetsMarkers.eachLayer(function (layer) {
             layer.calcMarker1.setContent("  ");
             layer.calcMarker2.setContent("  ");
@@ -1342,7 +1343,7 @@ export const squadStratMarker = squadMarker.extend({
 
     _handleDragEnd: function () {
 
-        if (App.userSettings.keypadUnderCursor) this.map.on("mousemove", this.map._handleMouseMove);
+        if (App.userSettings.keypadUnderCursor) this.map.on("pointermove", this.map._handleMouseMove);
 
         this.isDragging = false;
         this.posPopUp.close();

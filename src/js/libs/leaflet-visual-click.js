@@ -8,13 +8,13 @@
 * The patch change the visualClick to be manually triggered and its color to be set
 */
 
-import { Map, Marker, Handler, divIcon, Browser} from "leaflet";
+import { Map, Marker, Handler, DivIcon, Browser} from "leaflet";
 
 Map.VisualClick = Handler.extend({
 
     _makeVisualIcon: function(color){
         var touchMode = this._map.options.visualClickMode === "touch" ? true : false;
-        return new divIcon({
+        return new DivIcon({
             className: "leaflet-visualclick-icon" + (touchMode ? "-touch" : "") + " " + color,
             iconSize: [0, 0],
             clickable: false

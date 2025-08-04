@@ -7,7 +7,7 @@
 
 
 import {
-    DomUtil, Util, Renderer, LatLng, latLng, DomEvent 
+    DomUtil, Util, Renderer, LatLng, DomEvent 
 } from "leaflet";
 
 export default Renderer.extend({
@@ -83,7 +83,7 @@ export default Renderer.extend({
     getEvents: function() {
         var events = Renderer.prototype.getEvents.call(this);
 
-        Util.extend(events, {
+        Object.assign(events, {
             resize: this.resize,
             move: Util.throttle(this._update, 49, this)
         });
@@ -136,7 +136,7 @@ export default Renderer.extend({
 
             for (let i = 0; i < dataLen; i++) {
                 let dataVal = data[i],
-                    latlng = latLng(dataVal),
+                    latlng = new LatLng(dataVal),
                     point = map.latLngToContainerPoint(latlng);
 
                 heatmap.addPoint(
