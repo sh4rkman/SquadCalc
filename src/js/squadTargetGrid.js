@@ -68,8 +68,8 @@ export default class TargetGrid {
 
         // Tell the user about the new functionality
         //if (localStorage.getItem("tips-targetGrid") === null) {
-            App.openToast("success", "tips-target-title", "tips-target-subtitle")
-            localStorage.setItem("tips-targetGrid", "seen");
+            //App.openToast("success", "tips-target-title", "tips-target-subtitle")
+            //localStorage.setItem("tips-targetGrid", "seen");
         //}
     }
 

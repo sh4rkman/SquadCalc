@@ -250,7 +250,7 @@ export default class SquadLayer {
      */
     getLayerOffsets(mapTextureCorners) {
         let layerOriginX = Math.min(mapTextureCorners[0].location_x, mapTextureCorners[1].location_x);
-        let layerOriginY = Math.min(mapTextureCorners[0].location_y, mapTextureCorners[1].location_y)
+        let layerOriginY = Math.min(mapTextureCorners[0].location_y, mapTextureCorners[1].location_y);
         let layerOffsetToMapX = (this.map.activeMap.SDK_data.minimap.corner0[0] * 100) - layerOriginX;
         let layerOffsetToMapY = (this.map.activeMap.SDK_data.minimap.corner0[1] * 100) - layerOriginY;
         return [layerOriginX + layerOffsetToMapX, layerOriginY + layerOffsetToMapY];

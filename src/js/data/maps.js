@@ -544,7 +544,7 @@ function extraInfo() {
         console.log(`    * Heightmap dimensions : [${e.heightmap.size[0]},${e.heightmap.size[1]}], scale: [${e.heightmap.scale}]`);
 
         // how to scale & crop heightmap in gimp
-        console.log("    * Minimap & Heightmap position :")
+        console.log("    * Minimap & Heightmap position :");
         console.log(`        -> scale heightmap to: ${Math.round(e.heightmap.size[0] * e.heightmap.scale[0])}x${Math.round(e.heightmap.size[1] * e.heightmap.scale[1])}`);
         console.log(`        -> set canvas size to: ${mmBounds[0]}x${mmBounds[1]} with offset: ${xO}x${yO}`);
 
@@ -554,7 +554,7 @@ function extraInfo() {
         }
 
         // Heightmap z-scaling & levels
-        console.log("    * Heightmap z-scaling & Levels :")
+        console.log("    * Heightmap z-scaling & Levels :");
         console.log(`        -> set levels to: ${e.heightmap.BWlevels[0]} <-> ${e.heightmap.BWlevels[1]}`);
         console.log(`        -> final z-scale: ${scale(e.heightmap.BWlevels[0], e.heightmap.BWlevels[1], e.heightmap.scale[2])}`);
         console.log("---");

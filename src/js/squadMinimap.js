@@ -1,4 +1,4 @@
-import {imageOverlay, tileLayer, Map, CRS, svg, Util, LayerGroup, Popup, Icon, LatLngBounds, latLng, Browser } from "leaflet";
+import {imageOverlay, tileLayer, Map, CRS, SVG, Util, LayerGroup, Popup, Icon, LatLngBounds, LatLng, Browser } from "leaflet";
 import squadGrid from "./squadGrid.js";
 import squadHeightmap from "./squadHeightmaps.js";
 import { App } from "../app.js";
@@ -43,7 +43,7 @@ export const squadMinimap = Map.extend({
             doubleClickZoom: false,
             maxZoom: 8,
             minZoom: 1,
-            renderer: svg({padding: 3}),
+            renderer: new SVG({padding: 3}),
             zoom: 2,
             zoomControl: false,
             zoomSnap: 0,
@@ -107,13 +107,13 @@ export const squadMinimap = Map.extend({
         // }
 
         // Custom events handlers
-        if (!Browser.mobile) {
-            this.on("click", function(e) { this._handleclick(e); });
-            this.on("dblclick", function(e) { this._handleDoubleClick(e); });
-        } else {
+        // if (!Browser.mobile) {
+        //     this.on("click", function(e) { this._handleclick(e); });
+        //     this.on("dblclick", function(e) { this._handleDoubleClick(e); });
+        // } else {
             this.on("click", function(e) { this._handleDoubleClick(e); });
-            this.on("dblclick", function(e) { return false; });
-        }
+            this.on("dblclick", function() { return false; });
+        // }
 
 
         // this.on("click", (event) => {
@@ -746,7 +746,7 @@ export const squadMinimap = Map.extend({
 
         if (App.userSettings.keypadUnderCursor && App.hasMouse){
             if (this.mouseLocationPopup._latlng){
-                this.updateMouseLocationPopup(new latLng(this.mouseLocationPopup._latlng.lat, this.mouseLocationPopup._latlng.lng));
+                this.updateMouseLocationPopup(new LatLng(this.mouseLocationPopup._latlng.lat, this.mouseLocationPopup._latlng.lng));
             }
         }
 
