@@ -497,8 +497,23 @@ export default class SquadFactions {
             if (App.userSettings.defaultFactions) {
                 const team1DefaultFaction = factionData.teamConfigs.team1.defaultFactionUnit.split("_")[0];
                 const team2DefaultFaction = factionData.teamConfigs.team2.defaultFactionUnit.split("_")[0];
-                this.FACTION1_SELECTOR.val(team1DefaultFaction).trigger($.Event("change", { broadcast: false }));
-                this.FACTION2_SELECTOR.val(team2DefaultFaction).trigger($.Event("change", { broadcast: false }));
+
+                if (this.FACTION1_SELECTOR.find(`option[value="${team1DefaultFaction}"]`).length > 0) {
+                    this.FACTION1_SELECTOR.val(team1DefaultFaction).trigger($.Event("change", { broadcast: false }));
+                } else {
+                    console.debug(`Default faction for team 1 not found in dropdown: ${team1DefaultFaction}`);
+                    console.debug(`Falling back to ${factionData.teamConfigs.factions.team1Units[0].factionID}`);
+                    this.FACTION1_SELECTOR.val(factionData.teamConfigs.factions.team1Units[0].factionID).trigger($.Event("change", { broadcast: false }));
+                }
+
+                if (this.FACTION2_SELECTOR.find(`option[value="${team2DefaultFaction}"]`).length > 0) {
+                    this.FACTION2_SELECTOR.val(team2DefaultFaction).trigger($.Event("change", { broadcast: false }));
+                } else {
+                    console.debug(`Default faction for team 2 not found in dropdown: ${team2DefaultFaction}`);
+                    console.debug(`Falling back to ${factionData.teamConfigs.factions.team2Units[0].factionID}`);
+                    this.FACTION2_SELECTOR.val(factionData.teamConfigs.factions.team2Units[0].factionID).trigger($.Event("change", { broadcast: false }));
+                }
+
             } else {
                 this.FACTION1_SELECTOR.val("").trigger($.Event("change", { broadcast: false }));
                 this.FACTION2_SELECTOR.val("").trigger($.Event("change", { broadcast: false }));

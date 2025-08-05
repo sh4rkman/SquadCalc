@@ -464,15 +464,19 @@ export default class SquadLayer {
         // Creating protectionZones + noConstructionZones
         this.layerData.mapAssets.protectionZones.forEach((pZone) => {
 
-            // Skip small protection zones
-            if (pZone.objects[0].boxExtent.extent_x < 1000) return;
+            // Skip small protection zones (old basrah)
+            if (pZone.objects[0].boxExtent.extent_x < 100) return;
+
+            // Skip weird protection zones for bots
+            if (pZone.teamid === "0") return;
 
             // Center of the protection zone
             let [location_y, location_x] = this.convertToLatLng(pZone.objects[0].location_x, pZone.objects[0].location_y);
 
             // Protection Zone is a Rectangle/Capsule
             // We're drawing capsule as a rectangle cause it's easier
-            if (pZone.objects[0].isBox || pZone.objects[0].isCapsule) {
+            //if (pZone.objects[0].isBox || pZone.objects[0].isCapsule) {  
+            if (pZone.objects[0].isBox) {              
 
                 // Radiis
                 let protectRadiusX = ( pZone.objects[0].boxExtent.extent_x / 100 ) * -this.map.gameToMapScale;
@@ -763,9 +767,9 @@ export default class SquadLayer {
         // Hide all clusters first, then selectively show reachable ones
         Object.values(this.layerData.objectives).forEach((cluster) => {
             console.debug("Should we hide cluster :", cluster.name);
-            console.debug("   -> Cluster position", cluster.pointPosition);
-            console.debug("   -> Clicked flag position", flag.position);
-            console.debug("   -> Current position", this.currentPosition);
+            // console.debug("   -> Cluster position", cluster.pointPosition);
+            // console.debug("   -> Clicked flag position", flag.position);
+            // console.debug("   -> Current position", this.currentPosition);
             if (Math.abs(this.startPosition - cluster.pointPosition)+1 >= this.currentPosition) {
                 console.debug("   -> Cluster is in front! Hiding.");
                 if (!flag.clusters.some(c => c.name === cluster.objectName)) {
@@ -798,13 +802,13 @@ export default class SquadLayer {
             }
 
             console.debug("Cluster to show", cluster.name);
-            console.debug("   -> cluster.pointPosition", cluster.pointPosition);
-            console.debug("   -> Current position", this.currentPosition);
+            //console.debug("   -> cluster.pointPosition", cluster.pointPosition);
+            //console.debug("   -> Current position", this.currentPosition);
 
             // If the cluster is in front of the clicked flag, show it
             if (Math.abs(this.startPosition - cluster.pointPosition) + 1 > this.currentPosition){
         
-                console.debug("   -> Cluster in front, showing it !");
+                //console.debug("   -> Cluster in front, showing it !");
                 this._showCluster(cluster);
                 
                 // If cluster is directly in front of the clicked flag, count the next flags

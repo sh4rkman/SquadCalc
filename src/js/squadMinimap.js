@@ -1,4 +1,4 @@
-import {imageOverlay, tileLayer, Map, CRS, svg, Util, LayerGroup, Popup, Icon, LatLngBounds, latLng } from "leaflet";
+import {imageOverlay, tileLayer, Map, CRS, svg, Util, LayerGroup, Popup, Icon, LatLngBounds, latLng, Browser } from "leaflet";
 import squadGrid from "./squadGrid.js";
 import squadHeightmap from "./squadHeightmaps.js";
 import { App } from "../app.js";
@@ -85,20 +85,46 @@ export const squadMinimap = Map.extend({
         });
         this.contextMenu = new squadContextMenu();
 
+
+        // if (Browser.mobile) {
+        //     // Custom events handlers
+        //     this.on("click", function(e) { 
+        //         this._handleclick(e);
+        //     });
+
+        //     this.on("dblclick", function(e) { 
+        //         this._handleDoubleClick(e); 
+        //         App.openToast("success", "dblclick", "");
+        //     });
+        // } else {
+        //     // Custom events handlers
+        //     this.on("click", function(e) { 
+        //         this._handleDoubleClick(e); 
+        //     });
+        //     this.on("dblclick", function(e) { 
+        //         return false;
+        //     });
+        // }
+
         // Custom events handlers
-        this.on("click", function(e) { this._handleclick(e); });
-        this.on("dblclick", function(e) { this._handleDoubleClick(e); });
+        if (!Browser.mobile) {
+            this.on("click", function(e) { this._handleclick(e); });
+            this.on("dblclick", function(e) { this._handleDoubleClick(e); });
+        } else {
+            this.on("click", function(e) { this._handleDoubleClick(e); });
+            this.on("dblclick", function(e) { return false; });
+        }
 
 
-        this.on("click", (event) => {
-            // Clear any existing timeout to prevent overlapping
-            if (this._singleClickTimeout) clearTimeout(this._singleClickTimeout);
-        
-            this._singleClickTimeout = setTimeout(() => {
-                this._handleclick(event);
-                this._singleClickTimeout = null;
-            }, 175);
-        });
+        // this.on("click", (event) => {
+        //     // Clear any existing timeout to prevent overlapping
+        //     if (this._singleClickTimeout) clearTimeout(this._singleClickTimeout);
+        //     console.warn("single click")
+        //     this._singleClickTimeout = setTimeout(() => {
+        //         this._handleclick(event);
+        //         this._singleClickTimeout = null;
+        //     }, 175);
+        // });
         
         // this.on("dblclick", (event) => {
         //     if (this._singleClickTimeout) {
