@@ -433,7 +433,7 @@ export class SquadObjective {
 
 
     hide(){
-        console.debug("      -> Hiding flag: ", this.name);
+        //console.debug("      -> Hiding flag: ", this.name);
         this.nameText.removeFrom(this.layerGroup);
         this.flag.removeFrom(this.layerGroup);
         this.flag.options.interactive = false;
@@ -475,7 +475,7 @@ export class SquadObjective {
     }
 
     show(){
-        console.debug("      -> Showing flag: ", this.name);
+        //console.debug("      -> Showing flag: ", this.name);
         this.nameText.setOpacity(1).addTo(this.layerGroup);
         this.flag.setOpacity(1).addTo(this.layerGroup);
         this.unselect();

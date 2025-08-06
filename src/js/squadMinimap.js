@@ -106,33 +106,14 @@ export const squadMinimap = Map.extend({
         //     });
         // }
 
-        // Custom events handlers
-        // if (!Browser.mobile) {
-        //     this.on("click", function(e) { this._handleclick(e); });
-        //     this.on("dblclick", function(e) { this._handleDoubleClick(e); });
-        // } else {
+        //Custom events handlers
+        if (!Browser.mobile) {
+            this.on("click", function(e) { this._handleclick(e); });
+            this.on("dblclick", function(e) { this._handleDoubleClick(e); });
+        } else {
             this.on("click", function(e) { this._handleDoubleClick(e); });
             this.on("dblclick", function() { return false; });
-        // }
-
-
-        // this.on("click", (event) => {
-        //     // Clear any existing timeout to prevent overlapping
-        //     if (this._singleClickTimeout) clearTimeout(this._singleClickTimeout);
-        //     console.warn("single click")
-        //     this._singleClickTimeout = setTimeout(() => {
-        //         this._handleclick(event);
-        //         this._singleClickTimeout = null;
-        //     }, 175);
-        // });
-        
-        // this.on("dblclick", (event) => {
-        //     if (this._singleClickTimeout) {
-        //         clearTimeout(this._singleClickTimeout);
-        //         this._singleClickTimeout = null;
-        //     }
-        //     this._handleDoubleClick(event);
-        // });
+        }
 
         this.on("contextmenu", this._handleContextMenu, this);
         this.on("zoomend", this._handleZoom, this);

@@ -72,7 +72,7 @@ export const MAPS = [
                 scale: [1, 1, 1],
                 BWlevels: [0, 2360]
             }
-      }
+        }
     },
     { 
         name: "BlackCoast", 
@@ -563,7 +563,7 @@ function extraInfo() {
 }
 
 // Only run this with "node src/js/data/maps.js mapinfo"
-if (typeof process !== 'undefined' && process.argv?.[2] === "mapinfo") {
+if (typeof process !== "undefined" && process.argv?.[2] === "mapinfo") {
     extraInfo();
 }
 

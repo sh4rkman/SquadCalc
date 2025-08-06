@@ -161,7 +161,7 @@ export default class SquadLayer {
             orderedObjectives = pointsOrder.map(name => nameToObjective[name]).filter(Boolean);
 
 
-            orderedObjectives.forEach((obj, i) => {
+            orderedObjectives.forEach((obj) => {
                 const latlng = this.convertToLatLng(obj.location_x, obj.location_y);
 
                 // Identify and process mains

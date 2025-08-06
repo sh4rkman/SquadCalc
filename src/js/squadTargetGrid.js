@@ -3,9 +3,9 @@ import { Polyline, LayerGroup } from "leaflet";
 
 export default class TargetGrid {
     
-    static ANGLE_DEV = 12;
-    static ANGLE_STEP = 2;
-    static lineOptions = { color: "Lime", weight: 2, opacity: 0.7 };
+    static get ANGLE_DEV() { return 12; }
+    static get ANGLE_STEP() { return 2; }
+    static get lineOptions() { return { color: "Lime", weight: 2, opacity: 0.7 }; }
 
     constructor(map, firingSolution) {
         this.map = map;
@@ -13,7 +13,7 @@ export default class TargetGrid {
         this.elevation = App.minimap.activeWeaponsMarkers.getLayers()[0].angleType === "high" ? firingSolution.elevation.high.mil : firingSolution.elevation.low.mil;
         this.linesGroup = new LayerGroup();
 
-        // Weapon in degree have 6*1deg elevation lines, others hav 4* 10miliradians
+        // Weapon in degree have 6*1 deg elevation lines, others hav 5*10 miliradians
         if (this.firingSolution.activeWeapon.unit === "deg") {
             this.ELEVATION_DEVIATION = this.firingSolution.degToMil(1) * 6;
             this.ELEVATION_STEP = this.firingSolution.degToMil(1);
@@ -68,8 +68,8 @@ export default class TargetGrid {
 
         // Tell the user about the new functionality
         //if (localStorage.getItem("tips-targetGrid") === null) {
-            //App.openToast("success", "tips-target-title", "tips-target-subtitle")
-            //localStorage.setItem("tips-targetGrid", "seen");
+        //App.openToast("success", "tips-target-title", "tips-target-subtitle")
+        //localStorage.setItem("tips-targetGrid", "seen");
         //}
     }
 
