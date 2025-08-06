@@ -6,7 +6,7 @@ import { App } from "../app.js";
 export default class SquadContextMenu {
 
     constructor() {
-
+        this.isOpen = false;
         document.addEventListener("contextmenu", this.handleContextMenu);
         
         this.mainContextMenu = tippy(document.querySelector("#map"), {
@@ -23,8 +23,12 @@ export default class SquadContextMenu {
             onHide: () => {
                 $(".ctxButton").off("click");
                 document.removeEventListener("contextmenu", this.handleContextMenu);
+                setTimeout(() => {
+                    this.isOpen = false;
+                }, 100);
             },
             onShow: (tip) => {
+                this.isOpen = true;
                 tip.setContent(
                     `<div class="contextmenu"">
                         <button class="ctxButton">

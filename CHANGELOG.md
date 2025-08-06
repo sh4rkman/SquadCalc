@@ -1,3 +1,12 @@
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **38.1.1** *(2025-06-08)*
+
+<img src="https://img.shields.io/badge/-%20improv%20-orange"> Now using single tap/touch on mobile to create weapons/targets
+
+<img src="https://img.shields.io/badge/-bug%20fix%20-b22"> ""fixed"" iOS bug where double-tap wasn't creating markers (fix [#296](https://github.com/sh4rkman/SquadCalc/issues/296))
+
+
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
 
 # <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **38.1.0** *(2025-05-07)*
 

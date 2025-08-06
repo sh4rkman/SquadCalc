@@ -1,4 +1,4 @@
-import {imageOverlay, tileLayer, Map, CRS, svg, Util, LayerGroup, Popup, Icon, LatLngBounds, latLng } from "leaflet";
+import {Browser, imageOverlay, tileLayer, Map, CRS, svg, Util, LayerGroup, Popup, Icon, LatLngBounds, latLng } from "leaflet";
 import squadGrid from "./squadGrid.js";
 import squadHeightmap from "./squadHeightmaps.js";
 import { App } from "../app.js";
@@ -84,28 +84,20 @@ export const squadMinimap = Map.extend({
         });
         this.contextMenu = new squadContextMenu();
 
-        // Custom events handlers
-        this.on("click", this._handleclick());
-        this.on("dblclick", function(e) { this._handleDoubleClick(e); });
-
-
-        this.on("click", (event) => {
-            // Clear any existing timeout to prevent overlapping
-            if (this._singleClickTimeout) clearTimeout(this._singleClickTimeout);
         
-            this._singleClickTimeout = setTimeout(() => {
-                this._handleclick(event);
-                this._singleClickTimeout = null;
-            }, 175);
-        });
-        
-        // this.on("dblclick", (event) => {
-        //     if (this._singleClickTimeout) {
-        //         clearTimeout(this._singleClickTimeout);
-        //         this._singleClickTimeout = null;
-        //     }
-        //     this._handleDoubleClick(event);
-        // });
+        if (!Browser.mobile) {
+            // On desktop create markers with a double click
+            this.on("click", function(e) { this._handleclick(e); });
+            this.on("dblclick", function(e) { this._handleDoubleClick(e); });
+        } else {
+            // On mobile just use single click
+            this.on("click", function(e) {
+                // avoid creating unwanted markers when closing contextmenu
+                if (this.contextMenu.isOpen) return; 
+                this._handleDoubleClick(e); 
+            });
+            this.on("dblclick", function() { return false; });
+        }
 
         this.on("contextmenu", this._handleContextMenu, this);
         this.on("zoomend", this._handleZoom, this);
