@@ -41,7 +41,7 @@ export default class SquadFactions {
      * */
     formatFactions(state, isSelection = false) {
         if (!state.id) return state.text;
-        const imgHtml = `<img src="/icons/flags/${state.element.value}.webp" class="img-flag" />`;
+        const imgHtml = `<img src="/img/flags/${state.element.value}.webp" class="img-flag" />`;
         if (isSelection) return $(`<span class="countryFlags">${imgHtml}</span>`);
         return $(`
             <span class="countryFlags">
@@ -64,7 +64,7 @@ export default class SquadFactions {
         const name = $element.data("name");
         return $(`
             <div class="unit-option">
-                <img src="/icons/units/${type}.webp" class="unit-logo${isSelection ? " selection" : ""}" alt="${state.text}" />
+                <img src="/img/units/${type}.webp" class="unit-logo${isSelection ? " selection" : ""}" alt="${state.text}" />
                 <div class="unit-texts">
                     <div class="unit-type">${i18next.t(type, { ns: "units" })}</div>
                     ${isSelection ? "" : `<div class="unit-name">${i18next.t(name, { ns: "units" })}</div>`}
@@ -82,7 +82,7 @@ export default class SquadFactions {
     pinUnit(teamfaction, country, faction) {
     
         const $img = $("<img>", {
-            src: `/icons/flags/${country}.webp`,
+            src: `/img/flags/${country}.webp`,
             alt: "Faction Icon",
             class: "faction-img"
         });
@@ -101,7 +101,7 @@ export default class SquadFactions {
                 $("#pinnedVehiclesTab").append(`
                     <div class="pinnedVehicles animate__animated animate__fadeInLeft" data-vehiclename="${vehicle.type}" data-vehtype="${vehicle.vehType}" data-vehicon="${vehicle.icon}" data-respawntime="${vehicle.respawnTime}">
                         <button type="button" class="btn-pined" aria-label="Select Factions">
-                            <img src="/icons/ally/vehicles/${vehicle.icon}.webp" alt="Faction Icon"/>
+                            <img src="/img/ally/vehicles/${vehicle.icon}.webp" alt="Faction Icon"/>
                         </button>
                         <div class="pinedVehiclesMeta">
                             <div class="pinedVehiclesName" data-i18n="vehicles:${vehicle.type}">${i18next.t(vehicle.type, { ns: "vehicles" })}</div>
@@ -263,7 +263,7 @@ export default class SquadFactions {
                 html: isValid ? FACTION : i18next.t(`common:${teamKey}`),
                 iconSize: [300, 20],
                 iconAnchor: App.userSettings.circlesFlags ? [150, 38] : [150, 32],
-                shadowUrl: "../img/icons/markers/marker_shadow.webp",
+                shadowUrl: "../img/img/markers/marker_shadow.webp",
                 shadowSize: [0, 0],
             })
         );
@@ -399,7 +399,7 @@ export default class SquadFactions {
                 $("#team1Vehicles").append(`
                     <div class="vehicle-card animate__animated animate__fadeIn animate__faster">
                         <div class="vehicle-icon">
-                            <img src='/icons/ally/vehicles/${vehicle.icon}.webp' alt='${vehicle.type}' class='vehicle-icon-img'>
+                            <img src='/img/ally/vehicles/${vehicle.icon}.webp' alt='${vehicle.type}' class='vehicle-icon-img'>
                         </div>
                         <div class="vehicle-icon">
                             <div class="vehicle-count">×${vehicle.count}</div>
@@ -468,7 +468,7 @@ export default class SquadFactions {
                 $("#team2Vehicles").append(`
                     <div class="vehicle-card animate__animated animate__fadeIn animate__faster">
                         <div class="vehicle-icon">
-                            <img src="/icons/ally/vehicles/${vehicle.icon}.webp" alt='${vehicle.type}' class='vehicle-icon-img'>
+                            <img src="/img/ally/vehicles/${vehicle.icon}.webp" alt='${vehicle.type}' class='vehicle-icon-img'>
                         </div>
                         <div class="vehicle-icon">
                             <div class="vehicle-count">×${vehicle.count}</div>

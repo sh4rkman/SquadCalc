@@ -33,7 +33,6 @@
     "targetAnimationTooltip": "禁用以将标记图标替换为简约的圆形",
     "performanceWarning": "可能会导致性能问题",
     "markerDragTooltip": "拖动时显示网格坐标",
-    "contextMenuTooltip": "右键单击地图显示类似游戏内的各类标记选项",
     "copyNextFlagsTooltip": "在点击目标点后，自动复制所有可能的下一个点的名称到剪贴板",
     "copyTargetTooltip": "放置/拖动目标后，自动将计算结果复制到剪贴板",
     "lowAndHighTooltip": "显示可以以高角度和低角度射击的武器的两种角度",

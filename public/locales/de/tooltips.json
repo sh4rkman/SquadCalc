@@ -37,7 +37,6 @@
     "copyTargetTooltip": "Nach dem Platzieren/Ziehen eines Ziels die Berechnungen automatisch in die Zwischenablage kopieren",
     "lowAndHighTooltip": "Sowohl steile als auch flache Winkel für Waffen anzeigen, die in beiden Modi schießen können",
     "capZoneOnHoverTooltip": "Eroberungszonen nur anzeigen, wenn der Mauszeiger über einer Flagge steht, statt sie ständig anzuzeigen",
-    "contextMenuTooltip": "Rechtsklick auf die Karte öffnet ein Kontextmenü zum Platzieren von Markierungen",
     "revealLayerOnHoverTooltip": "Wenn der Mauszeiger über einer Flagge steht, werden die unerreichbaren Flaggen ausgeblendet, falls diese Flagge angeklickt wird",
     "sessionCreated": "Sitzung erstellt!",
     "sessionClosed": "Sitzung geschlossen",

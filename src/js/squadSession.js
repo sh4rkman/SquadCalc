@@ -1,7 +1,6 @@
 
 import { App } from "../app.js";
 import { LatLng } from "leaflet";
-import  { MapArrow, MapCircle, MapRectangle }  from "./squadShapes.js";
 import { createSessionTooltips, leaveSessionTooltips } from "./tooltips.js";
 
 
@@ -129,19 +128,6 @@ export default class SquadSession {
                 });
             });
 
-            data.mapState.markers.forEach(marker => {
-                App.minimap.createMarker(new LatLng(marker.lat, marker.lng), marker.team, marker.category, marker.icon, marker.uid);
-            });
-            data.mapState.arrows.forEach(arrow => {
-                new MapArrow(App.minimap, arrow.color, arrow.latlngs[0], arrow.latlngs[1], arrow.uid);
-            });
-            data.mapState.circles.forEach(circle => {
-                new MapCircle(App.minimap, circle.color, circle.latlng, circle.radius, circle.uid);
-            });
-            data.mapState.rectangles.forEach(rectangle => {
-                new MapRectangle(App.minimap, rectangle.color, rectangle.bounds._southWest, rectangle.bounds._northEast, rectangle.uid);
-            });
-
             // Update UI for joining the session
             App.openToast("success", "sessionJoined", "");
 
@@ -204,41 +190,7 @@ export default class SquadSession {
             });
             break;
         }
-        case "DELETE_MARKER": {
-            App.minimap.activeMarkers.eachLayer((marker) => {
-                if (marker.uid === data.uid) {
-                    marker.delete(false);
-                    App.minimap.visualClick.triggerVisualClick(marker.getLatLng(), "cyan");
-                }
-            });
-            break;
-        }
-        case "DELETE_ARROW": {
-            App.minimap.activeArrows.forEach((arrow) => {
-                if (arrow.uid === data.uid) {
-                    arrow.delete(false);
-                }
-            });
-            break;
-        }
-        case "DELETE_CIRCLE": {
-            App.minimap.activeCircles.forEach((circle) => {
-                if (circle.uid === data.uid) {
-                    circle.delete(false);
-                }
-            });
-            break;
-        }
-        case "DELETE_RECTANGLE": {
-            App.minimap.activeRectangles.forEach((rectangle) => {
-                if (rectangle.uid === data.uid) {
-                    rectangle.delete(false);
-                }
-            });
-            break;
-        }
-
-
+        
         /**********************************************************************/
         /*                       Handle the ADD updates                       */
         /**********************************************************************/
@@ -251,26 +203,6 @@ export default class SquadSession {
         case "ADDING_TARGET": {
             App.minimap.createTarget(new LatLng(data.lat, data.lng), false, data.uid);
             App.minimap.visualClick.triggerVisualClick(new LatLng(data.lat, data.lng), "cyan");
-            break;
-        }
-        case "ADDING_MARKER": {
-            App.minimap.createMarker(new LatLng(data.lat, data.lng), data.team, data.category, data.icon, data.uid);
-            App.minimap.visualClick.triggerVisualClick(new LatLng(data.lat, data.lng), "cyan");
-            break;
-        }
-        case "ADDING_ARROW": {
-            new MapArrow(App.minimap, data.color, data.latlngs[0], data.latlngs[1], data.uid);
-            App.minimap.visualClick.triggerVisualClick(data.latlngs[0], "cyan");
-            break;
-        }
-        case "ADDING_CIRCLE": {
-            new MapCircle(App.minimap, data.color, data.latlng, data.radius, data.uid);
-            App.minimap.visualClick.triggerVisualClick(data.latlng, "cyan");
-            break;
-        }
-        case "ADDING_RECTANGLE": {
-            new MapRectangle(App.minimap, data.color, data.bounds._northEast, data.bounds._southWest, data.uid);
-            App.minimap.visualClick.triggerVisualClick(data.bounds._northEast, "cyan");
             break;
         }
 
@@ -295,16 +227,6 @@ export default class SquadSession {
                     target._handleDrag({ latlng: new LatLng(data.lat, data.lng) });
                     App.minimap.visualClick.triggerVisualClick(new LatLng(data.lat, data.lng), "cyan");
                 } 
-            });
-            break;
-        }
-        case "MOVING_MARKER": {
-            
-            App.minimap.activeMarkers.eachLayer((marker) => {
-                if (marker.uid === data.uid) {
-                    marker._handleDrag({ latlng: new LatLng(data.lat, data.lng) });
-                    App.minimap.visualClick.triggerVisualClick(new LatLng(data.lat, data.lng), "cyan");
-                }
             });
             break;
         }

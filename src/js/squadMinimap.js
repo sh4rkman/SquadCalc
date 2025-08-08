@@ -4,7 +4,6 @@ import squadHeightmap from "./squadHeightmaps.js";
 import { App } from "../app.js";
 import { squadWeaponMarker, squadTargetMarker, squadStratMarker } from "./squadMarker.js";
 import { mortarIcon, mortarIcon1, mortarIcon2 } from "./squadIcon.js";
-import  { MapArrow, MapCircle, MapRectangle }  from "./squadShapes.js";
 import { explode } from "./animations.js";
 import { fetchMarkersByMap } from "./squadCalcAPI.js";
 import webGLHeatmap from "./libs/leaflet-webgl-heatmap.js";
@@ -13,9 +12,8 @@ import "leaflet-spin";
 import "./libs/webgl-heatmap.js";
 import "./libs/leaflet-smoothWheelZoom.js";
 import "tippy.js/dist/tippy.css";
-import squadContextMenu from "./squadContextMenu.js";
 import "leaflet-polylinedecorator";
-import { v4 as uuidv4 } from "uuid";
+
 
 /**
  * Squad Minimap
@@ -83,8 +81,6 @@ export const squadMinimap = Map.extend({
             closeOnClick: false,
             interactive: false,
         });
-        this.contextMenu = new squadContextMenu();
-
 
         // if (Browser.mobile) {
         //     // Custom events handlers
@@ -499,6 +495,8 @@ export const squadMinimap = Map.extend({
             newMarker = new squadWeaponMarker(latlng, {icon: mortarIcon2, uid: uid, heightPadding: heightPadding}, this).addTo(this.markersGroup).addTo(this.activeWeaponsMarkers);
             this.activeWeaponsMarkers.getLayers()[0].setIcon(mortarIcon1);
             this.updateTargets();
+        } else {
+            return;
         }
 
         // If in a session, broadcast the new weapon with a unique identifier
@@ -558,77 +556,6 @@ export const squadMinimap = Map.extend({
         }
     },
 
-    createMarker(latlng, team, category, icon, uid = false) {
-        let markerOptions = { icon: "", circlesOnHover: false, team: team, category: category, icontype: icon, uid: uid };
-        let markerSizeSetting = App.userSettings.markerSize; 
-        let iconSizeValue = 20 + (markerSizeSetting - 1) * 5;
-        let iconSize = [iconSizeValue, iconSizeValue];
-
-        if (icon === "deployable_mortars" || icon === "deployable_hellcannon") {
-            let range = 0;
-            if (icon === "deployable_mortars") range = 1237;
-            if (icon === "deployable_hellcannon") range = 923;
-
-            markerOptions.circles1Size = range * this.gameToMapScale;
-            markerOptions.circlesOnHover = true;
-            markerOptions.circles1Weight = 2;
-            markerOptions.circles1Color = team === "ally" ? "white" : "#f23534";
-        }
-
-        if (icon === "deployable_fob_blue") {
-            markerOptions.circlesOnHover = false;
-            markerOptions.circles1Color = "#00E8FF";
-            markerOptions.circles1Size = 150 * this.gameToMapScale;
-            markerOptions.circles2Color = "white";
-            markerOptions.circles2Size = this.activeMap.radiusExclusion * this.gameToMapScale;
-        }
-        if (icon === "deployable_fob") { 
-            markerOptions.circlesOnHover = false;
-            markerOptions.circles1Color = "#f23534";
-            markerOptions.circles1Size = 150 * this.gameToMapScale;
-            markerOptions.circles2Color = "white";
-            markerOptions.circles2Size = this.activeMap.radiusExclusion * this.gameToMapScale;
-        }
-        if (icon === "deployable_hab_activated") { iconSize = [38, 38]; }
-        if (icon === "T_strategic_uav") { 
-            markerOptions.circles1Size = 300 * this.gameToMapScale;
-            markerOptions.circles1Color = team === "ally" ? "#ffc400" : "#f23534";
-        }
-        markerOptions.icon = new Icon({
-            iconUrl: `/icons/${team}/${category}/${icon}.webp`,
-            iconSize: iconSize,
-            iconAnchor: [iconSize[0]/2, iconSize[1]/2],
-            className: "squadMarker",
-        });
-        
-        // Create marker and close context menu
-        let newMarker = new squadStratMarker(latlng, markerOptions, this).addTo(this.activeMarkers);
-
-        // Add Item to history
-        this.history.push(newMarker);
-
-        $(".btn-delete, .btn-undo, .btn-download").show();
-
-        if (!uid && App.session.ws && App.session.ws.readyState === WebSocket.OPEN) {
-            console.debug("Creating a marker with uid", newMarker.uid);
-        
-            // Send the MOVING_WEAPON event to the server
-            App.session.ws.send(
-                JSON.stringify({
-                    type: "ADDING_MARKER",
-                    uid: newMarker.uid,
-                    lat: latlng.lat,
-                    lng: latlng.lng,
-                    team: team,
-                    category: category,
-                    icon: icon
-                })
-            );
-        }
-        
-    },
-
-
     /**
      * Update Mouse Location Content
      * @param {latLng} latlng - coordinates of the mouse
@@ -668,11 +595,6 @@ export const squadMinimap = Map.extend({
 
         // If out of bounds
         if (!this.imageBounds.contains(event.latlng)) return 1;
-
-        if (App.userSettings.contextMenu) {
-            this.contextMenu.open(event);
-            return 0;
-        }
 
         this.createWeapon(event.latlng);
     },
@@ -742,180 +664,4 @@ export const squadMinimap = Map.extend({
         }
 
     },
-
-
-    createArrow: function (color, uid = false) {
-        let isDrawing = false;
-        let arrow = null;
-    
-        const handleMouseMove = (event) => {
-            if (!isDrawing) return;
-    
-            const endLatLng = event.latlng;
-    
-            if (arrow) {
-                // Update the arrow's polyline positions
-                arrow.polyline.setLatLngs([arrow.startLatLng, endLatLng]);
-                arrow.polylineDecorator.setPaths([arrow.polyline.getLatLngs()]);
-            } else {
-                // Create a new arrow on first movement
-                const startLatLng = this.contextMenu.mainContextMenu.e.latlng;
-                arrow = new MapArrow(this, color, startLatLng, endLatLng, uid);
-            }
-        };
-    
-        const handleClick = () => {
-            if (isDrawing && arrow) {
-                isDrawing = false; // Stop the drawing process
-                this.off("mousemove", handleMouseMove); // Remove the mousemove listener
-    
-                if (!arrow.uid) arrow.uid = uuidv4();
-                
-                // Send the arrow to the WebSocket server
-                if (App.session.ws && App.session.ws.readyState === WebSocket.OPEN) {
-                    console.debug("sending new arrow with uid", arrow.uid);
-                    App.session.ws.send(
-                        JSON.stringify({
-                            type: "ADDING_ARROW",
-                            uid: arrow.uid,
-                            color: color,
-                            latlngs: arrow.polyline.getLatLngs(),
-                        })
-                    );
-                }
-            }
-        };
-    
-        const handleRightClick = () => {
-            if (isDrawing && arrow) {
-                // Cancel drawing and remove the arrow
-                arrow.delete(); // Custom method to clean up the arrow
-                arrow = null; // Reset the arrow reference
-                isDrawing = false;
-                this.off("mousemove", handleMouseMove);
-            }
-        };
-    
-        // Initialize the arrow drawing process
-        if (!isDrawing) {
-            isDrawing = true;
-            this.on("mousemove", handleMouseMove); // Start tracking mouse movement
-            this.once("click", handleClick); // Finalize the arrow on click
-            this.on("contextmenu", handleRightClick); // Cancel on right-click
-        }
-    },
-
-
-    createRectangle: function (color, uid = false) {
-        let isDrawing = true;
-        let rectangle = null;
-        const startLatLng = this.contextMenu.mainContextMenu.e.latlng;
-    
-        const handleMouseMove = (event) => {
-            if (!isDrawing) return;
-    
-            const endLatLng = event.latlng;
-    
-            if (rectangle) {
-                rectangle.rectangle.setBounds([startLatLng, endLatLng]);
-            } else {
-                rectangle = new MapRectangle(this, color, startLatLng, endLatLng, uid);
-            }
-        };
-    
-        const handleClick = () => {
-            if (isDrawing && rectangle) {
-                isDrawing = false;
-                this.off("mousemove", handleMouseMove);
-    
-                if (!rectangle.uid) rectangle.uid = uuidv4();
-
-                // Send rectangle data via WebSocket
-                if (App.session.ws && App.session.ws.readyState === WebSocket.OPEN) {
-                    console.debug("Sending new rectangle with uid", rectangle.uid);
-                    App.session.ws.send(
-                        JSON.stringify({
-                            type: "ADDING_RECTANGLE",
-                            uid: rectangle.uid,
-                            color: color,
-                            bounds: rectangle.rectangle.getBounds(),
-                        })
-                    );
-                }
-            }
-        };
-    
-        const handleRightClick = () => {
-            if (isDrawing && rectangle) {
-                // Cancel the drawing process and remove the rectangle
-                rectangle.delete();
-                rectangle = null;
-                isDrawing = false;
-                this.off("mousemove", handleMouseMove);
-            }
-        };
-    
-        // Start tracking mouse movement immediately
-        this.on("mousemove", handleMouseMove);
-        this.once("click", handleClick);
-        this.on("contextmenu", handleRightClick);
-    },
-
-    createCircle: function (color, uid = false) {
-        let isDrawing = true;
-        let circle = null;
-        const startLatLng = this.contextMenu.mainContextMenu.e.latlng;
-        
-        const handleMouseMove = (event) => {
-
-            if (!isDrawing) return;
-        
-            // Calculate the lat/lng difference
-            const latDelta = (event.latlng.lat - startLatLng.lat);
-            const lngDelta = (event.latlng.lng - startLatLng.lng);
-            const radius = Math.hypot(latDelta, lngDelta);
-
-            if (circle) circle.circle.setRadius(radius);
-            else circle = new MapCircle(this, color, startLatLng, radius, uid);
-        };
-    
-        const handleClick = () => {
-            if (isDrawing && circle) {
-                isDrawing = false;
-                this.off("mousemove", handleMouseMove);
-    
-                if (!circle.uid) circle.uid = uuidv4();
-    
-                // Send circle data via WebSocket
-                if (App.session.ws && App.session.ws.readyState === WebSocket.OPEN) {
-                    console.debug("Sending new circle with uid", circle.uid);
-                    App.session.ws.send(
-                        JSON.stringify({
-                            type: "ADDING_CIRCLE",
-                            uid: circle.uid,
-                            color: color,
-                            latlng: circle.circle.getLatLng(),
-                            radius: circle.circle.getRadius(),
-                        })
-                    );
-                }
-            }
-        };
-    
-        const handleRightClick = () => {
-            if (isDrawing && circle) {
-                // Cancel the drawing process and remove the circle
-                circle.delete();
-                circle = null;
-                isDrawing = false;
-                this.off("mousemove", handleMouseMove);
-            }
-        };
-    
-        // Start tracking mouse movement immediately
-        this.on("mousemove", handleMouseMove);
-        this.once("click", handleClick);
-        this.on("contextmenu", handleRightClick);
-    }
-
 });

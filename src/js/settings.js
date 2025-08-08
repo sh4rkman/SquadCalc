@@ -106,9 +106,6 @@ export function loadSettings(){
     App.userSettings.showMainAssets = loadLocalSetting("settings-show-mainassets");
     $("#showMainAssetsSettings").prop("checked", App.userSettings.showMainAssets);
 
-    App.userSettings.contextMenu = loadLocalSetting("settings-context-menu");
-    $("#contextMenuSettings").prop("checked", App.userSettings.contextMenu);
-
     App.userSettings.showFlagsDistance = loadLocalSetting("settings-show-flags-distance");
     $("#showFlagsDistanceSettings").prop("checked", App.userSettings.showFlagsDistance);
 
@@ -160,11 +157,11 @@ export function loadSettings(){
     App.userSettings.targetAnimation = loadLocalSetting("settings-target-animation");
     $("#targetAnimationSettings").prop("checked", App.userSettings.targetAnimation);
     if (App.userSettings.targetAnimation) {
-        $("#markerPreview").attr("src", "./markers/marker_target_enabled.webp");
+        $("#markerPreview").attr("src", "../img/markers/marker_target_enabled.webp");
         $("#markerPreview").css("margin-top", "0px");
     } 
     else {
-        $("#markerPreview").attr("src", "./markers/marker_target_mini.webp");
+        $("#markerPreview").attr("src", "../img/markers/marker_target_mini.webp");
         $("#markerPreview").css("margin-top", "20px");
     }
 
@@ -257,11 +254,11 @@ export function updatePreview(){
 
 
     if (App.userSettings.targetAnimation) {
-        $("#markerPreview").attr("src", "/markers/marker_target_enabled.webp");
+        $("#markerPreview").attr("src", "./img/markers/marker_target_enabled.webp");
         $("#markerPreview").css("margin-top", "0px");
     } 
     else {
-        $("#markerPreview").attr("src", "./markers/marker_target_mini.webp");
+        $("#markerPreview").attr("src", "../img/markers/marker_target_mini.webp");
         $("#markerPreview").css("margin-top", "20px");
     }
 }
@@ -386,13 +383,6 @@ $("#enableFactionsSettings").on("change", function() {
             $("#factionsTab").show();
         }
     }
-});
-
-
-$("#contextMenuSettings").on("change", function() {
-    var val = $("#contextMenuSettings").is(":checked");
-    App.userSettings.contextMenu = val;
-    localStorage.setItem("settings-context-menu", +val);
 });
 
 $("#circlesFlagsSettings").on("change", function() {
@@ -592,11 +582,11 @@ $("#targetAnimationSettings").on("change", function() {
     localStorage.setItem("settings-target-animation", +val);
 
     if (App.userSettings.targetAnimation) {
-        $("#markerPreview").attr("src", "./markers/marker_target_enabled.webp");
+        $("#markerPreview").attr("src", "../img/markers/marker_target_enabled.webp");
         $("#markerPreview").css("margin-top", "0px");
     } 
     else {
-        $("#markerPreview").attr("src", "./markers/marker_target_mini.webp");
+        $("#markerPreview").attr("src", "../img/markers/marker_target_mini.webp");
         $("#markerPreview").css("margin-top", "20px");
     }
 

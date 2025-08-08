@@ -220,10 +220,10 @@ export default class Simulation {
         this.ctx.scale(1, -1);
                
         if (isNaN(this.firingSolution.elevation.high.rad) && isNaN(this.firingSolution.elevation.low.rad)) {
-            image.src = "./markers/marker_target_disabled.webp";
+            image.src = "./img/markers/marker_target_disabled.webp";
         } 
         else {
-            image.src = "./markers/marker_target_enabled.webp";
+            image.src = "./img/markers/marker_target_enabled.webp";
         }
 
         this.ctx.drawImage(

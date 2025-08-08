@@ -9,7 +9,6 @@ import { tooltip_save, createSessionTooltips, leaveSessionTooltips } from "./too
 import { checkApiHealth, fetchLayersByMap, fetchLayerByName } from "./squadCalcAPI.js";
 import { initWebSocket } from "./smcConnector.js";
 import { LatLng } from "leaflet";
-import  { MapArrow, MapCircle, MapRectangle }  from "./squadShapes.js";
 import SquadSession from "./squadSession.js";
 import SquadFiringSolution from "./squadFiringSolution.js";
 import packageInfo from "../../package.json";
@@ -490,54 +489,6 @@ export default class SquadCalc {
                                     this.minimap.createTarget(new LatLng(target.lat, target.lng), false);
                                 });
                             }
-
-                            data.markers.forEach(marker => {
-                                this.minimap.createMarker(new LatLng(marker.lat, marker.lng), marker.team, marker.category, marker.icon);
-                            });
-                            data.arrows.forEach(arrow => {
-                                let newArrow = new MapArrow(this.minimap, arrow.color, arrow.latlngs[0], arrow.latlngs[1]);
-                                if (this.session.ws && this.session.ws.readyState === WebSocket.OPEN) {
-                                    console.debug("sending new arrow with uid", arrow.uid);
-                                    this.session.ws.send(
-                                        JSON.stringify({
-                                            type: "ADDING_ARROW",
-                                            uid: newArrow.uid,
-                                            color: newArrow.color,
-                                            latlngs: newArrow.polyline.getLatLngs(),
-                                        })
-                                    );
-                                }
-                            });
-                            data.circles.forEach(circle => {
-                                let newCircle = new MapCircle(this.minimap, circle.color, circle.latlng, circle.radius);
-                                if (this.session.ws && this.session.ws.readyState === WebSocket.OPEN) {
-                                    console.debug("Sending new circle with uid", circle.uid);
-                                    this.session.ws.send(
-                                        JSON.stringify({
-                                            type: "ADDING_CIRCLE",
-                                            uid: newCircle.uid,
-                                            color: newCircle.color,
-                                            latlng: newCircle.circle.getLatLng(),
-                                            radius: newCircle.circle.getRadius(),
-                                        })
-                                    );
-                                }
-                            });
-                            data.rectangles.forEach(rectangle => {
-                                let newRect = new MapRectangle(this.minimap, rectangle.color, rectangle.bounds._southWest, rectangle.bounds._northEast);
-                                if (this.session.ws && this.session.ws.readyState === WebSocket.OPEN) {
-                                    console.debug("Sending new rectangle with uid", rectangle.uid);
-                                    this.session.ws.send(
-                                        JSON.stringify({
-                                            type: "ADDING_RECTANGLE",
-                                            uid: newRect.uid,
-                                            color: newRect.color,
-                                            bounds: newRect.rectangle.getBounds(),
-                                        })
-                                    );
-                                }
-                            });
-
                             this.openToast("success", "importSuccess", "");
                         
                         } catch (err) {
