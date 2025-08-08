@@ -496,8 +496,8 @@ $flag-circle-opacity: 0.2;
         white-space: nowrap;
         &:active,
         &.active {
-            background: linear-gradient(135deg, firebrick, #ec392f);
-            border-color: firebrick;
+            background: variables.$mainColor;
+            border-color: variables.$mainColor;
             box-shadow: 0 0 4px rgba(0, 0, 0, 1);
             min-width: 90px;
             font-size: 1em;
@@ -631,8 +631,8 @@ $flag-circle-opacity: 0.2;
                 height: auto;
                 width: 50%;
                 font-size: 1em;
-                background-color: firebrick;
-                border-color: firebrick;;
+                background-color: variables.$mainColor;
+                border-color: variables.$mainColor;
                 color: white;
                 svg {
                     width: 0.5em;

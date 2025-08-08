@@ -77,26 +77,6 @@
         text-align: center;
         padding: 10px;
     }
-    &[data-theme~='factionCopy'] {
-        font-size: 1em;
-        text-align: center;
-        padding: 5px;
-        background-color: firebrick;
-        letter-spacing: 1px;
-        max-width: 10px;
-        &[data-placement^='top']>.tippy-arrow::before {
-            border-top-color: variables.$mainColor
-        }
-        &[data-placement^='bottom']>.tippy-arrow::before {
-            border-bottom-color: variables.$mainColor
-        }
-        &[data-placement^='left']>.tippy-arrow::before {
-            border-left-color: variables.$mainColor
-        }
-        &[data-placement^='right']>.tippy-arrow::before {
-            border-right-color: variables.$mainColor
-        }
-    }
     &[data-theme~='settingsTooltips'] {
         margin-top: 2px;
         font-size: 0.9em;

@@ -75,7 +75,7 @@ export default class SquadLayer {
                 const radius = 1.5 * this.map.gameToMapScale;
                 this.caches.addLayer(new Circle(latlng, {
                     radius: radius,
-                    color: "firebrick",
+                    color: App.mainColor,
                     fillColor: "white",
                     opacity: 1,
                     weight: 1.5,
@@ -459,7 +459,7 @@ export default class SquadLayer {
      * @param {Array} this.layerData.mapAssets.protectionZones - Array of protection zones
      */
     createProtectionZones() {
-        const PZONECOLOR = "firebrick";
+        const PZONECOLOR = App.mainColor;
 
         // Creating protectionZones + noConstructionZones
         this.layerData.mapAssets.protectionZones.forEach((pZone) => {
@@ -467,7 +467,7 @@ export default class SquadLayer {
             // Skip small protection zones (old basrah)
             if (pZone.objects[0].boxExtent.extent_x < 100) return;
 
-            // Skip weird protection zones for bots
+            // Skip weird protection zones
             if (pZone.teamid === "0") return;
 
             // Center of the protection zone
@@ -530,7 +530,7 @@ export default class SquadLayer {
                 let noDeployRadius = (pZone.objects[0].sphereRadius + pZone.deployableLockDistance) / 100 * this.map.gameToMapScale;
 
                 let protectionZone = new Circle(latlngSphere, {
-                    color: "firebrick",
+                    color: App.mainColor,
                     opacity: 1,
                     weight: 2,
                     fillOpacity: 0.1,
@@ -538,7 +538,7 @@ export default class SquadLayer {
                 }).addTo(this.activeLayerMarkers);
 
                 let noDeployZone = new Circle(latlngSphere, {
-                    color: "firebrick",
+                    color: App.mainColor,
                     dashArray: "10,20",
                     opacity: 1,
                     weight: 1,
