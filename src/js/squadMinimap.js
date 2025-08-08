@@ -173,7 +173,8 @@ export const squadMinimap = Map.extend({
             this.activeLayer.addTo(this.layerGroup);
         } else {
             // Use ImageOverlay for standard images
-            let imgPath = `maps${this.activeMap.mapURL}${LAYERMODE}.webp`;
+            let imgPath = `${process.env.API_URL}/img${this.activeMap.mapURL}${LAYERMODE}.webp`;
+            //let imgPath = `maps${this.activeMap.mapURL}${LAYERMODE}.webp`;
             this.activeLayer = new imageOverlay(imgPath, this.imageBounds);
             this.activeLayer.addTo(this.layerGroup);
             $(this.activeLayer.getElement()).css("opacity", 0);

@@ -11,7 +11,7 @@ import targetIconImgMinimal from "../img/icons/markers/marker_target_mini.webp";
 import targetIconSessionImgMinimal from "../img/icons/markers/marker_target_session_mini.webp";
 import targetIconImgDisabledMinimal from "../img/icons/markers/marker_target_disabled_mini.webp";
 
-import mortarIconImg from "../img/icons/markers/marker_mortar.webp";
+//import mortarIconImg from ;
 import hellcannonMarker from "../img/icons/markers/marker_hellcannon.webp";
 import ub32Marker from "../img/icons/markers/marker_ub32.webp";
 import tmortarMarker from "../img/icons/markers/marker_tmortar.webp";
@@ -24,7 +24,7 @@ import mortarIconImg1 from "../img/icons/markers/marker_mortar_1.webp";
 import mortarIconImg2 from "../img/icons/markers/marker_mortar_2.webp";
 
 export const mortarIcon = new Icon({
-    iconUrl: mortarIconImg,
+    iconUrl: "./marker_mortar.webp",
     shadowUrl: shadowIconImg,
     iconSize:     [38, 47], 
     shadowSize:   [38, 47], 
