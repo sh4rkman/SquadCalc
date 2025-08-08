@@ -1,17 +1,4 @@
-import hellcannonLogo from "../../img/icons/weapons/hellcannon_white.png";
-import ub322Logo from "../../img/icons/weapons/ub32_deployable.png";
-import technicalLogo from "../../img/icons/weapons/technical_mortar_white.png";
-import mlrsLogo from "../../img/icons/weapons/mlrs_white.png";
-import ub32Logo from "../../img/icons/weapons/ub32_white.png";
-import m113Logo from "../../img/icons/weapons/m113a3_white.png";
-import mk19rwsLogo from "../../img/icons/weapons/mk19_rws_white.png";
-
-/* eslint no-unused-vars: "off" */
-import markerIconPng from "leaflet/dist/images/marker-icon.png";
-import markerShadow from "leaflet/dist/images/marker-shadow.png";
-import markerIconx2 from "leaflet/dist/images/marker-icon-2x.png";
-
-import { mortarIcon, hellIcon, ub32Icon, tMortarIcon, tub32Icon, gradIcon, m121Icon, mk19Icon} from "../squadIcon.js";
+import { mortarIcon, hellIcon, ub32Icon, tMortarIcon, tub32Icon, gradIcon, m121Icon, mk19Icon } from "../squadIcon.js";
 
 export const WEAPONSTYPE = ["deployables", "vehicles"];
 
@@ -46,7 +33,7 @@ export var WEAPONS = [
         gravityScale: 2,
         minElevation: [-25, 35],
         unit: "deg",
-        logo: ub322Logo,
+        logo: "./weapons/ub32_deployable.png",
         marker: ub32Icon,
         logoCannonPos: "110%",
         type: "deployables",
@@ -68,7 +55,7 @@ export var WEAPONS = [
         gravityScale: 1,
         minElevation: [10, 85],
         unit: "deg",
-        logo: hellcannonLogo,
+        logo: "./weapons/hellcannon_white.png",
         marker: hellIcon,
         logoCannonPos: "130%",
         type: "deployables",
@@ -90,7 +77,7 @@ export var WEAPONS = [
         gravityScale: 1,
         minElevation: [-45, 135],
         unit: "deg",
-        logo: technicalLogo,
+        logo: "./weapons/technical_mortar_white.png",
         marker: tMortarIcon,
         logoCannonPos: "50%",
         type: "vehicles",
@@ -112,7 +99,7 @@ export var WEAPONS = [
         gravityScale: 2,
         minElevation: [-45, 135],
         unit: "deg",
-        logo: ub32Logo,
+        logo: "./weapons/ub32_white.png",
         marker: tub32Icon,
         logoCannonPos: "55%",
         type: "vehicles",
@@ -134,7 +121,7 @@ export var WEAPONS = [
         gravityScale: 2,
         minElevation: [-45, 135],
         unit: "deg",
-        logo: mlrsLogo,
+        logo: "./weapons/mlrs_white.png",
         marker: gradIcon,
         logoCannonPos: "60%",
         type: "vehicles",
@@ -156,7 +143,7 @@ export var WEAPONS = [
         gravityScale: 1,
         minElevation: [45, 85.3],
         unit: "deg",
-        logo: m113Logo,
+        logo: "./weapons/m113a3_white.png",
         marker: m121Icon,
         logoCannonPos: "45%",
         type: "vehicles",
@@ -193,7 +180,7 @@ export var WEAPONS = [
         gravityScale: 1,
         minElevation: [-45, 85.3],
         unit: "deg",
-        logo: mk19rwsLogo,
+        logo: "./weapons/mk19_rws_white.png",
         marker: mk19Icon,
         logoCannonPos: "60%",
         type: "experimental",
