@@ -1,4 +1,3 @@
-import classicLogo from "../../img/icons/mortar.png";
 import hellcannonLogo from "../../img/icons/weapons/hellcannon_white.png";
 import ub322Logo from "../../img/icons/weapons/ub32_deployable.png";
 import technicalLogo from "../../img/icons/weapons/technical_mortar_white.png";
@@ -8,7 +7,6 @@ import m113Logo from "../../img/icons/weapons/m113a3_white.png";
 import mk19rwsLogo from "../../img/icons/weapons/mk19_rws_white.png";
 
 /* eslint no-unused-vars: "off" */
-import target from "../../img/icons/target.png"; 
 import markerIconPng from "leaflet/dist/images/marker-icon.png";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";
 import markerIconx2 from "leaflet/dist/images/marker-icon-2x.png";
@@ -26,7 +24,7 @@ export var WEAPONS = [
         gravityScale: 1,
         minElevation: [45, 88.875],
         unit: "mil",
-        logo: classicLogo,
+        logo: "./icons/mortar.png",
         marker: mortarIcon,
         logoCannonPos: "130%",
         type: "deployables",

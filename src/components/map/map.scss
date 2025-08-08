@@ -147,118 +147,118 @@ $flag-circle-opacity: 0.2;
             &.main {
                 overflow: hidden;
                 &.main {
-                    background: url('../../img/icons/deployables/main.webp') no-repeat center center;
+                    background: url('./icons/shared/main.webp') no-repeat center center;
                     background-size: 50%;
                     transition: opacity 0.1s ease-in;
                     &.circleFlag {
                         background-size: 80%;
                         &.country_ADF {
-                            background: url('../../../public/icons/flags/circles/ADF.webp') no-repeat center center;
+                            background: url('./icons/flags/circles/ADF.webp') no-repeat center center;
                             background-size: 210%;
                         }
                         &.country_TLF {
-                            background: url('../../../public/icons/flags/circles/TLF.webp') no-repeat center center;
+                            background: url('./icons/flags/circles/TLF.webp') no-repeat center center;
                             background-size: 210%;
                         }
                         &.country_CAF {
-                            background: url('../../../public/icons/flags/circles/CAF.webp') no-repeat center center;
+                            background: url('./icons/flags/circles/CAF.webp') no-repeat center center;
                             background-size: 210%;
                         }
                         &.country_IMF {
-                            background: url('../../../public/icons/flags/circles/IMF.webp') no-repeat center center;
+                            background: url('./icons/flags/circles/IMF.webp') no-repeat center center;
                             background-size: 210%;
                         }
                         &.country_INS {
-                            background: url('../../../public/icons/flags/circles/INS.webp') no-repeat center center;
+                            background: url('./icons/flags/circles/INS.webp') no-repeat center center;
                             background-size: 210%;
                         }
                         &.country_PLA {
-                            background: url('../../../public/icons/flags/circles/PLA.webp') no-repeat center center;
+                            background: url('./icons/flags/circles/PLA.webp') no-repeat center center;
                             background-size: 210%;
                         }
                         &.country_PLANMC {
-                            background: url('../../../public/icons/flags/circles/PLANMC.webp') no-repeat center center;
+                            background: url('./icons/flags/circles/PLANMC.webp') no-repeat center center;
                             background-size: 210%;
                         }
                         &.country_PLAAGF {
-                            background: url('../../../public/icons/flags/circles/PLAAGF.webp') no-repeat center center;
+                            background: url('./icons/flags/circles/PLAAGF.webp') no-repeat center center;
                             background-size: 210%;
                         }
                         &.country_USA {
-                            background: url('../../../public/icons/flags/circles/USA.webp') no-repeat center center;
+                            background: url('./icons/flags/circles/USA.webp') no-repeat center center;
                             background-size: 210%;
                         }
                         &.country_USMC {
-                            background: url('../../../public/icons/flags/circles/USMC.webp') no-repeat center center;
+                            background: url('./icons/flags/circles/USMC.webp') no-repeat center center;
                             background-size: 210%;
                         }
                         &.country_VDV {
-                            background: url('../../../public/icons/flags/circles/VDV.webp') no-repeat center center;
+                            background: url('./icons/flags/circles/VDV.webp') no-repeat center center;
                             background-size: 210%;
                         }
                         &.country_WPMC {
-                            background: url('../../../public/icons/flags/circles/WPMC.webp') no-repeat center center;
+                            background: url('./icons/flags/circles/WPMC.webp') no-repeat center center;
                             background-size: 210%;
                         }
                     }
                     &.country_ADF {
-                        background: url('../../../public/icons/flags/ADF.webp') no-repeat center center;
+                        background: url('./icons/flags/ADF.webp') no-repeat center center;
                         background-size: cover;
                     }
                     &.country_BAF {
-                        background: url('../../../public/icons/flags/BAF.webp') no-repeat center center;
+                        background: url('./icons/flags/BAF.webp') no-repeat center center;
                         background-size: cover;
                     }
                     &.country_CAF {
-                        background: url('../../../public/icons/flags/CAF.webp') no-repeat center center;
+                        background: url('./icons/flags/CAF.webp') no-repeat center center;
                         background-size: cover;
                     }
                     &.country_IMF {
-                        background: url('../../../public/icons/flags/IMF.webp') no-repeat center center;
+                        background: url('./icons/flags/IMF.webp') no-repeat center center;
                         background-size: cover;
                     }
                     &.country_INS {
-                        background: url('../../../public/icons/flags/INS.webp') no-repeat center center;
+                        background: url('./icons/flags/INS.webp') no-repeat center center;
                         background-size: cover;
                     }
                     &.country_MEA {
-                        background: url('../../../public/icons/flags/MEA.webp') no-repeat center center;
+                        background: url('./icons/flags/MEA.webp') no-repeat center center;
                         background-size: cover;
                     }
                     &.country_PLA {
-                        background: url('../../../public/icons/flags/PLA.webp') no-repeat center center;
+                        background: url('./icons/flags/PLA.webp') no-repeat center center;
                         background-size: cover;
                     }
                     &.country_RGF {
-                        background: url('../../../public/icons/flags/RGF.webp') no-repeat center center;
+                        background: url('./icons/flags/RGF.webp') no-repeat center center;
                         background-size: cover;
                     }
                     &.country_USA {
-                        background: url('../../../public/icons/flags/USA.webp') no-repeat center center;
+                        background: url('./icons/flags/USA.webp') no-repeat center center;
                         background-size: cover;
                     }
                     &.country_USMC {
-                        background: url('../../../public/icons/flags/USMC.webp') no-repeat center center;
+                        background: url('./icons/flags/USMC.webp') no-repeat center center;
                         background-size: cover;
                     }
                     &.country_VDV {
-                        background: url('../../../public/icons/flags/VDV.webp') no-repeat center center;
+                        background: url('./icons/flags/VDV.webp') no-repeat center center;
                         background-size: cover;
                     }
                     &.country_PLANMC {
-                        background: url('../../../public/icons/flags/PLANMC.webp') no-repeat center center;
+                        background: url('./icons/flags/PLANMC.webp') no-repeat center center;
                         background-size: cover;
                     }
                     &.country_PLAAGF {
-                        background: url('../../../public/icons/flags/PLAAGF.webp') no-repeat center center;
+                        background: url('./icons/flags/PLAAGF.webp') no-repeat center center;
                         background-size: cover;
                     }
                     &.country_TLF {
-                        background: url('../../../public/icons/flags/TLF.webp') no-repeat center center;
+                        background: url('./icons/flags/TLF.webp') no-repeat center center;
                         background-size: cover;
                     }
                     &.country_WPMC {
-                        background: url('../../../public/icons/flags/WPMC.webp') no-repeat center center;
+                        background: url('./icons/flags/WPMC.webp') no-repeat center center;
                         background-size: cover;
                     }
                 }
@@ -345,17 +345,17 @@ $flag-circle-opacity: 0.2;
             font-size: 1.1em;
         }
         .helipads {
-            background: url('../../../public/icons/ally/deployables/deployable_helipad.webp') no-repeat center center;
+            background: url('./icons/ally/deployables/deployable_helipad.webp') no-repeat center center;
             background-size: contain;
             transition: opacity 0.1s ease-in;
         }
         .repairStations {
-            background: url('../../../public/icons/ally/deployables/deployable_repairstation.webp') no-repeat center center;
+            background: url('./icons/ally/deployables/deployable_repairstation.webp') no-repeat center center;
             background-size: contain;
             transition: opacity 0.1s ease-in;
         }
         .ammocrates {
-            background: url('../../../public/icons/ally/deployables/deployable_ammocrate.webp') no-repeat center center;
+            background: url('./icons/ally/deployables/deployable_ammocrate.webp') no-repeat center center;
             background-size: contain;
             transition: opacity 0.1s ease-in;
         }

@@ -46,7 +46,11 @@ export default async (env) => {
     },
     module: {
         rules: [
-         
+              { 
+              test: /\.(html)$/,
+              include: path.join(__dirname, ''),
+              use: { loader: 'html-loader', options: { interpolate: true, sources: false } }
+            },
             {
               test: /\.(sc|sa|c)ss$/i,
               use: [
@@ -60,12 +64,9 @@ export default async (env) => {
                 'sass-loader',
               ],
             },
+
             { test: /\.(png|svg|jpg|jpeg|gif|webp)$/i, type: 'asset/resource', },
-            { 
-              test: /\.(html)$/,
-              include: path.join(__dirname, ''),
-              use: { loader: 'html-loader', options: { interpolate: true } }
-            }
+
         ],
     },
     devServer: {

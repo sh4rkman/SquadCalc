@@ -5,11 +5,6 @@ import { animateCSS } from "./animations.js";
 import SquadFactions from "./squadFactions.js";
 
 /* eslint no-unused-vars: "off" */
-import mapIcon from "../img/icons/preview/preview.webp";
-import speadIcon from "../img/icons/preview/spread.png";
-import gridIcon from "../img/icons/preview/grid.png";
-import maxRangeIcon from "../img/icons/preview/maxrange.png";
-import damageRangeIcon from "../img/icons/preview/damage.png";
 
 function loadLocalSetting(item, default_value = 1) {
 
@@ -165,11 +160,11 @@ export function loadSettings(){
     App.userSettings.targetAnimation = loadLocalSetting("settings-target-animation");
     $("#targetAnimationSettings").prop("checked", App.userSettings.targetAnimation);
     if (App.userSettings.targetAnimation) {
-        $("#markerPreview").attr("src", "./marker/marker_target_enabled.webp");
+        $("#markerPreview").attr("src", "./markers/marker_target_enabled.webp");
         $("#markerPreview").css("margin-top", "0px");
     } 
     else {
-        $("#markerPreview").attr("src", "./marker/marker_target_mini.webp");
+        $("#markerPreview").attr("src", "./markers/marker_target_mini.webp");
         $("#markerPreview").css("margin-top", "20px");
     }
 
@@ -258,6 +253,16 @@ export function updatePreview(){
         tooltip_coordPreview.enable();
     } else {
         tooltip_coordPreview.disable();
+    }
+
+
+    if (App.userSettings.targetAnimation) {
+        $("#markerPreview").attr("src", "/markers/marker_target_enabled.webp");
+        $("#markerPreview").css("margin-top", "0px");
+    } 
+    else {
+        $("#markerPreview").attr("src", "./markers/marker_target_mini.webp");
+        $("#markerPreview").css("margin-top", "20px");
     }
 }
 
