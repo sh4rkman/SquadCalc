@@ -62,7 +62,7 @@
 // COMMON
 
 .middleContext {
-    background: url('../../../public/icons/shared/ctx/T_icon_Target.webp') no-repeat center center;
+    background: url('./icons/shared/ctx/T_icon_Target.webp') no-repeat center center;
     background-size: contain;
 }
 
@@ -70,9 +70,9 @@
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center center;
-    &.arrow { background-image: url('../../../public/icons/shared/ctx/arrow.webp'); }
-    &.rectangle { background-image: url('../../../public/icons/shared/ctx/rectangle.webp'); }
-    &.circle { background-image: url('../../../public/icons/shared/ctx/circle.webp'); }
+    &.arrow { background-image: url('./icons/shared/ctx/arrow.webp'); }
+    &.rectangle { background-image: url('./icons/shared/ctx/rectangle.webp'); }
+    &.circle { background-image: url('./icons/shared/ctx/circle.webp'); }
     &.blue {
         background-color: #00137e;
         &:hover { background-color: #000844; }

@@ -46,8 +46,21 @@ export default async (env) => {
     },
     module: {
         rules: [
+         
+            {
+              test: /\.(sc|sa|c)ss$/i,
+              use: [
+                'style-loader',
+                {
+                  loader: 'css-loader',
+                  options: {
+                    url: false // <-- don't try to import/resolve url() paths
+                  }
+                },
+                'sass-loader',
+              ],
+            },
             { test: /\.(png|svg|jpg|jpeg|gif|webp)$/i, type: 'asset/resource', },
-            { test: /\.(sc|sa|c)ss$/i, use: ['style-loader', 'css-loader', 'sass-loader'],},
             { 
               test: /\.(html)$/,
               include: path.join(__dirname, ''),

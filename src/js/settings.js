@@ -10,8 +10,6 @@ import speadIcon from "../img/icons/preview/spread.png";
 import gridIcon from "../img/icons/preview/grid.png";
 import maxRangeIcon from "../img/icons/preview/maxrange.png";
 import damageRangeIcon from "../img/icons/preview/damage.png";
-import miniTargetIcon from "../img/icons/markers/marker_target_mini.webp";
-import targetIcon from "../img/icons/markers/marker_target_enabled.webp";
 
 function loadLocalSetting(item, default_value = 1) {
 
@@ -167,11 +165,11 @@ export function loadSettings(){
     App.userSettings.targetAnimation = loadLocalSetting("settings-target-animation");
     $("#targetAnimationSettings").prop("checked", App.userSettings.targetAnimation);
     if (App.userSettings.targetAnimation) {
-        $("#markerPreview").attr("src", targetIcon);
+        $("#markerPreview").attr("src", "./marker/marker_target_enabled.webp");
         $("#markerPreview").css("margin-top", "0px");
     } 
     else {
-        $("#markerPreview").attr("src", miniTargetIcon);
+        $("#markerPreview").attr("src", "./marker/marker_target_mini.webp");
         $("#markerPreview").css("margin-top", "20px");
     }
 
@@ -589,11 +587,11 @@ $("#targetAnimationSettings").on("change", function() {
     localStorage.setItem("settings-target-animation", +val);
 
     if (App.userSettings.targetAnimation) {
-        $("#markerPreview").attr("src", targetIcon);
+        $("#markerPreview").attr("src", "./markers/marker_target_enabled.webp");
         $("#markerPreview").css("margin-top", "0px");
     } 
     else {
-        $("#markerPreview").attr("src", miniTargetIcon);
+        $("#markerPreview").attr("src", "./markers/marker_target_mini.webp");
         $("#markerPreview").css("margin-top", "20px");
     }
 
