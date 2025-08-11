@@ -320,16 +320,19 @@ export default class SquadLayer {
     createHelipads() {
         this.layerData.assets.helipads.forEach((asset) => {
             const latlng = this.convertToLatLng(asset.location_x, asset.location_y);
-            this.mainZones.assets.push(new Marker(latlng, {
+            let marker = new Marker(latlng, {
                 interactive: false,
                 keyboard: false,
                 zIndexOffset: -1000,
                 opacity: 1,
                 icon: new DivIcon({
-                    className: "helipads",
+                    className: "deployables",
                     iconSize: [36, 36],
                 })
-            }).addTo(this.activeLayerMarkers));
+            }).addTo(this.activeLayerMarkers);
+            const iconElement = marker.getElement();
+            iconElement.style.backgroundImage = `url('${process.env.API_URL}/img/icons/ally/deployables/deployable_helipad.webp')`;
+            this.mainZones.assets.push(marker);
         });
     }
 
@@ -353,23 +356,30 @@ export default class SquadLayer {
             const latlng = this.convertToLatLng(asset.location_x, asset.location_y);
 
             if (asset.type === "Repair Station") {
-                this.mainZones.assets.push(new Marker(latlng, {
+                let marker = new Marker(latlng, {
                     ...assetsMarkerParams,
                     icon: new DivIcon({
-                        className: "repairStations",
+                        className: "deployables",
                         iconSize: [30, 30]
                     })
-                }).addTo(this.activeLayerMarkers));
+                }).addTo(this.activeLayerMarkers);
+                const iconElement = marker.getElement();
+                iconElement.style.backgroundImage = `url('${process.env.API_URL}/img/icons/ally/deployables/deployable_repairstation.webp')`;
+                this.mainZones.assets.push(marker);
             }
 
             if (asset.type === "Ammo Crate") {
-                this.mainZones.assets.push(new Marker(latlng, {
+                let marker = new Marker(latlng, {
                     ...assetsMarkerParams,
                     icon: new DivIcon({
-                        className: "ammocrates",
+                        className: "deployables",
                         iconSize: [25, 25]
                     })
-                }).addTo(this.activeLayerMarkers));
+                }).addTo(this.activeLayerMarkers)
+
+                const iconElement = marker.getElement();
+                iconElement.style.backgroundImage = `url('${process.env.API_URL}/img/icons/ally/deployables/deployable_ammocrate.webp')`;
+                this.mainZones.assets.push(marker);
             }
         });
     }

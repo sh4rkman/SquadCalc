@@ -4,11 +4,18 @@
 <img src="https://img.shields.io/badge/-new%20features-green">
 
 - **New Albasrah!**  
-  Every layer, faction, image, heightmap, and related data has been updated. Feel free to report a bug if you spot one.
+  Every layer, faction, image, heightmap, and related data has been updated.  
+  Overall every layer/factions/vehicles list change with the UE5 update have been taken into account.  
+  Feel free to report a bug if you spot one.  
 
 - **Target Deviation Grids!**  
   fsdfdsfdsfdsfsdf
 
+- **SquadTactics!** https://squadtactics.app  
+Features for creating markers, strategizing, and planning your future games have been removed from squadcalc.app and moved to their own dedicated (but very similar) app.  
+This change frees up code in SquadCalc, allowing me to develop more strategy-focused functionality and better separate use cases: if you need a companion app while playing, use squadcalc.app; if you want to plan your next match outside the game, use squadtactics.app.  
+Following this split, many shared assets between the two apps (map images, heightmaps, icons, etc.) have been moved out of the GitHub repository and are now hosted server-side to avoid duplication and maintenance headaches.  
+Map files will likely return later in their own public repository.
 
 <img src="https://img.shields.io/badge/-bug%20fixes-b22">
 
@@ -31,10 +38,13 @@
 <img src="https://img.shields.io/badge/-%20other-grey">
 
 - "Auto pick single flag" feature is now activated by default: SquadCalc will automatically pick a flag if it's the only available option. The setting has been removed.
-- Improved contrast of the target compact icons
+- Added complete factions names when hovering a flag in faction selection
+- Changed the maximum additional height an user can set to a weapon from 100 to 300m
+- Improved contrast of the targets compact icon
 - Improved map & heightmap caching to speedup image loading
-- Reduced button and selector sizes on mobile to be more compact
-- Added a brand new 404 page
+- Reduced button and selector sizes on mobile to be more compact2
+- Added a custom "Under Maintenance" page
+- Added a custom `404` page
 
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->

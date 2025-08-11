@@ -146,134 +146,34 @@ $flag-circle-opacity: 0.2;
             }
             &.main {
                 overflow: hidden;
-                &.main {
-                    background: url('./img/shared/main.webp') no-repeat center center;
-                    background-size: 50%;
-                    transition: opacity 0.1s ease-in;
-                    &.circleFlag {
-                        background-size: 80%;
-                        &.country_ADF {
-                            background: url('./img/flags/circles/ADF.webp') no-repeat center center;
-                            background-size: 210%;
-                        }
-                        &.country_TLF {
-                            background: url('./img/flags/circles/TLF.webp') no-repeat center center;
-                            background-size: 210%;
-                        }
-                        &.country_CAF {
-                            background: url('./img/flags/circles/CAF.webp') no-repeat center center;
-                            background-size: 210%;
-                        }
-                        &.country_IMF {
-                            background: url('./img/flags/circles/IMF.webp') no-repeat center center;
-                            background-size: 210%;
-                        }
-                        &.country_INS {
-                            background: url('./img/flags/circles/INS.webp') no-repeat center center;
-                            background-size: 210%;
-                        }
-                        &.country_PLA {
-                            background: url('./img/flags/circles/PLA.webp') no-repeat center center;
-                            background-size: 210%;
-                        }
-                        &.country_PLANMC {
-                            background: url('./img/flags/circles/PLANMC.webp') no-repeat center center;
-                            background-size: 210%;
-                        }
-                        &.country_PLAAGF {
-                            background: url('./img/flags/circles/PLAAGF.webp') no-repeat center center;
-                            background-size: 210%;
-                        }
-                        &.country_USA {
-                            background: url('./img/flags/circles/USA.webp') no-repeat center center;
-                            background-size: 210%;
-                        }
-                        &.country_USMC {
-                            background: url('./img/flags/circles/USMC.webp') no-repeat center center;
-                            background-size: 210%;
-                        }
-                        &.country_VDV {
-                            background: url('./img/flags/circles/VDV.webp') no-repeat center center;
-                            background-size: 210%;
-                        }
-                        &.country_WPMC {
-                            background: url('./img/flags/circles/WPMC.webp') no-repeat center center;
-                            background-size: 210%;
-                        }
-                    }
-                    &.country_ADF {
-                        background: url('./img/flags/ADF.webp') no-repeat center center;
-                        background-size: cover;
-                    }
-                    &.country_BAF {
-                        background: url('./img/flags/BAF.webp') no-repeat center center;
-                        background-size: cover;
-                    }
-                    &.country_CAF {
-                        background: url('./img/flags/CAF.webp') no-repeat center center;
-                        background-size: cover;
-                    }
-                    &.country_IMF {
-                        background: url('./img/flags/IMF.webp') no-repeat center center;
-                        background-size: cover;
-                    }
-                    &.country_INS {
-                        background: url('./img/flags/INS.webp') no-repeat center center;
-                        background-size: cover;
-                    }
-                    &.country_MEA {
-                        background: url('./img/flags/MEA.webp') no-repeat center center;
-                        background-size: cover;
-                    }
-                    &.country_PLA {
-                        background: url('./img/flags/PLA.webp') no-repeat center center;
-                        background-size: cover;
-                    }
-                    &.country_RGF {
-                        background: url('./img/flags/RGF.webp') no-repeat center center;
-                        background-size: cover;
-                    }
-                    &.country_USA {
-                        background: url('./img/flags/USA.webp') no-repeat center center;
-                        background-size: cover;
-                    }
-                    &.country_USMC {
-                        background: url('./img/flags/USMC.webp') no-repeat center center;
-                        background-size: cover;
-                    }
-                    &.country_VDV {
-                        background: url('./img/flags/VDV.webp') no-repeat center center;
-                        background-size: cover;
-                    }
-                    &.country_PLANMC {
-                        background: url('./img/flags/PLANMC.webp') no-repeat center center;
-                        background-size: cover;
-                    }
-                    &.country_PLAAGF {
-                        background: url('./img/flags/PLAAGF.webp') no-repeat center center;
-                        background-size: cover;
-                    }
-                    &.country_TLF {
-                        background: url('./img/flags/TLF.webp') no-repeat center center;
-                        background-size: cover;
-                    }
-                    &.country_WPMC {
-                        background: url('./img/flags/WPMC.webp') no-repeat center center;
-                        background-size: cover;
-                    }
+                background-size: contain;
+                background-position: center center;
+                background-repeat: no-repeat;
+                border: none;
+                outline: 2px rgb(58, 58, 58) solid;
+                &.circleFlag {
+                   background-size: cover; 
                 }
             }
             &.main.selectable {
                 background-color: rgba(197, 0, 0);
                 outline-color: rgb(143, 0, 0);
                 outline-width: 3px;
+                &:focus {
+                    outline: 3px rgb(143, 0, 0) solid!important;
+                }
             }
             &.main.unselectable {
-                pointer-events: none;
+                // pointer-events: none;
                 background-color: rgba(255, 255, 255, 0.4);
+                &:focus {
+                    outline: solid 3px rgb(104, 104, 104)!important;
+                }
+
             }
             &.main.selected {
                 background-color: rgba(0, 128, 0, 0.9);
+                outline: 2px green solid; 
                 &::before {
                     content: "";
                 }
@@ -297,65 +197,14 @@ $flag-circle-opacity: 0.2;
                 }
             }
         }
-        .kpPopup, .posPopUpTarget, .posPopUpWeapon {
+        .kpPopup, .posPopUpWeapon {
             @include popup-base-styles;
-        }
-        .calcPopup, .calcPopup2 {
-            @include variables.text-outline;
-            @extend .unselectable;
-            margin: 0;
-            padding: 0;
-            font-family: variables.$mainFont, Times, "Times New Roman", serif;
-            pointer-events: none;
-            font-size: var(--font-size-calc-popup);
-            height: 45px;
-            .bearingUiCalc {
-                font-size: 0.7em;
-            }
-            .leaflet-popup-tip,
-            .leaflet-popup-content-wrapper {
-                pointer-events: none;
-                background: transparent;
-                box-shadow: none;
-                color: variables.$mainTxtColor;
-            }
-            .leaflet-popup-content {
-                margin: 0;
-                line-height: 1;
-            }
-            &.calcPopup {
-                .leaflet-popup-content-wrapper {
-                    text-align: right;
-                }
-            }
-            &.calcPopup2 {
-                .leaflet-popup-content-wrapper {
-                    text-align: left;
-                }
-            }
-        }
-        .animatedWeaponMarker {
-            animation: weapon-appear 0.25s ease-in-out forwards 0s;
-        }
-        .animatedTargetMarker {
-            animation: target-appear 0.25s ease-in-out forwards 0s;
         }
         .gridText {
             @include variables.light-text-outline;
             font-size: 1.1em;
         }
-        .helipads {
-            background: url('./img/ally/deployables/deployable_helipad.webp') no-repeat center center;
-            background-size: contain;
-            transition: opacity 0.1s ease-in;
-        }
-        .repairStations {
-            background: url('./img/ally/deployables/deployable_repairstation.webp') no-repeat center center;
-            background-size: contain;
-            transition: opacity 0.1s ease-in;
-        }
-        .ammocrates {
-            background: url('./img/ally/deployables/deployable_ammocrate.webp') no-repeat center center;
+        .deployables {
             background-size: contain;
             transition: opacity 0.1s ease-in;
         }
@@ -496,7 +345,7 @@ $flag-circle-opacity: 0.2;
         white-space: nowrap;
         &:active,
         &.active {
-            background: variables.$mainColor;
+            background: linear-gradient(135deg, variables.$mainColor, variables.$mainColor);
             border-color: variables.$mainColor;
             box-shadow: 0 0 4px rgba(0, 0, 0, 1);
             min-width: 90px;
@@ -766,3 +615,137 @@ $flag-circle-opacity: 0.2;
 
 
 .leaflet-pane.leaflet-ie10-visual-click-pane-pane { z-index: 300; }
+
+.tippy-box {
+    cursor: auto;
+    pointer-events: auto !important;
+}
+
+
+#mapPinButton {
+    margin-top: 8px;
+    background: #222;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 2px;
+    text-align: center;
+    cursor: pointer;
+    user-select: none;
+    width: 100%;
+    &:hover {
+        background: #111;
+    }
+    &.active {
+        background-color: variables.$mainColor;
+        color: white;
+    }
+}
+
+.faction-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    padding: 5px;
+    max-width: 280px;
+    justify-items: center;
+    &:has(> :only-child) {
+        grid-template-columns: 1fr;
+    }
+    &:has(.faction-item:nth-child(4)) {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+.faction-label {
+    @include variables.text-outline;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    color: white;
+    font-size: 10px;
+    font-weight: bold;
+    text-align: center;
+    letter-spacing: 0;
+    padding: 2px 4px;
+    pointer-events: none;
+    line-height: 0.8em;
+}
+
+.faction-item {
+    position: relative;
+    background: #111;
+    outline: 1px solid #ddd;
+    border-radius: 2px;
+    width: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-weight: bold;
+    font-size: 14px;
+    transition: all 0.1s ease;
+    aspect-ratio: 2 / 1;
+    line-break: loose;
+    &.units {
+        max-width: 400px;
+        height: 55px;
+        &:active {
+            transform: scale(0.95);
+            outline-color: green;
+            transition: transform 0.1s ease;
+        }
+    }
+    &._selected {
+        outline: green 3px solid;
+        &::after {
+            background: rgba(255, 255, 255, 0);
+        }
+    }
+    &::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border: 3px solid rgba(0, 0, 0, 0.15);
+        // background: rgba(255, 255, 255, 0.35); /* faint white overlay */
+        pointer-events: none;
+    }
+}
+
+.faction-item.units img {
+    position: absolute;
+    width: 60%;
+    height: auto;
+    object-fit: contain;
+}
+
+.faction-item.units .faction-label {
+    position: absolute;
+    margin-top: 4px;
+    font-size: 10px;
+    line-height: 1.2em;
+    padding: 0;
+    bottom: 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: "..";
+}
+
+.faction-item:hover {
+    outline-color: #007acc;
+    cursor: pointer;
+    outline-width: 3px;
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    &._selected {
+        outline-color: green;
+    }
+}
+
+.faction-item img {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    pointer-events: none;
+}

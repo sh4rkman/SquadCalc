@@ -46,30 +46,22 @@ export default async (env) => {
     },
     module: {
         rules: [
-         
-            {
-              test: /\.(sc|sa|c)ss$/i,
-              use: [
-                'style-loader',
-                {
-                  loader: 'css-loader',
-                  options: {
-                    url: false // <-- don't try to import/resolve url() paths
-                  }
-                },
-                'sass-loader',
-              ],
-            },
-             { 
-              test: /\.(html)$/,
-              include: path.join(__dirname, ''),
-              use: { loader: 'html-loader', options: { interpolate: true, sources: false } }
-            },
-            { test: /\.(png|svg|jpg|jpeg|gif|webp)$/i, type: 'asset/resource', },
-
+          {
+            test: /\.(sc|sa|c)ss$/i,
+            use: [
+              'style-loader', { loader: 'css-loader', options: { url: false } }, 'sass-loader',
+            ],
+          },
+          { 
+            test: /\.(html)$/,
+            include: path.join(__dirname, ''),
+            use: { loader: 'html-loader', options: { interpolate: true } }
+          },
+          { test: /\.(png|svg|jpg|jpeg|gif|webp)$/i, type: 'asset/resource', },
         ],
     },
     devServer: {
+      port: 3000,
       open: true,
       historyApiFallback: {
         rewrites: [

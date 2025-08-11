@@ -13,5 +13,20 @@
   "USA": "美国陆军",
   "USMC": "美国海军陆战队",
   "VDV": "VDV",
-  "WPMC": "WPMC"
+  "WPMC": "WPMC",
+  "ADF_displayName": "Australian Defence Force",
+  "BAF_displayName": "British Armed Forces",
+  "CAF_displayName": "Canadian Armed Forces",
+  "IMF_displayName": "Irregular Militia Forces",
+  "INS_displayName": "Insurgents",
+  "MEA_displayName": "Middle Eastern Alliance",
+  "PLA_displayName": "People's Liberation Army",
+  "PLAAGF_displayName": "People's Liberation Army Airborne Ground Forces",
+  "PLANMC_displayName": "People's Liberation Army Navy Marine Corps",
+  "RGF_displayName": "Russian Ground Forces",
+  "TLF_displayName": "Turkish Land Forces",
+  "USA_displayName": "United States Army",
+  "USMC_displayName": "United States Marine Corps",
+  "VDV_displayName": "Russian Airborne Forces",
+  "WPMC_displayName": "Western Private Military Company"
   }

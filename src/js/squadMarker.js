@@ -398,7 +398,8 @@ export const squadWeaponMarker = squadMarker.extend({
 
         $(".heightPadding input").on("change", weapon, (e) => {
             const input = e.currentTarget;
-            input.value = Math.max(0, Math.min(input.value, 100));
+            const MAXHEIGHTPADDING = 300;
+            input.value = Math.max(0, Math.min(input.value, MAXHEIGHTPADDING));
             weapon.heightPadding = parseFloat(input.value);
             this.map.updateTargets();
         

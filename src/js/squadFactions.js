@@ -19,6 +19,7 @@ export default class SquadFactions {
         this.UNIT2_SELECTOR = $(".dropbtn11");
         this.init(squadLayer.layerData);
         this.initDropdowns();
+        this.pinned = false;
     }
 
 
@@ -41,10 +42,10 @@ export default class SquadFactions {
      * */
     formatFactions(state, isSelection = false) {
         if (!state.id) return state.text;
-        const imgHtml = `<img src="/img/flags/${state.element.value}.webp" class="img-flag" />`;
-        if (isSelection) return $(`<span class="countryFlags">${imgHtml}</span>`);
+        const imgHtml = `<img src="${process.env.API_URL}/img/flags/${state.element.value}.webp" class="img-flag" />`;
+        if (isSelection) return $(`<span class="countryFlags" title="${i18next.t(state.element.value + "_displayName", { ns: "factions" }) }">${imgHtml}</span>`);
         return $(`
-            <span class="countryFlags">
+            <span class="countryFlags" title="${i18next.t(state.element.value + "_displayName", { ns: "factions" }) }">
                 <p>${imgHtml}</p>
                 <span class="flag-label">${i18next.t("factions:" + state.element.value)}</span>
             </span>
@@ -64,7 +65,7 @@ export default class SquadFactions {
         const name = $element.data("name");
         return $(`
             <div class="unit-option">
-                <img src="/img/units/${type}.webp" class="unit-logo${isSelection ? " selection" : ""}" alt="${state.text}" />
+                <img src="${process.env.API_URL}/img/units/${type}.webp" class="unit-logo${isSelection ? " selection" : ""}" alt="${state.text}" />
                 <div class="unit-texts">
                     <div class="unit-type">${i18next.t(type, { ns: "units" })}</div>
                     ${isSelection ? "" : `<div class="unit-name">${i18next.t(name, { ns: "units" })}</div>`}
@@ -82,7 +83,7 @@ export default class SquadFactions {
     pinUnit(teamfaction, country, faction) {
     
         const $img = $("<img>", {
-            src: `/img/flags/${country}.webp`,
+            src: `${process.env.API_URL}/img/flags/${country}.webp`,
             alt: "Faction Icon",
             class: "faction-img"
         });
@@ -101,7 +102,7 @@ export default class SquadFactions {
                 $("#pinnedVehiclesTab").append(`
                     <div class="pinnedVehicles animate__animated animate__fadeInLeft" data-vehiclename="${vehicle.type}" data-vehtype="${vehicle.vehType}" data-vehicon="${vehicle.icon}" data-respawntime="${vehicle.respawnTime}">
                         <button type="button" class="btn-pined" aria-label="Select Factions">
-                            <img src="/img/ally/vehicles/${vehicle.icon}.webp" alt="Faction Icon"/>
+                            <img src="${process.env.API_URL}/img/icons/ally/vehicles/${vehicle.icon}.webp" alt="Faction Icon"/>
                         </button>
                         <div class="pinedVehiclesMeta">
                             <div class="pinedVehiclesName" data-i18n="vehicles:${vehicle.type}">${i18next.t(vehicle.type, { ns: "vehicles" })}</div>
@@ -170,6 +171,7 @@ export default class SquadFactions {
             const secs = seconds % 60;
             return `${minutes}:${secs.toString().padStart(2, "0")}`;
         }
+        this.pinned = true;
     }
 
 
@@ -187,6 +189,7 @@ export default class SquadFactions {
         $("#pinnedVehiclesTab").empty();
         $(".btn-pin").removeClass("active").text(i18next.t("common:pinToMap")).attr("data-i18n", "common:pinToMap");
         this.resetFactionsButton();
+        this.pinned = false;
     }
 
 
@@ -236,25 +239,16 @@ export default class SquadFactions {
     updateMainIcon(teamKey, FACTION) {
 
         var mainFlag;
+
         this.squadLayer.mains.forEach((main) => {
             if (main.objectName.toLowerCase().includes(teamKey)) {
                 mainFlag = main;
                 return;
             }
         });
-        
-        const MAIN_ICON = mainFlag.flag._icon;
 
-        // Remove any old country_XXX class
-        MAIN_ICON.classList.forEach(className => {
-            if (className.startsWith("country_")) MAIN_ICON.classList.remove(className);
-        });
-    
         const isValid = FACTION !== "";
-    
-        // Add new country_XXX class if valid
-        if (isValid) MAIN_ICON.classList.add(`country_${FACTION}`);
-    
+
         // Update the name text icon
         mainFlag.nameText.setIcon(
             new DivIcon({
@@ -263,10 +257,12 @@ export default class SquadFactions {
                 html: isValid ? FACTION : i18next.t(`common:${teamKey}`),
                 iconSize: [300, 20],
                 iconAnchor: App.userSettings.circlesFlags ? [150, 38] : [150, 32],
-                shadowUrl: "../img/img/markers/marker_shadow.webp",
+                //shadowUrl: "../img/icons/markers/marker_shadow.webp",
                 shadowSize: [0, 0],
             })
         );
+
+        mainFlag.updateMainIcon();
     }
 
 
@@ -355,8 +351,6 @@ export default class SquadFactions {
 
         this.UNIT1_SELECTOR.off("change").on("change", (event) => {
 
-            //console.log("unit1 change", event);
-
             // Reset UI
             $("#team1Vehicles").empty();
             if ($("#team1PinButton").hasClass("active")) this.unpinUnit();
@@ -370,7 +364,7 @@ export default class SquadFactions {
 
             // Broadcast the map change to the session if needed
             const broadcast = event.broadcast ?? true;
-            //console.log("unit1 change", event.target.value);
+
             if (broadcast && App.session.ws && App.session.ws.readyState === WebSocket.OPEN) {
                 console.log("broadcasting unit1 change", event.target.value);
                 App.session.ws.send(
@@ -384,6 +378,12 @@ export default class SquadFactions {
 
 
             selectedUnit.vehicles.forEach((vehicle) => {
+
+                // Skip boats if the team doesn't have boat spawn available
+                if (vehicle.spawnerSize === "Boat" && !factionData.team1boats) {
+                    console.debug("No boatspawner available ! Skipping boat.");
+                    return;
+                }
 
                 let delayInfo = "";
                 if (vehicle.delay > 0) {
@@ -399,7 +399,7 @@ export default class SquadFactions {
                 $("#team1Vehicles").append(`
                     <div class="vehicle-card animate__animated animate__fadeIn animate__faster">
                         <div class="vehicle-icon">
-                            <img src='/img/ally/vehicles/${vehicle.icon}.webp' alt='${vehicle.type}' class='vehicle-icon-img'>
+                            <img loading="lazy" src='${process.env.API_URL}/img/icons/ally/vehicles/${vehicle.icon}.webp' alt='${vehicle.type}' class='vehicle-icon-img'>
                         </div>
                         <div class="vehicle-icon">
                             <div class="vehicle-count">×${vehicle.count}</div>
@@ -424,8 +424,6 @@ export default class SquadFactions {
         });
 
         this.UNIT2_SELECTOR.off("change").on("change", (event) => {
-
-            //console.log("unit2 change", event.target.value);
 
             // Empty the vehicles container
             $("#team2Vehicles").empty();
@@ -453,7 +451,13 @@ export default class SquadFactions {
             }
 
             selectedUnit.vehicles.forEach((vehicle) => {
-                
+
+                // Skip boats if the team doesn't have boat spawn available
+                if (vehicle.spawnerSize === "Boat" && !factionData.team2boats) {
+                    console.debug("No boatspawner available ! Skipping boat.");
+                    return;
+                }
+
                 let delayInfo = "";
                 if (vehicle.delay > 0) {
                     delayInfo = `
@@ -468,7 +472,7 @@ export default class SquadFactions {
                 $("#team2Vehicles").append(`
                     <div class="vehicle-card animate__animated animate__fadeIn animate__faster">
                         <div class="vehicle-icon">
-                            <img src="/img/ally/vehicles/${vehicle.icon}.webp" alt='${vehicle.type}' class='vehicle-icon-img'>
+                            <img loading="lazy"src="${process.env.API_URL}/img/icons/ally/vehicles/${vehicle.icon}.webp" alt='${vehicle.type}' class='vehicle-icon-img'>
                         </div>
                         <div class="vehicle-icon">
                             <div class="vehicle-count">×${vehicle.count}</div>
@@ -530,8 +534,8 @@ export default class SquadFactions {
             }
             this.unpinUnit();
 
-            $(".btn-pin").removeClass("active").text(i18next.t("common:pinToMap"));
-            $(".btn-pin").attr("data-i18n", "common:pinToMap");
+            $(".btn-pin, #mapPinButton").removeClass("active").text(i18next.t("common:pinToMap"));
+            $(".btn-pin, #mapPinButton").attr("data-i18n", "common:pinToMap");
 
             let country;
             let faction;

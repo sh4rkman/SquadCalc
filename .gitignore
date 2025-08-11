@@ -8,3 +8,4 @@ public/dist/
 config/test-results/
 *.Identifier
 /.idea
+maintenance.enable

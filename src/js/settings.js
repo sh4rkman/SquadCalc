@@ -362,17 +362,6 @@ $("#enableFactionsSettings").on("change", function() {
         $("#hideLowRespawnSettings").prop("disabled", true);
         $("#disableSoundsSettings").prop("disabled", true);
         $("#defaultFactionsSettings").prop("disabled", true);
-        
-        App.minimap.layer.mains[0].flag._icon.classList.forEach(className => {
-            if (className.startsWith("country_")) {
-                App.minimap.layer.mains[0].flag._icon.classList.remove(className);
-            }
-        });
-        App.minimap.layer.mains[1].flag._icon.classList.forEach(className => {
-            if (className.startsWith("country_")) {
-                App.minimap.layer.mains[1].flag._icon.classList.remove(className);
-            }
-        });
     } else {
         $("#hideLowRespawnSettings").prop("disabled", false);
         $("#disableSoundsSettings").prop("disabled", false);
@@ -392,7 +381,7 @@ $("#circlesFlagsSettings").on("change", function() {
 
     if (App.minimap.layer){
         App.minimap.layer.flags.forEach(flag => {
-            flag.updateIcon();
+            flag.update();
         });
         if (!App.minimap.layer.isVisible) App.minimap.layer.toggleVisibility();
     }

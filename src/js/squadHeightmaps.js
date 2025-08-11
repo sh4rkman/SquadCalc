@@ -13,9 +13,8 @@ export default class SquadHeightmap {
         this.map = map;
         this.width = 500;
         this.heightmapScaling = this.width / this.map.pixelSize;
-        let heightmapPath = `${process.env.API_URL}/img${this.map.activeMap.mapURL}heightmap.json`
+        let heightmapPath = `${process.env.API_URL}/img/maps${this.map.activeMap.mapURL}heightmap.json`;
         this.json = this.loadHeightmapJson(heightmapPath);
-        //this.json = this.loadHeightmapJson(`maps${this.map.activeMap.mapURL}heightmap.json`);
     }
 
 

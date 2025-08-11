@@ -155,10 +155,11 @@ export const squadMinimap = Map.extend({
         // Show spinner
         this.spin(true, this.spinOptions);
 
-        // Add the new layer but keep it hidden initially
+        let imagePath = `${process.env.API_URL}/img/maps${this.activeMap.mapURL}${LAYERMODE}`;
+
         if (App.userSettings.highQualityImages) {
             // Use TileLayer for high-quality images
-            let tilePath = `${process.env.API_URL}/img${this.activeMap.mapURL}${LAYERMODE}_hq/{z}_{x}_{y}.webp`;
+            let tilePath = `${imagePath}_hq/{z}_{x}_{y}.webp`;
             this.activeLayer = new tileLayer(tilePath, {
                 bounds: this.imageBounds,
                 minNativeZoom: 0,
@@ -169,9 +170,8 @@ export const squadMinimap = Map.extend({
             this.activeLayer.addTo(this.layerGroup);
         } else {
             // Use ImageOverlay for standard images
-            let imgPath = `${process.env.API_URL}/img${this.activeMap.mapURL}${LAYERMODE}.webp`;
-            //let imgPath = `maps${this.activeMap.mapURL}${LAYERMODE}.webp`;
-            this.activeLayer = new imageOverlay(imgPath, this.imageBounds);
+            imagePath = `${imagePath}.webp`;
+            this.activeLayer = new imageOverlay(imagePath, this.imageBounds);
             this.activeLayer.addTo(this.layerGroup);
             $(this.activeLayer.getElement()).css("opacity", 0);
         }
