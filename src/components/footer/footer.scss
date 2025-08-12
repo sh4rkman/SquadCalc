@@ -1,76 +1,95 @@
+@use "../shared/variables";
+
 /***************************************
 ************   FOOTER   ***************
 **************************************/
 
 footer {
-    .fabs {
-        bottom: 1.2rem;
+    #footerButtons {
         position: fixed;
+        bottom: 0;
+        right: 0;
+        display: flex;
+        flex-direction: row-reverse;
+        align-items: center;
+        gap: 0.7em;
+        z-index: 10;
+        padding: 0.5em;
+        border-radius: 40px 40px 0 40px;
+        overflow: hidden;
+        transition: max-width 0.3s ease;
+        max-width: 1em;
+        min-width: 4em;
+        pointer-events: none;
+        &.expanded {
+            max-width: 20em;
+            .legacyButton,
+            .extraButton {
+                opacity: 1;
+                transform: translateX(0);
+                pointer-events: auto;
+            }
+            .settingsButton {
+                .fab {
+                    background-color: #333;
+
+                    &:hover {
+                        background: variables.$mainColor;
+                    }
+                }
+            }
+        }
+        .legacyButton,
+        .extraButton {
+            opacity: 0;
+            transform: translateX(0.5rem);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            pointer-events: none;
+        }
+        .settingsButton {
+            .fab {
+                background-color: variables.$mainColor;
+            }
+        }
+    }
+    .fabs {
         height: 2.5rem;
         width: 2.5rem;
-        &.fab-wrapper {
-            right: 1rem;
-        }
-        &.fab-wrapper2 {
-            left: 1rem;
-        }
+        position: relative;
         input {
             display: none;
         }
         .fab {
             background: #333;
             border-radius: 50%;
-            font-size: 1.1rem;
             height: 2.5rem;
-            position: relative;
-            transition: all 0.3s ease;
             width: 2.5rem;
-            z-index: 1;
             display: flex;
             align-items: center;
             justify-content: center;
+            position: relative;
+            z-index: 1;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s ease, background-color 0.4s ease;
+            cursor: pointer;
+            pointer-events: all;
             &:active {
-                transform: scale(0.8);
-            }
-            &::before {
-                background-color: rgba(255, 255, 255, 0.1);
-                border-radius: 50%;
-                content: "";
-                height: 100%;
-                left: 0;
-                position: absolute;
-                top: 0;
-                width: 100%;
+                transform: scale(0.85);
             }
             &:hover {
-                background: rgb(24, 24, 24);
-                cursor: pointer;
+                background: variables.$mainColor;
+                transform: scale(1.1);
             }
             svg {
                 fill: white;
-                height: 1.1em;
-                width: 1.1em;
-            }
-            &.fab2 {
-                &:hover {
-                    svg {
-                        transition: all 0.3s ease;
-                        transform: rotate(120deg);
-                    }
-                }
-            }
-            &.fab1 {
-                &:hover {
-                    svg {
-                        transition: all 0.3s ease;
-                        transform: rotateZ(180deg);
-                    }
-                    
-                }
+                height: 1em;
+                width: 1em;
+                transition: transform 0.3s ease;
             }
         }
     }
 }
+
 
 
 /***************************************

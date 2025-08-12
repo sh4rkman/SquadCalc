@@ -241,28 +241,25 @@
         }
     }
     footer {
-        .fabs {
-            bottom: 1.5rem;
-            height: 3.5rem;
-            width: 3.5rem;
-            &.fab-wrapper {
-                right: 1.5rem;
-            }
-            &.fab-wrapper2 {
-                left: 1.5rem;
-            }
-            .fab {
-                font-size: 1.5rem;
+        #footerButtons {
+            padding: 1em 1em 1em 2em;
+            gap: 1em;
+            max-width: 6em;
+            .fabs {
                 height: 3.5rem;
                 width: 3.5rem;
-                .fab-dots-2 {
-                    padding-top: 1rem;
+                .fab {
+                    height: 3.5rem;
+                    width: 3.5rem;
+                    svg {
+                        height: 1.3em;
+                        width: 1.3em;
+                    }
                 }
             }
+
         }
     }
-
-
 
     /* -- L*560px -- */
     @media (height >= 35em) {

@@ -197,8 +197,48 @@ $flag-circle-opacity: 0.2;
                 }
             }
         }
-        .kpPopup, .posPopUpWeapon {
+        .kpPopup, .posPopUpTarget, .posPopUpWeapon {
             @include popup-base-styles;
+        }
+         .calcPopup, .calcPopup2 {
+            @include variables.text-outline;
+            @extend .unselectable;
+            margin: 0;
+            padding: 0;
+            font-family: variables.$mainFont, Times, "Times New Roman", serif;
+            pointer-events: none;
+            font-size: var(--font-size-calc-popup);
+            height: 45px;
+            .bearingUiCalc {
+                font-size: 0.7em;
+            }
+            .leaflet-popup-tip,
+            .leaflet-popup-content-wrapper {
+                pointer-events: none;
+                background: transparent;
+                box-shadow: none;
+                color: variables.$mainTxtColor;
+            }
+            .leaflet-popup-content {
+                margin: 0;
+                line-height: 1;
+            }
+            &.calcPopup {
+                .leaflet-popup-content-wrapper {
+                    text-align: right;
+                }
+            }
+            &.calcPopup2 {
+                .leaflet-popup-content-wrapper {
+                    text-align: left;
+                }
+            }
+        }
+        .animatedWeaponMarker {
+            animation: weapon-appear 0.25s ease-in-out forwards 0s;
+        }
+        .animatedTargetMarker {
+            animation: target-appear 0.25s ease-in-out forwards 0s;
         }
         .gridText {
             @include variables.light-text-outline;
@@ -735,7 +775,7 @@ $flag-circle-opacity: 0.2;
     outline-color: #007acc;
     cursor: pointer;
     outline-width: 3px;
-    transform: scale(1.05);
+    transform: scale(1.1);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     &._selected {
         outline-color: green;

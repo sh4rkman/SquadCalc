@@ -20,6 +20,7 @@ export default class SquadFactions {
         this.init(squadLayer.layerData);
         this.initDropdowns();
         this.pinned = false;
+        this.pinnedFaction = "";
     }
 
 
@@ -78,26 +79,45 @@ export default class SquadFactions {
      * * * Pin the selected unit to the map and start a timer for its respawn time
      * * @param {Array} teamfaction - The faction data for the selected unit
      * * @param {string} country - The country code for the flag icon (RGF, USA, etc.)
-     *  * @param {string} faction - The faction name for the selected unit
+     *  * @param {string} unitName - The unit name for the selected unit
      * */
-    pinUnit(teamfaction, country, faction) {
-    
+    pinUnit(teamfaction, country, unitName, teamMain) {
+        this.unpinUnit(); // should be possible
+
+        this.pinnedFaction = teamMain;
+
+        // Set the pinned faction flag in the left side button
         const $img = $("<img>", {
             src: `${process.env.API_URL}/img/flags/${country}.webp`,
             alt: "Faction Icon",
             class: "faction-img"
         });
         $("#factionsButton button").empty().append($img);
-        
-        const selectedUnit = teamfaction.find((unit) => unit.unitObjectName === faction);
 
+        // Find the given faction in the teamfaction unit list
+        const selectedUnit = teamfaction.find((unit) => unit.unitObjectName === unitName);
         if (!selectedUnit) return;
+
+        var boatsAvailable;
+
+        if (teamMain === "00-Team1 Main") {
+            boatsAvailable = this.squadLayer.layerData.team1boats;
+            $("#team1PinButton").addClass("active").text(i18next.t("common:pinned"));
+            $("#team1PinButton").attr("data-i18n", "common:pinned");
+        } else {
+            boatsAvailable = this.squadLayer.layerData.team2boats;
+            $("#team2PinButton").addClass("active").text(i18next.t("common:pinned"));
+            $("#team2PinButton").attr("data-i18n", "common:pinned");
+        }
 
         selectedUnit.vehicles.forEach((vehicle) => {
             for (let i = 0; i < vehicle.count; i++){
                 
                 // Filter out vehicles with respawn time < 10 minutes
                 if (App.userSettings.hideLowRespawn && vehicle.respawnTime < 5) return;
+
+                // Skip boats if the team doesn't have boat spawn available
+                if (vehicle.spawnerSize === "Boat" && !boatsAvailable) return;
 
                 $("#pinnedVehiclesTab").append(`
                     <div class="pinnedVehicles animate__animated animate__fadeInLeft" data-vehiclename="${vehicle.type}" data-vehtype="${vehicle.vehType}" data-vehicon="${vehicle.icon}" data-respawntime="${vehicle.respawnTime}">
@@ -108,7 +128,6 @@ export default class SquadFactions {
                             <div class="pinedVehiclesName" data-i18n="vehicles:${vehicle.type}">${i18next.t(vehicle.type, { ns: "vehicles" })}</div>
                             <div class="pinedVehiclesTimer">${vehicle.respawnTime}<span class="" data-i18n="common:min">${i18next.t("common:min")}</span></div>
                         </div>
-                        <div class="vehicle-type" 
                     </div>
                 `);
             }
@@ -125,7 +144,6 @@ export default class SquadFactions {
             const $vehicleDiv = $(event.currentTarget);
             const $timerDiv = $vehicleDiv.find(".pinedVehiclesTimer");
             const baseRespawnTime = $vehicleDiv.data("respawntime");
-        
             if ($vehicleDiv.hasClass("active")) {
                 const timerId = $vehicleDiv.data("timerId");
                 if (timerId) clearInterval(timerId);
@@ -135,7 +153,6 @@ export default class SquadFactions {
                 $vehicleDiv.removeClass("active").removeData("timerId endTime");
                 return;
             }
-        
             $vehicleDiv.addClass("active");
             const vehIcon = $vehicleDiv.data("vehicon");
         
@@ -185,11 +202,14 @@ export default class SquadFactions {
             $vehicleDiv.removeData("timerId");
         });
 
-        // Now clear the pinned vehicles tab and reset buttons
+        // Now clear the pinned vehicles tab and reset Pin buttons
         $("#pinnedVehiclesTab").empty();
-        $(".btn-pin").removeClass("active").text(i18next.t("common:pinToMap")).attr("data-i18n", "common:pinToMap");
+        $(".btn-pin, #mapPinButton").removeClass("active").text(i18next.t("common:pinToMap"));
+        $(".btn-pin, #mapPinButton").attr("data-i18n", "common:pinToMap");
+        
         this.resetFactionsButton();
         this.pinned = false;
+        this.pinnedFaction = "";
     }
 
 
@@ -268,10 +288,12 @@ export default class SquadFactions {
 
     /**
      * * * Copy the vehicle name to the clipboard
+     * * * Add doublequotes to the vehicle name in case there is spaces
+     * * * By default squad are created with "1" so they are locked
      * @param {*} event 
      */
     copyVehicleName(event) {
-        navigator.clipboard.writeText(`CreateSquad ${event.target.innerText}`);
+        navigator.clipboard.writeText(`CreateSquad "${event.target.innerText}" 1`);
         animateCSS($(event.target), "fadeIn");
         const originalText = event.target.innerText;
         event.target.innerText = i18next.t("tooltips:copied");
@@ -385,6 +407,8 @@ export default class SquadFactions {
                     return;
                 }
 
+                let wikiURL = vehicle.type.split(' ')[0];
+
                 let delayInfo = "";
                 if (vehicle.delay > 0) {
                     delayInfo = `
@@ -398,9 +422,11 @@ export default class SquadFactions {
 
                 $("#team1Vehicles").append(`
                     <div class="vehicle-card animate__animated animate__fadeIn animate__faster">
-                        <div class="vehicle-icon">
-                            <img loading="lazy" src='${process.env.API_URL}/img/icons/ally/vehicles/${vehicle.icon}.webp' alt='${vehicle.type}' class='vehicle-icon-img'>
-                        </div>
+                        <a href="https://squad.fandom.com/wiki/${wikiURL}" target="_blank" title="Open the squadwiki page in a new tab">
+                            <div class="vehicle-icon">
+                                <img src="${process.env.API_URL}/img/icons/ally/vehicles/${vehicle.icon}.webp" alt='${vehicle.type}'>
+                            </div>
+                        </a>
                         <div class="vehicle-icon">
                             <div class="vehicle-count">×${vehicle.count}</div>
                         </div>
@@ -413,7 +439,7 @@ export default class SquadFactions {
                                 </span>
                                 <span class="count-delay"> ${delayInfo}</span>
                             </div>
-                            <div class="vehicle-type" data-i18n="vehicles:${vehicle.type}">${i18next.t(vehicle.type, { ns: "vehicles" })}</div>
+                            <div class="vehicle-type" data-i18n="vehicles:${vehicle.type}" title="${i18next.t("clickToCopy", { ns: "tooltips" })}">${i18next.t(vehicle.type, { ns: "vehicles" })}</div>
                         </div>
                     </div>
                 `);
@@ -452,11 +478,15 @@ export default class SquadFactions {
 
             selectedUnit.vehicles.forEach((vehicle) => {
 
+                console.log(vehicle)
+
                 // Skip boats if the team doesn't have boat spawn available
                 if (vehicle.spawnerSize === "Boat" && !factionData.team2boats) {
                     console.debug("No boatspawner available ! Skipping boat.");
                     return;
                 }
+
+                let wikiURL = vehicle.type.split(' ')[0];
 
                 let delayInfo = "";
                 if (vehicle.delay > 0) {
@@ -471,14 +501,16 @@ export default class SquadFactions {
 
                 $("#team2Vehicles").append(`
                     <div class="vehicle-card animate__animated animate__fadeIn animate__faster">
-                        <div class="vehicle-icon">
-                            <img loading="lazy"src="${process.env.API_URL}/img/icons/ally/vehicles/${vehicle.icon}.webp" alt='${vehicle.type}' class='vehicle-icon-img'>
-                        </div>
+                        <a href="https://squad.fandom.com/wiki/${wikiURL}" target="_blank" title="Open the squadwiki page in a new tab">
+                            <div class="vehicle-icon">
+                                <img src="${process.env.API_URL}/img/icons/ally/vehicles/${vehicle.icon}.webp" alt='${vehicle.type}'>
+                            </div>
+                        </a>
                         <div class="vehicle-icon">
                             <div class="vehicle-count">×${vehicle.count}</div>
                         </div>
                         <div class="vehicle-info">
-                            <div class="vehicle-type" data-i18n="vehicles:${vehicle.type}">${i18next.t(vehicle.type, { ns: "vehicles" })}</div>
+                            <div class="vehicle-type" data-i18n="vehicles:${vehicle.type}" title="${i18next.t("clickToCopy", { ns: "tooltips" })}">${i18next.t(vehicle.type, { ns: "vehicles" })}</div>
                             <div class="vehicle-meta">
                                 <span class="respawn">
                                     <span data-i18n="common:respawn">${i18next.t("common:respawn")}</span>
@@ -526,39 +558,36 @@ export default class SquadFactions {
 
         $(".btn-pin").off("click").on("click", (event) => {
             
+            //TODO most of the logic here should be moved into pinUnit()
+
             if ($(event.currentTarget).hasClass("active")) {
                 this.unpinUnit();
                 $(event.currentTarget).removeClass("active");
-                this.resetFactionsButton();
                 return;
-            }
-            this.unpinUnit();
-
-            $(".btn-pin, #mapPinButton").removeClass("active").text(i18next.t("common:pinToMap"));
-            $(".btn-pin, #mapPinButton").attr("data-i18n", "common:pinToMap");
+            } 
 
             let country;
             let faction;
             let teamfaction;
+            let teamMain;
             
             if (event.currentTarget.id === "team1PinButton") {
                 country = this.FACTION1_SELECTOR.val();
                 faction = this.UNIT1_SELECTOR.val();
                 teamfaction = factionData.units.team1Units;
+                teamMain = "00-Team1 Main"
             } else {
                 country = this.FACTION2_SELECTOR.val();
                 faction = this.UNIT2_SELECTOR.val();
                 teamfaction = factionData.units.team2Units;
+                teamMain = "Z-Team2 Main"
             }
 
             // if country of faction is empty or null, return
             if (country === null || faction === null) return;
             if (country === "" || faction === "") return;
 
-            $(event.currentTarget).addClass("active").text(i18next.t("common:pinned"));
-            $(event.currentTarget).attr("data-i18n", "common:pinned");
-
-            this.pinUnit(teamfaction, country, faction);
+            this.pinUnit(teamfaction, country, faction, teamMain);
     
         });
 

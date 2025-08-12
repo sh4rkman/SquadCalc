@@ -563,7 +563,7 @@ export class SquadObjective {
                     const factionId = ev.currentTarget.id;
                     
                     if (FACTION_SELECTOR.val() != factionId) {
-                        this.layer.factions.unpinUnit();
+                        if(this.objCluster.objectDisplayName === this.layer.factions.pinnedFaction) this.layer.factions.unpinUnit();
                         FACTION_SELECTOR.val(factionId).trigger($.Event("change", { broadcast: false }));
                     }
                     
@@ -600,19 +600,18 @@ export class SquadObjective {
   
                     tip.setContent(html);
 
-                    if (this.layer.factions.pinned) {
-                        $("#mapPinButton").addClass("active").text(i18next.t("common:pinned"));
-                        $("#mapPinButton").attr("data-i18n", "common:pinned");
-                        $("#mapPinButton").addClass("active");
+                    // If that unit is already pinned, set the button to "pinned"
+                    if (this.layer.factions.pinned && this.objCluster.objectDisplayName === this.layer.factions.pinnedFaction) {
+                        $("#mapPinButton").addClass("active").text(i18next.t("common:pinned")).attr("data-i18n", "common:pinned");
                     }
 
-                    // Attach a *new* listener for the units
+                    // Attach a new listener for the units
                     const unitItems = tip.popper.querySelectorAll(".faction-item");
                     const handleClickUnit = (ev) => {
                         const unitId = ev.currentTarget.id;
 
                         if (UNIT_SELECTOR.val() != unitId) {
-                            this.layer.factions.unpinUnit();
+                            if (this.objCluster.objectDisplayName === this.layer.factions.pinnedFaction) this.layer.factions.unpinUnit();
                             // Remove _selected from all faction-item units
                             const unitItems = ev.currentTarget.parentElement.querySelectorAll(".faction-item.units._selected");
                             unitItems.forEach(item => item.classList.remove("_selected"));
@@ -622,34 +621,34 @@ export class SquadObjective {
                         }
                     };
 
-                    const handleSpecialClick = (e) => {
-                        const btn = e.currentTarget;
-     
-                        if ($(e.currentTarget).hasClass("active")) {
-                            this.layer.factions.unpinUnit();
-                            $(e.currentTarget).removeClass("active").text(i18next.t("common:pinToMap"));
-                            this.layer.factions.resetFactionsButton();
+                    const handleClickPin = (e) => {
+
+                        const $btn = $(e.currentTarget);
+                       
+                        // Already pinned ? Unpin.
+                        if ($btn.hasClass("active")) {
+                            this.layer.factions.unpinUnit(); 
+                            $btn.removeClass("active").text(i18next.t("common:pinToMap"));
                             return;
-                        } 
-                        btn.classList.toggle("active");
-                        $(btn).text(i18next.t("common:pinned")).attr("data-i18n", "common:pinned");
-                        this.layer.factions.pinUnit(UNITS, FACTION_SELECTOR.val(), UNIT_SELECTOR.val());
+                        }
+
+                        // Pin the unit
+                        this.layer.factions.pinUnit(UNITS, FACTION_SELECTOR.val(), UNIT_SELECTOR.val(), this.objCluster.objectDisplayName);
+
+                        // Set the button to active & hide the contextmenu
+                        $btn.addClass("active").text(i18next.t("common:pinned"));
                         tip.hide();
                     };
 
-                    const specialButton = tip.popper.querySelector("#mapPinButton");
-                    
-                    specialButton.addEventListener("click", handleSpecialClick);
-
-
-
+                    const ctxPinButton = tip.popper.querySelector("#mapPinButton");
+                    ctxPinButton.addEventListener("click", handleClickPin);
                     unitItems.forEach(item => item.addEventListener("click", handleClickUnit));
 
                     // Add cleanup for the new listener
                     const prevCleanup = tip._cleanup;
                     tip._cleanup = () => {
                         unitItems.forEach(item => item.removeEventListener("click", handleClickUnit));
-                        specialButton.removeEventListener("click", handleSpecialClick);
+                        ctxPinButton.removeEventListener("click", handleClickPin);
                         if (prevCleanup) prevCleanup(); // also clean faction listeners
                     };
                 };

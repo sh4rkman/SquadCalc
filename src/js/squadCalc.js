@@ -379,6 +379,11 @@ export default class SquadCalc {
 
     }
 
+    closeMenu() {
+        footerButtons.classList.remove('expanded');
+        $('.fab2').html(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Pro 6.7.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2024 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64l384 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 128C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32l384 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 288c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32L32 448c-17.7 0-32-14.3-32-32s14.3-32 32-32l384 0c17.7 0 32 14.3 32 32z"/></svg>`);
+    }
+
     loadUI(){
         const calcInformation = document.querySelector("#calcInformation");
         const weaponInformation = document.querySelector("#weaponInformation");
@@ -549,12 +554,17 @@ export default class SquadCalc {
             this.minimap.layer.toggleVisibility();
         });
 
+        $("#fabCheckbox3").on("change", () => { 
+            window.open('https://squadtactics.app', '_blank', 'noopener');
+        });
+
         $("#fabCheckbox2").on("change", () => { this.switchUI();});
 
         $("#factionsButton").on("click", () => {
             document.querySelector("#factionsDialog").showModal();
         });
         
+
 
         $("#mapLayerMenu").find("button.btn-session").on("click", () => {
             if ($(".btn-session").hasClass("active")) {
