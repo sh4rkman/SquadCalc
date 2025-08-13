@@ -72,7 +72,7 @@ export class SquadObjective {
 
         let dropdownSelector, fileName;
 
-        if (this.objectName.replaceAll(" ", "") === "00-Team1Main") {
+        if (this.objectName === "00-Team1 Main") {
             dropdownSelector = ".dropbtn8";
         } else {
             dropdownSelector = ".dropbtn10";
@@ -137,7 +137,7 @@ export class SquadObjective {
             nameTextClassName += " main";
 
             if (process.env.DISABLE_FACTIONS != "true" && App.userSettings.enableFactions) {
-                if (this.objectName === "00-Team1Main") {
+                if (this.objectName === "00-Team1 Main") {
                     if ($(".dropbtn8").val() != null) {
                         html = $(".dropbtn8").val();  
                     } else {
@@ -151,7 +151,7 @@ export class SquadObjective {
                     }
                 }
             } else {
-                if (this.objectName === "00-Team1Main") html = i18next.t("common:team1");
+                if (this.objectName === "00-Team1 Main") html = i18next.t("common:team1");
                 else html = i18next.t("common:team2");
             }
         }
@@ -286,20 +286,20 @@ export class SquadObjective {
         if (App.userSettings.circlesFlags) className += " circleFlag";
 
         if (this.isMain) { 
-            if (this.layer.layerData.gamemode === "RAAS"){
+            if (this.layer.gamemode === "RAAS"){
                 className += " main selectable";
             } else {
                 className += " main unselectable";
             }
         } else {
-            if (this.layer.layerData.gamemode != "AAS" && this.layer.layerData.gamemode != "Destruction" && this.layer.layerData.gamemode != "Skirmish"){
+            if (this.layer.isRandomized){
                 html = position;
                 className += " flag" + position;
             }
         } 
 
         if (Math.abs(this.layer.startPosition - this.position) === this.layer.currentPosition){
-            if (this.layer.layerData.gamemode != "AAS" && this.layer.layerData.gamemode != "Destruction" && this.layer.layerData.gamemode != "Skirmish"){
+            if (this.layer.isRandomized){
                 className += " next"; 
             }
         } else this.isNext = false;
@@ -309,7 +309,7 @@ export class SquadObjective {
 
         this.isSelected = false;
 
-        if (this.layer.layerData.gamemode != "AAS" && this.layer.layerData.gamemode != "Destruction" && this.layer.layerData.gamemode != "Skirmish"){
+        if (this.layer.isRandomized){
             this.flag.on("click", this._handleClick, this);
             this.flag.on("contextmenu", this._handleContextMenu, this);
             this.flag.on("dblclick", this._handleDoubleClick, this);
@@ -348,11 +348,11 @@ export class SquadObjective {
         }
 
         if (this.isMain) { 
-            if (this.layer.layerData.gamemode === "RAAS") className += " main selectable";
+            if (this.layer.gamemode === "RAAS") className += " main selectable";
             else className += " main unselectable";
         } else {
             // if RAAS/Invasion, add the flag number and a colored icon
-            if (this.layer.layerData.gamemode != "AAS" && this.layer.layerData.gamemode != "Destruction" && this.layer.layerData.gamemode != "Skirmish") {
+            if (this.layer.isRandomized) {
                 className += " flag" + this.position;
                 html = this.position;
             }
@@ -369,7 +369,7 @@ export class SquadObjective {
 
     _handleClick(){
         clearTimeout(this.mouseOverTimeout);
-        if (this.layer.layerData.gamemode != "Invasion" && this.layer.layerData.gamemode != "RAAS") return;
+        if (!this.layer.isRandomized) return;
         this.layer._handleFlagClick(this);
     }
 
@@ -378,6 +378,7 @@ export class SquadObjective {
         return false;
     }
 
+    
     _handleContextMenu(e){
         
         if (this.isMain) {
@@ -385,17 +386,13 @@ export class SquadObjective {
             return;
         }
 
-        if (this.layer.layerData.gamemode != "Invasion" && this.layer.layerData.gamemode != "RAAS") return;
-
-        if (this.isSelected){
-            this.layer._handleFlagClick(this);
-        }
+        if (this.layer.isRandomized && this.isSelected) this.layer._handleFlagClick(this);
     }
 
     _handleMouseOver() {
 
         // On RAAS/Invasion, preview the lane on hover
-        if (this.layer.layerData.gamemode === "Invasion" || this.layer.layerData.gamemode === "RAAS") {
+        if (this.layer.isRandomized) {
             if (this.isNext && App.userSettings.revealLayerOnHover) {
                 this.mouseOverTimeout = setTimeout(() => {
                     this.layer.preview(this);
@@ -563,7 +560,7 @@ export class SquadObjective {
                     const factionId = ev.currentTarget.id;
                     
                     if (FACTION_SELECTOR.val() != factionId) {
-                        if(this.objCluster.objectDisplayName === this.layer.factions.pinnedFaction) this.layer.factions.unpinUnit();
+                        if (this.objCluster.objectDisplayName === this.layer.factions.pinnedFaction) this.layer.factions.unpinUnit();
                         FACTION_SELECTOR.val(factionId).trigger($.Event("change", { broadcast: false }));
                     }
                     

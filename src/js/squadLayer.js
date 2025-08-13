@@ -4,6 +4,7 @@ import { SquadObjective } from "./squadObjective.js";
 import { App } from "../app.js";
 import "./libs/leaflet-measure-path.js";
 import SquadFactions from "./squadFactions.js";
+import { Hexagon } from "./libs/leaflet-hexagon.js";
 
 export default class SquadLayer {
 
@@ -11,6 +12,11 @@ export default class SquadLayer {
         this.map = map;
         this.activeLayerMarkers = new LayerGroup().addTo(this.map);
         this.layerData = layerData;
+        this.capturePoints = layerData.capturePoints;
+        this.objectives = layerData.objectives;
+        this.gamemode = layerData.gamemode;
+        this.isRandomized = this.isRandomized(); 
+        
         [this.offset_x, this.offset_y] = this.getLayerOffsets(this.layerData.mapTextureCorners);
         this.isVisible = true;
         this.currentPosition = 0;
@@ -61,173 +67,170 @@ export default class SquadLayer {
 
 
     /**
+     * Checks if the current layer's gamemode is randomized.
+     * A layer is considered randomized if its gamemode is either "RAAS" or "Invasion"
+     * @returns {boolean} True if the layer is randomized, false otherwise
+     */
+    isRandomized() {
+        return this.gamemode === "RAAS" || this.gamemode === "Invasion";
+    }
+
+
+    /**
      * xxxx
      * @return {number} - xxxx
      */
     init(){
 
-        // Destruction
-        if (this.layerData.gamemode === "Destruction") {
+        // Create Flags
+        switch (this.gamemode) {
+        case "Destruction":
+            this.initDestruction(this.capturePoints);
+            break;
+        case "AAS":
+        case "Skirmish":
+        case "Seed":
+            this.initPredictiveLayer();
+            break;
+        case "Territory Control":
+            this.initTerritoryControl(this.capturePoints);
+            break;
+        case "RAAS":
+        case "Invasion":
+            this.initRandomizedLayer();
+            break;
+        }
 
-            // Creating the Caches
-            Object.values(this.layerData.capturePoints.objectiveSpawnLocations).forEach((cache) => {
-                const latlng = this.convertToLatLng(cache.location_x, cache.location_y);
-                const radius = 1.5 * this.map.gameToMapScale;
-                this.caches.addLayer(new Circle(latlng, {
-                    radius: radius,
-                    color: App.mainColor,
-                    fillColor: "white",
-                    opacity: 1,
-                    weight: 1.5,
-                    fillOpacity: 1,
-                }).addTo(this.activeLayerMarkers));
-            });
+        // Create Other Layer Assets
+        this.createHelipads();
+        this.createDeployables();
+        this.createProtectionZones();
+        this.createBorders();
+    }
 
-            // Creating the Mains
-            Object.values(this.layerData.capturePoints.points.objectives).forEach((main) => {
-                const latlng = this.convertToLatLng(main.location_x, main.location_y);
-                const newFlag = new SquadObjective(latlng, this, main, 1, main);
+
+    /**
+     * Initialize a layer going from first to last point
+     * AAS - SEED - SKIRMISH
+     */
+    initPredictiveLayer(){
+        const pointsOrder = this.capturePoints?.points?.pointsOrder;
+        const objectives = this.objectives;
+
+        let orderedObjectives = [];
+
+        // Sort objectives according to their order in layerData.capturePoints.points.pointsOrder
+        const nameToObjective = Object.values(objectives).reduce((acc, obj) => {
+            acc[obj.objectDisplayName] = obj;
+            return acc;
+        }, {});
+
+        orderedObjectives = pointsOrder.map(name => nameToObjective[name]).filter(Boolean);
+
+        orderedObjectives.forEach((obj) => {
+            const latlng = this.convertToLatLng(obj.location_x, obj.location_y);
+
+            // Identify and process mains
+            if (obj.name === "Main") {
+                this.path.push(latlng);
+                let newFlag = new SquadObjective(latlng, this, obj, 1, obj);
                 this.flags.push(newFlag);
                 this.mains.push(newFlag);
-                newFlag.flag.off();
-                newFlag.flag.options.interactive = false;
+                return;
+            }
+
+            const newFlag = new SquadObjective(latlng, this, obj, 0, obj);
+            this.path.push(latlng);
+            this.flags.push(newFlag);
+
+            obj.objects.forEach(cap => {
+                newFlag.createCapZone(cap);
             });
+        });
 
+        this.polyline.setLatLngs(this.path);
+    }
 
-            // Creating the phase aeras
-            Object.values(this.layerData.capturePoints.destructionObject.phases).forEach((phases) => {
+    /**
+     * Initialize TC
+     * @param {Array} capturePoints - List of Points from layerData
+     */
+    initTerritoryControl(capturePoints) {
 
-                phases.phaseObjectives.forEach((obj) => {
+        // Create the Mains
+        Object.values(capturePoints.points.objectives).forEach((main) => {
+            const latlng = this.convertToLatLng(main.location_x, main.location_y);
+            const newFlag = new SquadObjective(latlng, this, main, 1, main);
+            this.flags.push(newFlag);
+            this.mains.push(newFlag);
+        });
 
-                    const latlngs = [];
-                    let totalLat = 0;
-                    let totalLng = 0;
-                    let center;
-
-                    obj.splinePoints.forEach((point) => {
-                        let latlng = this.convertToLatLng(point.location_x, point.location_y);
-                        totalLat += ((point.location_y - this.offset_y) / 100 * -this.map.gameToMapScale);
-                        totalLng += ((point.location_x - this.offset_x) / 100 * this.map.gameToMapScale);
-                        latlngs.push(latlng);
-                    });
+        // Create the Hexagons
+        Object.values(capturePoints.hexs.hexs).forEach((hex) => {
+            const LATLNG = this.convertToLatLng(hex.location_x, hex.location_y);
+            const HEXRADIUS = (hex.boxExtent.location_x * this.map.gameToMapScale) / 100;
+            const teamColors = { 0: "white", 1: "MediumBlue", 2: "firebrick" };
+            const color = teamColors[hex.initialTeam];
             
-                    // Draw the aeras
-                    new Polygon(latlngs, {
-                        color: "red",
-                        dashArray: "10,8",
-                        weight: 1,
-                        fillOpacity: 0,
-                    }).addTo(this.phaseAeras);
-
-                    // This is the centroid where we'll place the phase number
-                    center = [totalLat / latlngs.length, totalLng / latlngs.length];
-                    
-                    // Place the phase number in the center of the zone
-                    new Marker(center, {
-                        interactive: false,
-                        icon: new DivIcon({
-                            className: "destructionPhase",
-                            html: phases.PhaseNumber + 1,
-                            iconSize: [50, 50],
-                            iconAnchor: [25, 25]
-                        })
-                    }).addTo(this.phaseNumber);
-                });
-            });
-
-            this.createAssets();
-            this.createBorders();
-            return;
-        }
-
-        // AAS
-        if (
-            this.layerData.gamemode === "AAS" ||
-            this.layerData.gamemode === "Skirmish" ||
-            this.layerData.gamemode === "Seed"
-        ) {
-            const pointsOrder = this.layerData.capturePoints?.points?.pointsOrder;
-            const objectives = this.layerData.objectives;
-
-            let orderedObjectives = [];
-
-            // Sort objectives according to their order in layerData.capturePoints.points.pointsOrder
-            
-            const nameToObjective = Object.values(objectives).reduce((acc, obj) => {
-                acc[obj.objectDisplayName] = obj;
-                return acc;
-            }, {});
-
-            orderedObjectives = pointsOrder.map(name => nameToObjective[name]).filter(Boolean);
+            new Hexagon(LATLNG, HEXRADIUS, {color: color, weight: 1}).addTo(this.activeLayerMarkers);
+            new Marker(LATLNG, {
+                interactive: false,
+                icon: new DivIcon({
+                    className: "hexNumber",
+                    html: hex.hexNum,
+                    iconSize: [50, 50],
+                    iconAnchor: [25, 12]
+                })
+            }).addTo(this.activeLayerMarkers);
+        });
+    }
 
 
-            orderedObjectives.forEach((obj) => {
-                const latlng = this.convertToLatLng(obj.location_x, obj.location_y);
+    /**
+     * Initialize a layer going from first to last point
+     * RAAS - Invasion
+     */
+    initRandomizedLayer() {
 
-                // Identify and process mains
-                if (obj.name === "Main") {
-                    this.path.push(latlng);
-                    let newFlag = new SquadObjective(latlng, this, obj, 1, obj);
-                    this.flags.push(newFlag);
-                    this.mains.push(newFlag);
-                    return;
-                }
+        Object.values(this.objectives).forEach((objCluster) => {
 
-                const newFlag = new SquadObjective(latlng, this, obj, 0, obj);
-                this.path.push(latlng);
-                this.flags.push(newFlag);
-
-                obj.objects.forEach(cap => {
-                    newFlag.createCapZone(cap);
-                });
-            });
-
-            this.polyline.setLatLngs(this.path);
-            this.createAssets();
-            this.createBorders();
-            return;
-        }
-
-        // RAAS / INVASION
-
-        Object.values(this.layerData.objectives).forEach((objCluster) => {
-
+            // Create Mains
             if (!objCluster.points) {
                 const latlng = this.convertToLatLng(objCluster.location_x, objCluster.location_y);
                 const newFlag = new SquadObjective(latlng, this, objCluster, 1, objCluster);
                 this.mains.push(newFlag);
                 this.flags.push(newFlag);
+                return;
             } 
-            else {
-                objCluster.points.forEach((obj) => {
 
-                    let latlng = this.convertToLatLng(obj.location_x, obj.location_y);
-                    let flagExists = false;
+            objCluster.points.forEach((obj) => {
 
-                    this.flags.forEach((flag) => {
-                        if (this.areLatLngsClose(flag.latlng, latlng)) {
-                            console.debug(`adding cluster ${objCluster.name} to flag ${flag.name}`);
-                            console.debug("new clustersList: ", flag.clusters);
-                            flag.addCluster(objCluster);
-                            flagExists = true;
-                        }
-                    });
+                let latlng = this.convertToLatLng(obj.location_x, obj.location_y);
+                let flagExists = false;
 
-                    if (!flagExists) {
-                        const newFlag = new SquadObjective(latlng, this, obj, 0, objCluster);
-                        this.flags.push(newFlag);
-                        newFlag.hide();
-                        // Adding capzones to the flag object
-                        obj.objects.forEach((cap) => {
-                            newFlag.createCapZone(cap);
-                        });
+                this.flags.forEach((flag) => {
+                    if (this.areLatLngsClose(flag.latlng, latlng)) {
+                        console.debug(`adding cluster ${objCluster.name} to flag ${flag.name}`);
+                        console.debug("new clustersList: ", flag.clusters);
+                        flag.addCluster(objCluster);
+                        flagExists = true;
                     }
                 });
-            }
+
+                if (!flagExists) {
+                    const newFlag = new SquadObjective(latlng, this, obj, 0, objCluster);
+                    this.flags.push(newFlag);
+                    newFlag.hide();
+                    // Adding capzones to the flag object
+                    obj.objects.forEach((cap) => {
+                        newFlag.createCapZone(cap);
+                    });
+                }
+            });
         });
 
         // Pre-select first main flag in invasion
-        if (this.layerData.gamemode === "Invasion") {
+        if (this.gamemode === "Invasion") {
             this.mains.forEach((main) => {
                 // Invaders are always Team 1
                 if (main.objectName.toLowerCase().includes("team1")){
@@ -236,9 +239,72 @@ export default class SquadLayer {
                 }
             });
         }
+    
+    }
 
-        this.createAssets();
-        this.createBorders();
+    /**
+     * Initialize Destruction layer
+     */
+    initDestruction(capturePoints) {
+        // Creating the Caches
+        Object.values(capturePoints.objectiveSpawnLocations).forEach((cache) => {
+            const latlng = this.convertToLatLng(cache.location_x, cache.location_y);
+            const radius = 1.5 * this.map.gameToMapScale;
+            this.caches.addLayer(new Circle(latlng, {
+                radius: radius,
+                color: App.mainColor,
+                fillColor: "white",
+                opacity: 1,
+                weight: 1.5,
+                fillOpacity: 1,
+            }).addTo(this.activeLayerMarkers));
+        });
+        // Creating the Mains
+        Object.values(capturePoints.points.objectives).forEach((main) => {
+            const latlng = this.convertToLatLng(main.location_x, main.location_y);
+            const newFlag = new SquadObjective(latlng, this, main, 1, main);
+            this.flags.push(newFlag);
+            this.mains.push(newFlag);
+        });
+        // Creating the phase aeras
+        Object.values(capturePoints.destructionObject.phases).forEach((phases) => {
+
+            phases.phaseObjectives.forEach((obj) => {
+                const latlngs = [];
+                let totalLat = 0;
+                let totalLng = 0;
+                let center;
+
+                obj.splinePoints.forEach((point) => {
+                    let latlng = this.convertToLatLng(point.location_x, point.location_y);
+                    totalLat += ((point.location_y - this.offset_y) / 100 * -this.map.gameToMapScale);
+                    totalLng += ((point.location_x - this.offset_x) / 100 * this.map.gameToMapScale);
+                    latlngs.push(latlng);
+                });
+        
+                // Draw the aeras
+                new Polygon(latlngs, {
+                    color: "red",
+                    dashArray: "10,8",
+                    weight: 1,
+                    fillOpacity: 0,
+                }).addTo(this.phaseAeras);
+
+                // This is the centroid where we'll place the phase number
+                center = [totalLat / latlngs.length, totalLng / latlngs.length];
+                
+                // Place the phase number in the center of the zone
+                new Marker(center, {
+                    interactive: false,
+                    icon: new DivIcon({
+                        className: "destructionPhase",
+                        html: phases.PhaseNumber + 1,
+                        iconSize: [50, 50],
+                        iconAnchor: [25, 25]
+                    })
+                }).addTo(this.phaseNumber);
+            });
+        });
     }
 
 
@@ -375,7 +441,7 @@ export default class SquadLayer {
                         className: "deployables",
                         iconSize: [25, 25]
                     })
-                }).addTo(this.activeLayerMarkers)
+                }).addTo(this.activeLayerMarkers);
 
                 const iconElement = marker.getElement();
                 iconElement.style.backgroundImage = `url('${process.env.API_URL}/img/icons/ally/deployables/deployable_ammocrate.webp')`;
@@ -563,14 +629,6 @@ export default class SquadLayer {
         });
     }
 
-    
-    createAssets() {
-        this.createHelipads();
-        this.createDeployables();
-        this.createProtectionZones();
-    }
-
-
     setMainZoneOpacity(on){
         var opacity = on ? 1 : 0;
         const textOpacity = on ? 1 : 0;
@@ -624,7 +682,7 @@ export default class SquadLayer {
         if (Math.abs(this.startPosition - flag.position) > this.currentPosition) {
 
             // In RAAS, we can click on the oposite main flag to reset the layer
-            if (this.layerData.gamemode === "RAAS" && flag.isMain){
+            if (this.gamemode === "RAAS" && flag.isMain){
                 if (broadcast && App.session.ws && App.session.ws.readyState === WebSocket.OPEN) {
                     App.session.ws.send(
                         JSON.stringify({
@@ -635,6 +693,7 @@ export default class SquadLayer {
                     );
                     console.debug(`Sent layer click update for flag #${flag.objectName}`);
                 }
+
                 this._resetLayer();
                 this._handleFlagClick(flag, false);
                 return true;
@@ -669,7 +728,7 @@ export default class SquadLayer {
                 return;
             }
 
-            if (flag.isMain){
+            if (flag.isMain && this.gamemode != "Invasion"){
                 this._resetLayer();
                 this._handleFlagClick(flag);
                 return;
@@ -775,7 +834,7 @@ export default class SquadLayer {
         console.debug("****************************************");
 
         // Hide all clusters first, then selectively show reachable ones
-        Object.values(this.layerData.objectives).forEach((cluster) => {
+        Object.values(this.objectives).forEach((cluster) => {
             console.debug("Should we hide cluster :", cluster.name);
             // console.debug("   -> Cluster position", cluster.pointPosition);
             // console.debug("   -> Clicked flag position", flag.position);
@@ -802,11 +861,11 @@ export default class SquadLayer {
         // Show reachable clusters
         reachableClusters.forEach((clusterName) => {
 
-            let cluster = this.layerData.objectives[clusterName];
+            let cluster = this.objectives[clusterName];
 
             // If the cluster is not found directly, search for a matching displayName (mains)
             if (!cluster) {
-                cluster = Object.values(this.layerData.objectives).find(
+                cluster = Object.values(this.objectives).find(
                     (obj) => obj.objectDisplayName === clusterName
                 );
             }
@@ -936,7 +995,7 @@ export default class SquadLayer {
         console.debug("****************************************");
 
         // Hide all clusters first, then selectively show reachable ones
-        Object.values(this.layerData.objectives).forEach((cluster) => {
+        Object.values(this.objectives).forEach((cluster) => {
             console.debug("Should we fade cluster :", cluster.name);
             console.debug("   -> Cluster position", cluster.pointPosition);
             console.debug("   -> Clicked flag position", flag.position);
@@ -958,11 +1017,11 @@ export default class SquadLayer {
         // Show reachable clusters
         reachableClusters.forEach((clusterName) => {
 
-            let cluster = this.layerData.objectives[clusterName];
+            let cluster = this.objectives[clusterName];
 
             // If the cluster is not found directly, search for a matching displayName (mains)
             if (!cluster) {
-                cluster = Object.values(this.layerData.objectives).find(
+                cluster = Object.values(this.objectives).find(
                     (obj) => obj.objectDisplayName === clusterName
                 );
             }
@@ -995,7 +1054,7 @@ export default class SquadLayer {
         reachableClusters.add(clusterName); // Mark this cluster as reachable)
 
         // Sometimes links are stored in clusters, sometimes in lanes
-        const links = this.layerData.capturePoints.lanes.links || this.layerData.capturePoints.clusters.links;
+        const links = this.capturePoints.lanes.links || this.capturePoints.clusters.links;
 
         // Traverse each link to find connected clusters
         links.forEach((link) => {
@@ -1030,9 +1089,9 @@ export default class SquadLayer {
         });
 
         // Pre-select first main flag in invasion
-        if (this.layerData.gamemode === "Invasion") {
+        if (this.gamemode === "Invasion") {
             this.mains.forEach((main) => {
-                if (main.objectName === this.layerData.capturePoints.clusters.listOfMains[0].replaceAll(" ", "")){
+                if (main.objectName === this.capturePoints.clusters.listOfMains[0]){
                     this._handleFlagClick(main, false);
                 }
             });
@@ -1054,7 +1113,7 @@ export default class SquadLayer {
         });
 
         // Caches opacity
-        if (this.layerData.gamemode === "Destruction") {
+        if (this.gamemode === "Destruction") {
 
             this.caches.eachLayer((layer) => {
                 layer.setStyle({ fillOpacity: value, opacity: value });

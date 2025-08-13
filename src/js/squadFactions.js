@@ -98,7 +98,7 @@ export default class SquadFactions {
         const selectedUnit = teamfaction.find((unit) => unit.unitObjectName === unitName);
         if (!selectedUnit) return;
 
-        var boatsAvailable;
+        let boatsAvailable;
 
         if (teamMain === "00-Team1 Main") {
             boatsAvailable = this.squadLayer.layerData.team1boats;
@@ -407,7 +407,7 @@ export default class SquadFactions {
                     return;
                 }
 
-                let wikiURL = vehicle.type.split(' ')[0];
+                let wikiURL = vehicle.type.split(" ")[0];
 
                 let delayInfo = "";
                 if (vehicle.delay > 0) {
@@ -478,15 +478,13 @@ export default class SquadFactions {
 
             selectedUnit.vehicles.forEach((vehicle) => {
 
-                console.log(vehicle)
-
                 // Skip boats if the team doesn't have boat spawn available
                 if (vehicle.spawnerSize === "Boat" && !factionData.team2boats) {
                     console.debug("No boatspawner available ! Skipping boat.");
                     return;
                 }
 
-                let wikiURL = vehicle.type.split(' ')[0];
+                let wikiURL = vehicle.type.split(" ")[0];
 
                 let delayInfo = "";
                 if (vehicle.delay > 0) {
@@ -575,12 +573,12 @@ export default class SquadFactions {
                 country = this.FACTION1_SELECTOR.val();
                 faction = this.UNIT1_SELECTOR.val();
                 teamfaction = factionData.units.team1Units;
-                teamMain = "00-Team1 Main"
+                teamMain = "00-Team1 Main";
             } else {
                 country = this.FACTION2_SELECTOR.val();
                 faction = this.UNIT2_SELECTOR.val();
                 teamfaction = factionData.units.team2Units;
-                teamMain = "Z-Team2 Main"
+                teamMain = "Z-Team2 Main";
             }
 
             // if country of faction is empty or null, return

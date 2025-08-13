@@ -102,7 +102,6 @@ $flag-circle-opacity: 0.2;
                 display: grid;
                 letter-spacing: 0;
                 outline: solid 3px rgb(104, 104, 104);
-                pointer-events: none;
                 &.selected {
                     background-color: rgba(0, 128, 0, 1);
                     outline-color: rgb(0, 90, 0);
@@ -164,8 +163,8 @@ $flag-circle-opacity: 0.2;
                 }
             }
             &.main.unselectable {
-                // pointer-events: none;
                 background-color: rgba(255, 255, 255, 0.4);
+                outline: solid 3px rgb(104, 104, 104)!important;
                 &:focus {
                     outline: solid 3px rgb(104, 104, 104)!important;
                 }
@@ -254,6 +253,12 @@ $flag-circle-opacity: 0.2;
         .destructionPhase {
             @include variables.light-text-outline;
             font-size: 2em;
+            text-align: center;
+            font-family: variables.$mainFont, Times, "Times New Roman", serif;
+        }
+        .hexNumber {
+            @include variables.light-text-outline;
+            font-size: 1.1em;
             text-align: center;
             font-family: variables.$mainFont, Times, "Times New Roman", serif;
         }
@@ -672,6 +677,8 @@ $flag-circle-opacity: 0.2;
     cursor: pointer;
     user-select: none;
     width: 100%;
+    min-width: 100px;
+    font-size: 0.8em;
     &:hover {
         background: #111;
     }

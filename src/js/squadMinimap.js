@@ -1,8 +1,8 @@
-import {imageOverlay, tileLayer, Map, CRS, SVG, Util, LayerGroup, Popup, Icon, LatLngBounds, LatLng, Browser } from "leaflet";
+import {imageOverlay, tileLayer, Map, CRS, SVG, Util, LayerGroup, Popup, LatLngBounds, LatLng, Browser } from "leaflet";
 import squadGrid from "./squadGrid.js";
 import squadHeightmap from "./squadHeightmaps.js";
 import { App } from "../app.js";
-import { squadWeaponMarker, squadTargetMarker, squadStratMarker } from "./squadMarker.js";
+import { squadWeaponMarker, squadTargetMarker } from "./squadMarker.js";
 import { mortarIcon, mortarIcon1, mortarIcon2 } from "./squadIcon.js";
 import { explode } from "./animations.js";
 import { fetchMarkersByMap } from "./squadCalcAPI.js";
@@ -82,31 +82,12 @@ export const squadMinimap = Map.extend({
             interactive: false,
         });
 
-        // if (Browser.mobile) {
-        //     // Custom events handlers
-        //     this.on("click", function(e) { 
-        //         this._handleclick(e);
-        //     });
-
-        //     this.on("dblclick", function(e) { 
-        //         this._handleDoubleClick(e); 
-        //         App.openToast("success", "dblclick", "");
-        //     });
-        // } else {
-        //     // Custom events handlers
-        //     this.on("click", function(e) { 
-        //         this._handleDoubleClick(e); 
-        //     });
-        //     this.on("dblclick", function(e) { 
-        //         return false;
-        //     });
-        // }
-
-        //Custom events handlers
         if (!Browser.mobile) {
+            // On desktop create markers with a double click
             this.on("click", function(e) { this._handleclick(e); });
             this.on("dblclick", function(e) { this._handleDoubleClick(e); });
         } else {
+            // On mobile just use single click
             this.on("click", function(e) { this._handleDoubleClick(e); });
             this.on("dblclick", function() { return false; });
         }

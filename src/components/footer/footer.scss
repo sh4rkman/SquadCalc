@@ -15,15 +15,16 @@ footer {
         gap: 0.7em;
         z-index: 10;
         padding: 0.5em;
-        border-radius: 40px 40px 0 40px;
+        border-radius: 40px 40px 0;
         overflow: hidden;
         transition: max-width 0.3s ease;
         max-width: 1em;
-        min-width: 4em;
+        min-width: 40em;
         pointer-events: none;
         &.expanded {
             max-width: 20em;
             .legacyButton,
+            .settingsButton,
             .extraButton {
                 opacity: 1;
                 transform: translateX(0);
@@ -32,7 +33,6 @@ footer {
             .settingsButton {
                 .fab {
                     background-color: #333;
-
                     &:hover {
                         background: variables.$mainColor;
                     }
@@ -40,13 +40,14 @@ footer {
             }
         }
         .legacyButton,
+        .settingsButton,
         .extraButton {
             opacity: 0;
             transform: translateX(0.5rem);
             transition: opacity 0.3s ease, transform 0.3s ease;
             pointer-events: none;
         }
-        .settingsButton {
+        .menuButton {
             .fab {
                 background-color: variables.$mainColor;
             }

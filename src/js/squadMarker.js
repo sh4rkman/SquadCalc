@@ -1,7 +1,8 @@
 import { App } from "../app.js";
 import { ellipse } from "./libs/leaflet.ellipse.js";
+import { Hexagon } from "./libs/leaflet-hexagon.js";
 import "./libs/leaflet-visual-click.js";
-import { Marker, Circle, CircleMarker, Popup, Polygon, Icon } from "leaflet";
+import { Marker, Circle, CircleMarker, Popup, Polygon } from "leaflet";
 import { targetIcon1, targetIconAnimated, targetIconDisabled, targetIconMinimal, targetSessionIcon1, targetIconSessionMinimal, targetIconMinimalDisabled } from "./squadIcon.js";
 import SquadSimulation from "./squadSimulation.js";
 import SquadFiringSolution from "./squadFiringSolution.js";
@@ -655,6 +656,8 @@ export const squadTargetMarker = squadMarker.extend({
         this.spreadMarker1 = new ellipse(latlng, [0, 0], 0, this.spreadOptionsOff).addTo(this.map.markersGroup);
         this.spreadMarker11 = new ellipse(latlng, [0, 0], 0, this.spreadOptionsOff).addTo(this.map.markersGroup);
         this.spreadMarker2 = new ellipse(latlng, [0, 0], 0, this.spreadOptionsOff).addTo(this.map.markersGroup);
+        new Hexagon(latlng, 1).addTo(this.map.markersGroup);
+        
         this.updateSpread();
 
         // Initiate Damage Ellipse
