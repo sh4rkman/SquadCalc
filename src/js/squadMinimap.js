@@ -2,7 +2,8 @@ import {imageOverlay, tileLayer, Map, CRS, SVG, Util, LayerGroup, Popup, LatLngB
 import squadGrid from "./squadGrid.js";
 import squadHeightmap from "./squadHeightmaps.js";
 import { App } from "../app.js";
-import { squadWeaponMarker, squadTargetMarker } from "./squadMarker.js";
+import { squadWeaponMarker } from "./squadMarker.js";
+import { squadTargetMarker } from "./squadTargetMarker.js";
 import { mortarIcon, mortarIcon1, mortarIcon2 } from "./squadIcon.js";
 import { explode } from "./animations.js";
 import { fetchMarkersByMap } from "./squadCalcAPI.js";

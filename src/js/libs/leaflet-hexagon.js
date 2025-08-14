@@ -4,27 +4,32 @@
  * Works fine with CRS.Simple or other linear, non-geographic coordinate systems.
  * 
  * Usage:
- * const hex = new Hexagon({ lat: 50, lng: 34 }, 100, { color: 'red' }).addTo(map);
+ * const hex = new Hexagon({ lat: 50, lng: 34 }, 100, { color: 'red', rotation: 30 }).addTo(map);
  *
  * Parameters:
  *    center: Array[lat, lng] or Object{ lat: number, lng: number }
  *    radius: Number - Distance from the center to any vertex
- *    options: Standard Leaflet Polygon options (color, weight, fillColor, etc.)
- *        + rotation: Number in degrees to rotate the hexagon around its center
+ *    rotation (optional) : Angle in degree applied to the hexagon
+ *    options: Standard Leaflet Polygon options
  * 
- * Author: Maxime "sharkman" Boussard for https://github.com/sh4rkman/SquadCalc
+ * Author: Maxime "sharkman" Boussard
  * License: MIT
  */
 
 import { Polygon } from "leaflet";
 
 export class Hexagon extends Polygon {
-    constructor(center, radius, options = {}) {
-        const lat = Array.isArray(center) ? center[0] : center.lat;
-        const lng = Array.isArray(center) ? center[1] : center.lng;
 
-        const rotation = (options.rotation || 0) * Math.PI / 180;
+    constructor(center, radius, rotation = 0, options = {}) {
+        const centerArr = Hexagon._validateCenter(center);
+        const rot = Hexagon._validateRotation(rotation);
+        super(Hexagon._buildCoords(centerArr[0], centerArr[1], radius, rot), options);
+        this._center = centerArr;
+        this._radius = radius;
+        this._rotation = rot;
+    }
 
+    static _buildCoords(lat, lng, radius, rotation) {
         const coords = [];
         for (let i = 0; i < 6; i++) {
             const angle = Math.PI / 3 * i + rotation;
@@ -34,8 +39,63 @@ export class Hexagon extends Polygon {
             ]);
         }
         coords.push(coords[0]);
+        return coords;
+    }
 
-        super(coords, options);
+    static _validateCenter(center) {
+        if (!center) {
+            throw new Error("Hexagon: center is required — expected [lat, lng] or { lat, lng }");
+        }
+
+        const lat = Array.isArray(center) ? center[0] : center.lat;
+        const lng = Array.isArray(center) ? center[1] : center.lng;
+
+        if (typeof lat !== "number" || typeof lng !== "number" || isNaN(lat) || isNaN(lng)) {
+            throw new Error("Hexagon: Invalid center — expected numbers in [lat, lng] or { lat, lng }");
+        }
+
+        return [lat, lng];
+    }
+
+    static _validateRotation(rotation) {
+        if (typeof rotation !== "number" || isNaN(rotation)) {
+            throw new Error("Hexagon: rotation must be a valid number (degrees)");
+        }
+        return rotation * Math.PI / 180;
+    }
+
+
+    setLatLng(center) {
+        this._center = Array.isArray(center) ? center : [center.lat, center.lng];
+        const [lat, lng] = this._center;
+        const coords = Hexagon._buildCoords(lat, lng, this._radius, this._rotation);
+        return this.setLatLngs(coords);
+    }
+
+    setRadius(radius) {
+        this._radius = radius;
+        const [lat, lng] = this._center;
+        const coords = Hexagon._buildCoords(lat, lng, radius, this._rotation);
+        return this.setLatLngs(coords);
+    }
+
+    setRotation(rotationDeg) {
+        this._rotation = (rotationDeg || 0) * Math.PI / 180;
+        const [lat, lng] = this._center;
+        const coords = Hexagon._buildCoords(lat, lng, this._radius, this._rotation);
+        return this.setLatLngs(coords);
+    }
+
+    getCenter() {
+        return { lat: this._center[0], lng: this._center[1] };
+    }
+
+    getRadius() {
+        return this._radius;
+    }
+
+    getRotation() {
+        return this._rotation * 180 / Math.PI;
     }
 }
 
