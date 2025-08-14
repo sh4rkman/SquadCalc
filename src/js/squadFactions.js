@@ -556,8 +556,7 @@ export default class SquadFactions {
 
         $(".btn-pin").off("click").on("click", (event) => {
             
-            //TODO most of the logic here should be moved into pinUnit()
-
+            // Already Pinned, unpin.
             if ($(event.currentTarget).hasClass("active")) {
                 this.unpinUnit();
                 $(event.currentTarget).removeClass("active");
@@ -581,7 +580,7 @@ export default class SquadFactions {
                 teamMain = "Z-Team2 Main";
             }
 
-            // if country of faction is empty or null, return
+            // if country of faction is empty or null, do nothing
             if (country === null || faction === null) return;
             if (country === "" || faction === "") return;
 

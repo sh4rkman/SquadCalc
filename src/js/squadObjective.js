@@ -1,8 +1,8 @@
 import { DivIcon, Marker, Circle, LayerGroup, Rectangle } from "leaflet";
 import { App } from "../app.js";
 import i18next from "i18next";
-import tippy, {sticky} from "tippy.js";
 import "tippy.js/dist/tippy.css";
+import { FactionCtxMenu } from "./squadFactionCtxMenu.js";
 
 export class SquadObjective {
 
@@ -382,7 +382,8 @@ export class SquadObjective {
     _handleContextMenu(e){
         
         if (this.isMain) {
-            this.openFactionSelector(e);
+            //this.openFactionSelector(e);
+            this.ctxMenu = new FactionCtxMenu(this.layer, this.objCluster.objectDisplayName).open(e);
             return;
         }
 
@@ -498,168 +499,5 @@ export class SquadObjective {
             this.revealCapZones();
         }
         
-    }
-
-    openFactionSelector(e) {
-
-        const el = e.target._icon;
-        if (el._tippy) el._tippy.destroy();
-        
-        // Create the tippy tooltip
-        tippy(el, {
-            trigger: "manual",
-            placement: "top",
-            sticky: true,
-            plugins: [sticky],
-            duration: 0,
-            allowHTML: true,
-            interactive: true,
-            theme: "mapFactionMenu",
-            onHidden: (tip) => {
-                if (tip._cleanup) tip._cleanup();
-                tip.destroy();
-            },
-            onShow: (tip) => {
-
-                var FACTIONS, UNITS, FACTION_SELECTOR, UNIT_SELECTOR;
-
-                // avoid click event propagation to the map
-                tip.popper.addEventListener("click", e => e.stopPropagation());
-
-                if (this.objCluster.objectDisplayName === "00-Team1 Main") {
-                    FACTIONS = this.layer.layerData.teamConfigs.factions.team1Units;
-                    UNITS = this.layer.layerData.units.team1Units;
-                    FACTION_SELECTOR = this.layer.factions.FACTION1_SELECTOR;
-                    UNIT_SELECTOR = this.layer.factions.UNIT1_SELECTOR;
-                } else {
-                    FACTIONS = this.layer.layerData.teamConfigs.factions.team2Units;
-                    UNITS = this.layer.layerData.units.team2Units;
-                    FACTION_SELECTOR = this.layer.factions.FACTION2_SELECTOR;
-                    UNIT_SELECTOR = this.layer.factions.UNIT2_SELECTOR;
-                }
-
-                let html = "<div class='faction-grid'>";
-
-                FACTIONS.forEach((faction) => {
-                    let selected = "";
-                    if (FACTION_SELECTOR.val() === faction.factionID) selected = "_selected";
-                    html += `<div class="faction-item ${selected}" id="${faction.factionID}" title="${i18next.t(faction.factionID + "_displayName", { ns: "factions" }) }">
-                        <img src="${process.env.API_URL}/img/flags/${faction.factionID}.webp" alt="Faction ${faction.factionID}" />
-                        <div class="faction-label">${i18next.t(faction.factionID, { ns: "factions" })}</div>
-                    </div>`;
-                });
-                
-                html += "</div>";
-                tip.setContent(html);
-
-                // Attach click events after content is inserted
-                const items = tip.popper.querySelectorAll(".faction-item");
-
-                const handleClick = (ev) => {
-                    let html = "<div class='faction-grid'>";
-                    const factionId = ev.currentTarget.id;
-                    
-                    if (FACTION_SELECTOR.val() != factionId) {
-                        if (this.objCluster.objectDisplayName === this.layer.factions.pinnedFaction) this.layer.factions.unpinUnit();
-                        FACTION_SELECTOR.val(factionId).trigger($.Event("change", { broadcast: false }));
-                    }
-                    
-                    // Load the factions units into the selector
-                    FACTIONS.forEach((faction) => {
-                        if (faction.factionID == factionId) {
-                            for (const unit of UNITS) {
-                                if (unit.unitObjectName === faction.defaultUnit) {
-                                    let selected = "";
-                                    if (UNIT_SELECTOR.val() === faction.defaultUnit) selected = "_selected";
-                                    html += `<div class="faction-item units ${selected}" id="${faction.defaultUnit}" title="${i18next.t(unit.type, { ns: "units" }) } - ${i18next.t(unit.displayName, { ns: "units" }) }">
-                                        <img src="${process.env.API_URL}/img/units/${unit.type}.webp" alt="Faction ${faction.factionID}" />
-                                        <div class="faction-label">${i18next.t(unit.type, { ns: "units" })}</div>
-                                    </div>`;
-                                    break;
-                                }
-                            }
-                            for (const type of faction.types) {
-                                for (const unit of UNITS) {
-                                    if (unit.unitObjectName === type.unit) {
-                                        let selected = "";
-                                        if (UNIT_SELECTOR.val() === type.unit) selected = "_selected";
-                                        html += `<div class="faction-item units ${selected}" id="${type.unit}" title="${i18next.t(unit.type, { ns: "units" }) } - ${i18next.t(unit.displayName, { ns: "units" }) }">
-                                            <img src="${process.env.API_URL}/img/units/${unit.type}.webp" alt="Faction ${faction.factionID}"/>
-                                            <div class="faction-label">${i18next.t(unit.type, { ns: "units" })}</div>
-                                            </div>`;
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-                    });
-                    html += `</div><button id="mapPinButton">${i18next.t("common:pinToMap")}</button>`;
-  
-                    tip.setContent(html);
-
-                    // If that unit is already pinned, set the button to "pinned"
-                    if (this.layer.factions.pinned && this.objCluster.objectDisplayName === this.layer.factions.pinnedFaction) {
-                        $("#mapPinButton").addClass("active").text(i18next.t("common:pinned")).attr("data-i18n", "common:pinned");
-                    }
-
-                    // Attach a new listener for the units
-                    const unitItems = tip.popper.querySelectorAll(".faction-item");
-                    const handleClickUnit = (ev) => {
-                        const unitId = ev.currentTarget.id;
-
-                        if (UNIT_SELECTOR.val() != unitId) {
-                            if (this.objCluster.objectDisplayName === this.layer.factions.pinnedFaction) this.layer.factions.unpinUnit();
-                            // Remove _selected from all faction-item units
-                            const unitItems = ev.currentTarget.parentElement.querySelectorAll(".faction-item.units._selected");
-                            unitItems.forEach(item => item.classList.remove("_selected"));
-                            $(ev.currentTarget).addClass("_selected");
-                            $("#mapPinButton").removeClass("active").text(i18next.t("common:pinToMap"));
-                            UNIT_SELECTOR.val(unitId).trigger($.Event("change", { broadcast: false }));
-                        }
-                    };
-
-                    const handleClickPin = (e) => {
-
-                        const $btn = $(e.currentTarget);
-                       
-                        // Already pinned ? Unpin.
-                        if ($btn.hasClass("active")) {
-                            this.layer.factions.unpinUnit(); 
-                            $btn.removeClass("active").text(i18next.t("common:pinToMap"));
-                            return;
-                        }
-
-                        // Pin the unit
-                        this.layer.factions.pinUnit(UNITS, FACTION_SELECTOR.val(), UNIT_SELECTOR.val(), this.objCluster.objectDisplayName);
-
-                        // Set the button to active & hide the contextmenu
-                        $btn.addClass("active").text(i18next.t("common:pinned"));
-                        tip.hide();
-                    };
-
-                    const ctxPinButton = tip.popper.querySelector("#mapPinButton");
-                    ctxPinButton.addEventListener("click", handleClickPin);
-                    unitItems.forEach(item => item.addEventListener("click", handleClickUnit));
-
-                    // Add cleanup for the new listener
-                    const prevCleanup = tip._cleanup;
-                    tip._cleanup = () => {
-                        unitItems.forEach(item => item.removeEventListener("click", handleClickUnit));
-                        ctxPinButton.removeEventListener("click", handleClickPin);
-                        if (prevCleanup) prevCleanup(); // also clean faction listeners
-                    };
-                };
-
-                items.forEach(item => item.addEventListener("click", handleClick));
-
-                // Store cleanup function on instance
-                tip._cleanup = () => {
-                    items.forEach(item => item.removeEventListener("click", handleClick));
-                };
-            }
-        });
-
-        el._tippy.show();
-                
     }
 }

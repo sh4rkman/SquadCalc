@@ -667,26 +667,51 @@ $flag-circle-opacity: 0.2;
 }
 
 
-#mapPinButton {
-    margin-top: 8px;
-    background: #222;
-    color: white;
-    padding: 8px 12px;
-    border-radius: 2px;
-    text-align: center;
-    cursor: pointer;
-    user-select: none;
+
+#mapCtxButtonsContainer {
+    display: flex;
     width: 100%;
+    //border: solid red 1px;
+    gap: 5px; // optional spacing between buttons
     min-width: 100px;
-    font-size: 0.8em;
-    &:hover {
-        background: #111;
-    }
-    &.active {
-        background-color: variables.$mainColor;
+    margin-top: 5px;
+    #mapPinButton,
+    #backToFactionsBtn {
+        background: #222;
         color: white;
+        padding: 8px 12px;
+        border-radius: 2px;
+        text-align: center;
+        cursor: pointer;
+        user-select: none;
+        font-size: 0.8em;
+        &:hover {
+            background: #111;
+        }
+        &.active {
+            background-color: variables.$mainColor;
+            color: white;
+        }
+    }
+
+    #mapPinButton {
+        flex: 9;
+    }
+
+    #backToFactionsBtn {
+        flex: 1;
+        svg {
+            width: 1.2em;
+            height: 1.2em;
+            path {
+                fill: white;
+            }
+        }
+
     }
 }
+
+
 
 .faction-grid {
     display: grid;
