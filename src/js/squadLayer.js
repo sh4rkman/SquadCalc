@@ -182,7 +182,7 @@ export default class SquadLayer {
                     className: "hexNumber",
                     html: hex.hexNum,
                     iconSize: [50, 50],
-                    iconAnchor: [25, 12]
+                    iconAnchor: [25, 8]
                 })
             }).addTo(this.activeLayerMarkers);
         });
