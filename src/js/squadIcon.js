@@ -103,7 +103,7 @@ export const mortarIcon2 = new Icon({
 });
 
 export const targetIconMinimal = new Icon({
-    iconUrl: ".markers/marker_target_mini.webp",
+    iconUrl: "../img/markers/marker_target_mini.webp",
     shadowUrl: DEFAULTSHADOW,
     shadowSize: [0, 0], // hack to avoid 404
     iconSize:     [30, 30], 
