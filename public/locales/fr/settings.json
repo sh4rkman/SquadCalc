@@ -24,6 +24,7 @@
         "targetDrag": "Grille pendant le déplacement",
         "showSpread": "Rayon de dispersion",
         "showDamage": "Rayons de dégâts",
+        "targetGrid": "Grille de déviation",
         "showAnimations": "Grandes icônes",
         "copyTarget": "Copier automatiquement les cibles",
         "lowAndHigh": "Afficher les angles bas et hauts",

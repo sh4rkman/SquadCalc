@@ -24,6 +24,7 @@
         "targetDrag": "Rasterfeld beim Ziehen anzeigen",
         "showSpread": "Streuung anzeigen",
         "showDamage": "Schadensradien anzeigen",
+        "targetGrid": "Abweichungsraster",
         "showAnimations": "Große Symbole verwenden",
         "copyTarget": "Ziel automatisch in Zwischenablage kopieren",
         "lowAndHigh": "Sowohl flache als auch steile Winkel anzeigen",

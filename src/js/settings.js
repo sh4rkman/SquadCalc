@@ -148,7 +148,7 @@ export function loadSettings(){
     App.userSettings.damageRadius = loadLocalSetting("settings-damage-radius");
     $("#damageRadiusSetting").prop("checked", App.userSettings.damageRadius);
 
-    App.userSettings.targetGrid = loadLocalSetting("settings-target-grid");
+    App.userSettings.targetGrid = loadLocalSetting("settings-target-grid", 0);
     $("#targetGridSetting").prop("checked", App.userSettings.targetGrid);
 
     App.userSettings.showHeight = loadLocalSetting("settings-show-height", 0);

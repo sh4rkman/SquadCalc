@@ -65,12 +65,6 @@ export default class TargetGrid {
         for (let i= -TargetGrid.ANGLE_DEV/2; i <= TargetGrid.ANGLE_DEV/2; i= i + TargetGrid.ANGLE_STEP) {
             this.linesGroup.addLayer(this.drawSegmentAtAngle(weaponLatLng, BASEANGLE + i, startRadius, endRadius));
         }
-
-        // Tell the user about the new functionality
-        //if (localStorage.getItem("tips-targetGrid") === null) {
-        //App.openToast("success", "tips-target-title", "tips-target-subtitle")
-        //localStorage.setItem("tips-targetGrid", "seen");
-        //}
     }
 
     drawArc(centerLatLng, bearingDeg, startOffset, endOffset, radius, segments = 64) {

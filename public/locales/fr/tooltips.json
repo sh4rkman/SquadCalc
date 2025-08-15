@@ -72,5 +72,6 @@
     "showMainAssetsTooltip": "Affiche les stations de réparation, caisses de munitions et autres construction des bases principales sur la carte",
     "showMainZonesTooltip": "Afficher les zones de protection et d'interdiction de déploiement pour chaque base principale",
     "clickToCopy": "Cliquez pour copier la commande `CreateSquad`",
-    "vehicleRespawned": "Véhicule réapparu"
+    "vehicleRespawned": "Véhicule réapparu",
+    "targetGridTooltip": "Affiche une grille autour des cibles : les lignes verticales indiquent la déviation angulaire (1°) et les arcs horizontaux indiquent la déviation en élévation (10 mils ou 1° selon le système d'unités de l'arme)."
 }

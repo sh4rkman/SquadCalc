@@ -72,5 +72,6 @@
     "showMainAssetsTooltip": "Reparaturstationen, Munitionskisten und andere Hauptressourcen auf der Karte anzeigen",
     "showMainZonesTooltip": "Schutz- und Deploy-Verbotszonen für jede Hauptbasis anzeigen",
     "clickToCopy": "Zum Kopieren des `CreateSquad`-Befehls klicken",
-    "vehicleRespawned": "Fahrzeug wieder erschienen"
+    "vehicleRespawned": "Fahrzeug wieder erschienen",
+    "targetGridTooltip": "Zeigt ein Raster um die Ziele an: Vertikale Linien zeigen die Winkelabweichung (1°) und horizontale Bögen zeigen die Höhenabweichung (10 mils oder 1°, abhängig vom Einheitensystem der Waffe)"
 }

@@ -72,5 +72,6 @@
     "showMainAssetsTooltip": "在地图上显示维修站、弹药箱和其他主要资源",
     "showMainZonesTooltip": "显示每个主基地的保护区和禁止部署区域",
     "clickToCopy": "点击复制 `CreateSquad` 命令",
-    "vehicleRespawned": "载具已重生"
+    "vehicleRespawned": "载具已重生",
+    "targetGridTooltip": "在目标周围显示网格：垂直线显示角度偏差（1°），水平弧线显示仰角偏差（10密位或1°，取决于武器的单位系统）"
 }

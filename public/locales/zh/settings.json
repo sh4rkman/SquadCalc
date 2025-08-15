@@ -24,6 +24,7 @@
         "targetDrag": "拖动时显示网格坐标",
         "showSpread": "显示散布半径",
         "showDamage": "显示伤害半径",
+        "targetGrid": "偏差网格",
         "showAnimations": "使用大图标",
         "copyTarget": "自动复制计算结果",
         "lowAndHigh": "显示低角度和高角度",

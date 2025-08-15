@@ -73,7 +73,5 @@
     "showMainZonesTooltip": "Show protection and no-deploy zones for each main",
     "clickToCopy": "Click to copy `CreateSquad` command",
     "vehicleRespawned": "Vehicle respawned",
-    "targetGridTooltip": "Displays a grid around the targets: vertical lines show angle deviation (1°), and horizontal arcs show elevation deviation (10 mils or 1° depending on the weapon's unit system).",
-    "tips-target-title": "New Target Deviation Grid !",
-    "tips-target-subtitle": "Don't like it ? You can disable it though Settings"
+    "targetGridTooltip": "Displays a grid around the targets: vertical lines show angle deviation (1°), and horizontal arcs show elevation deviation (10 mils or 1° depending on the weapon's unit system)."
 }
