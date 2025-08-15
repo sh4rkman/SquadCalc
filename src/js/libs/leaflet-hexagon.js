@@ -9,8 +9,7 @@
  * Parameters:
  *    center: Array[lat, lng] or Object{ lat: number, lng: number }
  *    radius: Number - Distance from the center to any vertex
- *    rotation (optional) : Angle in degree applied to the hexagon
- *    options: Standard Leaflet Polygon options
+ *    options: Standard Leaflet Polygon options + rotation in degree
  * 
  * Author: Maxime "sharkman" Boussard
  * License: MIT
@@ -20,9 +19,9 @@ import { Polygon } from "leaflet";
 
 export class Hexagon extends Polygon {
 
-    constructor(center, radius, rotation = 0, options = {}) {
+    constructor(center, radius, options = {}) {
         const centerArr = Hexagon._validateCenter(center);
-        const rot = Hexagon._validateRotation(rotation);
+        const rot = Hexagon._validateRotation(options.rotation || 0);
         super(Hexagon._buildCoords(centerArr[0], centerArr[1], radius, rot), options);
         this._center = centerArr;
         this._radius = radius;
@@ -98,6 +97,3 @@ export class Hexagon extends Polygon {
         return this._rotation * 180 / Math.PI;
     }
 }
-
-// Factory function for consistency
-export const hexagon = (center, radius, options) => new Hexagon(center, radius, options);

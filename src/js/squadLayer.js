@@ -92,13 +92,16 @@ export default class SquadLayer {
         case "Seed":
             this.initPredictiveLayer();
             break;
-        case "Territory Control":
+        case "TC":
             this.initTerritoryControl(this.capturePoints);
             break;
         case "RAAS":
         case "Invasion":
             this.initRandomizedLayer();
             break;
+        default:
+            this.clear();
+            throw new Error(`Unsupported gamemode: "${this.gamemode}"`);
         }
 
         // Create Other Layer Assets
@@ -658,22 +661,9 @@ export default class SquadLayer {
     _handleFlagClick(flag, broadcast = true) {
         let backward = false;
 
-        console.debug("**************************");
-        console.debug("      NEW CLICKED FLAG    ");
-        console.debug("**************************");
-        console.debug("  -> Selected Flag:", flag.objectName);
-        console.debug("  -> Clicked flag position", flag.position);
-        console.debug("  -> Flag Object:", flag);
-        console.debug("  -> Current position", this.currentPosition);
-        console.debug("  -> Current selected Flags", this.selectedFlags);
-        console.debug("  -> Cluster History", this.selectedReachableClusters);
-
         if (this.selectedFlags.length === 0){
-            console.debug("  -> First flag clicked");
             this.startPosition = flag.position;
-            console.debug("  -> starting position", this.startPosition);
             if (flag.position > 1){
-                console.debug("  -> (Going from enemy main to main");
                 this.reversed = true;
             }
         }
@@ -789,74 +779,56 @@ export default class SquadLayer {
             }
         }
 
-        console.debug("**************************");
-        console.debug("       STARTING DFS       ");
-        console.debug("**************************");
+        this.render(flag, false, backward);
 
-        // Set to track clusters that can be reached from the clicked flag
-        let reachableClusters = new Set();
+    }
 
-        // Start DFS from each clicked flag clusters
-        flag.clusters.forEach((cluster) => {
-            // Only start DFS from clusters that are from our current position
-            if (Math.abs(this.startPosition - cluster.pointPosition)+1 == this.currentPosition){
-                const clusterName = cluster.name === "Main" ? cluster.objectDisplayName : cluster.name;
-                this.dfs(clusterName, reachableClusters);
-            }        
-        });
-
-        // Remove clusters that were not reachable from the previous flag
-        reachableClusters = this._filterClusters(reachableClusters);
-
-        // Something went wrong, we are in the wrong direction
-        if (reachableClusters.size === 1 && this.currentPosition === 1){
-            if (flag.isMain){
-                console.debug("Already blocked");
-                console.debug("Trying again in the other direction");
-                this.reversed = !this.reversed;
-                reachableClusters.clear();
-                this.dfs(flag.clusters[0].objectDisplayName, reachableClusters);
-            }
-        }
-
-
-        // Store the clusters in case we need to backtrack later
-        this.selectedReachableClusters.push(reachableClusters);
-        console.debug("Cluster History updated", this.selectedReachableClusters);
-
-
-        /***************  RENDERING  ***************/
-        /* We can finally act on the flags now !  */
-        /***************  RENDERING  ***************/
+    /**
+     * For a given flag render the layer
+     * Start a DFS from the flag, hide every not-already-selected flags & show the reachable ones
+     * @param {Objectives} flag - Flag from where to start
+     * @param {boolean} preview - Should we just fade out other flags or hide them
+     * @param {boolean} backward - User is going backward (unselecting flags)
+     */
+    render(flag, preview, backward = false) {
 
         console.debug("****************************************");
-        console.debug("Hiding Clusters in front of clicked flag");
+        console.debug("              LAYER UPDATE              ");
+        console.debug("****************************************");
+        console.debug("  -> Preview:", preview);
+        console.debug("  -> Reverse:", this.reversed);
+        console.debug("  -> Selected Flag:", flag.objectName);
+        console.debug("  -> Clicked flag position", flag.position);
+        console.debug("  -> Current position", this.currentPosition);
+        console.debug("  -> Current selected Flags", this.selectedFlags);
+        console.debug("  -> Cluster History", this.selectedReachableClusters);
+
+        console.debug("****************************************");
+        console.debug("                  DFS                   ");
         console.debug("****************************************");
 
-        // Hide all clusters first, then selectively show reachable ones
-        Object.values(this.objectives).forEach((cluster) => {
-            console.debug("Should we hide cluster :", cluster.name);
-            // console.debug("   -> Cluster position", cluster.pointPosition);
-            // console.debug("   -> Clicked flag position", flag.position);
-            // console.debug("   -> Current position", this.currentPosition);
-            if (Math.abs(this.startPosition - cluster.pointPosition)+1 >= this.currentPosition) {
-                console.debug("   -> Cluster is in front! Hiding.");
-                if (!flag.clusters.some(c => c.name === cluster.objectName)) {
-                    this._hideCluster(cluster, flag);
-                }
-            } else {
-                // Ignore clusters that are behind us
-                console.debug("   -> Cluster behind, skipping it.");
-            }
-        });
+        let reachableClusters = this.getReachableClusters(flag, preview);
+        if (reachableClusters.size <= 1) return;
 
-        console.debug("*****************************************");
-        console.debug("Showing Clusters in front of clicked flag");
-        console.debug("*****************************************");
+        console.debug("****************************************");
+        console.debug("               Rendering                ");
+        console.debug("****************************************");
 
+        this.hideClusters(flag, preview);
+        let nextFlags = this.showClusters(flag, reachableClusters, preview);
+        if (!preview) this.handleNextFlags(nextFlags, backward);
 
-        // We will store the very next flags in this array
+    }
+
+    /**
+     * Return the reachable clusters
+     * @param {Objectives} flag - Flag from where to start
+     * @param {boolean} preview - Should we just fade in other flags or hide them
+     */
+    showClusters(flag, reachableClusters, preview = false){
+        
         let nextFlags = [];
+        console.debug("Showing Clusters");
 
         // Show reachable clusters
         reachableClusters.forEach((clusterName) => {
@@ -865,42 +837,94 @@ export default class SquadLayer {
 
             // If the cluster is not found directly, search for a matching displayName (mains)
             if (!cluster) {
-                cluster = Object.values(this.objectives).find(
-                    (obj) => obj.objectDisplayName === clusterName
-                );
+                cluster = Object.values(this.objectives).find((obj) => obj.objectDisplayName === clusterName);
             }
 
-            console.debug("Cluster to show", cluster.name);
-            //console.debug("   -> cluster.pointPosition", cluster.pointPosition);
-            //console.debug("   -> Current position", this.currentPosition);
+            let position = Math.abs(this.startPosition - cluster.pointPosition);
+            if (!preview) position += 1;
 
             // If the cluster is in front of the clicked flag, show it
-            if (Math.abs(this.startPosition - cluster.pointPosition) + 1 > this.currentPosition){
+            if (position > this.currentPosition){
         
-                //console.debug("   -> Cluster in front, showing it !");
-                this._showCluster(cluster);
-                
+                console.debug(`  -> ${cluster.name}`);
+                if (preview) this._fadeInCluster(cluster, flag);  
+                else  this._showCluster(cluster);
+
                 // If cluster is directly in front of the clicked flag, count the next flags
-                if (Math.abs(this.startPosition - cluster.pointPosition) + 1 === this.currentPosition+1){
+                if (Math.abs(position) === this.currentPosition+1){
                     const futurFlags = this.flags.filter((f) => f.clusters.includes(cluster));
                     futurFlags.forEach((flag) => {
                         // Only add if not already in the list
-                        if (!nextFlags.includes(flag)) {
-                            nextFlags.push(flag);
-                        }
+                        if (!nextFlags.includes(flag)) nextFlags.push(flag);
                     });
                 }
-                    
-            }
-            else {
-                console.debug("   -> Cluster behind, skipping it.");
+                
             }
         });
 
-        this.handleNextFlags(nextFlags, backward);
+        return nextFlags;
     }
 
+    /**
+     * Hide Clusters in front of a given flag
+     * @param {Objectives} flag - Flag from where to start
+     * @param {boolean} preview - Should we just fade out other flags or hide them
+     */
+    hideClusters(flag, preview = false){
+        console.debug("Hidding Clusters");
+        Object.values(this.objectives).forEach((cluster) => {
+            // Only Hide/Fade cluster in front of us
+            if (Math.abs(this.startPosition - cluster.pointPosition)+1 >= this.currentPosition) {
+                console.debug(`  -> ${cluster.name}`);
+                if (!flag.clusters.some(c => c.name === cluster.objectName)) {
+                    if (preview) this._fadeOutCluster(cluster, flag);  
+                    else this._hideCluster(cluster, flag);
+                }
+            }
+        });
+    }
+
+
+    /**
+     * Return the reachable clusters
+     * @param {Objectives} flag - Flag from where to start
+     * @return {Set} Set of cluster reachable in front of the flag
+     */
+    getReachableClusters(flag, preview) {
+        let reachableClusters = new Set();
+        // Start DFS from each clicked flag clusters
+        flag.clusters.forEach((cluster) => {
+            let position = Math.abs(this.startPosition - cluster.pointPosition);
+            if (!preview) position += 1;
+            if (position == this.currentPosition){
+                // Only start DFS from clusters that are from our current position
+                const clusterName = cluster.name === "Main" ? cluster.objectDisplayName : cluster.name;
+                this.dfs(clusterName, reachableClusters);
+            }
+        });
+
+        // Something went wrong, we are in the wrong direction
+        if (reachableClusters.size === 1 && this.currentPosition === 1){
+            if (!flag.isMain) return;
+            console.debug("Already blocked, Trying again in the other direction");
+            this.reversed = !this.reversed;
+            reachableClusters.clear();
+            this.dfs(flag.clusters[0].objectDisplayName, reachableClusters);
+        }
+
+        // Remove clusters that were not reachable from the previous flag
+        reachableClusters = this._filterClusters(reachableClusters);
+
+        // Store the clusters in case we need to backtrack later
+        if (!preview) {
+            this.selectedReachableClusters.push(reachableClusters);
+            console.debug("Cluster History updated", this.selectedReachableClusters);
+        }
+        
+        return reachableClusters;
+    }
     
+
     /**
      * Handle next flags behaviour
      * Hightlight the next flags / Copy their names to the clipboard / Click the next flag if only one
@@ -908,27 +932,16 @@ export default class SquadLayer {
      * @param {boolean} backward - True if we are going backward
      */
     handleNextFlags(nextFlags, backward) {
-        console.debug("Flags next step :", nextFlags);
-
-        let nextFlagsNamesArray = [];
 
         // Highlight the next flags with a proper class
         nextFlags.forEach((flag) => {
             flag.flag._icon.classList.add("next");
             flag.flag.options.icon.options.className = "flag flag" + flag.position + " next";
             flag.isNext = true;
-            nextFlagsNamesArray.push(flag.name);
         });
-
-        // Copy the next flags names to the clipboard
-        // if (App.userSettings.copyNextFlags) {
-        //     navigator.clipboard.writeText(i18next.t("common:nextFlags") + " : " + nextFlagsNamesArray.join("/"));
-        // }  
        
         // Only one flag in front ? Click it
-        if (nextFlags.length === 1 && !backward){
-            this._handleFlagClick(nextFlags[0], false);
-        }
+        if (nextFlags.length === 1 && !backward) this._handleFlagClick(nextFlags[0], false);
     }
 
 
@@ -946,104 +959,11 @@ export default class SquadLayer {
                 }
             });
         }
-
-        console.debug("**************************");
-        console.debug("         DFS ENDED        ");
-        console.debug("**************************");
         console.debug("Reachable clusters:", Array.from(reachableClusters));
-
         return reachableClusters;
     }
      
      
-
-    preview(flag) {
-
-        console.debug("**************************");
-        console.debug("       NEW PREVIEW        ");
-        console.debug("**************************");
-        console.debug("  -> Selected Flag:", flag.objectName);
-        console.debug("  -> Hovered flag position", flag.position);
-        console.debug("  -> Flag Object:", flag);
-        console.debug("  -> Current position", this.currentPosition);
-        console.debug("  -> Current selected Flags", this.selectedFlags);
-        console.debug("  -> Cluster History", this.selectedReachableClusters);
-        console.debug("**************************");
-        console.debug("       STARTING DFS       ");
-        console.debug("**************************");
-
-        // Set to track clusters that can be reached from the clicked flag
-        let reachableClusters = new Set();
-
-        // Start DFS from each clicked flag clusters
-        flag.clusters.forEach((cluster) => {
-            // Only start DFS from clusters that are from our current position
-            if (Math.abs(this.startPosition - cluster.pointPosition) === this.currentPosition){
-                this.dfs(cluster.name, reachableClusters);
-            }
-        });
-
-        reachableClusters = this._filterClusters(reachableClusters);
-      
-
-        /***************  RENDERING  ***************/
-        /* We can finally act on the flags now !  */
-        /***************  RENDERING  ***************/
-
-        console.debug("****************************************");
-        console.debug(" Fading Clusters in front of clicked flag");
-        console.debug("****************************************");
-
-        // Hide all clusters first, then selectively show reachable ones
-        Object.values(this.objectives).forEach((cluster) => {
-            console.debug("Should we fade cluster :", cluster.name);
-            console.debug("   -> Cluster position", cluster.pointPosition);
-            console.debug("   -> Clicked flag position", flag.position);
-            console.debug("   -> Current position", this.currentPosition+1);
-            if (Math.abs(this.startPosition - cluster.pointPosition) >= this.currentPosition) {
-                console.debug("   -> Cluster is in front! Hiding.");
-                this._fadeOutCluster(cluster, flag);  
-            } else {
-                // Ignore clusters that are behind us
-                console.debug("   -> Cluster behind, skipping it.");
-            }
-        });
-
-
-        console.debug("*****************************************");
-        console.debug("Showing Clusters in front of clicked flag");
-        console.debug("*****************************************");
-
-        // Show reachable clusters
-        reachableClusters.forEach((clusterName) => {
-
-            let cluster = this.objectives[clusterName];
-
-            // If the cluster is not found directly, search for a matching displayName (mains)
-            if (!cluster) {
-                cluster = Object.values(this.objectives).find(
-                    (obj) => obj.objectDisplayName === clusterName
-                );
-            }
-
-            console.debug("Cluster to show", cluster.name);
-            console.debug("   -> cluster.pointPosition", cluster.pointPosition);
-            console.debug("   -> Current position", this.currentPosition+1);
-
-            // If the cluster is in front of the clicked flag, show it
-            if (Math.abs(this.startPosition - cluster.pointPosition) > this.currentPosition){
-                console.debug("   -> Cluster in front, showing it !");
-                this._fadeInCluster(cluster, flag);   
-            }
-            else {
-                console.debug("   -> Cluster behind, skipping it.");
-            }
-        });
-
-    }
-
-
-
     /**
      * Deep First Search to find all reachable clusters from a given cluster
      * @param {String} clusterName 
@@ -1127,8 +1047,6 @@ export default class SquadLayer {
                 layer.setStyle({ opacity: value });
             }); 
         }
-
-        
     }
 
 
@@ -1184,8 +1102,6 @@ export default class SquadLayer {
 
     _hideCluster(cluster, clickedFlag) {
 
-        console.debug("   -> hiding cluster", cluster);
-
         if (cluster.name === "Main") return;
 
         const flagsToHide = this.flags.filter((f) =>
@@ -1201,8 +1117,6 @@ export default class SquadLayer {
     }
 
     _fadeInCluster(cluster, clickedFlag) {
-
-        console.debug("   -> Fading cluster", cluster);
 
         if (cluster.name === "Main") return;
 
@@ -1224,8 +1138,6 @@ export default class SquadLayer {
     }
 
     _fadeOutCluster(cluster, clickedFlag) {
-
-        console.debug("   -> Fading cluster", cluster);
 
         if (cluster.name === "Main") return;
 
@@ -1275,9 +1187,9 @@ export default class SquadLayer {
      * @return {number} - xxxx
      */
     clear(){
-        this.activeLayerMarkers.clearLayers();
-        this.phaseNumber.clearLayers();
-        this.phaseAeras.clearLayers();
+        this.activeLayerMarkers.removeFrom(this.map).clearLayers();
+        this.phaseNumber.removeFrom(this.map).clearLayers();
+        this.phaseAeras.removeFrom(this.map).clearLayers();
         if (this.factions) this.factions.unpinUnit();
         $(".btn-layer").removeClass("active").hide();
     }

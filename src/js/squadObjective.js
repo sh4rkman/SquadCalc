@@ -90,10 +90,8 @@ export class SquadObjective {
         let position = null;
         let html = "";
         let className = "flag selected";
-
         this.isNext = false;
         this.flag.removeFrom(this.layerGroup).remove();
-        console.debug("Selecting flag: ", this.name);
 
         if (App.userSettings.circlesFlags) className += " circleFlag";
     
@@ -382,7 +380,6 @@ export class SquadObjective {
     _handleContextMenu(e){
         
         if (this.isMain) {
-            //this.openFactionSelector(e);
             this.ctxMenu = new FactionCtxMenu(this.layer, this.objCluster.objectDisplayName).open(e);
             return;
         }
@@ -396,7 +393,7 @@ export class SquadObjective {
         if (this.layer.isRandomized) {
             if (this.isNext && App.userSettings.revealLayerOnHover) {
                 this.mouseOverTimeout = setTimeout(() => {
-                    this.layer.preview(this);
+                    this.layer.render(this, true);
                 }, 250);
             }
         }

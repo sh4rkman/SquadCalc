@@ -155,9 +155,7 @@ $flag-circle-opacity: 0.2;
                 }
             }
             &.main.selectable {
-                background-color: rgba(197, 0, 0);
-                outline-color: rgb(143, 0, 0);
-                outline-width: 3px;
+                    outline: 3px rgb(143, 0, 0) solid!important;
                 &:focus {
                     outline: 3px rgb(143, 0, 0) solid!important;
                 }
@@ -168,11 +166,10 @@ $flag-circle-opacity: 0.2;
                 &:focus {
                     outline: solid 3px rgb(104, 104, 104)!important;
                 }
-
             }
             &.main.selected {
                 background-color: rgba(0, 128, 0, 0.9);
-                outline: 2px green solid; 
+                outline: 3px rgb(0, 90, 0) solid !important; 
                 &::before {
                     content: "";
                 }
@@ -671,8 +668,7 @@ $flag-circle-opacity: 0.2;
 #mapCtxButtonsContainer {
     display: flex;
     width: 100%;
-    //border: solid red 1px;
-    gap: 5px; // optional spacing between buttons
+    gap: 5px;
     min-width: 100px;
     margin-top: 5px;
     #mapPinButton,
@@ -693,11 +689,9 @@ $flag-circle-opacity: 0.2;
             color: white;
         }
     }
-
     #mapPinButton {
         flex: 9;
     }
-
     #backToFactionsBtn {
         flex: 1;
         svg {
@@ -707,10 +701,8 @@ $flag-circle-opacity: 0.2;
                 fill: white;
             }
         }
-
     }
 }
-
 
 
 .faction-grid {
@@ -731,14 +723,13 @@ $flag-circle-opacity: 0.2;
 .faction-label {
     @include variables.text-outline;
     position: absolute;
-    bottom: 0;
     left: 0;
     right: 0;
     color: white;
-    font-size: 10px;
+    font-size: 14px;
     font-weight: bold;
     text-align: center;
-    letter-spacing: 0;
+    letter-spacing: 0.5px;
     padding: 2px 4px;
     pointer-events: none;
     line-height: 0.8em;
@@ -749,7 +740,7 @@ $flag-circle-opacity: 0.2;
     background: #111;
     outline: 1px solid #ddd;
     border-radius: 2px;
-    width: 60px;
+    width: 70px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -786,6 +777,7 @@ $flag-circle-opacity: 0.2;
 
 .faction-item.units img {
     position: absolute;
+    top: 0;
     width: 60%;
     height: auto;
     object-fit: contain;
@@ -793,9 +785,8 @@ $flag-circle-opacity: 0.2;
 
 .faction-item.units .faction-label {
     position: absolute;
-    margin-top: 4px;
     font-size: 10px;
-    line-height: 1.2em;
+    line-height: 2em;
     padding: 0;
     bottom: 5px;
     white-space: nowrap;

@@ -36,8 +36,7 @@ export class FactionCtxMenu {
 
     _onShow(tip) {
         this.tip = tip;
-
-        const isTeam1 = this.flagName.objectDisplayName === "00-Team1 Main";
+        const isTeam1 = this.flagName === "00-Team1 Main";
         this.FACTIONS = isTeam1 ? this.layer.layerData.teamConfigs.factions.team1Units : this.layer.layerData.teamConfigs.factions.team2Units;
         this.UNITS = isTeam1 ? this.layer.layerData.units.team1Units : this.layer.layerData.units.team2Units;
         this.FACTION_SELECTOR = isTeam1 ? this.layer.factions.FACTION1_SELECTOR : this.layer.factions.FACTION2_SELECTOR;
@@ -52,9 +51,8 @@ export class FactionCtxMenu {
 
     openUnitsCtxMenu(factionId) {
         let html = "<div class='faction-grid'>";
-
         if (this.FACTION_SELECTOR.val() != factionId) {
-            if (this.flagName.objectDisplayName === this.layer.factions.pinnedFaction) this.layer.factions.unpinUnit();
+            if (this.flagName === this.layer.factions.pinnedFaction) this.layer.factions.unpinUnit();
             this.FACTION_SELECTOR.val(factionId).trigger($.Event("change", { broadcast: false }));
         }
 
@@ -87,7 +85,7 @@ export class FactionCtxMenu {
         this.tip.setContent(html);
 
         // If that unit is already pinned, set the button to "pinned"
-        if (this.layer.factions.pinned && this.flagName.objectDisplayName === this.layer.factions.pinnedFaction) {
+        if (this.layer.factions.pinned && this.flagName === this.layer.factions.pinnedFaction) {
             $("#mapPinButton").addClass("active").text(i18next.t("common:pinned")).attr("data-i18n", "common:pinned");
         }
 
@@ -117,7 +115,12 @@ export class FactionCtxMenu {
 
     _handleFactionClick(ev) {
         const factionId = ev.currentTarget.id;
-        this.openUnitsCtxMenu(factionId);
+        if ($(ev.currentTarget).hasClass("_selected")){
+            $(ev.currentTarget).removeClass("_selected");
+            this.FACTION_SELECTOR.val("").trigger($.Event("change", { broadcast: false }));
+        } else {
+            this.openUnitsCtxMenu(factionId);
+        }
     }
 
     _attachUnitHandlers() {
@@ -129,7 +132,7 @@ export class FactionCtxMenu {
         const handleClickUnit = (ev) => {
             const unitId = ev.currentTarget.id;
             if (this.UNIT_SELECTOR.val() !== unitId) {
-                if (this.flagName.objectDisplayName === this.layer.factions.pinnedFaction) this.layer.factions.unpinUnit();
+                if (this.flagName === this.layer.factions.pinnedFaction) this.layer.factions.unpinUnit();
                 tip.popper.querySelectorAll(".faction-item.units._selected").forEach(item => item.classList.remove("_selected"));
                 ev.currentTarget.classList.add("_selected");
                 pinButton.classList.remove("active");
@@ -144,7 +147,7 @@ export class FactionCtxMenu {
                 this.layer.factions.unpinUnit();
                 $btn.removeClass("active").text(i18next.t("common:pinToMap"));
             } else {
-                this.layer.factions.pinUnit(this.UNITS, this.FACTION_SELECTOR.val(), this.UNIT_SELECTOR.val(), this.flagName.objectDisplayName);
+                this.layer.factions.pinUnit(this.UNITS, this.FACTION_SELECTOR.val(), this.UNIT_SELECTOR.val(), this.flagName);
                 $btn.addClass("active").text(i18next.t("common:pinned"));
                 //tip.hide();
             }
