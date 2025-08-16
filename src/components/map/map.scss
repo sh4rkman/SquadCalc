@@ -725,6 +725,7 @@ $flag-circle-opacity: 0.2;
     position: absolute;
     left: 0;
     right: 0;
+    bottom: 2px;
     color: white;
     font-size: 14px;
     font-weight: bold;
@@ -769,8 +770,7 @@ $flag-circle-opacity: 0.2;
         content: '';
         position: absolute;
         inset: 0;
-        border: 3px solid rgba(0, 0, 0, 0.15);
-        // background: rgba(255, 255, 255, 0.35); /* faint white overlay */
+        border: 4px solid rgba(0, 0, 0, 0.30);
         pointer-events: none;
     }
 }

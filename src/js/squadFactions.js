@@ -257,6 +257,7 @@ export default class SquadFactions {
     updateMainIcon(teamKey, FACTION) {
 
         var mainFlag;
+        var html = "";
 
         this.squadLayer.mains.forEach((main) => {
             if (main.objectName.toLowerCase().includes(teamKey)) {
@@ -265,14 +266,15 @@ export default class SquadFactions {
             }
         });
 
-        const isValid = FACTION !== "";
+        if (FACTION !== "") html = i18next.t(FACTION, { ns: "factions" })
+        else  html = i18next.t(teamKey, { ns: "common" })
 
         // Update the name text icon
         mainFlag.nameText.setIcon(
             new DivIcon({
                 className: "objText main",
                 keyboard: false,
-                html: isValid ? FACTION : i18next.t(`common:${teamKey}`),
+                html: html,
                 iconSize: [300, 20],
                 iconAnchor: App.userSettings.circlesFlags ? [150, 38] : [150, 32],
                 //shadowUrl: "../img/icons/markers/marker_shadow.webp",
