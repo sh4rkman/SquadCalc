@@ -1,4 +1,4 @@
-import {imageOverlay, tileLayer, Map, CRS, SVG, Util, LayerGroup, Popup, LatLngBounds, LatLng, Browser } from "leaflet";
+import {ImageOverlay, TileLayer, Map, CRS, SVG, Util, LayerGroup, Popup, LatLngBounds, LatLng, Browser } from "leaflet";
 import squadGrid from "./squadGrid.js";
 import squadHeightmap from "./squadHeightmaps.js";
 import { App } from "../app.js";
@@ -142,7 +142,7 @@ export const squadMinimap = Map.extend({
         if (App.userSettings.highQualityImages) {
             // Use TileLayer for high-quality images
             let tilePath = `${imagePath}_hq/{z}_{x}_{y}.webp`;
-            this.activeLayer = new tileLayer(tilePath, {
+            this.activeLayer = new TileLayer(tilePath, {
                 bounds: this.imageBounds,
                 minNativeZoom: 0,
                 maxNativeZoom : 5,
@@ -153,7 +153,7 @@ export const squadMinimap = Map.extend({
         } else {
             // Use ImageOverlay for standard images
             imagePath = `${imagePath}.webp`;
-            this.activeLayer = new imageOverlay(imagePath, this.imageBounds);
+            this.activeLayer = new ImageOverlay(imagePath, this.imageBounds);
             this.activeLayer.addTo(this.layerGroup);
             $(this.activeLayer.getElement()).css("opacity", 0);
         }
