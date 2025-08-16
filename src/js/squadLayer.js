@@ -28,8 +28,8 @@ export default class SquadLayer {
             opacity: 0.9,
             showMeasurements: true,
             measurementOptions: {
-                showTotalDistance: false,
                 minPixelDistance: 50,
+                scaling: this.map.mapToGameScale,
             }
         }).addTo(this.activeLayerMarkers);
 
@@ -1169,10 +1169,8 @@ export default class SquadLayer {
             this.setMainZoneOpacity(true);
             if (App.userSettings.showFlagsDistance) {
                 this.polyline.showMeasurements({
-                    measurementOptions: {
-                        showTotalDistance: false,
-                        minPixelDistance: 50,
-                    }
+                    minPixelDistance: 50,
+                    scaling: this.map.mapToGameScale,
                 });
             }
             $(".btn-layer").addClass("active");

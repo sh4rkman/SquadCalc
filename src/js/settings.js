@@ -1,8 +1,8 @@
 import { App } from "../app.js";
 import { tooltip_coordPreview } from "./tooltips.js";
-import i18next from "i18next";
 import { animateCSS } from "./animations.js";
 import SquadFactions from "./squadFactions.js";
+import i18next from "i18next";
 
 /* eslint no-unused-vars: "off" */
 
@@ -416,10 +416,8 @@ $("#showFlagsDistanceSettings").on("change", function() {
     if (App.minimap.layer){
         if (val){
             App.minimap.layer.polyline.showMeasurements({
-                measurementOptions: {
-                    showTotalDistance: false,
-                    minPixelDistance: 50,
-                }
+                minPixelDistance: 50,
+                scaling: App.minimap.mapToGameScale,
             });
         } else {
             App.minimap.layer.polyline.hideMeasurements();

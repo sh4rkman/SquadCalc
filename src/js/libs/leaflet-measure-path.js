@@ -5,7 +5,6 @@
  * https://github.com/sh4rkman/SquadCalc
  */
 
-import { App } from "../../app.js";
 import L from "leaflet";
 import i18next from "i18next";
 
@@ -221,6 +220,7 @@ import i18next from "i18next";
                 showDistances: true,
                 showArea: true,
                 showTotalDistance: options.showTotalDistance,
+                scaling: options.scaling || 1,
                 lang: {
                     totalLength: "Total length",
                     totalArea: "Total area",
@@ -310,7 +310,7 @@ import i18next from "i18next";
                     let p3 = this._map.project(ll1, 0);
                     let p4 = this._map.project(ll2, 0);
                     let distMap = Math.sqrt(Math.pow(p4.x - p3.x, 2) + Math.pow(p4.y - p3.y, 2));
-                    distMap = distMap * App.minimap.mapToGameScale;
+                    distMap = distMap * this._measurementOptions.scaling; 
 
                     pixelDist = p1.distanceTo(p2);
 
@@ -358,6 +358,7 @@ import i18next from "i18next";
             this._measurementOptions = L.extend({
                 showOnHover: false,
                 showArea: true,
+                scaling: options.scaling || 1,
                 lang: {
                     totalArea: "Total area",
                 }
