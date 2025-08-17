@@ -134,8 +134,8 @@ export default class SquadFactions {
         });
             
         // Prevent focus
-        $(document).off("mousedown", ".btn-pined, .pinnedVehicles");
-        $(document).on("mousedown", ".btn-pined, .pinnedVehicles", (event) => {event.preventDefault();});
+        $(document).off("pointerdown", ".btn-pined, .pinnedVehicles");
+        $(document).on("pointerdown", ".btn-pined, .pinnedVehicles", (event) => {event.preventDefault();});
 
         $(document).off("click", ".pinnedVehicles");
         $(document).on("click", ".pinnedVehicles", (event) => {

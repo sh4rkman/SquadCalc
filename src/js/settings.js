@@ -445,11 +445,11 @@ $("#keypadUnderCursorSetting").on("change", function() {
     var val = $("#keypadUnderCursorSetting").is(":checked");
 
     if (val){
-        App.minimap.on("mousemove", App.minimap._handleMouseMove);
+        App.minimap.on("pointermove", App.minimap._handleMouseMove);
         //App.minimap.on("zoomend", App.minimap._handleZoom);
     }
     else {
-        App.minimap.off("mousemove", App.minimap._handleMouseMove);
+        App.minimap.off("pointermove", App.minimap._handleMouseMove);
         //App.minimap.off("zoomend", App.minimap._handleZoom);
         App.minimap.mouseLocationPopup.close();
     }

@@ -53,8 +53,8 @@ export class SquadObjective {
         this.flag.on("click", this._handleClick, this);
         this.flag.on("contextmenu", this._handleContextMenu, this);
         this.flag.on("dblclick", this._handleDoubleClick, this);
-        this.flag.on("mouseover", this._handleMouseOver, this);
-        this.flag.on("mouseout", this._handleMouseOut, this);
+        this.flag.on("pointerover", this._handleMouseOver, this);
+        this.flag.on("pointerout", this._handleMouseOut, this);
     }
 
 
@@ -108,8 +108,8 @@ export class SquadObjective {
         this.flag.on("click", this._handleClick, this);
         this.flag.on("contextmenu", this._handleContextMenu, this);
         this.flag.on("dblclick", this._handleDoubleClick, this);
-        this.flag.on("mouseover", this._handleMouseOver, this);
-        this.flag.on("mouseout", this._handleMouseOut, this);
+        this.flag.on("pointerover", this._handleMouseOver, this);
+        this.flag.on("pointerout", this._handleMouseOut, this);
     }
 
 
@@ -304,8 +304,8 @@ export class SquadObjective {
             this.flag.on("click", this._handleClick, this);
             this.flag.on("contextmenu", this._handleContextMenu, this);
             this.flag.on("dblclick", this._handleDoubleClick, this);
-            this.flag.on("mouseover", this._handleMouseOver, this);
-            this.flag.on("mouseout", this._handleMouseOut, this);
+            this.flag.on("pointerover", this._handleMouseOver, this);
+            this.flag.on("pointerout", this._handleMouseOut, this);
         }
     }
 

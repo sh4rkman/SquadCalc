@@ -8,13 +8,12 @@ import { mortarIcon, mortarIcon1, mortarIcon2 } from "./squadIcon.js";
 import { explode } from "./animations.js";
 import { fetchMarkersByMap } from "./squadCalcAPI.js";
 import webGLHeatmap from "./libs/leaflet-webgl-heatmap.js";
-import "leaflet-edgebuffer";
-import "leaflet-spin";
 import "./libs/webgl-heatmap.js";
 import "./libs/leaflet-smoothWheelZoom.js";
 import "tippy.js/dist/tippy.css";
 import "leaflet-polylinedecorator";
-
+import "./libs/leaflet-edgebuffer.js";
+import "./libs/leaflet-spin.js";
 
 /**
  * Squad Minimap
@@ -42,7 +41,7 @@ export const squadMinimap = Map.extend({
             doubleClickZoom: false,
             maxZoom: 8,
             minZoom: 1,
-            renderer: new SVG({padding: 3}),
+            renderer: new SVG({ padding: 3}),
             zoom: 2,
             zoomControl: false,
             zoomSnap: 0,
@@ -97,8 +96,8 @@ export const squadMinimap = Map.extend({
         this.on("zoomend", this._handleZoom, this);
 
         if (App.userSettings.keypadUnderCursor && App.hasMouse){
-            this.on("mousemove", this._handleMouseMove, this);
-            this.on("mouseout", this._handleMouseOut, this);
+            this.on("pointermove", this._handleMouseMove, this);
+            this.on("pointerout", this._handleMouseOut, this);
         }
 
     },
@@ -277,8 +276,8 @@ export const squadMinimap = Map.extend({
     fadeOtherTargets: function(hoveredTarget){
         this.activeTargetsMarkers.eachLayer((target) => {
             if (target != hoveredTarget) {
-                target.off("mouseover");
-                target.off("mouseout");
+                target.off("pointerover");
+                target.off("pointerout");
                 target.setOpacity(0.65);
                 target.calcMarker1.close();
                 target.calcMarker2.close();

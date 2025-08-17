@@ -156,8 +156,8 @@ export const squadWeaponMarker = squadMarker.extend({
         this.on("dblclick", this._handleDblclick, this);
         this.on("contextmenu", this._handleContextMenu, this);
         if (App.hasMouse){
-            this.on("mouseover", this._handleMouseOver, this);
-            this.on("mouseout", this._handleMouseOut, this);
+            this.on("pointerover", this._handleMouseOver, this);
+            this.on("pointerout", this._handleMouseOut, this);
         }
     },
 
@@ -422,7 +422,7 @@ export const squadWeaponMarker = squadMarker.extend({
     _handleDragStart: function () {
 
         this.map.mouseLocationPopup.close();
-        this.map.off("mousemove", this.map._handleMouseMove);
+        this.map.off("pointermove", this.map._handleMouseMove);
 
         this.map.activeTargetsMarkers.eachLayer(function (layer) {
             layer.calcMarker1.setContent("  ");
@@ -465,7 +465,7 @@ export const squadWeaponMarker = squadMarker.extend({
         
 
         if (App.userSettings.keypadUnderCursor){
-            this.map.on("mousemove", this.map._handleMouseMove);
+            this.map.on("pointermove", this.map._handleMouseMove);
         }
 
         if (App.userSettings.realMaxRange) {

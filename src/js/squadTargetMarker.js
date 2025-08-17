@@ -142,8 +142,8 @@ export const squadTargetMarker = squadMarker.extend({
         this.on("contextmenu", this._handleContextMenu, this);
 
         if (App.hasMouse) {
-            this.on("mouseover", this._handleMouseOver, this);
-            this.on("mouseout", this._handleMouseOut, this);
+            this.on("pointerover", this._handleMouseOver, this);
+            this.on("pointerout", this._handleMouseOut, this);
         }
 
     },
@@ -539,7 +539,7 @@ export const squadTargetMarker = squadMarker.extend({
     _handleDragStart: function () {
         this.isDragging = true;
         this.map.mouseLocationPopup.close();
-        this.map.off("mousemove", this.map._handleMouseMove);
+        this.map.off("pointermove", this.map._handleMouseMove);
 
         if (!App.hasMouse) {
             this.calcMarker1.setContent("  ");
@@ -573,7 +573,7 @@ export const squadTargetMarker = squadMarker.extend({
             );
         }
 
-        if (App.userSettings.keypadUnderCursor) this.map.on("mousemove", this.map._handleMouseMove);
+        if (App.userSettings.keypadUnderCursor) this.map.on("pointermove", this.map._handleMouseMove);
 
         // Hide PositionPopUp & MiniCircle
         this.isDragging = false;
@@ -601,8 +601,8 @@ export const squadTargetMarker = squadMarker.extend({
 
         // If they already faded, switch them back
         this.map.activeTargetsMarkers.eachLayer((target) => {
-            target.on("mouseover", target._handleMouseOver, target);
-            target.on("mouseout", target._handleMouseOut, target);
+            target.on("pointerover", target._handleMouseOver, target);
+            target.on("pointerout", target._handleMouseOut, target);
             target.setOpacity(1);
             target.calcMarker1.openOn(this.map);
             if (this.map.activeWeaponsMarkers.getLayers()[1]) target.calcMarker2.openOn(this.map);
@@ -637,8 +637,8 @@ export const squadTargetMarker = squadMarker.extend({
         if (!this.isDragging){
             //this.grid.hide();
             this.map.activeTargetsMarkers.eachLayer((target) => {
-                target.on("mouseover", target._handleMouseOver, target);
-                target.on("mouseout", target._handleMouseOut, target);
+                target.on("pointerover", target._handleMouseOver, target);
+                target.on("pointerout", target._handleMouseOut, target);
                 target.setOpacity(1);
                 target.calcMarker1.openOn(this.map);
                 if (this.map.activeWeaponsMarkers.getLayers()[1]) target.calcMarker2.openOn(this.map);
