@@ -64,7 +64,7 @@
     }
     #factionsDialog {
         #factionVehicles {
-            .vehicle-card {
+            .card-content {
                 .vehicle-icon {
                     width: 22px;
                     height: 22px;
@@ -122,7 +122,7 @@
 @media screen and (width <= 35em) {
     #factionsDialog {
         #factionVehicles {
-            .vehicle-card {
+            .card-content {
                 padding: 0.3em;
                 .vehicle-icon {
                     width: 22px;
@@ -137,7 +137,7 @@
                 font-size: 0.8em;
             }
             #team1Vehicles {
-                .vehicle-card {
+                .card-content {
                     .vehicle-icon {
                         margin-left: 0.5em;
                     }
@@ -151,7 +151,7 @@
 @media screen and (width <= 32em) {
     #factionsDialog {
         #factionVehicles {
-            .vehicle-card {
+            .card-content {
                 padding: 0.3em;
                 .vehicle-icon {
                     width: 15px;
@@ -166,7 +166,7 @@
                 }
             }
             #team1Vehicles {
-                .vehicle-card {
+                .card-content {
                     .vehicle-icon {
                         margin-left: 0.2em;
                         margin-right: 0;

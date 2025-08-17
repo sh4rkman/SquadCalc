@@ -561,12 +561,8 @@ export default class SquadCalc {
 
         $("#fabCheckbox2").on("change", () => { this.switchUI();});
 
-        $("#factionsButton").on("click", () => {
-            document.querySelector("#factionsDialog").showModal();
-        });
+        $("#factionsButton").on("click", () => { $("#factionsDialog")[0].showModal(); });
         
-
-
         $("#mapLayerMenu").find("button.btn-session").on("click", () => {
             if ($(".btn-session").hasClass("active")) {
                 

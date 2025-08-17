@@ -135,15 +135,15 @@ export class SquadObjective {
 
             if (process.env.DISABLE_FACTIONS != "true" && App.userSettings.enableFactions) {
                 if (this.objectName === "00-Team1 Main") {
-                    if ($(".dropbtn8").val() != null) html = i18next.t($(".dropbtn8").val(), { ns: "factions" })
-                    else html = i18next.t("team1", { ns: "common" })
+                    if ($(".dropbtn8").val() != null) html = `<div data-i18n="factions:${$(".dropbtn8").val()}">${i18next.t($(".dropbtn8").val(), { ns: "factions" })}</div>`;
+                    else html = i18next.t("team1", { ns: "common" });
                 } else {
-                    if ($(".dropbtn10").val() != null) html = i18next.t($(".dropbtn10").val(), { ns: "factions" })
-                    else html = i18next.t("team2", { ns: "common" })
+                    if ($(".dropbtn10").val() != null) html = `<div data-i18n="factions:${$(".dropbtn10").val()}">${i18next.t($(".dropbtn10").val(), { ns: "factions" })}</div>`;
+                    else html = `<div data-i18n="common:team2">${i18next.t("common:team2")}</div>;`;
                 }
             } else {
                 if (this.objectName === "00-Team1 Main") html = i18next.t("common:team1");
-                else html = i18next.t("common:team2");
+                else html = `<div data-i18n="common:team2">${i18next.t("common:team2")}</div>;`;
             }
         }
 

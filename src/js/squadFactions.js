@@ -266,8 +266,8 @@ export default class SquadFactions {
             }
         });
 
-        if (FACTION !== "") html = i18next.t(FACTION, { ns: "factions" })
-        else  html = i18next.t(teamKey, { ns: "common" })
+        if (FACTION !== "") html = `<div data-i18n="factions:${FACTION}">${i18next.t(FACTION, { ns: "factions" })}</div>`;
+        else  html = `<div data-i18n="common:${teamKey}">${i18next.t(teamKey, { ns: "common" })}</div>`;
 
         // Update the name text icon
         mainFlag.nameText.setIcon(
@@ -301,6 +301,16 @@ export default class SquadFactions {
             animateCSS($(event.target), "fadeIn");
             event.target.innerText = originalText;
         }, 2000);
+    }
+
+    
+    /**
+     * Open/Close Vehicle Cards
+     * @param {*} event 
+     */
+    openCard(event) {
+        if ($(event.target).closest(".vehicle-type").length) return;
+        $(event.currentTarget).toggleClass("selected");
     }
 
 
@@ -407,7 +417,7 @@ export default class SquadFactions {
                     return;
                 }
 
-                let wikiURL = vehicle.type.split(" ")[0];
+                let shortVehName = vehicle.type.split(" ")[0];
 
                 let delayInfo = "";
                 if (vehicle.delay > 0) {
@@ -422,30 +432,35 @@ export default class SquadFactions {
 
                 $("#team1Vehicles").append(`
                     <div class="vehicle-card animate__animated animate__fadeIn animate__faster">
-                        <a href="https://squad.fandom.com/wiki/${wikiURL}" target="_blank" title="Open the squadwiki page in a new tab">
+                        <div class="card-content">
                             <div class="vehicle-icon">
                                 <img src="${process.env.API_URL}/img/icons/ally/vehicles/${vehicle.icon}.webp" alt='${vehicle.type}'>
                             </div>
-                        </a>
-                        <div class="vehicle-icon">
-                            <div class="vehicle-count">×${vehicle.count}</div>
-                        </div>
-                        <div class="vehicle-info">
-                            <div class="vehicle-meta">
-                                <span class="respawn">
-                                    <span data-i18n="common:respawn">${i18next.t("common:respawn")}</span>
-                                    : ${vehicle.respawnTime}
-                                    <span data-i18n="common:min">${i18next.t("common:min")}</span>
-                                </span>
-                                <span class="count-delay"> ${delayInfo}</span>
+                            <div class="vehicle-icon">
+                                <div class="vehicle-count">${vehicle.count}×</div>
                             </div>
-                            <div class="vehicle-type" data-i18n="vehicles:${vehicle.type}" title="${i18next.t("clickToCopy", { ns: "tooltips" })}">${i18next.t(vehicle.type, { ns: "vehicles" })}</div>
+                            <div class="vehicle-info">
+                                <div class="vehicle-meta">
+                                    <span class="respawn">
+                                        <span data-i18n="common:respawn">${i18next.t("common:respawn")}</span>
+                                        : ${vehicle.respawnTime}
+                                        <span data-i18n="common:min">${i18next.t("common:min")}</span>
+                                    </span>
+                                    <span class="count-delay"> ${delayInfo}</span>
+                                </div>
+                                <div class="vehicle-type" data-i18n="vehicles:${vehicle.type}" title="${i18next.t("clickToCopy", { ns: "tooltips" })}">${i18next.t(vehicle.type, { ns: "vehicles" })}</div>
+                            </div>
+                        </div>
+                        <div class="image">
+                            <a href="https://squad.fandom.com/wiki/${shortVehName}" target="_blank" class="attribution">squad.fandom.com</a>
+                            <img src="${process.env.API_URL}/img/vehicles/${vehicle.type}.webp" onerror="this.onerror=null; this.src='${process.env.API_URL}/img/vehicles/placeholder.webp';"/>
                         </div>
                     </div>
                 `);
             });
 
             // Handle click-to-copy
+            $(".vehicle-card").off("click").on("click", (event) => { this.openCard(event); });
             $(".vehicle-type").off("click").on("click", (event) => { this.copyVehicleName(event); });
         });
 
@@ -484,7 +499,7 @@ export default class SquadFactions {
                     return;
                 }
 
-                let wikiURL = vehicle.type.split(" ")[0];
+                let shortVehName = vehicle.type.split(" ")[0];
 
                 let delayInfo = "";
                 if (vehicle.delay > 0) {
@@ -499,24 +514,29 @@ export default class SquadFactions {
 
                 $("#team2Vehicles").append(`
                     <div class="vehicle-card animate__animated animate__fadeIn animate__faster">
-                        <a href="https://squad.fandom.com/wiki/${wikiURL}" target="_blank" title="Open the squadwiki page in a new tab">
+                        <div class="card-content">
+
+                                <div class="vehicle-icon">
+                                    <img src="${process.env.API_URL}/img/icons/ally/vehicles/${vehicle.icon}.webp" alt='${vehicle.type}'>
+                                </div>
                             <div class="vehicle-icon">
-                                <img src="${process.env.API_URL}/img/icons/ally/vehicles/${vehicle.icon}.webp" alt='${vehicle.type}'>
+                                <div class="vehicle-count">×${vehicle.count}</div>
                             </div>
-                        </a>
-                        <div class="vehicle-icon">
-                            <div class="vehicle-count">×${vehicle.count}</div>
+                            <div class="vehicle-info">
+                                <div class="vehicle-type" data-i18n="vehicles:${vehicle.type}" title="${i18next.t("clickToCopy", { ns: "tooltips" })}">${i18next.t(vehicle.type, { ns: "vehicles" })}</div>
+                                <div class="vehicle-meta">
+                                    <span class="respawn">
+                                        <span data-i18n="common:respawn">${i18next.t("common:respawn")}</span>
+                                        : ${vehicle.respawnTime}
+                                        <span data-i18n="common:min">${i18next.t("common:min")}</span>
+                                    </span>
+                                    <span class="count-delay">${delayInfo}</span>
+                                </div>
+                            </div>
                         </div>
-                        <div class="vehicle-info">
-                            <div class="vehicle-type" data-i18n="vehicles:${vehicle.type}" title="${i18next.t("clickToCopy", { ns: "tooltips" })}">${i18next.t(vehicle.type, { ns: "vehicles" })}</div>
-                            <div class="vehicle-meta">
-                                <span class="respawn">
-                                    <span data-i18n="common:respawn">${i18next.t("common:respawn")}</span>
-                                    : ${vehicle.respawnTime}
-                                    <span data-i18n="common:min">${i18next.t("common:min")}</span>
-                                </span>
-                                <span class="count-delay">${delayInfo}</span>
-                            </div>
+                        <div class="image">
+                            <a href="https://squad.fandom.com/wiki/${shortVehName}" target="_blank" class="attribution">squad.fandom.com</a>
+                            <img src="${process.env.API_URL}/img/vehicles/${vehicle.type}.webp" onerror="this.onerror=null; this.src='${process.env.API_URL}/img/vehicles/placeholder.webp';"/>
                         </div>
                     </div>
                 `);
@@ -524,7 +544,7 @@ export default class SquadFactions {
     
             // Handle click-to-copy
             $(".vehicle-type").off("click").on("click", (event) => { this.copyVehicleName(event); });
-
+            $(".vehicle-card").off("click").on("click", (event) => { this.openCard(event); });
         });
 
         if (App.userSettings.enableFactions) {
