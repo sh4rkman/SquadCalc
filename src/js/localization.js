@@ -94,6 +94,21 @@ function updateContent() {
         });
     });
 
+    // 强制刷新单位选择器的显示
+    if (App.minimap.layer && App.minimap.layer.factions) {
+        // 获取当前选中的值
+        const unit1Value = $(".dropbtn9").val();
+        const unit2Value = $(".dropbtn11").val();
+        
+        // 如果有选中值，触发重新渲染
+        if (unit1Value) {
+            $(".dropbtn9").val(unit1Value).trigger('change.select2');
+        }
+        if (unit2Value) {
+            $(".dropbtn11").val(unit2Value).trigger('change.select2');
+        }
+    }
+
     if (App.minimap.layer) App.minimap.layer.polyline.updateMeasurements();
    
     $(".dropbtn").select2("destroy").select2({
@@ -141,7 +156,7 @@ function updateContent() {
     });
 
 
-    if (App.minimap.layer.faction) {
+    if (App.minimap.layer) {
         $(".dropbtn8").select2("destroy").select2({
             dropdownCssClass: "dropbtn",
             dropdownParent: $("#faction1"),
