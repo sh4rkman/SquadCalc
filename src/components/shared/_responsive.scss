@@ -87,6 +87,16 @@
             }
         }
     }
+
+    // Settings controls responsive layout for mobile
+    #settingsControls {
+        button {
+            width: 30%;
+            &.active {
+                width: 37%;
+            }
+        }
+    }
     /* -- H < 568px -- */
     @media (height >= 35em) {
         #classic_ui {
