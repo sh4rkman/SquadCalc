@@ -91,7 +91,7 @@
     // Settings controls responsive layout for mobile
     #settingsControls {
         button {
-            width: 30%;
+            width: 29%;
             &.active {
                 width: 37%;
             }
@@ -410,5 +410,31 @@
         .tippy-box {
             font-size: 200%;
         }
+    }
+}
+
+/* Fix for mobile devices - prevent hover states from sticking on specific elements */
+@media (hover: none) {
+    // Settings controls buttons
+    #settingsControls button:not(.active):hover {
+        background-color: inherit !important;
+    }
+
+    // Map layer menu buttons
+    #mapLayerMenu .btn:not(.active):hover {
+        background-color: white !important;
+        svg {
+            transform: none !important;
+        }
+    }
+
+    // Footer buttons
+    footer button:hover {
+        background-color: inherit !important;
+    }
+
+    // Dialog close buttons
+    .closeModal:hover {
+        background-color: inherit !important;
     }
 }
