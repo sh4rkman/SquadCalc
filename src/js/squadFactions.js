@@ -306,11 +306,24 @@ export default class SquadFactions {
     
     /**
      * Open/Close Vehicle Cards
-     * @param {*} event 
+     * @param {*} event
      */
     openCard(event) {
         if ($(event.target).closest(".vehicle-type").length) return;
-        $(event.currentTarget).toggleClass("selected");
+
+        const $card = $(event.currentTarget);
+        const $image = $card.find(".image");
+
+        // Check if card is currently expanded (image is visible)
+        const isExpanded = $image.is(":visible");
+
+        if (isExpanded) {
+            // Card is expanded, collapse it
+            $card.removeClass("selected");
+        } else {
+            // Card is collapsed, expand it
+            $card.addClass("selected");
+        }
     }
 
 
@@ -621,6 +634,7 @@ export default class SquadFactions {
             dropdownParent: $("#faction1"),
             allowClear: true,
             placeholder: factionPlaceholder,
+            width: "100px",
             minimumResultsForSearch: -1,
             templateResult: (state) => this.formatFactions(state, false),
             templateSelection: (state) => this.formatFactions(state, true),
@@ -631,6 +645,7 @@ export default class SquadFactions {
             dropdownParent: $("#faction2"),
             allowClear: true,
             placeholder: factionPlaceholder,
+            width: "100px",
             minimumResultsForSearch: -1,
             templateResult: (state) => this.formatFactions(state, false),
             templateSelection: (state) => this.formatFactions(state, true),

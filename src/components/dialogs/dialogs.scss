@@ -407,7 +407,7 @@ $bezier: cubic-bezier(0.65, 0.25, 0.56, 0.96);
         vertical-align: middle;
         height: 18px;
         cursor: pointer;
-        transition: background-color 0.3s ease;
+        transition: background-color 0.3s ease, width 0.3s ease;
         span {
             vertical-align: middle;
             display: inline-flex;
