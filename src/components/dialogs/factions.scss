@@ -157,10 +157,20 @@
             .image {
                 display: none;
             }
-            &:hover, &.selected {
+            &.selected {
                 background: firebrick;
                 .vehicle-meta .count-delay {
                     color: #aaa;
+                }
+            }
+
+            // Hover effect only for devices that support true hover (desktop)
+            @media (hover: hover) {
+                &:hover {
+                    background: firebrick;
+                    .vehicle-meta .count-delay {
+                        color: #aaa;
+                    }
                 }
             }
             &.selected {
