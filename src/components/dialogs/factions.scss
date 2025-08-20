@@ -157,17 +157,24 @@
             .image {
                 display: none;
             }
-            &:hover, &.selected {
-                background: firebrick;
-                .vehicle-meta .count-delay {
-                    color: #aaa;
+            // Hover effect only for devices that support true hover (desktop)
+            @media (hover: hover) {
+                &:hover {
+                    background: firebrick;
+                    .vehicle-meta .count-delay {
+                        color: #aaa;
+                    }
                 }
             }
             &.selected {
+                background: firebrick;
                 height: auto;
                 flex-direction: column;
                 align-items: flex-start;
                 border-radius: 0.25em 0.25em 1em 1em ;
+                .vehicle-meta .count-delay {
+                    color: #aaa;
+                }
                 .image {
                     margin-top: 0.5em;
                     display: block;

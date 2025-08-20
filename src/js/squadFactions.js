@@ -306,11 +306,24 @@ export default class SquadFactions {
     
     /**
      * Open/Close Vehicle Cards
-     * @param {*} event 
+     * @param {*} event
      */
     openCard(event) {
         if ($(event.target).closest(".vehicle-type").length) return;
-        $(event.currentTarget).toggleClass("selected");
+
+        const $card = $(event.currentTarget);
+        const $image = $card.find(".image");
+
+        // Check if card is currently expanded (image is visible)
+        const isExpanded = $image.is(":visible");
+
+        if (isExpanded) {
+            // Card is expanded, collapse it
+            $card.removeClass("selected");
+        } else {
+            // Card is collapsed, expand it
+            $card.addClass("selected");
+        }
     }
 
 
