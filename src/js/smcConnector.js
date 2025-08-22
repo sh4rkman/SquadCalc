@@ -128,6 +128,7 @@ function checkCoordinates(socketCoordinates) {
     if (App.minimap.activeTargetsMarkers) {
         App.minimap.activeTargetsMarkers.eachLayer(function (target) {
             const BEARING = target.firingSolution1.bearing;
+            const DISTANCE = target.firingSolution1.distance;
             let elevation;
             if (App.minimap.activeWeaponsMarkers.getLayers()[0].angleType === "high") {
                 elevation = target.firingSolution1.elevation.high;
@@ -149,6 +150,10 @@ function checkCoordinates(socketCoordinates) {
                 coorArray = coorArray + "\n";
             }
             coorArray = coorArray + `${elevation} | ${BEARING.toFixed(1)}°`;
+
+            if (App.userSettings.showDistance) {
+                coorArray = coorArray + ` | ${DISTANCE.toFixed(0)}m`;
+            }
         });
     }
     if (coorArray != prevCoorArray) {
