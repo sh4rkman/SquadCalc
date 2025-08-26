@@ -88,15 +88,6 @@
         }
     }
 
-    // Settings controls responsive layout for mobile
-    #settingsControls {
-        button {
-            width: 29%;
-            &.active {
-                width: 37%;
-            }
-        }
-    }
     /* -- H < 568px -- */
     @media (height >= 35em) {
         #classic_ui {
@@ -419,7 +410,6 @@
     #settingsControls button:not(.active):hover {
         background-color: inherit !important;
     }
-
     // Map layer menu buttons
     #mapLayerMenu .btn:not(.active):hover {
         background-color: white !important;
@@ -427,12 +417,10 @@
             transform: none !important;
         }
     }
-
     // Footer buttons
     footer button:hover {
         background-color: inherit !important;
     }
-
     // Dialog close buttons
     .closeModal:hover {
         background-color: inherit !important;

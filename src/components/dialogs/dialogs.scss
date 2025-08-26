@@ -402,7 +402,7 @@ $bezier: cubic-bezier(0.65, 0.25, 0.56, 0.96);
     width: 100%;
     button {
         color: variables.$mainBGColor;
-        width: 29%;
+        width: 28%;
         margin-bottom: 1em;
         vertical-align: middle;
         height: 18px;
@@ -420,6 +420,7 @@ $bezier: cubic-bezier(0.65, 0.25, 0.56, 0.96);
             color: variables.$mainTxtColor;
             padding-bottom: 0;
             height: 25px;
+            width: 33%;
             svg {
                 display: inline-block;
                 fill: variables.$mainTxtColor;

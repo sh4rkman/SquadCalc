@@ -11,6 +11,8 @@ export default class SquadLayer {
     constructor(map, layerData) {
         this.map = map;
         this.activeLayerMarkers = new LayerGroup().addTo(this.map);
+        this.activeFaction1Markers = new LayerGroup().addTo(this.map);
+        this.activeFaction2Markers = new LayerGroup().addTo(this.map);
         this.layerData = layerData;
         this.capturePoints = layerData.capturePoints;
         this.objectives = layerData.objectives;
@@ -109,6 +111,130 @@ export default class SquadLayer {
         this.createDeployables();
         this.createProtectionZones();
         this.createBorders();
+        this.createSpawners();
+    }
+
+
+    createSpawners(){
+
+        this.Team1QuadBikes = [];
+        this.Team2QuadBikes = [];
+        this.Team1MRAPs = [];
+
+        this.team1VehicleSpawners = {
+            helicopters: [],
+            boats: [],
+            vehicles: [],
+            bikes: []
+        };
+
+        this.team2VehicleSpawners = {
+            helicopters: [],
+            boats: [],
+            vehicles: [],
+            bikes: []
+        };
+
+        this.layerData.assets.vehicleSpawners.forEach((spawner) => {
+
+            const latlng = this.convertToLatLng(spawner.location_x, spawner.location_y);
+
+            let color = "white";
+            let halfWidth = 1;
+            let halfHeight = 1; 
+
+            if (spawner.size === "MBT") {
+                color = "firebrick";
+                halfWidth = 2.3;
+                halfHeight = 1.7;
+                if (spawner.type === "Team One") this.team1VehicleSpawners.vehicles.push(spawner);
+                else this.team2VehicleSpawners.vehicles.push(spawner);
+            } 
+
+            if (spawner.size === "APC") {
+                color = "Purple";
+                halfWidth = 3;
+                halfHeight = 1.7;
+                if (spawner.type === "Team One") this.team1VehicleSpawners.vehicles.push(spawner);
+                else this.team2VehicleSpawners.vehicles.push(spawner);
+            } 
+
+            if (spawner.size === "Car") {
+                color = "blue";
+                halfWidth = 2;
+                halfHeight = 1.5;
+                if (spawner.type === "Team One") this.team1VehicleSpawners.vehicles.push(spawner);
+                else this.team2VehicleSpawners.vehicles.push(spawner);
+            } 
+
+            if (spawner.size === "QuadBike") {
+                color = "yellow";
+                halfWidth = 1;
+                halfHeight = 0.8;
+                if (spawner.type === "Team One") this.team1VehicleSpawners.bikes.push(spawner);
+                else this.team2VehicleSpawners.bikes.push(spawner);
+            } 
+
+            if (spawner.size === "Helicopter") {
+                color = "green";
+                halfWidth = 12;
+                halfHeight = 12;
+                if (spawner.type === "Team One") this.team1VehicleSpawners.helicopters.push(spawner);
+                else this.team2VehicleSpawners.helicopters.push(spawner);
+            } 
+
+            if (spawner.size === "Boat") {
+                color = "black";
+                halfWidth = 3;
+                halfHeight = 1.5;
+                if (spawner.type === "Team One") this.team1VehicleSpawners.boats.push(spawner);
+                else this.team2VehicleSpawners.boats.push(spawner);
+            } 
+
+            const bounds = [
+                [latlng[0] - halfHeight * this.map.gameToMapScale, latlng[1] - halfWidth * this.map.gameToMapScale], // top-left (y, x)
+                [latlng[0] + halfHeight * this.map.gameToMapScale, latlng[1] + halfWidth * this.map.gameToMapScale]  // bottom-right
+            ];
+
+
+            let spawnRectangle;
+
+            if (spawner.typePriorities.length > 0) {
+                
+                // let prio = spawner.typePriorities[0].name;
+                // new Marker(latlng, {
+                //     interactive: false,
+                //     icon: new DivIcon({
+                //         className: "spawnText",
+                //         html: `${prio}`,
+                //         iconSize: [50, 50],
+                //         iconAnchor: [25, 40]
+                //     })
+                // }).addTo(this.activeLayerMarkers)
+
+                spawnRectangle = new Rectangle(bounds, {
+                    color: color,
+                    fillOpacity: 0,
+                    opacity: 1,
+                    weight: 1,
+                }).addTo(this.activeLayerMarkers);
+
+            } else {
+
+                spawnRectangle = new Rectangle(bounds, {
+                    color: color,
+                    fillOpacity: 0,
+                    opacity: 0.75,
+                    weight: 1,
+                    dashArray: "4 4" 
+                }).addTo(this.activeLayerMarkers);
+
+            }
+
+            this.rotateRectangle(spawnRectangle, spawner.rotation_z);
+
+        });
+
     }
 
 
@@ -1186,6 +1312,8 @@ export default class SquadLayer {
      */
     clear(){
         this.activeLayerMarkers.removeFrom(this.map).clearLayers();
+        this.activeFaction1Markers.removeFrom(this.map).clearLayers();
+        this.activeFaction2Markers.removeFrom(this.map).clearLayers();
         this.phaseNumber.removeFrom(this.map).clearLayers();
         this.phaseAeras.removeFrom(this.map).clearLayers();
         if (this.factions) this.factions.unpinUnit();

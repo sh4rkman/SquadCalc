@@ -7,7 +7,7 @@
 
 //import L from "leaflet";
 import i18next from "i18next";
-import { Marker, Polyline, LayerGroup, Util, Layer } from "leaflet";
+import { Marker, Polyline, Polygon, LayerGroup, Util, Layer, DomUtil, Circle } from "leaflet";
 
 (function() {
     "use strict";
@@ -33,8 +33,8 @@ import { Marker, Polyline, LayerGroup, Util, Layer } from "leaflet";
         onAdd: function(map) {
             this._map = map;
             let pane = this.getPane ? this.getPane() : map.getPanes().markerPane;
-            let el = this._element = L.DomUtil.create("div", "leaflet-zoom-animated leaflet-measure-path-measurement", pane);
-            let inner = L.DomUtil.create("div", "", el);
+            let el = this._element = DomUtil.create("div", "leaflet-zoom-animated leaflet-measure-path-measurement", pane);
+            let inner = DomUtil.create("div", "", el);
             inner.title = this._title;
             inner.innerHTML = this._measurement;
 
@@ -51,13 +51,13 @@ import { Marker, Polyline, LayerGroup, Util, Layer } from "leaflet";
         },
 
         _setPosition: function() {
-            L.DomUtil.setPosition(this._element, this._map.latLngToLayerPoint(this._latlng));
+            DomUtil.setPosition(this._element, this._map.latLngToLayerPoint(this._latlng));
             this._element.style.transform += " rotate(" + this._rotation + "rad)";
         },
 
         _animateZoom: function(opt) {
             var pos = this._map._latLngToNewLayerPoint(this._latlng, opt.zoom, opt.center).round();
-            L.DomUtil.setPosition(this._element, pos);
+            DomUtil.setPosition(this._element, pos);
             this._element.style.transform += " rotate(" + this._rotation + "rad)";
         }
     });
@@ -246,7 +246,7 @@ import { Marker, Polyline, LayerGroup, Util, Layer } from "leaflet";
             return this;
         },
 
-        onAdd: override(L.Polyline.prototype.onAdd, function(originalReturnValue) {
+        onAdd: override(Polyline.prototype.onAdd, function(originalReturnValue) {
             var showOnHover = this.options.measurementOptions && this.options.measurementOptions.showOnHover;
             if (this.options.showMeasurements && !showOnHover) {
                 this.showMeasurements(this.options.measurementOptions);
@@ -254,17 +254,17 @@ import { Marker, Polyline, LayerGroup, Util, Layer } from "leaflet";
             return originalReturnValue;
         }),
 
-        onRemove: override(L.Polyline.prototype.onRemove, function(originalReturnValue) {
+        onRemove: override(Polyline.prototype.onRemove, function(originalReturnValue) {
             this.hideMeasurements();
             return originalReturnValue;
         }, true),
 
-        setLatLngs: override(L.Polyline.prototype.setLatLngs, function(originalReturnValue) {
+        setLatLngs: override(Polyline.prototype.setLatLngs, function(originalReturnValue) {
             this.updateMeasurements();
             return originalReturnValue;
         }),
 
-        spliceLatLngs: override(L.Polyline.prototype.spliceLatLngs, function(originalReturnValue) {
+        spliceLatLngs: override(Polyline.prototype.spliceLatLngs, function(originalReturnValue) {
             this.updateMeasurements();
             return originalReturnValue;
         }),
@@ -276,7 +276,7 @@ import { Marker, Polyline, LayerGroup, Util, Layer } from "leaflet";
             if (!this._measurementLayer) return this;
 
             let latLngs = this.getLatLngs(),
-                isPolygon = this instanceof L.Polygon,
+                isPolygon = this instanceof Polygon,
                 options = this._measurementOptions,
                 totalDist = 0,
                 formatter,
@@ -325,7 +325,7 @@ import { Marker, Polyline, LayerGroup, Util, Layer } from "leaflet";
 
                 // Show total length for polylines
                 if (!isPolygon && this._measurementOptions.showTotalDistance) {
-                    L.marker.measurement(ll2, formatter(totalDist), options.lang.totalLength, 0, options)
+                    Marker.measurement(ll2, formatter(totalDist), options.lang.totalLength, 0, options)
                         .addTo(this._measurementLayer);
                 }
             }
@@ -333,7 +333,7 @@ import { Marker, Polyline, LayerGroup, Util, Layer } from "leaflet";
             if (isPolygon && options.showArea && latLngs.length > 2) {
                 formatter = options.formatArea || this.formatArea.bind(this);
                 let area = ringArea(latLngs);
-                L.marker.measurement(this.getBounds().getCenter(),
+                Marker.measurement(this.getBounds().getCenter(),
                     formatter(area), options.lang.totalArea, 0, options)
                     .addTo(this._measurementLayer);
             }
@@ -348,83 +348,84 @@ import { Marker, Polyline, LayerGroup, Util, Layer } from "leaflet";
         }
     });
 
-    L.Polyline.addInitHook(function() {
+    Polyline.addInitHook(function() {
         addInitHook.call(this);
     });
 
-    // L.Circle.include({
-    //     showMeasurements: function(options) {
-    //         if (!this._map || this._measurementLayer) return this;
+    Circle.include({
+        showMeasurements: function(options) {
+            if (!this._map || this._measurementLayer) return this;
 
-    //         this._measurementOptions = L.extend({
-    //             showOnHover: false,
-    //             showArea: true,
-    //             scaling: options.scaling || 1,
-    //             lang: {
-    //                 totalArea: "Total area",
-    //             }
-    //         }, options || {});
+            this._measurementOptions = Object.assign({
+                showOnHover: false,
+                showArea: true,
+                scaling: options.scaling || 1,
+                lang: {
+                    totalArea: "Total area",
+                }
+            }, options || {});
 
-    //         this._measurementLayer = L.layerGroup().addTo(this._map);
-    //         this.updateMeasurements();
-    //         this._map.on("zoom", this.updateMeasurements, this);
-    //         return this;
-    //     },
+            this._measurementLayer = new LayerGroup().addTo(this._map);
+            this.updateMeasurements();
+            this._map.on("zoom", this.updateMeasurements, this);
+            return this;
+        },
 
-    //     hideMeasurements: function() {
-    //         if (!this._map) return this;
-    //         this._map.on("zoom", this.updateMeasurements, this);
-    //         if (!this._measurementLayer) return this;
-    //         this._map.removeLayer(this._measurementLayer);
-    //         this._measurementLayer = null;
-    //         return this;
-    //     },
+        hideMeasurements: function() {
+            if (!this._map) return this;
+            this._map.on("zoom", this.updateMeasurements, this);
+            if (!this._measurementLayer) return this;
+            this._map.removeLayer(this._measurementLayer);
+            this._measurementLayer = null;
+            return this;
+        },
 
-    //     onAdd: override(L.Circle.prototype.onAdd, function(originalReturnValue) {
-    //         var showOnHover = this.options.measurementOptions && this.options.measurementOptions.showOnHover;
-    //         if (this.options.showMeasurements && !showOnHover) {
-    //             this.showMeasurements(this.options.measurementOptions);
-    //         }
-    //         return originalReturnValue;
-    //     }),
+        onAdd: override(Circle.prototype.onAdd, function(originalReturnValue) {
+            var showOnHover = this.options.measurementOptions && this.options.measurementOptions.showOnHover;
+            if (this.options.showMeasurements && !showOnHover) {
+                this.showMeasurements(this.options.measurementOptions);
+            }
+            return originalReturnValue;
+        }),
 
-    //     onRemove: override(L.Circle.prototype.onRemove, function(originalReturnValue) {
-    //         this.hideMeasurements();
-    //         return originalReturnValue;
-    //     }, true),
+        onRemove: override(Circle.prototype.onRemove, function(originalReturnValue) {
+            this.hideMeasurements();
+            return originalReturnValue;
+        }, true),
 
-    //     setLatLng: override(L.Circle.prototype.setLatLng, function(originalReturnValue) {
-    //         this.updateMeasurements();
-    //         return originalReturnValue;
-    //     }),
+        setLatLng: override(Circle.prototype.setLatLng, function(originalReturnValue) {
+            this.updateMeasurements();
+            return originalReturnValue;
+        }),
 
-    //     setRadius: override(L.Circle.prototype.setRadius, function(originalReturnValue) {
-    //         this.updateMeasurements();
-    //         return originalReturnValue;
-    //     }),
+        setRadius: override(Circle.prototype.setRadius, function(originalReturnValue) {
+            this.updateMeasurements();
+            return originalReturnValue;
+        }),
 
-    //     formatArea: formatArea,
+        formatArea: formatArea,
 
-    //     updateMeasurements: function() {
-    //         if (!this._measurementLayer) return;
+        updateMeasurements: function() {
+            if (!this._measurementLayer) return;
 
-    //         let latLng = this.getLatLng(),
-    //             options = this._measurementOptions,
-    //             formatter = options.formatArea || L.bind(this.formatArea, this);
+            let latLng = this.getLatLng(),
+                options = this._measurementOptions,
+                formatter = options.formatArea || this.formatArea.bind(this);
 
-    //         this._measurementLayer.clearLayers();
 
-    //         if (options.showArea) {
-    //             formatter = options.formatArea || L.bind(this.formatArea, this);
-    //             let area = circleArea(this.getRadius());
-    //             L.marker.measurement(latLng,
-    //                 formatter(area), options.lang.totalArea, 0, options)
-    //                 .addTo(this._measurementLayer);
-    //         }
-    //     }
-    // });
+            this._measurementLayer.clearLayers();
 
-    // L.Circle.addInitHook(function() {
-    //     addInitHook.call(this);
-    // });
+            if (options.showArea) {
+                formatter = options.formatArea || this.formatArea.bind(this);
+                let area = circleArea(this.getRadius());
+                Marker.measurement(latLng,
+                    formatter(area), options.lang.totalArea, 0, options)
+                    .addTo(this._measurementLayer);
+            }
+        }
+    });
+
+    Circle.addInitHook(function() {
+        addInitHook.call(this);
+    });
 })();

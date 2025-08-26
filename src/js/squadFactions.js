@@ -3,6 +3,7 @@ import { App } from "../app.js";
 import { DivIcon } from "leaflet";
 import { animateCSS } from "./animations.js";
 import i18next from "i18next";
+import { squadVehicleMarker } from "./squadSpawner.js";
 
 
 export default class SquadFactions {
@@ -326,6 +327,92 @@ export default class SquadFactions {
         }
     }
 
+    spawnVehicle(vehicle, spawners, activeFactionMarkers){
+
+        if (vehicle.spawnerSize === "Helicopter") {
+            for (let v = 0; v < vehicle.count; v++) {
+                if (spawners.helicopters.length === 0) break;
+                // Pick a random Helicopter spawner
+                const randIndex = Math.floor(Math.random() * spawners.helicopters.length);
+                const spawner = spawners.helicopters[randIndex];
+                const latlng = this.squadLayer.convertToLatLng(spawner.location_x, spawner.location_y);
+                new squadVehicleMarker(latlng, spawner, vehicle).addTo(activeFactionMarkers);
+                // remove the used spawner
+                spawners.helicopters.splice(randIndex, 1);
+            }
+            return;
+        }
+
+        if (vehicle.spawnerSize === "QuadBike") {
+            for (let v = 0; v < vehicle.count; v++) {
+                if (spawners.bikes.length === 0) break;
+                // Pick first spawner in the list
+                const spawner = spawners.bikes[0];
+                const latlng = this.squadLayer.convertToLatLng(spawner.location_x, spawner.location_y);
+                new squadVehicleMarker(latlng, spawner, vehicle).addTo(activeFactionMarkers);
+                // remove the used spawner
+                spawners.bikes.splice(0, 1);
+            }
+            return;
+        }
+
+        if (vehicle.spawnerSize === "Boat") {
+            for (let v = 0; v < vehicle.count; v++) {
+                if (spawners.boats.length === 0) break;
+                // pick random index
+                const randIndex = Math.floor(Math.random() * spawners.boats.length);
+                const spawner = spawners.boats[randIndex];
+                const latlng = this.squadLayer.convertToLatLng(spawner.location_x, spawner.location_y);
+                new squadVehicleMarker(latlng, spawner, vehicle).addTo(activeFactionMarkers);
+                // remove the used spawner
+                spawners.boats.splice(randIndex, 1);
+            }
+            return;
+        }
+
+        for (let v = 0; v < vehicle.count; v++) {
+
+            let foundDedicated = false;
+
+            const vehType = vehicle.vehType;
+
+            for (let i = 0; i < spawners.vehicles.length; i++) {
+                if (spawners.vehicles.length === 0) break;
+
+                const randIndex = Math.floor(Math.random() * spawners.vehicles.length);
+                const spawner = spawners.vehicles[randIndex];
+
+                if (spawner.typePriorities.find(p => p.name === vehType)) {
+                    const latlng = this.squadLayer.convertToLatLng(spawner.location_x, spawner.location_y);
+                    new squadVehicleMarker(latlng, spawner, vehicle).addTo(activeFactionMarkers);
+                    spawners.vehicles.splice(randIndex, 1);
+                    foundDedicated = true;
+                    break;
+                }
+            }
+
+            if (!foundDedicated) {
+
+                // filter only spawners with empty typePriorities
+                const fallbackSpawners = spawners.vehicles.filter(s => 
+                    !s.typePriorities || s.typePriorities.length === 0
+                );
+
+                if (fallbackSpawners.length > 0) {
+                    const randomIndex = Math.floor(Math.random() * fallbackSpawners.length);
+                    const spawner = fallbackSpawners[randomIndex];
+                    const latlng = this.squadLayer.convertToLatLng(spawner.location_x, spawner.location_y);
+                    new squadVehicleMarker(latlng, spawner, vehicle).addTo(activeFactionMarkers);
+                    const originalIndex = spawners.vehicles.indexOf(spawner);
+                    if (originalIndex !== -1) spawners.vehicles.splice(originalIndex, 1);
+
+                } else {
+                    console.debug("NO EMPTY SPAWNERS LEFT!");
+                }
+            }
+        }
+    }
+
 
     /** 
      * * Initialize the factions selector and load the factions into it
@@ -399,6 +486,9 @@ export default class SquadFactions {
             // Reset UI
             $("#team1Vehicles").empty();
             if ($("#team1PinButton").hasClass("active")) this.unpinUnit();
+
+            // Clear spawned vehicles 
+            this.squadLayer.activeFaction1Markers.clearLayers();
         
             const selectedUnit = factionData.units.team1Units.find((unit) => unit.unitObjectName === event.target.value);
         
@@ -421,6 +511,13 @@ export default class SquadFactions {
                 );
             }
 
+            // Create a local copy of available spawners
+            let spawners = {
+                helicopters: [...this.squadLayer.team1VehicleSpawners.helicopters],
+                boats: [...this.squadLayer.team1VehicleSpawners.boats],
+                vehicles: [...this.squadLayer.team1VehicleSpawners.vehicles],
+                bikes: [...this.squadLayer.team1VehicleSpawners.bikes]
+            };
 
             selectedUnit.vehicles.forEach((vehicle) => {
 
@@ -470,6 +567,9 @@ export default class SquadFactions {
                         </div>
                     </div>
                 `);
+                
+                this.spawnVehicle(vehicle, spawners, this.squadLayer.activeFaction1Markers);
+
             });
 
             // Handle click-to-copy
@@ -482,6 +582,9 @@ export default class SquadFactions {
             // Empty the vehicles container
             $("#team2Vehicles").empty();
             if ( $("#team2PinButton").hasClass("active") ) this.unpinUnit();
+
+            // Clear spawned vehicles 
+            this.squadLayer.activeFaction2Markers.clearLayers();
 
             const selectedUnit = factionData.units.team2Units.find((unit) => unit.unitObjectName === event.target.value);
         
@@ -503,6 +606,14 @@ export default class SquadFactions {
                     })
                 );
             }
+
+            // Create a local copy of available spawners
+            let spawners = {
+                helicopters: [...this.squadLayer.team2VehicleSpawners.helicopters],
+                boats: [...this.squadLayer.team2VehicleSpawners.boats],
+                vehicles: [...this.squadLayer.team2VehicleSpawners.vehicles],
+                bikes: [...this.squadLayer.team2VehicleSpawners.bikes]
+            };
 
             selectedUnit.vehicles.forEach((vehicle) => {
 
@@ -553,8 +664,10 @@ export default class SquadFactions {
                         </div>
                     </div>
                 `);
+
+                this.spawnVehicle(vehicle, spawners, this.squadLayer.activeFaction2Markers);
+
             });
-    
             // Handle click-to-copy
             $(".vehicle-type").off("click").on("click", (event) => { this.copyVehicleName(event); });
             $(".vehicle-card").off("click").on("click", (event) => { this.openCard(event); });

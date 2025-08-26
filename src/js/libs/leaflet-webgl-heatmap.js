@@ -94,7 +94,6 @@ export default Renderer.extend({
     },
 
     resize: function() {
-        console.log("ici")
         var canvas = this._container,
             size = this._map.getSize();
 

@@ -2,7 +2,7 @@
     "SettingsTitle": "Settings",
         "map": "Map",
         "mortars": "Mortars",
-        "layer": "Layers/Factions",
+        "layer": "Layers",
     "mapOptions": "Map Options",
         "showGrid": "Show Grid",
         "showKeypad": "Keypads under Cursor",
