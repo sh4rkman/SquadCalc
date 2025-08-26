@@ -11,8 +11,8 @@ export default class SquadLayer {
     constructor(map, layerData) {
         this.map = map;
         this.activeLayerMarkers = new LayerGroup().addTo(this.map);
-        this.activeFaction1Markers = new LayerGroup().addTo(this.map);
-        this.activeFaction2Markers = new LayerGroup().addTo(this.map);
+        this.activeFaction1Markers = new LayerGroup();
+        this.activeFaction2Markers = new LayerGroup();
         this.layerData = layerData;
         this.capturePoints = layerData.capturePoints;
         this.objectives = layerData.objectives;
@@ -1305,6 +1305,18 @@ export default class SquadLayer {
             if (this.borders && App.userSettings.showMapBorders) this.borders.setStyle({ opacity: 0, fillOpacity: 0.75 });
         }
     }
+
+
+    revealSpawns(){
+        this.activeFaction1Markers.addTo(this.map);
+        this.activeFaction2Markers.addTo(this.map);
+    }
+
+    hideSpawns(){
+        this.activeFaction1Markers.remove();
+        this.activeFaction2Markers.remove();
+    }
+
 
     /**
      * xxxx

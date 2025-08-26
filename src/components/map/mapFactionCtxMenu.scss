@@ -1,0 +1,149 @@
+@use "../shared/variables";
+
+#mapCtxButtonsContainer {
+    display: flex;
+    width: 100%;
+    gap: 5px;
+    min-width: 100px;
+    margin-top: 5px;
+    #mapPinButton,
+    #backToFactionsBtn {
+        background: #222;
+        color: white;
+        padding: 8px 12px;
+        border-radius: 2px;
+        text-align: center;
+        cursor: pointer;
+        user-select: none;
+        font-size: 0.8em;
+        &:hover {
+            background: #111;
+        }
+        &.active {
+            background-color: variables.$mainColor;
+            color: white;
+        }
+    }
+    #mapPinButton {
+        flex: 9;
+    }
+    #backToFactionsBtn {
+        flex: 1;
+        svg {
+            width: 1.2em;
+            height: 1.2em;
+            path {
+                fill: white;
+            }
+        }
+    }
+}
+
+
+.faction-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    padding: 5px;
+    max-width: 280px;
+    justify-items: center;
+    &:has(> :only-child) {
+        grid-template-columns: 1fr;
+    }
+    &:has(.faction-item:nth-child(4)) {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+.faction-label {
+    @include variables.text-outline;
+    position: absolute;
+    left: 0;
+    right: 0;
+    //bottom: 2px;
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    text-align: center;
+    letter-spacing: 0.5px;
+    padding: 2px 4px;
+    pointer-events: none;
+    //line-height: 0.6em;
+}
+
+.faction-item {
+    position: relative;
+    background: #111;
+    outline: 1px solid #ddd;
+    border-radius: 2px;
+    width: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-weight: bold;
+    font-size: 14px;
+    transition: all 0.1s ease;
+    aspect-ratio: 2 / 1;
+    line-break: loose;
+    &.units {
+        max-width: 400px;
+        height: 55px;
+        &:active {
+            transform: scale(0.95);
+            outline-color: green;
+            transition: transform 0.1s ease;
+        }
+    }
+    &._selected {
+        outline: green 3px solid;
+        &::after {
+            background: rgba(255, 255, 255, 0);
+        }
+    }
+    &::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border: 4px solid rgba(0, 0, 0, 0.30);
+        pointer-events: none;
+    }
+}
+
+.faction-item.units img {
+    position: absolute;
+    top: 0;
+    width: 60%;
+    height: auto;
+    object-fit: contain;
+}
+
+.faction-item.units .faction-label {
+    position: absolute;
+    font-size: 10px;
+    line-height: 2em;
+    padding: 0;
+    bottom: 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: "..";
+}
+
+.faction-item:hover {
+    outline-color: #007acc;
+    cursor: pointer;
+    outline-width: 3px;
+    transform: scale(1.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    &._selected {
+        outline-color: green;
+    }
+}
+
+.faction-item img {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    pointer-events: none;
+}

@@ -9,10 +9,19 @@ import "leaflet/dist/leaflet.css";
 // Local styles
 import "./components/header/header.scss";
 import "./components/footer/footer.scss";
+
 import "./components/map/map.scss";
+import "./components/map/mapFactionCtxMenu.scss";
+import "./components/map/mapObjectives.scss";
+import "./components/map/mapButtons.scss";
+import "./components/map/mapLogo.scss";
+
 import "./components/legacyui/legacyui.scss";
+
 import "./components/dialogs/dialogs.scss";
 import "./components/dialogs/factions.scss";
+import "./components/dialogs/settings.scss";
+
 import "./components/shared/_tooltips.scss";
 import "./components/shared/_responsive.scss";
 
