@@ -66,18 +66,18 @@
 }
 
 .countryFlags {
+    padding: 0;
+    margin: 0;
     .img-flag {
-        width: 50px;
+        width: 45px;
         border: solid rgba(255, 255, 255, 0.336) 0.1px;
         box-shadow: 0 0 5px rgb(37, 37, 37);
     }
     .flag-label {
+        position: relative;
         letter-spacing: normal;
         font-size: 1.4em;
-        line-height: 0.65em;
-    }
-    p {
-        padding-bottom: 0.6em;
+        line-height: 1.2em;
     }
 }
 
@@ -162,7 +162,7 @@
                 &:hover {
                     background: firebrick;
                     .vehicle-meta .count-delay {
-                        color: #aaa;
+                        color: white;
                     }
                 }
             }
@@ -173,7 +173,7 @@
                 align-items: flex-start;
                 border-radius: 0.25em 0.25em 1em 1em ;
                 .vehicle-meta .count-delay {
-                    color: #aaa;
+                    color: white;
                 }
                 .image {
                     margin-top: 0.5em;
@@ -319,6 +319,9 @@
         &:focus {
             outline: none;
         }
+    }
+    .factionSelector  .select2-results__option {
+        padding-top: 3px;
     }
     .unitSelector .select2-results__option {
         word-break: break-word;
