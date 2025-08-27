@@ -207,7 +207,7 @@ export var WEAPONS = [
         damageFallOff: 1,
         heightOffset: 3
     },
-        {
+    {
         name: "M109fix",
         velocity: 225,
         deceleration: 0,

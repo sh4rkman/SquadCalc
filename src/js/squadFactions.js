@@ -336,7 +336,8 @@ export default class SquadFactions {
                 const randIndex = Math.floor(Math.random() * spawners.helicopters.length);
                 const spawner = spawners.helicopters[randIndex];
                 const latlng = this.squadLayer.convertToLatLng(spawner.location_x, spawner.location_y);
-                new squadVehicleMarker(latlng, spawner, vehicle).addTo(activeFactionMarkers);
+                vehicle.dedicatedSpawn = true;
+                new squadVehicleMarker(latlng, spawner, vehicle, true).addTo(activeFactionMarkers);
                 // remove the used spawner
                 spawners.helicopters.splice(randIndex, 1);
             }
@@ -349,7 +350,7 @@ export default class SquadFactions {
                 // Pick first spawner in the list
                 const spawner = spawners.bikes[0];
                 const latlng = this.squadLayer.convertToLatLng(spawner.location_x, spawner.location_y);
-                new squadVehicleMarker(latlng, spawner, vehicle).addTo(activeFactionMarkers);
+                new squadVehicleMarker(latlng, spawner, vehicle, true).addTo(activeFactionMarkers);
                 // remove the used spawner
                 spawners.bikes.splice(0, 1);
             }
@@ -363,7 +364,7 @@ export default class SquadFactions {
                 const randIndex = Math.floor(Math.random() * spawners.boats.length);
                 const spawner = spawners.boats[randIndex];
                 const latlng = this.squadLayer.convertToLatLng(spawner.location_x, spawner.location_y);
-                new squadVehicleMarker(latlng, spawner, vehicle).addTo(activeFactionMarkers);
+                new squadVehicleMarker(latlng, spawner, vehicle, true).addTo(activeFactionMarkers);
                 // remove the used spawner
                 spawners.boats.splice(randIndex, 1);
             }
@@ -373,22 +374,22 @@ export default class SquadFactions {
         for (let v = 0; v < vehicle.count; v++) {
 
             let foundDedicated = false;
-
             const vehType = vehicle.vehType;
 
-            for (let i = 0; i < spawners.vehicles.length; i++) {
-                if (spawners.vehicles.length === 0) break;
+            // collect only spawners that allow this vehType
+            const validSpawners = spawners.vehicles.filter(spawner =>
+                spawner.typePriorities.some(p => p.name === vehType)
+            );
 
-                const randIndex = Math.floor(Math.random() * spawners.vehicles.length);
-                const spawner = spawners.vehicles[randIndex];
-
-                if (spawner.typePriorities.find(p => p.name === vehType)) {
-                    const latlng = this.squadLayer.convertToLatLng(spawner.location_x, spawner.location_y);
-                    new squadVehicleMarker(latlng, spawner, vehicle).addTo(activeFactionMarkers);
-                    spawners.vehicles.splice(randIndex, 1);
-                    foundDedicated = true;
-                    break;
-                }
+            if (validSpawners.length > 0) {
+                // pick one random spawner between the valid spawn
+                const randIndex = Math.floor(Math.random() * validSpawners.length);
+                const spawner = validSpawners[randIndex];
+                foundDedicated = true;
+                const latlng = this.squadLayer.convertToLatLng(spawner.location_x, spawner.location_y);
+                new squadVehicleMarker(latlng, spawner, vehicle, true).addTo(activeFactionMarkers);
+                // remove the chosen spawner from the main pool
+                spawners.vehicles = spawners.vehicles.filter(s => s !== spawner);
             }
 
             if (!foundDedicated) {
@@ -402,7 +403,7 @@ export default class SquadFactions {
                     const randomIndex = Math.floor(Math.random() * fallbackSpawners.length);
                     const spawner = fallbackSpawners[randomIndex];
                     const latlng = this.squadLayer.convertToLatLng(spawner.location_x, spawner.location_y);
-                    new squadVehicleMarker(latlng, spawner, vehicle).addTo(activeFactionMarkers);
+                    new squadVehicleMarker(latlng, spawner, vehicle, false).addTo(activeFactionMarkers);
                     const originalIndex = spawners.vehicles.indexOf(spawner);
                     if (originalIndex !== -1) spawners.vehicles.splice(originalIndex, 1);
 

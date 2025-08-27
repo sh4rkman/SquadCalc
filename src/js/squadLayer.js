@@ -176,7 +176,7 @@ export default class SquadLayer {
             } 
 
             if (spawner.size === "Helicopter") {
-                color = "green";
+                color = "white";
                 halfWidth = 12;
                 halfHeight = 12;
                 if (spawner.type === "Team One") this.team1VehicleSpawners.helicopters.push(spawner);
@@ -201,16 +201,16 @@ export default class SquadLayer {
 
             if (spawner.typePriorities.length > 0) {
                 
-                // let prio = spawner.typePriorities[0].name;
-                // new Marker(latlng, {
-                //     interactive: false,
-                //     icon: new DivIcon({
-                //         className: "spawnText",
-                //         html: `${prio}`,
-                //         iconSize: [50, 50],
-                //         iconAnchor: [25, 40]
-                //     })
-                // }).addTo(this.activeLayerMarkers)
+                let prio = spawner.typePriorities[0].name;
+                new Marker(latlng, {
+                    interactive: false,
+                    icon: new DivIcon({
+                        className: "spawnText",
+                        html: `${prio}`,
+                        iconSize: [50, 50],
+                        iconAnchor: [25, 40]
+                    })
+                }).addTo(this.activeLayerMarkers);
 
                 spawnRectangle = new Rectangle(bounds, {
                     color: color,

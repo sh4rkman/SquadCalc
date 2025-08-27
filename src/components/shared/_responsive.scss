@@ -15,7 +15,7 @@
         }
         #weaponSelector {
             .select2-results__options {
-                max-height: 390px;
+                max-height: 470px;
             }
         }
     }
@@ -26,7 +26,7 @@
 
 @media (height >= 45em) {
     header {
-        #mapSelector, #layerSelector {
+        .mapSelector #mapSelector, .weaponSelector #layerSelector {
             .select2-results__options {
                 line-height: 0.85em;
                 max-height: 770px;
