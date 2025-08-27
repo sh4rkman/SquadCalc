@@ -1,6 +1,6 @@
 import { App } from "../app.js";
 import "./libs/leaflet-visual-click.js";
-import { Marker, Circle, CircleMarker, Popup, Polygon } from "leaflet";
+import { Marker, Circle, CircleMarker, Popup, Polygon, Icon } from "leaflet";
 import i18next from "i18next";
 import { sendMarkerData } from "./squadCalcAPI.js";
 import { v4 as uuidv4 } from "uuid";
@@ -164,13 +164,33 @@ export const squadWeaponMarker = squadMarker.extend({
 
     getIcon: function(){
         if (this.map.activeWeaponsMarkers.getLayers().length === 0) {
-            this.setIcon(App.activeWeapon.marker);
+            this.setIcon(
+                new Icon({
+                    iconUrl: `/img/markers/weapons/${App.activeWeapon.name}.webp`,
+                    shadowUrl: "/img/markers/targets/marker_shadow.webp",
+                    iconSize:     [38, 47], 
+                    shadowSize:   [38, 47], 
+                    iconAnchor:   [19, 47],
+                    shadowAnchor: [10, 47],
+                    className: "animatedWeaponMarker"
+                })
+            );
         }
     },
 
     updateIcon: function(){
         if (this.map.activeWeaponsMarkers.getLayers().length === 1) {
-            this.setIcon(App.activeWeapon.marker);
+            this.setIcon(
+                new Icon({
+                    iconUrl: `/img/markers/weapons/${App.activeWeapon.name}.webp`,
+                    shadowUrl: "/img/markers/targets/marker_shadow.webp",
+                    iconSize:     [38, 47], 
+                    shadowSize:   [38, 47], 
+                    iconAnchor:   [19, 47],
+                    shadowAnchor: [10, 47],
+                    className: "animatedWeaponMarker"
+                })
+            );
         }
     },
 
@@ -354,7 +374,7 @@ export const squadWeaponMarker = squadMarker.extend({
         if (App.activeWeapon.name === "M1064M121")  name += ` (${$(".dropbtn3 option:selected").text()})`;
 
         // Logo
-        $(".weaponIcon").first().attr("src", App.activeWeapon.logo);
+        $(".weaponIcon").first().attr("src", `/img/weapons/${App.activeWeapon.name}.png`);
         $(".infName").first().text(name);
         $(".infRange").first().text(`${App.activeWeapon.minDistance + i18next.t("common:m")} - ${App.activeWeapon.maxDistance.toFixed(0) + i18next.t("common:m")}`);
         $(".infMOA").first().text(`${App.activeWeapon.moa} (${(App.activeWeapon.moa / 60).toFixed(1) + i18next.t("common:°")})`);

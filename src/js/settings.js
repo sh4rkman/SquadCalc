@@ -157,11 +157,11 @@ export function loadSettings(){
     App.userSettings.targetAnimation = loadLocalSetting("settings-target-animation");
     $("#targetAnimationSettings").prop("checked", App.userSettings.targetAnimation);
     if (App.userSettings.targetAnimation) {
-        $("#markerPreview").attr("src", "../img/markers/marker_target_enabled.webp");
+        $("#markerPreview").attr("src", "/img/markers/targets/marker_target_enabled.webp");
         $("#markerPreview").css("margin-top", "0px");
     } 
     else {
-        $("#markerPreview").attr("src", "../img/markers/marker_target_mini.webp");
+        $("#markerPreview").attr("src", "/img/markers/targets/marker_target_mini.webp");
         $("#markerPreview").css("margin-top", "20px");
     }
 
@@ -191,6 +191,17 @@ export function loadSettings(){
         $("#map").css("cursor", "crosshair");
         $("#preview").css("cursor", "crosshair");
     }
+
+    // Load Preview
+    $("#gridPreview").attr("src", "/img/preview/grid.png");
+    $("#mapPreview").attr("src", "/img/preview/preview.webp");
+    $("#maxRangePreview").attr("src", "/img/preview/maxrange.png");
+    $("#spreadPreview").attr("src", "/img/preview/spread.png");
+    $("#damagePreview").attr("src", "/img/preview/damage.png");
+    $("#targetGridPreview").attr("src", "/img/preview/targetGrid.webp");
+
+    // Load that image aswell because wtf not.
+    $("#targetImg").attr("src", "/img/target.png");
 
     // Open Menu
     $(document).on("click", "#fabCheckbox4", function() {
@@ -270,11 +281,11 @@ export function updatePreview(){
 
 
     if (App.userSettings.targetAnimation) {
-        $("#markerPreview").attr("src", "./img/markers/marker_target_enabled.webp");
+        $("#markerPreview").attr("src", "/img/markers/targets/marker_target_enabled.webp");
         $("#markerPreview").css("margin-top", "0px");
     } 
     else {
-        $("#markerPreview").attr("src", "../img/markers/marker_target_mini.webp");
+        $("#markerPreview").attr("src", "/img/markers/targets/marker_target_mini.webp");
         $("#markerPreview").css("margin-top", "20px");
     }
 }
@@ -585,11 +596,11 @@ $("#targetAnimationSettings").on("change", function() {
     localStorage.setItem("settings-target-animation", +val);
 
     if (App.userSettings.targetAnimation) {
-        $("#markerPreview").attr("src", "../img/markers/marker_target_enabled.webp");
+        $("#markerPreview").attr("src", "/img/markers/targets/marker_target_enabled.webp");
         $("#markerPreview").css("margin-top", "0px");
     } 
     else {
-        $("#markerPreview").attr("src", "../img/markers/marker_target_mini.webp");
+        $("#markerPreview").attr("src", "/img/markers/targets/marker_target_mini.webp");
         $("#markerPreview").css("margin-top", "20px");
     }
 

@@ -903,8 +903,8 @@ export default class SquadCalc {
         } else {
             $("#ammoSelector").hide();
         }
-    
-        $("#mortarImg").attr("src", this.activeWeapon.logo);
+        $("#mortarImg").attr("src", `/img/weapons/${this.activeWeapon.name}.png`);
+        
         this.shoot();
     
         // Update Minimap marker
