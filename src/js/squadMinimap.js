@@ -640,9 +640,13 @@ export const squadMinimap = Map.extend({
 
         if (this.getZoom() > this.detailedZoomThreshold){
             this.layer.revealAllCapzones();
-            this.layer.revealSpawns();
+            if (App.userSettings.showMainAssets) {
+                this.layer.mainZones.assets.forEach(asset => { asset.setOpacity(1); });
+                this.layer.revealSpawns();
+            }
         } else {
             this.layer.hideAllCapzones();
+            App.minimap.layer.mainZones.assets.forEach(asset => { asset.setOpacity(0); });
             this.layer.hideSpawns();
         }
 

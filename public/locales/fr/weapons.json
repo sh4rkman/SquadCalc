@@ -1,6 +1,6 @@
 {
     "deployables": "Déployables",
-        "Mortar": "Mortier",
+        "Mortar": "Mortier 81mm",
         "UB-32": "UB-32",
         "HellCannon": "Hell Cannon",
     "vehicles": "Véhicules",
@@ -11,5 +11,10 @@
             "impact": "Impact",
             "nearSurface": "Aérienne",
     "experimental": "Expérimental",
-        "Mk19": "MK19-RWS"
+        "Mk19": "MK19-RWS",
+        "M109": "M109A7 Paladin",
+        "T62.DUMP.TRUCK": "T62 Dump Truck",
+        "MTLB_FAB500": "MTLB БЕГЕМОТ",
+        "HIMARS": "M142 HIMARS",
+        "TOS-1A": "TOS-1A"
 }

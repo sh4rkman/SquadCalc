@@ -329,13 +329,17 @@ $("#showMainAssetsSettings").on("change", function() {
     App.userSettings.showMainAssets = val;
     localStorage.setItem("settings-show-mainassets", +val);
 
-    App.minimap.layer.mainZones.assets.forEach(asset => {
-        if (!val) {
-            asset.setOpacity(0);
-        } else {
-            asset.setOpacity(1);
-        }
-    });
+    if (App.minimap.getZoom() > App.minimap.detailedZoomThreshold) {
+        App.minimap.layer.mainZones.assets.forEach(asset => {
+            if (!val) {
+                asset.setOpacity(0);
+                App.minimap.layer.hideSpawns();
+            } else {
+                asset.setOpacity(1);
+                App.minimap.layer.revealSpawns();
+            }
+        });
+    }
 });
 
 $("#disableSoundsSettings").on("change", function() {

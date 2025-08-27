@@ -231,7 +231,7 @@ export var WEAPONS = [
         gravityScale: 2,
         deceleration: 0,
         decelerationTime: 0,
-        minElevation: [-5, 30.4],
+        minElevation: [-45, 135],
         unit: "deg",
         type: "experimental",
         angleType: "low",
@@ -245,7 +245,7 @@ export var WEAPONS = [
         heightOffset: 3
     },
     {
-        name: "MTLB.FAB500",
+        name: "MTLB_FAB500",
         velocity: 95,
         deceleration: 0,
         decelerationTime : 0,
@@ -253,7 +253,7 @@ export var WEAPONS = [
         minElevation: [-45, 85.3],
         unit: "deg",
         type: "experimental",
-        angleType: "high",
+        angleType: "low",
         elevationPrecision: 1,
         minDistance: 75,
         moa: 150,

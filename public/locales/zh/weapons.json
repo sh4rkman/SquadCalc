@@ -1,6 +1,6 @@
 {
     "deployables": "武器工事",
-        "Mortar": "迫击炮",
+        "Mortar": "81毫米迫击炮",
         "UB-32": "UB32火箭巢",
         "HellCannon": "地狱加农(煤气罐)",
     "vehicles": "载具",
@@ -11,5 +11,10 @@
             "impact": "高爆",
             "nearSurface": "空爆",
     "experimental": "实验性武器",
-        "Mk19": "MK19-遥控武器站"
+        "Mk19": "MK19-遥控武器站",
+        "M109": "M109A7 Paladin",
+        "T62.DUMP.TRUCK": "T62 Dump Truck",
+        "MTLB_FAB500": "MTLB БЕГЕМОТ",
+        "HIMARS": "M142 HIMARS",
+        "TOS-1A": "TOS-1A"
 }

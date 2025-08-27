@@ -36,7 +36,7 @@ export const squadVehicleMarker = Marker.extend({
         this.on("pointerover", this._handleOver, this);
         this.on("pointerout", this._handleOut, this);
     },
-
+   
 
     open(event) {
         const el = event.target._icon;

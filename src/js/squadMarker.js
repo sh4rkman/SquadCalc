@@ -549,7 +549,17 @@ export const squadWeaponMarker = squadMarker.extend({
             this.map.deleteTargets();
         } else {
             // Set default icon on remaining weapon
-            this.map.activeWeaponsMarkers.getLayers()[0].setIcon(App.activeWeapon.marker);
+            this.map.activeWeaponsMarkers.getLayers()[0].setIcon(
+                new Icon({
+                    iconUrl: `/img/markers/weapons/${App.activeWeapon.name}.webp`,
+                    shadowUrl: "/img/markers/weapons/marker_shadow.webp",
+                    iconSize:     [38, 47], 
+                    shadowSize:   [38, 47], 
+                    iconAnchor:   [19, 47],
+                    shadowAnchor: [10, 47],
+                    className: "animatedWeaponMarker"
+                })
+            );
         }
 
         // Update remaining targets if they exists

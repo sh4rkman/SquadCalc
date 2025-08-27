@@ -201,16 +201,16 @@ export default class SquadLayer {
 
             if (spawner.typePriorities.length > 0) {
                 
-                let prio = spawner.typePriorities[0].name;
-                new Marker(latlng, {
-                    interactive: false,
-                    icon: new DivIcon({
-                        className: "spawnText",
-                        html: `${prio}`,
-                        iconSize: [50, 50],
-                        iconAnchor: [25, 40]
-                    })
-                }).addTo(this.activeLayerMarkers);
+                // let prio = spawner.typePriorities[0].name;
+                // new Marker(latlng, {
+                //     interactive: false,
+                //     icon: new DivIcon({
+                //         className: "spawnText",
+                //         html: `${prio}`,
+                //         iconSize: [50, 50],
+                //         iconAnchor: [25, 40]
+                //     })
+                // }).addTo(this.activeLayerMarkers);
 
                 spawnRectangle = new Rectangle(bounds, {
                     color: color,
@@ -519,7 +519,7 @@ export default class SquadLayer {
                 interactive: false,
                 keyboard: false,
                 zIndexOffset: -1000,
-                opacity: 1,
+                opacity: 0,
                 icon: new DivIcon({
                     className: "deployables",
                     iconSize: [36, 36],
@@ -543,7 +543,7 @@ export default class SquadLayer {
             interactive: false,
             keyboard: false,
             zIndexOffset: -1000,
-            opacity: 1,
+            opacity: 0,
         };
 
         this.layerData.assets.deployables.forEach((asset) => {
@@ -777,9 +777,12 @@ export default class SquadLayer {
 
         if (!App.userSettings.showMainAssets) opacity = 0;
 
-        this.mainZones.assets.forEach(asset => {
-            asset.setOpacity(opacity);
-        });
+        if (this.map.getZoom() > this.map.detailedZoomThreshold) {
+            this.mainZones.assets.forEach(asset => {
+                asset.setOpacity(opacity);
+            });
+        }
+
 
     }
 

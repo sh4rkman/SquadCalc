@@ -1,6 +1,6 @@
 {
     "deployables": "Размещаемые",
-        "Mortar": "Миномёт",
+        "Mortar": "Миномёт 81 мм",
         "UB-32": "УБ-32",
         "HellCannon": "Адская пушка",
     "vehicles": "Транспортные средства",
@@ -11,5 +11,10 @@
             "impact": "Удар",
             "nearSurface": "воздух",
     "experimental": "Экспериментальные",
-        "Mk19": "МК19-RWS"
+        "Mk19": "МК19-RWS",
+        "M109": "M109A7 Paladin",
+        "T62.DUMP.TRUCK": "T62 Dump Truck",
+        "MTLB_FAB500": "MTLB БЕГЕМОТ",
+        "HIMARS": "M142 HIMARS",
+        "TOS-1A": "TOS-1A"
 }
