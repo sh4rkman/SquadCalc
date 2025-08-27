@@ -52,6 +52,16 @@ export const tub32Icon = new Icon({
     className: "animatedWeaponMarker"
 });
 
+export const defaultIcon = new Icon({
+    iconUrl: "../img/markers/marker_default.webp",
+    shadowUrl: "../img/markers/marker_shadow.webp",
+    iconSize:     [38, 47], 
+    shadowSize:   [38, 47], 
+    iconAnchor:   [19, 47],
+    shadowAnchor: [10, 47],
+    className: "animatedWeaponMarker"
+});
+
 export const gradIcon = new Icon({
     iconUrl: "../img/markers/marker_grad.webp",
     shadowUrl: "../img/markers/marker_shadow.webp",

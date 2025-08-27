@@ -286,7 +286,6 @@ export default class SquadCalc {
                 weapon.unit,
                 weapon.logo,
                 weapon.marker,
-                weapon.logoCannonPos,
                 weapon.type,
                 weapon.angleType,
                 weapon.elevationPrecision,
