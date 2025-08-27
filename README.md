@@ -20,250 +20,293 @@
 </br>
 </br>
 
-[squadcalc.app](https://squadcalc.app/) is a mortar calculator and lane finder for the game <a href="https://joinsquad.com/">Squad</a> !  
+[squadcalc.app](https://squadcalc.app/) – The Ultimate In-Game Companion for [Squad](https://joinsquad.com/)!
+
 
 </br>
 
-# <div align="center">Table of Contents</div>
 
-
-- [Screenshots](#screenshots)  
-- [Features](#features)
-  - [Mortar Calculator](#mortar-calculator)
-    - [Elevations Calculations](#elevations-calculations)
-    - [Spread & Damage Radiuses](#Spread-and-Damages-radiuses)
-    - [Commonly Used Spot](#commonly-used-spot)
-    - [Squad Mortar Overlay Compatibility](#squad-mortar-overlay-compatibility)
-  - [Layer Info](#layer-info)
-    - [Lanes/Flags preview](#lanesflags-preview)
-    - [Factions, Units and Vehicles list](#factions-units-and-vehicles-list)
-  - [Others](#Others)
-      - [Shared Sessions](#Shared-Sessions)
-      - [Advanced Customisation & Informations](#Advanced-Customisation--Informations)
-      - [Map Layers](#map-layers)
-
-- [Attributions](#Attributions)
-- [Support the project](#support-the-project)
 
 
 </br>
  
-# <div align="center">Screenshots</div>
+# <b>Screenshots</b>
 
-</br>
+<details>
 
-<div align="center">
-  <picture><img src="./src/img/github/desktop_ui_1.webp" alt="classic preview"></picture>  
-  <picture><img src="./src/img/github/desktop_ui_5.webp" alt="Lane Finder preview"></picture>
-  <picture><img src="./src/img/github/desktop_ui_2.webp" alt="topographic preview"></picture>
+  <summary><a>Click to Unfold</a></summary>
+
+  <div align="center">
+    <picture><img src="./src/img/github/desktop_ui_1.webp" alt="classic preview"></picture>  
+    <picture><img src="./src/img/github/desktop_ui_5.webp" alt="Lane Finder preview"></picture>
+    <picture><img src="./src/img/github/desktop_ui_2.webp" alt="topographic preview"></picture>
     <picture><img src="./src/img/github/desktop_ui_6.webp" alt="capzone/mains preview"></picture>
-  <picture><img src="./src/img/github/desktop_ui_3.webp" alt="weapon information preview"></picture>
-  <picture><img src="./src/img/github/desktop_ui_4.webp" alt="calculations information preview"></picture>
-  <!-- <picture><img src="./src/img/github/desktop_ui_0.webp" alt="legacy preview"></picture> -->
-</div>
+    <picture><img src="./src/img/github/desktop_ui_3.webp" alt="weapon information preview"></picture>
+    <picture><img src="./src/img/github/desktop_ui_4.webp" alt="calculations information preview"></picture>
+    <!-- <picture><img src="./src/img/github/desktop_ui_0.webp" alt="legacy preview"></picture> -->
+  </div>
+
+</details>
+
 
 </br></br>
 
-# <div align="center"><b>Features</b></div>
+# <b>Features</b>
 
 </br>
 
-# <div align="center"><b>Mortar Calculator</b></div>
+## Mortar Calculator
+
+<details>
+  <summary><b>Elevations Calculations</b></summary>
+  </br>
+  SquadCalc utilizes heightmaps extracted from the Squad SDK to precisely compute the elevation difference between mortars and targets, automatically adjusting the elevation settings.  
+
+  [Check out the Wiki](https://github.com/sh4rkman/SquadCalc/wiki/Deducing-Altitude) to understand how it works.
+</details>
+
+<details>
+  <summary><b>Spread and Damages radiuses</b></summary>  
+  </br>
+  Reduce teamkilling and maximize your damage by visualizing the spread of your shells and the range of their explosions.  
+  Check out the Wiki on [Spread](https://github.com/sh4rkman/SquadCalc/wiki/Deducing-Spread) and [Damage](https://github.com/sh4rkman/SquadCalc/wiki/Deducing-Damage-Radius) to understand how it works.
+
+  <div align="center">
+    <img width="50%" src="./src/img/github/radiuses.webp" alt="settings">
+  </div>
+</details>
+
+<details>
+  <summary><b>Commonly used spot</b></summary>
+  </br>
+  Squadcalc is logging up to 15000 weapon positions for each map and each weapons, thus allowing to create a dynamic heatmap of where other players commonly set their weapons. If you're having trouble finding a good spot to place your mortar or weapons, activate the 'Frequent Locations' feature !
+
+  <div align="center">
+    <img width="60%" src="./src/img/github/heatmap.webp" alt="commonly used spots">
+  </div>
+</details>
 
 
-## **Elevations Calculations**
+<details>
+  <summary><b>Squad Mortar Overlay Compatibility</b></summary>
 
-SquadCalc utilizes heightmaps extracted from the Squad SDK to precisely compute the elevation difference between mortars and targets, automatically adjusting the elevation settings.  [Check out the Wiki](https://github.com/sh4rkman/SquadCalc/wiki/Deducing-Altitude) to understand how it works.
+  </br>  
 
-## **Spread and Damages radiuses**
+  SquadCalc is compatible with [Squad Mortar Overlay](https://github.com/Devil4ngle/SquadMortarOverlay), made by [Devil4ngle](https://github.com/Devil4ngle).  
+  Squad Mortar Overlay is a program capturing screenshots from your ingame map and overlaying it with SquadCalc.  
 
-Reduce teamkilling and maximize your damage by visualizing the spread of your shells and the range of their explosions.  
-Check out the Wiki on [Spread](https://github.com/sh4rkman/SquadCalc/wiki/Deducing-Spread) and [Damage](https://github.com/sh4rkman/SquadCalc/wiki/Deducing-Damage-Radius) to understand how it works.
-
-<div align="center">
-  <picture>
-      <img width="50%" src="./src/img/github/radiuses.webp" alt="settings">
-  </picture>
-</div>
+  It allows :
+  * Having ingame markers automatically merged into SquadCalc map to quickly place the right targets
+  * Having an ingame overlay with the current SquadCalc calculations displayed in front of Squad
 
 
+  </br>
 
-## **Commonly used spot**
+  ### <div align="center">[> Download Squad Mortar Overlay <](https://github.com/Devil4ngle/SquadMortarOverlay/releases)</div>
 
-Squadcalc is logging up to 15000 weapon positions for each map and each weapons, thus allowing to create a dynamic heatmap of where other players commonly set their weapons. If you're having trouble finding a good spot to place your mortar or weapons, activate the 'Frequent Locations' feature !
+</details>
 
-<div align="center">
-  <picture><img width="60%" src="./src/img/github/heatmap.webp" alt="commonly used spots"></picture>
-</div>
+</br>
 
-</br></br>
-## **Squad Mortar Overlay Compatibility**
+## Layer Info
 
-SquadCalc is compatible with [Squad Mortar Overlay](https://github.com/Devil4ngle/SquadMortarOverlay), made by [Devil4ngle](https://github.com/Devil4ngle).  
-Squad Mortar Overlay is a program capturing screenshots from your ingame map and overlaying it with SquadCalc.  
+<details>
+  <summary><b>Lanes/Flags preview</b></summary>
+  </br>
 
-It allows :
-* Having ingame markers automatically merged into SquadCalc map to quickly place the right targets
-* Having an ingame overlay with the current SquadCalc calculations displayed in front of Squad
+  Hover over a flag to preview how selecting it would affect the layer.  
+  This allows you to quickly scan how the layer looks at the start of the game, for example.
+
+  <div align="center">
+    <picture><img width="70%" src="./src/img/github/layer-finder.gif" alt="capzones"></picture>
+  </div>
+
+</details>
+
+<details>
+  <summary><b>Capzones</b></summary>
+  </br>
+
+  SquadCalc lets you see each precise flag capzone extracted from the game SDK and view it in detail.  
+  It helps you find the perfect location for a FOB, the best route to sneak into a cap zone, or even where to fire mortars effectively.
+
+  <div align="center">
+    <picture><img width="80%" src="./src/img/github/capzones.webp" alt="capzones"></picture>
+  </div>
+
+</details>
+
+
+
+<details>
+  <summary><b>Main Protection & No-deploy zone</b></summary>
+  </br>
+
+  Plan your radios and mortars : squadcalc display every mains protection zones (no vehicles shooting) and no-deploy (radios, mortars, emplacement).
+
+  <div align="center">
+    <picture><img width="70%" src="./src/img/github/mains.webp" alt="capzones"></picture>
+  </div>
+
+</details>
+
+
+
+<details>
+  <summary><b>Real map borders</b></summary>
+  </br>  
+
+  Each layer can have have it's own playable aera : squadcalc shows the exact invisible map limits.  
+
+  <div align="center">
+    <picture><img width="70%" src="./src/img/github/borders.webp" alt="autocomplete"></picture>
+  </div>
+</details>
+
+
+
+
+<details>
+  <summary><b>Autocomplete</b></summary>
+  </br>  
+
+  SquadCalc will automatically complete the layer if there is only one possible incoming flag, saving you a few clicks.
+
+</details>
+
+
+
+
+
+<details>
+  <summary><b>Factions, Units and Vehicles list</b></summary>
+  </br>  
+
+  Browse every layer available factions, units, and vehicles :
+
+  <div align="center">
+    <picture><img width="70%" src="./src/img/github/units.webp" alt="autocomplete"></picture>
+  </div>
+
+  <br>
+
+  You can also pin the enemy vehicles list to your map and set timers when you destroy them : you will receive a sound notification when they respawn !
+
+  <div align="center">
+    <picture><img width="70%" src="./src/img/github/timer.webp" alt="autocomplete"></picture>
+  </div>
+
+</details>
 
 
 </br>
 
-### <div align="center">[> Download Squad Mortar Overlay <](https://github.com/Devil4ngle/SquadMortarOverlay/releases)</div>
+
+## Others
 
 
-</br></br>
+<details>
+  <summary><b>Shared Sessions</b></summary>
+  </br>
 
-# <div align="center"><b>Layer Info</b></div>
+  Start a shared session and invite your friends!  
 
-<div align="center">
-  <picture><img width="70%" src="./src/img/github/layer-finder.gif" alt="capzones"></picture>
-</div>
+  Collaborate on a single map, sharing markers, weapons, and targets in real time.
+  Synchronize your mortar targets more efficiently, strategize together, and develop tactics seamlessly.
 
+  Sessions works up to 10 participants.
 
-## **Lanes/Flags preview**
-
-Hover over a flag to preview how selecting it would affect the layer.  
-This allows you to quickly scan how the layer looks at the start of the game, for example.
-
-
-### **Capzones**
-
-SquadCalc lets you see each precise flag capzone extracted from the game SDK and view it in detail.  
-It helps you find the perfect location for a FOB, the best route to sneak into a cap zone, or even where to fire mortars effectively.
-
-<div align="center">
-  <picture><img width="80%" src="./src/img/github/capzones.webp" alt="capzones"></picture>
-</div>
-
-### **Main Protection & No-deploy zone**
-
-Plan your radios and mortars : squadcalc display every mains protection zones (no vehicles shooting) and no-deploy (radios, mortars, emplacement).
-
-<div align="center">
-  <picture><img width="70%" src="./src/img/github/mains.webp" alt="capzones"></picture>
-</div>
-
-### **Real map borders**
-
-Each layer can have have it's own playable aera : squadcalc shows the exact invisible map limits.
-
-<div align="center">
-  <picture><img width="70%" src="./src/img/github/borders.webp" alt="autocomplete"></picture>
-</div>
-
-### **Autocomplete**
-
-SquadCalc will automatically complete the layer if there is only one possible incoming flag, saving you a few clicks.
-
-
-## **Factions, Units and Vehicles list**
-
-Browse every layer available factions, units, and vehicles :
-
-<div align="center">
-  <picture><img width="70%" src="./src/img/github/units.webp" alt="autocomplete"></picture>
-</div>
-
-<br>
-
-You can also pin the enemy vehicles list to your map and set timers when you destroy them : you will receive a sound notification when they respawn !
-
-<div align="center">
-  <picture><img width="70%" src="./src/img/github/timer.webp" alt="autocomplete"></picture>
-</div>
-
-
-
-
-</br></br>
-
-# <div align="center"><b>Others</b></div>
-
-## **Shared Sessions**
-
-Start a shared session and invite your friends!  
-
-Collaborate on a single map, sharing markers, weapons, and targets in real time.
-Synchronize your mortar targets more efficiently, strategize together, and develop tactics seamlessly.
-
-Sessions works up to 10 participants.
-
-<div align="center">
-  <picture><img width="100%" src="./src/img/github/sessions.webp" alt="map layers"></picture>
-</div>
+  <div align="center">
+    <picture><img width="100%" src="./src/img/github/sessions.webp" alt="map layers"></picture>
+  </div>
   
+</details>
 
 
 
-## **Advanced Customisation & Informations**
 
-Want to see Spread radius, time of flight, distance AND bearing for each targets ? You can.  
-Rather have a minimalist/non-clustered map ? you can too. Hop in settings to customise everything.
+<details>
+  <summary><b>Advanced Customisation & Informations</b></summary>
+  </br>
 
-Get a better and complete understanding of your shots and visualise a simulation of the projectile path and the terrain between you and your targets. You can even see if terrain is going to block your projectiles when using low angle weapons ! (UB/GRAD) 
+  Want to see Spread radius, time of flight, distance AND bearing for each targets ? You can.  
+  Rather have a minimalist/non-clustered map ? you can too. Hop in settings to customise everything.
 
-<div align="center">
-  <picture>
-      <img width="60%" src="./src/img/github/settings.webp" alt="settings">
-  </picture>
+  Get a better and complete understanding of your shots and visualise a simulation of the projectile path and the terrain between you and your targets. You can even see if terrain is going to block your projectiles when using low angle weapons ! (UB/GRAD) 
+
+  <div align="center">
     <picture>
-    <img width="46%" src="./src/img/github/simulation.webp" alt="target information">
-  </picture>
-  <picture>
-    <img width="40%" src="./src/img/github/weaponInformation.webp" alt="weapon information">
-  </picture>
-</div>
-
-
-</br>
-
-## **Map Layers**
-
-<div align="center">
-  <picture><img width="50%" src="./src/img/github/layers.webp" alt="map layers"></picture>
-</div>
-
-### Base map :
-The classic, straight from the game base map.  
-
-### Terrain map :
-Base map enhanced with bumpmap from SDK's heightmap. Add a better comprehension of terrain.  
-Also known as "why the fuck is it not the default ingame map?"
-
-### Topographic map :
-A mix of bump map, contour map with a touch of hypsometric colors for a complete understanding of map reliefs.
-
-
-## **Ultra HD Maps**
-
-<div align="center">
-  <picture><img width="80%" src="./src/img/github/hdmaps.webp" alt="map layers"></picture>
-  <div align="center">UHD Maps vs regular ingame map image</div>
-</div>
-
-
-<br>
-
-With a single click, you can switch the map to a high-definition version powered by AI upscaling. The HD maps are 8192×8192 resolution images, letting you explore every part of the map in ultra-sharp detail right within the Leaflet interface.
-
-## **Import/Export Your Maps**
-
-<br>
-
-<div align="center">
-  <picture><img width="50%" src="./src/img/github/import_export.webp" alt="Map Import/Export Preview"></picture>
-</div>
-
-<br>
-
-Easily export your map and markers to an offline file for backup or sharing. To restore them later, just drag and drop the file into SquadCalc—your markers will be instantly loaded. These files are also perfect for sharing with teammates to ensure everyone’s on the same page.
+        <img width="60%" src="./src/img/github/settings.webp" alt="settings">
+    </picture>
+      <picture>
+      <img width="46%" src="./src/img/github/simulation.webp" alt="target information">
+    </picture>
+    <picture>
+      <img width="40%" src="./src/img/github/weaponInformation.webp" alt="weapon information">
+    </picture>
+  </div>
+</details>
 
 
 
+<details>
+  <summary><b>Map Layers</b></summary>
+  </br>
+
+  <div align="center">
+    <picture><img width="50%" src="./src/img/github/layers.webp" alt="map layers"></picture>
+  </div>
+
+  ### Base map :
+  The classic, straight from the game base map.  
+
+  ### Terrain map :
+  Base map enhanced with bumpmap from SDK's heightmap. Add a better comprehension of terrain.  
+  Also known as "why the fuck is it not the default ingame map?"
+
+  ### Topographic map :
+  A mix of bump map, contour map with a touch of hypsometric colors for a complete understanding of map reliefs.
+
+</details>
+
+
+
+<details>
+  <summary><b>Ultra HD Maps</b></summary>
+  </br>
+
+  <div align="center">
+    <picture><img width="80%" src="./src/img/github/hdmaps.webp" alt="map layers"></picture>
+    <div align="center">UHD Maps vs regular ingame map image</div>
+  </div>
+
+
+  <br>
+
+  With a single click, you can switch the map to a high-definition version powered by AI upscaling. The HD maps are 8192×8192 resolution images, letting you explore every part of the map in ultra-sharp detail right within the Leaflet interface.
+
+</details>
+
+
+
+<details>
+  <summary><b>Import/Export Your Maps</b></summary>
+  </br>
+
+  <br>
+
+  <div align="center">
+    <picture><img width="50%" src="./src/img/github/import_export.webp" alt="Map Import/Export Preview"></picture>
+  </div>
+
+  <br>
+
+  Easily export your map and markers to an offline file for backup or sharing. To restore them later, just drag and drop the file into SquadCalc—your markers will be instantly loaded. These files are also perfect for sharing with teammates to ensure everyone’s on the same page.
+
+</details>
 
 </br></br></br>
-# <div align="center">Attributions</div>
+# **Attributions**
 </br>
 
 * 🗺️ Map System built on **[Leaflet JS](https://leafletjs.com/)**
@@ -282,7 +325,7 @@ Easily export your map and markers to an offline file for backup or sharing. To 
 
 
 </br></br></br>
-# <div align="center">Support the project</div>
+# **Support the project**
 </br>
 
 [![buy me a coffee](https://img.shields.io/badge/BUY%20ME%20A%20COFFEE-b12222?style=for-the-badge&logo=buy-me-a-coffee&logoColor=white)](https://buymeacoffee.com/sharkman)  
