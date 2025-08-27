@@ -167,7 +167,7 @@ export const squadWeaponMarker = squadMarker.extend({
             this.setIcon(
                 new Icon({
                     iconUrl: `/img/markers/weapons/${App.activeWeapon.name}.webp`,
-                    shadowUrl: "/img/markers/targets/marker_shadow.webp",
+                    shadowUrl: "/img/markers/weapons/marker_shadow.webp",
                     iconSize:     [38, 47], 
                     shadowSize:   [38, 47], 
                     iconAnchor:   [19, 47],
@@ -183,7 +183,7 @@ export const squadWeaponMarker = squadMarker.extend({
             this.setIcon(
                 new Icon({
                     iconUrl: `/img/markers/weapons/${App.activeWeapon.name}.webp`,
-                    shadowUrl: "/img/markers/targets/marker_shadow.webp",
+                    shadowUrl: "/img/markers/weapons/marker_shadow.webp",
                     iconSize:     [38, 47], 
                     shadowSize:   [38, 47], 
                     iconAnchor:   [19, 47],

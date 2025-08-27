@@ -278,7 +278,7 @@ export default class SquadFactions {
                 html: html,
                 iconSize: [300, 20],
                 iconAnchor: App.userSettings.circlesFlags ? [150, 38] : [150, 32],
-                //shadowUrl: "../img/icons/markers/marker_shadow.webp",
+                //shadowUrl: "../img/icons/markers/weapons/marker_shadow.webp",
                 shadowSize: [0, 0],
             })
         );

@@ -34,7 +34,7 @@ export class SquadObjective {
                 html: html,
                 iconSize: [300, 20],
                 iconAnchor: App.userSettings.circlesFlags ? [150, 38] : [150, 32],
-                shadowUrl: "../img/icons/markers/marker_shadow.webp",
+                shadowUrl: "../img/icons/markers/weapons/marker_shadow.webp",
                 shadowSize: [0, 0],
             })
         }).addTo(this.layerGroup);
@@ -42,7 +42,7 @@ export class SquadObjective {
 
         // Temporary icon to avoid 404s on leaflet shadow marker
         let tempIcon = new DivIcon({
-            shadowUrl: "../img/icons/markers/marker_shadow.webp",
+            shadowUrl: "../img/icons/markers/weapons/marker_shadow.webp",
             shadowSize: [0, 0],
         });
 
@@ -157,7 +157,7 @@ export class SquadObjective {
                 html: html,
                 iconSize: [300, 20],
                 iconAnchor: App.userSettings.circlesFlags ? [150, 38] : [150, 32],
-                shadowUrl: "../img/icons/markers/marker_shadow.webp",
+                shadowUrl: "../img/icons/markers/weapons/marker_shadow.webp",
                 shadowSize: [0, 0],
             })
         }).addTo(this.layerGroup);
