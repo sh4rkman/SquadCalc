@@ -66,10 +66,10 @@ tippy("span[data-i18n='settings:mapAnimationSettings']", {
     },
 });
 
-tippy("span[data-i18n='settings:experimentalWeapons']", {
+tippy("span[data-i18n='settings:moddedWeapons']", {
     ...commonToolipsSettings,
     onShow(tip) {
-        tip.setContent(`${i18next.t("tooltips:experimentalWeaponsTooltip")}`);
+        tip.setContent(`${i18next.t("tooltips:moddedWeaponTooltip")}`);
     },
 });
 

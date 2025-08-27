@@ -168,6 +168,14 @@ export var WEAPONS = [
         damageFallOff: 1,
         heightOffset: 2.5,
     },
+    /*
+     *****************
+     * MODDED WEAPONS
+     *****************
+     */
+    /*
+     * Steel Division
+     */
     {
         name: "M109",
         velocity: 225,
@@ -176,7 +184,7 @@ export var WEAPONS = [
         gravityScale: 2,
         minElevation: [-45, 135],
         unit: "deg",
-        type: "experimental",
+        type: "modded",
         angleType: "low",
         elevationPrecision: 1,
         minDistance: 0,
@@ -187,44 +195,6 @@ export var WEAPONS = [
         damageFallOff: 3.5,
         heightOffset: 3
     },
-    // {
-    //     name: "BP_Fix_Proj_155",
-    //     velocity: 225,
-    //     deceleration: 0,
-    //     decelerationTime: 0,
-    //     gravityScale: 2,
-    //     minElevation: [-45, 85.3],
-    //     unit: "deg",
-    //     type: "experimental",
-    //     angleType: "low",
-    //     elevationPrecision: 1,
-    //     minDistance: 0,
-    //     moa: 1.5,
-    //     explosionDamage: 125,
-    //     explosionRadius: [1, 75],
-    //     explosionDistanceFromImpact: 1,
-    //     damageFallOff: 1,
-    //     heightOffset: 3
-    // },
-    // {
-    //     name: "BP_Fix_Proj_155_sec",
-    //     velocity: 225,
-    //     deceleration: 0,
-    //     decelerationTime: 0,
-    //     gravityScale: 2,
-    //     minElevation: [-45, 85.3],
-    //     unit: "deg",
-    //     type: "experimental",
-    //     angleType: "low",
-    //     elevationPrecision: 1,
-    //     minDistance: 0,
-    //     moa: 1.5,
-    //     explosionDamage: 450,
-    //     explosionRadius: [3, 20],
-    //     explosionDistanceFromImpact: 1,
-    //     damageFallOff: 1,
-    //     heightOffset: 3
-    // },
     {
         name: "T62.DUMP.TRUCK",
         velocity: 210,
@@ -233,7 +203,7 @@ export var WEAPONS = [
         decelerationTime: 0,
         minElevation: [-45, 135],
         unit: "deg",
-        type: "experimental",
+        type: "modded",
         angleType: "low",
         elevationPrecision: 1,
         minDistance: 0,
@@ -245,25 +215,6 @@ export var WEAPONS = [
         heightOffset: 3
     },
     {
-        name: "MTLB_FAB500",
-        velocity: 95,
-        deceleration: 0,
-        decelerationTime : 0,
-        gravityScale: 1,
-        minElevation: [-45, 85.3],
-        unit: "deg",
-        type: "experimental",
-        angleType: "low",
-        elevationPrecision: 1,
-        minDistance: 75,
-        moa: 150,
-        explosionDamage: 4500,
-        explosionRadius: [0.1, 50],
-        explosionDistanceFromImpact: 2,
-        damageFallOff: 4,
-        heightOffset: 3,
-    },
-    {
         name: "HIMARS",
         velocity: 250,
         gravityScale: 2,
@@ -272,7 +223,7 @@ export var WEAPONS = [
         minElevation: [-3, 84.7],
         unit: "deg",
         logoCannonPos: "60%",
-        type: "experimental",
+        type: "modded",
         angleType: "low",
         elevationPrecision: 1,
         minDistance: 0,
@@ -292,7 +243,7 @@ export var WEAPONS = [
         minElevation: [0, 80],
         unit: "deg",
         logoCannonPos: "60%",
-        type: "experimental",
+        type: "modded",
         angleType: "low",
         elevationPrecision: 1,
         minDistance: 0,
@@ -302,6 +253,28 @@ export var WEAPONS = [
         explosionDistanceFromImpact: 0.2,
         damageFallOff: 1,
         heightOffset: 3
+    },
+    /*
+     * Squad AdminTools
+     */
+    {
+        name: "MTLB_FAB500",
+        velocity: 95,
+        deceleration: 0,
+        decelerationTime : 0,
+        gravityScale: 1,
+        minElevation: [-45, 85.3],
+        unit: "deg",
+        type: "modded",
+        angleType: "low",
+        elevationPrecision: 1,
+        minDistance: 75,
+        moa: 150,
+        explosionDamage: 4500,
+        explosionRadius: [0.1, 50],
+        explosionDistanceFromImpact: 2,
+        damageFallOff: 4,
+        heightOffset: 3,
     },
 ];
 

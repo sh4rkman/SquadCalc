@@ -45,5 +45,7 @@
     "team1": "Team 1",
     "team2": "Team 2",
     "pinToMap": "An Karte anheften",
-    "pinned": "Angeheftet"
+    "pinned": "Angeheftet",
+    "randomSpawn": "Zufälliger Spawnpunkt",
+    "dedicactedSpawn": "Fester Spawnpunkt"
 }

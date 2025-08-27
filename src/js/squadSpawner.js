@@ -74,9 +74,8 @@ export const squadVehicleMarker = Marker.extend({
 
         let dedicatedSpawnInfo;
 
-        // TODO: Localizations
-        if (this.dedicatedSpawn) dedicatedSpawnInfo = "<div class='dedicatedSpawn'>Dedicated Spawn location</div>";
-        else dedicatedSpawnInfo = "<div class='dedicatedSpawn warning'>Random Spawn location</div>";
+        if (this.dedicatedSpawn) dedicatedSpawnInfo = `<div class='dedicatedSpawn'>${i18next.t("dedicactedSpawn", { ns: "common" })}</div>`;
+        else dedicatedSpawnInfo = `<div class='dedicatedSpawn warning'>${i18next.t("randomSpawn", { ns: "common" })}</div>`;
 
         let delayInfo = "";
 

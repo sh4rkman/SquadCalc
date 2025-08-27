@@ -344,9 +344,9 @@ export default class SquadCalc {
 
         if (this.userSettings.experimentalWeapons) {
 
-            this.WEAPON_SELECTOR.append(`<optgroup data-i18n-label=weapons:experimental label="${i18next.t("weapons:experimental")}">`);
+            this.WEAPON_SELECTOR.append(`<optgroup data-i18n-label=weapons:modded label="${i18next.t("weapons:modded")}">`);
             for (let y = 0; y < WEAPONSLENGTH; y += 1) {
-                if (WEAPONS[y].type === "experimental") {
+                if (WEAPONS[y].type === "modded") {
                     this.WEAPON_SELECTOR.append(`<option data-i18n=weapons:${WEAPONS[y].name} value=${y}>${i18next.t("weapons:" + WEAPONS[y].name)}</option>`);
                 }
             }
@@ -357,12 +357,12 @@ export default class SquadCalc {
             let selectedValue = this.WEAPON_SELECTOR.val();
             
             // Remove the experimental optgroup
-            this.WEAPON_SELECTOR.find("optgroup[data-i18n-label='weapons:experimental']").remove();
+            this.WEAPON_SELECTOR.find("optgroup[data-i18n-label='weapons:modded']").remove();
             
             // Remove experimental options and check if the selected value is experimental
             this.WEAPON_SELECTOR.find("option").filter(
                 function() {
-                    return WEAPONS[$(this).val()].type === "experimental";
+                    return WEAPONS[$(this).val()].type === "modded";
                 }).each(function() {
                 if ($(this).val() === selectedValue) {
                     selectedValue = null;

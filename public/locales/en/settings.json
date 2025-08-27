@@ -19,7 +19,7 @@
     "weaponOptions": "Weapons Options",
         "weaponDrag": "Keypads while dragging",
         "realMaxRange": "Use Real Max Range",
-        "experimentalWeapons": "Experimental weapons",
+        "moddedWeapons": "Enable modded weapons",
     "targetOptions": "Targets Options",
         "targetDrag": "Keypads while dragging",
         "showSpread": "Spread Radius",

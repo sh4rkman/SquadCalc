@@ -19,7 +19,7 @@
     "weaponOptions": "Waffenoptionen",
         "weaponDrag": "Rasterfeld beim Ziehen anzeigen",
         "realMaxRange": "Reale maximale Reichweite verwenden",
-        "experimentalWeapons": "Experimentelle Waffen",
+        "moddedWeapons": "Modded-Waffen aktivieren",
     "targetOptions": "Zieloptionen",
         "targetDrag": "Rasterfeld beim Ziehen anzeigen",
         "showSpread": "Streuung anzeigen",

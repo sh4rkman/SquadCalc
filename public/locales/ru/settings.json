@@ -19,7 +19,7 @@
     "weaponOptions": "Опции оружия",
         "weaponDrag": "Номер сетки",
         "realMaxRange": "Использовать реальную максимальную дальность",  
-        "experimentalWeapons": "Экспериментальное оружие",
+        "moddedWeapons": "Включить модовое оружие",
     "targetOptions": "Опции целей",
         "targetDrag": "Номер сетки",
         "showSpread": "Радиус разброса",

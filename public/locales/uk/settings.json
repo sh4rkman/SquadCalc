@@ -19,7 +19,7 @@
     "weaponOptions": "Опції зброї",
         "weaponDrag": "Сітка маркера",
         "realMaxRange": "Використовувати реальну максимальну дальність",  
-        "experimentalWeapons": "Експериментальна зброя",
+        "moddedWeapons": "Увімкнути модову зброю",
     "targetOptions": "Опції цілей",
         "targetDrag": "Сітка маркера",
         "showSpread": "радіус розподілу",

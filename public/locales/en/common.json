@@ -47,5 +47,7 @@
     "team1": "Team 1",
     "team2": "Team 2",
     "pinToMap": "Pin to map",
-    "pinned": "Pinned"
+    "pinned": "Pinned",
+    "randomSpawn": "Random spawn location",
+    "dedicactedSpawn": "Dedicated spawn location"
 }

@@ -19,7 +19,7 @@
     "weaponOptions": "Options des armes",
         "weaponDrag": "Grille pendant le déplacement",
         "realMaxRange": "Utiliser la portée maximale réelle",  
-        "experimentalWeapons": "Armes expérimentales",
+        "moddedWeapons": "Activer les armes moddées",
     "targetOptions": "Options des cibles",
         "targetDrag": "Grille pendant le déplacement",
         "showSpread": "Rayon de dispersion",

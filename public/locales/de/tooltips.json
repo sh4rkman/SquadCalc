@@ -24,7 +24,7 @@
     "velocityDesc": "Die Mündungsgeschwindigkeit ist die Geschwindigkeit, mit der ein Projektil den Lauf einer Waffe verlässt, gemessen direkt beim Austritt. Sie beeinflusst Reichweite und Genauigkeit des Schusses.",
     "heightPaddingDesc": "Wenn die Waffe über dem Boden platziert wird (z.B. auf Gebäuden oder Brücken), gib hier die zusätzliche Höhe an.",
     "smoothMapTooltip": "Fügt sanfte Animationen beim Zoomen oder Verschieben der Karte hinzu. Eine Seitenaktualisierung ist erforderlich",
-    "experimentalWeaponsTooltip": "Fügt unkonventionelle indirekte Feuerwaffen zur Waffenliste hinzu, Benutzung auf eigenes Risiko!",
+    "moddedWeaponTooltip": "Fügt Waffenunterstützung für beliebte Mods hinzu (Steel Division, Global Escalation, Squad AdminTools, ...)",
     "damageRadiusTooltip": "Todesradius und 25-Schadens-Radius anzeigen",
     "showKeypadTooltip": "Rasterfeld unter dem Cursor anzeigen",
     "showSpreadTooltip": "Möglichen Streubereich der Geschosse um die Ziele anzeigen",

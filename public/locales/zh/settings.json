@@ -19,7 +19,7 @@
     "weaponOptions": "武器选项",
         "weaponDrag": "拖动时显示网格坐标",
         "realMaxRange": "使用武器实际最大范围",
-        "experimentalWeapons": "显示实验性武器",
+        "moddedWeapons": "启用Mod版武器",
     "targetOptions": "目标选项",
         "targetDrag": "拖动时显示网格坐标",
         "showSpread": "显示散布半径",
