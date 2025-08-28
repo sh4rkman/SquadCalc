@@ -534,9 +534,14 @@ export default class SquadFactions {
                 let delayInfo = "";
                 if (vehicle.delay > 0) {
                     delayInfo = `
+                        <span class="count-delay-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                                <path d="M256 0c-17.7 0-32 14.3-32 32l0 64c0 17.7 14.3 32 32 32s32-14.3 32-32l0-29.3C378.8 81.9 448 160.9 448 256c0 106-86 192-192 192S64 362 64 256c0-53.7 22-102.3 57.6-137.1c12.6-12.4 12.8-32.6 .5-45.3S89.5 60.8 76.8 73.1C29.5 119.6 0 184.4 0 256C0 397.4 114.6 512 256 512s256-114.6 256-256S397.4 0 256 0zM193 159c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l80 80c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-80-80z"/>
+                            </svg>
+                        </span>
                         <span class="delay">
-                            <span data-i18n="common:delayed">${i18next.t("common:delayed")}</span>
-                            : ${vehicle.delay}
+                            <span class="delayText"><span data-i18n="common:delayed">${i18next.t("common:delayed")}</span>
+                            : </span>${vehicle.delay}
                             <span data-i18n="common:min">${i18next.t("common:min")}</span>
                         </span>
                     `;
@@ -553,12 +558,19 @@ export default class SquadFactions {
                             </div>
                             <div class="vehicle-info">
                                 <div class="vehicle-meta">
-                                    <span class="respawn">
-                                        <span data-i18n="common:respawn">${i18next.t("common:respawn")}</span>
-                                        : ${vehicle.respawnTime}
-                                        <span data-i18n="common:min">${i18next.t("common:min")}</span>
+                                    <span class="respawnHolder">
+                                        <span class="respawn-icon">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Pro 6.7.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2024 Fonticons, Inc. --><path d="M463.5 224l8.5 0c13.3 0 24-10.7 24-24l0-128c0-9.7-5.8-18.5-14.8-22.2s-19.3-1.7-26.2 5.2L413.4 96.6c-87.6-86.5-228.7-86.2-315.8 1c-87.5 87.5-87.5 229.3 0 316.8s229.3 87.5 316.8 0c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0c-62.5 62.5-163.8 62.5-226.3 0s-62.5-163.8 0-226.3c62.2-62.2 162.7-62.5 225.3-1L327 183c-6.9 6.9-8.9 17.2-5.2 26.2s12.5 14.8 22.2 14.8l119.5 0z"/></svg>
+                                        </span>
+                                        <span class="respawn">
+                                            <span class="respawnText"><span data-i18n="common:respawn">${i18next.t("common:respawn")}</span>
+                                            : </span>${vehicle.respawnTime}
+                                            <span data-i18n="common:min">${i18next.t("common:min")}</span>
+                                        </span>
                                     </span>
-                                    <span class="count-delay"> ${delayInfo}</span>
+                                    <span class="delayHolder">
+                                        <span class="count-delay">${delayInfo}</span>
+                                    </span>
                                 </div>
                                 <div class="vehicle-type" data-i18n="vehicles:${vehicle.type}" title="${i18next.t("clickToCopy", { ns: "tooltips" })}">${i18next.t(vehicle.type, { ns: "vehicles" })}</div>
                             </div>
@@ -632,9 +644,14 @@ export default class SquadFactions {
                 if (vehicle.delay > 0) {
                     delayInfo = `
                         <span class="delay">
-                            <span data-i18n="common:delayed">${i18next.t("common:delayed")}</span>
-                            : ${vehicle.delay}
+                            <span class="delayText"><span data-i18n="common:delayed">${i18next.t("common:delayed")}</span>
+                            : </span>${vehicle.delay}
                             <span data-i18n="common:min">${i18next.t("common:min")}</span>
+                        </span>
+                        <span class="count-delay-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                                <path d="M256 0c-17.7 0-32 14.3-32 32l0 64c0 17.7 14.3 32 32 32s32-14.3 32-32l0-29.3C378.8 81.9 448 160.9 448 256c0 106-86 192-192 192S64 362 64 256c0-53.7 22-102.3 57.6-137.1c12.6-12.4 12.8-32.6 .5-45.3S89.5 60.8 76.8 73.1C29.5 119.6 0 184.4 0 256C0 397.4 114.6 512 256 512s256-114.6 256-256S397.4 0 256 0zM193 159c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l80 80c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-80-80z"/>
+                            </svg>
                         </span>
                     `;
                 }
@@ -652,13 +669,21 @@ export default class SquadFactions {
                             <div class="vehicle-info">
                                 <div class="vehicle-type" data-i18n="vehicles:${vehicle.type}" title="${i18next.t("clickToCopy", { ns: "tooltips" })}">${i18next.t(vehicle.type, { ns: "vehicles" })}</div>
                                 <div class="vehicle-meta">
-                                    <span class="respawn">
-                                        <span data-i18n="common:respawn">${i18next.t("common:respawn")}</span>
-                                        : ${vehicle.respawnTime}
-                                        <span data-i18n="common:min">${i18next.t("common:min")}</span>
+                                    <span class="respawnHolder">
+                                        <span class="respawn">
+                                            <span class="respawnText"><span data-i18n="common:respawn">${i18next.t("common:respawn")}</span>
+                                            : </span>${vehicle.respawnTime}
+                                            <span data-i18n="common:min">${i18next.t("common:min")}</span>
+                                        </span>
+                                        <span class="respawn-icon">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M463.5 224l8.5 0c13.3 0 24-10.7 24-24l0-128c0-9.7-5.8-18.5-14.8-22.2s-19.3-1.7-26.2 5.2L413.4 96.6c-87.6-86.5-228.7-86.2-315.8 1c-87.5 87.5-87.5 229.3 0 316.8s229.3 87.5 316.8 0c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0c-62.5 62.5-163.8 62.5-226.3 0s-62.5-163.8 0-226.3c62.2-62.2 162.7-62.5 225.3-1L327 183c-6.9 6.9-8.9 17.2-5.2 26.2s12.5 14.8 22.2 14.8l119.5 0z"/></svg>
+                                        </span>
                                     </span>
-                                    <span class="count-delay">${delayInfo}</span>
+                                    <span class="delayHolder">
+                                        <span class="count-delay">${delayInfo}</span>
+                                    </span>
                                 </div>
+
                             </div>
                         </div>
                         <div class="image">

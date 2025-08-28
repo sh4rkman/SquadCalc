@@ -160,21 +160,30 @@
             // Hover effect only for devices that support true hover (desktop)
             @media (hover: hover) {
                 &:hover {
-                    background: firebrick;
-                    .vehicle-meta .count-delay {
-                        color: white;
-                    }
+                    background: variables.$mainColor;
+                    .vehicle-meta .delayHolder {
+                        .count-delay {
+                            color: #aaa;
+                        }
+                        .count-delay-icon svg {
+                            fill: #aaa;
+                        }
+                    } 
                 }
             }
             &.selected {
-                background: firebrick;
+                background: variables.$mainColor;
                 height: auto;
                 flex-direction: column;
                 align-items: flex-start;
-                border-radius: 0.25em 0.25em 1em 1em ;
-                .vehicle-meta .count-delay {
-                    color: white;
-                }
+                .vehicle-meta .delayHolder {
+                    .count-delay {
+                        color: #aaa;
+                    }
+                    .count-delay-icon svg {
+                        fill: #aaa;
+                    }
+                } 
                 .image {
                     margin-top: 0.5em;
                     display: block;
@@ -247,12 +256,48 @@
                 text-align: right;
                 color: #aaa;
                 font-size: 1.1em;
-                .respawn {
+                .respawnHolder {
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 0.3em;
                     margin-bottom: 0.3em;
+                    .respawn-icon {
+                        display: inline-flex;
+                        align-items: center;
+                        justify-content: center;
+                        width: 1em;
+                        height: 1em;
+                        padding: 0;
+                        margin: 0;
+                        svg {
+                            width: 100%;
+                            height: 100%;
+                            fill: #aaa;
+                        }
+                    }
                 }
-                .count-delay {
-                    min-height: 1em;
-                    color: variables.$mainColor;;
+                .delayHolder {
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 0.3em;
+                    .count-delay-icon {
+                        display: inline-flex;
+                        align-items: center;
+                        justify-content: center;
+                        width: 1em;
+                        height: 1em;
+                        padding: 0;
+                        margin: 0;
+                        svg {
+                            width: 100%;
+                            height: 100%;
+                            fill: variables.$mainColor;
+                        }
+                    }
+                    .count-delay {
+                        min-height: 1em;
+                        color: variables.$mainColor;
+                    }
                 }
             }
         }
@@ -299,6 +344,9 @@
             .vehicle-type {
                 margin-left: 1em;
             }
+        }
+        .delayHolder, .respawnHolder {
+            justify-content: flex-end;
         }
     }
     .dropbtn9, .dropbtn11 {
