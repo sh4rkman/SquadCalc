@@ -148,7 +148,7 @@
 }
 
 .spawnVehicleCard {
-    width: 250px;
+    width: 275px;
     letter-spacing: 0.7px;
     border-radius: 12px;
     overflow: hidden;
@@ -158,19 +158,33 @@
     flex-direction: column;
     font-size: 0.8em;
     text-align: left;
-    div {
+    > div {
         padding: 6px 10px;
         font-size: 1em;
-        font-weight: 500;
         color: #f0f0f0;
-        background: #2b2b2b;
         display: flex;
         align-items: center;
-        width: fit-content;
     }
-    .vehName {
-        font-size: 1.4em;
-        cursor: pointer;
+    .vehTitle {
+        display: flex;
+        align-items: center;
+        justify-content: space-between; 
+        width: 100%;
+        padding: 0;
+        .vehName {
+            padding: 6px 10px;
+            font-size: 1.5em;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .vehFlag {
+            margin: 0 8px 0 0;
+            width: 40px;
+            height: auto;
+            border-radius: 3px;
+            flex-shrink: 0;
+        }
     }
     .dedicatedSpawn {
         padding: 0 1em;

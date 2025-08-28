@@ -125,7 +125,7 @@ export default class SquadLayer {
             helicopters: [],
             boats: [],
             vehicles: [],
-            bikes: []
+            bikes: [],
         };
 
         this.team2VehicleSpawners = {
@@ -139,57 +139,29 @@ export default class SquadLayer {
 
             const latlng = this.convertToLatLng(spawner.location_x, spawner.location_y);
 
+            const vehicleConfig = {
+                MBT: { color: "white", halfWidth: 2.3, halfHeight: 1.7, key: "vehicles" },
+                APC: { color: "purple",   halfWidth: 3,   halfHeight: 1.7, key: "vehicles" },
+                Car: { color: "blue",     halfWidth: 2,   halfHeight: 1.5, key: "vehicles" },
+                QuadBike: { color: "yellow", halfWidth: 1,   halfHeight: 0.8, key: "bikes" },
+                Helicopter: { color: "white", halfWidth: 12,  halfHeight: 12, key: "helicopters" },
+                Boat: { color: "black",   halfWidth: 3,   halfHeight: 1.5, key: "boats" },
+            };
+
             let color = "white";
             let halfWidth = 1;
-            let halfHeight = 1; 
+            let halfHeight = 1;
 
-            if (spawner.size === "MBT") {
-                color = "firebrick";
-                halfWidth = 2.3;
-                halfHeight = 1.7;
-                if (spawner.type === "Team One") this.team1VehicleSpawners.vehicles.push(spawner);
-                else this.team2VehicleSpawners.vehicles.push(spawner);
-            } 
+            const config = vehicleConfig[spawner.size];
+            if (config) {
+                ({ color, halfWidth, halfHeight } = config);
 
-            if (spawner.size === "APC") {
-                color = "Purple";
-                halfWidth = 3;
-                halfHeight = 1.7;
-                if (spawner.type === "Team One") this.team1VehicleSpawners.vehicles.push(spawner);
-                else this.team2VehicleSpawners.vehicles.push(spawner);
-            } 
+                const teamKey = spawner.type === "Team One" ? this.team1VehicleSpawners : this.team2VehicleSpawners;
+                    
+                    
 
-            if (spawner.size === "Car") {
-                color = "blue";
-                halfWidth = 2;
-                halfHeight = 1.5;
-                if (spawner.type === "Team One") this.team1VehicleSpawners.vehicles.push(spawner);
-                else this.team2VehicleSpawners.vehicles.push(spawner);
-            } 
-
-            if (spawner.size === "QuadBike") {
-                color = "yellow";
-                halfWidth = 1;
-                halfHeight = 0.8;
-                if (spawner.type === "Team One") this.team1VehicleSpawners.bikes.push(spawner);
-                else this.team2VehicleSpawners.bikes.push(spawner);
-            } 
-
-            if (spawner.size === "Helicopter") {
-                color = "white";
-                halfWidth = 12;
-                halfHeight = 12;
-                if (spawner.type === "Team One") this.team1VehicleSpawners.helicopters.push(spawner);
-                else this.team2VehicleSpawners.helicopters.push(spawner);
-            } 
-
-            if (spawner.size === "Boat") {
-                color = "black";
-                halfWidth = 3;
-                halfHeight = 1.5;
-                if (spawner.type === "Team One") this.team1VehicleSpawners.boats.push(spawner);
-                else this.team2VehicleSpawners.boats.push(spawner);
-            } 
+                teamKey[config.key].push(spawner);
+            }
 
             const bounds = [
                 [latlng[0] - halfHeight * this.map.gameToMapScale, latlng[1] - halfWidth * this.map.gameToMapScale], // top-left (y, x)
@@ -214,7 +186,7 @@ export default class SquadLayer {
 
                 spawnRectangle = new Rectangle(bounds, {
                     color: color,
-                    fillOpacity: 0,
+                    fillOpacity: 0.25,
                     opacity: 1,
                     weight: 1,
                 }).addTo(this.activeLayerMarkers);
@@ -223,7 +195,7 @@ export default class SquadLayer {
 
                 spawnRectangle = new Rectangle(bounds, {
                     color: color,
-                    fillOpacity: 0,
+                    fillOpacity: 0.05,
                     opacity: 0.75,
                     weight: 1,
                     dashArray: "4 4" 
@@ -703,7 +675,6 @@ export default class SquadLayer {
                     color: PZONECOLOR,
                     opacity: 1,
                     weight: 2,
-                    fillOpacity: 0.1,
                 }).addTo(this.activeLayerMarkers);
 
                 let noDeployZone = new Rectangle(noDeployBounds, {
@@ -711,7 +682,6 @@ export default class SquadLayer {
                     dashArray: "10,20",
                     opacity: 1,
                     weight: 1,
-                    fillOpacity: 0.1,
                 }).addTo(this.activeLayerMarkers);
 
                 if (pZone.objects[0].boxExtent.rotation_z != 0){
@@ -738,7 +708,6 @@ export default class SquadLayer {
                     color: App.mainColor,
                     opacity: 1,
                     weight: 2,
-                    fillOpacity: 0.1,
                     radius: protectRadius,
                 }).addTo(this.activeLayerMarkers);
 
@@ -747,7 +716,6 @@ export default class SquadLayer {
                     dashArray: "10,20",
                     opacity: 1,
                     weight: 1,
-                    fillOpacity: 0.1,
                     radius: noDeployRadius,
                 }).addTo(this.activeLayerMarkers);
 
@@ -761,7 +729,7 @@ export default class SquadLayer {
     setMainZoneOpacity(on){
         var opacity = on ? 1 : 0;
         const textOpacity = on ? 1 : 0;
-        const fillOpacity = on ? 0.1 : 0;
+        const fillOpacity = on ? 0.05 : 0;
 
         this.mainZones.rectangles.forEach((rectangle) => {
             if (!App.userSettings.showMainZones) {

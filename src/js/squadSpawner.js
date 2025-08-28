@@ -1,4 +1,4 @@
-import { Marker, Icon } from "leaflet";
+import { Marker, Icon, Browser, DomEvent } from "leaflet";
 import tippy, {sticky} from "tippy.js";
 import i18next from "i18next";
 import "./libs/leaflet-rotatedMarker.js";
@@ -15,13 +15,14 @@ export const squadVehicleMarker = Marker.extend({
     },
 
     // Constructor
-    initialize: function (latlng, spawner, vehicle, dedicatedSpawn, options) {
+    initialize: function (latlng, spawner, vehicle, faction, dedicatedSpawn, options) {
         
         Marker.prototype.initialize.call(this, latlng, options);
 
         this.spawner = spawner;
         this.vehicle = vehicle;
         this.dedicatedSpawn = dedicatedSpawn;
+        this.faction = faction;
 
         this.setIcon(
             new Icon({
@@ -32,9 +33,17 @@ export const squadVehicleMarker = Marker.extend({
             }));
 
         this.setRotationAngle(spawner.rotation_z + 90);
+        
 
-        this.on("pointerover", this._handleOver, this);
-        this.on("pointerout", this._handleOut, this);
+        if (!Browser.mobile) {
+            this.on("pointerover", this._handleOver, this);
+            this.on("pointerout", this._handleOut, this);
+        } else {
+            this.on("click", this._handleOver, this);
+        }
+
+        this.on("contextmenu", this._handleCtxMenu, this);
+        
     },
    
 
@@ -55,11 +64,6 @@ export const squadVehicleMarker = Marker.extend({
             appendTo: document.body,
             onHidden: (tip) => this._cleanup(tip),
             onShow: (tip) => this._onShow(tip),
-            onMount: (tip) => {
-                $(tip.popper).find(".vehName")
-                    .off("click")
-                    .on("click", (event) => { this._map.layer.factions.copyVehicleName(event); });
-            }
         });
 
         el._tippy.show();
@@ -84,8 +88,7 @@ export const squadVehicleMarker = Marker.extend({
             <div class="delay">
                 <span >
                     <span data-i18n="common:delayed">${i18next.t("common:delayed")}</span>
-                    : ${this.vehicle.delay}
-                    <span data-i18n="common:min">${i18next.t("common:min")}</span>
+                    : ${this.vehicle.delay}<span data-i18n="common:min">${i18next.t("common:min")}</span>
                 </span>
             </div>
             `;
@@ -93,7 +96,10 @@ export const squadVehicleMarker = Marker.extend({
 
         let html = `
             <div class='spawnVehicleCard animate__animated animate__fadeIn animate__faster'>
-                <div class="vehName" title="${i18next.t("clickToCopy", { ns: "tooltips" })}">${i18next.t(this.vehicle.type, { ns: "vehicles" })}</div>
+                <div class="vehTitle">
+                    <div class="vehName">${i18next.t(this.vehicle.type, { ns: "vehicles" })}</div>
+                    <img class="vehFlag" src="${process.env.API_URL}/img/flags/${this.faction}.webp" class="img-flag" />
+                </div>
                 <div class="respawn">
                     <span>${i18next.t("common:respawn")}</span> : ${this.vehicle.respawnTime} <span>${i18next.t("common:min")}</span>
                 </div>
@@ -128,6 +134,12 @@ export const squadVehicleMarker = Marker.extend({
         if (el._tippy) {
             el._tippy.hide();
         }
+    },
+
+    _handleCtxMenu(event) {
+        DomEvent.preventDefault(event);   // prevent browser menu
+        DomEvent.stopPropagation(event);  // stop Leaflet listeners
+        return false;  
     }
 
 });

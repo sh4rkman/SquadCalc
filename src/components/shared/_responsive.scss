@@ -121,57 +121,54 @@
 
 /* -- WIDTH < 568px -- */
 @media screen and (width <= 35em) {
-    #factionsDialog {
-        #factionVehicles {
-            .card-content {
-                padding: 0.3em;
-                .vehicle-icon {
-                    width: 22px;
-                    height: 22px;
-                    margin-right: 0.5em;
-                }
-                .vehicle-info {
-                    font-size: 0.8em;
-                }
+    #factionsDialog #factionVehicles {
+        .card-content {
+            padding: 0.3em;
+            .vehicle-icon {
+                width: 22px;
+                height: 22px;
+                margin-right: 0.5em;
             }
             .vehicle-info {
                 font-size: 0.8em;
             }
-            #team1Vehicles {
-                .card-content {
-                    .vehicle-icon {
-                        margin-left: 0.5em;
-                    }
+        }
+        .vehicle-info {
+            font-size: 0.8em;
+        }
+        #team1Vehicles {
+            .card-content {
+                .vehicle-icon {
+                    margin-left: 0.5em;
                 }
             }
         }
+        
     }
 }
 
 /* -- WIDTH < 512px -- */
 @media screen and (width <= 32em) {
-    #factionsDialog {
-        #factionVehicles {
-            .card-content {
-                padding: 0.3em;
-                .vehicle-icon {
-                    width: 15px;
-                    height: 15px;
-                    margin-right: 0.2em;
-                    .vehicle-count {
-                        font-size: 1em;
-                    }
-                }
-                .vehicle-info {
-                    font-size: 0.6em;
+    #factionsDialog #factionVehicles {
+        .card-content {
+            padding: 0.3em;
+            .vehicle-icon {
+                width: 15px;
+                height: 15px;
+                margin-right: 0.2em;
+                .vehicle-count {
+                    font-size: 1em;
                 }
             }
-            #team1Vehicles {
-                .card-content {
-                    .vehicle-icon {
-                        margin-left: 0.2em;
-                        margin-right: 0;
-                    }
+            .vehicle-info {
+                font-size: 0.6em;
+            }
+        }
+        #team1Vehicles {
+            .card-content {
+                .vehicle-icon {
+                    margin-left: 0.2em;
+                    margin-right: 0;
                 }
             }
         }
@@ -220,6 +217,9 @@
                 height: 45px;
             }
         }
+    }
+    #factionsDialog #factionVehicles .vehicle-card.selected .image a {
+        font-size: 1em;
     }
 
     @media (height >= 40em) {

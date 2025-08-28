@@ -106,23 +106,40 @@ export class FactionCtxMenu {
         this.tip.setContent(html);
 
         const items = this.tip.popper.querySelectorAll(".faction-item");
-        items.forEach(item => item.addEventListener("click", (ev) => this._handleFactionClick(ev)));
+        items.forEach(item => {
+            item.addEventListener("click", ev => this._handleFactionClick(ev));
+            item.addEventListener("contextmenu", ev => { this._handleFactionCtxMenu(ev); });
+        });
 
         this.tip._cleanup = () => {
-            items.forEach(item => item.removeEventListener("click", this._handleFactionClick));
+            items.forEach(item => {
+                item.removeEventListener("click", this._handleFactionClick);
+                item.removeEventListener("contextmenu", this._handleFactionCtxMenu);
+            }); 
         };
     }
 
-    _handleFactionClick(ev) {
-        const factionId = ev.currentTarget.id;
-        if ($(ev.currentTarget).hasClass("_selected")){
-            $(ev.currentTarget).removeClass("_selected");
-            this.FACTION_SELECTOR.val("").trigger($.Event("change", { broadcast: false }));
-        } else {
-            this.openUnitsCtxMenu(factionId);
-        }
+    _handleFactionClick(event) {
+        this.openUnitsCtxMenu(event.currentTarget.id);
     }
 
+
+    _handleFactionCtxMenu(event){
+        if ($(event.currentTarget).hasClass("_selected")){
+            $(event.currentTarget).removeClass("_selected");
+            this.FACTION_SELECTOR.val("").trigger($.Event("change", { broadcast: false }));
+        } 
+    }
+
+
+    _handleUnitCtxMenu(event){
+        if ($(event.currentTarget).hasClass("_selected")){
+            $(event.currentTarget).removeClass("_selected");
+            this.UNIT_SELECTOR.val("").trigger($.Event("change", { broadcast: false }));
+        } 
+    }
+
+    
     _attachUnitHandlers() {
         const tip = this.tip;
         const unitItems = tip.popper.querySelectorAll(".faction-item.units");
@@ -155,7 +172,11 @@ export class FactionCtxMenu {
 
         const handleClickBack = () => this.openFactionsCtxMenu();
 
-        unitItems.forEach(item => item.addEventListener("click", handleClickUnit));
+        unitItems.forEach(item => {
+            item.addEventListener("click", handleClickUnit);
+            item.addEventListener("contextmenu", ev => { this._handleUnitCtxMenu(ev); });
+        });
+
         pinButton.addEventListener("click", handleClickPin);
         backButton.addEventListener("click", handleClickBack);
 

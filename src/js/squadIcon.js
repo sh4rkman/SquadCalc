@@ -1,7 +1,5 @@
 import { Icon } from "leaflet";
 
-import DEFAULTSHADOW from "leaflet/dist/images/marker-shadow.png";
-
 export const mortarIcon = new Icon({
     iconUrl: "../img/markers/weapons/marker_mortar.webp",
     shadowUrl: "/img/markers/weapons/marker_shadow.webp",

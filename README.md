@@ -20,7 +20,7 @@
 </br>
 </br>
 
-[squadcalc.app](https://squadcalc.app/) – The Ultimate In-Game Companion for [Squad](https://joinsquad.com/)!
+[SquadCalc.app](https://squadcalc.app/) – The Ultimate In-Game Companion for [Squad](https://joinsquad.com/)!
 
 
 </br>
