@@ -423,8 +423,9 @@ export const MAPS = [
         radiusExclusion: FOBEXCLUSIONS.medium,
         SDK_data: {
             minimap: {
-                corner0: [-3600, -3600],  // Manually adjusted, looks like the 2deg rotation fuck up everything
-                corner1: [3300, 3300]
+                // 6869x6869 is not from SDK, probably due to 2.02deg rotation
+                corner0: [-3611, -3293],
+                corner1: [3258, 3576]
             },
             heightmap: {
                 origin: [-4811, -3947],
