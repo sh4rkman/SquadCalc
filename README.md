@@ -61,29 +61,37 @@
   <summary><b>Elevations Calculations</b></summary>
   </br>
   SquadCalc utilizes heightmaps extracted from the Squad SDK to precisely compute the elevation difference between mortars and targets, automatically adjusting the elevation settings.  
+  
+  </br>
 
   [Check out the Wiki](https://github.com/sh4rkman/SquadCalc/wiki/Deducing-Altitude) to understand how it works.
+
+  </br>
 </details>
 
 <details>
   <summary><b>Spread and Damages radiuses</b></summary>  
   </br>
   Reduce teamkilling and maximize your damage by visualizing the spread of your shells and the range of their explosions.  
+
   Check out the Wiki on [Spread](https://github.com/sh4rkman/SquadCalc/wiki/Deducing-Spread) and [Damage](https://github.com/sh4rkman/SquadCalc/wiki/Deducing-Damage-Radius) to understand how it works.
 
   <div align="center">
     <img width="50%" src="./src/img/github/radiuses.webp" alt="settings">
   </div>
+  </br>
 </details>
 
 <details>
   <summary><b>Commonly used spot</b></summary>
   </br>
-  Squadcalc is logging up to 15000 weapon positions for each map and each weapons, thus allowing to create a dynamic heatmap of where other players commonly set their weapons. If you're having trouble finding a good spot to place your mortar or weapons, activate the 'Frequent Locations' feature !
+  Squadcalc is logging up to 15000 weapon positions for each map and each weapons, thus allowing to create a dynamic heatmap of where other players commonly set their weapons. If you're having trouble finding a good spot to place your mortar or weapons, activate the 'Frequent Locations' feature !  
 
+  </br>
   <div align="center">
     <img width="60%" src="./src/img/github/heatmap.webp" alt="commonly used spots">
   </div>
+  </br>
 </details>
 
 
@@ -110,6 +118,9 @@
 
 ## Layer Info
 
+
+
+
 <details>
   <summary><b>Lanes/Flags preview</b></summary>
   </br>
@@ -119,7 +130,7 @@
 
   <div align="center">
     <picture><img width="70%" src="./src/img/github/layer-finder.gif" alt="capzones"></picture>
-  </div>
+  </div></br>
 
 </details>
 
@@ -132,7 +143,7 @@
 
   <div align="center">
     <picture><img width="80%" src="./src/img/github/capzones.webp" alt="capzones"></picture>
-  </div>
+  </div></br>
 
 </details>
 
@@ -146,7 +157,7 @@
 
   <div align="center">
     <picture><img width="70%" src="./src/img/github/mains.webp" alt="capzones"></picture>
-  </div>
+  </div></br>
 
 </details>
 
@@ -160,7 +171,7 @@
 
   <div align="center">
     <picture><img width="70%" src="./src/img/github/borders.webp" alt="autocomplete"></picture>
-  </div>
+  </div></br>
 </details>
 
 
@@ -186,18 +197,34 @@
 
   <div align="center">
     <picture><img width="70%" src="./src/img/github/units.webp" alt="autocomplete"></picture>
-  </div>
+  </div><br>
 
-  <br>
+
 
   You can also pin the enemy vehicles list to your map and set timers when you destroy them : you will receive a sound notification when they respawn !
 
   <div align="center">
     <picture><img width="70%" src="./src/img/github/timer.webp" alt="autocomplete"></picture>
-  </div>
+  </div></br>
+
+  Change faction and pick a unit directly from the map by rightclicking a main :
+
+  <div align="center">
+    <picture><img width="40%" src="./src/img/github/mainCtxMenu.webp" alt="autocomplete"></picture>
+  </div></br>
 
 </details>
 
+<details>
+  <summary><b>Vehicles Spawns Locations</b></summary>
+  </br>  
+
+  Anticipate where the vehicles will be spawning :
+
+  <div align="center">
+    <picture><img width="100%" src="./src/img/github/spawns.gif" alt="autocomplete"></picture>
+  </div><br>
+</details>
 
 </br>
 

@@ -547,6 +547,29 @@ export default class SquadFactions {
                     `;
                 }
 
+                let oneOrMoreTickets;
+                if (vehicle.ticketValue === 1) oneOrMoreTickets = "ticket";
+                else oneOrMoreTickets = "tickets";
+
+                //console.log(vehicle)
+                let amphibious = "";
+                if (vehicle.isAmphibious) {
+                    amphibious = `
+                        <div class="tag">
+                            <img src="${process.env.API_URL}/img/icons/shared/amphibious.webp" title="${i18next.t("amphibious", { ns: "common" })}">
+                        </div>
+                    `;
+                }
+
+                let ATGM = "";
+                if (vehicle.ATGM) {
+                    ATGM = `
+                        <div class="tag">
+                            <img src="${process.env.API_URL}/img/icons/shared/ATGM.webp" title="${i18next.t("atgm", { ns: "common" })}">
+                        </div>
+                    `;
+                }
+
                 $("#team1Vehicles").append(`
                     <div class="vehicle-card animate__animated animate__fadeIn animate__faster">
                         <div class="card-content">
@@ -557,7 +580,20 @@ export default class SquadFactions {
                                 <div class="vehicle-count">${vehicle.count}×</div>
                             </div>
                             <div class="vehicle-info">
+
                                 <div class="vehicle-meta">
+
+                                    <span class="ticketHolder">
+                                        <span class="ticket-icon">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><!--!Font Awesome Free v7.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M96 128C60.7 128 32 156.7 32 192L32 256C32 264.8 39.4 271.7 47.7 274.6C66.5 281.1 80 299 80 320C80 341 66.5 358.9 47.7 365.4C39.4 368.3 32 375.2 32 384L32 448C32 483.3 60.7 512 96 512L544 512C579.3 512 608 483.3 608 448L608 384C608 375.2 600.6 368.3 592.3 365.4C573.5 358.9 560 341 560 320C560 299 573.5 281.1 592.3 274.6C600.6 271.7 608 264.8 608 256L608 192C608 156.7 579.3 128 544 128L96 128zM448 400L448 240L192 240L192 400L448 400zM144 224C144 206.3 158.3 192 176 192L464 192C481.7 192 496 206.3 496 224L496 416C496 433.7 481.7 448 464 448L176 448C158.3 448 144 433.7 144 416L144 224z"/></svg>
+                                        </span>
+                                        <span class="ticket">
+                                            <span class="ticketText"><span data-i18n="common:value">${i18next.t("common:value")}</span>
+                                            : </span>${vehicle.ticketValue}
+                                            <span data-i18n="common:${oneOrMoreTickets}">${i18next.t("common:"+oneOrMoreTickets)}</span>
+                                        </span>
+                                    </span>
+
                                     <span class="respawnHolder">
                                         <span class="respawn-icon">
                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Pro 6.7.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2024 Fonticons, Inc. --><path d="M463.5 224l8.5 0c13.3 0 24-10.7 24-24l0-128c0-9.7-5.8-18.5-14.8-22.2s-19.3-1.7-26.2 5.2L413.4 96.6c-87.6-86.5-228.7-86.2-315.8 1c-87.5 87.5-87.5 229.3 0 316.8s229.3 87.5 316.8 0c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0c-62.5 62.5-163.8 62.5-226.3 0s-62.5-163.8 0-226.3c62.2-62.2 162.7-62.5 225.3-1L327 183c-6.9 6.9-8.9 17.2-5.2 26.2s12.5 14.8 22.2 14.8l119.5 0z"/></svg>
@@ -568,15 +604,19 @@ export default class SquadFactions {
                                             <span data-i18n="common:min">${i18next.t("common:min")}</span>
                                         </span>
                                     </span>
+
                                     <span class="delayHolder">
                                         <span class="count-delay">${delayInfo}</span>
                                     </span>
+
                                 </div>
+
                                 <div class="vehicle-type" data-i18n="vehicles:${vehicle.type}" title="${i18next.t("clickToCopy", { ns: "tooltips" })}">${i18next.t(vehicle.type, { ns: "vehicles" })}</div>
                             </div>
                         </div>
                         <div class="image">
                             <a href="https://squad.fandom.com/wiki/${shortVehName}" target="_blank" class="attribution">squad.fandom.com</a>
+                            <div class="tags">${amphibious}${ATGM}</div>
                             <img src="${process.env.API_URL}/img/vehicles/${vehicle.type}.webp" onerror="this.onerror=null; this.src='${process.env.API_URL}/img/vehicles/placeholder.webp';"/>
                         </div>
                     </div>
@@ -656,19 +696,50 @@ export default class SquadFactions {
                     `;
                 }
 
+                let amphibious = "";
+                if (vehicle.isAmphibious) {
+                    amphibious = `
+                        <div class="tag">
+                            <img src="${process.env.API_URL}/img/icons/shared/amphibious.webp" title="${i18next.t("amphibious", { ns: "common" })}">
+                        </div>
+                    `;
+                }
+
+                let ATGM = "";
+                if (vehicle.ATGM) {
+                    ATGM = `
+                        <div class="tag">
+                            <img src="${process.env.API_URL}/img/icons/shared/ATGM.webp" title="${i18next.t("atgm", { ns: "common" })}">
+                        </div>
+                    `;
+                }
+
+                let oneOrMoreTickets;
+                if (vehicle.ticketValue === 1) oneOrMoreTickets = "ticket";
+                else oneOrMoreTickets = "tickets";
+
                 $("#team2Vehicles").append(`
                     <div class="vehicle-card animate__animated animate__fadeIn animate__faster">
                         <div class="card-content">
-
-                                <div class="vehicle-icon">
-                                    <img src="${process.env.API_URL}/img/icons/ally/vehicles/${vehicle.icon}.webp" alt='${vehicle.type}'>
-                                </div>
+                            <div class="vehicle-icon">
+                                <img src="${process.env.API_URL}/img/icons/ally/vehicles/${vehicle.icon}.webp" alt='${vehicle.type}'>
+                            </div>
                             <div class="vehicle-icon">
                                 <div class="vehicle-count">×${vehicle.count}</div>
                             </div>
                             <div class="vehicle-info">
                                 <div class="vehicle-type" data-i18n="vehicles:${vehicle.type}" title="${i18next.t("clickToCopy", { ns: "tooltips" })}">${i18next.t(vehicle.type, { ns: "vehicles" })}</div>
                                 <div class="vehicle-meta">
+                                    <span class="ticketHolder">
+                                        <span class="ticket">
+                                            <span class="ticketText"><span data-i18n="common:value">${i18next.t("common:value")}</span>
+                                            : </span>${vehicle.ticketValue}
+                                            <span data-i18n="common:${oneOrMoreTickets}">${i18next.t("common:"+oneOrMoreTickets)}</span>
+                                        </span>
+                                        <span class="ticket-icon">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path d="M96 128C60.7 128 32 156.7 32 192L32 256C32 264.8 39.4 271.7 47.7 274.6C66.5 281.1 80 299 80 320C80 341 66.5 358.9 47.7 365.4C39.4 368.3 32 375.2 32 384L32 448C32 483.3 60.7 512 96 512L544 512C579.3 512 608 483.3 608 448L608 384C608 375.2 600.6 368.3 592.3 365.4C573.5 358.9 560 341 560 320C560 299 573.5 281.1 592.3 274.6C600.6 271.7 608 264.8 608 256L608 192C608 156.7 579.3 128 544 128L96 128zM448 400L448 240L192 240L192 400L448 400zM144 224C144 206.3 158.3 192 176 192L464 192C481.7 192 496 206.3 496 224L496 416C496 433.7 481.7 448 464 448L176 448C158.3 448 144 433.7 144 416L144 224z"/></svg>
+                                        </span>
+                                    </span>
                                     <span class="respawnHolder">
                                         <span class="respawn">
                                             <span class="respawnText"><span data-i18n="common:respawn">${i18next.t("common:respawn")}</span>
@@ -687,6 +758,7 @@ export default class SquadFactions {
                             </div>
                         </div>
                         <div class="image">
+                            <div class="tags">${amphibious}${ATGM}</div>
                             <a href="https://squad.fandom.com/wiki/${shortVehName}" target="_blank" class="attribution">squad.fandom.com</a>
                             <img src="${process.env.API_URL}/img/vehicles/${vehicle.type}.webp" onerror="this.onerror=null; this.src='${process.env.API_URL}/img/vehicles/placeholder.webp';"/>
                         </div>
