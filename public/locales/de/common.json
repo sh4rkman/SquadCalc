@@ -47,5 +47,10 @@
     "pinToMap": "An Karte anheften",
     "pinned": "Angeheftet",
     "randomSpawn": "Zufälliger Spawnpunkt",
-    "dedicactedSpawn": "Fester Spawnpunkt"
+    "dedicactedSpawn": "Fester Spawnpunkt",
+    "amphibious": "Amphibisch",
+    "atgm": "ATGM",
+    "value": "Wert",
+    "ticket": "Ticket",
+    "tickets": "Tickets"
 }

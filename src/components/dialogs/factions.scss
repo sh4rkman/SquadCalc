@@ -163,12 +163,32 @@
                     background: variables.$mainColor;
                     .vehicle-meta .delayHolder {
                         .count-delay {
-                            color: #aaa;
+                            color: white;
                         }
                         .count-delay-icon svg {
-                            fill: #aaa;
+                            fill: white;
                         }
                     } 
+                    .vehicle-meta .respawnHolder {
+                        .respawn {
+                            color: white;
+                        }
+                        .respawn-icon {
+                            svg {
+                                fill: white;
+                            }
+                        }
+                    }
+                    .vehicle-meta .ticketHolder {
+                        .ticket {
+                            color: white;
+                        }
+                        .ticket-icon {
+                            svg {
+                                fill: white;
+                            }
+                        }
+                    }
                 }
             }
             &.selected {
@@ -178,12 +198,32 @@
                 align-items: flex-start;
                 .vehicle-meta .delayHolder {
                     .count-delay {
-                        color: #aaa;
+                        color: white;
                     }
                     .count-delay-icon svg {
-                        fill: #aaa;
+                        fill: white;
                     }
                 } 
+                .vehicle-meta .respawnHolder {
+                    .respawn {
+                        color: white;
+                    }
+                    .respawn-icon {
+                        svg {
+                            fill: white;
+                        }
+                    }
+                }
+                 .vehicle-meta .ticketHolder {
+                    .ticket {
+                        color: white;
+                    }
+                    .ticket-icon {
+                        svg {
+                            fill: white;
+                        }
+                    }
+                }
                 .image {
                     margin-top: 0.5em;
                     display: block;
@@ -285,7 +325,7 @@
                     align-items: center;
                     gap: 0.3em;
                     margin-bottom: 0.3em;
-                    .respawn-icon, .ticket-icon{
+                    .respawn-icon, .ticket-icon {
                         display: inline-flex;
                         align-items: center;
                         justify-content: center;

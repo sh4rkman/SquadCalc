@@ -19,10 +19,9 @@
         }
     }
     &[data-theme~='spawnCards'] {
-        background: rgba(30, 30, 30, 0.7);
+        background: rgba(30, 30, 30, 0.6);
         backdrop-filter: blur(6px);
         border-radius: 8px;
-           // overflow: hidden;
         box-shadow: 0 4px 12px rgba(0,0,0,0.25);
         .tippy-content {
             padding: 0;

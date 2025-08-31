@@ -217,8 +217,8 @@ export class SquadObjective {
 
             // Cap radiis
             if (cap.isBox) {
-                rectangleRadiusX = cap.boxExtent.extent_x / 100 * -this.layer.map.gameToMapScale;
-                rectangleRadiusY = cap.boxExtent.extent_y / 100 * -this.layer.map.gameToMapScale;
+                rectangleRadiusX = (cap.boxExtent.extent_x / 100) * cap.boxExtent.scaling_x * -this.layer.map.gameToMapScale;
+                rectangleRadiusY = (cap.boxExtent.extent_y / 100) * cap.boxExtent.scaling_y * -this.layer.map.gameToMapScale;
             }
             else if (cap.isCapsule) {
                 rectangleRadiusX = cap.capsuleRadius / 100 * -this.layer.map.gameToMapScale;

@@ -49,5 +49,10 @@
     "pinToMap": "Pin to map",
     "pinned": "Pinned",
     "randomSpawn": "Random spawn location",
-    "dedicactedSpawn": "Dedicated spawn location"
+    "dedicactedSpawn": "Dedicated spawn location",
+    "amphibious": "Amphibious",
+    "atgm": "ATGM",
+    "value": "Value",
+    "ticket": "Ticket",
+    "tickets": "Tickets"
 }

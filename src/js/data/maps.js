@@ -4,42 +4,43 @@ const FOBEXCLUSIONS = {
 };
 
 export const MAPS = [
-    // {   // UE5
-    //     name: "AlBasrah",
-    //     mapURL: "/albasrah/",
-    //     radiusExclusion: FOBEXCLUSIONS.medium,
-    //     SDK_data: {
-    //         minimap: {
-    //             corner0: [-2000, -2000],
-    //             corner1: [2000, 2000],
-    //         },
-    //         heightmap: {
-    //             origin: [-2040, -2040],
-    //             size: [4081, 4081],
-    //             scale: [1, 1, 1],
-    //             BWlevels: [291, 873],
-    //         }
-    //     }
-    // },
-    { 
-        name: "AlBasrah", 
-        size: 3040, // OK
-        scaling: 0.01294, // OK
+    {   // UE5
+        name: "AlBasrah",
         mapURL: "/albasrah/",
         radiusExclusion: FOBEXCLUSIONS.medium,
         SDK_data: {
             minimap: {
-                corner0: [-1520, -1520],
-                corner1: [1520, 1520]
+                corner0: [-2000, -2000],
+                corner1: [2000, 2000],
             },
             heightmap: {
-                origin: [-2032, -2032],
-                size: [3049, 3049],
-                scale: [1, 1, 0.1],
-                BWlevels: [2793, 4087]
+                origin: [-2040, -2040],
+                size: [4081, 4081],
+                scale: [1, 1, 1],
+                BWlevels: [291, 873],
             }
         }
     },
+    // { 
+    //     // UE4
+    //     name: "AlBasrah", 
+    //     size: 3040, // OK
+    //     scaling: 0.01294, // OK
+    //     mapURL: "/albasrah/",
+    //     radiusExclusion: FOBEXCLUSIONS.medium,
+    //     SDK_data: {
+    //         minimap: {
+    //             corner0: [-1520, -1520],
+    //             corner1: [1520, 1520]
+    //         },
+    //         heightmap: {
+    //             origin: [-2032, -2032],
+    //             size: [3049, 3049],
+    //             scale: [1, 1, 0.1],
+    //             BWlevels: [2793, 4087]
+    //         }
+    //     }
+    // },
     { 
         name: "Anvil", 
         mapURL: "/anvil/",

@@ -1,57 +1,69 @@
 
-# <img src="https://img.shields.io/badge/-major%20release-b22222?style=for-the-badge">  **39.0.0** *(2025-XX-XX)*
+# <img src="https://img.shields.io/badge/-major%20release-b22222?style=for-the-badge">  **39.0.0** *(2025-08-28)*
 
 <img src="https://img.shields.io/badge/-new%20features-green">
 
-- **New Albasrah!**  
-  Every layer, faction, image, heightmap, and related data has been updated.  
-  Overall every layer/factions/vehicles list change with the UE5 update have been taken into account.  
-  Feel free to report a bug if you spot one.  
+- **Spawning Vehicles !** ([#343](https://github.com/sh4rkman/SquadCalc/issues/343))  
+Vehicles now spawn on the main map after picking a faction, so you can anticipate where they will appear. All spawns possibilities are shown.  
+Hovering over an icon opens an info card about it.
 
-- **Target Deviation Grids!**  
-  fsdfdsfdsfdsfsdf
+- **Faction & Unit Selection from the Map**  
+You can now right-click any main flag to select the Faction/Unit of that team and pin it to the screen.
+
+- **Target Deviation Grids**  
+  You can now enable a deviation grid on targets that helps adjust shots without the need to place another target: vertical lines show angle deviation (1°), and horizontal arcs show elevation deviation (10 mils or 1° depending on the weapon's unit system).
+
+- **Modded Weapons** ([#327](https://github.com/sh4rkman/SquadCalc/issues/327))  
+  Added support for 5 new artillery vehicles from popular mods : Himars, TOS-1A, M109 Paladin, MTLB БЕГЕМОТ, T62 Dump Truck.  
+  (Thanks [yobaNGE](https://github.com/yobaNGE) for the weapons data !)
+
+- **Territory Control, Seed & Skirmish Layers Support** 
+
+- **Vehicle Illustration in Faction Selection**  
+  Click any vehicle in the faction panel to see what it looks like in-game.
 
 - **SquadTactics!** https://squadtactics.app  
-Features for creating markers, strategizing, and planning your future games have been removed from squadcalc.app and moved to their own dedicated (but very similar) app.  
-This change frees up code in SquadCalc, allowing me to develop more strategy-focused functionality and better separate use cases: if you need a companion app while playing, use squadcalc.app; if you want to plan your next match outside the game, use squadtactics.app.  
-Following this split, many shared assets between the two apps (map images, heightmaps, icons, etc.) have been moved out of the GitHub repository and are now hosted server-side to avoid duplication and maintenance headaches.  
-Map files will likely return later in their own public repository.
+Features for creating markers, strategizing, and planning your future games have been removed from squadcalc.app and moved to their own dedicated (but very similar) app. If you need a companion app while playing, use squadcalc.app; if you want to plan your next match outside the game, use squadtactics.app.  
+
 
 - **And more**  
-Added complete factions names when hovering a flag in faction selection
-Clicking a vehicle icon in faction selection now redirect to its `squad.fandom.com/wiki/` page in a new tab
+  - Added complete faction names when hovering over a flag in faction selection.  
+  - Added links in faction selection redirecting to each vehicle's `squad.fandom.com/wiki/` page in a new tab.  
+  - "Auto pick single flag" is now activated by default: SquadCalc will automatically pick a flag if it's the only available option. The setting has been removed.  
+  - Enabling distance on target markers also displays the distance in squadmortaroverlay (thanks TheMatheusDev! [#295](https://github.com/sh4rkman/SquadCalc/pull/345)).  
+  - Logi Boats now appear next to other boats in the vehicle list.  
+  - Factions are now sorted alphabetically
+  - Added ticket count to vehicles
+  - Added info-cards showing if a vehicle is amphibious or has ATGM
+  - Boats are removed from vehicle lists if they can't spawn in the current layer.  
+  - Changed the maximum additional height a user can set for a weapon from 100 to 300m.  
+  - Improved contrast of the target's compact icon.  
+  - Improved map & heightmap caching to speed up image loading.  
+  - Reduced button and selector sizes on mobile to be more compact.  
+  - Added a custom "Under Maintenance" page.  
+  - Added a custom `404` page.
+
+
 
 <img src="https://img.shields.io/badge/-bug%20fixes-b22">
 
-- Fixed Skorpo real size (fixing the grid misplacement aswell)
-- Fixed a Skorpo heightmap being slightly misrotated (Thanks ZFZR031! fix [#295](https://github.com/sh4rkman/SquadCalc/issues/295))
-- SquadCalc is now installable again as a Progressive Web App (Thanks Acemantura! fix [#328](https://github.com/sh4rkman/SquadCalc/issues/328))
-- Additional weapon heights are now correctly shared between session members (Thanks aiphton! fix [#322](https://github.com/sh4rkman/SquadCalc/issues/322))
-- Vehicle respawn timers no longer appear in seconds after being started/aborted (Thanks Petro! fix [#324](https://github.com/sh4rkman/SquadCalc/issues/324))
-- Changing layer while in a session now broadcasts the layer change to other session members (fix [#305](https://github.com/sh4rkman/SquadCalc/issues/324))
-- Changing factions/units while in a session now broadcasts the change to other session members (fix [#305](https://github.com/sh4rkman/SquadCalc/issues/324))
-- Fixed CreateSquad commands to work with vehicle name containing spaces (Thanks Snowflake !)
-- Fixed CreateSquad commands so they create locked squad by default (Thanks Snowflake !)
-- SquadCalc no longer tries to copy target to clipboard when moving a weapon if "auto-copy target to clipboard" is enabled
-- SquadCalc no longer tries to copy targets created by session members to clipboard when "auto-copy target to clipboard" is enabled
-- Fixed a rare calculation error when shooting at very close range and high elevation with BM21-Grad (fix [#329](https://github.com/sh4rkman/SquadCalc/issues/329))
-- Fixed hidden console errors when switching language
-- Added missing vehicle translation file for German
-- Fixed typo in vehicle translations file for Russian (Thanks kimochi)
-- Right-clicking a marker no longer triggers a console error
+- Fixed Skorpo real size (fixing the grid misplacement as well).  
+- Fixed a Skorpo heightmap being slightly misrotated (Thanks ZFZR031! fix [#295](https://github.com/sh4rkman/SquadCalc/issues/295)).  
+- SquadCalc is now installable again as a Progressive Web App (Thanks Acemantura! fix [#328](https://github.com/sh4rkman/SquadCalc/issues/328)).  
+- Additional weapon heights are now correctly shared between session members (Thanks aiphton! fix [#322](https://github.com/sh4rkman/SquadCalc/issues/322)).  
+- Vehicle respawn timers no longer appear in seconds after being started/aborted (Thanks Petro! fix [#324](https://github.com/sh4rkman/SquadCalc/issues/324)).  
+- Changing layers while in a session now broadcasts the layer change to other session members (fix [#305](https://github.com/sh4rkman/SquadCalc/issues/324)).  
+- Changing factions/units while in a session now broadcasts the change to other session members (fix [#305](https://github.com/sh4rkman/SquadCalc/issues/324)).  
+- Main faction names are now correctly translated.  
+- Fixed `CreateSquad` commands to work with vehicle names containing spaces (Thanks Snowflake!).   
+- SquadCalc no longer tries to copy targets to the clipboard when moving a weapon if "auto-copy target to clipboard" is enabled.  
+- SquadCalc no longer tries to copy targets created by session members to the clipboard when "auto-copy target to clipboard" is enabled.  
+- Fixed a rare calculation error when shooting at very close range and high elevation with BM21-Grad (fix [#329](https://github.com/sh4rkman/SquadCalc/issues/329)).  
+- Fixed console errors appearing when switching languages.  
+- Added missing vehicle translation file for German.  
+- Fixed typo in vehicle translation file for Russian (Thanks kimochi!).  
+- Right-clicking a marker no longer triggers a console error.
 
-
-<img src="https://img.shields.io/badge/-%20other-grey">
-
-- "Auto pick single flag" feature is now activated by default: SquadCalc will automatically pick a flag if it's the only available option. The setting has been removed.
-- Logi Boats now appears next to other boats in vehicle list
-- Boats are removed from vehicle lists if they can't spawn in the current layer
-- Changed the maximum additional height an user can set to a weapon from 100 to 300m
-- Improved contrast of the targets compact icon
-- Improved map & heightmap caching to speedup image loading
-- Reduced button and selector sizes on mobile to be more compact2
-- Added a custom "Under Maintenance" page
-- Added a custom `404` page
 
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->

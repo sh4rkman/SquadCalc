@@ -97,7 +97,7 @@ export class FactionCtxMenu {
         this.FACTIONS.forEach(faction => {
             const selected = this.FACTION_SELECTOR.val() === faction.factionID ? "_selected" : "";
             html += `<div class="faction-item ${selected}" id="${faction.factionID}" title="${i18next.t(faction.factionID + "_displayName", { ns: "factions" })}">
-                <img src="${process.env.API_URL}/img/flags/${faction.factionID}.webp" alt="Faction ${faction.factionID}" />
+                <img src="${process.env.API_URL}/img/flags/${faction.factionID}.webp"/>
                 <div class="faction-label">${i18next.t(faction.factionID, { ns: "factions" })}</div>
             </div>`;
         });

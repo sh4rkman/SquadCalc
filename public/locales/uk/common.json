@@ -47,5 +47,10 @@
     "pinToMap": "Закріпити на мапі",
     "pinned": "Закріплено",
     "randomSpawn": "Випадкова точка спавну",
-    "dedicactedSpawn": "Фіксована точка спавну"
+    "dedicactedSpawn": "Фіксована точка спавну",
+    "amphibious": "Амфібія",
+    "atgm": "ПТКР",
+    "value": "Значення",
+    "ticket": "Квиток",
+    "tickets": "Квитки"
 }

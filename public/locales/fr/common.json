@@ -47,5 +47,7 @@
     "pinToMap": "Épingler sur la carte",
     "pinned": "Épinglé",
     "randomSpawn": "Emplacement de spawn aléatoire",
-    "dedicactedSpawn": "Emplacement de spawn fixe"
+    "dedicactedSpawn": "Emplacement de spawn fixe",
+    "amphibious": "Amphibi",
+    "atgm": "Missile antichar"
 }
