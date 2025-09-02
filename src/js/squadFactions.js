@@ -424,9 +424,9 @@ export default class SquadFactions {
 
         const metaHTML = `
             <div class="vehicle-meta">
-                ${this.getCardTicketHTML(vehicle, false)}
-                ${this.getCardRespawnHTML(vehicle, false)}
-                ${this.getCardDelayHTML(vehicle, false)}
+                ${this.getCardTicketHTML(vehicle, LEFT)}
+                ${this.getCardRespawnHTML(vehicle, LEFT)}
+                ${this.getCardDelayHTML(vehicle, LEFT)}
             </div>`;
 
         DIV.append(`
@@ -724,7 +724,7 @@ export default class SquadFactions {
             selectedUnit.vehicles.forEach((vehicle) => {
                 // Skip boats if the team doesn't have boat spawn available
                 if (vehicle.spawnerSize === "Boat" && !factionData.team2boats) return;
-                this.generateCardHTML(vehicle, $("#team2Vehicles"), false,);
+                this.generateCardHTML(vehicle, $("#team2Vehicles"), false);
                 this.spawnVehicle(vehicle, spawners, this.squadLayer.activeFaction2Markers);
             });
 
