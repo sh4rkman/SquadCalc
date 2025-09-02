@@ -84,15 +84,14 @@ export default class SquadLayer {
      */
     init(){
 
-        // Create Flags
         switch (this.gamemode) {
         case "Destruction":
             this.initDestruction(this.capturePoints);
             break;
         case "AAS":
-        case "Skirmish":
         case "Seed":
             this.initPredictiveLayer();
+            //this.initSkirmishLayer(); // TODO: use a single function for AASGraphs
             break;
         case "TC":
             this.initTerritoryControl(this.capturePoints);
@@ -100,6 +99,9 @@ export default class SquadLayer {
         case "RAAS":
         case "Invasion":
             this.initRandomizedLayer();
+            break;
+        case "Skirmish":
+            this.initSkirmishLayer();
             break;
         default:
             this.clear();
@@ -210,9 +212,58 @@ export default class SquadLayer {
     }
 
 
+    initSkirmishLayer() {
+
+        // Set Paths
+        Object.values(this.capturePoints.points.links).forEach(link => {
+            const nodeAFlag = Object.values(this.objectives).find(objective => objective.objectDisplayName === link.nodeA);
+            const nodeBFlag = Object.values(this.objectives).find(objective => objective.objectDisplayName === link.nodeB);
+            const latlngNodeA = this.convertToLatLng(nodeAFlag.location_x, nodeAFlag.location_y);
+            const latlngNodeB = this.convertToLatLng(nodeBFlag.location_x, nodeBFlag.location_y);
+            let path = [latlngNodeA, latlngNodeB];
+
+            // Not using this.path here because several path would be created on each others
+            new Polyline(path, {
+                color: "white",
+                opacity: 0.9,
+                weight: 2,
+                showMeasurements: false,
+                // measurementOptions: {
+                //     minPixelDistance: 50,
+                //     scaling: this.map.mapToGameScale,
+                // }
+            }).addTo(this.activeLayerMarkers);
+
+        });
+
+        Object.values(this.objectives).forEach((obj) => {
+            const latlng = this.convertToLatLng(obj.location_x, obj.location_y);
+
+            // Identify and process mains
+            if (obj.name === "Main") {
+                let newFlag = new SquadObjective(latlng, this, obj, 1, obj);
+                this.flags.push(newFlag);
+                this.mains.push(newFlag);
+                return;
+            }
+
+            const newFlag = new SquadObjective(latlng, this, obj, 0, obj);
+            this.flags.push(newFlag);
+
+            obj.objects.forEach(cap => {
+                newFlag.createCapZone(cap);
+            });
+        });
+
+        //this.polyline.setLatLngs(this.path);
+
+    }
+
+
+
     /**
      * Initialize a layer going from first to last point
-     * AAS - SEED - SKIRMISH
+     * AAS - SEED
      */
     initPredictiveLayer(){
         const pointsOrder = this.capturePoints?.points?.pointsOrder;

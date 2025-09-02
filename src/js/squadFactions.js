@@ -415,7 +415,7 @@ export default class SquadFactions {
     }
 
 
-    generateCardHTML(vehicle, LEFT = false) {
+    generateCardHTML(vehicle, DIV, LEFT = false) {
 
         const typeHTML = `
             <div class="vehicle-type" data-i18n="vehicles:${vehicle.type}" title="${i18next.t("clickToCopy", { ns: "tooltips" })}">
@@ -429,7 +429,7 @@ export default class SquadFactions {
                 ${this.getCardDelayHTML(vehicle, false)}
             </div>`;
 
-        $("#team2Vehicles").append(`
+        DIV.append(`
             <div class="vehicle-card animate__animated animate__fadeIn animate__faster">
                 <div class="card-content">
                     <div class="vehicle-icon">
@@ -467,14 +467,25 @@ export default class SquadFactions {
                 </div>
             `;
         }
+
+        let totalSeats = vehicle.passengerSeats + vehicle.driverSeats; 
+        let passengersHTML = `
+                <div class="tag">
+                    <div class="passenger">${totalSeats}</div>
+                    <img src="${process.env.API_URL}/img/icons/shared/passenger.webp" title="${i18next.t("passengers", { ns: "common" })}">
+                </div>
+            `;
+
         return `
             <div class="image">
                 <a href="https://squad.fandom.com/wiki/${shortVehName}" target="_blank" class="attribution">squad.fandom.com</a>
-                <div class="tags">${amphibious}${ATGM}</div>
+                <div class="tags">${passengersHTML}${amphibious}${ATGM}</div>
                 <img src="${process.env.API_URL}/img/vehicles/${vehicle.type}.webp" onerror="this.onerror=null; this.src='${process.env.API_URL}/img/vehicles/placeholder.webp';"/>
             </div>
         `;
     }
+
+
 
     getCardTicketHTML(vehicle, iconLeft = true) {
         if (!vehicle.ticketValue || vehicle.ticketValue == 0) return;
@@ -498,29 +509,34 @@ export default class SquadFactions {
         return `
             <span class="ticketHolder">
                 ${iconLeft ? iconHTML + textHTML : textHTML + iconHTML}
-            </span>
-        `;
+            </span>`;
     }
 
 
-    getCardDelayHTML(vehicle) {
-        if (vehicle.delay == 0 || !vehicle.delay) return "";
+
+    getCardDelayHTML(vehicle, iconLeft = true) {
+        if (vehicle.delay == 0 || !vehicle.delay) return "<span class='delayHolder'></span>";
+
+        const iconHTML = `
+            <span class="count-delay-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                    <path d="M256 0c-17.7 0-32 14.3-32 32l0 64c0 17.7 14.3 32 32 32s32-14.3 32-32l0-29.3C378.8 81.9 448 160.9 448 256c0 106-86 192-192 192S64 362 64 256c0-53.7 22-102.3 57.6-137.1c12.6-12.4 12.8-32.6 .5-45.3S89.5 60.8 76.8 73.1C29.5 119.6 0 184.4 0 256C0 397.4 114.6 512 256 512s256-114.6 256-256S397.4 0 256 0zM193 159c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l80 80c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-80-80z"/>
+                </svg>
+            </span>`;
+
+        const textHTML = `
+            <span class="delay">
+                <span class="delayText"><span data-i18n="common:delayed">${i18next.t("common:delayed")}</span>
+                : </span>${vehicle.delay}
+                <span data-i18n="common:min">${i18next.t("common:min")}</span>
+            </span>`;
+
         return `
             <span class="delayHolder">
                 <span class="count-delay">
-                    <span class="delay">
-                        <span class="delayText"><span data-i18n="common:delayed">${i18next.t("common:delayed")}</span>
-                        : </span>${vehicle.delay}
-                        <span data-i18n="common:min">${i18next.t("common:min")}</span>
-                    </span>
-                    <span class="count-delay-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-                            <path d="M256 0c-17.7 0-32 14.3-32 32l0 64c0 17.7 14.3 32 32 32s32-14.3 32-32l0-29.3C378.8 81.9 448 160.9 448 256c0 106-86 192-192 192S64 362 64 256c0-53.7 22-102.3 57.6-137.1c12.6-12.4 12.8-32.6 .5-45.3S89.5 60.8 76.8 73.1C29.5 119.6 0 184.4 0 256C0 397.4 114.6 512 256 512s256-114.6 256-256S397.4 0 256 0zM193 159c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l80 80c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-80-80z"/>
-                        </svg>
-                    </span>
+                    ${iconLeft ? iconHTML + textHTML : textHTML + iconHTML}
                 </span>
-            </span>
-        `;
+            </span>`;
     }
 
 
@@ -542,8 +558,7 @@ export default class SquadFactions {
         return `
             <span class="respawnHolder">
                 ${iconLeft ? iconHTML + textHTML : textHTML + iconHTML}
-            </span>
-        `;
+            </span>`;
     }
 
 
@@ -654,34 +669,10 @@ export default class SquadFactions {
             };
 
             selectedUnit.vehicles.forEach((vehicle) => {
-
                 // Skip boats if the team doesn't have boat spawn available
-                if (vehicle.spawnerSize === "Boat" && !factionData.team1boats) console.debug("No boatspawner available ! Skipping boat.");
-
-                $("#team1Vehicles").append(`
-                    <div class="vehicle-card animate__animated animate__fadeIn animate__faster">
-                        <div class="card-content">
-                            <div class="vehicle-icon">
-                                <img src="${process.env.API_URL}/img/icons/ally/vehicles/${vehicle.icon}.webp" alt='${vehicle.type}'>
-                            </div>
-                            <div class="vehicle-icon">
-                                <div class="vehicle-count">${vehicle.count}×</div>
-                            </div>
-                            <div class="vehicle-info">
-                                <div class="vehicle-meta">
-                                    ${this.getCardTicketHTML(vehicle)}
-                                    ${this.getCardRespawnHTML(vehicle)}
-                                    ${this.getCardDelayHTML(vehicle)}
-                                </div>
-                                <div class="vehicle-type" data-i18n="vehicles:${vehicle.type}" title="${i18next.t("clickToCopy", { ns: "tooltips" })}">${i18next.t(vehicle.type, { ns: "vehicles" })}</div>
-                            </div>
-                        </div>
-                        ${this.getCardImgHTML(vehicle)}
-                    </div>
-                `);
-                
+                if (vehicle.spawnerSize === "Boat" && !factionData.team1boats) return;
+                this.generateCardHTML(vehicle, $("#team1Vehicles"), true);
                 this.spawnVehicle(vehicle, spawners, this.squadLayer.activeFaction1Markers);
-
             });
 
             // Handle click-to-copy
@@ -733,7 +724,7 @@ export default class SquadFactions {
             selectedUnit.vehicles.forEach((vehicle) => {
                 // Skip boats if the team doesn't have boat spawn available
                 if (vehicle.spawnerSize === "Boat" && !factionData.team2boats) return;
-                this.generateCardHTML(vehicle, false);
+                this.generateCardHTML(vehicle, $("#team2Vehicles"), false,);
                 this.spawnVehicle(vehicle, spawners, this.squadLayer.activeFaction2Markers);
             });
 

@@ -86,7 +86,7 @@
     line-break: loose;
     &.units {
         max-width: 400px;
-        height: 55px;
+        height: 65px;
         width: 70px;
         &:active {
             transform: scale(0.95);
@@ -97,22 +97,22 @@
     &._selected {
         outline: green 3px solid;
         &::after {
-            //background: rgba(255, 255, 255, 0);
+            background: rgba(255, 255, 255, 0);
         }
     }
     &::after {
         content: '';
         position: absolute;
         inset: 0;
-        border: 4px solid rgba(0, 0, 0, 0.30);
+        border: 3px solid rgba(0, 0, 0, 0.30);
         pointer-events: none;
     }
 }
 
 .faction-item.units img {
     position: absolute;
-    top: 0;
-    width: 60%;
+    top: 5px;
+    width: 50%;
     height: auto;
     object-fit: contain;
 }
@@ -120,11 +120,12 @@
 .faction-item.units .faction-label {
     position: absolute;
     font-size: 10px;
-    line-height: 2em;
-    padding: 0;
-    bottom: 5px;
-    white-space: nowrap;
-    overflow: hidden;
+    line-height: 1.1em;
+    letter-spacing: normal;
+    padding: 0 2px;
+    top: 40px;
+    white-space: wrap;
+    // overflow: hidden;
     text-overflow: "..";
 }
 
@@ -154,7 +155,7 @@
     display: flex;
     flex-direction: column;
     font-size: 0.8em;
-    //background: rgba(30, 30, 30, 0.7);
+    // background: rgba(30, 30, 30, 0.7);
     backdrop-filter: blur(6px);
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.25);
@@ -183,15 +184,15 @@
         width: 100%;
         padding: 0;
         .vehName {
-            padding: 6px 10px;
-            font-size: 1.3em;
+            padding: 10px 10px 0;
+            font-size: 1.4em;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
         .vehFlag {
-            margin: 8px 8px 0 0;
-            width: 55px;
+            margin: 6px 8px 0 0;
+            width: 50px;
             height: auto;
             border-radius: 3px;
             flex-shrink: 0;
@@ -216,11 +217,24 @@
             }
         }
     }
-    .respawnHolder, .delayHolder, .ticketHolder, .locationHolder {
-        padding: 0.2em 1em;
+    .statsHolder {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.6em 1em;
+        padding: 1em 2em 0;
+        margin-top: 0.5em;
+        place-items: center;
+        border-top: 1px solid rgba(128, 128, 128, 0.616);
+    }
+    .respawnHolder,
+    .delayHolder,
+    .ticketHolder,
+    .locationHolder {
         display: flex;
         align-items: center;
         gap: 0.5em;
+        width: 100%;
+        justify-content: center;
     }
     .ticket {
         display: inline-flex;
@@ -254,8 +268,14 @@
             width: 3em;
             height: 3em;
             display: flex;
-            justify-content: center;    
+            justify-content: center;
             align-items: center;
+            .passengers {
+                position: absolute;
+                font-size: 14px;
+                letter-spacing: 0;
+                margin-left: 13px;
+            }
             img {
                 margin-top: 0;
                 bottom: 0;

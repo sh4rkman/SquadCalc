@@ -242,12 +242,19 @@
                         flex-wrap: wrap;
                         gap: 0.5em;
                         .tag {
-                            align-items: center;
                             border-radius: 4px;
                             background: rgba(26, 25, 25, 0.8);
                             width: 4em;
                             height: auto;
-                            display: block;
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            .passenger {
+                                position: absolute;
+                                font-size: 14px;
+                                letter-spacing: 0px;
+                                margin-left: 13px;
+                            }
                             &:hover {
                                 background: rgba(26, 25, 25, 0.9);
                             }
@@ -344,7 +351,7 @@
                     display: inline-flex;
                     align-items: center;
                     gap: 0.3em;
-                    min-height: 1.15em;
+                    min-height: 1em;
                     .count-delay-icon {
                         display: inline-flex;
                         align-items: center;
@@ -449,7 +456,7 @@
         background-color: variables.$mainBGColor;
     }
     .select2-container {
-        @include variables.text-outline;
+        @include variables.light-text-outline;
         pointer-events: all;
         background-color: transparent;
         border-bottom: 1px solid variables.$mainTxtColor;

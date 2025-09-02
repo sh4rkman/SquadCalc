@@ -53,7 +53,7 @@ export class FactionCtxMenu {
         let html = "<div class='faction-grid animate__animated animate__fadeIn animate__faster'>";
         if (this.FACTION_SELECTOR.val() != factionId) {
             if (this.flagName === this.layer.factions.pinnedFaction) this.layer.factions.unpinUnit();
-            this.FACTION_SELECTOR.val(factionId).trigger($.Event("change", { broadcast: false }));
+            this.FACTION_SELECTOR.val(factionId).trigger($.Event("change", { broadcast: true }));
         }
 
         this.FACTIONS.forEach(faction => {
@@ -127,7 +127,7 @@ export class FactionCtxMenu {
     _handleFactionCtxMenu(event){
         if ($(event.currentTarget).hasClass("_selected")){
             $(event.currentTarget).removeClass("_selected");
-            this.FACTION_SELECTOR.val("").trigger($.Event("change", { broadcast: false }));
+            this.FACTION_SELECTOR.val("").trigger($.Event("change", { broadcast: true }));
         } 
     }
 
@@ -135,7 +135,7 @@ export class FactionCtxMenu {
     _handleUnitCtxMenu(event){
         if ($(event.currentTarget).hasClass("_selected")){
             $(event.currentTarget).removeClass("_selected");
-            this.UNIT_SELECTOR.val("").trigger($.Event("change", { broadcast: false }));
+            this.UNIT_SELECTOR.val("").trigger($.Event("change", { broadcast: true }));
         } 
     }
 
@@ -154,7 +154,7 @@ export class FactionCtxMenu {
                 ev.currentTarget.classList.add("_selected");
                 pinButton.classList.remove("active");
                 pinButton.textContent = i18next.t("common:pinToMap");
-                this.UNIT_SELECTOR.val(unitId).trigger($.Event("change", { broadcast: false }));
+                this.UNIT_SELECTOR.val(unitId).trigger($.Event("change", { broadcast: true }));
             }
         };
 

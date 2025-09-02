@@ -35,7 +35,7 @@ export const squadVehicleMarker = Marker.extend({
         this.setRotationAngle(spawner.rotation_z + 90);
         
 
-        if (Browser.mobile) {
+        if (!Browser.mobile) {
             this.on("pointerover", this._handleOver, this);
             this.on("pointerout", this._handleOut, this);
         } else {
@@ -84,10 +84,13 @@ export const squadVehicleMarker = Marker.extend({
                     <img class="vehFlag" src="${process.env.API_URL}/img/flags/${this.faction}.webp" class="img-flag" />
                 </div>
 
-                ${this.getTicketsHTML()}
-                ${this.getRespawnHTML()}
-                ${this.getDelayHTML()}
-                ${this.getLocationHTML()}
+                <div class="statsHolder">
+                    ${this.getTicketsHTML()}
+                    ${this.getRespawnHTML()}
+                    ${this.getLocationHTML()}
+                    ${this.getDelayHTML()}
+                </div>
+
                 ${this.getTagsHTML()}
                 <img src="${process.env.API_URL}/img/vehicles/${this.vehicle.type}.webp" onerror="this.onerror=null; this.src='${process.env.API_URL}/img/vehicles/placeholder.webp';"/>
             </div>
@@ -99,8 +102,11 @@ export const squadVehicleMarker = Marker.extend({
 
     getTagsHTML() {
         const tags = [];
+        let totalSeats = this.vehicle.passengerSeats + this.vehicle.driverSeats;
+        tags.push(`<img src="${process.env.API_URL}/img/icons/shared/passenger.webp" alt="ATGM"><div class="passengers">${totalSeats}</div>`);
         if (this.vehicle.isAmphibious) tags.push(`<img src="${process.env.API_URL}/img/icons/shared/amphibious.webp" alt="Amphibious">`);
         if (this.vehicle.ATGM) tags.push(`<img src="${process.env.API_URL}/img/icons/shared/ATGM.webp" alt="ATGM">`);
+
         return `
             <div class="tags">
                 ${tags.map(tag => `<div class="tag">${tag}</div>`).join("")}
