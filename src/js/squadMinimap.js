@@ -82,13 +82,18 @@ export const squadMinimap = Map.extend({
             interactive: false,
         });
 
+        
         if (!Browser.mobile) {
             // On desktop create markers with a double click
             this.on("click", function(e) { this._handleclick(e); });
             this.on("dblclick", function(e) { this._handleDoubleClick(e); });
         } else {
             // On mobile just use single click
-            this.on("click", function(e) { this._handleDoubleClick(e); });
+            this.on("click", function(e) {
+                // avoid creating unwanted markers when closing contextmenu
+                if (this.contextMenu.isOpen) return; 
+                this._handleDoubleClick(e); 
+            });
             this.on("dblclick", function() { return false; });
         }
 
