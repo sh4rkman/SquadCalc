@@ -66,10 +66,10 @@ tippy("span[data-i18n='settings:mapAnimationSettings']", {
     },
 });
 
-tippy("span[data-i18n='settings:experimentalWeapons']", {
+tippy("span[data-i18n='settings:moddedWeapons']", {
     ...commonToolipsSettings,
     onShow(tip) {
-        tip.setContent(`${i18next.t("tooltips:experimentalWeaponsTooltip")}`);
+        tip.setContent(`${i18next.t("tooltips:moddedWeaponTooltip")}`);
     },
 });
 
@@ -116,6 +116,13 @@ tippy("span[data-i18n='settings:showSpread']", {
     },
 });
 
+tippy("span[data-i18n='settings:targetGrid']", {
+    ...commonToolipsSettings,
+    onShow(tip) {
+        tip.setContent(`${i18next.t("tooltips:targetGridTooltip")}`);
+    },
+});
+
 tippy("span[data-i18n='settings:realMaxRange']", {
     ...commonToolipsSettings,
     onShow(tip) {
@@ -140,15 +147,6 @@ tippy("span[data-i18n='settings:copyTarget']", {
     onShow(tip) {
         tip.setContent(`
             ${i18next.t("tooltips:copyTargetTooltip")}
-        `);
-    },
-});
-
-tippy("span[data-i18n='settings:autoLane']", {
-    ...commonToolipsSettings,
-    onShow(tip) {
-        tip.setContent(`
-            ${i18next.t("tooltips:autoLaneTooltip")}
         `);
     },
 });

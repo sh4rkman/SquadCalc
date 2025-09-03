@@ -40,7 +40,7 @@ Map.SmoothWheelZoom = Handler.extend({
     _onWheelStart: function (e) {
         var map = this._map;
         this._isWheeling = true;
-        this._wheelMousePosition = map.mouseEventToContainerPoint(e);
+        this._wheelMousePosition = map.pointerEventToContainerPoint(e);
         this._centerPoint = map.getSize()._divideBy(2);
         this._startLatLng = map.containerPointToLatLng(this._centerPoint);
         //this._wheelStartLatLng = map.containerPointToLatLng(this._wheelMousePosition);
@@ -66,7 +66,7 @@ Map.SmoothWheelZoom = Handler.extend({
         if (this._goalZoom < map.getMinZoom() || this._goalZoom > map.getMaxZoom()) {
             this._goalZoom = map._limitZoom(this._goalZoom);
         }
-        this._wheelMousePosition = this._map.mouseEventToContainerPoint(e);
+        this._wheelMousePosition = this._map.pointerEventToContainerPoint(e);
         this._wheelMouseLatLng = map.containerPointToLatLng(this._wheelMousePosition); // patch
 
         clearTimeout(this._timeoutId);

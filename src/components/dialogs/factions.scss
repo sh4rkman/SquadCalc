@@ -1,0 +1,498 @@
+@use '../shared/variables';
+
+.unit-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    .unit-logo {
+        border: rgb(56, 56, 56) 1px solid;
+        width: 30px;
+        height: 30px;
+        flex-shrink: 0;
+        object-fit: contain;
+        border-radius: 6px;
+        padding: 2px;
+        &.selection {
+            border: none;
+        }
+    }
+    .unit-texts {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        flex: 1;
+        min-width: 0;
+    }
+    .unit-type {
+        font-weight: bold;
+        font-size: 13px;
+        line-height: 1.5em;
+        margin-top: 0.3em;
+    }
+    .unit-name {
+        @include variables.light-text-outline;
+        color: #ccc;
+        font-size: 9px;
+        line-height: 1.3em;
+        font-style: italic;
+        text-transform: capitalize;
+    }
+}
+
+
+#pinButtons {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin: 1em 0;
+    .btn-pin {
+        color: #111;
+        flex: 1;
+        cursor: pointer;
+        text-align: center;
+        padding: 0.5em 1em;
+        font-size: 1em;
+        font-weight: bold;
+        margin: auto;
+        width: 20px;
+        max-width: 200px;
+        &.active {
+            background-color: variables.$mainColor;
+            color: white;
+            text-transform: uppercase;
+            transition: background-color 0.2s ease;
+        }
+    }
+}
+
+.countryFlags {
+    padding: 0;
+    margin: 0;
+    .img-flag {
+        width: 45px;
+        border: solid rgba(255, 255, 255, 0.336) 0.1px;
+        box-shadow: 0 0 5px rgb(37, 37, 37);
+    }
+    .flag-label {
+        position: relative;
+        letter-spacing: normal;
+        font-size: 1.4em;
+        line-height: 1.2em;
+    }
+}
+
+
+#factionsDialog {
+    border-radius: 0;
+    flex-direction: column;
+    height: 100vh;
+    &:not([open]) {
+        display: none;
+    }
+    &[open] {
+        display: flex;
+    }
+    h2 {
+        text-align: center;
+        font-size: 2em;
+    }
+    #factionMenu {
+        width: 100%;
+        padding: 0;
+        margin: 0 auto;
+        text-align: center;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        gap: 2em;
+        #team1, #team2 {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 50%;
+            h2 {
+                margin: 0;
+                padding: 0.5em 0;
+            }
+            .selectors {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                padding-top: 5px;
+            }
+            .factionSelector {
+                width: 100px;
+                .select2-container {
+                    min-width: 80px;
+                }
+            }
+        }
+    }
+    #factionVehicles {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        overflow-y: scroll;
+        scrollbar-width: none; 
+        max-height: 75%;
+        .vehicle-card {
+            display: flex;
+            align-items: center;
+            background: #1e1e1e;
+            border: 1px solid #444;
+            margin: 0.25em 0;
+            width: 100%;
+            font-size: 0.9em;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            flex-direction: column;
+            transition: all 0.1s ease-in-out;
+            .card-content {
+                padding: 0.5em;
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                width: 100%;
+            }
+            .image {
+                display: none;
+            }
+            // Hover effect only for devices that support true hover (desktop)
+            @media (hover: hover) {
+                &:hover {
+                    background: variables.$mainColor;
+                    .vehicle-meta .delayHolder {
+                        .count-delay {
+                            color: white;
+                        }
+                        .count-delay-icon svg {
+                            fill: white;
+                        }
+                    } 
+                    .vehicle-meta .respawnHolder {
+                        .respawn {
+                            color: white;
+                        }
+                        .respawn-icon {
+                            svg {
+                                fill: white!important;;
+                            }
+                        }
+                    }
+                    .vehicle-meta .ticketHolder {
+                        .ticket {
+                            color: white;
+                        }
+                        .ticket-icon {
+                            svg {
+                                fill: white;
+                            }
+                        }
+                    }
+                }
+            }
+            &.selected {
+                background: variables.$mainColor;
+                height: auto;
+                flex-direction: column;
+                align-items: flex-start;
+                .vehicle-meta .delayHolder {
+                    .count-delay {
+                        color: white;
+                    }
+                    .count-delay-icon svg {
+                        fill: white;
+                    }
+                } 
+                .vehicle-meta .respawnHolder {
+                    .respawn {
+                        color: white;
+                    }
+                    .respawn-icon {
+                        svg {
+                            fill: white!important;
+                        }
+                    }
+                }
+                 .vehicle-meta .ticketHolder {
+                    .ticket {
+                        color: white;
+                    }
+                    .ticket-icon {
+                        svg {
+                            fill: white;
+                        }
+                    }
+                }
+                .image {
+                    margin-top: 0.5em;
+                    display: block;
+                    bottom: 0;
+                    width: 100%;
+                    position: relative; 
+                    img {
+                        width: 100%;
+                    }
+                    .tags {
+                        height: 4em;
+                        position: absolute;
+                        bottom: 0.5em;
+                        left: 0.5em;
+                        display: flex;
+                        flex-wrap: wrap;
+                        gap: 0.5em;
+                        .tag {
+                            border-radius: 4px;
+                            background: rgba(26, 25, 25, 0.8);
+                            width: 4em;
+                            height: auto;
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            .passenger {
+                                position: absolute;
+                                font-size: 14px;
+                                letter-spacing: 0;
+                                margin-left: 13px;
+                            }
+                            &:hover {
+                                background: rgba(26, 25, 25, 0.9);
+                            }
+                        }
+                    }
+                    a {
+                        position: absolute;
+                        bottom: 0;
+                        right: 0;
+                        font-size: 0.8em;
+                        letter-spacing: 0;
+                        font-style: italic;
+                        color: #111;
+                        background: rgba(255, 255, 255, 0.5);
+                        padding: 2px 5px;
+                        border-radius: 3px;
+                        text-decoration: none;
+                        &:hover {
+                            text-decoration: underline;
+                        }
+
+                    }
+                }
+
+            }
+        }
+        button {
+            cursor: pointer;
+        }
+        .vehicle-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 0.25em;
+            margin-right: 0.75em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            img {
+                width: 85%;
+            }
+        }
+        .vehicle-count {
+            font-size: 1.7em;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+        }
+        .vehicle-info {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            flex-grow: 1;
+            letter-spacing: normal;
+            .vehicle-type {
+                font-size: 1.3em;
+                font-weight: bold;
+                color: #fff;
+                cursor: pointer;
+                text-align: center;
+                white-space: nowrap;
+                margin-right: 1em;
+            }
+            .vehicle-meta {
+                display: flex;
+                flex-direction: column;
+                text-align: right;
+                color: #aaa;
+                font-size: 1.1em;
+                .respawnHolder, .ticketHolder {
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 0.3em;
+                    margin-bottom: 0.3em;
+                    &.warning {
+                        color: firebrick;
+                        .respawn-icon svg {
+                            fill: firebrick;
+                        }
+                    }
+                    .respawn-icon, .ticket-icon {
+                        display: inline-flex;
+                        align-items: center;
+                        justify-content: center;
+                        width: 1em;
+                        height: 1em;
+                        padding: 0;
+                        margin: 0;
+                        svg {
+                            width: 100%;
+                            height: 100%;
+                            fill: #aaa;
+                        }
+                    }
+                }
+                .delayHolder {
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 0.3em;
+                    min-height: 1em;
+                    .count-delay-icon {
+                        display: inline-flex;
+                        align-items: center;
+                        justify-content: center;
+                        width: 1em;
+                        height: 1em;
+                        padding: 0;
+                        margin: 0;
+                        svg {
+                            width: 100%;
+                            height: 100%;
+                            fill: variables.$mainColor;
+                        }
+                    }
+                    .count-delay {
+                        color: variables.$mainColor;
+                    }
+                }
+            }
+        }
+        
+    }
+    #team1Vehicles, #team2Vehicles {
+        width: 47%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        overflow-y: scroll;
+        height: auto;
+        padding-bottom: 3px;
+        scrollbar-width: none;
+        ::-webkit-scrollbar {
+            display: none;
+        }
+        h3 {
+            margin: 0;
+            padding: 0.5em 0;
+        }
+    }
+    #team1Vehicles {
+        margin-left: 2%;
+        margin-right: 2%;
+        .vehicle-card .card-content {
+            align-items: center;
+            flex-direction: row-reverse;
+            .vehicle-type {
+                text-align: right;
+            }
+            .vehicle-icon {
+                margin-right: 0;
+                margin-left: 0.75em;
+            }
+            .vehicle-meta {
+                justify-content: space-between;
+                text-align: left;
+            }
+        }
+    }
+    #team2Vehicles {
+        .card-content {
+            .vehicle-type {
+                margin-left: 1em;
+            }
+        }
+        .delayHolder, .respawnHolder, .ticketHolder {
+            justify-content: flex-end;
+        }
+    }
+    .dropbtn9, .dropbtn11 {
+        color: #fff;
+        font-weight: bold;
+        line-height: 2.188em;
+        text-transform: uppercase;
+        background-color: var(--themecolor, variables.$mainBGColor);
+        select {
+            -moz-appearance: none;
+            -webkit-appearance: none;
+            appearance: none;
+            background-color: transparent;
+            background-image: none;
+            border: none;
+            box-shadow: none;
+        }
+        &:focus {
+            outline: none;
+        }
+    }
+    .factionSelector  .select2-results__option {
+        padding-top: 3px;
+    }
+    .unitSelector .select2-results__option {
+        word-break: break-word;
+        line-height: 2;
+    }
+    .unitSelector .select2-container--default {
+        letter-spacing: 0.5px;
+    }
+    .select2 {
+        background-color: transparent;
+    }
+    .select2-dropdown {
+        background-color: variables.$mainBGColor;
+    }
+    .select2-container {
+        @include variables.light-text-outline;
+        pointer-events: all;
+        background-color: transparent;
+        border-bottom: 1px solid variables.$mainTxtColor;
+        line-height: 2.188em;
+        min-width: 200px;
+        padding-bottom: 0.3em;
+        text-transform: uppercase;
+    }
+    .select2-container--default {
+        .select2-results__option--highlighted[aria-selected] {
+            background-color: variables.$mainColor;
+        }
+        .select2-results__option--selected {
+            background-color: variables.$mainColor;
+            opacity: 0.5;
+        }
+        .select2-selection--single .select2-selection__rendered {
+            color: #fff;
+        }
+        .select2-selection--single {
+            background-color: transparent;
+            border: none;
+            color: variables.$mainTxtColor;
+        }
+    }
+    span.select2-selection.select2-selection--single {
+        outline: none;
+    }
+    .select2-results__options {
+        line-height: 0.4em;
+        font-size: 0.75em;
+    }
+}

@@ -30,7 +30,10 @@ export default async (env) => {
 
   return {
 
-    entry: './src/app.js',
+    entry: {
+      main: './src/app.js',
+      '404-style': './src/components/404/404.scss',
+    },
     stats: { warnings: false},
     mode: env.WEBPACK_BUILD ? 'production' : 'development',
     devtool: env.WEBPACK_BUILD ? false : 'inline-source-map',
@@ -43,18 +46,29 @@ export default async (env) => {
     },
     module: {
         rules: [
-            { test: /\.(png|svg|jpg|jpeg|gif|webp)$/i, type: 'asset/resource', },
-            { test: /\.(sc|sa|c)ss$/i, use: ['style-loader', 'css-loader', 'sass-loader'],},
-            { 
-              test: /\.(html)$/,
-              include: path.join(__dirname, ''),
-              use: { loader: 'html-loader', options: { interpolate: true } }
-            }
+          {
+            test: /\.(sc|sa|c)ss$/i,
+            use: [
+              'style-loader', { loader: 'css-loader', options: { url: false } }, 'sass-loader',
+            ],
+          },
+          { 
+            test: /\.(html)$/,
+            include: path.join(__dirname, ''),
+            use: { loader: 'html-loader', options: { interpolate: true } }
+          },
+          { test: /\.(png|svg|jpg|jpeg|gif|webp)$/i, type: 'asset/resource', },
         ],
     },
     devServer: {
+      port: 3000,
       open: true,
-      historyApiFallback: true,
+      historyApiFallback: {
+        rewrites: [
+          { from: /./, to: '/404.html' },
+        ],
+        disableDotRule: true,
+      },
       static: {
         directory: path.join(__dirname, '../public'),
         publicPath: '/',
@@ -73,13 +87,20 @@ export default async (env) => {
               removeAttributeQuotes: true,
           } : false
         }),
+        new HtmlWebpackPlugin({
+          template: './src/404.html',
+          filename: '404.html',
+          chunks: ['404-style'], 
+        }),
         new CopyWebpackPlugin({
           patterns: [
             {
               from: path.resolve(__dirname, '../public'),
               to: path.resolve(__dirname, '../dist'),
             },
-            { from: "./src/img/github/", to: "./src/img/github/" },
+            { from: "./src/img/github/",
+              to: "./src/img/github/", 
+            },
           ],
         }),
         new webpack.ProvidePlugin({
@@ -106,14 +127,13 @@ export default async (env) => {
               sizes: [16, 32, 96, 192, 256, 384, 512],
               destination: path.join('src', 'img', 'favicons'),
               purpose: 'maskable'
+            },
+            { // PWA Installation icon
+              src: path.resolve('./src/img/favicons/favicon_512x512.png'),
+              size: '192x192',
+              destination: path.join('src', 'img', 'favicons'),
+              purpose: 'any'
             }
-            // {
-            //   src: path.resolve('./src/img/favicons/maskable_icon_x512.png'),
-            //   size: '1024x1024',
-            //   destination: path.join('src', 'img', 'favicons'),
-            //   ios: true,
-            //   purpose: 'maskable'
-            // }
           ],
           screenshots : [
             {
@@ -167,17 +187,19 @@ export default async (env) => {
             },
           ]
         }),
-        new workbox.GenerateSW({
-          swDest: "./sw.js",
-          skipWaiting: true,
-          clientsClaim: true,
-          maximumFileSizeToCacheInBytes: 10000000,
+        new workbox.InjectManifest({
+          swSrc: './src/js/sw.js',
+          swDest: './sw.js',
+          maximumFileSizeToCacheInBytes: 10 * 1024 * 1024,
           exclude: [
-            /manifest\.json$/, // web app manifest
-            /\.map$/, // source maps
-            /\/favicons\//, // favicon
-            /robots\.txt/, // robots.txt
+            /manifest\.json$/,
+            /\.map$/,
+            /\/favicons\//,
+            /robots\.txt/,
             /\.webp$/,
+            /\.mp3$/,
+            /\.json$/,
+            /\.gif$/,
           ],
         })
     ],

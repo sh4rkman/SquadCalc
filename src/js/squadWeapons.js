@@ -2,7 +2,7 @@ import { App } from "../app.js";
 import { WEAPONS } from "./data/weapons.js";
 
 export class Weapon {
-    constructor(name, velocity, deceleration, decelerationTime, gravityScale, minElevation, unit, logo, marker, logoCannonPos, type, angleType, elevationPrecision, minDistance, moa, maxDamage, startRadius, endRadius, distanceFromImpact, falloff, shells = [], heightOffset = 0) {
+    constructor(name, velocity, deceleration, decelerationTime, gravityScale, minElevation, unit, logo, marker, type, angleType, elevationPrecision, minDistance, moa, maxDamage, startRadius, endRadius, distanceFromImpact, falloff, shells = [], heightOffset = 0) {
         this.name = name;
         this.velocity = velocity;
         this.deceleration = deceleration;
@@ -13,7 +13,6 @@ export class Weapon {
         this.unit = unit;
         this.logo = logo;
         this.marker = marker;
-        this.logoCannonPos = logoCannonPos;
         this.type = type;
         this.angleType = angleType;
         this.elevationPrecision = elevationPrecision;

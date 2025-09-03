@@ -45,5 +45,9 @@
     "team1": "Équipe 1",
     "team2": "Équipe 2",
     "pinToMap": "Épingler sur la carte",
-    "pinned": "Épinglé"
+    "pinned": "Épinglé",
+    "randomSpawn": "Aléatoire",
+    "dedicactedSpawn": "Fixe",
+    "amphibious": "Amphibi",
+    "atgm": "Missile antichar"
 }

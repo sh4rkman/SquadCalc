@@ -24,7 +24,7 @@
     "velocityDesc": "枪口初速是指弹丸离开枪管时的即时速度，它影响射程和精准度。",
     "heightPaddingDesc": "当武器不是放置在海拔地面时（例如在建筑物或桥梁上），需在此输入补充高度。",
     "smoothMapTooltip": "在缩放或移动地图时添加平滑动画。需要重新加载页面",
-    "experimentalWeaponsTooltip": "将实验性的非常规间接火力武器添加到武器列表，不保证指哪打哪，使用风险自负！",
+    "moddedWeaponTooltip": "为热门模组添加武器支持（Steel Division、Global Escalation、Squad AdminTools 等)",
     "damageRadiusTooltip": "显示致死半径和25伤害半径",
     "showKeypadTooltip": "在光标下显示数字键盘",
     "showSpreadTooltip": "显示目标周围可能的弹着点区域",
@@ -33,11 +33,9 @@
     "targetAnimationTooltip": "禁用以将标记图标替换为简约的圆形",
     "performanceWarning": "可能会导致性能问题",
     "markerDragTooltip": "拖动时显示网格坐标",
-    "contextMenuTooltip": "右键单击地图显示类似游戏内的各类标记选项",
     "copyNextFlagsTooltip": "在点击目标点后，自动复制所有可能的下一个点的名称到剪贴板",
     "copyTargetTooltip": "放置/拖动目标后，自动将计算结果复制到剪贴板",
     "lowAndHighTooltip": "显示可以以高角度和低角度射击的武器的两种角度",
-    "autoLaneTooltip": "如果下一个点是既定的，squadcalc 将自动选择下一个点",
     "capZoneOnHoverTooltip": "(放大时)不始终显示可以拉点的区域，仅在鼠标悬停在点上时显示",
     "revealLayerOnHoverTooltip": "鼠标悬停在点上将隐藏互斥的其他点",
     "sessionCreated": "会话已创建！",
@@ -74,5 +72,6 @@
     "showMainAssetsTooltip": "在地图上显示维修站、弹药箱和其他主要资源",
     "showMainZonesTooltip": "显示每个主基地的保护区和禁止部署区域",
     "clickToCopy": "点击复制 `CreateSquad` 命令",
-    "vehicleRespawned": "载具已重生"
+    "vehicleRespawned": "载具已重生",
+    "targetGridTooltip": "在目标周围显示网格：垂直线显示角度偏差（1°），水平弧线显示仰角偏差（10密位或1°，取决于武器的单位系统）"
 }

@@ -24,7 +24,7 @@
     "velocityDesc": "Muzzle velocity is the speed at which a projectile leaves the barrel of a gun, measured immediately upon exit. It affects the range, and accuracy the shot.",
     "heightPaddingDesc": "When placing the weapon above the ground (e.g., on buildings or bridges), use this field to specify the additional height.",
     "smoothMapTooltip": "Add smooth animations when zooming or panning the map. A page refresh is needed",
-    "experimentalWeaponsTooltip": "Add non-conventional indirect fire weapons to the weapon list, use at your own risk!",
+    "moddedWeaponTooltip": "Add weapons support for popular mods (Steel Division, Global Escalation, Squad AdminTools, ...)",
     "damageRadiusTooltip": "Display kill radius and 25 damage radius",
     "showKeypadTooltip": "Display the keypad currently hovered under the cursor",
     "showSpreadTooltip": "Display possible rounds' dispersion area around the targets",
@@ -36,9 +36,7 @@
     "copyNextFlagsTooltip": "When clicking a flag, automatically add the next flags to clipboard",
     "copyTargetTooltip": "After placing/dragging a target, automatically copy the calculations to clipboard",
     "lowAndHighTooltip": "Show both high and low angle for weapons that can shoot in both modes",
-    "autoLaneTooltip": "If only one flag is available on layer's next step, squadcalc will automatically select it",
     "capZoneOnHoverTooltip": "Instead of showing capzones at all times, only show them when hovering over a flag",
-    "contextMenuTooltip": "Right click on the map reveal a context menu allowing you to place markers",
     "revealLayerOnHoverTooltip": "Hovering a flag will fade out the unreachable flags if this flag happens to be clicked",
     "sessionCreated": "Session created !",
     "sessionClosed": "Session closed",
@@ -74,5 +72,6 @@
     "showMainAssetsTooltip": "Show repair stations, ammo crates and other main assets on the map",
     "showMainZonesTooltip": "Show protection and no-deploy zones for each main",
     "clickToCopy": "Click to copy `CreateSquad` command",
-    "vehicleRespawned": "Vehicle respawned"
+    "vehicleRespawned": "Vehicle respawned",
+    "targetGridTooltip": "Displays a grid around the targets: vertical lines show angle deviation (1°), and horizontal arcs show elevation deviation (10 mils or 1° depending on the weapon's unit system)."
 }

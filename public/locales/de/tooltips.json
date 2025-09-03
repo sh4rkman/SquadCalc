@@ -24,7 +24,7 @@
     "velocityDesc": "Die Mündungsgeschwindigkeit ist die Geschwindigkeit, mit der ein Projektil den Lauf einer Waffe verlässt, gemessen direkt beim Austritt. Sie beeinflusst Reichweite und Genauigkeit des Schusses.",
     "heightPaddingDesc": "Wenn die Waffe über dem Boden platziert wird (z.B. auf Gebäuden oder Brücken), gib hier die zusätzliche Höhe an.",
     "smoothMapTooltip": "Fügt sanfte Animationen beim Zoomen oder Verschieben der Karte hinzu. Eine Seitenaktualisierung ist erforderlich",
-    "experimentalWeaponsTooltip": "Fügt unkonventionelle indirekte Feuerwaffen zur Waffenliste hinzu, Benutzung auf eigenes Risiko!",
+    "moddedWeaponTooltip": "Fügt Waffenunterstützung für beliebte Mods hinzu (Steel Division, Global Escalation, Squad AdminTools, ...)",
     "damageRadiusTooltip": "Todesradius und 25-Schadens-Radius anzeigen",
     "showKeypadTooltip": "Rasterfeld unter dem Cursor anzeigen",
     "showSpreadTooltip": "Möglichen Streubereich der Geschosse um die Ziele anzeigen",
@@ -36,9 +36,7 @@
     "copyNextFlagsTooltip": "Beim Klicken auf eine Flagge automatisch die nächsten Flaggen in die Zwischenablage kopieren",
     "copyTargetTooltip": "Nach dem Platzieren/Ziehen eines Ziels die Berechnungen automatisch in die Zwischenablage kopieren",
     "lowAndHighTooltip": "Sowohl steile als auch flache Winkel für Waffen anzeigen, die in beiden Modi schießen können",
-    "autoLaneTooltip": "Wenn nur eine Flagge im nächsten Schritt des Layers verfügbar ist, versucht SquadCalc automatisch zur nächsten Route fortzuschreiten",
     "capZoneOnHoverTooltip": "Eroberungszonen nur anzeigen, wenn der Mauszeiger über einer Flagge steht, statt sie ständig anzuzeigen",
-    "contextMenuTooltip": "Rechtsklick auf die Karte öffnet ein Kontextmenü zum Platzieren von Markierungen",
     "revealLayerOnHoverTooltip": "Wenn der Mauszeiger über einer Flagge steht, werden die unerreichbaren Flaggen ausgeblendet, falls diese Flagge angeklickt wird",
     "sessionCreated": "Sitzung erstellt!",
     "sessionClosed": "Sitzung geschlossen",
@@ -74,5 +72,6 @@
     "showMainAssetsTooltip": "Reparaturstationen, Munitionskisten und andere Hauptressourcen auf der Karte anzeigen",
     "showMainZonesTooltip": "Schutz- und Deploy-Verbotszonen für jede Hauptbasis anzeigen",
     "clickToCopy": "Zum Kopieren des `CreateSquad`-Befehls klicken",
-    "vehicleRespawned": "Fahrzeug wieder erschienen"
+    "vehicleRespawned": "Fahrzeug wieder erschienen",
+    "targetGridTooltip": "Zeigt ein Raster um die Ziele an: Vertikale Linien zeigen die Winkelabweichung (1°) und horizontale Bögen zeigen die Höhenabweichung (10 mils oder 1°, abhängig vom Einheitensystem der Waffe)"
 }

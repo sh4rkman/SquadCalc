@@ -1,4 +1,4 @@
-name: Deploy pre-prod
+name: Deploy Beta
 permissions:
   contents: read
 on:
@@ -21,19 +21,24 @@ jobs:
         echo "VERSION=$VERSION" >> $GITHUB_ENV
 
     - name: Pull code & Build
-      uses: appleboy/ssh-action@v1.0.3
+      uses: appleboy/ssh-action@v1.2.2
       with:
         host: ${{ secrets.HOST }}
         port: ${{ secrets.PORT }}
         username: ${{ secrets.USERNAME }}
         password: ${{ secrets.PASSWORD }}
         script: |
-          eval `ssh-agent -s`
-          ssh-add ~/.ssh/${{ secrets.SSH_PUBLIC_KEY_NAME }}
-          cd ${{ secrets.DEV_DIST }}
-          git pull origin dev
-          npm ci
-          npm run build
+            eval `ssh-agent -s`
+            ssh-add ~/.ssh/${{ secrets.SSH_PUBLIC_KEY_NAME }}
+            # Enable maintenance mode
+            touch ${{ secrets.DEV_DIST }}/maintenance.enable
+            # Deploy
+            cd ${{ secrets.DEV_DIST }}
+            git pull origin dev
+            npm ci
+            npm run build
+            # Disable maintenance mode
+            rm ${{ secrets.DEV_DIST }}/maintenance.enable
 
     - name: Discord notification
       env:

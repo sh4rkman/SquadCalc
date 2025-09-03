@@ -47,5 +47,12 @@
     "team1": "队伍 1",
     "team2": "队伍 2",
     "pinToMap": "固定到地图",
-    "pinned": "已固定"
+    "pinned": "已固定",
+    "randomSpawn": "随机出生点",
+    "dedicactedSpawn": "固定出生点",
+    "amphibious": "两栖",
+    "atgm": "反坦克导弹",
+    "value": "值",
+    "ticket": "票",
+    "tickets": "票"
 }

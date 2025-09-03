@@ -15,7 +15,7 @@
         }
         #weaponSelector {
             .select2-results__options {
-                max-height: 390px;
+                max-height: 470px;
             }
         }
     }
@@ -26,7 +26,7 @@
 
 @media (height >= 45em) {
     header {
-        #mapSelector {
+        .mapSelector #mapSelector, .weaponSelector #layerSelector {
             .select2-results__options {
                 line-height: 0.85em;
                 max-height: 770px;
@@ -57,14 +57,27 @@
     .unit-logo {
         display: none;
     }
+    .respawnText, .delayText, .ticketText {
+        display: none;
+    }
     .countryFlags {
         .img-flag {
             width: 40px;
         }
     }
+    #factionsDialog #factionVehicles .vehicle-card .image .tags {
+        height: 3em!important;
+        .tag {
+            width: 3em!important;
+            .passenger {
+                font-size: 11px!important;
+                margin-left: 10px!important;;
+            }
+        }
+    }
     #factionsDialog {
         #factionVehicles {
-            .vehicle-card {
+            .card-content {
                 .vehicle-icon {
                     width: 22px;
                     height: 22px;
@@ -87,6 +100,7 @@
             }
         }
     }
+
     /* -- H < 568px -- */
     @media (height >= 35em) {
         #classic_ui {
@@ -120,57 +134,54 @@
 
 /* -- WIDTH < 568px -- */
 @media screen and (width <= 35em) {
-    #factionsDialog {
-        #factionVehicles {
-            .vehicle-card {
-                padding: 0.3em;
-                .vehicle-icon {
-                    width: 22px;
-                    height: 22px;
-                    margin-right: 0.5em;
-                }
-                .vehicle-info {
-                    font-size: 0.8em;
-                }
+    #factionsDialog #factionVehicles {
+        .card-content {
+            padding: 0.3em;
+            .vehicle-icon {
+                width: 22px;
+                height: 22px;
+                margin-right: 0.5em;
             }
             .vehicle-info {
                 font-size: 0.8em;
             }
-            #team1Vehicles {
-                .vehicle-card {
-                    .vehicle-icon {
-                        margin-left: 0.5em;
-                    }
+        }
+        .vehicle-info {
+            font-size: 0.8em;
+        }
+        #team1Vehicles {
+            .card-content {
+                .vehicle-icon {
+                    margin-left: 0.5em;
                 }
             }
         }
+        
     }
 }
 
 /* -- WIDTH < 512px -- */
 @media screen and (width <= 32em) {
-    #factionsDialog {
-        #factionVehicles {
-            .vehicle-card {
-                padding: 0.3em;
-                .vehicle-icon {
-                    width: 15px;
-                    height: 15px;
-                    margin-right: 0.2em;
-                    .vehicle-count {
-                        font-size: 1em;
-                    }
-                }
-                .vehicle-info {
-                    font-size: 0.6em;
+    #factionsDialog #factionVehicles {
+        .card-content {
+            padding: 0.3em;
+            .vehicle-icon {
+                width: 15px;
+                height: 15px;
+                margin-right: 0.2em;
+                .vehicle-count {
+                    font-size: 1em;
                 }
             }
-            #team1Vehicles {
-                .vehicle-card {
-                    .vehicle-icon {
-                        margin-left: 0.2em;
-                        margin-right: 0;
-                    }
+            .vehicle-info {
+                font-size: 0.6em;
+            }
+        }
+        #team1Vehicles {
+            .card-content {
+                .vehicle-icon {
+                    margin-left: 0.2em;
+                    margin-right: 0;
                 }
             }
         }
@@ -205,6 +216,7 @@
             .select2-container {
                 float: right;
                 font-size: 1em;
+                padding-bottom: 0.3em;
             }
             #layerSelector {
                 padding-top: 3em;
@@ -219,13 +231,23 @@
             }
         }
     }
+    #factionsDialog #factionVehicles .vehicle-card.selected .image a {
+        font-size: 1em;
+    }
 
     @media (height >= 40em) {
         #mapLayerMenu{
+            right: 2%;
             .btn {
                 font-size: 1.4em;
                 width: 44px;
                 height: 44px;
+                &.btn-session {
+                    margin-top: 1em;
+                }
+            }
+            #sessionActions {
+                width: 44px;
             }
             .mapLayerMenuSeparator {
                 margin-top: 20px;
@@ -233,28 +255,25 @@
         }
     }
     footer {
-        .fabs {
-            bottom: 1.5rem;
-            height: 3.5rem;
-            width: 3.5rem;
-            &.fab-wrapper {
-                right: 1.5rem;
-            }
-            &.fab-wrapper2 {
-                left: 1.5rem;
-            }
-            .fab {
-                font-size: 1.5rem;
+        #footerButtons {
+            padding: 1em 1em 1em 2em;
+            gap: 1em;
+            max-width: 6em;
+            .fabs {
                 height: 3.5rem;
                 width: 3.5rem;
-                .fab-dots-2 {
-                    padding-top: 1rem;
+                .fab {
+                    height: 3.5rem;
+                    width: 3.5rem;
+                    svg {
+                        height: 1.3em;
+                        width: 1.3em;
+                    }
                 }
             }
+
         }
     }
-
-
 
     /* -- L*560px -- */
     @media (height >= 35em) {
@@ -395,5 +414,28 @@
         .tippy-box {
             font-size: 200%;
         }
+    }
+}
+
+/* Fix for mobile devices - prevent hover states from sticking on specific elements */
+@media (hover: none) {
+    // Settings controls buttons
+    #settingsControls button:not(.active):hover {
+        background-color: inherit !important;
+    }
+    // Map layer menu buttons
+    #mapLayerMenu .btn:not(.active):hover {
+        background-color: white !important;
+        svg {
+            transform: none !important;
+        }
+    }
+    // Footer buttons
+    footer button:hover {
+        background-color: inherit !important;
+    }
+    // Dialog close buttons
+    .closeModal:hover {
+        background-color: inherit !important;
     }
 }

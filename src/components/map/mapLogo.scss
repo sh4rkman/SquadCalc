@@ -1,0 +1,43 @@
+@use "../shared/variables";
+
+.logo {
+    @extend .unselectable;
+    position: fixed;
+    height: 100vh;
+    width: 100vw;
+    display: table;
+    font-family: variables.$logoFont, Times, "Times New Roman", serif;
+    text-transform: uppercase;
+    font-size: 7em;
+    letter-spacing: 0;
+    span {
+        font-weight: bolder;
+        line-height: 1.3em;
+        display: table-cell;
+        vertical-align: middle;
+        span {
+            display: inline-block;
+        }
+        span:nth-child(1) {
+            padding: 0 0 10px;
+        }
+        span:nth-child(2) {
+            padding: 0 15px 10px;
+            background: linear-gradient(to right, variables.$mainColor 50%, variables.$mainBGColor 50%);
+            background-size: 200% 100%;
+            background-position: right bottom;
+            animation: 1s ease-out 0.3s 1 forwards loading;
+        }
+    }
+}
+
+#background {
+    @extend .logo;
+}
+
+#loader {
+    @extend .logo;
+    background-color: variables.$mainBGColor;
+    z-index: 99;
+    top: 0;
+}

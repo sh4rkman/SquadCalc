@@ -1,6 +1,4 @@
 import { App } from "../app.js";
-import targetIcon from "../img/icons/markers/marker_target_enabled.webp";
-import targetIconDisabled from "../img/icons/markers/marker_target_disabled.webp";
 import i18next from "i18next";
 
 export default class Simulation {
@@ -42,11 +40,10 @@ export default class Simulation {
                 this.drawCanvasIcons();
             }
         }.bind(this));
-        
-
-        
     }
 
+
+    
     /**
      * Populate the simulation table with info
      */
@@ -223,10 +220,10 @@ export default class Simulation {
         this.ctx.scale(1, -1);
                
         if (isNaN(this.firingSolution.elevation.high.rad) && isNaN(this.firingSolution.elevation.low.rad)) {
-            image.src = targetIconDisabled;
+            image.src = "./img/markers/targets/marker_target_disabled.webp";
         } 
         else {
-            image.src = targetIcon;
+            image.src = "./img/markers/targets/marker_target_enabled.webp";
         }
 
         this.ctx.drawImage(

@@ -7,7 +7,7 @@
 
 
 import {
-    DomUtil, Util, Renderer, LatLng, latLng, DomEvent 
+    DomUtil, Util, Renderer, LatLng, DomEvent 
 } from "leaflet";
 
 export default Renderer.extend({
@@ -73,7 +73,7 @@ export default Renderer.extend({
     // onRemove-ish
     _destroyContainer: function () {
         delete this.gl;
-        DomUtil.remove(this._container);
+        this._container.remove();
         DomEvent.off(this._container);
         delete this._container;
     },
@@ -82,10 +82,12 @@ export default Renderer.extend({
 
     getEvents: function() {
         var events = Renderer.prototype.getEvents.call(this);
-
-        Util.extend(events, {
+        
+        // Replace Util.extend with Object.assign or spread operator
+        Object.assign(events, {
             resize: this.resize,
-            move: Util.throttle(this._update, 49, this)
+            //move: Util.throttle(this._update, 49, this)
+            move: this._update,
         });
 
         return events;
@@ -136,7 +138,7 @@ export default Renderer.extend({
 
             for (let i = 0; i < dataLen; i++) {
                 let dataVal = data[i],
-                    latlng = latLng(dataVal),
+                    latlng = new LatLng(dataVal),
                     point = map.latLngToContainerPoint(latlng);
 
                 heatmap.addPoint(

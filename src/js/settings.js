@@ -1,17 +1,10 @@
 import { App } from "../app.js";
 import { tooltip_coordPreview } from "./tooltips.js";
-import i18next from "i18next";
 import { animateCSS } from "./animations.js";
 import SquadFactions from "./squadFactions.js";
+import i18next from "i18next";
 
 /* eslint no-unused-vars: "off" */
-import mapIcon from "../img/icons/preview/preview.webp";
-import speadIcon from "../img/icons/preview/spread.png";
-import gridIcon from "../img/icons/preview/grid.png";
-import maxRangeIcon from "../img/icons/preview/maxrange.png";
-import damageRangeIcon from "../img/icons/preview/damage.png";
-import miniTargetIcon from "../img/icons/markers/marker_target_mini.webp";
-import targetIcon from "../img/icons/markers/marker_target_enabled.webp";
 
 function loadLocalSetting(item, default_value = 1) {
 
@@ -113,9 +106,6 @@ export function loadSettings(){
     App.userSettings.showMainAssets = loadLocalSetting("settings-show-mainassets");
     $("#showMainAssetsSettings").prop("checked", App.userSettings.showMainAssets);
 
-    App.userSettings.contextMenu = loadLocalSetting("settings-context-menu");
-    $("#contextMenuSettings").prop("checked", App.userSettings.contextMenu);
-
     App.userSettings.showFlagsDistance = loadLocalSetting("settings-show-flags-distance");
     $("#showFlagsDistanceSettings").prop("checked", App.userSettings.showFlagsDistance);
 
@@ -136,9 +126,6 @@ export function loadSettings(){
 
     App.userSettings.capZoneOnHover = loadLocalSetting("settings-capZone-onHover", 0);
     $("#capZoneOnHoverSettings").prop("checked", App.userSettings.capZoneOnHover);
-
-    App.userSettings.autoLane = loadLocalSetting("settings-auto-lane");
-    $("#autoLaneSetting").prop("checked", App.userSettings.autoLane);
 
     App.userSettings.weaponDrag = loadLocalSetting("settings-weapon-drag");
     $("#weaponDragSetting").prop("checked", App.userSettings.weaponDrag);
@@ -161,17 +148,20 @@ export function loadSettings(){
     App.userSettings.damageRadius = loadLocalSetting("settings-damage-radius");
     $("#damageRadiusSetting").prop("checked", App.userSettings.damageRadius);
 
+    App.userSettings.targetGrid = loadLocalSetting("settings-target-grid", 0);
+    $("#targetGridSetting").prop("checked", App.userSettings.targetGrid);
+
     App.userSettings.showHeight = loadLocalSetting("settings-show-height", 0);
     $("#heightSetting").prop("checked", App.userSettings.showHeight);
 
     App.userSettings.targetAnimation = loadLocalSetting("settings-target-animation");
     $("#targetAnimationSettings").prop("checked", App.userSettings.targetAnimation);
     if (App.userSettings.targetAnimation) {
-        $("#markerPreview").attr("src", targetIcon);
+        $("#markerPreview").attr("src", "/img/markers/targets/marker_target_enabled.webp");
         $("#markerPreview").css("margin-top", "0px");
     } 
     else {
-        $("#markerPreview").attr("src", miniTargetIcon);
+        $("#markerPreview").attr("src", "/img/markers/targets/marker_target_mini.webp");
         $("#markerPreview").css("margin-top", "20px");
     }
 
@@ -202,11 +192,38 @@ export function loadSettings(){
         $("#preview").css("cursor", "crosshair");
     }
 
-    // Add Events Listeners on cog button
-    // Open Settings
+    // Load Preview
+    $("#gridPreview").attr("src", "/img/preview/grid.png");
+    $("#mapPreview").attr("src", "/img/preview/preview.webp");
+    $("#maxRangePreview").attr("src", "/img/preview/maxrange.png");
+    $("#spreadPreview").attr("src", "/img/preview/spread.png");
+    $("#damagePreview").attr("src", "/img/preview/damage.png");
+    $("#targetGridPreview").attr("src", "/img/preview/targetGrid.webp");
+
+    // Load that image aswell because wtf not.
+    $("#targetImg").attr("src", "/img/target.png");
+
+    // Open Menu
+    $(document).on("click", "#fabCheckbox4", function() {
+
+        const footerButtons = document.getElementById("footerButtons");
+        if (!footerButtons.classList.contains("expanded")) {
+            footerButtons.classList.add("expanded");
+            $(".fab4").html("<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 640 640\"><!--!Font Awesome Free v7.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d=\"M183.1 137.4C170.6 124.9 150.3 124.9 137.8 137.4C125.3 149.9 125.3 170.2 137.8 182.7L275.2 320L137.9 457.4C125.4 469.9 125.4 490.2 137.9 502.7C150.4 515.2 170.7 515.2 183.2 502.7L320.5 365.3L457.9 502.6C470.4 515.1 490.7 515.1 503.2 502.6C515.7 490.1 515.7 469.8 503.2 457.3L365.8 320L503.1 182.6C515.6 170.1 515.6 149.8 503.1 137.3C490.6 124.8 470.3 124.8 457.8 137.3L320.5 274.7L183.1 137.4z\"/></svg>");
+        } else {
+            App.closeMenu();
+        }
+
+        // Close the menu
+        document.addEventListener("click", e => {
+            if (footerButtons.classList.contains("expanded") && !footerButtons.contains(e.target)) App.closeMenu();
+        });
+    });
+
     $(document).on("click", "#fabCheckbox", function() {
         updatePreview();
         $("#helpDialog")[0].showModal();
+        App.closeMenu();
     });
 
 }
@@ -250,10 +267,26 @@ export function updatePreview(){
         $("#gridPreview").hide();
     }
 
+    if (App.userSettings.targetGrid){
+        $("#targetGridPreview").show();
+    } else {
+        $("#targetGridPreview").hide();
+    }
+
     if (App.userSettings.keypadUnderCursor){
         tooltip_coordPreview.enable();
     } else {
         tooltip_coordPreview.disable();
+    }
+
+
+    if (App.userSettings.targetAnimation) {
+        $("#markerPreview").attr("src", "/img/markers/targets/marker_target_enabled.webp");
+        $("#markerPreview").css("margin-top", "0px");
+    } 
+    else {
+        $("#markerPreview").attr("src", "/img/markers/targets/marker_target_mini.webp");
+        $("#markerPreview").css("margin-top", "20px");
     }
 }
 
@@ -296,13 +329,17 @@ $("#showMainAssetsSettings").on("change", function() {
     App.userSettings.showMainAssets = val;
     localStorage.setItem("settings-show-mainassets", +val);
 
-    App.minimap.layer.mainZones.assets.forEach(asset => {
-        if (!val) {
-            asset.setOpacity(0);
-        } else {
-            asset.setOpacity(1);
-        }
-    });
+    if (App.minimap.getZoom() > App.minimap.detailedZoomThreshold) {
+        App.minimap.layer.mainZones.assets.forEach(asset => {
+            if (!val) {
+                asset.setOpacity(0);
+                App.minimap.layer.hideSpawns();
+            } else {
+                asset.setOpacity(1);
+                App.minimap.layer.revealSpawns();
+            }
+        });
+    }
 });
 
 $("#disableSoundsSettings").on("change", function() {
@@ -356,17 +393,6 @@ $("#enableFactionsSettings").on("change", function() {
         $("#hideLowRespawnSettings").prop("disabled", true);
         $("#disableSoundsSettings").prop("disabled", true);
         $("#defaultFactionsSettings").prop("disabled", true);
-        
-        App.minimap.layer.mains[0].flag._icon.classList.forEach(className => {
-            if (className.startsWith("country_")) {
-                App.minimap.layer.mains[0].flag._icon.classList.remove(className);
-            }
-        });
-        App.minimap.layer.mains[1].flag._icon.classList.forEach(className => {
-            if (className.startsWith("country_")) {
-                App.minimap.layer.mains[1].flag._icon.classList.remove(className);
-            }
-        });
     } else {
         $("#hideLowRespawnSettings").prop("disabled", false);
         $("#disableSoundsSettings").prop("disabled", false);
@@ -379,13 +405,6 @@ $("#enableFactionsSettings").on("change", function() {
     }
 });
 
-
-$("#contextMenuSettings").on("change", function() {
-    var val = $("#contextMenuSettings").is(":checked");
-    App.userSettings.contextMenu = val;
-    localStorage.setItem("settings-context-menu", +val);
-});
-
 $("#circlesFlagsSettings").on("change", function() {
     var val = $("#circlesFlagsSettings").is(":checked");
     App.userSettings.circlesFlags = val;
@@ -393,7 +412,7 @@ $("#circlesFlagsSettings").on("change", function() {
 
     if (App.minimap.layer){
         App.minimap.layer.flags.forEach(flag => {
-            flag.updateIcon();
+            flag.update();
         });
         if (!App.minimap.layer.isVisible) App.minimap.layer.toggleVisibility();
     }
@@ -412,22 +431,13 @@ $("#showFlagsDistanceSettings").on("change", function() {
     if (App.minimap.layer){
         if (val){
             App.minimap.layer.polyline.showMeasurements({
-                measurementOptions: {
-                    showTotalDistance: false,
-                    minPixelDistance: 50,
-                }
+                minPixelDistance: 50,
+                scaling: App.minimap.mapToGameScale,
             });
         } else {
             App.minimap.layer.polyline.hideMeasurements();
         }
     }
-});
-
-
-$("#autoLaneSetting").on("change", function() {
-    var val = $("#autoLaneSetting").is(":checked");
-    App.userSettings.autoLane = val;
-    localStorage.setItem("settings-auto-lane", +val);
 });
 
 $("#capZoneOnHoverSettings").on("change", function() {
@@ -450,11 +460,11 @@ $("#keypadUnderCursorSetting").on("change", function() {
     var val = $("#keypadUnderCursorSetting").is(":checked");
 
     if (val){
-        App.minimap.on("mousemove", App.minimap._handleMouseMove);
+        App.minimap.on("pointermove", App.minimap._handleMouseMove);
         //App.minimap.on("zoomend", App.minimap._handleZoom);
     }
     else {
-        App.minimap.off("mousemove", App.minimap._handleMouseMove);
+        App.minimap.off("pointermove", App.minimap._handleMouseMove);
         //App.minimap.off("zoomend", App.minimap._handleZoom);
         App.minimap.mouseLocationPopup.close();
     }
@@ -497,6 +507,14 @@ $("#damageRadiusSetting").on("change", function() {
     App.userSettings.damageRadius = val;
     localStorage.setItem("settings-damage-radius", +val);
     App.minimap.updateTargetsSpreads(); // Update every targets to add/remove spread radius
+    updatePreview();
+});
+
+$("#targetGridSetting").on("change", function() {
+    var val = $("#targetGridSetting").is(":checked");
+    App.userSettings.targetGrid = val;
+    localStorage.setItem("settings-target-grid", +val);
+    App.minimap.updateTargets();
     updatePreview();
 });
 
@@ -582,11 +600,11 @@ $("#targetAnimationSettings").on("change", function() {
     localStorage.setItem("settings-target-animation", +val);
 
     if (App.userSettings.targetAnimation) {
-        $("#markerPreview").attr("src", targetIcon);
+        $("#markerPreview").attr("src", "/img/markers/targets/marker_target_enabled.webp");
         $("#markerPreview").css("margin-top", "0px");
     } 
     else {
-        $("#markerPreview").attr("src", miniTargetIcon);
+        $("#markerPreview").attr("src", "/img/markers/targets/marker_target_mini.webp");
         $("#markerPreview").css("margin-top", "20px");
     }
 

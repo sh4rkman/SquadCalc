@@ -45,5 +45,12 @@
     "team1": "Команда 1",
     "team2": "Команда 2",
     "pinToMap": "Закріпити на мапі",
-    "pinned": "Закріплено"
+    "pinned": "Закріплено",
+    "randomSpawn": "Випадкова",
+    "dedicactedSpawn": "Фіксована",
+    "amphibious": "Амфібія",
+    "atgm": "ПТКР",
+    "value": "Значення",
+    "ticket": "Квиток",
+    "tickets": "Квитки"
 }

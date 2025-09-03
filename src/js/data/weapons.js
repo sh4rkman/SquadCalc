@@ -1,20 +1,3 @@
-import classicLogo from "../../img/icons/mortar.png";
-import hellcannonLogo from "../../img/icons/weapons/hellcannon_white.png";
-import ub322Logo from "../../img/icons/weapons/ub32_deployable.png";
-import technicalLogo from "../../img/icons/weapons/technical_mortar_white.png";
-import mlrsLogo from "../../img/icons/weapons/mlrs_white.png";
-import ub32Logo from "../../img/icons/weapons/ub32_white.png";
-import m113Logo from "../../img/icons/weapons/m113a3_white.png";
-import mk19rwsLogo from "../../img/icons/weapons/mk19_rws_white.png";
-
-/* eslint no-unused-vars: "off" */
-import target from "../../img/icons/target.png"; 
-import markerIconPng from "leaflet/dist/images/marker-icon.png";
-import markerShadow from "leaflet/dist/images/marker-shadow.png";
-import markerIconx2 from "leaflet/dist/images/marker-icon-2x.png";
-
-import { mortarIcon, hellIcon, ub32Icon, tMortarIcon, tub32Icon, gradIcon, m121Icon, mk19Icon} from "../squadIcon.js";
-
 export const WEAPONSTYPE = ["deployables", "vehicles"];
 
 export var WEAPONS = [
@@ -26,9 +9,6 @@ export var WEAPONS = [
         gravityScale: 1,
         minElevation: [45, 88.875],
         unit: "mil",
-        logo: classicLogo,
-        marker: mortarIcon,
-        logoCannonPos: "130%",
         type: "deployables",
         angleType: "high",
         elevationPrecision: 0,
@@ -48,9 +28,6 @@ export var WEAPONS = [
         gravityScale: 2,
         minElevation: [-25, 35],
         unit: "deg",
-        logo: ub322Logo,
-        marker: ub32Icon,
-        logoCannonPos: "110%",
         type: "deployables",
         angleType: "low",
         elevationPrecision: 1,
@@ -70,9 +47,6 @@ export var WEAPONS = [
         gravityScale: 1,
         minElevation: [10, 85],
         unit: "deg",
-        logo: hellcannonLogo,
-        marker: hellIcon,
-        logoCannonPos: "130%",
         type: "deployables",
         angleType: "high",
         elevationPrecision: 1,
@@ -92,9 +66,6 @@ export var WEAPONS = [
         gravityScale: 1,
         minElevation: [-45, 135],
         unit: "deg",
-        logo: technicalLogo,
-        marker: tMortarIcon,
-        logoCannonPos: "50%",
         type: "vehicles",
         angleType: "high",
         elevationPrecision: 1,
@@ -114,9 +85,6 @@ export var WEAPONS = [
         gravityScale: 2,
         minElevation: [-45, 135],
         unit: "deg",
-        logo: ub32Logo,
-        marker: tub32Icon,
-        logoCannonPos: "55%",
         type: "vehicles",
         angleType: "low",
         elevationPrecision: 1,
@@ -136,9 +104,6 @@ export var WEAPONS = [
         gravityScale: 2,
         minElevation: [-45, 135],
         unit: "deg",
-        logo: mlrsLogo,
-        marker: gradIcon,
-        logoCannonPos: "60%",
         type: "vehicles",
         angleType: "low",
         elevationPrecision: 1,
@@ -158,9 +123,6 @@ export var WEAPONS = [
         gravityScale: 1,
         minElevation: [45, 85.3],
         unit: "deg",
-        logo: m113Logo,
-        marker: m121Icon,
-        logoCannonPos: "45%",
         type: "vehicles",
         angleType: "high",
         elevationPrecision: 1,
@@ -195,10 +157,7 @@ export var WEAPONS = [
         gravityScale: 1,
         minElevation: [-45, 85.3],
         unit: "deg",
-        logo: mk19rwsLogo,
-        marker: mk19Icon,
-        logoCannonPos: "60%",
-        type: "experimental",
+        type: "vehicles",
         angleType: "low",
         elevationPrecision: 1,
         minDistance: 10,
@@ -208,6 +167,114 @@ export var WEAPONS = [
         explosionDistanceFromImpact: 0.08,
         damageFallOff: 1,
         heightOffset: 2.5,
-    }
+    },
+    /*
+     *****************
+     * MODDED WEAPONS
+     *****************
+     */
+    /*
+     * Steel Division
+     */
+    {
+        name: "M109",
+        velocity: 225,
+        deceleration: 0,
+        decelerationTime: 0,
+        gravityScale: 2,
+        minElevation: [-45, 135],
+        unit: "deg",
+        type: "modded",
+        angleType: "low",
+        elevationPrecision: 1,
+        minDistance: 0,
+        moa: 1.5,
+        explosionDamage: 2000,
+        explosionRadius: [40, 75],
+        explosionDistanceFromImpact: 1,
+        damageFallOff: 3.5,
+        heightOffset: 3
+    },
+    {
+        name: "T62.DUMP.TRUCK",
+        velocity: 210,
+        gravityScale: 2,
+        deceleration: 0,
+        decelerationTime: 0,
+        minElevation: [-45, 135],
+        unit: "deg",
+        type: "modded",
+        angleType: "low",
+        elevationPrecision: 1,
+        minDistance: 0,
+        moa: 100,
+        explosionDamage: 400,
+        explosionRadius: [20, 40],
+        explosionDistanceFromImpact: 1,
+        damageFallOff: 1,
+        heightOffset: 3
+    },
+    {
+        name: "HIMARS",
+        velocity: 250,
+        gravityScale: 2,
+        deceleration: 0,
+        decelerationTime: 0,
+        minElevation: [-3, 84.7],
+        unit: "deg",
+        logoCannonPos: "60%",
+        type: "modded",
+        angleType: "low",
+        elevationPrecision: 1,
+        minDistance: 0,
+        moa: 15,
+        explosionDamage: 300,
+        explosionRadius: [1.5, 50],
+        explosionDistanceFromImpact: 3,
+        damageFallOff: 1,
+        heightOffset: 3
+    },
+    {
+        name: "TOS-1A",
+        velocity: 100,
+        deceleration: 0,
+        decelerationTime: 0,
+        gravityScale: 1,
+        minElevation: [0, 80],
+        unit: "deg",
+        logoCannonPos: "60%",
+        type: "modded",
+        angleType: "low",
+        elevationPrecision: 1,
+        minDistance: 0,
+        moa: 500,
+        explosionDamage: 150,
+        explosionRadius: [15, 25],
+        explosionDistanceFromImpact: 0.2,
+        damageFallOff: 1,
+        heightOffset: 3
+    },
+    /*
+     * Squad AdminTools
+     */
+    {
+        name: "MTLB_FAB500",
+        velocity: 95,
+        deceleration: 0,
+        decelerationTime : 0,
+        gravityScale: 1,
+        minElevation: [-45, 85.3],
+        unit: "deg",
+        type: "modded",
+        angleType: "low",
+        elevationPrecision: 1,
+        minDistance: 75,
+        moa: 150,
+        explosionDamage: 4500,
+        explosionRadius: [0.1, 50],
+        explosionDistanceFromImpact: 2,
+        damageFallOff: 4,
+        heightOffset: 3,
+    },
 ];
 

@@ -33,22 +33,10 @@
                 }
 
                 if ("serviceWorker" in navigator) {
-                    // Unregister the service worker
-                    navigator.serviceWorker.getRegistrations().then((registrations) => {
-                        registrations.forEach((registration) => {
-                            registration.unregister();
-                        });
-                    }).catch((error) => {
-                        console.error(`Error during service worker unregistration: ${error}`);
-                    });
-
-                    // Clear any related caches
-                    if (window.caches) {
-                        caches.keys().then((cacheNames) => {
-                            cacheNames.forEach((cacheName) => {
-                                caches.delete(cacheName);
-                            });
-                        });
+                    try {
+                        navigator.serviceWorker.register("sw.js");
+                    } catch (error) {
+                        console.error(`Registration failed with ${error}`);
                     }
                 }
                 
@@ -71,9 +59,6 @@
             <%= require('html-loader!./components/dialogs/target.html').default %>
             <%= require('html-loader!./components/dialogs/settings.html').default %>
             <%= require('html-loader!./components/dialogs/factions.html').default %>
-
-            <!-- CONTEXTMENU -->
-            <%= require('html-loader!./components/contextMenu/contextMenu.html').default %>
 
             <!-- FOOTER / TOAST / HEIGHTMAP -->
             <%= require('html-loader!./components/footer/footer.html').default %>

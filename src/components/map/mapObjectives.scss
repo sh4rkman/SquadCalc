@@ -1,0 +1,140 @@
+@use "../shared/variables";
+
+// Global variables
+$flag-opacity: 0.8;
+$flag-circle-opacity: 0.2;
+
+// Mixins for repeated styles
+@mixin flag-color($bg-color, $outline-color) {
+    background-color: rgba($bg-color, $flag-opacity); 
+    &.circleFlag {
+        outline: solid $outline-color 3px;
+        background-color: rgba($bg-color, $flag-circle-opacity);
+    }
+}
+
+.objText {
+    @include variables.light-text-outline;
+    font-size: var(--font-size-objtext);
+    font-family: roboto, Verdana, Geneva, Tahoma, sans-serif;
+    letter-spacing: 0.02em;
+    align-content: center;
+    display: grid;
+    &.main {
+        text-transform: uppercase;
+    }
+}
+
+#map_ui #map .leaflet-pane .leaflet-marker-pane .flag {
+    @include variables.light-text-outline;
+    background-color: rgba(255, 255, 255, 0.4);
+    font-size: 1.3em;
+    border: solid rgba(0, 0, 0, 0.5) 1px;
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.75);
+    transition: opacity 0.25s ease-in-out;
+    font-family: variables.$mainFont, Verdana, Geneva, Tahoma, sans-serif;
+    border-radius: 2px;
+    cursor: inherit;
+    align-content: center;
+    display: grid;
+    &.circleFlag {
+        border-radius: 15px;
+        margin-left: -15px!important;
+        margin-top: -15px!important;
+        width: 30px!important;
+        height: 30px!important;
+        align-content: center;
+        display: grid;
+        letter-spacing: 0;
+        outline: solid 3px rgb(104, 104, 104);
+        &.selected {
+            background-color: rgba(0, 128, 0, 1);
+            outline-color: rgb(0, 90, 0);
+        }
+    }
+    &:active {
+        cursor: inherit;
+    }
+    &.flag2 { @include flag-color(rgb(0, 255, 0), rgb(68, 255, 68)); }
+    &.flag3 { @include flag-color(rgb(0, 0, 255), rgb(0, 0, 255)); }
+    &.flag4 { @include flag-color(rgb(255, 255, 0), rgb(255, 255, 0)); }
+    &.flag5 { @include flag-color(rgb(43, 255, 255), rgb(43, 255, 255)); }
+    &.flag6 { @include flag-color(rgb(200, 48, 102), rgb(200, 48, 102)); }
+    &.flag7 { @include flag-color(rgb(255, 105, 0), rgb(255, 105, 0)); }
+    &.selected {
+        font-size: 1.3em;
+        background-color: rgba(0, 128, 0, 0.9);
+        overflow: hidden;
+        display: block;
+        &::before {
+            content: "✔";
+            color: rgb(255, 255, 255);
+            position: relative;
+            font-size: 2em;
+            top: 0.2em;
+            right: 0.2em;
+            line-height: 0%;
+        }
+        &.circleFlag {
+            display: grid;
+            &::before {
+                content: "";
+            }
+            &.main {
+                background-color: rgba(0, 128, 0, 1);
+            }
+            &:hover {
+                box-shadow: 0 2px 12px rgba(0, 0, 0, 1);
+            }
+        }
+    }
+    &.main {
+        overflow: hidden;
+        background-size: contain;
+        background-position: center center;
+        background-repeat: no-repeat;
+        border: none;
+        outline: 2px rgb(58, 58, 58) solid;
+        &.circleFlag {
+            background-size: cover; 
+        }
+    }
+    &.main.selectable {
+            outline: 3px rgb(143, 0, 0) solid!important;
+        &:focus {
+            outline: 3px rgb(143, 0, 0) solid!important;
+        }
+    }
+    &.main.unselectable {
+        background-color: rgba(255, 255, 255, 0.4);
+        outline: solid 3px rgb(104, 104, 104)!important;
+        &:focus {
+            outline: solid 3px rgb(104, 104, 104)!important;
+        }
+    }
+    &.main.selected {
+        background-color: rgba(0, 128, 0, 0.9);
+        outline: 3px rgb(0, 90, 0) solid !important; 
+        &::before {
+            content: "";
+        }
+    }
+    &.selected, &.next, &.main {
+        cursor: pointer;
+        pointer-events: all;
+        box-shadow: 0 8px 12px rgba(0, 0, 0, 0.7);
+        &:hover {
+            outline-width: 3px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 1);
+        }
+    }
+    &.next {
+        background-color: rgba(197, 0, 0);
+        &.circleFlag {
+            background-color: rgba(197, 0, 0);
+            outline-color: rgb(143, 0, 0);
+            outline-width: 3px;
+            letter-spacing: 0;
+        }
+    }
+}

@@ -47,5 +47,12 @@
     "team1": "Team 1",
     "team2": "Team 2",
     "pinToMap": "Pin to map",
-    "pinned": "Pinned"
+    "pinned": "Pinned",
+    "randomSpawn": "Random",
+    "dedicactedSpawn": "Dedicated",
+    "amphibious": "Amphibious",
+    "atgm": "ATGM",
+    "value": "Value",
+    "ticket": "Ticket",
+    "tickets": "Tickets"
 }

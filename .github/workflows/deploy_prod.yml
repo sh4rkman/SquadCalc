@@ -11,19 +11,24 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Pull code & Build
-      uses: appleboy/ssh-action@v1.0.3
+      uses: appleboy/ssh-action@v1.2.2
       with:
         host: ${{ secrets.HOST }}
         port: ${{ secrets.PORT }}
         username: ${{ secrets.USERNAME }}
         password: ${{ secrets.PASSWORD }}
         script: |
-         eval `ssh-agent -s`
-         ssh-add ~/.ssh/${{ secrets.SSH_PUBLIC_KEY_NAME }}
-         cd ${{ secrets.DIST }}
-         git pull origin master
-         npm ci
-         npm run build
+            eval `ssh-agent -s`
+            ssh-add ~/.ssh/${{ secrets.SSH_PUBLIC_KEY_NAME }}
+            # Enable maintenance mode
+            touch ${{ secrets.DIST }}/maintenance.enable
+            # Deploy
+            cd ${{ secrets.DIST }}
+            git pull origin master
+            npm ci
+            npm run build
+            # Disable maintenance mode
+            rm ${{ secrets.DIST }}/maintenance.enable
     - name: Discord notification
       env:
         DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}

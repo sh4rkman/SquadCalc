@@ -5,6 +5,35 @@
 ***************************************/
 
 .tippy-box {
+    &[data-theme~='mapFactionMenu'] {
+        background: rgba(30, 30, 30, 0.7);
+        backdrop-filter: blur(6px);
+        border-radius: 8px;
+        padding: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+        &[data-placement^='top']>.tippy-arrow::before {
+            display: none;
+        }
+        &[data-placement^='bottom']>.tippy-arrow::before {
+            display: none;
+        }
+    }
+    &[data-theme~='spawnCards'] {
+        background: rgba(30, 30, 30, 0.45);
+        backdrop-filter: blur(6px);
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+        .tippy-content {
+            padding: 0;
+
+        }
+        &[data-placement^='top']>.tippy-arrow::before {
+            display: none;
+        }
+        &[data-placement^='bottom']>.tippy-arrow::before {
+            display: none;
+        }
+    }
     &[data-theme~='new'] {
         background-color: variables.$newColor;
         color: variables.$mainTxtColor;
@@ -72,31 +101,6 @@
             border-bottom-color: transparent;
         }
     }
-    &[data-theme~='infTooltips'] {
-        font-size: 1em;
-        text-align: center;
-        padding: 10px;
-    }
-    &[data-theme~='factionCopy'] {
-        font-size: 1em;
-        text-align: center;
-        padding: 5px;
-        background-color: firebrick;
-        letter-spacing: 1px;
-        max-width: 10px;
-        &[data-placement^='top']>.tippy-arrow::before {
-            border-top-color: variables.$mainColor
-        }
-        &[data-placement^='bottom']>.tippy-arrow::before {
-            border-bottom-color: variables.$mainColor
-        }
-        &[data-placement^='left']>.tippy-arrow::before {
-            border-left-color: variables.$mainColor
-        }
-        &[data-placement^='right']>.tippy-arrow::before {
-            border-right-color: variables.$mainColor
-        }
-    }
     &[data-theme~='settingsTooltips'] {
         margin-top: 2px;
         font-size: 0.9em;
@@ -108,11 +112,4 @@
 
 .tippy-arrow {
     transform: scale(1.5);
-}
-
-.perfWarning {
-    color: rgb(255, 5, 5);
-    letter-spacing: 0;
-    font-size: 1.1em;
-    text-transform: uppercase;
 }
