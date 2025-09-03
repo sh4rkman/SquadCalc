@@ -501,7 +501,7 @@ export default class SquadLayer {
      * @returns {Array} - [latitude, longitude] in meters
      */ 
     convertToLatLng(x, y) {
-        return [(y - this.offset_y) / 100 * -this.map.gameToMapScale, (x - this.offset_x) / 100 * this.map.gameToMapScale];
+        return [(y - this.offset_y) / 100 * -this.map.gameToMapScale2, (x - this.offset_x) / 100 * this.map.gameToMapScale2];
     }
 
 
@@ -511,7 +511,7 @@ export default class SquadLayer {
      * @returns {number} - coordinate in meters, scaled to the map
      */
     scaleToMap(coord) {
-        return coord / 100 * this.map.gameToMapScale;
+        return coord / 100 * this.map.gameToMapScale2;
     }
 
 

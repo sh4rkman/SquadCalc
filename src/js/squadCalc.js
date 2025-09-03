@@ -554,7 +554,7 @@ export default class SquadCalc {
         });
 
         $("#fabCheckbox3").on("change", () => {
-            const newUrl = window.location.href.replace("squadcalc", "squadstrat").replace("3000", "4000");
+            const newUrl = window.location.href.replace("squadcalc", "squadtactics").replace("3000", "4000");
             window.open(newUrl, "_blank", "noopener");
         });
 

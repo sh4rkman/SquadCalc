@@ -99,7 +99,7 @@ export default LayerGroup.extend({
             return;
         }
         const currentZoom = Math.round(this.map.getZoom());
-        const mapZoomPadding = this.map.activeMap.size/4000;
+        const mapZoomPadding = this.map.activeMap.size /4000;
 
         if (currentZoom >= 3.7 + mapZoomPadding) {
             this.setLinesWeight(this.kpLines, 3);

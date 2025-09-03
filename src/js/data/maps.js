@@ -12,6 +12,7 @@ export const MAPS = [
             minimap: {
                 corner0: [-2000, -2000],
                 corner1: [2000, 2000],
+                size: 3900,
             },
             heightmap: {
                 origin: [-2040, -2040],
@@ -425,8 +426,10 @@ export const MAPS = [
         SDK_data: {
             minimap: {
                 // 6869x6869 is not from SDK, probably due to 2.02deg rotation
+                // This corners are perfect for settings map assets, but the ingame grid is more 6900*6900
                 corner0: [-3611, -3293],
-                corner1: [3258, 3576]
+                corner1: [3258, 3576],
+                size: 6900,
             },
             heightmap: {
                 origin: [-4811, -3947],
@@ -572,8 +575,10 @@ if (typeof process !== "undefined" && process.argv?.[2] === "mapinfo") {
 // Compute size in meters and z-scaling from SDK data for each map
 export function initMapsProperties() {
     MAPS.forEach((map) => {
+        map.size = map.SDK_data.minimap.size || bounds(map.SDK_data.minimap.corner0, map.SDK_data.minimap.corner1)[0];
         map.scaling = scale(map.SDK_data.heightmap.BWlevels[0], map.SDK_data.heightmap.BWlevels[1], map.SDK_data.heightmap.scale[2]);
-        map.size = bounds(map.SDK_data.minimap.corner0, map.SDK_data.minimap.corner1)[0];
+        map.size2 = bounds(map.SDK_data.minimap.corner0, map.SDK_data.minimap.corner1)[0];
+
     });
 }
 

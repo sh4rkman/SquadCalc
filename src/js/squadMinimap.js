@@ -113,6 +113,7 @@ export const squadMinimap = Map.extend({
     draw: function(){
 
         this.gameToMapScale = this.pixelSize / this.activeMap.size;
+        this.gameToMapScale2 = this.pixelSize / this.activeMap.size2;
         this.mapToGameScale = this.activeMap.size / this.pixelSize;
         this.detailedZoomThreshold = ( 3 + (this.activeMap.size / 7000) ) * 0.8;
        
