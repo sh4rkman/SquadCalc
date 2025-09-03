@@ -235,6 +235,12 @@
         gap: 0.5em;
         width: 100%;
         justify-content: center;
+        &.warning {
+            color: #f55;
+            svg {
+                fill: #f55;
+            }
+        }
     }
     .ticket {
         display: inline-flex;

@@ -548,18 +548,28 @@ export default class SquadFactions {
                 </svg>
             </span>`;
 
-        const textHTML = `
-            <span class="respawn">
-                <span class="respawnText"><span data-i18n="common:respawn">${i18next.t("common:respawn")}</span>
-                : </span>${vehicle.respawnTime}
-                <span data-i18n="common:min">${i18next.t("common:min")}</span>
-            </span>`;
+        let textHTML;
+
+        if (vehicle.singleUse) {
+            textHTML = `
+                <span class="respawn">-</span>`;
+        } else {
+            textHTML = `
+                <span class="respawn">
+                    <span class="respawnText">
+                        <span data-i18n="common:respawn">${i18next.t("common:respawn")}</span>:
+                    </span>
+                    ${vehicle.respawnTime}
+                    <span data-i18n="common:min">${i18next.t("common:min")}</span>
+                </span>`;
+        }
 
         return `
-            <span class="respawnHolder">
+            <span class="respawnHolder${vehicle.singleUse ? " warning" : ""}">
                 ${iconLeft ? iconHTML + textHTML : textHTML + iconHTML}
             </span>`;
     }
+
 
 
     /** 

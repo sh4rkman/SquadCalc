@@ -65,6 +65,16 @@
             width: 40px;
         }
     }
+    #factionsDialog #factionVehicles .vehicle-card .image .tags {
+        height: 3em!important;
+        .tag {
+            width: 3em!important;
+            .passenger {
+                font-size: 11px!important;
+                margin-left: 10px!important;;
+            }
+        }
+    }
     #factionsDialog {
         #factionVehicles {
             .card-content {

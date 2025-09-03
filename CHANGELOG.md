@@ -1,10 +1,13 @@
 
-# <img src="https://img.shields.io/badge/-major%20release-b22222?style=for-the-badge">  **39.0.0** *(2025-08-XX)*
+# <img src="https://img.shields.io/badge/-major%20release-b22222?style=for-the-badge">  **39.0.0** *(2025-09-03)*
 
 <img src="https://img.shields.io/badge/-new%20features-green">
 
-- **Spawning Vehicles !** ([#343](https://github.com/sh4rkman/SquadCalc/issues/343))  
-Vehicles now spawn on the main map after picking a faction, so you can anticipate where they will appear. All spawns possibilities are shown.  
+- **9.0 & UE5 Ready** 
+New AlBasrah and updated Factions Units Layers.
+
+- **Spawning Vehicles** ([#343](https://github.com/sh4rkman/SquadCalc/issues/343))  
+Vehicles now spawn on map's main after picking a faction, so you can anticipate where they will appear. All spawns possibilities are shown.  
 Hovering over an icon opens an info card about it.
 
 - **Faction & Unit Selection from the Map**  
@@ -21,20 +24,21 @@ You can now right-click any main flag to select the Faction/Unit of that team an
 
 - **Vehicle Illustration in Faction Selection**  
   Click any vehicle in the faction panel to see what it looks like in-game.
+  Added in-cards showing if a vehicle is amphibious or has ATGM, and its number of available seats.
 
 - **SquadTactics!** https://squadtactics.app  
 Features for creating markers, strategizing, and planning your future games have been removed from squadcalc.app and moved to their own dedicated (but very similar) app. If you need a companion app while playing, use squadcalc.app; if you want to plan your next match outside the game, use squadtactics.app.  
 
 
 - **And more**  
+  - Added ticket count to vehicles
   - Added complete faction names when hovering over a flag in faction selection.  
   - Added links in faction selection redirecting to each vehicle's `squad.fandom.com/wiki/` page in a new tab.  
   - "Auto pick single flag" is now activated by default: SquadCalc will automatically pick a flag if it's the only available option. The setting has been removed.  
   - Enabling distance on target markers also displays the distance in squadmortaroverlay (thanks TheMatheusDev! [#295](https://github.com/sh4rkman/SquadCalc/pull/345)).  
   - Logi Boats now appear next to other boats in the vehicle list.  
   - Factions are now sorted alphabetically
-  - Added ticket count to vehicles
-  - Added info-cards showing if a vehicle is amphibious or has ATGM
+  - Vehicles now show if they won't respawn instead of showing default respawn time.
   - Boats are removed from vehicle lists if they can't spawn in the current layer.  
   - Changed the maximum additional height a user can set for a weapon from 100 to 300m.  
   - Improved contrast of the target's compact icon.  
