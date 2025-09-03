@@ -1,6 +1,6 @@
 # <img src="https://img.shields.io/badge/-hotfix-cd6f68?style=for-the-badge">  **39.0.1** *(2025-09-03)*
 
-<img src="https://img.shields.io/badge/-bug%20fixes-b22"> Fixed Skorpo size/grid.  
+<img src="https://img.shields.io/badge/-bug%20fixes-b22"> Fixed Albasrah/Skorpo size and grid. (thanks Mooraragi)
 
 <img src="https://img.shields.io/badge/-bug%20fixes-b22"> Fixed squadtactics.app button URL
 
