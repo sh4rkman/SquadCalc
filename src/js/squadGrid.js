@@ -99,7 +99,7 @@ export default LayerGroup.extend({
             return;
         }
         const currentZoom = Math.round(this.map.getZoom());
-        const mapZoomPadding = this.map.activeMap.size/4000;
+        const mapZoomPadding = this.map.activeMap.size /4000;
 
         if (currentZoom >= 3.7 + mapZoomPadding) {
             this.setLinesWeight(this.kpLines, 3);
@@ -175,10 +175,15 @@ export default LayerGroup.extend({
         // clear old grid lines
         this.clearLines();
 
+        let scaling = this.map.gameToMapScale
+
+        // Ugly fix for Skorpo being tilted
+        if (this.map.activeMap.name === "Skorpo") scaling = 256 / this.map.activeMap.correctedSize;
+
         // Define and scale line's intervals
-        const kp = (300 / 3 ** 0) * this.map.gameToMapScale;
-        const s1 = (300 / 3 ** 1) * this.map.gameToMapScale;
-        const s2 = (300 / 3 ** 2) * this.map.gameToMapScale;
+        const kp = (300 / 3 ** 0) * scaling;
+        const s1 = (300 / 3 ** 1) * scaling;
+        const s2 = (300 / 3 ** 2) * scaling;
 
         // for complete grid drawing we take lowest interval, as we want to draw all lines
         // whether or not they will be seen is dependant on another function setting

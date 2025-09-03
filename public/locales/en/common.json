@@ -50,9 +50,10 @@
     "pinned": "Pinned",
     "randomSpawn": "Random",
     "dedicactedSpawn": "Dedicated",
-    "amphibious": "Amphibious",
+    "amphibious": "Water-capable",
     "atgm": "ATGM",
     "value": "Value",
     "ticket": "Ticket",
-    "tickets": "Tickets"
+    "tickets": "Tickets",
+    "passengers": "Available Seats"
 }

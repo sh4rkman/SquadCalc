@@ -425,6 +425,7 @@ export const MAPS = [
         SDK_data: {
             minimap: {
                 // 6869x6869 is not from SDK, probably due to 2.02deg rotation
+                // This corners are perfect for settings map assets, but the ingame grid is more 6900*6900
                 corner0: [-3611, -3293],
                 corner1: [3258, 3576]
             },
@@ -574,6 +575,7 @@ export function initMapsProperties() {
     MAPS.forEach((map) => {
         map.scaling = scale(map.SDK_data.heightmap.BWlevels[0], map.SDK_data.heightmap.BWlevels[1], map.SDK_data.heightmap.scale[2]);
         map.size = bounds(map.SDK_data.minimap.corner0, map.SDK_data.minimap.corner1)[0];
+        if (map.name === "Skorpo") map.correctedSize = 6900;
     });
 }
 
