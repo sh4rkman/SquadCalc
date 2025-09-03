@@ -1,9 +1,16 @@
+# <img src="https://img.shields.io/badge/-hotfix-cd6f68?style=for-the-badge">  **39.0.2** *(2025-09-04)*
+
+<img src="https://img.shields.io/badge/-bug%20fixes-b22"> Temporary drawing fake grid to be 1to1 with ingame broken grids
+
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
+
 # <img src="https://img.shields.io/badge/-hotfix-cd6f68?style=for-the-badge">  **39.0.1** *(2025-09-03)*
 
 <img src="https://img.shields.io/badge/-bug%20fixes-b22"> Fixed Albasrah/Skorpo size and grid. (thanks Mooraragi)
 
 <img src="https://img.shields.io/badge/-bug%20fixes-b22"> Fixed squadtactics.app button URL
-
 
 
 

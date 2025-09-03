@@ -176,9 +176,9 @@ export default LayerGroup.extend({
         this.clearLines();
 
         // Define and scale line's intervals
-        const kp = (300 / 3 ** 0) * this.map.gameToMapScale;
-        const s1 = (300 / 3 ** 1) * this.map.gameToMapScale;
-        const s2 = (300 / 3 ** 2) * this.map.gameToMapScale;
+        const kp = (300 / 3 ** 0) * this.map.fakeSize;
+        const s1 = (300 / 3 ** 1) * this.map.fakeSize;
+        const s2 = (300 / 3 ** 2) * this.map.fakeSize;
 
         // for complete grid drawing we take lowest interval, as we want to draw all lines
         // whether or not they will be seen is dependant on another function setting
