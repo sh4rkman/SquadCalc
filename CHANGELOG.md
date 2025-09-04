@@ -1,6 +1,6 @@
-# <img src="https://img.shields.io/badge/-hotfix-cd6f68?style=for-the-badge">  **39.0.2** *(2025-09-04)*
+# <img src="https://img.shields.io/badge/-hotfix-cd6f68?style=for-the-badge">  **39.0.3** *(2025-09-04)*
 
-<img src="https://img.shields.io/badge/-bug%20fixes-b22"> Temporary drawing fake grid to be 1to1 with ingame broken grids
+<img src="https://img.shields.io/badge/-bug%20fixes-b22"> creating weapon & target markers on mobile should now be working
 
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
