@@ -1,7 +1,14 @@
+# <img src="https://img.shields.io/badge/-hotfix-cd6f68?style=for-the-badge">  **39.0.4** *(2025-09-04)*
+
+<img src="https://img.shields.io/badge/-bug%20fixes-b22"> SquadMortarOverlay images now load properly
+
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
+
 # <img src="https://img.shields.io/badge/-hotfix-cd6f68?style=for-the-badge">  **39.0.3** *(2025-09-04)*
 
 <img src="https://img.shields.io/badge/-bug%20fixes-b22"> creating weapon & target markers on mobile should now be working
-
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
 
@@ -13,8 +20,8 @@
 <img src="https://img.shields.io/badge/-bug%20fixes-b22"> Fixed squadtactics.app button URL
 
 
-
 </br></br><!-- CHANGELOG SPLIT MARKER -->
+
 
 # <img src="https://img.shields.io/badge/-major%20release-b22222?style=for-the-badge">  **39.0.0** *(2025-09-03)*
 

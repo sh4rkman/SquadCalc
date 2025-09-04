@@ -79,7 +79,7 @@ async function setupWebSockets() {
             }
 
             if (event.data === "MapData") {
-                let imageUrl = "maps" + App.minimap.activeMap.mapURL + "basemap.webp";
+                let imageUrl = `${process.env.API_URL}/img/maps${App.minimap.activeMap.mapURL}basemap.webp`;
                 const response = await fetch(imageUrl);
                 const imageBlob = await response.blob();
                 const reader = new FileReader();
