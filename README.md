@@ -24,10 +24,6 @@
 
 
 </br>
-
-
-
-
 </br>
  
 # <b>Screenshots</b>
@@ -49,11 +45,10 @@
 </details>
 
 
-</br></br>
+</br>
 
 # <b>Features</b>
 
-</br>
 
 ## Mortar Calculator
 

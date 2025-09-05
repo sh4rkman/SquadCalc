@@ -226,7 +226,7 @@ export default class SquadFactions {
                 new Audio(`/sounds/${LANG}/${vehIcon}.mp3`).play();  
             }
             
-        }
+        };
     
         updateTimer();
         const timerId = setInterval(updateTimer, 1000);
@@ -858,35 +858,35 @@ export default class SquadFactions {
 
     loadCommanderAssets(DIV, selectedUnit) {
 
-            // Load Commanders Assets
-            $(DIV).empty();
+        // Load Commanders Assets
+        $(DIV).empty();
 
-            // Clear existing tooltips
-            tippy(`${DIV} .commander-asset`).forEach(instance => {
-                instance.destroy();
-            });
+        // Clear existing tooltips
+        tippy(`${DIV} .commander-asset`).forEach(instance => {
+            instance.destroy();
+        });
 
-            Object.values(selectedUnit.commanderAssets).forEach(asset => {
-                $(DIV).append(`
+        Object.values(selectedUnit.commanderAssets).forEach(asset => {
+            $(DIV).append(`
                     <img src="${process.env.API_URL}/img/icons/shared/commander/${asset.icon}.png"
                      class="commander-asset" 
                      data-tippy-name="${asset.displayName}"
                      data-tippy-delay="${asset.delay}" />
                 `);
-            });
+        });
 
-            // Initialize tooltips for all images in one go
-            tippy(`${DIV} .commander-asset`, {
-                appendTo: () => document.querySelector('#factionsDialog'),
-                delay: 200,
-                placement: "bottom",
-                allowHTML: true,
-                theme: "infTooltips",
-                onShow(instance) {
-                    const el = instance.reference;
-                    const name = el.getAttribute('data-tippy-name');
-                    const delay = el.getAttribute('data-tippy-delay');
-                    instance.setContent(`
+        // Initialize tooltips for all images in one go
+        tippy(`${DIV} .commander-asset`, {
+            appendTo: () => document.querySelector("#factionsDialog"),
+            delay: 200,
+            placement: "bottom",
+            allowHTML: true,
+            theme: "infTooltips",
+            onShow(instance) {
+                const el = instance.reference;
+                const name = el.getAttribute("data-tippy-name");
+                const delay = el.getAttribute("data-tippy-delay");
+                instance.setContent(`
                         <div class="tooltip-content">
                             <strong>${name}</strong><br>
                             <span class="delayText"><span data-i18n="common:delayed">${i18next.t("common:delayed")}</span>
@@ -894,8 +894,8 @@ export default class SquadFactions {
                             <span data-i18n="common:min">${i18next.t("common:min")}</span>
                         </div>
                     `);
-                },
-            });
+            },
+        });
 
     }
 
