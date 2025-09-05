@@ -1,3 +1,11 @@
+# <img src="https://img.shields.io/badge/-hotfix-grey?style=for-the-badge">  **39.1.1** *(2025-09-05)*
+
+<img src="https://img.shields.io/badge/-bug%20fixes-b22"> Commander Assets icons now loads properly
+
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
+
 </br></br><!-- CHANGELOG SPLIT MARKER -->
 
 # <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **39.1.0** *(2025-09-05)*
