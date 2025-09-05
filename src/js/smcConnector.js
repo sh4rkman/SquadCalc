@@ -13,7 +13,7 @@ let connectionInterval = null;
  * @returns {Promise<void>} A promise that resolves when initialization is complete
  */
 export async function initWebSocket() {
-    if (process.env.WEBSOCKET != "true") { return; }
+    if (process.env.WEBSOCKET != "true") return;
     if (isConnecting) return;
     startConnectionAttempts();
 }
@@ -27,9 +27,7 @@ function startConnectionAttempts() {
         cleanup();
         connectionInterval = setInterval(async () => {
             const isAvailable = await checkServerAvailability();
-            if (isAvailable) {
-                await setupWebSockets();
-            }
+            if (isAvailable) await setupWebSockets();
         }, 5000);
     }
 }
@@ -72,11 +70,8 @@ async function setupWebSockets() {
         });
 
         socketMap.addEventListener("message", async (event) => {
-            if (event.data === "Map") {
-                if (socketMap.readyState === WebSocket.OPEN) {
-                    socketMap.send(App.minimap.activeMap.name);
-                }
-            }
+
+            if (event.data === "Map" && socketMap.readyState === WebSocket.OPEN) socketMap.send(App.minimap.activeMap.name);
 
             if (event.data === "MapData") {
                 let imageUrl = `${process.env.API_URL}/img/maps${App.minimap.activeMap.mapURL}basemap.webp`;

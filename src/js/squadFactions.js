@@ -4,7 +4,7 @@ import { DivIcon } from "leaflet";
 import { animateCSS } from "./animations.js";
 import i18next from "i18next";
 import { squadVehicleMarker } from "./squadSpawner.js";
-
+import tippy from "tippy.js";
 
 export default class SquadFactions {
 
@@ -133,7 +133,7 @@ export default class SquadFactions {
                 `);
             }
         });
-            
+        
         // Prevent focus
         $(document).off("pointerdown", ".btn-pined, .pinnedVehicles");
         $(document).on("pointerdown", ".btn-pined, .pinnedVehicles", (event) => {event.preventDefault();});
@@ -688,6 +688,10 @@ export default class SquadFactions {
             // Handle click-to-copy
             $(".vehicle-card").off("click").on("click", (event) => { this.openCard(event); });
             $(".vehicle-type").off("click").on("click", (event) => { this.copyVehicleName(event); });
+
+            // Load Commanders Icons & Tooltips
+            this.loadCommanderAssets("#team1CommanderAsset", selectedUnit);
+
         });
 
         this.UNIT2_SELECTOR.off("change").on("change", (event) => {
@@ -737,6 +741,9 @@ export default class SquadFactions {
                 this.generateCardHTML(vehicle, $("#team2Vehicles"), false);
                 this.spawnVehicle(vehicle, spawners, this.squadLayer.activeFaction2Markers);
             });
+
+            // Load Commanders Icons & Tooltips
+            this.loadCommanderAssets("#team2CommanderAsset", selectedUnit);
 
             // Handle click-to-copy
             $(".vehicle-type").off("click").on("click", (event) => { this.copyVehicleName(event); });
@@ -805,6 +812,51 @@ export default class SquadFactions {
         });
 
     }
+
+
+    loadCommanderAssets(DIV, selectedUnit) {
+
+            // Load Commanders Assets
+            $(DIV).empty();
+
+            // Clear existing tooltips
+            tippy(`${DIV} .commander-asset`).forEach(instance => {
+                instance.destroy();
+            });
+
+            Object.values(selectedUnit.commanderAssets).forEach(asset => {
+                $(DIV).append(`
+                    <img src="${process.env.API_URL}/img/icons/shared/commander/${asset.icon}.png"
+                     class="commander-asset" 
+                     data-tippy-name="${asset.displayName}"
+                     data-tippy-delay="${asset.delay}" />
+                `);
+            });
+
+            // Initialize tooltips for all images in one go
+            tippy(`${DIV} .commander-asset`, {
+                appendTo: () => document.querySelector('#factionsDialog'),
+                delay: 200,
+                placement: "bottom",
+                allowHTML: true,
+                theme: "infTooltips",
+                onShow(instance) {
+                    const el = instance.reference;
+                    const name = el.getAttribute('data-tippy-name');
+                    const delay = el.getAttribute('data-tippy-delay');
+                    instance.setContent(`
+                        <div class="tooltip-content">
+                            <strong>${name}</strong><br>
+                            <span class="delayText"><span data-i18n="common:delayed">${i18next.t("common:delayed")}</span>
+                            : </span>${delay}
+                            <span data-i18n="common:min">${i18next.t("common:min")}</span>
+                        </div>
+                    `);
+                },
+            });
+
+    }
+
 
     initDropdowns() {
         let factionPlaceholder = i18next.t("common:faction");
