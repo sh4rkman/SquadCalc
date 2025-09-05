@@ -1,4 +1,26 @@
-# <img src="https://img.shields.io/badge/-hotfix-cd6f68?style=for-the-badge">  **39.0.4** *(2025-09-04)*
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **39.1.0** *(2025-09-05)*
+
+<img src="https://img.shields.io/badge/-new%20features-green"> **Commanders Assets !**
+
+You can know see on faction panel what commander asset each time has.  
+You can now track the enemy commander assets cooldowns when pinning a faction.
+
+<img src="https://img.shields.io/badge/-bug%20fix%20-b22"> Keypad under cursors now reflect UE5 "Fake grids" (Thanks yourothersis!)
+
+<img src="https://img.shields.io/badge/-bug%20fix%20-b22"> Deviation Grid tooltips now indicate the correct angle deviation value (Thanks yourothersis!)
+
+<img src="https://img.shields.io/badge/-bug%20fix%20-b22"> Fixed a bug where quicly changing maps could mix up their layers (Thanks Snowflake!)
+
+<img src="https://img.shields.io/badge/-bug%20fix%20-b22"> Fixed tooltips styles on Weapons & Targets information pop-ups
+
+<img src="https://img.shields.io/badge/-other%20fix%20-grey"> "Only Track High Respawn Times Pinned Vehicles" setting is now activated by default
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
+
+# <img src="https://img.shields.io/badge/-hotfix-grey?style=for-the-badge">  **39.0.4** *(2025-09-04)*
 
 <img src="https://img.shields.io/badge/-bug%20fixes-b22"> SquadMortarOverlay images now load properly
 
@@ -6,14 +28,14 @@
 </br></br><!-- CHANGELOG SPLIT MARKER -->
 
 
-# <img src="https://img.shields.io/badge/-hotfix-cd6f68?style=for-the-badge">  **39.0.3** *(2025-09-04)*
+# <img src="https://img.shields.io/badge/-hotfix-grey?style=for-the-badge">  **39.0.3** *(2025-09-04)*
 
 <img src="https://img.shields.io/badge/-bug%20fixes-b22"> creating weapon & target markers on mobile should now be working
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
 
 
-# <img src="https://img.shields.io/badge/-hotfix-cd6f68?style=for-the-badge">  **39.0.1** *(2025-09-03)*
+# <img src="https://img.shields.io/badge/-hotfix-grey?style=for-the-badge">  **39.0.1** *(2025-09-03)*
 
 <img src="https://img.shields.io/badge/-bug%20fixes-b22"> Fixed Albasrah/Skorpo size and grid. (thanks Mooraragi)
 
@@ -38,7 +60,7 @@ Hovering over an icon opens an info card about it.
 You can now right-click any main flag to select the Faction/Unit of that team and pin it to the screen.
 
 - **Target Deviation Grids**  
-  You can now enable a deviation grid on targets that helps adjust shots without the need to place another target: vertical lines show angle deviation (1°), and horizontal arcs show elevation deviation (10 mils or 1° depending on the weapon's unit system).
+  You can now enable a deviation grid on targets that helps adjust shots without the need to place another target: vertical lines show angle deviation (2°), and horizontal arcs show elevation deviation (10 mils or 1° depending on the weapon's unit system).
 
 - **Modded Weapons** ([#327](https://github.com/sh4rkman/SquadCalc/issues/327))  
   Added support for 5 new artillery vehicles from popular mods : Himars, TOS-1A, M109 Paladin, MTLB БЕГЕМОТ, T62 Dump Truck.  

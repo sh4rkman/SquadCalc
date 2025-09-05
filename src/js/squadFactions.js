@@ -4,7 +4,7 @@ import { DivIcon } from "leaflet";
 import { animateCSS } from "./animations.js";
 import i18next from "i18next";
 import { squadVehicleMarker } from "./squadSpawner.js";
-
+import tippy from "tippy.js";
 
 export default class SquadFactions {
 
@@ -111,6 +111,24 @@ export default class SquadFactions {
             $("#team2PinButton").attr("data-i18n", "common:pinned");
         }
 
+        selectedUnit.commanderAssets.forEach((asset) => {
+
+            let tactical = "commander";
+            if (asset.displayName.includes("Drone") || asset.displayName.includes("UAV")) tactical = "drone";
+
+            $("#pinnedVehiclesTab").append(`
+                <div class="pinnedVehicles animate__animated animate__fadeInLeft" data-vehiclename="${asset.displayName}" data-vehtype="${tactical}" data-vehicon="${tactical}"data-respawntime="${asset.delay}">
+                    <button type="button" class="btn-pined" aria-label="Select Factions">
+                        <img src="${process.env.API_URL}/img/icons/shared/commander/${asset.icon}.png" alt="Faction Icon"/>
+                    </button>
+                    <div class="pinedVehiclesMeta">
+                        <div class="pinedVehiclesName" data-i18n="vehicles:${asset.displayName}">${i18next.t(asset.displayName, { ns: "vehicles" })}</div>
+                        <div class="pinedVehiclesTimer">${asset.delay}<span class="" data-i18n="common:min">${i18next.t("common:min")}</span></div>
+                    </div>
+                </div>
+            `);
+        });
+
         selectedUnit.vehicles.forEach((vehicle) => {
             for (let i = 0; i < vehicle.count; i++){
                 
@@ -121,7 +139,7 @@ export default class SquadFactions {
                 if (vehicle.spawnerSize === "Boat" && !boatsAvailable) return;
 
                 $("#pinnedVehiclesTab").append(`
-                    <div class="pinnedVehicles animate__animated animate__fadeInLeft" data-vehiclename="${vehicle.type}" data-vehtype="${vehicle.vehType}" data-vehicon="${vehicle.icon}" data-respawntime="${vehicle.respawnTime}">
+                    <div class="pinnedVehicles animate__animated animate__fadeInLeft" data-vehiclename="${vehicle.type}" data-vehtype="${vehicle.vehType}" c data-respawntime="${vehicle.respawnTime}">
                         <button type="button" class="btn-pined" aria-label="Select Factions">
                             <img src="${process.env.API_URL}/img/icons/ally/vehicles/${vehicle.icon}.webp" alt="Faction Icon"/>
                         </button>
@@ -133,63 +151,87 @@ export default class SquadFactions {
                 `);
             }
         });
-            
+
         // Prevent focus
         $(document).off("pointerdown", ".btn-pined, .pinnedVehicles");
         $(document).on("pointerdown", ".btn-pined, .pinnedVehicles", (event) => {event.preventDefault();});
 
         $(document).off("click", ".pinnedVehicles");
-        $(document).on("click", ".pinnedVehicles", (event) => {
-            const $vehicleDiv = $(event.currentTarget);
-            const $timerDiv = $vehicleDiv.find(".pinedVehiclesTimer");
-            const baseRespawnTime = $vehicleDiv.data("respawntime");
-            if ($vehicleDiv.hasClass("active")) {
-                const timerId = $vehicleDiv.data("timerId");
-                if (timerId) clearInterval(timerId);
-                $timerDiv.empty().append(`
-                    ${baseRespawnTime}<span class="unit" data-i18n="common:min">${i18next.t("common:min")}</span>
-                `);
-                $vehicleDiv.removeClass("active").removeData("timerId endTime");
-                return;
+
+        $(document).on("click", ".pinnedVehicles", (event) => { 
+            const $clicked = $(event.currentTarget);
+            const baseRespawnTime = $clicked.data("respawntime");
+            if ($clicked.data("vehtype") === "commander") {
+                const $otherCommanders = $(".pinnedVehicles[data-vehtype='commander']").not($clicked);
+                $otherCommanders.each((_, el) => {
+                    // const baseRespawnTime = $(el).data("respawntime");
+                    this.pinClick($(el), 15);
+                });
             }
-            $vehicleDiv.addClass("active");
-            const vehIcon = $vehicleDiv.data("vehicon");
-        
-            const endTime = Date.now() + baseRespawnTime * 1000 * 60; // Convert minutes to milliseconds
-            $vehicleDiv.data("endTime", endTime);
-        
-            function updateTimer() {
-                const remaining = Math.max(0, Math.round((endTime - Date.now()) / 1000));
-                if (remaining > 0) {
-                    $timerDiv.text(formatTime(remaining));
-                } else {
-                    clearInterval(timerId);
-                    $vehicleDiv.removeClass("active").removeData("timerId endTime");
-                    $timerDiv.empty().append(`
-                        ${baseRespawnTime}<span class="unit" data-i18n="common:min">${i18next.t("common:min")}</span>
-                    `);
-                    App.openToast("warning", "vehicleRespawned", "");
-        
-                    if (!App.userSettings.disableSounds) {
-                        const LANG = localStorage.getItem("settings-language");
-                        new Audio(`/sounds/${LANG}/${vehIcon}.mp3`).play();  
-                    }
-                }
-            }
-        
-            updateTimer();
-            const timerId = setInterval(updateTimer, 1000);
-            $vehicleDiv.data("timerId", timerId);
+            this.pinClick($(event.currentTarget), baseRespawnTime);
         });
         
-        function formatTime(seconds) {
-            const minutes = Math.floor(seconds / 60);
-            const secs = seconds % 60;
-            return `${minutes}:${secs.toString().padStart(2, "0")}`;
-        }
         this.pinned = true;
     }
 
+
+    formatTime(seconds) {
+        const minutes = Math.floor(seconds / 60);
+        const secs = seconds % 60;
+        return `${minutes}:${secs.toString().padStart(2, "0")}`;
+    }
+
+
+    unpinClick($vehicleDiv, $timerDiv) {
+        const timerId = $vehicleDiv.data("timerId");
+        const baseRespawnTime = $vehicleDiv.data("respawntime");
+        if (timerId) clearInterval(timerId);
+        $timerDiv.empty().append(`${baseRespawnTime}<span class="unit" data-i18n="common:min">${i18next.t("common:min")}</span>`);
+        $vehicleDiv.removeClass("active").removeData("timerId endTime");
+        return;
+    }
+
+
+    pinClick(target, baseRespawnTime) {
+        const $vehicleDiv = target;
+        const $timerDiv = $vehicleDiv.find(".pinedVehiclesTimer");
+
+        if ($vehicleDiv.hasClass("active")) {
+            this.unpinClick($vehicleDiv, $timerDiv, baseRespawnTime);
+            return;
+        }
+
+        $vehicleDiv.addClass("active");
+        const vehIcon = $vehicleDiv.data("vehicon");
+    
+        const endTime = Date.now() + baseRespawnTime * 1000 * 60; // Minutes to milliseconds
+        $vehicleDiv.data("endTime", endTime);
+    
+        const updateTimer = () => {
+
+            const remaining = Math.max(0, Math.round((endTime - Date.now()) / 1000));
+
+            if (remaining > 0) {
+                $timerDiv.text(this.formatTime(remaining));
+                return;
+            } 
+
+            clearInterval(timerId);
+            $vehicleDiv.removeClass("active").removeData("timerId endTime");
+            $timerDiv.empty().append(`${baseRespawnTime}<span class="unit" data-i18n="common:min">${i18next.t("common:min")}</span>`);
+            App.openToast("warning", "vehicleRespawned", "");
+
+            if (!App.userSettings.disableSounds) {
+                const LANG = localStorage.getItem("settings-language");
+                new Audio(`/sounds/${LANG}/${vehIcon}.mp3`).play();  
+            }
+            
+        };
+    
+        updateTimer();
+        const timerId = setInterval(updateTimer, 1000);
+        $vehicleDiv.data("timerId", timerId);
+    }
 
     unpinUnit() {
         // Clear any active timers
@@ -688,6 +730,10 @@ export default class SquadFactions {
             // Handle click-to-copy
             $(".vehicle-card").off("click").on("click", (event) => { this.openCard(event); });
             $(".vehicle-type").off("click").on("click", (event) => { this.copyVehicleName(event); });
+
+            // Load Commanders Icons & Tooltips
+            this.loadCommanderAssets("#team1CommanderAsset", selectedUnit);
+
         });
 
         this.UNIT2_SELECTOR.off("change").on("change", (event) => {
@@ -737,6 +783,9 @@ export default class SquadFactions {
                 this.generateCardHTML(vehicle, $("#team2Vehicles"), false);
                 this.spawnVehicle(vehicle, spawners, this.squadLayer.activeFaction2Markers);
             });
+
+            // Load Commanders Icons & Tooltips
+            this.loadCommanderAssets("#team2CommanderAsset", selectedUnit);
 
             // Handle click-to-copy
             $(".vehicle-type").off("click").on("click", (event) => { this.copyVehicleName(event); });
@@ -805,6 +854,51 @@ export default class SquadFactions {
         });
 
     }
+
+
+    loadCommanderAssets(DIV, selectedUnit) {
+
+        // Load Commanders Assets
+        $(DIV).empty();
+
+        // Clear existing tooltips
+        tippy(`${DIV} .commander-asset`).forEach(instance => {
+            instance.destroy();
+        });
+
+        Object.values(selectedUnit.commanderAssets).forEach(asset => {
+            $(DIV).append(`
+                    <img src="${process.env.API_URL}/img/icons/shared/commander/${asset.icon}.png"
+                     class="commander-asset" 
+                     data-tippy-name="${asset.displayName}"
+                     data-tippy-delay="${asset.delay}" />
+                `);
+        });
+
+        // Initialize tooltips for all images in one go
+        tippy(`${DIV} .commander-asset`, {
+            appendTo: () => document.querySelector("#factionsDialog"),
+            delay: 200,
+            placement: "bottom",
+            allowHTML: true,
+            theme: "infTooltips",
+            onShow(instance) {
+                const el = instance.reference;
+                const name = el.getAttribute("data-tippy-name");
+                const delay = el.getAttribute("data-tippy-delay");
+                instance.setContent(`
+                        <div class="tooltip-content">
+                            <strong>${name}</strong><br>
+                            <span class="delayText"><span data-i18n="common:delayed">${i18next.t("common:delayed")}</span>
+                            : </span>${delay}
+                            <span data-i18n="common:min">${i18next.t("common:min")}</span>
+                        </div>
+                    `);
+            },
+        });
+
+    }
+
 
     initDropdowns() {
         let factionPlaceholder = i18next.t("common:faction");

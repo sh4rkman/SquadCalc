@@ -97,7 +97,7 @@ export function loadSettings(){
     App.userSettings.disableSounds = loadLocalSetting("settings-disable-sounds", 0);
     $("#disableSoundsSettings").prop("checked", App.userSettings.disableSounds);
 
-    App.userSettings.hideLowRespawn = loadLocalSetting("settings-hide-lowrespawn", 0);
+    App.userSettings.hideLowRespawn = loadLocalSetting("settings-hide-lowrespawn", 1);
     $("#hideLowRespawnSettings").prop("checked", App.userSettings.hideLowRespawn);
 
     App.userSettings.showMainZones = loadLocalSetting("settings-show-mainzones");

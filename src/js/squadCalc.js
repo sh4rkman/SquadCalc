@@ -192,12 +192,13 @@ export default class SquadCalc {
                 return;
             }
 
+            // Re-empty just in case user changed map while the request was on the way
+            this.LAYER_SELECTOR.empty();
+
             // Empty option for placeholder
             this.LAYER_SELECTOR.append("<option value=></option>");
 
-            layers.forEach((layer) => {
-                this.LAYER_SELECTOR.append(`<option value=${layer.rawName}>${layer.shortName}</option>`);
-            });
+            layers.forEach((layer) => { this.LAYER_SELECTOR.append(`<option value=${layer.rawName}>${layer.shortName}</option>`);});
             
 
             // If URL has a "layer" parameter
