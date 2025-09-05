@@ -119,7 +119,7 @@ export default class SquadFactions {
             $("#pinnedVehiclesTab").append(`
                 <div class="pinnedVehicles animate__animated animate__fadeInLeft" data-vehiclename="${asset.displayName}" data-vehtype="${tactical}" data-vehicon="${tactical}"data-respawntime="${asset.delay}">
                     <button type="button" class="btn-pined" aria-label="Select Factions">
-                        <img src="${process.env.API_URL}/img/icons/shared/commander/${asset.icon}.png" alt="Faction Icon"/>
+                        <img src="${process.env.API_URL}/img/icons/shared/commander/${asset.icon}.webp" alt="Faction Icon"/>
                     </button>
                     <div class="pinedVehiclesMeta">
                         <div class="pinedVehiclesName" data-i18n="vehicles:${asset.displayName}">${i18next.t(asset.displayName, { ns: "vehicles" })}</div>
@@ -868,7 +868,7 @@ export default class SquadFactions {
 
         Object.values(selectedUnit.commanderAssets).forEach(asset => {
             $(DIV).append(`
-                    <img src="${process.env.API_URL}/img/icons/shared/commander/${asset.icon}.png"
+                    <img src="${process.env.API_URL}/img/icons/shared/commander/${asset.icon}.webp"
                      class="commander-asset" 
                      data-tippy-name="${asset.displayName}"
                      data-tippy-delay="${asset.delay}" />
