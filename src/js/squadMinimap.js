@@ -14,6 +14,8 @@ import "tippy.js/dist/tippy.css";
 import "leaflet-polylinedecorator";
 import "./libs/leaflet-edgebuffer.js";
 import "./libs/leaflet-spin.js";
+import "./libs/leaflet-imageoverlay-rotated.js";
+
 
 /**
  * Squad Minimap
@@ -646,11 +648,13 @@ export const squadMinimap = Map.extend({
             if (App.userSettings.showMainAssets) {
                 this.layer.mainZones.assets.forEach(asset => { asset.setOpacity(1); });
                 this.layer.revealSpawns();
+                this.layer.vehicleSpawners.forEach(spawn => { spawn.show(); });
             }
         } else {
             this.layer.hideAllCapzones();
             App.minimap.layer.mainZones.assets.forEach(asset => { asset.setOpacity(0); });
             this.layer.hideSpawns();
+            this.layer.vehicleSpawners.forEach(spawn => { spawn.hide(); });
         }
 
     },

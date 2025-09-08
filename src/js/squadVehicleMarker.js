@@ -1,5 +1,5 @@
 import { Marker, Icon, Browser, DomEvent } from "leaflet";
-import tippy, {sticky} from "tippy.js";
+import tippy from "tippy.js";
 import i18next from "i18next";
 import "./libs/leaflet-rotatedMarker.js";
 
@@ -30,10 +30,10 @@ export const squadVehicleMarker = Marker.extend({
                 iconSize: [36, 36],
                 iconAnchor: [18, 18],
                 className: "vehSpawnIcon"
-            }));
+            })
+        );
 
         this.setRotationAngle(spawner.rotation_z + 90);
-        
 
         if (!Browser.mobile) {
             this.on("pointerover", this._handleOver, this);
@@ -42,7 +42,9 @@ export const squadVehicleMarker = Marker.extend({
             this.on("click", this._handleOver, this);
         }
 
+        // Catch this events and disable propagation
         this.on("contextmenu", this._handleCtxMenu, this);
+        this.on("dblclick", this._handleCtxMenu, this);
         
     },
    
@@ -52,11 +54,8 @@ export const squadVehicleMarker = Marker.extend({
         if (el._tippy) el._tippy.destroy();
 
         tippy(el, {
-            trigger: "manual",
-            delay: 200,
+            delay: [200, 0],
             placement: "top",
-            sticky: true,
-            plugins: [sticky],
             duration: 0,
             allowHTML: true,
             interactive: true,
@@ -66,7 +65,7 @@ export const squadVehicleMarker = Marker.extend({
             onShow: (tip) => this._onShow(tip),
         });
 
-        el._tippy.show();
+        //el._tippy.show();
     },
 
 
@@ -124,7 +123,6 @@ export const squadVehicleMarker = Marker.extend({
             <span class="locationHolder ${warning}">
                 <span class="location-icon">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
-                        <!--!Font Awesome Free v7.0.0 by @fontawesome -->
                         <path d="M128 252.6C128 148.4 214 64 320 64C426 64 512 148.4 512 252.6C512 371.9 391.8 514.9 341.6 569.4C329.8 582.2 310.1 582.2 298.3 569.4C248.1 514.9 127.9 371.9 127.9 252.6zM320 320C355.3 320 384 291.3 384 256C384 220.7 355.3 192 320 192C284.7 192 256 220.7 256 256C256 291.3 284.7 320 320 320z"/>
                     </svg>
                 </span>

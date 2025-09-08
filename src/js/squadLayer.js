@@ -5,6 +5,8 @@ import { App } from "../app.js";
 import "./libs/leaflet-measure-path.js";
 import SquadFactions from "./squadFactions.js";
 import { Hexagon } from "./libs/leaflet-hexagon.js";
+import { squadSpawnGroup } from "./squadSpawnGroup.js";
+import { SquadVehicleSpawner } from "./squadVehicleSpawner.js";
 
 export default class SquadLayer {
 
@@ -54,6 +56,27 @@ export default class SquadLayer {
         this.phaseAeras = new FeatureGroup().addTo(this.map);
         this.flags = [];
         this.reversed = false;
+
+        this.vehicles = [];
+        this.vehicleSpawners = [];
+
+        this.team1VehicleSpawners = {
+            helicopters: [],
+            boats: [],
+            vehicles: [],
+            bikes: [],
+        };
+
+        this.team2VehicleSpawners = {
+            helicopters: [],
+            boats: [],
+            vehicles: [],
+            bikes: []
+        };
+
+
+        this.mainZones.ammocrates = [];
+
         this.init();
 
         if (process.env.DISABLE_FACTIONS != "true") {
@@ -114,101 +137,33 @@ export default class SquadLayer {
         this.createProtectionZones();
         this.createBorders();
         this.createSpawners();
+        this.createTeamSpawns();
+    }
+
+
+    createTeamSpawns(){
+
+        this.layerData.mapAssets.spawnGroups.forEach((spawnGroup) => {
+            const latlng = this.convertToLatLng(spawnGroup.location_x, spawnGroup.location_y);
+            this.vehicles.push(new squadSpawnGroup(latlng, spawnGroup, this).addTo(this.activeLayerMarkers));
+        });
+
+        if (App.userSettings.showMainAssets && this.map.getZoom() > this.map.detailedZoomThreshold) {
+            this.vehicleSpawners.forEach(spawn => { spawn.show(); });
+        }
+
     }
 
 
     createSpawners(){
-
-        this.Team1QuadBikes = [];
-        this.Team2QuadBikes = [];
-        this.Team1MRAPs = [];
-
-        this.team1VehicleSpawners = {
-            helicopters: [],
-            boats: [],
-            vehicles: [],
-            bikes: [],
-        };
-
-        this.team2VehicleSpawners = {
-            helicopters: [],
-            boats: [],
-            vehicles: [],
-            bikes: []
-        };
-
         this.layerData.assets.vehicleSpawners.forEach((spawner) => {
-
             const latlng = this.convertToLatLng(spawner.location_x, spawner.location_y);
-
-            const vehicleConfig = {
-                MBT: { color: "white", halfWidth: 2.3, halfHeight: 1.7, key: "vehicles" },
-                APC: { color: "purple",   halfWidth: 3,   halfHeight: 1.7, key: "vehicles" },
-                Car: { color: "blue",     halfWidth: 2,   halfHeight: 1.5, key: "vehicles" },
-                QuadBike: { color: "yellow", halfWidth: 1,   halfHeight: 0.8, key: "bikes" },
-                Helicopter: { color: "white", halfWidth: 12,  halfHeight: 12, key: "helicopters" },
-                Boat: { color: "black",   halfWidth: 3,   halfHeight: 1.5, key: "boats" },
-            };
-
-            let color = "white";
-            let halfWidth = 1;
-            let halfHeight = 1;
-
-            const config = vehicleConfig[spawner.size];
-            if (config) {
-                ({ color, halfWidth, halfHeight } = config);
-
-                const teamKey = spawner.type === "Team One" ? this.team1VehicleSpawners : this.team2VehicleSpawners;
-                    
-                    
-
-                teamKey[config.key].push(spawner);
-            }
-
-            const bounds = [
-                [latlng[0] - halfHeight * this.map.gameToMapScale, latlng[1] - halfWidth * this.map.gameToMapScale], // top-left (y, x)
-                [latlng[0] + halfHeight * this.map.gameToMapScale, latlng[1] + halfWidth * this.map.gameToMapScale]  // bottom-right
-            ];
-
-
-            let spawnRectangle;
-
-            if (spawner.typePriorities.length > 0) {
-                
-                // let prio = spawner.typePriorities[0].name;
-                // new Marker(latlng, {
-                //     interactive: false,
-                //     icon: new DivIcon({
-                //         className: "spawnText",
-                //         html: `${prio}`,
-                //         iconSize: [50, 50],
-                //         iconAnchor: [25, 40]
-                //     })
-                // }).addTo(this.activeLayerMarkers);
-
-                spawnRectangle = new Rectangle(bounds, {
-                    color: color,
-                    fillOpacity: 0.25,
-                    opacity: 1,
-                    weight: 1,
-                }).addTo(this.activeLayerMarkers);
-
-            } else {
-
-                spawnRectangle = new Rectangle(bounds, {
-                    color: color,
-                    fillOpacity: 0.05,
-                    opacity: 0.75,
-                    weight: 1,
-                    dashArray: "4 4" 
-                }).addTo(this.activeLayerMarkers);
-
-            }
-
-            this.rotateRectangle(spawnRectangle, spawner.rotation_z);
-
+            this.vehicleSpawners.push(new SquadVehicleSpawner(latlng, spawner, this));
         });
 
+        if (App.userSettings.showMainAssets && this.map.getZoom() > this.map.detailedZoomThreshold) {
+            this.vehicleSpawners.forEach(spawn => { spawn.show(); });
+        }
     }
 
 
@@ -598,6 +553,7 @@ export default class SquadLayer {
                 const iconElement = marker.getElement();
                 iconElement.style.backgroundImage = `url('${process.env.API_URL}/img/icons/ally/deployables/deployable_ammocrate.webp')`;
                 this.mainZones.assets.push(marker);
+                this.mainZones.ammocrates.push(marker);
             }
         });
     }
@@ -1352,6 +1308,8 @@ export default class SquadLayer {
         this.phaseAeras.removeFrom(this.map).clearLayers();
         if (this.factions) this.factions.unpinUnit();
         $(".btn-layer").removeClass("active").hide();
+        this.vehicles = [];
+        this.vehicleSpawners = [];
     }
 
 }

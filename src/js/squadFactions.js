@@ -3,7 +3,7 @@ import { App } from "../app.js";
 import { DivIcon } from "leaflet";
 import { animateCSS } from "./animations.js";
 import i18next from "i18next";
-import { squadVehicleMarker } from "./squadSpawner.js";
+import { squadVehicleMarker } from "./squadVehicleMarker.js";
 import tippy from "tippy.js";
 
 export default class SquadFactions {
@@ -111,23 +111,23 @@ export default class SquadFactions {
             $("#team2PinButton").attr("data-i18n", "common:pinned");
         }
 
-        selectedUnit.commanderAssets.forEach((asset) => {
-
-            let tactical = "commander";
-            if (asset.displayName.includes("Drone") || asset.displayName.includes("UAV")) tactical = "drone";
-
-            $("#pinnedVehiclesTab").append(`
-                <div class="pinnedVehicles animate__animated animate__fadeInLeft" data-vehiclename="${asset.displayName}" data-vehtype="${tactical}" data-vehicon="${tactical}"data-respawntime="${asset.delay}">
-                    <button type="button" class="btn-pined" aria-label="Select Factions">
-                        <img src="${process.env.API_URL}/img/icons/shared/commander/${asset.icon}.webp" alt="Faction Icon"/>
-                    </button>
-                    <div class="pinedVehiclesMeta">
-                        <div class="pinedVehiclesName" data-i18n="vehicles:${asset.displayName}">${i18next.t(asset.displayName, { ns: "vehicles" })}</div>
-                        <div class="pinedVehiclesTimer">${asset.delay}<span class="" data-i18n="common:min">${i18next.t("common:min")}</span></div>
+        if (!this.squadLayer.layerData.commanderDisabled) {
+            selectedUnit.commanderAssets.forEach((asset) => {
+                let tactical = "commander";
+                if (asset.displayName.includes("Drone") || asset.displayName.includes("UAV")) tactical = "drone";
+                $("#pinnedVehiclesTab").append(`
+                    <div class="pinnedVehicles animate__animated animate__fadeInLeft" data-vehiclename="${asset.displayName}" data-vehtype="${tactical}" data-vehicon="${tactical}"data-respawntime="${asset.delay}">
+                        <button type="button" class="btn-pined" aria-label="Select Factions">
+                            <img src="${process.env.API_URL}/img/icons/shared/commander/${asset.icon}.webp" alt="Faction Icon"/>
+                        </button>
+                        <div class="pinedVehiclesMeta">
+                            <div class="pinedVehiclesName" data-i18n="vehicles:${asset.displayName}">${i18next.t(asset.displayName, { ns: "vehicles" })}</div>
+                            <div class="pinedVehiclesTimer">${asset.delay}<span class="" data-i18n="common:min">${i18next.t("common:min")}</span></div>
+                        </div>
                     </div>
-                </div>
-            `);
-        });
+                `);
+            });
+        }
 
         selectedUnit.vehicles.forEach((vehicle) => {
             for (let i = 0; i < vehicle.count; i++){
@@ -635,6 +635,10 @@ export default class SquadFactions {
         this.FACTION1_SELECTOR.off("change").on("change", (event) => {
             // Reset UI
             $("#team1Vehicles").empty();
+            $("#team1CommanderAsset").empty();
+
+            this.loadFactionBackground("#factionImg1", event.target.value);
+            
             if ( $("#team1PinButton").hasClass("active") ) this.unpinUnit();
 
             // Broadcast the Unit change to the session if needed
@@ -660,6 +664,8 @@ export default class SquadFactions {
             // Reset UI
             $("#team2Vehicles").empty();
             if ( $("#team2PinButton").hasClass("active") ) this.unpinUnit();
+
+            this.loadFactionBackground("#factionImg2", event.target.value);
 
 
             // Broadcast the Faction change to the session if needed
@@ -733,8 +739,9 @@ export default class SquadFactions {
 
             // Load Commanders Icons & Tooltips
             this.loadCommanderAssets("#team1CommanderAsset", selectedUnit);
-
+            
         });
+
 
         this.UNIT2_SELECTOR.off("change").on("change", (event) => {
 
@@ -742,6 +749,8 @@ export default class SquadFactions {
 
             // Empty the vehicles container
             teamFactionDiv.empty();
+            $("#team2CommanderAsset").empty();
+
             if ( $("#team2PinButton").hasClass("active") ) this.unpinUnit();
 
             // Clear spawned vehicles 
@@ -856,23 +865,33 @@ export default class SquadFactions {
     }
 
 
+    loadFactionBackground(DIV, selectedUnit) {
+        $(DIV).empty();
+        if (selectedUnit) $(DIV).append(`<img src="http://localhost:3009/api/img/spawnGroup/${selectedUnit}.webp" class="factionImgs animate__animated animate__fadeIn animate__faster" />`);
+    }
+
+
     loadCommanderAssets(DIV, selectedUnit) {
 
         // Load Commanders Assets
         $(DIV).empty();
 
         // Clear existing tooltips
-        tippy(`${DIV} .commander-asset`).forEach(instance => {
-            instance.destroy();
-        });
+        tippy(`${DIV} .commander-asset`).forEach(instance => { instance.destroy(); });
+
+        // Layer don't have commander (Skirmish, Seed, Kokan)
+        if (this.squadLayer.layerData.commanderDisabled) {
+            $(DIV).append(`${i18next.t("common:noCommander")}`);
+            return;
+        } 
 
         Object.values(selectedUnit.commanderAssets).forEach(asset => {
             $(DIV).append(`
-                    <img src="${process.env.API_URL}/img/icons/shared/commander/${asset.icon}.webp"
-                     class="commander-asset" 
-                     data-tippy-name="${asset.displayName}"
-                     data-tippy-delay="${asset.delay}" />
-                `);
+                <img src="${process.env.API_URL}/img/icons/shared/commander/${asset.icon}.webp"
+                    class="commander-asset" 
+                    data-tippy-name="${asset.displayName}"
+                    data-tippy-delay="${asset.delay}" />
+            `);
         });
 
         // Initialize tooltips for all images in one go
@@ -886,14 +905,14 @@ export default class SquadFactions {
                 const el = instance.reference;
                 const name = el.getAttribute("data-tippy-name");
                 const delay = el.getAttribute("data-tippy-delay");
-                instance.setContent(`
-                        <div class="tooltip-content">
-                            <strong>${name}</strong><br>
-                            <span class="delayText"><span data-i18n="common:delayed">${i18next.t("common:delayed")}</span>
-                            : </span>${delay}
-                            <span data-i18n="common:min">${i18next.t("common:min")}</span>
-                        </div>
-                    `);
+                instance.setContent(
+                    `<div class="tooltip-content">
+                        <strong>${name}</strong><br>
+                        <span class="delayText"><span data-i18n="common:delayed">${i18next.t("common:delayed")}</span>
+                        : </span>${delay}
+                        <span data-i18n="common:min">${i18next.t("common:min")}</span>
+                    </div>`
+                );
             },
         });
 

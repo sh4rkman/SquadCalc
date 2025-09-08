@@ -149,13 +149,12 @@
 }
 
 .spawnVehicleCard {
-    width: 300px;
+    width: 250px;
     letter-spacing: 0.7px;
     overflow: hidden;
     display: flex;
     flex-direction: column;
     font-size: 0.8em;
-    // background: rgba(30, 30, 30, 0.7);
     backdrop-filter: blur(6px);
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.25);
@@ -289,6 +288,79 @@
         }
     }
 }
+
+
+.spawnGroupCard {
+    width: 250px;
+    letter-spacing: 0.7px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    font-size: 0.7em;
+    backdrop-filter: blur(6px);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+    .spawn-delay-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 1.7em;
+        svg {
+            width: 100%;
+            height: 100%;
+            fill: #aaa;
+        }
+    }
+    > div {
+        font-size: 1em;
+        color: #f0f0f0;
+        display: flex;
+        align-items: center;
+
+    }
+    .spawnTitle {
+        width: 100%;
+        border-bottom: 1px solid rgba(128, 128, 128, 0.616);
+        .spawnName {
+            padding: 0.5em 0;
+            font-size: 1.4em;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin:auto;
+            text-align: center;
+        }
+    }
+    .statsHolder {
+        display: block;
+        place-items: center;
+
+    }
+    .spawnDelayHolder {
+        padding: 0.7em 0;
+        display: flex;
+        align-items: center;
+        gap: 0.5em;
+        width: 100%;
+        justify-content: center;
+        color: #f55;
+        svg {
+            fill:#f55;
+        }
+        &.warning {
+            color: #f55;
+            svg {
+                fill: #f55;
+            }
+        }
+    }
+    img {
+        width: 100%;
+        object-fit: cover;
+        border-radius: 0;
+    }
+}
+
 
 .vehSpawnIcon {
     cursor: pointer!important;

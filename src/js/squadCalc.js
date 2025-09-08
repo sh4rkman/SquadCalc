@@ -146,32 +146,38 @@ export default class SquadCalc {
             abortController = new AbortController();
             const signal = abortController.signal;
             this.minimap.spin(true, this.minimap.spinOptions);
-            fetchLayerByName(event.target.value, { signal }).then(layerData => {
-                if (this.minimap.layer) this.minimap.layer.clear();
-                this.minimap.layer = new SquadLayer(this.minimap, layerData);
-                $(".btn-layer").addClass("active").show();
+            fetchLayerByName(event.target.value, { signal })
+                .catch(error => {
+                    if (error.name !== "AbortError") {
+                        this.openToast("error", "error", "apiError");
+                        console.error("Error fetching layer data:", error);
+                    }
+                    $("#factionsTab").hide();
+                    this.minimap.spin(false);
 
-                // Broadcast the map change to the session if needed
-                if (broadcast && this.session.ws && this.session.ws.readyState === WebSocket.OPEN) {
-                    this.session.ws.send(
-                        JSON.stringify({
-                            type: "UPDATE_LAYER",
-                            layer: event.target.value,
-                        })
-                    );
-                    console.debug(`Sent layer update for layer #${event.target.value}`);
-                }
-                $(document).trigger("layer:loaded");
-                
-                this.minimap.spin(false);
-            }).catch(error => {
-                if (error.name !== "AbortError") {
-                    this.openToast("error", "error", "apiError");
-                    console.error("Error fetching layer data:", error);
-                }
-                $("#factionsTab").hide();
-                this.minimap.spin(false);
-            });
+                    // Stop the chain
+                    throw error;
+                })
+                .then(layerData => {
+                    if (!layerData) return; // prevent continuing on fetch failure
+
+                    if (this.minimap.layer) this.minimap.layer.clear();
+                    this.minimap.layer = new SquadLayer(this.minimap, layerData);
+                    $(".btn-layer").addClass("active").show();
+
+                    if (broadcast && this.session.ws?.readyState === WebSocket.OPEN) {
+                        this.session.ws.send(
+                            JSON.stringify({
+                                type: "UPDATE_LAYER",
+                                layer: event.target.value,
+                            })
+                        );
+                        console.debug(`Sent layer update for layer #${event.target.value}`);
+                    }
+
+                    $(document).trigger("layer:loaded");
+                    this.minimap.spin(false);
+                });
         });
     }
 
