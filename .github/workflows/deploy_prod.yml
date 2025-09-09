@@ -29,6 +29,7 @@ jobs:
             npm run build
             # Disable maintenance mode
             rm ${{ secrets.DIST }}/maintenance.enable
+            
     - name: Discord notification
       env:
         DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
