@@ -867,7 +867,7 @@ export default class SquadFactions {
 
     loadFactionBackground(DIV, selectedUnit) {
         $(DIV).empty();
-        if (selectedUnit) $(DIV).append(`<img src="http://localhost:3009/api/img/spawnGroup/${selectedUnit}.webp" class="factionImgs animate__animated animate__fadeIn animate__faster" />`);
+        if (selectedUnit) $(DIV).append(`<img src="${process.env.API_URL}/img/spawnGroup/${selectedUnit}.webp" class="factionImgs animate__animated animate__fadeIn animate__faster" />`);
     }
 
 

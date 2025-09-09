@@ -65,7 +65,7 @@ export const squadVehicleMarker = Marker.extend({
             onShow: (tip) => this._onShow(tip),
         });
 
-        //el._tippy.show();
+        el._tippy.show();
     },
 
 
