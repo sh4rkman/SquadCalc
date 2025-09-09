@@ -20,9 +20,10 @@ $flag-circle-opacity: 0.2;
     letter-spacing: 0.02em;
     align-content: center;
     display: grid;
-    &.main {
-        text-transform: uppercase;
-    }
+    // &.main {
+    //     //text-transform: uppercase;
+    //     //border: solid red 1px;
+    // }
 }
 
 #map_ui #map .leaflet-pane .leaflet-marker-pane .flag {

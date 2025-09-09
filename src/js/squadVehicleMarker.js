@@ -54,7 +54,7 @@ export const squadVehicleMarker = Marker.extend({
         if (el._tippy) el._tippy.destroy();
 
         tippy(el, {
-            delay: [200, 0],
+            delay: 200,
             placement: "top",
             duration: 0,
             allowHTML: true,

@@ -309,8 +309,16 @@ export default class SquadFactions {
             }
         });
 
-        if (FACTION !== "") html = `<div data-i18n="factions:${FACTION}">${i18next.t(FACTION, { ns: "factions" })}</div>`;
-        else  html = `<div data-i18n="common:${teamKey}">${i18next.t(teamKey, { ns: "common" })}</div>`;
+        html = `
+            <span>
+                <span data-i18n="common:${teamKey}">
+                    ${i18next.t(teamKey, { ns: "common" })}
+                </span>
+            `;
+
+        if (FACTION !== "") html += `: <span data-i18n="factions:${FACTION}">${i18next.t(FACTION, { ns: "factions" })}</span>`;
+
+        html  += "</span>";
 
         // Update the name text icon
         mainFlag.nameText.setIcon(

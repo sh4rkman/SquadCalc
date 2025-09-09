@@ -53,9 +53,9 @@ export const squadSpawnGroup = Marker.extend({
         if (el._tippy) el._tippy.destroy();
 
         this.tippy = tippy(el, {
+            delay: 200,
             placement: "top",
             sticky: true,
-            delay: [200, 0],
             duration: 0,
             allowHTML: true,
             interactive: true,
@@ -64,6 +64,10 @@ export const squadSpawnGroup = Marker.extend({
             onHidden: (tip) => this._cleanup(tip),
             onShow: (tip) => this._onShow(tip),
         });
+
+
+        el._tippy.show(); 
+
     },
 
 

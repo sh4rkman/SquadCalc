@@ -39,7 +39,6 @@ export class SquadObjective {
             })
         }).addTo(this.layerGroup);
 
-
         // Temporary icon to avoid 404s on leaflet shadow marker
         let tempIcon = new DivIcon({
             shadowUrl: "../img/icons/markers/weapons/marker_shadow.webp",
@@ -134,16 +133,19 @@ export class SquadObjective {
             nameTextClassName += " main";
 
             if (process.env.DISABLE_FACTIONS != "true" && App.userSettings.enableFactions) {
+
                 if (this.objectName === "00-Team1 Main") {
-                    if ($(".dropbtn8").val() != null) html = `<div data-i18n="factions:${$(".dropbtn8").val()}">${i18next.t($(".dropbtn8").val(), { ns: "factions" })}</div>`;
-                    else html = i18next.t("team1", { ns: "common" });
+                    html = `<span><span data-i18n="common:team1">${i18next.t("team1", { ns: "common" })}</span>`;
+                    if ($(".dropbtn8").val() != null) html += `: <span data-i18n="factions:${$(".dropbtn8").val()}">${i18next.t($(".dropbtn8").val(), { ns: "factions" })}</span>`;
                 } else {
-                    if ($(".dropbtn10").val() != null) html = `<div data-i18n="factions:${$(".dropbtn10").val()}">${i18next.t($(".dropbtn10").val(), { ns: "factions" })}</div>`;
-                    else html = `<div data-i18n="common:team2">${i18next.t("common:team2")}</div>;`;
+                    html = `<span><span data-i18n="common:team1">${i18next.t("team2", { ns: "common" })}</span>`;
+                    if ($(".dropbtn10").val() != null) html += `: <span data-i18n="factions:${$(".dropbtn10").val()}">${i18next.t($(".dropbtn10").val(), { ns: "factions" })}</span>`;
                 }
+                html += "</span>";
+
             } else {
-                if (this.objectName === "00-Team1 Main") html = i18next.t("common:team1");
-                else html = `<div data-i18n="common:team2">${i18next.t("common:team2")}</div>;`;
+                if (this.objectName === "00-Team1 Main") html = `<span data-i18n="common:team1">${i18next.t("team1", { ns: "common" })}</span>`;
+                else html = `<span data-i18n="common:team2">${i18next.t("team2", { ns: "common" })}</span>`;
             }
         }
 
