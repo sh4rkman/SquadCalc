@@ -66,7 +66,8 @@ export const squadSpawnGroup = Marker.extend({
         });
 
 
-        el._tippy.show(); 
+        // On mobile manually trigger without delay
+        if (Browser.mobile) el._tippy.show();
 
     },
 

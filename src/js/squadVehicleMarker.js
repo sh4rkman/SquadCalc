@@ -65,7 +65,9 @@ export const squadVehicleMarker = Marker.extend({
             onShow: (tip) => this._onShow(tip),
         });
 
-        el._tippy.show();
+        // On mobile manually trigger without delay
+        if (Browser.mobile) el._tippy.show();
+        
     },
 
 
