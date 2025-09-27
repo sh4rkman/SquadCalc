@@ -193,9 +193,9 @@ export default LayerGroup.extend({
         
 
         // vertical keypad lines
-        // doing some magic against floating point imprecision
+        // Going east +1 to make it through floating point imprecision
         const startX = this.bounds.getWest();
-        const endX = this.bounds.getEast();
+        const endX = this.bounds.getEast() + 1;
 
         for (let x = startX, z = 0; x <= endX; x += interval) {
             const bot = {lat: this.bounds.getSouth(), lng: x};
@@ -236,8 +236,9 @@ export default LayerGroup.extend({
         }
 
         // horizontal keypad lines, almost the same as for vertical lines
+        // Going South +1 to make it through floating point imprecision
         const startY = this.bounds.getNorth();
-        const endY = this.bounds.getSouth();
+        const endY = this.bounds.getSouth() - 1;
 
         for (let y = startY, z = 0; y >= endY; y -= interval) {
             const left = {lat: y, lng: this.bounds.getWest()};
