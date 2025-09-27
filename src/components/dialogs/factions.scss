@@ -529,21 +529,3 @@
         }
     }
 }
-
-#factionImg {
-    position: absolute;
-    bottom: 0;
-    display: flex;
-    z-index: -1;
-    filter: brightness(75%);
-    width: 100%;
-    gap: 30%;
-}
-
-#factionImg div {
-    width: 50%;
-    img {
-        width: 100%;
-        height: auto;
-    }
-}
