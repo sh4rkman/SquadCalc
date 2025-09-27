@@ -1,6 +1,6 @@
 
 import { App } from "../app.js";
-import { DivIcon } from "leaflet";
+import { DivIcon, Browser } from "leaflet";
 import { animateCSS } from "./animations.js";
 import i18next from "i18next";
 import { squadVehicleMarker } from "./squadVehicleMarker.js";
@@ -316,7 +316,7 @@ export default class SquadFactions {
                 </span>
             `;
 
-        if (FACTION !== "") html += `: <span data-i18n="factions:${FACTION}">${i18next.t(FACTION, { ns: "factions" })}</span>`;
+        if (FACTION !== "") html += ` : <span data-i18n="factions:${FACTION}">${i18next.t(FACTION, { ns: "factions" })}</span>`;
 
         html  += "</span>";
 
@@ -360,7 +360,7 @@ export default class SquadFactions {
      * @param {*} event
      */
     openCard(event) {
-        if ($(event.target).closest(".vehicle-type").length) return;
+        if ($(event.target).closest(".vehicle-type").length && !Browser.mobile) return;
 
         const $card = $(event.currentTarget);
         const $image = $card.find(".image");
@@ -644,8 +644,6 @@ export default class SquadFactions {
             // Reset UI
             $("#team1Vehicles").empty();
             $("#team1CommanderAsset").empty();
-
-            this.loadFactionBackground("#factionImg1", event.target.value);
             
             if ( $("#team1PinButton").hasClass("active") ) this.unpinUnit();
 
@@ -672,9 +670,6 @@ export default class SquadFactions {
             // Reset UI
             $("#team2Vehicles").empty();
             if ( $("#team2PinButton").hasClass("active") ) this.unpinUnit();
-
-            this.loadFactionBackground("#factionImg2", event.target.value);
-
 
             // Broadcast the Faction change to the session if needed
             const broadcast = event.broadcast ?? true;
@@ -743,7 +738,9 @@ export default class SquadFactions {
 
             // Handle click-to-copy
             $(".vehicle-card").off("click").on("click", (event) => { this.openCard(event); });
-            $(".vehicle-type").off("click").on("click", (event) => { this.copyVehicleName(event); });
+
+            if (!Browser.mobile) $(".vehicle-type").off("click").on("click", (event) => { this.copyVehicleName(event); });
+            
 
             // Load Commanders Icons & Tooltips
             this.loadCommanderAssets("#team1CommanderAsset", selectedUnit);
@@ -805,7 +802,7 @@ export default class SquadFactions {
             this.loadCommanderAssets("#team2CommanderAsset", selectedUnit);
 
             // Handle click-to-copy
-            $(".vehicle-type").off("click").on("click", (event) => { this.copyVehicleName(event); });
+            if (!Browser.mobile) $(".vehicle-type").off("click").on("click", (event) => { this.copyVehicleName(event); });
             $(".vehicle-card").off("click").on("click", (event) => { this.openCard(event); });
         });
 
@@ -870,12 +867,6 @@ export default class SquadFactions {
     
         });
 
-    }
-
-
-    loadFactionBackground(DIV, selectedUnit) {
-        $(DIV).empty();
-        if (selectedUnit) $(DIV).append(`<img src="${process.env.API_URL}/img/spawnGroup/${selectedUnit}.webp" class="factionImgs animate__animated animate__fadeIn animate__faster" />`);
     }
 
 
