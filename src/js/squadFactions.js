@@ -65,9 +65,13 @@ export default class SquadFactions {
         const $element = $(state.element);
         const type = $element.data("type");
         const name = $element.data("name");
+        const icon = $element.data("icon");
+
         return $(`
             <div class="unit-option">
-                <img src="${process.env.API_URL}/img/units/${type}.webp" class="unit-logo${isSelection ? " selection" : ""}" alt="${state.text}" />
+
+                ${isSelection ? "" : `<img src="${process.env.API_URL}/img/units/${icon}.webp" class="unit-logo${isSelection ? " selection" : ""}" alt="${state.text}" />`}
+                
                 <div class="unit-texts">
                     <div class="unit-type">${i18next.t(type, { ns: "units" })}</div>
                     ${isSelection ? "" : `<div class="unit-name">${i18next.t(name, { ns: "units" })}</div>`}
@@ -271,14 +275,15 @@ export default class SquadFactions {
             if (faction.factionID == FACTION) {
                 for (const unit of UNITS) {
                     if (unit.unitObjectName === faction.defaultUnit) {
-                        SELECTOR.append(`<option value="${faction.defaultUnit}" data-type="${unit.type}" data-name="${unit.displayName}"></option>`);
+                        SELECTOR.append(`<option value="${faction.defaultUnit}" data-type="${unit.type}" data-icon="${unit.unitIcon}" data-name="${unit.displayName}"></option>`);
                         break;
                     }
                 }
                 for (const type of faction.types) {
                     for (const unit of UNITS) {
                         if (unit.unitObjectName === type.unit) {
-                            SELECTOR.append(`<option value="${type.unit}" data-type="${unit.type}" data-name="${unit.displayName}"></option>`);
+                            console.log(unit)
+                            SELECTOR.append(`<option value="${type.unit}" data-type="${unit.type}" data-icon="${unit.unitIcon}" data-name="${unit.displayName}"></option>`);
                             break;
                         }
                     }

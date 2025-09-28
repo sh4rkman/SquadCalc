@@ -2,16 +2,16 @@
 
 .unit-option {
     display: flex;
-    align-items: center;
+    //align-items: flex-start;
     gap: 10px;
     .unit-logo {
-        border: rgb(56, 56, 56) 1px solid;
-        width: 30px;
-        height: 30px;
-        flex-shrink: 0;
-        object-fit: contain;
-        border-radius: 6px;
-        padding: 2px;
+        //border: rgb(56, 56, 56) 1px solid;
+        width: 35px;
+        height: 35px;
+        //flex-shrink: 0;
+        //object-fit: contain;
+        //border-radius: 6px;
+        //padding: 2px;
         &.selection {
             border: none;
         }
@@ -19,7 +19,7 @@
     .unit-texts {
         display: flex;
         flex-direction: column;
-        justify-content: center;
+        //justify-content: center;
         flex: 1;
         min-width: 0;
     }
