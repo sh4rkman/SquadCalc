@@ -24,7 +24,8 @@ In Invasion and RAAS, now displaying for each possible next flag the percentage 
 - Commander assets are now hidden on layers after unselecting a faction
 - Hovering over the number of available seats now correctly triggers the tooltip
 - Vehicle spawn emplacements are now correctly hidden if the "show main assets" setting is disabled
-- Fixed HellCannon arc so it can be fired from 10° to 90° (Thanks Mooraragi!)
+- Fixed HellCannon data so it can be fired from 10° to 90° (Thanks Mooraragi!)
+- Fixed map grid sometimes not displaying the last letter/number on large maps (fix #362)
 - Fixed main bases on Harju Skirmish v2 (Thanks ghoti!)
 - Fixed flag orders on Kohat_Invasion_v1, Kohat_Invasion_v2, Manicouagan_Invasion_v1, Anvil_Invasion_v1, Harju_Invasion_v3, Narva_Invasion_v1 (Thanks Take The L-iam!)
 
