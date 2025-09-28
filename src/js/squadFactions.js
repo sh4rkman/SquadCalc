@@ -705,10 +705,7 @@ export default class SquadFactions {
         
             const selectedUnit = factionData.units.team1Units.find((unit) => unit.unitObjectName === event.target.value);
         
-            if (!selectedUnit) {
-                console.warn("No matching unit found for", event.target.value);
-                return;
-            }
+            if (!selectedUnit) return;
 
             // Broadcast the map change to the session if needed
             const broadcast = event.broadcast ?? true;
@@ -767,10 +764,7 @@ export default class SquadFactions {
 
             const selectedUnit = factionData.units.team2Units.find((unit) => unit.unitObjectName === event.target.value);
         
-            if (!selectedUnit) {
-                console.warn("No matching unit found for", event.target.value);
-                return;
-            }
+            if (!selectedUnit) return;
 
             // Broadcast the map change to the session if needed
             const broadcast = event.broadcast ?? true;

@@ -1,5 +1,5 @@
 import { Marker, Icon, Browser, DomEvent } from "leaflet";
-import { App } from "../app.js"
+import { App } from "../app.js";
 import tippy from "tippy.js";
 import i18next from "i18next";
 
