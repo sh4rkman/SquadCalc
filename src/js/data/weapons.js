@@ -254,6 +254,26 @@ export var WEAPONS = [
         damageFallOff: 1,
         heightOffset: 3
     },
+    // WIP
+    // {
+    //     name: "Ural-HellCannon",
+    //     velocity: 180,
+    //     deceleration: 0,
+    //     decelerationTime : 0,
+    //     gravityScale: 2,
+    //     minElevation: [10, 85],
+    //     unit: "deg",
+    //     type: "modded",
+    //     angleType: "high",
+    //     elevationPrecision: 1,
+    //     minDistance: 300,
+    //     moa: 300,
+    //     explosionDamage: 300,
+    //     explosionRadius: [1, 75],
+    //     explosionDistanceFromImpact: 2,
+    //     damageFallOff: 1,
+    //     heightOffset: 1.5,
+    // },
     /*
      * Squad AdminTools
      */

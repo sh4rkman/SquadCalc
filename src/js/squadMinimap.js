@@ -643,7 +643,9 @@ export const squadMinimap = Map.extend({
         // If there is a layer selected, reveal capzone when enough zoomed in
         if (!this.layer) return;
 
-        if (this.getZoom() > this.detailedZoomThreshold){
+        
+
+        if (this.getZoom() > this.detailedZoomThreshold && this.layer.isVisible){
             this.layer.revealAllCapzones();
             if (App.userSettings.showMainAssets) {
                 this.layer.mainZones.assets.forEach(asset => { asset.setOpacity(1); });
