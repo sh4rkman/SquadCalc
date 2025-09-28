@@ -92,11 +92,11 @@ export default class SquadFactions {
         this.pinnedFaction = teamMain;
 
         // Set the pinned faction flag in the left side button
-        const $img = $("<img>", {
-            src: `${process.env.API_URL}/img/flags/${country}.webp`,
-            alt: "Faction Icon",
-            class: "faction-img"
-        });
+        const $img = $("<img>")
+            .attr("src", `${process.env.API_URL}/img/flags/${country}.webp`)
+            .attr("alt", "Faction Icon")
+            .addClass("faction-img");
+
         $("#factionsButton button").empty().append($img);
 
         // Find the given faction in the teamfaction unit list
