@@ -24,7 +24,15 @@ export class SquadObjective {
 
         console.debug("creating flag", this.name, "at position", this.position);
         let html = "";
-        if (!this.isMain){ html = this.name;}
+        if (!this.isMain){ 
+            html = this.name;
+        } else {
+            if (this.objectName === "00-Team1 Main") {
+                html = `<span><span data-i18n="common:team1">${i18next.t("team1", { ns: "common" })}</span></span>`;
+            } else {
+                html = `<span><span data-i18n="common:team2">${i18next.t("team2", { ns: "common" })}</span></span>`;
+            }
+        }
 
         this.nameText = new Marker(latlng, {
             interactive: false,
@@ -109,7 +117,6 @@ export class SquadObjective {
         }
 
         fileName = $(dropdownSelector).val();
-
         if (!fileName || !App.userSettings.enableFactions) fileName = "main";
         if (App.userSettings.circlesFlags) fileName = `circles/${fileName}`;
         this.flag.getElement().style.backgroundImage = `url('${process.env.API_URL}/img/flags/${fileName}.webp')`;
@@ -406,7 +413,7 @@ export class SquadObjective {
     
     _handleContextMenu(e){
         
-        if (this.isMain) {
+        if (this.isMain && App.userSettings.enableFactions && process.env.DISABLE_FACTIONS != "true") {
             this.ctxMenu = new FactionCtxMenu(this.layer, this.objCluster.objectDisplayName).open(e);
             return;
         }
