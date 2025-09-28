@@ -19,7 +19,7 @@ footer {
         overflow: hidden;
         transition: max-width 0.3s ease;
         max-width: 1em;
-        min-width: 40em;
+        min-width: 4em;
         pointer-events: none;
         &.expanded {
             max-width: 20em;

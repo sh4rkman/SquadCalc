@@ -16,7 +16,7 @@ export const MAPS = [
             },
             heightmap: {
                 origin: [-2040, -2040],
-                fakeSize: [4081, 4081],
+                size: [4081, 4081],
                 scale: [1, 1, 1],
                 BWlevels: [291, 873],
             }
@@ -36,7 +36,7 @@ export const MAPS = [
     //         },
     //         heightmap: {
     //             origin: [-2032, -2032],
-    //             fakeSize: [3049, 3049],
+    //             size: [3049, 3049],
     //             scale: [1, 1, 0.1],
     //             BWlevels: [2793, 4087]
     //         }
@@ -54,7 +54,7 @@ export const MAPS = [
             },
             heightmap: {
                 origin: [-2040, -2040],
-                fakeSize: [4081, 4081],
+                size: [4081, 4081],
                 scale: [0.75, 0.75, 0.45],
                 BWlevels: [1825, 6640]
             }
@@ -72,7 +72,7 @@ export const MAPS = [
             },
             heightmap: {
                 origin: [-2016, -2142],
-                fakeSize: [4033, 4033],
+                size: [4033, 4033],
                 scale: [1, 1, 1],
                 BWlevels: [0, 2360]
             }
@@ -90,7 +90,7 @@ export const MAPS = [
             },
             heightmap: {
                 origin: [-2040, -2142],
-                fakeSize: [4065, 4065],
+                size: [4065, 4065],
                 scale: [1.003937, 1.003937, 0.8],
                 BWlevels: [2593, 7712]
             }
@@ -108,7 +108,7 @@ export const MAPS = [
             },
             heightmap: {
                 origin: [-2464, -2664],
-                fakeSize: [8129, 4827],
+                size: [8129, 4827],
                 scale: [0.5, 0.5, 4],
                 BWlevels: [1209, 1369]
             }
@@ -126,7 +126,7 @@ export const MAPS = [
             },
             heightmap: {
                 origin: [-2040, -2040],
-                fakeSize: [4081, 4081],
+                size: [4081, 4081],
                 scale: [1, 1, 1],
                 BWlevels: [39, 440]
             }
@@ -144,7 +144,7 @@ export const MAPS = [
             },
             heightmap: {
                 origin: [-1598, -1866],
-                fakeSize: [2806, 2806],
+                size: [2806, 2806],
                 scale: [1, 1, 3.2],
                 BWlevels: [0, 675]
             }
@@ -162,7 +162,7 @@ export const MAPS = [
             },
             heightmap: {
                 origin: [-2032, -2032],
-                fakeSize: [4065, 4065],
+                size: [4065, 4065],
                 scale: [1, 1, 0.40],
                 BWlevels: [0, 5516]
             }
@@ -180,7 +180,7 @@ export const MAPS = [
             },
             heightmap: {
                 origin: [-2032, -2032],
-                fakeSize: [4065, 4065],
+                size: [4065, 4065],
                 scale: [1, 1, 10],
                 BWlevels: [750, 950]
             }
@@ -198,7 +198,7 @@ export const MAPS = [
             },
             heightmap: {
                 origin: [-2040, -2040],
-                fakeSize: [4081, 4081],
+                size: [4081, 4081],
                 scale: [1, 1, 1],
                 BWlevels: [4683, 5542]
             }
@@ -216,7 +216,7 @@ export const MAPS = [
             },
             heightmap: {
                 origin: [-2016, -2016],
-                fakeSize: [4032, 4032],
+                size: [4032, 4032],
                 scale: [1, 1, 1],
                 BWlevels: [1349, 3241]
             }
@@ -234,7 +234,7 @@ export const MAPS = [
             },
             heightmap: {
                 origin: [-2016, -2016],
-                fakeSize: [4033, 4033],
+                size: [4033, 4033],
                 scale: [1, 1, 1.35],
                 BWlevels: [5437, 6846]
             }
@@ -252,7 +252,7 @@ export const MAPS = [
             },
             heightmap: {
                 origin: [-2016, -2016],
-                fakeSize: [4065, 4065],
+                size: [4065, 4065],
                 scale: [1, 1, 0.75],
                 BWlevels: [0, 9775]
             }
@@ -270,7 +270,7 @@ export const MAPS = [
             },
             heightmap: {
                 origin: [-1334, -1715],
-                fakeSize: [6097, 7367],
+                size: [6097, 7367],
                 scale: [0.5, 0.5, 1],
                 BWlevels: [100, 264]
             }
@@ -288,7 +288,7 @@ export const MAPS = [
             },
             heightmap: {
                 origin: [-2167, -2167],
-                fakeSize: [4336, 4336],
+                size: [4336, 4336],
                 scale: [1, 1, 1.5],
                 BWlevels: [5006, 6887]
             }
@@ -306,7 +306,7 @@ export const MAPS = [
             },
             heightmap: {
                 origin: [-1386, -1260],
-                fakeSize: [2773, 1891],
+                size: [2773, 1891],
                 scale: [1, 1, 0.5],
                 BWlevels: [6188, 8903]
             }
@@ -324,7 +324,7 @@ export const MAPS = [
             },
             heightmap: {
                 origin: [-2032, -2032],
-                fakeSize: [4065, 4065],
+                size: [4065, 4065],
                 scale: [1, 1, 3],
                 BWlevels: [2479, 5898]
             }
@@ -342,7 +342,7 @@ export const MAPS = [
             },
             heightmap: {
                 origin: [-1545, -1260],
-                fakeSize: [3061, 2551],
+                size: [3061, 2551],
                 scale: [1, 1, 1.2],
                 BWlevels: [2479, 5898]
             }
@@ -360,7 +360,7 @@ export const MAPS = [
             },
             heightmap: {
                 origin: [-1785, -1785],
-                fakeSize: [4081, 4081],
+                size: [4081, 4081],
                 scale: [1, 1, 0.3],
                 BWlevels: [4326, 6683]
             }
@@ -378,7 +378,7 @@ export const MAPS = [
             },
             heightmap: {
                 origin: [-2016, -2016],
-                fakeSize: [4033, 4033],
+                size: [4033, 4033],
                 scale: [1, 1, 1],
                 BWlevels: [4940, 5523]
             }
@@ -396,7 +396,7 @@ export const MAPS = [
             },
             heightmap: {
                 origin: [-2016, -2016],
-                fakeSize: [4033, 4033],
+                size: [4033, 4033],
                 scale: [1, 1, 1],
                 BWlevels: [4940, 5523]
             }
@@ -414,7 +414,7 @@ export const MAPS = [
             },
             heightmap: {
                 origin: [-2016, -2016],
-                fakeSize: [4033, 4033],
+                size: [4033, 4033],
                 scale: [1, 1, 0.28],
                 BWlevels: [410, 9643]
             }
@@ -432,7 +432,7 @@ export const MAPS = [
             },
             heightmap: {
                 origin: [-2040, -2040],
-                fakeSize: [4081, 4081],
+                size: [4081, 4081],
                 scale: [1, 1, 1],
                 BWlevels: [1349, 3241]
             }
@@ -455,7 +455,7 @@ export const MAPS = [
             },
             heightmap: {
                 origin: [-4811, -3947],
-                fakeSize: [7113, 5081],
+                size: [7113, 5081],
                 scale: [1.2, 1.2, 3.5],
                 BWlevels: [952, 4074]
             }
@@ -473,7 +473,7 @@ export const MAPS = [
             },
             heightmap: {
                 origin: [-683, -373],
-                fakeSize: [1427, 1055],
+                size: [1427, 1055],
                 scale: [1, 1, 0.75],
                 BWlevels: [1375, 1854]
             }
@@ -491,7 +491,7 @@ export const MAPS = [
             },
             heightmap: {
                 origin: [-2287, -2287], // SDK is wrong, this is deduced instead
-                fakeSize: [4573, 4573],
+                size: [4573, 4573],
                 scale: [1, 1, 1.25],
                 BWlevels: [3689, 4111]
             }
@@ -509,7 +509,7 @@ export const MAPS = [
             },
             heightmap: {
                 origin: [-3302, -3302], // SDK is wrong, this is deduced instead
-                fakeSize: [6351, 6351],
+                size: [6351, 6351],
                 scale: [1, 1, 4],
                 BWlevels: [0, 833]
             }

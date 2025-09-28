@@ -10,16 +10,6 @@ jobs:
     name: ssh/pull/build
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
-
-    # Extract the version from package.json
-    - name: Get version from package.json
-      id: get_version
-      run: |
-        VERSION=$(jq -r '.version' package.json)
-        echo "VERSION=$VERSION" >> $GITHUB_ENV
-
     - name: Pull code & Build
       uses: appleboy/ssh-action@v1.2.2
       with:

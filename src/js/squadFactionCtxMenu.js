@@ -51,6 +51,7 @@ export class FactionCtxMenu {
 
     openUnitsCtxMenu(factionId) {
         let html = "<div class='faction-grid animate__animated animate__fadeIn animate__faster'>";
+        
         if (this.FACTION_SELECTOR.val() != factionId) {
             if (this.flagName === this.layer.factions.pinnedFaction) this.layer.factions.unpinUnit();
             this.FACTION_SELECTOR.val(factionId).trigger($.Event("change", { broadcast: true }));
@@ -65,7 +66,10 @@ export class FactionCtxMenu {
 
                     const selected = this.UNIT_SELECTOR.val() === unitId ? "_selected" : "";
                     html += `<div class="faction-item units ${selected}" id="${unit.unitObjectName}" title="${i18next.t(unit.type, { ns: "units" })} - ${i18next.t(unit.displayName, { ns: "units" })}">
-                        <img src="${process.env.API_URL}/img/units/${unit.type}.webp" alt="Faction ${faction.factionID}" />
+                        <img 
+                            src="${process.env.API_URL}/img/units/${unit.unitIcon}.webp" 
+                            onerror="this.onerror=null; this.src='${process.env.API_URL}/img/units/placeholder.webp';"
+                        />
                         <div class="faction-label">${i18next.t(unit.type, { ns: "units" })}</div>
                     </div>`;
                 });

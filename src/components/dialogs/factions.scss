@@ -2,16 +2,16 @@
 
 .unit-option {
     display: flex;
-    align-items: center;
+    // align-items: flex-start;
     gap: 10px;
     .unit-logo {
-        border: rgb(56, 56, 56) 1px solid;
-        width: 30px;
-        height: 30px;
-        flex-shrink: 0;
-        object-fit: contain;
-        border-radius: 6px;
-        padding: 2px;
+        // border: rgb(56, 56, 56) 1px solid;
+        width: 35px;
+        height: 35px;
+        // flex-shrink: 0;
+        // object-fit: contain;
+        // border-radius: 6px;
+        // padding: 2px;
         &.selection {
             border: none;
         }
@@ -19,7 +19,7 @@
     .unit-texts {
         display: flex;
         flex-direction: column;
-        justify-content: center;
+        // justify-content: center;
         flex: 1;
         min-width: 0;
     }
@@ -254,6 +254,7 @@
                                 font-size: 14px;
                                 letter-spacing: 0;
                                 margin-left: 13px;
+                                pointer-events: none;
                             }
                             &:hover {
                                 background: rgba(26, 25, 25, 0.9);
@@ -498,23 +499,19 @@
 }
 
 #commanderAssets {
-    // border: solid red 1px;
-    height: 50px;
     width: 100%;
     display: flex;
     flex-direction: row;
     margin: 1em 0;
     .commanderAssets {
-        // border: solid blue 1px;
         flex: 1;
         display: flex;
         align-items: center;
         justify-content: center;
         gap: 0.5em;
         img {
+            height: 50px;
             margin: unset;
-            max-height: 100%;
-            height: auto;
             cursor: pointer;
             border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 6px;

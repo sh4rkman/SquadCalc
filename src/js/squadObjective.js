@@ -20,6 +20,7 @@ export class SquadObjective {
         this.isHidden = false;
         this.position = cluster.pointPosition;
         this.isNext = false;
+        this.percentage = "";
 
         console.debug("creating flag", this.name, "at position", this.position);
         let html = "";
@@ -39,6 +40,19 @@ export class SquadObjective {
             })
         }).addTo(this.layerGroup);
 
+        // this.percentageText = new Marker(latlng, {
+        //     interactive: false,
+        //     keyboard: false,
+        //     icon: new DivIcon({
+        //         className: "objText",
+        //         keyboard: false,
+        //         html: "100%",
+        //         iconSize: [300, 20],
+        //         iconAnchor: App.userSettings.circlesFlags ? [-150, 38] : [-150, 32],
+        //         shadowUrl: "../img/icons/markers/weapons/marker_shadow.webp",
+        //         shadowSize: [0, 0],
+        //     })
+        // }).addTo(this.layerGroup);
 
         // Temporary icon to avoid 404s on leaflet shadow marker
         let tempIcon = new DivIcon({
@@ -57,6 +71,22 @@ export class SquadObjective {
         this.flag.on("pointerout", this._handleMouseOut, this);
     }
 
+
+    showPercentage() {
+        this.percentageText = new Marker(this.latlng, {
+            interactive: false,
+            keyboard: false,
+            icon: new DivIcon({
+                className: "objText",
+                keyboard: false,
+                html: Math.round(this.percentage) + "%",
+                iconSize: [300, 20],
+                iconAnchor: App.userSettings.circlesFlags ? [150, -18] : [150, -12],
+                shadowUrl: "../img/icons/markers/weapons/marker_shadow.webp",
+                shadowSize: [0, 0],
+            })
+        }).addTo(this.layerGroup);
+    }
 
     update(){
         if (this.isSelected){
@@ -134,20 +164,24 @@ export class SquadObjective {
             nameTextClassName += " main";
 
             if (process.env.DISABLE_FACTIONS != "true" && App.userSettings.enableFactions) {
+
                 if (this.objectName === "00-Team1 Main") {
-                    if ($(".dropbtn8").val() != null) html = `<div data-i18n="factions:${$(".dropbtn8").val()}">${i18next.t($(".dropbtn8").val(), { ns: "factions" })}</div>`;
-                    else html = i18next.t("team1", { ns: "common" });
+                    html = `<span><span data-i18n="common:team1">${i18next.t("team1", { ns: "common" })}</span>`;
+                    if ($(".dropbtn8").val() != null) html += ` : <span data-i18n="factions:${$(".dropbtn8").val()}">${i18next.t($(".dropbtn8").val(), { ns: "factions" })}</span>`;
                 } else {
-                    if ($(".dropbtn10").val() != null) html = `<div data-i18n="factions:${$(".dropbtn10").val()}">${i18next.t($(".dropbtn10").val(), { ns: "factions" })}</div>`;
-                    else html = `<div data-i18n="common:team2">${i18next.t("common:team2")}</div>;`;
+                    html = `<span><span data-i18n="common:team2">${i18next.t("team2", { ns: "common" })}</span>`;
+                    if ($(".dropbtn10").val() != null) html += ` : <span data-i18n="factions:${$(".dropbtn10").val()}">${i18next.t($(".dropbtn10").val(), { ns: "factions" })}</span>`;
                 }
+                html += "</span>";
+
             } else {
-                if (this.objectName === "00-Team1 Main") html = i18next.t("common:team1");
-                else html = `<div data-i18n="common:team2">${i18next.t("common:team2")}</div>;`;
+                if (this.objectName === "00-Team1 Main") html = `<span data-i18n="common:team1">${i18next.t("team1", { ns: "common" })}</span>`;
+                else html = `<span data-i18n="common:team2">${i18next.t("team2", { ns: "common" })}</span>`;
             }
         }
 
         this.nameText.removeFrom(this.layerGroup).remove();
+        if (this.percentageText) this.percentageText.removeFrom(this.layerGroup).remove();
         this.nameText = new Marker(this.latlng, {
             interactive: false,
             keyboard: false,
@@ -437,6 +471,7 @@ export class SquadObjective {
     hide(){
         //console.debug("      -> Hiding flag: ", this.name);
         this.nameText.removeFrom(this.layerGroup);
+        this.percentageText?.removeFrom(this.layerGroup).remove();
         this.flag.removeFrom(this.layerGroup);
         this.flag.options.interactive = false;
         this.flag.off();
@@ -447,10 +482,10 @@ export class SquadObjective {
     _setOpacity(value){
         this.flag.setOpacity(value);
         this.nameText.setOpacity(value);
+        this.percentageText?.setOpacity(value);
 
         // if opacity = 0, this.flag can't be clicked
         // css cursor is set to default on hover
-
         if (value === 0){
             $(".flag").css("pointer-events", "none");
         } else {
@@ -462,22 +497,24 @@ export class SquadObjective {
     _fadeIn(){
         this.flag.setOpacity(1);
         this.nameText.setOpacity(1);
+        this.percentageText?.setOpacity(1);
         this.isFadeOut = false;
     }
 
     _fadeOut(){
         this.flag.setOpacity(0.15);
         this.nameText.setOpacity(0.15);
+        this.percentageText?.setOpacity(0.15);
         this.isFadeOut = true;
     }
 
     delete(){
         this.nameText.removeFrom(this.layerGroup).remove();
+        this.percentageText?.removeFrom(this.layerGroup).remove();
         this.flag.removeFrom(this.layerGroup).remove();
     }
 
     show(){
-        //console.debug("      -> Showing flag: ", this.name);
         this.nameText.setOpacity(1).addTo(this.layerGroup);
         this.flag.setOpacity(1).addTo(this.layerGroup);
         this.unselect();

@@ -1,9 +1,43 @@
-# <img src="https://img.shields.io/badge/-hotfix-grey?style=for-the-badge">  **39.1.1** *(2025-09-05)*
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge"> **39.2.0** *(2025-09-28)*
 
-<img src="https://img.shields.io/badge/-bug%20fixes-b22"> Commander Assets icons now loads properly
+
+<img src="https://img.shields.io/badge/-new%20features-green"> 
+
+- **Map Spawns**  
+SquadCalc now displays the available spawns for each team. This includes main bases as well as temporary spawns in Invasion, and advanced spawns that appear later in the game.
+
+- **Next flags %**  
+In Invasion and RAAS, now displaying for each possible next flag the percentage chance that it will appear in the layer.
+
+<img src="https://img.shields.io/badge/-%20improv%20-orange">  
+
+- Vehicle tooltips now open with a 200ms delay to avoid accidental openings
+- Improved faction selector panel responsiveness on mobile  
+- Vehicle names can no longer be clicked on mobile to avoid misclicks
+- Vehicle spawns now show their reserved vehicle type, if any
+- Main base names now include the team number for clarity (Thanks AndersHogqvist & grey275, fix #361)
+
+<img src="https://img.shields.io/badge/-bug%20fixes-b22">   
+
+- Fixed bottom-right buttons being clickable even when not displayed (Thanks Madlifer!)
+- Commander assets are now hidden on layers where they are not available (fix #358)
+- Commander assets are now hidden on layers after unselecting a faction
+- Hovering over the number of available seats now correctly triggers the tooltip
+- Vehicle spawn emplacements are now correctly hidden if the "show main assets" setting is disabled
+- Fixed HellCannon data so it can be fired from 10° to 90° (Thanks Mooraragi!)
+- Fixed map grid sometimes not displaying the last letter/number on large maps (fix #362)
+- Fixed main bases on Harju Skirmish v2 (Thanks ghoti!)
+- Fixed flag orders on Kohat_Invasion_v1, Kohat_Invasion_v2, Manicouagan_Invasion_v1, Anvil_Invasion_v1, Harju_Invasion_v3, Narva_Invasion_v1 (Thanks Take The L-iam!)
+
 
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
+
+
+
+# <img src="https://img.shields.io/badge/-hotfix-grey?style=for-the-badge">  **39.1.1** *(2025-09-05)*
+
+<img src="https://img.shields.io/badge/-bug%20fixes-b22"> Commander Assets icons now loads properly
 
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->

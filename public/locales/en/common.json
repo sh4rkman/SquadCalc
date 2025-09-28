@@ -55,5 +55,9 @@
     "value": "Value",
     "ticket": "Ticket",
     "tickets": "Tickets",
-    "passengers": "Available Seats"
+    "passengers": "Available Seats",
+    "noCommander": "No commander assets",
+    "spawn": "Spawn",
+    "temporary": "Temporary",
+    "disabledSpawn": "Disabled until first cap"
 }
