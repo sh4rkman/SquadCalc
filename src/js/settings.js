@@ -88,6 +88,9 @@ export function loadSettings(){
         $(".factionSettings").hide();
     }
 
+    App.userSettings.showNextFlagsPercentages = loadLocalSetting("settings-show-next-flags-percentages");
+    $("#showNextFlagPercentageSettings").prop("checked", App.userSettings.showNextFlagsPercentages);
+
     App.userSettings.showMapBorders = loadLocalSetting("settings-show-map-borders");
     $("#showMapBordersSettings").prop("checked", App.userSettings.showMapBorders);
 
@@ -321,6 +324,21 @@ $("#showMainZonesSettings").on("change", function() {
             rectangle.setStyle({ fillOpacity: 0.1, opacity: 1 });
         }  
     });
+});
+
+
+$("#showNextFlagPercentageSettings").on("change", function() {
+    var val = $("#showNextFlagPercentageSettings").is(":checked");
+    App.userSettings.showNextFlagsPercentages = val;
+    localStorage.setItem("settings-show-next-flags-percentages", +val);
+
+    if (App.minimap.layer){
+        if (val) {
+            App.minimap.layer.flags.forEach(flag => { if (flag.isNext) flag.showPercentage(); });
+        } else {
+            App.minimap.layer.flags.forEach(flag => { flag.percentageText?.removeFrom(App.minimap.layer.layerGroup).remove(); });
+        }
+    }
 });
 
 

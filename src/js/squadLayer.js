@@ -1127,6 +1127,9 @@ export default class SquadLayer {
             flag.isNext = true;
         });
 
+
+        if (!App.userSettings.showNextFlagsPercentages) return;
+
         // Collect only reachable clusters
         const validClusters = nextFlags
             .flatMap(flag => flag.clusters)

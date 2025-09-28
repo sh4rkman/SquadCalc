@@ -41,6 +41,7 @@
         "showMainZones": "Hauptzonen anzeigen",
         "showMainAssets": "Hauptressourcen anzeigen",
         "showMapBorders": "Kartenrand der Ebene anzeigen",
+        "showNextFlagPercentage": "Wahrscheinlichkeiten der nächsten Flaggen anzeigen",
     "factionsOptions": "Fraktionen-Optionen",
         "defaultFactions": "Standardfraktionen der Ebene automatisch auswählen",
         "enableFactions": "Fraktionen aktivieren",

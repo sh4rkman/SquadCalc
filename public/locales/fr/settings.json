@@ -41,6 +41,7 @@
         "showMainZones": "Zones de main",
         "showMainAssets": "Déployables de main",
         "showMapBorders": "Bordures de la carte",
+        "showNextFlagPercentage": "Afficher les probabilités des prochains drapeaux",
     "factionsOptions": "Options des Factions",
         "defaultFactions": "Selection automatique des factions par défaut",
         "enableFactions": "Activer les factions",
