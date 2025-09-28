@@ -52,5 +52,10 @@
     "atgm": "ATGM",
     "value": "Wert",
     "ticket": "Ticket",
-    "tickets": "Tickets"
+    "tickets": "Tickets",
+    "passengers": "Verfügbare Sitze",
+    "noCommander": "Keine Kommandanten-Ressourcen",
+    "spawn": "Erscheinen",
+    "temporary": "Vorübergehend",
+    "disabledSpawn": "Bis zur ersten Eroberung deaktiviert"
 }

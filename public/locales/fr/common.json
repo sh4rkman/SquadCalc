@@ -49,5 +49,13 @@
     "randomSpawn": "Aléatoire",
     "dedicactedSpawn": "Fixe",
     "amphibious": "Amphibi",
-    "atgm": "Missile antichar"
+    "atgm": "Missile antichar",
+    "value": "Valeur",
+    "ticket": "Ticket",
+    "tickets": "Tickets",
+    "passengers": "Places disponibles",
+    "noCommander": "Pas d'équipements de commandant",
+    "spawn": "Apparition",
+    "temporary": "Temporaire",
+    "disabledSpawn": "Désactivé jusqu'à la première capture"
 }
