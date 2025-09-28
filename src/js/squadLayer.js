@@ -984,7 +984,6 @@ export default class SquadLayer {
 
     // WIP
     refreshLane(flag) {
-        console.log("clicked flag:", flag.name);
 
         const laneObjects = this.layerData.capturePoints.lanes.laneObjects;
 

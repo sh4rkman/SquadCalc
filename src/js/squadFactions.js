@@ -282,7 +282,6 @@ export default class SquadFactions {
                 for (const type of faction.types) {
                     for (const unit of UNITS) {
                         if (unit.unitObjectName === type.unit) {
-                            console.log(unit)
                             SELECTOR.append(`<option value="${type.unit}" data-type="${unit.type}" data-icon="${unit.unitIcon}" data-name="${unit.displayName}"></option>`);
                             break;
                         }
