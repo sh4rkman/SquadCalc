@@ -56,6 +56,6 @@
     "passengers": "Places disponibles",
     "noCommander": "Pas d'équipements de commandant",
     "spawn": "Spawn",
-    "temporary": "Temporaire",
+    "temporary": "Spawn Temporaire",
     "disabledSpawn": "Désactivé jusqu'à la première capture"
 }

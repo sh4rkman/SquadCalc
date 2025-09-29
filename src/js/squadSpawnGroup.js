@@ -103,7 +103,7 @@ export const squadSpawnGroup = Marker.extend({
         tip.popper.addEventListener("contextmenu", e => e.preventDefault());
 
         let spawnName = i18next.t("common:spawn");
-        if (this.temporary) spawnName = `${i18next.t("common:temporary")} ${spawnName}`;
+        if (this.temporary) spawnName = `${i18next.t("common:temporary")}`;
 
         let html = `
             <div class='spawnGroupCard animate__animated animate__fadeIn animate__faster'>

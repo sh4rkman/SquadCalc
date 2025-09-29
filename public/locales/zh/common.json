@@ -58,6 +58,6 @@
     "passengers": "可用座位",
     "noCommander": "无指挥官资源",
     "spawn": "生成",
-    "temporary": "临时",
+    "temporary": "临时生成",
     "disabledSpawn": "首次占领前禁用"
 }
