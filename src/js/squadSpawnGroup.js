@@ -1,4 +1,5 @@
 import { Marker, Icon, Browser, DomEvent } from "leaflet";
+import { App } from "../app.js";
 import tippy from "tippy.js";
 import i18next from "i18next";
 
@@ -78,7 +79,7 @@ export const squadSpawnGroup = Marker.extend({
         let team, teamName;
 
         if (this.data.team === "Team One" || this.data.team === "Team Neutral") {
-            if (this.layer.factions.FACTION1_SELECTOR.val()) {
+            if (this.layer.factions?.FACTION1_SELECTOR.val() && App.userSettings.enableFactions && process.env.DISABLE_FACTIONS != "true") {
                 team = this.layer.factions.FACTION1_SELECTOR.val();
                 teamName = i18next.t(`factions:${this.layer.factions.FACTION1_SELECTOR.val()}`);
             } 
@@ -88,7 +89,7 @@ export const squadSpawnGroup = Marker.extend({
             }
         } 
         else {
-            if (this.layer.factions.FACTION2_SELECTOR.val()) {
+            if (this.layer.factions?.FACTION2_SELECTOR.val() && App.userSettings.enableFactions && process.env.DISABLE_FACTIONS != "true") {
                 team = this.layer.factions.FACTION2_SELECTOR.val();
                 teamName = i18next.t(`factions:${this.layer.factions.FACTION2_SELECTOR.val()}`);
             } 
@@ -102,7 +103,7 @@ export const squadSpawnGroup = Marker.extend({
         tip.popper.addEventListener("contextmenu", e => e.preventDefault());
 
         let spawnName = i18next.t("common:spawn");
-        if (this.temporary) spawnName = `${i18next.t("common:temporary")} ${spawnName}`;
+        if (this.temporary) spawnName = `${i18next.t("common:temporary")}`;
 
         let html = `
             <div class='spawnGroupCard animate__animated animate__fadeIn animate__faster'>

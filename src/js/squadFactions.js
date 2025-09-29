@@ -92,11 +92,11 @@ export default class SquadFactions {
         this.pinnedFaction = teamMain;
 
         // Set the pinned faction flag in the left side button
-        const $img = $("<img>", {
-            src: `${process.env.API_URL}/img/flags/${country}.webp`,
-            alt: "Faction Icon",
-            class: "faction-img"
-        });
+        const $img = $("<img>")
+            .attr("src", `${process.env.API_URL}/img/flags/${country}.webp`)
+            .attr("alt", "Faction Icon")
+            .addClass("faction-img");
+
         $("#factionsButton button").empty().append($img);
 
         // Find the given faction in the teamfaction unit list
@@ -705,10 +705,7 @@ export default class SquadFactions {
         
             const selectedUnit = factionData.units.team1Units.find((unit) => unit.unitObjectName === event.target.value);
         
-            if (!selectedUnit) {
-                console.warn("No matching unit found for", event.target.value);
-                return;
-            }
+            if (!selectedUnit) return;
 
             // Broadcast the map change to the session if needed
             const broadcast = event.broadcast ?? true;
@@ -767,10 +764,7 @@ export default class SquadFactions {
 
             const selectedUnit = factionData.units.team2Units.find((unit) => unit.unitObjectName === event.target.value);
         
-            if (!selectedUnit) {
-                console.warn("No matching unit found for", event.target.value);
-                return;
-            }
+            if (!selectedUnit) return;
 
             // Broadcast the map change to the session if needed
             const broadcast = event.broadcast ?? true;

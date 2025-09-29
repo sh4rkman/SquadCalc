@@ -1032,10 +1032,9 @@ export default class SquadLayer {
 
             // If the cluster is in front of the clicked flag, show it
             if (position > this.currentPosition){
-        
                 console.debug(`  -> ${cluster.name}`);
                 if (preview) this._fadeInCluster(cluster, flag);  
-                else  this._showCluster(cluster);
+                else this._showCluster(cluster);
 
                 // If cluster is directly in front of the clicked flag, count the next flags
                 if (Math.abs(position) === this.currentPosition+1){
@@ -1120,12 +1119,19 @@ export default class SquadLayer {
      */
     handleNextFlags(nextFlags, backward, reachableClusters) {
 
+        // Only one flag in front ? Click it adn stop here
+        if (nextFlags.length === 1 && !backward) {
+            this._handleFlagClick(nextFlags[0], false);
+            return;
+        } 
+
         // Highlight the next flags with a proper class
         nextFlags.forEach(flag => {
             flag.flag._icon.classList.add("next");
             flag.flag.options.icon.options.className = "flag flag" + flag.position + " next";
             flag.isNext = true;
         });
+
 
         // Collect only reachable clusters
         const validClusters = nextFlags
@@ -1142,13 +1148,7 @@ export default class SquadLayer {
         const clusterWeight = uniqueClusters.length > 0 ? 100 / uniqueClusters.length : 0;
 
         nextFlags.forEach(flag => {
-            let percentage = 0;
-
-            // console.log("flag", flag.name)
-            // flag.clusters.forEach((cluster) => {
-            //     console.log("  -> ", cluster.name)
-            // })
-            
+            let percentage = 0;          
 
             // Only check reachable clusters
             uniqueClusters.forEach(cluster => {
@@ -1167,12 +1167,10 @@ export default class SquadLayer {
             });
 
             flag.percentage = percentage;
-            flag.showPercentage();
+            if (App.userSettings.showNextFlagsPercentages) flag.showPercentage();
 
         });
 
-        // Only one flag in front ? Click it
-        if (nextFlags.length === 1 && !backward) this._handleFlagClick(nextFlags[0], false);
     }
 
 

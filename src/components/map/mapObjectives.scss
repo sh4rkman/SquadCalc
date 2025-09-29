@@ -101,6 +101,7 @@ $flag-circle-opacity: 0.2;
         }
     }
     &.main.selectable {
+            background-color: rgb(197, 0, 0);
             outline: 3px rgb(143, 0, 0) solid!important;
         &:focus {
             outline: 3px rgb(143, 0, 0) solid!important;

@@ -1,3 +1,22 @@
+# <img src="https://img.shields.io/badge/-hotfix-grey?style=for-the-badge"> **39.2.1** *(2025-09-29)*
+
+<img src="https://img.shields.io/badge/-%20improv%20-orange">  
+
+- Added a setting to enable/disable next flag probabilities (fix #369)
+
+<img src="https://img.shields.io/badge/-bug%20fixes-b22">   
+
+- Fixed bottom-right buttons being clickable even when not displayed (fix #367)
+- Mains now shows "Team 1" / "Team 2" when factions are disabled
+- FactionContextMenu is now disabled when factions are disabled (fix #368)
+- SpawnPoints now correctly display a generic "team1/2" image on hover when factions are disabled
+- Fixed mains icons having no background color when no faction are selected
+- Fixed AlBasrah Invasion layers that couldn't be fully completed
+- Fixed missing translations for Commander/SpawnPoints (fix #365)
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
+
 # <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge"> **39.2.0** *(2025-09-28)*
 
 
