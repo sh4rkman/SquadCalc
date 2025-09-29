@@ -15,17 +15,42 @@
  * License: MIT
  */
 
-import { Polygon } from "leaflet";
+import { Polygon, DomEvent } from "leaflet";
+
+
 
 export class Hexagon extends Polygon {
+
+    // single shared cycle
+    static COLORS = ["MediumBlue", "firebrick", "white"];
 
     constructor(center, radius, options = {}) {
         const centerArr = Hexagon._validateCenter(center);
         const rot = Hexagon._validateRotation(options.rotation || 0);
-        super(Hexagon._buildCoords(centerArr[0], centerArr[1], radius, rot), options);
+        super(Hexagon._buildCoords(centerArr[0], centerArr[1], radius, rot),   {
+            ...options,
+            className: (options.className || "") + " hexagon-shape"
+        });
         this._center = centerArr;
         this._radius = radius;
         this._rotation = rot;
+
+        // determine starting index
+        const color = options.color || Hexagon.COLORS[0];
+        const idx = Hexagon.COLORS.findIndex(c => c.toLowerCase() === color.toLowerCase());
+        this._colorIndex = idx !== -1 ? idx : 0;
+
+        this.setStyle({
+            color: Hexagon.COLORS[this._colorIndex],
+            fillColor: Hexagon.COLORS[this._colorIndex],
+            fillOpacity: options.fillOpacity ?? 0.2,
+            weight: options.weight ?? 1
+        });
+
+        // add click handler
+        this.on("contextmenu", (e) => this._cycleColor(e));
+        this.on("pointerover", () => { this.setStyle({ fillOpacity: 0.5 }); });
+        this.on("pointerout", () => { this.setStyle({ fillOpacity: 0.2 }); });
     }
 
     static _buildCoords(lat, lng, radius, rotation) {
@@ -95,5 +120,13 @@ export class Hexagon extends Polygon {
 
     getRotation() {
         return this._rotation * 180 / Math.PI;
+    }
+
+    _cycleColor(e) {
+        DomEvent.preventDefault(e);
+        DomEvent.stopPropagation(e);
+        this._colorIndex = (this._colorIndex + 1) % Hexagon.COLORS.length;
+        const color = Hexagon.COLORS[this._colorIndex];
+        this.setStyle({ color, fillColor: color });
     }
 }

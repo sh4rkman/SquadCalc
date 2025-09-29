@@ -290,10 +290,13 @@ export default class SquadLayer {
         Object.values(capturePoints.hexs.hexs).forEach((hex) => {
             const LATLNG = this.convertToLatLng(hex.location_x, hex.location_y);
             const HEXRADIUS = (hex.boxExtent.location_x * this.map.gameToMapScale) / 100;
-            const teamColors = { 0: "white", 1: "MediumBlue", 2: "firebrick" };
-            const color = teamColors[hex.initialTeam];
+            const teamColors = {
+                0: "white",
+                1: "MediumBlue",
+                2: "firebrick"
+            };
             
-            new Hexagon(LATLNG, HEXRADIUS, {color: color, weight: 1}).addTo(this.activeLayerMarkers);
+            new Hexagon(LATLNG, HEXRADIUS, {color: teamColors[hex.initialTeam], weight: 1}).addTo(this.activeLayerMarkers);
             new Marker(LATLNG, {
                 interactive: false,
                 icon: new DivIcon({
@@ -304,6 +307,18 @@ export default class SquadLayer {
                 })
             }).addTo(this.activeLayerMarkers);
         });
+
+        // Pre-select first main flag
+        if (this.gamemode === "Invasion") {
+            this.mains.forEach((main) => {
+                if (main.objectName.toLowerCase().includes("team1")){
+                    main._handleClick();
+                    return;
+                }
+            });
+        }
+
+
     }
 
 
@@ -821,6 +836,7 @@ export default class SquadLayer {
 
 
     _handleFlagClick(flag, broadcast = true) {
+        
         let backward = false;
 
         if (this.selectedFlags.length === 0){
