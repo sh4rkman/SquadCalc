@@ -123,7 +123,7 @@ export const squadMinimap = Map.extend({
         if (this.grid) this.grid.remove();
         if (this.layer) this.layer = "";
 
-        this.grid = new squadGrid(this);
+        this.grid = new squadGrid(this, {opacity: App.userSettings.gridOpacity}).addTo(this.layerGroup);
         this.grid.setBounds([[0,0], [-this.pixelSize, this.pixelSize]]);
 
         // load map
@@ -379,22 +379,6 @@ export const squadMinimap = Map.extend({
         this.activeWeaponsMarkers.eachLayer(function (weapon) {
             weapon.updateWeapon();
         });
-    },
-
-
-    /**
-     * add Grid to minimap layers
-     */
-    showGrid: function(){
-        this.grid.addTo(this.layerGroup);
-    },
-
-
-    /**
-     * Hide Grid from minimap layers
-     */
-    hideGrid: function(){
-        this.grid.removeFrom(this.layerGroup);
     },
 
 

@@ -60,6 +60,7 @@ export default LayerGroup.extend({
         LayerGroup.prototype.initialize.call(this);
         Util.setOptions(this, options);
         this.map = map;
+        this.opacity = options?.opacity ?? 1;
     },
 
     clearLines() {
@@ -91,6 +92,13 @@ export default LayerGroup.extend({
         this.clearLines();
     },
 
+
+    setOpacity(opacity) {
+        this.opacity = opacity;
+        this.updateLineOpacity();
+    },
+
+
     /**
    * Sets opacity of subgrid lines based on zoom level.
    */
@@ -102,23 +110,23 @@ export default LayerGroup.extend({
         const mapZoomPadding = this.map.activeMap.size /4000;
 
         if (currentZoom >= 3.7 + mapZoomPadding) {
-            this.setLinesWeight(this.kpLines, 3);
-            this.setLinesOpacity(this.s1Lines, 0.8);
-            this.setLinesWeight(this.s1Lines, 1.5);
-            this.setLinesOpacity(this.s2Lines, 1);
-            this.setLinesWeight(this.s2Lines, 0.5);
+            this.setLinesWeight(this.kpLines, 3 * this.opacity);
+            this.setLinesOpacity(this.s1Lines, 0.8 * this.opacity);
+            this.setLinesWeight(this.s1Lines, 1.5 * this.opacity);
+            this.setLinesOpacity(this.s2Lines, 1 * this.opacity);
+            this.setLinesWeight(this.s2Lines, 0.5 * this.opacity);
         }
         else if (currentZoom >= 2 + mapZoomPadding) {
-            this.setLinesWeight(this.kpLines, 2);
-            this.setLinesOpacity(this.kpLines, 0.7);
-            this.setLinesOpacity(this.s1Lines, 0.3);
-            this.setLinesOpacity(this.s2Lines, 0);
+            this.setLinesWeight(this.kpLines, 2 * this.opacity);
+            this.setLinesOpacity(this.kpLines, 0.7 * this.opacity);
+            this.setLinesOpacity(this.s1Lines, 0.3 * this.opacity);
+            this.setLinesOpacity(this.s2Lines, 0 * this.opacity);
         } 
         else {
-            this.setLinesWeight(this.kpLines, 0.5);
-            this.setLinesOpacity(this.kpLines, 1);
-            this.setLinesOpacity(this.s1Lines, 0);
-            this.setLinesOpacity(this.s2Lines, 0);
+            this.setLinesWeight(this.kpLines, 0.5 * this.opacity);
+            this.setLinesOpacity(this.kpLines, 1 * this.opacity);
+            this.setLinesOpacity(this.s1Lines, 0 * this.opacity);
+            this.setLinesOpacity(this.s2Lines, 0 * this.opacity);
         }
     },
 

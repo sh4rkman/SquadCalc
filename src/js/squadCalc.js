@@ -231,7 +231,7 @@ export default class SquadCalc {
             this.minimap.spin(false);
             $("#layerSelector").show();
 
-            if (!currentUrl.searchParams.has("session")) $(document).trigger("layers:loaded");
+            $(document).trigger("layers:loaded");
 
         }).catch(error => {
             $("#layerSelector").hide();
@@ -406,18 +406,6 @@ export default class SquadCalc {
         }
 
         if (this.ui == 1) this.loadMapUIMode();
-
-        $(document).on("change", ".dropbtn6", (event) => {
-            this.userSettings.fontSize = event.target.value;
-            localStorage.setItem("settings-font-size", this.userSettings.fontSize);
-            this.changeFontSize();
-        });
-
-        $(document).on("change", ".dropbtn7", (event) => {
-            this.userSettings.markerSize = event.target.value;
-            localStorage.setItem("settings-marker-size", this.userSettings.markerSize);
-            this.changeIconsSize();
-        });
 
         // Add Events listeners
 
@@ -788,12 +776,6 @@ export default class SquadCalc {
         });
 
         this.show();
-    }
-
-    changeIconsSize(){
-        this.minimap.activeMarkers.eachLayer((marker) => {
-            marker.updateIconSize();
-        });
     }
 
     changeFontSize(){
@@ -1329,6 +1311,7 @@ export default class SquadCalc {
         const arrows = [];
         const circles = [];
         const rectangles = [];
+        const hexs = [];
         const activeWeapon = this.WEAPON_SELECTOR.val();
         const activeMap = this.MAP_SELECTOR.val();
         const activeLayer = this.LAYER_SELECTOR.val();
@@ -1390,9 +1373,15 @@ export default class SquadCalc {
             this.minimap.layer.selectedFlags.forEach(flag => {
                 selectedFlags.push(flag.objectName);
             });
+            this.minimap.layer.hexs.forEach((hex) => {
+                hexs.push({
+                    number: hex._hexNumber,
+                    colorIndex: hex._colorIndex,
+                });
+            });
         }
-    
-        return { weapons, targets, markers, arrows, circles, rectangles, activeWeapon, activeMap, activeLayer, selectedFlags, teams, version };
+
+        return { hexs, weapons, targets, markers, arrows, circles, rectangles, activeWeapon, activeMap, activeLayer, selectedFlags, teams, version };
     }
 
     saveMapStateToFile() {

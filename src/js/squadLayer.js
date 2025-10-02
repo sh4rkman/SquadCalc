@@ -55,6 +55,7 @@ export default class SquadLayer {
         this.phaseNumber = new FeatureGroup().addTo(this.map);
         this.phaseAeras = new FeatureGroup().addTo(this.map);
         this.flags = [];
+        this.hexs = [];
         this.reversed = false;
 
         this.spawnGroups = [];
@@ -296,16 +297,7 @@ export default class SquadLayer {
                 2: "firebrick"
             };
             
-            new Hexagon(LATLNG, HEXRADIUS, {color: teamColors[hex.initialTeam], weight: 1}).addTo(this.activeLayerMarkers);
-            new Marker(LATLNG, {
-                interactive: false,
-                icon: new DivIcon({
-                    className: "hexNumber",
-                    html: hex.hexNum,
-                    iconSize: [50, 50],
-                    iconAnchor: [25, 8]
-                })
-            }).addTo(this.activeLayerMarkers);
+            this.hexs.push(new Hexagon(LATLNG, HEXRADIUS, this, hex.hexNum, {color: teamColors[hex.initialTeam], weight: 1}).addTo(this.activeLayerMarkers));
         });
 
         // Pre-select first main flag
@@ -1246,6 +1238,7 @@ export default class SquadLayer {
         this.selectedFlags = [];
         this.reversed = false;
         this.path = [];
+        //this.hexs = [];
         this.polyline.setLatLngs([]);
 
         this.flags.forEach((flag) => {
@@ -1410,10 +1403,12 @@ export default class SquadLayer {
             $(".btn-layer").removeClass("active");
             this.hideAllCapzones();
             this.setMainZoneOpacity(false);
+            this.hexs.forEach((hex => { hex.hide();}));
             this.vehicleSpawners.forEach(spawn => { spawn.hide(); });
             if (this.borders && App.userSettings.showMapBorders) this.borders.setStyle({ fillOpacity: 0 });
         }
         else {
+            this.hexs.forEach((hex => { hex.show();}));
             this._setOpacity(1);
             this.setMainZoneOpacity(true);
             if (App.userSettings.showFlagsDistance) {
@@ -1459,6 +1454,7 @@ export default class SquadLayer {
         $(".btn-layer").removeClass("active").hide();
         this.spawnGroups = [];
         this.vehicleSpawners = [];
+        this.hexs = [];
     }
 
 }

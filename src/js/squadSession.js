@@ -105,11 +105,10 @@ export default class SquadSession {
                 
                 $(document).one("layer:loaded", () => {
                     App.minimap.layer._resetLayer();
-                    // Click flags
-                    console.debug("Clicking flags for session: ", data.mapState.selectedFlags);
+
+                    console.debug("Clicking flags for session: ");  
                     data.mapState.selectedFlags.forEach(flag => {
-                        console.debug("looking for flag: ", flag);
-                        console.debug("Flags: ", App.minimap.layer.flags);
+                        console.debug("  looking for flag: ", flag);
                         App.minimap.layer.flags.forEach((layerFlag) => {
                             if (layerFlag.objectName === flag) {
                                 if (layerFlag.isSelected) return;
@@ -120,7 +119,22 @@ export default class SquadSession {
                         });
                     });
 
+                    data.mapState.hexs.forEach(sessionHex => {
+                        App.minimap.layer.hexs.forEach((layerHex) => {
+                            if (sessionHex.number === layerHex._hexNumber) {
+                                layerHex.setStyle({
+                                    color: layerHex.COLORS[sessionHex.colorIndex],
+                                    fillColor: layerHex.COLORS[sessionHex.colorIndex],
+                                });
+                                layerHex._colorIndex = sessionHex.colorIndex;
+                                return;
+                            }
+                        });
+                    });
+
                     // Load Factions and Units
+                    if (!data.mapState.teams || data.mapState.teams.length === 0) return;
+
                     App.FACTION1_SELECTOR.val(data.mapState.teams[0][0]).trigger($.Event("change", { broadcast: false }));
                     App.FACTION2_SELECTOR.val(data.mapState.teams[1][0]).trigger($.Event("change", { broadcast: false }));
                     App.UNIT1_SELECTOR.val(data.mapState.teams[0][1]).trigger($.Event("change", { broadcast: false }));
@@ -136,6 +150,18 @@ export default class SquadSession {
             $("#sessionActions").css("display", "flex");
 
             this.wsActiveUsers = data.sessionUsers;
+            break;
+        }
+
+        case "UPDATE_HEXAGON": {
+            console.debug("new hex color !", data);
+            App.minimap.layer?.hexs?.forEach((hex) => {
+                if (hex._hexNumber === data.number) {
+                    hex._cycleColor(null, false);
+                    App.minimap.visualClick.triggerVisualClick(hex.getCenter(), "cyan");
+                }
+            });
+
             break;
         }
 
@@ -236,21 +262,23 @@ export default class SquadSession {
         /**********************************************************************/
 
         case "UPDATE_FACTION": {
-            if (data.teamIndex === 0) {
-                App.minimap.layer.factions.FACTION1_SELECTOR.val(data.faction).trigger($.Event("change", { broadcast: false }));
-            } else if (data.teamIndex === 1) {
-                App.minimap.layer.factions.FACTION2_SELECTOR.val(data.faction).trigger($.Event("change", { broadcast: false }));
-            }
+            console.debug("Received new faction: ", data.faction);
+            // if (data.teamIndex === 0) {
+            //     App.FACTION1_SELECTOR.val(data.faction).trigger($.Event("change", { broadcast: false }));
+            // } else if (data.teamIndex === 1) {
+            //     App.FACTION2_SELECTOR.val(data.faction).trigger($.Event("change", { broadcast: false }));
+            // }
             break;
         }
 
 
         case "UPDATE_UNIT": {
-            if (data.teamIndex === 0) {
-                App.minimap.layer.factions.UNIT1_SELECTOR.val(data.faction).trigger($.Event("change", { broadcast: false }));
-            } else if (data.teamIndex === 1) {
-                App.minimap.layer.factions.UNIT2_SELECTOR.val(data.faction).trigger($.Event("change", { broadcast: false }));
-            }
+            console.debug("Received new unit: ", data.faction);
+            // if (data.teamIndex === 0) {
+            //     App.minimap.layer.factions.UNIT1_SELECTOR.val(data.faction).trigger($.Event("change", { broadcast: false }));
+            // } else if (data.teamIndex === 1) {
+            //     App.minimap.layer.factions.UNIT2_SELECTOR.val(data.faction).trigger($.Event("change", { broadcast: false }));
+            // }
             break;
         }
 

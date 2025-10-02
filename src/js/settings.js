@@ -37,7 +37,7 @@ export function loadSettings(){
     const mapMode = currentUrl.searchParams.get("type");
 
     if ($(".btn-" + mapMode).length) {
-        $(".btn-"+mapMode).addClass("active");
+        $(".btn-"+ mapMode).addClass("active");
     } 
     else {
         // Default to the first button
@@ -45,36 +45,9 @@ export function loadSettings(){
         App.updateUrlParams({type: null});
     }
 
-
-    let fontSize = localStorage.getItem("settings-font-size");
-    if (fontSize === null || isNaN(fontSize) || fontSize === ""){
-        localStorage.setItem("settings-font-size", 3);
-        fontSize = 3;
-    }
-    App.userSettings.fontSize = fontSize;
-
-    $(".dropbtn6").select2({
-        dropdownCssClass: "dropbtn6",
-        dropdownParent: $("#helpDialog"),
-        minimumResultsForSearch: -1,
-    });
-    $(".dropbtn6").val(fontSize).trigger("change");
-
-
-    let markerSize = localStorage.getItem("settings-marker-size");
-    if (markerSize === null || isNaN(fontSize) || fontSize === ""){
-        localStorage.setItem("settings-marker-size", 3);
-        markerSize = 3;
-    }
-    App.userSettings.markerSize = markerSize;
-    $(".dropbtn7").select2({
-        dropdownCssClass: "dropbtn7",
-        dropdownParent: $("#helpDialog"),
-        minimumResultsForSearch: -1, // Disable search
-    });
-    $(".dropbtn7").val(markerSize).trigger("change");
-
-
+    loadFontSize();
+    loadGridOpacity();
+    
     App.userSettings.enableFactions = loadLocalSetting("settings-enable-factions");
     $("#enableFactionsSettings").prop("checked", App.userSettings.enableFactions);
 
@@ -168,8 +141,8 @@ export function loadSettings(){
         $("#markerPreview").css("margin-top", "20px");
     }
 
-    App.userSettings.grid = loadLocalSetting("settings-grid");
-    $("#gridSetting").prop("checked", App.userSettings.grid);
+
+
     
     App.userSettings.realMaxRange = loadLocalSetting("settings-real-max-range", 0);
     $("#realMaxRangeSettings").prop("checked", App.userSettings.realMaxRange);
@@ -264,11 +237,6 @@ export function updatePreview(){
 
     $("#textPreview").html(subtextContent);
 
-    if (App.userSettings.grid){
-        $("#gridPreview").show();
-    } else {
-        $("#gridPreview").hide();
-    }
 
     if (App.userSettings.targetGrid){
         $("#targetGridPreview").show();
@@ -498,21 +466,6 @@ $("#keypadUnderCursorSetting").on("change", function() {
     updatePreview();
 });
 
-$("#gridSetting").on("change", function() {
-    var val = $("#gridSetting").is(":checked");
-    if (val) {
-        App.userSettings.grid = val;
-        localStorage.setItem("settings-grid", +val);
-        App.minimap.showGrid();
-    }
-    else {
-        App.userSettings.grid = val;
-        localStorage.setItem("settings-grid", +val);
-        App.minimap.hideGrid();
-    }
-    updatePreview();
-});
-
 $("#spreadRadiusSetting").on("change", function() {
     var val = $("#spreadRadiusSetting").is(":checked");
     App.userSettings.spreadRadius = val;
@@ -711,3 +664,55 @@ $(".toggleCheckbox").on("click", function() {
     checkbox.prop("checked", !checkbox.prop("checked")).trigger("change");
     animateCSS($(this).closest("td"), "headShake");
 });
+
+function loadFontSize() {
+    let fontSize = localStorage.getItem("settings-font-size");
+    if (fontSize === null || isNaN(fontSize) || fontSize === ""){
+        localStorage.setItem("settings-font-size", 3);
+        fontSize = 3;
+    }
+    App.userSettings.fontSize = fontSize;
+
+    const slider = document.getElementById("fontSlider");
+    const ticks = document.getElementById("fontTicks");
+
+    for (let i = 0.5; i <= 1.5; i=i+0.5) {
+        const tick = document.createElement("div");
+        tick.className = "tick";
+        tick.setAttribute("data-value", i);
+        ticks.appendChild(tick);
+    }
+
+    slider.oninput = () => {
+        App.userSettings.fontSize = slider.value;
+        localStorage.setItem("settings-font-size", App.userSettings.fontSize);
+        App.changeFontSize();
+    };
+}
+
+function loadGridOpacity() {
+    let gridOpacity = localStorage.getItem("settings-grid-opacity");
+    if (gridOpacity === null || isNaN(gridOpacity) || gridOpacity === ""){
+        localStorage.setItem("settings-grid-opacity", 1);
+        gridOpacity = 1;
+    }
+    App.userSettings.gridOpacity = gridOpacity;
+    $("#gridPreview").css("opacity", App.userSettings.gridOpacity);
+
+    const slider = document.getElementById("gridSlider");
+    const ticks = document.getElementById("gridTicks");
+
+    // Create Ticks
+    for (let i = 0; i <= 1; i=i+0.5) {
+        const tick = document.createElement("div");
+        tick.className = "tick";
+        tick.setAttribute("data-value", i);
+        ticks.appendChild(tick);
+    }
+
+    slider.oninput = () => {
+        App.userSettings.gridOpacity = slider.value;
+        localStorage.setItem("settings-grid-opacity", App.userSettings.gridOpacity);
+        $("#gridPreview").css("opacity", App.userSettings.gridOpacity);
+    };
+}

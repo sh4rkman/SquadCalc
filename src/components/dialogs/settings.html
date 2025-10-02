@@ -54,19 +54,6 @@
       <table class="userSettings">
           <caption data-i18n="settings:mapOptions"></caption>
           <tbody>
-              <tr>
-                  <td>
-                      <label class="mcui-checkbox">
-                          <input id="gridSetting" type="checkbox">
-                          <span>
-                              <svg class="mcui-check" viewBox="-2 -2 35 35" aria-hidden="true">
-                                <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
-                              </svg>
-                          </span>
-                        </label>
-                  </td>
-                  <td><span data-i18n="settings:showGrid" class="toggleCheckbox"></span></td>
-              </tr>
 
               <tr id="keypadUnderCursorSettingRow">
                   <td >
@@ -119,6 +106,24 @@
           </tbody>
       </table>
 
+      <div id="gridOpacity">
+        <table class="gridOpacitySettings">
+          <tbody>
+              <tr>
+                  <td class="noborder">
+                    <span data-i18n="settings:showGrid"></span>:
+                  </td> 
+                  <td class="noborder">
+                      <div class="slider-wrapper">
+                        <div class="ticks" id="gridTicks"></div>
+                        <input type="range" id="gridSlider" min="0" max="1" value="1" step="0.1">
+                      </div>
+                  </td>
+              </tr>
+          </tbody>
+        </table>
+      </div>
+
       <div id="fontSize">
         <table class="fontSizeSettings">
           <tbody>
@@ -127,44 +132,15 @@
                     <span data-i18n="settings:fontSize"></span>:
                   </td> 
                   <td class="noborder">
-                    <div id="" class="dropdown">
-                      <select id="" class="dropbtn6 unselectable" tabindex="-1">
-                        <option value="1" data-i18n="settings:verySmall"></option>
-                        <option value="2" data-i18n="settings:small"></option>
-                        <option value="3" data-i18n="settings:normal"></option>
-                        <option value="4" data-i18n="settings:large"></option>
-                        <option value="5" data-i18n="settings:veryLarge"></option>
-                      </select>
-                  </div>
+                      <div class="slider-wrapper">
+                        <div class="ticks" id="fontTicks"></div>
+                        <input type="range" id="fontSlider" min="1" max="5" value="3" step="1">
+                      </div>
                   </td>
               </tr>
           </tbody>
         </table>
       </div>
-
-      <!-- <div id="fontSize"> // duplicate fontSize ID to change
-        <table class="fontSizeSettings">
-          <tbody>
-              <tr>
-                  <td class="noborder">
-                    <span data-i18n="settings:markerSize"></span>: 
-                  </td> 
-                  <td class="noborder">
-                    <div id="" class="dropdown">
-                      <select id="" class="dropbtn7 unselectable" tabindex="-1">
-                        <option value="1" data-i18n="settings:verySmall"></option>
-                        <option value="2" data-i18n="settings:small"></option>
-                        <option value="3" data-i18n="settings:normal"></option>
-                        <option value="4" data-i18n="settings:large"></option>
-                        <option value="5" data-i18n="settings:veryLarge"></option>
-                      </select>
-                  </div>
-                  </td>
-              </tr>
-          </tbody>
-        </table>
-      </div> -->
-
 
       <div id="previewHolder">
         <h3 data-i18n="settings:preview">Preview</h3>
