@@ -103,20 +103,36 @@
                   </td>
               </tr>
 
+              <tr class="contextMenuSettings">
+                  <td>
+                      <label class="mcui-checkbox">
+                          <input id="contextMenuSettings" type="checkbox">
+                          <span>
+                            <svg class="mcui-check" viewBox="-2 -2 35 35" aria-hidden="true">
+                              <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
+                            </svg>
+                          </span>
+                        </label>
+                  </td>
+                  <td>
+                    <span data-i18n="settings:contextMenu" class="toggleCheckbox"></span>
+                  </td>
+              </tr>
+
           </tbody>
       </table>
 
-      <div id="gridOpacity">
-        <table class="gridOpacitySettings">
+      <div class="slidersHolders">
+        <table class="slidersTables">
           <tbody>
               <tr>
                   <td class="noborder">
-                    <span data-i18n="settings:showGrid"></span>:
+                    <span data-i18n="settings:gridOpacity"></span>
                   </td> 
                   <td class="noborder">
                       <div class="slider-wrapper">
                         <div class="ticks" id="gridTicks"></div>
-                        <input type="range" id="gridSlider" min="0" max="1" value="1" step="0.1">
+                        <input type="range" id="gridSlider" min="0" max="1" step="0.05">
                       </div>
                   </td>
               </tr>
@@ -124,17 +140,35 @@
         </table>
       </div>
 
-      <div id="fontSize">
-        <table class="fontSizeSettings">
+      <div class="slidersHolders">
+        <table class="slidersTables">
           <tbody>
               <tr>
                   <td class="noborder">
-                    <span data-i18n="settings:fontSize"></span>:
+                    <span data-i18n="settings:zoomSensitivity"></span>
+                  </td> 
+                  <td class="noborder">
+                      <div class="slider-wrapper">
+                        <div class="ticks" id="zoomTicks"></div>
+                        <input type="range" id="zoomSlider" min="1" max="3" step="0.1">
+                      </div>
+                  </td>
+              </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="slidersHolders">
+        <table class="slidersTables">
+          <tbody>
+              <tr>
+                  <td class="noborder">
+                    <span data-i18n="settings:fontSize"></span>
                   </td> 
                   <td class="noborder">
                       <div class="slider-wrapper">
                         <div class="ticks" id="fontTicks"></div>
-                        <input type="range" id="fontSlider" min="1" max="5" value="3" step="1">
+                        <input type="range" id="fontSlider" min="1" max="5" step="1">
                       </div>
                   </td>
               </tr>
@@ -142,23 +176,58 @@
         </table>
       </div>
 
-      <div id="previewHolder">
-        <h3 data-i18n="settings:preview">Preview</h3>
-        <div id="preview" class="unselectable">
-            <div id="textPreview">
-                <span>1345</span><br>
-                <span class="bearingPreview">241.5°</span>
-            </div>
-            <div id="center">
-                <img id="mapPreview" loading="lazy" alt="mapPreview" draggable="false">
-                <img id="targetGridPreview" loading="lazy" alt="targetGridPreview" draggable="false">
-                <img id="damagePreview" loading="lazy" alt="damagePreview" draggable="false">
-                <img id="spreadPreview" loading="lazy" alt="spreadPreview" draggable="false">
-                <img id="gridPreview" loading="lazy" alt="gridPreview" draggable="false">
-                <img id="markerPreview" loading="lazy" alt="markerPreview" draggable="false">
-                <img id="maxRangePreview" loading="lazy" alt="maxRangePreview" draggable="false">
-            </div>
-        </div>
+      <div class="slidersHolders">
+        <table class="slidersTables">
+          <tbody>
+              <tr>
+                  <td class="noborder">
+                    <span data-i18n="settings:markerSize"></span>
+                  </td> 
+                  <td class="noborder">
+                      <div class="slider-wrapper">
+                        <div class="ticks" id="markerTicks"></div>
+                        <input type="range" id="markerSlider" min="1" max="5" step="0.25">
+                      </div>
+                  </td>
+              </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="slidersHolders">
+        <table class="slidersTables">
+          <tbody>
+              <tr>
+                  <td class="noborder">
+                    <span data-i18n="settings:brightness"></span>
+                  </td> 
+                  <td class="noborder">
+                      <div class="slider-wrapper">
+                        <div class="ticks" id="brightnessTicks"></div>
+                        <input type="range" id="brightnessSlider" min="0.5" max="1.5" step="0.05">
+                      </div>
+                  </td>
+              </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="slidersHolders">
+        <table class="slidersTables">
+          <tbody>
+              <tr>
+                  <td class="noborder">
+                    <span data-i18n="settings:contrast"></span>
+                  </td> 
+                  <td class="noborder">
+                      <div class="slider-wrapper">
+                        <div class="ticks" id="contrastTicks"></div>
+                        <input type="range" id="contrastSlider" min="0.5" max="1.5" step="0.05">
+                      </div>
+                  </td>
+              </tr>
+          </tbody>
+        </table>
       </div>
 
     </div>

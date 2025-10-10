@@ -47,6 +47,12 @@ export function loadSettings(){
 
     loadFontSize();
     loadGridOpacity();
+    loadZoomSensitivity();
+    loadBrightness();
+    loadContrast();
+    loadMarkerSize();
+
+    $("#map").css("filter", `brightness(${App.userSettings.brightness * 100}%) contrast(${App.userSettings.contrast * 100}%)`);
     
     App.userSettings.enableFactions = loadLocalSetting("settings-enable-factions");
     $("#enableFactionsSettings").prop("checked", App.userSettings.enableFactions);
@@ -130,6 +136,9 @@ export function loadSettings(){
     App.userSettings.showHeight = loadLocalSetting("settings-show-height", 0);
     $("#heightSetting").prop("checked", App.userSettings.showHeight);
 
+    App.userSettings.contextMenu = loadLocalSetting("settings-contextmenu", 0);
+    $("#contextMenuSettings").prop("checked", App.userSettings.contextMenu);
+
     App.userSettings.targetAnimation = loadLocalSetting("settings-target-animation");
     $("#targetAnimationSettings").prop("checked", App.userSettings.targetAnimation);
     if (App.userSettings.targetAnimation) {
@@ -141,9 +150,6 @@ export function loadSettings(){
         $("#markerPreview").css("margin-top", "20px");
     }
 
-
-
-    
     App.userSettings.realMaxRange = loadLocalSetting("settings-real-max-range", 0);
     $("#realMaxRangeSettings").prop("checked", App.userSettings.realMaxRange);
 
@@ -197,68 +203,10 @@ export function loadSettings(){
     });
 
     $(document).on("click", "#fabCheckbox", function() {
-        updatePreview();
         $("#helpDialog")[0].showModal();
         App.closeMenu();
     });
 
-}
-
-
-export function updatePreview(){
-    var subtextContent;
-
-    if (App.userSettings.spreadRadius){
-        $("#spreadPreview").show();
-    } else {
-        $("#spreadPreview").hide();
-    }
-
-    if (App.userSettings.damageRadius){
-        $("#damagePreview").show();
-    } else {
-        $("#damagePreview").hide();
-    }
-
-    subtextContent = "<span>1345</span><br>";
-
-    if (App.userSettings.showBearing){ 
-        subtextContent += `<span class=bearingPreview>241.5<span data-i18n="common:°">${i18next.t("common:°")}</span></span><br>`;
-    } 
-    if (App.userSettings.showTimeOfFlight){
-        subtextContent += `<span class=bearingPreview>20.1<span data-i18n="common:s">${i18next.t("common:s")}</span></span><br>`;
-    } 
-    if (App.userSettings.showDistance){ 
-        subtextContent += `<span class=bearingPreview>1145<span data-i18n="common:m">${i18next.t("common:m")}</span></span><br>`;
-    }
-    if (App.userSettings.showHeight){ 
-        subtextContent += `<span class=bearingPreview>+19<span data-i18n="common:m">${i18next.t("common:m")}</span></span><br>`;
-    } 
-
-    $("#textPreview").html(subtextContent);
-
-
-    if (App.userSettings.targetGrid){
-        $("#targetGridPreview").show();
-    } else {
-        $("#targetGridPreview").hide();
-    }
-
-    if (App.userSettings.keypadUnderCursor){
-        tooltip_coordPreview.enable();
-    } else {
-        tooltip_coordPreview.disable();
-    }
-
-
-    if (App.userSettings.targetAnimation) {
-        $("#markerPreview").attr("src", "/img/markers/targets/marker_target_enabled.webp");
-        $("#markerPreview").css("margin-top", "0px");
-    } 
-    else {
-        $("#markerPreview").attr("src", "/img/markers/targets/marker_target_mini.webp");
-        $("#markerPreview").css("margin-top", "20px");
-    }
 }
 
 $("#showMapBordersSettings").on("change", function() {
@@ -279,6 +227,11 @@ $("#defaultFactionsSettings").on("change", function() {
     localStorage.setItem("settings-default-factions", +val);
 });
 
+$("#contextMenuSettings").on("change", function() {
+    var val = $("#contextMenuSettings").is(":checked");
+    App.userSettings.contextMenu = val;
+    localStorage.setItem("settings-contextmenu", +val);
+});
 
 $("#showMainZonesSettings").on("change", function() {
     var val = $("#showMainZonesSettings").is(":checked");
@@ -463,7 +416,6 @@ $("#keypadUnderCursorSetting").on("change", function() {
     }
     App.userSettings.keypadUnderCursor = val;
     localStorage.setItem("settings-keypad-cursor", +val);
-    updatePreview();
 });
 
 $("#spreadRadiusSetting").on("change", function() {
@@ -471,7 +423,6 @@ $("#spreadRadiusSetting").on("change", function() {
     App.userSettings.spreadRadius = val;
     localStorage.setItem("settings-spread-radius", +val);
     App.minimap.updateTargetsSpreads(); // Update every targets to add/remove spread radius
-    updatePreview();
 });
 
 $("#mapAnimationSettings").on("change", function() {
@@ -485,7 +436,6 @@ $("#damageRadiusSetting").on("change", function() {
     App.userSettings.damageRadius = val;
     localStorage.setItem("settings-damage-radius", +val);
     App.minimap.updateTargetsSpreads(); // Update every targets to add/remove spread radius
-    updatePreview();
 });
 
 $("#targetGridSetting").on("change", function() {
@@ -493,7 +443,6 @@ $("#targetGridSetting").on("change", function() {
     App.userSettings.targetGrid = val;
     localStorage.setItem("settings-target-grid", +val);
     App.minimap.updateTargets();
-    updatePreview();
 });
 
 $("#targetDragSetting").on("change", function() {
@@ -519,7 +468,6 @@ $("#heightSetting").on("change", function() {
     }
 
     App.minimap.updateTargets();
-    updatePreview();
 });
 
 $("#experimentalSetting").on("change", function() {
@@ -604,7 +552,6 @@ $("#bearingOverDistanceSettings").on("change", function() {
 
     // Update every targets to add/remove distance
     App.minimap.updateTargets();
-    updatePreview();
 });
 
 $("#bearingSetting").on("change", function() {
@@ -618,7 +565,6 @@ $("#bearingSetting").on("change", function() {
     }
 
     App.minimap.updateTargets();
-    updatePreview();
 });
 
 $("#distanceSetting").on("change", function() {
@@ -632,7 +578,6 @@ $("#distanceSetting").on("change", function() {
     }
 
     App.minimap.updateTargets();
-    updatePreview();
 });
 
 
@@ -647,7 +592,6 @@ $("#timeOfFlightSetting").on("change", function() {
     }
 
     App.minimap.updateTargets();
-    updatePreview();
 });
 
 
@@ -666,22 +610,31 @@ $(".toggleCheckbox").on("click", function() {
 });
 
 function loadFontSize() {
+    const min = 0.5;
+    const def = 1; 
+    const max = 1.5;
     let fontSize = localStorage.getItem("settings-font-size");
+
     if (fontSize === null || isNaN(fontSize) || fontSize === ""){
-        localStorage.setItem("settings-font-size", 3);
-        fontSize = 3;
+        let defaultFontSize = 3;
+        localStorage.setItem("settings-font-size", defaultFontSize);
+        fontSize = defaultFontSize;
     }
+
     App.userSettings.fontSize = fontSize;
 
     const slider = document.getElementById("fontSlider");
     const ticks = document.getElementById("fontTicks");
 
-    for (let i = 0.5; i <= 1.5; i=i+0.5) {
+    [min, def, max].forEach(val => {
         const tick = document.createElement("div");
         tick.className = "tick";
-        tick.setAttribute("data-value", i);
+        tick.setAttribute("data-value", `${val*100}%`);
+        const percent = ((val - min) / (max - min)) * 100;
+        tick.style.left = percent + "%";
+        if (val === def) tick.classList.add("default-tick");
         ticks.appendChild(tick);
-    }
+    });
 
     slider.oninput = () => {
         App.userSettings.fontSize = slider.value;
@@ -690,29 +643,181 @@ function loadFontSize() {
     };
 }
 
-function loadGridOpacity() {
-    let gridOpacity = localStorage.getItem("settings-grid-opacity");
-    if (gridOpacity === null || isNaN(gridOpacity) || gridOpacity === ""){
-        localStorage.setItem("settings-grid-opacity", 1);
-        gridOpacity = 1;
+function loadMarkerSize() {
+    const min = 0.5;
+    const def = 1; 
+    const max = 1.5;
+    let markerSize = localStorage.getItem("settings-marker-size");
+
+    if (markerSize === null || isNaN(markerSize) || markerSize === ""){
+        localStorage.setItem("settings-marker-size", def);
+        markerSize = def;
     }
-    App.userSettings.gridOpacity = gridOpacity;
-    $("#gridPreview").css("opacity", App.userSettings.gridOpacity);
+
+    App.userSettings.markerSize = markerSize;
+
+    const slider = document.getElementById("markerSlider");
+    const ticks = document.getElementById("markerTicks");
+
+    [min, def, max].forEach(val => {
+        const tick = document.createElement("div");
+        tick.className = "tick";
+        tick.setAttribute("data-value", `${val*100}%`);
+        const percent = ((val - min) / (max - min)) * 100;
+        tick.style.left = percent + "%";
+        if (val === def) tick.classList.add("default-tick");
+        ticks.appendChild(tick);
+    });
+
+    slider.oninput = () => {
+        App.userSettings.markerSize = slider.value;
+        localStorage.setItem("settings-marker-size", App.userSettings.markerSize);
+        App.minimap.activeMarkers.eachLayer((marker) => {
+            marker.updateIconSize();
+        });
+    };
+}
+
+function loadGridOpacity() {
+    const min = 0;
+    const def = 0.8; 
+    const max = 1;
+    let gridOpacity = localStorage.getItem("settings-grid-opacity");
+
+    if (gridOpacity === null || isNaN(gridOpacity) || gridOpacity === ""){
+        localStorage.setItem("settings-grid-opacity", def);
+        gridOpacity = def;
+    }
 
     const slider = document.getElementById("gridSlider");
     const ticks = document.getElementById("gridTicks");
 
-    // Create Ticks
-    for (let i = 0; i <= 1; i=i+0.5) {
+    App.userSettings.gridOpacity = gridOpacity;
+    $("#gridPreview").css("opacity", App.userSettings.gridOpacity);
+    slider.value = App.userSettings.gridOpacity;
+
+    [min, def, max].forEach(val => {
         const tick = document.createElement("div");
         tick.className = "tick";
-        tick.setAttribute("data-value", i);
+        tick.setAttribute("data-value", `${val*100}%`);
+        const percent = ((val - min) / (max - min)) * 100;
+        tick.style.left = percent + "%";
+
+        if (val === def) tick.classList.add("default-tick");
         ticks.appendChild(tick);
-    }
+    });
 
     slider.oninput = () => {
         App.userSettings.gridOpacity = slider.value;
+        App.minimap.grid.setOpacity(App.userSettings.gridOpacity);
         localStorage.setItem("settings-grid-opacity", App.userSettings.gridOpacity);
         $("#gridPreview").css("opacity", App.userSettings.gridOpacity);
+    };
+}
+
+function loadZoomSensitivity() {
+    const min = 0.5;
+    const def = 1; 
+    const max = 1.5;
+
+    let zoomSensitivity = localStorage.getItem("settings-zoom-sensitivity");
+
+    if (zoomSensitivity === null || isNaN(zoomSensitivity) || zoomSensitivity === ""){
+        let defaultSensitivity = 2;
+        localStorage.setItem("settings-zoom-sensitivity", defaultSensitivity);
+        zoomSensitivity = defaultSensitivity;
+    }
+
+    const slider = document.getElementById("zoomSlider");
+    const ticks = document.getElementById("zoomTicks");
+    App.userSettings.zoomSensitivity = zoomSensitivity;
+    slider.value = App.userSettings.zoomSensitivity;
+    
+    [min, def, max].forEach(val => {
+        const tick = document.createElement("div");
+        tick.className = "tick";
+        tick.setAttribute("data-value", `${val*100}%`);
+        const percent = ((val - min) / (max - min)) * 100;
+        tick.style.left = percent + "%";
+
+        if (val === def) tick.classList.add("default-tick");
+        ticks.appendChild(tick);
+    });
+
+    slider.oninput = () => {
+        App.userSettings.zoomSensitivity = slider.value;
+        localStorage.setItem("settings-zoom-sensitivity", App.userSettings.zoomSensitivity);
+        App.minimap.options.smoothSensitivity = App.userSettings.zoomSensitivity;
+        App.minimap.options.wheelPxPerZoomLevel = 120 / App.userSettings.zoomSensitivity;
+    };
+}
+
+function loadBrightness() {
+    const min = 0.5;
+    const def = 1; 
+    const max = 1.5;
+
+    let brightness = localStorage.getItem("settings-brightness");
+
+    if (brightness === null || isNaN(brightness) || brightness === ""){
+        localStorage.setItem("settings-brightness", def);
+        brightness = def;
+    }
+
+    const slider = document.getElementById("brightnessSlider");
+    const ticks = document.getElementById("brightnessTicks");
+
+    App.userSettings.brightness = brightness;
+    slider.value = App.userSettings.brightness;
+
+    [min, def, max].forEach(val => {
+        const tick = document.createElement("div");
+        tick.className = "tick";
+        tick.setAttribute("data-value", `${val*100}%`);
+        const percent = ((val - min) / (max - min)) * 100;
+        tick.style.left = percent + "%";
+        if (val === def) tick.classList.add("default-tick");
+        ticks.appendChild(tick);
+    });
+
+    slider.oninput = () => {
+        App.userSettings.brightness = slider.value;
+        localStorage.setItem("settings-brightness", slider.value);
+        $("#map").css("filter", `brightness(${App.userSettings.brightness * 100}%) contrast(${App.userSettings.contrast * 100}%)`);
+    };
+}
+
+function loadContrast() {
+    const min = 0.5;
+    const def = 1; 
+    const max = 1.5;
+
+    let contrast = localStorage.getItem("settings-contrast");
+
+    if (contrast === null || isNaN(contrast) || contrast === ""){
+        localStorage.setItem("settings-contrast", def);
+        contrast = def;
+    }
+
+    const slider = document.getElementById("contrastSlider");
+    const ticks = document.getElementById("contrastTicks");
+
+    App.userSettings.contrast = contrast;
+    slider.value = App.userSettings.contrast;
+
+    [min, def, max].forEach(val => {
+        const tick = document.createElement("div");
+        tick.className = "tick";
+        tick.setAttribute("data-value", `${val*100}%`);
+        const percent = ((val - min) / (max - min)) * 100;
+        tick.style.left = percent + "%";
+        if (val === def) tick.classList.add("default-tick");
+        ticks.appendChild(tick);
+    });
+
+    slider.oninput = () => {
+        App.userSettings.contrast = slider.value;
+        localStorage.setItem("settings-contrast", slider.value);
+        $("#map").css("filter", `brightness(${App.userSettings.brightness * 100}%) contrast(${App.userSettings.contrast * 100}%)`);
     };
 }

@@ -1,4 +1,4 @@
-import tippy, {followCursor} from "tippy.js";
+import tippy from "tippy.js";
 import "tippy.js/dist/tippy.css";
 import i18next from "i18next";
 
@@ -49,13 +49,6 @@ tippy("span[data-i18n='settings:lowAndHigh']", {
     ...commonToolipsSettings,
     onShow(tip) {
         tip.setContent(`${i18next.t("tooltips:lowAndHighTooltip")}`);
-    },
-});
-
-tippy("span[data-i18n='settings:contextMenu']", {
-    ...commonToolipsSettings,
-    onShow(tip) {
-        tip.setContent(`${i18next.t("tooltips:contextMenuTooltip")}`);
     },
 });
 
@@ -394,18 +387,6 @@ tippy("#savebutton svg", {
 });
 tooltip_save = document.querySelector("#savebutton svg")._tippy;
 
-tippy("#preview", {
-    animation: false,
-    content: "B03-4-5",
-    followCursor: true,
-    plugins: [followCursor],
-    touch: false,
-    placement: "bottom",
-    appendTo: document.querySelector("#preview"),
-    theme: "preview",
-    hideOnClick: false,
-});
-tooltip_coordPreview = document.querySelector("#preview")._tippy;
 
 const targetDialog = document.getElementById("calcInformation");
 tippy(".infSpreadTooltip", {

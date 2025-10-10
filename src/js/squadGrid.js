@@ -60,7 +60,7 @@ export default LayerGroup.extend({
         LayerGroup.prototype.initialize.call(this);
         Util.setOptions(this, options);
         this.map = map;
-        this.opacity = options?.opacity ?? 1;
+        this.opacity = options?.opacity ?? 0.8;
     },
 
     clearLines() {
@@ -103,30 +103,30 @@ export default LayerGroup.extend({
    * Sets opacity of subgrid lines based on zoom level.
    */
     updateLineOpacity() {
-        if (!this.map) {
-            return;
-        }
+
+        if (!this.map) return;
+
         const currentZoom = Math.round(this.map.getZoom());
-        const mapZoomPadding = this.map.activeMap.size /4000;
+        const mapZoomPadding = this.map.activeMap.size / 4000;
 
         if (currentZoom >= 3.7 + mapZoomPadding) {
-            this.setLinesWeight(this.kpLines, 3 * this.opacity);
-            this.setLinesOpacity(this.s1Lines, 0.8 * this.opacity);
-            this.setLinesWeight(this.s1Lines, 1.5 * this.opacity);
+            this.setLinesWeight(this.kpLines, 3.5 * this.opacity);
+            this.setLinesOpacity(this.s1Lines, 1 * this.opacity);
+            this.setLinesWeight(this.s1Lines, 1.7 * this.opacity);
             this.setLinesOpacity(this.s2Lines, 1 * this.opacity);
-            this.setLinesWeight(this.s2Lines, 0.5 * this.opacity);
+            this.setLinesWeight(this.s2Lines, 1 * this.opacity);
         }
         else if (currentZoom >= 2 + mapZoomPadding) {
-            this.setLinesWeight(this.kpLines, 2 * this.opacity);
-            this.setLinesOpacity(this.kpLines, 0.7 * this.opacity);
-            this.setLinesOpacity(this.s1Lines, 0.3 * this.opacity);
-            this.setLinesOpacity(this.s2Lines, 0 * this.opacity);
+            this.setLinesWeight(this.kpLines, 2.5 * this.opacity);
+            this.setLinesOpacity(this.kpLines, 1 * this.opacity);
+            this.setLinesOpacity(this.s1Lines, 0.6 * this.opacity);
+            this.setLinesOpacity(this.s2Lines, 0);
         } 
         else {
-            this.setLinesWeight(this.kpLines, 0.5 * this.opacity);
+            this.setLinesWeight(this.kpLines, 1.5 * this.opacity);
             this.setLinesOpacity(this.kpLines, 1 * this.opacity);
-            this.setLinesOpacity(this.s1Lines, 0 * this.opacity);
-            this.setLinesOpacity(this.s2Lines, 0 * this.opacity);
+            this.setLinesOpacity(this.s1Lines, 0);
+            this.setLinesOpacity(this.s2Lines, 0);
         }
     },
 
@@ -136,18 +136,12 @@ export default LayerGroup.extend({
     * @param {Number} opacity - desired opacity value
     */
     setLinesOpacity(lines, opacity = 0.5) {
-    // we check only the first object as we are updating all at the same time
-    // and this one check might save us iterating through the whole array
-        if (lines.length === 0 || lines[0].options.opacity === opacity) {
-            return;
-        } 
-        else {
-            lines.forEach((l) => {
-                l.setStyle({
-                    opacity,
-                });
-            });
-        }
+        // we check only the first object as we are updating all at the same time
+        if (lines.length === 0 || lines[0].options.opacity === opacity) return;
+
+        lines.forEach((line) => {
+            line.setStyle({ opacity });
+        });
     },
 
 
@@ -158,17 +152,11 @@ export default LayerGroup.extend({
     */
     setLinesWeight(lines, weight = 1) {
         // we check only the first object as we are updating all at the same time
-        // and this one check might save us iterating through the whole array
-        if (lines.length === 0) {
-            return;
-        } 
-        else {
-            lines.forEach((l) => {
-                l.setStyle({
-                    weight,
-                });
-            });
-        }
+        if (lines.length === 0 || lines[0].options.weight === weight) return;
+
+        lines.forEach((line) => {
+            line.setStyle({ weight });
+        });
     },
 
     /**
@@ -180,6 +168,7 @@ export default LayerGroup.extend({
             console.debug("no viewbounds, skipping draw");
             return;
         }
+
         // clear old grid lines
         this.clearLines();
 
@@ -199,7 +188,6 @@ export default LayerGroup.extend({
         this.s2Lines = [];
         this.labels = [];
         
-
         // vertical keypad lines
         // Going east +1 to make it through floating point imprecision
         const startX = this.bounds.getWest();

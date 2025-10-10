@@ -778,6 +778,14 @@ export default class SquadCalc {
         this.show();
     }
 
+
+    changeIconsSize(){
+        this.minimap.activeMarkers.eachLayer((marker) => {
+            marker.updateIconSize();
+        });
+    }
+
+    
     changeFontSize(){
         let fontSize;
         this.userSettings.fontSize = parseInt(this.userSettings.fontSize, 10) || 1;

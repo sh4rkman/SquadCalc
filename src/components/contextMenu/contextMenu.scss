@@ -1,0 +1,95 @@
+@use "../shared/variables";
+
+
+.contextmenu {
+    display: flex;
+    padding: 0;
+    .ctxButton, .shapeButton {
+        margin: 2px;
+        background-color: rgba(0, 0, 0, 0.5);
+        cursor: pointer;
+        align-items: center;
+        display: flex;
+        &:hover {
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+    }
+    .middleContextButton {
+        background-color: transparent;
+        align-content: center;
+        &:hover {
+            background-color: transparent;
+        }
+        &:active {
+            transform: scale(0.9);
+        }
+    }
+    span {
+        width: 25px;
+        height: 25px;   
+    }
+    .contextmenuVert {
+        width: 140px;
+        height: auto;
+        display: flex;
+        flex-wrap: wrap;
+        background-color: rgba(0, 0, 0, 0.6);
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        backdrop-filter: blur(2px);
+        .ctxButton, .shapeButton {
+            margin: 0;
+            padding: 2px 0.5px;
+            background-color: transparent;
+            transition: background-color 0.2s;
+            span {
+                margin: 0;
+                padding: 0;
+                height: 27px;
+                width: 27px;
+            }
+            &:hover {
+                background-color: rgba(0, 0, 0, 0.7);
+                transform: scale(1.2);
+                z-index: 1;
+            }
+        }
+    }
+}
+
+
+// COMMON
+
+.middleContext {
+    background-size: contain;
+}
+
+.arrow, .rectangle, .circle {
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center center;
+    &.blue {
+        background-color: #00137e;
+        &:hover { background-color: #000844; }
+    }
+    &.red {
+        background-color: #bb2623;
+        &:hover { background-color: #6b1716; }
+    }
+    &.green {
+        background-color: #007f00;
+        &:hover { background-color: #005200; }
+    }
+    &.black {
+        background-color: #141414;
+        &:hover { background-color: #000; }
+    }
+}
+
+.tippy-box[data-theme~="contextmenu"] {
+    background-color: transparent;
+    .tippy-content {
+        padding: 0;
+    }
+}
