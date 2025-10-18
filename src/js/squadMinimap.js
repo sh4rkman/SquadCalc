@@ -293,6 +293,8 @@ export const squadMinimap = Map.extend({
                 target.disableSpreadRadii();
                 target.disableDamageRadii();
                 target.twentyFiveDamageRadius.setStyle({ opacity: 0 });
+                target.removeLineToTarget();
+                target.grid.hide();
             }
         });
     },

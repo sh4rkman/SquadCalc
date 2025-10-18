@@ -258,21 +258,21 @@ export default class SquadSession {
             App.minimap.visualClick.triggerVisualClick(new LatLng(data.lat, data.lng), "cyan");
             break;
         }
-        case "ADDING_ARROW": {
-            new MapArrow(App.minimap, data.color, data.latlngs[0], data.latlngs[1], data.uid);
-            App.minimap.visualClick.triggerVisualClick(data.latlngs[0], "cyan");
-            break;
-        }
-        case "ADDING_CIRCLE": {
-            new MapCircle(App.minimap, data.color, data.latlng, data.radius, data.uid);
-            App.minimap.visualClick.triggerVisualClick(data.latlng, "cyan");
-            break;
-        }
-        case "ADDING_RECTANGLE": {
-            new MapRectangle(App.minimap, data.color, data.bounds._northEast, data.bounds._southWest, data.uid);
-            App.minimap.visualClick.triggerVisualClick(data.bounds._northEast, "cyan");
-            break;
-        }
+        // case "ADDING_ARROW": {
+        //     new MapArrow(App.minimap, data.color, data.latlngs[0], data.latlngs[1], data.uid);
+        //     App.minimap.visualClick.triggerVisualClick(data.latlngs[0], "cyan");
+        //     break;
+        // }
+        // case "ADDING_CIRCLE": {
+        //     new MapCircle(App.minimap, data.color, data.latlng, data.radius, data.uid);
+        //     App.minimap.visualClick.triggerVisualClick(data.latlng, "cyan");
+        //     break;
+        // }
+        // case "ADDING_RECTANGLE": {
+        //     new MapRectangle(App.minimap, data.color, data.bounds._northEast, data.bounds._southWest, data.uid);
+        //     App.minimap.visualClick.triggerVisualClick(data.bounds._northEast, "cyan");
+        //     break;
+        // }
         case "ADDING_WEAPON": {
             App.minimap.createWeapon(new LatLng(data.lat, data.lng), data.uid, data.heightPadding);
             App.minimap.visualClick.triggerVisualClick(new LatLng(data.lat, data.lng), "cyan");

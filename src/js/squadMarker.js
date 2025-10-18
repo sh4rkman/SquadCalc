@@ -444,11 +444,13 @@ export const squadWeaponMarker = squadMarker.extend({
         this.map.mouseLocationPopup.close();
         this.map.off("pointermove", this.map._handleMouseMove);
 
-        this.map.activeTargetsMarkers.eachLayer(function (layer) {
-            layer.calcMarker1.setContent("  ");
-            layer.calcMarker2.setContent("  ");
-            layer.disableSpreadRadii();
-            layer.disableDamageRadii();
+        this.map.activeTargetsMarkers.eachLayer(function (target) {
+            target.calcMarker1.setContent("  ");
+            target.calcMarker2.setContent("  ");
+            target.disableSpreadRadii();
+            target.disableDamageRadii();
+            target.removeLineToTarget();
+            target.grid.hide();
         }); 
         
         if (App.activeWeapon.type === "deployables") {

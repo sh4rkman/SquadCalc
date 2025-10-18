@@ -606,7 +606,7 @@ export const squadTargetMarker = squadMarker.extend({
         // Avoid other target keeping fading
         clearTimeout(this.mouseOverTimeout);
 
-        // If they already faded, switch them back
+        // If it's too late, Fade every other targets back in
         this.map.activeTargetsMarkers.eachLayer((target) => {
             target.on("pointerover", target._handleMouseOver, target);
             target.on("pointerout", target._handleMouseOut, target);
@@ -615,21 +615,22 @@ export const squadTargetMarker = squadMarker.extend({
             if (this.map.activeWeaponsMarkers.getLayers()[1]) target.calcMarker2.openOn(this.map);
             target.updateSpread();
             target.updateDamageRadius();
+            target.drawLineToTarget();
+            target.grid.show();
         });
 
-        // We can now safely start deleting
+        // Prevent right click to happen on elements behind
         e.originalEvent.preventDefault();
         e.originalEvent.stopPropagation();
+
+        // We can now safely start deleting
         this.delete();
     },
 
     // On Hovering for more than 500ms hide other targets
     _handleMouseOver: function() {
-        this.grid.show();
-
         this.mouseOverTimeout = setTimeout(() => {
-            // Hide other targets
-            if (!this.isDragging) this.map.fadeOtherTargets(this);
+            if (!this.isDragging) this.map.fadeOtherTargets(this); // Hide other targets
         }, 500);
     },
 
@@ -641,8 +642,7 @@ export const squadTargetMarker = squadMarker.extend({
         this.calcMarker1.getElement().style.zIndex  = "";
         this.calcMarker2.getElement().style.zIndex  = "";
 
-        if (!this.isDragging){
-            //this.grid.hide();
+        if (!this.isDragging) {
             this.map.activeTargetsMarkers.eachLayer((target) => {
                 target.on("pointerover", target._handleMouseOver, target);
                 target.on("pointerout", target._handleMouseOut, target);
@@ -651,6 +651,8 @@ export const squadTargetMarker = squadMarker.extend({
                 if (this.map.activeWeaponsMarkers.getLayers()[1]) target.calcMarker2.openOn(this.map);
                 target.updateSpread();
                 target.updateDamageRadius();
+                target.drawLineToTarget();
+                target.grid.show();
             });
         }
     },
@@ -668,12 +670,10 @@ export const squadTargetMarker = squadMarker.extend({
     },
 
     drawLineToTarget: function () {
-        if (!App.userSettings.lineToTarget) {
-            return;
-        }
-
+        
+        if (!App.userSettings.lineToTarget) return;
+        
         let lines = [];
-
 
         if (!isNaN(this.firingSolution1.elevation.high.rad) || !isNaN(this.firingSolution1.elevation.low.rad)) {
             lines.push([this.firingSolution1.weaponLatLng, this.getLatLng()]);
@@ -685,7 +685,7 @@ export const squadTargetMarker = squadMarker.extend({
         for (const line of lines) {
             this.linesBetweenTargets.push(new Polyline(line, {
                 color: "white",
-                opacity: 0.9,
+                opacity: 0.65,
                 weight: 2,
                 showMeasurements: false,
             }).addTo(this.map.markersGroup));

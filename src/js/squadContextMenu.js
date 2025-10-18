@@ -92,54 +92,54 @@ export default class SquadContextMenu {
             onHide: () => {
                 $(".shapeButton").off("click");
             },
-            onShow: (tip) => {
-                // tip.setContent(
-                //     `
-                //     <div class="contextmenu">
-                //         <button class="shapeButton">
-                //             <span class="circle blue" data-team="shared" data-category="ctx" data-icon="circle"></span>
-                //         </button>
-                //     </div>
-                //     <div class="contextmenu">
-                //         <button class="shapeButton">
-                //             <span class="rectangle blue" data-team="shared" data-category="ctx" data-icon="rectangle"></span>
-                //         </button>   
-                //     </div>
-                //     <div class="contextmenu">
-                //         <button class="shapeButton">
-                //             <span class="arrow blue" data-team="shared" data-category="ctx" data-icon="arrow"></span>
-                //         </button>
-                //     </div>
-                //     `
-                // );
+            // onShow: (tip) => {
+            // tip.setContent(
+            //     `
+            //     <div class="contextmenu">
+            //         <button class="shapeButton">
+            //             <span class="circle blue" data-team="shared" data-category="ctx" data-icon="circle"></span>
+            //         </button>
+            //     </div>
+            //     <div class="contextmenu">
+            //         <button class="shapeButton">
+            //             <span class="rectangle blue" data-team="shared" data-category="ctx" data-icon="rectangle"></span>
+            //         </button>   
+            //     </div>
+            //     <div class="contextmenu">
+            //         <button class="shapeButton">
+            //             <span class="arrow blue" data-team="shared" data-category="ctx" data-icon="arrow"></span>
+            //         </button>
+            //     </div>
+            //     `
+            // );
                 
-                //this.setIcons(tip);
+            //this.setIcons(tip);
 
-                // setTimeout(() => {
-                //     $(".shapeButton").on("click", (event) => {
-                //         let targetElement = event.target.closest(".shapeButton span"); // Ensure we get the <span> inside the button
+            // setTimeout(() => {
+            //     $(".shapeButton").on("click", (event) => {
+            //         let targetElement = event.target.closest(".shapeButton span"); // Ensure we get the <span> inside the button
                     
-                //         if (!targetElement) return;
+            //         if (!targetElement) return;
                                        
-                //         // Extract the shape type (arrow, rectangle, circle)
-                //         const shape = ["arrow", "rectangle", "circle"].find(type => targetElement.classList.contains(type));
+            //         // Extract the shape type (arrow, rectangle, circle)
+            //         const shape = ["arrow", "rectangle", "circle"].find(type => targetElement.classList.contains(type));
                     
-                //         // Extract the color (any other class that isn't the shape itself)
-                //         const color = [...targetElement.classList].find(cls => cls !== shape);
+            //         // Extract the color (any other class that isn't the shape itself)
+            //         const color = [...targetElement.classList].find(cls => cls !== shape);
                     
-                //         if (shape && color) {
-                //             // Call the corresponding method dynamically
-                //             const methodName = `create${shape.charAt(0).toUpperCase() + shape.slice(1)}`;
-                //             if (typeof App.minimap[methodName] === "function") {
-                //                 App.minimap[methodName](color);
-                //             }
-                //         }
+            //         if (shape && color) {
+            //             // Call the corresponding method dynamically
+            //             const methodName = `create${shape.charAt(0).toUpperCase() + shape.slice(1)}`;
+            //             if (typeof App.minimap[methodName] === "function") {
+            //                 App.minimap[methodName](color);
+            //             }
+            //         }
                     
-                //         this.close();
-                //     });
-                // }, 0);
+            //         this.close();
+            //     });
+            // }, 0);
 
-            }
+            // }
         });
     }
 
