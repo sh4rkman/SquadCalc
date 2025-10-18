@@ -25,6 +25,7 @@
         "showSpread": "Spread Radius",
         "showDamage": "Damage Radiuses",
         "targetGrid": "Deviation Grid",
+        "lineToTarget": "Line to target",
         "showAnimations": "Use Large Icons",
         "copyTarget": "Auto-copy Target to clipboard",
         "lowAndHigh": "Show both Low and High angles",
