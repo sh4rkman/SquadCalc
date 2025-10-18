@@ -30,6 +30,7 @@
         "showDistance": "Entfernung",
         "showTimeOfFlight": "Flugzeit",
         "showHeightDiff": "Höhenunterschied",
+        "lineToTarget": "Linie zum Ziel",
     "LaneFinderOptions": "Routen-Finder-Optionen",
         "capZoneOnHover": "Eroberungszonen nur beim Überfahren anzeigen",
         "revealLayerOnHover" : "Layer anzeigen, wenn der Mauszeiger über einer Flagge steht",

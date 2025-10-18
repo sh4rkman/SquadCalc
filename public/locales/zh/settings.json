@@ -30,6 +30,7 @@
         "showDistance": "显示距离",
         "showTimeOfFlight": "显示飞行时间",
         "showHeightDiff": "显示高度差",
+        "lineToTarget": "指向目标的线",
     "factionsOptions": "阵营选项",
         "defaultFactions": "自动选择阵营",
         "enableFactions": "启用阵营",

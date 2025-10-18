@@ -30,6 +30,7 @@
         "showDistance": "Distance",
         "showTimeOfFlight": "Temps de vol",
         "showHeightDiff": "Différence d'altitude",
+        "lineToTarget": "Ligne vers la cible",
     "LaneFinderOptions": "Options de recherche de voie",
         "capZoneOnHover": "Montrer les zones de capture au survol",
         "revealLayerOnHover": "Révéler le layer au survol des drapeaux",

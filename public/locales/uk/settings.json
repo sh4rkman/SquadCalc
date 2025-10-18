@@ -30,6 +30,8 @@
         "showDistance": "відстань",
         "showTimeOfFlight": "час польоту",
         "showHeightDiff": "різницю висот",
+        "lineToTarget": "Лінія до цілі",
+        "lineToTargetTooltip": "Проводить лінію між зброєю та ціллю",
     "LaneFinderOptions": "Параметри пошуку смуг",
         "capZoneOnHover": "Зони при наведенні",
         "revealLayerOnHover": "Показати шар при наведенні на прапор",
