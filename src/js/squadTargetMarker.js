@@ -1,6 +1,6 @@
 
 import { App } from "../app.js";
-import { CircleMarker, Popup } from "leaflet";
+import { CircleMarker, Polyline, Popup } from "leaflet";
 import SquadSimulation from "./squadSimulation.js";
 import SquadFiringSolution from "./squadFiringSolution.js";
 import TargetGrid from "./squadTargetGrid.js";
@@ -94,9 +94,6 @@ export const squadTargetMarker = squadMarker.extend({
                 map: App.minimap.activeMap.name,
             });
         }
-        
-        // Initialise the target Grid
-        this.grid = new TargetGrid(this.map, this.firingSolution1);
 
         // Calc PopUps
         this.calcMarker1 = new Popup(popUpOptions_weapon1).setLatLng(latlng).addTo(this.map.markersGroup);
@@ -119,6 +116,11 @@ export const squadTargetMarker = squadMarker.extend({
             this.calcMarker2.setContent(`2. ${html2}`).openOn(this.map);
             if (App.userSettings.copyTarget && !options.uid) navigator.clipboard.writeText(`${clipboard1} / ${clipboard2}`);  
         }
+
+        // Initialise the target Grid
+        this.grid = new TargetGrid(this.map, ...this.getFirstAvailableWeapon());
+        this.linesBetweenTargets = [];
+        this.drawLineToTarget();
 
         // Initiate Spread Ellipse
         this.spreadMarker1 = new Ellipse(latlng, [0, 0], 0, this.spreadOptionsOff).addTo(this.map.markersGroup);
@@ -195,6 +197,7 @@ export const squadTargetMarker = squadMarker.extend({
         this.posPopUp.removeFrom(this.map.markersGroup).remove();
 
         this.grid.clear();
+        this.removeLineToTarget();
         
         // Remove the marker itself
         this.removeFrom(this.map.markersGroup).removeFrom(this.map.activeTargetsMarkers).remove();
@@ -414,10 +417,6 @@ export const squadTargetMarker = squadMarker.extend({
         this.calcMarker1.setContent(html1);
         clipboard = clipboard1;
 
-        // Refresh targetGrids
-        this.grid.clear();
-        this.grid = new TargetGrid(this.map, this.firingSolution1);
-
         if (this.map.activeWeaponsMarkers.getLayers().length === 2) {
             this.firingSolution2 = new SquadFiringSolution(this.map.activeWeaponsMarkers.getLayers()[1].getLatLng(), this.getLatLng(), this.map, this.map.activeWeaponsMarkers.getLayers()[1].heightPadding);
             const [html2, clipboard2] = this.getContent(this.firingSolution2, this.map.activeWeaponsMarkers.getLayers()[1].angleType);
@@ -427,6 +426,14 @@ export const squadTargetMarker = squadMarker.extend({
         } else {
             this.calcMarker2.close();
         }
+
+        // Refresh targetGrids
+        this.grid.clear();
+        this.grid = new TargetGrid(this.map, ...this.getFirstAvailableWeapon());
+
+        this.removeLineToTarget();
+        this.drawLineToTarget();
+
         this.updateSpread();
         this.updateDamageRadius();
         if (copy && App.userSettings.copyTarget) navigator.clipboard.writeText(clipboard);
@@ -648,4 +655,48 @@ export const squadTargetMarker = squadMarker.extend({
         }
     },
 
+    getFirstAvailableWeapon: function () {
+        if (
+            this.map.activeWeaponsMarkers.getLayers().length === 2 &&
+            isNaN(this.firingSolution1.elevation.high.rad) && isNaN(this.firingSolution1.elevation.low.rad) &&
+            (!isNaN(this.firingSolution2.elevation.high.rad) || !isNaN(this.firingSolution2.elevation.low.rad))
+        ) {
+            return [this.firingSolution2, this.map.activeWeaponsMarkers.getLayers()[1]];
+        }
+
+        return [this.firingSolution1, this.map.activeWeaponsMarkers.getLayers()[0]];
+    },
+
+    drawLineToTarget: function () {
+        if (!App.userSettings.lineToTarget) {
+            return;
+        }
+
+        let lines = [];
+
+
+        if (!isNaN(this.firingSolution1.elevation.high.rad) || !isNaN(this.firingSolution1.elevation.low.rad)) {
+            lines.push([this.firingSolution1.weaponLatLng, this.getLatLng()]);
+        }
+        if (this.map.activeWeaponsMarkers.getLayers().length === 2 && (!isNaN(this.firingSolution2.elevation.high.rad) || !isNaN(this.firingSolution2.elevation.low.rad))) {
+            lines.push([this.firingSolution2.weaponLatLng, this.getLatLng()]);
+        }
+
+        for (const line of lines) {
+            this.linesBetweenTargets.push(new Polyline(line, {
+                color: "white",
+                opacity: 0.9,
+                weight: 2,
+                showMeasurements: false,
+            }).addTo(this.map.markersGroup));
+        }
+    },
+
+    removeLineToTarget: function () {
+        if (this.linesBetweenTargets.length > 0) {
+            for (const linesBetweenTarget of this.linesBetweenTargets) {
+                linesBetweenTarget.removeFrom(this.map.markersGroup).remove();
+            }
+        }
+    }
 });

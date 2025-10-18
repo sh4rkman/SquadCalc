@@ -7,10 +7,11 @@ export default class TargetGrid {
     static get ANGLE_STEP() { return 2; }
     static get lineOptions() { return { color: "Lime", weight: 2, opacity: 0.7 }; }
 
-    constructor(map, firingSolution) {
+    constructor(map, firingSolution, weaponMarker) {
         this.map = map;
         this.firingSolution = firingSolution;
-        this.elevation = App.minimap.activeWeaponsMarkers.getLayers()[0].angleType === "high" ? firingSolution.elevation.high.mil : firingSolution.elevation.low.mil;
+        this.weaponMarker = weaponMarker;
+        this.elevation = weaponMarker.angleType === "high" ? firingSolution.elevation.high.mil : firingSolution.elevation.low.mil;
         this.linesGroup = new LayerGroup();
 
         // Weapon in degree have 6*1 deg elevation lines, others hav 5*10 miliradians
@@ -48,7 +49,7 @@ export default class TargetGrid {
         const QUADRATICDIST = this.firingSolution.distance;
         const AVGDELTA = QUADRATICDIST - REVERSEDIST;
         const BASEANGLE = this.firingSolution.bearing - 90; // face north
-        const weaponLatLng = this.map.activeWeaponsMarkers.getLayers()[0].getLatLng();
+        const weaponLatLng = this.weaponMarker.getLatLng();
 
         const startRadius = (this.firingSolution.getProjectileDistance(this.firingSolution.milToDeg(this.elevation - this.ELEVATION_DEVIATION/2)) + AVGDELTA) * this.map.gameToMapScale;
         const endRadius = (this.firingSolution.getProjectileDistance(this.firingSolution.milToDeg(this.elevation + this.ELEVATION_DEVIATION/2)) + AVGDELTA) * this.map.gameToMapScale;

@@ -133,6 +133,9 @@ export function loadSettings(){
     App.userSettings.targetGrid = loadLocalSetting("settings-target-grid", 0);
     $("#targetGridSetting").prop("checked", App.userSettings.targetGrid);
 
+    App.userSettings.lineToTarget = loadLocalSetting("settings-line-to-target", 0);
+    $("#lineToTargetSetting").prop("checked", App.userSettings.lineToTarget);
+
     App.userSettings.showHeight = loadLocalSetting("settings-show-height", 0);
     $("#heightSetting").prop("checked", App.userSettings.showHeight);
 
@@ -442,6 +445,13 @@ $("#targetGridSetting").on("change", function() {
     var val = $("#targetGridSetting").is(":checked");
     App.userSettings.targetGrid = val;
     localStorage.setItem("settings-target-grid", +val);
+    App.minimap.updateTargets();
+});
+
+$("#lineToTargetSetting").on("change", function() {
+    var val = $("#lineToTargetSetting").is(":checked");
+    App.userSettings.lineToTarget = val;
+    localStorage.setItem("settings-line-to-target", +val);
     App.minimap.updateTargets();
 });
 
