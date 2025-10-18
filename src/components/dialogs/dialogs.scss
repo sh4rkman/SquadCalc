@@ -1,9 +1,5 @@
 @use '../shared/variables';
 
-:root {
-    --font-size-text-preview: 1em;
-}
-
 dialog {
     width: calc(100% - 10%);
     text-align: left;

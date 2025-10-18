@@ -118,7 +118,7 @@
         }
         .hexNumber {
             @include variables.light-text-outline;
-            font-size: 1.1em;
+            font-size: var(--font-size-objtext);
             text-align: center;
             font-family: variables.$mainFont, Times, "Times New Roman", serif;
         }
