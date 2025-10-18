@@ -93,7 +93,7 @@ export default class SquadFactions {
 
         // Set the pinned faction flag in the left side button
         const $img = $("<img>")
-            .attr("src", `${process.env.API_URL}/img/flags/${country}.webp`)
+            .attr("src", `${process.env.API_URL}/img/flags/${encodeURIComponent(country)}.webp`)
             .attr("alt", "Faction Icon")
             .addClass("faction-img");
 
