@@ -184,7 +184,7 @@
                             -webkit-appearance: none;
                             width: 16px;
                             height: 16px;
-                            background: linear-gradient(135deg, #b22222 0%, #8b0000 100%);
+                            background: linear-gradient(135deg, variables.$mainColor 0%, variables.$mainColor 100%);
                             border: 2px solid rgba(255, 255, 255, 0.1);
                             border-radius: 50%;
                             cursor: pointer;
@@ -199,7 +199,7 @@
                         input[type="range"]::-moz-range-thumb {
                             width: 16px;
                             height: 16px;
-                            background: linear-gradient(135deg, #b22222 0%, #8b0000 100%);
+                            background: linear-gradient(135deg, variables.$mainColor 0%, variables.$mainColor 100%);
                             border: 1px solid rgba(255, 255, 255, 0.7);
                             border-radius: 50%;
                             cursor: pointer;
