@@ -16,7 +16,7 @@
         display: table-cell;
         vertical-align: middle;
         span {
-            display: inline-block;
+            display: block;
         }
         span:nth-child(2) {
             padding: 0 0 10px;
@@ -27,6 +27,8 @@
             background-size: 200% 100%;
             background-position: right bottom;
             animation: 1s ease-out 0.3s 1 forwards loading;
+            width: 4em;
+            margin: 0 auto;
         }
     }
 }

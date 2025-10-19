@@ -242,6 +242,16 @@
             }
         }
     }
+    #loader, #background {
+        span {
+            span {
+                display: inline-block;
+            }
+            span:nth-child(3) {
+                width: auto;
+            }
+        }
+    }
     #classic_ui {
         padding-top: 3em;
         .coord {
