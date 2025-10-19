@@ -49,7 +49,6 @@
     "shortcuts": "Raccourcis",
         "enter": "Entrer en mode focus, masquant les boutons de l'interface utilisateur",
         "deleteLastTarget": "Supprimer la dernière cible placée sur la carte",
-    "preview": "Aperçu",
     "changelog": "Journal des modifications",
     "github": "Voir le code sur Github",
     "bug": "Signaler un bug",

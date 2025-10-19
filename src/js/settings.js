@@ -1,5 +1,4 @@
 import { App } from "../app.js";
-import { tooltip_coordPreview } from "./tooltips.js";
 import { animateCSS } from "./animations.js";
 import SquadFactions from "./squadFactions.js";
 import i18next from "i18next";
@@ -144,14 +143,6 @@ export function loadSettings(){
 
     App.userSettings.targetAnimation = loadLocalSetting("settings-target-animation");
     $("#targetAnimationSettings").prop("checked", App.userSettings.targetAnimation);
-    if (App.userSettings.targetAnimation) {
-        $("#markerPreview").attr("src", "/img/markers/targets/marker_target_enabled.webp");
-        $("#markerPreview").css("margin-top", "0px");
-    } 
-    else {
-        $("#markerPreview").attr("src", "/img/markers/targets/marker_target_mini.webp");
-        $("#markerPreview").css("margin-top", "20px");
-    }
 
     App.userSettings.realMaxRange = loadLocalSetting("settings-real-max-range", 0);
     $("#realMaxRangeSettings").prop("checked", App.userSettings.realMaxRange);
@@ -170,20 +161,10 @@ export function loadSettings(){
 
     if (App.userSettings.cursor) {
         $("#map").css("cursor", "default");
-        $("#preview").css("cursor", "default");
     }
     else {
         $("#map").css("cursor", "crosshair");
-        $("#preview").css("cursor", "crosshair");
     }
-
-    // Load Preview
-    $("#gridPreview").attr("src", "/img/preview/grid.png");
-    $("#mapPreview").attr("src", "/img/preview/preview.webp");
-    $("#maxRangePreview").attr("src", "/img/preview/maxrange.png");
-    $("#spreadPreview").attr("src", "/img/preview/spread.png");
-    $("#damagePreview").attr("src", "/img/preview/damage.png");
-    $("#targetGridPreview").attr("src", "/img/preview/targetGrid.webp");
 
     // Load that image aswell because wtf not.
     $("#targetImg").attr("src", "/img/target.png");
@@ -508,13 +489,6 @@ $("#lowAndHighSetting").on("change", function() {
     App.minimap.updateTargets();
 });
 
-
-// $("#copyNextFlagsSettings").on("change", function() {
-//     var val =  $("#copyNextFlagsSettings").is(":checked");
-//     App.userSettings.copyNextFlags = val;
-//     localStorage.setItem("settings-copy-next-flags", +val);
-// });
-
 $("#cursorChoiceSettings").on("change", function() {
     var val =  $("#cursorChoiceSettings").is(":checked");
     App.userSettings.cursor = val;
@@ -522,11 +496,9 @@ $("#cursorChoiceSettings").on("change", function() {
 
     if (val) {
         $("#map").css("cursor", "default");
-        $("#preview").css("cursor", "default");
     }
     else {
         $("#map").css("cursor", "crosshair");
-        $("#preview").css("cursor", "crosshair");
     }
 });
 
@@ -534,15 +506,6 @@ $("#targetAnimationSettings").on("change", function() {
     var val = $("#targetAnimationSettings").is(":checked");
     App.userSettings.targetAnimation = val;
     localStorage.setItem("settings-target-animation", +val);
-
-    if (App.userSettings.targetAnimation) {
-        $("#markerPreview").attr("src", "/img/markers/targets/marker_target_enabled.webp");
-        $("#markerPreview").css("margin-top", "0px");
-    } 
-    else {
-        $("#markerPreview").attr("src", "/img/markers/targets/marker_target_mini.webp");
-        $("#markerPreview").css("margin-top", "20px");
-    }
 
     App.minimap.activeTargetsMarkers.eachLayer(function (target) {
         target.updateCalcPopUps();

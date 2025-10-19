@@ -814,8 +814,6 @@ export default class SquadCalc {
         const root = document.documentElement;
         root.style.setProperty("--font-size-objtext", `${fontSize}em`);
         root.style.setProperty("--font-size-calc-popup", `${fontSize - 0.1}em`);
-        $("#textPreview").css("font-size", `${fontSize}em`);
-
     }
 
     /**

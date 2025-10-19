@@ -4,7 +4,6 @@ import i18next from "i18next";
 
 export var tooltip_save;
 export var tooltip_copied;
-export var tooltip_coordPreview;
 
 const helpDialog = document.querySelector("#helpDialog");
 
