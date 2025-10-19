@@ -553,6 +553,7 @@ export const squadTargetMarker = squadMarker.extend({
             this.calcMarker2.setContent("  ");
             this.disableSpreadRadii();
             this.disableDamageRadii();
+            this.removeLineToTarget();
         }
 
         if (App.userSettings.targetDrag) {
@@ -672,6 +673,9 @@ export const squadTargetMarker = squadMarker.extend({
     drawLineToTarget: function () {
         
         if (!App.userSettings.lineToTarget) return;
+
+        // Remove existing lines
+        this.removeLineToTarget();
         
         let lines = [];
 
