@@ -4,14 +4,16 @@ Thank you for considering contributing to this project! 🙏
 
 ## 1. Open an Issue/Discussion first
 
-⚠️ **Before creating a pull request, please open an [Issue](https://github.com/sh4rkman/SquadCalc/issues) or start a [Discussion](https://github.com/sh4rkman/SquadCalc/discussions) for new features.** ⚠️  
-This helps me make sure that the feature aligns with the project’s goals and avoids wasted work.  
+⚠️ **Before creating a pull request, please open an [Issue](https://github.com/sh4rkman/SquadCalc/issues) or start a [Discussion](https://github.com/sh4rkman/SquadCalc/discussions) for new features** ⚠️  
 
+This helps me make sure that the feature aligns with the project’s goals and avoids wasted work.  
 **Exceptions:** Simple fixes, typos, or translations do not require an issue first.
 
 ## 2. Target the Development Branch
-All pull requests should target the **development branch (`dev`)**, not `main`.  
-Your PR will first be tested and merged with the current under-development features before eventually making it to `main`.
+
+⚠️  **All pull requests should target the development branch (`dev`), not `master`.** ⚠️  
+
+Your PR will first be tested and merged with the current under-development features before eventually making it to `master`.
 
 ### How to create a PR
 1. Fork the repository (if needed)
