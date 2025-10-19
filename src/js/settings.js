@@ -666,7 +666,6 @@ function loadGridOpacity() {
     const ticks = document.getElementById("gridTicks");
 
     App.userSettings.gridOpacity = gridOpacity;
-    $("#gridPreview").css("opacity", App.userSettings.gridOpacity);
     slider.value = App.userSettings.gridOpacity;
 
     [min, def, max].forEach(val => {
@@ -684,7 +683,6 @@ function loadGridOpacity() {
         App.userSettings.gridOpacity = slider.value;
         App.minimap.grid.setOpacity(App.userSettings.gridOpacity);
         localStorage.setItem("settings-grid-opacity", App.userSettings.gridOpacity);
-        $("#gridPreview").css("opacity", App.userSettings.gridOpacity);
     };
 }
 
