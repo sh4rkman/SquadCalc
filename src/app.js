@@ -25,6 +25,8 @@ import "./components/dialogs/settings.scss";
 import "./components/shared/_tooltips.scss";
 import "./components/shared/_responsive.scss";
 
+import "./components/contextMenu/contextMenu.scss";
+
 // JS
 import SquadCalc from "./js/squadCalc.js";
 

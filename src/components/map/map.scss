@@ -118,7 +118,7 @@
         }
         .hexNumber {
             @include variables.light-text-outline;
-            font-size: 1.1em;
+            font-size: var(--font-size-objtext);
             text-align: center;
             font-family: variables.$mainFont, Times, "Times New Roman", serif;
         }
@@ -248,4 +248,18 @@
 .tippy-box {
     cursor: auto;
     pointer-events: auto !important;
+}
+
+.hexagon-shape {
+    cursor: pointer!important;
+    transition: fill-opacity 0.15s ease, stroke-opacity 0.15s ease;
+}
+
+.hexagon-shape.hovered {
+    fill-opacity: 0.8;
+}
+
+.hexagon-shape.faded-out {
+    fill-opacity: 0;
+    stroke-opacity: 0;
 }

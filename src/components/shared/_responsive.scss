@@ -242,6 +242,16 @@
             }
         }
     }
+    #loader, #background {
+        span {
+            span {
+                display: inline-block;
+            }
+            span:nth-child(3) {
+                width: auto;
+            }
+        }
+    }
     #classic_ui {
         padding-top: 3em;
         .coord {
@@ -342,7 +352,7 @@
         }
          &#helpDialog {
             font-size: 0.7em;
-            height: 550px;
+            height: 575px;
             width: 600px;
             table {
                width: 90%;

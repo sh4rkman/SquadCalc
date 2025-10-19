@@ -1,9 +1,5 @@
 @use '../shared/variables';
 
-:root {
-    --font-size-text-preview: 1em;
-}
-
 dialog {
     width: calc(100% - 10%);
     text-align: left;
@@ -27,7 +23,7 @@ dialog {
         }
     }
     &::backdrop {
-        backdrop-filter: blur(3px) brightness(120%) grayscale(20%) contrast(90%);
+        backdrop-filter: none;
     }
     h2, h3 {
         padding: 1.25em;

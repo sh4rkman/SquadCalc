@@ -1,4 +1,4 @@
-import {ImageOverlay, TileLayer, Map, CRS, SVG, Util, LayerGroup, Popup, LatLngBounds, LatLng, Browser } from "leaflet";
+import {Icon, ImageOverlay, TileLayer, Map, CRS, SVG, Util, LayerGroup, Popup, LatLngBounds, LatLng, Browser } from "leaflet";
 import squadGrid from "./squadGrid.js";
 import squadHeightmap from "./squadHeightmaps.js";
 import { App } from "../app.js";
@@ -8,6 +8,8 @@ import { mortarIcon, mortarIcon1, mortarIcon2 } from "./squadIcon.js";
 import { explode } from "./animations.js";
 import { fetchMarkersByMap } from "./squadCalcAPI.js";
 import webGLHeatmap from "./libs/leaflet-webgl-heatmap.js";
+import squadContextMenu from "./squadContextMenu.js";
+import { squadStratMarker } from "./squadMarker.js";
 import "./libs/webgl-heatmap.js";
 import "./libs/leaflet-smoothWheelZoom.js";
 import "tippy.js/dist/tippy.css";
@@ -47,9 +49,10 @@ export const squadMinimap = Map.extend({
             zoom: 2,
             zoomControl: false,
             zoomSnap: 0,
-            smoothSensitivity: 2,
+            smoothSensitivity: App.userSettings.zoomSensitivity,
             scrollWheelZoom: App.userSettings.smoothMap,
             smoothWheelZoom: !App.userSettings.smoothMap,
+            wheelPxPerZoomLevel: 120 / App.userSettings.zoomSensitivity,
             inertia: App.userSettings.smoothMap,
             zoomAnimation: App.userSettings.smoothMap,
         };
@@ -83,6 +86,7 @@ export const squadMinimap = Map.extend({
             closeOnClick: false,
             interactive: false,
         });
+        this.contextMenu = new squadContextMenu();
 
         
         if (!Browser.mobile) {
@@ -123,7 +127,7 @@ export const squadMinimap = Map.extend({
         if (this.grid) this.grid.remove();
         if (this.layer) this.layer = "";
 
-        this.grid = new squadGrid(this);
+        this.grid = new squadGrid(this, {opacity: App.userSettings.gridOpacity}).addTo(this.layerGroup);
         this.grid.setBounds([[0,0], [-this.pixelSize, this.pixelSize]]);
 
         // load map
@@ -289,6 +293,8 @@ export const squadMinimap = Map.extend({
                 target.disableSpreadRadii();
                 target.disableDamageRadii();
                 target.twentyFiveDamageRadius.setStyle({ opacity: 0 });
+                target.removeLineToTarget();
+                target.grid.hide();
             }
         });
     },
@@ -379,22 +385,6 @@ export const squadMinimap = Map.extend({
         this.activeWeaponsMarkers.eachLayer(function (weapon) {
             weapon.updateWeapon();
         });
-    },
-
-
-    /**
-     * add Grid to minimap layers
-     */
-    showGrid: function(){
-        this.grid.addTo(this.layerGroup);
-    },
-
-
-    /**
-     * Hide Grid from minimap layers
-     */
-    hideGrid: function(){
-        this.grid.removeFrom(this.layerGroup);
     },
 
 
@@ -582,7 +572,12 @@ export const squadMinimap = Map.extend({
         // If out of bounds
         if (!this.imageBounds.contains(event.latlng)) return 1;
 
-        this.createWeapon(event.latlng);
+        if (App.userSettings.contextMenu) {
+            this.contextMenu.open(event);
+        } else {
+            this.createWeapon(event.latlng);
+        }
+
     },
 
 
@@ -644,7 +639,6 @@ export const squadMinimap = Map.extend({
         if (!this.layer) return;
 
         
-
         if (this.getZoom() > this.detailedZoomThreshold && this.layer.isVisible){
             this.layer.revealAllCapzones();
             if (App.userSettings.showMainAssets) {
@@ -659,5 +653,75 @@ export const squadMinimap = Map.extend({
             this.layer.vehicleSpawners.forEach(spawn => { spawn.hide(); });
         }
 
+    },
+
+    createMarker(latlng, team, category, icon, uid = false) {
+        let markerOptions = { icon: "", circlesOnHover: false, team: team, category: category, icontype: icon, uid: uid };
+        let markerSizeSetting = App.userSettings.markerSize;
+        let iconSizeValue = 20 + (markerSizeSetting - 1) * 5;
+        let iconSize = [iconSizeValue, iconSizeValue];
+
+        if (icon === "deployable_mortars" || icon === "deployable_hellcannon") {
+            let range = 0;
+            if (icon === "deployable_mortars") range = 1237;
+            if (icon === "deployable_hellcannon") range = 923;
+
+            markerOptions.circles1Size = range * this.gameToMapScale;
+            markerOptions.circlesOnHover = true;
+            markerOptions.circles1Weight = 2;
+            markerOptions.circles1Color = team === "ally" ? "white" : "#f23534";
+        }
+
+        if (icon === "deployable_fob_blue") {
+            markerOptions.circlesOnHover = false;
+            markerOptions.circles1Color = "#00E8FF";
+            markerOptions.circles1Size = 150 * this.gameToMapScale;
+            markerOptions.circles2Color = "white";
+            markerOptions.circles2Size = this.activeMap.radiusExclusion * this.gameToMapScale;
+        }
+        if (icon === "deployable_fob") { 
+            markerOptions.circlesOnHover = false;
+            markerOptions.circles1Color = "#f23534";
+            markerOptions.circles1Size = 150 * this.gameToMapScale;
+            markerOptions.circles2Color = "white";
+            markerOptions.circles2Size = this.activeMap.radiusExclusion * this.gameToMapScale;
+        }
+        if (icon === "deployable_hab_activated") { iconSize = [38, 38]; }
+        if (icon === "T_strategic_uav") { 
+            markerOptions.circles1Size = 300 * this.gameToMapScale;
+            markerOptions.circles1Color = team === "ally" ? "#ffc400" : "#f23534";
+        }
+        markerOptions.icon = new Icon({
+            iconUrl: `${process.env.API_URL}/img/icons/${team}/${category}/${icon}.webp`,
+            iconSize: iconSize,
+            iconAnchor: [iconSize[0]/2, iconSize[1]/2],
+            className: "squadMarker",
+        });
+        
+        // Create marker and close context menu
+        let newMarker = new squadStratMarker(latlng, markerOptions, this).addTo(this.activeMarkers);
+
+        // Add Item to history
+        this.history.push(newMarker);
+
+        $(".btn-delete, .btn-undo, .btn-download").show();
+
+        if (!uid && App.session.ws && App.session.ws.readyState === WebSocket.OPEN) {
+            console.debug("Creating a marker with uid", newMarker.uid);
+        
+            // Send the MOVING_WEAPON event to the server
+            App.session.ws.send(
+                JSON.stringify({
+                    type: "ADDING_MARKER",
+                    uid: newMarker.uid,
+                    lat: latlng.lat,
+                    lng: latlng.lng,
+                    team: team,
+                    category: category,
+                    icon: icon
+                })
+            );
+        }
+        
     },
 });

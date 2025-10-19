@@ -8,7 +8,7 @@
     display: table;
     font-family: variables.$logoFont, Times, "Times New Roman", serif;
     text-transform: uppercase;
-    font-size: 7em;
+    font-size: 6em;
     letter-spacing: 0;
     span {
         font-weight: bolder;
@@ -16,17 +16,19 @@
         display: table-cell;
         vertical-align: middle;
         span {
-            display: inline-block;
-        }
-        span:nth-child(1) {
-            padding: 0 0 10px;
+            display: block;
         }
         span:nth-child(2) {
+            padding: 0 0 10px;
+        }
+        span:nth-child(3) {
             padding: 0 15px 10px;
             background: linear-gradient(to right, variables.$mainColor 50%, variables.$mainBGColor 50%);
             background-size: 200% 100%;
             background-position: right bottom;
             animation: 1s ease-out 0.3s 1 forwards loading;
+            width: 4em;
+            margin: 0 auto;
         }
     }
 }

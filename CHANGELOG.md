@@ -1,3 +1,40 @@
+# <img src="https://img.shields.io/badge/-major%20release-b22222?style=for-the-badge">  **40.0.0** *(2025-10-19)*
+
+
+<img src="https://img.shields.io/badge/-new%20features-green"> 
+
+- 🎃
+
+- **Interactive Hexagons for Territory control**  
+Hexagons in TC can now be right-clicked to cycle through red/blue/neutral colors. Colors are Synced between sessions.
+
+- **New Settings**  
+  - Brightness, Contrast, Zoom Sensitivity, Grid Opacity can now be customised in `Settings > Map` (thanks exhausted_ghost ! fix #372)
+  - A line can now be toggled on/off between weapons and targets in `Settings > Mortars` ([#380](https://github.com/sh4rkman/SquadCalc/pull/380), thanks Antiaris74!)
+
+<img src="https://img.shields.io/badge/-%20improv%20-orange">  
+
+- Font-Size selector is now a slider
+- If a target isn't reachable by first mortar but reachable by second one, a deviation grid will now be displayed for the second weapon ([#380](https://github.com/sh4rkman/SquadCalc/pull/380), thanks Antiaris74!)
+
+<img src="https://img.shields.io/badge/-bug%20fixes-b22">   
+
+- Territory control Hexagons are now correctly hidden when hiding the layer
+- Territory control Hexagons numbers now scale with font size settings (fix #373)
+- Layer should now correctly load when joining a session
+- Fixed missing BMP-2M illustration (fix #371)
+- When hovering a target, other targets deviation grids are now correctly faded out
+- When dragging a weapon, deviations grids are now faded out
+
+<img src="https://img.shields.io/badge/-other%20fix%20-grey">  
+
+- Custom context menu and markers are back in `Settings > Map`
+- Removed blur effect when dialogs are open
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
+
+
 # <img src="https://img.shields.io/badge/-hotfix-grey?style=for-the-badge"> **39.2.1** *(2025-09-29)*
 
 <img src="https://img.shields.io/badge/-%20improv%20-orange">  

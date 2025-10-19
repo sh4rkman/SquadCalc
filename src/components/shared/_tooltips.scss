@@ -90,17 +90,6 @@
             padding: 6px 12px 0;
         }
     }
-    &[data-theme~='preview'] {
-        @include variables.text-outline;
-        background-color: transparent;
-        font-size: calc(var(--font-size-objtext) + 0.2em);
-        color: variables.$mainTxtColor;
-        letter-spacing: 0.1rem;
-        margin-top: 5px;
-        &[data-placement^='bottom']>.tippy-arrow::before {
-            border-bottom-color: transparent;
-        }
-    }
     &[data-theme='infTooltips'] {
         font-size: 1em;
         text-align: center;

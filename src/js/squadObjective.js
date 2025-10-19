@@ -48,20 +48,6 @@ export class SquadObjective {
             })
         }).addTo(this.layerGroup);
 
-        // this.percentageText = new Marker(latlng, {
-        //     interactive: false,
-        //     keyboard: false,
-        //     icon: new DivIcon({
-        //         className: "objText",
-        //         keyboard: false,
-        //         html: "100%",
-        //         iconSize: [300, 20],
-        //         iconAnchor: App.userSettings.circlesFlags ? [-150, 38] : [-150, 32],
-        //         shadowUrl: "../img/icons/markers/weapons/marker_shadow.webp",
-        //         shadowSize: [0, 0],
-        //     })
-        // }).addTo(this.layerGroup);
-
         // Temporary icon to avoid 404s on leaflet shadow marker
         let tempIcon = new DivIcon({
             shadowUrl: "../img/icons/markers/weapons/marker_shadow.webp",

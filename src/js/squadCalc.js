@@ -231,7 +231,7 @@ export default class SquadCalc {
             this.minimap.spin(false);
             $("#layerSelector").show();
 
-            if (!currentUrl.searchParams.has("session")) $(document).trigger("layers:loaded");
+            $(document).trigger("layers:loaded");
 
         }).catch(error => {
             $("#layerSelector").hide();
@@ -387,7 +387,7 @@ export default class SquadCalc {
 
     closeMenu() {
         $("#footerButtons").removeClass("expanded");
-        $(".fab4").html("<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 448 512\"><path d=\"M0 96C0 78.3 14.3 64 32 64l384 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 128C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32l384 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 288c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32L32 448c-17.7 0-32-14.3-32-32s14.3-32 32-32l384 0c17.7 0 32 14.3 32 32z\"/></svg>");
+        $(".fab4").html("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 640 640'><path d='M168.1 531.1L156.9 540.1C153.7 542.6 149.8 544 145.8 544C136 544 128 536 128 526.2L128 256C128 150 214 64 320 64C426 64 512 150 512 256L512 526.2C512 536 504 544 494.2 544C490.2 544 486.3 542.6 483.1 540.1L471.9 531.1C458.5 520.4 439.1 522.1 427.8 535L397.3 570C394 573.8 389.1 576 384 576C378.9 576 374.1 573.8 370.7 570L344.1 539.5C331.4 524.9 308.7 524.9 295.9 539.5L269.3 570C266 573.8 261.1 576 256 576C250.9 576 246.1 573.8 242.7 570L212.2 535C200.9 522.1 181.5 520.4 168.1 531.1zM288 256C288 238.3 273.7 224 256 224C238.3 224 224 238.3 224 256C224 273.7 238.3 288 256 288C273.7 288 288 273.7 288 256zM384 288C401.7 288 416 273.7 416 256C416 238.3 401.7 224 384 224C366.3 224 352 238.3 352 256C352 273.7 366.3 288 384 288z'/></svg>");
     }
 
     loadUI(){
@@ -406,18 +406,6 @@ export default class SquadCalc {
         }
 
         if (this.ui == 1) this.loadMapUIMode();
-
-        $(document).on("change", ".dropbtn6", (event) => {
-            this.userSettings.fontSize = event.target.value;
-            localStorage.setItem("settings-font-size", this.userSettings.fontSize);
-            this.changeFontSize();
-        });
-
-        $(document).on("change", ".dropbtn7", (event) => {
-            this.userSettings.markerSize = event.target.value;
-            localStorage.setItem("settings-marker-size", this.userSettings.markerSize);
-            this.changeIconsSize();
-        });
 
         // Add Events listeners
 
@@ -790,12 +778,14 @@ export default class SquadCalc {
         this.show();
     }
 
+
     changeIconsSize(){
         this.minimap.activeMarkers.eachLayer((marker) => {
             marker.updateIconSize();
         });
     }
 
+    
     changeFontSize(){
         let fontSize;
         this.userSettings.fontSize = parseInt(this.userSettings.fontSize, 10) || 1;
@@ -823,10 +813,7 @@ export default class SquadCalc {
 
         const root = document.documentElement;
         root.style.setProperty("--font-size-objtext", `${fontSize}em`);
-        root.style.setProperty("-size-text-preview", `${fontSize}em`);
         root.style.setProperty("--font-size-calc-popup", `${fontSize - 0.1}em`);
-        $("#textPreview").css("font-size", `${fontSize}em`);
-
     }
 
     /**
@@ -1329,6 +1316,7 @@ export default class SquadCalc {
         const arrows = [];
         const circles = [];
         const rectangles = [];
+        const hexs = [];
         const activeWeapon = this.WEAPON_SELECTOR.val();
         const activeMap = this.MAP_SELECTOR.val();
         const activeLayer = this.LAYER_SELECTOR.val();
@@ -1390,9 +1378,15 @@ export default class SquadCalc {
             this.minimap.layer.selectedFlags.forEach(flag => {
                 selectedFlags.push(flag.objectName);
             });
+            this.minimap.layer.hexs.forEach((hex) => {
+                hexs.push({
+                    number: hex._hexNumber,
+                    colorIndex: hex._colorIndex,
+                });
+            });
         }
-    
-        return { weapons, targets, markers, arrows, circles, rectangles, activeWeapon, activeMap, activeLayer, selectedFlags, teams, version };
+
+        return { hexs, weapons, targets, markers, arrows, circles, rectangles, activeWeapon, activeMap, activeLayer, selectedFlags, teams, version };
     }
 
     saveMapStateToFile() {

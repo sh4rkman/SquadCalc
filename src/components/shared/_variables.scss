@@ -1,12 +1,12 @@
 // Colors
-$mainColor: firebrick;
+$mainColor: rgb(219, 62, 0);
 $mainBGColor: #111;
 $mainTxtColor: #fff;
 $newColor: green;
 
 
 :root {
-    --main-color: #{$mainColor}; // Interpolation so i can use variable in JS
+    --main-color: #{$mainColor}; // Interpolation so we can use this color in JS
 }
 
 // Fonts
@@ -16,7 +16,6 @@ $logoFont: oswald;
 
 /*
    * -- BASE STYLES --
-   * Most of these are inherited from Base, but I want to change a few.
 */
 
 * {

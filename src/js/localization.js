@@ -132,21 +132,6 @@ function updateContent() {
         minimumResultsForSearch: -1,
     });
 
-    $(".dropbtn6").select2("destroy").select2({
-        dropdownCssClass: "dropbtn6",
-        dropdownParent: $("#helpDialog"),
-        minimumResultsForSearch: -1,
-        width: "fit-content",
-    });
-
-    $(".dropbtn7").select2("destroy").select2({
-        dropdownCssClass: "dropbtn7",
-        dropdownParent: $("#helpDialog"),
-        minimumResultsForSearch: -1,
-        width: "fit-content",
-    });
-
-
     if (App.minimap.layer?.faction) {
 
         $(".dropbtn8").select2("destroy").select2({
