@@ -95,6 +95,9 @@ export function loadSettings(){
 
     App.userSettings.lowAndHigh = loadLocalSetting("settings-low-high", 0);
     $("#lowAndHighSetting").prop("checked", App.userSettings.lowAndHigh);
+
+    App.userSettings.lastDigits = loadLocalSetting("settings-last-digits", 0);
+    $("#lastDigitsSetting").prop("checked", App.userSettings.lastDigits);
     
     App.userSettings.copyTarget = loadLocalSetting("settings-copy-target", 0);
     $("#targetCopySetting").prop("checked", App.userSettings.copyTarget);
@@ -486,6 +489,13 @@ $("#lowAndHighSetting").on("change", function() {
     var val =  $("#lowAndHighSetting").is(":checked");
     App.userSettings.lowAndHigh = val;
     localStorage.setItem("settings-low-high", +val);
+    App.minimap.updateTargets();
+});
+
+$("#lastDigitsSetting").on("change", function() {
+    var val =  $("#lastDigitsSetting").is(":checked");
+    App.userSettings.lastDigits = val;
+    localStorage.setItem("settings-last-digits", +val);
     App.minimap.updateTargets();
 });
 
