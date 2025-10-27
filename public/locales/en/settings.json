@@ -27,6 +27,7 @@
         "showAnimations": "Use Large Icons",
         "copyTarget": "Auto-copy Target to clipboard",
         "lowAndHigh": "Show both Low and High angles",
+        "lastDigits": "Compact target display (last 3 elevation digits)",
         "showBearing": "Bearing",
         "showDistance": "Distance",
         "showTimeOfFlight": "Time of Flight",

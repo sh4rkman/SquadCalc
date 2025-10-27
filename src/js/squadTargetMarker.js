@@ -249,7 +249,14 @@ export const squadTargetMarker = squadMarker.extend({
             [elevation, timeOfFlight] = formatElevationData(selectedElevation, selectedTimeOfFlight);
         }
 
-        let content = `<span class=calcNumber></span></br><span>${elevation}</span>`;
+        let content;
+        
+        // Checks if last three elevation digits option is enabled and if selected weapon is "Mortar"
+        if (App.userSettings.lastDigits && ["Mortar"].includes(App.activeWeapon.name)){
+            content = `<span class=calcNumber></span></br><span>${elevation.toString().slice(-3)}</span>`;
+        } else {
+           content = `<span class=calcNumber></span></br><span>${elevation}</span>`;
+        }
 
         if (App.userSettings.showBearing) content += `<br><span class=bearingUiCalc>${BEARING.toFixed(1)}<span data-i18n="common:°">${i18next.t("common:°")}</span></span>`;
         if (App.userSettings.showTimeOfFlight) content += `<br><span class=bearingUiCalc>${timeOfFlight}</span>`;
