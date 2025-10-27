@@ -76,7 +76,7 @@ export default class SquadCalc {
         
         // Load maps 
         MAPS.forEach((map, i) => {
-            this.MAP_SELECTOR.append(`<option data-i18n=maps:${map.name} value=${i}></option>`);
+            this.MAP_SELECTOR.append(`<option data-i18n="maps:${map.name}" value="${i}"></option>`);
         });        
 
         // Add event listener
@@ -124,6 +124,13 @@ export default class SquadCalc {
                 if (this.minimap.layer) this.minimap.layer.clear();
                 $(".btn-layer").hide();
                 $("#factionsTab").hide();
+
+                // Empty Factions&Units selectors
+                this.FACTION1_SELECTOR.empty();
+                this.UNIT1_SELECTOR.empty();
+                this.FACTION2_SELECTOR.empty();
+                this.UNIT2_SELECTOR.empty();
+
                 if (broadcast && this.session.ws && this.session.ws.readyState === WebSocket.OPEN) {
                     this.session.ws.send(
                         JSON.stringify({

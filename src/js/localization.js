@@ -94,13 +94,7 @@ function updateContent() {
         });
     });
 
-
-
-    if (App.minimap.layer) {
-
-        App.minimap.layer.polyline.updateMeasurements();
-
-    }
+    if (App.minimap.layer) App.minimap.layer.polyline.updateMeasurements();
    
     $(".dropbtn").select2("destroy").select2({
         dropdownCssClass: "dropbtn",
