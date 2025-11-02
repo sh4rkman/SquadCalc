@@ -1,4 +1,15 @@
-# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **40.1.0** *(2025-11-02)*
+# <img src="https://img.shields.io/badge/-hotfix-grey?style=for-the-badge"> **40.1.1** *(2025-11-02)*
+
+<img src="https://img.shields.io/badge/-bug%20fixes-b22">  
+
+- **Compact Elevation setting:** Fixed map not refreshing after taking a screenshot with squadmortaroverlay (thanks Hans_Wurst)
+
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
+
+
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge"> **40.1.0** *(2025-11-02)*
 
 <img src="https://img.shields.io/badge/-new%20features-green">  
 
@@ -12,7 +23,7 @@
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
 
-# <img src="https://img.shields.io/badge/-major%20release-b22222?style=for-the-badge">  **40.0.0** *(2025-10-19)*
+# <img src="https://img.shields.io/badge/-major%20release-b22222?style=for-the-badge"> **40.0.0** *(2025-10-19)*
 
 
 <img src="https://img.shields.io/badge/-new%20features-green"> 
