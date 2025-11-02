@@ -339,7 +339,8 @@
 * 👌🏼 Thanks to everyone supporting the project with kinds words, clever suggestions, and better code than mine
   * MK19 implementation by [Ferrariic](https://github.com/Ferrariic)
   * SquadMortarOverlay connector by [Devil4ngle](https://github.com/Devil4ngle)
-  * Weapon-to-Target lines & deviation grid enhancements by [Antiaris74](https://github.com/Antiaris74) 
+  * Weapon-to-Target lines & deviation grid enhancements by [Antiaris74](https://github.com/Antiaris74)  
+  * Compact elevation by [d503-ai](https://github.com/d503-ai)  
   * ZH Translations by [Guducat](https://github.com/Guducat)
   * RU Translations by sitroz
   * GE Translations by [f0xcb](https://github.com/f0xcb) 

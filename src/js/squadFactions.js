@@ -87,13 +87,14 @@ export default class SquadFactions {
      *  * @param {string} unitName - The unit name for the selected unit
      * */
     pinUnit(teamfaction, country, unitName, teamMain) {
+        const safeCountry = encodeURIComponent(country.trim());
         this.unpinUnit(); // should be possible
 
         this.pinnedFaction = teamMain;
 
         // Set the pinned faction flag in the left side button
         const $img = $("<img>")
-            .attr("src", `${process.env.API_URL}/img/flags/${country}.webp`)
+            .attr("src", `${process.env.API_URL}/img/flags/${safeCountry}.webp`)
             .attr("alt", "Faction Icon")
             .addClass("faction-img");
 
