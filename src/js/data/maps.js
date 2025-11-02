@@ -5,7 +5,7 @@ const FOBEXCLUSIONS = {
 
 export const MAPS = [
     {   // UE5
-        name: `AlBasrah`,
+        name: "AlBasrah",
         mapURL: `${process.env.API_URL}/img/maps/albasrah/`,
         radiusExclusion: FOBEXCLUSIONS.medium,
         SDK_data: {
@@ -43,7 +43,7 @@ export const MAPS = [
     //     }
     // },
     { 
-        name: `Anvil`, 
+        name: "Anvil", 
         mapURL: `${process.env.API_URL}/img/maps/anvil/`,
         radiusExclusion: FOBEXCLUSIONS.medium,
         SDK_data: {
@@ -61,7 +61,7 @@ export const MAPS = [
         }
     },
     { 
-        name: `Belaya`, 
+        name: "Belaya", 
         mapURL: `${process.env.API_URL}/img/maps/belaya/`,
         radiusExclusion: FOBEXCLUSIONS.medium,
         SDK_data: {
@@ -79,7 +79,7 @@ export const MAPS = [
         }
     },
     { 
-        name: `BlackCoast`, 
+        name: "BlackCoast", 
         mapURL: `${process.env.API_URL}/img/maps/blackcoast/`,
         radiusExclusion: FOBEXCLUSIONS.medium,
         SDK_data: {
@@ -97,7 +97,7 @@ export const MAPS = [
         }
     },
     { 
-        name: `Chora`, 
+        name: "Chora", 
         mapURL: `${process.env.API_URL}/img/maps/chora/`,
         radiusExclusion: FOBEXCLUSIONS.small,
         SDK_data: {
@@ -115,7 +115,7 @@ export const MAPS = [
         }
     },
     { 
-        name: `Fallujah`, 
+        name: "Fallujah", 
         mapURL: `${process.env.API_URL}/img/maps/fallujah/`,
         radiusExclusion: FOBEXCLUSIONS.medium,
         SDK_data: {
@@ -133,7 +133,7 @@ export const MAPS = [
         }
     },
     { 
-        name: `FoolsRoad`,
+        name: "FoolsRoad",
         mapURL: `${process.env.API_URL}/img/maps/foolsroad/`,
         radiusExclusion: FOBEXCLUSIONS.small,
         SDK_data: {
@@ -151,7 +151,7 @@ export const MAPS = [
         }
     },
     { 
-        name: `GooseBay`, 
+        name: "GooseBay", 
         mapURL: `${process.env.API_URL}/img/maps/goosebay/`,
         radiusExclusion: FOBEXCLUSIONS.medium,
         SDK_data: {
@@ -169,7 +169,7 @@ export const MAPS = [
         }
     },
     { 
-        name: `Gorodok`, 
+        name: "Gorodok", 
         mapURL: `${process.env.API_URL}/img/maps/gorodok/`,
         radiusExclusion: FOBEXCLUSIONS.medium,
         SDK_data: {
@@ -187,7 +187,7 @@ export const MAPS = [
         }
     },
     { 
-        name: `Jensen`, 
+        name: "Jensen", 
         mapURL: `${process.env.API_URL}/img/maps/jensen/`,
         radiusExclusion: FOBEXCLUSIONS.medium,
         SDK_data: {
@@ -205,7 +205,7 @@ export const MAPS = [
         }
     },
     { 
-        name: `Harju`, 
+        name: "Harju", 
         mapURL: `${process.env.API_URL}/img/maps/harju/`,
         radiusExclusion: FOBEXCLUSIONS.medium,
         SDK_data: {
@@ -223,7 +223,7 @@ export const MAPS = [
         }
     },
     { 
-        name: `Kamdesh`, 
+        name: "Kamdesh", 
         mapURL: `${process.env.API_URL}/img/maps/kamdesh/`,
         radiusExclusion: FOBEXCLUSIONS.medium,
         SDK_data: {
@@ -241,7 +241,7 @@ export const MAPS = [
         }
     },
     { 
-        name: `Kohat`, 
+        name: "Kohat", 
         mapURL: `${process.env.API_URL}/img/maps/kohat/`,
         radiusExclusion: FOBEXCLUSIONS.medium,
         SDK_data: {
@@ -259,7 +259,7 @@ export const MAPS = [
         }
     },
     { 
-        name: `Kokan`,
+        name: "Kokan",
         mapURL: `${process.env.API_URL}/img/maps/kokan/`,
         radiusExclusion: FOBEXCLUSIONS.small,
         SDK_data: {
@@ -277,7 +277,7 @@ export const MAPS = [
         }
     },
     { 
-        name: `Lashkar`, 
+        name: "Lashkar", 
         mapURL: `${process.env.API_URL}/img/maps/lashkar/`,
         radiusExclusion: FOBEXCLUSIONS.medium,
         SDK_data: {
@@ -295,7 +295,7 @@ export const MAPS = [
         }
     },
     { 
-        name: `Logar`, 
+        name: "Logar", 
         mapURL: `${process.env.API_URL}/img/maps/logar/`,
         radiusExclusion: FOBEXCLUSIONS.small,
         SDK_data: {
@@ -313,7 +313,7 @@ export const MAPS = [
         }
     },
     { 
-        name: `Manicouagan`, 
+        name: "Manicouagan", 
         mapURL: `${process.env.API_URL}/img/maps/manicouagan/`,
         radiusExclusion: FOBEXCLUSIONS.medium,
         SDK_data: {
@@ -331,7 +331,7 @@ export const MAPS = [
         }
     },
     { 
-        name: `Mestia`, 
+        name: "Mestia", 
         mapURL: `${process.env.API_URL}/img/maps/mestia/`,
         radiusExclusion: FOBEXCLUSIONS.medium,
         SDK_data: {
@@ -349,7 +349,7 @@ export const MAPS = [
         }
     },
     { 
-        name: `Mutaha`, 
+        name: "Mutaha", 
         mapURL: `${process.env.API_URL}/img/maps/mutaha/`,
         radiusExclusion: FOBEXCLUSIONS.medium,
         SDK_data: {
@@ -367,7 +367,7 @@ export const MAPS = [
         }
     },
     { 
-        name: `Narva`, 
+        name: "Narva", 
         mapURL: `${process.env.API_URL}/img/maps/narva/`,
         radiusExclusion: FOBEXCLUSIONS.medium,
         SDK_data: {
@@ -385,7 +385,7 @@ export const MAPS = [
         }
     },
     { 
-        name: `Narva_f`, 
+        name: "Narva_f", 
         mapURL: `${process.env.API_URL}/img/maps/narva-flooded/`,
         radiusExclusion: FOBEXCLUSIONS.medium,
         SDK_data: {
@@ -403,14 +403,14 @@ export const MAPS = [
         }
     },
     { 
-        name: `Pacific`, 
+        name: "Pacific", 
         mapURL: `${process.env.API_URL}/img/maps/pacific/`,
         radiusExclusion: FOBEXCLUSIONS.medium,
         SDK_data: {
             minimap: {
                 corner0: [-2016, -2016],
                 corner1: [2016, 2016],
-                gridSize: `3900`,
+                gridSize: "3900",
             },
             heightmap: {
                 origin: [-2016, -2016],
@@ -421,7 +421,7 @@ export const MAPS = [
         }
     },
     { 
-        name: `Sanxian`,
+        name: "Sanxian",
         mapURL: `${process.env.API_URL}/img/maps/sanxian/`,
         radiusExclusion: FOBEXCLUSIONS.medium,
         SDK_data: {
@@ -442,7 +442,7 @@ export const MAPS = [
         // HEIGHTMAP SHOULD BE ROTATED 2.02deg
         // THEN SCALED TO 8510/6079
         // THEN OFFSET -421;+998
-        name: `Skorpo`, 
+        name: "Skorpo", 
         mapURL: `${process.env.API_URL}/img/maps/skorpo/`,
         radiusExclusion: FOBEXCLUSIONS.medium,
         SDK_data: {
@@ -462,7 +462,7 @@ export const MAPS = [
         }
     },
     { 
-        name: `Sumari`, 
+        name: "Sumari", 
         mapURL: `${process.env.API_URL}/img/maps/sumari/`,
         radiusExclusion: FOBEXCLUSIONS.small,
         SDK_data: {
@@ -480,7 +480,7 @@ export const MAPS = [
         }
     },
     { 
-        name: `Tallil`, 
+        name: "Tallil", 
         mapURL: `${process.env.API_URL}/img/maps/tallil/`,
         radiusExclusion: FOBEXCLUSIONS.medium,
         SDK_data: {
@@ -498,7 +498,7 @@ export const MAPS = [
         }
     },
     { 
-        name: `Yehorivka`, 
+        name: "Yehorivka", 
         mapURL: `${process.env.API_URL}/img/maps/yehorivka/`, 
         radiusExclusion: FOBEXCLUSIONS.medium,
         SDK_data: {
@@ -590,26 +590,26 @@ function extraInfo() {
         console.log(`    * Heightmap dimensions : [${e.heightmap.size[0]},${e.heightmap.size[1]}], scale: [${e.heightmap.scale}]`);
 
         // how to scale & crop heightmap in gimp
-        console.log(`    * Minimap & Heightmap position :`);
+        console.log("    * Minimap & Heightmap position :");
         console.log(`        -> scale heightmap to: ${Math.round(e.heightmap.size[0] * e.heightmap.scale[0])}x${Math.round(e.heightmap.size[1] * e.heightmap.scale[1])}`);
         console.log(`        -> set canvas size to: ${mmBounds[0]}x${mmBounds[1]} with offset: ${xO}x${yO}`);
 
         // Warning if the heightmap is smaller than the minimap
         if (e.heightmap.size[0] * e.heightmap.scale[0] < mmBounds[0] || e.heightmap.size[1] * e.heightmap.scale[1] < mmBounds[1]) {
-            console.warn(`        -> heightmap is smaller than the minimap`);
+            console.warn("        -> heightmap is smaller than the minimap");
         }
 
         // Heightmap z-scaling & levels
-        console.log(`    * Heightmap z-scaling & Levels :`);
+        console.log("    * Heightmap z-scaling & Levels :");
         console.log(`        -> set levels to: ${e.heightmap.BWlevels[0]} <-> ${e.heightmap.BWlevels[1]}`);
         console.log(`        -> final z-scale: ${scale(e.heightmap.BWlevels[0], e.heightmap.BWlevels[1], e.heightmap.scale[2])}`);
-        console.log(`---`);
+        console.log("---");
     });
 
 }
 
 // Only run this with `node src/js/data/maps.js mapinfo`
-if (typeof process !== `undefined` && process.argv?.[2] === `mapinfo`) {
+if (typeof process !== "undefined" && process.argv?.[2] === "mapinfo") {
     extraInfo();
 }
 

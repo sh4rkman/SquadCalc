@@ -31,6 +31,7 @@
     "showMaxRangeTooltip": "Maximale Reichweite in alle Richtungen unter Berücksichtigung der Höhen berechnen",
     "useClassicCursorTooltip": "Fadenkreuz durch Standard-Cursor ersetzen",
     "targetAnimationTooltip": "Deaktivieren, um Zielmarkierungssymbole durch minimalistische Kreise zu ersetzen",
+    "lastDigitsTooltip": "Nur die letzten drei Ziffern des Höhenwerts anzeigen (z. B. 193 statt 1193)",
     "performanceWarning": "Kann Leistungsprobleme verursachen",
     "markerDragTooltip": "Raster beim Ziehen anzeigen",
     "copyNextFlagsTooltip": "Beim Klicken auf eine Flagge automatisch die nächsten Flaggen in die Zwischenablage kopieren",

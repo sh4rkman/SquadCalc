@@ -182,7 +182,7 @@ export const squadMinimap = Map.extend({
         });
 
         this.activeLayer.once("error", (e) => {
-            console.error("Error loading", e.sourceTarget._url)
+            console.error("Error loading", e.sourceTarget._url);
             if (OLDLAYER) OLDLAYER.remove();
             this.spin(false);
         });

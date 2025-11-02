@@ -31,6 +31,7 @@
         "showDistance": "Показать расстояние",
         "showTimeOfFlight": "Показать время полёта",
         "showHeightDiff": "Показать разницу высот",
+        "lastDigits": "Компактное отображение высоты",
     "LaneFinderOptions": "Опции поиска полос",
         "capZoneOnHover": "Зоны при наведении",
         "revealLayerOnHover": "Показать слой при наведении на флаг",
