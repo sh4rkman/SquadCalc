@@ -18,16 +18,16 @@
         span {
             display: block;
         }
-        span:nth-child(2) {
+        span:nth-child(1) {
             padding: 0 0 10px;
         }
-        span:nth-child(3) {
+        span:nth-child(2) {
             padding: 0 15px 10px;
             background: linear-gradient(to right, variables.$mainColor 50%, variables.$mainBGColor 50%);
             background-size: 200% 100%;
             background-position: right bottom;
             animation: 1s ease-out 0.3s 1 forwards loading;
-            width: 4em;
+            width: 3em;
             margin: 0 auto;
         }
     }
