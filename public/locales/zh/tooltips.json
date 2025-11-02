@@ -31,6 +31,7 @@
     "showMaxRangeTooltip": "计算每个方向的最大范围，同时考虑高度",
     "useClassicCursorTooltip": "使用系统的鼠标样式",
     "targetAnimationTooltip": "禁用以将标记图标替换为简约的圆形",
+    "lastDigitsTooltip": "仅显示海拔值的后三位数字（例如 193 而不是 1193）",
     "performanceWarning": "可能会导致性能问题",
     "markerDragTooltip": "拖动时显示网格坐标",
     "copyNextFlagsTooltip": "在点击目标点后，自动复制所有可能的下一个点的名称到剪贴板",

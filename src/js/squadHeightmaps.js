@@ -13,8 +13,9 @@ export default class SquadHeightmap {
         this.map = map;
         this.width = 500;
         this.heightmapScaling = this.width / this.map.pixelSize;
-        let heightmapPath = `${process.env.API_URL}/img/maps${this.map.activeMap.mapURL}heightmap.json`;
-        this.json = this.loadHeightmapJson(heightmapPath);
+        let heightmapPath = `${this.map.activeMap.mapURL}heightmap.json`;
+        this.json = [];
+        this.loadHeightmapJson(heightmapPath);
     }
 
 
@@ -23,14 +24,20 @@ export default class SquadHeightmap {
      * @param {string} [url] - URL to the JSON file
      */
     async loadHeightmapJson(url) {
+        
+        // If no heightmap is provided, don't look for a .json file
+        if (!this.map.activeMap.SDK_data.heightmap) return;
+
         try {
             const response = await fetch(url); // Fetch the JSON file
             let data = await response.json();
             this.json = data;
-            $(document).trigger("heightmap:loaded");
         } catch (error) {
-            console.error("Failed to load heightmap:", error);
+            console.error("Failed to load heightmap:", url);
+            console.error("  -> ", error);
         }
+        
+        $(document).trigger("heightmap:loaded");
     }
 
 
@@ -41,6 +48,10 @@ export default class SquadHeightmap {
      * @returns {integer} - height in meters
      */
     getHeight(latlng){
+
+        // Fallback in case heightmap isn't supplied or didn't load
+        if (!this.json || !Array.isArray(this.json)) return 0;
+
         const row = Math.round(latlng.lat * -this.heightmapScaling);
         const col = Math.round(latlng.lng * this.heightmapScaling);
         let height = 0; // Todo: Implement a better way to handle this, like returning infinity

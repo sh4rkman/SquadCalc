@@ -325,22 +325,22 @@ export default class SquadSession {
 
         case "UPDATE_FACTION": {
             console.debug("Received new faction: ", data.faction);
-            // if (data.teamIndex === 0) {
-            //     App.FACTION1_SELECTOR.val(data.faction).trigger($.Event("change", { broadcast: false }));
-            // } else if (data.teamIndex === 1) {
-            //     App.FACTION2_SELECTOR.val(data.faction).trigger($.Event("change", { broadcast: false }));
-            // }
+            if (data.teamIndex === 0) {
+                App.FACTION1_SELECTOR.val(data.faction).trigger($.Event("change", { broadcast: false }));
+            } else if (data.teamIndex === 1) {
+                App.FACTION2_SELECTOR.val(data.faction).trigger($.Event("change", { broadcast: false }));
+            }
             break;
         }
 
 
         case "UPDATE_UNIT": {
             console.debug("Received new unit: ", data.faction);
-            // if (data.teamIndex === 0) {
-            //     App.minimap.layer.factions.UNIT1_SELECTOR.val(data.faction).trigger($.Event("change", { broadcast: false }));
-            // } else if (data.teamIndex === 1) {
-            //     App.minimap.layer.factions.UNIT2_SELECTOR.val(data.faction).trigger($.Event("change", { broadcast: false }));
-            // }
+            if (data.teamIndex === 0) {
+                App.minimap.layer.factions.UNIT1_SELECTOR.val(data.faction).trigger($.Event("change", { broadcast: false }));
+            } else if (data.teamIndex === 1) {
+                App.minimap.layer.factions.UNIT2_SELECTOR.val(data.faction).trigger($.Event("change", { broadcast: false }));
+            }
             break;
         }
 

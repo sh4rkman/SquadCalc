@@ -369,7 +369,6 @@ export const squadWeaponMarker = squadMarker.extend({
     _handleClick: function(weapon) {
         const DIALOG = document.getElementById("weaponInformation");
 
-
         let name = i18next.t("weapons:" + App.activeWeapon.name);
         if (App.activeWeapon.name === "M1064M121")  name += ` (${$(".dropbtn3 option:selected").text()})`;
 

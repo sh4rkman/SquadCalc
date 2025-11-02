@@ -150,6 +150,15 @@ tippy("span[data-i18n='settings:copyTarget']", {
     },
 });
 
+tippy("span[data-i18n='settings:lastDigits']", {
+    ...commonToolipsSettings,
+    onShow(tip) {
+        tip.setContent(`
+            ${i18next.t("tooltips:lastDigitsTooltip")}
+        `);
+    },
+});
+
 tippy("span[data-i18n='settings:capZoneOnHover']", {
     ...commonToolipsSettings,
     onShow(tip) {

@@ -115,9 +115,9 @@ export const squadMinimap = Map.extend({
     draw: function(){
 
         this.gameToMapScale = this.pixelSize / this.activeMap.size;
-        this.gameToMapScaleFake = this.pixelSize / this.activeMap.fakeSize;
+        this.gameToMapScaleFake = this.pixelSize / this.activeMap.gridSize;
         this.mapToGameScale = this.activeMap.size / this.pixelSize;
-        this.mapToGameScaleFake = this.activeMap.fakeSize / this.pixelSize;
+        this.mapToGameScaleFake = this.activeMap.gridSize / this.pixelSize;
         this.detailedZoomThreshold = ( 3 + (this.activeMap.size / 7000) ) * 0.8;
        
         // Load Heightmap
@@ -145,7 +145,7 @@ export const squadMinimap = Map.extend({
         // Show spinner
         this.spin(true, this.spinOptions);
 
-        let imagePath = `${process.env.API_URL}/img/maps${this.activeMap.mapURL}${LAYERMODE}`;
+        let imagePath = `${this.activeMap.mapURL}${LAYERMODE}`;
 
         if (App.userSettings.highQualityImages) {
             // Use TileLayer for high-quality images
@@ -167,8 +167,7 @@ export const squadMinimap = Map.extend({
         }
     
 
-        this.activeLayer.on("load", () => {
-            
+        this.activeLayer.once("load", () => {
             if (App.userSettings.highQualityImages) {
                 if (OLDLAYER) OLDLAYER.remove();
                 this.spin(false);
@@ -180,8 +179,14 @@ export const squadMinimap = Map.extend({
                     this.spin(false);
                 });
             }
-
         });
+
+        this.activeLayer.once("error", (e) => {
+            console.error("Error loading", e.sourceTarget._url);
+            if (OLDLAYER) OLDLAYER.remove();
+            this.spin(false);
+        });
+
 
         // Show grid and heatmap
         if (changemap) {

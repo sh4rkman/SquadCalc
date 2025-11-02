@@ -1,3 +1,17 @@
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge">  **40.1.0** *(2025-11-02)*
+
+<img src="https://img.shields.io/badge/-new%20features-green">  
+
+- **Compact Elevation setting:** Enable this option to decluster the map and only keep the last 3 digit of elevations (1275 -> 275) ([#387](https://github.com/sh4rkman/SquadCalc/pull/387), thanks d503-ai!)
+  
+
+<img src="https://img.shields.io/badge/-dev%20-grey">  
+
+- Updated code structure to make it easier for developers to add custom local maps.
+- Changed heightmaps & locales caching
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
 # <img src="https://img.shields.io/badge/-major%20release-b22222?style=for-the-badge">  **40.0.0** *(2025-10-19)*
 
 
@@ -14,8 +28,9 @@ Hexagons in TC can now be right-clicked to cycle through red/blue/neutral colors
 
 <img src="https://img.shields.io/badge/-%20improv%20-orange">  
 
-- Font-Size selector is now a slider
 - If a target isn't reachable by first mortar but reachable by second one, a deviation grid will now be displayed for the second weapon ([#380](https://github.com/sh4rkman/SquadCalc/pull/380), thanks Antiaris74!)
+- Font-Size selector is now a slider
+- Logo is now vertical on mobile
 
 <img src="https://img.shields.io/badge/-bug%20fixes-b22">   
 

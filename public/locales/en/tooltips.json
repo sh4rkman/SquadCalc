@@ -34,6 +34,7 @@
     "performanceWarning": "Can cause performance issues",
     "markerDragTooltip": "Display grid while dragging",
     "copyNextFlagsTooltip": "When clicking a flag, automatically add the next flags to clipboard",
+    "lastDigitsTooltip": "Show only the last three digits of elevation values (e.g. 193 instead of 1193)",
     "copyTargetTooltip": "After placing/dragging a target, automatically copy the calculations to clipboard",
     "lowAndHighTooltip": "Show both high and low angle for weapons that can shoot in both modes",
     "capZoneOnHoverTooltip": "Instead of showing capzones at all times, only show them when hovering over a flag",

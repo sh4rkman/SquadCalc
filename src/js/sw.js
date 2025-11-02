@@ -24,30 +24,30 @@ registerRoute(
     })
 );
 
-registerRoute(
-    ({ url }) => url.pathname.includes("/maps/") && url.pathname.endsWith("heightmap.json"),
-    new StaleWhileRevalidate({
-        cacheName: "map-heightmap",
-        plugins: [
-            new ExpirationPlugin({
-                maxEntries: 30,
-                maxAgeSeconds: 60 * 60 * 24 * 30, // 30 days
-                purgeOnQuotaError: true,
-            }),
-        ],
-    })
-);
+// registerRoute(
+//     ({ url }) => url.pathname.includes("/maps/") && url.pathname.endsWith("heightmap.json"),
+//     new StaleWhileRevalidate({
+//         cacheName: "map-heightmap",
+//         plugins: [
+//             new ExpirationPlugin({
+//                 maxEntries: 30,
+//                 maxAgeSeconds: 60 * 60 * 24 * 30, // 30 days
+//                 purgeOnQuotaError: true,
+//             }),
+//         ],
+//     })
+// );
 
-registerRoute(
-    ({ url }) => url.pathname.includes("/locales/") && url.pathname.endsWith(".json"),
-    new StaleWhileRevalidate({
-        cacheName: "locales",
-        plugins: [
-            new ExpirationPlugin({
-                maxEntries: 30,
-                maxAgeSeconds: 60 * 60 * 24 * 30, // 30 days
-                purgeOnQuotaError: true,
-            }),
-        ],
-    })
-);
+// registerRoute(
+//     ({ url }) => url.pathname.includes("/locales/") && url.pathname.endsWith(".json"),
+//     new StaleWhileRevalidate({
+//         cacheName: "locales",
+//         plugins: [
+//             new ExpirationPlugin({
+//                 maxEntries: 30,
+//                 maxAgeSeconds: 60 * 60 * 24 * 30, // 30 days
+//                 purgeOnQuotaError: true,
+//             }),
+//         ],
+//     })
+// );
