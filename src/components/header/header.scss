@@ -148,3 +148,76 @@ header {
     float: left;
     margin-right: 0;
 }
+
+/***************************************
+************  LOGO STYLES  *************
+***************************************/
+
+.Krest-logo-link {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    a {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    
+    svg {
+        max-width: 100px;
+        max-height: 50px;
+    }
+}
+
+/***************************************
+************  LOADER STYLES  ***********
+***************************************/
+
+#loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    #loaderLogo {
+        text-align: center;
+        color: white;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+        
+        div:first-child {
+            // SVG container
+            svg {
+                width: auto;
+                height: 150px;
+            }
+        }
+        
+        div:nth-child(2) {
+            // SQUAD CALC text
+            font-size: 48px;
+            font-weight: bold;
+            text-transform: uppercase;
+            
+            span {
+                margin-right: 10px;
+            }
+        }
+        
+        div:last-child {
+            // "На серверах Кресты" text
+            font-size: 20px;
+            line-height: 60px;
+            opacity: 0.8;
+        }
+    }
+}
