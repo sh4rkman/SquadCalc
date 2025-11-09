@@ -6,6 +6,7 @@ import "./libs/leaflet-measure-path.js";
 import SquadFactions from "./squadFactions.js";
 import { Hexagon } from "./libs/leaflet-hexagon.js";
 import { squadSpawnGroup } from "./squadSpawnGroup.js";
+import { squadCameraActor } from "./squadCameraActor.js";
 import { SquadVehicleSpawner } from "./squadVehicleSpawner.js";
 
 export default class SquadLayer {
@@ -139,7 +140,15 @@ export default class SquadLayer {
         this.createBorders();
         this.createSpawners();
         this.createTeamSpawns();
+        this.createCameraActors();
         //this.createTeamSpawnsPoints();
+    }
+
+    createCameraActors(){
+        this.layerData.cameraActors.forEach((camera) => {
+            if (camera.name != "MapCameraLocation") return;
+            new squadCameraActor(this.convertToLatLng(camera.location_x, camera.location_y), camera, this).addTo(this.activeLayerMarkers);
+        });
     }
 
 
