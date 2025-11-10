@@ -33,6 +33,8 @@ app.use('/api', async (req, res) => {
       headers: {
         'Content-Type': 'application/json',
         'X-API-Key': API_KEY,
+        'X-Forwarded-For': req.headers['x-forwarded-for'] || req.ip,
+        ...req.headers,
         ...(req.get('origin') ? { Origin: req.get('origin') } : {}),
         ...(req.get('referer') ? { Referer: req.get('referer') } : {})
       },
