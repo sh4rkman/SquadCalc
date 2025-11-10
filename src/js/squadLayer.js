@@ -144,7 +144,7 @@ export default class SquadLayer {
     createCameraActors(){
         this.layerData.cameraActors.forEach((camera) => {
             if (camera.name != "MapCameraLocation") return;
-            new squadCameraActor(this.convertToLatLng(camera.location_x, camera.location_y), camera, this).addTo(this.activeLayerMarkers);
+            this.cameraActor = new squadCameraActor(this.convertToLatLng(camera.location_x, camera.location_y), camera, this).addTo(this.activeLayerMarkers);
         });
     }
 
@@ -199,7 +199,7 @@ export default class SquadLayer {
             const nodeBFlag = Object.values(this.objectives).find(objective => objective.objectDisplayName === link.nodeB);
             const latlngNodeA = this.convertToLatLng(nodeAFlag.location_x, nodeAFlag.location_y);
             const latlngNodeB = this.convertToLatLng(nodeBFlag.location_x, nodeBFlag.location_y);
-            this.path.push(latlngNodeA, latlngNodeB)
+            this.path.push(latlngNodeA, latlngNodeB);
         });
 
         Object.values(this.objectives).forEach((obj) => {
@@ -1353,12 +1353,14 @@ export default class SquadLayer {
             this.isVisible = false;
             $(".btn-layer").removeClass("active");
             this.hideAllCapzones();
+            this.cameraActor?.hide();
             this.setMainZoneOpacity(false);
             this.hexs.forEach((hex => { hex.hide();}));
             this.vehicleSpawners.forEach(spawn => { spawn.hide(); });
-            if (this.borders && App.userSettings.showMapBorders) this.borders.setStyle({ fillOpacity: 0 });
+            if (App.userSettings.showMapBorders) this.borders?.setStyle({ fillOpacity: 0 });
         }
         else {
+            this.cameraActor?.show();
             this.hexs.forEach((hex => { hex.show();}));
             this._setOpacity(1);
             this.setMainZoneOpacity(true);

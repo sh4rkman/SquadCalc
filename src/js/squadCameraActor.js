@@ -1,6 +1,7 @@
 import { Marker, Icon, Browser, DomEvent } from "leaflet";
 import tippy from "tippy.js";
 import i18next from "i18next";
+import "./libs/leaflet-rotatedMarker.js";
 
 
 export const squadCameraActor = Marker.extend({
@@ -28,7 +29,10 @@ export const squadCameraActor = Marker.extend({
                 iconSize: [30, 30],
                 iconAnchor: [15, 15],
                 className: "vehSpawnIcon"
-            }));
+            })
+        );
+
+        this.setRotationAngle(camera.rotation_z);
 
         if (!Browser.mobile) {
             this.on("pointerover", this._handleOver, this);
@@ -69,6 +73,13 @@ export const squadCameraActor = Marker.extend({
 
     },
 
+    hide() {
+        this.removeFrom(this.layer.activeLayerMarkers);
+    },
+
+    show() {
+        this.addTo(this.layer.activeLayerMarkers);
+    },
 
     _onShow(tip) {
         this.tip = tip;
@@ -119,6 +130,7 @@ export const squadCameraActor = Marker.extend({
 
         // remove marker from map
         this.remove();
+        this.layer.cameraActor = null;
     },
 
 
