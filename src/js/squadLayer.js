@@ -115,8 +115,8 @@ export default class SquadLayer {
             break;
         case "AAS":
         case "Seed":
+        case "Skirmish":
             this.initPredictiveLayer();
-            //this.initSkirmishLayer(); // TODO: use a single function for AASGraphs
             break;
         case "TC":
             this.initTerritoryControl(this.capturePoints);
@@ -124,9 +124,6 @@ export default class SquadLayer {
         case "RAAS":
         case "Invasion":
             this.initRandomizedLayer();
-            break;
-        case "Skirmish":
-            this.initSkirmishLayer();
             break;
         default:
             this.clear();
@@ -191,28 +188,18 @@ export default class SquadLayer {
     }
 
 
-    initSkirmishLayer() {
-
-        // Set Paths
+    /**
+     * Initialize a layer going from first to last point
+     * AAS - SEED - Skirmish
+     */
+    initPredictiveLayer(){
+                // Set Paths
         Object.values(this.capturePoints.points.links).forEach(link => {
             const nodeAFlag = Object.values(this.objectives).find(objective => objective.objectDisplayName === link.nodeA);
             const nodeBFlag = Object.values(this.objectives).find(objective => objective.objectDisplayName === link.nodeB);
             const latlngNodeA = this.convertToLatLng(nodeAFlag.location_x, nodeAFlag.location_y);
             const latlngNodeB = this.convertToLatLng(nodeBFlag.location_x, nodeBFlag.location_y);
-            let path = [latlngNodeA, latlngNodeB];
-
-            // Not using this.path here because several path would be created on each others
-            new Polyline(path, {
-                color: "white",
-                opacity: 0.9,
-                weight: 2,
-                showMeasurements: false,
-                // measurementOptions: {
-                //     minPixelDistance: 50,
-                //     scaling: this.map.mapToGameScale,
-                // }
-            }).addTo(this.activeLayerMarkers);
-
+            this.path.push(latlngNodeA, latlngNodeB)
         });
 
         Object.values(this.objectives).forEach((obj) => {
@@ -227,51 +214,6 @@ export default class SquadLayer {
             }
 
             const newFlag = new SquadObjective(latlng, this, obj, 0, obj);
-            this.flags.push(newFlag);
-
-            obj.objects.forEach(cap => {
-                newFlag.createCapZone(cap);
-            });
-        });
-
-        //this.polyline.setLatLngs(this.path);
-
-    }
-
-
-
-    /**
-     * Initialize a layer going from first to last point
-     * AAS - SEED
-     */
-    initPredictiveLayer(){
-        const pointsOrder = this.capturePoints?.points?.pointsOrder;
-        const objectives = this.objectives;
-
-        let orderedObjectives = [];
-
-        // Sort objectives according to their order in layerData.capturePoints.points.pointsOrder
-        const nameToObjective = Object.values(objectives).reduce((acc, obj) => {
-            acc[obj.objectDisplayName] = obj;
-            return acc;
-        }, {});
-
-        orderedObjectives = pointsOrder.map(name => nameToObjective[name]).filter(Boolean);
-
-        orderedObjectives.forEach((obj) => {
-            const latlng = this.convertToLatLng(obj.location_x, obj.location_y);
-
-            // Identify and process mains
-            if (obj.name === "Main") {
-                this.path.push(latlng);
-                let newFlag = new SquadObjective(latlng, this, obj, 1, obj);
-                this.flags.push(newFlag);
-                this.mains.push(newFlag);
-                return;
-            }
-
-            const newFlag = new SquadObjective(latlng, this, obj, 0, obj);
-            this.path.push(latlng);
             this.flags.push(newFlag);
 
             obj.objects.forEach(cap => {
