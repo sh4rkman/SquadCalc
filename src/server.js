@@ -27,19 +27,19 @@ app.use(express.static(path.join(__dirname, '../dist')));
 app.use('/api', async (req, res) => {
   try {
     const url = `${API_BASE_URL}${req.url}`;
-    
+    const body = req.method !== 'GET' ? JSON.stringify(req.body) : undefined;
+
     const response = await fetch(url, {
-      method: req.method,
-      headers: {
-        'Content-Type': 'application/json',
+    method: req.method,
+    headers: {
+        ...req.headers,
+        'Content-Length': body ? Buffer.byteLength(body) : 0,
         'X-API-Key': API_KEY,
         'X-Forwarded-For': req.headers['x-forwarded-for'] || req.ip,
-        ...req.headers,
-        ...(req.get('origin') ? { Origin: req.get('origin') } : {}),
-        ...(req.get('referer') ? { Referer: req.get('referer') } : {})
-      },
-      body: req.method !== 'GET' ? JSON.stringify(req.body) : undefined
+    },
+    body
     });
+
     const data = await response.json();
     res.status(response.status).json(data);
   } catch (error) {
