@@ -76,5 +76,9 @@
   },
   "overrides": {
     "phin": "^3.7.1"
+  },
+  "dependencies": {
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0"
   }
 }
