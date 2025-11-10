@@ -26,8 +26,8 @@
     "esversion": 11
   },
   "scripts": {
-    "start": "webpack serve -c ./config/webpack.config.js",
-    "build": "webpack -c ./config/webpack.config.js",
+    "dev": "cross-env NODE_ENV=development node server/server.js",
+    "build": "webpack --env WEBPACK_BUILD=true --config ./config/webpack.config.js && cross-env NODE_ENV=production node server/server.js",
     "lint": "stylelint -c ./config/.stylelintrc.json ./src/**/*.scss && htmlhint --config ./config/.htmlhintrc.json --nocolor ./src/ && jshint ./src/ && eslint --fix -c ./config/.eslintrc.js ./src/",
     "mapinfo": "node src/js/data/maps.js mapinfo"
   },
@@ -36,6 +36,7 @@
     "@types/node": "^22.10.3",
     "animate.css": "^4.1.1",
     "copy-webpack-plugin": "^12.0.2",
+    "cross-env": "^10.1.0",
     "css-loader": "^7.1.2",
     "css-minimizer-webpack-plugin": "^7.0.0",
     "dotenv-webpack": "^8.1.0",
@@ -69,12 +70,18 @@
     "uuid": "^11.0.5",
     "webpack": "^5.97.1",
     "webpack-cli": "^6.0.1",
+    "webpack-dev-middleware": "^7.4.5",
     "webpack-dev-server": "^5.2.0",
+    "webpack-hot-middleware": "^2.26.1",
     "webpack-merge": "^6.0.1",
     "webpack-pwa-manifest": "^4.3.0",
     "workbox-webpack-plugin": "^7.3.0"
   },
   "overrides": {
     "phin": "^3.7.1"
+  },
+  "dependencies": {
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0"
   }
 }

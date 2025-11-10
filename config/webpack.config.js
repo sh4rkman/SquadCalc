@@ -28,10 +28,14 @@ export default async (env) => {
     ? [{ userAgent: "*", allow: "/" }] 
     : [{ userAgent: "*", disallow: "/" }];
 
+  const isDevelopment = !env.WEBPACK_BUILD;
+
   return {
 
     entry: {
-      main: './src/app.js',
+      main: isDevelopment 
+        ? ['webpack-hot-middleware/client?path=/__webpack_hmr&timeout=20000&reload=true', './src/app.js']
+        : './src/app.js'
     },
     stats: { warnings: false},
     mode: env.WEBPACK_BUILD ? 'production' : 'development',
@@ -97,6 +101,8 @@ export default async (env) => {
         new webpack.ProvidePlugin({
             $: "jquery", jQuery: "jquery", "window.jQuery": "jquery'", "window.$": "jquery"
         }),
+        // Add HMR plugin in development
+        ...(isDevelopment ? [new webpack.HotModuleReplacementPlugin()] : []),
         new RobotstxtPlugin({
           policy: robotstxtPolicy,
         }),
