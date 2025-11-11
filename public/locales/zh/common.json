@@ -59,5 +59,7 @@
     "noCommander": "无指挥官资源",
     "spawn": "生成",
     "temporary": "临时生成",
-    "disabledSpawn": "首次占领前禁用"
+    "disabledSpawn": "首次占领前禁用",
+    "respawnCamera": "重生摄像头",
+    "rightClicToRemove": "右键点击以移除标记"
 }

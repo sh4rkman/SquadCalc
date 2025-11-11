@@ -103,6 +103,10 @@ export default class SquadSession {
             $(document).one("layers:loaded", () => {
                 App.LAYER_SELECTOR.val(data.mapState.activeLayer).trigger($.Event("change", { broadcast: false }));
                 
+                data.mapState.markers.forEach(marker => {
+                    App.minimap.createMarker(new LatLng(marker.lat, marker.lng), marker.team, marker.category, marker.icon, marker.uid);
+                });
+
                 $(document).one("layer:loaded", () => {
                     App.minimap.layer._resetLayer();
 
@@ -119,6 +123,7 @@ export default class SquadSession {
                         });
                     });
 
+                    console.debug("Received hexs from session: ", data.mapState.hexs);
                     data.mapState.hexs.forEach(sessionHex => {
                         App.minimap.layer.hexs.forEach((layerHex) => {
                             if (sessionHex.number === layerHex._hexNumber) {

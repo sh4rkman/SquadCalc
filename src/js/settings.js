@@ -66,6 +66,9 @@ export function loadSettings(){
         $(".factionSettings").hide();
     }
 
+    App.userSettings.showRespawnCam = loadLocalSetting("settings-show-respawn-cam");
+    $("#respawnCamSettings").prop("checked", App.userSettings.showRespawnCam);
+
     App.userSettings.showNextFlagsPercentages = loadLocalSetting("settings-show-next-flags-percentages");
     $("#showNextFlagPercentageSettings").prop("checked", App.userSettings.showNextFlagsPercentages);
 
@@ -218,6 +221,18 @@ $("#contextMenuSettings").on("change", function() {
     var val = $("#contextMenuSettings").is(":checked");
     App.userSettings.contextMenu = val;
     localStorage.setItem("settings-contextmenu", +val);
+});
+
+$("#respawnCamSettings").on("change", function() {
+    var val = $("#respawnCamSettings").is(":checked");
+    App.userSettings.showRespawnCam = val;
+    localStorage.setItem("settings-show-respawn-cam", +val);
+
+    if (val) {
+        App.minimap.layer.cameraActor?.show();
+    } else {
+        App.minimap.layer.cameraActor?.hide();
+    }
 });
 
 $("#showMainZonesSettings").on("change", function() {

@@ -47,6 +47,7 @@
         "showMainAssets": "显示主要资产",
         "showMapBorders": "显示地图边界",
         "showNextFlagPercentage": "显示下一个旗帜的概率分布",
+        "respawnCam": "显示重生摄像头位置",
     "shortcuts": "快捷键",
         "enter": "进入专注模式，隐藏所有按钮",
         "deleteLastTarget": "删除地图上最后放置的目标",
