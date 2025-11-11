@@ -14,7 +14,7 @@ const API_BASE_URL = process.env.API_URL;
 
 if (!API_KEY) {
     console.error('ERROR: API_KEY not set in .env file');
-    console.error('Get your API key at https://squadcalc.app/api-access');
+    console.error('Get your API key at https://discord.com/invite/BNPAc5kEJP');
     process.exit(1);
 }
 
