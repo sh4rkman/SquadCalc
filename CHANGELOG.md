@@ -1,5 +1,5 @@
 
-# <img src="https://img.shields.io/badge/-major%20release-b22222?style=for-the-badge"> **40.2.0** *(2025-11-12)*
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge"> **40.2.0** *(2025-11-12)*
 
 
 <img src="https://img.shields.io/badge/-new%20features-green">
