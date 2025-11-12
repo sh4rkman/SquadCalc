@@ -57,5 +57,7 @@
     "noCommander": "Keine Kommandanten-Ressourcen",
     "spawn": "Erscheinen",
     "temporary": "Vorübergehend Erscheinen",
-    "disabledSpawn": "Bis zur ersten Eroberung deaktiviert"
+    "disabledSpawn": "Bis zur ersten Eroberung deaktiviert",
+    "respawnCamera": "Wiederbelebungskamera",
+    "rightClicToRemove": "Rechtsklick zum Entfernen der Markierung"
 }

@@ -1,4 +1,5 @@
 {
+    "AFU": "AFU",
     "ADF": "ADF",
     "BAF": "BAF",
     "CAF": "CAF",
@@ -14,6 +15,7 @@
     "USMC": "USMC",
     "VDV": "VDV",
     "WPMC": "WPMC",
+    "AFU_displayName": "Armed Forces of Ukraine",
     "ADF_displayName": "Australian Defence Force",
     "BAF_displayName": "British Armed Forces",
     "CAF_displayName": "Canadian Armed Forces",

@@ -59,5 +59,7 @@
     "noCommander": "No commander assets",
     "spawn": "Spawn",
     "temporary": "Temporary Spawn",
-    "disabledSpawn": "Disabled until first cap"
+    "disabledSpawn": "Disabled until first cap",
+    "respawnCamera": "Respawn Camera",
+    "rightClicToRemove": "Right click to remove"
 }

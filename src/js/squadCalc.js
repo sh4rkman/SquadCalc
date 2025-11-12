@@ -505,8 +505,11 @@ export default class SquadCalc {
 
                     $(document).one("layers:loaded", () => {
                         this.LAYER_SELECTOR.val(data.activeLayer).trigger($.Event("change", { broadcast: true }));
-                        $(document).on("layer:loaded", () => {
+                        $(document).one("layer:loaded", () => {
 
+                            data.markers.forEach(marker => {
+                                this.minimap.createMarker(new LatLng(marker.lat, marker.lng), marker.team, marker.category, marker.icon, marker.uid);
+                            });
 
                             data.selectedFlags.forEach(flag => {
                                 this.minimap.layer.flags.forEach((layerFlag) => {

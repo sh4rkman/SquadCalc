@@ -42,6 +42,7 @@
         "showMainAssets": "Show Main Assets",
         "showMapBorders": "Show Layer Map Border",
         "showNextFlagPercentage": "Show Next Flags Probabilities",
+        "respawnCam": "Show Respawn Camera Position",
     "factionsOptions": "Factions Options",
         "defaultFactions": "Auto-Select Layer's Default Factions",
         "enableFactions": "Enable Factions",

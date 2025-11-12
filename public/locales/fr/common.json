@@ -57,5 +57,7 @@
     "noCommander": "Pas d'équipements de commandant",
     "spawn": "Spawn",
     "temporary": "Spawn Temporaire",
-    "disabledSpawn": "Désactivé jusqu'à la première capture"
+    "disabledSpawn": "Désactivé jusqu'à la première capture",
+    "respawnCamera": "Caméra de respawn",
+    "rightClicToRemove": "Clic droit pour supprimer"
 }

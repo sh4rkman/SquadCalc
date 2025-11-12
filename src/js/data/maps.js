@@ -22,26 +22,6 @@ export const MAPS = [
             }
         }
     },
-    // { 
-    //     // UE4
-    //     name: `AlBasrah`, 
-    //     gridSize: 3040, // OK
-    //     scaling: 0.01294, // OK
-    //     mapURL: `/albasrah/`,
-    //     radiusExclusion: FOBEXCLUSIONS.medium,
-    //     SDK_data: {
-    //         minimap: {
-    //             corner0: [-1520, -1520],
-    //             corner1: [1520, 1520]
-    //         },
-    //         heightmap: {
-    //             origin: [-2032, -2032],
-    //             size: [3049, 3049],
-    //             scale: [1, 1, 0.1],
-    //             BWlevels: [2793, 4087]
-    //         }
-    //     }
-    // },
     { 
         name: "Anvil", 
         mapURL: `${process.env.API_URL}/img/maps/anvil/`,
@@ -68,7 +48,7 @@ export const MAPS = [
             minimap: {
                 corner0: [-1954, -2080],
                 corner1: [1950, 1825],
-                gridSize: 3904,
+                gridSize: 3900,
             },
             heightmap: {
                 origin: [-2016, -2142],
