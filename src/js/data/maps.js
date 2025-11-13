@@ -180,7 +180,7 @@ export const MAPS = [
                 origin: [-2040, -2040],
                 size: [4081, 4081],
                 scale: [1, 1, 1],
-                BWlevels: [4683, 5542]
+                BWlevels: [4643, 5595]
             }
         }
     },
