@@ -232,6 +232,16 @@ export const squadTargetMarker = squadMarker.extend({
         const formatElevationData = (elevationData, timeOfFlight) => {
             if (isNaN(elevationData?.rad)) return ["---", "---"];
             const elevation = App.activeWeapon.unit === "mil" ? elevationData.mil.toFixed(0) : elevationData.deg.toFixed(1);
+
+            console.log(App.activeWeapon)
+
+            if(App.activeWeapon.name === "BTR4-AGS" || App.activeWeapon.name === "BTR4-AGS-FIXED"){
+                if(App.activeWeapon.name === "BTR4-AGS-FIXED") elevationData.deg = elevationData.deg - 0.9;
+                const degrees = Math.floor(elevationData.deg);
+                const minutes = Math.round((elevationData.deg - degrees) * 60);
+                return [`${degrees}°${minutes.toString().padStart(2, '0')}'`, `${timeOfFlight.toFixed(0)}<span data-i18n="common:s">${i18next.t("common:s")}</span>`];
+            }
+
             const formattedTime = `${timeOfFlight.toFixed(0)}<span data-i18n="common:s">${i18next.t("common:s")}</span>`;
             return [elevation, formattedTime];
         };
@@ -254,6 +264,7 @@ export const squadTargetMarker = squadMarker.extend({
 
 
         // Checks if last three elevation digits option is enabled and if selected weapon is "Mortar"
+        // TODO move this in the previous if statement when other weapons are supported
         if (App.userSettings.lastDigits && ["Mortar"].includes(App.activeWeapon.name)){
             content = `<span class=calcNumber></span></br><span>${elevation.toString().slice(-3)}</span>`;
         } else {
