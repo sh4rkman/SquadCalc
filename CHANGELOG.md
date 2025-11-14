@@ -1,8 +1,34 @@
+
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge"> **40.2.0** *(2025-11-12)*
+
+
+<img src="https://img.shields.io/badge/-new%20features-green">
+
+- **Respawn Camera:** : Added a feature to display the Respawn Cam position on the map. (thanks jadow)
+Can be disabled in settings, marker can be deleted with a right clic.
+
+
+<img src="https://img.shields.io/badge/-bug%20fixes-b22">  
+
+- Fixed an issue where existing markers did not appear when joining a session
+- Fixed an issue where markers where not created when importing a save file
+- Fixed TC hexagons displaying with incorrect colors when joining a session ([#383](https://github.com/sh4rkman/SquadCalc/issues/383))
+- Skirmish links between flags now correctly fade out when the layer is hidden ([#391](https://github.com/sh4rkman/SquadCalc/issues/391))
+
+<img src="https://img.shields.io/badge/-other%20-grey"> 
+
+- Added a `.env` template/example file for developers ([#393](https://github.com/sh4rkman/SquadCalc/issues/393))
+
+
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
+
 # <img src="https://img.shields.io/badge/-hotfix-grey?style=for-the-badge"> **40.1.1** *(2025-11-02)*
 
 <img src="https://img.shields.io/badge/-bug%20fixes-b22">  
 
-- **Compact Elevation setting:** Fixed map not refreshing after taking a screenshot with squadmortaroverlay (thanks Hans_Wurst)
+- Fixed map not refreshing after taking a screenshot with squadmortaroverlay (thanks Hans_Wurst)
 
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
@@ -52,7 +78,7 @@ Hexagons in TC can now be right-clicked to cycle through red/blue/neutral colors
 - When hovering a target, other targets deviation grids are now correctly faded out
 - When dragging a weapon, deviations grids are now faded out
 
-<img src="https://img.shields.io/badge/-other%20fix%20-grey">  
+<img src="https://img.shields.io/badge/-other%20-grey">  
 
 - Custom context menu and markers are back in `Settings > Map`
 - Removed blur effect when dialogs are open

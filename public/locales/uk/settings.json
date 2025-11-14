@@ -42,6 +42,7 @@
         "showMainAssets": "Показати основні активи",
         "showMapBorders": "Показати межі карти",
         "showNextFlagPercentage": "Показати ймовірності наступних прапорів",
+        "respawnCam": "Показати позицію камери відродження",
     "factionsOptions": "Опції фракцій",
         "defaultFactions": "Автовибір фракцій за замовчуванням",
         "enableFactions": "Увімкнути фракції",

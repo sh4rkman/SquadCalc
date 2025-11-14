@@ -89,7 +89,7 @@ export const squadCameraActor = Marker.extend({
 
         let html = `
             <div class='spawnGroupCard animate__animated animate__fadeIn animate__faster'>
-                <div class="spawnTitle"><div class="spawnName">${i18next.t("common:deathCam")}</div></div>
+                <div class="spawnTitle"><div class="spawnName">${i18next.t("common:respawnCamera")}</div></div>
                 <div class="statsHolder">
                     <div class="rightClicToRemove">
                         <span> ${i18next.t("common:rightClicToRemove")}</span>

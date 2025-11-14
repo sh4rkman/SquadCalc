@@ -142,10 +142,9 @@ export default class SquadLayer {
     }
 
     createCameraActors(){
-        this.layerData.cameraActors.forEach((camera) => {
-            if (camera.name != "MapCameraLocation") return;
-            this.cameraActor = new squadCameraActor(this.convertToLatLng(camera.location_x, camera.location_y), camera, this).addTo(this.activeLayerMarkers);
-        });
+        if (!this.layerData.mapCameraActor) return;
+        this.cameraActor = new squadCameraActor(this.convertToLatLng(this.layerData.mapCameraActor.location_x, this.layerData.mapCameraActor.location_y), this.layerData.mapCameraActor, this);
+        if (App.userSettings.showRespawnCam) this.cameraActor.show();
     }
 
 
@@ -193,7 +192,7 @@ export default class SquadLayer {
      * AAS - SEED - Skirmish
      */
     initPredictiveLayer(){
-                // Set Paths
+        // Set Paths
         Object.values(this.capturePoints.points.links).forEach(link => {
             const nodeAFlag = Object.values(this.objectives).find(objective => objective.objectDisplayName === link.nodeA);
             const nodeBFlag = Object.values(this.objectives).find(objective => objective.objectDisplayName === link.nodeB);
