@@ -19,6 +19,7 @@ export var WEAPONS = [
         explosionDistanceFromImpact: 1,
         damageFallOff: 7,
         heightOffset: 1,
+        angleOffset: 0,
     },
     {
         name: "UB-32",
@@ -38,6 +39,7 @@ export var WEAPONS = [
         explosionDistanceFromImpact: 0.2,
         damageFallOff: 1,
         heightOffset: 1,
+        angleOffset: 0,
     },
     {
         name: "HellCannon",
@@ -57,6 +59,7 @@ export var WEAPONS = [
         explosionDistanceFromImpact: 2,
         damageFallOff: 1,
         heightOffset: 1.5,
+        angleOffset: 0,
     },
     {
         name: "Tech.Mortar",
@@ -76,6 +79,7 @@ export var WEAPONS = [
         explosionDistanceFromImpact: 0.5,
         damageFallOff: 7,
         heightOffset: 2.5,
+        angleOffset: 5,
     },
     {
         name: "Tech.UB-32",
@@ -95,6 +99,7 @@ export var WEAPONS = [
         explosionDistanceFromImpact: 0.2,
         damageFallOff: 1,
         heightOffset: 2.5,
+        angleOffset: 0,
     },
     {
         name: "BM-21Grad",
@@ -114,6 +119,7 @@ export var WEAPONS = [
         explosionDistanceFromImpact: 2,
         damageFallOff: 1,
         heightOffset: 3,
+        angleOffset: 0,
     },
     {
         name: "M1064M121",
@@ -133,6 +139,7 @@ export var WEAPONS = [
         explosionDistanceFromImpact: 10,
         damageFallOff: 1.3,
         heightOffset: 3,
+        angleOffset: 0,
         shells : [{
             moa: 40,
             explosionDamage: 400,
@@ -151,7 +158,7 @@ export var WEAPONS = [
     },
     {
         name: "Mk19",
-        velocity: 235,
+        velocity: 230,
         deceleration: 0,
         decelerationTime : 0,
         gravityScale: 1,
@@ -166,7 +173,8 @@ export var WEAPONS = [
         explosionRadius: [1, 15],
         explosionDistanceFromImpact: 0.08,
         damageFallOff: 1,
-        heightOffset: 2.5,
+        heightOffset: 4,
+        angleOffset: 0.984,
     },
     {
         name: "BTR4-AGS",
@@ -175,7 +183,7 @@ export var WEAPONS = [
         decelerationTime : 0,
         gravityScale: 1,
         minElevation: [-45, 135],
-        unit: "deg",
+        unit: "degMin",
         type: "vehicles",
         angleType: "low",
         elevationPrecision: 2,
@@ -185,7 +193,8 @@ export var WEAPONS = [
         explosionRadius: [1, 15],
         explosionDistanceFromImpact: 1,
         damageFallOff: 1,
-        heightOffset: 0,
+        heightOffset: 3.4,
+        angleOffset: 0.73459689,
     },
     // {
     //     name: "BTR4-30mm",
@@ -231,7 +240,8 @@ export var WEAPONS = [
         explosionRadius: [40, 75],
         explosionDistanceFromImpact: 1,
         damageFallOff: 3.5,
-        heightOffset: 3
+        heightOffset: 3,
+        angleOffset: 0,
     },
     {
         name: "T62.DUMP.TRUCK",
@@ -250,7 +260,8 @@ export var WEAPONS = [
         explosionRadius: [20, 40],
         explosionDistanceFromImpact: 1,
         damageFallOff: 1,
-        heightOffset: 3
+        heightOffset: 3,
+        angleOffset: 0,
     },
     {
         name: "HIMARS",
@@ -270,7 +281,8 @@ export var WEAPONS = [
         explosionRadius: [1.5, 50],
         explosionDistanceFromImpact: 3,
         damageFallOff: 1,
-        heightOffset: 3
+        heightOffset: 3,
+        angleOffset: 0,
     },
     {
         name: "TOS-1A",
@@ -290,7 +302,8 @@ export var WEAPONS = [
         explosionRadius: [15, 25],
         explosionDistanceFromImpact: 0.2,
         damageFallOff: 1,
-        heightOffset: 3
+        heightOffset: 3,
+        angleOffset: 0,
     },
     // WIP
     // {
@@ -333,6 +346,7 @@ export var WEAPONS = [
         explosionDistanceFromImpact: 2,
         damageFallOff: 4,
         heightOffset: 3,
+        angleOffset: 0,
     },
 ];
 

@@ -311,7 +311,8 @@ export default class SquadCalc {
                 weapon.explosionDistanceFromImpact,
                 weapon.damageFallOff,
                 weapon.shells,
-                weapon.heightOffset
+                weapon.heightOffset,
+                weapon.angleOffset
             );
         });
         

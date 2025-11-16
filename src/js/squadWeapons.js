@@ -2,7 +2,7 @@ import { App } from "../app.js";
 import { WEAPONS } from "./data/weapons.js";
 
 export class Weapon {
-    constructor(name, velocity, deceleration, decelerationTime, gravityScale, minElevation, unit, logo, marker, type, angleType, elevationPrecision, minDistance, moa, maxDamage, startRadius, endRadius, distanceFromImpact, falloff, shells = [], heightOffset = 0) {
+    constructor(name, velocity, deceleration, decelerationTime, gravityScale, minElevation, unit, logo, marker, type, angleType, elevationPrecision, minDistance, moa, maxDamage, startRadius, endRadius, distanceFromImpact, falloff, shells = [], heightOffset = 0, angleOffset = 0) {
         this.name = name;
         this.velocity = velocity;
         this.deceleration = deceleration;
@@ -23,7 +23,9 @@ export class Weapon {
         this.twentyFiveDamageRadius = this.calculateDistanceForDamage(maxDamage, startRadius, endRadius, falloff, distanceFromImpact, 25);
         this.shells = shells;
         this.heightOffset = heightOffset;
+        this.angleOffset = angleOffset;
     }
+
 
     /**
      * Calculate the weapon velocity based on the distance to the target.
@@ -34,9 +36,9 @@ export class Weapon {
      * @returns {number} - Calculated velocity of the weapon for the given distance.
      */
     getVelocity(distance) {
-       
+
         // If there's no deceleration, return the constant velocity
-        if (this.decelerationDistance == 0) { return this.velocity; }
+        if (this.decelerationDistance === 0) return this.velocity;
         
         // If the distance is within the deceleration phase
         if (distance <= this.decelerationDistance) {
@@ -55,6 +57,7 @@ export class Weapon {
         return distance / totalTime;   
     }
 
+
     /**
      * Return the angle factor from 45°
      * @returns {1/-1} -1 = 0-45° / 1 = 45-90°
@@ -63,6 +66,7 @@ export class Weapon {
         if (this.angleType === "high") { return -1; }
         return 1;
     }
+
 
     /**
      * Calculate the maximum distance a projectile can travel at a 45° angle.
@@ -93,6 +97,7 @@ export class Weapon {
         return decelerationDistance + cruiseDistance;
     }
 
+    
     /**
      * Return distance at which will be dealt given damage
      * https://github.com/sh4rkman/SquadCalc/wiki/Deducing-Damage-Radius

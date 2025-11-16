@@ -231,21 +231,30 @@ export const squadTargetMarker = squadMarker.extend({
          */
         const formatElevationData = (elevationData, timeOfFlight) => {
             if (isNaN(elevationData?.rad)) return ["---", "---"];
-            const elevation = App.activeWeapon.unit === "mil" ? elevationData.mil.toFixed(0) : elevationData.deg.toFixed(1);
 
-            if(App.activeWeapon.name === "BTR4-AGS"){
-                elevationData.deg = elevationData.deg - 0.82;
-                let degrees = Math.floor(elevationData.deg);
-                let minutes = Math.round((elevationData.deg - degrees) * 60);
-                if (minutes === 60) {
-                    degrees += 1;
-                    minutes = 0;
+            let convertedElevation;
+
+            switch (App.activeWeapon.unit) {
+                case "mil":
+                    convertedElevation = elevationData.mil.toFixed(0);
+                    break;
+                case "degMin": {
+                    // Convert degrees to degrees + minutes
+                    let degrees = Math.floor(elevationData.deg);
+                    let minutes = Math.round((elevationData.deg - degrees) * 60);
+                    if (minutes === 60) {
+                        degrees += 1;
+                        minutes = 0;
+                    }
+                    convertedElevation = `${degrees}°${minutes.toString().padStart(2, '0')}'`;
+                    break;
                 }
-                return [`${degrees}°${minutes.toString().padStart(2, '0')}'`, `${timeOfFlight.toFixed(0)}<span data-i18n="common:s">${i18next.t("common:s")}</span>`];
+                default:
+                    convertedElevation = elevationData.deg.toFixed(1);
             }
 
             const formattedTime = `${timeOfFlight.toFixed(0)}<span data-i18n="common:s">${i18next.t("common:s")}</span>`;
-            return [elevation, formattedTime];
+            return [convertedElevation, formattedTime];
         };
 
         let elevation, timeOfFlight;

@@ -65,7 +65,9 @@ export default class Simulation {
                 App.activeWeapon.name != "Mortar" &&
                  App.activeWeapon.name != "UB-32" &&
                   App.activeWeapon.name != "M1064M121" &&
-                   App.activeWeapon.name != "Mk19") {
+                   App.activeWeapon.name != "Mk19" &&
+                    App.activeWeapon.name != "BTR4-AGS"
+                ) {
 
                 let elevationlow = this.firingSolution.elevation.low;
                 let elevationhigh = this.firingSolution.elevation.high;
@@ -110,23 +112,52 @@ export default class Simulation {
                 if (this.angleType === "high"){
                     this.div.find(".infTimeOfFlight").first().text(this.firingSolution.timeOfFlight.high.toFixed(1)+i18next.t("common:s"));
                     this.div.find(".infSpread").first().text(`H:${this.firingSolution.spreadParameters.high.semiMajorAxis.toFixed(1) + i18next.t("common:m")} V:${this.firingSolution.spreadParameters.high.semiMinorAxis.toFixed(1) + i18next.t("common:m")}`);
-                    if (this.activeWeaponUnit === "mil"){
-                        this.div.find(".infElevation").first().text(`${this.firingSolution.elevation.high.mil.toFixed(1)}mil`);
-                    } else {
-                        this.div.find(".infElevation").first().text(this.firingSolution.elevation.high.deg.toFixed(2)+i18next.t("common:°"));
+                    switch (App.activeWeapon.unit) {
+                        case "mil":
+                            this.div.find(".infElevation").first().text(`${this.firingSolution.elevation.high.mil.toFixed(1)}mil`);
+                            break;
+                        case "degMin": {
+                            // Convert degrees to degrees + minutes
+                            let degrees = Math.floor(this.firingSolution.elevation.high.deg);
+                            let minutes = Math.round((this.firingSolution.elevation.high.deg - degrees) * 60);
+                            if (minutes === 60) {
+                                degrees += 1;
+                                minutes = 0;
+                            }
+                            this.div.find(".infElevation").first().text(`${degrees}°${minutes.toString().padStart(2, '0')}' (${this.firingSolution.elevation.high.deg.toFixed(2)+i18next.t("common:°")})`);
+                            break;
+                        }
+                        default:
+                            this.div.find(".infElevation").first().text(this.firingSolution.elevation.low.deg.toFixed(2)+i18next.t("common:°"));
                     }
                 } else {
                     this.div.find(".infTimeOfFlight").first().text(this.firingSolution.timeOfFlight.low.toFixed(1)+i18next.t("common:s"));
                     this.div.find(".infSpread").first().text(`H:${this.firingSolution.spreadParameters.low.semiMajorAxis.toFixed(1) + i18next.t("common:m")} V:${this.firingSolution.spreadParameters.low.semiMinorAxis.toFixed(1) + i18next.t("common:m")}`);
-                    if (this.activeWeaponUnit === "mil"){
-                        this.div.find(".infElevation").first().text(`${this.firingSolution.elevation.low.mil.toFixed(1)}mil`);
-                    } else {
-                        this.div.find(".infElevation").first().text(this.firingSolution.elevation.low.deg.toFixed(2)+i18next.t("common:°"));
+                    
+                    switch (App.activeWeapon.unit) {
+                        case "mil":
+                            this.div.find(".infElevation").first().text(`${this.firingSolution.elevation.low.mil.toFixed(1)}mil`);
+                            break;
+                        case "degMin": {
+                            // Convert degrees to degrees + minutes
+                            let degrees = Math.floor(this.firingSolution.elevation.low.deg);
+                            let minutes = Math.round((this.firingSolution.elevation.low.deg - degrees) * 60);
+                            if (minutes === 60) {
+                                degrees += 1;
+                                minutes = 0;
+                            }
+                            this.div.find(".infElevation").first().text(`${degrees}°${minutes.toString().padStart(2, '0')}' (${this.firingSolution.elevation.low.deg.toFixed(2)+i18next.t("common:°")})`);
+                            break;
+                        }
+                        default:
+                            this.div.find(".infElevation").first().text(this.firingSolution.elevation.low.deg.toFixed(2)+i18next.t("common:°"));
                     }
+
                 }
             }
         }
     }
+
 
     /**
      * Read the heightpath and determine the appropriate ground level to display 
@@ -135,6 +166,7 @@ export default class Simulation {
     getMinGround(){
         return ( 30 - Math.min(...this.heightPath) ) * this.yScaling;
     }
+
 
     /**
      * Draw a grid on canvas representing distances
@@ -178,6 +210,7 @@ export default class Simulation {
         this.ctx.translate(0, -this.canvas.height);
     }
 
+
     /**
      * Draw the ground in the canvas
      */
@@ -205,6 +238,7 @@ export default class Simulation {
         this.ctx.fillRect(0, 0, this.padding, this.canvas.height);
         this.ctx.fillRect(this.canvas.width, 0, -this.padding, this.canvas.height);
     }
+
 
     /**
      * Draw Target Icon in the simulation canvas
@@ -238,6 +272,7 @@ export default class Simulation {
         this.ctx.translate(0, -this.canvas.height);
     }
 
+    
     /**
      * Draw projectile trajectory on the canvas.
      * @param {Function} [callback] - Function to call after the projectile is drawn.
@@ -252,6 +287,9 @@ export default class Simulation {
         let x = this.padding;
         let y = this.firingSolution.weaponHeight * this.yScaling + this.yOffset;
         let elevation = this.angleType === "high" ? this.firingSolution.elevation.high.rad : this.firingSolution.elevation.low.rad;
+
+        // If the elevation has been offsetted, reset it
+        elevation = elevation +  this.firingSolution.degToRad(App.activeWeapon.angleOffset);
 
         // If no firing solution, simulate a max distance shot 
         if (isNaN(elevation)) {
