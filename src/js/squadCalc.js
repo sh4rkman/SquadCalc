@@ -312,7 +312,8 @@ export default class SquadCalc {
                 weapon.damageFallOff,
                 weapon.shells,
                 weapon.heightOffset,
-                weapon.angleOffset
+                weapon.angleOffset,
+                weapon.projectileLifespan
             );
         });
         

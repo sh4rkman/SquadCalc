@@ -234,9 +234,11 @@ export const squadTargetMarker = squadMarker.extend({
 
             let convertedElevation;
 
+            const formattedTime = `${timeOfFlight.toFixed(0)}<span data-i18n="common:s">${i18next.t("common:s")}</span>`;
+
             switch (App.activeWeapon.unit) {
                 case "mil":
-                    convertedElevation = elevationData.mil.toFixed(0);
+                    convertedElevation = elevationData.mil.toFixed(App.activeWeapon.elevationPrecision);
                     break;
                 case "degMin": {
                     // Convert degrees to degrees + minutes
@@ -250,10 +252,10 @@ export const squadTargetMarker = squadMarker.extend({
                     break;
                 }
                 default:
-                    convertedElevation = elevationData.deg.toFixed(1);
+                    convertedElevation = elevationData.deg.toFixed(App.activeWeapon.elevationPrecision);
             }
 
-            const formattedTime = `${timeOfFlight.toFixed(0)}<span data-i18n="common:s">${i18next.t("common:s")}</span>`;
+
             return [convertedElevation, formattedTime];
         };
 
@@ -272,8 +274,6 @@ export const squadTargetMarker = squadMarker.extend({
 
         let content;
         
-
-
         // Checks if last three elevation digits option is enabled and if selected weapon is "Mortar"
         // TODO move this in the previous if statement when other weapons are supported
         if (App.userSettings.lastDigits && ["Mortar"].includes(App.activeWeapon.name)){
@@ -335,7 +335,8 @@ export const squadTargetMarker = squadMarker.extend({
             App.activeWeapon.name != "Mortar" &&
              App.activeWeapon.name != "UB-32" &&
               App.activeWeapon.name != "M1064M121" &&
-               App.activeWeapon.name != "Mk19") {  
+               App.activeWeapon.name != "Mk19" &&
+                App.activeWeapon.name != "BTR4-30mm") {  
             setSpreadMarker(this.spreadMarker11, this.firingSolution1, 0, true);
         } else {
             this.spreadMarker11.setStyle(this.spreadOptionsOff);
@@ -355,16 +356,19 @@ export const squadTargetMarker = squadMarker.extend({
         this.twentyFiveDamageRadius.setStyle(this.spreadOptionsOff);
     },
 
+
     disableSpreadRadii: function() {
         this.spreadMarker1.setStyle(this.spreadOptionsOff);
         this.spreadMarker11.setStyle(this.spreadOptionsOff);
         this.spreadMarker2.setStyle(this.spreadOptionsOff);
     },
 
+
     /*
     * Update target damage radius ellipses according to it's firing solutions
     */
     updateDamageRadius: function() {
+        
         // If damage radius is disabled, turn off the circles and exit
         if (!App.userSettings.damageRadius) {
             this.disableDamageRadii();
@@ -382,11 +386,11 @@ export const squadTargetMarker = squadMarker.extend({
         let baseRadiiX = this.spreadMarker1.getRadius().x;
         let baseRadiiY = this.spreadMarker1.getRadius().y;
         let baseBearing = this.firingSolution1.bearing;
-    
+
         // If two markers exist, do some additional checks
         if (this.map.activeWeaponsMarkers.getLayers().length == 2) {
             const hasFiringSolution2 = !isNaN(this.firingSolution2.elevation.high.rad) || !isNaN(this.firingSolution2.elevation.low.rad);
-                                        
+            
             // If no valid solutions, turn off circles
             if (!hasFiringSolution1 && !hasFiringSolution2) {
                 this.disableDamageRadii();
@@ -437,6 +441,7 @@ export const squadTargetMarker = squadMarker.extend({
         this.hundredDamageRadius.setTilt(baseBearing);
         this.twentyFiveDamageRadius.setTilt(baseBearing);
     },
+
 
     /*
     * Update target calculationPopups according to it's firing solutions

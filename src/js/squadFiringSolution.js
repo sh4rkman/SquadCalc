@@ -28,6 +28,9 @@ export default class SquadFiringSolution {
         this.spreadParameters = {low: [], high: []};
         this.spreadParameters.low = this.getSpreadParameter(this.elevation.low.rad, this.timeOfFlight.low);
         this.spreadParameters.high = this.getSpreadParameter(this.elevation.high.rad, this.timeOfFlight.high);
+
+        if (this.timeOfFlight.low > App.activeWeapon.projectileLifespan) this.elevation.low.rad = NaN;
+        if (this.timeOfFlight.high > App.activeWeapon.projectileLifespan) this.elevation.high.rad = NaN;
     }
 
 
@@ -62,7 +65,7 @@ export default class SquadFiringSolution {
             return NaN;
         }
 
-        return elevation ;
+        return elevation;
     }
 
 

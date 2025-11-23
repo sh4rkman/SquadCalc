@@ -2,7 +2,7 @@ import { App } from "../app.js";
 import { WEAPONS } from "./data/weapons.js";
 
 export class Weapon {
-    constructor(name, velocity, deceleration, decelerationTime, gravityScale, minElevation, unit, logo, marker, type, angleType, elevationPrecision, minDistance, moa, maxDamage, startRadius, endRadius, distanceFromImpact, falloff, shells = [], heightOffset = 0, angleOffset = 0) {
+    constructor(name, velocity, deceleration, decelerationTime, gravityScale, minElevation, unit, logo, marker, type, angleType, elevationPrecision, minDistance, moa, maxDamage, startRadius, endRadius, distanceFromImpact, falloff, shells = [], heightOffset = 0, angleOffset = 0, projectileLifespan = 100) {
         this.name = name;
         this.velocity = velocity;
         this.deceleration = deceleration;
@@ -24,6 +24,7 @@ export class Weapon {
         this.shells = shells;
         this.heightOffset = heightOffset;
         this.angleOffset = angleOffset;
+        this.projectileLifespan = projectileLifespan;
     }
 
 
@@ -97,7 +98,7 @@ export class Weapon {
         return decelerationDistance + cruiseDistance;
     }
 
-    
+
     /**
      * Return distance at which will be dealt given damage
      * https://github.com/sh4rkman/SquadCalc/wiki/Deducing-Damage-Radius
