@@ -9,6 +9,7 @@ import { tooltip_save, createSessionTooltips, leaveSessionTooltips } from "./too
 import { checkApiHealth, fetchLayersByMap, fetchLayerByName } from "./squadCalcAPI.js";
 import { initWebSocket } from "./smcConnector.js";
 import { LatLng } from "leaflet";
+import SquadServersBrowser from "./squadServersBrowser.js";
 import SquadSession from "./squadSession.js";
 import SquadFiringSolution from "./squadFiringSolution.js";
 import packageInfo from "../../package.json";
@@ -391,19 +392,21 @@ export default class SquadCalc {
                 this.WEAPON_SELECTOR.val(0).trigger("change");
             }
         }
-
     }
+
 
     closeMenu() {
         $("#footerButtons").removeClass("expanded");
         $(".fab4").html("<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 448 512\"><path d=\"M0 96C0 78.3 14.3 64 32 64l384 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 128C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32l384 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 288c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32L32 448c-17.7 0-32-14.3-32-32s14.3-32 32-32l384 0c17.7 0 32 14.3 32 32z\"/></svg>");
     }
 
+
     loadUI(){
         const calcInformation = document.querySelector("#calcInformation");
         const weaponInformation = document.querySelector("#weaponInformation");
         const helpDialog = document.querySelector("#helpDialog");
         const factionsDialog = document.querySelector("#factionsDialog");
+        const serversInformation = document.querySelector("#serversInformation");
 
         $(".btn-delete, .btn-download, .btn-undo, .btn-layer, #mapLayerMenu").hide();
 
@@ -434,6 +437,7 @@ export default class SquadCalc {
         // MAP MODE
         this.closeDialogOnClickOutside(calcInformation);
         this.closeDialogOnClickOutside(weaponInformation);
+        this.closeDialogOnClickOutside(serversInformation);
         this.closeDialogOnClickOutside(helpDialog);
         this.closeDialogOnClickOutside(factionsDialog);
         
@@ -462,6 +466,12 @@ export default class SquadCalc {
             e.preventDefault();
             dragCounter = 0;
             overlay.style.display = "none";
+        });
+
+        $(document).on("click", "#servers", () => {
+            $("#serversInformation")[0].showModal();
+            //this.loadServersInfo();
+            this.squadServersBrowser = new SquadServersBrowser();
         });
           
         window.addEventListener("drop", e => {
@@ -658,7 +668,7 @@ export default class SquadCalc {
                 if (this.ui == 0) return;
 
                 // Disable Shortkeys when currently in a dialog
-                if (weaponInformation.open || calcInformation.open || helpDialog.open || factionsDialog.open) return;
+                if (weaponInformation.open || calcInformation.open || helpDialog.open || factionsDialog.open || serversInformation.open) return;
 
                 // ENTER = FOCUS MODE
                 if (event.key === "Enter") {

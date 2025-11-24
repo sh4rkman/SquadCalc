@@ -21,6 +21,7 @@ import "./components/legacyui/legacyui.scss";
 import "./components/dialogs/dialogs.scss";
 import "./components/dialogs/factions.scss";
 import "./components/dialogs/settings.scss";
+import "./components/dialogs/servers.scss";
 
 import "./components/shared/_tooltips.scss";
 import "./components/shared/_responsive.scss";

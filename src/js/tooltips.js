@@ -296,13 +296,23 @@ tippy(".btn-focus", {
         );
     },
 });
-tippy("#factionsButton", {
+tippy(".btn-focus", {
     ...commonMapMenuToolipsSettings,
     onShow(tip) {
-        tip.setContent(i18next.t("tooltips:factions&Vehicles"));
+        tip.setContent(
+            `
+            <div>${i18next.t("tooltips:focusMode")}</div>
+            <div class="tooltipsubtext">${i18next.t("tooltips:enter")}</div>
+            `
+        );
     },
 });
-
+tippy("#servers", {
+    ...commonMapMenuToolipsSettings,
+    onShow(tip) {
+        tip.setContent(i18next.t("tooltips:serverBrowser"));
+    },
+});
 tippy(".copy-vehicle-btn", {
     ...commonMapMenuToolipsSettings,
     onShow(tip) {

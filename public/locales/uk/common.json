@@ -59,5 +59,16 @@
     "temporary": "Тимчасово Виникнення",
     "disabledSpawn": "Вимкнено до першого захоплення",
     "respawnCamera": "Камера відродження",
-    "rightClicToRemove": "Клацніть правою кнопкою м"
+    "rightClicToRemove": "Клацніть правою кнопкою м",
+    "loadingServers": "Завантаження серверів...",
+    "errorLoading": "Помилка завантаження серверів.",
+    "searchServerPlaceholder": "Пошук сервера або карти...",
+    "serverName": "Назва сервера",
+    "currentMap": "Поточна карта",
+    "players": "Гравці",
+    "noServersFound": "Сервери не знайдені.",
+    "server": "сервер",
+    "servers": "сервери",
+    "found": "знайдено",
+    "load": "Завантажити"
 }

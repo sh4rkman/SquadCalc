@@ -237,22 +237,22 @@ export const squadTargetMarker = squadMarker.extend({
             const formattedTime = `${timeOfFlight.toFixed(0)}<span data-i18n="common:s">${i18next.t("common:s")}</span>`;
 
             switch (App.activeWeapon.unit) {
-                case "mil":
-                    convertedElevation = elevationData.mil.toFixed(App.activeWeapon.elevationPrecision);
-                    break;
-                case "degMin": {
-                    // Convert degrees to degrees + minutes
-                    let degrees = Math.floor(elevationData.deg);
-                    let minutes = Math.round((elevationData.deg - degrees) * 60);
-                    if (minutes === 60) {
-                        degrees += 1;
-                        minutes = 0;
-                    }
-                    convertedElevation = `${degrees}°${minutes.toString().padStart(2, '0')}'`;
-                    break;
+            case "mil":
+                convertedElevation = elevationData.mil.toFixed(App.activeWeapon.elevationPrecision);
+                break;
+            case "degMin": {
+                // Convert degrees to degrees + minutes
+                let degrees = Math.floor(elevationData.deg);
+                let minutes = Math.round((elevationData.deg - degrees) * 60);
+                if (minutes === 60) {
+                    degrees += 1;
+                    minutes = 0;
                 }
-                default:
-                    convertedElevation = elevationData.deg.toFixed(App.activeWeapon.elevationPrecision);
+                convertedElevation = `${degrees}°${minutes.toString().padStart(2, "0")}'`;
+                break;
+            }
+            default:
+                convertedElevation = elevationData.deg.toFixed(App.activeWeapon.elevationPrecision);
             }
 
 

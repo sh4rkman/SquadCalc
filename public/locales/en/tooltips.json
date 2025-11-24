@@ -75,5 +75,6 @@
     "clickToCopy": "Click to copy `CreateSquad` command",
     "vehicleRespawned": "Vehicle respawned",
     "targetGridTooltip": "Displays a grid around the targets: vertical lines show angle deviation (2°), and horizontal arcs show elevation deviation (10 mils or 1° depending on the weapon's unit system).",
-    "lineToTargetTooltip": "Draws a line between the weapon and the target"
+    "lineToTargetTooltip": "Draws a line between the weapon and the target",
+    "serverBrowser": "Squad Servers Browser"
 }
