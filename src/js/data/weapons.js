@@ -320,7 +320,7 @@ export var WEAPONS = [
         angleType: "low",
         elevationPrecision: 1,
         minDistance: 0,
-        moa: 500,
+        moa: 200,
         explosionDamage: 150,
         explosionRadius: [15, 25],
         explosionDistanceFromImpact: 0.2,
