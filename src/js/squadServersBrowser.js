@@ -41,9 +41,10 @@ export default class SquadServersBrowser {
             (s.attributes.details.map || "").toLowerCase().includes(q)
         );
 
-        console.log(`Filtered servers with query "${query}":`, this.filteredData);
+        console.debug(`Filtered servers with query "${query}":`, this.filteredData);
         this.renderTable(this.filteredData);
     }
+
 
     renderTable(servers, isInitialRender = false) {
         const serversList = document.getElementById("serversList");
@@ -51,7 +52,7 @@ export default class SquadServersBrowser {
         // Only render the full structure on initial load
         if (isInitialRender) {
             const fullHTML = `
-                <div class="container">
+                <div class="container animate__animated animate__fadeIn">
                     <div class="search-container">
                         <div class="search-wrapper">
                             <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -74,7 +75,7 @@ export default class SquadServersBrowser {
                     </div>
                 </div>
 
-                <div id="tableContainer" class="animate__animated animate__fadeInDown">
+                <div id="tableContainer" class="animate__animated animate__fadeIn">
 
                     <table class="servers-table">
                         <thead>
@@ -104,6 +105,14 @@ export default class SquadServersBrowser {
             if (searchInput) {
                 searchInput.addEventListener("input", (e) => {
                     this.filterServers(e.target.value);
+                });
+            }
+
+            // Refresh Button listener
+            const refreshBtn = document.getElementById("refreshBtn");
+            if (refreshBtn) {
+                refreshBtn.addEventListener("click", () => {
+                    this.loadServersInfo();
                 });
             }
 
