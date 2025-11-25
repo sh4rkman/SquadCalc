@@ -470,7 +470,6 @@ export default class SquadCalc {
 
         $(document).on("click", "#servers", () => {
             $("#serversInformation")[0].showModal();
-            //this.loadServersInfo();
             this.squadServersBrowser = new SquadServersBrowser();
         });
           

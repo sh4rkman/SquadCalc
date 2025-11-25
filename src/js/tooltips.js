@@ -307,12 +307,14 @@ tippy(".btn-focus", {
         );
     },
 });
-tippy("#servers", {
+
+export const serverBrowserTooltips = tippy("#servers", {
     ...commonMapMenuToolipsSettings,
     onShow(tip) {
         tip.setContent(i18next.t("tooltips:serverBrowser"));
     },
 });
+
 tippy(".copy-vehicle-btn", {
     ...commonMapMenuToolipsSettings,
     onShow(tip) {

@@ -2,6 +2,7 @@ import i18next from "i18next";
 import { App } from "../app.js";
 import { MAPS } from "./data/maps.js";
 
+
 export default class SquadServersBrowser {
 
     constructor() {
@@ -50,20 +51,30 @@ export default class SquadServersBrowser {
         // Only render the full structure on initial load
         if (isInitialRender) {
             const fullHTML = `
-                <div class="search-container">
-                    <input 
-                        type="text" 
-                        id="serverSearch" 
-                        class="search-input" 
-                        placeholder="${i18next.t("searchServerPlaceholder", { ns: "common" })}"
-                    />
+                <div class="container">
+                    <div class="search-container">
+                        <div class="search-wrapper">
+                            <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <path d="m21 21-4.35-4.35"></path>
+                            </svg>
+                            <input 
+                                type="text" 
+                                class="search-input" 
+                                placeholder="${i18next.t("searchServerPlaceholder", { ns: "common" })}"
+                                id="serverSearch"
+                            />
+                        </div>
+                        <span class="results-count" id="resultsCount"></span>
+                        <button class="refresh-btn" id="refreshBtn">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/>
+                            </svg>
+                        </button>
+                    </div>
                 </div>
 
-                <div class="results-count-wrapper">
-                    <span class="results-count" id="resultsCount"></span>
-                </div>
-
-                <div id="tableContainer">
+                <div id="tableContainer" class="animate__animated animate__fadeInDown">
 
                     <table class="servers-table">
                         <thead>
@@ -120,15 +131,15 @@ export default class SquadServersBrowser {
                         ${server.team1  ? `<img title="${server.attributes.details.squad_teamOne}"
                                 src="${process.env.API_URL}/img/flags/${server.team1}.webp" 
                                 alt="${server.team1}" class="flag-icon">`
-                            : "-"
-                        }
+        : "-"
+}
                     </td>
                     <td>
                         ${server.team2 ? `<img title="${server.attributes.details.squad_teamTwo}"
                                 src="${process.env.API_URL}/img/flags/${server.team2}.webp" 
                                 alt="${server.team2}" class="flag-icon">`
-                            : "-"
-                        }
+        : "-"
+}
                     </td>
                     <td>
                         ${!server.team1 || !server.team2 || !server.mapName ? "" : `<button 
@@ -138,8 +149,12 @@ export default class SquadServersBrowser {
                                 data-team2="${server.team2}"
                                 data-unit1="${server.attributes.details.squad_teamOne || ""}"
                                 data-unit2="${server.attributes.details.squad_teamTwo || ""}"
-                                class="status-badge ok">${i18next.t("load", { ns: "common" })} <span>→</span></button>`
-                        }
+                                class="status-badge ok">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
+                                    <path d="M416 160L480 160C497.7 160 512 174.3 512 192L512 448C512 465.7 497.7 480 480 480L416 480C398.3 480 384 494.3 384 512C384 529.7 398.3 544 416 544L480 544C533 544 576 501 576 448L576 192C576 139 533 96 480 96L416 96C398.3 96 384 110.3 384 128C384 145.7 398.3 160 416 160zM406.6 342.6C419.1 330.1 419.1 309.8 406.6 297.3L278.6 169.3C266.1 156.8 245.8 156.8 233.3 169.3C220.8 181.8 220.8 202.1 233.3 214.6L306.7 288L96 288C78.3 288 64 302.3 64 320C64 337.7 78.3 352 96 352L306.7 352L233.3 425.4C220.8 437.9 220.8 458.2 233.3 470.7C245.8 483.2 266.1 483.2 278.6 470.7L406.6 342.7z"/>
+                                </svg>
+                            </button>`
+}
                     </td>
                 </tr>
             `).join("") : `
