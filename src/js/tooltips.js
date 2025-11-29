@@ -313,7 +313,12 @@ export const serverBrowserTooltips = tippy("#servers", {
     onShow(tip) {
         tip.setContent(i18next.t("tooltips:serverBrowser"));
     },
-});
+})[0];
+
+export const activeServerBrowserTooltips = tippy("#servers", {
+    ...commonMapMenuToolipsSettings,
+})[0];
+activeServerBrowserTooltips.disable();
 
 tippy(".copy-vehicle-btn", {
     ...commonMapMenuToolipsSettings,

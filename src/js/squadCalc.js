@@ -15,6 +15,7 @@ import SquadFiringSolution from "./squadFiringSolution.js";
 import packageInfo from "../../package.json";
 import i18next from "i18next";
 import SquadLayer from "./squadLayer.js";
+import { serverBrowserTooltips } from "./tooltips.js";
 
 
 
@@ -469,8 +470,27 @@ export default class SquadCalc {
         });
 
         $(document).on("click", "#servers", () => {
+            //let button = $(e.currentTarget);
+
+            // if(button.hasClass("active")) {
+            //     button.removeClass("active");
+            //     if(this.squadServersBrowser) {
+            //         this.squadServersBrowser.selectedLayer = null;
+            //         this.squadServersBrowser.selectedServer = null;
+            //     }
+
+            //     serverBrowserTooltips.enable();
+            //     activeServerBrowserTooltips.disable();
+            //     return;
+            // }
+
+            serverBrowserTooltips.disable();
+            if (!this.squadServersBrowser) {
+                this.squadServersBrowser = new SquadServersBrowser();
+                this.squadServersBrowser.init();
+            }
             $("#serversInformation")[0].showModal();
-            this.squadServersBrowser = new SquadServersBrowser();
+            
         });
           
         window.addEventListener("drop", e => {

@@ -59,6 +59,7 @@
     "temporary": "Spawn Temporaire",
     "disabledSpawn": "Désactivé jusqu'à la première capture",
     "respawnCamera": "Caméra de respawn",
+    "rightClicToRemove": "(Clic droit pour enlever)",
     "loadingServers": "Récupération des serveurs...",
     "errorLoading": "Erreur lors du chargement des serveurs.",
     "searchServerPlaceholder": "Rechercher un serveur ou une carte...",
@@ -68,6 +69,5 @@
     "noServersFound": "Aucun serveur trouvé.",
     "server": "serveur",
     "servers": "serveurs",
-    "found": "trouvé",
-    "load": "Charger"
+    "next": "à suivre"
 }

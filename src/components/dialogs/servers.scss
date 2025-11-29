@@ -12,10 +12,12 @@
     }
     #tableContainer {
         width: 96%;
-        height: 85vh;
+        height: 88vh;
         overflow: hidden auto;
     }
 }
+
+
 
 .servers-table {
     width: 100%;
@@ -37,12 +39,29 @@
     tbody tr {
         border-bottom: 1px solid #e5e7eb;
         background-color: #111111b6;
-        transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.4s ease;
+        transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.2s ease;
         &:hover {
             background: #111111f6;
             transform: scale(1.03);
             cursor: pointer;
             box-shadow: 0 0 4px rgba(0,0,0,0.7);
+        }
+        &:active, &.selected {
+            background: firebrick;
+        }
+        &.unavailable {
+            border-bottom: 1px solid #e5e7eb;
+            background-color: #1f1f1fb6;
+            color: rgba(255, 255, 255, 0.4);
+            cursor: not-allowed;
+            user-select: none;
+            pointer-events: auto;
+            .mapdata {
+                color: rgba(255, 255, 255, 0.4);
+            }
+            &:hover {
+                transform: none;
+            }
         }
         &:last-child {
             border-bottom: none;
@@ -80,7 +99,13 @@
 
 .mapdata {
     color: #d1d5db;
-    font-weight: 400;
+    font-size: 0.95em;
+    .nextMap {
+        font-style: italic;
+        font-size: 0.9em;
+        font-weight: 400;
+        opacity: 0.85;
+    }
 }
 
 .sort-indicator {
@@ -177,7 +202,6 @@
     #serversList #tableContainer {
         width: 100%;
         height: 90vh;
-        border: solid red 1px;
     }
 }
 
@@ -215,10 +239,9 @@
 
 .container {
     width: 90%;
-    height: 15vh;
-    border: solid purple 2px;
+    height: 10vh;
     flex-shrink: 0;
-    padding: 1em;
+    padding: 2em;
     display: flex;
     flex-direction: column;
     justify-content: flex-end; // This pushes content to the bottom

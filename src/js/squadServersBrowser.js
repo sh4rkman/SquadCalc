@@ -1,140 +1,149 @@
 import i18next from "i18next";
 import { App } from "../app.js";
 import { MAPS } from "./data/maps.js";
+import { activeServerBrowserTooltips } from "./tooltips.js";
 
 
 export default class SquadServersBrowser {
 
     constructor() {
+        this.serversData = null;
+        this.syncInterval = null;
+        this.selectedServer = null;
+        this.selectedLayer = null;
+        this.refreshInterval = 20; // seconds
+    }
+
+    init(){
         this.loadServersInfo();
     }
 
+    toMinSec(seconds) {
+        const h = Math.floor(seconds / 3600);
+        const m = Math.floor((seconds % 3600) / 60);
+        const s = seconds % 60;
+        if (h > 0) return `${h}:${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
+        return `${m}:${s.toString().padStart(2, "0")}`;
+    }
 
-    async loadServersInfo() {
-        const serversList = document.getElementById("serversList");
 
+    async syncWithServer(){
+
+        // log hour:min
+        var d = new Date();
+        var n = d.toLocaleTimeString();
+
+        if (!this.selectedServer) return;
+
+        this.getServers();
+
+        if (!this.serversData) return;
+
+        this.serversData.forEach(server => {
+            if (server.id == this.selectedServer) {
+                let playTime = this.toMinSec(server.attributes.details.squad_playTime);
+                let map = server.attributes.details.map;
+                console.log(`${n} - ${server.attributes.name} - ${map} - playtime : ${playTime}`);
+                if (map != this.selectedLayer) {
+                    console.warn(`  LAYER CHANGED FROM ${this.selectedLayer} to ${map}`);
+                    this.selectedLayer = map;
+                    this.switchLayer(server.name,
+                        server.mapName,
+                        map,
+                        server.team1,
+                        server.team2,
+                        server.attributes.details.squad_teamOne,
+                        server.attributes.details.squad_teamTwo
+                    );
+                }
+            }
+        });
+    }
+
+
+    async getServers() {
         try {
-            // Show loading indicator
-            serversList.innerHTML = `
-                <div class="loading-container">
-                    <div class="loading-spinner"></div>
-                    <p>${i18next.t("loadingServers", { ns: "common" })}</p>
-                </div>
-            `;
-
-            // Fetch from **your** API instead of BattleMetrics directly
             const response = await fetch(`${process.env.API_URL}/get/servers`);
             const data = await response.json();
             this.serversData = data.servers;
-            this.renderTable(this.serversData, true);
         } catch (error) {
             console.error("Error fetching server data:", error);
-            serversList.innerHTML = `<p data-i18n="common:errorLoading">${i18next.t("loadingServers", { ns: "common" })}</p>`;
+            //serversList.innerHTML = `<p data-i18n="common:errorLoading">${i18next.t("loadingServers", { ns: "common" })}</p>`;
         }
+    }
+
+    async loadServersInfo() {
+        const serversList = document.getElementById("serversList");
+        serversList.innerHTML = `
+            <div class="loading-container">
+                <div class="loading-spinner"></div>
+                <p>${i18next.t("loadingServers", { ns: "common" })}</p>
+            </div>
+        `;
+
+        await this.getServers();
+        this.renderTable(this.serversData);
+    }
+
+    async refreshRows() {
+
+        const tbody = document.getElementById("serversTableBody");
+        const searchInput = document.getElementById("serverSearch");
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="6" style="text-align: center; padding: 40px;">
+                    <p>${i18next.t("loadingServers", { ns: "common" })}</p>
+                </td>
+            </tr>
+        `;
+        await this.getServers();
+        this.filterServers(searchInput.value);
     }
 
 
     filterServers(query) {
         const q = query.toLowerCase();
-        this.filteredData = this.serversData.filter(s =>
-            s.attributes.name.toLowerCase().includes(q) ||
-            (s.attributes.details.map || "").toLowerCase().includes(q)
-        );
 
-        console.debug(`Filtered servers with query "${query}":`, this.filteredData);
-        this.renderTable(this.filteredData);
-    }
-
-
-    renderTable(servers, isInitialRender = false) {
-        const serversList = document.getElementById("serversList");
-
-        // Only render the full structure on initial load
-        if (isInitialRender) {
-            const fullHTML = `
-                <div class="container animate__animated animate__fadeIn">
-                    <div class="search-container">
-                        <div class="search-wrapper">
-                            <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <circle cx="11" cy="11" r="8"></circle>
-                                <path d="m21 21-4.35-4.35"></path>
-                            </svg>
-                            <input 
-                                type="text" 
-                                class="search-input" 
-                                placeholder="${i18next.t("searchServerPlaceholder", { ns: "common" })}"
-                                id="serverSearch"
-                            />
-                        </div>
-                        <span class="results-count" id="resultsCount"></span>
-                        <button class="refresh-btn" id="refreshBtn">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/>
-                            </svg>
-                        </button>
-                    </div>
-                </div>
-
-                <div id="tableContainer" class="animate__animated animate__fadeIn">
-
-                    <table class="servers-table">
-                        <thead>
-                            <tr>
-                                <th class="sortable" data-sort="name"">
-                                    ${i18next.t("serverName", { ns: "common" })} <span class="sort-indicator">⇅</span>
-                                </th>
-                                <th class="sortable" data-sort="map">
-                                    ${i18next.t("currentMap", { ns: "common" })} <span class="sort-indicator">⇅</span>
-                                </th>
-                                <th class="sortable" data-sort="players">
-                                    ${i18next.t("players", { ns: "common" })} <span class="sort-indicator">⇅</span>
-                                </th>
-                                <th>${i18next.t("team1", { ns: "common" })}</th>
-                                <th>${i18next.t("team2", { ns: "common" })}</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody id="serversTableBody"></tbody>
-                    </table>
-                </div>
-            `;
-            serversList.innerHTML = fullHTML;
-
-            // Search input listener
-            const searchInput = document.getElementById("serverSearch");
-            if (searchInput) {
-                searchInput.addEventListener("input", (e) => {
-                    this.filterServers(e.target.value);
-                });
-            }
-
-            // Refresh Button listener
-            const refreshBtn = document.getElementById("refreshBtn");
-            if (refreshBtn) {
-                refreshBtn.addEventListener("click", () => {
-                    this.loadServersInfo();
-                });
-            }
-
-            // Sortable headers
-            const sortableHeaders = serversList.querySelectorAll("th[data-sort]");
-            sortableHeaders.forEach(header => {
-                header.addEventListener("click", () => {
-                    this.sortTable(header.getAttribute("data-sort"));
-                });
-            });
-
+        if (this.serversData) {
+            this.filteredData = this.serversData?.filter(s =>
+                s.attributes.name.toLowerCase().includes(q) ||
+                (s.attributes.details.map || "").toLowerCase().includes(q)
+            );
         }
 
+        console.debug(`Filtered servers with query "${query}":`, this.filteredData);
+        this.renderRows(this.filteredData);
+    }
+
+    renderRows(servers){
         // Always update the table body and results count
         const tbody = document.getElementById("serversTableBody");
-        const resultsCount = document.getElementById("resultsCount");
+        //const resultsCount = document.getElementById("resultsCount");
 
-        if (tbody) {
-            tbody.innerHTML = servers.length > 0 ? servers.map(server => `
-                <tr>
+        if (servers && servers.length > 0) {
+
+            tbody.innerHTML = servers.map(server => `
+                <tr class="
+                    ${server.id == this.selectedServer ? "selected" : ""}
+                    ${!server.team1 || !server.team2 || !server.mapName ? "unavailable" : ""}
+                "
+                data-servername="${server.attributes.name}"
+                data-serverid="${server.id}"
+                data-layer="${server.attributes.details.map}"
+                data-map="${server.mapName}" 
+                data-team1="${server.team1}"
+                data-team2="${server.team2}"
+                data-unit1="${server.attributes.details.squad_teamOne || ""}"
+                data-unit2="${server.attributes.details.squad_teamTwo || ""}">
                     <td title="${server.attributes.name}">${server.attributes.name}</td>
-                    <td class="mapdata">${server.attributes.details.map || i18next.t("servers:unknown")}</td>
+                    <td class="mapdata">
+                    ${server.attributes.details.map}<br>
+                    ${server.attributes.details.squad_nextLayer ? `
+                        <span class="nextMap">${i18next.t("next", { ns: "common" })}: ${server.attributes.details.squad_nextLayer}</span>`
+        : 
+        "<span class=\"nextMap\">Map Voting</span>"
+}
+                    </td>
                     <td>${server.attributes.players}/${server.attributes.maxPlayers}</td>
                     <td>
                         ${server.team1  ? `<img title="${server.attributes.details.squad_teamOne}"
@@ -150,63 +159,185 @@ export default class SquadServersBrowser {
         : "-"
 }
                     </td>
-                    <td>
-                        ${!server.team1 || !server.team2 || !server.mapName ? "" : `<button 
-                                data-map="${server.mapName}" 
-                                data-layer="${server.attributes.details.map}" 
-                                data-team1="${server.team1}"
-                                data-team2="${server.team2}"
-                                data-unit1="${server.attributes.details.squad_teamOne || ""}"
-                                data-unit2="${server.attributes.details.squad_teamTwo || ""}"
-                                class="status-badge ok">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
-                                    <path d="M416 160L480 160C497.7 160 512 174.3 512 192L512 448C512 465.7 497.7 480 480 480L416 480C398.3 480 384 494.3 384 512C384 529.7 398.3 544 416 544L480 544C533 544 576 501 576 448L576 192C576 139 533 96 480 96L416 96C398.3 96 384 110.3 384 128C384 145.7 398.3 160 416 160zM406.6 342.6C419.1 330.1 419.1 309.8 406.6 297.3L278.6 169.3C266.1 156.8 245.8 156.8 233.3 169.3C220.8 181.8 220.8 202.1 233.3 214.6L306.7 288L96 288C78.3 288 64 302.3 64 320C64 337.7 78.3 352 96 352L306.7 352L233.3 425.4C220.8 437.9 220.8 458.2 233.3 470.7C245.8 483.2 266.1 483.2 278.6 470.7L406.6 342.7z"/>
-                                </svg>
-                            </button>`
-}
-                    </td>
                 </tr>
-            `).join("") : `
+            `).join("");
+        }
+        else {
+            tbody.innerHTML = `
                 <tr>
                     <td colspan="6" style="text-align: center; padding: 40px;">
                         ${i18next.t("noServersFound", { ns: "common" })}
                     </td>
                 </tr>
-            `;
+                `;
         }
 
-        const loadButtons = serversList.querySelectorAll(".status-badge.ok");
-        loadButtons.forEach(button => {
-            button.addEventListener("click", () => {
-                const mapName = button.getAttribute("data-map");
-                const mapIndex = MAPS.findIndex(m => m.name.toLowerCase() === mapName.toLowerCase());
-                const layerIndex = button.getAttribute("data-layer");
-                const team1 = button.getAttribute("data-team1");
-                const team2 = button.getAttribute("data-team2");
-                const unit1 = button.getAttribute("data-unit1");
-                const unit2 = button.getAttribute("data-unit2");
-                if (mapName) App.MAP_SELECTOR.val(mapIndex).trigger($.Event("change", { broadcast: true }));
-                $(document).one("layers:loaded", () => {
-                    App.LAYER_SELECTOR.val(layerIndex).trigger($.Event("change", { broadcast: true }));
-                    $(document).one("layer:loaded", () => {
-                        App.FACTION1_SELECTOR.val(team1).trigger($.Event("change", { broadcast: true }));
-                        App.FACTION2_SELECTOR.val(team2).trigger($.Event("change", { broadcast: true }));
-                        App.UNIT1_SELECTOR.val(unit1).trigger($.Event("change", { broadcast: true }));
-                        App.UNIT2_SELECTOR.val(unit2).trigger($.Event("change", { broadcast: true }));
-                    });
-                });
-                
-                $("#serversInformation")[0].close();
+        // const loadButtons = serversList.querySelectorAll(".status-badge.ok");
+        // loadButtons.forEach(button => {
+        //     button.addEventListener("click", (e) => {
+        //         this.switchLayer(e.target);
+        //     });
+        // });
+    }
+
+    renderTable(servers) {
+        const serversList = document.getElementById("serversList");
+
+        // Only render the full structure on initial load
+        const fullHTML = `
+            <div class="container animate__animated animate__fadeIn">
+                <div class="search-container">
+                    <div class="search-wrapper">
+                        <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <path d="m21 21-4.35-4.35"></path>
+                        </svg>
+                        <input 
+                            type="text" 
+                            class="search-input" 
+                            placeholder="${i18next.t("searchServerPlaceholder", { ns: "common" })}"
+                            id="serverSearch"
+                        />
+                    </div>
+                    <span class="results-count" id="resultsCount"></span>
+                    <button class="refresh-btn" id="refreshBtn">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div id="tableContainer" class="animate__animated animate__fadeIn">
+
+                <table class="servers-table">
+                    <thead>
+                        <tr>
+                            <th class="sortable" data-sort="name"">
+                                ${i18next.t("serverName", { ns: "common" })} <span class="sort-indicator">⇅</span>
+                            </th>
+                            <th class="sortable" data-sort="map">
+                                ${i18next.t("currentMap", { ns: "common" })} <span class="sort-indicator">⇅</span>
+                            </th>
+                            <th class="sortable" data-sort="players">
+                                ${i18next.t("players", { ns: "common" })} <span class="sort-indicator">⇅</span>
+                            </th>
+                            <th>${i18next.t("team1", { ns: "common" })}</th>
+                            <th>${i18next.t("team2", { ns: "common" })}</th>
+                        </tr>
+                    </thead>
+                    <tbody id="serversTableBody"></tbody>
+                </table>
+            </div>
+        `;
+
+        serversList.innerHTML = fullHTML;
+
+        $(".servers-table").on("click", "tr", (event) => {
+            const row = $(event.currentTarget);
+
+            // --- UNSELECT ---
+            if (row.hasClass("selected")) {
+
+                row.removeClass("selected");
+                $("#servers").removeClass("active");
+
+                this.selectedServer = null;
+
+                // stop sync
+                if (this.syncInterval) {
+                    clearInterval(this.syncInterval);
+                    this.syncInterval = null;
+                }
+
+                activeServerBrowserTooltips.disable();
+                return;
+            }
+
+            // --- SELECT ---
+            $(".servers-table tr").removeClass("selected");
+            row.addClass("selected");
+            $("#servers").addClass("active");
+
+            this.selectedServer = row.data("serverid");
+            this.selectedLayer = row.data("layer");
+
+            // start sync every X seconds
+            if (this.syncInterval) clearInterval(this.syncInterval);
+            this.syncInterval = setInterval(() => this.syncWithServer(), this.refreshInterval * 1000);
+
+            // switch layer immediately
+            this.switchLayer(
+                row.data("servername"),
+                row.data("map"),
+                row.data("layer"),
+                row.data("team1"),
+                row.data("team2"),
+                row.data("unit1"),
+                row.data("unit2")
+            );
+        });
+
+        // Search input listener
+        const searchInput = document.getElementById("serverSearch");
+        if (searchInput) {
+            searchInput.addEventListener("input", (e) => {
+                this.filterServers(e.target.value);
+            });
+        }
+
+        // Refresh Button listener
+        const refreshBtn = document.getElementById("refreshBtn");
+        if (refreshBtn) {
+            refreshBtn.addEventListener("click", () => {
+                this.refreshRows();
+            });
+        }
+
+        // Sortable headers
+        const sortableHeaders = serversList.querySelectorAll("th[data-sort]");
+        sortableHeaders.forEach(header => {
+            header.addEventListener("click", () => {
+                this.sortTable(header.getAttribute("data-sort"));
             });
         });
 
-        if (resultsCount) {
-            if (servers.length === 1) {
-                resultsCount.textContent = `${servers.length} ${i18next.t("server", { ns: "common" })} ${i18next.t("found", { ns: "common" })}`;
-            } else {
-                resultsCount.textContent = `${servers.length} ${i18next.t("servers", { ns: "common" })} ${i18next.t("found", { ns: "common" })}`;
-            }
-        }
+        this.renderRows(servers);
+
+        // if (resultsCount) {
+        //     if (servers.length === 1) {
+        //         resultsCount.textContent = `${servers.length} ${i18next.t("server", { ns: "common" })} ${i18next.t("found", { ns: "common" })}`;
+        //     } else {
+        //         resultsCount.textContent = `${servers.length} ${i18next.t("servers", { ns: "common" })} ${i18next.t("found", { ns: "common" })}`;
+        //     }
+        // }
+    }
+
+
+    switchLayer(serverName, mapName, layerIndex, team1, team2, unit1, unit2){
+        
+        if (!mapName) return;
+
+        const mapIndex = MAPS.findIndex(m => m.name.toLowerCase() === mapName.toLowerCase());
+        App.MAP_SELECTOR.val(mapIndex).trigger($.Event("change", { broadcast: true }));
+        $(document).one("layers:loaded", () => {
+            App.LAYER_SELECTOR.val(layerIndex).trigger($.Event("change", { broadcast: true }));
+            $(document).one("layer:loaded", () => {
+                if (team1 && team2) {
+                    App.FACTION1_SELECTOR.val(team1).trigger($.Event("change", { broadcast: true }));
+                    App.FACTION2_SELECTOR.val(team2).trigger($.Event("change", { broadcast: true }));
+                    if (unit1 && unit2) {
+                        App.UNIT1_SELECTOR.val(unit1).trigger($.Event("change", { broadcast: true }));
+                        App.UNIT2_SELECTOR.val(unit2).trigger($.Event("change", { broadcast: true }));
+                    }
+                }
+
+            });
+        });
+        
+        $("#serversInformation")[0].close();
+        activeServerBrowserTooltips.setContent(`Map Synced with ${serverName}`);
+        activeServerBrowserTooltips.enable();
     }
 
 
@@ -246,7 +377,7 @@ export default class SquadServersBrowser {
         });
 
         this.filteredData = sorted;
-        this.renderTable(sorted);
+        this.renderRows(sorted);
     }
 
 }
