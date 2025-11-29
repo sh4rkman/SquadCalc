@@ -216,8 +216,10 @@ export default class SquadCalc {
             layers.forEach((layer) => { this.LAYER_SELECTOR.append(`<option value=${layer.rawName}>${layer.shortName}</option>`);});
             
 
-            // If URL has a "layer" parameter
-            if (currentUrl.searchParams.has("layer") && !currentUrl.searchParams.has("session")) {
+            // If URL has a "layer" parameter and no active session yet
+            // Using this.session instead of URL param allows layer to load on first call,
+            // but prevents overwriting session state when SESSION_JOINED triggers a reload
+            if (currentUrl.searchParams.has("layer") && !this.session) {
                 const urlLayerName = currentUrl.searchParams.get("layer").toLowerCase().replaceAll(" ", "");
             
                 // Normalize option text by removing any extra spaces around the "V"
