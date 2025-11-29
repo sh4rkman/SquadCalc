@@ -93,7 +93,18 @@ export const checkApiHealth = async () => {
                     $(".btn-session").addClass("active");
                     createSessionTooltips.disable();
                     leaveSessionTooltips.enable();
-                    App.session = new SquadSession(sessionId);
+                    
+                    // Wait for layer/layers to load before creating session
+                    // This ensures layer data is included in the initial session state
+                    if (urlParams.has("layer")) {
+                        $(document).one("layer:loaded", () => {
+                            App.session = new SquadSession(sessionId);
+                        });
+                    } else {
+                        $(document).one("layers:loaded", () => {
+                            App.session = new SquadSession(sessionId);
+                        });
+                    }
                 }
             }
         } else {

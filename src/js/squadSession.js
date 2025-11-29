@@ -77,30 +77,6 @@ export default class SquadSession {
             $("#sessionActions").css("display", "flex");
             App.updateUrlParams({ session: data.sessionId });
             App.openToast("success", "sessionCreated", "shareSession", true);
-            
-            // Load layer from URL if present (for new sessions only)
-            const currentUrl = new URL(window.location.href);
-            if (currentUrl.searchParams.has("layer")) {
-                const loadLayerFromUrl = () => {
-                    const urlLayerName = currentUrl.searchParams.get("layer").toLowerCase().replaceAll(" ", "");
-                    const matchingOption = App.LAYER_SELECTOR.find("option").filter(function() {
-                        const optionText = $(this).text().toLowerCase().replaceAll(" ", "");
-                        return optionText === urlLayerName;
-                    });
-                    if (matchingOption.length > 0) {
-                        matchingOption.prop("selected", true);
-                        App.LAYER_SELECTOR.trigger($.Event("change", { broadcast: true }));
-                    }
-                };
-                
-                // Check if layers dropdown is already populated
-                if (App.LAYER_SELECTOR.find("option").length > 1) {
-                    loadLayerFromUrl();
-                } else {
-                    $(document).one("layers:loaded", loadLayerFromUrl);
-                }
-            }
-            
             break;
         }
 
