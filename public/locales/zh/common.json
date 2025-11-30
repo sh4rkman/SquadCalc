@@ -64,7 +64,7 @@
     "rightClicToRemove": "右键点击以移除标记",
     "loadingServers": "正在加载服务器...",
     "errorLoading": "加载服务器时出错。",
-    "searchServersPlaceholder": "搜索服务器...",
+    "searchServerPlaceholder": "搜索服务器...",
     "serverName": "服务器名称",
     "currentMap": "当前地图",
     "players": "玩家数",

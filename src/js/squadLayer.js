@@ -11,7 +11,7 @@ import { SquadVehicleSpawner } from "./squadVehicleSpawner.js";
 
 export default class SquadLayer {
 
-    constructor(map, layerData) {
+    constructor(map, layerData, broadcast) {
         this.map = map;
         this.activeLayerMarkers = new LayerGroup().addTo(this.map);
         this.activeFaction1Markers = new LayerGroup();
@@ -82,7 +82,7 @@ export default class SquadLayer {
         this.init();
 
         if (process.env.DISABLE_FACTIONS != "true") {
-            this.factions = new SquadFactions(this);
+            this.factions = new SquadFactions(this, broadcast);
             if (App.userSettings.enableFactions) $("#factionsTab").show();
         }
 

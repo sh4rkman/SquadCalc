@@ -171,7 +171,7 @@ export default class SquadCalc {
                     if (!layerData) return; // prevent continuing on fetch failure
 
                     if (this.minimap.layer) this.minimap.layer.clear();
-                    this.minimap.layer = new SquadLayer(this.minimap, layerData);
+                    this.minimap.layer = new SquadLayer(this.minimap, layerData, broadcast);
                     $(".btn-layer").addClass("active").show();
 
                     if (broadcast && this.session.ws?.readyState === WebSocket.OPEN) {

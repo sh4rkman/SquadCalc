@@ -72,7 +72,7 @@
         max-width: 400px;
         height: 50px;
         &:nth-child(2) {
-            max-width: 100px;
+            max-width: 150px;
         }
     }
     th, td {
@@ -187,9 +187,11 @@
     .servers-table th:nth-child(3),
     .servers-table td:nth-child(3),
     .servers-table th:nth-child(4),
-    .servers-table th:nth-child(5),
     .servers-table td:nth-child(4),
-    .servers-table td:nth-child(5) {
+    .servers-table th:nth-child(5),
+    .servers-table td:nth-child(5),
+    .servers-table th:nth-child(6),
+    .servers-table td:nth-child(6) {
         display: none;
     }
     .servers-table th,
@@ -228,8 +230,6 @@
 }
 
 .servers-table th,
-.servers-table th:nth-child(5),
-.servers-table th:nth-child(6),
 .servers-table td:nth-child(3),
 .servers-table td:nth-child(4),
 .servers-table td:nth-child(5),

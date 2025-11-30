@@ -26,6 +26,14 @@ export default class SquadServersBrowser {
         return `${m}:${s.toString().padStart(2, "0")}`;
     }
 
+    formatPlayTime(seconds) {
+        const totalMinutes = Math.floor(seconds / 60);
+        const h = Math.floor(totalMinutes / 60);
+        const m = totalMinutes % 60;
+
+        return `${h.toString().padStart(2, "0")}:${m.toString().padStart(2, "0")}`;
+    }
+
 
     async syncWithServer(){
 
@@ -42,14 +50,14 @@ export default class SquadServersBrowser {
         this.serversData.forEach(server => {
             if (server.id == this.selectedServer) {
                 let playTime = this.toMinSec(server.attributes.details.squad_playTime);
-                let map = server.attributes.details.map;
-                console.log(`${n} - ${server.attributes.name} - ${map} - playtime : ${playTime}`);
-                if (map != this.selectedLayer) {
-                    console.warn(`  LAYER CHANGED FROM ${this.selectedLayer} to ${map}`);
-                    this.selectedLayer = map;
-                    this.switchLayer(server.name,
+                console.log(`${n} - ${server.attributes.name} - ${server.attributes.details.map} - playtime : ${playTime}`);
+                if (server.attributes.details.map != this.selectedLayer) {
+                    console.warn(`  LAYER CHANGED FROM ${this.selectedLayer} to ${server.attributes.details.map}`);
+                    this.selectedLayer = server.attributes.details.map;
+                    this.switchLayer(
+                        server.attributes.name,
                         server.mapName,
-                        map,
+                        server.attributes.details.map,
                         server.team1,
                         server.team2,
                         server.attributes.details.squad_teamOne,
@@ -115,52 +123,73 @@ export default class SquadServersBrowser {
         this.renderRows(this.filteredData);
     }
 
+
+    getNextLayerHTML(server){
+        if (server.attributes.details.squad_nextLayer) {
+            return `
+                <span class="nextMap" data-i18n="common:next">
+                    ${i18next.t("next", { ns: "common" })}: ${server.attributes.details.squad_nextLayer}
+                </span>
+                `;
+        } 
+        return "<span class=\"nextMap\">Map Voting</span>";
+    }
+
+    getTeamHTML(team, label) {
+        if (team) {
+            return `<img
+                title="${label}"
+                src="${process.env.API_URL}/img/flags/${team}.webp"
+                alt="${team}"
+                class="flag-icon">`;
+        } else {
+            return "-";
+        }
+    }
+
     renderRows(servers){
-        // Always update the table body and results count
+
         const tbody = document.getElementById("serversTableBody");
-        //const resultsCount = document.getElementById("resultsCount");
 
         if (servers && servers.length > 0) {
 
-            tbody.innerHTML = servers.map(server => `
-                <tr class="
-                    ${server.id == this.selectedServer ? "selected" : ""}
-                    ${!server.team1 || !server.team2 || !server.mapName ? "unavailable" : ""}
-                "
-                data-servername="${server.attributes.name}"
-                data-serverid="${server.id}"
-                data-layer="${server.attributes.details.map}"
-                data-map="${server.mapName}" 
-                data-team1="${server.team1}"
-                data-team2="${server.team2}"
-                data-unit1="${server.attributes.details.squad_teamOne || ""}"
-                data-unit2="${server.attributes.details.squad_teamTwo || ""}">
-                    <td title="${server.attributes.name}">${server.attributes.name}</td>
-                    <td class="mapdata">
-                    ${server.attributes.details.map}<br>
-                    ${server.attributes.details.squad_nextLayer ? `
-                        <span class="nextMap">${i18next.t("next", { ns: "common" })}: ${server.attributes.details.squad_nextLayer}</span>`
-        : 
-        "<span class=\"nextMap\">Map Voting</span>"
-}
-                    </td>
-                    <td>${server.attributes.players}/${server.attributes.maxPlayers}</td>
-                    <td>
-                        ${server.team1  ? `<img title="${server.attributes.details.squad_teamOne}"
-                                src="${process.env.API_URL}/img/flags/${server.team1}.webp" 
-                                alt="${server.team1}" class="flag-icon">`
-        : "-"
-}
-                    </td>
-                    <td>
-                        ${server.team2 ? `<img title="${server.attributes.details.squad_teamTwo}"
-                                src="${process.env.API_URL}/img/flags/${server.team2}.webp" 
-                                alt="${server.team2}" class="flag-icon">`
-        : "-"
-}
-                    </td>
-                </tr>
-            `).join("");
+            let rows = "";
+
+            servers.forEach(server => {
+                const isSelected = server.id == this.selectedServer ? "selected" : "";
+                const unavailable = (!server.team1 || !server.team2 || !server.mapName) ? "unavailable" : "";
+
+                const nextLayer = this.getNextLayerHTML(server);
+
+                rows += `
+                    <tr class="${isSelected} ${unavailable}"
+                        data-servername="${server.attributes.name}"
+                        data-serverid="${server.id}"
+                        data-layer="${server.attributes.details.map}"
+                        data-map="${server.mapName}" 
+                        data-team1="${server.team1}"
+                        data-team2="${server.team2}"
+                        data-unit1="${server.attributes.details.squad_teamOne || ""}"
+                        data-unit2="${server.attributes.details.squad_teamTwo || ""}">
+                        
+                        <td title="${server.attributes.name}">${server.attributes.name}</td>
+                        
+                        <td class="mapdata">
+                            ${server.attributes.details.map}<br>
+                            ${nextLayer}
+                        </td>
+                        
+                        <td>${server.attributes.players} / ${server.attributes.maxPlayers}</td>
+                        
+                        <td>${this.formatPlayTime(server.attributes.details.squad_playTime)}</td>
+                        
+                        <td>${this.getTeamHTML(server.team1, server.attributes.details.squad_teamOne)}</td>
+                        <td>${this.getTeamHTML(server.team2, server.attributes.details.squad_teamTwo)}</td>
+                    </tr>
+                `;
+            });
+
+            tbody.innerHTML = rows;
         }
         else {
             tbody.innerHTML = `
@@ -172,12 +201,6 @@ export default class SquadServersBrowser {
                 `;
         }
 
-        // const loadButtons = serversList.querySelectorAll(".status-badge.ok");
-        // loadButtons.forEach(button => {
-        //     button.addEventListener("click", (e) => {
-        //         this.switchLayer(e.target);
-        //     });
-        // });
     }
 
     renderTable(servers) {
@@ -195,6 +218,7 @@ export default class SquadServersBrowser {
                         <input 
                             type="text" 
                             class="search-input" 
+                            data-i18n-placeholder="common:searchServerPlaceholder"
                             placeholder="${i18next.t("searchServerPlaceholder", { ns: "common" })}"
                             id="serverSearch"
                         />
@@ -213,17 +237,20 @@ export default class SquadServersBrowser {
                 <table class="servers-table">
                     <thead>
                         <tr>
-                            <th class="sortable" data-sort="name"">
+                            <th class="sortable" data-sort="name" data-i18n="common:serverName">
                                 ${i18next.t("serverName", { ns: "common" })} <span class="sort-indicator">⇅</span>
                             </th>
-                            <th class="sortable" data-sort="map">
+                            <th class="sortable" data-sort="map" data-i18n="common:currentMap">
                                 ${i18next.t("currentMap", { ns: "common" })} <span class="sort-indicator">⇅</span>
                             </th>
-                            <th class="sortable" data-sort="players">
+                            <th class="sortable" data-sort="players" data-i18n="common:players">
                                 ${i18next.t("players", { ns: "common" })} <span class="sort-indicator">⇅</span>
                             </th>
-                            <th>${i18next.t("team1", { ns: "common" })}</th>
-                            <th>${i18next.t("team2", { ns: "common" })}</th>
+                            <th class="sortable" data-sort="playtime" data-i18n="common:playTime">
+                                ${i18next.t("playTime", { ns: "common" })} <span class="sort-indicator">⇅</span>
+                            </th>
+                            <th data-i18n="common:team1">${i18next.t("team1", { ns: "common" })}</th>
+                            <th data-i18n="common:team2">${i18next.t("team2", { ns: "common" })}</th>
                         </tr>
                     </thead>
                     <tbody id="serversTableBody"></tbody>
@@ -316,7 +343,10 @@ export default class SquadServersBrowser {
 
     switchLayer(serverName, mapName, layerIndex, team1, team2, unit1, unit2){
         
-        if (!mapName) return;
+
+        console.log(serverName, mapName, layerIndex, team1, team2, unit1, unit2);
+
+        if (!mapName || !serverName || !layerIndex) return;
 
         const mapIndex = MAPS.findIndex(m => m.name.toLowerCase() === mapName.toLowerCase());
         App.MAP_SELECTOR.val(mapIndex).trigger($.Event("change", { broadcast: true }));
@@ -366,6 +396,10 @@ export default class SquadServersBrowser {
             case "players":
                 valA = a.attributes.players;
                 valB = b.attributes.players;
+                break;
+            case "playtime":
+                valA = a.attributes.details.squad_playTime;
+                valB = b.attributes.details.squad_playTime;
                 break;
             default:
                 return 0;
