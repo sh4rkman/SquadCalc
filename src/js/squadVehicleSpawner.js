@@ -79,15 +79,20 @@ export class SquadVehicleSpawner {
             const bottomLeft = rotated[3];
 
             // Create txt with rotation
-            this.txt = new ImageOverlay.Rotated(`${process.env.API_URL}/img/vehicleSpawners/${this.data.typePriorities[0].name}.webp`, topLeft, topRight, bottomLeft ).addTo(this.layer.activeLayerMarkers);
+            this.txt = new ImageOverlay.Rotated(
+                `${process.env.API_URL}/img/vehicleSpawners/${this.data.typePriorities[0].name}.webp`,
+                topLeft,
+                topRight,
+                bottomLeft)
+            .addTo(this.layer.activeLayerMarkers);
 
-            // Create regular without rotation for now
-            this.rectangle = new Rectangle(bounds, { color: color, ...this.rectangleOptions }).addTo(this.layer.activeLayerMarkers);
-
-        } else {
-            this.rectangle = new Rectangle(bounds, { color: color, ...this.rectangleOptions }).addTo(this.layer.activeLayerMarkers);
+            // Attach a custom class after creation to custom its z-index with css
+            if (this.txt.getElement()) this.txt.getElement().classList.add('vehSpawnerTxt');
+            
         }
 
+        // Create the rectangle & rotate it
+        this.rectangle = new Rectangle(bounds, { color: color, ...this.rectangleOptions }).addTo(this.layer.activeLayerMarkers);
         this.layer.rotateRectangle(this.rectangle, this.data.rotation_z);
         this.hide();
     }
