@@ -385,6 +385,11 @@ export default class SquadServersBrowser {
         });
 
         this.renderRows(servers);
+
+        // Focus search input at the end
+        //const searchInput = document.getElementById('serverSearch');
+        if (searchInput) searchInput.focus();
+        
     }
 
 
