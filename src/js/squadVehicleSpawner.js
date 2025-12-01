@@ -84,10 +84,10 @@ export class SquadVehicleSpawner {
                 topLeft,
                 topRight,
                 bottomLeft)
-            .addTo(this.layer.activeLayerMarkers);
+                .addTo(this.layer.activeLayerMarkers);
 
             // Attach a custom class after creation to custom its z-index with css
-            if (this.txt.getElement()) this.txt.getElement().classList.add('vehSpawnerTxt');
+            if (this.txt.getElement()) this.txt.getElement().classList.add("vehSpawnerTxt");
             
         }
 
