@@ -13,6 +13,7 @@
     #tableContainer {
         width: 96%;
         height: 88vh;
+        max-width: 1600px;
         overflow: hidden auto;
     }
 }
@@ -266,6 +267,7 @@ th {
     flex-direction: column;
     justify-content: flex-end; // This pushes content to the bottom
     min-height: fit-content;
+    max-width: 1200px;
     .search-container {
         position: relative;
         display: flex;
@@ -346,6 +348,7 @@ th {
         }
     }
     &.info-btn {
+        display: none;
         svg {
             fill: currentcolor;
         }
