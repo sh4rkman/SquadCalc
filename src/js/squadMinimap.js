@@ -124,9 +124,7 @@ export const squadMinimap = Map.extend({
     draw: function(){
 
         this.gameToMapScale = this.pixelSize / this.activeMap.size;
-        this.gameToMapScaleFake = this.pixelSize / this.activeMap.gridSize;
         this.mapToGameScale = this.activeMap.size / this.pixelSize;
-        this.mapToGameScaleFake = this.activeMap.gridSize / this.pixelSize;
         this.detailedZoomThreshold = ( 3 + (this.activeMap.size / 7000) ) * 0.8;
        
         // Load Heightmap
@@ -411,8 +409,8 @@ export const squadMinimap = Map.extend({
      */
     getKP: function(lat, lng, precision = Math.round(this.getZoom())) {
         // to minimize confusion
-        const x = lng * this.mapToGameScaleFake;
-        const y = lat * this.mapToGameScaleFake;
+        const x = lng * this.mapToGameScale;
+        const y = lat * this.mapToGameScale;
         const kp = 300 / 3 ** 0; // interval of main keypad, e.g "A5"
         const kpNumber = `0000${Math.floor(y / kp) + 1}`.slice(-2);
         const s1 = 300 / 3 ** 1; // interval of first sub keypad
