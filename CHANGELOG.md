@@ -1,3 +1,41 @@
+# <img src="https://img.shields.io/badge/-major%20release-b22222?style=for-the-badge"> **41.0.0** *(2025-12-03)*
+
+
+</br><img src="https://img.shields.io/badge/-new%20features-green"> 
+
+- **Server Browser & Server Syncing** *([#394](https://github.com/sh4rkman/SquadCalc/issues/394))*  
+
+You can now browse the list of active servers and select the one you’re playing on. SquadCalc will automatically update the current layer, factions, and units to match the selected server. If the server changes the map, SquadCalc will detect it and update the layer accordingly as soon as possible. *(thanks Takyon Scure, C-BoT-AU!)*
+
+- **BTR4 AGS30**  
+
+Added the new Ukrainian BTR-4 equipped with the AGS-30 grenade launcher to the mortar calculator.
+
+
+</br><img src="https://img.shields.io/badge/-%20improv%20-orange">  
+
+- **Projectile Lifespan** *([#399](https://github.com/sh4rkman/SquadCalc/issues/399))*  
+SquadCalc now accounts for projectiles with a limited lifespan. If a shot would expire mid-air, it will be marked as out of range.  
+
+
+</br><img src="https://img.shields.io/badge/-bug%20fixes-b22">   
+
+- Joining a session that switched layer after its creation now correctly load the current layer *([#406](https://github.com/sh4rkman/SquadCalc/issues/406))*
+- Opening a SquadCalc link with an embedded session now correctly loads the associated layer. *([#403](https://github.com/sh4rkman/SquadCalc/issues/403), thanks Metroseksuaali)*
+- Vehicle Spawner texts are still visible after changing the base layer *([#407](https://github.com/sh4rkman/SquadCalc/issues/407))*
+- Adjusted Jensen's range heightmap by a few meters
+- Fixed Projectile Trajectory Simulations being wrong for Technical Mortars 
+- Fixed a missing French locale  
+
+
+</br><img src="https://img.shields.io/badge/-other%20-grey">  
+
+- Updated TOS-1A MOA from `500` to `200` *(thanks ovalnik!)*  
+- Grids code have been updated to handle maps that are rectangle (looking at you Skorpo)
+
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
 
 # <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge"> **40.2.0** *(2025-11-12)*
 
