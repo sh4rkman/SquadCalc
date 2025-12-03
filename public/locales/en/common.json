@@ -72,5 +72,7 @@
     "server": "server",
     "servers": "servers",
     "load": "Load",
-    "next": "Next"
+    "next": "Next",
+    "playTime": "Play Time",
+    "mapSyncedwith": "Map Synced with"
 }
