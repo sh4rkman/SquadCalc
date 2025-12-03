@@ -75,5 +75,6 @@
     "clickToCopy": "点击复制 `CreateSquad` 命令",
     "vehicleRespawned": "载具已重生",
     "lineToTargetTooltip": "在武器和目标之间绘制一条线",
-    "targetGridTooltip": "在目标周围显示网格：垂直线显示角度偏差（2°），水平弧线显示仰角偏差（10密位或1°，取决于武器的单位系统）"
+    "targetGridTooltip": "在目标周围显示网格：垂直线显示角度偏差（2°），水平弧线显示仰角偏差（10密位或1°，取决于武器的单位系统）",
+    "serverBrowser": "Squad 服务器浏览器"
 }
