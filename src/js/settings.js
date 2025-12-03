@@ -642,9 +642,12 @@ function loadFontSize() {
 }
 
 function loadMarkerSize() {
-    const min = 0.5;
-    const def = 1; 
-    const max = 1.5;
+    const min = 1;
+    const def = 3; 
+    const max = 5;
+
+    // let markerSize = localStorage.getItem("settings-marker-size");
+    // temp fix; todo load from localstorage in few month
     let markerSize = localStorage.getItem("settings-marker-size");
 
     if (markerSize === null || isNaN(markerSize) || markerSize === ""){

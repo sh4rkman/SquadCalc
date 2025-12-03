@@ -494,7 +494,7 @@ export default class SquadCalc {
             $("#serversInformation")[0].showModal();
             
             // Focus search input at the end
-            const searchInput = document.getElementById('serverSearch');
+            const searchInput = document.getElementById("serverSearch");
             if (searchInput) searchInput.focus();
             
         });

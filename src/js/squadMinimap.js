@@ -114,7 +114,7 @@ export const squadMinimap = Map.extend({
         snow1.create();
         //snow1.show();
         snow2.create();
-        snow2.show();
+        //snow2.show();
 
     },
 
@@ -124,6 +124,7 @@ export const squadMinimap = Map.extend({
     draw: function(){
 
         this.gameToMapScale = this.pixelSize / this.activeMap.size;
+        this.gameToMapScaleY = this.pixelSize / this.activeMap.sizeY;
         this.mapToGameScale = this.activeMap.size / this.pixelSize;
         this.detailedZoomThreshold = ( 3 + (this.activeMap.size / 7000) ) * 0.8;
        
