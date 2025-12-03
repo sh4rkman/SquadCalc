@@ -387,7 +387,6 @@ export default class SquadServersBrowser {
         this.renderRows(servers);
 
         // Focus search input at the end
-        //const searchInput = document.getElementById('serverSearch');
         if (searchInput) searchInput.focus();
         
     }
@@ -426,9 +425,10 @@ export default class SquadServersBrowser {
         });
         
         $("#serversInformation")[0].close();
-        activeServerBrowserTooltips.setContent(`Map Synced with ${serverName}`);
+        activeServerBrowserTooltips.setContent(`${i18next.t("mapSyncedwith", { ns: "common" })} ${serverName}`);
         activeServerBrowserTooltips.enable();
         activeServerBrowserTooltips.hide();
+        App.openToast("success", "mapUpdated", "");
     }
 
 

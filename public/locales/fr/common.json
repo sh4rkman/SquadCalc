@@ -69,5 +69,7 @@
     "noServersFound": "Aucun serveur trouvé.",
     "server": "serveur",
     "servers": "serveurs",
-    "next": "à suivre"
+    "next": "à suivre",
+    "playTime": "Temps de jeu",
+    "mapSyncedwith": "Carte synchronisée avec"
 }

@@ -70,5 +70,7 @@
     "server": "Server",
     "servers": "Server",
     "load": "Laden",
-    "next": "Nächste"
+    "next": "Nächste",
+    "playTime": "Spielzeit",
+    "mapSyncedwith": "Karte synchronisiert mit"
 }
