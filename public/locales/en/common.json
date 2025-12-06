@@ -59,5 +59,20 @@
     "noCommander": "No commander assets",
     "spawn": "Spawn",
     "temporary": "Temporary Spawn",
-    "disabledSpawn": "Disabled until first cap"
+    "disabledSpawn": "Disabled until first cap",
+    "respawnCamera": "Respawn Camera",
+    "rightClicToRemove": "Right click to remove",
+    "loadingServers": "Loading servers...",
+    "errorLoading": "Error loading server data.",
+    "searchServerPlaceholder": "Search by server name or map",
+    "serverName": "Server Name",
+    "currentMap": "Current Map",
+    "players": "Players",
+    "noServersFound": "No servers found.",
+    "server": "server",
+    "servers": "servers",
+    "load": "Load",
+    "next": "Next",
+    "playTime": "Play Time",
+    "mapSyncedwith": "Map Synced with"
 }

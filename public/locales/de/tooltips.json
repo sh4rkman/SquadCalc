@@ -75,5 +75,6 @@
     "clickToCopy": "Zum Kopieren des `CreateSquad`-Befehls klicken",
     "vehicleRespawned": "Fahrzeug wieder erschienen",
     "lineToTargetTooltip": "Zieht eine Linie zwischen der Waffe und dem Ziel",
-    "targetGridTooltip": "Zeigt ein Raster um die Ziele an: Vertikale Linien zeigen die Winkelabweichung (2°) und horizontale Bögen zeigen die Höhenabweichung (10 mils oder 1°, abhängig vom Einheitensystem der Waffe)"
+    "targetGridTooltip": "Zeigt ein Raster um die Ziele an: Vertikale Linien zeigen die Winkelabweichung (2°) und horizontale Bögen zeigen die Höhenabweichung (10 mils oder 1°, abhängig vom Einheitensystem der Waffe)",
+    "serverBrowser": "Squad-Server-Browser"
 }

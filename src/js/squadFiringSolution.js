@@ -28,6 +28,9 @@ export default class SquadFiringSolution {
         this.spreadParameters = {low: [], high: []};
         this.spreadParameters.low = this.getSpreadParameter(this.elevation.low.rad, this.timeOfFlight.low);
         this.spreadParameters.high = this.getSpreadParameter(this.elevation.high.rad, this.timeOfFlight.high);
+
+        if (this.timeOfFlight.low > App.activeWeapon.projectileLifespan) this.elevation.low.rad = NaN;
+        if (this.timeOfFlight.high > App.activeWeapon.projectileLifespan) this.elevation.high.rad = NaN;
     }
 
 
@@ -51,17 +54,12 @@ export default class SquadFiringSolution {
      * @returns {number || NaN} radian angle if target in range, NaN otherwise
     */
     getElevation(dist = 0, lowangle = false) {
-        let padding = 0;
         let angleFactor;
         
         const P1 = Math.sqrt(this.velocity ** 4 - this.gravity * (this.gravity * dist ** 2 + 2 * (this.heightDiff - App.activeWeapon.heightOffset) * this.velocity ** 2));
         angleFactor = lowangle ? -P1 : P1;
 
-        // The technical mortar is bugged : the ingame range metter is off by 5°
-        // Ugly fix until OWI correct it
-        if (App.activeWeapon.name === "Tech.Mortar") padding = -0.0872665;
-
-        let elevation = padding + Math.atan((this.velocity ** 2 + angleFactor) / (this.gravity * dist));
+        let elevation = Math.atan((this.velocity ** 2 + angleFactor) / (this.gravity * dist)) - this.degToRad(App.activeWeapon.angleOffset);
 
         if (this.radToDeg(elevation) < App.activeWeapon.minElevation[0] || this.radToDeg(elevation) > App.activeWeapon.minElevation[1]){
             return NaN;

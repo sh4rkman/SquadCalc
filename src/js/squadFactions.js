@@ -12,13 +12,13 @@ export default class SquadFactions {
      * * @param {Object} layerData - The layer data object containing the factions and units
      * * @param {SquadLayer} squadLayer - The SquadLayer object containing the main icons
      * */
-    constructor(squadLayer) {
+    constructor(squadLayer, broadcast) {
         this.squadLayer = squadLayer;
         this.FACTION1_SELECTOR = $(".dropbtn8");
         this.FACTION2_SELECTOR = $(".dropbtn10");
         this.UNIT1_SELECTOR = $(".dropbtn9");
         this.UNIT2_SELECTOR = $(".dropbtn11");
-        this.init(squadLayer.layerData);
+        this.init(squadLayer.layerData, broadcast);
         this.initDropdowns();
         this.pinned = false;
         this.pinnedFaction = "";
@@ -631,7 +631,7 @@ export default class SquadFactions {
      * * Initialize the factions selector and load the factions into it
      * * @param {Object} factionData - The faction data object
      * */
-    init(factionData) {
+    init(factionData, broadcast2) {
 
         $(".dropbtn8, .dropbtn10").empty();
         this.resetFactionsButton();
@@ -653,7 +653,7 @@ export default class SquadFactions {
             if ( $("#team1PinButton").hasClass("active") ) this.unpinUnit();
 
             // Broadcast the Unit change to the session if needed
-            const broadcast = event.broadcast ?? true;
+            const broadcast = event.broadcast || broadcast2;
 
             // Update Unit selector and main icon
             this.loadUnits(event.target.value, factionData.units.team1Units, factionData.teamConfigs.factions.team1Units, this.UNIT1_SELECTOR, broadcast);
@@ -677,7 +677,7 @@ export default class SquadFactions {
             if ( $("#team2PinButton").hasClass("active") ) this.unpinUnit();
 
             // Broadcast the Faction change to the session if needed
-            const broadcast = event.broadcast ?? true;
+            const broadcast = event.broadcast || broadcast2;
 
             // Update Unit selector and main icon
             this.loadUnits(event.target.value, factionData.units.team2Units, factionData.teamConfigs.factions.team2Units, this.UNIT2_SELECTOR, broadcast);

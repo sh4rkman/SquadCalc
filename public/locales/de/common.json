@@ -57,5 +57,20 @@
     "noCommander": "Keine Kommandanten-Ressourcen",
     "spawn": "Erscheinen",
     "temporary": "Vorübergehend Erscheinen",
-    "disabledSpawn": "Bis zur ersten Eroberung deaktiviert"
+    "disabledSpawn": "Bis zur ersten Eroberung deaktiviert",
+    "respawnCamera": "Wiederbelebungskamera",
+    "rightClicToRemove": "Rechtsklick zum Entfernen der Markierung",
+    "loadingServers": "Lade Server...",
+    "errorLoading": "Fehler beim Laden der Server.",
+    "searchServerPlaceholder": "Suche nach Servernamen oder Karte...",
+    "serverName": "Servername",
+    "currentMap": "Karte",
+    "players": "Spieler",
+    "noServersFound": "Keine Server gefunden.",
+    "server": "Server",
+    "servers": "Server",
+    "load": "Laden",
+    "next": "Nächste",
+    "playTime": "Spielzeit",
+    "mapSyncedwith": "Karte synchronisiert mit"
 }

@@ -57,5 +57,19 @@
     "noCommander": "Pas d'équipements de commandant",
     "spawn": "Spawn",
     "temporary": "Spawn Temporaire",
-    "disabledSpawn": "Désactivé jusqu'à la première capture"
+    "disabledSpawn": "Désactivé jusqu'à la première capture",
+    "respawnCamera": "Caméra de respawn",
+    "rightClicToRemove": "(Clic droit pour enlever)",
+    "loadingServers": "Récupération des serveurs...",
+    "errorLoading": "Erreur lors du chargement des serveurs.",
+    "searchServerPlaceholder": "Rechercher un serveur ou une carte...",
+    "serverName": "Nom du serveur",
+    "currentMap": "Carte",
+    "players": "Joueurs",
+    "noServersFound": "Aucun serveur trouvé.",
+    "server": "serveur",
+    "servers": "serveurs",
+    "next": "à suivre",
+    "playTime": "Temps de jeu",
+    "mapSyncedwith": "Carte synchronisée avec"
 }

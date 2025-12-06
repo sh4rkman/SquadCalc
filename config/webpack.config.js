@@ -32,7 +32,6 @@ export default async (env) => {
 
     entry: {
       main: './src/app.js',
-      '404-style': './src/components/404/404.scss',
     },
     stats: { warnings: false},
     mode: env.WEBPACK_BUILD ? 'production' : 'development',
@@ -64,9 +63,6 @@ export default async (env) => {
       port: 3000,
       open: true,
       historyApiFallback: {
-        rewrites: [
-          { from: /./, to: '/404.html' },
-        ],
         disableDotRule: true,
       },
       static: {
@@ -86,11 +82,6 @@ export default async (env) => {
               removeComments: true,
               removeAttributeQuotes: true,
           } : false
-        }),
-        new HtmlWebpackPlugin({
-          template: './src/404.html',
-          filename: '404.html',
-          chunks: ['404-style'], 
         }),
         new CopyWebpackPlugin({
           patterns: [

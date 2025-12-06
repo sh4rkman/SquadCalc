@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Pull code & Build
-      uses: appleboy/ssh-action@v1.2.2
+      uses: appleboy/ssh-action@v1.2.4
       with:
         host: ${{ secrets.HOST }}
         port: ${{ secrets.PORT }}

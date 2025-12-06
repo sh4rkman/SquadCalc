@@ -6,11 +6,12 @@ import "./libs/leaflet-measure-path.js";
 import SquadFactions from "./squadFactions.js";
 import { Hexagon } from "./libs/leaflet-hexagon.js";
 import { squadSpawnGroup } from "./squadSpawnGroup.js";
+import { squadCameraActor } from "./squadCameraActor.js";
 import { SquadVehicleSpawner } from "./squadVehicleSpawner.js";
 
 export default class SquadLayer {
 
-    constructor(map, layerData) {
+    constructor(map, layerData, broadcast) {
         this.map = map;
         this.activeLayerMarkers = new LayerGroup().addTo(this.map);
         this.activeFaction1Markers = new LayerGroup();
@@ -81,7 +82,7 @@ export default class SquadLayer {
         this.init();
 
         if (process.env.DISABLE_FACTIONS != "true") {
-            this.factions = new SquadFactions(this);
+            this.factions = new SquadFactions(this, broadcast);
             if (App.userSettings.enableFactions) $("#factionsTab").show();
         }
 
@@ -114,8 +115,8 @@ export default class SquadLayer {
             break;
         case "AAS":
         case "Seed":
+        case "Skirmish":
             this.initPredictiveLayer();
-            //this.initSkirmishLayer(); // TODO: use a single function for AASGraphs
             break;
         case "TC":
             this.initTerritoryControl(this.capturePoints);
@@ -123,9 +124,6 @@ export default class SquadLayer {
         case "RAAS":
         case "Invasion":
             this.initRandomizedLayer();
-            break;
-        case "Skirmish":
-            this.initSkirmishLayer();
             break;
         default:
             this.clear();
@@ -139,7 +137,14 @@ export default class SquadLayer {
         this.createBorders();
         this.createSpawners();
         this.createTeamSpawns();
+        this.createCameraActors();
         //this.createTeamSpawnsPoints();
+    }
+
+    createCameraActors(){
+        if (!this.layerData.mapCameraActor) return;
+        this.cameraActor = new squadCameraActor(this.convertToLatLng(this.layerData.mapCameraActor.location_x, this.layerData.mapCameraActor.location_y), this.layerData.mapCameraActor, this);
+        if (App.userSettings.showRespawnCam) this.cameraActor.show();
     }
 
 
@@ -182,28 +187,18 @@ export default class SquadLayer {
     }
 
 
-    initSkirmishLayer() {
-
+    /**
+     * Initialize a layer going from first to last point
+     * AAS - SEED - Skirmish
+     */
+    initPredictiveLayer(){
         // Set Paths
         Object.values(this.capturePoints.points.links).forEach(link => {
             const nodeAFlag = Object.values(this.objectives).find(objective => objective.objectDisplayName === link.nodeA);
             const nodeBFlag = Object.values(this.objectives).find(objective => objective.objectDisplayName === link.nodeB);
             const latlngNodeA = this.convertToLatLng(nodeAFlag.location_x, nodeAFlag.location_y);
             const latlngNodeB = this.convertToLatLng(nodeBFlag.location_x, nodeBFlag.location_y);
-            let path = [latlngNodeA, latlngNodeB];
-
-            // Not using this.path here because several path would be created on each others
-            new Polyline(path, {
-                color: "white",
-                opacity: 0.9,
-                weight: 2,
-                showMeasurements: false,
-                // measurementOptions: {
-                //     minPixelDistance: 50,
-                //     scaling: this.map.mapToGameScale,
-                // }
-            }).addTo(this.activeLayerMarkers);
-
+            this.path.push(latlngNodeA, latlngNodeB);
         });
 
         Object.values(this.objectives).forEach((obj) => {
@@ -218,51 +213,6 @@ export default class SquadLayer {
             }
 
             const newFlag = new SquadObjective(latlng, this, obj, 0, obj);
-            this.flags.push(newFlag);
-
-            obj.objects.forEach(cap => {
-                newFlag.createCapZone(cap);
-            });
-        });
-
-        //this.polyline.setLatLngs(this.path);
-
-    }
-
-
-
-    /**
-     * Initialize a layer going from first to last point
-     * AAS - SEED
-     */
-    initPredictiveLayer(){
-        const pointsOrder = this.capturePoints?.points?.pointsOrder;
-        const objectives = this.objectives;
-
-        let orderedObjectives = [];
-
-        // Sort objectives according to their order in layerData.capturePoints.points.pointsOrder
-        const nameToObjective = Object.values(objectives).reduce((acc, obj) => {
-            acc[obj.objectDisplayName] = obj;
-            return acc;
-        }, {});
-
-        orderedObjectives = pointsOrder.map(name => nameToObjective[name]).filter(Boolean);
-
-        orderedObjectives.forEach((obj) => {
-            const latlng = this.convertToLatLng(obj.location_x, obj.location_y);
-
-            // Identify and process mains
-            if (obj.name === "Main") {
-                this.path.push(latlng);
-                let newFlag = new SquadObjective(latlng, this, obj, 1, obj);
-                this.flags.push(newFlag);
-                this.mains.push(newFlag);
-                return;
-            }
-
-            const newFlag = new SquadObjective(latlng, this, obj, 0, obj);
-            this.path.push(latlng);
             this.flags.push(newFlag);
 
             obj.objects.forEach(cap => {
@@ -521,7 +471,7 @@ export default class SquadLayer {
      * @returns {Array} - [latitude, longitude] in meters
      */ 
     convertToLatLng(x, y) {
-        return [(y - this.offset_y) / 100 * -this.map.gameToMapScale, (x - this.offset_x) / 100 * this.map.gameToMapScale];
+        return [(y - this.offset_y) / 100 * -this.map.gameToMapScaleY, (x - this.offset_x) / 100 * this.map.gameToMapScaleY];
     }
 
 
@@ -1402,12 +1352,14 @@ export default class SquadLayer {
             this.isVisible = false;
             $(".btn-layer").removeClass("active");
             this.hideAllCapzones();
+            this.cameraActor?.hide();
             this.setMainZoneOpacity(false);
             this.hexs.forEach((hex => { hex.hide();}));
             this.vehicleSpawners.forEach(spawn => { spawn.hide(); });
-            if (this.borders && App.userSettings.showMapBorders) this.borders.setStyle({ fillOpacity: 0 });
+            if (App.userSettings.showMapBorders) this.borders?.setStyle({ fillOpacity: 0 });
         }
         else {
+            this.cameraActor?.show();
             this.hexs.forEach((hex => { hex.show();}));
             this._setOpacity(1);
             this.setMainZoneOpacity(true);

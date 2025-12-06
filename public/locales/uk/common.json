@@ -57,5 +57,20 @@
     "noCommander": "Немає командирських ресурсів",
     "spawn": "Виникнення",
     "temporary": "Тимчасово Виникнення",
-    "disabledSpawn": "Вимкнено до першого захоплення"
+    "disabledSpawn": "Вимкнено до першого захоплення",
+    "respawnCamera": "Камера відродження",
+    "rightClicToRemove": "Клацніть правою кнопкою м",
+    "loadingServers": "Завантаження серверів...",
+    "errorLoading": "Помилка завантаження серверів.",
+    "searchServerPlaceholder": "Пошук сервера або карти...",
+    "serverName": "Назва сервера",
+    "currentMap": "Поточна карта",
+    "players": "Гравці",
+    "noServersFound": "Сервери не знайдені.",
+    "server": "сервер",
+    "servers": "сервери",
+    "load": "Завантажити",
+    "next": "Наступна",
+    "playTime": "Час на мапі",
+    "mapSyncedwith": "Мапу синхронізовано з"
 }

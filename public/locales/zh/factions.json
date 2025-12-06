@@ -1,4 +1,5 @@
-{
+{   
+    "AFU": "乌军",
     "ADF": "澳军",
     "BAF": "英军",
     "CAF": "加军",
@@ -16,6 +17,7 @@
     "USMC": "马润",
     "VDV": "俄空降军",
     "WPMC": "雇佣兵",
+    "AFU_displayName": "乌克兰武装部队",
     "ADF_displayName": "澳大利亚国防军",
     "BAF_displayName": "英国陆军",
     "CAF_displayName": "加拿大陆军",

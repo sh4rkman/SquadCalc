@@ -12,7 +12,6 @@ export const MAPS = [
             minimap: {
                 corner0: [-2000, -2000],
                 corner1: [2000, 2000],
-                gridSize: 3900,
             },
             heightmap: {
                 origin: [-2040, -2040],
@@ -22,26 +21,6 @@ export const MAPS = [
             }
         }
     },
-    // { 
-    //     // UE4
-    //     name: `AlBasrah`, 
-    //     gridSize: 3040, // OK
-    //     scaling: 0.01294, // OK
-    //     mapURL: `/albasrah/`,
-    //     radiusExclusion: FOBEXCLUSIONS.medium,
-    //     SDK_data: {
-    //         minimap: {
-    //             corner0: [-1520, -1520],
-    //             corner1: [1520, 1520]
-    //         },
-    //         heightmap: {
-    //             origin: [-2032, -2032],
-    //             size: [3049, 3049],
-    //             scale: [1, 1, 0.1],
-    //             BWlevels: [2793, 4087]
-    //         }
-    //     }
-    // },
     { 
         name: "Anvil", 
         mapURL: `${process.env.API_URL}/img/maps/anvil/`,
@@ -50,7 +29,6 @@ export const MAPS = [
             minimap: {
                 corner0: [-2040, -2040],
                 corner1: [1020, 1020],
-                gridSize: 3000,
             },
             heightmap: {
                 origin: [-2040, -2040],
@@ -68,7 +46,6 @@ export const MAPS = [
             minimap: {
                 corner0: [-1954, -2080],
                 corner1: [1950, 1825],
-                gridSize: 3904,
             },
             heightmap: {
                 origin: [-2016, -2142],
@@ -86,7 +63,6 @@ export const MAPS = [
             minimap: {
                 corner0: [-2299, -2127],
                 corner1: [2299, 2472],
-                gridSize: 4500,
             },
             heightmap: {
                 origin: [-2040, -2142],
@@ -104,7 +80,6 @@ export const MAPS = [
             minimap: {
                 corner0: [-2464, -2664],
                 corner1: [1600, 1400],
-                gridSize: 4200,
             },
             heightmap: {
                 origin: [-2464, -2664],
@@ -122,7 +97,6 @@ export const MAPS = [
             minimap: {
                 corner0: [-1315, -1545],
                 corner1: [1690, 1460],
-                gridSize: 3000,
             },
             heightmap: {
                 origin: [-2040, -2040],
@@ -140,7 +114,6 @@ export const MAPS = [
             minimap: {
                 corner0: [-1326, -1326],
                 corner1: [448, 448],
-                gridSize: 1800,
             },
             heightmap: {
                 origin: [-1598, -1866],
@@ -158,7 +131,6 @@ export const MAPS = [
             minimap: {
                 corner0: [-2016, -2016],
                 corner1: [2015, 2015],
-                gridSize: 3900,
             },
             heightmap: {
                 origin: [-2032, -2032],
@@ -176,7 +148,6 @@ export const MAPS = [
             minimap: {
                 corner0: [-2032, -2032],
                 corner1: [2032, 2032],
-                gridSize: 4200,
             },
             heightmap: {
                 origin: [-2032, -2032],
@@ -194,13 +165,12 @@ export const MAPS = [
             minimap: {
                 corner0: [-2004, -2004],
                 corner1: [2004, 2004],
-                gridSize: 3900,
             },
             heightmap: {
                 origin: [-2040, -2040],
                 size: [4081, 4081],
                 scale: [1, 1, 1],
-                BWlevels: [4683, 5542]
+                BWlevels: [4643, 5595]
             }
         }
     },
@@ -212,7 +182,6 @@ export const MAPS = [
             minimap: {
                 corner0: [-2016, -2016],
                 corner1: [2016, 2016],
-                gridSize: 3900,
             },
             heightmap: {
                 origin: [-2016, -2016],
@@ -230,7 +199,6 @@ export const MAPS = [
             minimap: {
                 corner0: [-2016, -2016],
                 corner1: [2016, 2016],
-                gridSize: 3900,
             },
             heightmap: {
                 origin: [-2016, -2016],
@@ -248,7 +216,6 @@ export const MAPS = [
             minimap: {
                 corner0: [-2300, -2300],
                 corner1: [2317, 2317],
-                gridSize: 4500,
             },
             heightmap: {
                 origin: [-2016, -2016],
@@ -266,7 +233,6 @@ export const MAPS = [
             minimap: {
                 corner0: [-1076, -1076],
                 corner1: [1420, 1420],
-                gridSize: 2400,
             },
             heightmap: {
                 origin: [-1334, -1715],
@@ -284,7 +250,6 @@ export const MAPS = [
             minimap: {
                 corner0: [-2167, -2167],
                 corner1: [2167, 2167],
-                gridSize: 4200,
             },
             heightmap: {
                 origin: [-2167, -2167],
@@ -302,7 +267,6 @@ export const MAPS = [
             minimap: {
                 corner0: [-881, -1132],
                 corner1: [880, 629],
-                gridSize: 1800,
             },
             heightmap: {
                 origin: [-1386, -1260],
@@ -320,7 +284,6 @@ export const MAPS = [
             minimap: {
                 corner0: [-2016, -2016],
                 corner1: [2015, 2015],
-                gridSize: 3900,
             },
             heightmap: {
                 origin: [-2032, -2032],
@@ -338,7 +301,6 @@ export const MAPS = [
             minimap: {
                 corner0: [-1200, -1100],
                 corner1: [1200, 1300],
-                gridSize: 2400,
             },
             heightmap: {
                 origin: [-1545, -1260],
@@ -356,7 +318,6 @@ export const MAPS = [
             minimap: {
                 corner0: [-935, -1140],
                 corner1: [1820, 1615],
-                gridSize: 2700,
             },
             heightmap: {
                 origin: [-1785, -1785],
@@ -374,7 +335,6 @@ export const MAPS = [
             minimap: {
                 corner0: [-1390, -1402],
                 corner1: [1410, 1398],
-                gridSize: 2700,
             },
             heightmap: {
                 origin: [-2016, -2016],
@@ -392,7 +352,6 @@ export const MAPS = [
             minimap: {
                 corner0: [-1390, -1402],
                 corner1: [1410, 1398],
-                gridSize: 2700,
             },
             heightmap: {
                 origin: [-2016, -2016],
@@ -410,7 +369,6 @@ export const MAPS = [
             minimap: {
                 corner0: [-2016, -2016],
                 corner1: [2016, 2016],
-                gridSize: "3900",
             },
             heightmap: {
                 origin: [-2016, -2016],
@@ -428,7 +386,6 @@ export const MAPS = [
             minimap: {
                 corner0: [-2300, -2050],
                 corner1: [2300, 2550],
-                gridSize: 4500,
             },
             heightmap: {
                 origin: [-2040, -2040],
@@ -450,8 +407,7 @@ export const MAPS = [
                 // 6869x6869 is not from SDK, probably due to 2.02deg rotation
                 // This corners are perfect for settings map assets, but the ingame grid is more 6900*6900
                 corner0: [-3611, -3293],
-                corner1: [3258, 3576],
-                gridSize: 6900,
+                corner1: [3238, 3576],
             },
             heightmap: {
                 origin: [-4811, -3947],
@@ -469,7 +425,6 @@ export const MAPS = [
             minimap: {
                 corner0: [-640, -447],
                 corner1: [660, 853],
-                gridSize: 1200,
             },
             heightmap: {
                 origin: [-683, -373],
@@ -487,7 +442,6 @@ export const MAPS = [
             minimap: {
                 corner0: [-2340, -2340],
                 corner1: [2340, 2340],
-                gridSize: 4800,
             },
             heightmap: {
                 origin: [-2287, -2287], // SDK is wrong, this is deduced instead
@@ -505,7 +459,6 @@ export const MAPS = [
             minimap: {
                 corner0: [-3302, -3302], 
                 corner1: [3048, 3048],
-                gridSize: 6300,
             },
             heightmap: {
                 origin: [-3302, -3302], // SDK is wrong, this is deduced instead
@@ -527,7 +480,6 @@ export const MAPS = [
     //         minimap: {
     //             corner0: [-3302, -3302], 
     //             corner1: [3048, 3048],
-    //             gridSize: 6300,
     //         },
     //     }
     // },
@@ -617,7 +569,7 @@ if (typeof process !== "undefined" && process.argv?.[2] === "mapinfo") {
 export function initMapsProperties() {
     MAPS.forEach((map) => {
         map.size = bounds(map.SDK_data.minimap.corner0, map.SDK_data.minimap.corner1)[0];
-        map.gridSize = map.SDK_data.minimap.gridSize;
+        map.sizeY = bounds(map.SDK_data.minimap.corner0, map.SDK_data.minimap.corner1)[1];
         map.scaling = scale(
             map.SDK_data?.heightmap?.BWlevels?.[0] ?? 0,
             map.SDK_data?.heightmap?.BWlevels?.[1] ?? 0,

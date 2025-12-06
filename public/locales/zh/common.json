@@ -59,5 +59,20 @@
     "noCommander": "无指挥官资源",
     "spawn": "生成",
     "temporary": "临时生成",
-    "disabledSpawn": "首次占领前禁用"
+    "disabledSpawn": "首次占领前禁用",
+    "respawnCamera": "重生摄像头",
+    "rightClicToRemove": "右键点击以移除标记",
+    "loadingServers": "正在加载服务器...",
+    "errorLoading": "加载服务器时出错。",
+    "searchServerPlaceholder": "搜索服务器...",
+    "serverName": "服务器名称",
+    "currentMap": "当前地图",
+    "players": "玩家数",
+    "noServersFound": "未找到服务器。",
+    "server": "服务器",
+    "servers": "服务器",
+    "load": "加载",
+    "next": "下一个",
+    "playTime": "地图时间",
+    "mapSyncedwith": "地图已同步至"
 }
