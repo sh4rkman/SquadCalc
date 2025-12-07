@@ -173,14 +173,20 @@ export default LayerGroup.extend({
         this.clearLines();
 
         // Define and scale line's intervals
-        const kp = (300 / 3 ** 0) * this.map.gameToMapScaleFake;
-        const s1 = (300 / 3 ** 1) * this.map.gameToMapScaleFake;
-        const s2 = (300 / 3 ** 2) * this.map.gameToMapScaleFake;
+        // This handle rectangle map stretched into a rectangle
+        const kpX = (300 / 3 ** 0) * this.map.gameToMapScale;
+        const s1X = (300 / 3 ** 1) * this.map.gameToMapScale;
+        const s2X = (300 / 3 ** 2) * this.map.gameToMapScale;
+
+        const kpY = (300 / 3 ** 0) * this.map.gameToMapScaleY;
+        const s1Y = (300 / 3 ** 1) * this.map.gameToMapScaleY;
+        const s2Y = (300 / 3 ** 2) * this.map.gameToMapScaleY;
 
         // for complete grid drawing we take lowest interval, as we want to draw all lines
         // whether or not they will be seen is dependant on another function setting
         // opacity based on zoom level
-        const interval = s2;
+        const intervalX = s2X;
+        const intervalY = s2Y;
 
         // clearing arrays
         this.kpLines = [];
@@ -191,9 +197,9 @@ export default LayerGroup.extend({
         // vertical keypad lines
         // Going east +1 to make it through floating point imprecision
         const startX = this.bounds.getWest();
-        const endX = this.bounds.getEast() + 1;
+        const endX = this.bounds.getEast();
 
-        for (let x = startX, z = 0; x <= endX; x += interval) {
+        for (let x = startX, z = 0; x <= endX; x += intervalX) {
             const bot = {lat: this.bounds.getSouth(), lng: x};
             const top = {lat: this.bounds.getNorth(), lng: x};
 
@@ -202,11 +208,11 @@ export default LayerGroup.extend({
             // basically, main style if multiple of 300, sub1 style if multiple of 100,
             // sub2 if multiple of 33
             // we use if-else so that we don't draw lines over each other
-            if (this.isMultiple(kp, x)) {
+            if (this.isMultiple(kpX, x)) {
                 this.kpLines.push(new Polyline([bot, top], this.lineStyleKP));
 
                 // Create
-                let top2 = {lat: this.bounds.getNorth(), lng: x-(kp/2)};
+                let top2 = {lat: this.bounds.getNorth(), lng: x-(kpX/2)};
 
                 if (x != 0) {
                     this.labels.push(new Marker(top2, {
@@ -222,27 +228,27 @@ export default LayerGroup.extend({
 
                 z += 1;
 
-            } else if (this.isMultiple(s1, x)) {
+            } else if (this.isMultiple(s1X, x)) {
                 this.s1Lines.push(new Polyline([bot, top], this.lineStyleSUB1));
-            } else if (this.isMultiple(s2, x)) {
+            } else if (this.isMultiple(s2X, x)) {
                 this.s2Lines.push(new Polyline([bot, top], this.lineStyleSUB2));
             } else {
-                console.warn(`no match! x = ${x}; x%:`, [x % kp, x % s1, x % s2]); // this should never happen
+                console.warn(`no match! x = ${x}; x%:`, [x % kpX, x % s1X, x % s2X]); // this should never happen
             }
         }
 
         // horizontal keypad lines, almost the same as for vertical lines
         // Going South +1 to make it through floating point imprecision
         const startY = this.bounds.getNorth();
-        const endY = this.bounds.getSouth() - 1;
+        const endY = this.bounds.getSouth();
 
-        for (let y = startY, z = 0; y >= endY; y -= interval) {
+        for (let y = startY, z = 0; y >= endY; y -= intervalY) {
             const left = {lat: y, lng: this.bounds.getWest()};
             const right = {lat: y, lng: this.bounds.getEast()};
 
 
-            if (this.isMultiple(kp, y)) {
-                let textPos = {lat: y+(kp/2), lng: this.bounds.getWest()};
+            if (this.isMultiple(kpY, y)) {
+                let textPos = {lat: y+(kpY/2), lng: this.bounds.getWest()};
                 this.kpLines.push(new Polyline([left, right], this.lineStyleKP));
 
                 if (y!=0){ // skip first label
@@ -258,12 +264,12 @@ export default LayerGroup.extend({
                 }
                 z+=1;
 
-            } else if (this.isMultiple(s1, y)) {
+            } else if (this.isMultiple(s1Y, y)) {
                 this.s1Lines.push(new Polyline([left, right], this.lineStyleSUB1));
-            } else if (this.isMultiple(s2, y)) {
+            } else if (this.isMultiple(s2Y, y)) {
                 this.s2Lines.push(new Polyline([left, right], this.lineStyleSUB2));
             } else {
-                console.warn(`no match! y = ${y}; y%:`, [y % kp, y % s1, y % s2]);
+                console.warn(`no match! y = ${y}; y%:`, [y % kpX, y % s1X, y % s2X]);
             }
         }
 

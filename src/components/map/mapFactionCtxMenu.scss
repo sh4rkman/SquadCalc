@@ -6,6 +6,7 @@
     gap: 5px;
     min-width: 100px;
     margin-top: 5px;
+    font-weight: bold;
     #mapPinButton,
     #backToFactionsBtn {
         background: #222;
@@ -16,6 +17,7 @@
         cursor: pointer;
         user-select: none;
         font-size: 0.8em;
+        font-weight: bold;
         &:hover {
             background: #111;
         }
@@ -158,6 +160,7 @@
     backdrop-filter: blur(6px);
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+    font-weight: bold;
     .respawn-icon, .ticket-icon, .delay-icon, .location-icon {
         display: inline-flex;
         align-items: center;
@@ -299,6 +302,7 @@
     backdrop-filter: blur(6px);
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+    font-weight: bold;
     .spawn-delay-icon {
         display: inline-flex;
         align-items: center;
@@ -367,4 +371,8 @@
 
 .vehSpawnIcon {
     cursor: pointer!important;
+}
+
+.vehSpawnerTxt {
+    z-index: 100!important;
 }

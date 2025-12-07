@@ -13,9 +13,9 @@
                 max-height: 470px;
             }
         }
-        #weaponSelector {
+        .weaponSelector #weaponSelector {
             .select2-results__options {
-                max-height: 470px;
+                max-height: 400px;
             }
         }
     }
@@ -30,6 +30,11 @@
             .select2-results__options {
                 line-height: 0.85em;
                 max-height: 770px;
+            }
+        }
+        .weaponSelector #weaponSelector {
+            .select2-results__options {
+                max-height: 500px;
             }
         }
     }
@@ -271,7 +276,7 @@
                 font-size: 1.4em;
                 width: 44px;
                 height: 44px;
-                &.btn-session {
+                &.btn-servers {
                     margin-top: 1em;
                 }
             }
