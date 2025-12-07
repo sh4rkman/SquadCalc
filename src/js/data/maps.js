@@ -6,7 +6,7 @@ const FOBEXCLUSIONS = {
 export const MAPS = [
     {   // UE5
         name: "AlBasrah",
-        mapURL: `${process.env.API_URL}/img/maps/albasrah/`,
+        mapURL: `/api/img/maps/albasrah/`,
         radiusExclusion: FOBEXCLUSIONS.medium,
         SDK_data: {
             minimap: {

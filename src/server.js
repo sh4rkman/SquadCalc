@@ -40,10 +40,13 @@ app.use('/api', async (req, res) => {
     body
     });
 
+    console.log(`API Proxy: ${req.method} ${url} -> ${response.status}`);
+
     const data = await response.json();
     res.status(response.status).json(data);
   } catch (error) {
-    console.error('API proxy error:', error);
+    //console.error('API proxy error:', error);
+    console.error(`API Proxy: ${req.method} ${req.url}`);
     res.status(500).json({ error: 'Failed to reach API' });
   }
 });

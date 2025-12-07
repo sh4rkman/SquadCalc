@@ -146,6 +146,7 @@ export const squadMinimap = Map.extend({
         this.spin(true, this.spinOptions);
 
         let imagePath = `${this.activeMap.mapURL}${LAYERMODE}`;
+        console.log("imagePath", imagePath)
 
         if (App.userSettings.highQualityImages) {
             // Use TileLayer for high-quality images

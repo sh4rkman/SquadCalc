@@ -25,6 +25,8 @@ export default class SquadHeightmap {
      */
     async loadHeightmapJson(url) {
         
+        console.log("Loading heightmap:", url);
+
         // If no heightmap is provided, don't look for a .json file
         if (!this.map.activeMap.SDK_data.heightmap) return;
 
