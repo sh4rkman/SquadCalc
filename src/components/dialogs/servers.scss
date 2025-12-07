@@ -1,0 +1,357 @@
+@use '../shared/variables';
+
+#serversList {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-weight: 600;
+    height: 100%;
+    table {
+        margin: auto;
+        width: 100%;
+    }
+    #tableContainer {
+        width: 96%;
+        height: 88vh;
+        max-width: 1600px;
+        overflow: hidden auto;
+    }
+}
+
+th {
+    .sort-indicator {
+        opacity: 0.5;
+        margin-left: 4px;
+    }
+    &.sorted {
+        background: rgb(163, 28, 28) !important;
+        .sort-indicator {
+            opacity: 1;
+        }
+    }
+}
+
+.servers-table {
+    width: 100%;
+    background: transparent;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    border-radius: 8px;
+    overflow: hidden;
+    letter-spacing: 0.2px;
+    border-collapse: separate;
+    border-spacing: 0 4px; 
+    padding: 0 1.5em;
+    thead th {
+        position: sticky;
+        top: 0;
+        background: variables.$mainColor;
+        text-transform: uppercase;
+        z-index: 1;
+        user-select: none;
+    }
+    tbody tr {
+        border-bottom: 1px solid #e5e7eb;
+        background-color: #111111b6;
+        transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.2s ease;
+        &:hover {
+            background: #111111f6;
+            transform: scale(1.03);
+            cursor: pointer;
+            box-shadow: 0 0 4px rgba(0,0,0,0.7);
+        }
+        &:active, &.selected {
+            background: variables.$mainColor;
+        }
+        &.unavailable {
+            border-bottom: 1px solid #e5e7eb;
+            background-color: #1f1f1fb6;
+            color: rgba(255, 255, 255, 0.4);
+            cursor: not-allowed;
+            user-select: none;
+            pointer-events: auto;
+            .mapdata {
+                color: rgba(255, 255, 255, 0.4);
+            }
+            &:hover {
+                transform: none;
+            }
+        }
+        &:last-child {
+            border-bottom: none;
+        }
+    }
+    td {
+        overflow: hidden;
+        max-width: 400px;
+        height: 50px;
+        &:nth-child(2) {
+            max-width: 150px;
+        }
+    }
+    th, td {
+        padding: 8px 12px;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+}
+
+#serversInformation {
+    width: 100%;
+    height: 100%;
+    max-width: 100%;
+    max-height: 100%;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(40px) brightness(1.5) contrast(0.75);
+    border-radius: 0;
+}
+
+.sortable:hover {
+    background: rgb(163, 28, 28);
+    cursor: pointer;
+}
+
+.mapdata {
+    color: #d1d5db;
+    font-size: 0.95em;
+    .nextMap {
+        font-style: italic;
+        font-size: 0.9em;
+        font-weight: 400;
+        opacity: 0.85;
+    }
+}
+
+.sort-indicator {
+    font-size: 12px;
+    opacity: 0.7;
+    margin-left: 4px;
+}
+
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    border: none;
+    transition: all 0.2s ease;
+    &.ok {
+        background: #4A5568;
+        color: white;
+        &:hover {
+            cursor: pointer;
+            background: #059669;
+            transform: scale(1.05);
+            box-shadow: 0 4px 4px rgba(16, 185, 129, 0.4);
+        }
+        svg {
+            width: 18px;
+            height: 18px;
+            fill: currentcolor;
+            display: block;
+        }
+    }
+}
+
+.loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    padding: 60px 20px;
+    color: rgba(255, 255, 255, 0.9);
+    text-shadow: 0 0 10px rgba(0, 0, 0, 1);
+    p {
+        margin: 8px 0;
+        font-size: 16px;
+    }
+    .loading-spinner {
+        width: 50px;
+        height: 50px;
+        border: 4px solid rgba(255, 255, 255, 0.2);
+        border-top-color: rgba(255, 255, 255, 0.8);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin-bottom: 20px;
+        box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+    }
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Responsive design */
+@media (width <= 890px) {
+    .search-container {
+        align-items: stretch;
+    }
+    .servers-table {
+        font-size: 10px;
+    }
+    .status-badge {
+        font-size: 8px;
+        letter-spacing: 0.5px;
+    }
+    // .servers-table th:nth-child(3),
+    // .servers-table td:nth-child(3),
+    // .servers-table th:nth-child(4),
+    // .servers-table td:nth-child(4),
+    .servers-table th:nth-child(5),
+    .servers-table td:nth-child(5),
+    .servers-table th:nth-child(6),
+    .servers-table td:nth-child(6) {
+        display: none;
+    }
+    .servers-table th,
+    .servers-table td {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 300px;
+    }
+    #serversList #tableContainer {
+        width: 100%;
+        height: 90vh;
+    }
+}
+
+@media (width <= 570px) {
+    .search-input::placeholder {
+        font-size: 0.6em;
+    }
+    .servers-table th:nth-child(3),
+    .servers-table td:nth-child(3),
+    .servers-table th:nth-child(4),
+    .servers-table td:nth-child(4){
+        display: none;
+    }
+    .servers-table {
+        padding: 0;
+        td {
+            white-space: wrap;
+            max-width: 200px;
+        }
+        tbody tr {
+            &:hover {
+                transform: scale(1);
+            }
+        }
+    }
+    .search-icon {
+        display: none;
+    }
+}
+
+.flag-icon {
+    width: 40px;
+}
+
+.servers-table th,
+.servers-table td:nth-child(3),
+.servers-table td:nth-child(4),
+.servers-table td:nth-child(5),
+.servers-table td:nth-child(6) {
+    text-align: center;
+}
+
+.container {
+    width: 90%;
+    height: 10vh;
+    flex-shrink: 0;
+    padding: 2em;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end; // This pushes content to the bottom
+    min-height: fit-content;
+    max-width: 1200px;
+    .search-container {
+        position: relative;
+        display: flex;
+        align-items: stretch;
+        gap: 1em;
+        margin-top: auto;
+    }
+    .search-wrapper {
+        position: relative;
+        flex: 5;
+    }
+    .search-icon {
+        position: absolute;
+        left: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: rgba(255, 255, 255, 0.7);
+        pointer-events: none;
+        z-index: 1;
+    }
+    .search-input {
+        width: 100%;
+        padding: 16px 20px 16px 52px;
+        border: none;
+        border-radius: 16px;
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.18));
+        color: white;
+        font-size: 15px;
+        font-weight: 500;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        backdrop-filter: blur(20px);
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        &::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+        &:focus {
+            outline: none;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0.22));
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2), 
+                        inset 0 1px 0 rgba(255, 255, 255, 0.15),
+                        0 0 0 3px rgba(255, 255, 255, 0.15);
+            transform: translateY(-1px);
+        }
+    }
+}
+
+.searchBtn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 48px;
+    border: none;
+    border-radius: 12px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.18));
+    backdrop-filter: blur(20px);
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    flex: 0 0 auto;
+    &:hover {
+        background: variables.$mainColor;
+    }
+    &:active {
+        transform: scale(0.6);
+    }
+    svg {
+        width: 18px;
+        height: 18px;
+        transition: transform 0.6s ease;
+    }
+    &.refresh-btn {
+        &:hover {
+            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.18);
+            svg {
+                transform: rotate(180deg);
+            }
+        }
+    }
+    &.info-btn {
+        display: none;
+        svg {
+            fill: currentcolor;
+        }
+    }
+}
+

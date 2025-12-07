@@ -59,5 +59,18 @@
     "temporary": "Временное Появление",
     "disabledSpawn": "Отключено до первого захвата",
     "respawnCamera": "Камера возрождения",
-    "rightClicToRemove": "Щелкните правой кнопкой мыши"
+    "rightClicToRemove": "Щелкните правой кнопкой мыши",
+    "loadingServers": "Загрузка серверов...",
+    "errorLoading": "Ошибка при загрузке серверов.",
+    "searchServerPlaceholder": "Поиск сервера или карты...",
+    "serverName": "Название сервера",
+    "currentMap": "Текущая карта",
+    "players": "Игроки",
+    "noServersFound": "Серверы не найдены.",
+    "server": "сервер",
+    "servers": "серверы",
+    "load": "Загрузить",
+    "next": "Следующая",
+    "playTime": "Время на карте",
+    "mapSyncedwith": "Карта синхронизирована с"
 }

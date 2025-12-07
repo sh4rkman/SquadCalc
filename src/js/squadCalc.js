@@ -9,11 +9,13 @@ import { tooltip_save, createSessionTooltips, leaveSessionTooltips } from "./too
 import { checkApiHealth, fetchLayersByMap, fetchLayerByName } from "./squadCalcAPI.js";
 import { initWebSocket } from "./smcConnector.js";
 import { LatLng } from "leaflet";
+import SquadServersBrowser from "./squadServersBrowser.js";
 import SquadSession from "./squadSession.js";
 import SquadFiringSolution from "./squadFiringSolution.js";
 import packageInfo from "../../package.json";
 import i18next from "i18next";
 import SquadLayer from "./squadLayer.js";
+import { serverBrowserTooltips } from "./tooltips.js";
 
 
 
@@ -169,7 +171,7 @@ export default class SquadCalc {
                     if (!layerData) return; // prevent continuing on fetch failure
 
                     if (this.minimap.layer) this.minimap.layer.clear();
-                    this.minimap.layer = new SquadLayer(this.minimap, layerData);
+                    this.minimap.layer = new SquadLayer(this.minimap, layerData, broadcast);
                     $(".btn-layer").addClass("active").show();
 
                     if (broadcast && this.session.ws?.readyState === WebSocket.OPEN) {
@@ -214,8 +216,10 @@ export default class SquadCalc {
             layers.forEach((layer) => { this.LAYER_SELECTOR.append(`<option value=${layer.rawName}>${layer.shortName}</option>`);});
             
 
-            // If URL has a "layer" parameter
-            if (currentUrl.searchParams.has("layer") && !currentUrl.searchParams.has("session")) {
+            // If URL has a "layer" parameter and no active session yet
+            // Using this.session instead of URL param allows layer to load on first call,
+            // but prevents overwriting session state when SESSION_JOINED triggers a reload
+            if (currentUrl.searchParams.has("layer") && !this.session) {
                 const urlLayerName = currentUrl.searchParams.get("layer").toLowerCase().replaceAll(" ", "");
             
                 // Normalize option text by removing any extra spaces around the "V"
@@ -311,7 +315,9 @@ export default class SquadCalc {
                 weapon.explosionDistanceFromImpact,
                 weapon.damageFallOff,
                 weapon.shells,
-                weapon.heightOffset
+                weapon.heightOffset,
+                weapon.angleOffset,
+                weapon.projectileLifespan
             );
         });
         
@@ -389,19 +395,21 @@ export default class SquadCalc {
                 this.WEAPON_SELECTOR.val(0).trigger("change");
             }
         }
-
     }
+
 
     closeMenu() {
         $("#footerButtons").removeClass("expanded");
-        $(".fab4").html("<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 448 512\"><path d=\"M0 96C0 78.3 14.3 64 32 64l384 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 128C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32l384 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 288c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32L32 448c-17.7 0-32-14.3-32-32s14.3-32 32-32l384 0c17.7 0 32 14.3 32 32z\"/></svg>");
+        $(".fab4").html("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 448 512'><path d='M224 0c17.7 0 32 14.3 32 32l0 30.1 15-15c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9l-49 49 0 70.3 61.4-35.8 17.7-66.1c3.4-12.8 16.6-20.4 29.4-17s20.4 16.6 17 29.4l-5.2 19.3 23.6-13.8c15.3-8.9 34.9-3.7 43.8 11.5s3.8 34.9-11.5 43.8l-25.3 14.8 21.7 5.8c12.8 3.4 20.4 16.6 17 29.4s-16.6 20.4-29.4 17l-67.7-18.1L287.5 256l60.9 35.5 67.7-18.1c12.8-3.4 26 4.2 29.4 17s-4.2 26-17 29.4l-21.7 5.8 25.3 14.8c15.3 8.9 20.4 28.5 11.5 43.8s-28.5 20.4-43.8 11.5l-23.6-13.8 5.2 19.3c3.4 12.8-4.2 26-17 29.4s-26-4.2-29.4-17l-17.7-66.1L256 311.7l0 70.3 49 49c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0l-15-15 0 30.1c0 17.7-14.3 32-32 32s-32-14.3-32-32l0-30.1-15 15c-9.4 9.4-24.6 9.4-33.9 0s-9.4-24.6 0-33.9l49-49 0-70.3-61.4 35.8-17.7 66.1c-3.4 12.8-16.6 20.4-29.4 17s-20.4-16.6-17-29.4l5.2-19.3L48.1 395.6c-15.3 8.9-34.9 3.7-43.8-11.5s-3.7-34.9 11.5-43.8l25.3-14.8-21.7-5.8c-12.8-3.4-20.4-16.6-17-29.4s16.6-20.4 29.4-17l67.7 18.1L160.5 256 99.6 220.5 31.9 238.6c-12.8 3.4-26-4.2-29.4-17s4.2-26 17-29.4l21.7-5.8L15.9 171.6C.6 162.7-4.5 143.1 4.4 127.9s28.5-20.4 43.8-11.5l23.6 13.8-5.2-19.3c-3.4-12.8 4.2-26 17-29.4s26 4.2 29.4 17l17.7 66.1L192 200.3l0-70.3L143 81c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l15 15L192 32c0-17.7 14.3-32 32-32z'/></svg>");
     }
+
 
     loadUI(){
         const calcInformation = document.querySelector("#calcInformation");
         const weaponInformation = document.querySelector("#weaponInformation");
         const helpDialog = document.querySelector("#helpDialog");
         const factionsDialog = document.querySelector("#factionsDialog");
+        const serversInformation = document.querySelector("#serversInformation");
 
         $(".btn-delete, .btn-download, .btn-undo, .btn-layer, #mapLayerMenu").hide();
 
@@ -432,6 +440,7 @@ export default class SquadCalc {
         // MAP MODE
         this.closeDialogOnClickOutside(calcInformation);
         this.closeDialogOnClickOutside(weaponInformation);
+        this.closeDialogOnClickOutside(serversInformation);
         this.closeDialogOnClickOutside(helpDialog);
         this.closeDialogOnClickOutside(factionsDialog);
         
@@ -460,6 +469,34 @@ export default class SquadCalc {
             e.preventDefault();
             dragCounter = 0;
             overlay.style.display = "none";
+        });
+
+        $(document).on("click", "#servers", () => {
+            //let button = $(e.currentTarget);
+
+            // if(button.hasClass("active")) {
+            //     button.removeClass("active");
+            //     if(this.squadServersBrowser) {
+            //         this.squadServersBrowser.selectedLayer = null;
+            //         this.squadServersBrowser.selectedServer = null;
+            //     }
+
+            //     serverBrowserTooltips.enable();
+            //     activeServerBrowserTooltips.disable();
+            //     return;
+            // }
+
+            serverBrowserTooltips.disable();
+            if (!this.squadServersBrowser) {
+                this.squadServersBrowser = new SquadServersBrowser();
+                this.squadServersBrowser.init();
+            }
+            $("#serversInformation")[0].showModal();
+            
+            // Focus search input at the end
+            const searchInput = document.getElementById("serverSearch");
+            if (searchInput) searchInput.focus();
+            
         });
           
         window.addEventListener("drop", e => {
@@ -656,7 +693,7 @@ export default class SquadCalc {
                 if (this.ui == 0) return;
 
                 // Disable Shortkeys when currently in a dialog
-                if (weaponInformation.open || calcInformation.open || helpDialog.open || factionsDialog.open) return;
+                if (weaponInformation.open || calcInformation.open || helpDialog.open || factionsDialog.open || serversInformation.open) return;
 
                 // ENTER = FOCUS MODE
                 if (event.key === "Enter") {

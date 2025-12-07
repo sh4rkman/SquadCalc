@@ -74,7 +74,7 @@ function getLanguage(LANGUAGES){
  * Update every label with the correct localization text
  */
 function updateContent() {
-    document.querySelectorAll("[data-i18n], [data-i18n-title], [data-i18n-content], [data-i18n-label], [data-i18n-aria-label], [data-i18n-alt]").forEach(element => {
+    document.querySelectorAll("[data-i18n], [data-i18n-placeholder], [data-i18n-title], [data-i18n-content], [data-i18n-label], [data-i18n-aria-label], [data-i18n-alt]").forEach(element => {
         if (element.hasAttribute("data-i18n")) {
             const rawKey = element.getAttribute("data-i18n");
             const [namespace, ...rest] = rawKey.split(":");
