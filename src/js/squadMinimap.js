@@ -109,11 +109,11 @@ export const squadMinimap = Map.extend({
         }
 
 
-        const snow1 = new Snow("#snow1");
-        const snow2 = new Snow("#snow2");
-        snow1.create();
+        //const snow1 = new Snow("#snow1");
+        //const snow2 = new Snow("#snow2");
+        //snow1.create();
         //snow1.show();
-        snow2.create();
+        //snow2.create();
         //snow2.show();
 
     },
@@ -154,7 +154,6 @@ export const squadMinimap = Map.extend({
         this.spin(true, this.spinOptions);
 
         let imagePath = `${this.activeMap.mapURL}${LAYERMODE}`;
-        console.log("imagePath", imagePath)
 
         if (App.userSettings.highQualityImages) {
             // Use TileLayer for high-quality images
@@ -706,7 +705,7 @@ export const squadMinimap = Map.extend({
             markerOptions.circles1Color = team === "ally" ? "#ffc400" : "#f23534";
         }
         markerOptions.icon = new Icon({
-            iconUrl: `${process.env.API_URL}/img/icons/${team}/${category}/${icon}.webp`,
+            iconUrl: `/api/img/icons/${team}/${category}/${icon}.webp`,
             iconSize: iconSize,
             iconAnchor: [iconSize[0]/2, iconSize[1]/2],
             className: "squadMarker",

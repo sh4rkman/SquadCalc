@@ -25,8 +25,6 @@ export default class SquadHeightmap {
      */
     async loadHeightmapJson(url) {
         
-        console.log("Loading heightmap:", url);
-
         // If no heightmap is provided, don't look for a .json file
         if (!this.map.activeMap.SDK_data.heightmap) return;
 
@@ -50,6 +48,8 @@ export default class SquadHeightmap {
      * @returns {integer} - height in meters
      */
     getHeight(latlng){
+
+        console.log(latlng)
 
         // Fallback in case heightmap isn't supplied or didn't load
         if (!this.json || !Array.isArray(this.json)) return 0;

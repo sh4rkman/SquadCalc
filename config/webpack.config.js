@@ -69,9 +69,21 @@ export default async (env) => {
         directory: path.join(__dirname, '../public'),
         publicPath: '/',
       },
-      watchFiles: {
-        //paths: ['src/**/*'],
-      },
+      proxy: [
+        {
+            context: ['/api'],
+            target: 'http://localhost:3009',
+            changeOrigin: true,
+            //secure: true,
+            pathRewrite: {
+                '^/api': '/api/v2' // rewrite /api/... → /api/v2/...
+            },
+            onProxyReq: (proxyReq) => {
+                proxyReq.setHeader('X-API-Key', process.env.API_KEY);
+            }
+            
+        }
+    ]
     },
     plugins: [
         new Dotenv(),

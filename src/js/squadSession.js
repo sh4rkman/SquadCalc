@@ -8,6 +8,7 @@ export default class SquadSession {
 
     constructor(sessionId) {
         const WS_URL = process.env.API_URL.replace(/^http/, "ws");
+        console.log("attempt to create session on", WS_URL)
         this.ws = new WebSocket(`${WS_URL}/`);
         this.wsActiveUsers = 1;
         this.ws.onopen = () => { this._open(sessionId); };

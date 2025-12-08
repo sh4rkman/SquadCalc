@@ -86,7 +86,7 @@ export const checkApiHealth = async () => {
         if (response.ok) {
             const data = await response.json();
             if (data.status === "OK") {
-                console.log(`Connected to /api/v2`);
+                console.log(`Connected to ${process.env.API_URL}`);
                 const urlParams = new URLSearchParams(window.location.search);
                 const sessionId = urlParams.get("session");
                 if (sessionId) {

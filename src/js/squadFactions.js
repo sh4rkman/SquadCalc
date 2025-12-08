@@ -44,7 +44,7 @@ export default class SquadFactions {
      * */
     formatFactions(state, isSelection = false) {
         if (!state.id) return state.text;
-        const imgHtml = `<img src="${process.env.API_URL}/img/flags/${state.element.value}.webp" class="img-flag" />`;
+        const imgHtml = `<img src="/api/img/flags/${state.element.value}.webp" class="img-flag" />`;
         if (isSelection) return $(`<span class="countryFlags" title="${i18next.t(state.element.value + "_displayName", { ns: "factions" }) }">${imgHtml}</span>`);
         return $(`
             <span class="countryFlags" title="${i18next.t(state.element.value + "_displayName", { ns: "factions" }) }">
@@ -70,7 +70,7 @@ export default class SquadFactions {
         return $(`
             <div class="unit-option">
 
-                ${isSelection ? "" : `<img src="${process.env.API_URL}/img/units/${icon}.webp" class="unit-logo${isSelection ? " selection" : ""}" alt="${state.text}" />`}
+                ${isSelection ? "" : `<img src="/api/img/units/${icon}.webp" class="unit-logo${isSelection ? " selection" : ""}" alt="${state.text}" />`}
                 
                 <div class="unit-texts">
                     <div class="unit-type">${i18next.t(type, { ns: "units" })}</div>
@@ -94,7 +94,7 @@ export default class SquadFactions {
 
         // Set the pinned faction flag in the left side button
         const $img = $("<img>")
-            .attr("src", `${process.env.API_URL}/img/flags/${safeCountry}.webp`)
+            .attr("src", `/api/img/flags/${safeCountry}.webp`)
             .attr("alt", "Faction Icon")
             .addClass("faction-img");
 
@@ -123,7 +123,7 @@ export default class SquadFactions {
                 $("#pinnedVehiclesTab").append(`
                     <div class="pinnedVehicles animate__animated animate__fadeInLeft" data-vehiclename="${asset.displayName}" data-vehtype="${tactical}" data-vehicon="${tactical}"data-respawntime="${asset.delay}">
                         <button type="button" class="btn-pined" aria-label="Select Factions">
-                            <img src="${process.env.API_URL}/img/icons/shared/commander/${asset.icon}.webp" alt="Faction Icon"/>
+                            <img src="/api/img/icons/shared/commander/${asset.icon}.webp" alt="Faction Icon"/>
                         </button>
                         <div class="pinedVehiclesMeta">
                             <div class="pinedVehiclesName" data-i18n="vehicles:${asset.displayName}">${i18next.t(asset.displayName, { ns: "vehicles" })}</div>
@@ -146,7 +146,7 @@ export default class SquadFactions {
                 $("#pinnedVehiclesTab").append(`
                     <div class="pinnedVehicles animate__animated animate__fadeInLeft" data-vehiclename="${vehicle.type}" data-vehtype="${vehicle.vehType}" c data-respawntime="${vehicle.respawnTime}">
                         <button type="button" class="btn-pined" aria-label="Select Factions">
-                            <img src="${process.env.API_URL}/img/icons/ally/vehicles/${vehicle.icon}.webp" alt="Faction Icon"/>
+                            <img src="/api/img/icons/ally/vehicles/${vehicle.icon}.webp" alt="Faction Icon"/>
                         </button>
                         <div class="pinedVehiclesMeta">
                             <div class="pinedVehiclesName" data-i18n="vehicles:${vehicle.type}">${i18next.t(vehicle.type, { ns: "vehicles" })}</div>
@@ -488,7 +488,7 @@ export default class SquadFactions {
             <div class="vehicle-card animate__animated animate__fadeIn animate__faster">
                 <div class="card-content">
                     <div class="vehicle-icon">
-                        <img src="${process.env.API_URL}/img/icons/ally/vehicles/${vehicle.icon}.webp" alt='${vehicle.type}'>
+                        <img src="/api/img/icons/ally/vehicles/${vehicle.icon}.webp" alt='${vehicle.type}'>
                     </div>
                     <div class="vehicle-icon">
                         <div class="vehicle-count">×${vehicle.count}</div>
@@ -509,7 +509,7 @@ export default class SquadFactions {
         if (vehicle.isAmphibious) {
             amphibious = `
                 <div class="tag">
-                    <img src="${process.env.API_URL}/img/icons/shared/amphibious.webp" title="${i18next.t("amphibious", { ns: "common" })}">
+                    <img src="/api/img/icons/shared/amphibious.webp" title="${i18next.t("amphibious", { ns: "common" })}">
                 </div>
             `;
         }
@@ -518,7 +518,7 @@ export default class SquadFactions {
         if (vehicle.ATGM) {
             ATGM = `
                 <div class="tag">
-                    <img src="${process.env.API_URL}/img/icons/shared/ATGM.webp" title="${i18next.t("atgm", { ns: "common" })}">
+                    <img src="/api/img/icons/shared/ATGM.webp" title="${i18next.t("atgm", { ns: "common" })}">
                 </div>
             `;
         }
@@ -527,7 +527,7 @@ export default class SquadFactions {
         let passengersHTML = `
                 <div class="tag">
                     <div class="passenger">${totalSeats}</div>
-                    <img src="${process.env.API_URL}/img/icons/shared/passenger.webp" title="${i18next.t("passengers", { ns: "common" })}">
+                    <img src="/api/img/icons/shared/passenger.webp" title="${i18next.t("passengers", { ns: "common" })}">
                 </div>
             `;
 
@@ -535,7 +535,7 @@ export default class SquadFactions {
             <div class="image">
                 <a href="https://squad.fandom.com/wiki/${shortVehName}" target="_blank" class="attribution">squad.fandom.com</a>
                 <div class="tags">${passengersHTML}${amphibious}${ATGM}</div>
-                <img src="${process.env.API_URL}/img/vehicles/${vehicle.type}.webp" onerror="this.onerror=null; this.src='${process.env.API_URL}/img/vehicles/placeholder.webp';"/>
+                <img src="/api/img/vehicles/${vehicle.type}.webp" onerror="this.onerror=null; this.src='/api/img/vehicles/placeholder.webp';"/>
             </div>
         `;
     }
@@ -885,7 +885,7 @@ export default class SquadFactions {
 
         Object.values(selectedUnit.commanderAssets).forEach(asset => {
             $(DIV).append(`
-                <img src="${process.env.API_URL}/img/icons/shared/commander/${asset.icon}.webp"
+                <img src="/api/img/icons/shared/commander/${asset.icon}.webp"
                     class="commander-asset" 
                     data-tippy-name="${asset.displayName}"
                     data-tippy-delay="${asset.delay}" />
