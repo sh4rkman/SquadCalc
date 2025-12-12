@@ -391,12 +391,12 @@ export default class SquadSettings {
         return {
             fontSize: {
                 key: "settings-font-size",
-                min: 1,
-                default: 3,
-                max: 5,
+                min: 0.5,
+                default: 1,
+                max: 1.5,
                 selector: "#fontSlider",
                 ticksSelector: "#fontTicks",
-                tickValues: [1, 3, 5],
+                tickValues: [0.5, 1, 1.5],
                 defaultTickIndex: 1,
                 formatTick: (val) => `${val * 100}%`,
                 onChange: () => this.app.changeFontSize()
@@ -433,12 +433,12 @@ export default class SquadSettings {
             },
             zoomSensitivity: {
                 key: "settings-zoom-sensitivity",
-                min: 1,
-                default: 2,
-                max: 3,
+                min: 0.5,
+                default: 1,
+                max: 1.5,
                 selector: "#zoomSlider",
                 ticksSelector: "#zoomTicks",
-                tickValues: [1, 2, 3],
+                tickValues: [0.5, 1, 1.5],
                 defaultTickIndex: 1,
                 formatTick: (val) => `${val * 100}%`,
                 onChange: () => {
