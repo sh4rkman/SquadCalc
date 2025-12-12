@@ -309,7 +309,21 @@
 
 </details>
 
+<details>
+  <summary><b>Server Syncing</b></summary>
+  </br>
 
+  <br>
+
+  <div align="center">
+    <picture><img width="80%" src="./src/img/github/servers.webp" alt="Server Syncing"></picture>
+  </div>
+
+  <br>
+
+  Browse the active servers and click the one you're playing on. SquadCalc will automatically update and load the factions and units for the server’s current map. It will even update automatically if it detects a map change!
+
+</details>
 
 <details>
   <summary><b>Import/Export Your Maps</b></summary>
@@ -331,19 +345,28 @@
 # **Attributions**
 </br>
 
-* 🗺️ Map System built on **[Leaflet JS](https://leafletjs.com/)**
-* 🖼️ Map Images, Marker Icons are from SquadSDK by **[OffWorld Industries](https://www.offworldindustries.com/)**
-* 🧮 Layers & Factions Data are extracted thanks to **[Squad-Wiki Pipeline Map Data](https://github.com/Squad-Wiki/squad-wiki-pipeline-map-data)** SDK extractor tools *(Special thanks to [Shanomac99](https://github.com/Shanomac99))*
-* 🗣️ AI Text-To-Speech made with **[Luvvoice](https://luvvoice.com/)** 
-* 🔣 Icons by **[FontAwesome](https://fontawesome.com/icons)**
-* 👌🏼 Thanks to everyone supporting the project with kinds words, clever suggestions, and better code than mine
-  * MK19 implementation by [Ferrariic](https://github.com/Ferrariic)
-  * SquadMortarOverlay connector by [Devil4ngle](https://github.com/Devil4ngle)
-  * Weapon-to-Target lines & deviation grid enhancements by [Antiaris74](https://github.com/Antiaris74)  
-  * Compact elevation by [d503-ai](https://github.com/d503-ai)  
-  * ZH Translations by [Guducat](https://github.com/Guducat)
-  * RU Translations by sitroz
-  * GE Translations by [f0xcb](https://github.com/f0xcb) 
+🗺️ Map System built on **[Leaflet JS](https://leafletjs.com/)**  
+🖼️ Map Images, Marker Icons are from SquadSDK by **[OffWorld Industries](https://www.offworldindustries.com/)**
+🧮 Layers & Factions Data are extracted thanks to **[Squad-Wiki Pipeline Map Data](https://github.com/Squad-Wiki/squad-wiki-pipeline-map-data)** SDK extractor  tools *(Special thanks to [Shanomac99](https://github.com/Shanomac99))*  
+🖥️ Servers data provided by **[BattleMetrics](https://www.battlemetrics.com)**  
+🗣️ AI Text-To-Speech made with **[Luvvoice](https://luvvoice.com/)**  
+🔣 Icons by **[FontAwesome](https://fontawesome.com/icons)**  
+👌🏼 Thanks to everyone supporting the project with kinds words, clever suggestions, and better code than mine
+
+</br></br></br>
+# **Contributors**
+</br>
+
+* [Antiaris74](https://github.com/Antiaris74)  
+* [d503-ai](https://github.com/d503-ai)  
+* [Devil4ngle](https://github.com/Devil4ngle)
+* [f0xcb](https://github.com/f0xcb) 
+* [Ferrariic](https://github.com/Ferrariic)
+* [Guducat](https://github.com/Guducat)
+* [Metroseksuaali](https://github.com/Metroseksuaali)  
+* [TheMatheusDev](https://github.com/TheMatheusDev)  
+* sitroz
+
 
 
 

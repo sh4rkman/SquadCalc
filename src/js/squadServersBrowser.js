@@ -188,8 +188,6 @@ export default class SquadServersBrowser {
                             ${server.attributes.details.map}<br>
                             ${nextLayer}
                         </td>
-                        <td>${server.attributes.players} / ${server.attributes.maxPlayers}</td>
-                        <td>${this.formatPlayTime(server.attributes.details.squad_playTime)}</td>
                         <td>${this.getTeamHTML(server.team1, server.attributes.details.squad_teamOne)}</td>
                         <td>${this.getTeamHTML(server.team2, server.attributes.details.squad_teamTwo)}</td>
                     </tr>
@@ -250,18 +248,17 @@ export default class SquadServersBrowser {
                             <th class="sortable" data-sort="map" data-i18n="common:currentMap">
                                 ${i18next.t("currentMap", { ns: "common" })} <span class="sort-indicator">⇅</span>
                             </th>
-                            <th class="sortable" data-sort="players" data-i18n="common:players">
-                                ${i18next.t("players", { ns: "common" })} <span class="sort-indicator">⇅</span>
-                            </th>
-                            <th class="sortable" data-sort="playtime" data-i18n="common:playTime">
-                                ${i18next.t("playTime", { ns: "common" })} <span class="sort-indicator">⇅</span>
-                            </th>
                             <th data-i18n="common:team1">${i18next.t("team1", { ns: "common" })}</th>
                             <th data-i18n="common:team2">${i18next.t("team2", { ns: "common" })}</th>
                         </tr>
                     </thead>
                     <tbody id="serversTableBody"></tbody>
                 </table>
+            </div>
+            <div id="battlemetrics">
+                <a href="https://www.battlemetrics.com/servers/squad" target="_blank">
+                    Powered by <span id="battle">BATTLE</span>METRICS.com
+                </a>
             </div>
         `;
     }
@@ -463,10 +460,6 @@ export default class SquadServersBrowser {
             case "players":
                 valA = a.attributes.players;
                 valB = b.attributes.players;
-                break;
-            case "playtime":
-                valA = a.attributes.details.squad_playTime;
-                valB = b.attributes.details.squad_playTime;
                 break;
             default:
                 return 0;
