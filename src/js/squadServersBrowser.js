@@ -2,7 +2,7 @@ import i18next from "i18next";
 import { App } from "../app.js";
 import { MAPS } from "./data/maps.js";
 import { activeServerBrowserTooltips } from "./tooltips.js";
-
+import Fuse from "fuse.js";
 
 export default class SquadServersBrowser {
 
@@ -60,6 +60,15 @@ export default class SquadServersBrowser {
             const response = await fetch(`${process.env.API_URL}/get/servers`);
             const data = await response.json();
             this.serversData = data.servers;
+
+            // Initiate fuse index
+            this.fuse = new Fuse(this.serversData, {
+                includeScore: true,
+                threshold: 0.4,
+                distance: 1000,
+                keys: ["attributes.name", "attributes.details.map"]
+            });
+
         } catch (error) {
             console.error("Error fetching server data:", error);
             //serversList.innerHTML = `<p data-i18n="common:errorLoading">${i18next.t("loadingServers", { ns: "common" })}</p>`;
@@ -106,19 +115,23 @@ export default class SquadServersBrowser {
 
     /**
      * Filters servers by name or map and updates the table.
+     * Uses Fuse.js for fuzzy matching, so typos like "YEORIVKA" will match "YEHORIVKA".
      * @param {string} query
      */
     filterServers(query) {
-        const q = query.toLowerCase();
-
-        if (this.serversData) {
-            this.filteredData = this.serversData?.filter(s =>
-                s.attributes.name.toLowerCase().includes(q) ||
-                (s.attributes.details.map || "").toLowerCase().includes(q)
-            );
+        if (!query.trim()) {
+            this.filteredData = this.serversData;
+            this.renderRows(this.filteredData);
+            return;
         }
 
-        console.debug(`Filtered servers with query "${query}":`, this.filteredData);
+        if (!this.fuse) return;
+
+        const results = this.fuse.search(query);
+        this.filteredData = results.map(r => r.item);
+
+        console.debug(`Fuse filtered servers with "${query}":`, this.filteredData);
+
         this.renderRows(this.filteredData);
     }
 
