@@ -3,7 +3,6 @@ import { WEAPONS, WEAPONSTYPE } from "./data/weapons.js";
 import { squadMinimap } from "./squadMinimap.js";
 import { Weapon } from "./squadWeapons.js";
 import { animateCSS, animateCalc } from "./animations.js";
-import { loadSettings } from "./settings.js";
 import { loadLanguage } from "./localization.js";
 import { tooltip_save, createSessionTooltips, leaveSessionTooltips } from "./tooltips.js";
 import { checkApiHealth, fetchLayersByMap, fetchLayerByName } from "./squadCalcAPI.js";
@@ -12,6 +11,7 @@ import { LatLng } from "leaflet";
 import SquadServersBrowser from "./squadServersBrowser.js";
 import SquadSession from "./squadSession.js";
 import SquadFiringSolution from "./squadFiringSolution.js";
+import SquadSettings from "./squadSettings.js";
 import packageInfo from "../../package.json";
 import i18next from "i18next";
 import SquadLayer from "./squadLayer.js";
@@ -33,7 +33,7 @@ export default class SquadCalc {
         this.MAPSIZE = options.mapSize;
         this.gravity = options.gravity;
         this.debug = options.debug;
-        this.userSettings = [];
+        this.userSettings = new SquadSettings(this);
         this.activeWeapon = "";
         this.hasMouse = matchMedia("(pointer:fine)").matches;
         this.MAP_SELECTOR = $(".dropbtn");
@@ -51,7 +51,7 @@ export default class SquadCalc {
     init() {
         loadLanguage(this.supportedLanguages);
         initMapsProperties();
-        loadSettings();
+        this.userSettings.init();
         this.loadMapSelector();
         this.loadMinimap();
         this.loadWeapons();
