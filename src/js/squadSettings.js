@@ -424,7 +424,7 @@ export default class SquadSettings {
                 max: 1,
                 selector: "#gridSlider",
                 ticksSelector: "#gridTicks",
-                tickValues: [0, 0.5, 1],
+                tickValues: [0, 0.8, 1],
                 defaultTickIndex: 1,
                 formatTick: (val) => `${val * 100}%`,
                 onChange: () => {
