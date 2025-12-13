@@ -1,3 +1,17 @@
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge"> **41.1.0** *(2025-12-13)*
+
+</br><img src="https://img.shields.io/badge/-bug%20fixes-b22">  
+- Fixed a text not updating when swithing language *([#415](https://github.com/sh4rkman/SquadCalc/issues/415))*
+
+</br><img src="https://img.shields.io/badge/-%20improv%20-orange"> 
+- Server search now use [fuzzy matching](https://en.wikipedia.org/wiki/Approximate_string_matching) so typos are more forgiving and still return results
+
+</br><img src="https://img.shields.io/badge/-other%20-grey">
+- Settings code fully reworked by Metroseksuaali *([#274](https://github.com/sh4rkman/SquadCalc/issues/274))*  
+- Added a [BattleMetrics.com](https://www.battlemetrics.com/) attribution link in the server browser
+- Updated readme
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
 # <img src="https://img.shields.io/badge/-major%20release-b22222?style=for-the-badge"> **41.0.0** *(2025-12-03)*
 
 
