@@ -1,10 +1,10 @@
-# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge"> **40.1.0** *(2025-12-13)*
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge"> **41.1.0** *(2025-12-13)*
 
 </br><img src="https://img.shields.io/badge/-bug%20fixes-b22">  
 - Fixed a text no updating when swithing language *([#415](https://github.com/sh4rkman/SquadCalc/issues/415))*
 
 </br><img src="https://img.shields.io/badge/-%20improv%20-orange"> 
-- Server search now use fuzzy matching so typos are more forgiving and still return results
+- Server search now use [fuzzy matching](https://en.wikipedia.org/wiki/Approximate_string_matching) so typos are more forgiving and still return results
 
 </br><img src="https://img.shields.io/badge/-other%20-grey">
 - Settings code fully reworked by Metroseksuaali *([#274](https://github.com/sh4rkman/SquadCalc/issues/274))*  
