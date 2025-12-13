@@ -877,9 +877,9 @@ export default class SquadFactions {
         // Clear existing tooltips
         tippy(`${DIV} .commander-asset`).forEach(instance => { instance.destroy(); });
 
-        // Layer don't have commander (Skirmish, Seed, Kokan)
+        // If Layer doesn't have commander (Skirmish, Seed, Kokan, ...)
         if (this.squadLayer.layerData.commanderDisabled) {
-            $(DIV).append(`${i18next.t("common:noCommander")}`);
+            $(DIV).append(`<span data-i18n="common:noCommander">${i18next.t("common:noCommander")}</span>`);
             return;
         } 
 
