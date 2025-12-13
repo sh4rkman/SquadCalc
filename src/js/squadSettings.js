@@ -7,10 +7,12 @@ import SquadFactions from "./squadFactions.js";
  */
 export default class SquadSettings {
 
-    static TYPES = {
-        CHECKBOX: "checkbox",
-        SLIDER: "slider"
-    };
+    static get TYPES() {
+        return {
+            CHECKBOX: "checkbox",
+            SLIDER: "slider"
+        };
+    }
 
     constructor(app) {
         this.app = app;
@@ -204,7 +206,7 @@ export default class SquadSettings {
                 key: "settings-hide-lowrespawn",
                 default: true,
                 selector: "#hideLowRespawnSettings",
-                onChange: (val) => {
+                onChange: () => {
                     if ($(".btn-pin.active").length === 0) return;
 
                     // Clear all pinned vehicles & remove timers
@@ -353,7 +355,8 @@ export default class SquadSettings {
                             }
                         });
                         this.app.minimap.layer.vehicleSpawners.forEach(spawn => {
-                            val ? spawn.show() : spawn.hide();
+                            if (val) spawn.show();
+                            else spawn.hide();
                         });
                     }
                 }
