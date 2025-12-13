@@ -65,7 +65,8 @@ export default class SquadServersBrowser {
             this.fuse = new Fuse(this.serversData, {
                 includeScore: true,
                 threshold: 0.4,
-                distance: 1000,
+                distance: 500,
+                minMatchCharLength: 3,
                 keys: ["attributes.name", "attributes.details.map"]
             });
 

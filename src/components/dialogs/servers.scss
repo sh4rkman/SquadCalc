@@ -30,19 +30,21 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: variables.$logoFont;
-    #battle {
-        color: #ff0700;
-    }
+
     a {
         text-decoration: none;
         font-weight: 600;
         transition: color 0.2s ease;
         text-decoration: none;
-        text-shadow: 0 0 10px rgba(0, 0, 0, 1);
+        text-shadow: 0 0 6px rgba(0, 0, 0, 1);
         letter-spacing: 0.1em;
         color: white;
         text-underline-offset: 4px;
+        font-family: variables.$logoFont;
+        font-size: 1.1em;
+        #battle {
+            color: #ff0700;
+        }
         &:hover {
             text-decoration: underline;
             cursor: pointer;
