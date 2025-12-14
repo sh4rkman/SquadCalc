@@ -1,7 +1,7 @@
 import { Icon } from "leaflet";
 
 export const mortarIcon = new Icon({
-    iconUrl: "../img/markers/weapons/marker_mortar.webp",
+    iconUrl: "../img/markers/weapons/marker_mortar_1.webp",
     shadowUrl: "/img/markers/weapons/marker_shadow.webp",
     iconSize:     [38, 47], 
     shadowSize:   [38, 47], 
