@@ -206,9 +206,7 @@ export default class SquadLayer {
 
             // Identify and process mains
             if (obj.name === "Main") {
-                let newFlag = new SquadObjective(latlng, this, obj, 1, obj);
-                this.flags.push(newFlag);
-                this.mains.push(newFlag);
+                this.createMainObjective(obj);
                 return;
             }
 
@@ -231,10 +229,7 @@ export default class SquadLayer {
 
         // Create the Mains
         Object.values(capturePoints.points.objectives).forEach((main) => {
-            const latlng = this.convertToLatLng(main.location_x, main.location_y);
-            const newFlag = new SquadObjective(latlng, this, main, 1, main);
-            this.flags.push(newFlag);
-            this.mains.push(newFlag);
+            this.createMainObjective(main);
         });
 
         // Create the Hexagons
@@ -249,18 +244,6 @@ export default class SquadLayer {
             
             this.hexs.push(new Hexagon(LATLNG, HEXRADIUS, this, hex.hexNum, {color: teamColors[hex.initialTeam], weight: 1}).addTo(this.activeLayerMarkers));
         });
-
-        // Pre-select first main flag
-        if (this.gamemode === "Invasion") {
-            this.mains.forEach((main) => {
-                if (main.objectName.toLowerCase().includes("team1")){
-                    main._handleClick();
-                    return;
-                }
-            });
-        }
-
-
     }
 
 
@@ -274,10 +257,7 @@ export default class SquadLayer {
 
             // Create Mains
             if (!objCluster.points) {
-                const latlng = this.convertToLatLng(objCluster.location_x, objCluster.location_y);
-                const newFlag = new SquadObjective(latlng, this, objCluster, 1, objCluster);
-                this.mains.push(newFlag);
-                this.flags.push(newFlag);
+                this.createMainObjective(objCluster);
                 return;
             }
 
@@ -319,49 +299,49 @@ export default class SquadLayer {
         }
         
 
-        // if (!this.layerData.capturePoints.lanes.laneObjects) return;
+        if (!this.layerData.capturePoints.lanes.laneObjects) return;
 
-        // Object.values(this.layerData.capturePoints.lanes.laneObjects).forEach((laneObject, i) => {
-        //     // attach properties directly
-        //     laneObject.points = [];
-        //     laneObject.color = this.getLaneColor(laneObject.name, i);
+        Object.values(this.layerData.capturePoints.lanes.laneObjects).forEach((laneObject, i) => {
+            // attach properties directly
+            laneObject.points = [];
+            laneObject.color = this.getLaneColor(laneObject.name, i);
             
-        //     laneObject.pointsOrder.forEach((point) => {
-        //         let latlng;
-        //         let clusterData = Object.values(this.objectives).find(obj => obj.name === point);
+            laneObject.pointsOrder.forEach((point) => {
+                let latlng;
+                let clusterData = Object.values(this.objectives).find(obj => obj.name === point);
 
-        //         if (clusterData) {
-        //             latlng = this.convertToLatLng(clusterData.avgLocation.location_x, clusterData.avgLocation.location_y);
-        //         } else {
-        //             clusterData = Object.values(this.objectives).find(obj => obj.objectDisplayName === point);
-        //             if (clusterData) {
-        //                 latlng = this.convertToLatLng(clusterData.location_x, clusterData.location_y);
-        //             }
-        //         }
+                if (clusterData) {
+                    latlng = this.convertToLatLng(clusterData.avgLocation.location_x, clusterData.avgLocation.location_y);
+                } else {
+                    clusterData = Object.values(this.objectives).find(obj => obj.objectDisplayName === point);
+                    if (clusterData) {
+                        latlng = this.convertToLatLng(clusterData.location_x, clusterData.location_y);
+                    }
+                }
 
-        //         if (latlng) {
-        //             laneObject.points.push(latlng);
-        //         }
-        //     });
+                if (latlng) {
+                    laneObject.points.push(latlng);
+                }
+            });
 
-        //     // create & store polyline (but don’t add to map yet if you want toggle later)
-        //     if (laneObject.points.length > 0) {
-        //         laneObject.polyline = new Polyline(laneObject.points, { 
-        //             color: laneObject.color,
-        //             weight: 70,
-        //             opacity: 0.35
-        //         }).addTo(this.map); 
-        //     }
-        // });
+            // create & store polyline (but don’t add to map yet if you want toggle later)
+            if (laneObject.points.length > 0) {
+                laneObject.polyline = new Polyline(laneObject.points, { 
+                    color: laneObject.color,
+                    weight: 70,
+                    opacity: 0.35
+                }).addTo(this.map); 
+            }
+        });
 
 
     }
 
 
-    // getLaneColor(laneName, i) {
-    //     const colors = ["red", "blue", "green", "purple", "white", "yellow", "orange"];
-    //     return colors[i % colors.length]; // cycle through colors
-    // }
+    getLaneColor(laneName, i) {
+        const colors = ["red", "blue", "green", "purple", "white", "yellow", "orange"];
+        return colors[i % colors.length]; // cycle through colors
+    }
 
 
     /**
@@ -383,10 +363,7 @@ export default class SquadLayer {
         });
         // Creating the Mains
         Object.values(capturePoints.points.objectives).forEach((main) => {
-            const latlng = this.convertToLatLng(main.location_x, main.location_y);
-            const newFlag = new SquadObjective(latlng, this, main, 1, main);
-            this.flags.push(newFlag);
-            this.mains.push(newFlag);
+            this.createMainObjective(main);
         });
         // Creating the phase aeras
         Object.values(capturePoints.destructionObject.phases).forEach((phases) => {
@@ -427,6 +404,14 @@ export default class SquadLayer {
                 }).addTo(this.phaseNumber);
             });
         });
+    }
+
+
+    createMainObjective(obj) {
+        const latlng = this.convertToLatLng(obj.location_x, obj.location_y);
+        const newFlag = new SquadObjective(latlng, this, obj, 1, obj);
+        this.flags.push(newFlag);
+        this.mains.push(newFlag);
     }
 
 

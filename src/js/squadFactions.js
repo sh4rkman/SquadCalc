@@ -80,6 +80,7 @@ export default class SquadFactions {
         `);
     }
 
+
     /**
      * * * Pin the selected unit to the map and start a timer for its respawn time
      * * @param {Array} teamfaction - The faction data for the selected unit
@@ -178,8 +179,13 @@ export default class SquadFactions {
         
         this.pinned = true;
     }
-
-
+    
+    
+    /**
+     * Formats a duration given in seconds into a `MM:SS` string.
+     * @param {number} seconds - Total time in seconds.
+     * @returns {string} A formatted time string in minutes and seconds.
+     */
     formatTime(seconds) {
         const minutes = Math.floor(seconds / 60);
         const secs = seconds % 60;

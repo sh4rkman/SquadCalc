@@ -66,7 +66,7 @@ export default class SquadServersBrowser {
                 includeScore: true,
                 threshold: 0.4,
                 distance: 500,
-                minMatchCharLength: 3,
+                //minMatchCharLength: 3,
                 keys: ["attributes.name", "attributes.details.map"]
             });
 
