@@ -504,7 +504,7 @@ export default class SquadLayer {
                 })
             }).addTo(this.activeLayerMarkers);
             const iconElement = marker.getElement();
-            iconElement.style.backgroundImage = `url('${process.env.API_URL}/img/icons/ally/deployables/deployable_helipad.webp')`;
+            iconElement.style.backgroundImage = `url('/api/img/icons/ally/deployables/deployable_helipad.webp')`;
             this.mainZones.assets.push(marker);
         });
     }
@@ -537,7 +537,7 @@ export default class SquadLayer {
                     })
                 }).addTo(this.activeLayerMarkers);
                 const iconElement = marker.getElement();
-                iconElement.style.backgroundImage = `url('${process.env.API_URL}/img/icons/ally/deployables/deployable_repairstation.webp')`;
+                iconElement.style.backgroundImage = `url('/api/img/icons/ally/deployables/deployable_repairstation.webp')`;
                 this.mainZones.assets.push(marker);
             }
 
@@ -551,7 +551,7 @@ export default class SquadLayer {
                 }).addTo(this.activeLayerMarkers);
 
                 const iconElement = marker.getElement();
-                iconElement.style.backgroundImage = `url('${process.env.API_URL}/img/icons/ally/deployables/deployable_ammocrate.webp')`;
+                iconElement.style.backgroundImage = `url('/api/img/icons/ally/deployables/deployable_ammocrate.webp')`;
                 this.mainZones.assets.push(marker);
                 this.mainZones.ammocrates.push(marker);
             }

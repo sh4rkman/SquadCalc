@@ -69,9 +69,22 @@ export default async (env) => {
         directory: path.join(__dirname, '../public'),
         publicPath: '/',
       },
-      watchFiles: {
-        //paths: ['src/**/*'],
-      },
+      proxy: [
+        {
+            context: ['/api/'],
+            //target: 'http://localhost:3009',
+            target: process.env.DEV_API_URL || 'https://beta.squadcalc.app',
+            changeOrigin: true,
+            //secure: true,
+            pathRewrite: {
+                '^/api': '/api/v2'
+            },
+            ws: true,
+            onProxyReq: (proxyReq) => {
+                proxyReq.setHeader('X-API-Key', process.env.API_KEY);
+            }
+        }
+      ]
     },
     plugins: [
         new Dotenv(),

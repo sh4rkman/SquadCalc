@@ -105,7 +105,7 @@ export class SquadObjective {
         fileName = $(dropdownSelector).val();
         if (!fileName || !App.userSettings.enableFactions) fileName = "main";
         if (App.userSettings.circlesFlags) fileName = `circles/${fileName}`;
-        this.flag.getElement().style.backgroundImage = `url('${process.env.API_URL}/img/flags/${fileName}.webp')`;
+        this.flag.getElement().style.backgroundImage = `url('/api/img/flags/${fileName}.webp')`;
     }
 
 

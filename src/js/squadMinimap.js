@@ -705,7 +705,7 @@ export const squadMinimap = Map.extend({
             markerOptions.circles1Color = team === "ally" ? "#ffc400" : "#f23534";
         }
         markerOptions.icon = new Icon({
-            iconUrl: `${process.env.API_URL}/img/icons/${team}/${category}/${icon}.webp`,
+            iconUrl: `/api/img/icons/${team}/${category}/${icon}.webp`,
             iconSize: iconSize,
             iconAnchor: [iconSize[0]/2, iconSize[1]/2],
             className: "squadMarker",
