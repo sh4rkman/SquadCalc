@@ -6,7 +6,7 @@ const FOBEXCLUSIONS = {
 export const MAPS = [
     {   // UE5
         name: "AlBasrah",
-        mapURL: `/api/img/maps/albasrah/`,
+        mapURL: `/api/v2/img/maps/albasrah/`,
         radiusExclusion: FOBEXCLUSIONS.medium,
         SDK_data: {
             minimap: {
@@ -23,7 +23,7 @@ export const MAPS = [
     },
     { 
         name: "Anvil", 
-        mapURL: `/api/img/maps/anvil/`,
+        mapURL: `/api/v2/img/maps/anvil/`,
         radiusExclusion: FOBEXCLUSIONS.medium,
         SDK_data: {
             minimap: {
@@ -40,7 +40,7 @@ export const MAPS = [
     },
     { 
         name: "Belaya", 
-        mapURL: `/api/img/maps/belaya/`,
+        mapURL: `/api/v2/img/maps/belaya/`,
         radiusExclusion: FOBEXCLUSIONS.medium,
         SDK_data: {
             minimap: {
@@ -57,7 +57,7 @@ export const MAPS = [
     },
     { 
         name: "BlackCoast", 
-        mapURL: `/api/img/maps/blackcoast/`,
+        mapURL: `/api/v2/img/maps/blackcoast/`,
         radiusExclusion: FOBEXCLUSIONS.medium,
         SDK_data: {
             minimap: {
@@ -74,7 +74,7 @@ export const MAPS = [
     },
     { 
         name: "Chora", 
-        mapURL: `/api/img/maps/chora/`,
+        mapURL: `/api/v2/img/maps/chora/`,
         radiusExclusion: FOBEXCLUSIONS.small,
         SDK_data: {
             minimap: {
@@ -91,7 +91,7 @@ export const MAPS = [
     },
     { 
         name: "Fallujah", 
-        mapURL: `/api/img/maps/fallujah/`,
+        mapURL: `/api/v2/img/maps/fallujah/`,
         radiusExclusion: FOBEXCLUSIONS.medium,
         SDK_data: {
             minimap: {
@@ -108,7 +108,7 @@ export const MAPS = [
     },
     { 
         name: "FoolsRoad",
-        mapURL: `/api/img/maps/foolsroad/`,
+        mapURL: `/api/v2/img/maps/foolsroad/`,
         radiusExclusion: FOBEXCLUSIONS.small,
         SDK_data: {
             minimap: {
@@ -125,7 +125,7 @@ export const MAPS = [
     },
     { 
         name: "GooseBay", 
-        mapURL: `/api/img/maps/goosebay/`,
+        mapURL: `/api/v2/img/maps/goosebay/`,
         radiusExclusion: FOBEXCLUSIONS.medium,
         SDK_data: {
             minimap: {
@@ -142,7 +142,7 @@ export const MAPS = [
     },
     { 
         name: "Gorodok", 
-        mapURL: `/api/img/maps/gorodok/`,
+        mapURL: `/api/v2/img/maps/gorodok/`,
         radiusExclusion: FOBEXCLUSIONS.medium,
         SDK_data: {
             minimap: {
@@ -159,7 +159,7 @@ export const MAPS = [
     },
     { 
         name: "Jensen", 
-        mapURL: `/api/img/maps/jensen/`,
+        mapURL: `/api/v2/img/maps/jensen/`,
         radiusExclusion: FOBEXCLUSIONS.medium,
         SDK_data: {
             minimap: {
@@ -176,7 +176,7 @@ export const MAPS = [
     },
     { 
         name: "Harju", 
-        mapURL: `/api/img/maps/harju/`,
+        mapURL: `/api/v2/img/maps/harju/`,
         radiusExclusion: FOBEXCLUSIONS.medium,
         SDK_data: {
             minimap: {
@@ -193,7 +193,7 @@ export const MAPS = [
     },
     { 
         name: "Kamdesh", 
-        mapURL: `/api/img/maps/kamdesh/`,
+        mapURL: `/api/v2/img/maps/kamdesh/`,
         radiusExclusion: FOBEXCLUSIONS.medium,
         SDK_data: {
             minimap: {
@@ -210,7 +210,7 @@ export const MAPS = [
     },
     { 
         name: "Kohat", 
-        mapURL: `/api/img/maps/kohat/`,
+        mapURL: `/api/v2/img/maps/kohat/`,
         radiusExclusion: FOBEXCLUSIONS.medium,
         SDK_data: {
             minimap: {
@@ -227,7 +227,7 @@ export const MAPS = [
     },
     { 
         name: "Kokan",
-        mapURL: `/api/img/maps/kokan/`,
+        mapURL: `/api/v2/img/maps/kokan/`,
         radiusExclusion: FOBEXCLUSIONS.small,
         SDK_data: {
             minimap: {
@@ -244,7 +244,7 @@ export const MAPS = [
     },
     { 
         name: "Lashkar", 
-        mapURL: `/api/img/maps/lashkar/`,
+        mapURL: `/api/v2/img/maps/lashkar/`,
         radiusExclusion: FOBEXCLUSIONS.medium,
         SDK_data: {
             minimap: {
@@ -261,7 +261,7 @@ export const MAPS = [
     },
     { 
         name: "Logar", 
-        mapURL: `/api/img/maps/logar/`,
+        mapURL: `/api/v2/img/maps/logar/`,
         radiusExclusion: FOBEXCLUSIONS.small,
         SDK_data: {
             minimap: {
@@ -278,7 +278,7 @@ export const MAPS = [
     },
     { 
         name: "Manicouagan", 
-        mapURL: `/api/img/maps/manicouagan/`,
+        mapURL: `/api/v2/img/maps/manicouagan/`,
         radiusExclusion: FOBEXCLUSIONS.medium,
         SDK_data: {
             minimap: {
@@ -295,7 +295,7 @@ export const MAPS = [
     },
     { 
         name: "Mestia", 
-        mapURL: `/api/img/maps/mestia/`,
+        mapURL: `/api/v2/img/maps/mestia/`,
         radiusExclusion: FOBEXCLUSIONS.medium,
         SDK_data: {
             minimap: {
@@ -312,7 +312,7 @@ export const MAPS = [
     },
     { 
         name: "Mutaha", 
-        mapURL: `/api/img/maps/mutaha/`,
+        mapURL: `/api/v2/img/maps/mutaha/`,
         radiusExclusion: FOBEXCLUSIONS.medium,
         SDK_data: {
             minimap: {
@@ -329,7 +329,7 @@ export const MAPS = [
     },
     { 
         name: "Narva", 
-        mapURL: `/api/img/maps/narva/`,
+        mapURL: `/api/v2/img/maps/narva/`,
         radiusExclusion: FOBEXCLUSIONS.medium,
         SDK_data: {
             minimap: {
@@ -346,7 +346,7 @@ export const MAPS = [
     },
     { 
         name: "Narva_f", 
-        mapURL: `/api/img/maps/narva-flooded/`,
+        mapURL: `/api/v2/img/maps/narva-flooded/`,
         radiusExclusion: FOBEXCLUSIONS.medium,
         SDK_data: {
             minimap: {
@@ -363,7 +363,7 @@ export const MAPS = [
     },
     { 
         name: "Pacific", 
-        mapURL: `/api/img/maps/pacific/`,
+        mapURL: `/api/v2/img/maps/pacific/`,
         radiusExclusion: FOBEXCLUSIONS.medium,
         SDK_data: {
             minimap: {
@@ -380,7 +380,7 @@ export const MAPS = [
     },
     { 
         name: "Sanxian",
-        mapURL: `/api/img/maps/sanxian/`,
+        mapURL: `/api/v2/img/maps/sanxian/`,
         radiusExclusion: FOBEXCLUSIONS.medium,
         SDK_data: {
             minimap: {
@@ -400,7 +400,7 @@ export const MAPS = [
         // THEN SCALED TO 8510/6079
         // THEN OFFSET -421;+998
         name: "Skorpo", 
-        mapURL: `/api/img/maps/skorpo/`,
+        mapURL: `/api/v2/img/maps/skorpo/`,
         radiusExclusion: FOBEXCLUSIONS.medium,
         SDK_data: {
             minimap: {
@@ -419,7 +419,7 @@ export const MAPS = [
     },
     { 
         name: "Sumari", 
-        mapURL: `/api/img/maps/sumari/`,
+        mapURL: `/api/v2/img/maps/sumari/`,
         radiusExclusion: FOBEXCLUSIONS.small,
         SDK_data: {
             minimap: {
@@ -436,7 +436,7 @@ export const MAPS = [
     },
     { 
         name: "Tallil", 
-        mapURL: `/api/img/maps/tallil/`,
+        mapURL: `/api/v2/img/maps/tallil/`,
         radiusExclusion: FOBEXCLUSIONS.medium,
         SDK_data: {
             minimap: {
@@ -453,7 +453,7 @@ export const MAPS = [
     },
     { 
         name: "Yehorivka", 
-        mapURL: `/api/img/maps/yehorivka/`, 
+        mapURL: `/api/v2/img/maps/yehorivka/`, 
         radiusExclusion: FOBEXCLUSIONS.medium,
         SDK_data: {
             minimap: {

@@ -9,7 +9,7 @@ import SquadSession from "./squadSession.js";
  * @throws {Error} Logs details of any network or HTTP errors encountered during the request.
  */
 export function sendMarkerData(markerData) {
-    fetch(`/api/post/weapons`, {
+    fetch(`/api/v2/post/weapons`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -32,7 +32,7 @@ export function sendMarkerData(markerData) {
  * @throws {Error} Logs details of any network or HTTP errors encountered during the request.
  */
 export function sendFOBData(FOBData) {
-    fetch(`/api/post/fobs`, {
+    fetch(`/api/v2/post/fobs`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -55,7 +55,7 @@ export function sendFOBData(FOBData) {
  * @returns {Promise<void>} A promise that resolves if the data is successfully sent, or logs an error if not.
  */
 export function sendTargetData(targetData) {
-    fetch(`/api/post/targets`, {
+    fetch(`/api/v2/post/targets`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -82,11 +82,11 @@ export function sendTargetData(targetData) {
 export const checkApiHealth = async () => {
     //if (!process.env.API_URL) { return; }
     try {
-        const response = await fetch(`/api/health`);
+        const response = await fetch(`/api/v2/health`);
         if (response.ok) {
             const data = await response.json();
             if (data.status === "OK") {
-                console.log(`Connected to /api`);
+                console.log(`Connected to SquadCalc API`);
                 const urlParams = new URLSearchParams(window.location.search);
                 const sessionId = urlParams.get("session");
                 if (sessionId) {
@@ -108,10 +108,10 @@ export const checkApiHealth = async () => {
                 }
             }
         } else {
-            console.error(`Not connected to /api`);
+            console.error(`Not connected to SquadCalc API`);
         }
     } catch (error) {
-        console.error(`Not connected to /api`);
+        console.error(`Not connected to SquadCalc API`);
         console.debug(error);
     }
 };
@@ -125,7 +125,7 @@ export const checkApiHealth = async () => {
  * @throws {Error} Throws an error if the network request fails or the response is not OK.
  */
 export async function fetchMarkersByMap(mapName, weapon) {
-    const url = `/api/get/weapons?map=${encodeURIComponent(mapName)}&weapon=${encodeURIComponent(weapon)}`;
+    const url = `/api/v2/get/weapons?map=${encodeURIComponent(mapName)}&weapon=${encodeURIComponent(weapon)}`;
 
     try {
 
@@ -151,7 +151,7 @@ export async function fetchMarkersByMap(mapName, weapon) {
  * @throws {Error} Throws an error if the network request fails or the response is not OK.
  */
 export async function fetchLayersByMap(mapName) {
-    const url = `/api/get/layers?map=${encodeURIComponent(mapName)}`;
+    const url = `/api/v2/get/layers?map=${encodeURIComponent(mapName)}`;
     try {
         const response = await fetch(url, { headers: { "X-App-Version": App.version }, });
         if (!response.ok) { throw new Error("Network response was not ok"); }
@@ -170,7 +170,7 @@ export async function fetchLayersByMap(mapName) {
  * @throws {Error} Throws an error if the network request fails or the response is not OK.
  */
 export async function fetchLayerByName(layerName, options = {}) {
-    const url = `/api/get/layer?name=${encodeURIComponent(layerName)}`;
+    const url = `/api/v2/get/layer?name=${encodeURIComponent(layerName)}`;
     const { signal } = options; 
     try {
         const response = await fetch(url, {
@@ -193,7 +193,7 @@ export async function fetchLayerByName(layerName, options = {}) {
  * @throws {Error} Throws an error if the network request fails or the response is not OK.
  */
 export async function fetchUnitByName(unitName, options = {}) {
-    const url = `/api/get/unit?name=${encodeURIComponent(unitName)}`;
+    const url = `/api/v2/get/unit?name=${encodeURIComponent(unitName)}`;
     const { signal } = options;
     try {
         const response = await fetch(url, {

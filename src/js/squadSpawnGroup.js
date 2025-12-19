@@ -27,7 +27,7 @@ export const squadSpawnGroup = Marker.extend({
 
         this.setIcon(
             new Icon({
-                iconUrl: `/api/img/icons/ally/deployables/mainspawn.webp`,
+                iconUrl: `/api/v2/img/icons/ally/deployables/mainspawn.webp`,
                 iconSize: [40, 40],
                 iconAnchor: [20, 20],
                 className: "vehSpawnIcon"
@@ -112,7 +112,7 @@ export const squadSpawnGroup = Marker.extend({
                     ${this.getDelayHTML()}
                     ${this.getSpawningEnabledHTML()}
                 </div>
-                <img src="/api/img/spawnGroup/${team}.webp"/>
+                <img src="/api/v2/img/spawnGroup/${team}.webp"/>
             </div>
         `;
         

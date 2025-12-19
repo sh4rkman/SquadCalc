@@ -76,9 +76,9 @@ export default async (env) => {
             target: process.env.DEV_API_URL || 'https://beta.squadcalc.app',
             changeOrigin: true,
             //secure: true,
-            pathRewrite: {
-                '^/api': '/api/v2'
-            },
+            // pathRewrite: {
+            //     '^/api': '/api/v2'
+            // },
             ws: true,
             onProxyReq: (proxyReq) => {
                 proxyReq.setHeader('X-API-Key', process.env.API_KEY);

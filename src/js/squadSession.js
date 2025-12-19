@@ -8,7 +8,7 @@ export default class SquadSession {
 
     constructor(sessionId) {
         this.ws = new WebSocket(
-            `${location.protocol === 'https:' ? 'wss' : 'ws'}://${location.host}/api/`
+            `${location.protocol === 'https:' ? 'wss' : 'ws'}://${location.host}/api/v2/`
         );
         this.wsActiveUsers = 1;
         this.ws.onopen = () => { this._open(sessionId); };

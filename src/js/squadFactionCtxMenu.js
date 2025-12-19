@@ -67,8 +67,8 @@ export class FactionCtxMenu {
                     const selected = this.UNIT_SELECTOR.val() === unitId ? "_selected" : "";
                     html += `<div class="faction-item units ${selected}" id="${unit.unitObjectName}" title="${i18next.t(unit.type, { ns: "units" })} - ${i18next.t(unit.displayName, { ns: "units" })}">
                         <img 
-                            src="/api/img/units/${unit.unitIcon}.webp" 
-                            onerror="this.onerror=null; this.src='/api/img/units/placeholder.webp';"
+                            src="/api/v2/img/units/${unit.unitIcon}.webp" 
+                            onerror="this.onerror=null; this.src='/api/v2/img/units/placeholder.webp';"
                         />
                         <div class="faction-label">${i18next.t(unit.type, { ns: "units" })}</div>
                     </div>`;
@@ -101,7 +101,7 @@ export class FactionCtxMenu {
         this.FACTIONS.forEach(faction => {
             const selected = this.FACTION_SELECTOR.val() === faction.factionID ? "_selected" : "";
             html += `<div class="faction-item ${selected}" id="${faction.factionID}" title="${i18next.t(faction.factionID + "_displayName", { ns: "factions" })}">
-                <img src="/api/img/flags/${faction.factionID}.webp"/>
+                <img src="/api/v2/img/flags/${faction.factionID}.webp"/>
                 <div class="faction-label">${i18next.t(faction.factionID, { ns: "factions" })}</div>
             </div>`;
         });

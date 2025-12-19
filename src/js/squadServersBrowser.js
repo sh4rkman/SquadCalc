@@ -57,7 +57,7 @@ export default class SquadServersBrowser {
      */
     async getServers() {
         try {
-            const response = await fetch(`/api/get/servers`);
+            const response = await fetch(`/api/v2/get/servers`);
             const data = await response.json();
             this.serversData = data.servers;
 
@@ -164,7 +164,7 @@ export default class SquadServersBrowser {
         if (team) {
             return `<img
                 title="${label}"
-                src="/api/img/flags/${team}.webp"
+                src="/api/v2/img/flags/${team}.webp"
                 alt="${team}"
                 class="flag-icon">`;
         } else {

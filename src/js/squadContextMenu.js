@@ -276,7 +276,7 @@ export default class SquadContextMenu {
             const icon = el.dataset.icon;
 
             // Build the path
-            let iconPath = `/api/img/icons/${team}/${category}/${icon}.webp`;
+            let iconPath = `/api/v2/img/icons/${team}/${category}/${icon}.webp`;
             el.style.backgroundImage = `url('${iconPath}')`;
             el.style.backgroundSize = "contain";
         });
