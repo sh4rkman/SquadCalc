@@ -60,7 +60,7 @@ export default async (env) => {
         ],
     },
     devServer: {
-      port: 3000,
+      port: process.env.DEV_PORT || 3000,
       open: true,
       historyApiFallback: {
         disableDotRule: true,
@@ -72,16 +72,11 @@ export default async (env) => {
       proxy: [
         {
             context: ['/api/'],
-            //target: 'http://localhost:3009',
             target: process.env.DEV_API_URL || 'https://beta.squadcalc.app',
             changeOrigin: true,
-            //secure: true,
-            // pathRewrite: {
-            //     '^/api': '/api/v2'
-            // },
             ws: true,
             onProxyReq: (proxyReq) => {
-                proxyReq.setHeader('X-API-Key', process.env.API_KEY);
+                if (process.env.API_KEY) proxyReq.setHeader('X-API-Key', process.env.API_KEY);
             }
         }
       ]
