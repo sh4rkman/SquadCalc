@@ -17,8 +17,6 @@ import "leaflet-polylinedecorator";
 import "./libs/leaflet-edgebuffer.js";
 import "./libs/leaflet-spin.js";
 import "./libs/leaflet-imageoverlay-rotated.js";
-import Snow from "./libs/pure-snow.js";
-
 
 /**
  * Squad Minimap
@@ -107,14 +105,6 @@ export const squadMinimap = Map.extend({
             this.on("pointermove", this._handleMouseMove, this);
             this.on("pointerout", this._handleMouseOut, this);
         }
-
-
-        const snow1 = new Snow("#snow1");
-        const snow2 = new Snow("#snow2");
-        snow1.create();
-        //snow1.show();
-        snow2.create();
-        //snow2.show();
 
     },
 
