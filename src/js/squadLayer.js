@@ -299,40 +299,40 @@ export default class SquadLayer {
         }
         
 
-        if (!this.layerData.capturePoints.lanes.laneObjects) return;
+        // if (!this.layerData.capturePoints.lanes.laneObjects) return;
 
-        Object.values(this.layerData.capturePoints.lanes.laneObjects).forEach((laneObject, i) => {
-            // attach properties directly
-            laneObject.points = [];
-            laneObject.color = this.getLaneColor(laneObject.name, i);
+        // Object.values(this.layerData.capturePoints.lanes.laneObjects).forEach((laneObject, i) => {
+        //     // attach properties directly
+        //     laneObject.points = [];
+        //     laneObject.color = this.getLaneColor(laneObject.name, i);
             
-            laneObject.pointsOrder.forEach((point) => {
-                let latlng;
-                let clusterData = Object.values(this.objectives).find(obj => obj.name === point);
+        //     laneObject.pointsOrder.forEach((point) => {
+        //         let latlng;
+        //         let clusterData = Object.values(this.objectives).find(obj => obj.name === point);
 
-                if (clusterData) {
-                    latlng = this.convertToLatLng(clusterData.avgLocation.location_x, clusterData.avgLocation.location_y);
-                } else {
-                    clusterData = Object.values(this.objectives).find(obj => obj.objectDisplayName === point);
-                    if (clusterData) {
-                        latlng = this.convertToLatLng(clusterData.location_x, clusterData.location_y);
-                    }
-                }
+        //         if (clusterData) {
+        //             latlng = this.convertToLatLng(clusterData.avgLocation.location_x, clusterData.avgLocation.location_y);
+        //         } else {
+        //             clusterData = Object.values(this.objectives).find(obj => obj.objectDisplayName === point);
+        //             if (clusterData) {
+        //                 latlng = this.convertToLatLng(clusterData.location_x, clusterData.location_y);
+        //             }
+        //         }
 
-                if (latlng) {
-                    laneObject.points.push(latlng);
-                }
-            });
+        //         if (latlng) {
+        //             laneObject.points.push(latlng);
+        //         }
+        //     });
 
-            // create & store polyline (but don’t add to map yet if you want toggle later)
-            if (laneObject.points.length > 0) {
-                laneObject.polyline = new Polyline(laneObject.points, { 
-                    color: laneObject.color,
-                    weight: 70,
-                    opacity: 0.35
-                }).addTo(this.map); 
-            }
-        });
+        //     // create & store polyline (but don’t add to map yet if you want toggle later)
+        //     if (laneObject.points.length > 0) {
+        //         laneObject.polyline = new Polyline(laneObject.points, { 
+        //             color: laneObject.color,
+        //             weight: 70,
+        //             opacity: 0.35
+        //         }).addTo(this.map); 
+        //     }
+        // });
 
 
     }

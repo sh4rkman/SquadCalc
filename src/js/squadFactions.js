@@ -718,7 +718,7 @@ export default class SquadFactions {
             const broadcast = event.broadcast ?? true;
 
             if (broadcast && App.session.ws && App.session.ws.readyState === WebSocket.OPEN) {
-                console.log("broadcasting unit1 change", event.target.value);
+                console.debug("broadcasting unit1 change", event.target.value);
                 App.session.ws.send(
                     JSON.stringify({
                         type: "UPDATE_UNIT",
@@ -777,7 +777,7 @@ export default class SquadFactions {
             const broadcast = event.broadcast ?? true;
 
             if (broadcast && App.session.ws && App.session.ws.readyState === WebSocket.OPEN) {
-                console.log("broadcasting unit2 change", event.target.value);
+                console.debug("broadcasting unit2 change", event.target.value);
                 App.session.ws.send(
                     JSON.stringify({
                         type: "UPDATE_UNIT",
