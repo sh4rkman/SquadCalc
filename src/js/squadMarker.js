@@ -670,7 +670,7 @@ export const squadStratMarker = squadMarker.extend({
         this.removeFrom(this.map.markersGroup).removeFrom(this.map.activeMarkers);
 
         // If that was the last Marker on the map, hide "delete all" buttons
-        if (!this.map.hasMarkers()) $(".btn-delete, .btn-undo, .btn-download").hide();
+        if (!this.map.hasMarkers()) $(".btn-delete, .btn-undo").hide();
 
         this.remove();
     },

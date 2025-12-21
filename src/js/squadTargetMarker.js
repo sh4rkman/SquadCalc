@@ -203,7 +203,7 @@ export const squadTargetMarker = squadMarker.extend({
         this.removeFrom(this.map.markersGroup).removeFrom(this.map.activeTargetsMarkers).remove();
     
         // If that was the last Marker on the map, hide "delete/undo" buttons
-        if (!this.map.hasMarkers()) $(".btn-delete, .btn-undo, .btn-download").hide();
+        if (!this.map.hasMarkers()) $(".btn-delete, .btn-undo").hide();
     },
 
 

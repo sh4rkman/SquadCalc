@@ -243,7 +243,7 @@ tippy("#bearingNum", {
 const commonMapMenuToolipsSettings = {
     animation: "fade",
     allowHTML: true,
-    placement: "left",
+    placement: "top",
     touch: false,
     theme: "menu",
     delay: [500, 0],
@@ -275,6 +275,7 @@ tippy(".btn-layer", {
 });
 tippy(".btn-hd", {
     ...commonMapMenuToolipsSettings,
+    placement: "left",
     onShow(tip) {
         tip.setContent(i18next.t("settings:highquality"));
     },
@@ -296,20 +297,21 @@ tippy(".btn-focus", {
         );
     },
 });
-tippy(".btn-focus", {
-    ...commonMapMenuToolipsSettings,
-    onShow(tip) {
-        tip.setContent(
-            `
-            <div>${i18next.t("tooltips:focusMode")}</div>
-            <div class="tooltipsubtext">${i18next.t("tooltips:enter")}</div>
-            `
-        );
-    },
-});
+// tippy(".btn-focus", {
+//     ...commonMapMenuToolipsSettings,
+//     onShow(tip) {
+//         tip.setContent(
+//             `
+//             <div>${i18next.t("tooltips:focusMode")}</div>
+//             <div class="tooltipsubtext">${i18next.t("tooltips:enter")}</div>
+//             `
+//         );
+//     },
+// });
 
 export const serverBrowserTooltips = tippy("#servers", {
     ...commonMapMenuToolipsSettings,
+    placement: "left",
     onShow(tip) {
         tip.setContent(i18next.t("tooltips:serverBrowser"));
     },
@@ -317,24 +319,27 @@ export const serverBrowserTooltips = tippy("#servers", {
 
 export const activeServerBrowserTooltips = tippy("#servers", {
     ...commonMapMenuToolipsSettings,
+    placement: "left",
 })[0];
 activeServerBrowserTooltips.disable();
 
-tippy(".copy-vehicle-btn", {
-    ...commonMapMenuToolipsSettings,
-    onShow(tip) {
-        tip.setContent(i18next.t("tooltips:factions&Vehicles"));
-    },
-});
+// tippy(".copy-vehicle-btn", {
+//     ...commonMapMenuToolipsSettings,
+//     onShow(tip) {
+//         tip.setContent(i18next.t("tooltips:factions&Vehicles"));
+//     },
+// });
 
 export const createSessionTooltips = tippy(".btn-session", {
     ...commonMapMenuToolipsSettings,
+    placement: "left",
     onShow(tip) {
         tip.setContent(i18next.t("tooltips:createSession"));
     },
 })[0];
 export const leaveSessionTooltips =  tippy(".btn-session", {
     ...commonMapMenuToolipsSettings,
+    placement: "left",
     onShow(tip) {
         tip.setContent(i18next.t("tooltips:leaveSession"));
     },
@@ -344,6 +349,7 @@ leaveSessionTooltips.disable();
 
 tippy(".btn-undo", {
     ...commonMapMenuToolipsSettings,
+    placement: "left",
     onShow(tip) {
         tip.setContent(
             `
@@ -368,6 +374,7 @@ tippy(".btn-download", {
 
 tippy(".btn-delete", {
     ...commonMapMenuToolipsSettings,
+    placement: "left",
     onShow(tip) {
         tip.setContent(
             `

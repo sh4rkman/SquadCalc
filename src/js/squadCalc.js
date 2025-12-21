@@ -411,7 +411,7 @@ export default class SquadCalc {
         const factionsDialog = document.querySelector("#factionsDialog");
         const serversInformation = document.querySelector("#serversInformation");
 
-        $(".btn-delete, .btn-download, .btn-undo, .btn-layer, #mapLayerMenu").hide();
+        $(".btn-delete, .btn-undo, .btn-layer, #mapLayerMenu").hide();
 
         this.ui = localStorage.getItem("data-ui");
 
@@ -472,20 +472,6 @@ export default class SquadCalc {
         });
 
         $(document).on("click", "#servers", () => {
-            //let button = $(e.currentTarget);
-
-            // if(button.hasClass("active")) {
-            //     button.removeClass("active");
-            //     if(this.squadServersBrowser) {
-            //         this.squadServersBrowser.selectedLayer = null;
-            //         this.squadServersBrowser.selectedServer = null;
-            //     }
-
-            //     serverBrowserTooltips.enable();
-            //     activeServerBrowserTooltips.disable();
-            //     return;
-            // }
-
             serverBrowserTooltips.disable();
             if (!this.squadServersBrowser) {
                 this.squadServersBrowser = new SquadServersBrowser();
@@ -495,8 +481,7 @@ export default class SquadCalc {
             
             // Focus search input at the end
             const searchInput = document.getElementById("serverSearch");
-            if (searchInput) searchInput.focus();
-            
+            if (searchInput) searchInput.focus(); 
         });
           
         window.addEventListener("drop", e => {
@@ -581,6 +566,7 @@ export default class SquadCalc {
             this.minimap.deleteArrows();
             this.minimap.deleteRectangles();
             this.minimap.deleteCircles();
+            this.minimap.deletePolylines();
         });
 
         $(".btn-download").on("click", () => {
@@ -627,6 +613,14 @@ export default class SquadCalc {
                 leaveSessionTooltips.enable();
             }
         });
+
+
+        // $("#btn-map-choices").on("hover", () => {
+        //     $("button.layers").show();
+        //     console.log("Map Layers Menu opened");
+        // });
+
+        // $("button.layers").hide();
 
         $("#mapLayerMenu").find("button.layers").on("click", (event) => {
 
@@ -797,7 +791,6 @@ export default class SquadCalc {
                 navigator.clipboard.writeText(newUrl);
                 this.openToast("success", "copied", "");
             }
-
         });
       
         weaponInformation.addEventListener("close", function(){
@@ -885,9 +878,9 @@ export default class SquadCalc {
         const newSvg = $("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 576 512'><path d='M384 476.1L192 421.2l0-385.3L384 90.8l0 385.3zm32-1.2l0-386.5L543.1 37.5c15.8-6.3 32.9 5.3 32.9 22.3l0 334.8c0 9.8-6 18.6-15.1 22.3L416 474.8zM15.1 95.1L160 37.2l0 386.5L32.9 474.5C17.1 480.8 0 469.2 0 452.2L0 117.4c0-9.8 6-18.6 15.1-22.3z'/></svg>");
         $(".fab1").empty().append(newSvg);
 
-        if (this.ui == 0){
+        if (this.ui == 0) {
             this.loadMapUIMode();
-            if (this.minimap.hasMarkers()) $(".btn-delete, .btn-undo, .btn-download").show();
+            if (this.minimap.hasMarkers()) $(".btn-delete, .btn-undo").show();
             return;
         }
 
