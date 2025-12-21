@@ -92,54 +92,53 @@ export default class SquadContextMenu {
             onHide: () => {
                 $(".shapeButton").off("click");
             },
-            // onShow: (tip) => {
-            // tip.setContent(
-            //     `
-            //     <div class="contextmenu">
-            //         <button class="shapeButton">
-            //             <span class="circle blue" data-team="shared" data-category="ctx" data-icon="circle"></span>
-            //         </button>
-            //     </div>
-            //     <div class="contextmenu">
-            //         <button class="shapeButton">
-            //             <span class="rectangle blue" data-team="shared" data-category="ctx" data-icon="rectangle"></span>
-            //         </button>   
-            //     </div>
-            //     <div class="contextmenu">
-            //         <button class="shapeButton">
-            //             <span class="arrow blue" data-team="shared" data-category="ctx" data-icon="arrow"></span>
-            //         </button>
-            //     </div>
-            //     `
-            // );
+            onShow: (tip) => {
+                const colors = ["blue", "red", "green", "yellow"];
+                const shapes = ["circle", "rectangle", "arrow"];
                 
-            //this.setIcons(tip);
+                let content = "";
+                shapes.forEach(shape => {
+                    content += `
+                        <div class="contextmenu shape-container">
+                            <button class="shapeButton primary">
+                                <span class="${shape} blue" data-shape="${shape}" data-color="blue"></span>
+                            </button>
+                            <div class="color-options">`;
+                    colors.forEach(color => {
+                        content += `
+                                <button class="shapeButton color-option">
+                                    <span class="${shape} ${color}" data-shape="${shape}" data-color="${color}"></span>
+                                </button>`;
+                    });
+                    content += `
+                            </div>
+                        </div>`;
+                });
+                
+                tip.setContent(content);
 
-            // setTimeout(() => {
-            //     $(".shapeButton").on("click", (event) => {
-            //         let targetElement = event.target.closest(".shapeButton span"); // Ensure we get the <span> inside the button
-                    
-            //         if (!targetElement) return;
+                setTimeout(() => {
+                    $(".shapeButton").on("click", (event) => {
+                        let targetElement = event.target.closest(".shapeButton span");
+                        
+                        if (!targetElement) {
+                            return;
+                        }
                                        
-            //         // Extract the shape type (arrow, rectangle, circle)
-            //         const shape = ["arrow", "rectangle", "circle"].find(type => targetElement.classList.contains(type));
-                    
-            //         // Extract the color (any other class that isn't the shape itself)
-            //         const color = [...targetElement.classList].find(cls => cls !== shape);
-                    
-            //         if (shape && color) {
-            //             // Call the corresponding method dynamically
-            //             const methodName = `create${shape.charAt(0).toUpperCase() + shape.slice(1)}`;
-            //             if (typeof App.minimap[methodName] === "function") {
-            //                 App.minimap[methodName](color);
-            //             }
-            //         }
-                    
-            //         this.close();
-            //     });
-            // }, 0);
-
-            // }
+                        const shape = targetElement.dataset.shape;
+                        const color = targetElement.dataset.color;
+                        
+                        if (shape && color) {
+                            const methodName = `create${shape.charAt(0).toUpperCase() + shape.slice(1)}`;
+                            if (typeof App.minimap[methodName] === "function") {
+                                App.minimap[methodName](color);
+                            }
+                        }
+                        
+                        this.close();
+                    });
+                }, 0);
+            }
         });
     }
 
@@ -230,42 +229,6 @@ export default class SquadContextMenu {
                 this.setIcons(tip);
             }
         });
-
-        // tippy(document.querySelector(".arrow.blue"), {
-        //     ...GLOBALOPTIONS,
-        //     placement: "right",
-        //     offset: [0, 3],
-        //     onShow : (tip) => {
-        //         const template = document.getElementById("arrows_html");
-        //         const clone = document.importNode(template.content, true);
-        //         tip.setContent(clone);
-        //         this.setIcons(tip);
-        //     }
-        // });
-
-        // tippy(document.querySelector(".rectangle.blue"), {
-        //     ...GLOBALOPTIONS,
-        //     placement: "right",
-        //     offset: [0, 3],
-        //     onShow : (tip) => {
-        //         const template = document.getElementById("rectangles_html");
-        //         const clone = document.importNode(template.content, true);
-        //         tip.setContent(clone);
-        //         this.setIcons(tip);
-        //     }
-        // });
-
-        // tippy(document.querySelector(".circle.blue"), {
-        //     ...GLOBALOPTIONS,
-        //     placement: "right",
-        //     offset: [0, 3],
-        //     onShow : (tip) => {
-        //         const template = document.getElementById("circles_html");
-        //         const clone = document.importNode(template.content, true);
-        //         tip.setContent(clone);
-        //         this.setIcons(tip);
-        //     }
-        // });
     }
 
     setIcons(tip) {

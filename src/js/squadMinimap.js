@@ -10,10 +10,10 @@ import { fetchMarkersByMap } from "./squadCalcAPI.js";
 import webGLHeatmap from "./libs/leaflet-webgl-heatmap.js";
 import squadContextMenu from "./squadContextMenu.js";
 import { squadStratMarker } from "./squadMarker.js";
+import { MapArrow, MapCircle, MapRectangle } from "./squadShapes.js";
 import "./libs/webgl-heatmap.js";
 import "./libs/leaflet-smoothWheelZoom.js";
 import "tippy.js/dist/tippy.css";
-import "leaflet-polylinedecorator";
 import "./libs/leaflet-edgebuffer.js";
 import "./libs/leaflet-spin.js";
 import "./libs/leaflet-imageoverlay-rotated.js";
@@ -726,5 +726,185 @@ export const squadMinimap = Map.extend({
             );
         }
         
+    },
+
+    createArrow: function (color, uid = false) {
+        const startLatLng = this.contextMenu.mainContextMenu.e?.latlng;
+        if (!startLatLng) {
+            console.error("No startLatLng available!");
+            return;
+        }
+        
+        let isDrawing = true;
+        let arrow = null;
+        const map = this;
+    
+        const handleMouseMove = (e) => {
+            if (!isDrawing) return;
+            const rect = map._container.getBoundingClientRect();
+            const point = { x: e.clientX - rect.left, y: e.clientY - rect.top };
+            const endLatLng = map.containerPointToLatLng(point);
+            
+            if (arrow) {
+                arrow.polyline.setLatLngs([startLatLng, endLatLng]);
+                arrow.polylineDecorator.setPaths([arrow.polyline.getLatLngs()]);
+            } else {
+                arrow = new MapArrow(map, color, startLatLng, endLatLng, uid);
+            }
+        };
+    
+        const handleClick = () => {
+            if (isDrawing && arrow) {
+                isDrawing = false;
+                map._container.removeEventListener("mousemove", handleMouseMove);
+                map._container.removeEventListener("click", handleClick);
+                map._container.removeEventListener("contextmenu", handleRightClick);
+                if (App.session.ws && App.session.ws.readyState === WebSocket.OPEN) {
+                    App.session.ws.send(JSON.stringify({
+                        type: "ADDING_ARROW",
+                        uid: arrow.uid,
+                        color: color,
+                        latlngs: arrow.polyline.getLatLngs(),
+                    }));
+                }
+            }
+        };
+    
+        const handleRightClick = (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            if (isDrawing && arrow) {
+                arrow.delete(false);
+                arrow = null;
+            }
+            isDrawing = false;
+            map._container.removeEventListener("mousemove", handleMouseMove);
+            map._container.removeEventListener("click", handleClick);
+            map._container.removeEventListener("contextmenu", handleRightClick);
+        };
+        
+        setTimeout(() => {
+            map._container.addEventListener("mousemove", handleMouseMove);
+            map._container.addEventListener("click", handleClick);
+            map._container.addEventListener("contextmenu", handleRightClick);
+        }, 50);
+    },
+
+    createRectangle: function (color, uid = false) {
+        const startLatLng = this.contextMenu.mainContextMenu.e?.latlng;
+        if (!startLatLng) return;
+        
+        let isDrawing = true;
+        let rectangle = null;
+        const map = this;
+    
+        const handleMouseMove = (e) => {
+            if (!isDrawing) return;
+            const rect = map._container.getBoundingClientRect();
+            const point = { x: e.clientX - rect.left, y: e.clientY - rect.top };
+            const endLatLng = map.containerPointToLatLng(point);
+            
+            if (rectangle) {
+                rectangle.rectangle.setBounds([startLatLng, endLatLng]);
+            } else {
+                rectangle = new MapRectangle(map, color, startLatLng, endLatLng, uid);
+            }
+        };
+    
+        const handleClick = () => {
+            if (isDrawing && rectangle) {
+                isDrawing = false;
+                map._container.removeEventListener("mousemove", handleMouseMove);
+                map._container.removeEventListener("click", handleClick);
+                map._container.removeEventListener("contextmenu", handleRightClick);
+                if (App.session.ws && App.session.ws.readyState === WebSocket.OPEN) {
+                    App.session.ws.send(JSON.stringify({
+                        type: "ADDING_RECTANGLE",
+                        uid: rectangle.uid,
+                        color: color,
+                        bounds: rectangle.rectangle.getBounds(),
+                    }));
+                }
+            }
+        };
+    
+        const handleRightClick = (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            if (isDrawing && rectangle) {
+                rectangle.delete(false);
+                rectangle = null;
+            }
+            isDrawing = false;
+            map._container.removeEventListener("mousemove", handleMouseMove);
+            map._container.removeEventListener("click", handleClick);
+            map._container.removeEventListener("contextmenu", handleRightClick);
+        };
+        
+        setTimeout(() => {
+            map._container.addEventListener("mousemove", handleMouseMove);
+            map._container.addEventListener("click", handleClick);
+            map._container.addEventListener("contextmenu", handleRightClick);
+        }, 50);
+    },
+
+    createCircle: function (color, uid = false) {
+        const startLatLng = this.contextMenu.mainContextMenu.e?.latlng;
+        if (!startLatLng) return;
+        
+        let isDrawing = true;
+        let circle = null;
+        const map = this;
+        
+        const handleMouseMove = (e) => {
+            if (!isDrawing) return;
+            const rect = map._container.getBoundingClientRect();
+            const point = { x: e.clientX - rect.left, y: e.clientY - rect.top };
+            const endLatLng = map.containerPointToLatLng(point);
+            
+            const latDelta = (endLatLng.lat - startLatLng.lat);
+            const lngDelta = (endLatLng.lng - startLatLng.lng);
+            const radius = Math.hypot(latDelta, lngDelta);
+            
+            if (circle) circle.circle.setRadius(radius);
+            else circle = new MapCircle(map, color, startLatLng, radius, uid);
+        };
+    
+        const handleClick = () => {
+            if (isDrawing && circle) {
+                isDrawing = false;
+                map._container.removeEventListener("mousemove", handleMouseMove);
+                map._container.removeEventListener("click", handleClick);
+                map._container.removeEventListener("contextmenu", handleRightClick);
+                if (App.session.ws && App.session.ws.readyState === WebSocket.OPEN) {
+                    App.session.ws.send(JSON.stringify({
+                        type: "ADDING_CIRCLE",
+                        uid: circle.uid,
+                        color: color,
+                        latlng: circle.circle.getLatLng(),
+                        radius: circle.circle.getRadius(),
+                    }));
+                }
+            }
+        };
+    
+        const handleRightClick = (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            if (isDrawing && circle) {
+                circle.delete(false);
+                circle = null;
+            }
+            isDrawing = false;
+            map._container.removeEventListener("mousemove", handleMouseMove);
+            map._container.removeEventListener("click", handleClick);
+            map._container.removeEventListener("contextmenu", handleRightClick);
+        };
+        
+        setTimeout(() => {
+            map._container.addEventListener("mousemove", handleMouseMove);
+            map._container.addEventListener("click", handleClick);
+            map._container.addEventListener("contextmenu", handleRightClick);
+        }, 50);
     },
 });

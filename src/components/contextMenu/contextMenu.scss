@@ -69,6 +69,14 @@
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center center;
+    position: relative;
+    &::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
     &.blue {
         background-color: #00137e;
         &:hover { background-color: #000844; }
@@ -81,10 +89,66 @@
         background-color: #007f00;
         &:hover { background-color: #005200; }
     }
+    &.yellow {
+        background-color: #c4a000;
+        &:hover { background-color: #8a7000; }
+    }
     &.black {
         background-color: #141414;
         &:hover { background-color: #000; }
     }
+}
+
+.shape-row {
+    display: flex;
+    flex-direction: row;
+}
+
+.shape-container {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    
+    .primary {
+        z-index: 2;
+    }
+    
+    .color-options {
+        display: none;
+        position: absolute;
+        left: 100%;
+        top: 0;
+        flex-direction: row;
+        background-color: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(2px);
+    }
+    
+    &:hover .color-options {
+        display: flex;
+    }
+}
+
+.arrow::after {
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-bottom: 12px solid white;
+}
+
+.rectangle::after {
+    width: 14px;
+    height: 10px;
+    border: 2px solid white;
+    background: transparent;
+}
+
+.circle::after {
+    width: 12px;
+    height: 12px;
+    border: 2px solid white;
+    border-radius: 50%;
+    background: transparent;
 }
 
 .tippy-box[data-theme~="contextmenu"] {
