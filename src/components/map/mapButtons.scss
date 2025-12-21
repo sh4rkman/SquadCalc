@@ -1,5 +1,36 @@
 @use "../shared/variables";
 
+
+
+
+.mapLayerMenuWrapper {
+    position: relative; // relative so #btnLayersGroup can be positioned against it
+    display: flex;
+    flex-direction: row-reverse; // main button on right, layers expand left
+    align-items: center;
+    gap: 0; // spacing between main button and layer buttons
+}
+
+.btnLayersGroup {
+    display: flex;
+    flex-direction: row;
+    gap: 0;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    svg {
+        pointer-events: none;
+    }
+}
+
+.mapLayerMenuWrapper:hover .btnLayersGroup {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+
 #factionsTab {
     display: none;
     top: 20%;
@@ -139,15 +170,17 @@
     } 
 }
 
-
 #mapLayerMenu {
     position: absolute;
     right: 0%;
     top: 20%;
-    width: 40px;
+    width: 47px;
     z-index: 1;
     height: auto;
     pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
     #sessionActions {
         display: none;
         flex-direction: row;
@@ -182,7 +215,7 @@
         height: 40px;
         margin: 0;
         color: variables.$mainBGColor;
-        border-bottom: #979797 solid 1px;
+        border: #979797 solid 1px;
         box-shadow: 0 2px 15px rgba(0,0,0,0.1);
         cursor: pointer;
         transition: all 0.25s ease-in-out;
@@ -199,7 +232,7 @@
         &.active {
             background-color: variables.$mainColor;
             border-top: variables.$mainColor;
-            border-bottom: variables.$mainColor;
+            border: variables.$mainColor;
             svg path {
                 fill: white;
             }
@@ -218,6 +251,10 @@
         &.btn-topomap svg {
             width: 1.4em;
             height: 1.4em;
+        }
+        &#btn-map-choices svg {
+            width: 1.3em;
+            height: 1.3em;
         }
         &.btn-session {
             z-index: 1;
