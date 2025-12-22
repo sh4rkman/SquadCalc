@@ -371,7 +371,7 @@ export default class SquadSettings {
             },
             contextMenu: {
                 key: "settings-contextmenu",
-                default: false,
+                default: true,
                 selector: "#contextMenuSettings"
             },
             highQualityImages: {
@@ -395,7 +395,7 @@ export default class SquadSettings {
             fontSize: {
                 key: "settings-font-size",
                 min: 0.5,
-                default: 1,
+                default: 3,
                 max: 1.5,
                 selector: "#fontSlider",
                 ticksSelector: "#fontTicks",
@@ -406,12 +406,12 @@ export default class SquadSettings {
             },
             markerSize: {
                 key: "settings-marker-size",
-                min: 1,
+                min: 0.5,
                 default: 3,
-                max: 5,
+                max: 1.5,
                 selector: "#markerSlider",
                 ticksSelector: "#markerTicks",
-                tickValues: [1, 3, 5],
+                tickValues: [0.5, 1, 1.5],
                 defaultTickIndex: 1,
                 formatTick: (val) => `${val * 100}%`,
                 onChange: () => {
@@ -437,7 +437,7 @@ export default class SquadSettings {
             zoomSensitivity: {
                 key: "settings-zoom-sensitivity",
                 min: 0.5,
-                default: 1,
+                default: 2,
                 max: 1.5,
                 selector: "#zoomSlider",
                 ticksSelector: "#zoomTicks",
