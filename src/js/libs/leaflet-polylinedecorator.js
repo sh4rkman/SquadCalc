@@ -5,7 +5,8 @@
  * This patched version uses Leaflet 2.0 PascalCase constructors
  * and creates standalone classes instead of extending L namespace
  */
-import * as L from "leaflet";
+
+import { DomUtil, FeatureGroup, LatLng, LatLngBounds, Marker, Point, Polyline, Polygon, Util } from "leaflet";
 
 // Helper functions
 function pointDistance(ptA, ptB) {
@@ -96,11 +97,11 @@ function projectPatternOnPointPath(pts, pattern) {
 
 // Rotated Marker support
 (function() {
-    const proto_initIcon = L.Marker.prototype._initIcon;
-    const proto_setPos = L.Marker.prototype._setPos;
-    const oldIE = (L.DomUtil.TRANSFORM === "msTransform");
+    const proto_initIcon = Marker.prototype._initIcon;
+    const proto_setPos = Marker.prototype._setPos;
+    const oldIE = (DomUtil.TRANSFORM === "msTransform");
 
-    L.Marker.addInitHook(function() {
+    Marker.addInitHook(function() {
         const iconOptions = this.options.icon && this.options.icon.options;
         const iconAnchor = iconOptions && this.options.icon.options.iconAnchor;
         const anchorStr = iconAnchor ? (iconAnchor[0] + "px " + iconAnchor[1] + "px") : null;
@@ -109,7 +110,7 @@ function projectPatternOnPointPath(pts, pattern) {
         this.on("drag", (e) => e.target._applyRotation());
     });
 
-    L.Marker.include({
+    Marker.include({
         _initIcon: function() { proto_initIcon.call(this); },
         _setPos: function(pos) {
             proto_setPos.call(this, pos);
@@ -117,11 +118,11 @@ function projectPatternOnPointPath(pts, pattern) {
         },
         _applyRotation: function() {
             if (this.options.rotationAngle) {
-                this._icon.style[L.DomUtil.TRANSFORM + "Origin"] = this.options.rotationOrigin;
+                this._icon.style[DomUtil.TRANSFORM + "Origin"] = this.options.rotationOrigin;
                 if (oldIE) {
-                    this._icon.style[L.DomUtil.TRANSFORM] = "rotate(" + this.options.rotationAngle + "deg)";
+                    this._icon.style[DomUtil.TRANSFORM] = "rotate(" + this.options.rotationAngle + "deg)";
                 } else {
-                    this._icon.style[L.DomUtil.TRANSFORM] += " rotateZ(" + this.options.rotationAngle + "deg)";
+                    this._icon.style[DomUtil.TRANSFORM] += " rotateZ(" + this.options.rotationAngle + "deg)";
                 }
             }
         },
@@ -140,102 +141,123 @@ function projectPatternOnPointPath(pts, pattern) {
 
 
 // Symbol namespace - standalone object (not attached to L)
-const Symbol = {};
+const PolylineSymbol = {};
 
+// ------------------------
 // Dash Symbol
-Symbol.Dash = L.Class.extend({
-    options: { pixelSize: 10, pathOptions: {} },
-    initialize: function(options) {
-        L.Util.setOptions(this, options);
+// ------------------------
+class DashSymbol {
+    constructor(options = {}) {
+        this.options = {
+            pixelSize: 10,
+            pathOptions: {},
+            ...options
+        };
         this.options.pathOptions.clickable = false;
-    },
-    buildSymbol: function(dirPoint, latLngs, map) {
+    }
+
+    buildSymbol(dirPoint, latLngs, map) {
         const opts = this.options;
         const d2r = Math.PI / 180;
+
         if (opts.pixelSize <= 1) {
-            return new L.Polyline([dirPoint.latLng, dirPoint.latLng], opts.pathOptions);
+            return new Polyline([dirPoint.latLng, dirPoint.latLng], opts.pathOptions);
         }
+
         const midPoint = map.project(dirPoint.latLng);
         const angle = -(dirPoint.heading - 90) * d2r;
-        const a = new L.Point(
-            midPoint.x + opts.pixelSize * Math.cos(angle + Math.PI) / 2,
-            midPoint.y + opts.pixelSize * Math.sin(angle) / 2
+
+        const a = new Point(
+            midPoint.x + (opts.pixelSize * Math.cos(angle + Math.PI)) / 2,
+            midPoint.y + (opts.pixelSize * Math.sin(angle)) / 2
         );
         const b = midPoint.add(midPoint.subtract(a));
-        return new L.Polyline([map.unproject(a), map.unproject(b)], opts.pathOptions);
+
+        return new Polyline([map.unproject(a), map.unproject(b)], opts.pathOptions);
     }
-});
-Symbol.dash = (options) => new Symbol.Dash(options);
+}
+PolylineSymbol.dash = (options) => new DashSymbol(options);
 
-
+// ------------------------
 // ArrowHead Symbol
-Symbol.ArrowHead = L.Class.extend({
-    options: {
-        polygon: true, pixelSize: 10, headAngle: 60,
-        pathOptions: { stroke: false, weight: 2 }
-    },
-    initialize: function(options) {
-        L.Util.setOptions(this, options);
+// ------------------------
+class ArrowHeadSymbol {
+    constructor(options = {}) {
+        this.options = {
+            polygon: true,
+            pixelSize: 10,
+            headAngle: 60,
+            pathOptions: { stroke: false, weight: 2 },
+            ...options
+        };
         this.options.pathOptions.clickable = false;
-    },
-    buildSymbol: function(dirPoint, latLngs, map) {
+    }
+
+    buildSymbol(dirPoint, latLngs, map) {
         const path = this._buildArrowPath(dirPoint, map);
-        return this.options.polygon 
-            ? new L.Polygon(path, this.options.pathOptions) 
-            : new L.Polyline(path, this.options.pathOptions);
-    },
-    _buildArrowPath: function(dirPoint, map) {
+        return this.options.polygon ? new Polygon(path, this.options.pathOptions) : new Polyline(path, this.options.pathOptions);
+    }
+
+    _buildArrowPath(dirPoint, map) {
         const d2r = Math.PI / 180;
         const tipPoint = map.project(dirPoint.latLng);
         const direction = -(dirPoint.heading - 90) * d2r;
         const radianArrowAngle = this.options.headAngle / 2 * d2r;
         const headAngle1 = direction + radianArrowAngle;
         const headAngle2 = direction - radianArrowAngle;
-        const arrowHead1 = new L.Point(
+
+        const arrowHead1 = new Point(
             tipPoint.x - this.options.pixelSize * Math.cos(headAngle1),
             tipPoint.y + this.options.pixelSize * Math.sin(headAngle1)
         );
-        const arrowHead2 = new L.Point(
+        const arrowHead2 = new Point(
             tipPoint.x - this.options.pixelSize * Math.cos(headAngle2),
             tipPoint.y + this.options.pixelSize * Math.sin(headAngle2)
         );
+
         return [map.unproject(arrowHead1), dirPoint.latLng, map.unproject(arrowHead2)];
     }
-});
-Symbol.arrowHead = (options) => new Symbol.ArrowHead(options);
+}
+PolylineSymbol.arrowHead = (options) => new ArrowHeadSymbol(options);
 
-
+// ------------------------
 // Marker Symbol
-Symbol.Marker = L.Class.extend({
-    options: { markerOptions: {}, rotate: false },
-    initialize: function(options) {
-        L.Util.setOptions(this, options);
+// ------------------------
+class MarkerSymbol {
+    constructor(options = {}) {
+        this.options = {
+            markerOptions: {},
+            rotate: false,
+            ...options
+        };
         this.options.markerOptions.clickable = false;
         this.options.markerOptions.draggable = false;
-    },
-    buildSymbol: function(directionPoint) {
+    }
+
+    buildSymbol(directionPoint) {
         if (this.options.rotate) {
-            this.options.markerOptions.rotationAngle = 
+            this.options.markerOptions.rotationAngle =
                 directionPoint.heading + (this.options.angleCorrection || 0);
         }
-        return new L.Marker(directionPoint.latLng, this.options.markerOptions);
+        return new Marker(directionPoint.latLng, this.options.markerOptions);
     }
-});
-Symbol.marker = (options) => new Symbol.Marker(options);
+}
+PolylineSymbol.marker = (options) => new MarkerSymbol(options);
+
 
 // Coordinate helpers
-const isCoord = (c) => c instanceof L.LatLng || 
+const isCoord = (c) => c instanceof LatLng || 
     (Array.isArray(c) && c.length === 2 && typeof c[0] === "number");
 const isCoordArray = (ll) => Array.isArray(ll) && isCoord(ll[0]);
 
 
 // PolylineDecorator - standalone class (not attached to L)
-const PolylineDecorator = L.FeatureGroup.extend({
+const PolylineDecorator = FeatureGroup.extend({
     options: { patterns: [] },
 
     initialize: function(paths, options) {
-        L.FeatureGroup.prototype.initialize.call(this);
-        L.Util.setOptions(this, options);
+        FeatureGroup.prototype.initialize.call(this);
+        Util.setOptions(this, options);
         this._map = null;
         this._paths = this._initPaths(paths);
         this._bounds = this._initBounds();
@@ -247,8 +269,8 @@ const PolylineDecorator = L.FeatureGroup.extend({
             const coords = isPolygon ? input.concat([input[0]]) : input;
             return [coords];
         }
-        if (input instanceof L.Polyline) {
-            return this._initPaths(input.getLatLngs(), input instanceof L.Polygon);
+        if (input instanceof Polyline) {
+            return this._initPaths(input.getLatLngs(), input instanceof Polygon);
         }
         if (Array.isArray(input)) {
             return input.reduce((flatArray, p) => 
@@ -291,12 +313,12 @@ const PolylineDecorator = L.FeatureGroup.extend({
     onRemove: function(map) {
         this._map.off("moveend", this.redraw, this);
         this._map = null;
-        L.FeatureGroup.prototype.onRemove.call(this, map);
+        FeatureGroup.prototype.onRemove.call(this, map);
     },
 
     _initBounds: function() {
         const allPathCoords = this._paths.reduce((acc, path) => acc.concat(path), []);
-        return new L.LatLngBounds(allPathCoords);
+        return new LatLngBounds(allPathCoords);
     },
 
     getBounds: function() { return this._bounds; },
@@ -313,7 +335,7 @@ const PolylineDecorator = L.FeatureGroup.extend({
         if (latLngs.length < 2) return [];
         const pathAsPoints = latLngs.map(latLng => this._map.project(latLng));
         return projectPatternOnPointPath(pathAsPoints, pattern).map(point => ({
-            latLng: this._map.unproject(new L.Point(point.pt.x, point.pt.y)),
+            latLng: this._map.unproject(new Point(point.pt.x, point.pt.y)),
             heading: point.heading
         }));
     },
@@ -329,7 +351,7 @@ const PolylineDecorator = L.FeatureGroup.extend({
         return this._paths.map(path => {
             const directionPoints = this._getDirectionPoints(path, pattern)
                 .filter(point => mapBounds.contains(point.latLng));
-            return new L.FeatureGroup(
+            return new FeatureGroup(
                 this._buildSymbols(path, pattern.symbolFactory, directionPoints)
             );
         });
@@ -337,7 +359,7 @@ const PolylineDecorator = L.FeatureGroup.extend({
 
     _draw: function() {
         this._patterns.map(pattern => this._getPatternLayers(pattern))
-            .forEach(layers => this.addLayer(new L.FeatureGroup(layers)));
+            .forEach(layers => this.addLayer(new FeatureGroup(layers)));
     }
 });
 
@@ -345,5 +367,5 @@ const PolylineDecorator = L.FeatureGroup.extend({
 const polylineDecorator = (paths, options) => new PolylineDecorator(paths, options);
 
 // Export for ES modules
-export { PolylineDecorator, polylineDecorator, Symbol };
-export default { PolylineDecorator, polylineDecorator, Symbol };
+export { PolylineDecorator, polylineDecorator, PolylineSymbol };
+export default { PolylineDecorator, polylineDecorator, PolylineSymbol };

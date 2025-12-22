@@ -5,7 +5,6 @@
  * https://github.com/sh4rkman/SquadCalc
  */
 
-//import L from "leaflet";
 import i18next from "i18next";
 import { Marker, Polyline, Polygon, LayerGroup, Util, Layer, DomUtil, Circle } from "leaflet";
 

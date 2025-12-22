@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from "uuid";
 import { App } from "../app.js";
 import { Polyline, DomEvent, Circle, Rectangle } from "leaflet";
-import { PolylineDecorator, Symbol } from "./libs/leaflet-polylinedecorator.js";
+import { PolylineDecorator, PolylineSymbol } from "./libs/leaflet-polylinedecorator.js";
 
 export class MapDrawing {
     
@@ -100,7 +100,7 @@ export class MapArrow {
             patterns: [{
                 offset: "100%",
                 repeat: 0,
-                symbol: Symbol.arrowHead({
+                symbol: PolylineSymbol.arrowHead({
                     pixelSize: 15,
                     polygon: false,
                     fill: true,
