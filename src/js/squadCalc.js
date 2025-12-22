@@ -16,6 +16,7 @@ import packageInfo from "../../package.json";
 import i18next from "i18next";
 import SquadLayer from "./squadLayer.js";
 import { serverBrowserTooltips } from "./tooltips.js";
+import { MapDrawing, MapArrow, MapCircle, MapRectangle } from "./squadShapes.js";
 
 
 
@@ -505,6 +506,22 @@ export default class SquadCalc {
 
                     $(".dropbtn").val(data.activeMap).trigger($.Event("change", { broadcast: true }));
 
+                    data.markers.forEach(marker => {
+                        this.minimap.createMarker(new LatLng(marker.lat, marker.lng), marker.team, marker.category, marker.icon, marker.uid);
+                    });
+                    data.arrows.forEach(arrow => {
+                        new MapArrow(this.minimap, arrow.color, arrow.latlngs[0], arrow.latlngs[1], arrow.uid);
+                    });
+                    data.circles.forEach(circle => {
+                        new MapCircle(this.minimap, circle.color, circle.latlng, circle.radius, circle.uid);
+                    });
+                    data.rectangles.forEach(rectangle => {
+                        new MapRectangle(this.minimap, rectangle.color, rectangle.bounds._southWest, rectangle.bounds._northEast, rectangle.uid);
+                    });
+                    data.draws.forEach(draw => {
+                        new MapDrawing(this.minimap, draw.color, draw.latlngs, draw.uid).finalize(false);
+                    });
+
                     $(document).one("heightmap:loaded", () => {
                         try {
 
@@ -529,10 +546,7 @@ export default class SquadCalc {
                         this.LAYER_SELECTOR.val(data.activeLayer).trigger($.Event("change", { broadcast: true }));
                         $(document).one("layer:loaded", () => {
 
-                            data.markers.forEach(marker => {
-                                this.minimap.createMarker(new LatLng(marker.lat, marker.lng), marker.team, marker.category, marker.icon, marker.uid);
-                            });
-
+                            // Select Flags
                             data.selectedFlags.forEach(flag => {
                                 this.minimap.layer.flags.forEach((layerFlag) => {
                                     if (layerFlag.objectName === flag) {
@@ -579,6 +593,10 @@ export default class SquadCalc {
 
         $(".btn-layer").on("click", () => {
             this.minimap.layer.toggleVisibility();
+        });
+
+        $(".btn-drawingMode").on("click", () => {
+            this.minimap.disableDrawingMode();
         });
 
         $("#fabCheckbox3").on("change", () => {
@@ -719,8 +737,10 @@ export default class SquadCalc {
                     }
                 }
 
-                // BACKSPACE = REMOVE LAST CREATED TARGET MARKER
-                if (event.key === "Backspace") {
+
+                // BACKSPACE / CTRL+Z = REMOVE LAST CREATED TARGET MARKER
+                if (event.key === "Backspace" ||(event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "z") {
+                    event.preventDefault();
                     if (this.minimap.history.length > 0) this.minimap.history.at(-1).delete();
                 }
 
@@ -728,6 +748,11 @@ export default class SquadCalc {
                 if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "s") {
                     event.preventDefault();
                     if (this.minimap.hasMarkers()) this.saveMapStateToFile();
+                }
+
+                // ESCAPE = QUIT DRAWING MODE
+                if (event.key === "Escape") {
+                    this.minimap.disableDrawingMode();
                 }
 
             });
@@ -1356,6 +1381,7 @@ export default class SquadCalc {
         const arrows = [];
         const circles = [];
         const rectangles = [];
+        const draws = [];
         const hexs = [];
         const activeWeapon = this.WEAPON_SELECTOR.val();
         const activeMap = this.MAP_SELECTOR.val();
@@ -1413,6 +1439,14 @@ export default class SquadCalc {
                 bounds: rectangle.rectangle.getBounds(),
             });
         });
+        this.minimap.activePolylines.forEach(polyline => {
+            draws.push({
+                uid: polyline.uid,
+                color: polyline.color,
+                bounds: polyline.polyline.getBounds(),
+                latlngs: polyline.polyline.getLatLngs(),
+            });
+        });
 
         if (this.minimap.layer) {
             this.minimap.layer.selectedFlags.forEach(flag => {
@@ -1426,7 +1460,7 @@ export default class SquadCalc {
             });
         }
 
-        return { hexs, weapons, targets, markers, arrows, circles, rectangles, activeWeapon, activeMap, activeLayer, selectedFlags, teams, version };
+        return { hexs, weapons, targets, markers, arrows, circles, rectangles, draws, activeWeapon, activeMap, activeLayer, selectedFlags, teams, version };
     }
 
     saveMapStateToFile() {

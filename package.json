@@ -1,6 +1,6 @@
 {
   "name": "squadcalc",
-  "version": "41.1.0",
+  "version": "42.0.0",
   "description": "A Complete Mortar Calculator and Map Lane Finder for Squad",
   "author": "Maxime 'sharkman' Boussard",
   "license": "MIT",
@@ -51,7 +51,6 @@
     "jshint": "^2.13.6",
     "leaflet": "^2.0.0-alpha.1",
     "leaflet-loader": "^0.0.3",
-    "leaflet-polylinedecorator": "^1.6.0",
     "mini-css-extract-plugin": "^2.9.2",
     "mkdirp": "^3.0.1",
     "path": "^0.12.7",
