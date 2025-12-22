@@ -9,7 +9,7 @@ import SquadSession from "./squadSession.js";
  * @throws {Error} Logs details of any network or HTTP errors encountered during the request.
  */
 export function sendMarkerData(markerData) {
-    fetch(`/api/v2/post/weapons`, {
+    fetch("/api/v2/post/weapons", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -32,7 +32,7 @@ export function sendMarkerData(markerData) {
  * @throws {Error} Logs details of any network or HTTP errors encountered during the request.
  */
 export function sendFOBData(FOBData) {
-    fetch(`/api/v2/post/fobs`, {
+    fetch("/api/v2/post/fobs", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -55,7 +55,7 @@ export function sendFOBData(FOBData) {
  * @returns {Promise<void>} A promise that resolves if the data is successfully sent, or logs an error if not.
  */
 export function sendTargetData(targetData) {
-    fetch(`/api/v2/post/targets`, {
+    fetch("/api/v2/post/targets", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -82,11 +82,11 @@ export function sendTargetData(targetData) {
 export const checkApiHealth = async () => {
     //if (!process.env.API_URL) { return; }
     try {
-        const response = await fetch(`/api/v2/health`);
+        const response = await fetch("/api/v2/health");
         if (response.ok) {
             const data = await response.json();
             if (data.status === "OK") {
-                console.log(`Connected to SquadCalc API`);
+                console.log("Connected to SquadCalc API");
                 const urlParams = new URLSearchParams(window.location.search);
                 const sessionId = urlParams.get("session");
                 if (sessionId) {
@@ -108,10 +108,10 @@ export const checkApiHealth = async () => {
                 }
             }
         } else {
-            console.error(`Not connected to SquadCalc API`);
+            console.error("Not connected to SquadCalc API");
         }
     } catch (error) {
-        console.error(`Not connected to SquadCalc API`);
+        console.error("Not connected to SquadCalc API");
         console.debug(error);
     }
 };

@@ -9,7 +9,7 @@ export default class SquadSession {
 
     constructor(sessionId) {
         this.ws = new WebSocket(
-            `${location.protocol === 'https:' ? 'wss' : 'ws'}://${location.host}/api/v2/`
+            `${location.protocol === "https:" ? "wss" : "ws"}://${location.host}/api/v2/`
         );
         this.wsActiveUsers = 1;
         this.ws.onopen = () => { this._open(sessionId); };
@@ -157,10 +157,10 @@ export default class SquadSession {
                 });
                 data.mapState.rectangles.forEach(rectangle => {
                     new MapRectangle(App.minimap, rectangle.color, rectangle.bounds._southWest, rectangle.bounds._northEast, rectangle.uid);
-                })
+                });
                 data.mapState.draws.forEach(draw => {
                     new MapDrawing(App.minimap, draw.color, draw.latlngs, draw.uid).finalize(false);
-                })
+                });
 
             });
 

@@ -25,7 +25,7 @@ export const squadCameraActor = Marker.extend({
 
         this.setIcon(
             new Icon({
-                iconUrl: `/api/v2/img/icons/shared/camera.webp`,
+                iconUrl: "/api/v2/img/icons/shared/camera.webp",
                 iconSize: [30, 30],
                 iconAnchor: [15, 15],
                 className: "vehSpawnIcon"

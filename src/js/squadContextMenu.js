@@ -119,45 +119,35 @@ export default class SquadContextMenu {
                     `
                 );
 
-
-
-                
                 this.setIcons(tip);
 
                 setTimeout(() => {
                     $(".penButton").on("click", (event) => {
 
-                        App.minimap.enableDrawingMode();
-
+                        // Extract the color from the clicked element
                         let targetElement = event.target.closest(".shapeButton span");
                         const color = [...targetElement.classList].find(cls => cls !== "pen");
 
-                        App.minimap.on('pointerdown', (e) => {
+                        App.minimap.on("pointerdown", (e) => {
                             if (!App.minimap.drawingMode)  return;
-                            if (e.originalEvent.button !== 0) {
-                                //$("#map").css("cursor", App.userSettings.cursor ? "default" : "crosshair");
-                                // // Stop event from bubbling up to Leaflet or other handlers
-                                // e.originalEvent.stopPropagation();
-                                // e.originalEvent.preventDefault();
-                                // App.minimap.drawingMode = false;
-                                return;
-                            }
+                            if (e.originalEvent.button !== 0) return;
                             App.minimap.drawing = true;
                             App.minimap.points = [e.latlng];
                             App.minimap.currentLine = new MapDrawing(App.minimap, color, App.minimap.points);
                         });
 
-                        App.minimap.on('pointermove', (e) => {
+                        App.minimap.on("pointermove", (e) => {
                             if (!App.minimap.drawingMode) return;
                             if (!App.minimap.drawing) return;
                             App.minimap.points.push(e.latlng);
                             App.minimap.currentLine.polyline.setLatLngs(App.minimap.points);
                         });
                 
-                        App.minimap.on('pointerup', () => {
+                        App.minimap.on("pointerup", () => {
                             if (!App.minimap.drawingMode) return;
                             if (!App.minimap.drawing) return;
                 
+                            // Avoid creating lines with less than 2 points
                             if (App.minimap.currentLine.polyline.getLatLngs().length < 2) {
                                 App.minimap.currentLine.delete();
                                 return;
@@ -165,36 +155,35 @@ export default class SquadContextMenu {
 
                             App.minimap.currentLine.finalize();
                             App.minimap.drawing = false;
-                
-                            // Clear the currentLine reference safely
                             App.minimap.currentLine = null;
                         });
 
+                        App.minimap.enableDrawingMode();
                         this.close();
                     });
 
 
-                $(".shapeButton").on("click", (event) => {
-                    let targetElement = event.target.closest(".shapeButton span"); // Ensure we get the <span> inside the button
+                    $(".shapeButton").on("click", (event) => {
+                        let targetElement = event.target.closest(".shapeButton span"); // Ensure we get the <span> inside the button
                     
-                    if (!targetElement) return;
+                        if (!targetElement) return;
                                        
-                    // Extract the shape type (arrow, rectangle, circle)
-                    const shape = ["arrow", "rectangle", "circle"].find(type => targetElement.classList.contains(type));
+                        // Extract the shape type (arrow, rectangle, circle)
+                        const shape = ["arrow", "rectangle", "circle"].find(type => targetElement.classList.contains(type));
                     
-                    // Extract the color (any other class that isn't the shape itself)
-                    const color = [...targetElement.classList].find(cls => cls !== shape);
+                        // Extract the color (any other class that isn't the shape itself)
+                        const color = [...targetElement.classList].find(cls => cls !== shape);
                     
-                    if (shape && color) {
+                        if (shape && color) {
                         // Call the corresponding method dynamically
-                        const methodName = `create${shape.charAt(0).toUpperCase() + shape.slice(1)}`;
-                        if (typeof App.minimap[methodName] === "function") {
-                            App.minimap[methodName](color);
+                            const methodName = `create${shape.charAt(0).toUpperCase() + shape.slice(1)}`;
+                            if (typeof App.minimap[methodName] === "function") {
+                                App.minimap[methodName](color);
+                            }
                         }
-                    }
                     
-                    this.close();
-                });
+                        this.close();
+                    });
                 }, 0);
 
 

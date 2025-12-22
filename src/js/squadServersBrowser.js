@@ -57,7 +57,7 @@ export default class SquadServersBrowser {
      */
     async getServers() {
         try {
-            const response = await fetch(`/api/v2/get/servers`);
+            const response = await fetch("/api/v2/get/servers");
             const data = await response.json();
             this.serversData = data.servers;
 

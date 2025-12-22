@@ -105,8 +105,8 @@ export const squadVehicleMarker = Marker.extend({
         const tags = [];
         let totalSeats = this.vehicle.passengerSeats + this.vehicle.driverSeats;
         tags.push(`<img src="/api/v2/img/icons/shared/passenger.webp" alt="ATGM"><div class="passengers">${totalSeats}</div>`);
-        if (this.vehicle.isAmphibious) tags.push(`<img src="/api/v2/img/icons/shared/amphibious.webp" alt="Amphibious">`);
-        if (this.vehicle.ATGM) tags.push(`<img src="/api/v2/img/icons/shared/ATGM.webp" alt="ATGM">`);
+        if (this.vehicle.isAmphibious) tags.push("<img src=\"/api/v2/img/icons/shared/amphibious.webp\" alt=\"Amphibious\">");
+        if (this.vehicle.ATGM) tags.push("<img src=\"/api/v2/img/icons/shared/ATGM.webp\" alt=\"ATGM\">");
 
         return `
             <div class="tags">
