@@ -162,11 +162,7 @@ export default class SquadServersBrowser {
      */
     getTeamHTML(team, label) {
         if (team) {
-            return `<img
-                title="${label}"
-                src="/api/v2/img/flags/${team}.webp"
-                alt="${team}"
-                class="flag-icon">`;
+            return `<img title="${label}" src="/img/flags/${team}.webp" alt="${team}" class="flag-icon">`;
         } else {
             return "-";
         }

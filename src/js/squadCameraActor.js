@@ -25,7 +25,7 @@ export const squadCameraActor = Marker.extend({
 
         this.setIcon(
             new Icon({
-                iconUrl: "/api/v2/img/icons/shared/camera.webp",
+                iconUrl: "/img/icons/shared/camera.webp",
                 iconSize: [30, 30],
                 iconAnchor: [15, 15],
                 className: "vehSpawnIcon"
@@ -95,7 +95,7 @@ export const squadCameraActor = Marker.extend({
                         <span> ${i18next.t("common:rightClicToRemove")}</span>
                     </div>
                 </div>
-                <img src="/api/v2/img/icons/shared/deathCam.webp"/>
+                <img src="/img/icons/shared/deathCam.webp"/>
             </div>
         `;
         

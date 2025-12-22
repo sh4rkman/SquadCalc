@@ -26,7 +26,7 @@ export const squadVehicleMarker = Marker.extend({
 
         this.setIcon(
             new Icon({
-                iconUrl: `/api/v2/img/icons/ally/vehicles/${vehicle.icon}.webp`,
+                iconUrl: `/img/icons/ally/vehicles/${vehicle.icon}.webp`,
                 iconSize: [36, 36],
                 iconAnchor: [18, 18],
                 className: "vehSpawnIcon"
@@ -82,7 +82,7 @@ export const squadVehicleMarker = Marker.extend({
 
                 <div class="vehTitle">
                     <div class="vehName">${i18next.t(this.vehicle.type, { ns: "vehicles" })}</div>
-                    <img class="vehFlag" src="/api/v2/img/flags/${this.faction}.webp" class="img-flag" />
+                    <img class="vehFlag" src="/img/flags/${this.faction}.webp" class="img-flag" />
                 </div>
 
                 <div class="statsHolder">
@@ -93,7 +93,7 @@ export const squadVehicleMarker = Marker.extend({
                 </div>
 
                 ${this.getTagsHTML()}
-                <img src="/api/v2/img/vehicles/${this.vehicle.type}.webp" onerror="this.onerror=null; this.src='/api/v2/img/vehicles/placeholder.webp';"/>
+                <img src="/img/vehicles/${this.vehicle.type}.webp" onerror="this.onerror=null; this.src='/img/vehicles/placeholder.webp';"/>
             </div>
         `;
         
@@ -104,9 +104,9 @@ export const squadVehicleMarker = Marker.extend({
     getTagsHTML() {
         const tags = [];
         let totalSeats = this.vehicle.passengerSeats + this.vehicle.driverSeats;
-        tags.push(`<img src="/api/v2/img/icons/shared/passenger.webp" alt="ATGM"><div class="passengers">${totalSeats}</div>`);
-        if (this.vehicle.isAmphibious) tags.push("<img src=\"/api/v2/img/icons/shared/amphibious.webp\" alt=\"Amphibious\">");
-        if (this.vehicle.ATGM) tags.push("<img src=\"/api/v2/img/icons/shared/ATGM.webp\" alt=\"ATGM\">");
+        tags.push(`<img src="/img/icons/shared/passenger.webp" alt="ATGM"><div class="passengers">${totalSeats}</div>`);
+        if (this.vehicle.isAmphibious) tags.push("<img src=\"/img/icons/shared/amphibious.webp\" alt=\"Amphibious\">");
+        if (this.vehicle.ATGM) tags.push("<img src=\"/img/icons/shared/ATGM.webp\" alt=\"ATGM\">");
 
         return `
             <div class="tags">
