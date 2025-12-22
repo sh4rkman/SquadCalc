@@ -15,6 +15,7 @@ export class MapDrawing {
         this.createDraw();
         this.polyline.addTo(this.map.activeDrawingGroup);
         this.map.activePolylines.push(this);
+
         console.debug("Creating new draw with uid", this.uid);
     }
 
@@ -59,6 +60,7 @@ export class MapDrawing {
     // Removes the arrow from the map
     delete(broadcast = true) {
 
+        // Broadcast deletion to other clients
         if (broadcast && App.session.ws && App.session.ws.readyState === WebSocket.OPEN) {
             console.debug("Deleting new draw with uid", this.uid);
             App.session.ws.send(
@@ -72,11 +74,8 @@ export class MapDrawing {
         this.map.activePolylines = this.map.activePolylines.filter(activePolyline => activePolyline !== this);
         this.map.removeLayer(this.polyline);
 
-        // remove from this.map.activePolylinesGroup
-
+        // remove from map & history
         this.polyline.removeFrom(this.map.activeDrawingGroup).remove();
-
-        // Remove the marker from targets array history
         this.map.history = this.map.history.filter(object => object !== this);
 
         // If that was the last Marker on the map, hide "delete all" buttons

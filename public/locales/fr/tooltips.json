@@ -76,5 +76,7 @@
     "vehicleRespawned": "Véhicule réapparu",
     "lineToTargetTooltip": "Trace une ligne entre l’arme et la cible",
     "targetGridTooltip": "Affiche une grille autour des cibles : les lignes verticales indiquent la déviation angulaire (2°) et les arcs horizontaux indiquent la déviation en élévation (10 mils ou 1° selon le système d'unités de l'arme).",
-    "serverBrowser": "Navigateur de serveurs Squad"
+    "serverBrowser": "Navigateur de serveurs Squad",
+    "quitDrawingMode": "Arrêter le dessin",
+    "escape": "Échap"
 }

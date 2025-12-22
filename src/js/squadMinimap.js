@@ -4,14 +4,13 @@ import squadHeightmap from "./squadHeightmaps.js";
 import { App } from "../app.js";
 import { squadWeaponMarker } from "./squadMarker.js";
 import { squadTargetMarker } from "./squadTargetMarker.js";
-import { MapDrawing, MapCircle, MapArrow, MapRectangle } from "./squadShapes.js";
+import { MapCircle, MapArrow, MapRectangle } from "./squadShapes.js";
 import { mortarIcon, mortarIcon1, mortarIcon2 } from "./squadIcon.js";
 import { explode } from "./animations.js";
 import { fetchMarkersByMap } from "./squadCalcAPI.js";
 import webGLHeatmap from "./libs/leaflet-webgl-heatmap.js";
 import squadContextMenu from "./squadContextMenu.js";
 import { squadStratMarker } from "./squadMarker.js";
-//import "leaflet-polylinedecorator";
 import "./libs/webgl-heatmap.js";
 import "./libs/leaflet-smoothWheelZoom.js";
 import "tippy.js/dist/tippy.css";
@@ -738,7 +737,6 @@ export const squadMinimap = Map.extend({
 
         // Add Item to history
         this.history.push(newMarker);
-
         $(".btn-delete, .btn-undo").show();
 
         if (!uid && App.session.ws && App.session.ws.readyState === WebSocket.OPEN) {
@@ -802,7 +800,7 @@ export const squadMinimap = Map.extend({
                 isDrawing = false;
                 this.off("mousemove", handleMouseMove);
     
-                if (!circle.uid) circle.uid = uuidv4();
+                //if (!circle.uid) circle.uid = uuidv4();
     
                 // Send circle data via WebSocket
                 if (App.session.ws && App.session.ws.readyState === WebSocket.OPEN) {
@@ -861,7 +859,7 @@ export const squadMinimap = Map.extend({
                 isDrawing = false; // Stop the drawing process
                 this.off("pointermove", handleMouseMove); // Remove the mousemove listener
     
-                if (!arrow.uid) arrow.uid = uuidv4();
+                //if (!arrow.uid) arrow.uid = uuidv4();
                 
                 // Send the arrow to the WebSocket server
                 if (App.session.ws && App.session.ws.readyState === WebSocket.OPEN) {
@@ -920,7 +918,7 @@ export const squadMinimap = Map.extend({
                 isDrawing = false;
                 this.off("pointermove", handleMouseMove);
     
-                if (!rectangle.uid) rectangle.uid = uuidv4();
+                //if (!rectangle.uid) rectangle.uid = uuidv4();
 
                 // Send rectangle data via WebSocket
                 if (App.session.ws && App.session.ws.readyState === WebSocket.OPEN) {

@@ -297,17 +297,6 @@ tippy(".btn-focus", {
         );
     },
 });
-// tippy(".btn-focus", {
-//     ...commonMapMenuToolipsSettings,
-//     onShow(tip) {
-//         tip.setContent(
-//             `
-//             <div>${i18next.t("tooltips:focusMode")}</div>
-//             <div class="tooltipsubtext">${i18next.t("tooltips:enter")}</div>
-//             `
-//         );
-//     },
-// });
 
 export const serverBrowserTooltips = tippy("#servers", {
     ...commonMapMenuToolipsSettings,
@@ -323,12 +312,6 @@ export const activeServerBrowserTooltips = tippy("#servers", {
 })[0];
 activeServerBrowserTooltips.disable();
 
-// tippy(".copy-vehicle-btn", {
-//     ...commonMapMenuToolipsSettings,
-//     onShow(tip) {
-//         tip.setContent(i18next.t("tooltips:factions&Vehicles"));
-//     },
-// });
 
 export const createSessionTooltips = tippy(".btn-session", {
     ...commonMapMenuToolipsSettings,
@@ -345,7 +328,6 @@ export const leaveSessionTooltips =  tippy(".btn-session", {
     },
 })[0];
 leaveSessionTooltips.disable();
-
 
 tippy(".btn-undo", {
     ...commonMapMenuToolipsSettings,
@@ -385,21 +367,18 @@ tippy(".btn-delete", {
     },
 });
 
-// export var hostOnlyTooltip = tippy("#mapSelector", {
-//     theme: "menu",
-//     offset: [0, 20],
-//     allowHTML: true,
-//     touch: false,
-//     hideOnClick: true,
-//     delay: [500, 100],
-//     maxWidth: 230, 
-//     followCursor: true,
-//     plugins: [followCursor],
-//     onShow(tip) {
-//         tip.setContent(i18next.t("tooltips:hostOnly"));
-//     },
-// })[0];
-// hostOnlyTooltip.disable();
+tippy(".btn-drawingMode", {
+    ...commonMapMenuToolipsSettings,
+    placement: "left",
+    onShow(tip) {
+        tip.setContent(
+            `
+            <div>${i18next.t("tooltips:quitDrawingMode")}</div>
+            <div class="tooltipsubtext">${i18next.t("tooltips:escape")}</div>
+            `
+        );
+    },
+});
 
 
 tippy("#elevationNum", {
