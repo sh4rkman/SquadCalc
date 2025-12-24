@@ -254,7 +254,6 @@ export const squadTargetMarker = squadMarker.extend({
                 convertedElevation = elevationData.deg.toFixed(App.activeWeapon.elevationPrecision);
             }
 
-
             return [convertedElevation, formattedTime];
         };
 

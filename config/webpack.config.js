@@ -97,9 +97,9 @@ export default async (env) => {
               from: path.resolve(__dirname, '../public'),
               to: path.resolve(__dirname, '../dist'),
             },
-            { from: "./src/img/github/",
-              to: "./src/img/github/", 
-            },
+            // { from: "./src/img/github/",
+            //   to: "../dist/img/github/", 
+            // },
           ],
         }),
         new webpack.ProvidePlugin({
@@ -124,61 +124,62 @@ export default async (env) => {
             {
               src: path.resolve('./src/img/favicons/favicon_512x512.png'),
               sizes: [16, 32, 96, 192, 256, 384, 512],
-              destination: path.join('src', 'img', 'favicons'),
+              destination: path.join('img', 'favicons'),
               purpose: 'maskable'
             },
             { // PWA Installation icon
               src: path.resolve('./src/img/favicons/favicon_512x512.png'),
               size: '192x192',
-              destination: path.join('src', 'img', 'favicons'),
+              destination: path.join('img', 'favicons'),
               purpose: 'any'
             }
+
           ],
           screenshots : [
             {
-              "src": "./src/img/github/mobile_ui.webp",
+              "src": "/img/github/mobile_ui.webp",
               "sizes": "748x1568",
               "type": "image/webp",
               "form_factor": "narrow",
               "label": "Map View"
             },
             {
-              "src": "./src/img/github/mobile.webp",
+              "src": "/img/github/mobile.webp",
               "sizes": "748x1568",
               "type": "image/webp",
               "form_factor": "narrow",
               "label": "Minimalist/keyboard friendly calculator"
             },
             {
-              "src": "./src/img/github/desktop_ui_1.webp",
+              "src": "/img/github/desktop_ui_1.webp",
               "sizes": "800x553",
               "type": "image/webp",
               "form_factor": "wide",
               "label": "Map Mode"
             },
             {
-              "src": "./src/img/github/desktop_ui_2.webp",
+              "src": "/img/github/desktop_ui_2.webp",
               "sizes": "800x553",
               "type": "image/webp",
               "form_factor": "wide",
               "label": "Topographic maps"
             },           
             {
-              "src": "./src/img/github/desktop_ui_3.webp",
+              "src": "/img/github/desktop_ui_3.webp",
               "sizes": "800x553",
               "type": "image/webp",
               "form_factor": "wide",
               "label": "Weapon Stats"
             },
             {
-              "src": "./src/img/github/desktop_ui_4.webp",
+              "src": "/img/github/desktop_ui_4.webp",
               "sizes": "800x553",
               "type": "image/webp",
               "form_factor": "wide",
               "label": "Target Stats"
             },
             {
-              "src": "./src/img/github/desktop_ui_0.webp",
+              "src": "/img/github/desktop_ui_0.webp",
               "sizes": "800x553",
               "type": "image/webp",
               "form_factor": "wide",
