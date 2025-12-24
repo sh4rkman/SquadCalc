@@ -415,9 +415,9 @@ export default class SquadSettings {
                 defaultTickIndex: 1,
                 formatTick: (val) => `${val * 100}%`,
                 onChange: () => {
-                    this.app.minimap.activeMarkers.eachLayer((marker) => {
-                        marker.updateIconSize();
-                    });
+                    this.app.minimap.activeMarkers.eachLayer((marker) => { marker.updateIconSize(); });
+                    this.app.minimap.activeTargetsMarkers.eachLayer((target) => { target.updateIcon(); });
+                    this.app.minimap.activeWeaponsMarkers.eachLayer((weapon) => { weapon.updateIcon(); });
                 }
             },
             gridOpacity: {
@@ -643,7 +643,7 @@ export default class SquadSettings {
         }
 
         // Load target image
-        $("#targetImg").attr("src", "/img/target.png");
+        $("#targetImg").attr("src", "/img/target.webp");
     }
 
     /**

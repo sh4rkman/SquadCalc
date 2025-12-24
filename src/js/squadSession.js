@@ -351,6 +351,7 @@ export default class SquadSession {
             App.minimap.activeTargetsMarkers.eachLayer((target) => {
                 if (target.uid === data.uid) {
                     target._handleDrag({ latlng: new LatLng(data.lat, data.lng) });
+                    target.updateIcon(false);
                     App.minimap.visualClick.triggerVisualClick(new LatLng(data.lat, data.lng), "cyan");
                 } 
             });

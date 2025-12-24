@@ -1,11 +1,10 @@
 
 import { App } from "../app.js";
-import { CircleMarker, Polyline, Popup } from "leaflet";
+import { CircleMarker, Polyline, Popup, Icon } from "leaflet";
 import SquadSimulation from "./squadSimulation.js";
 import SquadFiringSolution from "./squadFiringSolution.js";
 import TargetGrid from "./squadTargetGrid.js";
 import { sendTargetData } from "./squadCalcAPI.js";
-import { targetIcon1, targetIconAnimated, targetIconDisabled, targetIconMinimal, targetSessionIcon1, targetIconSessionMinimal, targetIconMinimalDisabled } from "./squadIcon.js";
 import { Ellipse } from "./libs/leaflet-ellipse.js";
 import { squadMarker } from "./squadMarker.js";
 import i18next from "i18next";
@@ -490,26 +489,63 @@ export const squadTargetMarker = squadMarker.extend({
     
         const isSingleWeapon = weapons.length === 1;
         const bothElevationsInvalid = isNaN(elevation) && isNaN(elevation2);
-        const targetAnimation = App.userSettings.targetAnimation;
-        let icon;
+        const isDisabled = (isSingleWeapon && isNaN(elevation)) || (!isSingleWeapon && bothElevationsInvalid);
 
-        // Determine the base icon type
-        if (isSingleWeapon && isNaN(elevation)) {
-            icon = targetAnimation ? targetIconDisabled : targetIconMinimalDisabled;
-        } else if (!isSingleWeapon && bothElevationsInvalid) {
-            icon = targetAnimation ? targetIconDisabled : targetIconMinimalDisabled;
-        } else if (this.fromSession){
-            if (targetAnimation) icon = targetSessionIcon1;
-            else icon = targetIconSessionMinimal;
+        let iconURL;
+        let iconClassName;
+
+
+        if (isDisabled) {
+            if (App.userSettings.targetAnimation) iconURL = "../img/markers/targets/marker_target_disabled.webp";
+            else  iconURL = "../img/markers/targets/marker_target_disabled_mini.webp";
         }
-        else if (targetAnimation) icon = animated ? targetIconAnimated : targetIcon1;
-        else icon = targetIconMinimal;
-        
+        else {
+            if (App.userSettings.targetAnimation) {
+                if (this.fromSession) iconURL = "../img/markers/targets/marker_target_session_enabled.webp";
+                else iconURL = "../img/markers/targets/marker_target_enabled.webp";
+                if (animated) iconClassName = "animatedTargetMarker";
+
+            } else {
+                if (this.fromSession) iconURL = "../img/markers/targets/marker_target_session_mini.webp";
+                else iconURL = "../img/markers/targets/marker_target_mini.webp";
+            }
+        }
+
+        let iconOptions = {};
+
+        if (App.userSettings.targetAnimation) {
+            // Create the scaling full target marker
+            const ICON_SETTING_SIZE = (App.userSettings.markerSize - 1) * 5;
+            const ICON_SIZE_X = 18 + ICON_SETTING_SIZE;
+            const ICON_SIZE_Y = 24 + ICON_SETTING_SIZE;
+            iconOptions = {
+                iconSize:     [ICON_SIZE_X, ICON_SIZE_Y],
+                shadowSize:   [ICON_SIZE_Y, ICON_SIZE_Y],
+                iconAnchor:   [ICON_SIZE_X/2, ICON_SIZE_Y],
+                shadowAnchor: [ICON_SIZE_X/4, ICON_SIZE_Y]
+            };
+        } else {
+            // Non scaling minimal target markers
+            iconOptions = {
+                shadowSize: [0, 0], // hack to avoid 404
+                iconSize:   [30, 30],
+                iconAnchor: [15, 15]
+            };
+        }
+
         // hack leaflet to avoid unwanted click event
         // https://github.com/Leaflet/Leaflet/issues/5067
         setTimeout((function (this2) {
             return function () {
-                this2.setIcon(icon);
+                //this2.setIcon(icon);
+                this2.setIcon(
+                    new Icon({
+                        iconUrl: iconURL,
+                        shadowUrl: "/img/markers/weapons/marker_shadow.webp",
+                        ...iconOptions,
+                        className: iconClassName
+                    })
+                );
             };
         })(this));
 

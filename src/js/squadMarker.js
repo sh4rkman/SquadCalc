@@ -132,8 +132,6 @@ export const squadWeaponMarker = squadMarker.extend({
             this.minRangeMarker.setStyle(this.minMaxDistCircleOff);
         }
 
-        this.getIcon();
-
         if (!options.uid) {
             sendMarkerData({
                 lat: this._latlng.lat,
@@ -162,36 +160,39 @@ export const squadWeaponMarker = squadMarker.extend({
     },
 
 
-    getIcon: function(){
-        if (this.map.activeWeaponsMarkers.getLayers().length === 0) {
-            this.setIcon(
-                new Icon({
-                    iconUrl: `/img/markers/weapons/${App.activeWeapon.name}.webp`,
-                    shadowUrl: "/img/markers/weapons/marker_shadow.webp",
-                    iconSize:     [38, 47], 
-                    shadowSize:   [38, 47], 
-                    iconAnchor:   [19, 47],
-                    shadowAnchor: [10, 47],
-                    className: "animatedWeaponMarker"
-                })
-            );
-        }
-    },
-
+    /**
+     * Update the weapon icon based on user settings and number of weapons
+    */
     updateIcon: function(){
-        if (this.map.activeWeaponsMarkers.getLayers().length === 1) {
-            this.setIcon(
-                new Icon({
-                    iconUrl: `/img/markers/weapons/${App.activeWeapon.name}.webp`,
-                    shadowUrl: "/img/markers/weapons/marker_shadow.webp",
-                    iconSize:     [38, 47], 
-                    shadowSize:   [38, 47], 
-                    iconAnchor:   [19, 47],
-                    shadowAnchor: [10, 47],
-                    className: "animatedWeaponMarker"
-                })
-            );
+
+        const ICON_SIZE_X = 28 + (App.userSettings.markerSize - 1) * 5;
+        const ICON_SIZE_Y = ICON_SIZE_X * (47 / 38);
+        const ICON_PROPERTIES = {
+            shadowUrl: "/img/markers/weapons/marker_shadow.webp",
+            iconSize:     [ICON_SIZE_X, ICON_SIZE_Y],
+            shadowSize:   [ICON_SIZE_X, ICON_SIZE_Y],
+            iconAnchor:   [ICON_SIZE_X / 2, ICON_SIZE_Y],
+            shadowAnchor: [ICON_SIZE_X / 4, ICON_SIZE_Y],
+            className: "animatedWeaponMarker"
+        };
+        
+        const layers = this.map.activeWeaponsMarkers.getLayers();
+        let iconUrl;
+
+        if (layers.length === 1) {
+            iconUrl = `/img/markers/weapons/${App.activeWeapon.name}.webp`;
         }
+
+        if (layers.length === 2) {
+            if (layers[0] === this) {
+                iconUrl = "/img/markers/weapons/marker_mortar_1.webp";
+            } else {
+                iconUrl = "/img/markers/weapons/marker_mortar_2.webp";
+            }
+        }
+
+        this.setIcon(new Icon({ iconUrl, ...ICON_PROPERTIES }));
+
     },
 
     
@@ -204,6 +205,8 @@ export const squadWeaponMarker = squadMarker.extend({
 
         const MAXRADIUS = App.activeWeapon.getMaxDistance() * this.map.gameToMapScale;
         const MINRADIUS = App.activeWeapon.minDistance * this.map.gameToMapScale;
+
+        console.log("App.activeWeapon.minDistance ", App.activeWeapon.minDistance);
 
         this.angleType = App.activeWeapon.angleType;
         this.minRangeMarker.setRadius(MINRADIUS);
@@ -370,10 +373,10 @@ export const squadWeaponMarker = squadMarker.extend({
         const DIALOG = document.getElementById("weaponInformation");
 
         let name = i18next.t("weapons:" + App.activeWeapon.name);
-        if (App.activeWeapon.name === "M1064M121")  name += ` (${$(".dropbtn3 option:selected").text()})`;
+        if (App.activeWeapon.shells.length > 1) name += ` (${$(".dropbtn3 option:selected").text().trim()})`;
 
         // Logo
-        $(".weaponIcon").first().attr("src", `/img/weapons/${App.activeWeapon.name}.png`);
+        $(".weaponIcon").first().attr("src", `/img/weapons/${App.activeWeapon.name}.webp`);
         $(".infName").first().text(name);
         $(".infRange").first().text(`${App.activeWeapon.minDistance + i18next.t("common:m")} - ${App.activeWeapon.maxDistance.toFixed(0) + i18next.t("common:m")}`);
         $(".infMOA").first().text(`${App.activeWeapon.moa} (${(App.activeWeapon.moa / 60).toFixed(1) + i18next.t("common:°")})`);
@@ -550,17 +553,7 @@ export const squadWeaponMarker = squadMarker.extend({
             this.map.deleteTargets();
         } else {
             // Set default icon on remaining weapon
-            this.map.activeWeaponsMarkers.getLayers()[0].setIcon(
-                new Icon({
-                    iconUrl: `/img/markers/weapons/${App.activeWeapon.name}.webp`,
-                    shadowUrl: "/img/markers/weapons/marker_shadow.webp",
-                    iconSize:     [38, 47], 
-                    shadowSize:   [38, 47], 
-                    iconAnchor:   [19, 47],
-                    shadowAnchor: [10, 47],
-                    className: "animatedWeaponMarker"
-                })
-            );
+            this.map.activeWeaponsMarkers.getLayers()[0].updateIcon();
         }
 
         // Update remaining targets if they exists

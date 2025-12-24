@@ -5,7 +5,6 @@ import { App } from "../app.js";
 import { squadWeaponMarker } from "./squadMarker.js";
 import { squadTargetMarker } from "./squadTargetMarker.js";
 import { MapCircle, MapArrow, MapRectangle } from "./squadShapes.js";
-import { mortarIcon, mortarIcon1, mortarIcon2 } from "./squadIcon.js";
 import { explode } from "./animations.js";
 import { fetchMarkersByMap } from "./squadCalcAPI.js";
 import webGLHeatmap from "./libs/leaflet-webgl-heatmap.js";
@@ -490,10 +489,13 @@ export const squadMinimap = Map.extend({
     createWeapon(latlng, uid = false, heightPadding = 0){
         let newMarker;
         if (this.activeWeaponsMarkers.getLayers().length === 0) {
-            newMarker = new squadWeaponMarker(latlng, {icon: mortarIcon, uid: uid, heightPadding: heightPadding}, this).addTo(this.markersGroup).addTo(this.activeWeaponsMarkers);
+            newMarker = new squadWeaponMarker(latlng, {uid: uid, heightPadding: heightPadding}, this)
+                .addTo(this.markersGroup).addTo(this.activeWeaponsMarkers);
+            newMarker.updateIcon();
         } else if (this.activeWeaponsMarkers.getLayers().length === 1) {
-            newMarker = new squadWeaponMarker(latlng, {icon: mortarIcon2, uid: uid, heightPadding: heightPadding}, this).addTo(this.markersGroup).addTo(this.activeWeaponsMarkers);
-            this.activeWeaponsMarkers.getLayers()[0].setIcon(mortarIcon1);
+            newMarker = new squadWeaponMarker(latlng, {uid: uid, heightPadding: heightPadding}, this).addTo(this.markersGroup).addTo(this.activeWeaponsMarkers);
+            newMarker.updateIcon();
+            this.activeWeaponsMarkers.getLayers()[0].updateIcon();
             this.updateTargets();
         } else {
             return;

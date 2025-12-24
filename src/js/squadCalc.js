@@ -297,7 +297,6 @@ export default class SquadCalc {
         WEAPONS.forEach((weapon, index, arr) => {
             arr[index] = new Weapon(
                 weapon.name,
-                weapon.velocity,
                 weapon.deceleration,
                 weapon.decelerationTime,
                 weapon.gravityScale,
@@ -308,13 +307,6 @@ export default class SquadCalc {
                 weapon.type,
                 weapon.angleType,
                 weapon.elevationPrecision,
-                weapon.minDistance,
-                weapon.moa,
-                weapon.explosionDamage,
-                weapon.explosionRadius[0],
-                weapon.explosionRadius[1],
-                weapon.explosionDistanceFromImpact,
-                weapon.damageFallOff,
                 weapon.shells,
                 weapon.heightOffset,
                 weapon.angleOffset,
@@ -951,18 +943,28 @@ export default class SquadCalc {
      */
     changeWeapon() {
         const WEAPON = this.WEAPON_SELECTOR.val();
-    
-        //this.line.hide("none");
+
         localStorage.setItem("data-weapon", WEAPON);
         this.activeWeapon = WEAPONS[WEAPON];
     
-        if (WEAPON == 6) {
+        if (this.activeWeapon.shells.length > 1) {
             $("#ammoSelector").show();
-            this.activeWeapon.changeShell();
         } else {
             $("#ammoSelector").hide();
         }
-        $("#mortarImg").attr("src", `/img/weapons/${this.activeWeapon.name}.png`);
+
+        // Load SHELL_SELECTOR with weapon.shells
+        this.SHELL_SELECTOR.empty();    
+        this.activeWeapon.shells.forEach((shell, index) => {
+            this.SHELL_SELECTOR.append(`
+                <option data-i18n=weapons:${shell.name} value=${index}>
+                    ${i18next.t("weapons:" + shell.name)}
+                </option>`
+            );
+        });
+        this.SHELL_SELECTOR.val(0).trigger("change");
+
+        $("#mortarImg").attr("src", `/img/weapons/${this.activeWeapon.name}.webp`);
         
         this.shoot();
     
