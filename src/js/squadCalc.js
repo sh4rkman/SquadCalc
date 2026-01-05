@@ -591,11 +591,6 @@ export default class SquadCalc {
             this.minimap.disableDrawingMode();
         });
 
-        $("#fabCheckbox3").on("change", () => {
-            const newUrl = window.location.href.replace("squadcalc", "squadtactics").replace("3000", "4000");
-            window.open(newUrl, "_blank", "noopener");
-        });
-
         $("#fabCheckbox2").on("change", () => { this.switchUI();});
 
         $("#factionsButton").on("click", () => { $("#factionsDialog")[0].showModal(); });

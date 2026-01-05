@@ -44,13 +44,6 @@ tippy("span[data-i18n='settings:lowAndHigh']", {
     },
 });
 
-tippy("span[data-i18n='settings:lowAndHigh']", {
-    ...commonToolipsSettings,
-    onShow(tip) {
-        tip.setContent(`${i18next.t("tooltips:lowAndHighTooltip")}`);
-    },
-});
-
 tippy("span[data-i18n='settings:mapAnimationSettings']", {
     ...commonToolipsSettings,
     onShow(tip) {
