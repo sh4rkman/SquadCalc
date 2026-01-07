@@ -4,7 +4,6 @@ import webpack from 'webpack';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 import CssMinimizerPlugin from 'css-minimizer-webpack-plugin';
 import TerserPlugin from 'terser-webpack-plugin';
-import WebpackPwaManifest from 'webpack-pwa-manifest';
 import RobotstxtPlugin from 'robotstxt-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import workbox from 'workbox-webpack-plugin';
@@ -114,87 +113,6 @@ export default async (env) => {
             new RobotstxtPlugin({
                 policy: robotstxtPolicy,
             }),
-            new WebpackPwaManifest({
-                name: 'SquadCalc',
-                short_name: 'SquadCalc',
-                start_url: "/",
-                description: 'A Complete Mortar Calculator for Squad',
-                background_color: '#111111',
-                publicPath: './',
-                fingerprints: false,
-                theme_color: '#FFFFFF',
-                inject: true,
-                ios: true,
-                crossorigin: 'use-credentials',
-                icons: [
-                    {
-                        // Regular FavIcon
-                        src: path.resolve('./src/img/favicons/favicon_512x512.png'),
-                        sizes: [16, 32, 96, 192, 256, 384, 512],
-                        destination: path.join('img', 'favicons'),
-                        purpose: 'maskable'
-                    },
-                    {
-                        // PWA Installation icon
-                        src: path.resolve('./src/img/favicons/favicon_512x512.png'),
-                        size: '192x192',
-                        destination: path.join('img', 'favicons'),
-                        purpose: 'any'
-                    }
-
-                ],
-                screenshots: [
-                    {
-                        "src": "/img/pwa/mobile_ui.webp",
-                        "sizes": "748x1568",
-                        "type": "image/webp",
-                        "form_factor": "narrow",
-                        "label": "Map View"
-                    },
-                    {
-                        "src": "/img/pwa/mobile.webp",
-                        "sizes": "748x1568",
-                        "type": "image/webp",
-                        "form_factor": "narrow",
-                        "label": "Minimalist/keyboard friendly calculator"
-                    },
-                    {
-                        "src": "/img/pwa/desktop_ui_1.webp",
-                        "sizes": "800x553",
-                        "type": "image/webp",
-                        "form_factor": "wide",
-                        "label": "Map Mode"
-                    },
-                    {
-                        "src": "/img/pwa/desktop_ui_2.webp",
-                        "sizes": "800x553",
-                        "type": "image/webp",
-                        "form_factor": "wide",
-                        "label": "Topographic maps"
-                    },
-                    {
-                        "src": "/img/pwa/desktop_ui_3.webp",
-                        "sizes": "800x553",
-                        "type": "image/webp",
-                        "form_factor": "wide",
-                        "label": "Weapon Stats"
-                    },
-                    {
-                        "src": "/img/pwa/desktop_ui_4.webp",
-                        "sizes": "800x553",
-                        "type": "image/webp",
-                        "form_factor": "wide",
-                        "label": "Target Stats"
-                    },
-                    {
-                        "src": "/img/pwa/desktop_ui_0.webp",
-                        "sizes": "800x553",
-                        "type": "image/webp",
-                        "form_factor": "wide",
-                        "label": "Legacy Mode"
-                    },
-                ]
-            }),
             new workbox.InjectManifest({
                 swSrc: './src/js/sw.js',
                 swDest: './sw.js',
@@ -204,7 +122,7 @@ export default async (env) => {
                     /\.map$/,
                     /\/favicons\//,
                     /robots\.txt/,
-                    /\.webp$/,
+                    // /\.webp$/,
                     /\.mp3$/,
                     /\.json$/,
                     /\.gif$/,
