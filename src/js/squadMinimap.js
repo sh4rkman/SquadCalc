@@ -156,7 +156,7 @@ export const squadMinimap = Map.extend({
 
         if (App.userSettings.highQualityImages) {
             // Use TileLayer for high-quality images
-            let tilePath = `${imagePath}_hq/{z}_{x}_{y}.webp`;
+            let tilePath = `${process.env.API_URL}${imagePath}_hq/{z}_{x}_{y}.webp`;
             this.activeLayer = new TileLayer(tilePath, {
                 bounds: this.imageBounds,
                 minNativeZoom: 0,
@@ -167,7 +167,7 @@ export const squadMinimap = Map.extend({
             this.activeLayer.addTo(this.layerGroup);
         } else {
             // Use ImageOverlay for standard images
-            imagePath = `${imagePath}.webp`;
+            imagePath = `${process.env.API_URL}${imagePath}.webp`;
             this.activeLayer = new ImageOverlay(imagePath, this.imageBounds);
             this.activeLayer.addTo(this.layerGroup);
             $(this.activeLayer.getElement()).css("opacity", 0);

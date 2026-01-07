@@ -57,7 +57,7 @@ export default class SquadServersBrowser {
      */
     async getServers() {
         try {
-            const response = await fetch("/api/v2/get/servers");
+            const response = await fetch(`${process.env.API_URL}/get/servers`);
             const data = await response.json();
             this.serversData = data.servers;
 
@@ -198,8 +198,8 @@ export default class SquadServersBrowser {
                             ${server.attributes.details.map}<br>
                             ${nextLayer}
                         </td>
-                        <td>${this.getTeamHTML(server.team1, server.attributes.details.squad_teamOne)}</td>
-                        <td>${this.getTeamHTML(server.team2, server.attributes.details.squad_teamTwo)}</td>
+                        <td class="teamFlags">${this.getTeamHTML(server.team1, server.attributes.details.squad_teamOne)}</td>
+                        <td class="teamFlags">${this.getTeamHTML(server.team2, server.attributes.details.squad_teamTwo)}</td>
                     </tr>
                 `;
             });
@@ -258,8 +258,8 @@ export default class SquadServersBrowser {
                             <th class="sortable" data-sort="map" data-i18n="common:currentMap">
                                 ${i18next.t("currentMap", { ns: "common" })} <span class="sort-indicator">⇅</span>
                             </th>
-                            <th data-i18n="common:team1">${i18next.t("team1", { ns: "common" })}</th>
-                            <th data-i18n="common:team2">${i18next.t("team2", { ns: "common" })}</th>
+                            <th class="teamFlags" data-i18n="common:team1">${i18next.t("team1", { ns: "common" })}</th>
+                            <th class="teamFlags" data-i18n="common:team2">${i18next.t("team2", { ns: "common" })}</th>
                         </tr>
                     </thead>
                     <tbody id="serversTableBody"></tbody>

@@ -8,9 +8,8 @@ import { MapDrawing, MapArrow, MapCircle, MapRectangle } from "./squadShapes.js"
 export default class SquadSession {
 
     constructor(sessionId) {
-        this.ws = new WebSocket(
-            `${location.protocol === "https:" ? "wss" : "ws"}://${location.host}/api/v2/`
-        );
+        const WS_URL = process.env.API_URL.replace(/^http/, "ws");
+        this.ws = new WebSocket(`${WS_URL}/`);
         this.wsActiveUsers = 1;
         this.ws.onopen = () => { this._open(sessionId); };
         this.ws.onclose = (event) => { this._close(event); };
