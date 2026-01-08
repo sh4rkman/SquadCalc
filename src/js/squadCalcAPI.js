@@ -92,7 +92,6 @@ export const checkApiHealth = async () => {
                     $(".btn-session").addClass("active");
                     createSessionTooltips.disable();
                     leaveSessionTooltips.enable();
-                    
                     // Wait for layer/layers to load before creating session
                     // This ensures layer data is included in the initial session state
                     if (urlParams.has("layer")) {
