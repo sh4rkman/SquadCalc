@@ -1,4 +1,4 @@
-# <img src="https://img.shields.io/badge/-major%20release-b22222?style=for-the-badge"> **42.0.0** *(2026-01-01)*
+# <img src="https://img.shields.io/badge/-major%20release-b22222?style=for-the-badge"> **42.0.0** *(2026-01-08)*
 
 </br><img src="https://img.shields.io/badge/-new%20features-green">  
 - Added French 120 Mortar (MO120RTF1) from SuperMod *(thanks Kryger)*
@@ -19,9 +19,9 @@
 - Weapon & Target markers now scale with marker size settings
 
 </br><img src="https://img.shields.io/badge/-other%20-grey">
-- squadcalc.app moved to a brand new server, cutting response times by three ! *(150ms -> 50ms)*
+- squadcalc.app moved to a brand new server, cutting response times by three !
 - With the imminent removal of squadtactics.app, a lot of image assets have been moved back from the API to the `/public/` folder of the repository. Should improve performance & loading times, specifically in regions with huge internet censorship.
-- `npm run build` & `npm run start` now run a check list and fails if something is wrong : missing `.env`, missing or badly formatted API_URL (thanks Karasiq 😋)
+- `npm run build` & `npm run start` now run a check list and fails if something is wrong : missing `.env`, missing or badly formatted API_URL
 - Added new custom settings to be defined in `.env`
   - `DEV_SERVER_PORT` (default to `3000`)
   - `DEV_SERVER_AUTO_OPEN` to disable a tab being opened when launching `npm run start` (default to `true`)

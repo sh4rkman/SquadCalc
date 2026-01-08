@@ -12,7 +12,7 @@ precacheAndRoute(self.__WB_MANIFEST);
 
 // NEVER cache HTML documents
 registerRoute(
-    ({ request }) => request.mode === 'navigate',
+    ({ request }) => request.mode === "navigate",
     new NetworkOnly()
 );
 
@@ -34,7 +34,7 @@ registerRoute(
 
 // Block all OTHER API requests from being cached
 registerRoute(
-    ({ url }) => url.pathname.startsWith('/api/'),
+    ({ url }) => url.pathname.startsWith("/api/"),
     new NetworkOnly()
 );
 
