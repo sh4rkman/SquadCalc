@@ -2,12 +2,12 @@ import { App } from "../app.js";
 import { WEAPONS } from "./data/weapons.js";
 
 export class Weapon {
-    constructor(name, velocity, deceleration, decelerationTime, gravityScale, minElevation, unit, logo, marker, type, angleType, elevationPrecision, minDistance, moa, maxDamage, startRadius, endRadius, distanceFromImpact, falloff, shells = [], heightOffset = 0, angleOffset = 0, projectileLifespan = 100) {
+    constructor(name, deceleration, decelerationTime, gravityScale, minElevation, unit, logo, marker, type, angleType, elevationPrecision, shells = [], heightOffset = 0, angleOffset = 0, projectileLifespan = 100) {
         this.name = name;
-        this.velocity = velocity;
+        //this.velocity = velocity;
         this.deceleration = deceleration;
         this.decelerationTime = decelerationTime;
-        this.decelerationDistance = this.velocity * this.decelerationTime - 0.5 * this.deceleration * Math.pow(this.decelerationTime, 2);
+        //this.decelerationDistance = this.velocity * this.decelerationTime - 0.5 * this.deceleration * Math.pow(this.decelerationTime, 2);
         this.gravityScale = gravityScale;
         this.minElevation = minElevation;
         this.unit = unit;
@@ -16,15 +16,16 @@ export class Weapon {
         this.type = type;
         this.angleType = angleType;
         this.elevationPrecision = elevationPrecision;
-        this.minDistance = minDistance;
-        this.moa = moa;
-        this.maxDistance = this.getMaxDistance();
-        this.hundredDamageRadius = this.calculateDistanceForDamage(maxDamage, startRadius, endRadius, falloff, distanceFromImpact, 100);
-        this.twentyFiveDamageRadius = this.calculateDistanceForDamage(maxDamage, startRadius, endRadius, falloff, distanceFromImpact, 25);
+        //this.minDistance = minDistance;
+        //this.moa = moa;
+        //this.maxDistance = this.getMaxDistance();
+        //this.hundredDamageRadius = this.calculateDistanceForDamage(maxDamage, startRadius, endRadius, falloff, distanceFromImpact, 100);
+        //this.twentyFiveDamageRadius = this.calculateDistanceForDamage(maxDamage, startRadius, endRadius, falloff, distanceFromImpact, 25);
         this.shells = shells;
         this.heightOffset = heightOffset;
         this.angleOffset = angleOffset;
         this.projectileLifespan = projectileLifespan;
+
     }
 
 
@@ -115,23 +116,31 @@ export class Weapon {
      * @returns {void} 
      */
     changeShell(){
-        const shell = $(".dropbtn3").val();
-        if ($(".dropbtn2").val() != 6) return;
-    
-        const weaponData = WEAPONS[6].shells[shell];
+        const SHELL_NUM = $(".dropbtn3").val();
+        const WEAPON_NUM = $(".dropbtn2").val();
+        const SHELL_DATA = WEAPONS[WEAPON_NUM].shells[SHELL_NUM];
 
         const explosionParams = [
-            weaponData.explosionDamage,
-            weaponData.explosionRadius[0],
-            weaponData.explosionRadius[1],
-            weaponData.damageFallOff,
-            weaponData.explosionDistanceFromImpact
+            SHELL_DATA.explosionDamage,
+            SHELL_DATA.explosionRadius[0],
+            SHELL_DATA.explosionRadius[1],
+            SHELL_DATA.damageFallOff,
+            SHELL_DATA.explosionDistanceFromImpact
         ];
     
+        // Load Shell data into Weapon
+        App.activeWeapon.velocity = SHELL_DATA.velocity;
+        App.activeWeapon.decelerationDistance = App.activeWeapon.velocity * App.activeWeapon.decelerationTime - 0.5 * App.activeWeapon.deceleration * Math.pow(App.activeWeapon.decelerationTime, 2);
+        App.activeWeapon.minDistance = SHELL_DATA.minDistance;
+        App.activeWeapon.moa = SHELL_DATA.moa;
+        App.activeWeapon.maxDistance = this.getMaxDistance();
         App.activeWeapon.hundredDamageRadius = App.activeWeapon.calculateDistanceForDamage(...explosionParams, 100);
         App.activeWeapon.twentyFiveDamageRadius = App.activeWeapon.calculateDistanceForDamage(...explosionParams, 25);
-        App.activeWeapon.moa = weaponData.moa;
+        App.activeWeapon.moa = SHELL_DATA.moa;
+
+        // Update Existsing Targets on Minimap
         App.minimap.updateTargets();
+        App.minimap.updateWeapons();
     }
 
 }

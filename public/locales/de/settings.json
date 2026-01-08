@@ -12,6 +12,7 @@
         "gridOpacity": "Raster-Deckkraft",
         "zoomSensitivity": "Zoom-Empfindlichkeit",
         "fontSize": "Schriftgröße",
+        "markerSize": "Größe der Marker",
         "brightness": "Helligkeit",
         "contrast": "Kontrast",        
     "weaponOptions": "Waffenoptionen",

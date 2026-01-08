@@ -1,3 +1,42 @@
+# <img src="https://img.shields.io/badge/-major%20release-b22222?style=for-the-badge"> **42.0.0** *(2026-01-08)*
+
+</br><img src="https://img.shields.io/badge/-new%20features-green">  
+- Added French 120 Mortar (MO120RTF1) from SuperMod *(thanks Kryger)*
+- Added Ural HellCanon from Steel Division *(Thanks Mooraragi)*
+
+</br><img src="https://img.shields.io/badge/-bug%20fixes-b22">  
+- Fixed missing M777 marker *(thanks Madlifer, Dutch)*
+- Fixed default value for fontsize & zoom speed settings
+- Fixed UB32 & Technical UB32 icon that were reverted
+- Marker's icons placed by other members within a session now correctly update when moved out of range
+
+</br><img src="https://img.shields.io/badge/-%20improv%20-orange"> 
+- Reworked menu buttons to be more compact
+- Added back shape-drawing from squadtactics *(thanks Metroseksuaali!)*
+- Added a free-hand drawing tool on right clic
+- Added `CTRL` + `Z` as an alternative hotkey to `backspace` for removing last target/marker/drawing
+- Added new icons for Mortar & Hellcanon
+- Weapon & Target markers now scale with marker size settings
+
+</br><img src="https://img.shields.io/badge/-other%20-grey">
+- squadcalc.app moved to a brand new server, cutting response times by three !
+- With the imminent removal of squadtactics.app, a lot of image assets have been moved back from the API to the `/public/` folder of the repository. Should improve performance & loading times, specifically in regions with huge internet censorship.
+- `npm run build` & `npm run start` now run a check list and fails if something is wrong : missing `.env`, missing or badly formatted API_URL
+- Added new custom settings to be defined in `.env`
+  - `DEV_SERVER_PORT` (default to `3000`)
+  - `DEV_SERVER_AUTO_OPEN` to disable a tab being opened when launching `npm run start` (default to `true`)
+- Renammed `INDEX` .env setting to `SEARCH_ENGINES`
+- Renammed `WEBSOCKET` .env setting to `SMO_WEBSOCKET`
+- Improved caching :
+  - Most of the images websites should now be precached a few seconds after page is loaded
+  - API responses will **not** be cached anymore
+  - Main HTML page will **not** be cached anymore
+- Reworked the MIT Licence
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
+
+
 # <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge"> **41.1.0** *(2025-12-13)*
 
 </br><img src="https://img.shields.io/badge/-bug%20fixes-b22">  

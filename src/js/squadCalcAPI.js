@@ -80,7 +80,6 @@ export function sendTargetData(targetData) {
  * @throws Will log an error if the network request fails or if the API response is not OK.
  */
 export const checkApiHealth = async () => {
-    if (!process.env.API_URL) { return; }
     try {
         const response = await fetch(`${process.env.API_URL}/health`);
         if (response.ok) {
@@ -93,7 +92,6 @@ export const checkApiHealth = async () => {
                     $(".btn-session").addClass("active");
                     createSessionTooltips.disable();
                     leaveSessionTooltips.enable();
-                    
                     // Wait for layer/layers to load before creating session
                     // This ensures layer data is included in the initial session state
                     if (urlParams.has("layer")) {
@@ -108,10 +106,10 @@ export const checkApiHealth = async () => {
                 }
             }
         } else {
-            console.error(`Not connected to ${process.env.API_URL}`);
+            console.error("Not connected to SquadCalc API");
         }
     } catch (error) {
-        console.error(`Not connected to ${process.env.API_URL}`);
+        console.error("Not connected to SquadCalc API");
         console.debug(error);
     }
 };

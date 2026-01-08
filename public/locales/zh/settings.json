@@ -12,6 +12,7 @@
         "gridOpacity": "网格不透明度",
         "zoomSensitivity": "缩放灵敏度",
         "fontSize": "字体大小",
+        "markerSize": "标记大小",
         "brightness": "亮度",
         "contrast": "对比度",
     "weaponOptions": "武器选项",

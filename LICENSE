@@ -1,11 +1,27 @@
-MIT License
+# MIT License (Non-Commercial)
 
-Copyright (c) 2024 Maxime "sharkman" Boussard
+Copyright (c) 2026 Maxime *"sharkman"* Boussard
 
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+<br>
 
-1. Attribution for Reuploads: If the Software is reuploaded, credit must be given to the original project and original author. This includes maintaining any existing links to the original project’s GitHub repository, which must not be removed or altered.
+---
 
-2. The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to use, copy, modify, and merge the Software **for non-commercial purposes only**, subject to the following conditions:
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+1. **NON-COMMERCIAL USE ONLY:** The Software may **not** be used, in whole or in part, for **any** commercial purpose. Commercial purposes include, but are not limited to: 
+    - Selling the Software or derivative works
+    - Using the Software in paid products or services
+    - Using the Software on websites, platforms, or applications that generate revenue (including advertising, subscriptions, sponsorships, or donations tied to access or functionality)
+
+2. **ATTRIBUTION** If the Software or any derivative work is redistributed or reuploaded, credit must be given to the original author and original project. This includes maintaining any existing references or links to the original project’s repository, which must not be removed or altered.
+
+3. **LICENCE NOTICE:** The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+
+---
+
+<br>  
+
+THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.

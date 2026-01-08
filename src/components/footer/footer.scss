@@ -24,12 +24,6 @@ footer {
         &.expanded {
             max-width: 20em;
             .legacyButton,
-            .settingsButton,
-            .extraButton {
-                opacity: 1;
-                transform: translateX(0);
-                pointer-events: auto;
-            }
             .settingsButton {
                 .fab {
                     background-color: #333;
@@ -41,12 +35,6 @@ footer {
         }
         .legacyButton,
         .settingsButton,
-        .extraButton {
-            opacity: 0;
-            transform: translateX(0.5rem);
-            transition: opacity 0.3s ease, transform 0.3s ease;
-            pointer-events: none;
-        }
         .menuButton {
             .fab {
                 background-color: variables.$mainColor;

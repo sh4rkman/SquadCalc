@@ -1,0 +1,75 @@
+{
+    "name": "SquadCalc",
+    "short_name": "SquadCalc",
+    "orientation": "portrait",
+    "display": "standalone",
+    "start_url": "/",
+    "description": "A Complete Mortar Calculator for Squad",
+    "background_color": "#111111",
+    "theme_color": "#FFFFFF",
+    "icons": [
+        {
+            "src": "/img/favicons/icon_192x192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "/img/favicons/icon_512x512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any"
+        }
+    ],
+    "screenshots": [
+        {
+            "src": "/img/github/mobile_ui.webp",
+            "sizes": "748x1568",
+            "type": "image/webp",
+            "form_factor": "narrow",
+            "label": "Map View"
+        },
+        {
+            "src": "/img/github/mobile.webp",
+            "sizes": "748x1568",
+            "type": "image/webp",
+            "form_factor": "narrow",
+            "label": "Minimalist/keyboard friendly calculator"
+        },
+        {
+            "src": "/img/github/desktop_ui_1.webp",
+            "sizes": "800x553",
+            "type": "image/webp",
+            "form_factor": "wide",
+            "label": "Map Mode"
+        },
+        {
+            "src": "/img/github/desktop_ui_2.webp",
+            "sizes": "800x553",
+            "type": "image/webp",
+            "form_factor": "wide",
+            "label": "Topographic maps"
+        },
+        {
+            "src": "/img/github/desktop_ui_3.webp",
+            "sizes": "800x553",
+            "type": "image/webp",
+            "form_factor": "wide",
+            "label": "Weapon Stats"
+        },
+        {
+            "src": "/img/github/desktop_ui_4.webp",
+            "sizes": "800x553",
+            "type": "image/webp",
+            "form_factor": "wide",
+            "label": "Target Stats"
+        },
+        {
+            "src": "/img/github/desktop_ui_0.webp",
+            "sizes": "800x553",
+            "type": "image/webp",
+            "form_factor": "wide",
+            "label": "Legacy Mode"
+        }
+    ]
+}

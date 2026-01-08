@@ -2,6 +2,7 @@ name: Deploy Prod
 permissions:
   contents: read
 on:
+  workflow_dispatch:
   push:
     branches: [ master ]
   
@@ -18,17 +19,14 @@ jobs:
         username: ${{ secrets.USERNAME }}
         password: ${{ secrets.PASSWORD }}
         script: |
-            eval `ssh-agent -s`
+            eval $(ssh-agent -s)
             ssh-add ~/.ssh/${{ secrets.SSH_PUBLIC_KEY_NAME }}
-            # Enable maintenance mode
-            touch ${{ secrets.DIST }}/maintenance.enable
+            source ~/.zshrc
             # Deploy
             cd ${{ secrets.DIST }}
             git pull origin master
             npm ci
             npm run build
-            # Disable maintenance mode
-            rm ${{ secrets.DIST }}/maintenance.enable
             
     - name: Discord notification
       env:

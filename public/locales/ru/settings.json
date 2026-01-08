@@ -12,6 +12,7 @@
         "gridOpacity": "Прозрачность сетки",
         "zoomSensitivity": "Чувствительность зума",
         "fontSize": "Размер шрифта",
+        "markerSize": "Размер маркеров",
         "brightness": "Яркость",
         "contrast": "Контраст",
     "weaponOptions": "Опции оружия",

@@ -1,6 +1,7 @@
 import tippy, {followCursor} from "tippy.js";
 import "tippy.js/dist/tippy.css";
 import { App } from "../app.js";
+import { MapDrawing } from "./squadShapes.js";
 
 
 export default class SquadContextMenu {
@@ -92,54 +93,101 @@ export default class SquadContextMenu {
             onHide: () => {
                 $(".shapeButton").off("click");
             },
-            // onShow: (tip) => {
-            // tip.setContent(
-            //     `
-            //     <div class="contextmenu">
-            //         <button class="shapeButton">
-            //             <span class="circle blue" data-team="shared" data-category="ctx" data-icon="circle"></span>
-            //         </button>
-            //     </div>
-            //     <div class="contextmenu">
-            //         <button class="shapeButton">
-            //             <span class="rectangle blue" data-team="shared" data-category="ctx" data-icon="rectangle"></span>
-            //         </button>   
-            //     </div>
-            //     <div class="contextmenu">
-            //         <button class="shapeButton">
-            //             <span class="arrow blue" data-team="shared" data-category="ctx" data-icon="arrow"></span>
-            //         </button>
-            //     </div>
-            //     `
-            // );
+            onShow: (tip) => {
+                tip.setContent(
+                    `
+                    <div class="contextmenu">
+                        <button id="penButton" class="shapeButton penButton">
+                            <span class="pen blue" data-team="shared" data-category="ctx" data-icon="pen"></span>
+                        </button>
+                    </div>
+                    <div class="contextmenu">
+                        <button class="shapeButton">
+                            <span class="circle blue" data-team="shared" data-category="ctx" data-icon="circle"></span>
+                        </button>
+                    </div>
+                    <div class="contextmenu">
+                        <button class="shapeButton">
+                            <span class="rectangle blue" data-team="shared" data-category="ctx" data-icon="rectangle"></span>
+                        </button>   
+                    </div>
+                    <div class="contextmenu">
+                        <button class="shapeButton">
+                            <span class="arrow blue" data-team="shared" data-category="ctx" data-icon="arrow"></span>
+                        </button>
+                    </div>
+                    `
+                );
+
+                this.setIcons(tip);
+
+                setTimeout(() => {
+                    $(".penButton").on("click", (event) => {
+
+                        // Extract the color from the clicked element
+                        let targetElement = event.target.closest(".shapeButton span");
+                        const color = [...targetElement.classList].find(cls => cls !== "pen");
+
+                        App.minimap.on("pointerdown", (e) => {
+                            if (!App.minimap.drawingMode)  return;
+                            if (e.originalEvent.button !== 0) return;
+                            App.minimap.drawing = true;
+                            App.minimap.points = [e.latlng];
+                            App.minimap.currentLine = new MapDrawing(App.minimap, color, App.minimap.points);
+                        });
+
+                        App.minimap.on("pointermove", (e) => {
+                            if (!App.minimap.drawingMode) return;
+                            if (!App.minimap.drawing) return;
+                            App.minimap.points.push(e.latlng);
+                            App.minimap.currentLine.polyline.setLatLngs(App.minimap.points);
+                        });
                 
-            //this.setIcons(tip);
+                        App.minimap.on("pointerup", () => {
+                            if (!App.minimap.drawingMode) return;
+                            if (!App.minimap.drawing) return;
+                
+                            // Avoid creating lines with less than 2 points
+                            if (App.minimap.currentLine.polyline.getLatLngs().length < 2) {
+                                App.minimap.currentLine.delete();
+                                return;
+                            }
 
-            // setTimeout(() => {
-            //     $(".shapeButton").on("click", (event) => {
-            //         let targetElement = event.target.closest(".shapeButton span"); // Ensure we get the <span> inside the button
+                            App.minimap.currentLine.finalize();
+                            App.minimap.drawing = false;
+                            App.minimap.currentLine = null;
+                        });
+
+                        App.minimap.enableDrawingMode();
+                        this.close();
+                    });
+
+
+                    $(".shapeButton").on("click", (event) => {
+                        let targetElement = event.target.closest(".shapeButton span"); // Ensure we get the <span> inside the button
                     
-            //         if (!targetElement) return;
+                        if (!targetElement) return;
                                        
-            //         // Extract the shape type (arrow, rectangle, circle)
-            //         const shape = ["arrow", "rectangle", "circle"].find(type => targetElement.classList.contains(type));
+                        // Extract the shape type (arrow, rectangle, circle)
+                        const shape = ["arrow", "rectangle", "circle"].find(type => targetElement.classList.contains(type));
                     
-            //         // Extract the color (any other class that isn't the shape itself)
-            //         const color = [...targetElement.classList].find(cls => cls !== shape);
+                        // Extract the color (any other class that isn't the shape itself)
+                        const color = [...targetElement.classList].find(cls => cls !== shape);
                     
-            //         if (shape && color) {
-            //             // Call the corresponding method dynamically
-            //             const methodName = `create${shape.charAt(0).toUpperCase() + shape.slice(1)}`;
-            //             if (typeof App.minimap[methodName] === "function") {
-            //                 App.minimap[methodName](color);
-            //             }
-            //         }
+                        if (shape && color) {
+                        // Call the corresponding method dynamically
+                            const methodName = `create${shape.charAt(0).toUpperCase() + shape.slice(1)}`;
+                            if (typeof App.minimap[methodName] === "function") {
+                                App.minimap[methodName](color);
+                            }
+                        }
                     
-            //         this.close();
-            //     });
-            // }, 0);
+                        this.close();
+                    });
+                }, 0);
 
-            // }
+
+            }
         });
     }
 
@@ -231,41 +279,53 @@ export default class SquadContextMenu {
             }
         });
 
-        // tippy(document.querySelector(".arrow.blue"), {
-        //     ...GLOBALOPTIONS,
-        //     placement: "right",
-        //     offset: [0, 3],
-        //     onShow : (tip) => {
-        //         const template = document.getElementById("arrows_html");
-        //         const clone = document.importNode(template.content, true);
-        //         tip.setContent(clone);
-        //         this.setIcons(tip);
-        //     }
-        // });
+        tippy(document.querySelector(".pen.blue"), {
+            ...GLOBALOPTIONS,
+            placement: "right",
+            offset: [0, 3],
+            onShow : (tip) => {
+                const template = document.getElementById("pens_html");
+                const clone = document.importNode(template.content, true);
+                tip.setContent(clone);
+                this.setIcons(tip);
+            }
+        });
 
-        // tippy(document.querySelector(".rectangle.blue"), {
-        //     ...GLOBALOPTIONS,
-        //     placement: "right",
-        //     offset: [0, 3],
-        //     onShow : (tip) => {
-        //         const template = document.getElementById("rectangles_html");
-        //         const clone = document.importNode(template.content, true);
-        //         tip.setContent(clone);
-        //         this.setIcons(tip);
-        //     }
-        // });
+        tippy(document.querySelector(".arrow.blue"), {
+            ...GLOBALOPTIONS,
+            placement: "right",
+            offset: [0, 3],
+            onShow : (tip) => {
+                const template = document.getElementById("arrows_html");
+                const clone = document.importNode(template.content, true);
+                tip.setContent(clone);
+                this.setIcons(tip);
+            }
+        });
 
-        // tippy(document.querySelector(".circle.blue"), {
-        //     ...GLOBALOPTIONS,
-        //     placement: "right",
-        //     offset: [0, 3],
-        //     onShow : (tip) => {
-        //         const template = document.getElementById("circles_html");
-        //         const clone = document.importNode(template.content, true);
-        //         tip.setContent(clone);
-        //         this.setIcons(tip);
-        //     }
-        // });
+        tippy(document.querySelector(".rectangle.blue"), {
+            ...GLOBALOPTIONS,
+            placement: "right",
+            offset: [0, 3],
+            onShow : (tip) => {
+                const template = document.getElementById("rectangles_html");
+                const clone = document.importNode(template.content, true);
+                tip.setContent(clone);
+                this.setIcons(tip);
+            }
+        });
+
+        tippy(document.querySelector(".circle.blue"), {
+            ...GLOBALOPTIONS,
+            placement: "right",
+            offset: [0, 3],
+            onShow : (tip) => {
+                const template = document.getElementById("circles_html");
+                const clone = document.importNode(template.content, true);
+                tip.setContent(clone);
+                this.setIcons(tip);
+            }
+        });
     }
 
     setIcons(tip) {
@@ -276,7 +336,7 @@ export default class SquadContextMenu {
             const icon = el.dataset.icon;
 
             // Build the path
-            let iconPath = `${process.env.API_URL}/img/icons/${team}/${category}/${icon}.webp`;
+            let iconPath = `/img/icons/${team}/${category}/${icon}.webp`;
             el.style.backgroundImage = `url('${iconPath}')`;
             el.style.backgroundSize = "contain";
         });

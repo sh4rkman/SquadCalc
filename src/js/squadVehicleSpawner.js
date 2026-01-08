@@ -80,7 +80,7 @@ export class SquadVehicleSpawner {
 
             // Create txt with rotation
             this.txt = new ImageOverlay.Rotated(
-                `${process.env.API_URL}/img/vehicleSpawners/${this.data.typePriorities[0].name}.webp`,
+                `/img/vehicleSpawners/${this.data.typePriorities[0].name}.webp`,
                 topLeft,
                 topRight,
                 bottomLeft)

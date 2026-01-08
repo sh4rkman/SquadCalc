@@ -128,6 +128,9 @@ th {
         padding: 8px 12px;
         white-space: nowrap;
         text-overflow: ellipsis;
+        &.teamFlags {
+            padding: 0;   
+        }
     }
 }
 

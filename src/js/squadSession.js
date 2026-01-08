@@ -2,6 +2,7 @@
 import { App } from "../app.js";
 import { LatLng } from "leaflet";
 import { createSessionTooltips, leaveSessionTooltips } from "./tooltips.js";
+import { MapDrawing, MapArrow, MapCircle, MapRectangle } from "./squadShapes.js";
 
 
 export default class SquadSession {
@@ -82,6 +83,7 @@ export default class SquadSession {
 
         case "SESSION_JOINED": {
             console.debug("Successfully joined session: " + data.sessionId);
+            console.debug("Session data: ", data);
 
             // Update MAP with custom event to skip the broadcast
             App.MAP_SELECTOR.val(data.mapState.activeMap).trigger($.Event("change", { broadcast: false }));
@@ -103,10 +105,6 @@ export default class SquadSession {
             $(document).one("layers:loaded", () => {
                 App.LAYER_SELECTOR.val(data.mapState.activeLayer).trigger($.Event("change", { broadcast: false }));
                 
-                data.mapState.markers.forEach(marker => {
-                    App.minimap.createMarker(new LatLng(marker.lat, marker.lng), marker.team, marker.category, marker.icon, marker.uid);
-                });
-
                 $(document).one("layer:loaded", () => {
                     App.minimap.layer._resetLayer();
 
@@ -144,7 +142,25 @@ export default class SquadSession {
                     App.FACTION2_SELECTOR.val(data.mapState.teams[1][0]).trigger($.Event("change", { broadcast: false }));
                     App.UNIT1_SELECTOR.val(data.mapState.teams[0][1]).trigger($.Event("change", { broadcast: false }));
                     App.UNIT2_SELECTOR.val(data.mapState.teams[1][1]).trigger($.Event("change", { broadcast: false }));
+                
                 });
+
+                data.mapState.markers.forEach(marker => {
+                    App.minimap.createMarker(new LatLng(marker.lat, marker.lng), marker.team, marker.category, marker.icon, marker.uid);
+                });
+                data.mapState.arrows.forEach(arrow => {
+                    new MapArrow(App.minimap, arrow.color, arrow.latlngs[0], arrow.latlngs[1], arrow.uid);
+                });
+                data.mapState.circles.forEach(circle => {
+                    new MapCircle(App.minimap, circle.color, circle.latlng, circle.radius, circle.uid);
+                });
+                data.mapState.rectangles.forEach(rectangle => {
+                    new MapRectangle(App.minimap, rectangle.color, rectangle.bounds._southWest, rectangle.bounds._northEast, rectangle.uid);
+                });
+                data.mapState.draws.forEach(draw => {
+                    new MapDrawing(App.minimap, draw.color, draw.latlngs, draw.uid).finalize(false);
+                });
+
             });
 
             // Update UI for joining the session
@@ -235,6 +251,15 @@ export default class SquadSession {
             });
             break;
         }
+        case "DELETE_DRAW": {
+            App.minimap.activePolylines.forEach((drawing) => {
+                if (drawing.uid === data.uid) { 
+                    drawing.delete(false);
+                    App.minimap.visualClick.triggerVisualClick(drawing.latlngs[0], "cyan");
+                }
+            });
+            break;
+        }
         case "DELETE_WEAPON": {
             App.minimap.activeWeaponsMarkers.eachLayer((weapon) => {
                 if (weapon.uid === data.uid) {
@@ -263,21 +288,28 @@ export default class SquadSession {
             App.minimap.visualClick.triggerVisualClick(new LatLng(data.lat, data.lng), "cyan");
             break;
         }
-        // case "ADDING_ARROW": {
-        //     new MapArrow(App.minimap, data.color, data.latlngs[0], data.latlngs[1], data.uid);
-        //     App.minimap.visualClick.triggerVisualClick(data.latlngs[0], "cyan");
-        //     break;
-        // }
-        // case "ADDING_CIRCLE": {
-        //     new MapCircle(App.minimap, data.color, data.latlng, data.radius, data.uid);
-        //     App.minimap.visualClick.triggerVisualClick(data.latlng, "cyan");
-        //     break;
-        // }
-        // case "ADDING_RECTANGLE": {
-        //     new MapRectangle(App.minimap, data.color, data.bounds._northEast, data.bounds._southWest, data.uid);
-        //     App.minimap.visualClick.triggerVisualClick(data.bounds._northEast, "cyan");
-        //     break;
-        // }
+
+        case "ADDING_DRAW": {
+            console.log("Adding new draw from session: ", data);
+            new MapDrawing(App.minimap, data.color, data.latlngs, data.uid).finalize(false);
+            App.minimap.visualClick.triggerVisualClick(data.latlngs[0], "cyan");
+            break;
+        }
+        case "ADDING_ARROW": {
+            new MapArrow(App.minimap, data.color, data.latlngs[0], data.latlngs[1], data.uid);
+            App.minimap.visualClick.triggerVisualClick(data.latlngs[0], "cyan");
+            break;
+        }
+        case "ADDING_CIRCLE": {
+            new MapCircle(App.minimap, data.color, data.latlng, data.radius, data.uid);
+            App.minimap.visualClick.triggerVisualClick(data.latlng, "cyan");
+            break;
+        }
+        case "ADDING_RECTANGLE": {
+            new MapRectangle(App.minimap, data.color, data.bounds._northEast, data.bounds._southWest, data.uid);
+            App.minimap.visualClick.triggerVisualClick(data.bounds._northEast, "cyan");
+            break;
+        }
         case "ADDING_WEAPON": {
             App.minimap.createWeapon(new LatLng(data.lat, data.lng), data.uid, data.heightPadding);
             App.minimap.visualClick.triggerVisualClick(new LatLng(data.lat, data.lng), "cyan");
@@ -318,6 +350,7 @@ export default class SquadSession {
             App.minimap.activeTargetsMarkers.eachLayer((target) => {
                 if (target.uid === data.uid) {
                     target._handleDrag({ latlng: new LatLng(data.lat, data.lng) });
+                    target.updateIcon(false);
                     App.minimap.visualClick.triggerVisualClick(new LatLng(data.lat, data.lng), "cyan");
                 } 
             });
