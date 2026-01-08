@@ -23,7 +23,7 @@ export default async (env) => {
     const dotenv = config();
     const DEV_SERVER_AUTO_OPEN = (process.env.DEV_SERVER_AUTO_OPEN || "true").toLowerCase() === "true";
     const SEARCH_ENGINES = (process.env.SEARCH_ENGINES || "false").toLowerCase() === "true";
-    const SMO_WEBSOCKET = (process.env.SEARCH_ENGINES || "false").toLowerCase() === "true";
+    const SMO_WEBSOCKET = (process.env.SMO_WEBSOCKET || "false").toLowerCase() === "true";
     
 
     // Run checks on .env file
