@@ -1,3 +1,34 @@
+# <img src="https://img.shields.io/badge/-major%20release-b22222?style=for-the-badge"> **42.0.0** *(2026-01-01)*
+
+</br><img src="https://img.shields.io/badge/-new%20features-green">  
+- Added French 120 Mortar (MO120RTF1) from SuperMod *(thanks Kryger)*
+- Added Ural HellCanon from Steel Division *(Thanks Mooraragi)*
+
+</br><img src="https://img.shields.io/badge/-bug%20fixes-b22">  
+- Fixed missing M777 marker *(thanks Madlifer)*
+- Fixed default value for fontsize & zoom speed
+- Fixed UB32 & Technical UB32 icon that were reverted
+- Marker's icons placed by other members within a session now correctly update when moved out of range
+
+</br><img src="https://img.shields.io/badge/-%20improv%20-orange"> 
+- Reworked menu buttons to be more compact
+- Added back shape-drawing from squadtactics (thanks Metroseksuaali!)
+- Added a free-hand drawing tool on right clic
+- Added `CTRL` + `Z` as a possible hotkey for removing last target/marker/drawing
+- Added new icons for Mortar & Hellcanon
+- Weapon & Target markers now scale with marker size settings
+
+</br><img src="https://img.shields.io/badge/-other%20-grey">
+- With the imminent removal of squadtactics.app, a lot of image assets have been moved back from the API to the `/public/` folder of the repository
+- `npm run build` now run a check list and fails if something is wrong : missing `.env`, missing or badly formatted API_URL (thanks Karasiq 😋)
+- Added support for dev server custom port with a `DEV_PORT` option in `.env`
+- Improved caching (images should now be precached, API responses won't be cached)
+- Reworked the MIT Licence
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
+
+
 # <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge"> **41.1.0** *(2025-12-13)*
 
 </br><img src="https://img.shields.io/badge/-bug%20fixes-b22">  
