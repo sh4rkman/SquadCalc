@@ -1,7 +1,7 @@
 
 <h1 align="center">
     <a href="https://squadcalc.app">
-      <img src="./src/img/github/logo.webp" alt="squadcalc logo">
+      <img src="./public/img/github/logo.webp" alt="squadcalc logo">
     </a>
 </h1>
 
@@ -33,13 +33,13 @@
   <summary><a>Click to Unfold</a></summary>
 
   <div align="center">
-    <picture><img src="./src/img/github/desktop_ui_1.webp" alt="classic preview"></picture>  
-    <picture><img src="./src/img/github/desktop_ui_5.webp" alt="Lane Finder preview"></picture>
-    <picture><img src="./src/img/github/desktop_ui_2.webp" alt="topographic preview"></picture>
-    <picture><img src="./src/img/github/desktop_ui_6.webp" alt="capzone/mains preview"></picture>
-    <picture><img src="./src/img/github/desktop_ui_3.webp" alt="weapon information preview"></picture>
-    <picture><img src="./src/img/github/desktop_ui_4.webp" alt="calculations information preview"></picture>
-    <!-- <picture><img src="./src/img/github/desktop_ui_0.webp" alt="legacy preview"></picture> -->
+    <picture><img src="./public/img/github/desktop_ui_1.webp" alt="classic preview"></picture>  
+    <picture><img src="./public/img/github/desktop_ui_5.webp" alt="Lane Finder preview"></picture>
+    <picture><img src="./public/img/github/desktop_ui_2.webp" alt="topographic preview"></picture>
+    <picture><img src="./public/img/github/desktop_ui_6.webp" alt="capzone/mains preview"></picture>
+    <picture><img src="./public/img/github/desktop_ui_3.webp" alt="weapon information preview"></picture>
+    <picture><img src="./public/img/github/desktop_ui_4.webp" alt="calculations information preview"></picture>
+    <!-- <picture><img src="./public/img/github/desktop_ui_0.webp" alt="legacy preview"></picture> -->
   </div>
 
 </details>
@@ -72,7 +72,7 @@
   Check out the Wiki on [Spread](https://github.com/sh4rkman/SquadCalc/wiki/Deducing-Spread) and [Damage](https://github.com/sh4rkman/SquadCalc/wiki/Deducing-Damage-Radius) to understand how it works.
 
   <div align="center">
-    <img width="50%" src="./src/img/github/radiuses.webp" alt="settings">
+    <img width="50%" src="./public/img/github/radiuses.webp" alt="settings">
   </div>
   </br>
 </details>
@@ -84,7 +84,7 @@
 
   </br>
   <div align="center">
-    <img width="60%" src="./src/img/github/heatmap.webp" alt="commonly used spots">
+    <img width="60%" src="./public/img/github/heatmap.webp" alt="commonly used spots">
   </div>
   </br>
 </details>
@@ -124,7 +124,7 @@
   This allows you to quickly scan how the layer looks at the start of the game, for example.
 
   <div align="center">
-    <picture><img width="70%" src="./src/img/github/layer-finder.gif" alt="capzones"></picture>
+    <picture><img width="70%" src="./public/img/github/layer-finder.gif" alt="capzones"></picture>
   </div></br>
 
 </details>
@@ -137,7 +137,7 @@
   It helps you find the perfect location for a FOB, the best route to sneak into a cap zone, or even where to fire mortars effectively.
 
   <div align="center">
-    <picture><img width="80%" src="./src/img/github/capzones.webp" alt="capzones"></picture>
+    <picture><img width="80%" src="./public/img/github/capzones.webp" alt="capzones"></picture>
   </div></br>
 
 </details>
@@ -151,7 +151,7 @@
   Plan your radios and mortars : squadcalc display every mains protection zones (no vehicles shooting) and no-deploy (radios, mortars, emplacement).
 
   <div align="center">
-    <picture><img width="70%" src="./src/img/github/mains.webp" alt="capzones"></picture>
+    <picture><img width="70%" src="./public/img/github/mains.webp" alt="capzones"></picture>
   </div></br>
 
 </details>
@@ -165,7 +165,7 @@
   Each layer can have have it's own playable aera : squadcalc shows the exact invisible map limits.  
 
   <div align="center">
-    <picture><img width="70%" src="./src/img/github/borders.webp" alt="autocomplete"></picture>
+    <picture><img width="70%" src="./public/img/github/borders.webp" alt="autocomplete"></picture>
   </div></br>
 </details>
 
@@ -191,7 +191,7 @@
   Browse every layer available factions, units, and vehicles :
 
   <div align="center">
-    <picture><img width="70%" src="./src/img/github/units.webp" alt="autocomplete"></picture>
+    <picture><img width="70%" src="./public/img/github/units.webp" alt="autocomplete"></picture>
   </div><br>
 
 
@@ -199,13 +199,13 @@
   You can also pin the enemy vehicles list to your map and set timers when you destroy them : you will receive a sound notification when they respawn !
 
   <div align="center">
-    <picture><img width="70%" src="./src/img/github/timer.webp" alt="autocomplete"></picture>
+    <picture><img width="70%" src="./public/img/github/timer.webp" alt="autocomplete"></picture>
   </div></br>
 
   Change faction and pick a unit directly from the map by rightclicking a main :
 
   <div align="center">
-    <picture><img width="40%" src="./src/img/github/mainCtxMenu.webp" alt="autocomplete"></picture>
+    <picture><img width="40%" src="./public/img/github/mainCtxMenu.webp" alt="autocomplete"></picture>
   </div></br>
 
 </details>
@@ -217,7 +217,7 @@
   Anticipate where the vehicles will be spawning :
 
   <div align="center">
-    <picture><img width="100%" src="./src/img/github/spawns.gif" alt="autocomplete"></picture>
+    <picture><img width="100%" src="./public/img/github/spawns.gif" alt="autocomplete"></picture>
   </div><br>
 </details>
 
@@ -239,7 +239,7 @@
   Sessions works up to 10 participants.
 
   <div align="center">
-    <picture><img width="100%" src="./src/img/github/sessions.webp" alt="map layers"></picture>
+    <picture><img width="100%" src="./public/img/github/sessions.webp" alt="map layers"></picture>
   </div>
   
 </details>
@@ -258,13 +258,13 @@
 
   <div align="center">
     <picture>
-        <img width="60%" src="./src/img/github/settings.webp" alt="settings">
+        <img width="60%" src="./public/img/github/settings.webp" alt="settings">
     </picture>
       <picture>
-      <img width="46%" src="./src/img/github/simulation.webp" alt="target information">
+      <img width="46%" src="./public/img/github/simulation.webp" alt="target information">
     </picture>
     <picture>
-      <img width="40%" src="./src/img/github/weaponInformation.webp" alt="weapon information">
+      <img width="40%" src="./public/img/github/weaponInformation.webp" alt="weapon information">
     </picture>
   </div>
 </details>
@@ -276,7 +276,7 @@
   </br>
 
   <div align="center">
-    <picture><img width="50%" src="./src/img/github/layers.webp" alt="map layers"></picture>
+    <picture><img width="50%" src="./public/img/github/layers.webp" alt="map layers"></picture>
   </div>
 
   ### Base map :
@@ -298,7 +298,7 @@
   </br>
 
   <div align="center">
-    <picture><img width="80%" src="./src/img/github/hdmaps.webp" alt="map layers"></picture>
+    <picture><img width="80%" src="./public/img/github/hdmaps.webp" alt="map layers"></picture>
     <div align="center">UHD Maps vs regular ingame map image</div>
   </div>
 
@@ -316,7 +316,7 @@
   <br>
 
   <div align="center">
-    <picture><img width="80%" src="./src/img/github/servers.webp" alt="Server Syncing"></picture>
+    <picture><img width="80%" src="./public/img/github/servers.webp" alt="Server Syncing"></picture>
   </div>
 
   <br>
@@ -332,7 +332,7 @@
   <br>
 
   <div align="center">
-    <picture><img width="50%" src="./src/img/github/import_export.webp" alt="Map Import/Export Preview"></picture>
+    <picture><img width="50%" src="./public/img/github/import_export.webp" alt="Map Import/Export Preview"></picture>
   </div>
 
   <br>

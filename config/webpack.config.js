@@ -107,11 +107,11 @@ export default async (env) => {
                         from: path.resolve(__dirname, '../public'),
                         to: path.resolve(__dirname, '../dist'),
                     },
-                    {
-                        // PWA ScreenShots
-                        from: "./src/img/github/",
-                        to: "../dist/img/pwa/",
-                    },
+                    // {
+                    //     // PWA ScreenShots
+                    //     from: "./src/img/github/",
+                    //     to: "../dist/img/pwa/",
+                    // },
                 ],
             }),
             new webpack.ProvidePlugin({
@@ -183,26 +183,26 @@ function preChecks(dotenv, env, shouldOpenTab) {
     console.log(`/____/\\__, /\\__,_/\\__,_/\\__,_/\\___/\\__,_/_/\\___/  `)
     console.log(`        /_/                                       `)
     console.log("*******************************************************")
-    if (!dotenv.error) console.log(`    -> found .env file ✅`)
+    if (!dotenv.error) console.log(`    -> Found .env file ✅ !`)
     else {
         console.error("    -> NO .ENV CONFIGURATION FOUND IN ROOT FOLDER ❌")
         console.error("    -> see https://github.com/sh4rkman/SquadCalc/wiki/Installation-&-Configuration#optional-configuration\n\n");
         throw error;
     }
-    if (!env.WEBPACK_BUILD) console.log(`    -> URL will be http://localhost:${process.env.DEV_SERVER_PORT || 3000} ✅`)
-    console.log(`    -> Index on search engines : ${process.env.INDEX ? '✅' : '❌'}`)
+    console.log(`      -> Index on search engines : ${process.env.INDEX ? '✅' : '❌'}`)
+    if (!env.WEBPACK_BUILD) console.log(`      -> URL will be http://localhost:${process.env.DEV_SERVER_PORT || 3000} ✅`)
     if (process.env.API_URL) {
         if (process.env.API_URL.endsWith("/")) {
-            console.error("    -> API_URL should NOT end with a slash (/) ❌\n\n");
+            console.error("      -> API_URL should NOT end with a slash (/) ❌\n\n");
             throw error;
         }
-        console.log(`    -> API used : ${process.env.API_URL} ✅`);
+        console.log(`      -> API used : ${process.env.API_URL} ✅`);
     }
     else {
-        console.error("    -> NO API URL FOUND IN .ENV ❌");
-        console.error("    -> Check if a .env file exists and if API_URL is defined\n\n");
+        console.error("      -> NO API URL FOUND IN .ENV ❌");
+        console.error("      -> Check if a .env file exists and if API_URL is defined\n\n");
         throw error;
     }
-    if (!env.WEBPACK_BUILD) console.log(`    -> Should dev server open in a new tab ${shouldOpenTab}`);
-    console.log(`    -> ${env.WEBPACK_BUILD ? 'Building /dist/ folder...' : 'Launching dev server...'}`)
+    if (!env.WEBPACK_BUILD) console.log(`      -> Should dev server open in a new Tab ? ${shouldOpenTab ? "✅" : "❌"}`);
+    console.log(`    -> ${env.WEBPACK_BUILD ? 'Building /dist/ folder...\n' : 'Launching dev server...\n'}`)
 }
