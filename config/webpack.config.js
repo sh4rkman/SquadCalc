@@ -22,10 +22,13 @@ export default async (env) => {
     const { config } = await import('dotenv');
     const dotenv = config();
 
-    // Run checks on .env file
-    preChecks(dotenv, env);
-
+    const shouldOpenTab = (process.env.DEV_SERVER_AUTO_OPEN || "true").toLowerCase() === "true";
     const isIndexed = process.env.INDEX && process.env.INDEX.toLowerCase() === 'true';
+
+    // Run checks on .env file
+    preChecks(dotenv, env, shouldOpenTab);
+
+
     const robotstxtPolicy = isIndexed
         ? [{ userAgent: "*", allow: "/" }]
         : [{ userAgent: "*", disallow: "/" }];
@@ -62,8 +65,9 @@ export default async (env) => {
             ],
         },
         devServer: {
-            port: process.env.DEV_PORT || 3000,
-            open: true,
+            port: process.env.DEV_SERVER_PORT || 3000,
+            open: shouldOpenTab,
+            allowedHosts: "all",
             historyApiFallback: {
                 disableDotRule: true,
             },
@@ -71,6 +75,9 @@ export default async (env) => {
                 directory: path.join(__dirname, '../public'),
                 publicPath: '/',
             },
+            client: {
+                webSocketURL: 'ws://0.0.0.0:80/ws',
+            }
             //   proxy: [
             //     {
             //         context: ['/api/'],
@@ -167,7 +174,7 @@ export default async (env) => {
     }
 };
 
-function preChecks(dotenv, env) {
+function preChecks(dotenv, env, shouldOpenTab) {
     console.log("*******************************************************")
     console.log(`                               __           __    `)
     console.log(`   _________ ___  ______ _____/ /________ _/ /____`)
@@ -182,7 +189,7 @@ function preChecks(dotenv, env) {
         console.error("    -> see https://github.com/sh4rkman/SquadCalc/wiki/Installation-&-Configuration#optional-configuration\n\n");
         throw error;
     }
-    if (!env.WEBPACK_BUILD) console.log(`    -> URL will be http://localhost:${process.env.DEV_PORT || 3000} ✅`)
+    if (!env.WEBPACK_BUILD) console.log(`    -> URL will be http://localhost:${process.env.DEV_SERVER_PORT || 3000} ✅`)
     console.log(`    -> Index on search engines : ${process.env.INDEX ? '✅' : '❌'}`)
     if (process.env.API_URL) {
         if (process.env.API_URL.endsWith("/")) {
@@ -196,6 +203,6 @@ function preChecks(dotenv, env) {
         console.error("    -> Check if a .env file exists and if API_URL is defined\n\n");
         throw error;
     }
-
+    if (!env.WEBPACK_BUILD) console.log(`    -> Should dev server open in a new tab ${shouldOpenTab}`);
     console.log(`    -> ${env.WEBPACK_BUILD ? 'Building /dist/ folder...' : 'Launching dev server...'}`)
 }
