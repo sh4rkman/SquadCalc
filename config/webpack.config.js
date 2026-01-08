@@ -21,17 +21,15 @@ export default async (env) => {
     // Dynamically import dotenv and await it since it's a Promise
     const { config } = await import('dotenv');
     const dotenv = config();
-
-    const shouldOpenTab = (process.env.DEV_SERVER_AUTO_OPEN || "true").toLowerCase() === "true";
-    const isIndexed = process.env.INDEX && process.env.INDEX.toLowerCase() === 'true';
+    const DEV_SERVER_AUTO_OPEN = (process.env.DEV_SERVER_AUTO_OPEN || "true").toLowerCase() === "true";
+    const SEARCH_ENGINES = (process.env.SEARCH_ENGINES || "false").toLowerCase() === "true";
+    const SMO_WEBSOCKET = (process.env.SEARCH_ENGINES || "false").toLowerCase() === "true";
+    
 
     // Run checks on .env file
-    preChecks(dotenv, env, shouldOpenTab);
+    preChecks(dotenv, env, DEV_SERVER_AUTO_OPEN, SEARCH_ENGINES, SMO_WEBSOCKET);
 
 
-    const robotstxtPolicy = isIndexed
-        ? [{ userAgent: "*", allow: "/" }]
-        : [{ userAgent: "*", disallow: "/" }];
 
     return {
 
@@ -66,7 +64,7 @@ export default async (env) => {
         },
         devServer: {
             port: process.env.DEV_SERVER_PORT || 3000,
-            open: shouldOpenTab,
+            open: DEV_SERVER_AUTO_OPEN,
             allowedHosts: "all",
             historyApiFallback: {
                 disableDotRule: true,
@@ -118,7 +116,7 @@ export default async (env) => {
                 $: "jquery", jQuery: "jquery", "window.jQuery": "jquery'", "window.$": "jquery"
             }),
             new RobotstxtPlugin({
-                policy: robotstxtPolicy,
+                policy: SEARCH_ENGINES ? [{ userAgent: "*", allow: "/" }] : [{ userAgent: "*", disallow: "/" }],
             }),
             new workbox.InjectManifest({
                 swSrc: './src/js/sw.js',
@@ -174,7 +172,9 @@ export default async (env) => {
     }
 };
 
-function preChecks(dotenv, env, shouldOpenTab) {
+
+
+function preChecks(dotenv, env, DEV_SERVER_AUTO_OPEN, SEARCH_ENGINES, SMO_WEBSOCKET) {
     console.log("*******************************************************")
     console.log(`                               __           __    `)
     console.log(`   _________ ___  ______ _____/ /________ _/ /____`)
@@ -183,26 +183,30 @@ function preChecks(dotenv, env, shouldOpenTab) {
     console.log(`/____/\\__, /\\__,_/\\__,_/\\__,_/\\___/\\__,_/_/\\___/  `)
     console.log(`        /_/                                       `)
     console.log("*******************************************************")
-    if (!dotenv.error) console.log(`    -> Found .env file ✅ !`)
-    else {
+
+
+    if (dotenv.error) {
         console.error("    -> NO .ENV CONFIGURATION FOUND IN ROOT FOLDER ❌")
         console.error("    -> see https://github.com/sh4rkman/SquadCalc/wiki/Installation-&-Configuration#optional-configuration\n\n");
-        throw error;
+        process.exit(1);
     }
-    console.log(`      -> Index on search engines : ${process.env.INDEX ? '✅' : '❌'}`)
+
+     console.log(`    -> Found .env file ✅ !`)
+    console.log(`      -> SquadMortarOverlay Support : ${SMO_WEBSOCKET ? '✅' : '❌'}`)
+    console.log(`      -> Index on search engines : ${SEARCH_ENGINES ? '✅' : '❌'}`)
     if (!env.WEBPACK_BUILD) console.log(`      -> URL will be http://localhost:${process.env.DEV_SERVER_PORT || 3000} ✅`)
     if (process.env.API_URL) {
         if (process.env.API_URL.endsWith("/")) {
             console.error("      -> API_URL should NOT end with a slash (/) ❌\n\n");
-            throw error;
+            process.exit(1);
         }
         console.log(`      -> API used : ${process.env.API_URL} ✅`);
     }
     else {
         console.error("      -> NO API URL FOUND IN .ENV ❌");
         console.error("      -> Check if a .env file exists and if API_URL is defined\n\n");
-        throw error;
+        process.exit(1);
     }
-    if (!env.WEBPACK_BUILD) console.log(`      -> Should dev server open in a new Tab ? ${shouldOpenTab ? "✅" : "❌"}`);
+    if (!env.WEBPACK_BUILD) console.log(`      -> Should dev server open in a new Tab ? ${DEV_SERVER_AUTO_OPEN ? "✅" : "❌"}`);
     console.log(`    -> ${env.WEBPACK_BUILD ? 'Building /dist/ folder...\n' : 'Launching dev server...\n'}`)
 }

@@ -6,7 +6,7 @@
 
 </br><img src="https://img.shields.io/badge/-bug%20fixes-b22">  
 - Fixed missing M777 marker *(thanks Madlifer, Dutch)*
-- Fixed default value for fontsize & zoom speed
+- Fixed default value for fontsize & zoom speed settings
 - Fixed UB32 & Technical UB32 icon that were reverted
 - Marker's icons placed by other members within a session now correctly update when moved out of range
 
@@ -19,16 +19,18 @@
 - Weapon & Target markers now scale with marker size settings
 
 </br><img src="https://img.shields.io/badge/-other%20-grey">
-- SquadCalc.app moved to a brand new server, cutting response times by three ! *(150ms -> 50ms)*
-- With the imminent removal of squadtactics.app, a lot of image assets have been moved back from the API to the `/public/` folder of the repository. Should improve performance & loading times.
+- squadcalc.app moved to a brand new server, cutting response times by three ! *(150ms -> 50ms)*
+- With the imminent removal of squadtactics.app, a lot of image assets have been moved back from the API to the `/public/` folder of the repository. Should improve performance & loading times, specifically in regions with huge internet censorship.
 - `npm run build` & `npm run start` now run a check list and fails if something is wrong : missing `.env`, missing or badly formatted API_URL (thanks Karasiq 😋)
 - Added new custom settings to be defined in `.env`
   - `DEV_SERVER_PORT` (default to `3000`)
   - `DEV_SERVER_AUTO_OPEN` to disable a tab being opened when launching `npm run start` (default to `true`)
+- Renammed `INDEX` .env setting to `SEARCH_ENGINES`
+- Renammed `WEBSOCKET` .env setting to `SMO_WEBSOCKET`
 - Improved caching :
   - Most of the images websites should now be precached a few seconds after page is loaded
   - API responses will **not** be cached anymore
-  - main HTML page will **not** be cached anymore
+  - Main HTML page will **not** be cached anymore
 - Reworked the MIT Licence
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
