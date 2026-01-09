@@ -155,7 +155,7 @@ export var WEAPONS = [
         angleOffset: 0,
         shells : [{
             name: "impact",
-            velocity: 171,
+            velocity: 142,
             minDistance: 340,
             moa: 40,
             explosionDamage: 400,
@@ -165,7 +165,7 @@ export var WEAPONS = [
         },
         {
             name: "nearSurface",
-            velocity: 171,
+            velocity: 142,
             minDistance: 340,
             moa: 50,
             explosionDamage: 100,
