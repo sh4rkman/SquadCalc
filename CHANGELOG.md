@@ -1,8 +1,18 @@
 
+
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge"> **42.0.2** *(2026-01-09)*
+
+</br><img src="https://img.shields.io/badge/-bug%20fixes-b22">  
+- Fixed M121 having wrong velocity (Thanks Matador!)
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
 # <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge"> **42.0.1** *(2026-01-09)*
 
 </br><img src="https://img.shields.io/badge/-bug%20fixes-b22">  
 - Fixed SquadMortarOverlay connector not loading the right map url
+
+
 
 # <img src="https://img.shields.io/badge/-major%20release-b22222?style=for-the-badge"> **42.0.0** *(2026-01-08)*
 
