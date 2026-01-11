@@ -1,5 +1,13 @@
 
 
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge"> **42.0.3** *(2026-01-11)*
+
+</br><img src="https://img.shields.io/badge/-bug%20fixes-b22">  
+- Updated M777 velocity (Thanks ovalnik/Dutch!)
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
+
 # <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge"> **42.0.2** *(2026-01-09)*
 
 </br><img src="https://img.shields.io/badge/-bug%20fixes-b22">  
