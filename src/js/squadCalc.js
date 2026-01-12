@@ -498,57 +498,33 @@ export default class SquadCalc {
 
                     $(".dropbtn").val(data.activeMap).trigger($.Event("change", { broadcast: true }));
 
-                    data.markers.forEach(marker => {
-                        this.minimap.createMarker(new LatLng(marker.lat, marker.lng), marker.team, marker.category, marker.icon, marker.uid);
-                    });
-                    data.arrows.forEach(arrow => {
-                        new MapArrow(this.minimap, arrow.color, arrow.latlngs[0], arrow.latlngs[1], arrow.uid);
-                    });
-                    data.circles.forEach(circle => {
-                        new MapCircle(this.minimap, circle.color, circle.latlng, circle.radius, circle.uid);
-                    });
-                    data.rectangles.forEach(rectangle => {
-                        new MapRectangle(this.minimap, rectangle.color, rectangle.bounds._southWest, rectangle.bounds._northEast, rectangle.uid);
-                    });
-                    data.draws.forEach(draw => {
-                        new MapDrawing(this.minimap, draw.color, draw.latlngs, draw.uid).finalize(false);
-                    });
+                    data.markers.forEach(marker => { this.minimap.createMarker(new LatLng(marker.lat, marker.lng), marker.team, marker.category, marker.icon, marker.uid); });
+                    data.arrows.forEach(arrow => { new MapArrow(this.minimap, arrow.color, arrow.latlngs[0], arrow.latlngs[1], arrow.uid); });
+                    data.circles.forEach(circle => { new MapCircle(this.minimap, circle.color, circle.latlng, circle.radius, circle.uid); });
+                    data.rectangles.forEach(rectangle => { new MapRectangle(this.minimap, rectangle.color, rectangle.bounds._southWest, rectangle.bounds._northEast, rectangle.uid); });
+                    data.draws.forEach(draw => { new MapDrawing(this.minimap, draw.color, draw.latlngs, draw.uid).finalize(false); });
 
+                    // Wait for the heightmap to load before adding weapons/targets
                     $(document).one("heightmap:loaded", () => {
-                        try {
-
-                            // Make sure there is weapons before trying to create targets
-                            if (Array.isArray(data.weapons) && data.weapons.length > 0) {
-                                data.weapons.forEach(weapon => {
-                                    this.minimap.createWeapon(new LatLng(weapon.lat, weapon.lng));        
-                                });
-                                data.targets.forEach(target => {
-                                    this.minimap.createTarget(new LatLng(target.lat, target.lng), false);
-                                });
-                            }
-                            this.openToast("success", "importSuccess", "");
-                        
-                        } catch (err) {
-                            console.debug("Error while creating markers:", err);
-                            this.openToast("error", "fileNotSupported", "openIssue");
+                        if (Array.isArray(data.weapons) && data.weapons.length > 0) {
+                            data.weapons.forEach(weapon => { this.minimap.createWeapon(new LatLng(weapon.lat, weapon.lng)); });
+                            data.targets.forEach(target => { this.minimap.createTarget(new LatLng(target.lat, target.lng), false); });
                         }
+                        this.openToast("success", "importSuccess", "");
                     });
 
                     $(document).one("layers:loaded", () => {
                         this.LAYER_SELECTOR.val(data.activeLayer).trigger($.Event("change", { broadcast: true }));
                         $(document).one("layer:loaded", () => {
-
                             // Select Flags
                             data.selectedFlags.forEach(flag => {
                                 this.minimap.layer.flags.forEach((layerFlag) => {
-                                    if (layerFlag.objectName === flag) {
-                                        if (layerFlag.isSelected) return;
-                                        this.minimap.layer._handleFlagClick(layerFlag);
-                                        return;
-                                    }
+                                    if (layerFlag.objectName != flag) return;
+                                    if (layerFlag.isSelected) return;
+                                    this.minimap.layer._handleFlagClick(layerFlag);
+                                    return;
                                 });
                             });
-
                             // Load Factions and Units
                             this.FACTION1_SELECTOR.val(data.teams[0][0]).trigger($.Event("change", { broadcast: false }));
                             this.FACTION2_SELECTOR.val(data.teams[1][0]).trigger($.Event("change", { broadcast: false }));
@@ -575,24 +551,11 @@ export default class SquadCalc {
             this.minimap.deletePolylines();
         });
 
-        $(".btn-download").on("click", () => {
-            this.saveMapStateToFile();
-        });
-
-        $(".btn-undo").on("click", () => {
-            if (this.minimap.history.length > 0) this.minimap.history.at(-1).delete();
-        });
-
-        $(".btn-layer").on("click", () => {
-            this.minimap.layer.toggleVisibility();
-        });
-
-        $(".btn-drawingMode").on("click", () => {
-            this.minimap.disableDrawingMode();
-        });
-
+        $(".btn-download").on("click", () => { this.saveMapStateToFile(); });
+        $(".btn-undo").on("click", () => { if (this.minimap.history.length > 0) this.minimap.history.at(-1).delete(); });
+        $(".btn-layer").on("click", () => { this.minimap.layer.toggleVisibility(); });
+        $(".btn-drawingMode").on("click", () => { this.minimap.disableDrawingMode(); });
         $("#fabCheckbox2").on("change", () => { this.switchUI();});
-
         $("#factionsButton").on("click", () => { $("#factionsDialog")[0].showModal(); });
         
         $("#mapLayerMenu").find("button.btn-session").on("click", () => {
@@ -685,7 +648,6 @@ export default class SquadCalc {
                 this.openToast("success", "focusMode", "enterToExit");
             });
 
-
             $(document).on("keydown", (event) => {
 
                 // Disable Shortkeys in legacy mode
@@ -724,7 +686,6 @@ export default class SquadCalc {
                     }
                 }
 
-
                 // BACKSPACE / CTRL+Z = REMOVE LAST CREATED TARGET MARKER
                 if (event.key === "Backspace" ||(event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "z") {
                     event.preventDefault();
@@ -738,9 +699,7 @@ export default class SquadCalc {
                 }
 
                 // ESCAPE = QUIT DRAWING MODE
-                if (event.key === "Escape") {
-                    this.minimap.disableDrawingMode();
-                }
+                if (event.key === "Escape") { this.minimap.disableDrawingMode(); }
 
             });
 
@@ -1057,16 +1016,9 @@ export default class SquadCalc {
         animateCalc(bearing.toFixed(1), 500, "bearingNum");
         animateCalc(elevation.toFixed(this.activeWeapon.elevationPrecision), 500, "elevationNum");
 
-        if (this.activeWeapon.getAngleType() === -1) {
-            $("#highlowicon").css({ transform: "rotate(0deg)"});
-        }
-        else {
-            $("#highlowicon").css({transform: "rotate(180deg)"});
-        }
-
-        if (this.activeWeapon.name != "Mortar" && this.activeWeapon.name != "UB-32") {
-            $("#highlow").addClass("active");
-        }
+        if (this.activeWeapon.name != "Mortar" && this.activeWeapon.name != "UB-32") $("#highlow").addClass("active");
+        if (this.activeWeapon.getAngleType() === -1) $("#highlowicon").css({ transform: "rotate(0deg)"});
+        else $("#highlowicon").css({transform: "rotate(180deg)"});
 
         // show actions button
         $("#savebutton").removeClass("hidden");
@@ -1101,13 +1053,9 @@ export default class SquadCalc {
      */
     showError(msg, issue) {
 
-        if (issue === "mortar") {
-            $("#mortar-location").addClass("error2");
-        } else if (issue === "target") {
-            $("#target-location").addClass("error2");
-        } else {
-            $("#target-location, #mortar-location").addClass("error2");
-        }
+        if (issue === "mortar") $("#mortar-location").addClass("error2");
+        else if (issue === "target") $("#target-location").addClass("error2");
+        else $("#target-location, #mortar-location").addClass("error2");
 
         // Rework the #setting div to display a single message
         $("#bearing").addClass("hidden").removeClass("pure-u-10-24");
@@ -1149,11 +1097,8 @@ export default class SquadCalc {
     copySave(COPY_ZONE) {
         let text2copy;
 
-        if (COPY_ZONE.prev().val().length === 0) {
-            text2copy = COPY_ZONE.prev().attr("placeholder").trim() + COPY_ZONE.text().trim();
-        } else {
-            text2copy = COPY_ZONE.prev().val().trim() + COPY_ZONE.text().trim();
-        }
+        if (COPY_ZONE.prev().val().length === 0) text2copy = COPY_ZONE.prev().attr("placeholder").trim() + COPY_ZONE.text().trim();
+        else text2copy = COPY_ZONE.prev().val().trim() + COPY_ZONE.text().trim();
 
         navigator.clipboard.writeText(text2copy);
         animateCSS(COPY_ZONE.parent(), "headShake");
@@ -1214,20 +1159,11 @@ export default class SquadCalc {
         // Otherwise we guess if the user is deleting or adding something
         // and ajust the cursor considering MSMC added/removed a '-'
 
-        if (startA >= 3) {
-            startA += (a > MORTAR_LENGTH) ? -1 : 1;
-        }
+        if (startA >= 3) startA += (a > MORTAR_LENGTH) ? -1 : 1;
+        if (startB >= 3) startB += (b > TARGET_LENGTH) ? -1 : 1;
         
-        if (startB >= 3) {
-            startB += (b > TARGET_LENGTH) ? -1 : 1;
-        }
-        
-        if (inputChanged === "weapon") {
-            MORTAR_LOC[0].setSelectionRange(startA, startA);
-        }
-        else if (inputChanged === "target"){
-            TARGET_LOC[0].setSelectionRange(startB, startB);
-        }
+        if (inputChanged === "weapon") MORTAR_LOC[0].setSelectionRange(startA, startA);
+        else if (inputChanged === "target") TARGET_LOC[0].setSelectionRange(startB, startB);
         else {
             MORTAR_LOC[0].setSelectionRange(startA, startA);
             TARGET_LOC[0].setSelectionRange(startB, startB);
@@ -1250,11 +1186,7 @@ export default class SquadCalc {
      * Resize every saved name
      */
     resizeInputsOnResize() {
-
-        $(".saved_list :input").each((index, element) => {
-            this.resizeInput($(element)[0]);
-        });
-
+        $(".saved_list :input").each((_, element) => { this.resizeInput($(element)[0]); });
     }
 
 
@@ -1293,12 +1225,10 @@ export default class SquadCalc {
     copyCalc(event) {
         
         // If calcs aren't ready, do nothing
-        if (!$(".copy").hasClass("copy")) { return 1; }
+        if (!$(".copy").hasClass("copy")) return 1;
 
         if (event.target.id === "highlowicon" || event.target.id === "highlow") {
-            if ($("#highlow").hasClass("active")) {
-                this.changeHighLow();
-            }
+            if ($("#highlow").hasClass("active")) this.changeHighLow();
             return 1;
         }
 
@@ -1313,11 +1243,8 @@ export default class SquadCalc {
      */
     changeHighLow(){
         const transformValue = $("#highlowicon").css("transform");
-        if (transformValue === "none" || transformValue === "matrix(1, 0, 0, 1, 0, 0)") {
-            this.activeWeapon.angleType = "low";
-        } else {
-            this.activeWeapon.angleType = "high";
-        }
+        if (transformValue === "none" || transformValue === "matrix(1, 0, 0, 1, 0, 0)") this.activeWeapon.angleType = "low";
+        else this.activeWeapon.angleType = "high";
         this.shoot();
     }
 
@@ -1350,9 +1277,7 @@ export default class SquadCalc {
             } else {
                 // opposite of calculations in getKP()
                 const SUB = Number(PARTS[i]);
-                if (Number.isNaN(SUB)) {
-                    console.debug(`invalid keypad string: ${FORMATTED_KEYPAD}`);
-                }
+                if (Number.isNaN(SUB)) console.debug(`invalid keypad string: ${FORMATTED_KEYPAD}`);
                 const subX = (SUB - 1) % 3;
                 const subY = 2 - (Math.ceil(SUB / 3) - 1);
 
@@ -1390,73 +1315,35 @@ export default class SquadCalc {
         const version = this.version;
     
         this.minimap.activeWeaponsMarkers.eachLayer(weapon => {
-            weapons.push({
-                lat: weapon._latlng.lat,
-                lng: weapon._latlng.lng,
-                heightPadding: weapon.heightPadding,
-                uid: weapon.uid
-            });
+            weapons.push({ lat: weapon._latlng.lat, lng: weapon._latlng.lng, heightPadding: weapon.heightPadding, uid: weapon.uid });
         });
         this.minimap.activeTargetsMarkers.eachLayer(target => {
-            targets.push({
-                lat: target._latlng.lat,
-                lng: target._latlng.lng,
-                uid: target.uid
-            });
+            targets.push({ lat: target._latlng.lat, lng: target._latlng.lng, uid: target.uid });
         });
         this.minimap.activeMarkers.eachLayer(marker => {
-            markers.push({
-                lat: marker._latlng.lat,
-                lng: marker._latlng.lng,
-                uid: marker.uid,
-                team: marker.team,
-                category: marker.category,
-                icon: marker.icontype
-            });
+            markers.push({ lat: marker._latlng.lat, lng: marker._latlng.lng, uid: marker.uid, team: marker.team, category: marker.category, icon: marker.icontype });
         });
         this.minimap.activeArrows.forEach(arrow => {
-            arrows.push({
-                uid: arrow.uid,
-                latlngs: arrow.polyline.getLatLngs(),
-                color: arrow.color,
-            });
+            arrows.push({ uid: arrow.uid, latlngs: arrow.polyline.getLatLngs(), color: arrow.color, });
         });
         this.minimap.activeCircles.forEach(circle => {
-            circles.push({
-                uid: circle.uid,
-                latlng: circle.circle.getLatLng(),
-                color: circle.color,
-                radius: circle.circle.getRadius(),
-            });
+            circles.push({ uid: circle.uid, latlng: circle.circle.getLatLng(), color: circle.color, radius: circle.circle.getRadius(), });
         });
         this.minimap.activeRectangles.forEach(rectangle => {
-            rectangles.push({
-                uid: rectangle.uid,
-                color: rectangle.color,
-                bounds: rectangle.rectangle.getBounds(),
-            });
+            rectangles.push({ uid: rectangle.uid, color: rectangle.color, bounds: rectangle.rectangle.getBounds(), });
         });
         this.minimap.activePolylines.forEach(polyline => {
-            draws.push({
-                uid: polyline.uid,
-                color: polyline.color,
-                bounds: polyline.polyline.getBounds(),
-                latlngs: polyline.polyline.getLatLngs(),
-            });
+            draws.push({ uid: polyline.uid, color: polyline.color, bounds: polyline.polyline.getBounds(), latlngs: polyline.polyline.getLatLngs(), });
         });
 
         if (this.minimap.layer) {
-            this.minimap.layer.selectedFlags.forEach(flag => {
-                selectedFlags.push(flag.objectName);
-            });
+            this.minimap.layer.selectedFlags.forEach(flag => { selectedFlags.push(flag.objectName); });
             this.minimap.layer.hexs.forEach((hex) => {
-                hexs.push({
-                    number: hex._hexNumber,
-                    colorIndex: hex._colorIndex,
-                });
+                hexs.push({ number: hex._hexNumber, colorIndex: hex._colorIndex, });
             });
         }
 
+        
         return { hexs, weapons, targets, markers, arrows, circles, rectangles, draws, activeWeapon, activeMap, activeLayer, selectedFlags, teams, version };
     }
 

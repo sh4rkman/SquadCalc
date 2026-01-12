@@ -175,15 +175,17 @@ export default async (env) => {
 
 
 function preChecks(dotenv, env, DEV_SERVER_AUTO_OPEN, SEARCH_ENGINES, SMO_WEBSOCKET) {
-    console.log("*******************************************************")
-    console.log(`                               __           __    `)
-    console.log(`   _________ ___  ______ _____/ /________ _/ /____`)
-    console.log('  / ___/ __ `/ / / / __ `/ __  / ___/ __ `/ / ___/')
-    console.log(` (__  ) /_/ / /_/ / /_/ / /_/ / /__/ /_/ / / /__  `)
-    console.log(`/____/\\__, /\\__,_/\\__,_/\\__,_/\\___/\\__,_/_/\\___/  `)
-    console.log(`        /_/                                       `)
-    console.log("*******************************************************")
-
+    
+    console.log("\n\n*****************************************************")
+    console.log(`   _____                       _  _____      _      `)
+    console.log(`  / ____|                     | |/ ____|    | |     `)
+    console.log(` | (___   __ _ _   _  __ _  __| | |     __ _| | ___ `)
+    console.log(`  \\___ \\ / _\` | | | |/ _\` |/ _\` | |    / _\` | |/ __|`)
+    console.log(`  ____) | (_| | |_| | (_| | (_| | |___| (_| | | (__ `)
+    console.log(` |_____/ \\__, |\\__,_|\\__,_|\\__,_|\\_____\\__,_|_|\\___|`)
+    console.log(`            | |                                     `)
+    console.log(`            |_|                 https://squadcalc.app`)
+    console.log("*****************************************************\n")
 
     if (dotenv.error) {
         console.error("    -> NO .ENV CONFIGURATION FOUND IN ROOT FOLDER ❌")
