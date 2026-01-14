@@ -9,7 +9,6 @@ import HtmlWebpackPlugin from 'html-webpack-plugin';
 import workbox from 'workbox-webpack-plugin';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
-import { error } from 'console';
 
 // For __dirname in ES modules
 const __filename = fileURLToPath(import.meta.url);
@@ -23,7 +22,7 @@ export default async (env) => {
     const DEV_SERVER_AUTO_OPEN = (process.env.DEV_SERVER_AUTO_OPEN || "true").toLowerCase() === "true";
     const SEARCH_ENGINES = (process.env.SEARCH_ENGINES || "false").toLowerCase() === "true";
     const SMO_WEBSOCKET = (process.env.SMO_WEBSOCKET || "false").toLowerCase() === "true";
-    
+
     // Run checks on .env file
     preChecks(dotenv, env, DEV_SERVER_AUTO_OPEN, SEARCH_ENGINES, SMO_WEBSOCKET);
 
@@ -32,7 +31,7 @@ export default async (env) => {
         entry: {
             main: './src/app.js',
         },
-        stats: { warnings: false },
+        stats: 'minimal',
         mode: env.WEBPACK_BUILD ? 'production' : 'development',
         devtool: env.WEBPACK_BUILD ? false : 'inline-source-map',
         output: {
@@ -46,9 +45,7 @@ export default async (env) => {
             rules: [
                 {
                     test: /\.(sc|sa|c)ss$/i,
-                    use: [
-                        'style-loader', { loader: 'css-loader', options: { url: false } }, 'sass-loader',
-                    ],
+                    use: ['style-loader', { loader: 'css-loader', options: { url: false } }, 'sass-loader'],
                 },
                 {
                     test: /\.(html)$/,
@@ -58,20 +55,18 @@ export default async (env) => {
                 { test: /\.(png|svg|jpg|jpeg|gif|webp)$/i, type: 'asset/resource', },
             ],
         },
+        infrastructureLogging: { level: 'none'},
         devServer: {
             port: process.env.DEV_SERVER_PORT || 3000,
             open: DEV_SERVER_AUTO_OPEN,
             allowedHosts: "all",
-            historyApiFallback: {
-                disableDotRule: true,
-            },
+            watchFiles: ["src/**/*.html"],
+            historyApiFallback: { disableDotRule: true },
             static: {
                 directory: path.join(__dirname, '../public'),
                 publicPath: '/',
             },
-            client: {
-                webSocketURL: 'ws://0.0.0.0:80/ws',
-            }
+            client: { webSocketURL: 'ws://0.0.0.0:80/ws' }
         },
         plugins: [
             new Dotenv(),
@@ -85,7 +80,7 @@ export default async (env) => {
             }),
             // Copy Public Assets to /dist/
             new CopyWebpackPlugin({
-                patterns: [{ from: path.resolve(__dirname, '../public'), to: path.resolve(__dirname, '../dist')}],
+                patterns: [{ from: path.resolve(__dirname, '../public'), to: path.resolve(__dirname, '../dist') }],
             }),
             new webpack.ProvidePlugin({
                 $: "jquery", jQuery: "jquery", "window.jQuery": "jquery'", "window.$": "jquery"
@@ -150,7 +145,7 @@ export default async (env) => {
 
 
 function preChecks(dotenv, env, DEV_SERVER_AUTO_OPEN, SEARCH_ENGINES, SMO_WEBSOCKET) {
-    
+
     console.log("\n\n*****************************************************")
     console.log(`   _____                       _  _____      _      `)
     console.log(`  / ____|                     | |/ ____|    | |     `)
@@ -168,7 +163,7 @@ function preChecks(dotenv, env, DEV_SERVER_AUTO_OPEN, SEARCH_ENGINES, SMO_WEBSOC
         process.exit(1);
     }
 
-     console.log(`    -> Found .env file ✅ !`)
+    console.log(`    -> Found .env file ✅ !`)
     console.log(`      -> SquadMortarOverlay Support : ${SMO_WEBSOCKET ? '✅' : '❌'}`)
     console.log(`      -> Index on search engines : ${SEARCH_ENGINES ? '✅' : '❌'}`)
     if (!env.WEBPACK_BUILD) console.log(`      -> URL will be http://localhost:${process.env.DEV_SERVER_PORT || 3000} ✅`)
