@@ -18,18 +18,14 @@ const __dirname = dirname(__filename);
 
 export default async (env) => {
 
-    // Dynamically import dotenv and await it since it's a Promise
     const { config } = await import('dotenv');
     const dotenv = config();
     const DEV_SERVER_AUTO_OPEN = (process.env.DEV_SERVER_AUTO_OPEN || "true").toLowerCase() === "true";
     const SEARCH_ENGINES = (process.env.SEARCH_ENGINES || "false").toLowerCase() === "true";
     const SMO_WEBSOCKET = (process.env.SMO_WEBSOCKET || "false").toLowerCase() === "true";
     
-
     // Run checks on .env file
     preChecks(dotenv, env, DEV_SERVER_AUTO_OPEN, SEARCH_ENGINES, SMO_WEBSOCKET);
-
-
 
     return {
 
@@ -76,17 +72,6 @@ export default async (env) => {
             client: {
                 webSocketURL: 'ws://0.0.0.0:80/ws',
             }
-            //   proxy: [
-            //     {
-            //         context: ['/api/'],
-            //         target: process.env.DEV_API_URL || 'https://beta.squadcalc.app',
-            //         changeOrigin: true,
-            //         ws: true,
-            //         onProxyReq: (proxyReq) => {
-            //             if (process.env.API_KEY) proxyReq.setHeader('X-API-Key', process.env.API_KEY);
-            //         }
-            //     }
-            //   ]
         },
         plugins: [
             new Dotenv(),
@@ -98,19 +83,9 @@ export default async (env) => {
                     removeAttributeQuotes: true,
                 } : false
             }),
+            // Copy Public Assets to /dist/
             new CopyWebpackPlugin({
-                patterns: [
-                    {
-                        // Public Assets
-                        from: path.resolve(__dirname, '../public'),
-                        to: path.resolve(__dirname, '../dist'),
-                    },
-                    // {
-                    //     // PWA ScreenShots
-                    //     from: "./src/img/github/",
-                    //     to: "../dist/img/pwa/",
-                    // },
-                ],
+                patterns: [{ from: path.resolve(__dirname, '../public'), to: path.resolve(__dirname, '../dist')}],
             }),
             new webpack.ProvidePlugin({
                 $: "jquery", jQuery: "jquery", "window.jQuery": "jquery'", "window.$": "jquery"

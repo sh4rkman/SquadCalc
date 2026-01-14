@@ -1,4 +1,10 @@
 
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge"> **42.0.4** *(2026-01-14)*
+
+</br><img src="https://img.shields.io/badge/-bug%20fixes-b22">  
+- M121 can now shoot at low angles again (Thanks Dan!)
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
 
 # <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge"> **42.0.3** *(2026-01-11)*
 

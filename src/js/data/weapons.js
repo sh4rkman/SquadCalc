@@ -146,7 +146,7 @@ export var WEAPONS = [
         deceleration: 0,
         decelerationTime : 0,
         gravityScale: 1,
-        minElevation: [45, 85.3],
+        minElevation: [-45, 85.3],
         unit: "deg",
         type: "vehicles",
         angleType: "high",
