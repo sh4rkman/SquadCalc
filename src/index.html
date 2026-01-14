@@ -27,12 +27,8 @@
             <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
             <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Oswald:wght@700&family=Roboto:wght@600&display=swap" rel="stylesheet">
 
-            <!-- FUCK IE / REGISTER SW -->
+            <!-- REGISTER SW -->
             <script>
-                if (navigator.appName.indexOf("Internet Explorer") != -1 || navigator.userAgent.match(/Trident.*rv[ :]*11\./)) {
-                    window.location = "https://choosebrowser.com/";
-                }
-
                 if ("serviceWorker" in navigator) {
                     try {
                         navigator.serviceWorker.register("sw.js");
@@ -40,7 +36,6 @@
                         console.error(`Registration failed with ${error}`);
                     }
                 }
-                
             </script>
 
         </head>
