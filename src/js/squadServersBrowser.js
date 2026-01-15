@@ -12,10 +12,82 @@ export default class SquadServersBrowser {
         this.selectedServer = null;
         this.selectedLayer = null;
         this.refreshInterval = 20; // seconds
+        this.moddedPrefixes = ["SD_", "CAF_", "MEE_", "CUSTOM_"];
     }
 
     init(){
         this.loadServersInfo();
+    }
+
+
+    /**
+     * Checks if a layer is supported (either vanilla or known modded prefix)
+     * @param {string} layerName - The layer name to check
+     * @returns {boolean} - True if supported, false otherwise
+     */
+    isSupportedLayer(layerName) {
+        if (!layerName) return false;
+
+        // Check if it has any underscore (all layers should have format: MapName_Mode_v1)
+        if (!layerName.includes("_")) return false;
+
+        // Check if it starts with any known modded prefix
+        for (const prefix of this.moddedPrefixes) {
+            if (layerName.startsWith(prefix)) {
+                return true; // Supported modded prefix
+            }
+        }
+
+        // Check if it starts with any unknown modded prefix (contains uppercase prefix before first underscore)
+        const firstPart = layerName.split("_")[0];
+        // If first part is all uppercase and 2-8 chars, it's likely an unsupported mod prefix
+        const isLikelyModPrefix = firstPart.length >= 2 && firstPart.length <= 8 && firstPart === firstPart.toUpperCase();
+        if (isLikelyModPrefix) {
+            return false; // Unsupported modded prefix
+        }
+
+        return true; // Vanilla layer
+    }
+
+    /**
+     * Parses a mod layer name (e.g., SD_Narva_Invasion_v1) and extracts:
+     * - mapName: The base map name (e.g., "Narva")
+     * - team1/team2: Extracted from squad_teamOne/squad_teamTwo
+     * @param {object} server - The server object from the API
+     * @returns {object} - { mapName, team1, team2 }
+     */
+    parseModLayer(server) {
+        const layerName = server.attributes.details.map;
+
+        // Check if this is a supported layer
+        if (!this.isSupportedLayer(layerName)) {
+            // Don't enrich unsupported modded layers - leave them as unavailable
+            return { mapName: null, team1: null, team2: null };
+        }
+
+        let cleanLayerName = layerName;
+
+        // Remove modded prefix if present
+        for (const prefix of this.moddedPrefixes) {
+            if (layerName.startsWith(prefix)) {
+                cleanLayerName = layerName.substring(prefix.length);
+                break;
+            }
+        }
+
+        // Extract map name (first part before underscore)
+        const parts = cleanLayerName.split("_");
+        const mapName = parts[0] || null;
+
+        // Extract factions from squad_teamOne and squad_teamTwo
+        // Format: "SSPR_LO_Mechanized" -> faction is "SSPR"
+        const team1Raw = server.attributes.details.squad_teamOne;
+        const team2Raw = server.attributes.details.squad_teamTwo;
+
+        const team1 = team1Raw ? team1Raw.split("_")[0] : null;
+        const team2 = team2Raw ? team2Raw.split("_")[0] : null;
+
+        return { mapName, team1, team2 };
     }
 
 
@@ -60,6 +132,18 @@ export default class SquadServersBrowser {
             const response = await fetch(`${process.env.API_URL}/get/servers`);
             const data = await response.json();
             this.serversData = data.servers;
+
+            // Process mod layers to populate mapName, team1, team2
+            this.serversData.forEach(server => {
+                if (!server.mapName || !server.team1 || !server.team2) {
+                    const modData = this.parseModLayer(server);
+                    if (modData.mapName) {
+                        server.mapName = server.mapName || modData.mapName;
+                        server.team1 = server.team1 || modData.team1;
+                        server.team2 = server.team2 || modData.team2;
+                    }
+                }
+            });
 
             // Initiate fuse index
             this.fuse = new Fuse(this.serversData, {
@@ -170,6 +254,25 @@ export default class SquadServersBrowser {
 
 
     /**
+     * Returns the player count HTML with queue info.
+     * Format: currentPlayers/maxPlayers (+queueCount)
+     * @param {object} server - The server object from the API.
+     * @returns {string} - The formatted player count HTML.
+     */
+    getPlayerCountHTML(server) {
+        const players = server.attributes.players || 0;
+        const maxPlayers = server.attributes.maxPlayers || 0;
+        const queue = server.attributes.details.squad_publicQueue || 0;
+
+        let html = `${players}/${maxPlayers}`;
+        if (queue > 0) {
+            html += ` <span class="queue-count">(+${queue})</span>`;
+        }
+        return html;
+    }
+
+
+    /**
      * Renders table rows for the given servers list.
      * @param {Array} servers
      */
@@ -200,6 +303,8 @@ export default class SquadServersBrowser {
                         </td>
                         <td class="teamFlags">${this.getTeamHTML(server.team1, server.attributes.details.squad_teamOne)}</td>
                         <td class="teamFlags">${this.getTeamHTML(server.team2, server.attributes.details.squad_teamTwo)}</td>
+                        <td>${this.toMinSec(server.attributes.details.squad_playTime || 0)}</td>
+                        <td>${this.getPlayerCountHTML(server)}</td>
                     </tr>
                 `;
             });
@@ -260,6 +365,12 @@ export default class SquadServersBrowser {
                             </th>
                             <th class="teamFlags" data-i18n="common:team1">${i18next.t("team1", { ns: "common" })}</th>
                             <th class="teamFlags" data-i18n="common:team2">${i18next.t("team2", { ns: "common" })}</th>
+                            <th class="sortable" data-sort="playtime" data-i18n="common:playTime">
+                                ${i18next.t("playTime", { ns: "common" })} <span class="sort-indicator">⇅</span>
+                            </th>
+                            <th class="sortable" data-sort="players" data-i18n="common:players">
+                                ${i18next.t("players", { ns: "common" })} <span class="sort-indicator">⇅</span>
+                            </th>
                         </tr>
                     </thead>
                     <tbody id="serversTableBody"></tbody>
@@ -468,8 +579,17 @@ export default class SquadServersBrowser {
                 valB = (b.attributes.details.map || "").toLowerCase();
                 break;
             case "players":
+                // Primary sort by players on server, secondary by queue
                 valA = a.attributes.players;
                 valB = b.attributes.players;
+                if (valA === valB) {
+                    valA = a.attributes.details.squad_publicQueue || 0;
+                    valB = b.attributes.details.squad_publicQueue || 0;
+                }
+                break;
+            case "playtime":
+                valA = a.attributes.details.squad_playTime || 0;
+                valB = b.attributes.details.squad_playTime || 0;
                 break;
             default:
                 return 0;
