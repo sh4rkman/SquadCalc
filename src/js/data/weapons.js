@@ -236,10 +236,10 @@ export var WEAPONS = [
         decelerationTime : 0,
         gravityScale: 1,
         minElevation: [45, 85.3],
-        unit: "deg",
+        unit: "mil",
         type: "modded",
         angleType: "high",
-        elevationPrecision: 1,
+        elevationPrecision: 0,
         heightOffset: 3,
         angleOffset: 0,
         shells : [{

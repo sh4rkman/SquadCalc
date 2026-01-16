@@ -1,4 +1,9 @@
 
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge"> **42.0.5** *(2026-01-17)*
+
+</br><img src="https://img.shields.io/badge/-bug%20fixes-b22">  
+- M1O-120-RTF1 now use milliradians as intended (Thanks Sh1nS0u_!)
+
 # <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge"> **42.0.4** *(2026-01-14)*
 
 </br><img src="https://img.shields.io/badge/-bug%20fixes-b22">  
