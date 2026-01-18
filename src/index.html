@@ -1,68 +1,86 @@
 <!doctype html>
-    <html lang="en" translate="no">
+<html lang="en" translate="no">
 
-        <head>
+<head>
 
-            <title data-i18n="common:squadcalc">SquadCalc</title>
+    <title data-i18n="common:squadcalc">SquadCalc</title>
 
-            <meta data-i18n-content="common:desc" name="description" content="">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1">
-            <meta name="theme-color" content="#111">
-            <meta charset="utf-8">
+    <meta data-i18n-content="common:desc" name="description" content="A Complete Mortar Calculator and map lane finder for SQUAD! Steel Division layers!">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1">
+    <meta name="theme-color" content="#111">
+    <meta charset="utf-8">
 
-            <!-- SOCIAL MEDIA -->
-            <meta property="og:title" content="SquadCalc">
-            <meta data-i18n-content="common:desc" property="og:description" content="">
-            <meta property="og:image" content="https://i.imgur.com/MIYQv6D.png">
-            <meta property="og:url" content="https://squadcalc.app">
-            <meta name="twitter:card" content="https://i.imgur.com/MIYQv6D.png">
+    <!-- SOCIAL MEDIA -->
+    <meta property="og:title" content="SquadCalc">
+    <meta property="og:site_name" content="SquadCalc">
+    <meta property="og:type" content="website">
+    <link rel="canonical" href="https://squadcalc.obamus.ru/">
+    <meta data-i18n-content="common:desc" property="og:description" content="A Complete Mortar Calculator and map lane finder for SQUAD! Steel Division layers!">
+    <meta property="og:image" content="https://i.imgur.com/MIYQv6D.png">
+    <meta property="og:url" content="https://squadcalc.obamus.ru">
+    <meta name="twitter:card" content="https://i.imgur.com/MIYQv6D.png">
 
-            <!-- FAVICON / MANIFEST -->
-            <link rel="icon" type="image/png" sizes="32x32" href="/img/favicons/icon_32x32.png">
-            <link rel="apple-touch-icon" href="/img/favicons/apple-touch-icon.png">
-            <link rel="manifest" href="/manifest.json">
+    <!-- FAVICON -->
+    <!--            <link rel="shortcut icon" type="image/x-icon" href="./src/img/favicons/icon_96x96.png">-->
+    <link rel="icon" type="image/png" sizes="32x32" href="/src/img/favicons/icon_32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/src/img/favicons/icon_96x96.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/src/img/favicons/icon_192x192.png">
+    <link rel="apple-touch-icon" sizes="192x192" href="/src/img/favicons/icon_192x192.png">
+    <!-- FONT/ICON -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Oswald:wght@700&family=Roboto:wght@600&display=swap" rel="stylesheet">
 
-            <!-- FONT/ICON -->
-            <link rel="preconnect" href="https://fonts.googleapis.com">
-            <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-            <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Oswald:wght@700&family=Roboto:wght@600&display=swap" rel="stylesheet">
+    <!-- FUCK IE / REGISTER SW -->
+    <script>
+        if (navigator.appName.indexOf("Internet Explorer") != -1 || navigator.userAgent.match(/Trident.*rv[ :]*11\./)) {
+            window.location = "https://choosebrowser.com/";
+        }
 
-            <!-- REGISTER SW -->
-            <script>
-                if ("serviceWorker" in navigator) {
-                    try {
-                        navigator.serviceWorker.register("sw.js");
-                    } catch (error) {
-                        console.error(`Registration failed with ${error}`);
-                    }
-                }
-            </script>
+        if ("serviceWorker" in navigator) {
+            try {
+                navigator.serviceWorker.register("sw.js");
+            } catch (error) {
+                console.error(`Registration failed with ${error}`);
+            }
+        }
 
-        </head>
+    </script>
 
-        <body style="visibility: hidden;">
+    <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            "name": "SquadCalc",
+            "url": "https://squadcalc.obamus.ru/"
+        }
+    </script>
 
-            
-            <!-- HEADER / LOADER -->
-            <%= require('html-loader!./components/header/header.html').default %>
+</head>
 
-            <!-- LEGACY/MAP MODE -->
-            <%= require('html-loader!./components/legacyui/legacyui.html').default %>
-            <%= require('html-loader!./components/map/map.html').default %>
+<body style="visibility: hidden;">
 
-            <!-- DIALOGS -->
-            <%= require('html-loader!./components/dialogs/weapon.html').default %>
-            <%= require('html-loader!./components/dialogs/target.html').default %>
-            <%= require('html-loader!./components/dialogs/settings.html').default %>
-            <%= require('html-loader!./components/dialogs/factions.html').default %>
-            <%= require('html-loader!./components/dialogs/servers.html').default %>
 
-            <!-- CONTEXTMENU -->
-            <%= require('html-loader!./components/contextMenu/contextMenu.html').default %>
+<!-- HEADER / LOADER -->
+<%= require('html-loader!./components/header/header.html').default %>
 
-            <!-- FOOTER / TOASTS -->
-            <%= require('html-loader!./components/footer/footer.html').default %>
+<!-- LEGACY/MAP MODE -->
+<%= require('html-loader!./components/legacyui/legacyui.html').default %>
+<%= require('html-loader!./components/map/map.html').default %>
 
-        </body>
+<!-- DIALOGS -->
+<%= require('html-loader!./components/dialogs/weapon.html').default %>
+<%= require('html-loader!./components/dialogs/target.html').default %>
+<%= require('html-loader!./components/dialogs/settings.html').default %>
+<%= require('html-loader!./components/dialogs/factions.html').default %>
+<%= require('html-loader!./components/dialogs/servers.html').default %>
 
-    </html>
+<!-- CONTEXTMENU -->
+<%= require('html-loader!./components/contextMenu/contextMenu.html').default %>
+
+<!-- FOOTER / TOASTS -->
+<%= require('html-loader!./components/footer/footer.html').default %>
+
+</body>
+
+</html>

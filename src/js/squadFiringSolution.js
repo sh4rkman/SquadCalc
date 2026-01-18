@@ -54,13 +54,100 @@ export default class SquadFiringSolution {
      * @returns {number || NaN} radian angle if target in range, NaN otherwise
     */
     getElevation(dist = 0, lowangle = false) {
+        // Check if weapon has barrel geometry - if yes, use iterative method
+        if ((App.activeWeapon.muzzleOffset && App.activeWeapon.muzzleOffset.y > 0) ||
+            (App.activeWeapon.barrelLength && App.activeWeapon.barrelLength > 0)) {
+            return this.getElevationWithBarrel(dist, lowangle);
+        }
+
         let angleFactor;
-        
+
         const P1 = Math.sqrt(this.velocity ** 4 - this.gravity * (this.gravity * dist ** 2 + 2 * (this.heightDiff - App.activeWeapon.heightOffset) * this.velocity ** 2));
         angleFactor = lowangle ? -P1 : P1;
 
         let elevation = Math.atan((this.velocity ** 2 + angleFactor) / (this.gravity * dist)) - this.degToRad(App.activeWeapon.angleOffset);
 
+        if (this.radToDeg(elevation) < App.activeWeapon.minElevation[0] || this.radToDeg(elevation) > App.activeWeapon.minElevation[1]){
+            return NaN;
+        }
+
+        return elevation;
+    }
+
+
+    /**
+     * Calculates elevation with iterative method accounting for 3D barrel geometry.
+     * Used for weapons with muzzle offsets (forward, perpendicular, or vertical).
+     * Converges to accurate elevation by iteratively adjusting for muzzle position changes.
+     * @param {number} [dist] - distance between weapon and target from getDist()
+     * @param {boolean} [lowangle] - "high" or "low" angle
+     * @returns {number || NaN} radian angle if target in range, NaN otherwise
+     */
+    getElevationWithBarrel(dist = 0, lowangle = false) {
+        // Support both new muzzleOffset and legacy barrelLength
+        const muzzleOffset = App.activeWeapon.muzzleOffset || {
+            x: 0,
+            y: App.activeWeapon.barrelLength || 0,
+            z: 0
+        };
+
+        // Adjust base distance for perpendicular muzzle offset
+        // After bearing correction, actual muzzle-to-target distance is reduced
+        // Geometry: √(D² - X²) where D = weapon-center-to-target, X = perpendicular offset
+        let baseDistance = dist;
+        if (muzzleOffset.x !== 0) {
+            const perpOffset = muzzleOffset.x;
+            const distSquared = dist * dist;
+            const offsetSquared = perpOffset * perpOffset;
+
+            // Ensure we don't get imaginary numbers if offset > distance (shouldn't happen)
+            if (distSquared > offsetSquared) {
+                baseDistance = Math.sqrt(distSquared - offsetSquared);
+            } else {
+                // Target is closer than perpendicular offset - likely won't hit
+                // Use original distance and let trajectory calculation determine if possible
+                baseDistance = dist;
+            }
+        }
+
+        const maxIterations = 50;
+        const tolerance = 0.0001;
+
+        // Initial approximation without forward/vertical muzzle offset consideration
+        let angleFactor;
+        const P1 = Math.sqrt(this.velocity ** 4 - this.gravity * (this.gravity * baseDistance ** 2 + 2 * (this.heightDiff - App.activeWeapon.heightOffset) * this.velocity ** 2));
+        angleFactor = lowangle ? -P1 : P1;
+        let elevation = Math.atan((this.velocity ** 2 + angleFactor) / (this.gravity * baseDistance)) - this.degToRad(App.activeWeapon.angleOffset);
+
+        // Iterative calculation accounting for forward and vertical muzzle offsets
+        for (let i = 0; i < maxIterations; i++) {
+            const sinElev = Math.sin(elevation);
+            const cosElev = Math.cos(elevation);
+
+            // Calculate 3D muzzle position offsets from pitch pivot
+            // When barrel elevates, Y and Z components rotate around pitch axis
+            const muzzleVerticalOffset = muzzleOffset.y * sinElev + muzzleOffset.z * cosElev;
+            const muzzleHorizontalOffset = muzzleOffset.y * cosElev - muzzleOffset.z * sinElev;
+
+            // Final adjustments: account for forward offset along barrel
+            const finalDist = baseDistance - muzzleHorizontalOffset;
+            const finalHeightDiff = this.heightDiff - App.activeWeapon.heightOffset - muzzleVerticalOffset;
+
+            // Calculate new angle with all adjustments
+            const P1_adjusted = Math.sqrt(this.velocity ** 4 - this.gravity * (this.gravity * finalDist ** 2 + 2 * finalHeightDiff * this.velocity ** 2));
+            const angleFactor_adjusted = lowangle ? -P1_adjusted : P1_adjusted;
+            const newElevation = Math.atan((this.velocity ** 2 + angleFactor_adjusted) / (this.gravity * finalDist)) - this.degToRad(App.activeWeapon.angleOffset);
+
+            // Check convergence
+            if (Math.abs(newElevation - elevation) < tolerance) {
+                elevation = newElevation;
+                break;
+            }
+
+            elevation = newElevation;
+        }
+
+        // Validate angle is within weapon limits
         if (this.radToDeg(elevation) < App.activeWeapon.minElevation[0] || this.radToDeg(elevation) > App.activeWeapon.minElevation[1]){
             return NaN;
         }
@@ -79,6 +166,20 @@ export default class SquadFiringSolution {
         const lngDelta = (this.targetLatLng.lng - this.weaponLatLng.lng) * this.map.mapToGameScale;
         let bearing = Math.atan2(latDelta, lngDelta) * 180 / Math.PI + 90;
         if (bearing < 0) { bearing += 360; } // Avoid Negative Angle by adding a whole rotation
+
+        // Apply bearing correction for perpendicular muzzle offset
+        if (App.activeWeapon.muzzleOffset && App.activeWeapon.muzzleOffset.x !== 0) {
+            const perpendicularOffset = App.activeWeapon.muzzleOffset.x;
+            // Positive X offset means muzzle is to the right of center (when facing forward)
+            // Bearing correction (in degrees): arctan(offset / distance)
+            // Negative correction rotates bearing left to compensate for right offset
+            const bearingCorrection = -Math.atan2(perpendicularOffset, this.distance) * 180 / Math.PI;
+            bearing += bearingCorrection;
+
+            if (bearing < 0) { bearing += 360; }
+            if (bearing >= 360) { bearing -= 360; }
+        }
+
         return bearing;
     }
 
