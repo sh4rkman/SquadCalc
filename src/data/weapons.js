@@ -12,7 +12,6 @@ export var WEAPONS = [
         angleType: "high",
         elevationPrecision: 0,
         heightOffset: 1,
-        angleOffset: 0,
         shells : [{
             name: "default",
             minDistance: 51,
@@ -35,7 +34,6 @@ export var WEAPONS = [
         angleType: "low",
         elevationPrecision: 1,
         heightOffset: 1,
-        angleOffset: 0,
         projectileLifespan: 20,
         shells : [{
             name: "default",
@@ -59,7 +57,6 @@ export var WEAPONS = [
         angleType: "high",
         elevationPrecision: 1,
         heightOffset: 1.5,
-        angleOffset: 0,
         shells : [{
             name: "default",
             minDistance: 0,
@@ -105,7 +102,6 @@ export var WEAPONS = [
         angleType: "low",
         elevationPrecision: 1,
         heightOffset: 2.5,
-        angleOffset: 0,
         projectileLifespan: 20,
         shells : [{
             name: "default",
@@ -129,7 +125,6 @@ export var WEAPONS = [
         angleType: "low",
         elevationPrecision: 1,
         heightOffset: 3,
-        angleOffset: 0,
         shells : [{
             name: "default",
             minDistance: 0,
@@ -152,7 +147,6 @@ export var WEAPONS = [
         angleType: "high",
         elevationPrecision: 1,
         heightOffset: 3,
-        angleOffset: 0,
         shells : [{
             name: "impact",
             velocity: 142,
@@ -241,7 +235,6 @@ export var WEAPONS = [
         angleType: "high",
         elevationPrecision: 0,
         heightOffset: 3,
-        angleOffset: 0,
         shells : [{
             name: "MO-SHORT",
             velocity: 110,
@@ -287,7 +280,6 @@ export var WEAPONS = [
         angleType: "low",
         elevationPrecision: 1,
         heightOffset: 3,
-        angleOffset: 0,
         shells : [{
             name: "default",
             minDistance: 0,
@@ -332,7 +324,6 @@ export var WEAPONS = [
         angleType: "low",
         elevationPrecision: 1,
         heightOffset: 3,
-        angleOffset: 0,
         shells : [{
             name: "default",
             minDistance: 0,
@@ -356,7 +347,6 @@ export var WEAPONS = [
         angleType: "low",
         elevationPrecision: 1,
         heightOffset: 3,
-        angleOffset: 0,
         shells : [{
             name: "default",
             minDistance: 0,
@@ -380,7 +370,6 @@ export var WEAPONS = [
         angleType: "low",
         elevationPrecision: 1,
         heightOffset: 3,
-        angleOffset: 0,
         shells : [{
             name: "default",
             minDistance: 0,
@@ -428,7 +417,6 @@ export var WEAPONS = [
         angleType: "low",
         elevationPrecision: 1,
         heightOffset: 3,
-        angleOffset: 0,
         shells : [{
             name: "default",
             minDistance: 75,

@@ -1,6 +1,6 @@
 import i18next from "i18next";
 import { App } from "../app.js";
-import { MAPS } from "./data/maps.js";
+import { MAPS } from "../data/maps.js";
 import { activeServerBrowserTooltips } from "./tooltips.js";
 import Fuse from "fuse.js";
 

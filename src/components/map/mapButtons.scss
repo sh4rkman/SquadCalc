@@ -4,11 +4,11 @@
 
 
 .mapLayerMenuWrapper {
-    position: relative; // relative so #btnLayersGroup can be positioned against it
+    position: relative; 
     display: flex;
-    flex-direction: row-reverse; // main button on right, layers expand left
+    flex-direction: row-reverse;
     align-items: center;
-    gap: 0; // spacing between main button and layer buttons
+    gap: 0;
 }
 
 .btnLayersGroup {

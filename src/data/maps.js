@@ -560,7 +560,7 @@ function extraInfo() {
 
 }
 
-// Only run this with `node src/js/data/maps.js mapinfo`
+// Only run this with `node src/data/maps.js mapinfo`
 if (typeof process !== "undefined" && process.argv?.[2] === "mapinfo") {
     extraInfo();
 }
