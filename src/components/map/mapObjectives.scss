@@ -48,6 +48,7 @@ $flag-circle-opacity: 0.2;
         display: grid;
         letter-spacing: 0;
         outline: solid 3px rgb(104, 104, 104);
+        outline-style: solid!important; // avoid outline being lost on focus
         &.selected {
             background-color: rgba(0, 128, 0, 1);
             outline-color: rgb(0, 90, 0);
