@@ -60,7 +60,7 @@ export default class SquadCalc {
         this.loadTheme();
         checkApiHealth();
         initWebSocket();
-        console.log(`SquadCalc v${this.version} Loaded!`);
+        console.log(`SquadCalc v${this.version} Loaded! 🎯`);
     }
 
     /**

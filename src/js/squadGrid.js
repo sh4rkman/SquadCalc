@@ -164,11 +164,8 @@ export default LayerGroup.extend({
     */
     redraw() {
         
-        if (!this.bounds) {
-            console.debug("no viewbounds, skipping draw");
-            return;
-        }
-
+        if (!this.bounds) return;
+        
         // clear old grid lines
         this.clearLines();
 

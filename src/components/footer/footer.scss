@@ -107,20 +107,22 @@ $toastDistanceFromBottom: 40px;
     visibility: hidden;
 }
 
-#icon-wrapper{
+#icon-wrapper {
     width: 30px;
     height: 30px;
     background: var(--secondary);
     border-radius: 5px;
-    box-sizing: border-box;
-    padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
 }
 
 #icon {
+    width: 20px;
+    height: 20px;
     background: var(--primary);
     border-radius: 50%;
-    height: 100%;
-    width: 100%;
     position: relative;
 }
 

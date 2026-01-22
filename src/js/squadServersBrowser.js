@@ -130,9 +130,6 @@ export default class SquadServersBrowser {
 
         const results = this.fuse.search(query);
         this.filteredData = results.map(r => r.item);
-
-        console.debug(`Fuse filtered servers with "${query}":`, this.filteredData);
-
         this.renderRows(this.filteredData);
     }
 
