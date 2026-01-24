@@ -31,6 +31,15 @@
     }
 }
 
+
+.map-crosshair #map {
+    cursor: crosshair;
+}
+
+#map {
+    cursor: default;
+}
+
 #map_ui {
     position: relative;
     height: 100vh; 
@@ -246,7 +255,7 @@
 .leaflet-pane.leaflet-ie10-visual-click-pane-pane { z-index: 300; }
 
 .tippy-box {
-    cursor: auto;
+    //cursor: auto;
     pointer-events: auto !important;
 }
 

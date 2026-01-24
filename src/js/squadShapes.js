@@ -19,7 +19,7 @@ export class MapDrawing {
         console.debug("Creating new draw with uid", this.uid);
     }
 
-    // Creates the arrow on the map
+    // Creates the draw on the map
     createDraw() {
         const arrowOptions = {
             color: this.color,

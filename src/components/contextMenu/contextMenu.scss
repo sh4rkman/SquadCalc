@@ -89,7 +89,13 @@
 
 .tippy-box[data-theme~="contextmenu"] {
     background-color: transparent;
+    pointer-events: auto !important;
+    cursor: default;
     .tippy-content {
         padding: 0;
     }
+}
+
+.map-crosshair .tippy-box[data-theme~="contextmenu"] {
+    cursor: crosshair;
 }

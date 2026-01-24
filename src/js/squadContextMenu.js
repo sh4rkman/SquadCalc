@@ -92,6 +92,7 @@ export default class SquadContextMenu {
             offset: [0, 15],
             onHide: () => {
                 $(".shapeButton").off("click");
+                $(".penButton").off("click");
             },
             onShow: (tip) => {
                 tip.setContent(
@@ -126,6 +127,10 @@ export default class SquadContextMenu {
 
                         // Extract the color from the clicked element
                         let targetElement = event.target.closest(".shapeButton span");
+
+                        // Catch weird clicks outside the span
+                        if (!targetElement) return;
+
                         const color = [...targetElement.classList].find(cls => cls !== "pen");
 
                         App.minimap.on("pointerdown", (e) => {

@@ -60,8 +60,8 @@ export default class SquadSettings {
                 default: false,
                 selector: "#cursorChoiceSettings",
                 requiresMouse: true,
-                onChange: (val) => {
-                    $("#map").css("cursor", val ? "default" : "crosshair");
+                onChange: () => {
+                    $("body").toggleClass("map-crosshair", !this.cursor);
                 }
             },
 
@@ -624,11 +624,7 @@ export default class SquadSettings {
         this.applyMapFilter();
 
         // Apply cursor setting
-        if (this.cursor) {
-            $("#map").css("cursor", "default");
-        } else {
-            $("#map").css("cursor", "crosshair");
-        }
+        $("body").toggleClass("map-crosshair", !this.cursor);
 
         // Handle faction-dependent settings
         if (!this.enableFactions) {
