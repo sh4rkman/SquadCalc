@@ -625,8 +625,10 @@ export const squadStratMarker = squadMarker.extend({
         this.on("dragEnd", this._handleDragEnd, this);
         this.on("mouseover", this._handleMouseOver, this);
         this.on("mouseout", this._handleMouseOut, this);
+        this.on("click", this._handleClick, this);
         this.on("contextmenu", this._handleContextMenu, this);
     },
+
 
     updateIconSize: function () {
         const markerSizeSetting = App.userSettings.markerSize;
@@ -639,6 +641,7 @@ export const squadStratMarker = squadMarker.extend({
         });
         this.setIcon(newIcon);
     },
+
 
     /**
      * Remove the contextmenu marker and every object tied
@@ -668,11 +671,13 @@ export const squadStratMarker = squadMarker.extend({
         this.remove();
     },
 
+
     _handleContextMenu: function() {
         // Avoid other target keeping fading
         clearTimeout(this.mouseOverTimeout);    
         this.delete();
     },
+
 
     _handleDrag: function (event) {
         event = this.keepOnMap(event);
@@ -683,12 +688,25 @@ export const squadStratMarker = squadMarker.extend({
         this.posPopUp.setContent(this.map.getKP(-event.latlng.lat, event.latlng.lng, 4)); 
     },
 
-    _handleDragStart: function () {
 
+    _handleDragStart: function () {
         this.map.mouseLocationPopup.close();
         this.map.off("mousemove", this.map._handleMouseMove);
         this.posPopUp.openOn(this.map);
     },
+
+
+    
+    /*
+    * Alt+Click to duplicate marker
+    */
+    _handleClick(e){
+        if (e.originalEvent.altKey) {
+            let newLatLng = {lat: this._latlng.lat, lng: this._latlng.lng + 1};
+            App.minimap.createMarker(newLatLng, this.team, this.category, this.icontype);
+        }
+    },
+
 
     _handleDragEnd: function () {
 
