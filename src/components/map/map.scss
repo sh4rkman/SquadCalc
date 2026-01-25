@@ -5,9 +5,14 @@
     --font-size-calc-popup: 0.9em;
 }
 
-.circles {
-    pointer-events: none!important;
-}
+// .circles {
+//     //pointer-events: none!important;
+// }
+
+// .tippy-box {
+//     //cursor: auto;
+//     pointer-events: auto !important;
+// }
 
 @mixin popup-base-styles {
     background: transparent;
@@ -142,13 +147,14 @@
             color: white;
             white-space: nowrap;
             transform-origin: 0;
+            & > div {
+                position: relative;
+                margin-top: -25%;
+                left: -50%;
+                pointer-events: none;
+            }
         }
-        .leaflet-measure-path-measurement > div {
-            position: relative;
-            margin-top: -25%;
-            left: -50%;
-            pointer-events: none;
-        }
+        .leaflet-measure-path-measurement 
         .leaflet-visualclick-icon {
             border-radius: 10%;
             pointer-events: none;
@@ -173,6 +179,9 @@
                 box-shadow: inset 0 0 25px 5px #1960b1, 0 0 10px -1px #11447e;
             }
         }
+        .leaflet-pane.leaflet-ie10-visual-click-pane-pane { 
+            z-index: 300; 
+        }
         .leaflet-visualclick-icon-touch {
             &::after {
                 content: "";
@@ -194,6 +203,17 @@
             &.cyan::after {
                 box-shadow: inset 0 0 25px -1px #1960b1, 0 0 10px -1px #11447e;
             }
+        }
+    }
+    .hexagon-shape {
+        cursor: pointer!important;
+        transition: fill-opacity 0.15s ease, stroke-opacity 0.15s ease;
+        .hovered {
+            fill-opacity: 0.8;
+        }
+        .faded-out {
+            fill-opacity: 0;
+            stroke-opacity: 0;
         }
     }
 }
@@ -251,24 +271,3 @@
     }
 }
 
-
-.leaflet-pane.leaflet-ie10-visual-click-pane-pane { z-index: 300; }
-
-.tippy-box {
-    //cursor: auto;
-    pointer-events: auto !important;
-}
-
-.hexagon-shape {
-    cursor: pointer!important;
-    transition: fill-opacity 0.15s ease, stroke-opacity 0.15s ease;
-}
-
-.hexagon-shape.hovered {
-    fill-opacity: 0.8;
-}
-
-.hexagon-shape.faded-out {
-    fill-opacity: 0;
-    stroke-opacity: 0;
-}

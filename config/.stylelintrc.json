@@ -1,6 +1,7 @@
 {
     "extends": "stylelint-config-standard-scss",
     "rules": {
+        
         "rule-empty-line-before": [
             "always",
             {
@@ -10,12 +11,7 @@
         "comment-empty-line-before": null,
         "selector-class-pattern": null,
         "scss/at-extend-no-missing-placeholder": null,
-        "scss/double-slash-comment-empty-line-before": [
-            "always",
-            {
-                "except": ["inside-block"]
-            }
-        ],
+        "scss/double-slash-comment-empty-line-before": null,
         "scss/dollar-variable-pattern": null,
         "scss/dollar-variable-colon-space-before": "never",
         "no-descending-specificity": null,
