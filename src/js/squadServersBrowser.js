@@ -12,6 +12,7 @@ export default class SquadServersBrowser {
         this.selectedServer = null;
         this.selectedLayer = null;
         this.refreshInterval = 20; // seconds
+        this.favorites = this.loadFavorites();
     }
 
     init(){
@@ -104,7 +105,7 @@ export default class SquadServersBrowser {
         const searchInput = document.getElementById("serverSearch");
         tbody.innerHTML = `
             <tr>
-                <td colspan="6" style="text-align: center; padding: 40px;">
+                <td colspan="7" style="text-align: center; padding: 40px;">
                     <p>${i18next.t("loadingServers", { ns: "common" })}</p>
                 </td>
             </tr>
@@ -132,6 +133,96 @@ export default class SquadServersBrowser {
         this.filteredData = results.map(r => r.item);
         this.renderRows(this.filteredData);
     }
+
+
+    /**
+     * Loads favorites from persistent storage.
+     * @returns {Set} Set of favorite server IDs
+     */
+    loadFavorites() {
+        try {
+            const stored = localStorage.getItem("favoriteServers");
+            return stored ? new Set(JSON.parse(stored)) : new Set();
+        } catch (error) {
+            console.warn("Could not load favorites:", error);
+            return new Set();
+        }
+    }
+
+
+    /**
+     * Returns the star icon HTML for the favorite button.
+     * @param {string|number} serverId
+     * @returns {string}
+     */
+    getFavoriteStarHTML(serverId) {
+        const isFav = this.isFavorite(serverId);
+        return `
+            <button class="favorite-btn ${isFav ? "favorited" : ""}" data-serverid="${serverId}" title="${isFav ? "Remove from favorites" : "Add to favorites"}">
+                <svg class="star-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" width="20" height="20">
+                    <path d="M341.5 45.1C337.4 37.1 329.1 32 320.1 32C311.1 32 302.8 37.1 298.7 45.1L225.1 189.3L65.2 214.7C56.3 216.1 48.9 222.4 46.1 231C43.3 239.6 45.6 249 51.9 255.4L166.3 369.9L141.1 529.8C139.7 538.7 143.4 547.7 150.7 553C158 558.3 167.6 559.1 175.7 555L320.1 481.6L464.4 555C472.4 559.1 482.1 558.3 489.4 553C496.7 547.7 500.4 538.8 499 529.8L473.7 369.9L588.1 255.4C594.5 249 596.7 239.6 593.9 231C591.1 222.4 583.8 216.1 574.8 214.7L415 189.3L341.5 45.1z"/>
+                </svg>
+            </button>
+        `;
+    }
+
+
+    /**
+     * Toggles a server as favorite and updates storage.
+     * @param {string|number} serverId
+     */
+    toggleFavorite(serverId) {
+        if (this.favorites.has(serverId)) {
+            this.favorites.delete(serverId);
+        } else {
+            this.favorites.add(serverId);
+        }
+        this.saveFavorites();
+    }
+
+
+    /**
+     * Saves favorites to persistent storage.
+     */
+    saveFavorites() {
+        try {
+            localStorage.setItem("favoriteServers", JSON.stringify([...this.favorites]));
+        } catch (error) {
+            console.warn("Could not save favorites to localStorage:", error);
+        }
+    }
+
+
+    /**
+     * Handles favorite button clicks without triggering row selection.
+     * @param {Event} event
+     */
+    handleFavoriteClick(event) {
+        event.stopPropagation();
+        console.log("Favorite button clicked");
+        const btn = event.target.closest(".favorite-btn");
+        if (!btn) return;
+
+        const serverId = btn.dataset.serverid;
+        this.toggleFavorite(serverId);
+        
+        // Update the button appearance
+        btn.classList.toggle("favorited");
+        const path = btn.querySelector(".star-icon path");
+        const isFav = btn.classList.contains("favorited");
+        path.setAttribute("fill", isFav ? "currentColor" : "none");
+    }
+
+
+    /**
+     * Checks if a server is favorited.
+     * @param {string|number} serverId
+     * @returns {boolean}
+     */
+    isFavorite(serverId) {
+        return this.favorites.has(serverId);
+    }
+
 
 
     /**
@@ -171,14 +262,21 @@ export default class SquadServersBrowser {
      * @param {Array} servers
      */
     renderRows(servers){
-
         const tbody = document.getElementById("serversTableBody");
         let rows = "";
-
+        
         if (servers && servers.length > 0) {
-            servers.forEach(server => {
+            // Sort favorites to top
+            const sortedServers = [...servers].sort((a, b) => {
+                const aIsFav = this.isFavorite(a.id) ? 1 : 0;
+                const bIsFav = this.isFavorite(b.id) ? 1 : 0;
+                return bIsFav - aIsFav; // Favorites first
+            });
+            
+            sortedServers.forEach(server => {
                 const isSelected = server.id == this.selectedServer ? "selected" : "";
                 const unavailable = (!server.team1 || !server.team2 || !server.mapName) ? "unavailable" : "";
+                const favoriteStarHTML = this.getFavoriteStarHTML(server.id);
                 const nextLayer = this.getNextLayerHTML(server);
                 rows += `
                     <tr class="${isSelected} ${unavailable}"
@@ -190,6 +288,7 @@ export default class SquadServersBrowser {
                         data-team2="${server.team2}"
                         data-unit1="${server.attributes.details.squad_teamOne || ""}"
                         data-unit2="${server.attributes.details.squad_teamTwo || ""}">
+                        <td class="favoriteCell">${favoriteStarHTML}</td>
                         <td title="${server.attributes.name}">${server.attributes.name}</td>
                         <td class="mapdata">
                             ${server.attributes.details.map}<br>
@@ -203,7 +302,7 @@ export default class SquadServersBrowser {
         } else {
             rows = `
                 <tr>
-                    <td colspan="6" style="text-align: center; padding: 40px;">
+                    <td colspan="7" style="text-align: center; padding: 40px;">
                         ${i18next.t("noServersFound", { ns: "common" })}
                     </td>
                 </tr>
@@ -249,6 +348,7 @@ export default class SquadServersBrowser {
                 <table class="servers-table">
                     <thead>
                         <tr>
+                            <th class="favoriteHeader"></th>
                             <th class="sortable" data-sort="name" data-i18n="common:serverName">
                                 ${i18next.t("serverName", { ns: "common" })} <span class="sort-indicator">⇅</span>
                             </th>
@@ -282,6 +382,9 @@ export default class SquadServersBrowser {
     handleRowClicks(row) {
         // Ignore clicks on header rows
         if (row.closest("thead").length) return;
+
+        // Ignore clicks on favorite button
+        if (row.closest(".favorite-btn")) return;
 
         // --- UNSELECT ---
         if (row.hasClass("selected")) {
@@ -338,6 +441,12 @@ export default class SquadServersBrowser {
             this.handleRowClicks($(event.currentTarget));
         });
 
+        // Favorite button click handler
+        const tbody = document.getElementById("serversTableBody");
+        tbody.addEventListener("click", (e) => {
+            this.handleFavoriteClick(e);
+        });
+
         // Search input listener
         const searchInput = document.getElementById("serverSearch");
         if (searchInput) {
@@ -353,14 +462,6 @@ export default class SquadServersBrowser {
                 this.refreshRows();
             });
         }
-
-        // // Info Button listener
-        // const infoBtn = document.getElementById("infoBtn");
-        // if (infoBtn) {
-        //     infoBtn.addEventListener("click", () => {
-        //         infoDialog.showModal();
-        //     });
-        // }
 
         // Sortable headers
         const sortableHeaders = serversList.querySelectorAll("th[data-sort]");

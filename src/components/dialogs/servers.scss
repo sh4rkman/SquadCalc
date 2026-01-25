@@ -91,7 +91,7 @@ th {
         transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.2s ease;
         &:hover {
             background: #111111f6;
-            transform: scale(1.03);
+            transform: scale(1.005);
             cursor: pointer;
             box-shadow: 0 0 4px rgba(0,0,0,0.7);
         }
@@ -120,7 +120,7 @@ th {
         overflow: hidden;
         max-width: 400px;
         height: 50px;
-        &:nth-child(2) {
+        &:nth-child(3) {
             max-width: 150px;
         }
     }
@@ -255,10 +255,10 @@ th {
     .search-input::placeholder {
         font-size: 0.6em;
     }
-    .servers-table th:nth-child(3),
-    .servers-table td:nth-child(3),
     .servers-table th:nth-child(4),
-    .servers-table td:nth-child(4){
+    .servers-table td:nth-child(4),
+    .servers-table th:nth-child(5),
+    .servers-table td:nth-child(5){
         display: none;
     }
     .servers-table {
@@ -387,3 +387,54 @@ th {
     }
 }
 
+.favoriteCell {
+    padding: 0 4px !important;
+    overflow: visible;
+    width: 40px;
+    max-width: 40px;
+}
+
+th.favoriteHeader {
+    text-transform: none;
+    font-size: 1.1em;
+    padding: 8px 4px !important;
+    width: 40px;
+    max-width: 40px;
+}
+
+
+.favorite-btn {
+    background: none;
+    border: none;
+    padding: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    svg {
+        width: 20px;
+        height: 20px;
+        transition: all 0.05s ease;
+    }
+    path {
+        fill: rgba(169, 169, 169, 0.466);
+        stroke: rgb(0, 0, 0);
+        stroke-width: 2;
+        transition: all 0.05s ease;
+    }
+    &:hover {
+        path {
+            fill: #fbbf24;
+            stroke: #fbbf24;
+        }
+        transform: scale(1.15);
+    }
+    &.favorited {
+        path {
+            fill: #fbbf24;
+            stroke: #fbbf24;
+            filter: drop-shadow(0 0 4px rgba(251, 191, 36, 0.5));
+        }
+    }
+}
