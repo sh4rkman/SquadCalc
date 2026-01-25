@@ -419,21 +419,22 @@ th.favoriteHeader {
     }
     path {
         fill: rgba(169, 169, 169, 0.466);
-        stroke: rgb(0, 0, 0);
-        stroke-width: 2;
         transition: all 0.05s ease;
     }
     &:hover {
         path {
-            fill: #fbbf24;
-            stroke: #fbbf24;
+            //fill: #fbbe248c;
         }
         transform: scale(1.15);
     }
     &.favorited {
+        &:hover {
+            path {
+                //fill: #fbbe248c;
+            }
+        }
         path {
             fill: #fbbf24;
-            stroke: #fbbf24;
             filter: drop-shadow(0 0 4px rgba(251, 191, 36, 0.5));
         }
     }

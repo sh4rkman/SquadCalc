@@ -8,6 +8,7 @@ export default class SquadServersBrowser {
 
     constructor() {
         this.serversData = null;
+        this.filteredData = null;
         this.syncInterval = null;
         this.selectedServer = null;
         this.selectedLayer = null;
@@ -551,7 +552,7 @@ export default class SquadServersBrowser {
         this.currentSort = column;
 
         // Sort from the current filteredData, or full dataset if empty
-        const baseData = this.filteredData?.length ? this.filteredData : [...this.serversData];
+        const baseData = this.filteredData !== null ? this.filteredData : [...this.serversData];
 
         const sorted = [...baseData].sort((a, b) => {
             let valA, valB;
