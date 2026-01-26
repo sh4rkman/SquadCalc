@@ -422,17 +422,9 @@ th.favoriteHeader {
         transition: all 0.05s ease;
     }
     &:hover {
-        path {
-            //fill: #fbbe248c;
-        }
         transform: scale(1.15);
     }
     &.favorited {
-        &:hover {
-            path {
-                //fill: #fbbe248c;
-            }
-        }
         path {
             fill: #fbbf24;
             filter: drop-shadow(0 0 4px rgba(251, 191, 36, 0.5));

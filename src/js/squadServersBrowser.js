@@ -200,7 +200,6 @@ export default class SquadServersBrowser {
      */
     handleFavoriteClick(event) {
         event.stopPropagation();
-        console.log("Favorite button clicked");
         const btn = event.target.closest(".favorite-btn");
         if (!btn) return;
 
@@ -380,12 +379,14 @@ export default class SquadServersBrowser {
      * - Switches the map/layer/factions/units to match the selected server
      * @param {jQuery<HTMLElement>} row - The clicked table row as a jQuery object.
      */
-    handleRowClicks(row) {
+    handleRowClicks(row, event) {
+
         // Ignore clicks on header rows
         if (row.closest("thead").length) return;
 
-        // Ignore clicks on favorite button
-        if (row.closest(".favorite-btn")) return;
+        // Ignore clicks on favorite button - check the actual clicked element
+        const clickedElement = $(event.target);
+        if (clickedElement.closest(".favorite-btn").length) return;
 
         // --- UNSELECT ---
         if (row.hasClass("selected")) {
@@ -439,13 +440,13 @@ export default class SquadServersBrowser {
 
         // Rows Click Handler
         $(".servers-table").on("click", "tr", (event) => {
-            this.handleRowClicks($(event.currentTarget));
+            this.handleRowClicks($(event.currentTarget), event);
         });
 
-        // Favorite button click handler
-        const tbody = document.getElementById("serversTableBody");
-        tbody.addEventListener("click", (e) => {
-            this.handleFavoriteClick(e);
+        // Favorite button click handler - use event delegation on the table
+        $(".servers-table").on("click", ".favorite-btn", (event) => {
+            event.stopPropagation();
+            this.handleFavoriteClick(event);
         });
 
         // Search input listener
