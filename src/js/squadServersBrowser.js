@@ -515,11 +515,47 @@ export default class SquadServersBrowser {
     switchLayer(serverName, mapName, layerIndex, team1, team2, unit1, unit2){
         
         if (!mapName || !serverName || !layerIndex) return;
-
+        
         const mapIndex = MAPS.findIndex(m => m.name.toLowerCase() === mapName.toLowerCase());
-        App.MAP_SELECTOR.val(mapIndex).trigger($.Event("change", { broadcast: true }));
-
-        $(document).one("layers:loaded", () => {
+        const currentMapIndex = parseInt(App.MAP_SELECTOR.val());
+        const currentLayerIndex = App.LAYER_SELECTOR.val();
+        
+        // If already on correct map and layer, just update factions/units
+        if (currentMapIndex === mapIndex && currentLayerIndex === layerIndex) {
+            if (team1 && team2) {
+                App.FACTION1_SELECTOR.val(team1).trigger($.Event("change", { broadcast: true }));
+                App.FACTION2_SELECTOR.val(team2).trigger($.Event("change", { broadcast: true }));
+                if (unit1 && unit2) {
+                    App.UNIT1_SELECTOR.val(unit1).trigger($.Event("change", { broadcast: true }));
+                    App.UNIT2_SELECTOR.val(unit2).trigger($.Event("change", { broadcast: true }));
+                }
+            }
+            $("#serversInformation")[0].close();
+            activeServerBrowserTooltips.setContent(`${i18next.t("mapSyncedwith", { ns: "common" })} ${serverName}`);
+            activeServerBrowserTooltips.enable();
+            activeServerBrowserTooltips.hide();
+            App.openToast("success", "mapUpdated", "");
+            return;
+        }
+        
+        // Map or layer needs to change
+        if (currentMapIndex !== mapIndex) {
+            App.MAP_SELECTOR.val(mapIndex).trigger($.Event("change", { broadcast: true }));
+            $(document).one("layers:loaded", () => {
+                App.LAYER_SELECTOR.val(layerIndex).trigger($.Event("change", { broadcast: true }));
+                $(document).one("layer:loaded", () => {
+                    if (team1 && team2) {
+                        App.FACTION1_SELECTOR.val(team1).trigger($.Event("change", { broadcast: true }));
+                        App.FACTION2_SELECTOR.val(team2).trigger($.Event("change", { broadcast: true }));
+                        if (unit1 && unit2) {
+                            App.UNIT1_SELECTOR.val(unit1).trigger($.Event("change", { broadcast: true }));
+                            App.UNIT2_SELECTOR.val(unit2).trigger($.Event("change", { broadcast: true }));
+                        }
+                    }
+                });
+            });
+        } else {
+            // Only layer needs to change
             App.LAYER_SELECTOR.val(layerIndex).trigger($.Event("change", { broadcast: true }));
             $(document).one("layer:loaded", () => {
                 if (team1 && team2) {
@@ -530,9 +566,8 @@ export default class SquadServersBrowser {
                         App.UNIT2_SELECTOR.val(unit2).trigger($.Event("change", { broadcast: true }));
                     }
                 }
-
             });
-        });
+        }
         
         $("#serversInformation")[0].close();
         activeServerBrowserTooltips.setContent(`${i18next.t("mapSyncedwith", { ns: "common" })} ${serverName}`);
