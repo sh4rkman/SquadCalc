@@ -328,7 +328,7 @@ export default class SquadLayer {
         //     if (laneObject.points.length > 0) {
         //         laneObject.polyline = new Polyline(laneObject.points, { 
         //             color: laneObject.color,
-        //             weight: 70,
+        //             weight: 10,
         //             opacity: 0.35
         //         }).addTo(this.map); 
         //     }
@@ -504,7 +504,7 @@ export default class SquadLayer {
                 })
             }).addTo(this.activeLayerMarkers);
             const iconElement = marker.getElement();
-            iconElement.style.backgroundImage = "url('/img/icons/ally/deployables/deployable_helipad.webp')";
+            iconElement.style.backgroundImage = "url('/img/icons/default/deployables/deployable_helipad.svg')";
             this.mainZones.assets.push(marker);
         });
     }
@@ -537,7 +537,7 @@ export default class SquadLayer {
                     })
                 }).addTo(this.activeLayerMarkers);
                 const iconElement = marker.getElement();
-                iconElement.style.backgroundImage = "url('/img/icons/ally/deployables/deployable_repairstation.webp')";
+                iconElement.style.backgroundImage = "url('/img/icons/default/deployables/deployable_repairstation.svg')";
                 this.mainZones.assets.push(marker);
             }
 
@@ -551,7 +551,7 @@ export default class SquadLayer {
                 }).addTo(this.activeLayerMarkers);
 
                 const iconElement = marker.getElement();
-                iconElement.style.backgroundImage = "url('/img/icons/ally/deployables/deployable_ammocrate.webp')";
+                iconElement.style.backgroundImage = "url('/img/icons/default/deployables/deployable_ammocrate.svg')";
                 this.mainZones.assets.push(marker);
                 this.mainZones.ammocrates.push(marker);
             }
@@ -922,7 +922,7 @@ export default class SquadLayer {
         this.hideClusters(flag, preview);
         let nextFlags = this.showClusters(flag, reachableClusters, preview);
         if (!preview) this.handleNextFlags(nextFlags, backward, reachableClusters);
-        //if (!preview) this.refreshLane(flag);
+        //this.refreshLane(flag);
     }
 
     // WIP

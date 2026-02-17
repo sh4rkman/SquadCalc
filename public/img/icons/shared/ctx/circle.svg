@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   viewBox="0 0 840 840"
+   version="1.1"
+   id="svg1"
+   sodipodi:docname="circle.svg"
+   inkscape:version="1.4.2 (f4327f4, 2025-05-13)"
+   width="840"
+   height="840"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs1" />
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="0.63046875"
+     inkscape:cx="421.9083"
+     inkscape:cy="469.49195"
+     inkscape:window-width="1552"
+     inkscape:window-height="1000"
+     inkscape:window-x="999"
+     inkscape:window-y="0"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg1" />
+  <path
+     style="fill:#ffffff;stroke-width:1.58612"
+     d="m 418.04214,166.03469 c -90.13525,1.14288 -177.39168,53.95328 -219.58179,133.70508 -43.56176,78.55311 -40.67728,180.10579 7.34821,256.01612 41.38174,67.31309 115.5865,113.67302 194.3925,120.2818 34.80945,0.573 70.44928,0.44921 103.49831,-12.02472 77.91371,-25.05645 140.74425,-90.23227 163.9834,-168.57617 9.43257,-26.79005 10.63439,-55.28829 9.78626,-83.40769 0.84579,-50.59965 -19.15773,-99.91722 -48.08589,-140.71362 -47.82643,-66.98041 -128.97573,-107.72946 -211.341,-105.2808 z m 4.89156,47.93371 c 65.13744,-2.15967 128.39539,31.86546 167.01959,83.59288 57.27953,73.28482 53.85593,186.25391 -6.74051,256.56628 -38.62803,47.15777 -98.60368,75.58254 -159.56965,75.31482 -63.56743,1.26782 -126.56045,-30.49741 -165.13481,-80.81267 -30.12591,-38.72736 -45.62052,-88.11109 -43.00358,-137.09558 1.50368,-43.88604 18.75062,-87.10727 46.14954,-121.27701 38.97376,-47.29303 99.49355,-77.99696 161.27942,-76.28872 z"
+     id="path2" />
+  <rect
+     style="fill:none"
+     id="rect2"
+     width="810.50806"
+     height="740.71869"
+     x="-84.064438"
+     y="-41.239159" />
+</svg>

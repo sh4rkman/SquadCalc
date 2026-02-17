@@ -29,7 +29,7 @@
         height: 25px;   
     }
     .contextmenuVert {
-        width: 140px;
+        width: calc(28px * 5);
         height: auto;
         display: flex;
         flex-wrap: wrap;
