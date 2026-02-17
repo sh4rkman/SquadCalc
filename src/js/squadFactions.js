@@ -145,7 +145,7 @@ export default class SquadFactions {
                 $("#pinnedVehiclesTab").append(`
                     <div class="pinnedVehicles animate__animated animate__fadeInLeft" data-vehiclename="${vehicle.type}" data-vehtype="${vehicle.vehType}" c data-respawntime="${vehicle.respawnTime}">
                         <button type="button" class="btn-pined" aria-label="Select Factions">
-                            <img src="/img/icons/ally/vehicles/${vehicle.icon}.webp" alt="Faction Icon"/>
+                            <img src="/img/icons/default/vehicles/${vehicle.icon}.svg" alt="Faction Icon"/>
                         </button>
                         <div class="pinedVehiclesMeta">
                             <div class="pinedVehiclesName" data-i18n="vehicles:${vehicle.type}">${i18next.t(vehicle.type, { ns: "vehicles" })}</div>
@@ -492,7 +492,7 @@ export default class SquadFactions {
             <div class="vehicle-card animate__animated animate__fadeIn animate__faster">
                 <div class="card-content">
                     <div class="vehicle-icon">
-                        <img src="/img/icons/ally/vehicles/${vehicle.icon}.webp" alt='${vehicle.type}'>
+                        <img src="/img/icons/default/vehicles/${vehicle.icon}.svg" alt='${vehicle.type}'>
                     </div>
                     <div class="vehicle-icon">
                         <div class="vehicle-count">×${vehicle.count}</div>

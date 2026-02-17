@@ -21,34 +21,31 @@ export default class SquadContextMenu {
             plugins: [followCursor],
             duration: 0,
             arrow: false,
-            offset: [0, -15],
+            offset: [73, -15],
             onHide: () => {
                 $(".ctxButton").off("click");
                 document.removeEventListener("contextmenu", this.boundHandleContextMenu);
             },
             onShow: (tip) => {
                 tip.setContent(
-                    `<div class="contextmenu"">
-                        <button class="ctxButton">
-                            <span class="fob" data-team="ally" data-category="deployables" data-icon="deployable_fob_blue"></span>
-                        </button>
-                        <button class="ctxButton">
-                            <span class="friendly" data-team="ally" data-category="vehicles" data-icon="map_truck_logistics"></span>
-                        </button>
-                        <button class="ctxButton">
-                             <span class="friendlyInf" data-team="ally" data-category="infantry" data-icon="map_genericinfantry"></span>
-                        </button>
+                    `<div class="contextmenu">
                         <button class="ctxButton middleContextButton">
                             <span class="middleContext" data-team="shared" data-category="ctx" data-icon="middleContext"></span>
                         </button>
                         <button class="ctxButton">
-                            <span class="enemy" data-team="enemy" data-category="infantry" data-icon="map_genericinfantry"></span>
+                            <span class="infIcons" data-team="default" data-category="infantry" data-icon="map_genericinfantry"></span>
                         </button>
                         <button class="ctxButton">
-                            <span class="enemyVehicles" data-team="enemy" data-category="vehicles" data-icon="map_truck_logistics"></span>
+                            <span class="vehiclesIcons" data-team="default" data-category="vehicles" data-icon="map_truck_logistics"></span>
                         </button>
                         <button class="ctxButton">
-                            <span class="enemyfob" data-team="enemy" data-category="deployables" data-icon="deployable_fob"></span>
+                            <span class="gunVehiclesIcons" data-team="default" data-category="vehicles" data-icon="map_ifv"></span>
+                        </button>
+                        <button class="ctxButton">
+                            <span class="airIcons" data-team="default" data-category="vehicles" data-icon="map_transporthelo"></span>
+                        </button>
+                        <button class="ctxButton">
+                            <span class="buildIcons" data-team="default" data-category="deployables" data-icon="deployable_fob"></span>
                         </button>
                     </div>`
                 );
@@ -208,6 +205,7 @@ export default class SquadContextMenu {
     }
 
     handleContextMenu() {
+
         const GLOBALOPTIONS = {
             allowHTML: true,
             interactive: true,
@@ -217,63 +215,19 @@ export default class SquadContextMenu {
             interactiveBorder: 0,
             theme: "contextmenu",
         };
-
-        tippy(document.querySelector(".fob"), {
+      
+        tippy(document.querySelector(".infIcons"), {
             ...GLOBALOPTIONS,
             offset: [57, 3],
-            onShow: (tip) => {
-                const template = document.getElementById("ally_deployables_html");
+            onShown : (tip) => {
+                const template = document.getElementById("infantry_html");
                 const clone = document.importNode(template.content, true);
                 tip.setContent(clone);
                 this.setIcons(tip);
             }
         });
 
-        tippy(document.querySelector(".friendly"), {
-            ...GLOBALOPTIONS,
-            offset: [28, 3],
-            onShow : (tip) => {
-                const template = document.getElementById("ally_vehicles_html");
-                const clone = document.importNode(template.content, true);
-                tip.setContent(clone);
-                this.setIcons(tip);
-            }
-        });
-
-        tippy(document.querySelector(".friendlyInf"), {
-            ...GLOBALOPTIONS,
-            offset: [-1, 3],
-            onShow : (tip) => {
-                const template = document.getElementById("ally_infantry_html");
-                const clone = document.importNode(template.content, true);
-                tip.setContent(clone);
-                this.setIcons(tip);
-            },
-        });
-        
-        tippy(document.querySelector(".enemyfob"), {
-            ...GLOBALOPTIONS,
-            offset: [0, 3],
-            onShow : (tip) => {
-                const template = document.getElementById("enemy_deployables_html");
-                const clone = document.importNode(template.content, true);
-                tip.setContent(clone);
-                this.setIcons(tip);
-            },
-        });
-
-        tippy(document.querySelector(".enemy"), {
-            ...GLOBALOPTIONS,
-            offset: [57, 3],
-            onShow : (tip) => {
-                const template = document.getElementById("enemy_infantry_html");
-                const clone = document.importNode(template.content, true);
-                tip.setContent(clone);
-                this.setIcons(tip);
-            }
-        });
-
-        tippy(document.querySelector(".enemyVehicles"), {
+        tippy(document.querySelector(".vehiclesIcons"), {
             ...GLOBALOPTIONS,
             offset: [28, 3],
             onShow : (tip) => {
@@ -284,6 +238,43 @@ export default class SquadContextMenu {
             }
         });
 
+        
+        tippy(document.querySelector(".gunVehiclesIcons"), {
+            ...GLOBALOPTIONS,
+            offset: [-1, 3],
+            onShow : (tip) => {
+                const template = document.getElementById("gun_vehicles_html");
+                const clone = document.importNode(template.content, true);
+                tip.setContent(clone);
+                this.setIcons(tip);
+            }
+        });
+
+        
+        tippy(document.querySelector(".airIcons"), {
+            ...GLOBALOPTIONS,
+            offset: [-30, 3],
+            onShown : (tip) => {
+                const template = document.getElementById("air_html");
+                const clone = document.importNode(template.content, true);
+                tip.setContent(clone);
+                this.setIcons(tip);
+            }
+        });
+
+
+        tippy(document.querySelector(".buildIcons"), {
+            ...GLOBALOPTIONS,
+            offset: [-59, 3],
+            onShow : (tip) => {
+                const template = document.getElementById("deployables_html");
+                const clone = document.importNode(template.content, true);
+                tip.setContent(clone);
+                this.setIcons(tip);
+            },
+        });
+
+        
         tippy(document.querySelector(".pen.blue"), {
             ...GLOBALOPTIONS,
             placement: "right",
@@ -341,7 +332,7 @@ export default class SquadContextMenu {
             const icon = el.dataset.icon;
 
             // Build the path
-            let iconPath = `/img/icons/${team}/${category}/${icon}.webp`;
+            let iconPath = `/img/icons/${team}/${category}/${icon}.svg`;
             el.style.backgroundImage = `url('${iconPath}')`;
             el.style.backgroundSize = "contain";
         });

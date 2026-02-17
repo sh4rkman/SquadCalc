@@ -697,6 +697,7 @@ export const squadMinimap = Map.extend({
         let iconSizeValue = 20 + (markerSizeSetting - 1) * 5;
         let iconSize = [iconSizeValue, iconSizeValue];
 
+        // Not Working TODO: fix
         if (icon === "deployable_mortars" || icon === "deployable_hellcannon") {
             let range = 0;
             if (icon === "deployable_mortars") range = 1237;
@@ -708,27 +709,44 @@ export const squadMinimap = Map.extend({
             markerOptions.circles1Color = team === "ally" ? "white" : "#f23534";
         }
 
-        if (icon === "deployable_fob_blue") {
-            markerOptions.circlesOnHover = false;
-            markerOptions.circles1Color = "#00E8FF";
-            markerOptions.circles1Size = 150 * this.gameToMapScale;
-            markerOptions.circles2Color = "white";
-            markerOptions.circles2Size = this.activeMap.radiusExclusion * this.gameToMapScale;
-        }
+
         if (icon === "deployable_fob") { 
             markerOptions.circlesOnHover = false;
-            markerOptions.circles1Color = "#f23534";
             markerOptions.circles1Size = 150 * this.gameToMapScale;
             markerOptions.circles2Color = "white";
             markerOptions.circles2Size = this.activeMap.radiusExclusion * this.gameToMapScale;
+
+            switch (team) {
+                case "default":
+                    markerOptions.circles1Color = "#fff";
+                    break;
+                case "blue":
+                    markerOptions.circles1Color = "#00E8FF";
+                    break
+                case "red":
+                    markerOptions.circles1Color = "#f23534";
+                    break
+                case "green":
+                    markerOptions.circles1Color = "#30a64a";
+                    break
+                case "orange":
+                    markerOptions.circles1Color = "#ffa500";
+                    break
+            }
         }
-        if (icon === "deployable_hab_activated") { iconSize = [38, 38]; }
+
+        if (icon === "deployable_hab") {
+            icon = "deployable_hab_activated";
+            iconSize = [38, 38]; 
+        }
+
         if (icon === "T_strategic_uav") { 
             markerOptions.circles1Size = 300 * this.gameToMapScale;
             markerOptions.circles1Color = team === "ally" ? "#ffc400" : "#f23534";
         }
+        
         markerOptions.icon = new Icon({
-            iconUrl: `/img/icons/${team}/${category}/${icon}.webp`,
+            iconUrl: `/img/icons/${team}/${category}/${icon}.svg`,
             iconSize: iconSize,
             iconAnchor: [iconSize[0]/2, iconSize[1]/2],
             className: "squadMarker",

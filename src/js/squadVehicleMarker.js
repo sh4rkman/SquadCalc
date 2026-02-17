@@ -26,7 +26,7 @@ export const squadVehicleMarker = Marker.extend({
 
         this.setIcon(
             new Icon({
-                iconUrl: `/img/icons/ally/vehicles/${vehicle.icon}.webp`,
+                iconUrl: `/img/icons/default/vehicles/${vehicle.icon}.svg`,
                 iconSize: [36, 36],
                 iconAnchor: [18, 18],
                 className: "vehSpawnIcon"
