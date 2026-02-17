@@ -1,19 +1,17 @@
-# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge"> **42.X.X** *(2026-02-XX)*
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge"> **42.2.0** *(2026-02-17)*
 
 </br><img src="https://img.shields.io/badge/-new%20features-green">  
-
+- The right-click menu now supports multiple new icon colors (thanks to BL4CK for the SVGs!)
+- Added 10.3 new layers
+- Added 10.3 PLA Vehicle images
+- Added 10.3 new Unit icons
 
 </br><img src="https://img.shields.io/badge/-%20improv%20-orange"> 
 - Syncing with a server now avoid refreshing the map/layer if already on the right one
 
 
-</br><img src="https://img.shields.io/badge/-bug%20fixes-b22">  
-
-
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
-
-
 
 
 # <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge"> **42.1.0** *(2026-01-31)*
