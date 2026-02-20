@@ -750,7 +750,7 @@ export default class SquadFactions {
 
             // Load Commanders Icons & Tooltips
             this.loadCommanderAssets("#team1CommanderAsset", selectedUnit);
-            
+            this.loadCharacteristics("#team1Characteristics", selectedUnit);
         });
 
 
@@ -803,6 +803,7 @@ export default class SquadFactions {
 
             // Load Commanders Icons & Tooltips
             this.loadCommanderAssets("#team2CommanderAsset", selectedUnit);
+            this.loadCharacteristics("#team2Characteristics", selectedUnit);
 
             // Handle click-to-copy
             if (!Browser.mobile) $(".vehicle-type").off("click").on("click", (event) => { this.copyVehicleName(event); });
@@ -870,6 +871,54 @@ export default class SquadFactions {
     
         });
 
+    }
+
+
+    loadCharacteristics(DIV, selectedUnit) {
+        
+        console.log("Loading characteristicsfor unit:", selectedUnit.unitObjectName, selectedUnit.characteristics);  
+
+        // Load Characteristics
+        $(DIV).empty();
+
+        // Clear existing tooltips
+        tippy(`${DIV} .unit-characteristic`).forEach(instance => { instance.destroy(); });
+
+        if (selectedUnit.characteristics) {
+            Object.entries(selectedUnit.characteristics).forEach(asset => {
+                console.log("Loading characteristic:", asset[1]);
+                //if (asset[1] === "NoSpecial" || asset[1] === "Pathfinder") return;
+
+                // if asset[1] containes a list of value return
+                if (["NoSpecial", "HeavyGrenadier", "Pathfinder", "M27s", "None"].some(k => asset[1].includes(k))) return;
+                
+
+                $(DIV).append(`
+                    <img src="/img/icons/shared/characteristics/${asset[1]}.webp"
+                    class="unit-characteristic"
+                    data-tippy-characteristic="${asset[1]}"
+                    />
+                `);
+            });
+        }
+
+        // Initialize tooltips for all images in one go
+        tippy(`${DIV} .unit-characteristic`, {
+            appendTo: () => document.querySelector("#factionsDialog"),
+            delay: 200,
+            placement: "bottom",
+            allowHTML: true,
+            theme: "infTooltips",
+            onShow(instance) {
+                const el = instance.reference;
+                const characteristic = el.getAttribute("data-tippy-characteristic");
+                instance.setContent(
+                    `<div class="tooltip-content">
+                        <strong>${i18next.t(`units:${characteristic}`)}</strong>
+                    </div>`
+                );
+            },
+        });
     }
 
 
