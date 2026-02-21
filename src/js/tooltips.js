@@ -299,11 +299,11 @@ export const serverBrowserTooltips = tippy("#servers", {
     },
 })[0];
 
-export const activeServerBrowserTooltips = tippy("#servers", {
-    ...commonMapMenuToolipsSettings,
-    placement: "left",
-})[0];
-activeServerBrowserTooltips.disable();
+// export const activeServerBrowserTooltips = tippy("#servers", {
+//     ...commonMapMenuToolipsSettings,
+//     placement: "left",
+// })[0];
+// activeServerBrowserTooltips.disable();
 
 
 export const createSessionTooltips = tippy(".btn-session", {

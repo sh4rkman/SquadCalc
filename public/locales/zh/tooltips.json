@@ -78,5 +78,6 @@
     "targetGridTooltip": "在目标周围显示网格：垂直线显示角度偏差（2°），水平弧线显示仰角偏差（10密位或1°，取决于武器的单位系统）",
     "serverBrowser": "Squad 服务器浏览器",
     "quitDrawingMode": "停止绘制",
-    "escape": "Esc"
+    "escape": "Esc",
+    "serverNotFound": "未找到服务器或服务器为空"
 }

@@ -717,21 +717,21 @@ export const squadMinimap = Map.extend({
             markerOptions.circles2Size = this.activeMap.radiusExclusion * this.gameToMapScale;
 
             switch (team) {
-                case "default":
-                    markerOptions.circles1Color = "#fff";
-                    break;
-                case "blue":
-                    markerOptions.circles1Color = "#00E8FF";
-                    break
-                case "red":
-                    markerOptions.circles1Color = "#f23534";
-                    break
-                case "green":
-                    markerOptions.circles1Color = "#30a64a";
-                    break
-                case "orange":
-                    markerOptions.circles1Color = "#ffa500";
-                    break
+            case "default":
+                markerOptions.circles1Color = "#fff";
+                break;
+            case "blue":
+                markerOptions.circles1Color = "#00E8FF";
+                break;
+            case "red":
+                markerOptions.circles1Color = "#f23534";
+                break;
+            case "green":
+                markerOptions.circles1Color = "#30a64a";
+                break;
+            case "orange":
+                markerOptions.circles1Color = "#ffa500";
+                break;
             }
         }
 

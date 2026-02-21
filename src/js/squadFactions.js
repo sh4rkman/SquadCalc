@@ -876,8 +876,6 @@ export default class SquadFactions {
 
     loadCharacteristics(DIV, selectedUnit) {
         
-        console.log("Loading characteristicsfor unit:", selectedUnit.unitObjectName, selectedUnit.characteristics);  
-
         // Load Characteristics
         $(DIV).empty();
 
@@ -886,13 +884,9 @@ export default class SquadFactions {
 
         if (selectedUnit.characteristics) {
             Object.entries(selectedUnit.characteristics).forEach(asset => {
-                console.log("Loading characteristic:", asset[1]);
-                //if (asset[1] === "NoSpecial" || asset[1] === "Pathfinder") return;
-
-                // if asset[1] containes a list of value return
+                // Ignore some useless characteristics
                 if (["NoSpecial", "HeavyGrenadier", "Pathfinder", "M27s", "None"].some(k => asset[1].includes(k))) return;
                 
-
                 $(DIV).append(`
                     <img src="/img/icons/shared/characteristics/${asset[1]}.webp"
                     class="unit-characteristic"
