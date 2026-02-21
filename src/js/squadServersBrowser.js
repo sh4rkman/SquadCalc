@@ -554,7 +554,7 @@ export default class SquadServersBrowser {
         // Map or layer needs to change
         if (currentMapIndex !== mapIndex) {
             App.MAP_SELECTOR.val(mapIndex).trigger($.Event("change", { broadcast: true }));
-            $(document).one("layers:loaded", () => {
+            $(document).on("layers:loaded", () => {
                 App.LAYER_SELECTOR.val(layerIndex).trigger($.Event("change", { broadcast: true }));
                 $(document).one("layer:loaded", () => {
                     if (team1 && team2) {
