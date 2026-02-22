@@ -28,10 +28,14 @@
   "scripts": {
     "start": "webpack serve -c ./config/webpack.config.js",
     "build": "webpack -c ./config/webpack.config.js",
-    "lint": "stylelint -c ./config/.stylelintrc.json ./src/**/*.scss && htmlhint --config ./config/.htmlhintrc.json --nocolor ./src/ && jshint ./src/ && eslint --fix -c ./config/.eslintrc.js ./src/",
+    "lint": "stylelint -c ./config/.stylelintrc.json ./src/**/*.scss && htmlhint --config ./config/.htmlhintrc.json --nocolor ./src/ && jshint ./src/ && eslint --fix -c ./config/eslint.config.js ./src/",
     "mapinfo": "node src/data/maps.js mapinfo"
   },
+  "engines": {
+    "node": ">=22.13.0"
+  },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@types/leaflet": "^1.9.15",
     "@types/node": "^22.10.3",
     "animate.css": "^4.1.1",
@@ -39,16 +43,17 @@
     "css-loader": "^7.1.2",
     "css-minimizer-webpack-plugin": "^7.0.0",
     "dotenv-webpack": "^8.1.0",
-    "eslint": "^4.0.0",
+    "eslint": "^10.0.1",
     "fs-extra": "^11.2.0",
     "fuse.js": "^7.1.0",
+    "globals": "^17.3.0",
     "html-loader": "^5.1.0",
     "html-webpack-plugin": "^5.6.3",
     "htmlhint": "^1.9.1",
     "i18next": "^24.2.0",
     "i18next-http-backend": "^3.0.1",
     "jquery": "^3.7.1",
-    "jshint": "^0.5.9",
+    "jshint": "^2.13.6",
     "leaflet": "^2.0.0-alpha.1",
     "leaflet-loader": "^0.0.3",
     "mini-css-extract-plugin": "^2.9.2",
@@ -72,6 +77,7 @@
     "workbox-webpack-plugin": "^7.4.0"
   },
   "overrides": {
-    "phin": "^3.7.1"
+    "phin": "^3.7.1",
+    "minimatch": "^10.2.1"
   }
 }
