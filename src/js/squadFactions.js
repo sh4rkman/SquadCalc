@@ -45,11 +45,17 @@ export default class SquadFactions {
     formatFactions(state, isSelection = false) {
         if (!state.id) return state.text;
         const imgHtml = `<img src="/img/flags/${state.element.value}.webp" class="img-flag" />`;
-        if (isSelection) return $(`<span class="countryFlags" title="${i18next.t(state.element.value + "_displayName", { ns: "factions" }) }">${imgHtml}</span>`);
+        if (isSelection) return $(`
+            <span class="countryFlags" data-i18n-title="factions:${state.element.value}_displayName" title="${i18next.t(state.element.value + "_displayName", { ns: "factions" }) }">
+                ${imgHtml}
+            </span>
+        `);
         return $(`
             <span class="countryFlags" title="${i18next.t(state.element.value + "_displayName", { ns: "factions" }) }">
                 <p>${imgHtml}</p>
-                <span class="flag-label">${i18next.t("factions:" + state.element.value)}</span>
+                <span class="flag-label" data-i18n="factions:${state.element.value}">
+                    ${i18next.t("factions:" + state.element.value)}
+                </span>
             </span>
         `);
     }
@@ -71,8 +77,8 @@ export default class SquadFactions {
             <div class="unit-option">
                 ${isSelection ? "" : `<img src="/img/units/${icon}.webp" class="unit-logo${isSelection ? " selection" : ""}" alt="${state.text}" />`}
                 <div class="unit-texts">
-                    <div class="unit-type">${i18next.t(type, { ns: "units" })}</div>
-                    ${isSelection ? "" : `<div class="unit-name">${i18next.t(name, { ns: "units" })}</div>`}
+                    <div class="unit-type" data-i18n="units:${type}">${i18next.t(type, { ns: "units" })}</div>
+                    ${isSelection ? "" : `<div class="unit-name" data-i18n="units:${name}">${i18next.t(name, { ns: "units" })}</div>`}
                 </div>
             </div>
         `);
@@ -885,7 +891,7 @@ export default class SquadFactions {
         if (selectedUnit.characteristics) {
             Object.entries(selectedUnit.characteristics).forEach(asset => {
                 // Ignore some useless characteristics
-                if (["NoSpecial", "HeavyGrenadier", "Pathfinder", "M27s", "None"].some(k => asset[1].includes(k))) return;
+                if (["NoSpecial", "HeavyGrenadier", "Pathfinder", "M27s", "None", "NoEmplacements"].some(k => asset[1].includes(k))) return;
                 
                 $(DIV).append(`
                     <img src="/img/icons/shared/characteristics/${asset[1]}.webp"
