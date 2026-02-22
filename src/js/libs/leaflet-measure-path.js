@@ -409,7 +409,7 @@ import { Marker, Polyline, Polygon, LayerGroup, Util, Layer, DomUtil, Circle } f
 
             let latLng = this.getLatLng(),
                 options = this._measurementOptions,
-                formatter = options.formatArea || this.formatArea.bind(this);
+                formatter;
 
 
             this._measurementLayer.clearLayers();

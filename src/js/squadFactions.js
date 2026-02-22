@@ -309,7 +309,12 @@ export default class SquadFactions {
     updateMainIcon(teamKey, FACTION) {
 
         var mainFlag;
-        var html = "";
+        var html = `
+            <span>
+                <span data-i18n="common:${teamKey}">
+                    ${i18next.t(teamKey, { ns: "common" })}
+                </span>
+            `;
 
         this.squadLayer.mains.forEach((main) => {
             if (main.objectName.toLowerCase().includes(teamKey)) {
@@ -318,12 +323,7 @@ export default class SquadFactions {
             }
         });
 
-        html = `
-            <span>
-                <span data-i18n="common:${teamKey}">
-                    ${i18next.t(teamKey, { ns: "common" })}
-                </span>
-            `;
+
 
         if (FACTION !== "") html += ` : <span data-i18n="factions:${FACTION}">${i18next.t(FACTION, { ns: "factions" })}</span>`;
 

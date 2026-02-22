@@ -1,7 +1,7 @@
 import i18next from "i18next";
 import { App } from "../app.js";
 import { MAPS } from "../data/maps.js";
-import { activeServerBrowserTooltips, serverBrowserTooltips } from "./tooltips.js";
+import { serverBrowserTooltips } from "./tooltips.js";
 import Fuse from "fuse.js";
 
 export default class SquadServersBrowser {
@@ -569,7 +569,6 @@ export default class SquadServersBrowser {
             });
         } else {
             // Only layer needs to change
-            App.LAYER_SELECTOR.val(layerIndex)
             $(document).one("layers:loaded", () => {
                 App.LAYER_SELECTOR.val(layerIndex).trigger($.Event("change", { broadcast: true }));
                 $(document).one("layer:loaded", () => {

@@ -15,7 +15,7 @@ import SquadSettings from "./squadSettings.js";
 import packageInfo from "../../package.json";
 import i18next from "i18next";
 import SquadLayer from "./squadLayer.js";
-import { serverBrowserTooltips } from "./tooltips.js";
+// import { serverBrowserTooltips } from "./tooltips.js";
 import { MapDrawing, MapArrow, MapCircle, MapRectangle } from "./squadShapes.js";
 
 

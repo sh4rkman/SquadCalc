@@ -23,7 +23,7 @@ export class SquadObjective {
         this.percentage = "";
 
         console.debug("creating flag", this.name, "at position", this.position);
-        let html = "";
+        let html;
         if (!this.isMain){ 
             html = this.name;
         } else {
@@ -110,7 +110,7 @@ export class SquadObjective {
 
 
     select(){
-        let position = null;
+        let position;
         let html = "";
         let className = "flag selected";
         this.isNext = false;

@@ -127,8 +127,8 @@ export const checkApiHealth = async () => {
                                 );
 
                                 // find the row with data-serverid = serverId and add class "selected"
-                               $(`#serversTableBody tr[data-serverid="${serverId}"]`).addClass("selected");
-                               $("#servers").addClass("active");
+                                $(`#serversTableBody tr[data-serverid="${serverId}"]`).addClass("selected");
+                                $("#servers").addClass("active");
 
                             }
                             else {
