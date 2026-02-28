@@ -45,11 +45,17 @@ export default class SquadFactions {
     formatFactions(state, isSelection = false) {
         if (!state.id) return state.text;
         const imgHtml = `<img src="/img/flags/${state.element.value}.webp" class="img-flag" />`;
-        if (isSelection) return $(`<span class="countryFlags" title="${i18next.t(state.element.value + "_displayName", { ns: "factions" }) }">${imgHtml}</span>`);
+        if (isSelection) return $(`
+            <span class="countryFlags" data-i18n-title="factions:${state.element.value}_displayName" title="${i18next.t(state.element.value + "_displayName", { ns: "factions" }) }">
+                ${imgHtml}
+            </span>
+        `);
         return $(`
             <span class="countryFlags" title="${i18next.t(state.element.value + "_displayName", { ns: "factions" }) }">
                 <p>${imgHtml}</p>
-                <span class="flag-label">${i18next.t("factions:" + state.element.value)}</span>
+                <span class="flag-label" data-i18n="factions:${state.element.value}">
+                    ${i18next.t("factions:" + state.element.value)}
+                </span>
             </span>
         `);
     }
@@ -71,8 +77,8 @@ export default class SquadFactions {
             <div class="unit-option">
                 ${isSelection ? "" : `<img src="/img/units/${icon}.webp" class="unit-logo${isSelection ? " selection" : ""}" alt="${state.text}" />`}
                 <div class="unit-texts">
-                    <div class="unit-type">${i18next.t(type, { ns: "units" })}</div>
-                    ${isSelection ? "" : `<div class="unit-name">${i18next.t(name, { ns: "units" })}</div>`}
+                    <div class="unit-type" data-i18n="units:${type}">${i18next.t(type, { ns: "units" })}</div>
+                    ${isSelection ? "" : `<div class="unit-name" data-i18n="units:${name}">${i18next.t(name, { ns: "units" })}</div>`}
                 </div>
             </div>
         `);
@@ -309,7 +315,12 @@ export default class SquadFactions {
     updateMainIcon(teamKey, FACTION) {
 
         var mainFlag;
-        var html = "";
+        var html = `
+            <span>
+                <span data-i18n="common:${teamKey}">
+                    ${i18next.t(teamKey, { ns: "common" })}
+                </span>
+            `;
 
         this.squadLayer.mains.forEach((main) => {
             if (main.objectName.toLowerCase().includes(teamKey)) {
@@ -318,12 +329,7 @@ export default class SquadFactions {
             }
         });
 
-        html = `
-            <span>
-                <span data-i18n="common:${teamKey}">
-                    ${i18next.t(teamKey, { ns: "common" })}
-                </span>
-            `;
+
 
         if (FACTION !== "") html += ` : <span data-i18n="factions:${FACTION}">${i18next.t(FACTION, { ns: "factions" })}</span>`;
 
@@ -750,7 +756,7 @@ export default class SquadFactions {
 
             // Load Commanders Icons & Tooltips
             this.loadCommanderAssets("#team1CommanderAsset", selectedUnit);
-            
+            this.loadCharacteristics("#team1Characteristics", selectedUnit);
         });
 
 
@@ -803,6 +809,7 @@ export default class SquadFactions {
 
             // Load Commanders Icons & Tooltips
             this.loadCommanderAssets("#team2CommanderAsset", selectedUnit);
+            this.loadCharacteristics("#team2Characteristics", selectedUnit);
 
             // Handle click-to-copy
             if (!Browser.mobile) $(".vehicle-type").off("click").on("click", (event) => { this.copyVehicleName(event); });
@@ -870,6 +877,48 @@ export default class SquadFactions {
     
         });
 
+    }
+
+
+    loadCharacteristics(DIV, selectedUnit) {
+        
+        // Load Characteristics
+        $(DIV).empty();
+
+        // Clear existing tooltips
+        tippy(`${DIV} .unit-characteristic`).forEach(instance => { instance.destroy(); });
+
+        if (selectedUnit.characteristics) {
+            Object.entries(selectedUnit.characteristics).forEach(asset => {
+                // Ignore some useless characteristics
+                if (["NoSpecial", "HeavyGrenadier", "Pathfinder", "M27s", "None", "NoEmplacements"].some(k => asset[1].includes(k))) return;
+                
+                $(DIV).append(`
+                    <img src="/img/icons/shared/characteristics/${asset[1]}.webp"
+                    class="unit-characteristic"
+                    data-tippy-characteristic="${asset[1]}"
+                    />
+                `);
+            });
+        }
+
+        // Initialize tooltips for all images in one go
+        tippy(`${DIV} .unit-characteristic`, {
+            appendTo: () => document.querySelector("#factionsDialog"),
+            delay: 200,
+            placement: "bottom",
+            allowHTML: true,
+            theme: "infTooltips",
+            onShow(instance) {
+                const el = instance.reference;
+                const characteristic = el.getAttribute("data-tippy-characteristic");
+                instance.setContent(
+                    `<div class="tooltip-content">
+                        <strong>${i18next.t(`units:${characteristic}`)}</strong>
+                    </div>`
+                );
+            },
+        });
     }
 
 

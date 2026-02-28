@@ -1,3 +1,19 @@
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge"> **42.3.0** *(2026-02-28)*
+
+</br><img src="https://img.shields.io/badge/-new%20features-green">  
+- The **Factions & Units panel** now shows units’ special characteristics (thanks to C-BoT-AU, fixes [#444](https://github.com/sh4rkman/SquadCalc/issues/444)).
+- When synced with a server, the server is now included in the URL. This allows you to bookmark your favorite server, for example: https://squadcalc.app/?server=29812439 (thanks to C-BoT-AU, fixes [#443](https://github.com/sh4rkman/SquadCalc/issues/443)).
+
+
+</br><img src="https://img.shields.io/badge/-bug%20fixes-b22">  
+- Fixed a bug when syncing a map with a server that changed map since last time the browser was refreshed  
+- Fixed a bug where modded server could be selected
+- Added missing vehicles icon for open top APC's (fix [#445](https://github.com/sh4rkman/SquadCalc/issues/445))
+- Fixed some lists and tooltips not translating when switch languages on factions menu (fix [#418](https://github.com/sh4rkman/SquadCalc/issues/418))
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
+
 # <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge"> **42.2.0** *(2026-02-17)*
 
 </br><img src="https://img.shields.io/badge/-new%20features-green">  

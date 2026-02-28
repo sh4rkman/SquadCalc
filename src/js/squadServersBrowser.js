@@ -1,7 +1,7 @@
 import i18next from "i18next";
 import { App } from "../app.js";
 import { MAPS } from "../data/maps.js";
-import { activeServerBrowserTooltips } from "./tooltips.js";
+import { serverBrowserTooltips } from "./tooltips.js";
 import Fuse from "fuse.js";
 
 export default class SquadServersBrowser {
@@ -92,6 +92,9 @@ export default class SquadServersBrowser {
         `;
         await this.getServers();
         this.renderTable(this.serversData);
+
+        // Trigger custom event
+        $(document).trigger("servers:loaded");
     }
 
 
@@ -224,7 +227,6 @@ export default class SquadServersBrowser {
     }
 
 
-
     /**
      * Returns the HTML for the server's next layer (or "Map Voting" if unavailable).
      * @param {object} server
@@ -243,7 +245,22 @@ export default class SquadServersBrowser {
 
 
     /**
-     * Returns the flag icon HTML for a team, or "-" if none.
+     * Returns the players HTML for a server.
+     * @param {number|null} players
+     * @param {number|null} maxPlayers
+     * @returns {string}
+     */
+    getPlayersHTML(players, maxPlayers) {
+        if (players != null && maxPlayers != null) {
+            return `${players} / ${maxPlayers}`;
+        } else {
+            return "-";
+        }
+    }
+
+
+    /**
+     * Returns the flag icon HTML for a team
      * @param {string|null} team
      * @param {string} label
      * @returns {string}
@@ -279,21 +296,14 @@ export default class SquadServersBrowser {
                 const favoriteStarHTML = this.getFavoriteStarHTML(server.id);
                 const nextLayer = this.getNextLayerHTML(server);
                 rows += `
-                    <tr class="${isSelected} ${unavailable}"
-                        data-servername="${server.attributes.name}"
-                        data-serverid="${server.id}"
-                        data-layer="${server.attributes.details.map}"
-                        data-map="${server.mapName}" 
-                        data-team1="${server.team1}"
-                        data-team2="${server.team2}"
-                        data-unit1="${server.attributes.details.squad_teamOne || ""}"
-                        data-unit2="${server.attributes.details.squad_teamTwo || ""}">
+                    <tr class="${isSelected} ${unavailable}" data-serverid="${server.id}">
                         <td class="favoriteCell">${favoriteStarHTML}</td>
                         <td title="${server.attributes.name}">${server.attributes.name}</td>
                         <td class="mapdata">
                             ${server.attributes.details.map}<br>
                             ${nextLayer}
                         </td>
+                        <td>${this.getPlayersHTML(server.attributes.players, server.attributes.maxPlayers)}</td>
                         <td class="teamFlags">
                             ${this.getTeamHTML(server.team1, server.attributes.details.squad_teamOne)}
                             ${this.getTeamHTML(server.team2, server.attributes.details.squad_teamTwo)}
@@ -341,7 +351,7 @@ export default class SquadServersBrowser {
                         </svg>
                     </button>
                     <button class="searchBtn info-btn" id="">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><!--!Font Awesome Free v7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M224 224C224 171 267 128 320 128C373 128 416 171 416 224C416 266.7 388.1 302.9 349.5 315.4C321.1 324.6 288 350.7 288 392L288 416C288 433.7 302.3 448 320 448C337.7 448 352 433.7 352 416L352 392C352 390.3 352.6 387.9 355.5 384.7C358.5 381.4 363.4 378.2 369.2 376.3C433.5 355.6 480 295.3 480 224C480 135.6 408.4 64 320 64C231.6 64 160 135.6 160 224C160 241.7 174.3 256 192 256C209.7 256 224 241.7 224 224zM320 576C342.1 576 360 558.1 360 536C360 513.9 342.1 496 320 496C297.9 496 280 513.9 280 536C280 558.1 297.9 576 320 576z"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path d="M224 224C224 171 267 128 320 128C373 128 416 171 416 224C416 266.7 388.1 302.9 349.5 315.4C321.1 324.6 288 350.7 288 392L288 416C288 433.7 302.3 448 320 448C337.7 448 352 433.7 352 416L352 392C352 390.3 352.6 387.9 355.5 384.7C358.5 381.4 363.4 378.2 369.2 376.3C433.5 355.6 480 295.3 480 224C480 135.6 408.4 64 320 64C231.6 64 160 135.6 160 224C160 241.7 174.3 256 192 256C209.7 256 224 241.7 224 224zM320 576C342.1 576 360 558.1 360 536C360 513.9 342.1 496 320 496C297.9 496 280 513.9 280 536C280 558.1 297.9 576 320 576z"/></svg>
                     </button>
                 </div>
             </div>
@@ -357,7 +367,10 @@ export default class SquadServersBrowser {
                             <th class="sortable" data-sort="map" data-i18n="common:currentMap">
                                 ${i18next.t("currentMap", { ns: "common" })} <span class="sort-indicator">⇅</span>
                             </th>
-                            <th class="" data-i18n="common:teams">
+                            <th data-i18n="common:players">
+                                ${i18next.t("players", { ns: "common" })}
+                            </th>
+                            <th data-i18n="common:teams">
                                 ${i18next.t("teams", { ns: "common" })}
                             </th>
                         </tr>
@@ -384,6 +397,9 @@ export default class SquadServersBrowser {
      */
     handleRowClicks(row, event) {
 
+        // Ignore disabled rows
+        if (!row || row.hasClass("unavailable")) return;
+
         // Ignore clicks on header rows
         if (row.closest("thead").length) return;
 
@@ -396,7 +412,7 @@ export default class SquadServersBrowser {
             row.removeClass("selected");
             $("#servers").removeClass("active");
             this.selectedServer = null;
-            activeServerBrowserTooltips.disable();
+            //activeServerBrowserTooltips.disable();
             // stop sync
             if (this.syncInterval) {
                 clearInterval(this.syncInterval);
@@ -410,8 +426,17 @@ export default class SquadServersBrowser {
         row.addClass("selected");
         $("#servers").addClass("active");
 
-        this.selectedServer = row.data("serverid");
-        this.selectedLayer = row.data("layer");
+        // Retrieve fresh data from the serversData array in case it has changed since rendering
+        const server = this.serversData.find(s => s.id == row.data("serverid"));
+        
+        // Add the serverid to the URL
+        const url = new URL(window.location);
+        url.searchParams.set("server", server.id);
+        window.history.replaceState({}, "", url);
+
+        // Update the selected server and layer
+        this.selectedServer = server.id;
+        this.selectedLayer = server.attributes.details.map;
 
         // start sync every X seconds
         if (this.syncInterval) clearInterval(this.syncInterval);
@@ -419,13 +444,13 @@ export default class SquadServersBrowser {
 
         // switch layer immediately
         this.switchLayer(
-            row.data("servername"),
-            row.data("map"),
-            row.data("layer"),
-            row.data("team1"),
-            row.data("team2"),
-            row.data("unit1"),
-            row.data("unit2")
+            server.attributes.name,
+            server.mapName,
+            server.attributes.details.map,
+            server.team1,
+            server.team2,
+            server.attributes.details.squad_teamOne,
+            server.attributes.details.squad_teamTwo
         );
     }
 
@@ -442,9 +467,7 @@ export default class SquadServersBrowser {
         serversList.innerHTML = this.generateTableHTML();
 
         // Rows Click Handler
-        $(".servers-table").on("click", "tr", (event) => {
-            this.handleRowClicks($(event.currentTarget), event);
-        });
+        $(".servers-table").on("click", "tr", (event) => { this.handleRowClicks($(event.currentTarget), event);});
 
         // Favorite button click handler - use event delegation on the table
         $(".servers-table").on("click", ".favorite-btn", (event) => {
@@ -454,19 +477,11 @@ export default class SquadServersBrowser {
 
         // Search input listener
         const searchInput = document.getElementById("serverSearch");
-        if (searchInput) {
-            searchInput.addEventListener("input", (e) => {
-                this.filterServers(e.target.value);
-            });
-        }
+        if (searchInput) searchInput.addEventListener("input", (e) => { this.filterServers(e.target.value);});
 
         // Refresh Button listener
         const refreshBtn = document.getElementById("refreshBtn");
-        if (refreshBtn) {
-            refreshBtn.addEventListener("click", () => {
-                this.refreshRows();
-            });
-        }
+        if (refreshBtn) refreshBtn.addEventListener("click", () => { this.refreshRows(); });
 
         // Sortable headers
         const sortableHeaders = serversList.querySelectorAll("th[data-sort]");
@@ -487,10 +502,8 @@ export default class SquadServersBrowser {
                 // Apply style + arrow to clicked header
                 header.classList.add("sorted");
                 const indicator = header.querySelector(".sort-indicator");
-
-                if (indicator) {
-                    indicator.textContent = direction === "asc" ? "▲" : "▼";
-                }
+                if (indicator) indicator.textContent = direction === "asc" ? "▲" : "▼";
+                
             });
         });
 
@@ -519,7 +532,7 @@ export default class SquadServersBrowser {
         const mapIndex = MAPS.findIndex(m => m.name.toLowerCase() === mapName.toLowerCase());
         const currentMapIndex = parseInt(App.MAP_SELECTOR.val());
         const currentLayerIndex = App.LAYER_SELECTOR.val();
-        
+
         // If already on correct map and layer, just update factions/units
         if (currentMapIndex === mapIndex && currentLayerIndex === layerIndex) {
             if (team1 && team2) {
@@ -531,9 +544,9 @@ export default class SquadServersBrowser {
                 }
             }
             $("#serversInformation")[0].close();
-            activeServerBrowserTooltips.setContent(`${i18next.t("mapSyncedwith", { ns: "common" })} ${serverName}`);
-            activeServerBrowserTooltips.enable();
-            activeServerBrowserTooltips.hide();
+            //activeServerBrowserTooltips.setContent(`${i18next.t("mapSyncedwith", { ns: "common" })} ${serverName}`);
+            //activeServerBrowserTooltips.enable();
+            serverBrowserTooltips.hide();
             App.openToast("success", "mapUpdated", "");
             return;
         }
@@ -541,7 +554,7 @@ export default class SquadServersBrowser {
         // Map or layer needs to change
         if (currentMapIndex !== mapIndex) {
             App.MAP_SELECTOR.val(mapIndex).trigger($.Event("change", { broadcast: true }));
-            $(document).one("layers:loaded", () => {
+            $(document).on("layers:loaded", () => {
                 App.LAYER_SELECTOR.val(layerIndex).trigger($.Event("change", { broadcast: true }));
                 $(document).one("layer:loaded", () => {
                     if (team1 && team2) {
@@ -556,23 +569,26 @@ export default class SquadServersBrowser {
             });
         } else {
             // Only layer needs to change
-            App.LAYER_SELECTOR.val(layerIndex).trigger($.Event("change", { broadcast: true }));
-            $(document).one("layer:loaded", () => {
-                if (team1 && team2) {
-                    App.FACTION1_SELECTOR.val(team1).trigger($.Event("change", { broadcast: true }));
-                    App.FACTION2_SELECTOR.val(team2).trigger($.Event("change", { broadcast: true }));
-                    if (unit1 && unit2) {
-                        App.UNIT1_SELECTOR.val(unit1).trigger($.Event("change", { broadcast: true }));
-                        App.UNIT2_SELECTOR.val(unit2).trigger($.Event("change", { broadcast: true }));
+            $(document).one("layers:loaded", () => {
+                App.LAYER_SELECTOR.val(layerIndex).trigger($.Event("change", { broadcast: true }));
+                $(document).one("layer:loaded", () => {
+                    if (team1 && team2) {
+                        App.FACTION1_SELECTOR.val(team1).trigger($.Event("change", { broadcast: true }));
+                        App.FACTION2_SELECTOR.val(team2).trigger($.Event("change", { broadcast: true }));
+                        if (unit1 && unit2) {
+                            App.UNIT1_SELECTOR.val(unit1).trigger($.Event("change", { broadcast: true }));
+                            App.UNIT2_SELECTOR.val(unit2).trigger($.Event("change", { broadcast: true }));
+                        }
                     }
-                }
+                });
             });
         }
         
         $("#serversInformation")[0].close();
-        activeServerBrowserTooltips.setContent(`${i18next.t("mapSyncedwith", { ns: "common" })} ${serverName}`);
-        activeServerBrowserTooltips.enable();
-        activeServerBrowserTooltips.hide();
+        // activeServerBrowserTooltips.setContent(`${i18next.t("mapSyncedwith", { ns: "common" })} ${serverName}`);
+        // activeServerBrowserTooltips.enable();
+        // activeServerBrowserTooltips.hide();
+        serverBrowserTooltips.hide();
         App.openToast("success", "mapUpdated", "");
     }
 

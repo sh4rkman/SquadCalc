@@ -78,5 +78,6 @@
     "lineToTargetTooltip": "Draws a line between the weapon and the target",
     "serverBrowser": "Squad Servers Browser",
     "quitDrawingMode": "Stop Drawing",
-    "escape": "Escape"
+    "escape": "Escape",
+    "serverNotFound": "Server not found or empty"
 }

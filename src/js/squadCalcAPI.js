@@ -1,6 +1,7 @@
 import { App } from "../app.js";
 import { createSessionTooltips, leaveSessionTooltips } from "./tooltips.js";
 import SquadSession from "./squadSession.js";
+import SquadServersBrowser from "./squadServersBrowser.js";
 
 /**
  * Sends weapon data to the API via a POST request.
@@ -102,6 +103,43 @@ export const checkApiHealth = async () => {
                         $(document).one("layers:loaded", () => {
                             App.session = new SquadSession(sessionId);
                         });
+                    }
+                } else if (urlParams.has("server")) {
+                    // If a server ID is present in the URL, switch to that server/layer immediately
+                    const serverId = urlParams.get("server");
+
+                    if (!App.squadServersBrowser) {
+                        App.squadServersBrowser = new SquadServersBrowser();
+                        App.squadServersBrowser.init();
+                        $(document).one("servers:loaded", () => {
+                            const server = App.squadServersBrowser.serversData.find(s => s.id == serverId);
+                            
+                            if (server) {
+
+                                App.squadServersBrowser.switchLayer(
+                                    server.attributes.name,
+                                    server.mapName,
+                                    server.attributes.details.map,
+                                    server.team1,
+                                    server.team2,
+                                    server.attributes.details.squad_teamOne || "",
+                                    server.attributes.details.squad_teamTwo || ""
+                                );
+
+                                // find the row with data-serverid = serverId and add class "selected"
+                                $(`#serversTableBody tr[data-serverid="${serverId}"]`).addClass("selected");
+                                $("#servers").addClass("active");
+
+                            }
+                            else {
+                                // remove the server parameter from the URL since it's invalid
+                                const url = new URL(window.location);
+                                url.searchParams.delete("server");
+                                window.history.replaceState({}, "", url);
+                                App.openToast("error", "serverNotFound", "");
+                            }
+                        });
+
                     }
                 }
             }

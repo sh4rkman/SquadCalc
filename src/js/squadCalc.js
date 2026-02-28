@@ -15,7 +15,7 @@ import SquadSettings from "./squadSettings.js";
 import packageInfo from "../../package.json";
 import i18next from "i18next";
 import SquadLayer from "./squadLayer.js";
-import { serverBrowserTooltips } from "./tooltips.js";
+// import { serverBrowserTooltips } from "./tooltips.js";
 import { MapDrawing, MapArrow, MapCircle, MapRectangle } from "./squadShapes.js";
 
 
@@ -117,6 +117,7 @@ export default class SquadCalc {
         let abortController = null;
 
         this.LAYER_SELECTOR.on("change", (event) => {
+
             const selectedLayerText = this.LAYER_SELECTOR.find(":selected").text().replaceAll(" ", "");
             const broadcast = event.broadcast ?? true;
 
@@ -253,12 +254,14 @@ export default class SquadCalc {
         });
     }
 
+
     /**
      * Retrieve some CSS variable so it can be used in plain JS
      */
     loadTheme() {
         this.mainColor = getComputedStyle(document.documentElement).getPropertyValue("--main-color").trim();
     }
+
 
     loadMinimap(){
         const currentUrl = new URL(window.location.href);
@@ -465,13 +468,13 @@ export default class SquadCalc {
         });
 
         $(document).on("click", "#servers", () => {
-            serverBrowserTooltips.disable();
+            
             if (!this.squadServersBrowser) {
                 this.squadServersBrowser = new SquadServersBrowser();
                 this.squadServersBrowser.init();
             }
             $("#serversInformation")[0].showModal();
-            
+
             // Focus search input at the end
             const searchInput = document.getElementById("serverSearch");
             if (searchInput) searchInput.focus(); 
@@ -1399,7 +1402,7 @@ export default class SquadCalc {
         const sortedParams = new URLSearchParams();
 
         // Add parameters in the order defined by paramOrder
-        ["map", "layer", "type", "session"].forEach((param) => {
+        ["map", "layer", "type", "session", "server"].forEach((param) => {
             if (urlParams.has(param)) {
                 sortedParams.set(param, urlParams.get(param));
                 urlParams.delete(param);

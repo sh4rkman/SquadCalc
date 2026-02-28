@@ -78,5 +78,6 @@
     "lineToTargetTooltip": "Рисует линию между техникой и целями",
     "serverBrowser": "Браузер серверов Squad",
     "quitDrawingMode": "Остановить рисование",
-    "escape": "Esc"
+    "escape": "Esc",
+    "serverNotFound": "Сервер не найден или пуст"
 }
