@@ -1,8 +1,8 @@
-# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge"> **42.3.0** *(2026-02-20)*
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge"> **42.3.0** *(2026-02-28)*
 
 </br><img src="https://img.shields.io/badge/-new%20features-green">  
-- Factions & Units pannel now show units special characteristics (thanks C-BoT-AU, fix [#444](https://github.com/sh4rkman/SquadCalc/issues/444))
-- When synced with a server, the server is now held in the URL. This allow to bookmark your favorite server like this https://squadcalc.app/?server=29812439 (thanks C-BoT-AU, fix [#443](https://github.com/sh4rkman/SquadCalc/issues/443))
+- The **Factions & Units panel** now shows units’ special characteristics (thanks to C-BoT-AU, fixes [#444](https://github.com/sh4rkman/SquadCalc/issues/444)).
+- When synced with a server, the server is now included in the URL. This allows you to bookmark your favorite server, for example: https://squadcalc.app/?server=29812439 (thanks to C-BoT-AU, fixes [#443](https://github.com/sh4rkman/SquadCalc/issues/443)).
 
 
 </br><img src="https://img.shields.io/badge/-bug%20fixes-b22">  
