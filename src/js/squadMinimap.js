@@ -737,7 +737,6 @@ export const squadMinimap = Map.extend({
 
         if (icon === "deployable_hab") {
             icon = "deployable_hab_activated";
-            iconSize = [38, 38]; 
         }
 
         if (icon === "T_strategic_uav") { 
