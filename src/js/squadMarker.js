@@ -637,7 +637,9 @@ export const squadStratMarker = squadMarker.extend({
 
     updateIconSize: function () {
         const markerSizeSetting = App.userSettings.markerSize;
-        const iconSizeValue = 20 + (markerSizeSetting - 1) * 5;
+        let iconSizeValue = 20 + (markerSizeSetting - 1) * 5;
+        if (this.icontype === "deployable_hab")  iconSizeValue *= 1.2;
+
         const newIcon = new Icon({
             iconUrl: this.options2.icon.options.iconUrl,
             iconSize: [iconSizeValue, iconSizeValue],
