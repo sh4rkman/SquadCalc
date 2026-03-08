@@ -1,3 +1,14 @@
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge"> **42.4.0** *(2026-03-08)*
+
+</br><img src="https://img.shields.io/badge/-bug%20fixes-b22">  
+- Fixed flags not appearing in AAS when joining an existing session (fix [#448](https://github.com/sh4rkman/SquadCalc/issues/448))
+- Fixed HAB icons not having the correct size when imported from a file (fix [#451](https://github.com/sh4rkman/SquadCalc/issues/451), thanks Panda !)
+- Unselecting a server now properly remove `&server=xxx` from the URL (fix [#452](https://github.com/sh4rkman/SquadCalc/issues/452),)
+
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
+
 # <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge"> **42.3.0** *(2026-02-28)*
 
 </br><img src="https://img.shields.io/badge/-new%20features-green">  

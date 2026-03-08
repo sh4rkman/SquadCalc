@@ -1,7 +1,7 @@
 {
   "name": "squadcalc",
-  "version": "42.3.0",
-  "description": "A Complete Mortar Calculator and Map Lane Finder for Squad",
+  "version": "42.4.0",
+  "description": "The Ultimate In-Game Companion for Squad!",
   "author": "Maxime 'sharkman' Boussard",
   "license": "MIT",
   "type": "module",
@@ -77,7 +77,7 @@
     "workbox-webpack-plugin": "^7.4.0"
   },
   "overrides": {
-    "phin": "^3.7.1",
-    "minimatch": "^10.2.1"
+    "minimatch": "^10.2.1",
+    "serialize-javascript": "7.0.3"
   }
 }
