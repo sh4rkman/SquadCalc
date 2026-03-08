@@ -407,12 +407,18 @@ export default class SquadServersBrowser {
         const clickedElement = $(event.target);
         if (clickedElement.closest(".favorite-btn").length) return;
 
+        const url = new URL(window.location);
+
         // --- UNSELECT ---
         if (row.hasClass("selected")) {
             row.removeClass("selected");
             $("#servers").removeClass("active");
             this.selectedServer = null;
-            //activeServerBrowserTooltips.disable();
+
+            // Remove &server= from URL
+            url.searchParams.delete("server");
+            window.history.replaceState({}, "", url);
+
             // stop sync
             if (this.syncInterval) {
                 clearInterval(this.syncInterval);
@@ -430,7 +436,6 @@ export default class SquadServersBrowser {
         const server = this.serversData.find(s => s.id == row.data("serverid"));
         
         // Add the serverid to the URL
-        const url = new URL(window.location);
         url.searchParams.set("server", server.id);
         window.history.replaceState({}, "", url);
 

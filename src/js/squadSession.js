@@ -106,7 +106,8 @@ export default class SquadSession {
                 App.LAYER_SELECTOR.val(data.mapState.activeLayer).trigger($.Event("change", { broadcast: false }));
                 
                 $(document).one("layer:loaded", () => {
-                    App.minimap.layer._resetLayer();
+
+                    // App.minimap.layer._resetLayer(); break AAS when joining a session in AAS mode
 
                     console.debug("Clicking flags for session: ");  
                     data.mapState.selectedFlags.forEach(flag => {
