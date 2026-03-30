@@ -669,6 +669,10 @@ export default class SquadFactions {
             this.loadUnits(event.target.value, factionData.units.team1Units, factionData.teamConfigs.factions.team1Units, this.UNIT1_SELECTOR, broadcast);
             this.updateMainIcon("team1", event.target.value);
 
+            if (event.broadcast !== false) {
+                App.updateUrlParams({ team1: event.target.value, team1unit: this.UNIT1_SELECTOR.val() });
+            }
+
             if (broadcast && App.session.ws && App.session.ws.readyState === WebSocket.OPEN) {
                 App.session.ws.send(
                     JSON.stringify({
@@ -692,6 +696,10 @@ export default class SquadFactions {
             // Update Unit selector and main icon
             this.loadUnits(event.target.value, factionData.units.team2Units, factionData.teamConfigs.factions.team2Units, this.UNIT2_SELECTOR, broadcast);
             this.updateMainIcon("team2", event.target.value);
+
+            if (event.broadcast !== false) {
+                App.updateUrlParams({ team2: event.target.value, team2unit: this.UNIT2_SELECTOR.val() });
+            }
 
             if (broadcast && App.session.ws && App.session.ws.readyState === WebSocket.OPEN) {
                 App.session.ws.send(
@@ -757,6 +765,10 @@ export default class SquadFactions {
             // Load Commanders Icons & Tooltips
             this.loadCommanderAssets("#team1CommanderAsset", selectedUnit);
             this.loadCharacteristics("#team1Characteristics", selectedUnit);
+
+            if (event.broadcast !== false) {
+                App.updateUrlParams({ team1: this.FACTION1_SELECTOR.val(), team1unit: event.target.value });
+            }
         });
 
 
@@ -814,6 +826,10 @@ export default class SquadFactions {
             // Handle click-to-copy
             if (!Browser.mobile) $(".vehicle-type").off("click").on("click", (event) => { this.copyVehicleName(event); });
             $(".vehicle-card").off("click").on("click", (event) => { this.openCard(event); });
+
+            if (event.broadcast !== false) {
+                App.updateUrlParams({ team2: this.FACTION2_SELECTOR.val(), team2unit: event.target.value });
+            }
         });
 
         if (App.userSettings.enableFactions) {

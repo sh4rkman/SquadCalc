@@ -95,7 +95,7 @@ export default class SquadCalc {
 
             // Update the URL
             if (broadcast) {
-                this.updateUrlParams({ map: this.minimap.activeMap.name, layer: null });
+                this.updateUrlParams({ map: this.minimap.activeMap.name, layer: null, team1: null, team1unit: null, team2: null, team2unit: null });
             } else {
                 this.updateUrlParams({ map: this.minimap.activeMap.name });
             }
@@ -123,7 +123,7 @@ export default class SquadCalc {
 
             // User cleared the layer selector, remove the layer and clean the URL
             if (selectedLayerText === "") {
-                this.updateUrlParams({ layer: null });
+                this.updateUrlParams({ layer: null, team1: null, team1unit: null, team2: null, team2unit: null });
                 if (abortController) { abortController.abort(); } // Abort the ongoing fetch request
                 if (this.minimap.layer) this.minimap.layer.clear();
                 $(".btn-layer").hide();
@@ -151,7 +151,11 @@ export default class SquadCalc {
             $(".dropbtn10").empty();
             
             // Update the the URL
-            this.updateUrlParams({ layer: selectedLayerText });
+            if (broadcast) {
+                this.updateUrlParams({ layer: selectedLayerText, team1: null, team1unit: null, team2: null, team2unit: null });
+            } else {
+                this.updateUrlParams({ layer: selectedLayerText });
+            }
 
             // Initialize a new AbortController for the fetch request
             abortController = new AbortController();
@@ -203,9 +207,9 @@ export default class SquadCalc {
 
         fetchLayersByMap(this.minimap.activeMap.name).then(layers => {
 
-            if (layers.length === 0) { 
+            if (layers.length === 0) {
                 this.minimap.spin(false);
-                this.updateUrlParams({ layer: null });
+                this.updateUrlParams({ layer: null, team1: null, team1unit: null, team2: null, team2unit: null });
                 return;
             }
 
@@ -233,8 +237,41 @@ export default class SquadCalc {
                 // If we find a matching option, set it as selected
                 if (matchingOption.length > 0) {
                     matchingOption.prop("selected", true);
+
+                    // Read team faction/unit URL params to apply after layer loads
+                    const teamParams = [
+                        { faction: currentUrl.searchParams.get("team1"), unit: currentUrl.searchParams.get("team1unit"), factionSel: this.FACTION1_SELECTOR, unitSel: this.UNIT1_SELECTOR },
+                        { faction: currentUrl.searchParams.get("team2"), unit: currentUrl.searchParams.get("team2unit"), factionSel: this.FACTION2_SELECTOR, unitSel: this.UNIT2_SELECTOR },
+                    ];
+                    const hasTeamParams = teamParams.some(t => t.faction || t.unit);
+                    const hasSession = currentUrl.searchParams.has("session");
+                    const hasServer = currentUrl.searchParams.has("server");
+
+                    if (hasTeamParams && !hasSession && !hasServer) {
+                        $(document).one("layer:loaded", () => {
+                            for (const { faction, unit, factionSel, unitSel } of teamParams) {
+                                if (faction) {
+                                    const factionMatch = factionSel.find("option").filter(function() {
+                                        return $(this).val().toLowerCase() === faction.toLowerCase();
+                                    });
+                                    if (factionMatch.length > 0) {
+                                        factionSel.val(factionMatch.val()).trigger($.Event("change", { broadcast: false }));
+                                    }
+                                }
+                                if (unit) {
+                                    const unitMatch = unitSel.find("option").filter(function() {
+                                        return $(this).val().toLowerCase() === unit.toLowerCase();
+                                    });
+                                    if (unitMatch.length > 0) {
+                                        unitSel.val(unitMatch.val()).trigger($.Event("change", { broadcast: false }));
+                                    }
+                                }
+                            }
+                        });
+                    }
+
                     this.LAYER_SELECTOR.trigger($.Event("change", { broadcast: false }));
-                } 
+                }
                 else {
                     // layer in url doesn't make sense, clean the url
                     this.updateUrlParams({ layer: null });
@@ -271,10 +308,10 @@ export default class SquadCalc {
         if (currentUrl.searchParams.has("map")) {
             const urlMapName = currentUrl.searchParams.get("map").toLowerCase();
             mapIndex = MAPS.findIndex(map => map.name.toLowerCase() === urlMapName);
-            if (mapIndex === -1) { 
+            if (mapIndex === -1) {
                 // user entered garbage, pick a random map & clean the url
-                mapIndex = Math.floor(Math.random() * MAPS.length); 
-                this.updateUrlParams({ layer: null });
+                mapIndex = Math.floor(Math.random() * MAPS.length);
+                this.updateUrlParams({ layer: null, team1: null, team1unit: null, team2: null, team2unit: null });
             }
         } 
         else { 
@@ -1402,7 +1439,7 @@ export default class SquadCalc {
         const sortedParams = new URLSearchParams();
 
         // Add parameters in the order defined by paramOrder
-        ["map", "layer", "type", "session", "server"].forEach((param) => {
+        ["map", "layer", "team1", "team1unit", "team2", "team2unit", "type", "session", "server"].forEach((param) => {
             if (urlParams.has(param)) {
                 sortedParams.set(param, urlParams.get(param));
                 urlParams.delete(param);
