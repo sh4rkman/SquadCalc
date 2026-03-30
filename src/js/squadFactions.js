@@ -669,7 +669,7 @@ export default class SquadFactions {
             this.loadUnits(event.target.value, factionData.units.team1Units, factionData.teamConfigs.factions.team1Units, this.UNIT1_SELECTOR, broadcast);
             this.updateMainIcon("team1", event.target.value);
 
-            if (event.broadcast !== false) {
+            if (event.broadcast) {
                 App.updateUrlParams({ team1: event.target.value, team1unit: this.UNIT1_SELECTOR.val() });
             }
 
@@ -697,7 +697,7 @@ export default class SquadFactions {
             this.loadUnits(event.target.value, factionData.units.team2Units, factionData.teamConfigs.factions.team2Units, this.UNIT2_SELECTOR, broadcast);
             this.updateMainIcon("team2", event.target.value);
 
-            if (event.broadcast !== false) {
+            if (event.broadcast) {
                 App.updateUrlParams({ team2: event.target.value, team2unit: this.UNIT2_SELECTOR.val() });
             }
 
@@ -766,7 +766,7 @@ export default class SquadFactions {
             this.loadCommanderAssets("#team1CommanderAsset", selectedUnit);
             this.loadCharacteristics("#team1Characteristics", selectedUnit);
 
-            if (event.broadcast !== false) {
+            if (event.broadcast) {
                 App.updateUrlParams({ team1: this.FACTION1_SELECTOR.val(), team1unit: event.target.value });
             }
         });
@@ -827,7 +827,7 @@ export default class SquadFactions {
             if (!Browser.mobile) $(".vehicle-type").off("click").on("click", (event) => { this.copyVehicleName(event); });
             $(".vehicle-card").off("click").on("click", (event) => { this.openCard(event); });
 
-            if (event.broadcast !== false) {
+            if (event.broadcast) {
                 App.updateUrlParams({ team2: this.FACTION2_SELECTOR.val(), team2unit: event.target.value });
             }
         });
