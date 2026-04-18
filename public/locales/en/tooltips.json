@@ -65,6 +65,7 @@
     "dragToImport": "You can drag and drop this file on the map to load it later",
     "importSuccess": "Map imported successfully",
     "download": "Save the map to file",
+    "upload": "Load a map from a file",
     "factions&Vehicles": "Factions and Vehicles",
     "enableFactionsTooltip": "After selecting a layer, enable Factions and Vehicles features",
     "defaultFactionsTooltip": "After picking a Layer, pre-select it's default factions",

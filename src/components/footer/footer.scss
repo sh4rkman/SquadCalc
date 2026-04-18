@@ -16,26 +16,8 @@ footer {
         z-index: 10;
         padding: 0.5em;
         border-radius: 40px 40px 0;
-        overflow: hidden;
-        transition: max-width 0.3s ease;
-        max-width: 1em;
-        min-width: 3.2em;
         pointer-events: none;
-        &.expanded {
-            max-width: 20em;
-            .legacyButton,
-            .settingsButton {
-                .fab {
-                    background-color: #333;
-                    &:hover {
-                        background: variables.$mainColor;
-                    }
-                }
-            }
-        }
-        .legacyButton,
-        .settingsButton,
-        .menuButton {
+        .settingsButton {
             .fab {
                 background-color: variables.$mainColor;
             }

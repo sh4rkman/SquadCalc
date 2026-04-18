@@ -187,11 +187,6 @@ button:focus {
 *  Animations
 ***************************************/
 
-@keyframes blink {
-    50% {
-        opacity: 0.25;
-    }
-}
 
 @keyframes appear {
     100% {
@@ -215,14 +210,6 @@ button:focus {
     }
 }
 
-@keyframes spread-appear {
-    0% {
-        opacity: 0;
-    }
-    100% {
-        opacity: 1;
-    }
-}
 
 @keyframes weapon-appear {
     0% {

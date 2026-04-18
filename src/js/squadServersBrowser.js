@@ -49,7 +49,7 @@ export default class SquadServersBrowser {
                         server.attributes.details.squad_teamTwo
                     );
                 }
-            }
+            } 
         });
     }
 

@@ -10,3 +10,4 @@ config/test-results/
 /.idea
 maintenance.enable
 /.fastRequest
+.claude/

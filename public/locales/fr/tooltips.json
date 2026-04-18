@@ -65,6 +65,7 @@
     "dragToImport": "Vous pouvez faire glisser et déposer ce fichier sur la carte pour le charger plus tard",
     "importSuccess": "Carte importée avec succès",
     "download": "Enregistrer la carte",
+    "upload": "Charger une carte depuis un fichier",
     "factions&Vehicles": "Factions et Véhicules",
     "enableFactionsTooltip": "Après avoir sélectionné une couche, activez les factions et les véhicules",
     "defaultFactionsTooltip": "Après avoir choisi une couche, présélectionnez ses factions par défaut",

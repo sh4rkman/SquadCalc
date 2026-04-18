@@ -65,6 +65,7 @@
     "dragToImport": "你可以将此文件拖放到地图上以稍后加载",
     "importSuccess": "地图导入成功",
     "download": "将地图保存到文件",
+    "upload": "从文件加载地图",
     "factions&Vehicles": "阵营与载具",
     "enableFactionsTooltip": "选择图层后，启用阵营和载具功能",
     "defaultFactionsTooltip": "选择图层后，预设默认阵营",

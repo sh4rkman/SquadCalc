@@ -96,13 +96,21 @@ export const checkApiHealth = async () => {
                     // Wait for layer/layers to load before creating session
                     // This ensures layer data is included in the initial session state
                     if (urlParams.has("layer")) {
-                        $(document).one("layer:loaded", () => {
+                        if (App.layerLoaded) {
                             App.session = new SquadSession(sessionId);
-                        });
+                        } else {
+                            $(document).one("layer:loaded", () => {
+                                App.session = new SquadSession(sessionId);
+                            });
+                        }
                     } else {
-                        $(document).one("layers:loaded", () => {
+                        if (App.layersLoaded) {
                             App.session = new SquadSession(sessionId);
-                        });
+                        } else {
+                            $(document).one("layers:loaded", () => {
+                                App.session = new SquadSession(sessionId);
+                            });
+                        }
                     }
                 } else if (urlParams.has("server")) {
                     // If a server ID is present in the URL, switch to that server/layer immediately
@@ -129,6 +137,15 @@ export const checkApiHealth = async () => {
                                 // find the row with data-serverid = serverId and add class "selected"
                                 $(`#serversTableBody tr[data-serverid="${serverId}"]`).addClass("selected");
                                 $("#servers").addClass("active");
+
+                                // start periodic sync as if the user had clicked the row
+                                App.squadServersBrowser.selectedServer = server.id;
+                                App.squadServersBrowser.selectedLayer = server.attributes.details.map;
+                                if (App.squadServersBrowser.syncInterval) clearInterval(App.squadServersBrowser.syncInterval);
+                                App.squadServersBrowser.syncInterval = setInterval(
+                                    () => App.squadServersBrowser.syncWithServer(),
+                                    App.squadServersBrowser.refreshInterval * 1000
+                                );
 
                             }
                             else {

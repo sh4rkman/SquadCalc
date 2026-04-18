@@ -394,6 +394,21 @@ export default class SquadFactions {
 
     spawnVehicle(vehicle, spawners, activeFactionMarkers){
 
+        if (vehicle.singleUse) {
+            const validSpawners = spawners.vehicles.filter(spawner =>
+                spawner.typePriorities.some(p => p.name === vehicle.vehType)
+            );
+
+            for (const spawner of validSpawners) {
+                if (spawner.maxNum > 0) {
+                    const latlng = this.squadLayer.convertToLatLng(spawner.location_x, spawner.location_y);
+                    this.squadLayer.mainZones.assets.push(new squadVehicleMarker(latlng, spawner, vehicle, spawners.faction, true).addTo(activeFactionMarkers));
+                    spawners.vehicles = spawners.vehicles.filter(s => s !== spawner);
+                    return;
+                }
+            }
+        }
+
         if (vehicle.spawnerSize === "Helicopter") {
             for (let v = 0; v < vehicle.count; v++) {
                 if (spawners.helicopters.length === 0) break;

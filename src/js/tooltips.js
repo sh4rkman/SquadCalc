@@ -347,6 +347,17 @@ tippy(".btn-download", {
     },
 });
 
+tippy(".btn-upload", {
+    ...commonMapMenuToolipsSettings,
+    onShow(tip) {
+        tip.setContent(
+            `
+            <div>${i18next.t("tooltips:upload")}</div>
+            `
+        );
+    },
+});
+
 tippy(".btn-delete", {
     ...commonMapMenuToolipsSettings,
     placement: "left",

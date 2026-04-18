@@ -65,6 +65,7 @@
     "dragToImport": "Du kannst diese Datei auf die Karte ziehen, um sie später zu laden",
     "importSuccess": "Karte erfolgreich importiert",
     "download": "Karte als Datei speichern",
+    "upload": "Karte aus einer Datei laden",
     "factions&Vehicles": "Fraktionen und Fahrzeuge",
     "enableFactionsTooltip": "Nach Auswahl einer Ebene Fraktionen und Fahrzeuge aktivieren",
     "defaultFactionsTooltip": "Nach Auswahl einer Ebene die Standardfraktionen vorauswählen",

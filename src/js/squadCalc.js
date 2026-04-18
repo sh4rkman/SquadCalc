@@ -190,6 +190,7 @@ export default class SquadCalc {
                         console.debug(`Sent layer update for layer #${event.target.value}`);
                     }
 
+                    this.layerLoaded = true;
                     $(document).trigger("layer:loaded");
                     this.minimap.spin(false);
                 });
@@ -281,6 +282,7 @@ export default class SquadCalc {
             this.minimap.spin(false);
             $("#layerSelector").show();
 
+            this.layersLoaded = true;
             $(document).trigger("layers:loaded");
 
         }).catch(error => {
@@ -431,10 +433,6 @@ export default class SquadCalc {
     }
 
 
-    closeMenu() {
-        $("#footerButtons").removeClass("expanded");
-        $(".fab4").html("<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 448 512\"><path d=\"M0 96C0 78.3 14.3 64 32 64l384 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 128C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32l384 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 288c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32L32 448c-17.7 0-32-14.3-32-32s14.3-32 32-32l384 0c17.7 0 32 14.3 32 32z\"/></svg>");
-    }
 
 
     loadUI(){
@@ -519,67 +517,11 @@ export default class SquadCalc {
           
         window.addEventListener("drop", e => {
             e.preventDefault();
-          
+
             if (this.ui == 0) return; // Don't handle drop in legacy mode
 
-            const files = e.dataTransfer.files;
-            const file = files?.[0];
-            if (!file) return;
-          
-            const reader = new FileReader();
-          
-            reader.onload = (event) => {
-                const content = event.target.result;
-          
-                // Try parsing as JSON
-                try {
-                    const data = JSON.parse(content);
-                    console.debug("Parsed JSON:", data);
-
-                    $(".dropbtn").val(data.activeMap).trigger($.Event("change", { broadcast: true }));
-
-                    data.markers.forEach(marker => { this.minimap.createMarker(new LatLng(marker.lat, marker.lng), marker.team, marker.category, marker.icon, marker.uid); });
-                    data.arrows.forEach(arrow => { new MapArrow(this.minimap, arrow.color, arrow.latlngs[0], arrow.latlngs[1], arrow.uid); });
-                    data.circles.forEach(circle => { new MapCircle(this.minimap, circle.color, circle.latlng, circle.radius, circle.uid); });
-                    data.rectangles.forEach(rectangle => { new MapRectangle(this.minimap, rectangle.color, rectangle.bounds._southWest, rectangle.bounds._northEast, rectangle.uid); });
-                    data.draws.forEach(draw => { new MapDrawing(this.minimap, draw.color, draw.latlngs, draw.uid).finalize(false); });
-
-                    // Wait for the heightmap to load before adding weapons/targets
-                    $(document).one("heightmap:loaded", () => {
-                        if (Array.isArray(data.weapons) && data.weapons.length > 0) {
-                            data.weapons.forEach(weapon => { this.minimap.createWeapon(new LatLng(weapon.lat, weapon.lng)); });
-                            data.targets.forEach(target => { this.minimap.createTarget(new LatLng(target.lat, target.lng), false); });
-                        }
-                        this.openToast("success", "importSuccess", "");
-                    });
-
-                    $(document).one("layers:loaded", () => {
-                        this.LAYER_SELECTOR.val(data.activeLayer).trigger($.Event("change", { broadcast: true }));
-                        $(document).one("layer:loaded", () => {
-                            // Select Flags
-                            data.selectedFlags.forEach(flag => {
-                                this.minimap.layer.flags.forEach((layerFlag) => {
-                                    if (layerFlag.objectName != flag) return;
-                                    if (layerFlag.isSelected) return;
-                                    this.minimap.layer._handleFlagClick(layerFlag);
-                                    return;
-                                });
-                            });
-                            // Load Factions and Units
-                            this.FACTION1_SELECTOR.val(data.teams[0][0]).trigger($.Event("change", { broadcast: false }));
-                            this.FACTION2_SELECTOR.val(data.teams[1][0]).trigger($.Event("change", { broadcast: false }));
-                            this.UNIT1_SELECTOR.val(data.teams[0][1]).trigger($.Event("change", { broadcast: false }));
-                            this.UNIT2_SELECTOR.val(data.teams[1][1]).trigger($.Event("change", { broadcast: false }));
-                        });
-                    });
-
-                } catch (err) {
-                    console.debug("Not valid JSON", err);
-                    this.openToast("error", "fileNotSupported", "");
-                }
-            };
-          
-            reader.readAsText(file);
+            const file = e.dataTransfer.files?.[0];
+            if (file) this.loadMapStateFromFile(file);
         });
 
         $(".btn-delete").on("click", () => {
@@ -592,10 +534,20 @@ export default class SquadCalc {
         });
 
         $(".btn-download").on("click", () => { this.saveMapStateToFile(); });
+        $(".btn-upload").on("click", () => {
+            const input = document.createElement("input");
+            input.type = "file";
+            input.accept = ".squadcalc,.json";
+            input.onchange = (e) => {
+                const file = e.target.files?.[0];
+                if (file) this.loadMapStateFromFile(file);
+            };
+            input.click();
+        });
         $(".btn-undo").on("click", () => { if (this.minimap.history.length > 0) this.minimap.history.at(-1).delete(); });
         $(".btn-layer").on("click", () => { this.minimap.layer.toggleVisibility(); });
         $(".btn-drawingMode").on("click", () => { this.minimap.disableDrawingMode(); });
-        $("#fabCheckbox2").on("change", () => { this.switchUI();});
+        $(".btn-legacy").on("click", () => { if (this.ui !== 0) this.switchUI(); });
         $("#factionsButton").on("click", () => { $("#factionsDialog")[0].showModal(); });
         
         $("#mapLayerMenu").find("button.btn-session").on("click", () => {
@@ -886,9 +838,6 @@ export default class SquadCalc {
      */
     switchUI(){
         
-        const newSvg = $("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 576 512'><path d='M384 476.1L192 421.2l0-385.3L384 90.8l0 385.3zm32-1.2l0-386.5L543.1 37.5c15.8-6.3 32.9 5.3 32.9 22.3l0 334.8c0 9.8-6 18.6-15.1 22.3L416 474.8zM15.1 95.1L160 37.2l0 386.5L32.9 474.5C17.1 480.8 0 469.2 0 452.2L0 117.4c0-9.8 6-18.6 15.1-22.3z'/></svg>");
-        $(".fab1").empty().append(newSvg);
-
         if (this.ui == 0) {
             this.loadMapUIMode();
             if (this.minimap.hasMarkers()) $(".btn-delete, .btn-undo").show();
@@ -903,6 +852,7 @@ export default class SquadCalc {
         $("#mapLayerMenu").hide();
         this.ui = 0;
         localStorage.setItem("data-ui", 0);
+        $(".fab2").html("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 640 640'><path d='M183.1 137.4C170.6 124.9 150.3 124.9 137.8 137.4C125.3 149.9 125.3 170.2 137.8 182.7L275.2 320L137.9 457.4C125.4 469.9 125.4 490.2 137.9 502.7C150.4 515.2 170.7 515.2 183.2 502.7L320.5 365.3L457.9 502.6C470.4 515.1 490.7 515.1 503.2 502.6C515.7 490.1 515.7 469.8 503.2 457.3L365.8 320L503.1 182.6C515.6 170.1 515.6 149.8 503.1 137.3C490.6 124.8 470.3 124.8 457.8 137.3L320.5 274.7L183.1 137.4z'/></svg>");
 
     }
 
@@ -922,8 +872,7 @@ export default class SquadCalc {
         $("#map_ui").removeClass("hidden");
         $("header").addClass("ui");
 
-        const LEGACYICONSVG = $("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 640 512'><path d='M32 32C14.3 32 0 46.3 0 64S14.3 96 32 96l576 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L32 32zm0 384c-17.7 0-32 14.3-32 32s14.3 32 32 32l576 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L32 416zM7 167c-9.4 9.4-9.4 24.6 0 33.9l55 55L7 311c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l55-55 55 55c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-55-55 55-55c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-55 55L41 167c-9.4-9.4-24.6-9.4-33.9 0zM265 167c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l55 55-55 55c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l55-55 55 55c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-55-55 55-55c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-55 55-55-55zM455 167c-9.4 9.4-9.4 24.6 0 33.9l55 55-55 55c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l55-55 55 55c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-55-55 55-55c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-55 55-55-55c-9.4-9.4-24.6-9.4-33.9 0z'/></svg>");
-        $(".fab1").empty().append(LEGACYICONSVG);
+        $(".fab2").html("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><defs><style>.fa-secondary{opacity:.4}</style></defs><path class='fa-secondary' d='M192 256a64 64 0 1 0 128 0 64 64 0 1 0 -128 0z'/><path class='fa-primary' d='M312 0L200 0 182.8 78.4c-15.8 6.5-30.6 15.1-44 25.4L62.3 79.5l-56 97 59.4 54.1C64.6 238.9 64 247.4 64 256s.6 17.1 1.7 25.4L6.3 335.5l56 97 76.5-24.4c13.4 10.3 28.2 18.9 44 25.4L200 512l112 0 17.2-78.4c15.8-6.5 30.6-15.1 44-25.4l76.5 24.4 56-97-59.4-54.1c1.1-8.3 1.7-16.8 1.7-25.4s-.6-17.1-1.7-25.4l59.4-54.1-56-97-76.5 24.4C359.8 93.6 345 85 329.2 78.4L312 0zM256 160a96 96 0 1 1 0 192 96 96 0 1 1 0-192z'/></svg>");
 
         $("#mapLayerMenu").show();
         this.ui = 1;
@@ -1408,7 +1357,54 @@ export default class SquadCalc {
         this.openToast("success", "mapSaved", "dragToImport");
     }
 
-    
+    loadMapStateFromFile(file) {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            try {
+                const data = JSON.parse(event.target.result);
+                console.debug("Parsed JSON:", data);
+
+                $(".dropbtn").val(data.activeMap).trigger($.Event("change", { broadcast: true }));
+
+                data.markers.forEach(marker => { this.minimap.createMarker(new LatLng(marker.lat, marker.lng), marker.team, marker.category, marker.icon, marker.uid); });
+                data.arrows.forEach(arrow => { new MapArrow(this.minimap, arrow.color, arrow.latlngs[0], arrow.latlngs[1], arrow.uid); });
+                data.circles.forEach(circle => { new MapCircle(this.minimap, circle.color, circle.latlng, circle.radius, circle.uid); });
+                data.rectangles.forEach(rectangle => { new MapRectangle(this.minimap, rectangle.color, rectangle.bounds._southWest, rectangle.bounds._northEast, rectangle.uid); });
+                data.draws.forEach(draw => { new MapDrawing(this.minimap, draw.color, draw.latlngs, draw.uid).finalize(false); });
+
+                $(document).one("heightmap:loaded", () => {
+                    if (Array.isArray(data.weapons) && data.weapons.length > 0) {
+                        data.weapons.forEach(weapon => { this.minimap.createWeapon(new LatLng(weapon.lat, weapon.lng)); });
+                        data.targets.forEach(target => { this.minimap.createTarget(new LatLng(target.lat, target.lng), false); });
+                    }
+                    this.openToast("success", "importSuccess", "");
+                });
+
+                $(document).one("layers:loaded", () => {
+                    this.LAYER_SELECTOR.val(data.activeLayer).trigger($.Event("change", { broadcast: true }));
+                    $(document).one("layer:loaded", () => {
+                        data.selectedFlags.forEach(flag => {
+                            this.minimap.layer.flags.forEach((layerFlag) => {
+                                if (layerFlag.objectName != flag) return;
+                                if (layerFlag.isSelected) return;
+                                this.minimap.layer._handleFlagClick(layerFlag);
+                            });
+                        });
+                        this.FACTION1_SELECTOR.val(data.teams[0][0]).trigger($.Event("change", { broadcast: false }));
+                        this.FACTION2_SELECTOR.val(data.teams[1][0]).trigger($.Event("change", { broadcast: false }));
+                        this.UNIT1_SELECTOR.val(data.teams[0][1]).trigger($.Event("change", { broadcast: false }));
+                        this.UNIT2_SELECTOR.val(data.teams[1][1]).trigger($.Event("change", { broadcast: false }));
+                    });
+                });
+            } catch (err) {
+                console.debug("Not valid JSON", err);
+                this.openToast("error", "fileNotSupported", "");
+            }
+        };
+        reader.readAsText(file);
+    }
+
+
     /**
      * Updates the URL search parameters by applying the provided updates.
      *
