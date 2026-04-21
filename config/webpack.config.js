@@ -101,6 +101,7 @@ export default async (env) => {
                     /\.mp3$/,
                     /\.json$/,
                     /\.gif$/,
+                    /\.html$/,
                 ],
             })
         ],
