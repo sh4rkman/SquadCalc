@@ -22,13 +22,10 @@
     "url": "https://github.com/sh4rkman/SquadCalc/issues"
   },
   "private": false,
-  "jshintConfig": {
-    "esversion": 11
-  },
   "scripts": {
     "start": "webpack serve -c ./config/webpack.config.js",
     "build": "webpack -c ./config/webpack.config.js",
-    "lint": "stylelint -c ./config/.stylelintrc.json ./src/**/*.scss && htmlhint --config ./config/.htmlhintrc.json --nocolor ./src/ && jshint ./src/ && eslint --fix -c ./config/eslint.config.js ./src/",
+    "lint": "stylelint -c ./config/.stylelintrc.json ./src/**/*.scss && htmlhint --config ./config/.htmlhintrc.json --nocolor ./src/ && eslint --fix -c ./config/eslint.config.js ./src/",
     "mapinfo": "node src/data/maps.js mapinfo"
   },
   "engines": {
@@ -44,7 +41,6 @@
     "css-minimizer-webpack-plugin": "^7.0.0",
     "dotenv-webpack": "^8.1.0",
     "eslint": "^10.0.1",
-    "fs-extra": "^11.2.0",
     "fuse.js": "^7.1.0",
     "globals": "^17.3.0",
     "html-loader": "^5.1.0",
@@ -53,9 +49,7 @@
     "i18next": "^24.2.0",
     "i18next-http-backend": "^3.0.1",
     "jquery": "^3.7.1",
-    "jshint": "^2.13.6",
     "leaflet": "^2.0.0-alpha.1",
-    "leaflet-loader": "^0.0.3",
     "mini-css-extract-plugin": "^2.9.2",
     "path": "^0.12.7",
     "postcss": ">=8.4.49",
@@ -78,6 +72,6 @@
   },
   "overrides": {
     "minimatch": "^10.2.1",
-    "serialize-javascript": "7.0.3"
+    "serialize-javascript": "7.0.5"
   }
 }
