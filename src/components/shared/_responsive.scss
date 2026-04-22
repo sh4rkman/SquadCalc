@@ -28,7 +28,7 @@
     header {
         .mapSelector #mapSelector, .weaponSelector #layerSelector {
             .select2-results__options {
-                line-height: 0.85em;
+                // line-height: 0.85em;
                 max-height: 770px;
             }
         }
@@ -418,7 +418,7 @@
                 }
                 .select2-results__options {
                     font-size: 1.2em;
-                    line-height: 1.3em;
+                    // line-height: 1.3em;
                     max-height: 1100px;
                 }
                 .select2-selection__placeholder {
@@ -458,12 +458,12 @@
         background-color: inherit !important;
     }
     // Map layer menu buttons
-    #mapLayerMenu .btn:not(.active):hover {
-        background-color: white !important;
-        svg {
-            transform: none !important;
-        }
-    }
+    // #mapLayerMenu .btn:not(.active):hover {
+    //     background-color: white !important;
+    //     svg {
+    //         transform: none !important;
+    //     }
+    // }
     // Footer buttons
     footer button:hover {
         background-color: inherit !important;

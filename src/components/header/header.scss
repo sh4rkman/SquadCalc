@@ -23,7 +23,6 @@ header {
         pointer-events: none;
         .select2-results__options {
             font-weight: 600;
-            line-height: 0.9em;
             font-size: 0.85em;
         }
         #weaponSelector {
@@ -58,7 +57,7 @@ header {
             z-index: 3;
             position: relative;
             .select2-results__options {
-                line-height: 1.1em;
+
                 font-size: 0.9em;
                 max-height: 400px;
             }
@@ -68,7 +67,6 @@ header {
             padding-top: 1em;
             position: relative;
             .select2-results__options {
-                line-height: 1.1em;
                 font-size: 0.9em;
                 max-height: 400px;
             }
@@ -85,7 +83,9 @@ header {
         font-weight: bold;
         line-height: 2.188em;
         text-transform: uppercase;
-        background-color: var(--themecolor, variables.$mainBGColor);
+        background: rgba(0, 0, 0, 0.8);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
         select {
             -moz-appearance: none;
             -webkit-appearance: none;
@@ -158,29 +158,18 @@ header {
 }
 
 @keyframes select2SlideDown {
-    from {
-        opacity: 0;
-        transform: translateY(-6px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
 @keyframes select2SlideUp {
-    from {
-        opacity: 0;
-        transform: translateY(6px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
 .select2-results__option {
     padding: 0.55em 1em;
+    line-height: 0.75em;
     transition: background-color 0.15s ease;
     letter-spacing: 0.05em;
 }

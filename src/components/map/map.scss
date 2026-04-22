@@ -37,7 +37,7 @@
     .leaflet-popup-content-wrapper {
         @include variables.text-outline;
         @extend .unselectable;
-        font-family: variables.$mainFont, Times, "Times New Roman", serif;
+        font-family: variables.$mainFont, Times, "Times New Roman", serif;  
         font-size: calc(var(--font-size-objtext) + 0.1em);
         background: transparent;
         box-shadow: none;
@@ -131,6 +131,7 @@
         }
         .gridText {
             @include variables.light-text-outline;
+            font-family: variables.$logoFont, Times, "Times New Roman", serif;
             font-size: 1.1em;
         }
         .deployables {
