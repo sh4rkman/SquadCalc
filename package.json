@@ -51,7 +51,7 @@
     "html-webpack-plugin": "^5.6.3",
     "htmlhint": "^1.9.1",
     "i18next": "^24.2.0",
-    "i18next-http-backend": "^3.0.1",
+    "i18next-http-backend": "^3.0.5",
     "jquery": "^3.7.1",
     "jshint": "^2.13.6",
     "leaflet": "^2.0.0-alpha.1",
