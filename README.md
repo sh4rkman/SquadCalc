@@ -363,6 +363,7 @@
 * [f0xcb](https://github.com/f0xcb) 
 * [Ferrariic](https://github.com/Ferrariic)
 * [Guducat](https://github.com/Guducat)
+* [Hans-Vader](https://github.com/Hans-Vader) 
 * [Metroseksuaali](https://github.com/Metroseksuaali)  
 * [TheMatheusDev](https://github.com/TheMatheusDev)  
 * sitroz
