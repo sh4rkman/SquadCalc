@@ -165,6 +165,7 @@ dialog {
     button {
         height: 20px;
         color: variables.$mainBGColor;
+        background-color: white;
         width: 45%;
         cursor: pointer;
         &.active {

@@ -7,6 +7,7 @@ $newColor: green;
 
 :root {
     --main-color: #{$mainColor}; // Interpolation so we can use this color in JS
+    color-scheme: dark;
 }
 
 // Fonts

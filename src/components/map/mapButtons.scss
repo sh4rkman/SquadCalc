@@ -191,6 +191,7 @@
                 width: 50%;
                 pointer-events: none;
                 svg {
+                    fill: white;
                     width: 0.5em;
                 }
             }
@@ -202,9 +203,6 @@
                 background-color: variables.$mainColor;
                 border-color: variables.$mainColor;
                 color: white;
-                svg {
-                    width: 0.5em;
-                }
             }
         }
     }
@@ -214,19 +212,23 @@
         width: 40px;
         height: 40px;
         margin: 0;
-        color: variables.$mainBGColor;
-        border: #979797 solid 1px;
-        box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+        color: #ccc;
+        border: rgba(255, 255, 255, 0.08) solid 1px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
         cursor: pointer;
         transition: all 0.25s ease-in-out;
         display: flex;
         align-items: center;
         justify-content: center;
-        background-color: white;
+        background: rgba(17, 17, 17, 0.75);
+        backdrop-filter: blur(6px);
+        -webkit-backdrop-filter: blur(6px);
         &:hover {
-            background-color: #979797;
+            background: rgba(10, 10, 10, 0.92);
+            color: #fff;
             svg {
                 transform: scale(1.1);
+                fill: #fff;
             }
         }
         &.active {
@@ -239,14 +241,14 @@
         }
         &:disabled {
             pointer-events: none;
-            background-color: #888;
+            background-color: #1e1e1e;
             svg path {
-                fill: #383838;
+                fill: #555;
             }
         }
         svg {
             height: 1em;
-            fill: variables.$mainBGColor;
+            fill: #ffffff;
         }
         &.btn-legacy svg {
             height: 0.8em;
