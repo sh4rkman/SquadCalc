@@ -177,7 +177,7 @@ export default class SquadSettings {
                 controls: ["#hideLowRespawnSettings", "#disableSoundsSettings", "#defaultFactionsSettings"],
                 onChange: (val) => {
                     if (!val) {
-                        $("#factionsTab").hide();
+                        $("#factionsTab, #factionsButton").hide();
                         $("#hideLowRespawnSettings").prop("disabled", true);
                         $("#disableSoundsSettings").prop("disabled", true);
                         $("#defaultFactionsSettings").prop("disabled", true);
@@ -187,7 +187,7 @@ export default class SquadSettings {
                         $("#defaultFactionsSettings").prop("disabled", false);
                         if (this.app.minimap.layer) {
                             this.app.minimap.layer.factions = new SquadFactions(this.app.minimap.layer);
-                            $("#factionsTab").show();
+                            $("#factionsTab, #factionsButton").show();
                         }
                     }
                 }
@@ -652,15 +652,12 @@ export default class SquadSettings {
     }
 
     /**
-     * Bind settings button event (open help dialog, or exit legacy mode)
+     * Bind settings button event (switch to map mode from legacy)
      */
     bindMenuButtons() {
-        $(document).on("click", "#fabCheckbox", () => {
-            if (this.app.ui === 0) {
-                this.app.switchUI();
-                return;
-            }
-            $("#helpDialog")[0].showModal();
+        $(document).on("click", ".returnBtn", (event) => {
+            event.preventDefault();
+            this.app.switchUI();
         });
     }
 

@@ -17,11 +17,6 @@ footer {
         padding: 0.5em;
         border-radius: 40px 40px 0;
         pointer-events: none;
-        .settingsButton {
-            .fab {
-                background-color: variables.$mainColor;
-            }
-        }
     }
     .fabs {
         height: 2.5rem;

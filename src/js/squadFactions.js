@@ -28,12 +28,28 @@ export default class SquadFactions {
     /*
      *  Reset the factions button to its default state
      */
-    resetFactionsButton() {
-        $("#factionsButton button").empty().append(`
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512">
-                <path fill="currentColor" d="M176 8c-6.6 0-12.4 4-14.9 10.1l-29.4 74L55.6 68.9c-6.3-1.9-13.1 .2-17.2 5.3s-4.6 12.2-1.4 17.9l39.5 69.1L10.9 206.4c-5.4 3.7-8 10.3-6.5 16.7s6.7 11.2 13.1 12.2l78.7 12.2L90.6 327c-.5 6.5 3.1 12.7 9 15.5s12.9 1.8 17.8-2.6l35.3-32.5 9.5-35.4 10.4-38.6c8-29.9 30.5-52.1 57.9-60.9l41-59.2c11.3-16.3 26.4-28.9 43.5-37.2c-.4-.6-.8-1.2-1.3-1.8c-4.1-5.1-10.9-7.2-17.2-5.3L220.3 92.1l-29.4-74C188.4 12 182.6 8 176 8zM367.7 161.5l135.6 36.3c6.5 1.8 11.3 7.4 11.8 14.2l4.6 56.5-201.5-54 32.2-46.6c3.8-5.6 10.8-8.1 17.3-6.4zm-69.9-30l-47.9 69.3c-21.6 3-40.3 18.6-46.3 41l-10.4 38.6-16.6 61.8-8.3 30.9c-4.6 17.1 5.6 34.6 22.6 39.2l15.5 4.1c17.1 4.6 34.6-5.6 39.2-22.6l8.3-30.9 247.3 66.3-8.3 30.9c-4.6 17.1 5.6 34.6 22.6 39.2l15.5 4.1c17.1 4.6 34.6-5.6 39.2-22.6l8.3-30.9L595 388l10.4-38.6c6-22.4-2.5-45.2-19.6-58.7l-6.8-84c-2.7-33.7-26.4-62-59-70.8L384.2 99.7c-32.7-8.8-67.3 4-86.5 31.8zm-17 131a24 24 0 1 1 -12.4 46.4 24 24 0 1 1 12.4-46.4zm217.9 83.2A24 24 0 1 1 545 358.1a24 24 0 1 1 -46.4-12.4z"/>
-            </svg>
+    setBarFlag(id, val) {
+        const src = val ? `/img/flags/${encodeURIComponent(val.trim())}.webp` : "/img/flags/unknown.webp";
+        const name = val ? i18next.t(val, { ns: "factions" }) : "?";
+        $(id).html(`
+            <img src="${src}" alt=""/>
+
         `);
+    }
+
+    setBarUnit(id, icon) {
+        if (icon) {
+            $(id).html(`<img src="/img/units/${encodeURIComponent(String(icon).trim())}.webp" alt=""/>`);
+        } else {
+            $(id).empty();
+        }
+    }
+
+    resetFactionsButton() {
+        this.setBarFlag("#factionBarFlag1", this.FACTION1_SELECTOR.val());
+        this.setBarFlag("#factionBarFlag2", this.FACTION2_SELECTOR.val());
+        this.setBarUnit("#factionBarUnit1", this.UNIT1_SELECTOR.find("option:selected").data("icon"));
+        this.setBarUnit("#factionBarUnit2", this.UNIT2_SELECTOR.find("option:selected").data("icon"));
     }
 
 
@@ -103,7 +119,6 @@ export default class SquadFactions {
             .attr("alt", "Faction Icon")
             .addClass("faction-img");
 
-        $("#factionsButton button").empty().append($img);
 
         // Find the given faction in the teamfaction unit list
         const selectedUnit = teamfaction.find((unit) => unit.unitObjectName === unitName);
@@ -674,7 +689,7 @@ export default class SquadFactions {
             // Reset UI
             $("#team1Vehicles").empty();
             $("#team1CommanderAsset").empty();
-            
+            this.setBarFlag("#factionBarFlag1", event.target.value);
             if ( $("#team1PinButton").hasClass("active") ) this.unpinUnit();
 
             // Broadcast the Unit change to the session if needed
@@ -703,6 +718,7 @@ export default class SquadFactions {
         this.FACTION2_SELECTOR.off("change").on("change", (event) => {
             // Reset UI
             $("#team2Vehicles").empty();
+            this.setBarFlag("#factionBarFlag2", event.target.value);
             if ( $("#team2PinButton").hasClass("active") ) this.unpinUnit();
 
             // Broadcast the Faction change to the session if needed
@@ -733,12 +749,13 @@ export default class SquadFactions {
             // Reset UI
             $("#team1Vehicles").empty();
             if ($("#team1PinButton").hasClass("active")) this.unpinUnit();
+            this.setBarUnit("#factionBarUnit1", this.UNIT1_SELECTOR.find("option:selected").data("icon"));
 
-            // Clear spawned vehicles 
+            // Clear spawned vehicles
             this.squadLayer.activeFaction1Markers.clearLayers();
-        
+
             const selectedUnit = factionData.units.team1Units.find((unit) => unit.unitObjectName === event.target.value);
-        
+
             if (!selectedUnit) return;
 
             // Broadcast the map change to the session if needed
@@ -796,6 +813,7 @@ export default class SquadFactions {
             $("#team2CommanderAsset").empty();
 
             if ( $("#team2PinButton").hasClass("active") ) this.unpinUnit();
+            this.setBarUnit("#factionBarUnit2", this.UNIT2_SELECTOR.find("option:selected").data("icon"));
 
             // Clear spawned vehicles 
             this.squadLayer.activeFaction2Markers.clearLayers();

@@ -122,6 +122,30 @@
                 }
             }
         }
+        #team2 {
+            #unit2 .unit-option {
+                flex-direction: row-reverse;
+            }
+            #unit2 .unit-logo {
+                transform: scaleX(-1);
+            }
+            .select2-selection--single {
+                .select2-selection__arrow {
+                    left: 1px;
+                    right: auto;
+                }
+                .select2-selection__rendered {
+                    padding-left: 20px;
+                    padding-right: 8px;
+                    text-align: right;
+                }
+                .select2-selection__clear {
+                    float: right;
+                    margin-left: 4px;
+                    margin-right: 0;
+                }
+            }
+        }
     }
     #factionVehicles {
         width: 100%;

@@ -83,7 +83,7 @@ export default class SquadLayer {
 
         if (process.env.DISABLE_FACTIONS != "true") {
             this.factions = new SquadFactions(this, broadcast);
-            if (App.userSettings.enableFactions) $("#factionsTab").show();
+            if (App.userSettings.enableFactions) $("#factionsTab, #factionsButton").show();
         }
 
         // If already zoomed in, reveal capzones/main assets

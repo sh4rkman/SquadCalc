@@ -1,3 +1,27 @@
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge"> **43.0.0** *(2026-0X-XX)*
+
+</br><img src="https://img.shields.io/badge/-new%20features-green">
+- Teams factions and units are now stored in the URL (thanks Hans Wurst!)
+- Added a button to upload saved file (thanks d503-ai !)
+- Reworked the faction button to show current factions & units
+
+</br><img src="https://img.shields.io/badge/-%20improv%20-orange"> 
+- Vehicle emplacements that disappear will now prioritise vehicles that don't respawn, like in game.
+- Moved legacy button into the menu, bottom-right button is now fully dedicated to settings (thanks Madlifer!)
+- Map buttons are now dark themed
+
+- Added `color-scheme: dark` to prevent browsers from forcing their own dark mode override on the app
+
+
+</br><img src="https://img.shields.io/badge/-bug%20fixes-b22">  
+- Fixed Server Syncing not working when joining a server from URL (fix [#459](https://github.com/sh4rkman/SquadCalc/issues/459))
+- Fixed session links sometimes not working when opening them in a new tab (fix [#458](https://github.com/sh4rkman/SquadCalc/issues/458))
+- Fixed a caching bug that displayed the old version after each update
+
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
+
 # <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge"> **42.4.0** *(2026-03-08)*
 
 </br><img src="https://img.shields.io/badge/-bug%20fixes-b22">  

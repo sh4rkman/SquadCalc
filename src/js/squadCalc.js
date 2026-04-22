@@ -127,7 +127,7 @@ export default class SquadCalc {
                 if (abortController) { abortController.abort(); } // Abort the ongoing fetch request
                 if (this.minimap.layer) this.minimap.layer.clear();
                 $(".btn-layer").hide();
-                $("#factionsTab").hide();
+                $("#factionsTab, #factionsButton").hide();
 
                 // Empty Factions&Units selectors
                 this.FACTION1_SELECTOR.empty();
@@ -167,7 +167,7 @@ export default class SquadCalc {
                         this.openToast("error", "error", "apiError");
                         console.error("Error fetching layer data:", error);
                     }
-                    $("#factionsTab").hide();
+                    $("#factionsTab, #factionsButton").hide();
                     this.minimap.spin(false);
 
                     // Stop the chain
@@ -836,19 +836,18 @@ export default class SquadCalc {
         
         if (this.ui == 0) {
             this.loadMapUIMode();
+            $(".returnBtn").hide();
             if (this.minimap.hasMarkers()) $(".btn-delete, .btn-undo").show();
             return;
         }
 
+        $(".returnBtn").show();
         $("#map_ui").addClass("hidden");
         $("#classic_ui").removeClass("hidden");
         $("header").removeClass("ui");
-        //$(".btn-delete").hide();
-        //$(".btn-undo").hide();
         $("#mapLayerMenu").hide();
         this.ui = 0;
         localStorage.setItem("data-ui", 0);
-        $(".fab2").html("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 640 640'><path d='M183.1 137.4C170.6 124.9 150.3 124.9 137.8 137.4C125.3 149.9 125.3 170.2 137.8 182.7L275.2 320L137.9 457.4C125.4 469.9 125.4 490.2 137.9 502.7C150.4 515.2 170.7 515.2 183.2 502.7L320.5 365.3L457.9 502.6C470.4 515.1 490.7 515.1 503.2 502.6C515.7 490.1 515.7 469.8 503.2 457.3L365.8 320L503.1 182.6C515.6 170.1 515.6 149.8 503.1 137.3C490.6 124.8 470.3 124.8 457.8 137.3L320.5 274.7L183.1 137.4z'/></svg>");
 
     }
 
@@ -867,12 +866,8 @@ export default class SquadCalc {
         $("#classic_ui").addClass("hidden");
         $("#map_ui").removeClass("hidden");
         $("header").addClass("ui");
-
-        $(".fab2").html("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><defs><style>.fa-secondary{opacity:.4}</style></defs><path class='fa-secondary' d='M192 256a64 64 0 1 0 128 0 64 64 0 1 0 -128 0z'/><path class='fa-primary' d='M312 0L200 0 182.8 78.4c-15.8 6.5-30.6 15.1-44 25.4L62.3 79.5l-56 97 59.4 54.1C64.6 238.9 64 247.4 64 256s.6 17.1 1.7 25.4L6.3 335.5l56 97 76.5-24.4c13.4 10.3 28.2 18.9 44 25.4L200 512l112 0 17.2-78.4c15.8-6.5 30.6-15.1 44-25.4l76.5 24.4 56-97-59.4-54.1c1.1-8.3 1.7-16.8 1.7-25.4s-.6-17.1-1.7-25.4l59.4-54.1-56-97-76.5 24.4C359.8 93.6 345 85 329.2 78.4L312 0zM256 160a96 96 0 1 1 0 192 96 96 0 1 1 0-192z'/></svg>");
-
         $("#mapLayerMenu").show();
         this.ui = 1;
-        //this.line.hide("none");
         localStorage.setItem("data-ui", 1);
         this.minimap.invalidateSize();
     }

@@ -16,10 +16,24 @@
     </div>  
 
     <div id="factionsTab" class="animate__animated animate__fadeInLeft" oncontextmenu="return false;">
-        <div id="factionsButton">
-            <button type="button" class="btn-faction" aria-label="Select Factions"></button>
-        </div>
         <div id="pinnedVehiclesTab"></div>
+    </div>
+
+    <div id="factionsButton" class="animate__animated animate__fadeInUp" oncontextmenu="return false;">
+        <button type="button" class="btn-faction" aria-label="Select Factions">
+            <div class="factionBar-top">
+                <svg class="factionBar-chevron" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+                    <path d="M201.4 137.4c12.5-12.5 32.8-12.5 45.3 0l160 160c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L224 205.3 86.6 342.6c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3l160-160z"/>
+                </svg>
+            </div>
+            <div class="factionBar-content">
+                <span id="factionBarFlag1" class="factionBarFlag"></span>
+                <span id="factionBarUnit1" class="factionBarUnit"></span>
+                <span class="factionBar-label" data-i18n="common:vs">vs</span>
+                <span id="factionBarUnit2" class="factionBarUnit"></span>
+                <span id="factionBarFlag2" class="factionBarFlag"></span>
+            </div>
+        </button>
     </div>
     
     <div id="mapLayerMenu" oncontextmenu="return false;">
@@ -60,13 +74,11 @@
 
             <div class="btnLayersGroup">
 
-
                 <button type="button" class="btn btn-legacy animate__animated animate__fadeInRight" aria-label="Download map">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512">
                         <path d="M32 32C14.3 32 0 46.3 0 64S14.3 96 32 96l576 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L32 32zm0 384c-17.7 0-32 14.3-32 32s14.3 32 32 32l576 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L32 416zM7 167c-9.4 9.4-9.4 24.6 0 33.9l55 55L7 311c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l55-55 55 55c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-55-55 55-55c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-55 55L41 167c-9.4-9.4-24.6-9.4-33.9 0zM265 167c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l55 55-55 55c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l55-55 55 55c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-55-55 55-55c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-55 55-55-55zM455 167c-9.4 9.4-9.4 24.6 0 33.9l55 55-55 55c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l55-55 55 55c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-55-55 55-55c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-55 55-55-55c-9.4-9.4-24.6-9.4-33.9 0z"></path>
                     </svg>
                 </button>
-
 
                 <button type="button" class="btn btn-download animate__animated animate__fadeInRight" aria-label="Download map">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
@@ -113,6 +125,12 @@
                 </button>
                 <button type="button" class="btn btn-session-users"></button>
             </div>
+        </div>
+
+        <div class="mapLayerMenuSeparator">
+            <button type="button" class="btn btn-settings animate__animated animate__fadeInRight" aria-label="Settings">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><defs><style>.fa-secondary{opacity:.4}</style></defs><path class="fa-secondary" d="M192 256a64 64 0 1 0 128 0 64 64 0 1 0 -128 0z"/><path class="fa-primary" d="M312 0L200 0 182.8 78.4c-15.8 6.5-30.6 15.1-44 25.4L62.3 79.5l-56 97 59.4 54.1C64.6 238.9 64 247.4 64 256s.6 17.1 1.7 25.4L6.3 335.5l56 97 76.5-24.4c13.4 10.3 28.2 18.9 44 25.4L200 512l112 0 17.2-78.4c15.8-6.5 30.6-15.1 44-25.4l76.5 24.4 56-97-59.4-54.1c1.1-8.3 1.7-16.8 1.7-25.4s-.6-17.1-1.7-25.4l59.4-54.1-56-97-76.5 24.4C359.8 93.6 345 85 329.2 78.4L312 0zM256 160a96 96 0 1 1 0 192 96 96 0 1 1 0-192z"/></svg>
+            </button>
         </div>
 
         <div class="mapLayerMenuSeparator">
