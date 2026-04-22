@@ -252,17 +252,13 @@ export default class SquadCalc {
                         $(document).one("layer:loaded", () => {
                             for (const { faction, unit, factionSel, unitSel } of teamParams) {
                                 if (faction) {
-                                    const factionMatch = factionSel.find("option").filter(function() {
-                                        return $(this).val().toLowerCase() === faction.toLowerCase();
-                                    });
+                                    const factionMatch = factionSel.find("option").filter((_, el) => el.value.toLowerCase() === faction.toLowerCase());
                                     if (factionMatch.length > 0) {
                                         factionSel.val(factionMatch.val()).trigger($.Event("change", { broadcast: false }));
                                     }
                                 }
                                 if (unit) {
-                                    const unitMatch = unitSel.find("option").filter(function() {
-                                        return $(this).val().toLowerCase() === unit.toLowerCase();
-                                    });
+                                    const unitMatch = unitSel.find("option").filter((_, el) => el.value.toLowerCase() === unit.toLowerCase());
                                     if (unitMatch.length > 0) {
                                         unitSel.val(unitMatch.val()).trigger($.Event("change", { broadcast: false }));
                                     }

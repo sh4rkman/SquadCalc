@@ -57,7 +57,6 @@ header {
             z-index: 3;
             position: relative;
             .select2-results__options {
-
                 font-size: 0.9em;
                 max-height: 400px;
             }
@@ -138,7 +137,6 @@ header {
     }
 }
 
-// Dropdown panel — appended to <body> by Select2
 .select2-dropdown {
     background: rgba(17, 17, 17, 0.92);
     backdrop-filter: blur(10px);
@@ -154,17 +152,25 @@ header {
 }
 
 .select2-dropdown--above {
-    animation: select2SlideUp 0.15s ease;
+    animation: select2-slide-up 0.15s ease;
 }
 
-@keyframes select2SlideDown {
-    from { opacity: 0; }
-    to { opacity: 1; }
+@keyframes select2-slide-down {
+    from { 
+        opacity: 0; 
+    }
+    to { 
+        opacity: 1;
+    }
 }
 
-@keyframes select2SlideUp {
-    from { opacity: 0; }
-    to { opacity: 1; }
+@keyframes select2-slide-up {
+    from { 
+        opacity: 0;
+    }
+    to { 
+        opacity: 1;
+    }
 }
 
 .select2-results__option {
