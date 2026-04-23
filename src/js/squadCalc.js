@@ -438,7 +438,7 @@ export default class SquadCalc {
         const factionsDialog = document.querySelector("#factionsDialog");
         const serversInformation = document.querySelector("#serversInformation");
 
-        $(".btn-delete, .btn-undo, .btn-layer, #mapLayerMenu").hide();
+        $(".btn-delete, .btn-undo, .btn-layer, .returnBtn, #mapLayerMenu").hide();
 
         this.ui = localStorage.getItem("data-ui");
 
@@ -448,6 +448,7 @@ export default class SquadCalc {
         }
 
         if (this.ui == 1) this.loadMapUIMode();
+        else $(".returnBtn").show();
 
         // Add Events listeners
 
@@ -545,7 +546,8 @@ export default class SquadCalc {
         $(".btn-drawingMode").on("click", () => { this.minimap.disableDrawingMode(); });
         $(".btn-legacy").on("click", () => { if (this.ui !== 0) this.switchUI(); });
         $("#factionsButton").on("click", () => { $("#factionsDialog")[0].showModal(); });
-        
+        $(".btn-settings").on("click", () => { helpDialog.showModal(); });
+
         $("#mapLayerMenu").find("button.btn-session").on("click", () => {
             if ($(".btn-session").hasClass("active")) {
                 
@@ -570,13 +572,6 @@ export default class SquadCalc {
             }
         });
 
-
-        // $("#btn-map-choices").on("hover", () => {
-        //     $("button.layers").show();
-        //     console.log("Map Layers Menu opened");
-        // });
-
-        // $("button.layers").hide();
 
         $("#mapLayerMenu").find("button.layers").on("click", (event) => {
 
@@ -833,7 +828,7 @@ export default class SquadCalc {
      * @returns {integer} - height in meters
      */
     switchUI(){
-        
+
         if (this.ui == 0) {
             this.loadMapUIMode();
             $(".returnBtn").hide();

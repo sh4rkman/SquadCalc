@@ -5,7 +5,6 @@ import i18next from "i18next";
 export var tooltip_save;
 export var tooltip_copied;
 
-const helpDialog = document.querySelector("#helpDialog");
 
 const commonToolipsSettings = {
     animation: "fade",
@@ -17,7 +16,7 @@ const commonToolipsSettings = {
     hideOnClick: true,
     delay: 200,
     maxWidth: 250, 
-    appendTo: helpDialog,
+    appendTo: document.querySelector("#helpDialog"),
 };
 
 tippy("#settings", {

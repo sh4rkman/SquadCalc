@@ -407,8 +407,6 @@ export const squadWeaponMarker = squadMarker.extend({
         // Additional height
         $(".heightPadding input").val(this.heightPadding);
         
-
-
         // Add listener that update angle/height & refresh targets
         weapon = weapon.sourceTarget;
         $("input[type=radio][name=angleChoice]").on("change", weapon, (e) => {
