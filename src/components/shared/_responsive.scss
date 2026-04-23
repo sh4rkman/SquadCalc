@@ -125,6 +125,9 @@
                     }
                 }
             }
+            #team2 .selectors {
+                flex-direction: column-reverse;
+            }
         }
     }
 

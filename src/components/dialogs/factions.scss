@@ -129,6 +129,16 @@
             #unit2 .unit-logo {
                 transform: scaleX(-1);
             }
+            #unit2 .select2-selection--single {
+                .select2-selection__arrow {
+                    left: 1px;
+                    right: auto;
+                }
+                .select2-selection__rendered {
+                    padding-left: 30px;
+                    text-align: center;
+                }
+            }
             #faction2 .select2-selection--single {
                 .select2-selection__arrow {
                     left: 1px;
