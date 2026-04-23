@@ -18,6 +18,7 @@
 - Fixed a caching bug that displayed the old version after each update
 - Fixed unit characteristics not hiding when removing a faction entirely
 - Fixed the server browser tooltip staying open after closing the server list
+- Fixed FV107 missing icon
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
 
