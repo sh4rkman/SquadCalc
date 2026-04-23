@@ -14,7 +14,7 @@ footer {
         align-items: center;
         gap: 0.7em;
         z-index: 10;
-        padding: 0.5em 0.5em calc(0.5em + env(safe-area-inset-bottom, 0px));
+        padding: 0.5em 0.5em calc(0.5em);
         border-radius: 40px 40px 0;
         pointer-events: none;
     }

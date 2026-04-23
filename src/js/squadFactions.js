@@ -32,8 +32,7 @@ export default class SquadFactions {
         const src = val ? `/img/flags/${encodeURIComponent(val.trim())}.webp` : "/img/flags/unknown.webp";
         const name = val ? i18next.t(val, { ns: "factions" }) : "?";
         $(id).html(`
-            <img src="${src}" alt=""/>
-
+            <img src="${src}" alt="${name}"/>
         `);
     }
 
@@ -108,17 +107,9 @@ export default class SquadFactions {
      *  * @param {string} unitName - The unit name for the selected unit
      * */
     pinUnit(teamfaction, country, unitName, teamMain) {
-        const safeCountry = encodeURIComponent(country.trim());
+
         this.unpinUnit(); // should be possible
-
         this.pinnedFaction = teamMain;
-
-        // Set the pinned faction flag in the left side button
-        const $img = $("<img>")
-            .attr("src", `/img/flags/${safeCountry}.webp`)
-            .attr("alt", "Faction Icon")
-            .addClass("faction-img");
-
 
         // Find the given faction in the teamfaction unit list
         const selectedUnit = teamfaction.find((unit) => unit.unitObjectName === unitName);

@@ -545,7 +545,11 @@ export default class SquadCalc {
         $(".btn-layer").on("click", () => { this.minimap.layer.toggleVisibility(); });
         $(".btn-drawingMode").on("click", () => { this.minimap.disableDrawingMode(); });
         $(".btn-legacy").on("click", () => { if (this.ui !== 0) this.switchUI(); });
-        $("#factionsButton").on("click", () => { $("#factionsDialog")[0].showModal(); });
+        $("#factionsButton .factionBar-top").on("click", (e) => {
+            e.stopPropagation();
+            $("#factionsButton").toggleClass("collapsed");
+        });
+        $("#factionsButton button.btn-faction").on("click", () => { $("#factionsDialog")[0].showModal(); });
         $(".btn-settings").on("click", () => { helpDialog.showModal(); });
 
         $("#mapLayerMenu").find("button.btn-session").on("click", () => {

@@ -43,7 +43,6 @@ caption,
 body {
     background-color: var(--themecolor, $mainBGColor);
     overflow: hidden;
-    padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 
 a:visited {
