@@ -15,7 +15,7 @@ import SquadSettings from "./squadSettings.js";
 import packageInfo from "../../package.json";
 import i18next from "i18next";
 import SquadLayer from "./squadLayer.js";
-// import { serverBrowserTooltips } from "./tooltips.js";
+import { serverBrowserTooltips } from "./tooltips.js";
 import { MapDrawing, MapArrow, MapCircle, MapRectangle } from "./squadShapes.js";
 
 
@@ -500,7 +500,8 @@ export default class SquadCalc {
         });
 
         $(document).on("click", "#servers", () => {
-            
+            serverBrowserTooltips.hide();
+            serverBrowserTooltips.disable();
             if (!this.squadServersBrowser) {
                 this.squadServersBrowser = new SquadServersBrowser();
                 this.squadServersBrowser.init();
@@ -509,7 +510,11 @@ export default class SquadCalc {
 
             // Focus search input at the end
             const searchInput = document.getElementById("serverSearch");
-            if (searchInput) searchInput.focus(); 
+            if (searchInput) searchInput.focus();
+        });
+
+        serversInformation.addEventListener("close", () => {
+            setTimeout(() => serverBrowserTooltips.enable(), 50);
         });
           
         window.addEventListener("drop", e => {
