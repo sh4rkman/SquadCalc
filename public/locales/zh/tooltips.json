@@ -80,5 +80,6 @@
     "serverBrowser": "Squad 服务器浏览器",
     "quitDrawingMode": "停止绘制",
     "escape": "Esc",
-    "serverNotFound": "未找到服务器或服务器为空"
+    "serverNotFound": "未找到服务器或服务器为空",
+    "legacyMode": "切换到简单模式"
 }

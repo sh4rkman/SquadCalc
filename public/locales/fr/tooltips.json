@@ -80,5 +80,6 @@
     "serverBrowser": "Navigateur de serveurs Squad",
     "quitDrawingMode": "Arrêter le dessin",
     "escape": "Échap",
-    "serverNotFound": "Serveur introuvable ou vide"
+    "serverNotFound": "Serveur introuvable ou vide",
+    "legacyMode": "Passer en mode simple"
 }

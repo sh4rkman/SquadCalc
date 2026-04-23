@@ -80,5 +80,6 @@
     "serverBrowser": "Squad-Server-Browser",
     "quitDrawingMode": "Zeichnen beenden",
     "escape": "Esc",
-    "serverNotFound": "Server nicht gefunden oder leer"
+    "serverNotFound": "Server nicht gefunden oder leer",
+    "legacyMode": "Zum einfachen Modus wechseln"
 }

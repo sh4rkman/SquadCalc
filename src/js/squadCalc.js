@@ -629,7 +629,6 @@ export default class SquadCalc {
 
             $("#mapLayerMenu").find("button.btn-focus").on("click", () => {
                 $("header").hide();
-                $("footer").hide();
                 $("#background").hide();
                 $("#mapLayerMenu").hide();
                 this.openToast("success", "focusMode", "enterToExit");
@@ -647,7 +646,6 @@ export default class SquadCalc {
                 if (event.key === "Enter") {
                     if ($("header").is(":hidden")) { // Quit focus mode
                         $("header").show();
-                        $("footer").show();
                         $("#mapLayerMenu").show();
                         $("#background").show();
                         if (this.minimap.layer && this.userSettings.enableFactions) {
@@ -656,7 +654,6 @@ export default class SquadCalc {
                         closeToast();
                     } else {
                         $("header").hide();
-                        $("footer").hide();
                         $("#background").hide();
                         $("#mapLayerMenu").hide();
                         $("#factionsButton").hide();

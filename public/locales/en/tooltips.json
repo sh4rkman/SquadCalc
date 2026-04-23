@@ -80,5 +80,6 @@
     "serverBrowser": "Squad Servers Browser",
     "quitDrawingMode": "Stop Drawing",
     "escape": "Escape",
-    "serverNotFound": "Server not found or empty"
+    "serverNotFound": "Server not found or empty",
+    "legacyMode": "Switch to simple mode"
 }

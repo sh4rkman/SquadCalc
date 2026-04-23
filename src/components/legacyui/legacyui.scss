@@ -126,6 +126,57 @@
     }
 }
 
+#footerButtons {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: center;
+    gap: 0.7em;
+    z-index: 10;
+    padding: 0.5em 0.5em calc(0.5em);
+    border-radius: 40px 40px 0;
+    pointer-events: none;
+}
+
+.fabs {
+    height: 2.5rem;
+    width: 2.5rem;
+    position: relative;
+    input {
+        display: none;
+    }
+    .fab {
+        background: #333;
+        border-radius: 50%;
+        height: 2.5rem;
+        width: 2.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        z-index: 1;
+        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+        transition: transform 0.2s ease, background-color 0.4s ease;
+        cursor: pointer;
+        pointer-events: all;
+        &:active {
+            transform: scale(0.85);
+        }
+        &:hover {
+            background: variables.$mainColor;
+            transform: scale(1.1);
+        }
+        svg {
+            fill: white;
+            height: 1em;
+            width: 1em;
+            transition: transform 0.3s ease;
+        }
+    }
+}
+
 .leader-line {
     z-index: -1;
 }

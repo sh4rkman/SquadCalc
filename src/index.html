@@ -60,8 +60,18 @@
             <!-- CONTEXTMENU -->
             <%= require('html-loader!./components/contextMenu/contextMenu.html').default %>
 
-            <!-- FOOTER / TOASTS -->
-            <%= require('html-loader!./components/footer/footer.html').default %>
+            <!-- TOAST -->
+            <section id="toast" class="info">
+                <div id="icon-wrapper">
+                    <div id="icon"></div>
+                </div>
+                <div id="toast-message">
+                    <h4 data-i18n=""></h4>
+                    <p data-i18n=""></p>
+                </div>
+                <button id="toast-close" aria-label="Close Toast Message"></button>
+                <div id="timer"></div>
+            </section>
 
         </body>
 

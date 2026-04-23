@@ -80,5 +80,6 @@
     "serverBrowser": "Браузер серверов Squad",
     "quitDrawingMode": "Остановить рисование",
     "escape": "Esc",
-    "serverNotFound": "Сервер не найден или пуст"
+    "serverNotFound": "Сервер не найден или пуст",
+    "legacyMode": "Переключиться в простой режим"
 }

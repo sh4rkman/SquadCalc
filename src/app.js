@@ -8,8 +8,6 @@ import "leaflet/dist/leaflet.css";
 
 // Local styles
 import "./components/header/header.scss";
-import "./components/footer/footer.scss";
-
 import "./components/map/map.scss";
 import "./components/map/mapFactionCtxMenu.scss";
 import "./components/map/mapObjectives.scss";
