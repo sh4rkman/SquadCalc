@@ -678,8 +678,8 @@ export default class SquadFactions {
         
         this.FACTION1_SELECTOR.off("change").on("change", (event) => {
             // Reset UI
-            $("#team1Vehicles").empty();
-            $("#team1CommanderAsset").empty();
+            // $("#team1Vehicles").empty();
+            // $("#team1CommanderAsset").empty();
             this.setBarFlag("#factionBarFlag1", event.target.value);
             if ( $("#team1PinButton").hasClass("active") ) this.unpinUnit();
 
@@ -739,6 +739,9 @@ export default class SquadFactions {
 
             // Reset UI
             $("#team1Vehicles").empty();
+            $("#team1CommanderAsset").empty();
+            $("#team1Characteristics").empty();
+
             if ($("#team1PinButton").hasClass("active")) this.unpinUnit();
             this.setBarUnit("#factionBarUnit1", this.UNIT1_SELECTOR.find("option:selected").data("icon"));
 
@@ -802,6 +805,7 @@ export default class SquadFactions {
             // Empty the vehicles container
             teamFactionDiv.empty();
             $("#team2CommanderAsset").empty();
+            $("#team2Characteristics").empty();
 
             if ( $("#team2PinButton").hasClass("active") ) this.unpinUnit();
             this.setBarUnit("#factionBarUnit2", this.UNIT2_SELECTOR.find("option:selected").data("icon"));
