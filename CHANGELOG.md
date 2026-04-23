@@ -7,9 +7,8 @@
 
 </br><img src="https://img.shields.io/badge/-%20improv%20-orange"> 
 - Vehicle emplacements that disappear will now prioritise vehicles that don't respawn, like in game.
-- Moved legacy button into the menu, bottom-right button is now fully dedicated to settings (thanks Madlifer!)
+- Moved legacy button into the menu (thanks Madlifer!)
 - Map buttons are now dark themed
-
 - Added `color-scheme: dark` to prevent browsers from forcing their own dark mode override on the app
 
 

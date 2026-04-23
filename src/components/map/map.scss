@@ -63,8 +63,8 @@
 
 #map_ui {
     position: relative;
-    height: 100vh; 
-    width: 100vw; 
+    height: calc(100vh - env(safe-area-inset-bottom, 0px));
+    width: 100vw;
     #map {
         height: 100%;
         width: 100%;
