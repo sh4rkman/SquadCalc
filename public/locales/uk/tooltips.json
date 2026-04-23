@@ -80,5 +80,6 @@
     "quitDrawingMode": "Зупинити малювання",
     "escape": "Esc",
     "serverNotFound": "Сервер не найден или пуст",
-    "legacyMode": "Перейти до простого режиму"
+    "legacyMode": "Перейти до простого режиму",
+    "settings": "Налаштування"
 }

@@ -17,6 +17,7 @@
 - Fixed session links sometimes not working when opening them in a new tab (fix [#458](https://github.com/sh4rkman/SquadCalc/issues/458))
 - Fixed a caching bug that displayed the old version after each update
 - Fixed unit characteristics not hiding when removing a faction entirely
+- Fixed the server browser tooltip staying open after closing the server list
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
 

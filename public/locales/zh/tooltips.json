@@ -81,5 +81,6 @@
     "quitDrawingMode": "停止绘制",
     "escape": "Esc",
     "serverNotFound": "未找到服务器或服务器为空",
-    "legacyMode": "切换到简单模式"
+    "legacyMode": "切换到简单模式",
+    "settings": "设置"
 }

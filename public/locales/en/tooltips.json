@@ -81,5 +81,6 @@
     "quitDrawingMode": "Stop Drawing",
     "escape": "Escape",
     "serverNotFound": "Server not found or empty",
-    "legacyMode": "Switch to simple mode"
+    "legacyMode": "Switch to simple mode",
+    "settings": "Settings"
 }

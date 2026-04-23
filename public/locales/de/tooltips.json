@@ -81,5 +81,6 @@
     "quitDrawingMode": "Zeichnen beenden",
     "escape": "Esc",
     "serverNotFound": "Server nicht gefunden oder leer",
-    "legacyMode": "Zum einfachen Modus wechseln"
+    "legacyMode": "Zum einfachen Modus wechseln",
+    "settings": "Einstellungen"
 }
