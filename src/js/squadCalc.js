@@ -15,7 +15,7 @@ import SquadSettings from "./squadSettings.js";
 import packageInfo from "../../package.json";
 import i18next from "i18next";
 import SquadLayer from "./squadLayer.js";
-import { serverBrowserTooltips } from "./tooltips.js";
+import { serverBrowserTooltips, settingsTooltips } from "./tooltips.js";
 import { MapDrawing, MapArrow, MapCircle, MapRectangle } from "./squadShapes.js";
 
 
@@ -516,6 +516,10 @@ export default class SquadCalc {
         serversInformation.addEventListener("close", () => {
             setTimeout(() => serverBrowserTooltips.enable(), 50);
         });
+
+        helpDialog.addEventListener("close", () => {
+            setTimeout(() => settingsTooltips.enable(), 50);
+        });
           
         window.addEventListener("drop", e => {
             e.preventDefault();
@@ -555,7 +559,11 @@ export default class SquadCalc {
             $("#factionsButton").toggleClass("collapsed");
         });
         $("#factionsButton button.btn-faction").on("click", () => { $("#factionsDialog")[0].showModal(); });
-        $(".btn-settings").on("click", () => { helpDialog.showModal(); });
+        $(".btn-settings").on("click", () => {
+            settingsTooltips.hide();
+            settingsTooltips.disable();
+            helpDialog.showModal();
+        });
 
         $("#mapLayerMenu").find("button.btn-session").on("click", () => {
             if ($(".btn-session").hasClass("active")) {

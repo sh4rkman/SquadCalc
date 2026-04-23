@@ -278,13 +278,13 @@ tippy(".btn-legacy", {
         tip.setContent(i18next.t("tooltips:legacyMode"));
     },
 });
-tippy(".btn-settings", {
+export const settingsTooltips = tippy(".btn-settings", {
     ...commonMapMenuToolipsSettings,
     placement: "left",
     onShow(tip) {
         tip.setContent(i18next.t("tooltips:settings"));
     },
-});
+})[0];
 tippy(".btn-helpmap", {
     ...commonMapMenuToolipsSettings,
     onShow(tip) {
