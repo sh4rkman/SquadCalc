@@ -33,6 +33,7 @@ export default class SquadFactions {
         const name = val ? i18next.t(val, { ns: "factions" }) : "?";
         $(id).html(`
             <img src="${src}" alt="${name}"/>
+            <label class="factionBarFlagName">${name}</label>
         `);
     }
 
@@ -386,14 +387,11 @@ export default class SquadFactions {
         const $card = $(event.currentTarget);
         const $image = $card.find(".image");
 
-        // Check if card is currently expanded (image is visible)
         const isExpanded = $image.is(":visible");
 
         if (isExpanded) {
-            // Card is expanded, collapse it
             $card.removeClass("selected");
         } else {
-            // Card is collapsed, expand it
             $card.addClass("selected");
         }
     }

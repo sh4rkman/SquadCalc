@@ -174,17 +174,19 @@ export default class SquadSettings {
                 key: "settings-enable-factions",
                 default: true,
                 selector: "#enableFactionsSettings",
-                controls: ["#hideLowRespawnSettings", "#disableSoundsSettings", "#defaultFactionsSettings"],
+                controls: ["#hideLowRespawnSettings", "#disableSoundsSettings", "#defaultFactionsSettings", "#minimizeFactionBarSettings"],
                 onChange: (val) => {
                     if (!val) {
                         $("#factionsTab, #factionsButton").hide();
                         $("#hideLowRespawnSettings").prop("disabled", true);
                         $("#disableSoundsSettings").prop("disabled", true);
                         $("#defaultFactionsSettings").prop("disabled", true);
+                        $("#minimizeFactionBarSettings").prop("disabled", true);
                     } else {
                         $("#hideLowRespawnSettings").prop("disabled", false);
                         $("#disableSoundsSettings").prop("disabled", false);
                         $("#defaultFactionsSettings").prop("disabled", false);
+                        $("#minimizeFactionBarSettings").prop("disabled", false);
                         if (this.app.minimap.layer) {
                             this.app.minimap.layer.factions = new SquadFactions(this.app.minimap.layer);
                             $("#factionsTab, #factionsButton").show();
@@ -201,6 +203,17 @@ export default class SquadSettings {
                 key: "settings-disable-sounds",
                 default: false,
                 selector: "#disableSoundsSettings"
+            },
+            minimizeFactionBar: {
+                key: "settings-minimize-factionbar",
+                default: false,
+                selector: "#minimizeFactionBarSettings",
+                onLoad: (val) => {
+                    $("#factionsButton").toggleClass("collapsed", val);
+                },
+                onChange: (val) => {
+                    $("#factionsButton").toggleClass("collapsed", val);
+                }
             },
             hideLowRespawn: {
                 key: "settings-hide-lowrespawn",
@@ -631,6 +644,7 @@ export default class SquadSettings {
             $("#hideLowRespawnSettings").prop("disabled", true);
             $("#disableSoundsSettings").prop("disabled", true);
             $("#defaultFactionsSettings").prop("disabled", true);
+            $("#minimizeFactionBarSettings").prop("disabled", true);
         }
 
         // Hide factions if disabled via environment

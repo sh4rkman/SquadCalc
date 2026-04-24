@@ -48,6 +48,7 @@
         "enableFactions": "Activer les factions",
         "hideLowRespawn": "Suivre uniquement les véhicules avec un long temps de respawn",
         "disableSounds": "Désactiver les sons de notification de respawn",
+        "minimizeFactionBar": "Réduire la barre de factions par défaut",
     "shortcuts": "Raccourcis",
         "enter": "Entrer en mode focus, masquant les boutons de l'interface utilisateur",
         "deleteLastTarget": "Supprimer la dernière cible placée sur la carte",

@@ -70,6 +70,7 @@
     "enableFactionsTooltip": "Nach Auswahl einer Ebene Fraktionen und Fahrzeuge aktivieren",
     "defaultFactionsTooltip": "Nach Auswahl einer Ebene die Standardfraktionen vorauswählen",
     "hideLowRespawnTooltip": "Beim Anheften einer Fraktion auf der Karte nur Fahrzeuge mit einer Respawn-Zeit von 10 Minuten oder mehr anzeigen",
+    "minimizeFactionBarTooltip": "Fraktionsleiste beim Start minimiert anzeigen — zum Aufklappen auf den Pfeil klicken",
     "vehicleTimerTooltip": "Klicken Sie auf ein Fahrzeug, um es als zerstört zu markieren und einen Respawn-Timer zu starten",
     "showMainAssetsTooltip": "Reparaturstationen, Munitionskisten und andere Hauptressourcen auf der Karte anzeigen",
     "showMainZonesTooltip": "Schutz- und Deploy-Verbotszonen für jede Hauptbasis anzeigen",

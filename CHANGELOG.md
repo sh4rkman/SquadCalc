@@ -4,6 +4,7 @@
 - Each team's factions and units are now stored in the URL (thanks Hans Wurst!)
 - Added a button to upload a saved file (thanks d503-ai !)
 - Reworked the faction button to show current factions & units
+- Added a setting to minimize the faction bar by default
 
 </br><img src="https://img.shields.io/badge/-%20improv%20-orange"> 
 - Vehicle emplacements that disappear will now prioritise vehicles that don't respawn, as in-game.

@@ -38,6 +38,7 @@
         "enableFactions": "启用阵营",
         "hideLowRespawn": "仅跟踪高重生时间的载具",
         "disableSounds": "禁用重生通知音效",
+        "minimizeFactionBar": "默认最小化阵营栏",
     "LaneFinderOptions": "猜点选项",
         "capZoneOnHover": "仅在鼠标悬停时显示可拉点区域",
         "revealLayerOnHover": "隐藏互斥点位",

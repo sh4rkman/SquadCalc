@@ -49,6 +49,7 @@
         "enableFactions": "Enable Factions",
         "hideLowRespawn": "Only Track High Respawn Times Vehicles",
         "disableSounds": "Disable Respawn Notification Sounds",
+        "minimizeFactionBar": "Minimize Faction Bar by Default",
     "shortcuts": "Shortcuts",
         "enter": "Enter focus mode, hiding UI buttons",
         "deleteLastTarget": "Delete last placed target on the map",

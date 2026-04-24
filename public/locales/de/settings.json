@@ -49,6 +49,7 @@
         "enableFactions": "Fraktionen aktivieren",
         "hideLowRespawn": "Nur Fahrzeuge mit hoher Respawn-Zeit verfolgen",
         "disableSounds": "Respawn-Benachrichtigungstöne deaktivieren",
+        "minimizeFactionBar": "Fraktionsleiste standardmäßig minimieren",
     "shortcuts": "Tastenkürzel",
         "enter": "Fokusmodus aktivieren, UI-Schaltflächen ausblenden",
         "deleteLastTarget": "Zuletzt platziertes Ziel auf der Karte löschen",

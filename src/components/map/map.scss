@@ -449,68 +449,75 @@ $toastDistanceFromBottom: 40px;
 }
 
 @keyframes countdown {
-    from { width: 100%; }
-    to   { width: 0%; }
+    from { 
+        width: 100%; 
+    }
+    to { 
+        width: 0%; 
+    }
 }
 
 .success {
     --primary: #2DD743;
     --secondary: #E3FEE6;
+    #icon { 
+        transform: rotate(-45deg); 
+    }
+    #icon::before {
+        width: 10px;
+        height: 3px;
+        transform: translate(calc(-50% + 1px), calc(-50% + 1px));
+    }
+    #icon::after {
+        width: 3px;
+        height: 6px;
+        transform: translate(calc(-50% - 3px), calc(-50% - 1px));
+    }
 }
-.success #icon { transform: rotate(-45deg); }
-.success #icon::before {
-    width: 10px;
-    height: 3px;
-    transform: translate(calc(-50% + 1px), calc(-50% + 1px));
-}
-.success #icon::after {
-    width: 3px;
-    height: 6px;
-    transform: translate(calc(-50% - 3px), calc(-50% - 1px));
-}
+
 
 .warning {
     --primary: #F29208;
     --secondary: #FFEEDF;
-}
-.warning #icon::before {
-    width: 3px;
-    height: 3px;
-    transform: translate(-50%, calc(-50% + 4px));
-}
-.warning #icon::after {
-    width: 3px;
-    height: 7px;
-    transform: translate(-50%, calc(-50% - 2px));
+    #icon::before {
+        width: 3px;
+        height: 3px;
+        transform: translate(-50%, calc(-50% + 4px));
+    }
+    #icon::after {
+        width: 3px;
+        height: 7px;
+        transform: translate(-50%, calc(-50% - 2px));
+    }
 }
 
 .error {
     --primary: #E63435;
     --secondary: #FFEAEC;
+    #icon::before {
+        width: 3px;
+        height: 3px;
+        transform: translate(-50%, calc(-50% + 4px));
+    }
+    #icon::after {
+        width: 3px;
+        height: 7px;
+        transform: translate(-50%, calc(-50% - 2px));
+    }
 }
-.error #icon::before {
-    width: 3px;
-    height: 3px;
-    transform: translate(-50%, calc(-50% + 4px));
-}
-.error #icon::after {
-    width: 3px;
-    height: 7px;
-    transform: translate(-50%, calc(-50% - 2px));
-}
+
 
 .info {
     --primary: #42C0F2;
     --secondary: #CFEFFC;
+    #icon::before {
+        width: 3px;
+        height: 7px;
+        transform: translate(-50%, calc(-50% + 2px));
+    }
+    #icon::after {
+        width: 3px;
+        height: 3px;
+        transform: translate(-50%, calc(-50% - 4px));
+    }
 }
-.info #icon::before {
-    width: 3px;
-    height: 7px;
-    transform: translate(-50%, calc(-50% + 2px));
-}
-.info #icon::after {
-    width: 3px;
-    height: 3px;
-    transform: translate(-50%, calc(-50% - 4px));
-}
-
