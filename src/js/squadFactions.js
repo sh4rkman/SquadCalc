@@ -156,7 +156,7 @@ export default class SquadFactions {
                 if (vehicle.spawnerSize === "Boat" && !boatsAvailable) return;
 
                 $("#pinnedVehiclesTab").append(`
-                    <div class="pinnedVehicles animate__animated animate__fadeInLeft" data-vehiclename="${vehicle.type}" data-vehtype="${vehicle.vehType}" c data-respawntime="${vehicle.respawnTime}">
+                    <div class="pinnedVehicles animate__animated animate__fadeInLeft" data-vehiclename="${vehicle.type}" data-vehtype="${vehicle.vehType}" data-vehicon="${vehicle.icon}" data-respawntime="${vehicle.respawnTime}">
                         <button type="button" class="btn-pined" aria-label="Select Factions">
                             <img src="/img/icons/default/vehicles/${vehicle.icon}.svg" alt="Faction Icon"/>
                         </button>
@@ -245,7 +245,7 @@ export default class SquadFactions {
 
             if (!App.userSettings.disableSounds) {
                 const LANG = localStorage.getItem("settings-language");
-                new Audio(`/sounds/${LANG}/${vehIcon}.mp3`).play();  
+                new Audio(`/sounds/${LANG}/${vehIcon}.mp3`).play();
             }
             
         };
