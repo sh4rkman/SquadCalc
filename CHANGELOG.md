@@ -12,6 +12,7 @@
   - Reworked the faction button to show current factions & units
   - Added a setting to minimize the faction bar by default
   - Moved legacy button into the Map Buttons (thanks Madlifer!)
+  - Added a shortcut (`CTRL` + `M`) to switch from Map to Legacy mode
   - Map buttons are now dark-themed
   - Added tooltips for settings and legacy ui buttons
   - Added `color-scheme: dark` to prevent browsers from forcing their own dark mode override on the app

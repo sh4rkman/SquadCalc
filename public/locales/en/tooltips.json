@@ -83,6 +83,7 @@
     "escape": "Escape",
     "serverNotFound": "Server not found or empty",
     "legacyMode": "Switch to simple mode",
+    "returnToMap": "Switch to map mode",
     "settings": "Settings",
     "openFactionSelection": "Click to open faction selection"
 }

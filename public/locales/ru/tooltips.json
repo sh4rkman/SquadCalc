@@ -83,6 +83,7 @@
     "escape": "Esc",
     "serverNotFound": "Сервер не найден или пуст",
     "legacyMode": "Переключиться в простой режим",
+    "returnToMap": "Переключиться в режим карты",
     "settings": "Настройки",
     "openFactionSelection": "Нажмите для открытия выбора фракции"
 }

@@ -83,6 +83,7 @@
     "escape": "Esc",
     "serverNotFound": "Server nicht gefunden oder leer",
     "legacyMode": "Zum einfachen Modus wechseln",
+    "returnToMap": "Zur Kartenansicht wechseln",
     "settings": "Einstellungen",
     "openFactionSelection": "Klicken um die Fraktionsauswahl zu öffnen"
 }

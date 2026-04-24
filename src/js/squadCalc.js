@@ -861,6 +861,7 @@ export default class SquadCalc {
         $("#classic_ui").removeClass("hidden");
         $("header").removeClass("ui");
         $("#mapLayerMenu").hide();
+        $("#layerSelector").hide();
         this.ui = 0;
         localStorage.setItem("data-ui", 0);
 
@@ -882,6 +883,7 @@ export default class SquadCalc {
         $("#map_ui").removeClass("hidden");
         $("header").addClass("ui");
         $("#mapLayerMenu").show();
+        if (this.LAYER_SELECTOR.find("option").length > 1) $("#layerSelector").show();
         this.ui = 1;
         localStorage.setItem("data-ui", 1);
         this.minimap.invalidateSize();

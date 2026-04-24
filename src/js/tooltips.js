@@ -281,6 +281,17 @@ tippy(".btn-legacy", {
         );
     },
 });
+tippy(".returnBtn", {
+    ...commonMapMenuToolipsSettings,
+    placement: "left",
+    offset: [0, 15],
+    onShow(tip) {
+        tip.setContent(
+            `<div>${i18next.t("tooltips:returnToMap")}</div>
+            <div class="tooltipsubtext">CTRL+M</div>`
+        );
+    },
+});
 export const settingsTooltips = tippy(".btn-settings", {
     ...commonMapMenuToolipsSettings,
     placement: "left",

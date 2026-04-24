@@ -536,7 +536,7 @@ export default class SquadSettings {
     loadSliders() {
         Object.entries(this.sliderDefinitions).forEach(([name, def]) => {
             const stored = localStorage.getItem(def.key);
-            
+
             if (stored === null || isNaN(stored) || stored === "") {
                 localStorage.setItem(def.key, def.default);
                 this[name] = def.default;
