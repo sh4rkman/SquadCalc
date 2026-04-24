@@ -275,7 +275,10 @@ tippy(".btn-hd", {
 tippy(".btn-legacy", {
     ...commonMapMenuToolipsSettings,
     onShow(tip) {
-        tip.setContent(i18next.t("tooltips:legacyMode"));
+        tip.setContent(
+            `<div>${i18next.t("tooltips:legacyMode")}</div>
+            <div class="tooltipsubtext">CTRL+M</div>`
+        );
     },
 });
 export const settingsTooltips = tippy(".btn-settings", {

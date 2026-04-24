@@ -649,7 +649,13 @@ export default class SquadCalc {
 
             $(document).on("keydown", (event) => {
 
-                // Disable Shortkeys in legacy mode
+                // Disable Shortkeys when typing in an input
+                if ($(event.target).is("input, textarea, select")) return;
+
+                // CTRL+M = TOGGLE LEGACY MODE (works in both UI modes)
+                if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "m") { event.preventDefault(); this.switchUI(); return; }
+
+                // Disable remaining Shortkeys in legacy mode
                 if (this.ui == 0) return;
 
                 // Disable Shortkeys when currently in a dialog
