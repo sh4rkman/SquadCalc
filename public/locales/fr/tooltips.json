@@ -83,5 +83,6 @@
     "escape": "Échap",
     "serverNotFound": "Serveur introuvable ou vide",
     "legacyMode": "Passer en mode simple",
-    "settings": "Paramètres"
+    "settings": "Paramètres",
+    "openFactionSelection": "Cliquer pour ouvrir la sélection de faction"
 }

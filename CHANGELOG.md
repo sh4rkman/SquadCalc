@@ -3,23 +3,28 @@
 </br><img src="https://img.shields.io/badge/-new%20features-green">
 - Each team's factions and units are now stored in the URL (thanks Hans Wurst!)
 - Added a button to upload a saved file (thanks d503-ai !)
-- Reworked the faction button to show current factions & units
-- Added a setting to minimize the faction bar by default
+
+- Added SquadCalc and Squad Data version in the Settings dialog
 
 </br><img src="https://img.shields.io/badge/-%20improv%20-orange"> 
 - Vehicle emplacements that disappear will now prioritise vehicles that don't respawn, as in-game.
-- Moved legacy button into the menu (thanks Madlifer!)
-- Map buttons are now dark-themed
-- Added `color-scheme: dark` to prevent browsers from forcing their own dark mode override on the app
+- UI General Overhaul
+  - Reworked the faction button to show current factions & units
+  - Added a setting to minimize the faction bar by default
+  - Moved legacy button into the Map Buttons (thanks Madlifer!)
+  - Map buttons are now dark-themed
+  - Added tooltips for settings and legacy ui buttons
+  - Added `color-scheme: dark` to prevent browsers from forcing their own dark mode override on the app
 
 
 </br><img src="https://img.shields.io/badge/-bug%20fixes-b22">  
 - Fixed Server Syncing not working when joining a server from a URL (fix [#459](https://github.com/sh4rkman/SquadCalc/issues/459))
 - Fixed session links sometimes not working when opening them in a new tab (fix [#458](https://github.com/sh4rkman/SquadCalc/issues/458))
-- Fixed a caching bug that displayed the old version after each update
 - Fixed unit characteristics not hiding when removing a faction entirely
 - Fixed the server browser tooltip staying open after closing the server list
 - Fixed FV107 missing icon
+- Fixed vehicle respawn alerts sound not playing
+- Fix attempt at caching bug that displayed the old version after each update
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
 

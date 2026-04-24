@@ -83,5 +83,6 @@
     "escape": "Esc",
     "serverNotFound": "Server nicht gefunden oder leer",
     "legacyMode": "Zum einfachen Modus wechseln",
-    "settings": "Einstellungen"
+    "settings": "Einstellungen",
+    "openFactionSelection": "Klicken um die Fraktionsauswahl zu öffnen"
 }

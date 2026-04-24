@@ -9,9 +9,6 @@
     }
 }
 
-
-
-
 .mapLayerMenuWrapper {
     position: relative; 
     display: flex;
@@ -173,15 +170,25 @@
                 z-index: 2;
             }
         }
+        .factionBar-hint {
+            font-size: 0.75em;
+            color: #aaa;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            max-height: 0;
+            overflow: hidden;
+            opacity: 0;
+            transition: opacity 0.2s ease, max-height 0.25s ease, padding 0.25s ease;
+        }
         .factionBarUnit {
             display: flex;
             align-items: center;
             justify-content: center;
             height: 32px;
-            width: 0;
+            width: 32px;
             overflow: hidden;
-            opacity: 0;
-            margin: 0;
+            opacity: 1;
+            margin: 0 0.4em;
             transition: width 0.3s ease-out, margin 0.3s ease-out, opacity 0.25s ease, transform 0.3s ease-out;
             img {
                 min-width: 32px;
@@ -192,10 +199,10 @@
             }
         }
         #factionBarUnit1 {
-            transform: translateX(-16px);
+            transform: translateX(0);
         }
         #factionBarUnit2 {
-            transform: translateX(16px);
+            transform: translateX(0);
         }
         #factionBarUnit2 img {
             transform: scaleX(-1);
@@ -218,12 +225,10 @@
             .factionBarFlagName {
                 opacity: 1;
             }
-            #factionBarUnit1,
-            #factionBarUnit2 {
-                width: 32px;
+            .factionBar-hint {
                 opacity: 1;
-                transform: translateX(0);
-                margin: 0 0.4em;
+                max-height: 3em;
+                padding: 0.6em 1em 0;
             }
             .factionBarFlag::before {
                 animation: flag-shimmer 0.55s ease-in-out;
@@ -281,7 +286,8 @@
         white-space: nowrap;
         box-shadow: 0 4px 4px rgba(0,0,0,0.25);
         backdrop-filter: blur(6px);
-        background: rgba(26, 26, 26, 0.6);
+        background: rgba(17, 17, 17, 0.75);
+        border: rgba(255, 255, 255, 0.08) solid 1px;
         &:active,
         &.active {
             background: linear-gradient(135deg, variables.$mainColor, variables.$mainColor);

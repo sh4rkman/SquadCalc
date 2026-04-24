@@ -83,5 +83,6 @@
     "escape": "Esc",
     "serverNotFound": "未找到服务器或服务器为空",
     "legacyMode": "切换到简单模式",
-    "settings": "设置"
+    "settings": "设置",
+    "openFactionSelection": "点击打开派系选择"
 }

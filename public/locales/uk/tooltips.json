@@ -82,5 +82,6 @@
     "escape": "Esc",
     "serverNotFound": "Сервер не найден или пуст",
     "legacyMode": "Перейти до простого режиму",
-    "settings": "Налаштування"
+    "settings": "Налаштування",
+    "openFactionSelection": "Натисніть, щоб відкрити вибір фракції"
 }
