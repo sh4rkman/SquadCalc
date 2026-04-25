@@ -680,7 +680,7 @@ export default class SquadFactions {
         if (val) {
             btn.innerHTML = `<img src="/img/flags/${val}.webp" onerror="this.onerror=null; this.src='/img/flags/unknown.webp';"/><span class="picker-label">${label}</span>`;
         } else {
-            btn.innerHTML = `<img src="/img/flags/unknown.webp"/>`;
+            btn.innerHTML = "<img src=\"/img/flags/unknown.webp\"/>";
         }
     }
 
@@ -698,7 +698,7 @@ export default class SquadFactions {
         if (factionVal && unitVal && icon) {
             btn.innerHTML = `<img src="/img/units/${icon}.webp" onerror="this.onerror=null; this.src='/img/units/placeholder.webp';"/>`;
         } else if (factionVal) {
-            btn.innerHTML = `<img src="/img/units/placeholder.webp"/>`;
+            btn.innerHTML = "<img src=\"/img/units/placeholder.webp\"/>";
         } else {
             btn.innerHTML = "";
         }

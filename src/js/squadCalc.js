@@ -924,10 +924,11 @@ export default class SquadCalc {
     show(){
         document.body.style.visibility = "visible";
         setTimeout(function() {
-            $("#loaderLogo").fadeOut("slow", function() {
-                $("#loader").fadeOut("fast");
-            });
-        }, 1300);
+            const logo = document.getElementById("loaderLogo");
+            logo.classList.remove("logo-stamp");
+            logo.classList.add("logo-stamp-out");
+            $("#loader").fadeOut(500);
+        }, 1800);
     }
 
     /**
