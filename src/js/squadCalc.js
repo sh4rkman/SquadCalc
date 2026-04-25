@@ -520,11 +520,14 @@ export default class SquadCalc {
 
 
     loadUI(){
-        const calcInformation = document.querySelector("#calcInformation");
-        const weaponInformation = document.querySelector("#weaponInformation");
-        const helpDialog = document.querySelector("#helpDialog");
-        const factionsDialog = document.querySelector("#factionsDialog");
-        const serversInformation = document.querySelector("#serversInformation");
+        this._dialogs = {
+            calc:    document.querySelector("#calcInformation"),
+            weapon:  document.querySelector("#weaponInformation"),
+            help:    document.querySelector("#helpDialog"),
+            factions:document.querySelector("#factionsDialog"),
+            servers: document.querySelector("#serversInformation"),
+        };
+        const { calc: calcInformation, weapon: weaponInformation, help: helpDialog, factions: factionsDialog, servers: serversInformation } = this._dialogs;
 
         $(".btn-delete, .btn-undo, .btn-layer, .returnBtn, #mapLayerMenu").hide();
 
@@ -735,103 +738,14 @@ export default class SquadCalc {
                 this.openToast("success", "focusMode", "enterToExit");
             });
 
-            $(document).on("keydown", (event) => {
-
-                // Disable Shortkeys when typing in an input
-                if ($(event.target).is("input, textarea, select")) return;
-
-                // CTRL+M = TOGGLE LEGACY MODE (works in both UI modes)
-                if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "m") { event.preventDefault(); this.switchUI(); return; }
-
-                // Disable remaining Shortkeys in legacy mode
-                if (this.ui == 0) return;
-
-                // Disable Shortkeys when currently in a dialog
-                if (weaponInformation.open || calcInformation.open || helpDialog.open || factionsDialog.open || serversInformation.open) return;
-
-                // ENTER = FOCUS MODE
-                if (event.key === "Enter") {
-                    if ($("header").is(":hidden")) { // Quit focus mode
-                        $("header").show();
-                        $("#mapLayerMenu").show();
-                        $("#background").show();
-                        if (this.minimap.layer && this.userSettings.enableFactions) {
-                            $("#factionsButton").show();
-                        }
-                        closeToast();
-                    } else {
-                        $("header").hide();
-                        $("#background").hide();
-                        $("#mapLayerMenu").hide();
-                        $("#factionsButton").hide();
-                        this.openToast("success", "focusMode", "enterToExit");
-                    }
-                }
-
-                // DELETE = REMOVE ALL MARKERS
-                if (event.key === "Delete") {
-                    if (this.minimap.history.length > 0) {
-                        this.minimap.history.forEach((item) => {
-                            item.delete();
-                        });
-                    }
-                }
-
-                // BACKSPACE / CTRL+Z = REMOVE LAST CREATED TARGET MARKER
-                if (event.key === "Backspace" ||(event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "z") {
-                    event.preventDefault();
-                    if (this.minimap.history.length > 0) this.minimap.history.at(-1).delete();
-                }
-
-                // CTRL + S = SAVE CURRENT MAP TO A FILE
-                if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "s") {
-                    event.preventDefault();
-                    if (this.minimap.hasMarkers()) this.saveMapStateToFile();
-                }
-
-                // ESCAPE = QUIT DRAWING MODE
-                if (event.key === "Escape") { this.minimap.disableDrawingMode(); }
-
-            });
+            $(document).on("keydown", (event) => this.handleKeydown(event));
 
 
         } else {
             $(".btn-focus").hide();
         }
 
-        let countdown;
-
-        const closeToast = () => {
-            const toast = document.querySelector("#toast");
-            if (!toast) return;
-            toast.style.animation = "close 0.3s cubic-bezier(.87,-1,.57,.97) forwards";
-            document.querySelector("#timer").classList.remove("timer-animation");
-            clearTimeout(countdown);
-        };
-        
-        this.openToast = (type, title, text) => {
-            const toast = document.querySelector("#toast");
-            clearTimeout(countdown);
-        
-            // Reset timer animation by forcing reflow
-            const timer = document.querySelector("#timer");
-            timer.classList.remove("timer-animation");
-            void timer.offsetWidth; // Trigger reflow
-            timer.classList.add("timer-animation");
-        
-            toast.classList = [type];
-            toast.style.animation = "open 0.3s cubic-bezier(.47,.02,.44,2) forwards";
-        
-            toast.querySelector("h4").setAttribute("data-i18n", `tooltips:${title}`);
-            toast.querySelector("h4").innerHTML = i18next.t(`tooltips:${title}`);
-            toast.querySelector("p").setAttribute("data-i18n", `tooltips:${text}`);
-            toast.querySelector("p").innerHTML = i18next.t(`tooltips:${text}`);
-        
-            // Start a new countdown
-            countdown = setTimeout(() => {
-                closeToast();
-            }, 5000);
-        };
+        this._countdown = null;
 
         // Global click listener for toast
         document.querySelector("#toast").addEventListener("click", (event) => {
@@ -839,7 +753,7 @@ export default class SquadCalc {
             const title = toast.querySelector("h4").getAttribute("data-i18n");  // Get data-i18n attribute
             
             // close current toast
-            closeToast();
+            this.closeToast();
 
             if (title === "tooltips:sessionCreated" && event.target.tagName !== "BUTTON") {
                 const url = new URL(window.location.href);
@@ -880,6 +794,83 @@ export default class SquadCalc {
         this.show();
     }
 
+
+    closeToast() {
+        const toast = document.querySelector("#toast");
+        if (!toast) return;
+        toast.style.animation = "close 0.3s cubic-bezier(.87,-1,.57,.97) forwards";
+        document.querySelector("#timer").classList.remove("timer-animation");
+        clearTimeout(this._countdown);
+    }
+
+    openToast(type, title, text) {
+        const toast = document.querySelector("#toast");
+        clearTimeout(this._countdown);
+
+        const timer = document.querySelector("#timer");
+        timer.classList.remove("timer-animation");
+        void timer.offsetWidth;
+        timer.classList.add("timer-animation");
+
+        toast.classList = [type];
+        toast.style.animation = "open 0.3s cubic-bezier(.47,.02,.44,2) forwards";
+
+        toast.querySelector("h4").setAttribute("data-i18n", `tooltips:${title}`);
+        toast.querySelector("h4").innerHTML = i18next.t(`tooltips:${title}`);
+        toast.querySelector("p").setAttribute("data-i18n", `tooltips:${text}`);
+        toast.querySelector("p").innerHTML = i18next.t(`tooltips:${text}`);
+
+        this._countdown = setTimeout(() => { this.closeToast(); }, 5000);
+    }
+
+    toggleFocusMode() {
+        if ($("header").is(":hidden")) {
+            $("header").show();
+            $("#mapLayerMenu").show();
+            $("#background").show();
+            if (this.minimap.layer && this.userSettings.enableFactions) {
+                $("#factionsButton").show();
+            }
+            this.closeToast();
+        } else {
+            $("header").hide();
+            $("#background").hide();
+            $("#mapLayerMenu").hide();
+            $("#factionsButton").hide();
+            this.openToast("success", "focusMode", "enterToExit");
+        }
+    }
+
+    handleKeydown(event) {
+        if ($(event.target).is("input, textarea, select")) return;
+
+        if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "m") {
+            event.preventDefault(); this.switchUI(); return;
+        }
+
+        if (this.ui == 0) return;
+
+        const { calc, weapon, help, factions, servers } = this._dialogs;
+        if (weapon.open || calc.open || help.open || factions.open || servers.open) return;
+
+        if (event.key === "Enter") { this.toggleFocusMode(); }
+
+        if (event.key === "Delete") {
+            this.minimap.history.forEach((item) => { item.delete(); });
+        }
+
+        if (event.key === "Backspace" || (event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "z") {
+            event.preventDefault();
+            if (this.minimap.history.length > 0) this.minimap.history.at(-1).delete();
+        }
+
+        if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "s") {
+            event.preventDefault();
+            if (this.minimap.hasMarkers()) this.saveMapStateToFile();
+        }
+
+        if (event.key === "Escape") { this.minimap.disableDrawingMode(); }
+    }
 
     changeIconsSize(){
         this.minimap.activeMarkers.eachLayer((marker) => {
