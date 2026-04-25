@@ -75,5 +75,6 @@
     "load": "Load",
     "next": "Next",
     "playTime": "Play Time",
-    "mapSyncedwith": "Map Synced with"
+    "mapSyncedwith": "Map Synced with",
+    "favServers": "Server"
 }

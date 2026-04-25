@@ -96,27 +96,32 @@ function updateContent() {
 
     if (App.minimap.layer) App.minimap.layer.polyline.updateMeasurements();
    
+    const selectorWidth = window.matchMedia("screen and (min-width: 124em) and (min-height: 68em)").matches ? "350px" : "250px";
+
+    let layerPlaceholder = i18next.t("common:layerPlaceholder");
+    let factionPlaceholder = i18next.t("common:faction");
+    let unitPlaceholder = i18next.t("common:unit");
+
     $(".dropbtn").select2("destroy").select2({
         dropdownCssClass: "dropbtn",
         dropdownParent: $("#mapSelector"),
         minimumResultsForSearch: -1,
+        width: selectorWidth,
     });
 
     $(".dropbtn2").select2("destroy").select2({
         dropdownCssClass: "dropbtn",
         dropdownParent: $("#weaponSelector"),
         minimumResultsForSearch: -1,
+        width: selectorWidth,
     });
 
     $(".dropbtn3").select2("destroy").select2({
         dropdownCssClass: "dropbtn",
         dropdownParent: $("#ammoSelector"),
         minimumResultsForSearch: -1,
+        width: selectorWidth,
     });
-
-    let layerPlaceholder = i18next.t("common:layerPlaceholder");
-    let factionPlaceholder = i18next.t("common:faction");
-    let unitPlaceholder = i18next.t("common:unit");
 
     $(".dropbtn5").select2("destroy").select2({
         dropdownCssClass: "dropbtn",
@@ -124,6 +129,15 @@ function updateContent() {
         allowClear: true,
         placeholder: layerPlaceholder,
         minimumResultsForSearch: -1,
+        width: selectorWidth,
+    });
+
+    $(".dropbtn6").select2("destroy").select2({
+        dropdownParent: $("#serverSelector"),
+        allowClear: true,
+        placeholder: i18next.t("common:favServers"),
+        minimumResultsForSearch: Infinity,
+        width: selectorWidth,
     });
 
     if (App.minimap.layer?.faction) {

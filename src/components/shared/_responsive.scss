@@ -256,6 +256,12 @@
                 font-size: 1em;
                 padding-bottom: 0.3em;
             }
+            #serverSelector {
+                padding-bottom: 3em;
+                .select2-container {
+                    max-width: 250px;
+                }
+            }
             #layerSelector {
                 padding-top: 3em;
             }
@@ -334,7 +340,7 @@
     header {
         .select2-container {
             font-size: 1em;
-            min-width: 205px;
+            min-width: 250px;
         }
     }
     dialog {
@@ -363,7 +369,7 @@
 @media screen and (width >= 62em) {
     header {
         .select2-container {
-            max-width: 230px;
+            max-width: 250px;
         }
     }
 }
@@ -394,6 +400,9 @@
             }
             .mapSelector {
                 padding: 2em 1.5em 0 0;
+                #serverSelector {
+                    padding-bottom: 5em;
+                }
                 #layerSelector {
                     padding-top: 5em;
                 }
@@ -404,6 +413,7 @@
             #layerSelector {
                 .select2-container {
                     min-width: 350px;
+                    max-width: 350px;
                     padding-bottom: 1em;
                     font-size: 1.4em;
                 }

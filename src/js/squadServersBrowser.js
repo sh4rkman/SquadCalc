@@ -184,6 +184,7 @@ export default class SquadServersBrowser {
             this.favorites.add(serverId);
         }
         this.saveFavorites();
+        $(document).trigger("favorites:changed", [{ favorites: this.favorites, servers: this.serversData }]);
     }
 
 
@@ -300,7 +301,7 @@ export default class SquadServersBrowser {
                 rows += `
                     <tr class="${isSelected} ${unavailable}" data-serverid="${server.id}">
                         <td class="favoriteCell">${favoriteStarHTML}</td>
-                        <td title="${server.attributes.name}">${server.attributes.name}</td>
+                        <td title="${server.attributes.name}"><div class="server-name">${server.attributes.name}</div></td>
                         <td class="mapdata">
                             ${server.attributes.details.map}<br>
                             ${nextLayer}
@@ -415,6 +416,7 @@ export default class SquadServersBrowser {
             $("#servers").removeClass("active");
             this.selectedServer = null;
             App.updateUrlParams({ server: null });
+            App.SERVER_SELECTOR.val("").trigger("change.select2");
 
             // stop sync
             if (this.syncInterval) {
@@ -433,6 +435,7 @@ export default class SquadServersBrowser {
         const server = this.serversData.find(s => s.id == row.data("serverid"));
 
         App.updateUrlParams({ server: server.id });
+        App.SERVER_SELECTOR.val(server.id).trigger("change.select2");
 
         // Update the selected server and layer
         this.selectedServer = server.id;

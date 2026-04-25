@@ -72,5 +72,6 @@
     "servers": "serveurs",
     "next": "à suivre",
     "playTime": "Temps de jeu",
-    "mapSyncedwith": "Carte synchronisée avec"
+    "mapSyncedwith": "Carte synchronisée avec",
+    "favServers": "Serveur"
 }

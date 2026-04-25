@@ -41,6 +41,7 @@ export default class SquadCalc {
         this.WEAPON_SELECTOR = $(".dropbtn2");
         this.SHELL_SELECTOR = $(".dropbtn3");
         this.LAYER_SELECTOR = $(".dropbtn5");
+        this.SERVER_SELECTOR = $(".dropbtn6");
         this.FACTION1_SELECTOR = $(".dropbtn8");
         this.FACTION2_SELECTOR = $(".dropbtn10");
         this.UNIT1_SELECTOR = $(".dropbtn9");
@@ -83,6 +84,7 @@ export default class SquadCalc {
         if (server)       this.initServerMode(server, session);
         else if (session) this.initSessionMode(session, this.urlIntent);
         else              this.initStaticMode(this.urlIntent);
+        this.initFavoriteServers();
     }
 
     initServerMode(serverId, sessionId = null) {
@@ -117,6 +119,7 @@ export default class SquadCalc {
                 server.attributes.details.squad_teamTwo
             );
 
+            $("#serversTableBody tr").removeClass("selected");
             $(`#serversTableBody tr[data-serverid="${serverId}"]`).addClass("selected");
             $("#servers").addClass("active");
 
@@ -210,6 +213,23 @@ export default class SquadCalc {
         // Initiate Maps&Layers Dropdown
         this.MAP_SELECTOR.select2();
         this.LAYER_SELECTOR.select2();
+        this.SERVER_SELECTOR.select2({ minimumResultsForSearch: Infinity, dropdownParent: $("#serverSelector"), allowClear: true });
+        this.SERVER_SELECTOR.on("change", (event) => {
+            const serverId = event.target.value;
+            if (!serverId) {
+                this.updateUrlParams({ server: null });
+                $("#serversTableBody tr").removeClass("selected");
+                $("#servers").removeClass("active");
+                if (this.squadServersBrowser) {
+                    this.squadServersBrowser.selectedServer = null;
+                    clearInterval(this.squadServersBrowser.syncInterval);
+                    this.squadServersBrowser.syncInterval = null;
+                }
+                return;
+            }
+            this.updateUrlParams({ server: serverId });
+            this.initServerMode(serverId);
+        });
         this.FACTION1_SELECTOR.select2();
         $(".dropbtn8").select2();
         $(".dropbtn9").select2();
@@ -378,6 +398,46 @@ export default class SquadCalc {
      */
     loadTheme() {
         this.mainColor = getComputedStyle(document.documentElement).getPropertyValue("--main-color").trim();
+    }
+
+
+    async initFavoriteServers() {
+        let favoriteIds;
+        try {
+            const stored = localStorage.getItem("favoriteServers");
+            if (!stored) return;
+            favoriteIds = new Set(JSON.parse(stored));
+        } catch {
+            return;
+        }
+        if (favoriteIds.size === 0) return;
+
+        try {
+            const controller = new AbortController();
+            const timeout = setTimeout(() => controller.abort(), 10000);
+            const response = await fetch(`${process.env.API_URL}/get/servers`, { signal: controller.signal });
+            clearTimeout(timeout);
+            if (!response.ok) return;
+            const data = await response.json();
+            const favoriteServers = (data.servers || []).filter(s => favoriteIds.has(String(s.id)));
+            if (favoriteServers.length === 0) return;
+            this.buildFavoriteServersDropdown(favoriteServers);
+        } catch {
+            // favorites dropdown is optional, fail silently
+        }
+    }
+
+
+    buildFavoriteServersDropdown(servers) {
+        this.SERVER_SELECTOR.empty();
+        this.SERVER_SELECTOR.append("<option value=\"\"></option>");
+        const currentServerId = this.squadServersBrowser?.selectedServer ?? this.urlIntent.server;
+        servers.forEach(server => {
+            const isActive = currentServerId && String(currentServerId) === String(server.id);
+            this.SERVER_SELECTOR.append(new Option(server.attributes.name, server.id, false, isActive));
+        });
+        this.SERVER_SELECTOR.trigger("change.select2");
+        $("#serverSelector").show();
     }
 
 
@@ -602,6 +662,15 @@ export default class SquadCalc {
             // Focus search input at the end
             const searchInput = document.getElementById("serverSearch");
             if (searchInput) searchInput.focus();
+        });
+
+        $(document).on("favorites:changed", (_event, { favorites, servers }) => {
+            const favoriteServers = (servers || []).filter(s => favorites.has(String(s.id)));
+            if (favoriteServers.length === 0) {
+                $("#serverSelector").hide();
+                return;
+            }
+            this.buildFavoriteServersDropdown(favoriteServers);
         });
 
         serversInformation.addEventListener("close", () => {

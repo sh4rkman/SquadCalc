@@ -73,5 +73,6 @@
     "load": "Laden",
     "next": "Nächste",
     "playTime": "Spielzeit",
-    "mapSyncedwith": "Karte synchronisiert mit"
+    "mapSyncedwith": "Karte synchronisiert mit",
+    "favServers": "Server"
 }

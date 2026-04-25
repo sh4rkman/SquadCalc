@@ -53,6 +53,30 @@ header {
                 background-color: transparent;
             }
         }
+        #serverSelector {
+            display: none;
+            z-index: 4;
+            position: relative;
+            padding-bottom: 1em;
+            .select2-container {
+                max-width: 250px;
+            }
+            .select2-selection__rendered {
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+            .select2-results__options {
+                font-size: 0.9em;
+                max-height: 300px;
+            }
+            .select2-results__option {
+                white-space: normal;
+                font-size: 0.75em;
+                line-height: 1.4em;
+                padding: 0.5em 0.8em;
+            }
+        }
         #mapSelector {
             z-index: 3;
             position: relative;
@@ -77,7 +101,8 @@ header {
     .dropbtn,
     .dropbtn2,
     .dropbtn3,
-    .dropbtn5 {
+    .dropbtn5,
+    .dropbtn6 {
         color: #fff;
         font-weight: bold;
         line-height: 2.188em;
@@ -107,7 +132,8 @@ header {
         pointer-events: all;
         background-color: transparent;
         border-bottom: 1px solid rgba(255, 255, 255, 0.3);
-        min-width: 200px;
+        min-width: 250px;
+        max-width: 250px;
         padding-bottom: 0;
         text-transform: uppercase;
         transition: border-color 0.2s ease;

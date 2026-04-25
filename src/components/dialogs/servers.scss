@@ -75,7 +75,7 @@ th {
     overflow: hidden;
     letter-spacing: 0.2px;
     border-collapse: separate;
-    border-spacing: 0 4px; 
+    border-spacing: 0 4px;
     padding: 0 1.5em;
     thead th {
         position: sticky;
@@ -88,12 +88,12 @@ th {
     tbody tr {
         border-bottom: 1px solid #e5e7eb;
         background-color: #111111b6;
-        transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.2s ease;
-        &:hover {
-            background: #111111f6;
-            transform: scale(1.005);
-            cursor: pointer;
-            box-shadow: 0 0 4px rgba(0,0,0,0.7);
+        transition: background 0.1s ease;
+        @media (hover: hover) {
+            &:hover {
+                background: variables.$mainColor;
+                cursor: pointer;
+            }
         }
         &:active, &.selected {
             background: variables.$mainColor;
@@ -108,8 +108,10 @@ th {
             .mapdata {
                 color: rgba(255, 255, 255, 0.4);
             }
-            &:hover {
-                transform: none;
+            @media (hover: hover) {
+                &:hover {
+                    background: #1f1f1fb6;
+                }
             }
         }
         &:last-child {
@@ -151,6 +153,20 @@ th {
 .sortable:hover {
     background: rgb(163, 28, 28);
     cursor: pointer;
+}
+
+.server-name {
+    max-width: 350px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+
+    @media (width <= 890px) {
+        max-width: 180px;
+    }
+    @media (width <= 570px) {
+        max-width: 120px;
+    }
 }
 
 .mapdata {

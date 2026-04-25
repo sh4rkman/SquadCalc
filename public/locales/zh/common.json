@@ -75,5 +75,6 @@
     "load": "加载",
     "next": "下一个",
     "playTime": "地图时间",
-    "mapSyncedwith": "地图已同步至"
+    "mapSyncedwith": "地图已同步至",
+    "favServers": "服务器"
 }
