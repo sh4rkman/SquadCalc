@@ -50,6 +50,7 @@ export default class SquadCalc {
     }
 
     init() {
+        this.urlIntent = this.parseUrlIntent();
         loadLanguage(this.supportedLanguages);
         initMapsProperties();
         this.userSettings.init();
@@ -61,6 +62,141 @@ export default class SquadCalc {
         checkApiHealth();
         initWebSocket();
         console.log(`SquadCalc v${this.version} Loaded! 🎯`);
+    }
+
+    parseUrlIntent() {
+        const p = new URLSearchParams(window.location.search);
+        return {
+            server:    p.get("server"),
+            session:   p.get("session"),
+            map:       p.get("map"),
+            layer:     p.get("layer"),
+            team1:     p.get("team1"),
+            team1unit: p.get("team1unit"),
+            team2:     p.get("team2"),
+            team2unit: p.get("team2unit"),
+        };
+    }
+
+    applyUrlIntent() {
+        const { server, session } = this.urlIntent;
+        if (server)       this.initServerMode(server, session);
+        else if (session) this.initSessionMode(session, this.urlIntent);
+        else              this.initStaticMode(this.urlIntent);
+    }
+
+    initServerMode(serverId, sessionId = null) {
+        this.updateUrlParams({ team1: null, team1unit: null, team2: null, team2unit: null });
+
+        if (!this.squadServersBrowser) {
+            this.squadServersBrowser = new SquadServersBrowser();
+            this.squadServersBrowser.init();
+        }
+
+        const setup = () => {
+            const server = this.squadServersBrowser.serversData?.find(s => s.id == serverId);
+
+            if (!server) {
+                this.updateUrlParams({ server: null });
+                this.openToast("error", "serverNotFound", "");
+                return;
+            }
+
+            this.squadServersBrowser.selectedServer = server.id;
+            this.squadServersBrowser.selectedLayer = server.attributes.details.map;
+
+            this.squadServersBrowser.switchLayer(
+                server.attributes.name,
+                server.mapName,
+                server.attributes.details.map,
+                server.team1,
+                server.team2,
+                server.attributes.details.squad_teamOne,
+                server.attributes.details.squad_teamTwo
+            );
+
+            $(`#serversTableBody tr[data-serverid="${serverId}"]`).addClass("selected");
+            $("#servers").addClass("active");
+
+            if (this.squadServersBrowser.syncInterval) clearInterval(this.squadServersBrowser.syncInterval);
+            this.squadServersBrowser.syncInterval = setInterval(
+                () => this.squadServersBrowser.syncWithServer(),
+                this.squadServersBrowser.refreshInterval * 1000
+            );
+
+            if (sessionId) this.initSessionMode(sessionId);
+        };
+
+        if (this.squadServersBrowser.serversData) {
+            setup();
+        } else {
+            $(document).one("servers:loaded", setup);
+        }
+    }
+
+    initSessionMode(sessionId, intent = null) {
+        $(".btn-session").addClass("active");
+        createSessionTooltips.disable();
+        leaveSessionTooltips.enable();
+
+        const startSession = () => { this.session = new SquadSession(sessionId); };
+
+        if (intent?.layer) {
+            this.initStaticMode(intent, startSession);
+        } else if (this.layersLoaded) {
+            startSession();
+        } else {
+            $(document).one("layers:loaded", startSession);
+        }
+    }
+
+    initStaticMode(intent, onLayerLoaded = null) {
+        if (!intent.layer) {
+            onLayerLoaded?.();
+            return;
+        }
+
+        const applyLayer = () => {
+            const urlLayerName = intent.layer.toLowerCase().replaceAll(" ", "");
+            const match = this.LAYER_SELECTOR.find("option").filter((_, el) =>
+                $(el).text().toLowerCase().replaceAll(" ", "") === urlLayerName
+            );
+
+            if (!match.length) {
+                this.updateUrlParams({ layer: null });
+                onLayerLoaded?.();
+                return;
+            }
+
+            match.prop("selected", true);
+
+            if (intent.team1 || intent.team2 || onLayerLoaded) {
+                $(document).one("layer:loaded", () => {
+                    [
+                        { faction: intent.team1, unit: intent.team1unit, fSel: this.FACTION1_SELECTOR, uSel: this.UNIT1_SELECTOR },
+                        { faction: intent.team2, unit: intent.team2unit, fSel: this.FACTION2_SELECTOR, uSel: this.UNIT2_SELECTOR },
+                    ].forEach(({ faction, unit, fSel, uSel }) => {
+                        if (faction) {
+                            const fm = fSel.find("option").filter((_, el) => el.value.toLowerCase() === faction.toLowerCase());
+                            if (fm.length) fSel.val(fm.val()).trigger($.Event("change", { broadcast: false }));
+                        }
+                        if (unit) {
+                            const um = uSel.find("option").filter((_, el) => el.value.toLowerCase() === unit.toLowerCase());
+                            if (um.length) uSel.val(um.val()).trigger($.Event("change", { broadcast: false }));
+                        }
+                    });
+                    onLayerLoaded?.();
+                });
+            }
+
+            this.LAYER_SELECTOR.trigger($.Event("change", { broadcast: false }));
+        };
+
+        if (this.layersLoaded) {
+            applyLayer();
+        } else {
+            $(document).one("layers:loaded", applyLayer);
+        }
     }
 
     /**
@@ -157,7 +293,8 @@ export default class SquadCalc {
                 this.updateUrlParams({ layer: selectedLayerText });
             }
 
-            // Initialize a new AbortController for the fetch request
+            // Abort any in-progress layer fetch before starting a new one
+            if (abortController) abortController.abort();
             abortController = new AbortController();
             const signal = abortController.signal;
             this.minimap.spin(true, this.minimap.spinOptions);
@@ -202,7 +339,6 @@ export default class SquadCalc {
      */
     loadLayers() {
         this.minimap.spin(true, this.minimap.spinOptions);
-        const currentUrl = new URL(window.location);
         $("#layerSelector").hide();
         this.LAYER_SELECTOR.empty();
 
@@ -216,64 +352,8 @@ export default class SquadCalc {
 
             // Re-empty just in case user changed map while the request was on the way
             this.LAYER_SELECTOR.empty();
-
-            // Empty option for placeholder
             this.LAYER_SELECTOR.append("<option value=></option>");
-
-            layers.forEach((layer) => { this.LAYER_SELECTOR.append(`<option value=${layer.rawName}>${layer.shortName}</option>`);});
-            
-
-            // If URL has a "layer" parameter and no active session yet
-            // Using this.session instead of URL param allows layer to load on first call,
-            // but prevents overwriting session state when SESSION_JOINED triggers a reload
-            if (currentUrl.searchParams.has("layer") && !this.session) {
-                const urlLayerName = currentUrl.searchParams.get("layer").toLowerCase().replaceAll(" ", "");
-            
-                // Normalize option text by removing any extra spaces around the "V"
-                const matchingOption = this.LAYER_SELECTOR.find("option").filter(function() {
-                    const optionText = $(this).text().toLowerCase().replaceAll(" ", "");
-                    return optionText === urlLayerName;
-                });
-            
-                // If we find a matching option, set it as selected
-                if (matchingOption.length > 0) {
-                    matchingOption.prop("selected", true);
-
-                    // Read team faction/unit URL params to apply after layer loads
-                    const teamParams = [
-                        { faction: currentUrl.searchParams.get("team1"), unit: currentUrl.searchParams.get("team1unit"), factionSel: this.FACTION1_SELECTOR, unitSel: this.UNIT1_SELECTOR },
-                        { faction: currentUrl.searchParams.get("team2"), unit: currentUrl.searchParams.get("team2unit"), factionSel: this.FACTION2_SELECTOR, unitSel: this.UNIT2_SELECTOR },
-                    ];
-                    const hasTeamParams = teamParams.some(t => t.faction || t.unit);
-                    const hasSession = currentUrl.searchParams.has("session");
-                    const hasServer = currentUrl.searchParams.has("server");
-
-                    if (hasTeamParams && !hasSession && !hasServer) {
-                        $(document).one("layer:loaded", () => {
-                            for (const { faction, unit, factionSel, unitSel } of teamParams) {
-                                if (faction) {
-                                    const factionMatch = factionSel.find("option").filter((_, el) => el.value.toLowerCase() === faction.toLowerCase());
-                                    if (factionMatch.length > 0) {
-                                        factionSel.val(factionMatch.val()).trigger($.Event("change", { broadcast: false }));
-                                    }
-                                }
-                                if (unit) {
-                                    const unitMatch = unitSel.find("option").filter((_, el) => el.value.toLowerCase() === unit.toLowerCase());
-                                    if (unitMatch.length > 0) {
-                                        unitSel.val(unitMatch.val()).trigger($.Event("change", { broadcast: false }));
-                                    }
-                                }
-                            }
-                        });
-                    }
-
-                    this.LAYER_SELECTOR.trigger($.Event("change", { broadcast: false }));
-                }
-                else {
-                    // layer in url doesn't make sense, clean the url
-                    this.updateUrlParams({ layer: null });
-                }
-            }
+            layers.forEach((layer) => { this.LAYER_SELECTOR.append(`<option value=${layer.rawName}>${layer.shortName}</option>`); });
 
             this.minimap.spin(false);
             $("#layerSelector").show();

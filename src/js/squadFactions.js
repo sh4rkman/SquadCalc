@@ -660,7 +660,15 @@ export default class SquadFactions {
         const img = document.getElementById(`teamBg${team}`);
         if (!img) return;
         const fallback = team === 1 ? "Team1" : "Team2";
-        img.src = `/img/spawnGroup/${factionId || fallback}.webp`;
+        const newSrc = `/img/spawnGroup/${factionId || fallback}.webp`;
+        img.style.transition = "opacity 0.15s ease";
+        img.style.opacity = "0";
+        setTimeout(() => {
+            img.src = newSrc;
+            const show = () => { img.style.opacity = ""; };
+            img.addEventListener("load", show, { once: true });
+            img.addEventListener("error", show, { once: true });
+        }, 150);
     }
 
     renderFactionBtn(team) {
@@ -668,8 +676,9 @@ export default class SquadFactions {
         const btn = document.getElementById(`factionBtn${team}`);
         if (!btn) return;
         const val = SELECTOR.val();
+        const label = val ? i18next.t(val, { ns: "factions" }) : "";
         if (val) {
-            btn.innerHTML = `<img src="/img/flags/${val}.webp" onerror="this.onerror=null; this.src='/img/flags/unknown.webp';"/>`;
+            btn.innerHTML = `<img src="/img/flags/${val}.webp" onerror="this.onerror=null; this.src='/img/flags/unknown.webp';"/><span class="picker-label">${label}</span>`;
         } else {
             btn.innerHTML = `<img src="/img/flags/unknown.webp"/>`;
         }
