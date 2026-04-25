@@ -106,6 +106,14 @@ export default class SquadCalc {
                 return;
             }
 
+            if (!server.team1 || !server.team2 || !server.mapName) {
+                this.updateUrlParams({ server: null });
+                this.SERVER_SELECTOR.val("").trigger("change.select2");
+                this.loadLayers();
+                this.initStaticMode(this.urlIntent);
+                return;
+            }
+
             this.squadServersBrowser.selectedServer = server.id;
             this.squadServersBrowser.selectedLayer = server.attributes.details.map;
 
@@ -433,8 +441,14 @@ export default class SquadCalc {
         this.SERVER_SELECTOR.append("<option value=\"\"></option>");
         const currentServerId = this.squadServersBrowser?.selectedServer ?? this.urlIntent.server;
         servers.forEach(server => {
-            const isActive = currentServerId && String(currentServerId) === String(server.id);
-            this.SERVER_SELECTOR.append(new Option(server.attributes.name, server.id, false, isActive));
+            const unavailable = !server.team1 || !server.team2 || !server.mapName;
+            const isActive = !unavailable && currentServerId && String(currentServerId) === String(server.id);
+            const option = new Option(server.attributes.name, server.id, false, isActive);
+            if (unavailable) {
+                option.disabled = true;
+                option.title = "Modded layer";
+            }
+            this.SERVER_SELECTOR.append(option);
         });
         this.SERVER_SELECTOR.trigger("change.select2");
         $("#serverSelector").show();

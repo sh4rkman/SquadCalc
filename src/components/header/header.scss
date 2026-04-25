@@ -74,6 +74,7 @@ header {
                 white-space: normal;
                 font-size: 0.75em;
                 line-height: 1.4em;
+                word-break: break-all;
                 padding: 0.5em 0.8em;
             }
         }
@@ -204,6 +205,9 @@ header {
     line-height: 0.75em;
     transition: background-color 0.15s ease;
     letter-spacing: 0.05em;
+    &[aria-disabled="true"] {
+        cursor: not-allowed;
+    }
 }
 
 .select2-search--dropdown .select2-search__field {
