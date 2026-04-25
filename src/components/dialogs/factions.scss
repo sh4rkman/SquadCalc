@@ -49,12 +49,17 @@
     background-color: white;
     cursor: pointer;
     text-align: center;
-    padding: 0.5em 1em;
-    font-size: 0.85em;
+    padding: 0.65em 1.2em;
+    font-size: 1em;
     font-weight: bold;
-    margin: 0.5em auto 0;
+    margin: 0.5em auto;
     width: 80%;
     max-width: 200px;
+
+    @media screen and (width <= 35em) {
+        font-size: 1em;
+        padding: 0.75em 1em;
+    }
     transition: background-color 0.2s ease;
     &:hover {
         background-color: #e0e0e0;
@@ -101,7 +106,7 @@
         font-size: 2em;
     }
     .team-picker h2 {
-        font-size: 3em;
+        font-size: clamp(1.6em, 6vw, 3em);
         line-height: 1;
         margin: 0;
         padding: 0.3em 0;
@@ -184,7 +189,7 @@
         .team-selectors {
             display: flex;
             flex-direction: row;
-            gap: 1em;
+            gap: clamp(0.35em, 1.5vw, 1em);
             justify-content: center;
             align-items: center;
             margin: 0.4em 0;
@@ -213,7 +218,7 @@
             }
         }
         .faction-picker-btn {
-            width: 100px;
+            width: clamp(70px, 22vw, 100px);
             aspect-ratio: 2 / 1;
             img {
                 position: absolute;
@@ -224,20 +229,20 @@
                 pointer-events: none;
             }
             .picker-label {
-                @include variables.text-outline;
                 position: absolute;
-                top: 50%;
-                transform: translateY(-50%);
-                left: 0;
-                right: 0;
-                color: white;
-                font-size: 2em;
-                font-weight: bold;
-                text-align: center;
-                letter-spacing: 0.5px;
+                inset: 0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
                 pointer-events: none;
                 opacity: 0;
+                background: rgba(0, 0, 0, 0.45);
                 transition: opacity 0.25s ease-in-out;
+                svg {
+                    width: 1.4em;
+                    height: 1.4em;
+                    fill: white;
+                }
             }
             &:hover .picker-label {
                 opacity: 1;
@@ -263,8 +268,8 @@
             }
         }
         .unit-picker-btn {
-            width: 65px;
-            height: 50px;
+            width: clamp(44px, 14vw, 65px);
+            height: clamp(34px, 11vw, 50px);
             opacity: 0.3;
             pointer-events: none;
             background: transparent;
@@ -284,17 +289,23 @@
                 pointer-events: none;
             }
             .picker-label {
-                @include variables.text-outline;
                 position: absolute;
-                bottom: 2px;
-                left: 0;
-                right: 0;
-                color: white;
-                font-weight: bold;
-                text-align: center;
-                padding: 0 2px;
+                inset: 0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
                 pointer-events: none;
-                line-height: 1.2;
+                opacity: 0;
+                background: rgba(0, 0, 0, 0.65);
+                transition: opacity 0.25s ease-in-out;
+                svg {
+                    width: 1.2em;
+                    height: 1.2em;
+                    fill: white;
+                }
+            }
+            &:hover .picker-label {
+                opacity: 1;
             }
         }
     }
@@ -604,7 +615,7 @@
     width: 100%;
     display: flex;
     flex-direction: row;
-    margin: 1em 0 1em;
+    margin: 0.5em 0 1em;
     .teamInfo {
         flex: 1;
         display: flex;
