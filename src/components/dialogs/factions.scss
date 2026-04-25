@@ -106,6 +106,7 @@
         margin: 0;
         padding: 0.3em 0;
         text-transform: uppercase;
+
         @include variables.text-outline;
     }
     #factionTop {
@@ -126,7 +127,12 @@
             line-height: 1;
             pointer-events: none;
             z-index: 2;
+
             @include variables.text-outline;
+
+            @media screen and (width <= 35em) {
+                display: none;
+            }
         }
         > * {
             position: relative;
@@ -141,7 +147,7 @@
             object-position: bottom center;
             pointer-events: none;
             z-index: 0;
-            opacity: 0.9;
+            opacity: 0.75;
             &#teamBg1 {
                 left: -15%;
                 mask-image: linear-gradient(to left, transparent 0%, black 25%), linear-gradient(to top, transparent 0%, black 20%);
@@ -193,23 +199,17 @@
             position: relative;
             cursor: pointer;
             background: #111;
-            outline: 1px solid rgba(255,255,255,0.4);
+            box-shadow: 0 0 0 1px rgba(255,255,255,0.2);
             border-radius: 3px;
             display: flex;
             align-items: center;
             justify-content: center;
             overflow: hidden;
-            box-shadow: inset 0 -3px 0 variables.$mainColor;
-            transition: outline-color 0.1s ease, outline-width 0.1s ease, transform 0.1s ease, box-shadow 0.1s ease;
+            transition: box-shadow 0.1s ease, transform 0.1s ease;
             user-select: none;
             &:hover {
-                outline: 2px solid variables.$mainColor;
+                box-shadow: 0 0 0 2px variables.$mainColor, 0 4px 12px rgba(0,0,0,0.4);
                 transform: scale(1.05);
-                box-shadow: inset 0 -3px 0 variables.$mainColor, 0 4px 12px rgba(0,0,0,0.4);
-            }
-            &:active {
-                transform: scale(0.95);
-                box-shadow: inset 0 -2px 0 variables.$mainColor;
             }
         }
         .faction-picker-btn {
@@ -264,7 +264,7 @@
         }
         .unit-picker-btn {
             width: 65px;
-            height: 65px;
+            height: 50px;
             opacity: 0.3;
             pointer-events: none;
             background: transparent;
@@ -275,7 +275,7 @@
             }
             &:hover {
                 background: transparent;
-                outline: 2px solid variables.$mainColor;
+                box-shadow: 0 0 0 2px variables.$mainColor;
             }
             img {
                 width: 70%;
@@ -604,7 +604,7 @@
     width: 100%;
     display: flex;
     flex-direction: row;
-    margin: 0.4em 0;
+    margin: 1em 0 1em;
     .teamInfo {
         flex: 1;
         display: flex;
@@ -617,7 +617,7 @@
         display: none;
     }
     .commanderAssets + .characteristics:not(:empty) {
-        border-left: 1px solid rgba(255, 255, 255, 0.15);
+        border-left: 1px solid rgba(255, 255, 255, 0.35);
         padding-left: 0.5em;
     }
     .commanderAssets,
@@ -639,6 +639,7 @@
             transition: transform 0.15s ease,
                         box-shadow 0.15s ease,
                         border-color 0.15s ease;
+
             @media (hover: hover) {
                 height: 34px;
                 &:hover {
