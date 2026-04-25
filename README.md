@@ -28,22 +28,15 @@
  
 # <b>Screenshots</b>
 
-<details>
-
-  <summary><a>Click to Unfold</a></summary>
-
-  <div align="center">
+<div align="center">
     <picture><img src="./public/img/github/desktop_ui_1.webp" alt="classic preview"></picture>  
     <picture><img src="./public/img/github/desktop_ui_5.webp" alt="Lane Finder preview"></picture>
-    <picture><img src="./public/img/github/desktop_ui_2.webp" alt="topographic preview"></picture>
     <picture><img src="./public/img/github/desktop_ui_6.webp" alt="capzone/mains preview"></picture>
-    <picture><img src="./public/img/github/desktop_ui_3.webp" alt="weapon information preview"></picture>
-    <picture><img src="./public/img/github/desktop_ui_4.webp" alt="calculations information preview"></picture>
+    <picture><img src="./public/img/github/desktop_ui_2.webp" alt="topographic preview"></picture>
+    <!-- <picture><img src="./public/img/github/desktop_ui_3.webp" alt="weapon information preview"></picture>
+    <picture><img src="./public/img/github/desktop_ui_4.webp" alt="calculations information preview"></picture> -->
     <!-- <picture><img src="./public/img/github/desktop_ui_0.webp" alt="legacy preview"></picture> -->
-  </div>
-
-</details>
-
+</div>
 
 </br>
 
