@@ -1,4 +1,5 @@
 @use '../shared/variables';
+@use 'sass:color';
 
 .unit-option {
     display: flex;
@@ -34,28 +35,31 @@
 }
 
 
-#pinButtons {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-    margin: 1em 0;
-    .btn-pin {
-        color: #111;
-        background-color: white;
-        flex: 1;
-        cursor: pointer;
-        text-align: center;
-        padding: 0.5em 1em;
-        font-size: 1em;
-        font-weight: bold;
-        margin: auto;
-        width: 20px;
-        max-width: 200px;
-        &.active {
-            background-color: variables.$mainColor;
-            color: white;
-            text-transform: uppercase;
-            transition: background-color 0.2s ease;
+.hidden-selector {
+    display: none;
+}
+
+.btn-pin {
+    color: #111;
+    background-color: white;
+    cursor: pointer;
+    text-align: center;
+    padding: 0.5em 1em;
+    font-size: 0.85em;
+    font-weight: bold;
+    margin: 0.5em auto 0;
+    width: 80%;
+    max-width: 200px;
+    transition: background-color 0.2s ease;
+    &:hover {
+        background-color: #e0e0e0;
+    }
+    &.active {
+        background-color: variables.$mainColor;
+        color: white;
+        text-transform: uppercase;
+        &:hover {
+            background-color: color.adjust(variables.$mainColor, $lightness: -8%);
         }
     }
 }
@@ -91,69 +95,170 @@
         text-align: center;
         font-size: 2em;
     }
+    .team-picker h2 {
+        font-size: 3em;
+        line-height: 1;
+        margin: 0;
+        padding: 0.3em 0;
+        @include variables.text-outline;
+    }
+    #factionTop {
+        position: relative;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        flex-shrink: 0;
+        .factionMenu-vs {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            color: #fff;
+            font-size: clamp(2em, 8vw, 7em);
+            font-weight: 900;
+            line-height: 1;
+            pointer-events: none;
+            z-index: 2;
+            @include variables.text-outline;
+        }
+        > * {
+            position: relative;
+            z-index: 1;
+        }
+        .team-bg {
+            position: absolute;
+            bottom: 0;
+            width: 48%;
+            height: 90%;
+            object-fit: contain;
+            object-position: bottom center;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.9;
+            &#teamBg1 {
+                left: -15%;
+                mask-image: linear-gradient(to left, transparent 0%, black 25%), linear-gradient(to top, transparent 0%, black 20%);
+                mask-composite: intersect;
+                -webkit-mask-image: linear-gradient(to left, transparent 0%, black 25%), linear-gradient(to top, transparent 0%, black 20%);
+                -webkit-mask-composite: source-in;
+            }
+            &#teamBg2 {
+                right: -15%;
+                transform: scaleX(-1);
+                mask-image: linear-gradient(to left, transparent 0%, black 25%), linear-gradient(to top, transparent 0%, black 20%);
+                mask-composite: intersect;
+                -webkit-mask-image: linear-gradient(to left, transparent 0%, black 25%), linear-gradient(to top, transparent 0%, black 20%);
+                -webkit-mask-composite: source-in;
+            }
+        }
+    }
     #factionMenu {
         width: 100%;
         padding: 0;
-        margin: 0 auto;
+        margin: 1.5em auto 0;
         text-align: center;
+        position: relative;
         display: flex;
         flex-direction: row;
         justify-content: center;
-        gap: 2em;
-        #team1, #team2 {
+        align-items: center;
+        .team-picker {
             display: flex;
             flex-direction: column;
             align-items: center;
             width: 50%;
-            h2 {
-                margin: 0;
-                padding: 0.5em 0;
-            }
-            .selectors {
-                display: flex;
-                flex-direction: row;
-                align-items: center;
-                padding-top: 5px;
-            }
-            .factionSelector {
-                width: 100px;
-                .select2-container {
-                    min-width: 80px;
-                }
+        }
+        .team-selectors {
+            display: flex;
+            flex-direction: row;
+            gap: 1em;
+            justify-content: center;
+            align-items: center;
+            margin: 0.4em 0;
+        }
+        #team2 .team-selectors {
+            flex-direction: row-reverse;
+        }
+        #team2 .unit-picker-btn img {
+            transform: scaleX(-1);
+        }
+        .picker-btn {
+            position: relative;
+            cursor: pointer;
+            background: #111;
+            outline: 1px solid rgba(255,255,255,0.2);
+            border-radius: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            transition: outline-color 0.1s ease, transform 0.1s ease, box-shadow 0.1s ease;
+            user-select: none;
+            &:hover {
+                outline: 2px solid variables.$mainColor;
+                transform: scale(1.05);
+                box-shadow: 0 4px 12px rgba(0,0,0,0.4);
             }
         }
-        #team2 {
-            #unit2 .unit-option {
-                flex-direction: row-reverse;
+        .faction-picker-btn {
+            width: 100px;
+            aspect-ratio: 2 / 1;
+            img {
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                pointer-events: none;
             }
-            #unit2 .unit-logo {
-                transform: scaleX(-1);
+            .picker-label {
+                @include variables.text-outline;
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                color: white;
+                font-size: 10px;
+                font-weight: bold;
+                text-align: center;
+                padding: 2px 4px;
+                pointer-events: none;
             }
-            #unit2 .select2-selection--single {
-                .select2-selection__arrow {
-                    left: 1px;
-                    right: auto;
-                }
-                .select2-selection__rendered {
-                    padding-left: 30px;
-                    text-align: center;
-                }
+        }
+        .unit-picker-btn {
+            width: 65px;
+            height: 65px;
+            opacity: 0.3;
+            pointer-events: none;
+            background: transparent;
+            outline: none;
+            &.ready {
+                opacity: 1;
+                pointer-events: auto;
             }
-            #faction2 .select2-selection--single {
-                .select2-selection__arrow {
-                    left: 1px;
-                    right: auto;
-                }
-                .select2-selection__rendered {
-                    padding-left: 20px;
-                    padding-right: 8px;
-                    text-align: right;
-                }
-                .select2-selection__clear {
-                    float: right;
-                    margin-left: 4px;
-                    margin-right: 0;
-                }
+            &:hover {
+                background: transparent;
+                outline: 2px solid variables.$mainColor;
+            }
+            img {
+                width: 70%;
+                height: auto;
+                object-fit: contain;
+                pointer-events: none;
+            }
+            .picker-label {
+                @include variables.text-outline;
+                position: absolute;
+                bottom: 2px;
+                left: 0;
+                right: 0;
+                color: white;
+                font-size: 9px;
+                font-weight: bold;
+                text-align: center;
+                padding: 0 2px;
+                pointer-events: none;
+                line-height: 1.2;
             }
         }
     }
@@ -457,75 +562,6 @@
             justify-content: flex-end;
         }
     }
-    .dropbtn9, .dropbtn11 {
-        color: #fff;
-        font-weight: bold;
-        line-height: 2.188em;
-        text-transform: uppercase;
-        background-color: var(--themecolor, variables.$mainBGColor);
-        select {
-            -moz-appearance: none;
-            -webkit-appearance: none;
-            appearance: none;
-            background-color: transparent;
-            background-image: none;
-            border: none;
-            box-shadow: none;
-        }
-        &:focus {
-            outline: none;
-        }
-    }
-    .factionSelector  .select2-results__option {
-        padding-top: 3px;
-    }
-    .unitSelector .select2-results__option {
-        word-break: break-word;
-        line-height: 2;
-    }
-    .unitSelector .select2-container--default {
-        letter-spacing: 0.5px;
-    }
-    .select2 {
-        background-color: transparent;
-    }
-    .select2-dropdown {
-        background-color: variables.$mainBGColor;
-    }
-    .select2-container {
-        @include variables.light-text-outline;
-        pointer-events: all;
-        background-color: transparent;
-        border-bottom: 1px solid variables.$mainTxtColor;
-        line-height: 2.188em;
-        min-width: 200px;
-        padding-bottom: 0.3em;
-        text-transform: uppercase;
-    }
-    .select2-container--default {
-        .select2-results__option--highlighted[aria-selected] {
-            background-color: variables.$mainColor;
-        }
-        .select2-results__option--selected {
-            background-color: variables.$mainColor;
-            opacity: 0.5;
-        }
-        .select2-selection--single .select2-selection__rendered {
-            color: #fff;
-        }
-        .select2-selection--single {
-            background-color: transparent;
-            border: none;
-            color: variables.$mainTxtColor;
-        }
-    }
-    span.select2-selection.select2-selection--single {
-        outline: none;
-    }
-    .select2-results__options {
-        line-height: 0.4em;
-        font-size: 0.75em;
-    }
 }
 
 #commanderAssets {
@@ -543,15 +579,16 @@
             height: 40px;
             margin: unset;
             cursor: pointer;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(0, 0, 0, 0.75);
+            border: 1px solid rgba(255, 255, 255, 0.15);
             border-radius: 6px;
-            padding: 2px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+            padding: 4px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
             transition: transform 0.15s ease, 
                         box-shadow 0.15s ease, 
                         border-color 0.15s ease;
             &:hover {
-                background: rgba(0, 0, 0, 0.3); 
+                background: rgba(0, 0, 0, 0.9); 
                 transform: scale(1.15);
                 border-color: rgba(255, 255, 255, 0.5);
                 box-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
@@ -576,6 +613,7 @@
             margin: unset;
             cursor: pointer;
             border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(0, 0, 0, 0.75); 
             border-radius: 6px;
             padding: 2px;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
@@ -583,7 +621,7 @@
                         box-shadow 0.15s ease, 
                         border-color 0.15s ease;
             &:hover {
-                background: rgba(0, 0, 0, 0.3); 
+                background: rgba(0, 0, 0, 0.9); 
                 transform: scale(1.15);
                 border-color: rgba(255, 255, 255, 0.5);
                 box-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);

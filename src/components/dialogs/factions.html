@@ -5,36 +5,39 @@
         </button>
     </form>
 
-    <h2 data-i18n="tooltips:factions&Vehicles"></h2>
-    
+    <div id="factionTop">
+    <img class="team-bg" id="teamBg1" alt="" />
+    <img class="team-bg" id="teamBg2" alt="" />
+    <span class="factionMenu-vs" data-i18n="common:vs">vs</span>
     <div id="factionMenu">
-        <div id="team1">
+        <div id="team1" class="team-picker">
             <h2 data-i18n="common:team1"></h2>
-            <div class="selectors">
-                <div id="faction1" class="factionSelector">
-                    <select class="dropbtn8 unselectable" tabindex="-1"></select>
-                </div>
-                <div id="unit1" class="unitSelector">
-                    <select class="dropbtn9 unselectable" tabindex="-1"></select>
-                </div>
+            <div class="team-selectors">
+                <div class="picker-btn faction-picker-btn" id="factionBtn1"></div>
+                <div class="picker-btn unit-picker-btn" id="unitBtn1"></div>
+            </div>
+            <button type="button" id="team1PinButton" class="btn btn-pin" aria-label="pin" data-i18n="common:pinToMap"></button>
+            <div id="faction1" class="hidden-selector">
+                <select class="dropbtn8 unselectable" tabindex="-1"></select>
+            </div>
+            <div id="unit1" class="hidden-selector">
+                <select class="dropbtn9 unselectable" tabindex="-1"></select>
             </div>
         </div>
-        <div id="team2">
+        <div id="team2" class="team-picker">
             <h2 data-i18n="common:team2"></h2>
-            <div class="selectors">
-                <div id="unit2" class="unitSelector">
-                    <select class="dropbtn11 unselectable" tabindex="-1"></select>
-                </div>
-                <div id="faction2" class="factionSelector">
-                    <select class="dropbtn10 unselectable" tabindex="-1"></select>
-                </div>
+            <div class="team-selectors">
+                <div class="picker-btn faction-picker-btn" id="factionBtn2"></div>
+                <div class="picker-btn unit-picker-btn" id="unitBtn2"></div>
+            </div>
+            <button type="button" id="team2PinButton" class="btn btn-pin" aria-label="pin" data-i18n="common:pinToMap"></button>
+            <div id="faction2" class="hidden-selector">
+                <select class="dropbtn10 unselectable" tabindex="-1"></select>
+            </div>
+            <div id="unit2" class="hidden-selector">
+                <select class="dropbtn11 unselectable" tabindex="-1"></select>
             </div>
         </div>
-    </div>
-
-    <div id="pinButtons">
-        <button type="button" id="team1PinButton" class="btn btn-pin" aria-label="pin" data-i18n="common:pinToMap"></button>
-        <button type="button" id="team2PinButton" class="btn btn-pin" aria-label="pin" data-i18n="common:pinToMap"></button>
     </div>
 
 
@@ -48,10 +51,12 @@
         <div id="team2Characteristics" class="characteristics"></div>
     </div>
 
+    </div><!-- #factionTop -->
+
     <div id="factionVehicles">
         <div id="team1Vehicles" class="teamVehicles"></div>
         <div id="team2Vehicles" class="teamVehicles"></div>
     </div>
-                
+
 
 </dialog>
