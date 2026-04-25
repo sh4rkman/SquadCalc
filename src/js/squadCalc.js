@@ -99,6 +99,8 @@ export default class SquadCalc {
             if (!server) {
                 this.updateUrlParams({ server: null });
                 this.openToast("error", "serverNotFound", "");
+                this.loadLayers();
+                this.initStaticMode(this.urlIntent);
                 return;
             }
 
@@ -185,6 +187,7 @@ export default class SquadCalc {
                             if (um.length) uSel.val(um.val()).trigger($.Event("change", { broadcast: false }));
                         }
                     });
+                    this.updateUrlParams({ team1: null, team1unit: null, team2: null, team2unit: null });
                     onLayerLoaded?.();
                 });
             }
@@ -403,7 +406,12 @@ export default class SquadCalc {
 
         // Update the URL & Layer
         this.updateUrlParams({ map: this.minimap.activeMap.name });
-        this.loadLayers(); 
+
+        // In server mode, skip the initial layers fetch — switchLayer will load
+        // the correct map's layers once server data arrives
+        if (!this.urlIntent.server) {
+            this.loadLayers();
+        }
 
     }
 
@@ -1523,7 +1531,7 @@ export default class SquadCalc {
         const sortedParams = new URLSearchParams();
 
         // Add parameters in the order defined by paramOrder
-        ["map", "layer", "team1", "team1unit", "team2", "team2unit", "type", "session", "server"].forEach((param) => {
+        ["map", "layer", "type", "session", "server"].forEach((param) => {
             if (urlParams.has(param)) {
                 sortedParams.set(param, urlParams.get(param));
                 urlParams.delete(param);

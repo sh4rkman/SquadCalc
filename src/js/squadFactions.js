@@ -861,9 +861,6 @@ export default class SquadFactions {
             this.renderUnitBtn(1);
             this.updateFactionBg(1, event.target.value);
 
-            if (event.broadcast !== false) {
-                App.updateUrlParams({ team1: event.target.value, team1unit: this.UNIT1_SELECTOR.val() });
-            }
 
             if (broadcast && App.session.ws && App.session.ws.readyState === WebSocket.OPEN) {
                 App.session.ws.send(
@@ -893,9 +890,6 @@ export default class SquadFactions {
             this.renderUnitBtn(2);
             this.updateFactionBg(2, event.target.value);
 
-            if (event.broadcast !== false) {
-                App.updateUrlParams({ team2: event.target.value, team2unit: this.UNIT2_SELECTOR.val() });
-            }
 
             if (broadcast && App.session.ws && App.session.ws.readyState === WebSocket.OPEN) {
                 App.session.ws.send(
@@ -966,9 +960,6 @@ export default class SquadFactions {
             this.loadCommanderAssets("#team1CommanderAsset", selectedUnit);
             this.loadCharacteristics("#team1Characteristics", selectedUnit);
 
-            if (event.broadcast !== false) {
-                App.updateUrlParams({ team1: this.FACTION1_SELECTOR.val(), team1unit: event.target.value });
-            }
         });
 
 
@@ -1030,9 +1021,6 @@ export default class SquadFactions {
             $(".vehicle-card").off("click").on("click", (event) => { this.openCard(event); });
             this.renderUnitBtn(2);
 
-            if (event.broadcast !== false) {
-                App.updateUrlParams({ team2: this.FACTION2_SELECTOR.val(), team2unit: event.target.value });
-            }
         });
 
         if (App.userSettings.enableFactions) {

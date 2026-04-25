@@ -57,8 +57,10 @@ export default class SquadServersBrowser {
      * Fetches the list of servers from the API and stores it in `this.serversData`.
      */
     async getServers() {
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 10000);
         try {
-            const response = await fetch(`${process.env.API_URL}/get/servers`);
+            const response = await fetch(`${process.env.API_URL}/get/servers`, { signal: controller.signal });
             const data = await response.json();
             this.serversData = data.servers;
 
@@ -73,7 +75,8 @@ export default class SquadServersBrowser {
 
         } catch (error) {
             console.error("Error fetching server data:", error);
-            //serversList.innerHTML = `<p data-i18n="common:errorLoading">${i18next.t("loadingServers", { ns: "common" })}</p>`;
+        } finally {
+            clearTimeout(timeout);
         }
     }
 
@@ -406,17 +409,12 @@ export default class SquadServersBrowser {
         const clickedElement = $(event.target);
         if (clickedElement.closest(".favorite-btn").length) return;
 
-        const url = new URL(window.location);
-
         // --- UNSELECT ---
         if (row.hasClass("selected")) {
             row.removeClass("selected");
             $("#servers").removeClass("active");
             this.selectedServer = null;
-
-            // Remove &server= from URL
-            url.searchParams.delete("server");
-            window.history.replaceState({}, "", url);
+            App.updateUrlParams({ server: null });
 
             // stop sync
             if (this.syncInterval) {
@@ -433,10 +431,8 @@ export default class SquadServersBrowser {
 
         // Retrieve fresh data from the serversData array in case it has changed since rendering
         const server = this.serversData.find(s => s.id == row.data("serverid"));
-        
-        // Add the serverid to the URL
-        url.searchParams.set("server", server.id);
-        window.history.replaceState({}, "", url);
+
+        App.updateUrlParams({ server: server.id });
 
         // Update the selected server and layer
         this.selectedServer = server.id;
@@ -552,6 +548,10 @@ export default class SquadServersBrowser {
         };
 
         const setLayerAndFactions = () => {
+            if (!App.LAYER_SELECTOR.find(`option[value="${layerIndex}"]`).length) {
+                $(document).one("layers:loaded", setLayerAndFactions);
+                return;
+            }
             App.LAYER_SELECTOR.val(layerIndex).trigger($.Event("change", { broadcast: true }));
             $(document).one("layer:loaded", applyFactions);
         };
