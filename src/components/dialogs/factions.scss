@@ -1,6 +1,11 @@
 @use '../shared/variables';
 @use 'sass:color';
 
+@keyframes flag-shimmer {
+    0%   { left: -75%; }
+    100% { left: 150%; }
+}
+
 .unit-option {
     display: flex;
     gap: 10px;
@@ -100,6 +105,7 @@
         line-height: 1;
         margin: 0;
         padding: 0.3em 0;
+        text-transform: uppercase;
         @include variables.text-outline;
     }
     #factionTop {
@@ -187,18 +193,23 @@
             position: relative;
             cursor: pointer;
             background: #111;
-            outline: 1px solid rgba(255,255,255,0.2);
+            outline: 1px solid rgba(255,255,255,0.4);
             border-radius: 3px;
             display: flex;
             align-items: center;
             justify-content: center;
             overflow: hidden;
-            transition: outline-color 0.1s ease, transform 0.1s ease, box-shadow 0.1s ease;
+            box-shadow: inset 0 -3px 0 variables.$mainColor;
+            transition: outline-color 0.1s ease, outline-width 0.1s ease, transform 0.1s ease, box-shadow 0.1s ease;
             user-select: none;
             &:hover {
                 outline: 2px solid variables.$mainColor;
                 transform: scale(1.05);
-                box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+                box-shadow: inset 0 -3px 0 variables.$mainColor, 0 4px 12px rgba(0,0,0,0.4);
+            }
+            &:active {
+                transform: scale(0.95);
+                box-shadow: inset 0 -2px 0 variables.$mainColor;
             }
         }
         .faction-picker-btn {
@@ -206,23 +217,49 @@
             aspect-ratio: 2 / 1;
             img {
                 position: absolute;
-                width: 100%;
-                height: 100%;
+                inset: -1px;
+                width: calc(100% + 2px);
+                height: calc(100% + 2px);
                 object-fit: cover;
                 pointer-events: none;
             }
             .picker-label {
                 @include variables.text-outline;
                 position: absolute;
-                bottom: 0;
+                top: 50%;
+                transform: translateY(-50%);
                 left: 0;
                 right: 0;
                 color: white;
-                font-size: 10px;
+                font-size: 2em;
                 font-weight: bold;
                 text-align: center;
-                padding: 2px 4px;
+                letter-spacing: 0.5px;
                 pointer-events: none;
+                opacity: 0;
+                transition: opacity 0.25s ease-in-out;
+            }
+            &:hover .picker-label {
+                opacity: 1;
+            }
+            &::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -75%;
+                width: 50%;
+                height: 100%;
+                background: linear-gradient(
+                    120deg,
+                    transparent 0%,
+                    rgba(255, 255, 255, 0.35) 50%,
+                    transparent 100%
+                );
+                z-index: 1;
+                pointer-events: none;
+            }
+            &:hover::before {
+                animation: flag-shimmer 0.55s ease-in-out;
             }
         }
         .unit-picker-btn {
@@ -253,7 +290,6 @@
                 left: 0;
                 right: 0;
                 color: white;
-                font-size: 9px;
                 font-weight: bold;
                 text-align: center;
                 padding: 0 2px;
@@ -493,7 +529,7 @@
                     display: inline-flex;
                     align-items: center;
                     gap: 0.3em;
-                    min-height: 1em;
+                    min-height: 1.4em;
                     .count-delay-icon {
                         display: inline-flex;
                         align-items: center;
@@ -564,67 +600,53 @@
     }
 }
 
-#commanderAssets {
+#factionInfo {
     width: 100%;
     display: flex;
     flex-direction: row;
-    margin: 1em 0;
-    .commanderAssets {
+    margin: 0.4em 0;
+    .teamInfo {
         flex: 1;
         display: flex;
+        flex-direction: row;
         align-items: center;
         justify-content: center;
         gap: 0.5em;
+    }
+    .characteristics:empty {
+        display: none;
+    }
+    .commanderAssets + .characteristics:not(:empty) {
+        border-left: 1px solid rgba(255, 255, 255, 0.15);
+        padding-left: 0.5em;
+    }
+    .commanderAssets,
+    .characteristics {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 0.35em;
         img {
-            height: 40px;
+            height: 26px;
             margin: unset;
             cursor: pointer;
             background: rgba(0, 0, 0, 0.75);
             border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 6px;
-            padding: 4px;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
-            transition: transform 0.15s ease, 
-                        box-shadow 0.15s ease, 
+            border-radius: 5px;
+            padding: 3px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+            transition: transform 0.15s ease,
+                        box-shadow 0.15s ease,
                         border-color 0.15s ease;
-            &:hover {
-                background: rgba(0, 0, 0, 0.9); 
-                transform: scale(1.15);
-                border-color: rgba(255, 255, 255, 0.5);
-                box-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
-            }
-        }
-    }
-}
-
-#characteristics {
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    margin: 0 0 1em;
-    .characteristics {
-        flex: 1;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 0.5em;
-        img {
-            height: 30px;
-            margin: unset;
-            cursor: pointer;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            background: rgba(0, 0, 0, 0.75); 
-            border-radius: 6px;
-            padding: 2px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
-            transition: transform 0.15s ease, 
-                        box-shadow 0.15s ease, 
-                        border-color 0.15s ease;
-            &:hover {
-                background: rgba(0, 0, 0, 0.9); 
-                transform: scale(1.15);
-                border-color: rgba(255, 255, 255, 0.5);
-                box-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
+            @media (hover: hover) {
+                height: 34px;
+                &:hover {
+                    background: rgba(0, 0, 0, 0.9);
+                    transform: scale(1.15);
+                    border-color: rgba(255, 255, 255, 0.5);
+                    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
+                }
             }
         }
     }
