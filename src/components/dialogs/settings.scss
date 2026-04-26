@@ -140,6 +140,10 @@
             &.separator {
                 opacity: 0.4;
             }
+            &.error {
+                color: variables.$mainColor;
+                opacity: 1;
+            }
         }
     }
     .slidersHolders {

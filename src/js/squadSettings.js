@@ -2,7 +2,6 @@ import { animateCSS } from "./animations.js";
 import SquadFactions from "./squadFactions.js";
 import packageInfo from "../../package.json";
 
-const GAME_DATA_VERSION = "10.4";
 
 /**
  * Centralized settings management for SquadCalc.
@@ -35,7 +34,6 @@ export default class SquadSettings {
         this.bindMenuButtons();
         this.applyInitialState();
         $("#appVersion").text(`SquadCalc v${packageInfo.version}`);
-        $("#gameDataVersion").text(`Squad v${GAME_DATA_VERSION}`);
     }
 
 
