@@ -14,8 +14,10 @@
   - Moved legacy button into the Map Buttons (thanks Madlifer!)
   - Added a shortcut (`CTRL` + `M`) to switch from Map to Legacy mode
   - Map buttons are now dark-themed
-  - Added tooltips for settings and legacy ui buttons
+  - Added tooltips for settings and legacy mode buttons
   - Added `color-scheme: dark` to prevent browsers from forcing their own dark mode override on the app
+  - Layer selector is not hidden on legacy mode
+- Changed Hellcanon translation in German (thanks Hans Wurst!)
 
 
 </br><img src="https://img.shields.io/badge/-bug%20fixes-b22">  
