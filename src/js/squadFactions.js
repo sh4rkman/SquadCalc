@@ -781,7 +781,7 @@ export default class SquadFactions {
         const currentUnit = UNIT_SELECTOR.val();
         const unitsToShow = [faction.defaultUnit, ...faction.types.map(t => t.unit)];
 
-        let html = "<div class='faction-grid animate__animated animate__fadeIn animate__faster'>";
+        let html = `<div class='faction-grid${team === 2 ? " team2" : ""} animate__animated animate__fadeIn animate__faster'>`;
         unitsToShow.forEach(unitId => {
             const unit = units.find(u => u.unitObjectName === unitId);
             if (!unit) return;
