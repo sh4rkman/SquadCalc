@@ -279,7 +279,9 @@ th {
         font-size: 0.6em;
     }
     .servers-table th:nth-child(4),
-    .servers-table td:nth-child(4)
+    .servers-table td:nth-child(4),
+    .servers-table th:nth-child(5),
+    .servers-table td:nth-child(5)
     {
         display: none;
     }
