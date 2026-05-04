@@ -238,7 +238,7 @@ export var WEAPONS = [
         shells : [{
             name: "MO-SHORT",
             velocity: 110,
-            moa: 50,
+            moa: 30,
             minDistance: 0,
             explosionDamage: 500,
             explosionRadius: [2, 60],
@@ -248,7 +248,7 @@ export var WEAPONS = [
         {
             name: "MO-MEDIUM",
             velocity: 143.5,
-            moa: 50,
+            moa: 30,
             minDistance: 0,
             explosionDamage: 500,
             explosionRadius: [2, 60],
@@ -258,7 +258,7 @@ export var WEAPONS = [
         {
             name: "MO-LONG",
             velocity: 171.5,
-            moa: 50,
+            moa: 30,
             minDistance: 0,
             explosionDamage: 500,
             explosionRadius: [2, 60],
