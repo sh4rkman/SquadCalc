@@ -205,6 +205,9 @@
             .vehicle-info {
                 font-size: 0.8em;
             }
+            .vehicle-icon:has(img) {
+                display: none;
+            }
         }
         #team1Vehicles {
             .card-content {
