@@ -21,6 +21,10 @@ header {
         z-index: 4;
         padding-top: 1em;
         pointer-events: none;
+        visibility: hidden;
+        &.active {
+            visibility: visible;
+        }
         .select2-results__options {
             font-weight: 600;
             font-size: 0.85em;
