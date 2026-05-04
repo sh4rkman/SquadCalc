@@ -90,8 +90,21 @@
         #factionVehicles {
             .card-content {
                 .vehicle-icon {
-                    width: 22px;
-                    height: 22px;
+                    width: 40px;
+                    height: 40px;
+                    flex-shrink: 0;
+                }
+                .vehicle-type {
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    min-width: 0;
+                    flex: 1;
+                }
+                .vehicle-info {
+                    min-width: 0;
+                }
+                .vehicle-meta {
+                    flex-shrink: 0;
                 }
             }
         }
@@ -185,16 +198,13 @@
         .card-content {
             padding: 0.3em;
             .vehicle-icon {
-                width: 22px;
-                height: 22px;
+                width: 30px;
+                height: 30px;
                 margin-right: 0.5em;
             }
             .vehicle-info {
                 font-size: 0.8em;
             }
-        }
-        .vehicle-info {
-            font-size: 0.8em;
         }
         #team1Vehicles {
             .card-content {
@@ -206,34 +216,6 @@
         
     }
 }
-
-/* -- WIDTH < 512px -- */
-@media screen and (width <= 32em) {
-    #factionsDialog #factionVehicles {
-        .card-content {
-            padding: 0.3em;
-            .vehicle-icon {
-                width: 15px;
-                height: 15px;
-                margin-right: 0.2em;
-                .vehicle-count {
-                    font-size: 1em;
-                }
-            }
-            .vehicle-info {
-                font-size: 0.6em;
-            }
-        }
-        #team1Vehicles {
-            .card-content {
-                .vehicle-icon {
-                    margin-left: 0.2em;
-                    margin-right: 0;
-                }
-            }
-        }
-    }
-} 
 
 /* ≥ 768px */
 
