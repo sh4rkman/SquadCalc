@@ -925,34 +925,45 @@ export default class SquadCalc {
     }
 
     handleKeydown(event) {
-        if ($(event.target).is("input, textarea, select")) return;
 
-        if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "m") {
-            event.preventDefault(); this.switchUI(); return;
-        }
-
-        if (this.ui == 0) return;
-
+        // Ignore shortcuts when a dialog is open
         const { calc, weapon, help, factions, servers } = this._dialogs;
         if (weapon.open || calc.open || help.open || factions.open || servers.open) return;
 
-        if (event.key === "Enter") { this.toggleFocusMode(); }
+        // Ignore shortcuts when inside an text area
+        if ($(event.target).is("input, textarea, select")) return;
 
-        if (event.key === "Delete") {
-            this.minimap.history.forEach((item) => { item.delete(); });
+        // CTRL+M: Switch from map to legacy mode
+        if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "m") {
+            event.preventDefault();
+            this.switchUI();
+            return;
         }
 
+        // Ignore other shortcuts when in legacy mode
+        if (this.ui == 0) return;
+
+        // Enter: leave/enter "Focus mode"
+        if (event.key === "Enter") this.toggleFocusMode();
+
+        // Delete: clear the map targets/markers
+        if (event.key === "Delete") this.minimap.history.forEach((item) => { item.delete(); });
+
+        // Escape: Quit drawing mode if drawing
+        if (event.key === "Escape") this.minimap.disableDrawingMode();
+
+        // Backspace/ctrl: Remove the last placed target/marker
         if (event.key === "Backspace" || (event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "z") {
             event.preventDefault();
             if (this.minimap.history.length > 0) this.minimap.history.at(-1).delete();
         }
 
+        // CTRL+S: Save & Download the map state
         if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "s") {
             event.preventDefault();
             if (this.minimap.hasMarkers()) this.saveMapStateToFile();
         }
 
-        if (event.key === "Escape") { this.minimap.disableDrawingMode(); }
     }
 
     changeIconsSize(){
