@@ -3,25 +3,28 @@
 </br><img src="https://img.shields.io/badge/-new%20features-green">
 - Each team's factions and units are now stored in the URL (thanks Hans Wurst!)
 - Added a button to upload a saved file (thanks d503-ai !)
-
 - Added SquadCalc and Squad Data version in the Settings dialog
-
-</br><img src="https://img.shields.io/badge/-%20improv%20-orange"> 
-- Vehicle emplacements that disappear will now prioritise vehicles that don't respawn, as in-game.
+- Added a shortcut (`M`) to switch basemap (Thanks SphaeroX ! [#476](https://github.com/sh4rkman/SquadCalc/issues/476))
+- Added a shortcut (`CTRL` + `M`) to switch from Map to Legacy mode
 - UI General Overhaul
   - Reworked the faction button to show current factions & units
   - Added a setting to minimize the faction bar by default
   - Moved legacy button into the Map Buttons (thanks Madlifer!)
-  - Added a shortcut (`CTRL` + `M`) to switch from Map to Legacy mode
   - Map buttons are now dark-themed
   - Added tooltips for settings and legacy mode buttons
   - Added `color-scheme: dark` to prevent browsers from forcing their own dark mode override on the app
-  - Layer selector is not hidden on legacy mode
-- Changed Hellcanon translation in German (thanks Hans Wurst!)
+  - Layer selector is now hidden on legacy mode
+  - weapon selectors are not hidden until a weapon is placed on the map
 
+</br><img src="https://img.shields.io/badge/-%20improv%20-orange"> 
+- Vehicle emplacements that disappear will now prioritise vehicles that don't respawn, as in-game.
+- Changed Hellcanon translation in German (thanks Hans Wurst!)
+- Enhanced faction dialog responsivness 
 
 </br><img src="https://img.shields.io/badge/-bug%20fixes-b22">  
 - Fixed Server Syncing not working when joining a server from a URL (fix [#459](https://github.com/sh4rkman/SquadCalc/issues/459))
+- Fixed MO120RTF1 MOA from 50 to 30 (Thanks yobaNGE ! fix [#473](https://github.com/sh4rkman/SquadCalc/issues/473))
+- In the server browser, teams are now correctly hidden on mobile(fix [#472](https://github.com/sh4rkman/SquadCalc/issues/472))
 - Fixed session links sometimes not working when opening them in a new tab (fix [#458](https://github.com/sh4rkman/SquadCalc/issues/458))
 - Fixed unit characteristics not hiding when removing a faction entirely
 - Fixed the server browser tooltip staying open after closing the server list

@@ -346,6 +346,7 @@
 🔣 Icons by **[FontAwesome](https://fontawesome.com/icons)**  
 👌🏼 Thanks to everyone supporting the project with kinds words, clever suggestions, and better code than mine
 
+
 </br></br></br>
 # **Contributors**
 </br>
@@ -359,10 +360,8 @@
 * [Hans-Vader](https://github.com/Hans-Vader) 
 * [Metroseksuaali](https://github.com/Metroseksuaali)  
 * [TheMatheusDev](https://github.com/TheMatheusDev)  
+* [SphaeroX](https://github.com/SphaeroX)  
 * sitroz
-
-
-
 
 
 
