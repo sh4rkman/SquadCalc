@@ -51,6 +51,7 @@
         "minimizeFactionBar": "Réduire la barre de factions par défaut",
     "shortcuts": "Raccourcis",
         "enter": "Entrer en mode focus, masquant les boutons de l'interface utilisateur",
+        "toggleMap": "Changer de mode de carte (Topographique, Terrain, Base)",
         "deleteLastTarget": "Supprimer la dernière cible placée sur la carte",
     "changelog": "Journal des modifications",
     "github": "Voir le code sur Github",

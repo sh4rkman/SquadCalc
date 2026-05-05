@@ -52,6 +52,7 @@
         "minimizeFactionBar": "Minimize Faction Bar by Default",
     "shortcuts": "Shortcuts",
         "enter": "Enter focus mode, hiding UI buttons",
+        "toggleMap": "Switch between map modes (Topographic, Terrain, Base)",
         "deleteLastTarget": "Delete last placed target on the map",
     "discord": "Official Discord",
     "github": "View code on Github",

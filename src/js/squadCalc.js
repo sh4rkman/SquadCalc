@@ -940,6 +940,21 @@ export default class SquadCalc {
             return;
         }
 
+        // M: Toggle map layers
+        if (!event.ctrlKey && !event.metaKey && event.key.toLowerCase() === "m") {
+            const layers = ["topomap", "terrainmap", "basemap"];
+            const currentLayer = $("#mapLayerMenu .layers.active").attr("value") || "basemap";
+            const nextIndex = (layers.indexOf(currentLayer) + 1) % layers.length;
+            const nextLayer = layers[nextIndex];
+
+            $("#mapLayerMenu").find(".layers").removeClass("active");
+            $(".btn-" + nextLayer).addClass("active");
+            this.updateUrlParams({ type: nextLayer === "basemap" ? null : nextLayer });
+            localStorage.setItem("settings-map-mode", nextLayer);
+            this.userSettings.layerMode = nextLayer;
+            this.minimap.changeLayer();
+        }
+
         // Ignore other shortcuts when in legacy mode
         if (this.ui == 0) return;
 
