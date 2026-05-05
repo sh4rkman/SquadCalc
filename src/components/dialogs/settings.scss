@@ -63,11 +63,38 @@
         border: none;
         margin: 0 0 1.5em 3em;
         &.shortcuts {
-            padding-top: 4em;
-            td {           
+            padding-top: 1.5em;
+            thead th {
+                font-size: 1.1em;
+                color: variables.$mainTxtColor;
+                opacity: 0.5;
+                padding-bottom: 10px;
+                font-weight: normal;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                text-align: left;
+            }
+            td {
                 &:nth-child(1) {
-                    padding: 10px 20px 10px 0;
+                    padding: 12px 0;
+                    white-space: nowrap;
                 }
+                &.arrow {
+                    padding: 0 16px;
+                    opacity: 0.3;
+                    font-size: 1.4em;
+                }
+            }
+            kbd {
+                display: inline-block;
+                padding: 4px 10px;
+                font-size: 1.8em;
+                font-family: monospace;
+                background-color: #2a2a2a;
+                border: 1px solid #555;
+                border-radius: 3px;
+                box-shadow: 0 1px 2px rgba(0,0,0,0.4);
+                color: #ddd;
             }
         }
         &.userSettings {
@@ -331,7 +358,7 @@ $bezier: cubic-bezier(0.65, 0.25, 0.56, 0.96);
     button {
         color: variables.$mainBGColor;
         background-color: white;
-        width: 28%;
+        width: 20%;
         margin-bottom: 1em;
         vertical-align: middle;
         height: 18px;
@@ -349,7 +376,7 @@ $bezier: cubic-bezier(0.65, 0.25, 0.56, 0.96);
             color: variables.$mainTxtColor;
             padding-bottom: 0;
             height: 25px;
-            width: 33%;
+            width: 28%;
             svg {
                 display: inline-block;
                 fill: variables.$mainTxtColor;
