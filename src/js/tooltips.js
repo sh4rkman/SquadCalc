@@ -245,19 +245,34 @@ const commonMapMenuToolipsSettings = {
 tippy(".btn-basemap", {
     ...commonMapMenuToolipsSettings,
     onShow(tip) {
-        tip.setContent(i18next.t("tooltips:basemode"));
+        tip.setContent(
+            `
+            <div>${i18next.t("tooltips:basemode")}</div>
+            <div class="tooltipsubtext">M</div>
+            `
+        );
     },
 });
 tippy(".btn-terrainmap", {
     ...commonMapMenuToolipsSettings,
     onShow(tip) {
-        tip.setContent(i18next.t("tooltips:terrainmode"));
+        tip.setContent(
+            `
+            <div>${i18next.t("tooltips:terrainmode")}</div>
+            <div class="tooltipsubtext">M</div>
+            `
+        );
     },
 });
 tippy(".btn-topomap", {
     ...commonMapMenuToolipsSettings,
     onShow(tip) {
-        tip.setContent(i18next.t("tooltips:topographicmode"));
+        tip.setContent(
+            `
+            <div>${i18next.t("tooltips:topographicmode")}</div>
+            <div class="tooltipsubtext">M</div>
+            `
+        );
     },
 });
 tippy(".btn-layer", {

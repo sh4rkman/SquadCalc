@@ -704,6 +704,21 @@ export default class SquadCalc {
                 // ESCAPE = QUIT DRAWING MODE
                 if (event.key === "Escape") { this.minimap.disableDrawingMode(); }
 
+                // M = TOGGLE MAP LAYERS
+                if (event.key.toLowerCase() === "m") {
+                    const layers = ["topomap", "terrainmap", "basemap"];
+                    const currentLayer = $("#mapLayerMenu .layers.active").attr("value") || "basemap";
+                    const nextIndex = (layers.indexOf(currentLayer) + 1) % layers.length;
+                    const nextLayer = layers[nextIndex];
+
+                    $("#mapLayerMenu").find(".layers").removeClass("active");
+                    $(".btn-" + nextLayer).addClass("active");
+                    this.updateUrlParams({ type: nextLayer === "basemap" ? null : nextLayer });
+                    localStorage.setItem("settings-map-mode", nextLayer);
+                    this.userSettings.layerMode = nextLayer;
+                    this.minimap.changeLayer();
+                }
+
             });
 
 

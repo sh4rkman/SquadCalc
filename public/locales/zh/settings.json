@@ -51,6 +51,7 @@
         "respawnCam": "显示重生摄像头位置",
     "shortcuts": "快捷键",
         "enter": "进入专注模式，隐藏所有按钮",
+        "toggleMap": "切换地图模式（地形图、地势图、底图）",
         "deleteLastTarget": "删除地图上最后放置的目标",
     "changelog": "更新日志",
     "github": "在GitHub上查看本开源项目的代码！",

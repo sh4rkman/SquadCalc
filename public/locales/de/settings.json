@@ -51,6 +51,7 @@
         "disableSounds": "Respawn-Benachrichtigungstöne deaktivieren",
     "shortcuts": "Tastenkürzel",
         "enter": "Fokusmodus aktivieren, UI-Schaltflächen ausblenden",
+        "toggleMap": "Zwischen Kartenmodi umschalten (Topografisch, Gelände, Basis)",
         "deleteLastTarget": "Zuletzt platziertes Ziel auf der Karte löschen",
     "discord": "Offizieller Discord",
     "github": "Code auf Github ansehen",
