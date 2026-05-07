@@ -26,6 +26,28 @@ import { MapDrawing, MapArrow, MapCircle, MapRectangle } from "./squadShapes.js"
  */
 export default class SquadCalc {
 
+    static get DEFAULT_SHORTCUTS() {
+        return {
+            toggleMap:        { key: "m",       ctrl: false, alt: false, shift: false },
+            switchUI:         { key: "m",       ctrl: true,  alt: false, shift: false },
+            focusMode:        { key: "Enter",   ctrl: false, alt: false, shift: false },
+            clearTargets:     { key: "Delete",  ctrl: false, alt: false, shift: false },
+            deleteLastTarget: { key: "z",       ctrl: true,  alt: false, shift: false },
+            saveMap:          { key: "s",       ctrl: true,  alt: false, shift: false },
+        };
+    }
+
+    static get SHORTCUT_ACTIONS() {
+        return [
+            { id: "toggleMap",        i18nKey: "settings:toggleMap"        },
+            { id: "switchUI",         i18nKey: "settings:switchUI"          },
+            { id: "focusMode",        i18nKey: "settings:enter"             },
+            { id: "clearTargets",     i18nKey: "settings:clearTargets"      },
+            { id: "deleteLastTarget", i18nKey: "settings:deleteLastTarget"  },
+            { id: "saveMap",          i18nKey: "settings:saveMap"           },
+        ];
+    }
+
     /**
      * @param {Array} [options]
      */
@@ -35,6 +57,7 @@ export default class SquadCalc {
         this.gravity = options.gravity;
         this.debug = options.debug;
         this.userSettings = new SquadSettings(this);
+        this.shortcuts = this.loadShortcuts();
         this.activeWeapon = "";
         this.hasMouse = matchMedia("(pointer:fine)").matches;
         this.MAP_SELECTOR = $(".dropbtn");
@@ -600,6 +623,7 @@ export default class SquadCalc {
             help:    document.querySelector("#helpDialog"),
             factions:document.querySelector("#factionsDialog"),
             servers: document.querySelector("#serversInformation"),
+            shortcutCapture: document.querySelector("#shortcutCaptureDialog"),
         };
         const { calc: calcInformation, weapon: weaponInformation, help: helpDialog, factions: factionsDialog, servers: serversInformation } = this._dialogs;
 
@@ -874,6 +898,8 @@ export default class SquadCalc {
             $("#"+$(event.currentTarget).val()).addClass("active");
         });
 
+        $("#settingsControls button[value='panel4']").on("click", () => this.initShortcutsPanel());
+
         this.show();
     }
 
@@ -924,29 +950,172 @@ export default class SquadCalc {
         }
     }
 
+    loadShortcuts() {
+        const defaults = SquadCalc.DEFAULT_SHORTCUTS;
+        try {
+            const stored = localStorage.getItem("settings-shortcuts");
+            if (stored) return { ...defaults, ...JSON.parse(stored) };
+        } catch { /* ignore corrupt data */ }
+        return { ...defaults };
+    }
+
+    saveShortcuts() {
+        localStorage.setItem("settings-shortcuts", JSON.stringify(this.shortcuts));
+    }
+
+    matchesShortcut(event, id) {
+        const sc = this.shortcuts[id];
+        if (!sc) return false;
+        return (sc.ctrl  === (event.ctrlKey || event.metaKey))
+            && (sc.alt   === event.altKey)
+            && (sc.shift === event.shiftKey)
+            && event.key.toLowerCase() === sc.key.toLowerCase();
+    }
+
+    formatShortcutHTML(shortcut) {
+        const parts = [];
+        if (shortcut.ctrl)  parts.push("<kbd>Ctrl</kbd>");
+        if (shortcut.alt)   parts.push("<kbd>Alt</kbd>");
+        if (shortcut.shift) parts.push("<kbd>Shift</kbd>");
+        const name = shortcut.key === " " ? "Space"
+            : shortcut.key.length === 1 ? shortcut.key.toUpperCase()
+            : shortcut.key;
+        parts.push(`<kbd>${name}</kbd>`);
+        return parts.join(" + ");
+    }
+
+    initShortcutsPanel() {
+        const tbody = $("#panel4 .shortcuts tbody");
+        tbody.empty();
+
+        for (const { id, i18nKey } of SquadCalc.SHORTCUT_ACTIONS) {
+            const sc = this.shortcuts[id];
+            const isCustom = JSON.stringify(sc) !== JSON.stringify(SquadCalc.DEFAULT_SHORTCUTS[id]);
+            const $row = $(`
+                <tr class="shortcut-row${isCustom ? " is-custom" : ""}" data-action="${id}">
+                    <td class="shortcut-key-cell">${this.formatShortcutHTML(sc)}</td>
+                    <td class="arrow">→</td>
+                    <td class="shortcut-desc" data-i18n="${i18nKey}"></td>
+                    <td class="shortcut-edit">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M362.7 19.3L314.3 67.7 444.3 197.7l48.4-48.4c25-25 25-65.5 0-90.5L453.3 19.3c-25-25-65.5-25-90.5 0zm-71 71L58.6 323.5c-10.4 10.4-18 23.3-22.2 37.4L1 481.2C-1.5 489.7 .8 498.8 7 505s15.3 8.5 23.7 6.1l120.3-35.4c14.1-4.2 27-11.8 37.4-22.2L421.7 220.3 291.7 90.3z"/></svg>
+                    </td>
+                </tr>
+            `);
+            $row.on("click", () => this.openShortcutCapture(id));
+            tbody.append($row);
+        }
+
+        $("#panel4 .shortcuts [data-i18n]").each(function() {
+            this.textContent = i18next.t(this.dataset.i18n);
+        });
+    }
+
+    openShortcutCapture(actionId) {
+        const dialog = this._dialogs.shortcutCapture;
+        const actionLabel = i18next.t(
+            SquadCalc.SHORTCUT_ACTIONS.find(a => a.id === actionId).i18nKey
+        );
+
+        dialog.querySelector(".capture-title").textContent = actionLabel;
+
+        const preview  = dialog.querySelector(".capture-preview");
+        const listening = dialog.querySelector(".capture-listening");
+        const conflict = dialog.querySelector(".capture-conflict");
+        const saveBtn  = dialog.querySelector("#captureSave");
+
+        let pending = null;
+
+        const reset = () => {
+            pending = null;
+            preview.innerHTML = "";
+            listening.style.display = "";
+            conflict.textContent = "";
+            saveBtn.disabled = true;
+        };
+        reset();
+
+        const onKeydown = (event) => {
+            if (!dialog.open) return;
+            event.preventDefault();
+            if (["Tab", "Escape", "Control", "Alt", "Shift", "Meta"].includes(event.key)) return;
+
+            pending = {
+                key:   event.key.length === 1 ? event.key.toLowerCase() : event.key,
+                ctrl:  event.ctrlKey || event.metaKey,
+                alt:   event.altKey,
+                shift: event.shiftKey,
+            };
+
+            listening.style.display = "none";
+            preview.innerHTML = this.formatShortcutHTML(pending);
+
+            const conflictEntry = SquadCalc.SHORTCUT_ACTIONS.find(({ id }) => {
+                if (id === actionId) return false;
+                const sc = this.shortcuts[id];
+                return sc.ctrl  === pending.ctrl
+                    && sc.alt   === pending.alt
+                    && sc.shift === pending.shift
+                    && sc.key.toLowerCase() === pending.key.toLowerCase();
+            });
+
+            if (conflictEntry) {
+                conflict.textContent = i18next.t("settings:captureConflict", {
+                    action: i18next.t(conflictEntry.i18nKey)
+                });
+                saveBtn.disabled = true;
+            } else {
+                conflict.textContent = "";
+                saveBtn.disabled = false;
+            }
+        };
+
+        document.addEventListener("keydown", onKeydown, true);
+
+        dialog.querySelector("#captureSave").onclick = () => {
+            if (!pending) return;
+            this.shortcuts[actionId] = pending;
+            this.saveShortcuts();
+            this.initShortcutsPanel();
+            cleanup();
+        };
+
+        dialog.querySelector("#captureReset").onclick = () => {
+            this.shortcuts[actionId] = { ...SquadCalc.DEFAULT_SHORTCUTS[actionId] };
+            this.saveShortcuts();
+            this.initShortcutsPanel();
+            cleanup();
+        };
+
+        dialog.querySelector("#captureCancel").onclick = () => cleanup();
+
+        const cleanup = () => {
+            document.removeEventListener("keydown", onKeydown, true);
+            if (dialog.open) dialog.close();
+        };
+
+        dialog.addEventListener("close", cleanup, { once: true });
+
+        dialog.showModal();
+    }
+
     handleKeydown(event) {
 
-        // Ignore shortcuts when a dialog is open
         const { calc, weapon, help, factions, servers } = this._dialogs;
         if (weapon.open || calc.open || help.open || factions.open || servers.open) return;
 
-        // Ignore shortcuts when inside an text area
         if ($(event.target).is("input, textarea, select")) return;
 
-        // CTRL+M: Switch from map to legacy mode
-        if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "m") {
+        if (this.matchesShortcut(event, "switchUI")) {
             event.preventDefault();
             this.switchUI();
             return;
         }
 
-        // M: Toggle map layers
-        if (!event.ctrlKey && !event.metaKey && event.key.toLowerCase() === "m") {
+        if (this.matchesShortcut(event, "toggleMap")) {
             const layers = ["topomap", "terrainmap", "basemap"];
             const currentLayer = $("#mapLayerMenu .layers.active").attr("value") || "basemap";
             const nextIndex = (layers.indexOf(currentLayer) + 1) % layers.length;
             const nextLayer = layers[nextIndex];
-
             $("#mapLayerMenu").find(".layers").removeClass("active");
             $(".btn-" + nextLayer).addClass("active");
             this.updateUrlParams({ type: nextLayer === "basemap" ? null : nextLayer });
@@ -955,26 +1124,19 @@ export default class SquadCalc {
             this.minimap.changeLayer();
         }
 
-        // Ignore other shortcuts when in legacy mode
         if (this.ui == 0) return;
 
-        // Enter: leave/enter "Focus mode"
-        if (event.key === "Enter") this.toggleFocusMode();
+        if (this.matchesShortcut(event, "focusMode")) this.toggleFocusMode();
+        if (this.matchesShortcut(event, "clearTargets")) this.minimap.history.forEach((item) => { item.delete(); });
 
-        // Delete: clear the map targets/markers
-        if (event.key === "Delete") this.minimap.history.forEach((item) => { item.delete(); });
-
-        // Escape: Quit drawing mode if drawing
         if (event.key === "Escape") this.minimap.disableDrawingMode();
 
-        // Backspace/ctrl: Remove the last placed target/marker
-        if (event.key === "Backspace" || (event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "z") {
+        if (event.key === "Backspace" || this.matchesShortcut(event, "deleteLastTarget")) {
             event.preventDefault();
             if (this.minimap.history.length > 0) this.minimap.history.at(-1).delete();
         }
 
-        // CTRL+S: Save & Download the map state
-        if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "s") {
+        if (this.matchesShortcut(event, "saveMap")) {
             event.preventDefault();
             if (this.minimap.hasMarkers()) this.saveMapStateToFile();
         }

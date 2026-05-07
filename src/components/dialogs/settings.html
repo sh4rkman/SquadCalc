@@ -768,42 +768,26 @@
                     <th data-i18n="settings:shortcutKey"></th>
                     <th></th>
                     <th data-i18n="settings:shortcutAction"></th>
+                    <th></th>
                 </tr>
             </thead>
-            <tbody>
-                <tr>
-                    <td><kbd>M</kbd></td>
-                    <td class="arrow">→</td>
-                    <td><span data-i18n="settings:toggleMap"></span></td>
-                </tr>
-                <tr>
-                    <td><kbd>Ctrl</kbd> + <kbd>M</kbd></td>
-                    <td class="arrow">→</td>
-                    <td><span data-i18n="settings:switchUI"></span></td>
-                </tr>
-                <tr>
-                    <td><kbd>Enter</kbd></td>
-                    <td class="arrow">→</td>
-                    <td><span data-i18n="settings:enter"></span></td>
-                </tr>
-                <tr>
-                    <td><kbd>Delete</kbd></td>
-                    <td class="arrow">→</td>
-                    <td><span data-i18n="settings:clearTargets"></span></td>
-                </tr>
-                <tr>
-                    <td><kbd>Backspace</kbd> / <kbd>Ctrl</kbd> + <kbd>Z</kbd></td>
-                    <td class="arrow">→</td>
-                    <td><span data-i18n="settings:deleteLastTarget"></span></td>
-                </tr>
-                <tr>
-                    <td><kbd>Ctrl</kbd> + <kbd>S</kbd></td>
-                    <td class="arrow">→</td>
-                    <td><span data-i18n="settings:saveMap"></span></td>
-                </tr>
-            </tbody>
+            <tbody></tbody>
         </table>
     </div>
+
+    <dialog id="shortcutCaptureDialog" class="animate__animated animate__zoomIn">
+        <p class="capture-title"></p>
+        <div class="capture-key-display">
+            <span class="capture-listening" data-i18n="settings:captureListening"></span>
+            <span class="capture-preview"></span>
+        </div>
+        <p class="capture-conflict"></p>
+        <div class="capture-buttons">
+            <button id="captureReset" data-i18n="settings:captureReset"></button>
+            <button id="captureCancel" data-i18n="settings:captureCancel"></button>
+            <button id="captureSave" data-i18n="settings:captureSave"></button>
+        </div>
+    </dialog>
 
     <div id="settingsVersion">
         <span id="appVersion"></span>

@@ -89,12 +89,32 @@
                 display: inline-block;
                 padding: 4px 10px;
                 font-size: 1.8em;
-                font-family: monospace;
+                font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
                 background-color: #2a2a2a;
                 border: 1px solid #555;
                 border-radius: 3px;
                 box-shadow: 0 1px 2px rgba(0,0,0,0.4);
                 color: #ddd;
+            }
+            .shortcut-row {
+                cursor: pointer;
+                transition: opacity 0.15s ease;
+                &:hover { opacity: 0.7; }
+                &.is-custom .shortcut-key-cell kbd {
+                    border-color: variables.$mainColor;
+                    color: variables.$mainColor;
+                }
+                .shortcut-edit {
+                    padding-left: 16px;
+                    opacity: 0;
+                    transition: opacity 0.15s ease;
+                    svg {
+                        height: 1.2em;
+                        width: 1.2em;
+                        fill: variables.$mainTxtColor;
+                    }
+                }
+                &:hover .shortcut-edit { opacity: 0.5; }
             }
         }
         &.userSettings {
@@ -390,6 +410,92 @@ $bezier: cubic-bezier(0.65, 0.25, 0.56, 0.96);
             &#flagsvg{
                 height: 1.2em;
                 width: 1.2em;
+            }
+        }
+    }
+}
+
+#shortcutCaptureDialog {
+    width: 480px;
+    padding: 2.5em;
+    text-align: center;
+    font-size: 1em;
+    font-weight: bold;
+    background-color: variables.$mainBGColor;
+    color: variables.$mainTxtColor;
+    border: 1px solid #444;
+    border-radius: 6px;
+
+    .capture-title {
+        font-size: 1.3em;
+        margin: 0 0 1.2em;
+        color: variables.$mainTxtColor;
+        opacity: 0.7;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .capture-key-display {
+        min-height: 3em;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 0.8em;
+
+        .capture-listening {
+            opacity: 0.4;
+            font-size: 1.1em;
+        }
+
+        .capture-preview {
+            font-size: 1.1em;
+            kbd {
+                display: inline-block;
+                padding: 6px 14px;
+                font-size: 1.6em;
+                font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+                background-color: #2a2a2a;
+                border: 1px solid #555;
+                border-radius: 3px;
+                box-shadow: 0 1px 2px rgba(0,0,0,0.4);
+                color: #ddd;
+            }
+        }
+    }
+
+    .capture-conflict {
+        min-height: 1.4em;
+        font-size: 0.95em;
+        color: variables.$mainColor;
+        margin: 0 0 1em;
+    }
+
+    .capture-buttons {
+        display: flex;
+        gap: 0.6em;
+        justify-content: center;
+
+        button {
+            padding: 6px 14px;
+            cursor: pointer;
+            font-size: 0.95em;
+            font-weight: bold;
+            border-radius: 3px;
+            border: 1px solid #555;
+            background-color: #2a2a2a;
+            color: variables.$mainTxtColor;
+            transition: background-color 0.2s ease;
+            &:hover { background-color: #3a3a3a; }
+            &#captureSave {
+                background-color: variables.$mainColor;
+                border-color: variables.$mainColor;
+                color: #fff;
+                &:hover { opacity: 0.85; }
+                &:disabled {
+                    opacity: 0.3;
+                    cursor: default;
+                    pointer-events: none;
+                }
             }
         }
     }

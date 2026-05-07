@@ -1,6 +1,7 @@
 import tippy from "tippy.js";
 import "tippy.js/dist/tippy.css";
 import i18next from "i18next";
+import { App } from "../app.js";
 
 export var tooltip_save;
 export var tooltip_copied;
@@ -247,7 +248,7 @@ tippy(".btn-basemap", {
         tip.setContent(
             `
             <div>${i18next.t("tooltips:basemode")}</div>
-            <div class="tooltipsubtext">M</div>
+            <div class="tooltipsubtext">${App.formatShortcutHTML(App.shortcuts.toggleMap)}</div>
             `
         );
     },
@@ -258,7 +259,7 @@ tippy(".btn-terrainmap", {
         tip.setContent(
             `
             <div>${i18next.t("tooltips:terrainmode")}</div>
-            <div class="tooltipsubtext">M</div>
+            <div class="tooltipsubtext">${App.formatShortcutHTML(App.shortcuts.toggleMap)}</div>
             `
         );
     },
@@ -269,7 +270,7 @@ tippy(".btn-topomap", {
         tip.setContent(
             `
             <div>${i18next.t("tooltips:topographicmode")}</div>
-            <div class="tooltipsubtext">M</div>
+            <div class="tooltipsubtext">${App.formatShortcutHTML(App.shortcuts.toggleMap)}</div>
             `
         );
     },
@@ -326,7 +327,7 @@ tippy(".btn-focus", {
         tip.setContent(
             `
             <div>${i18next.t("tooltips:focusMode")}</div>
-            <div class="tooltipsubtext">${i18next.t("tooltips:enter")}</div>
+            <div class="tooltipsubtext">${App.formatShortcutHTML(App.shortcuts.focusMode)}</div>
             `
         );
     },
@@ -370,7 +371,7 @@ tippy(".btn-undo", {
         tip.setContent(
             `
             <div>${i18next.t("tooltips:undo")}</div>
-            <div class="tooltipsubtext">${i18next.t("tooltips:backspace")}</div>
+            <div class="tooltipsubtext">${App.formatShortcutHTML(App.shortcuts.deleteLastTarget)}</div>
             `
         );
     },
@@ -382,7 +383,7 @@ tippy(".btn-download", {
         tip.setContent(
             `
             <div>${i18next.t("tooltips:download")}</div>
-            <div class="tooltipsubtext">CTRL+S</div>
+            <div class="tooltipsubtext">${App.formatShortcutHTML(App.shortcuts.saveMap)}</div>
             `
         );
     },
@@ -406,7 +407,7 @@ tippy(".btn-delete", {
         tip.setContent(
             `
             <div>${i18next.t("tooltips:deleteTargets")}</div>
-            <div class="tooltipsubtext">${i18next.t("tooltips:delete")}</div>
+            <div class="tooltipsubtext">${App.formatShortcutHTML(App.shortcuts.clearTargets)}</div>
             `
         );
     },
