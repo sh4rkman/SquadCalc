@@ -1,11 +1,11 @@
 import tippy from "tippy.js";
 import "tippy.js/dist/tippy.css";
 import i18next from "i18next";
+import { App } from "../app.js";
 
 export var tooltip_save;
 export var tooltip_copied;
 
-const helpDialog = document.querySelector("#helpDialog");
 
 const commonToolipsSettings = {
     animation: "fade",
@@ -17,7 +17,7 @@ const commonToolipsSettings = {
     hideOnClick: true,
     delay: 200,
     maxWidth: 250, 
-    appendTo: helpDialog,
+    appendTo: document.querySelector("#helpDialog"),
 };
 
 tippy("#settings", {
@@ -245,19 +245,34 @@ const commonMapMenuToolipsSettings = {
 tippy(".btn-basemap", {
     ...commonMapMenuToolipsSettings,
     onShow(tip) {
-        tip.setContent(i18next.t("tooltips:basemode"));
+        tip.setContent(
+            `
+            <div>${i18next.t("tooltips:basemode")}</div>
+            <div class="tooltipsubtext">${App.formatShortcutHTML(App.shortcuts.toggleMap)}</div>
+            `
+        );
     },
 });
 tippy(".btn-terrainmap", {
     ...commonMapMenuToolipsSettings,
     onShow(tip) {
-        tip.setContent(i18next.t("tooltips:terrainmode"));
+        tip.setContent(
+            `
+            <div>${i18next.t("tooltips:terrainmode")}</div>
+            <div class="tooltipsubtext">${App.formatShortcutHTML(App.shortcuts.toggleMap)}</div>
+            `
+        );
     },
 });
 tippy(".btn-topomap", {
     ...commonMapMenuToolipsSettings,
     onShow(tip) {
-        tip.setContent(i18next.t("tooltips:topographicmode"));
+        tip.setContent(
+            `
+            <div>${i18next.t("tooltips:topographicmode")}</div>
+            <div class="tooltipsubtext">${App.formatShortcutHTML(App.shortcuts.toggleMap)}</div>
+            `
+        );
     },
 });
 tippy(".btn-layer", {
@@ -273,6 +288,33 @@ tippy(".btn-hd", {
         tip.setContent(i18next.t("settings:highquality"));
     },
 });
+tippy(".btn-legacy", {
+    ...commonMapMenuToolipsSettings,
+    onShow(tip) {
+        tip.setContent(
+            `<div>${i18next.t("tooltips:legacyMode")}</div>
+            <div class="tooltipsubtext">CTRL+M</div>`
+        );
+    },
+});
+tippy(".returnBtn", {
+    ...commonMapMenuToolipsSettings,
+    placement: "left",
+    offset: [0, 15],
+    onShow(tip) {
+        tip.setContent(
+            `<div>${i18next.t("tooltips:returnToMap")}</div>
+            <div class="tooltipsubtext">CTRL+M</div>`
+        );
+    },
+});
+export const settingsTooltips = tippy(".btn-settings", {
+    ...commonMapMenuToolipsSettings,
+    placement: "left",
+    onShow(tip) {
+        tip.setContent(i18next.t("tooltips:settings"));
+    },
+})[0];
 tippy(".btn-helpmap", {
     ...commonMapMenuToolipsSettings,
     onShow(tip) {
@@ -285,7 +327,7 @@ tippy(".btn-focus", {
         tip.setContent(
             `
             <div>${i18next.t("tooltips:focusMode")}</div>
-            <div class="tooltipsubtext">${i18next.t("tooltips:enter")}</div>
+            <div class="tooltipsubtext">${App.formatShortcutHTML(App.shortcuts.focusMode)}</div>
             `
         );
     },
@@ -329,7 +371,7 @@ tippy(".btn-undo", {
         tip.setContent(
             `
             <div>${i18next.t("tooltips:undo")}</div>
-            <div class="tooltipsubtext">${i18next.t("tooltips:backspace")}</div>
+            <div class="tooltipsubtext">${App.formatShortcutHTML(App.shortcuts.deleteLastTarget)}</div>
             `
         );
     },
@@ -341,7 +383,18 @@ tippy(".btn-download", {
         tip.setContent(
             `
             <div>${i18next.t("tooltips:download")}</div>
-            <div class="tooltipsubtext">CTRL+S</div>
+            <div class="tooltipsubtext">${App.formatShortcutHTML(App.shortcuts.saveMap)}</div>
+            `
+        );
+    },
+});
+
+tippy(".btn-upload", {
+    ...commonMapMenuToolipsSettings,
+    onShow(tip) {
+        tip.setContent(
+            `
+            <div>${i18next.t("tooltips:upload")}</div>
             `
         );
     },
@@ -354,7 +407,7 @@ tippy(".btn-delete", {
         tip.setContent(
             `
             <div>${i18next.t("tooltips:deleteTargets")}</div>
-            <div class="tooltipsubtext">${i18next.t("tooltips:delete")}</div>
+            <div class="tooltipsubtext">${App.formatShortcutHTML(App.shortcuts.clearTargets)}</div>
             `
         );
     },

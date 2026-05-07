@@ -407,8 +407,6 @@ export const squadWeaponMarker = squadMarker.extend({
         // Additional height
         $(".heightPadding input").val(this.heightPadding);
         
-
-
         // Add listener that update angle/height & refresh targets
         weapon = weapon.sourceTarget;
         $("input[type=radio][name=angleChoice]").on("change", weapon, (e) => {
@@ -551,8 +549,9 @@ export const squadWeaponMarker = squadMarker.extend({
         this.removeFrom(this.map.markersGroup).removeFrom(this.map.activeWeaponsMarkers);
         this.remove();
 
-        if (this.map.activeWeaponsMarkers.getLayers().length === 0) { 
+        if (this.map.activeWeaponsMarkers.getLayers().length === 0) {
             this.map.deleteTargets();
+            $(".weaponSelector").removeClass("active animate__fadeIn");
         } else {
             // Set default icon on remaining weapon
             this.map.activeWeaponsMarkers.getLayers()[0].updateIcon();

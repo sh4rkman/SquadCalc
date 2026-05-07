@@ -119,6 +119,10 @@
     object-fit: contain;
 }
 
+.faction-grid.team2 .faction-item.units img {
+    transform: scaleX(-1);
+}
+
 .faction-item.units .faction-label {
     position: absolute;
     font-size: 10px;

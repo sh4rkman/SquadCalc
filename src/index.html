@@ -6,8 +6,9 @@
             <title data-i18n="common:squadcalc">SquadCalc</title>
 
             <meta data-i18n-content="common:desc" name="description" content="">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1, viewport-fit=cover">
             <meta name="theme-color" content="#111">
+            <meta name="color-scheme" content="dark">
             <meta charset="utf-8">
 
             <!-- SOCIAL MEDIA -->
@@ -42,7 +43,6 @@
 
         <body style="visibility: hidden;">
 
-            
             <!-- HEADER / LOADER -->
             <%= require('html-loader!./components/header/header.html').default %>
 
@@ -60,8 +60,18 @@
             <!-- CONTEXTMENU -->
             <%= require('html-loader!./components/contextMenu/contextMenu.html').default %>
 
-            <!-- FOOTER / TOASTS -->
-            <%= require('html-loader!./components/footer/footer.html').default %>
+            <!-- TOAST -->
+            <section id="toast" class="info">
+                <div id="icon-wrapper">
+                    <div id="icon"></div>
+                </div>
+                <div id="toast-message">
+                    <h4 data-i18n=""></h4>
+                    <p data-i18n=""></p>
+                </div>
+                <button id="toast-close" aria-label="Close Toast Message"></button>
+                <div id="timer"></div>
+            </section>
 
         </body>
 

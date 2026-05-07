@@ -1,7 +1,13 @@
 @use "../shared/variables";
 
-
-
+@keyframes flag-shimmer {
+    0%   { 
+        left: -75%; 
+    }
+    100% { 
+        left: 150%; 
+    }
+}
 
 .mapLayerMenuWrapper {
     position: relative; 
@@ -41,40 +47,213 @@
 }
 
 #factionsButton {
-    width: 50px;
-    padding: 0.5em;
-    border: none;
-    border-radius: 0 10px 10px 0;
-    background: white;
-    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8);
-    cursor: pointer;
-    transition: background-color 0.2s ease, box-shadow 0.2s ease;
-    font-weight: bold;
-    text-align: center;
-    z-index: 1;
+    display: none;
+    position: absolute;
+    bottom: 0;
     left: 0;
-    &:hover {
-        background-color: #b4b4b4;
-        box-shadow: 2px 2px 6px rgba(0, 0, 0, 1);
-    }
-    button {
-        margin: 2px 5px 0 0;
-        width: 30px;
-        height: 33px;
-        background-color: transparent;
-        color: #111;
-        top: auto;
+    right: 0;
+    width: fit-content;
+    margin: 0 auto;
+    z-index: 2;
+    text-align: center;
+    button.btn-faction {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 0;
+        position: relative;
+        overflow: visible;
+        background: rgba(17, 17, 17, 0.92);
+        backdrop-filter: blur(6px);
+        -webkit-backdrop-filter: blur(6px);
+        border: rgba(255, 255, 255, 0.08) solid 1px;
+        border-bottom: none;
+        border-radius: 5px 5px 0 0;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
         cursor: pointer;
-        svg {
-            margin-top: 3px;
-            height: 80%;
+        color: #ccc;
+        font-weight: bold;
+        font-size: 0.75em;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        width: fit-content;
+        transition: all 0.25s ease-in-out;
+        .factionBar-top {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translate(-50%, calc(-100%));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.3em 0.8em;
+            background: rgba(17, 17, 17, 0.92);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            border: rgba(255, 255, 255, 0.08) solid 1px;
+            border-bottom: none;
+            border-radius: 6px 6px 0 0;
         }
-        img {
-            width: 33px;
-            height: 20px;
-            background-color: #111;
-            box-shadow: 0 0 2px rgb(0, 0, 0);
+        .factionBar-chevron {
+            height: 0.9em;
+            fill: #ccc;
+            transform: rotate(180deg);
+            transition: transform 0.25s ease-in-out, fill 0.25s ease-in-out;
         }
+        .factionBar-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0;
+            padding: 0.6em 1.5em;
+            width: 100%;
+            max-height: 80px;
+            overflow: hidden;
+            opacity: 1;
+            transition: max-height 0.25s ease-in-out, padding 0.25s ease-in-out, opacity 0.2s ease;
+        }
+        .factionBarFlag {
+            position: relative;
+            width: 44px;
+            margin: 0 0.4em;
+            aspect-ratio: 2 / 1;
+            background: #111;
+            outline: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 2px;
+            overflow: hidden;
+            img {
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                pointer-events: none;
+            }
+            .factionBarFlagName {
+                @include variables.text-outline;
+                position: absolute;
+                left: 0;
+                right: 0;
+                top: 50%;
+                transform: translateY(-50%);
+                color: white;
+                font-size: 9px;
+                font-weight: bold;
+                text-align: center;
+                letter-spacing: 0.5px;
+                overflow: hidden;
+                pointer-events: none;
+                opacity: 0;
+                transition: opacity 0.25s ease-in-out;
+            }
+            &::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -75%;
+                width: 50%;
+                height: 100%;
+                background: linear-gradient(
+                    120deg,
+                    transparent 0%,
+                    rgba(255, 255, 255, 0.35) 50%,
+                    transparent 100%
+                );
+                z-index: 1;
+                pointer-events: none;
+            }
+            &::after {
+                content: '';
+                position: absolute;
+                inset: 0;
+                border: 2px solid rgba(0, 0, 0, 0.3);
+                pointer-events: none;
+                z-index: 2;
+            }
+        }
+        .factionBar-hint {
+            font-size: 0.75em;
+            color: #aaa;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            max-height: 0;
+            overflow: hidden;
+            opacity: 0;
+            transition: opacity 0.2s ease, max-height 0.25s ease, padding 0.25s ease;
+        }
+        .factionBarUnit {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 32px;
+            width: 32px;
+            overflow: hidden;
+            opacity: 1;
+            margin: 0 0.4em;
+            transition: width 0.3s ease-out, margin 0.3s ease-out, opacity 0.25s ease, transform 0.3s ease-out;
+            img {
+                min-width: 32px;
+                width: 32px;
+                height: 32px;
+                object-fit: contain;
+                filter: drop-shadow(0 0 3px rgba(0, 0, 0, 0.8));
+            }
+        }
+        #factionBarUnit1 {
+            transform: translateX(0);
+        }
+        #factionBarUnit2 {
+            transform: translateX(0);
+        }
+        #factionBarUnit2 img {
+            transform: scaleX(-1);
+        }
+        .factionBar-label {
+            text-align: center;
+            color: #fff;
+            font-size: 1.2em;
+            margin: 0 0.5em;
+        }
+        &:has(.factionBar-content:hover) {
+            background: rgba(10, 10, 10, 0.92);
+            color: #fff;
+            transform: scale(1.25);
+            transform-origin: bottom center;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+            .factionBar-top {
+                background: rgba(10, 10, 10, 0.92);
+            }
+            .factionBarFlagName {
+                opacity: 1;
+            }
+            .factionBar-hint {
+                opacity: 1;
+                max-height: 3em;
+                padding: 0.6em 1em 0;
+            }
+            .factionBarFlag::before {
+                animation: flag-shimmer 0.55s ease-in-out;
+            }
+        }
+        .factionBar-top:hover {
+            .factionBar-chevron {
+                fill: #fff;
+                transform: rotate(180deg) scale(1.2);
+            }
+        }
+    }
+}
+
+#factionsButton.collapsed button.btn-faction {
+    .factionBar-content {
+        max-height: 0;
+        padding: 0 1.5em;
+        opacity: 0;
+    }
+    .factionBar-chevron {
+        transform: rotate(0deg);
+    }
+    .factionBar-top:hover .factionBar-chevron {
+        transform: rotate(0deg) scale(1.2);
     }
 }
 
@@ -107,7 +286,8 @@
         white-space: nowrap;
         box-shadow: 0 4px 4px rgba(0,0,0,0.25);
         backdrop-filter: blur(6px);
-        background: rgba(26, 26, 26, 0.6);
+        background: rgba(17, 17, 17, 0.75);
+        border: rgba(255, 255, 255, 0.08) solid 1px;
         &:active,
         &.active {
             background: linear-gradient(135deg, variables.$mainColor, variables.$mainColor);
@@ -191,6 +371,7 @@
                 width: 50%;
                 pointer-events: none;
                 svg {
+                    fill: white;
                     width: 0.5em;
                 }
             }
@@ -202,9 +383,6 @@
                 background-color: variables.$mainColor;
                 border-color: variables.$mainColor;
                 color: white;
-                svg {
-                    width: 0.5em;
-                }
             }
         }
     }
@@ -214,19 +392,23 @@
         width: 40px;
         height: 40px;
         margin: 0;
-        color: variables.$mainBGColor;
-        border: #979797 solid 1px;
-        box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+        color: #ccc;
+        border: rgba(255, 255, 255, 0.08) solid 1px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
         cursor: pointer;
         transition: all 0.25s ease-in-out;
         display: flex;
         align-items: center;
         justify-content: center;
-        background-color: white;
+        background: rgba(17, 17, 17, 0.75);
+        backdrop-filter: blur(6px);
+        -webkit-backdrop-filter: blur(6px);
         &:hover {
-            background-color: #979797;
+            background: rgba(10, 10, 10, 0.92);
+            color: #fff;
             svg {
                 transform: scale(1.1);
+                fill: #fff;
             }
         }
         &.active {
@@ -239,14 +421,17 @@
         }
         &:disabled {
             pointer-events: none;
-            background-color: #888;
+            background-color: #1e1e1e;
             svg path {
-                fill: #383838;
+                fill: #555;
             }
         }
         svg {
             height: 1em;
-            fill: variables.$mainBGColor;
+            fill: #fff;
+        }
+        &.btn-legacy svg {
+            height: 0.8em;
         }
         &.btn-topomap svg {
             width: 1.4em;

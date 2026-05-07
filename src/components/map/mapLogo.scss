@@ -1,5 +1,43 @@
 @use "../shared/variables";
 
+@keyframes logo-stamp-kf {
+    0% {
+        transform: scale(3) translateY(-40px);
+        opacity: 0;
+        filter: blur(4px);
+    }
+    70% {
+        transform: scale(0.95) translateY(0);
+        opacity: 1;
+        filter: blur(0);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes logo-stamp-out-kf {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+        filter: blur(0);
+    }
+    30% {
+        transform: scale(0.95);
+        opacity: 1;
+        filter: blur(0);
+    }
+    100% {
+        transform: scale(3) translateY(-40px);
+        opacity: 0;
+        filter: blur(4px);
+    }
+}
+
+.logo-stamp { animation: logo-stamp-kf 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+
+.logo-stamp-out { animation: logo-stamp-out-kf 0.5s cubic-bezier(0.55, 0, 0.45, 1) forwards; }
+
 .logo {
     @extend .unselectable;
     position: fixed;

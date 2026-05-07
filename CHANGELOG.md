@@ -1,3 +1,41 @@
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge"> **43.0.0** *(2026-05-07)*
+
+</br><img src="https://img.shields.io/badge/-new%20features-green">
+- When servers are favorited, they now appear in a new dropdown button directly accessible from the map
+- Each team's factions and units are now stored in the URL (thanks Hans Wurst!)
+- Added a button to upload a saved file (thanks d503-ai !)
+- Added SquadCalc and Squad Data version in the Settings dialog
+- Keyboard shortcuts Overhaul
+  - Keyboard shortcuts can now be customized in a new setting panel
+  - Added a shortcut (default: `M`) to switch basemap (Thanks SphaeroX ! [#476](https://github.com/sh4rkman/SquadCalc/issues/476))
+  - Added a shortcut (default: `CTRL` + `M`) to switch from Map to Legacy mode
+- UI General Overhaul
+  - Reworked the faction button to show current factions & units
+  - Added a setting to minimize the faction bar by default
+  - Moved legacy button into the Map Buttons (thanks Madlifer!)
+  - Map buttons are now dark-themed
+  - Added tooltips for settings and legacy mode buttons
+  - Added `color-scheme: dark` to prevent browsers from forcing their own dark mode override on the app
+  - Layer selector is now hidden on legacy mode
+  - weapon selectors are now hidden until a weapon is placed on the map
+
+
+</br><img src="https://img.shields.io/badge/-bug%20fixes-b22">  
+- Fixed Server Syncing not working when joining a server from a URL (fix [#459](https://github.com/sh4rkman/SquadCalc/issues/459))
+- Fixed MO120RTF1 MOA from 50 to 30 (Thanks yobaNGE ! fix [#473](https://github.com/sh4rkman/SquadCalc/issues/473))
+- In the server browser, teams are now correctly hidden on mobile (fix [#472](https://github.com/sh4rkman/SquadCalc/issues/472))
+- Fixed session links sometimes not working when opening them in a new tab (fix [#458](https://github.com/sh4rkman/SquadCalc/issues/458))
+- Vehicle emplacements that disappear will now prioritise vehicles that don't respawn, as in-game.
+- Changed Hellcanon German translation (thanks Hans Wurst!)
+- Fixed unit characteristics not hiding when removing a faction entirely
+- Fixed the server browser tooltip staying open after closing the server list
+- Fixed FV107 missing icon
+- Fixed vehicle respawn alerts sound not playing
+- Fix attempt at caching bug that displayed the old version after each update
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
+
 # <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge"> **42.4.0** *(2026-03-08)*
 
 </br><img src="https://img.shields.io/badge/-bug%20fixes-b22">  

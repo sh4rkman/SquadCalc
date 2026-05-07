@@ -10,7 +10,7 @@
 
 header {
     position: relative;
-    width: 100%;
+    width: 100dvw;
     z-index: 2;
     top: 0;
     pointer-events: none;
@@ -21,9 +21,12 @@ header {
         z-index: 4;
         padding-top: 1em;
         pointer-events: none;
+        visibility: hidden;
+        &.active {
+            visibility: visible;
+        }
         .select2-results__options {
             font-weight: 600;
-            line-height: 0.9em;
             font-size: 0.85em;
         }
         #weaponSelector {
@@ -54,11 +57,35 @@ header {
                 background-color: transparent;
             }
         }
+        #serverSelector {
+            display: none;
+            z-index: 4;
+            position: relative;
+            padding-bottom: 1em;
+            .select2-container {
+                max-width: 250px;
+            }
+            .select2-selection__rendered {
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+            .select2-results__options {
+                font-size: 0.9em;
+                max-height: 300px;
+            }
+            .select2-results__option {
+                white-space: normal;
+                font-size: 0.75em;
+                line-height: 1.4em;
+                word-break: break-all;
+                padding: 0.5em 0.8em;
+            }
+        }
         #mapSelector {
             z-index: 3;
             position: relative;
             .select2-results__options {
-                line-height: 0.7em;
                 font-size: 0.9em;
                 max-height: 400px;
             }
@@ -68,7 +95,6 @@ header {
             padding-top: 1em;
             position: relative;
             .select2-results__options {
-                line-height: 0.7em;
                 font-size: 0.9em;
                 max-height: 400px;
             }
@@ -80,12 +106,15 @@ header {
     .dropbtn,
     .dropbtn2,
     .dropbtn3,
-    .dropbtn5 {
+    .dropbtn5,
+    .dropbtn6 {
         color: #fff;
         font-weight: bold;
         line-height: 2.188em;
         text-transform: uppercase;
-        background-color: var(--themecolor, variables.$mainBGColor);
+        background: rgba(0, 0, 0, 0.8);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
         select {
             -moz-appearance: none;
             -webkit-appearance: none;
@@ -107,11 +136,15 @@ header {
         font-size: 0.8em;
         pointer-events: all;
         background-color: transparent;
-        border-bottom: 1px solid variables.$mainTxtColor;
-        // line-height: 2.188em;
-        min-width: 200px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+        min-width: 250px;
+        max-width: 250px;
         padding-bottom: 0;
         text-transform: uppercase;
+        transition: border-color 0.2s ease;
+        &:hover, &.select2-container--open {
+            border-bottom-color: rgba(255, 255, 255, 0.75);
+        }
     }
     .select2-container--default {
         .select2-results__option--highlighted[aria-selected] {
@@ -119,7 +152,7 @@ header {
         }
         .select2-results__option--selected {
             background-color: variables.$mainColor;
-            opacity: 0.5;
+            opacity: 0.6;
         }
         .select2-selection--single .select2-selection__rendered {
             color: #fff;
@@ -135,11 +168,66 @@ header {
     }
 }
 
+.select2-dropdown {
+    background: rgba(17, 17, 17, 0.92);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    border-radius: 6px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+    overflow: hidden;
+}
+
+.select2-dropdown--below {
+    animation: select2SlideDown 0.15s ease;
+}
+
+.select2-dropdown--above {
+    animation: select2-slide-up 0.15s ease;
+}
+
+@keyframes select2-slide-down {
+    from { 
+        opacity: 0; 
+    }
+    to { 
+        opacity: 1;
+    }
+}
+
+@keyframes select2-slide-up {
+    from { 
+        opacity: 0;
+    }
+    to { 
+        opacity: 1;
+    }
+}
+
+.select2-results__option {
+    padding: 0.55em 1em;
+    line-height: 0.75em;
+    transition: background-color 0.15s ease;
+    letter-spacing: 0.05em;
+    &[aria-disabled="true"] {
+        cursor: not-allowed;
+    }
+}
+
+.select2-search--dropdown .select2-search__field {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 4px;
+    color: #fff;
+    outline: none;
+    padding: 0.4em 0.6em;
+}
+
 .select2-container--default.select2-container--disabled .select2-selection--single {
     background-color: transparent;
     cursor: not-allowed;
     .select2-selection__rendered {
-        color: lightgray;
+        color: rgba(255, 255, 255, 0.3);
         font-style: italic;
     }
 }
