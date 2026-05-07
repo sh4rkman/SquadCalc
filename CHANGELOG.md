@@ -1,6 +1,7 @@
 # <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge"> **43.0.0** *(2026-05-07)*
 
 </br><img src="https://img.shields.io/badge/-new%20features-green">
+- When servers are favorited, they now appear in a new dropdown button directly accessible from the map
 - Each team's factions and units are now stored in the URL (thanks Hans Wurst!)
 - Added a button to upload a saved file (thanks d503-ai !)
 - Added SquadCalc and Squad Data version in the Settings dialog
