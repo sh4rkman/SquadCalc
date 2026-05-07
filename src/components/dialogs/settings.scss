@@ -417,6 +417,7 @@ $bezier: cubic-bezier(0.65, 0.25, 0.56, 0.96);
 
 #shortcutCaptureDialog {
     width: 480px;
+    max-width: calc(100vw - 2em);
     padding: 2.5em;
     text-align: center;
     font-size: 1em;
