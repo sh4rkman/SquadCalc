@@ -96,9 +96,9 @@ export default class SquadCalc {
             map:       p.get("map"),
             layer:     p.get("layer"),
             team1:     p.get("team1"),
-            team1unit: p.get("unit1"),
+            team1unit: p.get("team1unit"),
             team2:     p.get("team2"),
-            team2unit: p.get("unit2"),
+            team2unit: p.get("team2unit"),
         };
     }
 
@@ -111,7 +111,7 @@ export default class SquadCalc {
     }
 
     initServerMode(serverId, sessionId = null) {
-        this.updateUrlParams({ team1: null, unit1: null, team2: null, unit2: null });
+        this.updateUrlParams({ team1: null, team1unit: null, team2: null, team2unit: null });
 
         if (!this.squadServersBrowser) {
             this.squadServersBrowser = new SquadServersBrowser();
@@ -221,7 +221,7 @@ export default class SquadCalc {
                             if (um.length) uSel.val(um.val()).trigger($.Event("change", { broadcast: false }));
                         }
                     });
-                    this.updateUrlParams({ team1: null, unit1: null, team2: null, unit2: null });
+                    this.updateUrlParams({ team1: null, team1unit: null, team2: null, team2unit: null });
                     onLayerLoaded?.();
                 });
             }
@@ -285,7 +285,7 @@ export default class SquadCalc {
 
             // Update the URL
             if (broadcast) {
-                this.updateUrlParams({ map: this.minimap.activeMap.name, layer: null, team1: null, unit1: null, team2: null, unit2: null });
+                this.updateUrlParams({ map: this.minimap.activeMap.name, layer: null, team1: null, team1unit: null, team2: null, team2unit: null });
             } else {
                 this.updateUrlParams({ map: this.minimap.activeMap.name });
             }
@@ -313,7 +313,7 @@ export default class SquadCalc {
 
             // User cleared the layer selector, remove the layer and clean the URL
             if (selectedLayerText === "") {
-                this.updateUrlParams({ layer: null, team1: null, unit1: null, team2: null, unit2: null });
+                this.updateUrlParams({ layer: null, team1: null, team1unit: null, team2: null, team2unit: null });
                 if (abortController) { abortController.abort(); } // Abort the ongoing fetch request
                 if (this.minimap.layer) this.minimap.layer.clear();
                 $(".btn-layer").hide();
@@ -343,7 +343,7 @@ export default class SquadCalc {
             
             // Update the the URL
             if (broadcast) {
-                this.updateUrlParams({ layer: selectedLayerText, team1: null, unit1: null, team2: null, unit2: null });
+                this.updateUrlParams({ layer: selectedLayerText, team1: null, team1unit: null, team2: null, team2unit: null });
             } else {
                 this.updateUrlParams({ layer: selectedLayerText });
             }
@@ -402,7 +402,7 @@ export default class SquadCalc {
 
             if (layers.length === 0) {
                 this.minimap.spin(false);
-                this.updateUrlParams({ layer: null, team1: null, unit1: null, team2: null, unit2: null });
+                this.updateUrlParams({ layer: null, team1: null, team1unit: null, team2: null, team2unit: null });
                 return;
             }
 
@@ -491,7 +491,7 @@ export default class SquadCalc {
             if (mapIndex === -1) {
                 // user entered garbage, pick a random map & clean the url
                 mapIndex = Math.floor(Math.random() * MAPS.length);
-                this.updateUrlParams({ layer: null, team1: null, unit1: null, team2: null, unit2: null });
+                this.updateUrlParams({ layer: null, team1: null, team1unit: null, team2: null, team2unit: null });
             }
         } 
         else { 
@@ -919,9 +919,9 @@ export default class SquadCalc {
         const t2 = this.FACTION2_SELECTOR.val();
         const u2 = this.UNIT2_SELECTOR.val();
         if (t1) params.set("team1", t1);
-        if (u1) params.set("unit1", u1);
+        if (u1) params.set("team1unit", u1);
         if (t2) params.set("team2", t2);
-        if (u2) params.set("unit2", u2);
+        if (u2) params.set("team2unit", u2);
 
         const url = `${window.location.origin}${window.location.pathname}?${params.toString()}`;
         navigator.clipboard.writeText(url);
