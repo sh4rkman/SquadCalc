@@ -18,8 +18,8 @@ export default class SquadFactions {
         this.FACTION2_SELECTOR = $(".dropbtn10");
         this.UNIT1_SELECTOR = $(".dropbtn9");
         this.UNIT2_SELECTOR = $(".dropbtn11");
+        this.factionData = null;
         this.init(squadLayer.layerData, broadcast);
-        this.initDropdowns();
         this.pinned = false;
         this.pinnedFaction = "";
     }
@@ -28,12 +28,28 @@ export default class SquadFactions {
     /*
      *  Reset the factions button to its default state
      */
-    resetFactionsButton() {
-        $("#factionsButton button").empty().append(`
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512">
-                <path fill="currentColor" d="M176 8c-6.6 0-12.4 4-14.9 10.1l-29.4 74L55.6 68.9c-6.3-1.9-13.1 .2-17.2 5.3s-4.6 12.2-1.4 17.9l39.5 69.1L10.9 206.4c-5.4 3.7-8 10.3-6.5 16.7s6.7 11.2 13.1 12.2l78.7 12.2L90.6 327c-.5 6.5 3.1 12.7 9 15.5s12.9 1.8 17.8-2.6l35.3-32.5 9.5-35.4 10.4-38.6c8-29.9 30.5-52.1 57.9-60.9l41-59.2c11.3-16.3 26.4-28.9 43.5-37.2c-.4-.6-.8-1.2-1.3-1.8c-4.1-5.1-10.9-7.2-17.2-5.3L220.3 92.1l-29.4-74C188.4 12 182.6 8 176 8zM367.7 161.5l135.6 36.3c6.5 1.8 11.3 7.4 11.8 14.2l4.6 56.5-201.5-54 32.2-46.6c3.8-5.6 10.8-8.1 17.3-6.4zm-69.9-30l-47.9 69.3c-21.6 3-40.3 18.6-46.3 41l-10.4 38.6-16.6 61.8-8.3 30.9c-4.6 17.1 5.6 34.6 22.6 39.2l15.5 4.1c17.1 4.6 34.6-5.6 39.2-22.6l8.3-30.9 247.3 66.3-8.3 30.9c-4.6 17.1 5.6 34.6 22.6 39.2l15.5 4.1c17.1 4.6 34.6-5.6 39.2-22.6l8.3-30.9L595 388l10.4-38.6c6-22.4-2.5-45.2-19.6-58.7l-6.8-84c-2.7-33.7-26.4-62-59-70.8L384.2 99.7c-32.7-8.8-67.3 4-86.5 31.8zm-17 131a24 24 0 1 1 -12.4 46.4 24 24 0 1 1 12.4-46.4zm217.9 83.2A24 24 0 1 1 545 358.1a24 24 0 1 1 -46.4-12.4z"/>
-            </svg>
+    setBarFlag(id, val) {
+        const src = val ? `/img/flags/${encodeURIComponent(val.trim())}.webp` : "/img/flags/unknown.webp";
+        const name = val ? i18next.t(val, { ns: "factions" }) : "?";
+        $(id).html(`
+            <img src="${src}" alt="${name}"/>
+            <label class="factionBarFlagName">${name}</label>
         `);
+    }
+
+    setBarUnit(id, icon) {
+        if (icon) {
+            $(id).html(`<img src="/img/units/${encodeURIComponent(String(icon).trim())}.webp" alt=""/>`);
+        } else {
+            $(id).empty();
+        }
+    }
+
+    resetFactionsButton() {
+        this.setBarFlag("#factionBarFlag1", this.FACTION1_SELECTOR.val());
+        this.setBarFlag("#factionBarFlag2", this.FACTION2_SELECTOR.val());
+        this.setBarUnit("#factionBarUnit1", this.UNIT1_SELECTOR.find("option:selected").data("icon"));
+        this.setBarUnit("#factionBarUnit2", this.UNIT2_SELECTOR.find("option:selected").data("icon"));
     }
 
 
@@ -92,18 +108,9 @@ export default class SquadFactions {
      *  * @param {string} unitName - The unit name for the selected unit
      * */
     pinUnit(teamfaction, country, unitName, teamMain) {
-        const safeCountry = encodeURIComponent(country.trim());
+
         this.unpinUnit(); // should be possible
-
         this.pinnedFaction = teamMain;
-
-        // Set the pinned faction flag in the left side button
-        const $img = $("<img>")
-            .attr("src", `/img/flags/${safeCountry}.webp`)
-            .attr("alt", "Faction Icon")
-            .addClass("faction-img");
-
-        $("#factionsButton button").empty().append($img);
 
         // Find the given faction in the teamfaction unit list
         const selectedUnit = teamfaction.find((unit) => unit.unitObjectName === unitName);
@@ -149,7 +156,7 @@ export default class SquadFactions {
                 if (vehicle.spawnerSize === "Boat" && !boatsAvailable) return;
 
                 $("#pinnedVehiclesTab").append(`
-                    <div class="pinnedVehicles animate__animated animate__fadeInLeft" data-vehiclename="${vehicle.type}" data-vehtype="${vehicle.vehType}" c data-respawntime="${vehicle.respawnTime}">
+                    <div class="pinnedVehicles animate__animated animate__fadeInLeft" data-vehiclename="${vehicle.type}" data-vehtype="${vehicle.vehType}" data-vehicon="${vehicle.icon}" data-respawntime="${vehicle.respawnTime}">
                         <button type="button" class="btn-pined" aria-label="Select Factions">
                             <img src="/img/icons/default/vehicles/${vehicle.icon}.svg" alt="Faction Icon"/>
                         </button>
@@ -238,7 +245,7 @@ export default class SquadFactions {
 
             if (!App.userSettings.disableSounds) {
                 const LANG = localStorage.getItem("settings-language");
-                new Audio(`/sounds/${LANG}/${vehIcon}.mp3`).play();  
+                new Audio(`/sounds/${LANG}/${vehIcon}.mp3`).play();
             }
             
         };
@@ -380,19 +387,31 @@ export default class SquadFactions {
         const $card = $(event.currentTarget);
         const $image = $card.find(".image");
 
-        // Check if card is currently expanded (image is visible)
         const isExpanded = $image.is(":visible");
 
         if (isExpanded) {
-            // Card is expanded, collapse it
             $card.removeClass("selected");
         } else {
-            // Card is collapsed, expand it
             $card.addClass("selected");
         }
     }
 
     spawnVehicle(vehicle, spawners, activeFactionMarkers){
+
+        if (vehicle.singleUse) {
+            const validSpawners = spawners.vehicles.filter(spawner =>
+                spawner.typePriorities.some(p => p.name === vehicle.vehType)
+            );
+
+            for (const spawner of validSpawners) {
+                if (spawner.maxNum > 0) {
+                    const latlng = this.squadLayer.convertToLatLng(spawner.location_x, spawner.location_y);
+                    this.squadLayer.mainZones.assets.push(new squadVehicleMarker(latlng, spawner, vehicle, spawners.faction, true).addTo(activeFactionMarkers));
+                    spawners.vehicles = spawners.vehicles.filter(s => s !== spawner);
+                    return;
+                }
+            }
+        }
 
         if (vehicle.spawnerSize === "Helicopter") {
             for (let v = 0; v < vehicle.count; v++) {
@@ -637,12 +656,182 @@ export default class SquadFactions {
 
 
 
-    /** 
+    updateFactionBg(team, factionId) {
+        const img = document.getElementById(`teamBg${team}`);
+        if (!img) return;
+        const fallback = team === 1 ? "Team1" : "Team2";
+        const newSrc = `/img/spawnGroup/${factionId || fallback}.webp`;
+        img.style.transition = "opacity 0.15s ease";
+        img.style.opacity = "0";
+        setTimeout(() => {
+            img.src = newSrc;
+            const show = () => { img.style.opacity = ""; };
+            img.addEventListener("load", show, { once: true });
+            img.addEventListener("error", show, { once: true });
+        }, 150);
+    }
+
+    renderFactionBtn(team) {
+        const SELECTOR = team === 1 ? this.FACTION1_SELECTOR : this.FACTION2_SELECTOR;
+        const btn = document.getElementById(`factionBtn${team}`);
+        if (!btn) return;
+        const val = SELECTOR.val();
+        if (val) {
+            btn.innerHTML = `<img src="/img/flags/${val}.webp" onerror="this.onerror=null; this.src='/img/flags/unknown.webp';"/><span class="picker-label"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M362.7 19.3L314.3 67.7 444.3 197.7l48.4-48.4c25-25 25-65.5 0-90.5L453.3 19.3c-25-25-65.5-25-90.5 0zm-71 71L58.6 323.5c-10.4 10.4-18 23.3-22.2 37.4L1 481.2C-1.5 489.7 .8 498.8 7 505s15.3 8.5 23.7 6.1l120.3-35.4c14.1-4.2 27-11.8 37.4-22.2L421.7 220.3 291.7 90.3z"/></svg></span>`;
+        } else {
+            btn.innerHTML = "<img src=\"/img/flags/unknown.webp\"/>";
+        }
+    }
+
+    renderUnitBtn(team) {
+        const UNIT_SELECTOR = team === 1 ? this.UNIT1_SELECTOR : this.UNIT2_SELECTOR;
+        const FACTION_SELECTOR = team === 1 ? this.FACTION1_SELECTOR : this.FACTION2_SELECTOR;
+        const btn = document.getElementById(`unitBtn${team}`);
+        if (!btn) return;
+        const factionVal = FACTION_SELECTOR.val();
+        const unitVal = UNIT_SELECTOR.val();
+        const icon = UNIT_SELECTOR.find("option:selected").data("icon");
+
+        btn.classList.toggle("ready", !!factionVal);
+
+        const pencil = "<span class=\"picker-label\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 512 512\"><path d=\"M362.7 19.3L314.3 67.7 444.3 197.7l48.4-48.4c25-25 25-65.5 0-90.5L453.3 19.3c-25-25-65.5-25-90.5 0zm-71 71L58.6 323.5c-10.4 10.4-18 23.3-22.2 37.4L1 481.2C-1.5 489.7 .8 498.8 7 505s15.3 8.5 23.7 6.1l120.3-35.4c14.1-4.2 27-11.8 37.4-22.2L421.7 220.3 291.7 90.3z\"/></svg></span>";
+        if (factionVal && unitVal && icon) {
+            btn.innerHTML = `<img src="/img/units/${icon}.webp" onerror="this.onerror=null; this.src='/img/units/placeholder.webp';"/>${pencil}`;
+        } else if (factionVal) {
+            btn.innerHTML = `<img src="/img/units/placeholder.webp"/>${pencil}`;
+        } else {
+            btn.innerHTML = "";
+        }
+    }
+
+    openFactionPicker(team) {
+        const factionData = this.factionData;
+        if (!factionData) return;
+        const factions = team === 1
+            ? factionData.teamConfigs.factions.team1Units
+            : factionData.teamConfigs.factions.team2Units;
+        const SELECTOR = team === 1 ? this.FACTION1_SELECTOR : this.FACTION2_SELECTOR;
+        const btn = document.getElementById(`factionBtn${team}`);
+        if (!btn) return;
+
+        if (btn._tippy) btn._tippy.destroy();
+
+        const currentVal = SELECTOR.val();
+        let html = "<div class='faction-grid animate__animated animate__fadeIn animate__faster'>";
+        factions.forEach(faction => {
+            const selected = currentVal === faction.factionID ? "_selected" : "";
+            html += `<div class="faction-item ${selected}" data-faction="${faction.factionID}" title="${i18next.t(faction.factionID + "_displayName", { ns: "factions" })}">
+                <img src="/img/flags/${faction.factionID}.webp"/>
+                <div class="faction-label">${i18next.t(faction.factionID, { ns: "factions" })}</div>
+            </div>`;
+        });
+        html += "</div>";
+
+        tippy(btn, {
+            content: html,
+            trigger: "manual",
+            interactive: true,
+            allowHTML: true,
+            placement: "bottom",
+            theme: "mapFactionMenu",
+            appendTo: document.querySelector("#factionsDialog"),
+            onShow: (tip) => {
+                tip.popper.addEventListener("contextmenu", e => e.preventDefault());
+                tip.popper.querySelectorAll(".faction-item").forEach(item => {
+                    item.addEventListener("click", () => {
+                        const factionId = item.dataset.faction;
+                        tip.hide();
+                        SELECTOR.val(factionId).trigger($.Event("change", { broadcast: true }));
+                    });
+                    item.addEventListener("contextmenu", () => {
+                        if (item.classList.contains("_selected")) {
+                            tip.hide();
+                            SELECTOR.val("").trigger($.Event("change", { broadcast: true }));
+                        }
+                    });
+                });
+            },
+            onHidden: (tip) => tip.destroy(),
+        });
+        btn._tippy.show();
+    }
+
+    openUnitPicker(team) {
+        const factionData = this.factionData;
+        if (!factionData) return;
+        const FACTION_SELECTOR = team === 1 ? this.FACTION1_SELECTOR : this.FACTION2_SELECTOR;
+        const UNIT_SELECTOR = team === 1 ? this.UNIT1_SELECTOR : this.UNIT2_SELECTOR;
+        const factions = team === 1
+            ? factionData.teamConfigs.factions.team1Units
+            : factionData.teamConfigs.factions.team2Units;
+        const units = team === 1
+            ? factionData.units.team1Units
+            : factionData.units.team2Units;
+        const btn = document.getElementById(`unitBtn${team}`);
+        if (!btn) return;
+
+        const selectedFaction = FACTION_SELECTOR.val();
+        if (!selectedFaction) return;
+
+        const faction = factions.find(f => f.factionID === selectedFaction);
+        if (!faction) return;
+
+        if (btn._tippy) btn._tippy.destroy();
+
+        const currentUnit = UNIT_SELECTOR.val();
+        const unitsToShow = [faction.defaultUnit, ...faction.types.map(t => t.unit)];
+
+        let html = `<div class='faction-grid${team === 2 ? " team2" : ""} animate__animated animate__fadeIn animate__faster'>`;
+        unitsToShow.forEach(unitId => {
+            const unit = units.find(u => u.unitObjectName === unitId);
+            if (!unit) return;
+            const selected = currentUnit === unitId ? "_selected" : "";
+            html += `<div class="faction-item units ${selected}" data-unit="${unitId}" title="${i18next.t(unit.type, { ns: "units" })} - ${i18next.t(unit.displayName, { ns: "units" })}">
+                <img src="/img/units/${unit.unitIcon}.webp" onerror="this.onerror=null; this.src='/img/units/placeholder.webp';"/>
+                <div class="faction-label">${i18next.t(unit.type, { ns: "units" })}</div>
+            </div>`;
+        });
+        html += "</div>";
+
+        tippy(btn, {
+            content: html,
+            trigger: "manual",
+            interactive: true,
+            allowHTML: true,
+            placement: "bottom",
+            theme: "mapFactionMenu",
+            appendTo: document.querySelector("#factionsDialog"),
+            onShow: (tip) => {
+                tip.popper.addEventListener("contextmenu", e => e.preventDefault());
+                tip.popper.querySelectorAll(".faction-item.units").forEach(item => {
+                    item.addEventListener("click", () => {
+                        const unitId = item.dataset.unit;
+                        tip.hide();
+                        if (UNIT_SELECTOR.val() !== unitId) {
+                            UNIT_SELECTOR.val(unitId).trigger($.Event("change", { broadcast: true }));
+                        }
+                    });
+                    item.addEventListener("contextmenu", () => {
+                        if (item.classList.contains("_selected")) {
+                            tip.hide();
+                            UNIT_SELECTOR.val("").trigger($.Event("change", { broadcast: true }));
+                        }
+                    });
+                });
+            },
+            onHidden: (tip) => tip.destroy(),
+        });
+        btn._tippy.show();
+    }
+
+
+    /**
      * * Initialize the factions selector and load the factions into it
      * * @param {Object} factionData - The faction data object
      * */
     init(factionData, broadcast2) {
 
+        this.factionData = factionData;
         $(".dropbtn8, .dropbtn10").empty();
         this.resetFactionsButton();
 
@@ -657,9 +846,9 @@ export default class SquadFactions {
         
         this.FACTION1_SELECTOR.off("change").on("change", (event) => {
             // Reset UI
-            $("#team1Vehicles").empty();
-            $("#team1CommanderAsset").empty();
-            
+            // $("#team1Vehicles").empty();
+            // $("#team1CommanderAsset").empty();
+            this.setBarFlag("#factionBarFlag1", event.target.value);
             if ( $("#team1PinButton").hasClass("active") ) this.unpinUnit();
 
             // Broadcast the Unit change to the session if needed
@@ -668,10 +857,10 @@ export default class SquadFactions {
             // Update Unit selector and main icon
             this.loadUnits(event.target.value, factionData.units.team1Units, factionData.teamConfigs.factions.team1Units, this.UNIT1_SELECTOR, broadcast);
             this.updateMainIcon("team1", event.target.value);
+            this.renderFactionBtn(1);
+            this.renderUnitBtn(1);
+            this.updateFactionBg(1, event.target.value);
 
-            if (event.broadcast) {
-                App.updateUrlParams({ team1: event.target.value, team1unit: this.UNIT1_SELECTOR.val() });
-            }
 
             if (broadcast && App.session.ws && App.session.ws.readyState === WebSocket.OPEN) {
                 App.session.ws.send(
@@ -688,6 +877,7 @@ export default class SquadFactions {
         this.FACTION2_SELECTOR.off("change").on("change", (event) => {
             // Reset UI
             $("#team2Vehicles").empty();
+            this.setBarFlag("#factionBarFlag2", event.target.value);
             if ( $("#team2PinButton").hasClass("active") ) this.unpinUnit();
 
             // Broadcast the Faction change to the session if needed
@@ -696,10 +886,10 @@ export default class SquadFactions {
             // Update Unit selector and main icon
             this.loadUnits(event.target.value, factionData.units.team2Units, factionData.teamConfigs.factions.team2Units, this.UNIT2_SELECTOR, broadcast);
             this.updateMainIcon("team2", event.target.value);
+            this.renderFactionBtn(2);
+            this.renderUnitBtn(2);
+            this.updateFactionBg(2, event.target.value);
 
-            if (event.broadcast) {
-                App.updateUrlParams({ team2: event.target.value, team2unit: this.UNIT2_SELECTOR.val() });
-            }
 
             if (broadcast && App.session.ws && App.session.ws.readyState === WebSocket.OPEN) {
                 App.session.ws.send(
@@ -717,13 +907,17 @@ export default class SquadFactions {
 
             // Reset UI
             $("#team1Vehicles").empty();
-            if ($("#team1PinButton").hasClass("active")) this.unpinUnit();
+            $("#team1CommanderAsset").empty();
+            $("#team1Characteristics").empty();
 
-            // Clear spawned vehicles 
+            if ($("#team1PinButton").hasClass("active")) this.unpinUnit();
+            this.setBarUnit("#factionBarUnit1", this.UNIT1_SELECTOR.find("option:selected").data("icon"));
+
+            // Clear spawned vehicles
             this.squadLayer.activeFaction1Markers.clearLayers();
-        
+
             const selectedUnit = factionData.units.team1Units.find((unit) => unit.unitObjectName === event.target.value);
-        
+
             if (!selectedUnit) return;
 
             // Broadcast the map change to the session if needed
@@ -760,15 +954,12 @@ export default class SquadFactions {
             $(".vehicle-card").off("click").on("click", (event) => { this.openCard(event); });
 
             if (!Browser.mobile) $(".vehicle-type").off("click").on("click", (event) => { this.copyVehicleName(event); });
-            
+            this.renderUnitBtn(1);
 
             // Load Commanders Icons & Tooltips
             this.loadCommanderAssets("#team1CommanderAsset", selectedUnit);
             this.loadCharacteristics("#team1Characteristics", selectedUnit);
 
-            if (event.broadcast) {
-                App.updateUrlParams({ team1: this.FACTION1_SELECTOR.val(), team1unit: event.target.value });
-            }
         });
 
 
@@ -779,8 +970,10 @@ export default class SquadFactions {
             // Empty the vehicles container
             teamFactionDiv.empty();
             $("#team2CommanderAsset").empty();
+            $("#team2Characteristics").empty();
 
             if ( $("#team2PinButton").hasClass("active") ) this.unpinUnit();
+            this.setBarUnit("#factionBarUnit2", this.UNIT2_SELECTOR.find("option:selected").data("icon"));
 
             // Clear spawned vehicles 
             this.squadLayer.activeFaction2Markers.clearLayers();
@@ -826,10 +1019,8 @@ export default class SquadFactions {
             // Handle click-to-copy
             if (!Browser.mobile) $(".vehicle-type").off("click").on("click", (event) => { this.copyVehicleName(event); });
             $(".vehicle-card").off("click").on("click", (event) => { this.openCard(event); });
+            this.renderUnitBtn(2);
 
-            if (event.broadcast) {
-                App.updateUrlParams({ team2: this.FACTION2_SELECTOR.val(), team2unit: event.target.value });
-            }
         });
 
         if (App.userSettings.enableFactions) {
@@ -890,8 +1081,20 @@ export default class SquadFactions {
             if (country === "" || faction === "") return;
 
             this.pinUnit(teamfaction, country, faction, teamMain);
-    
+
         });
+
+        this.renderFactionBtn(1);
+        this.renderFactionBtn(2);
+        this.renderUnitBtn(1);
+        this.renderUnitBtn(2);
+        this.updateFactionBg(1, this.FACTION1_SELECTOR.val());
+        this.updateFactionBg(2, this.FACTION2_SELECTOR.val());
+
+        document.getElementById("factionBtn1").onclick = () => this.openFactionPicker(1);
+        document.getElementById("factionBtn2").onclick = () => this.openFactionPicker(2);
+        document.getElementById("unitBtn1").onclick = () => this.openUnitPicker(1);
+        document.getElementById("unitBtn2").onclick = () => this.openUnitPicker(2);
 
     }
 

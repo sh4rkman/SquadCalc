@@ -2,7 +2,7 @@
 
 #helpDialog {
     width: 94%;
-    height: 515px;
+    height: 525px;
     max-width: 600px;
     font-size: 0.6em;
     font-weight: bold;
@@ -63,11 +63,58 @@
         border: none;
         margin: 0 0 1.5em 3em;
         &.shortcuts {
-            padding-top: 4em;
-            td {           
+            padding-top: 1.5em;
+            thead th {
+                font-size: 1.1em;
+                color: variables.$mainTxtColor;
+                opacity: 0.5;
+                padding-bottom: 10px;
+                font-weight: normal;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                text-align: left;
+            }
+            td {
                 &:nth-child(1) {
-                    padding: 10px 20px 10px 0;
+                    padding: 12px 0;
+                    white-space: nowrap;
                 }
+                &.arrow {
+                    padding: 0 16px;
+                    opacity: 0.3;
+                    font-size: 1.4em;
+                }
+            }
+            kbd {
+                display: inline-block;
+                padding: 4px 10px;
+                font-size: 1.8em;
+                font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+                background-color: #2a2a2a;
+                border: 1px solid #555;
+                border-radius: 3px;
+                box-shadow: 0 1px 2px rgba(0,0,0,0.4);
+                color: #ddd;
+            }
+            .shortcut-row {
+                cursor: pointer;
+                transition: opacity 0.15s ease;
+                &:hover { opacity: 0.7; }
+                &.is-custom .shortcut-key-cell kbd {
+                    border-color: variables.$mainColor;
+                    color: variables.$mainColor;
+                }
+                .shortcut-edit {
+                    padding-left: 16px;
+                    opacity: 0;
+                    transition: opacity 0.15s ease;
+                    svg {
+                        height: 1.2em;
+                        width: 1.2em;
+                        fill: variables.$mainTxtColor;
+                    }
+                }
+                &:hover .shortcut-edit { opacity: 0.5; }
             }
         }
         &.userSettings {
@@ -120,6 +167,29 @@
                     transform: scale(0.9);
                     fill: variables.$mainColor;
                 }
+            }
+        }
+    }
+    #settingsVersion {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        margin: 0 0 1em 2em;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 0.4em;
+        span {
+            font-size: 0.9em;
+            color: variables.$mainTxtColor;
+            opacity: 0.6;
+            letter-spacing: 0.5px;
+            &.separator {
+                opacity: 0.4;
+            }
+            &.error {
+                color: variables.$mainColor;
+                opacity: 1;
             }
         }
     }
@@ -307,7 +377,8 @@ $bezier: cubic-bezier(0.65, 0.25, 0.56, 0.96);
     width: 100%;
     button {
         color: variables.$mainBGColor;
-        width: 28%;
+        background-color: white;
+        width: 20%;
         margin-bottom: 1em;
         vertical-align: middle;
         height: 18px;
@@ -325,7 +396,7 @@ $bezier: cubic-bezier(0.65, 0.25, 0.56, 0.96);
             color: variables.$mainTxtColor;
             padding-bottom: 0;
             height: 25px;
-            width: 33%;
+            width: 28%;
             svg {
                 display: inline-block;
                 fill: variables.$mainTxtColor;
@@ -339,6 +410,93 @@ $bezier: cubic-bezier(0.65, 0.25, 0.56, 0.96);
             &#flagsvg{
                 height: 1.2em;
                 width: 1.2em;
+            }
+        }
+    }
+}
+
+#shortcutCaptureDialog {
+    width: 480px;
+    max-width: calc(100vw - 2em);
+    padding: 2.5em;
+    text-align: center;
+    font-size: 1em;
+    font-weight: bold;
+    background-color: variables.$mainBGColor;
+    color: variables.$mainTxtColor;
+    border: 1px solid #444;
+    border-radius: 6px;
+
+    .capture-title {
+        font-size: 1.3em;
+        margin: 0 0 1.2em;
+        color: variables.$mainTxtColor;
+        opacity: 0.7;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .capture-key-display {
+        min-height: 3em;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 0.8em;
+
+        .capture-listening {
+            opacity: 0.4;
+            font-size: 1.1em;
+        }
+
+        .capture-preview {
+            font-size: 1.1em;
+            kbd {
+                display: inline-block;
+                padding: 6px 14px;
+                font-size: 1.6em;
+                font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+                background-color: #2a2a2a;
+                border: 1px solid #555;
+                border-radius: 3px;
+                box-shadow: 0 1px 2px rgba(0,0,0,0.4);
+                color: #ddd;
+            }
+        }
+    }
+
+    .capture-conflict {
+        min-height: 1.4em;
+        font-size: 0.95em;
+        color: variables.$mainColor;
+        margin: 0 0 1em;
+    }
+
+    .capture-buttons {
+        display: flex;
+        gap: 0.6em;
+        justify-content: center;
+
+        button {
+            padding: 6px 14px;
+            cursor: pointer;
+            font-size: 0.95em;
+            font-weight: bold;
+            border-radius: 3px;
+            border: 1px solid #555;
+            background-color: #2a2a2a;
+            color: variables.$mainTxtColor;
+            transition: background-color 0.2s ease;
+            &:hover { background-color: #3a3a3a; }
+            &#captureSave {
+                background-color: variables.$mainColor;
+                border-color: variables.$mainColor;
+                color: #fff;
+                &:hover { opacity: 0.85; }
+                &:disabled {
+                    opacity: 0.3;
+                    cursor: default;
+                    pointer-events: none;
+                }
             }
         }
     }

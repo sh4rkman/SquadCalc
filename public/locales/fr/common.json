@@ -2,7 +2,7 @@
     "squad": "SQUAD",
     "calc": "CALC",
     "squadcalc": "SquadCalc",
-    "desc": "Un calculateur de mortier et layer pour SQUAD !",
+    "desc": "Le compagnon in-game ultime pour Squad !",
     "weaponInf": "Informations sur l'arme",
         "name": "Nom",
         "range": "Portée",
@@ -55,7 +55,7 @@
     "ticket": "Ticket",
     "tickets": "Tickets",
     "passengers": "Places disponibles",
-    "noCommander": "Pas d'équipements de commandant",
+    "noCommander": "Pas de commandant",
     "spawn": "Spawn",
     "temporary": "Spawn Temporaire",
     "disabledSpawn": "Désactivé jusqu'à la première capture",
@@ -72,5 +72,6 @@
     "servers": "serveurs",
     "next": "à suivre",
     "playTime": "Temps de jeu",
-    "mapSyncedwith": "Carte synchronisée avec"
+    "mapSyncedwith": "Carte synchronisée avec",
+    "favServers": "Serveur"
 }

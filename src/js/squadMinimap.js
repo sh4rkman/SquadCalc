@@ -271,7 +271,7 @@ export const squadMinimap = Map.extend({
 
         // Empty and clear buttons of DOM elements
         $(".dropbtn8, .dropbtn9, .dropbtn10, .dropbtn11").empty();
-        $("#factionsTab, .btn-delete, .btn-undo").hide();
+        $("#factionsTab, #factionsButton, .btn-delete, .btn-undo").hide();
 
         // Reset map view
         this.setView([-this.pixelSize/2, this.pixelSize/2], 2);
@@ -492,6 +492,10 @@ export const squadMinimap = Map.extend({
             newMarker = new squadWeaponMarker(latlng, {uid: uid, heightPadding: heightPadding}, this)
                 .addTo(this.markersGroup).addTo(this.activeWeaponsMarkers);
             newMarker.updateIcon();
+            const $ws = $(".weaponSelector");
+            $ws.removeClass("animate__fadeIn");
+            $ws[0].offsetWidth; // force reflow to restart animation
+            $ws.addClass("active animate__fadeIn");
         } else if (this.activeWeaponsMarkers.getLayers().length === 1) {
             newMarker = new squadWeaponMarker(latlng, {uid: uid, heightPadding: heightPadding}, this).addTo(this.markersGroup).addTo(this.activeWeaponsMarkers);
             newMarker.updateIcon();

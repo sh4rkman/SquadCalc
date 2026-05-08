@@ -7,6 +7,7 @@ $newColor: green;
 
 :root {
     --main-color: #{$mainColor}; // Interpolation so we can use this color in JS
+    color-scheme: dark;
 }
 
 // Fonts
@@ -156,7 +157,7 @@ button:focus {
     &.animate__fadeInDown {
         --animate-duration: 0.2s;
     }
-    &.animate__fadeInRight, &.animate__fadeInLeft {
+    &.animate__fadeInRight, &.animate__fadeInLeft, &.animate__fadeInUp {
         --animate-duration: 0.2s;
         svg {
             --animate-duration: 0.5s;
@@ -187,11 +188,6 @@ button:focus {
 *  Animations
 ***************************************/
 
-@keyframes blink {
-    50% {
-        opacity: 0.25;
-    }
-}
 
 @keyframes appear {
     100% {
@@ -215,14 +211,6 @@ button:focus {
     }
 }
 
-@keyframes spread-appear {
-    0% {
-        opacity: 0;
-    }
-    100% {
-        opacity: 1;
-    }
-}
 
 @keyframes weapon-appear {
     0% {

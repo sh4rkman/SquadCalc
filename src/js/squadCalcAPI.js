@@ -1,7 +1,4 @@
 import { App } from "../app.js";
-import { createSessionTooltips, leaveSessionTooltips } from "./tooltips.js";
-import SquadSession from "./squadSession.js";
-import SquadServersBrowser from "./squadServersBrowser.js";
 
 /**
  * Sends weapon data to the API via a POST request.
@@ -87,68 +84,17 @@ export const checkApiHealth = async () => {
             const data = await response.json();
             if (data.status === "OK") {
                 console.log(`Connected to ${process.env.API_URL}`);
-                const urlParams = new URLSearchParams(window.location.search);
-                const sessionId = urlParams.get("session");
-                if (sessionId) {
-                    $(".btn-session").addClass("active");
-                    createSessionTooltips.disable();
-                    leaveSessionTooltips.enable();
-                    // Wait for layer/layers to load before creating session
-                    // This ensures layer data is included in the initial session state
-                    if (urlParams.has("layer")) {
-                        $(document).one("layer:loaded", () => {
-                            App.session = new SquadSession(sessionId);
-                        });
-                    } else {
-                        $(document).one("layers:loaded", () => {
-                            App.session = new SquadSession(sessionId);
-                        });
-                    }
-                } else if (urlParams.has("server")) {
-                    // If a server ID is present in the URL, switch to that server/layer immediately
-                    const serverId = urlParams.get("server");
-
-                    if (!App.squadServersBrowser) {
-                        App.squadServersBrowser = new SquadServersBrowser();
-                        App.squadServersBrowser.init();
-                        $(document).one("servers:loaded", () => {
-                            const server = App.squadServersBrowser.serversData.find(s => s.id == serverId);
-                            
-                            if (server) {
-
-                                App.squadServersBrowser.switchLayer(
-                                    server.attributes.name,
-                                    server.mapName,
-                                    server.attributes.details.map,
-                                    server.team1,
-                                    server.team2,
-                                    server.attributes.details.squad_teamOne || "",
-                                    server.attributes.details.squad_teamTwo || ""
-                                );
-
-                                // find the row with data-serverid = serverId and add class "selected"
-                                $(`#serversTableBody tr[data-serverid="${serverId}"]`).addClass("selected");
-                                $("#servers").addClass("active");
-
-                            }
-                            else {
-                                // remove the server parameter from the URL since it's invalid
-                                const url = new URL(window.location);
-                                url.searchParams.delete("server");
-                                window.history.replaceState({}, "", url);
-                                App.openToast("error", "serverNotFound", "");
-                            }
-                        });
-
-                    }
-                }
+                if (data.version) $("#gameDataVersion").text(`Squad v${data.version}`);
+                App.applyUrlIntent();
             }
         } else {
             console.error("Not connected to SquadCalc API");
+            $("#gameDataVersion").text("Disconnected from API").addClass("error");
         }
     } catch (error) {
         console.error("Not connected to SquadCalc API");
         console.debug(error);
+        $("#gameDataVersion").text("Disconnected from API").addClass("error");
     }
 };
 

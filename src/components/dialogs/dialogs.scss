@@ -33,6 +33,7 @@ dialog {
         font-size: 1.7em;
         right: 8px;
         top: 8px;
+        z-index: 100;
         background-color: transparent;
         transition: all 0.4s ease-in-out;
         cursor: pointer;
@@ -165,6 +166,7 @@ dialog {
     button {
         height: 20px;
         color: variables.$mainBGColor;
+        background-color: white;
         width: 45%;
         cursor: pointer;
         &.active {

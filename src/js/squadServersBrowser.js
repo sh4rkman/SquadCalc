@@ -27,9 +27,8 @@ export default class SquadServersBrowser {
      * - Switches map, layer, factions, and units to match the server
      */
     async syncWithServer(){
-
         if (!this.selectedServer) return;
-        this.getServers();
+        await this.getServers();
         if (!this.serversData) return;
 
         this.serversData.forEach(server => {
@@ -58,8 +57,10 @@ export default class SquadServersBrowser {
      * Fetches the list of servers from the API and stores it in `this.serversData`.
      */
     async getServers() {
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 10000);
         try {
-            const response = await fetch(`${process.env.API_URL}/get/servers`);
+            const response = await fetch(`${process.env.API_URL}/get/servers`, { signal: controller.signal });
             const data = await response.json();
             this.serversData = data.servers;
 
@@ -74,7 +75,8 @@ export default class SquadServersBrowser {
 
         } catch (error) {
             console.error("Error fetching server data:", error);
-            //serversList.innerHTML = `<p data-i18n="common:errorLoading">${i18next.t("loadingServers", { ns: "common" })}</p>`;
+        } finally {
+            clearTimeout(timeout);
         }
     }
 
@@ -182,6 +184,7 @@ export default class SquadServersBrowser {
             this.favorites.add(serverId);
         }
         this.saveFavorites();
+        $(document).trigger("favorites:changed", [{ favorites: this.favorites, servers: this.serversData }]);
     }
 
 
@@ -298,7 +301,7 @@ export default class SquadServersBrowser {
                 rows += `
                     <tr class="${isSelected} ${unavailable}" data-serverid="${server.id}">
                         <td class="favoriteCell">${favoriteStarHTML}</td>
-                        <td title="${server.attributes.name}">${server.attributes.name}</td>
+                        <td title="${server.attributes.name}"><div class="server-name">${server.attributes.name}</div></td>
                         <td class="mapdata">
                             ${server.attributes.details.map}<br>
                             ${nextLayer}
@@ -407,17 +410,13 @@ export default class SquadServersBrowser {
         const clickedElement = $(event.target);
         if (clickedElement.closest(".favorite-btn").length) return;
 
-        const url = new URL(window.location);
-
         // --- UNSELECT ---
         if (row.hasClass("selected")) {
             row.removeClass("selected");
             $("#servers").removeClass("active");
             this.selectedServer = null;
-
-            // Remove &server= from URL
-            url.searchParams.delete("server");
-            window.history.replaceState({}, "", url);
+            App.updateUrlParams({ server: null });
+            App.SERVER_SELECTOR.val("").trigger("change.select2");
 
             // stop sync
             if (this.syncInterval) {
@@ -434,10 +433,9 @@ export default class SquadServersBrowser {
 
         // Retrieve fresh data from the serversData array in case it has changed since rendering
         const server = this.serversData.find(s => s.id == row.data("serverid"));
-        
-        // Add the serverid to the URL
-        url.searchParams.set("server", server.id);
-        window.history.replaceState({}, "", url);
+
+        App.updateUrlParams({ server: server.id });
+        App.SERVER_SELECTOR.val(server.id).trigger("change.select2");
 
         // Update the selected server and layer
         this.selectedServer = server.id;
@@ -530,71 +528,59 @@ export default class SquadServersBrowser {
      * @param {string} unit1
      * @param {string} unit2
      */
-    switchLayer(serverName, mapName, layerIndex, team1, team2, unit1, unit2){
-        
+    switchLayer(serverName, mapName, layerIndex, team1, team2, unit1, unit2) {
         if (!mapName || !serverName || !layerIndex) return;
-        
+
         const mapIndex = MAPS.findIndex(m => m.name.toLowerCase() === mapName.toLowerCase());
         const currentMapIndex = parseInt(App.MAP_SELECTOR.val());
         const currentLayerIndex = App.LAYER_SELECTOR.val();
 
-        // If already on correct map and layer, just update factions/units
-        if (currentMapIndex === mapIndex && currentLayerIndex === layerIndex) {
+        const applyFactions = () => {
             if (team1 && team2) {
-                App.FACTION1_SELECTOR.val(team1).trigger($.Event("change", { broadcast: true }));
-                App.FACTION2_SELECTOR.val(team2).trigger($.Event("change", { broadcast: true }));
+                App.FACTION1_SELECTOR.val(team1).trigger($.Event("change", { broadcast: false }));
+                App.FACTION2_SELECTOR.val(team2).trigger($.Event("change", { broadcast: false }));
                 if (unit1 && unit2) {
-                    App.UNIT1_SELECTOR.val(unit1).trigger($.Event("change", { broadcast: true }));
-                    App.UNIT2_SELECTOR.val(unit2).trigger($.Event("change", { broadcast: true }));
+                    App.UNIT1_SELECTOR.val(unit1).trigger($.Event("change", { broadcast: false }));
+                    App.UNIT2_SELECTOR.val(unit2).trigger($.Event("change", { broadcast: false }));
                 }
+                // Strip any team params that default faction loading may have written
+                App.updateUrlParams({ team1: null, team1unit: null, team2: null, team2unit: null });
             }
-            $("#serversInformation")[0].close();
-            //activeServerBrowserTooltips.setContent(`${i18next.t("mapSyncedwith", { ns: "common" })} ${serverName}`);
-            //activeServerBrowserTooltips.enable();
             serverBrowserTooltips.hide();
             App.openToast("success", "mapUpdated", "");
+        };
+
+        const setLayerAndFactions = () => {
+            if (!App.LAYER_SELECTOR.find(`option[value="${layerIndex}"]`).length) {
+                $(document).one("layers:loaded", setLayerAndFactions);
+                return;
+            }
+            App.LAYER_SELECTOR.val(layerIndex).trigger($.Event("change", { broadcast: true }));
+            $(document).one("layer:loaded", applyFactions);
+        };
+
+        $("#serversInformation")[0].close();
+
+        // Already on the right map and layer — factions only
+        if (currentMapIndex === mapIndex && currentLayerIndex === layerIndex) {
+            applyFactions();
             return;
         }
-        
-        // Map or layer needs to change
+
+        // Map needs to change — loadLayers() fires layers:loaded
         if (currentMapIndex !== mapIndex) {
             App.MAP_SELECTOR.val(mapIndex).trigger($.Event("change", { broadcast: true }));
-            $(document).on("layers:loaded", () => {
-                App.LAYER_SELECTOR.val(layerIndex).trigger($.Event("change", { broadcast: true }));
-                $(document).one("layer:loaded", () => {
-                    if (team1 && team2) {
-                        App.FACTION1_SELECTOR.val(team1).trigger($.Event("change", { broadcast: true }));
-                        App.FACTION2_SELECTOR.val(team2).trigger($.Event("change", { broadcast: true }));
-                        if (unit1 && unit2) {
-                            App.UNIT1_SELECTOR.val(unit1).trigger($.Event("change", { broadcast: true }));
-                            App.UNIT2_SELECTOR.val(unit2).trigger($.Event("change", { broadcast: true }));
-                        }
-                    }
-                });
-            });
-        } else {
-            // Only layer needs to change
-            $(document).one("layers:loaded", () => {
-                App.LAYER_SELECTOR.val(layerIndex).trigger($.Event("change", { broadcast: true }));
-                $(document).one("layer:loaded", () => {
-                    if (team1 && team2) {
-                        App.FACTION1_SELECTOR.val(team1).trigger($.Event("change", { broadcast: true }));
-                        App.FACTION2_SELECTOR.val(team2).trigger($.Event("change", { broadcast: true }));
-                        if (unit1 && unit2) {
-                            App.UNIT1_SELECTOR.val(unit1).trigger($.Event("change", { broadcast: true }));
-                            App.UNIT2_SELECTOR.val(unit2).trigger($.Event("change", { broadcast: true }));
-                        }
-                    }
-                });
-            });
+            $(document).one("layers:loaded", setLayerAndFactions);
+            return;
         }
-        
-        $("#serversInformation")[0].close();
-        // activeServerBrowserTooltips.setContent(`${i18next.t("mapSyncedwith", { ns: "common" })} ${serverName}`);
-        // activeServerBrowserTooltips.enable();
-        // activeServerBrowserTooltips.hide();
-        serverBrowserTooltips.hide();
-        App.openToast("success", "mapUpdated", "");
+
+        // Same map, different layer
+        const layersReady = App.LAYER_SELECTOR.find("option[value]:not([value=''])").length > 0;
+        if (layersReady) {
+            setLayerAndFactions();
+        } else {
+            $(document).one("layers:loaded", setLayerAndFactions);
+        }
     }
 
 

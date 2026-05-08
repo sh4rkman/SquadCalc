@@ -15,7 +15,7 @@ import SquadSettings from "./squadSettings.js";
 import packageInfo from "../../package.json";
 import i18next from "i18next";
 import SquadLayer from "./squadLayer.js";
-// import { serverBrowserTooltips } from "./tooltips.js";
+import { serverBrowserTooltips, settingsTooltips } from "./tooltips.js";
 import { MapDrawing, MapArrow, MapCircle, MapRectangle } from "./squadShapes.js";
 
 
@@ -26,6 +26,28 @@ import { MapDrawing, MapArrow, MapCircle, MapRectangle } from "./squadShapes.js"
  */
 export default class SquadCalc {
 
+    static get DEFAULT_SHORTCUTS() {
+        return {
+            toggleMap:        { key: "m",       ctrl: false, alt: false, shift: false },
+            switchUI:         { key: "m",       ctrl: true,  alt: false, shift: false },
+            focusMode:        { key: "Enter",   ctrl: false, alt: false, shift: false },
+            clearTargets:     { key: "Delete",  ctrl: false, alt: false, shift: false },
+            deleteLastTarget: { key: "z",       ctrl: true,  alt: false, shift: false },
+            saveMap:          { key: "s",       ctrl: true,  alt: false, shift: false },
+        };
+    }
+
+    static get SHORTCUT_ACTIONS() {
+        return [
+            { id: "toggleMap",        i18nKey: "settings:toggleMap"        },
+            { id: "switchUI",         i18nKey: "settings:switchUI"          },
+            { id: "focusMode",        i18nKey: "settings:enter"             },
+            { id: "clearTargets",     i18nKey: "settings:clearTargets"      },
+            { id: "deleteLastTarget", i18nKey: "settings:deleteLastTarget"  },
+            { id: "saveMap",          i18nKey: "settings:saveMap"           },
+        ];
+    }
+
     /**
      * @param {Array} [options]
      */
@@ -35,12 +57,14 @@ export default class SquadCalc {
         this.gravity = options.gravity;
         this.debug = options.debug;
         this.userSettings = new SquadSettings(this);
+        this.shortcuts = this.loadShortcuts();
         this.activeWeapon = "";
         this.hasMouse = matchMedia("(pointer:fine)").matches;
         this.MAP_SELECTOR = $(".dropbtn");
         this.WEAPON_SELECTOR = $(".dropbtn2");
         this.SHELL_SELECTOR = $(".dropbtn3");
         this.LAYER_SELECTOR = $(".dropbtn5");
+        this.SERVER_SELECTOR = $(".dropbtn6");
         this.FACTION1_SELECTOR = $(".dropbtn8");
         this.FACTION2_SELECTOR = $(".dropbtn10");
         this.UNIT1_SELECTOR = $(".dropbtn9");
@@ -50,6 +74,7 @@ export default class SquadCalc {
     }
 
     init() {
+        this.urlIntent = this.parseUrlIntent();
         loadLanguage(this.supportedLanguages);
         initMapsProperties();
         this.userSettings.init();
@@ -63,6 +88,154 @@ export default class SquadCalc {
         console.log(`SquadCalc v${this.version} Loaded! 🎯`);
     }
 
+    parseUrlIntent() {
+        const p = new URLSearchParams(window.location.search);
+        return {
+            server:    p.get("server"),
+            session:   p.get("session"),
+            map:       p.get("map"),
+            layer:     p.get("layer"),
+            team1:     p.get("team1"),
+            team1unit: p.get("team1unit"),
+            team2:     p.get("team2"),
+            team2unit: p.get("team2unit"),
+        };
+    }
+
+    applyUrlIntent() {
+        const { server, session } = this.urlIntent;
+        if (server)       this.initServerMode(server, session);
+        else if (session) this.initSessionMode(session, this.urlIntent);
+        else              this.initStaticMode(this.urlIntent);
+        this.initFavoriteServers();
+    }
+
+    initServerMode(serverId, sessionId = null) {
+        this.updateUrlParams({ team1: null, team1unit: null, team2: null, team2unit: null });
+
+        if (!this.squadServersBrowser) {
+            this.squadServersBrowser = new SquadServersBrowser();
+            this.squadServersBrowser.init();
+        }
+
+        const setup = () => {
+            const server = this.squadServersBrowser.serversData?.find(s => s.id == serverId);
+
+            if (!server) {
+                this.updateUrlParams({ server: null });
+                this.openToast("error", "serverNotFound", "");
+                this.loadLayers();
+                this.initStaticMode(this.urlIntent);
+                return;
+            }
+
+            if (!server.team1 || !server.team2 || !server.mapName) {
+                this.updateUrlParams({ server: null });
+                this.SERVER_SELECTOR.val("").trigger("change.select2");
+                this.loadLayers();
+                this.initStaticMode(this.urlIntent);
+                return;
+            }
+
+            this.squadServersBrowser.selectedServer = server.id;
+            this.squadServersBrowser.selectedLayer = server.attributes.details.map;
+
+            this.squadServersBrowser.switchLayer(
+                server.attributes.name,
+                server.mapName,
+                server.attributes.details.map,
+                server.team1,
+                server.team2,
+                server.attributes.details.squad_teamOne,
+                server.attributes.details.squad_teamTwo
+            );
+
+            $("#serversTableBody tr").removeClass("selected");
+            $(`#serversTableBody tr[data-serverid="${serverId}"]`).addClass("selected");
+            $("#servers").addClass("active");
+
+            if (this.squadServersBrowser.syncInterval) clearInterval(this.squadServersBrowser.syncInterval);
+            this.squadServersBrowser.syncInterval = setInterval(
+                () => this.squadServersBrowser.syncWithServer(),
+                this.squadServersBrowser.refreshInterval * 1000
+            );
+
+            if (sessionId) this.initSessionMode(sessionId);
+        };
+
+        if (this.squadServersBrowser.serversData) {
+            setup();
+        } else {
+            $(document).one("servers:loaded", setup);
+        }
+    }
+
+    initSessionMode(sessionId, intent = null) {
+        $(".btn-session").addClass("active");
+        createSessionTooltips.disable();
+        leaveSessionTooltips.enable();
+
+        const startSession = () => { this.session = new SquadSession(sessionId); };
+
+        if (intent?.layer) {
+            this.initStaticMode(intent, startSession);
+        } else if (this.layersLoaded) {
+            startSession();
+        } else {
+            $(document).one("layers:loaded", startSession);
+        }
+    }
+
+    initStaticMode(intent, onLayerLoaded = null) {
+        if (!intent.layer) {
+            onLayerLoaded?.();
+            return;
+        }
+
+        const applyLayer = () => {
+            const urlLayerName = intent.layer.toLowerCase().replaceAll(" ", "");
+            const match = this.LAYER_SELECTOR.find("option").filter((_, el) =>
+                $(el).text().toLowerCase().replaceAll(" ", "") === urlLayerName
+            );
+
+            if (!match.length) {
+                this.updateUrlParams({ layer: null });
+                onLayerLoaded?.();
+                return;
+            }
+
+            match.prop("selected", true);
+
+            if (intent.team1 || intent.team2 || onLayerLoaded) {
+                $(document).one("layer:loaded", () => {
+                    [
+                        { faction: intent.team1, unit: intent.team1unit, fSel: this.FACTION1_SELECTOR, uSel: this.UNIT1_SELECTOR },
+                        { faction: intent.team2, unit: intent.team2unit, fSel: this.FACTION2_SELECTOR, uSel: this.UNIT2_SELECTOR },
+                    ].forEach(({ faction, unit, fSel, uSel }) => {
+                        if (faction) {
+                            const fm = fSel.find("option").filter((_, el) => el.value.toLowerCase() === faction.toLowerCase());
+                            if (fm.length) fSel.val(fm.val()).trigger($.Event("change", { broadcast: false }));
+                        }
+                        if (unit) {
+                            const um = uSel.find("option").filter((_, el) => el.value.toLowerCase() === unit.toLowerCase());
+                            if (um.length) uSel.val(um.val()).trigger($.Event("change", { broadcast: false }));
+                        }
+                    });
+                    this.updateUrlParams({ team1: null, team1unit: null, team2: null, team2unit: null });
+                    onLayerLoaded?.();
+                });
+            }
+
+            this.LAYER_SELECTOR.trigger($.Event("change", { broadcast: false }));
+        };
+
+        if (this.layersLoaded) {
+            applyLayer();
+        } else {
+            $(document).one("layers:loaded", applyLayer);
+        }
+    }
+
     /**
      * Load the maps to the menu
      */
@@ -71,6 +244,23 @@ export default class SquadCalc {
         // Initiate Maps&Layers Dropdown
         this.MAP_SELECTOR.select2();
         this.LAYER_SELECTOR.select2();
+        this.SERVER_SELECTOR.select2({ minimumResultsForSearch: Infinity, dropdownParent: $("#serverSelector"), allowClear: true });
+        this.SERVER_SELECTOR.on("change", (event) => {
+            const serverId = event.target.value;
+            if (!serverId) {
+                this.updateUrlParams({ server: null });
+                $("#serversTableBody tr").removeClass("selected");
+                $("#servers").removeClass("active");
+                if (this.squadServersBrowser) {
+                    this.squadServersBrowser.selectedServer = null;
+                    clearInterval(this.squadServersBrowser.syncInterval);
+                    this.squadServersBrowser.syncInterval = null;
+                }
+                return;
+            }
+            this.updateUrlParams({ server: serverId });
+            this.initServerMode(serverId);
+        });
         this.FACTION1_SELECTOR.select2();
         $(".dropbtn8").select2();
         $(".dropbtn9").select2();
@@ -127,7 +317,7 @@ export default class SquadCalc {
                 if (abortController) { abortController.abort(); } // Abort the ongoing fetch request
                 if (this.minimap.layer) this.minimap.layer.clear();
                 $(".btn-layer").hide();
-                $("#factionsTab").hide();
+                $("#factionsTab, #factionsButton").hide();
 
                 // Empty Factions&Units selectors
                 this.FACTION1_SELECTOR.empty();
@@ -157,7 +347,8 @@ export default class SquadCalc {
                 this.updateUrlParams({ layer: selectedLayerText });
             }
 
-            // Initialize a new AbortController for the fetch request
+            // Abort any in-progress layer fetch before starting a new one
+            if (abortController) abortController.abort();
             abortController = new AbortController();
             const signal = abortController.signal;
             this.minimap.spin(true, this.minimap.spinOptions);
@@ -167,7 +358,7 @@ export default class SquadCalc {
                         this.openToast("error", "error", "apiError");
                         console.error("Error fetching layer data:", error);
                     }
-                    $("#factionsTab").hide();
+                    $("#factionsTab, #factionsButton").hide();
                     this.minimap.spin(false);
 
                     // Stop the chain
@@ -190,6 +381,7 @@ export default class SquadCalc {
                         console.debug(`Sent layer update for layer #${event.target.value}`);
                     }
 
+                    this.layerLoaded = true;
                     $(document).trigger("layer:loaded");
                     this.minimap.spin(false);
                 });
@@ -201,7 +393,6 @@ export default class SquadCalc {
      */
     loadLayers() {
         this.minimap.spin(true, this.minimap.spinOptions);
-        const currentUrl = new URL(window.location);
         $("#layerSelector").hide();
         this.LAYER_SELECTOR.empty();
 
@@ -215,72 +406,13 @@ export default class SquadCalc {
 
             // Re-empty just in case user changed map while the request was on the way
             this.LAYER_SELECTOR.empty();
-
-            // Empty option for placeholder
             this.LAYER_SELECTOR.append("<option value=></option>");
-
-            layers.forEach((layer) => { this.LAYER_SELECTOR.append(`<option value=${layer.rawName}>${layer.shortName}</option>`);});
-            
-
-            // If URL has a "layer" parameter and no active session yet
-            // Using this.session instead of URL param allows layer to load on first call,
-            // but prevents overwriting session state when SESSION_JOINED triggers a reload
-            if (currentUrl.searchParams.has("layer") && !this.session) {
-                const urlLayerName = currentUrl.searchParams.get("layer").toLowerCase().replaceAll(" ", "");
-            
-                // Normalize option text by removing any extra spaces around the "V"
-                const matchingOption = this.LAYER_SELECTOR.find("option").filter(function() {
-                    const optionText = $(this).text().toLowerCase().replaceAll(" ", "");
-                    return optionText === urlLayerName;
-                });
-            
-                // If we find a matching option, set it as selected
-                if (matchingOption.length > 0) {
-                    matchingOption.prop("selected", true);
-
-                    // Read team faction/unit URL params to apply after layer loads
-                    const teamParams = [
-                        { faction: currentUrl.searchParams.get("team1"), unit: currentUrl.searchParams.get("team1unit"), factionSel: this.FACTION1_SELECTOR, unitSel: this.UNIT1_SELECTOR },
-                        { faction: currentUrl.searchParams.get("team2"), unit: currentUrl.searchParams.get("team2unit"), factionSel: this.FACTION2_SELECTOR, unitSel: this.UNIT2_SELECTOR },
-                    ];
-                    const hasTeamParams = teamParams.some(t => t.faction || t.unit);
-                    const hasSession = currentUrl.searchParams.has("session");
-                    const hasServer = currentUrl.searchParams.has("server");
-
-                    if (hasTeamParams && !hasSession && !hasServer) {
-                        $(document).one("layer:loaded", () => {
-                            for (const { faction, unit, factionSel, unitSel } of teamParams) {
-                                if (faction) {
-                                    const factionMatch = factionSel.find("option").filter(function() {
-                                        return $(this).val().toLowerCase() === faction.toLowerCase();
-                                    });
-                                    if (factionMatch.length > 0) {
-                                        factionSel.val(factionMatch.val()).trigger($.Event("change", { broadcast: false }));
-                                    }
-                                }
-                                if (unit) {
-                                    const unitMatch = unitSel.find("option").filter(function() {
-                                        return $(this).val().toLowerCase() === unit.toLowerCase();
-                                    });
-                                    if (unitMatch.length > 0) {
-                                        unitSel.val(unitMatch.val()).trigger($.Event("change", { broadcast: false }));
-                                    }
-                                }
-                            }
-                        });
-                    }
-
-                    this.LAYER_SELECTOR.trigger($.Event("change", { broadcast: false }));
-                }
-                else {
-                    // layer in url doesn't make sense, clean the url
-                    this.updateUrlParams({ layer: null });
-                }
-            }
+            layers.forEach((layer) => { this.LAYER_SELECTOR.append(`<option value=${layer.rawName}>${layer.shortName}</option>`); });
 
             this.minimap.spin(false);
             $("#layerSelector").show();
 
+            this.layersLoaded = true;
             $(document).trigger("layers:loaded");
 
         }).catch(error => {
@@ -297,6 +429,52 @@ export default class SquadCalc {
      */
     loadTheme() {
         this.mainColor = getComputedStyle(document.documentElement).getPropertyValue("--main-color").trim();
+    }
+
+
+    async initFavoriteServers() {
+        let favoriteIds;
+        try {
+            const stored = localStorage.getItem("favoriteServers");
+            if (!stored) return;
+            favoriteIds = new Set(JSON.parse(stored));
+        } catch {
+            return;
+        }
+        if (favoriteIds.size === 0) return;
+
+        try {
+            const controller = new AbortController();
+            const timeout = setTimeout(() => controller.abort(), 10000);
+            const response = await fetch(`${process.env.API_URL}/get/servers`, { signal: controller.signal });
+            clearTimeout(timeout);
+            if (!response.ok) return;
+            const data = await response.json();
+            const favoriteServers = (data.servers || []).filter(s => favoriteIds.has(String(s.id)));
+            if (favoriteServers.length === 0) return;
+            this.buildFavoriteServersDropdown(favoriteServers);
+        } catch {
+            // favorites dropdown is optional, fail silently
+        }
+    }
+
+
+    buildFavoriteServersDropdown(servers) {
+        this.SERVER_SELECTOR.empty();
+        this.SERVER_SELECTOR.append("<option value=\"\"></option>");
+        const currentServerId = this.squadServersBrowser?.selectedServer ?? this.urlIntent.server;
+        servers.forEach(server => {
+            const unavailable = !server.team1 || !server.team2 || !server.mapName;
+            const isActive = !unavailable && currentServerId && String(currentServerId) === String(server.id);
+            const option = new Option(server.attributes.name, server.id, false, isActive);
+            if (unavailable) {
+                option.disabled = true;
+                option.title = "Modded layer";
+            }
+            this.SERVER_SELECTOR.append(option);
+        });
+        this.SERVER_SELECTOR.trigger("change.select2");
+        $("#serverSelector").show();
     }
 
 
@@ -325,7 +503,12 @@ export default class SquadCalc {
 
         // Update the URL & Layer
         this.updateUrlParams({ map: this.minimap.activeMap.name });
-        this.loadLayers(); 
+
+        // In server mode, skip the initial layers fetch — switchLayer will load
+        // the correct map's layers once server data arrives
+        if (!this.urlIntent.server) {
+            this.loadLayers();
+        }
 
     }
 
@@ -431,20 +614,20 @@ export default class SquadCalc {
     }
 
 
-    closeMenu() {
-        $("#footerButtons").removeClass("expanded");
-        $(".fab4").html("<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 448 512\"><path d=\"M0 96C0 78.3 14.3 64 32 64l384 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 128C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32l384 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 288c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32L32 448c-17.7 0-32-14.3-32-32s14.3-32 32-32l384 0c17.7 0 32 14.3 32 32z\"/></svg>");
-    }
 
 
     loadUI(){
-        const calcInformation = document.querySelector("#calcInformation");
-        const weaponInformation = document.querySelector("#weaponInformation");
-        const helpDialog = document.querySelector("#helpDialog");
-        const factionsDialog = document.querySelector("#factionsDialog");
-        const serversInformation = document.querySelector("#serversInformation");
+        this._dialogs = {
+            calc:    document.querySelector("#calcInformation"),
+            weapon:  document.querySelector("#weaponInformation"),
+            help:    document.querySelector("#helpDialog"),
+            factions:document.querySelector("#factionsDialog"),
+            servers: document.querySelector("#serversInformation"),
+            shortcutCapture: document.querySelector("#shortcutCaptureDialog"),
+        };
+        const { calc: calcInformation, weapon: weaponInformation, help: helpDialog, factions: factionsDialog, servers: serversInformation } = this._dialogs;
 
-        $(".btn-delete, .btn-undo, .btn-layer, #mapLayerMenu").hide();
+        $(".btn-delete, .btn-undo, .btn-layer, .returnBtn, #mapLayerMenu").hide();
 
         this.ui = localStorage.getItem("data-ui");
 
@@ -454,6 +637,7 @@ export default class SquadCalc {
         }
 
         if (this.ui == 1) this.loadMapUIMode();
+        else $(".returnBtn").show();
 
         // Add Events listeners
 
@@ -505,7 +689,8 @@ export default class SquadCalc {
         });
 
         $(document).on("click", "#servers", () => {
-            
+            serverBrowserTooltips.hide();
+            serverBrowserTooltips.disable();
             if (!this.squadServersBrowser) {
                 this.squadServersBrowser = new SquadServersBrowser();
                 this.squadServersBrowser.init();
@@ -514,72 +699,33 @@ export default class SquadCalc {
 
             // Focus search input at the end
             const searchInput = document.getElementById("serverSearch");
-            if (searchInput) searchInput.focus(); 
+            if (searchInput) searchInput.focus();
+        });
+
+        $(document).on("favorites:changed", (_event, { favorites, servers }) => {
+            const favoriteServers = (servers || []).filter(s => favorites.has(String(s.id)));
+            if (favoriteServers.length === 0) {
+                $("#serverSelector").hide();
+                return;
+            }
+            this.buildFavoriteServersDropdown(favoriteServers);
+        });
+
+        serversInformation.addEventListener("close", () => {
+            setTimeout(() => serverBrowserTooltips.enable(), 50);
+        });
+
+        helpDialog.addEventListener("close", () => {
+            setTimeout(() => settingsTooltips.enable(), 50);
         });
           
         window.addEventListener("drop", e => {
             e.preventDefault();
-          
+
             if (this.ui == 0) return; // Don't handle drop in legacy mode
 
-            const files = e.dataTransfer.files;
-            const file = files?.[0];
-            if (!file) return;
-          
-            const reader = new FileReader();
-          
-            reader.onload = (event) => {
-                const content = event.target.result;
-          
-                // Try parsing as JSON
-                try {
-                    const data = JSON.parse(content);
-                    console.debug("Parsed JSON:", data);
-
-                    $(".dropbtn").val(data.activeMap).trigger($.Event("change", { broadcast: true }));
-
-                    data.markers.forEach(marker => { this.minimap.createMarker(new LatLng(marker.lat, marker.lng), marker.team, marker.category, marker.icon, marker.uid); });
-                    data.arrows.forEach(arrow => { new MapArrow(this.minimap, arrow.color, arrow.latlngs[0], arrow.latlngs[1], arrow.uid); });
-                    data.circles.forEach(circle => { new MapCircle(this.minimap, circle.color, circle.latlng, circle.radius, circle.uid); });
-                    data.rectangles.forEach(rectangle => { new MapRectangle(this.minimap, rectangle.color, rectangle.bounds._southWest, rectangle.bounds._northEast, rectangle.uid); });
-                    data.draws.forEach(draw => { new MapDrawing(this.minimap, draw.color, draw.latlngs, draw.uid).finalize(false); });
-
-                    // Wait for the heightmap to load before adding weapons/targets
-                    $(document).one("heightmap:loaded", () => {
-                        if (Array.isArray(data.weapons) && data.weapons.length > 0) {
-                            data.weapons.forEach(weapon => { this.minimap.createWeapon(new LatLng(weapon.lat, weapon.lng)); });
-                            data.targets.forEach(target => { this.minimap.createTarget(new LatLng(target.lat, target.lng), false); });
-                        }
-                        this.openToast("success", "importSuccess", "");
-                    });
-
-                    $(document).one("layers:loaded", () => {
-                        this.LAYER_SELECTOR.val(data.activeLayer).trigger($.Event("change", { broadcast: true }));
-                        $(document).one("layer:loaded", () => {
-                            // Select Flags
-                            data.selectedFlags.forEach(flag => {
-                                this.minimap.layer.flags.forEach((layerFlag) => {
-                                    if (layerFlag.objectName != flag) return;
-                                    if (layerFlag.isSelected) return;
-                                    this.minimap.layer._handleFlagClick(layerFlag);
-                                    return;
-                                });
-                            });
-                            // Load Factions and Units
-                            this.FACTION1_SELECTOR.val(data.teams[0][0]).trigger($.Event("change", { broadcast: false }));
-                            this.FACTION2_SELECTOR.val(data.teams[1][0]).trigger($.Event("change", { broadcast: false }));
-                            this.UNIT1_SELECTOR.val(data.teams[0][1]).trigger($.Event("change", { broadcast: false }));
-                            this.UNIT2_SELECTOR.val(data.teams[1][1]).trigger($.Event("change", { broadcast: false }));
-                        });
-                    });
-
-                } catch (err) {
-                    console.debug("Not valid JSON", err);
-                    this.openToast("error", "fileNotSupported", "");
-                }
-            };
-          
-            reader.readAsText(file);
+            const file = e.dataTransfer.files?.[0];
+            if (file) this.loadMapStateFromFile(file);
         });
 
         $(".btn-delete").on("click", () => {
@@ -592,12 +738,31 @@ export default class SquadCalc {
         });
 
         $(".btn-download").on("click", () => { this.saveMapStateToFile(); });
+        $(".btn-upload").on("click", () => {
+            const input = document.createElement("input");
+            input.type = "file";
+            input.accept = ".squadcalc,.json";
+            input.onchange = (e) => {
+                const file = e.target.files?.[0];
+                if (file) this.loadMapStateFromFile(file);
+            };
+            input.click();
+        });
         $(".btn-undo").on("click", () => { if (this.minimap.history.length > 0) this.minimap.history.at(-1).delete(); });
         $(".btn-layer").on("click", () => { this.minimap.layer.toggleVisibility(); });
         $(".btn-drawingMode").on("click", () => { this.minimap.disableDrawingMode(); });
-        $("#fabCheckbox2").on("change", () => { this.switchUI();});
-        $("#factionsButton").on("click", () => { $("#factionsDialog")[0].showModal(); });
-        
+        $(".btn-legacy").on("click", () => { if (this.ui !== 0) this.switchUI(); });
+        $("#factionsButton .factionBar-top").on("click", (e) => {
+            e.stopPropagation();
+            $("#factionsButton").toggleClass("collapsed");
+        });
+        $("#factionsButton button.btn-faction").on("click", () => { $("#factionsDialog")[0].showModal(); });
+        $(".btn-settings").on("click", () => {
+            settingsTooltips.hide();
+            settingsTooltips.disable();
+            helpDialog.showModal();
+        });
+
         $("#mapLayerMenu").find("button.btn-session").on("click", () => {
             if ($(".btn-session").hasClass("active")) {
                 
@@ -622,13 +787,6 @@ export default class SquadCalc {
             }
         });
 
-
-        // $("#btn-map-choices").on("hover", () => {
-        //     $("button.layers").show();
-        //     console.log("Map Layers Menu opened");
-        // });
-
-        // $("button.layers").hide();
 
         $("#mapLayerMenu").find("button.layers").on("click", (event) => {
 
@@ -682,105 +840,19 @@ export default class SquadCalc {
 
             $("#mapLayerMenu").find("button.btn-focus").on("click", () => {
                 $("header").hide();
-                $("footer").hide();
                 $("#background").hide();
                 $("#mapLayerMenu").hide();
                 this.openToast("success", "focusMode", "enterToExit");
             });
 
-            $(document).on("keydown", (event) => {
-
-                // Disable Shortkeys in legacy mode
-                if (this.ui == 0) return;
-
-                // Disable Shortkeys when currently in a dialog
-                if (weaponInformation.open || calcInformation.open || helpDialog.open || factionsDialog.open || serversInformation.open) return;
-
-                // ENTER = FOCUS MODE
-                if (event.key === "Enter") {
-                    if ($("header").is(":hidden")) { // Quit focus mode
-                        $("header").show();
-                        $("footer").show();
-                        $("#mapLayerMenu").show();
-                        $("#background").show();
-                        if (this.minimap.layer && this.userSettings.enableFactions) {
-                            $("#factionsButton").show();
-                        }
-                        closeToast();
-                    } else {
-                        $("header").hide();
-                        $("footer").hide();
-                        $("#background").hide();
-                        $("#mapLayerMenu").hide();
-                        $("#factionsButton").hide();
-                        this.openToast("success", "focusMode", "enterToExit");
-                    }
-                }
-
-                // DELETE = REMOVE ALL MARKERS
-                if (event.key === "Delete") {
-                    if (this.minimap.history.length > 0) {
-                        this.minimap.history.forEach((item) => {
-                            item.delete();
-                        });
-                    }
-                }
-
-                // BACKSPACE / CTRL+Z = REMOVE LAST CREATED TARGET MARKER
-                if (event.key === "Backspace" ||(event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "z") {
-                    event.preventDefault();
-                    if (this.minimap.history.length > 0) this.minimap.history.at(-1).delete();
-                }
-
-                // CTRL + S = SAVE CURRENT MAP TO A FILE
-                if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "s") {
-                    event.preventDefault();
-                    if (this.minimap.hasMarkers()) this.saveMapStateToFile();
-                }
-
-                // ESCAPE = QUIT DRAWING MODE
-                if (event.key === "Escape") { this.minimap.disableDrawingMode(); }
-
-            });
+            $(document).on("keydown", (event) => this.handleKeydown(event));
 
 
         } else {
             $(".btn-focus").hide();
         }
 
-        let countdown;
-
-        const closeToast = () => {
-            const toast = document.querySelector("#toast");
-            if (!toast) return;
-            toast.style.animation = "close 0.3s cubic-bezier(.87,-1,.57,.97) forwards";
-            document.querySelector("#timer").classList.remove("timer-animation");
-            clearTimeout(countdown);
-        };
-        
-        this.openToast = (type, title, text) => {
-            const toast = document.querySelector("#toast");
-            clearTimeout(countdown);
-        
-            // Reset timer animation by forcing reflow
-            const timer = document.querySelector("#timer");
-            timer.classList.remove("timer-animation");
-            void timer.offsetWidth; // Trigger reflow
-            timer.classList.add("timer-animation");
-        
-            toast.classList = [type];
-            toast.style.animation = "open 0.3s cubic-bezier(.47,.02,.44,2) forwards";
-        
-            toast.querySelector("h4").setAttribute("data-i18n", `tooltips:${title}`);
-            toast.querySelector("h4").innerHTML = i18next.t(`tooltips:${title}`);
-            toast.querySelector("p").setAttribute("data-i18n", `tooltips:${text}`);
-            toast.querySelector("p").innerHTML = i18next.t(`tooltips:${text}`);
-        
-            // Start a new countdown
-            countdown = setTimeout(() => {
-                closeToast();
-            }, 5000);
-        };
+        this._countdown = null;
 
         // Global click listener for toast
         document.querySelector("#toast").addEventListener("click", (event) => {
@@ -788,7 +860,7 @@ export default class SquadCalc {
             const title = toast.querySelector("h4").getAttribute("data-i18n");  // Get data-i18n attribute
             
             // close current toast
-            closeToast();
+            this.closeToast();
 
             if (title === "tooltips:sessionCreated" && event.target.tagName !== "BUTTON") {
                 const url = new URL(window.location.href);
@@ -826,9 +898,250 @@ export default class SquadCalc {
             $("#"+$(event.currentTarget).val()).addClass("active");
         });
 
+        $("#settingsControls button[value='panel4']").on("click", () => this.initShortcutsPanel());
+
         this.show();
     }
 
+
+    closeToast() {
+        const toast = document.querySelector("#toast");
+        if (!toast) return;
+        toast.style.animation = "close 0.3s cubic-bezier(.87,-1,.57,.97) forwards";
+        document.querySelector("#timer").classList.remove("timer-animation");
+        clearTimeout(this._countdown);
+    }
+
+    openToast(type, title, text) {
+        const toast = document.querySelector("#toast");
+        clearTimeout(this._countdown);
+
+        const timer = document.querySelector("#timer");
+        timer.classList.remove("timer-animation");
+        void timer.offsetWidth;
+        timer.classList.add("timer-animation");
+
+        toast.classList = [type];
+        toast.style.animation = "open 0.3s cubic-bezier(.47,.02,.44,2) forwards";
+
+        toast.querySelector("h4").setAttribute("data-i18n", `tooltips:${title}`);
+        toast.querySelector("h4").innerHTML = i18next.t(`tooltips:${title}`);
+        toast.querySelector("p").setAttribute("data-i18n", `tooltips:${text}`);
+        toast.querySelector("p").innerHTML = i18next.t(`tooltips:${text}`);
+
+        this._countdown = setTimeout(() => { this.closeToast(); }, 5000);
+    }
+
+    toggleFocusMode() {
+        if ($("header").is(":hidden")) {
+            $("header").show();
+            $("#mapLayerMenu").show();
+            $("#background").show();
+            if (this.minimap.layer && this.userSettings.enableFactions) {
+                $("#factionsButton").show();
+            }
+            this.closeToast();
+        } else {
+            $("header").hide();
+            $("#background").hide();
+            $("#mapLayerMenu").hide();
+            $("#factionsButton").hide();
+            this.openToast("success", "focusMode", "enterToExit");
+        }
+    }
+
+    loadShortcuts() {
+        const defaults = SquadCalc.DEFAULT_SHORTCUTS;
+        try {
+            const stored = localStorage.getItem("settings-shortcuts");
+            if (stored) return { ...defaults, ...JSON.parse(stored) };
+        } catch { /* ignore corrupt data */ }
+        return { ...defaults };
+    }
+
+    saveShortcuts() {
+        localStorage.setItem("settings-shortcuts", JSON.stringify(this.shortcuts));
+    }
+
+    matchesShortcut(event, id) {
+        const sc = this.shortcuts[id];
+        if (!sc) return false;
+        return (sc.ctrl  === (event.ctrlKey || event.metaKey))
+            && (sc.alt   === event.altKey)
+            && (sc.shift === event.shiftKey)
+            && event.key.toLowerCase() === sc.key.toLowerCase();
+    }
+
+    formatShortcutHTML(shortcut) {
+        const parts = [];
+        if (shortcut.ctrl)  parts.push("<kbd>Ctrl</kbd>");
+        if (shortcut.alt)   parts.push("<kbd>Alt</kbd>");
+        if (shortcut.shift) parts.push("<kbd>Shift</kbd>");
+        const name = shortcut.key === " " ? "Space"
+            : shortcut.key.length === 1 ? shortcut.key.toUpperCase()
+            : shortcut.key;
+        parts.push(`<kbd>${name}</kbd>`);
+        return parts.join(" + ");
+    }
+
+    initShortcutsPanel() {
+        const tbody = $("#panel4 .shortcuts tbody");
+        tbody.empty();
+
+        for (const { id, i18nKey } of SquadCalc.SHORTCUT_ACTIONS) {
+            const sc = this.shortcuts[id];
+            const isCustom = JSON.stringify(sc) !== JSON.stringify(SquadCalc.DEFAULT_SHORTCUTS[id]);
+            const $row = $(`
+                <tr class="shortcut-row${isCustom ? " is-custom" : ""}" data-action="${id}">
+                    <td class="shortcut-key-cell">${this.formatShortcutHTML(sc)}</td>
+                    <td class="arrow">→</td>
+                    <td class="shortcut-desc" data-i18n="${i18nKey}"></td>
+                    <td class="shortcut-edit">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M362.7 19.3L314.3 67.7 444.3 197.7l48.4-48.4c25-25 25-65.5 0-90.5L453.3 19.3c-25-25-65.5-25-90.5 0zm-71 71L58.6 323.5c-10.4 10.4-18 23.3-22.2 37.4L1 481.2C-1.5 489.7 .8 498.8 7 505s15.3 8.5 23.7 6.1l120.3-35.4c14.1-4.2 27-11.8 37.4-22.2L421.7 220.3 291.7 90.3z"/></svg>
+                    </td>
+                </tr>
+            `);
+            $row.on("click", () => this.openShortcutCapture(id));
+            tbody.append($row);
+        }
+
+        $("#panel4 .shortcuts [data-i18n]").each(function() {
+            this.textContent = i18next.t(this.dataset.i18n);
+        });
+    }
+
+    openShortcutCapture(actionId) {
+        const dialog = this._dialogs.shortcutCapture;
+        const actionLabel = i18next.t(
+            SquadCalc.SHORTCUT_ACTIONS.find(a => a.id === actionId).i18nKey
+        );
+
+        dialog.querySelector(".capture-title").textContent = actionLabel;
+
+        const preview  = dialog.querySelector(".capture-preview");
+        const listening = dialog.querySelector(".capture-listening");
+        const conflict = dialog.querySelector(".capture-conflict");
+        const saveBtn  = dialog.querySelector("#captureSave");
+
+        let pending = null;
+
+        const reset = () => {
+            pending = null;
+            preview.innerHTML = "";
+            listening.style.display = "";
+            conflict.textContent = "";
+            saveBtn.disabled = true;
+        };
+        reset();
+
+        const onKeydown = (event) => {
+            if (!dialog.open) return;
+            event.preventDefault();
+            if (["Tab", "Escape", "Control", "Alt", "Shift", "Meta"].includes(event.key)) return;
+
+            pending = {
+                key:   event.key.length === 1 ? event.key.toLowerCase() : event.key,
+                ctrl:  event.ctrlKey || event.metaKey,
+                alt:   event.altKey,
+                shift: event.shiftKey,
+            };
+
+            listening.style.display = "none";
+            preview.innerHTML = this.formatShortcutHTML(pending);
+
+            const conflictEntry = SquadCalc.SHORTCUT_ACTIONS.find(({ id }) => {
+                if (id === actionId) return false;
+                const sc = this.shortcuts[id];
+                return sc.ctrl  === pending.ctrl
+                    && sc.alt   === pending.alt
+                    && sc.shift === pending.shift
+                    && sc.key.toLowerCase() === pending.key.toLowerCase();
+            });
+
+            if (conflictEntry) {
+                conflict.textContent = i18next.t("settings:captureConflict", {
+                    action: i18next.t(conflictEntry.i18nKey)
+                });
+                saveBtn.disabled = true;
+            } else {
+                conflict.textContent = "";
+                saveBtn.disabled = false;
+            }
+        };
+
+        document.addEventListener("keydown", onKeydown, true);
+
+        dialog.querySelector("#captureSave").onclick = () => {
+            if (!pending) return;
+            this.shortcuts[actionId] = pending;
+            this.saveShortcuts();
+            this.initShortcutsPanel();
+            cleanup();
+        };
+
+        dialog.querySelector("#captureReset").onclick = () => {
+            this.shortcuts[actionId] = { ...SquadCalc.DEFAULT_SHORTCUTS[actionId] };
+            this.saveShortcuts();
+            this.initShortcutsPanel();
+            cleanup();
+        };
+
+        dialog.querySelector("#captureCancel").onclick = () => cleanup();
+
+        const cleanup = () => {
+            document.removeEventListener("keydown", onKeydown, true);
+            if (dialog.open) dialog.close();
+        };
+
+        dialog.addEventListener("close", cleanup, { once: true });
+
+        dialog.showModal();
+    }
+
+    handleKeydown(event) {
+
+        const { calc, weapon, help, factions, servers } = this._dialogs;
+        if (weapon.open || calc.open || help.open || factions.open || servers.open) return;
+
+        if ($(event.target).is("input, textarea, select")) return;
+
+        if (this.matchesShortcut(event, "switchUI")) {
+            event.preventDefault();
+            this.switchUI();
+            return;
+        }
+
+        if (this.matchesShortcut(event, "toggleMap")) {
+            const layers = ["topomap", "terrainmap", "basemap"];
+            const currentLayer = $("#mapLayerMenu .layers.active").attr("value") || "basemap";
+            const nextIndex = (layers.indexOf(currentLayer) + 1) % layers.length;
+            const nextLayer = layers[nextIndex];
+            $("#mapLayerMenu").find(".layers").removeClass("active");
+            $(".btn-" + nextLayer).addClass("active");
+            this.updateUrlParams({ type: nextLayer === "basemap" ? null : nextLayer });
+            localStorage.setItem("settings-map-mode", nextLayer);
+            this.userSettings.layerMode = nextLayer;
+            this.minimap.changeLayer();
+        }
+
+        if (this.ui == 0) return;
+
+        if (this.matchesShortcut(event, "focusMode")) this.toggleFocusMode();
+        if (this.matchesShortcut(event, "clearTargets")) this.minimap.history.forEach((item) => { item.delete(); });
+
+        if (event.key === "Escape") this.minimap.disableDrawingMode();
+
+        if (event.key === "Backspace" || this.matchesShortcut(event, "deleteLastTarget")) {
+            event.preventDefault();
+            if (this.minimap.history.length > 0) this.minimap.history.at(-1).delete();
+        }
+
+        if (this.matchesShortcut(event, "saveMap")) {
+            event.preventDefault();
+            if (this.minimap.hasMarkers()) this.saveMapStateToFile();
+        }
+
+    }
 
     changeIconsSize(){
         this.minimap.activeMarkers.eachLayer((marker) => {
@@ -873,10 +1186,11 @@ export default class SquadCalc {
     show(){
         document.body.style.visibility = "visible";
         setTimeout(function() {
-            $("#loaderLogo").fadeOut("slow", function() {
-                $("#loader").fadeOut("fast");
-            });
-        }, 1300);
+            const logo = document.getElementById("loaderLogo");
+            logo.classList.remove("logo-stamp");
+            logo.classList.add("logo-stamp-out");
+            $("#loader").fadeOut(500);
+        }, 1800);
     }
 
     /**
@@ -885,22 +1199,20 @@ export default class SquadCalc {
      * @returns {integer} - height in meters
      */
     switchUI(){
-        
-        const newSvg = $("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 576 512'><path d='M384 476.1L192 421.2l0-385.3L384 90.8l0 385.3zm32-1.2l0-386.5L543.1 37.5c15.8-6.3 32.9 5.3 32.9 22.3l0 334.8c0 9.8-6 18.6-15.1 22.3L416 474.8zM15.1 95.1L160 37.2l0 386.5L32.9 474.5C17.1 480.8 0 469.2 0 452.2L0 117.4c0-9.8 6-18.6 15.1-22.3z'/></svg>");
-        $(".fab1").empty().append(newSvg);
 
         if (this.ui == 0) {
             this.loadMapUIMode();
+            $(".returnBtn").hide();
             if (this.minimap.hasMarkers()) $(".btn-delete, .btn-undo").show();
             return;
         }
 
+        $(".returnBtn").show();
         $("#map_ui").addClass("hidden");
         $("#classic_ui").removeClass("hidden");
         $("header").removeClass("ui");
-        //$(".btn-delete").hide();
-        //$(".btn-undo").hide();
         $("#mapLayerMenu").hide();
+        $("#layerSelector").hide();
         this.ui = 0;
         localStorage.setItem("data-ui", 0);
 
@@ -921,13 +1233,9 @@ export default class SquadCalc {
         $("#classic_ui").addClass("hidden");
         $("#map_ui").removeClass("hidden");
         $("header").addClass("ui");
-
-        const LEGACYICONSVG = $("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 640 512'><path d='M32 32C14.3 32 0 46.3 0 64S14.3 96 32 96l576 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L32 32zm0 384c-17.7 0-32 14.3-32 32s14.3 32 32 32l576 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L32 416zM7 167c-9.4 9.4-9.4 24.6 0 33.9l55 55L7 311c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l55-55 55 55c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-55-55 55-55c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-55 55L41 167c-9.4-9.4-24.6-9.4-33.9 0zM265 167c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l55 55-55 55c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l55-55 55 55c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-55-55 55-55c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-55 55-55-55zM455 167c-9.4 9.4-9.4 24.6 0 33.9l55 55-55 55c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l55-55 55 55c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-55-55 55-55c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-55 55-55-55c-9.4-9.4-24.6-9.4-33.9 0z'/></svg>");
-        $(".fab1").empty().append(LEGACYICONSVG);
-
         $("#mapLayerMenu").show();
+        if (this.LAYER_SELECTOR.find("option").length > 1) $("#layerSelector").show();
         this.ui = 1;
-        //this.line.hide("none");
         localStorage.setItem("data-ui", 1);
         this.minimap.invalidateSize();
     }
@@ -1408,7 +1716,54 @@ export default class SquadCalc {
         this.openToast("success", "mapSaved", "dragToImport");
     }
 
-    
+    loadMapStateFromFile(file) {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            try {
+                const data = JSON.parse(event.target.result);
+                console.debug("Parsed JSON:", data);
+
+                $(".dropbtn").val(data.activeMap).trigger($.Event("change", { broadcast: true }));
+
+                data.markers.forEach(marker => { this.minimap.createMarker(new LatLng(marker.lat, marker.lng), marker.team, marker.category, marker.icon, marker.uid); });
+                data.arrows.forEach(arrow => { new MapArrow(this.minimap, arrow.color, arrow.latlngs[0], arrow.latlngs[1], arrow.uid); });
+                data.circles.forEach(circle => { new MapCircle(this.minimap, circle.color, circle.latlng, circle.radius, circle.uid); });
+                data.rectangles.forEach(rectangle => { new MapRectangle(this.minimap, rectangle.color, rectangle.bounds._southWest, rectangle.bounds._northEast, rectangle.uid); });
+                data.draws.forEach(draw => { new MapDrawing(this.minimap, draw.color, draw.latlngs, draw.uid).finalize(false); });
+
+                $(document).one("heightmap:loaded", () => {
+                    if (Array.isArray(data.weapons) && data.weapons.length > 0) {
+                        data.weapons.forEach(weapon => { this.minimap.createWeapon(new LatLng(weapon.lat, weapon.lng)); });
+                        data.targets.forEach(target => { this.minimap.createTarget(new LatLng(target.lat, target.lng), false); });
+                    }
+                    this.openToast("success", "importSuccess", "");
+                });
+
+                $(document).one("layers:loaded", () => {
+                    this.LAYER_SELECTOR.val(data.activeLayer).trigger($.Event("change", { broadcast: true }));
+                    $(document).one("layer:loaded", () => {
+                        data.selectedFlags.forEach(flag => {
+                            this.minimap.layer.flags.forEach((layerFlag) => {
+                                if (layerFlag.objectName != flag) return;
+                                if (layerFlag.isSelected) return;
+                                this.minimap.layer._handleFlagClick(layerFlag);
+                            });
+                        });
+                        this.FACTION1_SELECTOR.val(data.teams[0][0]).trigger($.Event("change", { broadcast: false }));
+                        this.FACTION2_SELECTOR.val(data.teams[1][0]).trigger($.Event("change", { broadcast: false }));
+                        this.UNIT1_SELECTOR.val(data.teams[0][1]).trigger($.Event("change", { broadcast: false }));
+                        this.UNIT2_SELECTOR.val(data.teams[1][1]).trigger($.Event("change", { broadcast: false }));
+                    });
+                });
+            } catch (err) {
+                console.debug("Not valid JSON", err);
+                this.openToast("error", "fileNotSupported", "");
+            }
+        };
+        reader.readAsText(file);
+    }
+
+
     /**
      * Updates the URL search parameters by applying the provided updates.
      *
@@ -1439,7 +1794,7 @@ export default class SquadCalc {
         const sortedParams = new URLSearchParams();
 
         // Add parameters in the order defined by paramOrder
-        ["map", "layer", "team1", "team1unit", "team2", "team2unit", "type", "session", "server"].forEach((param) => {
+        ["map", "layer", "type", "session", "server"].forEach((param) => {
             if (urlParams.has(param)) {
                 sortedParams.set(param, urlParams.get(param));
                 urlParams.delete(param);
