@@ -909,10 +909,20 @@ export default class SquadCalc {
 
 
     shareLoadout() {
-        const params = new URLSearchParams(window.location.search);
-        params.delete("session");
-        params.delete("server");
-        params.delete("type");
+        const cur    = new URLSearchParams(window.location.search);
+        const params = new URLSearchParams();
+        if (cur.has("map"))   params.set("map", cur.get("map"));
+        if (cur.has("layer")) params.set("layer", cur.get("layer"));
+
+        const t1 = this.FACTION1_SELECTOR.val();
+        const u1 = this.UNIT1_SELECTOR.val();
+        const t2 = this.FACTION2_SELECTOR.val();
+        const u2 = this.UNIT2_SELECTOR.val();
+        if (t1) params.set("team1", t1);
+        if (u1) params.set("unit1", u1);
+        if (t2) params.set("team2", t2);
+        if (u2) params.set("unit2", u2);
+
         const url = `${window.location.origin}${window.location.pathname}?${params.toString()}`;
         navigator.clipboard.writeText(url);
         this.openToast("success", "copied", "");
