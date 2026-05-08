@@ -544,7 +544,7 @@ export default class SquadServersBrowser {
                     App.UNIT2_SELECTOR.val(unit2).trigger($.Event("change", { broadcast: false }));
                 }
                 // Strip any team params that default faction loading may have written
-                App.updateUrlParams({ team1: null, team1unit: null, team2: null, team2unit: null });
+                App.updateUrlParams({ team1: null, unit1: null, team2: null, unit2: null });
             }
             serverBrowserTooltips.hide();
             App.openToast("success", "mapUpdated", "");
