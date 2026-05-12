@@ -1035,7 +1035,7 @@ export default class SquadCalc {
         if (shortcut.shift) parts.push("<kbd>Shift</kbd>");
         const name = shortcut.key === " " ? "Space"
             : shortcut.key.length === 1 ? shortcut.key.toUpperCase()
-            : shortcut.key;
+                : shortcut.key;
         parts.push(`<kbd>${name}</kbd>`);
         return parts.join(" + ");
     }

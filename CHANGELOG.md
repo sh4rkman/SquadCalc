@@ -1,3 +1,18 @@
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge"> **43.1.0** *(2026-05-13)*
+
+</br><img src="https://img.shields.io/badge/-new%20features-green">
+- Modded weapons rework
+  - Each mod now has its own category in the weapon dropdown
+  - Added PZL07 (Infinite Warefare mod)
+  - When "Enable modded weapons" is on, individual mods can be toggled on/off
+
+</br><img src="https://img.shields.io/badge/-bug%20fixes-b22">  
+- Fixed weapon selector not hiding when switching map ([#480](https://github.com/sh4rkman/SquadCalc/issues/480))
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
+
+
 # <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge"> **43.0.1** *(2026-05-12)*
 
 </br><img src="https://img.shields.io/badge/-bug%20fixes-b22">  
