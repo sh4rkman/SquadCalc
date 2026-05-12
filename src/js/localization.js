@@ -1,6 +1,7 @@
 import i18next from "i18next";
 import HttpApi from "i18next-http-backend";
 import { App } from "../app.js";
+import { version } from "../../package.json";
 
 /**
  * Update every label with the correct localization text
@@ -22,7 +23,7 @@ export function loadLanguage(LANGUAGES) {
         ],
         debug: false,
         backend: {
-            loadPath: "./locales/{{lng}}/{{ns}}.json",
+            loadPath: `./locales/{{lng}}/{{ns}}.json?v=${version}`,
         }
     }, function(err) {
         if (err) return console.error(err);
