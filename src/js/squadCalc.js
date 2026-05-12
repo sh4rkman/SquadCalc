@@ -637,7 +637,10 @@ export default class SquadCalc {
         }
 
         if (this.ui == 1) this.loadMapUIMode();
-        else $(".returnBtn").show();
+        else {
+            $(".returnBtn").show();
+            $(".weaponSelector").addClass("active");
+        }
 
         // Add Events listeners
 
@@ -1213,6 +1216,7 @@ export default class SquadCalc {
         $("header").removeClass("ui");
         $("#mapLayerMenu").hide();
         $("#layerSelector").hide();
+        $(".weaponSelector").addClass("active");
         this.ui = 0;
         localStorage.setItem("data-ui", 0);
 
@@ -1235,6 +1239,9 @@ export default class SquadCalc {
         $("header").addClass("ui");
         $("#mapLayerMenu").show();
         if (this.LAYER_SELECTOR.find("option").length > 1) $("#layerSelector").show();
+        if (this.minimap.activeWeaponsMarkers.getLayers().length === 0) {
+            $(".weaponSelector").removeClass("active animate__fadeIn");
+        }
         this.ui = 1;
         localStorage.setItem("data-ui", 1);
         this.minimap.invalidateSize();

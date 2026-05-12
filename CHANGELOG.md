@@ -1,3 +1,11 @@
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge"> **43.0.1** *(2026-05-12)*
+
+</br><img src="https://img.shields.io/badge/-bug%20fixes-b22">  
+- Fixed weapon selector not showing on legacy mode (thanks scrubbadubba98!)
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
+
 # <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge"> **43.0.0** *(2026-05-07)*
 
 </br><img src="https://img.shields.io/badge/-new%20features-green">
