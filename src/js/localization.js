@@ -1,7 +1,8 @@
 import i18next from "i18next";
 import HttpApi from "i18next-http-backend";
 import { App } from "../app.js";
-import { version } from "../../package.json";
+import pkg from "../../package.json";
+const { version } = pkg;
 
 /**
  * Update every label with the correct localization text

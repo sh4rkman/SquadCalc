@@ -371,6 +371,23 @@ $bezier: cubic-bezier(0.65, 0.25, 0.56, 0.96);
     }
 }
 
+#modFiltersContainer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25em 1em;
+    padding: 0.4em 0 0.2em 1.5em;
+
+    .mod-filter-checkbox {
+        cursor: pointer;
+        gap: 0.4em;
+
+        .mod-filter-label {
+            font-size: 0.9em;
+            color: variables.$mainTxtColor;
+        }
+    }
+}
+
 #settingsControls {
     margin: 0 0 1.3em;
     text-align: center;

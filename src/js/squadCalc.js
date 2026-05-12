@@ -533,7 +533,8 @@ export default class SquadCalc {
                 weapon.shells,
                 weapon.heightOffset,
                 weapon.angleOffset,
-                weapon.projectileLifespan
+                weapon.projectileLifespan,
+                weapon.mod
             );
         });
         
@@ -573,41 +574,93 @@ export default class SquadCalc {
     }
 
     /**
-     * Add/Remove Experimental Weapons from Weapons dropdown list according to user settings
+     * Returns unique mod keys present in WEAPONS data
      */
-    toggleExperimentalWeapons(){
-        const WEAPONSLENGTH = WEAPONS.length;
+    _getUniqueMods() {
+        return [...new Set(WEAPONS.filter(w => w.mod).map(w => w.mod))].sort();
+    }
 
-        if (this.userSettings.experimentalWeapons) {
+    /**
+     * Populate #modFiltersContainer with one checkbox per mod and show #modFiltersRow
+     */
+    _renderModFilters() {
+        const mods = this._getUniqueMods();
+        const container = $("#modFiltersContainer");
+        container.empty();
 
-            this.WEAPON_SELECTOR.append(`<optgroup data-i18n-label=weapons:modded label="${i18next.t("weapons:modded")}">`);
-            for (let y = 0; y < WEAPONSLENGTH; y += 1) {
-                if (WEAPONS[y].type === "modded") {
-                    this.WEAPON_SELECTOR.append(`<option data-i18n=weapons:${WEAPONS[y].name} value=${y}>${i18next.t("weapons:" + WEAPONS[y].name)}</option>`);
+        mods.forEach(modKey => {
+            const checked = this.userSettings.isModEnabled(modKey) ? "checked" : "";
+            const label = i18next.t(`settings:${modKey}`, { defaultValue: modKey });
+            container.append(`
+                <label class="mcui-checkbox mod-filter-checkbox" data-mod="${modKey}">
+                    <input type="checkbox" class="modFilterCheckbox" data-mod="${modKey}" ${checked}>
+                    <span>
+                        <svg class="mcui-check" viewBox="-2 -2 35 35" aria-hidden="true">
+                            <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
+                        </svg>
+                    </span>
+                    <span class="mod-filter-label">${label}</span>
+                </label>
+            `);
+        });
+
+        $(".modFilterCheckbox").on("change", (e) => {
+            const modKey = $(e.target).data("mod");
+            const enabled = $(e.target).is(":checked");
+            this.userSettings.setModEnabled(modKey, enabled);
+            animateCSS($(e.target).closest("label"), "headShake");
+            this._rebuildModdedWeapons();
+        });
+
+        $("#modFiltersRow").show();
+    }
+
+    /**
+     * Rebuild per-mod optgroups in the weapon selector based on currently enabled mods
+     */
+    _rebuildModdedWeapons() {
+        const selectedValue = this.WEAPON_SELECTOR.val();
+        const selectedIsModded = !!(WEAPONS[selectedValue]?.mod);
+
+        this.WEAPON_SELECTOR.find("optgroup[data-mod]").remove();
+
+        this._getUniqueMods().forEach(modKey => {
+            if (!this.userSettings.isModEnabled(modKey)) return;
+
+            const label = i18next.t(`settings:${modKey}`, { defaultValue: modKey });
+            const optgroup = $(`<optgroup data-mod="${modKey}" label="${label}"></optgroup>`);
+
+            for (let y = 0; y < WEAPONS.length; y++) {
+                if (WEAPONS[y].mod === modKey) {
+                    optgroup.append(`<option data-i18n="weapons:${WEAPONS[y].name}" value="${y}">${i18next.t("weapons:" + WEAPONS[y].name)}</option>`);
                 }
             }
-            this.WEAPON_SELECTOR.append("</optgroup>");
 
+            if (optgroup.children().length) {
+                this.WEAPON_SELECTOR.append(optgroup);
+            }
+        });
+
+        if (selectedIsModded) {
+            this.WEAPON_SELECTOR.val(0).trigger("change");
+        }
+    }
+
+    /**
+     * Add/Remove Experimental Weapons from Weapons dropdown list according to user settings
+     */
+    toggleExperimentalWeapons() {
+        if (this.userSettings.experimentalWeapons) {
+            this._renderModFilters();
+            this._rebuildModdedWeapons();
         } else {
+            $("#modFiltersRow").hide();
+            $("#modFiltersContainer").empty();
 
-            let selectedValue = this.WEAPON_SELECTOR.val();
-            
-            // Remove the experimental optgroup
-            this.WEAPON_SELECTOR.find("optgroup[data-i18n-label='weapons:modded']").remove();
-            
-            // Remove experimental options and check if the selected value is experimental
-            this.WEAPON_SELECTOR.find("option").filter(
-                function() {
-                    return WEAPONS[$(this).val()].type === "modded";
-                }).each(function() {
-                if ($(this).val() === selectedValue) {
-                    selectedValue = null;
-                }
-                $(this).remove();
-            });
-            
-            // If the selected value was an experimental option, reset to Mortars
-            if (selectedValue === null) {
+            const selectedIsModded = !!(WEAPONS[this.WEAPON_SELECTOR.val()]?.mod);
+            this.WEAPON_SELECTOR.find("optgroup[data-mod]").remove();
+
+            if (selectedIsModded) {
                 this.WEAPON_SELECTOR.val(0).trigger("change");
             }
         }

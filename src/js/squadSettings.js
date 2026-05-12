@@ -706,4 +706,13 @@ export default class SquadSettings {
     get(name) {
         return this[name];
     }
+
+    isModEnabled(modKey) {
+        const stored = localStorage.getItem(`settings-mod-${modKey}`);
+        return stored === null ? true : stored === "1";
+    }
+
+    setModEnabled(modKey, enabled) {
+        localStorage.setItem(`settings-mod-${modKey}`, +enabled);
+    }
 }
