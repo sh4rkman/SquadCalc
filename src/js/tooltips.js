@@ -315,6 +315,13 @@ export const settingsTooltips = tippy(".btn-settings", {
         tip.setContent(i18next.t("tooltips:settings"));
     },
 })[0];
+tippy(".btn-share", {
+    ...commonMapMenuToolipsSettings,
+    placement: "left",
+    onShow(tip) {
+        tip.setContent(i18next.t("tooltips:shareSession"));
+    },
+});
 tippy(".btn-helpmap", {
     ...commonMapMenuToolipsSettings,
     onShow(tip) {
