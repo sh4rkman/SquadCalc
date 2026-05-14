@@ -4,6 +4,7 @@
         "mortars": "Mortiers",
         "layer": "Voie",
     "mapOptions": "Options de Carte",
+    "mapButtons": "Barre d'outils",
         "showKeypad": "Grille sous le curseur",
         "useClassicCursor": "Curseur classique",
         "mapAnimationSettings": "Animations de zoom",

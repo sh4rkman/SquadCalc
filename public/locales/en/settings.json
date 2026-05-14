@@ -4,6 +4,7 @@
         "mortars": "Mortars",
         "layer": "Layers",
     "mapOptions": "Map Options",
+    "mapButtons": "Map Toolbar",
         "showKeypad": "Keypads under Cursor",
         "useClassicCursor": "Use Classic Cursor",
         "mapAnimationSettings": "Pan/Zoom Animations",

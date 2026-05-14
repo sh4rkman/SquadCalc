@@ -4,6 +4,7 @@
         "mortars": "Минометы",
         "layer": "Layer",
     "mapOptions": "Опции карты",
+    "mapButtons": "Панель инструментов",
         "showKeypad": "Номер сетки под курсором",
         "useClassicCursor": "Классический курсор",
         "mapAnimationSettings": "Анимации перемещения и масштабирования",

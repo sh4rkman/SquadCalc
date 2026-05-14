@@ -4,6 +4,7 @@
         "mortars": "Mörser",
         "layer": "Layer",
     "mapOptions": "Kartenoptionen",
+    "mapButtons": "Kartenwerkzeugleiste",
         "showKeypad": "Rasterfeld unter Cursor anzeigen",
         "useClassicCursor": "Klassischen Cursor verwenden",
         "mapAnimationSettings": "Schwenk-/Zoom-Animationen",

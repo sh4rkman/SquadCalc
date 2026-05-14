@@ -4,6 +4,7 @@
         "mortars": "Міни",
         "layer": "Смуга",
     "mapOptions": "Опції карти",
+    "mapButtons": "Панель інструментів",
         "showKeypad": "клавіатуру під курсором",
         "useClassicCursor": "классический слайдер",
         "mapAnimationSettings": "Анімації масштабування",

@@ -4,6 +4,7 @@
         "mortars": "迫击炮",
         "layer": "地图猜点",
     "mapOptions": "地图选项",
+    "mapButtons": "地图工具栏",
         "showKeypad": "在光标下显示键盘",
         "useClassicCursor": "使用系统的鼠标样式",
         "mapAnimationSettings": "平移/缩放动画",
