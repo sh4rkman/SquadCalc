@@ -379,11 +379,12 @@ export const squadWeaponMarker = squadMarker.extend({
 
         // Logo
         $(".weaponIcon").first().attr("src", `/img/weapons/${App.activeWeapon.name}.webp`);
-        $(".infName").first().text(name);
+        $("#dialogWeaponTitle").text(name);
         $(".infRange").first().text(`${App.activeWeapon.minDistance + i18next.t("common:m")} - ${App.activeWeapon.maxDistance.toFixed(0) + i18next.t("common:m")}`);
         $(".infMOA").first().text(`${App.activeWeapon.moa} (${(App.activeWeapon.moa / 60).toFixed(1) + i18next.t("common:°")})`);
         $(".infMinDistance").first().text(App.activeWeapon.minDistance + i18next.t("common:m"));
         $(".infMaxDistance").first().text(App.activeWeapon.maxDistance.toFixed(1) + i18next.t("common:m"));
+        $(".infExplosionDamage").first().text(App.activeWeapon.shells[$(".dropbtn3").val() || 0].explosionDamage);
         $(".inf100damage").first().text(App.activeWeapon.hundredDamageRadius.toFixed(1) + i18next.t("common:m"));
         $(".inf25damage").first().text(App.activeWeapon.twentyFiveDamageRadius.toFixed(1) + i18next.t("common:m"));
         $(".infVelocity").first().text(`${App.activeWeapon.velocity + i18next.t("common:m")}/${i18next.t("common:s")}`);
