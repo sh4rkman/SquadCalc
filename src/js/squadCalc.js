@@ -103,7 +103,9 @@ export default class SquadCalc {
     }
 
     applyUrlIntent() {
+        console.debug("applyUrlIntent called");
         const { server, session } = this.urlIntent;
+        console.debug("URL intent - server:", server, "session:", session, "layer:", this.urlIntent.layer);
         if (server)       this.initServerMode(server, session);
         else if (session) this.initSessionMode(session, this.urlIntent);
         else              this.initStaticMode(this.urlIntent);
@@ -140,6 +142,12 @@ export default class SquadCalc {
             this.squadServersBrowser.selectedServer = server.id;
             this.squadServersBrowser.selectedLayer = server.attributes.details.map;
 
+            // Ensure layers are loaded for the server's map before switching layer
+            if (!this.layersLoaded) {
+                console.debug("Layers not loaded yet, loading layers for server map");
+                this.loadLayers();
+            }
+
             this.squadServersBrowser.switchLayer(
                 server.attributes.name,
                 server.mapName,
@@ -153,6 +161,16 @@ export default class SquadCalc {
             $("#serversTableBody tr").removeClass("selected");
             $(`#serversTableBody tr[data-serverid="${serverId}"]`).addClass("selected");
             $("#servers").addClass("active");
+
+            // If a specific layer was provided in the URL, apply it after the server's layers are loaded
+            console.debug("initServerMode - urlIntent:", this.urlIntent);
+            if (this.urlIntent.layer) {
+                console.debug("URL layer detected:", this.urlIntent.layer);
+                $(document).one("layer:loaded", () => {
+                    console.debug("layer:loaded event fired, applying URL layer");
+                    this.initStaticMode({ layer: this.urlIntent.layer });
+                });
+            }
 
             if (this.squadServersBrowser.syncInterval) clearInterval(this.squadServersBrowser.syncInterval);
             this.squadServersBrowser.syncInterval = setInterval(
@@ -187,7 +205,9 @@ export default class SquadCalc {
     }
 
     initStaticMode(intent, onLayerLoaded = null) {
+        console.debug("initStaticMode called with intent:", intent);
         if (!intent.layer) {
+            console.debug("No layer in intent, returning");
             onLayerLoaded?.();
             return;
         }
@@ -310,6 +330,7 @@ export default class SquadCalc {
 
             const selectedLayerText = this.LAYER_SELECTOR.find(":selected").text().replaceAll(" ", "");
             const broadcast = event.broadcast ?? true;
+            console.debug("LAYER_SELECTOR changed - selectedLayerText:", selectedLayerText, "broadcast:", broadcast);
 
             // User cleared the layer selector, remove the layer and clean the URL
             if (selectedLayerText === "") {

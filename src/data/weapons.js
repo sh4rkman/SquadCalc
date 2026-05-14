@@ -283,11 +283,11 @@ export var WEAPONS = [
         shells : [{
             name: "default",
             minDistance: 0.5,
-            velocity: 260,
+            velocity: 300,
             moa: 300,
             explosionDamage: 250,
-            explosionRadius: [200, 1000],
-            explosionDistanceFromImpact: 200,
+            explosionRadius: [2, 10],
+            explosionDistanceFromImpact: 2,
             damageFallOff: 1,
         }]
     },
