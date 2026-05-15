@@ -684,7 +684,6 @@ export default class SquadSettings {
             { key: "settings-btn-delete",      sharedContainer: "#mapBtnActions",     buttons: ".btn-delete",       default: true },
             { key: "settings-btn-download",    sharedContainer: "#mapBtnMain",        buttons: ".btn-download",     default: false },
             { key: "settings-btn-upload",      sharedContainer: "#mapBtnMain",        buttons: ".btn-upload",       default: false },
-            { key: "settings-btn-settings",    sharedContainer: null,                 buttons: ".btn-settings",     default: true },
         ];
     }
 
