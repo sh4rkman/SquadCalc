@@ -29,19 +29,31 @@ export default class SquadFactions {
      *  Reset the factions button to its default state
      */
     setBarFlag(id, val) {
+        const el = document.querySelector(id);
+        if (!el) return;
         const src = val ? `/img/flags/${encodeURIComponent(val.trim())}.webp` : "/img/flags/unknown.webp";
         const name = val ? i18next.t(val, { ns: "factions" }) : "?";
-        $(id).html(`
-            <img src="${src}" alt="${name}"/>
-            <label class="factionBarFlagName">${name}</label>
-        `);
+
+        const img = document.createElement("img");
+        img.src = src;
+        img.alt = name;
+
+        const label = document.createElement("label");
+        label.className = "factionBarFlagName";
+        label.textContent = name;
+
+        el.replaceChildren(img, label);
     }
 
     setBarUnit(id, icon) {
+        const el = document.querySelector(id);
+        if (!el) return;
         if (icon) {
-            $(id).html(`<img src="/img/units/${encodeURIComponent(String(icon).trim())}.webp" alt=""/>`);
+            const img = document.createElement("img");
+            img.src = `/img/units/${encodeURIComponent(String(icon).trim())}.webp`;
+            el.replaceChildren(img);
         } else {
-            $(id).empty();
+            el.replaceChildren();
         }
     }
 
@@ -676,10 +688,17 @@ export default class SquadFactions {
         const btn = document.getElementById(`factionBtn${team}`);
         if (!btn) return;
         const val = SELECTOR.val();
+
+        const img = document.createElement("img");
+        img.src = val ? `/img/flags/${val}.webp` : "/img/flags/unknown.webp";
+        img.addEventListener("error", () => { img.src = "/img/flags/unknown.webp"; }, { once: true });
+        btn.replaceChildren(img);
+
         if (val) {
-            btn.innerHTML = `<img src="/img/flags/${val}.webp" onerror="this.onerror=null; this.src='/img/flags/unknown.webp';"/><span class="picker-label"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M362.7 19.3L314.3 67.7 444.3 197.7l48.4-48.4c25-25 25-65.5 0-90.5L453.3 19.3c-25-25-65.5-25-90.5 0zm-71 71L58.6 323.5c-10.4 10.4-18 23.3-22.2 37.4L1 481.2C-1.5 489.7 .8 498.8 7 505s15.3 8.5 23.7 6.1l120.3-35.4c14.1-4.2 27-11.8 37.4-22.2L421.7 220.3 291.7 90.3z"/></svg></span>`;
-        } else {
-            btn.innerHTML = "<img src=\"/img/flags/unknown.webp\"/>";
+            const span = document.createElement("span");
+            span.className = "picker-label";
+            span.innerHTML = "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 512 512\"><path d=\"M362.7 19.3L314.3 67.7 444.3 197.7l48.4-48.4c25-25 25-65.5 0-90.5L453.3 19.3c-25-25-65.5-25-90.5 0zm-71 71L58.6 323.5c-10.4 10.4-18 23.3-22.2 37.4L1 481.2C-1.5 489.7 .8 498.8 7 505s15.3 8.5 23.7 6.1l120.3-35.4c14.1-4.2 27-11.8 37.4-22.2L421.7 220.3 291.7 90.3z\"/></svg>";
+            btn.appendChild(span);
         }
     }
 
@@ -694,13 +713,23 @@ export default class SquadFactions {
 
         btn.classList.toggle("ready", !!factionVal);
 
-        const pencil = "<span class=\"picker-label\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 512 512\"><path d=\"M362.7 19.3L314.3 67.7 444.3 197.7l48.4-48.4c25-25 25-65.5 0-90.5L453.3 19.3c-25-25-65.5-25-90.5 0zm-71 71L58.6 323.5c-10.4 10.4-18 23.3-22.2 37.4L1 481.2C-1.5 489.7 .8 498.8 7 505s15.3 8.5 23.7 6.1l120.3-35.4c14.1-4.2 27-11.8 37.4-22.2L421.7 220.3 291.7 90.3z\"/></svg></span>";
+        const makePencil = () => {
+            const span = document.createElement("span");
+            span.className = "picker-label";
+            span.innerHTML = "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 512 512\"><path d=\"M362.7 19.3L314.3 67.7 444.3 197.7l48.4-48.4c25-25 25-65.5 0-90.5L453.3 19.3c-25-25-65.5-25-90.5 0zm-71 71L58.6 323.5c-10.4 10.4-18 23.3-22.2 37.4L1 481.2C-1.5 489.7 .8 498.8 7 505s15.3 8.5 23.7 6.1l120.3-35.4c14.1-4.2 27-11.8 37.4-22.2L421.7 220.3 291.7 90.3z\"/></svg>";
+            return span;
+        };
         if (factionVal && unitVal && icon) {
-            btn.innerHTML = `<img src="/img/units/${icon}.webp" onerror="this.onerror=null; this.src='/img/units/placeholder.webp';"/>${pencil}`;
+            const img = document.createElement("img");
+            img.src = `/img/units/${icon}.webp`;
+            img.addEventListener("error", () => { img.src = "/img/units/placeholder.webp"; }, { once: true });
+            btn.replaceChildren(img, makePencil());
         } else if (factionVal) {
-            btn.innerHTML = `<img src="/img/units/placeholder.webp"/>${pencil}`;
+            const img = document.createElement("img");
+            img.src = "/img/units/placeholder.webp";
+            btn.replaceChildren(img, makePencil());
         } else {
-            btn.innerHTML = "";
+            btn.replaceChildren();
         }
     }
 
