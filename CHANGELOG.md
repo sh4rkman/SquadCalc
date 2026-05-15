@@ -1,13 +1,18 @@
-# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge"> **43.1.0** *(2026-05-13)*
+# <img src="https://img.shields.io/badge/-major%20release-b22222?style=for-the-badge"> **44.0.0** *(2026-05-15)*
 
 </br><img src="https://img.shields.io/badge/-new%20features-green">
+- Menu is now fully customisable from settings : show/hide the buttons you want in your toolbar
+- Added a new "Share" button that allows sharing a long URL holding the selected factions and units (thanks Hans-Vader, [#481](https://github.com/sh4rkman/SquadCalc/issues/481))
+- Weapon dialog now display the shell damage ([#483](https://github.com/sh4rkman/SquadCalc/issues/483))
+- Added PZL07 Chinese 122mm self-propelled artillery from Infinite Warfare mod (Thanks ovalnik!)
+- Added Type63 multiple rocket launcher from Supermod (Thanks MJH1606 !)
 - Modded weapons rework
   - Each mod now has its own category in the weapon dropdown
-  - Added PZL07 (Infinite Warefare mod)
-  - When "Enable modded weapons" is on, individual mods can be toggled on/off
+  - When "Enable modded weapons" is on, individual mods can be toggled on/off in the settings
 
 </br><img src="https://img.shields.io/badge/-bug%20fixes-b22">  
-- Fixed weapon selector not hiding when switching map ([#480](https://github.com/sh4rkman/SquadCalc/issues/480))
+- Fixed layer not loading when using an URL with a server in it
+- Fixed weapon selector not hiding when switching map (fix [#480](https://github.com/sh4rkman/SquadCalc/issues/480))
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
 
@@ -21,7 +26,7 @@
 </br></br><!-- CHANGELOG SPLIT MARKER -->
 
 
-# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge"> **43.0.0** *(2026-05-07)*
+# <img src="https://img.shields.io/badge/-major%20release-b22222?style=for-the-badge"> **43.0.0** *(2026-05-07)*
 
 </br><img src="https://img.shields.io/badge/-new%20features-green">
 - When servers are favorited, they now appear in a new dropdown button directly accessible from the map
