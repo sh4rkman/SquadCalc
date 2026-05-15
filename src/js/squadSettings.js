@@ -673,15 +673,18 @@ export default class SquadSettings {
     getButtonToggleDefinitions() {
         return [
             { key: "settings-btn-layers",  sharedContainer: "#mapBtnLayers",  buttons: ".btn-topomap, .btn-terrainmap, .btn-basemap", default: true },
-            { key: "settings-btn-hd",      sharedContainer: "#mapBtnLayers",  buttons: ".btn-hd",                                   default: true },
+            { key: "settings-btn-hd",      sharedContainer: null,             buttons: ".btn-hd",                                   default: true },
             { key: "settings-btn-legacy",  sharedContainer: "#mapBtnMain",    buttons: ".btn-legacy",                                default: false },
             { key: "settings-btn-helpmap", sharedContainer: "#mapBtnMain",    buttons: ".btn-helpmap",                               default: false },
             { key: "settings-btn-focus",   sharedContainer: "#mapBtnMain",    buttons: ".btn-focus",                                 default: false },
             { key: "settings-btn-servers", sharedContainer: "#mapBtnServers", buttons: "#servers",                                  default: true },
             { key: "settings-btn-session", sharedContainer: "#mapBtnServers", buttons: ".btn-session",                              default: true },
-            { key: "settings-btn-share",   sharedContainer: "#mapBtnShare",   buttons: ".btn-share",                                default: false },
-            { key: "settings-btn-undo",    sharedContainer: "#mapBtnActions", buttons: ".btn-undo",                                 default: true },
-            { key: "settings-btn-delete",  sharedContainer: "#mapBtnActions", buttons: ".btn-delete",                               default: true },
+            { key: "settings-btn-share",   sharedContainer: "#mapBtnMain",    buttons: ".btn-share",                                default: false },
+            { key: "settings-btn-undo",        sharedContainer: "#mapBtnActions",     buttons: ".btn-undo",         default: true },
+            { key: "settings-btn-delete",      sharedContainer: "#mapBtnActions",     buttons: ".btn-delete",       default: true },
+            { key: "settings-btn-download",    sharedContainer: "#mapBtnMain",        buttons: ".btn-download",     default: false },
+            { key: "settings-btn-upload",      sharedContainer: "#mapBtnMain",        buttons: ".btn-upload",       default: false },
+            { key: "settings-btn-settings",    sharedContainer: null,                 buttons: ".btn-settings",     default: true },
         ];
     }
 
@@ -690,6 +693,13 @@ export default class SquadSettings {
         const defs = this.getButtonToggleDefinitions().filter(d => d.sharedContainer === containerSelector);
         const anyVisible = defs.some(d => !$(d.buttons).data("placeholder"));
         $(containerSelector).toggle(anyVisible);
+    }
+
+    _updateDotsButton() {
+        const anyDemoted = this.getButtonToggleDefinitions().some(d =>
+            $(d.buttons).data("placeholder")
+        );
+        $("#mapBtnTools").toggle(anyDemoted);
     }
 
     _moveButtonsToMenu(def) {
@@ -702,6 +712,7 @@ export default class SquadSettings {
             $dotsGroup.append($el);
         });
         this._updateSharedContainer(def.sharedContainer);
+        this._updateDotsButton();
     }
 
     _restoreButtons(def) {
@@ -715,6 +726,7 @@ export default class SquadSettings {
             $el.removeData("placeholder");
         });
         this._updateSharedContainer(def.sharedContainer);
+        this._updateDotsButton();
     }
 
     loadButtonToggles() {
@@ -724,6 +736,7 @@ export default class SquadSettings {
             if (!val) this._moveButtonsToMenu(def);
             $(`.mapBtnToggle[data-key="${def.key}"]`).toggleClass("active", val);
         });
+        this._updateDotsButton();
     }
 
     bindButtonToggles() {

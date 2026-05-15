@@ -27,5 +27,5 @@ git checkout -b my-feature
 
 3. Make your changes and commit them
 4. Push your branch and open a pull request targeting dev
-5. Wait for review and approval before merging
+5. Wait for review and approval
 6. After merging, your PR will be automatically pushed to https://beta.squadcalc.app/
