@@ -1,5 +1,5 @@
 
-# <img src="https://img.shields.io/badge/-major%20release-b22222?style=for-the-badge"> **44.0.0** *(2026-05-15)*
+# <img src="https://img.shields.io/badge/-major%20release-b22222?style=for-the-badge"> **44.0.0** *(2026-05-22)*
 
 </br><img src="https://img.shields.io/badge/-new%20features-green">
 - Menu is now fully customisable from settings : show/hide the buttons you want in your toolbar
