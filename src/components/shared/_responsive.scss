@@ -15,7 +15,7 @@
         }
         .weaponSelector #weaponSelector {
             .select2-results__options {
-                max-height: 400px;
+                max-height: 450px;
             }
         }
     }
@@ -34,7 +34,7 @@
         }
         .weaponSelector #weaponSelector {
             .select2-results__options {
-                max-height: 500px;
+                max-height: 650px;
             }
         }
     }
@@ -173,7 +173,6 @@
             }
         }
     }
-
     #helpDialog {
         width: 100vw;
         height: 100dvh;
@@ -348,7 +347,6 @@
         }
         &#helpDialog {
             font-size: 0.7em;
-            height: 625px;
             width: 600px;
             table {
                width: 90%;
@@ -414,7 +412,7 @@
                 .select2-results__options {
                     font-size: 1.2em;
                     // line-height: 1.3em;
-                    max-height: 1100px;
+                    max-height: 1250px;
                 }
                 .select2-selection__placeholder {
                     font-size: 1.1em;

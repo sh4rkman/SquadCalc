@@ -31,6 +31,8 @@ export default class SquadSettings {
         this.bindCheckboxes();
         this.bindSliders();
         this.bindLabelClicks();
+        this.loadButtonToggles();
+        this.bindButtonToggles();
         this.bindMenuButtons();
         this.applyInitialState();
         $("#appVersion").text(`SquadCalc v${packageInfo.version}`);
@@ -668,6 +670,94 @@ export default class SquadSettings {
         $("#map").css("filter", `brightness(${brightness}%) contrast(${contrast}%)`);
     }
 
+    getButtonToggleDefinitions() {
+        return [
+            { key: "settings-btn-layers",  sharedContainer: "#mapBtnLayers",  buttons: ".btn-topomap, .btn-terrainmap, .btn-basemap", default: true },
+            { key: "settings-btn-hd",      sharedContainer: null,             buttons: ".btn-hd",                                   default: true },
+            { key: "settings-btn-legacy",  sharedContainer: "#mapBtnMain",    buttons: ".btn-legacy",                                default: false },
+            { key: "settings-btn-helpmap", sharedContainer: "#mapBtnMain",    buttons: ".btn-helpmap",                               default: false },
+            { key: "settings-btn-focus",   sharedContainer: "#mapBtnMain",    buttons: ".btn-focus",                                 default: false },
+            { key: "settings-btn-servers", sharedContainer: "#mapBtnServers", buttons: "#servers",                                  default: true },
+            { key: "settings-btn-session", sharedContainer: "#mapBtnServers", buttons: ".btn-session",                              default: true },
+            { key: "settings-btn-share",   sharedContainer: "#mapBtnMain",    buttons: ".btn-share",                                default: false },
+            { key: "settings-btn-undo",        sharedContainer: "#mapBtnActions",     buttons: ".btn-undo",         default: true },
+            { key: "settings-btn-delete",      sharedContainer: "#mapBtnActions",     buttons: ".btn-delete",       default: true },
+            { key: "settings-btn-download",    sharedContainer: "#mapBtnMain",        buttons: ".btn-download",     default: false },
+            { key: "settings-btn-upload",      sharedContainer: "#mapBtnMain",        buttons: ".btn-upload",       default: false },
+        ];
+    }
+
+    _updateSharedContainer(containerSelector) {
+        if (!containerSelector) return;
+        const defs = this.getButtonToggleDefinitions().filter(d => d.sharedContainer === containerSelector);
+        const anyVisible = defs.some(d => !$(d.buttons).data("placeholder"));
+        $(containerSelector).toggle(anyVisible);
+    }
+
+    _updateDotsButton() {
+        const anyDemoted = this.getButtonToggleDefinitions().some(d =>
+            $(d.buttons).data("placeholder")
+        );
+        $("#mapBtnTools").toggle(anyDemoted);
+    }
+
+    _moveButtonsToMenu(def) {
+        const $dotsGroup = $("#mapBtnTools .btnLayersGroup");
+        $(def.buttons).each((_, el) => {
+            const $el = $(el);
+            const $placeholder = $("<span class=\"btn-placeholder\"></span>");
+            $el.before($placeholder);
+            $el.data("placeholder", $placeholder);
+            $dotsGroup.append($el);
+        });
+        this._updateSharedContainer(def.sharedContainer);
+        this._updateDotsButton();
+    }
+
+    _restoreButtons(def) {
+        $(def.buttons).each((_, el) => {
+            const $el = $(el);
+            const $placeholder = $el.data("placeholder");
+            if ($placeholder && $placeholder.length) {
+                $placeholder.before($el);
+                $placeholder.remove();
+            }
+            $el.removeData("placeholder");
+        });
+        this._updateSharedContainer(def.sharedContainer);
+        this._updateDotsButton();
+    }
+
+    loadButtonToggles() {
+        this.getButtonToggleDefinitions().forEach(def => {
+            const stored = localStorage.getItem(def.key);
+            const val = stored === null ? def.default : stored === "1";
+            if (!val) this._moveButtonsToMenu(def);
+            $(`.mapBtnToggle[data-key="${def.key}"]`).toggleClass("active", val);
+        });
+        this._updateDotsButton();
+    }
+
+    bindButtonToggles() {
+        $(".mapBtnToggle").on("click", (e) => {
+            const btn = $(e.currentTarget);
+            const key = btn.data("key");
+            const def = this.getButtonToggleDefinitions().find(d => d.key === key);
+            if (!def) return;
+
+            const newVal = !btn.hasClass("active");
+            btn.toggleClass("active", newVal);
+            localStorage.setItem(key, newVal ? 1 : 0);
+            animateCSS(btn, "headShake");
+
+            if (newVal) {
+                this._restoreButtons(def);
+            } else {
+                this._moveButtonsToMenu(def);
+            }
+        });
+    }
+
     /**
      * Bind settings button event (switch to map mode from legacy)
      */
@@ -705,5 +795,14 @@ export default class SquadSettings {
      */
     get(name) {
         return this[name];
+    }
+
+    isModEnabled(modKey) {
+        const stored = localStorage.getItem(`settings-mod-${modKey}`);
+        return stored === null ? true : stored === "1";
+    }
+
+    setModEnabled(modKey, enabled) {
+        localStorage.setItem(`settings-mod-${modKey}`, +enabled);
     }
 }
