@@ -672,7 +672,7 @@ export default class SquadFactions {
         const img = document.getElementById(`teamBg${team}`);
         if (!img) return;
         const fallback = team === 1 ? "Team1" : "Team2";
-        const newSrc = `/img/spawnGroup/${factionId || fallback}.webp`;
+        const newSrc = `/img/spawnGroup/${(factionId || fallback).replace(/[^a-zA-Z0-9_-]/g, "")}.webp`;
         img.style.transition = "opacity 0.15s ease";
         img.style.opacity = "0";
         setTimeout(() => {
@@ -690,7 +690,7 @@ export default class SquadFactions {
         const val = SELECTOR.val();
 
         const img = document.createElement("img");
-        img.src = val ? `/img/flags/${val}.webp` : "/img/flags/unknown.webp";
+        img.src = val ? `/img/flags/${val.replace(/[^a-zA-Z0-9_-]/g, "")}.webp` : "/img/flags/unknown.webp";
         img.addEventListener("error", () => { img.src = "/img/flags/unknown.webp"; }, { once: true });
         btn.replaceChildren(img);
 

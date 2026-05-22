@@ -301,9 +301,9 @@ export default class SquadServersBrowser {
                 rows += `
                     <tr class="${isSelected} ${unavailable}" data-serverid="${server.id}">
                         <td class="favoriteCell">${favoriteStarHTML}</td>
-                        <td title="${server.attributes.name}"><div class="server-name">${server.attributes.name}</div></td>
+                        <td title="${App.sanitize(server.attributes.name)}"><div class="server-name">${App.sanitize(server.attributes.name)}</div></td>
                         <td class="mapdata">
-                            ${server.attributes.details.map}<br>
+                            ${App.sanitize(server.attributes.details.map)}<br>
                             ${nextLayer}
                         </td>
                         <td>${this.getPlayersHTML(server.attributes.players, server.attributes.maxPlayers)}</td>

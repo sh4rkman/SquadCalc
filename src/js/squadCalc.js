@@ -1914,5 +1914,13 @@ export default class SquadCalc {
         const newUrl = `${window.location.pathname}?${sortedParams.toString()}`;
         window.history.replaceState({}, "", newUrl);
     }
-    
+
+    static sanitize(str) {
+        return String(str)
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;");
+    }
+
 }
