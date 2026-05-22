@@ -1,3 +1,4 @@
+
 # <img src="https://img.shields.io/badge/-major%20release-b22222?style=for-the-badge"> **44.0.0** *(2026-05-15)*
 
 </br><img src="https://img.shields.io/badge/-new%20features-green">
@@ -15,7 +16,6 @@
 - Fixed weapon selector not hiding when switching map (fix [#480](https://github.com/sh4rkman/SquadCalc/issues/480))
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
-
 
 
 # <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge"> **43.0.1** *(2026-05-12)*
