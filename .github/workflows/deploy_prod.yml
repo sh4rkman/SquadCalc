@@ -30,12 +30,11 @@ jobs:
             
     - name: Discord notification
       env:
-        DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-        DISCORD_USERNAME: "Github bot"
+        DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_BETA }}
+        DISCORD_USERNAME: "Github Monitoring"
         DISCORD_AVATAR: "https://i.imgur.com/lPRYnJx.png"
       uses: Ilshidur/action-discord@master
       with:
         args: |
-          New version has been deployed on squadcalc.app !
-          **Full Changelog**: https://github.com/sh4rkman/SquadCalc/blob/master/CHANGELOG.md
+          **${{ github.repository }}** has been deployed on squadcalc.app
           **Commit**: ${{ github.event.head_commit.message }}
