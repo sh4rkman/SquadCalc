@@ -103,7 +103,9 @@ export default class SquadCalc {
     }
 
     applyUrlIntent() {
+        console.debug("applyUrlIntent called");
         const { server, session } = this.urlIntent;
+        console.debug("URL intent - server:", server, "session:", session, "layer:", this.urlIntent.layer);
         if (server)       this.initServerMode(server, session);
         else if (session) this.initSessionMode(session, this.urlIntent);
         else              this.initStaticMode(this.urlIntent);
@@ -140,6 +142,12 @@ export default class SquadCalc {
             this.squadServersBrowser.selectedServer = server.id;
             this.squadServersBrowser.selectedLayer = server.attributes.details.map;
 
+            // Ensure layers are loaded for the server's map before switching layer
+            if (!this.layersLoaded) {
+                console.debug("Layers not loaded yet, loading layers for server map");
+                this.loadLayers();
+            }
+
             this.squadServersBrowser.switchLayer(
                 server.attributes.name,
                 server.mapName,
@@ -153,6 +161,16 @@ export default class SquadCalc {
             $("#serversTableBody tr").removeClass("selected");
             $(`#serversTableBody tr[data-serverid="${serverId}"]`).addClass("selected");
             $("#servers").addClass("active");
+
+            // If a specific layer was provided in the URL, apply it after the server's layers are loaded
+            console.debug("initServerMode - urlIntent:", this.urlIntent);
+            if (this.urlIntent.layer) {
+                console.debug("URL layer detected:", this.urlIntent.layer);
+                $(document).one("layer:loaded", () => {
+                    console.debug("layer:loaded event fired, applying URL layer");
+                    this.initStaticMode({ layer: this.urlIntent.layer });
+                });
+            }
 
             if (this.squadServersBrowser.syncInterval) clearInterval(this.squadServersBrowser.syncInterval);
             this.squadServersBrowser.syncInterval = setInterval(
@@ -187,7 +205,9 @@ export default class SquadCalc {
     }
 
     initStaticMode(intent, onLayerLoaded = null) {
+        console.debug("initStaticMode called with intent:", intent);
         if (!intent.layer) {
+            console.debug("No layer in intent, returning");
             onLayerLoaded?.();
             return;
         }
@@ -310,6 +330,7 @@ export default class SquadCalc {
 
             const selectedLayerText = this.LAYER_SELECTOR.find(":selected").text().replaceAll(" ", "");
             const broadcast = event.broadcast ?? true;
+            console.debug("LAYER_SELECTOR changed - selectedLayerText:", selectedLayerText, "broadcast:", broadcast);
 
             // User cleared the layer selector, remove the layer and clean the URL
             if (selectedLayerText === "") {
@@ -317,6 +338,7 @@ export default class SquadCalc {
                 if (abortController) { abortController.abort(); } // Abort the ongoing fetch request
                 if (this.minimap.layer) this.minimap.layer.clear();
                 $(".btn-layer").hide();
+                $(".btn-share").hide();
                 $("#factionsTab, #factionsButton").hide();
 
                 // Empty Factions&Units selectors
@@ -370,6 +392,7 @@ export default class SquadCalc {
                     if (this.minimap.layer) this.minimap.layer.clear();
                     this.minimap.layer = new SquadLayer(this.minimap, layerData, broadcast);
                     $(".btn-layer").addClass("active").show();
+                    $(".btn-share").show();
 
                     if (broadcast && this.session.ws?.readyState === WebSocket.OPEN) {
                         this.session.ws.send(
@@ -533,7 +556,8 @@ export default class SquadCalc {
                 weapon.shells,
                 weapon.heightOffset,
                 weapon.angleOffset,
-                weapon.projectileLifespan
+                weapon.projectileLifespan,
+                weapon.mod
             );
         });
         
@@ -573,41 +597,93 @@ export default class SquadCalc {
     }
 
     /**
-     * Add/Remove Experimental Weapons from Weapons dropdown list according to user settings
+     * Returns unique mod keys present in WEAPONS data
      */
-    toggleExperimentalWeapons(){
-        const WEAPONSLENGTH = WEAPONS.length;
+    _getUniqueMods() {
+        return [...new Set(WEAPONS.filter(w => w.mod).map(w => w.mod))].sort();
+    }
 
-        if (this.userSettings.experimentalWeapons) {
+    /**
+     * Populate #modFiltersContainer with one checkbox per mod and show #modFiltersRow
+     */
+    _renderModFilters() {
+        const mods = this._getUniqueMods();
+        const container = $("#modFiltersContainer");
+        container.empty();
 
-            this.WEAPON_SELECTOR.append(`<optgroup data-i18n-label=weapons:modded label="${i18next.t("weapons:modded")}">`);
-            for (let y = 0; y < WEAPONSLENGTH; y += 1) {
-                if (WEAPONS[y].type === "modded") {
-                    this.WEAPON_SELECTOR.append(`<option data-i18n=weapons:${WEAPONS[y].name} value=${y}>${i18next.t("weapons:" + WEAPONS[y].name)}</option>`);
+        mods.forEach(modKey => {
+            const checked = this.userSettings.isModEnabled(modKey) ? "checked" : "";
+            const label = i18next.t(`settings:${modKey}`, { defaultValue: modKey });
+            container.append(`
+                <label class="mcui-checkbox mod-filter-checkbox" data-mod="${modKey}">
+                    <input type="checkbox" class="modFilterCheckbox" data-mod="${modKey}" ${checked}>
+                    <span>
+                        <svg class="mcui-check" viewBox="-2 -2 35 35" aria-hidden="true">
+                            <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
+                        </svg>
+                    </span>
+                    <span class="mod-filter-label">${label}</span>
+                </label>
+            `);
+        });
+
+        $(".modFilterCheckbox").on("change", (e) => {
+            const modKey = $(e.target).data("mod");
+            const enabled = $(e.target).is(":checked");
+            this.userSettings.setModEnabled(modKey, enabled);
+            animateCSS($(e.target).closest("label"), "headShake");
+            this._rebuildModdedWeapons();
+        });
+
+        $("#modFiltersRow").show();
+    }
+
+    /**
+     * Rebuild per-mod optgroups in the weapon selector based on currently enabled mods
+     */
+    _rebuildModdedWeapons() {
+        const selectedValue = this.WEAPON_SELECTOR.val();
+        const selectedIsModded = !!(WEAPONS[selectedValue]?.mod);
+
+        this.WEAPON_SELECTOR.find("optgroup[data-mod]").remove();
+
+        this._getUniqueMods().forEach(modKey => {
+            if (!this.userSettings.isModEnabled(modKey)) return;
+
+            const label = i18next.t(`settings:${modKey}`, { defaultValue: modKey });
+            const optgroup = $(`<optgroup data-mod="${modKey}" label="${label}"></optgroup>`);
+
+            for (let y = 0; y < WEAPONS.length; y++) {
+                if (WEAPONS[y].mod === modKey) {
+                    optgroup.append(`<option data-i18n="weapons:${WEAPONS[y].name}" value="${y}">${i18next.t("weapons:" + WEAPONS[y].name)}</option>`);
                 }
             }
-            this.WEAPON_SELECTOR.append("</optgroup>");
 
+            if (optgroup.children().length) {
+                this.WEAPON_SELECTOR.append(optgroup);
+            }
+        });
+
+        if (selectedIsModded) {
+            this.WEAPON_SELECTOR.val(0).trigger("change");
+        }
+    }
+
+    /**
+     * Add/Remove Experimental Weapons from Weapons dropdown list according to user settings
+     */
+    toggleExperimentalWeapons() {
+        if (this.userSettings.experimentalWeapons) {
+            this._renderModFilters();
+            this._rebuildModdedWeapons();
         } else {
+            $("#modFiltersRow").hide();
+            $("#modFiltersContainer").empty();
 
-            let selectedValue = this.WEAPON_SELECTOR.val();
-            
-            // Remove the experimental optgroup
-            this.WEAPON_SELECTOR.find("optgroup[data-i18n-label='weapons:modded']").remove();
-            
-            // Remove experimental options and check if the selected value is experimental
-            this.WEAPON_SELECTOR.find("option").filter(
-                function() {
-                    return WEAPONS[$(this).val()].type === "modded";
-                }).each(function() {
-                if ($(this).val() === selectedValue) {
-                    selectedValue = null;
-                }
-                $(this).remove();
-            });
-            
-            // If the selected value was an experimental option, reset to Mortars
-            if (selectedValue === null) {
+            const selectedIsModded = !!(WEAPONS[this.WEAPON_SELECTOR.val()]?.mod);
+            this.WEAPON_SELECTOR.find("optgroup[data-mod]").remove();
+
+            if (selectedIsModded) {
                 this.WEAPON_SELECTOR.val(0).trigger("change");
             }
         }
@@ -903,7 +979,30 @@ export default class SquadCalc {
 
         $("#settingsControls button[value='panel4']").on("click", () => this.initShortcutsPanel());
 
+        $(".btn-share").on("click", () => this.shareLoadout());
+
         this.show();
+    }
+
+
+    shareLoadout() {
+        const cur    = new URLSearchParams(window.location.search);
+        const params = new URLSearchParams();
+        if (cur.has("map"))   params.set("map", cur.get("map"));
+        if (cur.has("layer")) params.set("layer", cur.get("layer"));
+
+        const t1 = this.FACTION1_SELECTOR.val();
+        const u1 = this.UNIT1_SELECTOR.val();
+        const t2 = this.FACTION2_SELECTOR.val();
+        const u2 = this.UNIT2_SELECTOR.val();
+        if (t1) params.set("team1", t1);
+        if (u1) params.set("team1unit", u1);
+        if (t2) params.set("team2", t2);
+        if (u2) params.set("team2unit", u2);
+
+        const url = `${window.location.origin}${window.location.pathname}?${params.toString()}`;
+        navigator.clipboard.writeText(url);
+        this.openToast("success", "copied", "");
     }
 
 
@@ -982,7 +1081,7 @@ export default class SquadCalc {
         if (shortcut.shift) parts.push("<kbd>Shift</kbd>");
         const name = shortcut.key === " " ? "Space"
             : shortcut.key.length === 1 ? shortcut.key.toUpperCase()
-            : shortcut.key;
+                : shortcut.key;
         parts.push(`<kbd>${name}</kbd>`);
         return parts.join(" + ");
     }

@@ -2,7 +2,7 @@ import { App } from "../app.js";
 import { WEAPONS } from "../data/weapons.js";
 
 export class Weapon {
-    constructor(name, deceleration, decelerationTime, gravityScale, minElevation, unit, logo, marker, type, angleType, elevationPrecision, shells = [], heightOffset = 0, angleOffset = 0, projectileLifespan = 100) {
+    constructor(name, deceleration, decelerationTime, gravityScale, minElevation, unit, logo, marker, type, angleType, elevationPrecision, shells = [], heightOffset = 0, angleOffset = 0, projectileLifespan = 100, mod = null) {
         this.name = name;
         //this.velocity = velocity;
         this.deceleration = deceleration;
@@ -25,6 +25,7 @@ export class Weapon {
         this.heightOffset = heightOffset;
         this.angleOffset = angleOffset;
         this.projectileLifespan = projectileLifespan;
+        this.mod = mod;
 
     }
 

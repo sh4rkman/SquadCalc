@@ -2,7 +2,7 @@
 
 #helpDialog {
     width: 94%;
-    height: 525px;
+    height: 625px;
     max-width: 600px;
     font-size: 0.6em;
     font-weight: bold;
@@ -193,6 +193,41 @@
             }
         }
     }
+    #mapBtnToggles {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px;
+        .mapBtnToggle {
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(17, 17, 17, 0.75);
+            border: rgba(255, 255, 255, 0.08) solid 1px;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: #ccc;
+            svg {
+                height: 1.3em;
+                fill: #fff;
+                pointer-events: none;
+            }
+            &.active {
+                background-color: variables.$mainColor;
+                border-color: variables.$mainColor;
+            }
+            &:not(.active) {
+                opacity: 0.3;
+                filter: grayscale(1);
+            }
+            &:hover {
+                opacity: 1;
+                filter: none;
+            }
+        }
+    }
     .slidersHolders {
         width: 100%;
         height: auto;
@@ -371,6 +406,21 @@ $bezier: cubic-bezier(0.65, 0.25, 0.56, 0.96);
     }
 }
 
+#modFiltersContainer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25em 1em;
+    padding: 0.4em 0 0.2em 1.5em;
+    .mod-filter-checkbox {
+        cursor: pointer;
+        gap: 0.4em;
+        .mod-filter-label {
+            font-size: 0.9em;
+            color: variables.$mainTxtColor;
+        }
+    }
+}
+
 #settingsControls {
     margin: 0 0 1.3em;
     text-align: center;
@@ -426,7 +476,6 @@ $bezier: cubic-bezier(0.65, 0.25, 0.56, 0.96);
     color: variables.$mainTxtColor;
     border: 1px solid #444;
     border-radius: 6px;
-
     .capture-title {
         font-size: 1.3em;
         margin: 0 0 1.2em;
@@ -435,19 +484,16 @@ $bezier: cubic-bezier(0.65, 0.25, 0.56, 0.96);
         text-transform: uppercase;
         letter-spacing: 1px;
     }
-
     .capture-key-display {
         min-height: 3em;
         display: flex;
         align-items: center;
         justify-content: center;
         margin-bottom: 0.8em;
-
         .capture-listening {
             opacity: 0.4;
             font-size: 1.1em;
         }
-
         .capture-preview {
             font-size: 1.1em;
             kbd {
@@ -463,19 +509,16 @@ $bezier: cubic-bezier(0.65, 0.25, 0.56, 0.96);
             }
         }
     }
-
     .capture-conflict {
         min-height: 1.4em;
         font-size: 0.95em;
         color: variables.$mainColor;
         margin: 0 0 1em;
     }
-
     .capture-buttons {
         display: flex;
         gap: 0.6em;
         justify-content: center;
-
         button {
             padding: 6px 14px;
             cursor: pointer;

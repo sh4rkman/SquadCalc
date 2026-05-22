@@ -272,6 +272,7 @@ export const squadMinimap = Map.extend({
         // Empty and clear buttons of DOM elements
         $(".dropbtn8, .dropbtn9, .dropbtn10, .dropbtn11").empty();
         $("#factionsTab, #factionsButton, .btn-delete, .btn-undo").hide();
+        if (App.ui != 0) $(".weaponSelector").removeClass("active animate__fadeIn");
 
         // Reset map view
         this.setView([-this.pixelSize/2, this.pixelSize/2], 2);
