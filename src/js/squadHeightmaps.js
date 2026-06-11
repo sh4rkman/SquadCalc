@@ -1,6 +1,11 @@
 import { decode } from "fast-png";
 
 /**
+ * @typedef {import("leaflet").LatLng} LatLng
+ * @typedef {import("leaflet").Map} LeafletMap
+ */
+
+/**
  * Squad Heightmap
  * Load an heightmap in memory and calculate heights for given LatLng Points
  * @class squadHeightmap
@@ -9,7 +14,7 @@ export default class SquadHeightmap {
 
     /**
      * Load the heightmap for the given map
-     * @param {L.map} [map]
+     * @param {LeafletMap} [map]
      */
     constructor(map) {
         this.map = map;
@@ -27,11 +32,13 @@ export default class SquadHeightmap {
         const legacyHeightmap = this.map.activeMap.SDK_data?.heightmap;
 
         try {
+            let pngLoaded = false;
+
             if (heightmapPng) {
-                await this.loadHeightmapPng(`${this.map.activeMap.mapURL}${heightmapPng.file}`);
+                pngLoaded = await this.loadHeightmapPng(`${this.map.activeMap.mapURL}${heightmapPng.file}`);
             }
 
-            if (!this.png && legacyHeightmap) {
+            if (!pngLoaded && legacyHeightmap) {
                 await this.loadHeightmapJson(`${process.env.API_URL}${this.map.activeMap.mapURL}heightmap.json`);
             }
         } finally {
@@ -43,6 +50,7 @@ export default class SquadHeightmap {
     /**
      * Load the heightmap from a PNG file.
      * @param {string} [url] - URL to the PNG file
+     * @returns {Promise<boolean>} - Whether the PNG heightmap loaded successfully
      */
     async loadHeightmapPng(url) {
 
@@ -50,21 +58,28 @@ export default class SquadHeightmap {
 
         try {
             if (!["gray8", "rgb16"].includes(metadata.encoding)) {
-                throw new Error(`Unsupported heightmap PNG encoding: ${metadata.encoding}`);
+                console.error(`Unsupported heightmap PNG encoding: ${metadata.encoding}`);
+                return false;
             }
             if (!Number.isFinite(metadata.minHeightM) || !Number.isFinite(metadata.precisionM)) {
-                throw new Error("Heightmap PNG metadata requires finite minHeightM and precisionM");
+                console.error("Heightmap PNG metadata requires finite minHeightM and precisionM");
+                return false;
             }
 
             const response = await fetch(url);
-            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            if (!response.ok) {
+                console.error(`Failed to load heightmap: ${url}`);
+                console.error("  -> ", `HTTP ${response.status}`);
+                return false;
+            }
 
             const bytes = new Uint8Array(await response.arrayBuffer());
             const image = decode(bytes);
             const channels = image.channels ?? image.data.length / (image.width * image.height);
 
             if (metadata.encoding === "rgb16" && channels < 2) {
-                throw new Error(`rgb16 heightmap PNG requires at least 2 channels, got ${channels}`);
+                console.error(`rgb16 heightmap PNG requires at least 2 channels, got ${channels}`);
+                return false;
             }
 
             this.png = {
@@ -83,10 +98,13 @@ export default class SquadHeightmap {
             if (metadata.rows && metadata.rows !== image.height) {
                 console.warn(`Heightmap PNG height mismatch for ${this.map.activeMap.name}: expected ${metadata.rows}, got ${image.height}`);
             }
+
+            return true;
         } catch (error) {
             console.error("Failed to load heightmap:", url);
             console.error("  -> ", error);
             this.png = null;
+            return false;
         }
     }
 
@@ -94,18 +112,24 @@ export default class SquadHeightmap {
     /**
      * Load the heightmap from a JSON file
      * @param {string} [url] - URL to the JSON file
+     * @returns {Promise<boolean>} - Whether the JSON heightmap loaded successfully
      */
     async loadHeightmapJson(url) {
 
         try {
             const response = await fetch(url); // Fetch the JSON file
-            if (!response.ok) throw new Error(`HTTP ${response.status}`);
-            let data = await response.json();
-            this.json = data;
+            if (!response.ok) {
+                console.error(`Failed to load heightmap: ${url}`);
+                console.error("  -> ", `HTTP ${response.status}`);
+                return false;
+            }
+            this.json = await response.json();
+            return true;
         } catch (error) {
             console.error("Failed to load heightmap:", url);
             console.error("  -> ", error);
             this.json = [];
+            return false;
         }
     }
 
@@ -170,6 +194,7 @@ export default class SquadHeightmap {
      * Calculate a path of heights between two points
      * @param {LatLng} [mortarLatlng] - LatLng Point
      * @param {LatLng} [targetLatlng] - LatLng Point
+     * @param {number} [STEP=100] - Number of samples between weapon and target
      * @returns {Array} - Array containing all the Heights between weapon and Target in meters
      */
     getHeightPath(mortarLatlng, targetLatlng, STEP = 100) {
