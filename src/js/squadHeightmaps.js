@@ -1,3 +1,5 @@
+import { decode } from "fast-png";
+
 /**
  * Squad Heightmap
  * Load an heightmap in memory and calculate heights for given LatLng Points
@@ -11,11 +13,81 @@ export default class SquadHeightmap {
      */
     constructor(map) {
         this.map = map;
-        this.width = 500;
-        this.heightmapScaling = this.width / this.map.pixelSize;
-        let heightmapPath = `${process.env.API_URL}${this.map.activeMap.mapURL}heightmap.json`;
+        this.png = null;
         this.json = [];
-        this.loadHeightmapJson(heightmapPath);
+        this.loadHeightmap();
+    }
+
+
+    /**
+     * Load the heightmap from the best available source.
+     */
+    async loadHeightmap() {
+        const heightmapPng = this.map.activeMap.SDK_data?.heightmapPng;
+        const legacyHeightmap = this.map.activeMap.SDK_data?.heightmap;
+
+        try {
+            if (heightmapPng) {
+                await this.loadHeightmapPng(`${this.map.activeMap.mapURL}${heightmapPng.file}`);
+            }
+
+            if (!this.png && legacyHeightmap) {
+                await this.loadHeightmapJson(`${process.env.API_URL}${this.map.activeMap.mapURL}heightmap.json`);
+            }
+        } finally {
+            $(document).trigger("heightmap:loaded");
+        }
+    }
+
+
+    /**
+     * Load the heightmap from a PNG file.
+     * @param {string} [url] - URL to the PNG file
+     */
+    async loadHeightmapPng(url) {
+
+        const metadata = this.map.activeMap.SDK_data.heightmapPng;
+
+        try {
+            if (!["gray8", "rgb16"].includes(metadata.encoding)) {
+                throw new Error(`Unsupported heightmap PNG encoding: ${metadata.encoding}`);
+            }
+            if (!Number.isFinite(metadata.minHeightM) || !Number.isFinite(metadata.precisionM)) {
+                throw new Error("Heightmap PNG metadata requires finite minHeightM and precisionM");
+            }
+
+            const response = await fetch(url);
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+            const bytes = new Uint8Array(await response.arrayBuffer());
+            const image = decode(bytes);
+            const channels = image.channels ?? image.data.length / (image.width * image.height);
+
+            if (metadata.encoding === "rgb16" && channels < 2) {
+                throw new Error(`rgb16 heightmap PNG requires at least 2 channels, got ${channels}`);
+            }
+
+            this.png = {
+                data: image.data,
+                width: image.width,
+                height: image.height,
+                channels,
+                encoding: metadata.encoding,
+                minHeightM: metadata.minHeightM,
+                precisionM: metadata.precisionM,
+            };
+
+            if (metadata.cols && metadata.cols !== image.width) {
+                console.warn(`Heightmap PNG width mismatch for ${this.map.activeMap.name}: expected ${metadata.cols}, got ${image.width}`);
+            }
+            if (metadata.rows && metadata.rows !== image.height) {
+                console.warn(`Heightmap PNG height mismatch for ${this.map.activeMap.name}: expected ${metadata.rows}, got ${image.height}`);
+            }
+        } catch (error) {
+            console.error("Failed to load heightmap:", url);
+            console.error("  -> ", error);
+            this.png = null;
+        }
     }
 
 
@@ -24,20 +96,17 @@ export default class SquadHeightmap {
      * @param {string} [url] - URL to the JSON file
      */
     async loadHeightmapJson(url) {
-        
-        // If no heightmap is provided, don't look for a .json file
-        if (!this.map.activeMap.SDK_data.heightmap) return;
 
         try {
             const response = await fetch(url); // Fetch the JSON file
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
             let data = await response.json();
             this.json = data;
         } catch (error) {
             console.error("Failed to load heightmap:", url);
             console.error("  -> ", error);
+            this.json = [];
         }
-        
-        $(document).trigger("heightmap:loaded");
     }
 
 
@@ -49,18 +118,51 @@ export default class SquadHeightmap {
      */
     getHeight(latlng){
 
+        if (this.png) return this.getPngHeight(latlng);
+
         // Fallback in case heightmap isn't supplied or didn't load
         if (!this.json || !Array.isArray(this.json)) return 0;
 
-        const row = Math.round(latlng.lat * -this.heightmapScaling);
-        const col = Math.round(latlng.lng * this.heightmapScaling);
-        let height = 0; // Todo: Implement a better way to handle this, like returning infinity
+        const height = this.json.length;
+        const width = Array.isArray(this.json[0]) ? this.json[0].length : 0;
+        const row = Math.round(latlng.lat * -height / this.map.pixelSize);
+        const col = Math.round(latlng.lng * width / this.map.pixelSize);
+        let terrainHeight = 0; // Todo: Implement a better way to handle this, like returning infinity
 
         if (this.json[row] && typeof this.json[row][col] !== "undefined") {
-            height = this.json[row][col];
+            terrainHeight = this.json[row][col];
         }
-        
-        return height;
+
+        return terrainHeight;
+    }
+
+
+    /**
+     * Calculate heights from a decoded PNG heightmap.
+     * @param {LatLng} [latlng] - LatLng Point
+     * @returns {integer} - height in meters
+     */
+    getPngHeight(latlng) {
+
+        const row = Math.round(latlng.lat * -this.png.height / this.map.pixelSize);
+        const col = Math.round(latlng.lng * this.png.width / this.map.pixelSize);
+        let height = 0; // Todo: Implement a better way to handle this, like returning infinity
+
+        if (row < 0 || col < 0 || row >= this.png.height || col >= this.png.width) return height;
+
+        const pixelIndex = row * this.png.width + col;
+        let encodedHeight;
+
+        if (this.png.encoding === "gray8") {
+            encodedHeight = this.png.data[pixelIndex];
+        } else if (this.png.encoding === "rgb16") {
+            const offset = pixelIndex * this.png.channels;
+            encodedHeight = (this.png.data[offset] << 8) | this.png.data[offset + 1];
+        } else {
+            return height;
+        }
+
+        return this.png.minHeightM + encodedHeight * this.png.precisionM;
     }
 
     

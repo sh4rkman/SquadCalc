@@ -32,6 +32,21 @@ registerRoute(
     })
 );
 
+// Cache binary heightmaps for 30 days with StaleWhileRevalidate
+registerRoute(
+    ({ url }) => url.pathname.includes("/maps/") && url.pathname.endsWith("heightmap.png"),
+    new StaleWhileRevalidate ({
+        cacheName: "map-heightmaps",
+        plugins: [
+            new ExpirationPlugin({
+                maxEntries: 30,
+                maxAgeSeconds: 60 * 60 * 24 * 30, // 30 days
+                purgeOnQuotaError: true,
+            }),
+        ],
+    })
+);
+
 // Block all OTHER API requests from being cached
 registerRoute(
     ({ url }) => url.pathname.startsWith("/api/"),
