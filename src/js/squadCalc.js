@@ -113,8 +113,6 @@ export default class SquadCalc {
     }
 
     initServerMode(serverId, sessionId = null) {
-        this.updateUrlParams({ team1: null, team1unit: null, team2: null, team2unit: null });
-
         if (!this.squadServersBrowser) {
             this.squadServersBrowser = new SquadServersBrowser();
             this.squadServersBrowser.init();
@@ -139,6 +137,9 @@ export default class SquadCalc {
                 return;
             }
 
+            // Server found — discard any URL team overrides; map/layer are overwritten by switchLayer
+            this.updateUrlParams({ team1: null, team1unit: null, team2: null, team2unit: null });
+
             this.squadServersBrowser.selectedServer = server.id;
             this.squadServersBrowser.selectedLayer = server.attributes.details.map;
 
@@ -161,16 +162,6 @@ export default class SquadCalc {
             $("#serversTableBody tr").removeClass("selected");
             $(`#serversTableBody tr[data-serverid="${serverId}"]`).addClass("selected");
             $("#servers").addClass("active");
-
-            // If a specific layer was provided in the URL, apply it after the server's layers are loaded
-            console.debug("initServerMode - urlIntent:", this.urlIntent);
-            if (this.urlIntent.layer) {
-                console.debug("URL layer detected:", this.urlIntent.layer);
-                $(document).one("layer:loaded", () => {
-                    console.debug("layer:loaded event fired, applying URL layer");
-                    this.initStaticMode({ layer: this.urlIntent.layer });
-                });
-            }
 
             if (this.squadServersBrowser.syncInterval) clearInterval(this.squadServersBrowser.syncInterval);
             this.squadServersBrowser.syncInterval = setInterval(
@@ -1915,7 +1906,7 @@ export default class SquadCalc {
         window.history.replaceState({}, "", newUrl);
     }
 
-    static sanitize(str) {
+    sanitize(str) {
         return String(str)
             .replace(/&/g, "&amp;")
             .replace(/</g, "&lt;")

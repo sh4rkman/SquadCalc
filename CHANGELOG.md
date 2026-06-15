@@ -1,3 +1,11 @@
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge"> **44.0.1** *(2026-0X-XX)*
+
+</br><img src="https://img.shields.io/badge/-bug%20fixes-b22">   
+- Fixed Factions & Units no correctly when opening a URL holding a server id (Thanks wwrp450 !)
+
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
 
 # <img src="https://img.shields.io/badge/-major%20release-b22222?style=for-the-badge"> **44.0.0** *(2026-05-22)*
 
