@@ -539,13 +539,13 @@ export default class SquadFactions {
                         ${LEFT ? metaHTML + typeHTML : typeHTML + metaHTML}
                     </div>
                 </div>
-                ${this.getCardImgHTML(vehicle)}
+                ${this.getCardImgHTML(vehicle, LEFT)}
             </div>
         `);
     }
 
 
-    getCardImgHTML(vehicle){
+    getCardImgHTML(vehicle, LEFT = false){
         let shortVehName = vehicle.type.split(" ")[0];
         let amphibious = "";
         if (vehicle.isAmphibious) {
@@ -593,7 +593,7 @@ export default class SquadFactions {
             <div class="image">
                 <div class="tags">${passengersHTML}${amphibious}${ATGM}</div>
                 <div class="links">${wikiLink}${armorLink}</div>
-                <img src="/img/vehicles/${vehicle.type}.webp" onerror="this.onerror=null; this.src='/img/vehicles/placeholder.webp';"/>
+                <img src="/img/vehicles/${vehicle.type}.webp" onerror="this.onerror=null; this.src='/img/vehicles/placeholder.webp';" ${LEFT ? "class=\"mirrored\"" : ""}/>
             </div>
         `;
     }

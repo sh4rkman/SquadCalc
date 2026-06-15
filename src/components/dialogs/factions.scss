@@ -414,6 +414,9 @@
                     position: relative;
                     img {
                         width: 100%;
+                        &.mirrored {
+                            transform: scaleX(-1);
+                        }
                     }
                     .tag {
                         border-radius: 6px;
@@ -466,6 +469,7 @@
                         display: flex;
                         flex-wrap: wrap;
                         gap: 0.5em;
+                        z-index: 1;
                     }
                     .links {
                         position: absolute;
@@ -473,6 +477,7 @@
                         right: 0.5em;
                         display: flex;
                         gap: 0.5em;
+                        z-index: 1;
                     }
                 }
 

@@ -1,7 +1,14 @@
-# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge"> **44.0.1** *(2026-0X-XX)*
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge"> **44.1.0** *(2026-0X-XX)*
+
+</br><img src="https://img.shields.io/badge/-new%20features-green">  
+- Added a link to the squad-armor.com viewer for each vehicle of the factions panel 
+
+</br><img src="https://img.shields.io/badge/-%20improv%20-orange"> 
+- In the faction panel, vehicles images are now mirrored and facing each others
 
 </br><img src="https://img.shields.io/badge/-bug%20fixes-b22">   
 - Fixed Factions & Units no correctly when opening a URL holding a server id (Thanks wwrp450 !)
+- Fixed missing vehicles images for ZSL92 IFV & ZSL92A APC QLZ87
 
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
