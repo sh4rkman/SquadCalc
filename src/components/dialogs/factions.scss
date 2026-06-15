@@ -415,50 +415,64 @@
                     img {
                         width: 100%;
                     }
-                    .tags {
+                    .tag {
+                        border-radius: 6px;
+                        background: linear-gradient(160deg, rgba(45, 43, 43, 0.92), rgba(22, 21, 21, 0.92));
+                        border: 1px solid rgba(255, 255, 255, 0.1);
+                        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.55);
+                        width: 4em;
                         height: 4em;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        flex-shrink: 0;
+                        .passenger {
+                            position: absolute;
+                            font-size: 14px;
+                            letter-spacing: 0;
+                            margin-left: 13px;
+                            pointer-events: none;
+                        }
+                        &.armor-link, &.wiki-link {
+                            transition: background 0.15s ease, border-color 0.15s ease;
+                            &:hover {
+                                background: linear-gradient(160deg, rgba(70, 68, 68, 0.95), rgba(45, 44, 44, 0.95));
+                                border-color: rgba(255, 255, 255, 0.22);
+                            }
+                            text-decoration: none;
+                            > span {
+                                color: white;
+                                font-family: oswald, sans-serif;
+                                font-weight: bold;
+                                text-align: center;
+                                line-height: 1.3;
+                                letter-spacing: 0.05em;
+                            }
+                            .armor-yellow {
+                                color: #ffc40b;
+                            }
+                        }
+                        &.wiki-link > span {
+                            font-size: 1.4em;
+                        }
+                        &.armor-link > span {
+                            font-size: 1em;
+                        }
+                    }
+                    .tags {
                         position: absolute;
                         bottom: 0.5em;
                         left: 0.5em;
                         display: flex;
                         flex-wrap: wrap;
                         gap: 0.5em;
-                        .tag {
-                            border-radius: 4px;
-                            background: rgba(26, 25, 25, 0.8);
-                            width: 4em;
-                            height: auto;
-                            display: flex;
-                            justify-content: center;
-                            align-items: center;
-                            .passenger {
-                                position: absolute;
-                                font-size: 14px;
-                                letter-spacing: 0;
-                                margin-left: 13px;
-                                pointer-events: none;
-                            }
-                            &:hover {
-                                background: rgba(26, 25, 25, 0.9);
-                            }
-                        }
                     }
-                    a {
+                    .links {
                         position: absolute;
-                        bottom: 0;
-                        right: 0;
-                        font-size: 0.8em;
-                        letter-spacing: 0;
-                        font-style: italic;
-                        color: #111;
-                        background: rgba(255, 255, 255, 0.5);
-                        padding: 2px 5px;
-                        border-radius: 3px;
-                        text-decoration: none;
-                        &:hover {
-                            text-decoration: underline;
-                        }
-
+                        bottom: 0.5em;
+                        right: 0.5em;
+                        display: flex;
+                        gap: 0.5em;
                     }
                 }
 

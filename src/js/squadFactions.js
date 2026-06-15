@@ -395,6 +395,7 @@ export default class SquadFactions {
      */
     openCard(event) {
         if ($(event.target).closest(".vehicle-type").length && !Browser.mobile) return;
+        if ($(event.target).closest(".armor-link, .wiki-link").length) return;
 
         const $card = $(event.currentTarget);
         const $image = $card.find(".image");
@@ -564,7 +565,7 @@ export default class SquadFactions {
             `;
         }
 
-        let totalSeats = vehicle.passengerSeats + vehicle.driverSeats; 
+        let totalSeats = vehicle.passengerSeats + vehicle.driverSeats;
         let passengersHTML = `
                 <div class="tag">
                     <div class="passenger">${totalSeats}</div>
@@ -572,10 +573,26 @@ export default class SquadFactions {
                 </div>
             `;
 
+        const wikiLink = `
+            <a class="tag wiki-link" href="https://squad.fandom.com/wiki/${shortVehName}" target="_blank" title="squad.fandom.com">
+                <span>WIKI</span>
+            </a>
+        `;
+
+        let armorLink = "";
+        if (vehicle.rawType) {
+            const armorSlug = vehicle.rawType.replace(/_C$/, "");
+            armorLink = `
+                <a class="tag armor-link" href="https://squad-armor.com/vehicles/${armorSlug}" target="_blank" title="squad-armor.com">
+                    <span>SQUAD<br><span class="armor-yellow">ARMOR</span></span>
+                </a>
+            `;
+        }
+
         return `
             <div class="image">
-                <a href="https://squad.fandom.com/wiki/${shortVehName}" target="_blank" class="attribution">squad.fandom.com</a>
                 <div class="tags">${passengersHTML}${amphibious}${ATGM}</div>
+                <div class="links">${wikiLink}${armorLink}</div>
                 <img src="/img/vehicles/${vehicle.type}.webp" onerror="this.onerror=null; this.src='/img/vehicles/placeholder.webp';"/>
             </div>
         `;
