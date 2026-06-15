@@ -107,14 +107,14 @@ function updateContent() {
     $(".dropbtn").select2("destroy").select2({
         dropdownCssClass: "dropbtn",
         dropdownParent: $("#mapSelector"),
-        minimumResultsForSearch: -1,
+        minimumResultsForSearch: 1,
         width: selectorWidth,
     });
 
     $(".dropbtn2").select2("destroy").select2({
         dropdownCssClass: "dropbtn",
         dropdownParent: $("#weaponSelector"),
-        minimumResultsForSearch: -1,
+        minimumResultsForSearch: 1,
         width: selectorWidth,
     });
 
