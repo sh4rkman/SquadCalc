@@ -141,6 +141,7 @@ export const squadTargetMarker = squadMarker.extend({
         this.on("dragStart", this._handleDragStart, this);
         this.on("dragEnd", this._handleDragEnd, this);
         this.on("contextmenu", this._handleContextMenu, this);
+        this.on("pointerdown", this._handlePointerDown, this);
 
         if (App.hasMouse) {
             this.on("pointerover", this._handleMouseOver, this);
@@ -773,5 +774,94 @@ export const squadTargetMarker = squadMarker.extend({
                 linesBetweenTarget.removeFrom(this.map.markersGroup).remove();
             }
         }
-    }
+    },
+
+    _handlePointerDown: function (e) {
+        if (!e.originalEvent.altKey) return;
+
+        e.originalEvent.preventDefault();
+        this.dragging.disable();
+        this.map.dragging.disable();
+
+        // Release implicit pointer capture so pointermove reaches document
+        const el = this.getElement();
+        if (el && e.originalEvent.pointerId != null) {
+            try { el.releasePointerCapture(e.originalEvent.pointerId); } catch (_) { /* */ }
+        }
+
+        const start = this.getLatLng();
+        const [fs] = this.getFirstAvailableWeapon();
+        const [, weaponMarker] = this.getFirstAvailableWeapon();
+        const sp = weaponMarker.angleType === "high" ? fs.spreadParameters.high : fs.spreadParameters.low;
+        const a = isNaN(sp.semiMajorAxis) ? 50 : sp.semiMajorAxis;
+        const b = isNaN(sp.semiMinorAxis) ? 50 : sp.semiMinorAxis;
+        const axis = Math.max(10, (a + b) / 2);
+        console.log(`[Carpet] spacing: ${axis.toFixed(1)}m (H:${a.toFixed(1)} V:${b.toFixed(1)})`);
+        this._carpetStep = axis * this.map.gameToMapScale;
+
+        const previewLine = new Polyline([start, start], {
+            color: App.mainColor,
+            opacity: 0.65,
+            weight: 2,
+            dashArray: "6 6",
+            showMeasurements: false,
+        }).addTo(this.map.markersGroup);
+
+        const toLatLng = (domEvent) => {
+            const rect = this.map.getContainer().getBoundingClientRect();
+            return this.map.containerPointToLatLng([
+                domEvent.clientX - rect.left,
+                domEvent.clientY - rect.top,
+            ]);
+        };
+
+        let previewDots = [];
+
+        const onPointerMove = (domEvent) => {
+            const end = toLatLng(domEvent);
+            previewLine.setLatLngs([start, end]);
+
+            previewDots.forEach(d => d.removeFrom(this.map.markersGroup).remove());
+            previewDots = this._getCarpetPositions(start, end).map(latlng =>
+                new CircleMarker(latlng, {
+                    radius: 6,
+                    color: App.mainColor,
+                    fillColor: App.mainColor,
+                    fillOpacity: 0.5,
+                    interactive: false,
+                }).addTo(this.map.markersGroup)
+            );
+        };
+
+        const onPointerUp = (domEvent) => {
+            document.removeEventListener("pointermove", onPointerMove);
+            document.removeEventListener("pointerup", onPointerUp);
+            previewLine.removeFrom(this.map.markersGroup).remove();
+            previewDots.forEach(d => d.removeFrom(this.map.markersGroup).remove());
+            previewDots = [];
+            this.dragging.enable();
+            this.map.dragging.enable();
+
+            const end = toLatLng(domEvent);
+            this._getCarpetPositions(start, end)
+                .forEach(latlng => this.map.createTarget(latlng, null));
+        };
+
+        document.addEventListener("pointermove", onPointerMove);
+        document.addEventListener("pointerup", onPointerUp);
+    },
+
+    _getCarpetPositions: function (start, end) {
+        const dlat = end.lat - start.lat;
+        const dlng = end.lng - start.lng;
+        const totalDist = Math.hypot(dlat, dlng);
+        if (totalDist < this._carpetStep) return [];
+        const count = Math.floor(totalDist / this._carpetStep);
+        const positions = [];
+        for (let i = 1; i <= count; i++) {
+            const t = (i * this._carpetStep) / totalDist;
+            positions.push({ lat: start.lat + dlat * t, lng: start.lng + dlng * t });
+        }
+        return positions;
+    },
 });

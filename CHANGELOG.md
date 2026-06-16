@@ -1,8 +1,9 @@
 # <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge"> **44.1.0** *(2026-0X-XX)*
 
 </br><img src="https://img.shields.io/badge/-new%20features-green">  
+- You can know create carpet bombs by holding alt and dragging a target marker
 - Added a link to the squad-armor.com viewer for each vehicle of the factions panel
-- You can now search the map & weapon dropdown
+- You can now search the map & weapon dropdowns
 
 </br><img src="https://img.shields.io/badge/-%20improv%20-orange"> 
 - In the faction panel, vehicles images are now mirrored and facing each others
