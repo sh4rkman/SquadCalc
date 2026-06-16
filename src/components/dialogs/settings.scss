@@ -154,8 +154,12 @@
                 border: none;
                 padding: 0 0.4em;
             }
-            a {
+            a, button {
                 margin: 0;
+                background: none;
+                border: none;
+                padding: 0;
+                cursor: pointer;
             }
             svg {
                 height: 1.1em;

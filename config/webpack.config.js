@@ -53,6 +53,7 @@ export default async (env) => {
                     use: { loader: 'html-loader', options: { interpolate: true } }
                 },
                 { test: /\.(png|svg|jpg|jpeg|gif|webp)$/i, type: 'asset/resource', },
+                { test: /\.md$/, type: 'asset/source' },
             ],
         },
         infrastructureLogging: { level: 'none'},
