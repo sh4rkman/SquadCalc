@@ -117,25 +117,41 @@ export default class SquadHeightmap {
 
 
     /**
-     * Calculate a path of heights between two points
-     * @param {LatLng} [mortarLatlng] - LatLng Point
-     * @param {LatLng} [targetLatlng] - LatLng Point
-     * @returns {Array} - Array containing all the Heights between weapon and Target in meters
+     * Calculate a path of heights between two points, with optional terrain margins
+     * @param {LatLng} mortarLatlng
+     * @param {LatLng} targetLatlng
+     * @param {number} STEP - samples between weapon and target
+     * @param {number} extraBefore - fraction of path to extend before weapon
+     * @param {number} extraAfter  - fraction of path to extend after target
+     * @returns {{ path: number[], weaponIndex: number, targetIndex: number }}
      */
-    getHeightPath(mortarLatlng, targetLatlng, STEP = 100) {
-        const END = {lat: targetLatlng.lat, lng: targetLatlng.lng};
-        const START = {lat: mortarLatlng.lat, lng: mortarLatlng.lng};
-        const heightPath = [];
-        const latDiff =  END.lat - START.lat;
-        const lngDiff =  END.lng - START.lng;
-        
-        for (let i=0; i < STEP; i++){
-            heightPath.push(this.getHeightPNG(START));
-            START.lat += latDiff/STEP;
-            START.lng += lngDiff/STEP;
+    getHeightPath(mortarLatlng, targetLatlng, STEP = 100, extraBefore = 0.15, extraAfter = 0.15) {
+        const latDiff = targetLatlng.lat - mortarLatlng.lat;
+        const lngDiff = targetLatlng.lng - mortarLatlng.lng;
+
+        const extraBeforeSteps = Math.round(STEP * extraBefore);
+        const extraAfterSteps  = Math.round(STEP * extraAfter);
+        const totalSteps = STEP + extraBeforeSteps + extraAfterSteps;
+
+        const START = {
+            lat: mortarLatlng.lat - latDiff * extraBefore,
+            lng: mortarLatlng.lng - lngDiff * extraBefore,
+        };
+        const totalLatDiff = latDiff * (1 + extraBefore + extraAfter);
+        const totalLngDiff = lngDiff * (1 + extraBefore + extraAfter);
+
+        const path = [];
+        for (let i = 0; i < totalSteps; i++) {
+            path.push(this.getHeightPNG(START));
+            START.lat += totalLatDiff / totalSteps;
+            START.lng += totalLngDiff / totalSteps;
         }
-    
-        return heightPath;
+
+        return {
+            path,
+            weaponIndex: extraBeforeSteps,
+            targetIndex: extraBeforeSteps + STEP - 1,
+        };
     }
 
 }

@@ -3,7 +3,7 @@ import i18next from "i18next";
 
 export default class Simulation {
 
-    constructor(div, firingSolution, heightPath, angleType, activeWeaponUnit, padding = 0.1) {
+    constructor(div, firingSolution, heightPath, angleType, activeWeaponUnit, padding = 0, weaponIndex = 0, targetIndex = null) {
         this.div = $(div);
         this.firingSolution = firingSolution;
         this.heightPath = heightPath;
@@ -11,7 +11,12 @@ export default class Simulation {
         this.canvas = this.div.find("canvas").get(0);
         this.ctx = this.canvas.getContext("2d");
         this.padding = padding * this.canvas.width;
-        this.xScaling = ( this.canvas.width - ( 2 * this.padding ) ) / this.firingSolution.distance;
+        this.weaponIndex = weaponIndex;
+        this.targetIndex = targetIndex ?? heightPath.length - 1;
+        const terrainXScaling = (this.canvas.width - 2 * this.padding) / (heightPath.length - 1);
+        this.weaponX = this.weaponIndex * terrainXScaling + this.padding;
+        this.targetX = this.targetIndex * terrainXScaling + this.padding;
+        this.xScaling = (this.targetX - this.weaponX) / this.firingSolution.distance;
         this.yScaling = this.canvas.width/ this.firingSolution.distance;
         this.yOffset = this.getMinGround();
         this.animationFrame = "";
@@ -176,18 +181,23 @@ export default class Simulation {
 
         if (this.firingSolution.distance > 1200) { step = 500; } else { step = 300; }
 
-        // One grey line every 100m on x
+        const minor = 100 * this.xScaling;
+        const major = step * this.xScaling;
+
+        // One grey line every 100m on x, anchored at weapon (0m)
         this.ctx.fillStyle = "lightgrey";
-        for (let i= this.padding; i <this.canvas.width; i = i + 100 * this.xScaling){
+        for (let i = this.weaponX; i < this.canvas.width; i += minor)
             this.ctx.fillRect(i, 0, 1, this.canvas.height);
-        }
-    
-        // One black line every 300m on x
+        for (let i = this.weaponX - minor; i >= 0; i -= minor)
+            this.ctx.fillRect(i, 0, 1, this.canvas.height);
+
+        // One black line every 300/500m on x, anchored at weapon
         this.ctx.fillStyle = "#111";
-        for (let i= this.padding + step * this.xScaling; i <this.canvas.width; i = i + step * this.xScaling){
+        for (let i = this.weaponX; i < this.canvas.width; i += major)
             this.ctx.fillRect(i, 0, 1, this.canvas.height);
-        }
-    
+        for (let i = this.weaponX - major; i >= 0; i -= major)
+            this.ctx.fillRect(i, 0, 1, this.canvas.height);
+
         // One line every 50m on y
         this.ctx.fillStyle = "lightgrey";
         for (let i = 0 + this.yOffset; i < this.canvas.height; i = i + 50 * this.yScaling){
@@ -198,12 +208,13 @@ export default class Simulation {
         this.ctx.translate(0, this.canvas.height);
         this.ctx.scale(1, -1);
 
-        // One black line every 300m on x
+        // Distance labels every 300/500m anchored at weapon (negative before, positive after)
         this.ctx.fillStyle = "#111";
         this.ctx.font = "14px Montserrat";
-        for (let i = this.padding; i <this.canvas.width; i = i + step * this.xScaling){
-            this.ctx.fillText( ( (i - this.padding ) / this.xScaling ).toFixed(0) + i18next.t("common:m"), i+5, 20);
-        }
+        for (let i = this.weaponX; i < this.canvas.width; i += major)
+            this.ctx.fillText(((i - this.weaponX) / this.xScaling).toFixed(0) + i18next.t("common:m"), i + 5, 20);
+        for (let i = this.weaponX - major; i >= 0; i -= major)
+            this.ctx.fillText(((i - this.weaponX) / this.xScaling).toFixed(0) + i18next.t("common:m"), i + 5, 20);
     
         // Flip it back
         this.ctx.scale(1, -1);
@@ -234,9 +245,6 @@ export default class Simulation {
     
         this.ctx.fillStyle = groundColor;
         this.ctx.fill(ground);
-        this.ctx.fillStyle = "#f2f2f2";
-        this.ctx.fillRect(0, 0, this.padding, this.canvas.height);
-        this.ctx.fillRect(this.canvas.width, 0, -this.padding, this.canvas.height);
     }
 
 
@@ -262,8 +270,8 @@ export default class Simulation {
 
         this.ctx.drawImage(
             image,
-            this.canvas.width - this.padding - (IMG_WIDTH/2),
-            this.canvas.height - (this.heightPath.at(-1) * yScaling) - IMG_HEIGHT - this.yOffset,
+            this.targetX - (IMG_WIDTH / 2),
+            this.canvas.height - (this.heightPath[this.targetIndex] * yScaling) - IMG_HEIGHT - this.yOffset,
             IMG_WIDTH,
             IMG_HEIGHT);
 
@@ -284,7 +292,7 @@ export default class Simulation {
 
         let xVel;
         let yVel;
-        let x = this.padding;
+        let x = this.weaponX;
         let y = this.firingSolution.weaponHeight * this.yScaling + this.yOffset;
         let elevation = this.angleType === "high" ? this.firingSolution.elevation.high.rad : this.firingSolution.elevation.low.rad;
 
@@ -322,9 +330,9 @@ export default class Simulation {
             yVel -= G * deltaTime; // Update y velocity with gravity
 
             // Check if the projectile is out of bounds
-            if (y < 0 || x > (this.canvas.width - this.padding)) {
-                if (x > (this.canvas.width - this.padding)) {
-                    x = this.canvas.width - this.padding;
+            if (y < 0 || x > this.targetX) {
+                if (x > this.targetX) {
+                    x = this.targetX;
                 }
                 this.ctx.lineTo(x, y);
                 this.ctx.stroke();

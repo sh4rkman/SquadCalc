@@ -6,6 +6,7 @@
 
 </br><img src="https://img.shields.io/badge/-%20improv%20-orange"> 
 - In the faction panel, vehicles images are now mirrored and facing each others
+- Improved projectile simulation panel to now display the terrain before the weapon and after the target
 - Remove Belaya and Flooded Narva frop map list
 
 </br><img src="https://img.shields.io/badge/-bug%20fixes-b22">   

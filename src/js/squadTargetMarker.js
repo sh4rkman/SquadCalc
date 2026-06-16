@@ -562,15 +562,15 @@ export const squadTargetMarker = squadMarker.extend({
         $("#canvasControls > button").first().addClass("active");
 
         const weaponPos1 = this.map.activeWeaponsMarkers.getLayers()[0].getLatLng();
-        const heightPath1 = this._map.heightmap.getHeightPath(weaponPos1, this.getLatLng());
-        const simulation1 = new SquadSimulation("#sim1", this.firingSolution1, heightPath1, this.map.activeWeaponsMarkers.getLayers()[0].angleType, App.activeWeapon.unit);
+        const { path: heightPath1, weaponIndex: weaponIndex1, targetIndex: targetIndex1 } = this._map.heightmap.getHeightPath(weaponPos1, this.getLatLng());
+        const simulation1 = new SquadSimulation("#sim1", this.firingSolution1, heightPath1, this.map.activeWeaponsMarkers.getLayers()[0].angleType, App.activeWeapon.unit, 0, weaponIndex1, targetIndex1);
         $("#canvasControls").css("display", "none");
 
         if (this.map.activeWeaponsMarkers.getLayers().length === 2){
             $("#canvasControls").css("display", "block");
             weaponPos2 = this.map.activeWeaponsMarkers.getLayers()[1].getLatLng();
-            heightPath2 = this._map.heightmap.getHeightPath(weaponPos2, this.getLatLng());
-            simulation2 = new SquadSimulation("#sim2", this.firingSolution2, heightPath2, this.map.activeWeaponsMarkers.getLayers()[1].angleType, App.activeWeapon.unit);
+            const { path: heightPath2, weaponIndex: weaponIndex2, targetIndex: targetIndex2 } = this._map.heightmap.getHeightPath(weaponPos2, this.getLatLng());
+            simulation2 = new SquadSimulation("#sim2", this.firingSolution2, heightPath2, this.map.activeWeaponsMarkers.getLayers()[1].angleType, App.activeWeapon.unit, 0, weaponIndex2, targetIndex2);
         }
 
         // If the user close the modal, stop the animation
