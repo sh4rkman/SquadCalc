@@ -3,7 +3,7 @@
 Convert a SquadCalc heightmap JSON into a compact PNG for client-side lookup.
 
 The browser runtime does not need meta.json. Use --emit-js to print the
-heightmapPng block that should be copied into src/data/maps.js.
+heightmapPNG block that should be copied into src/data/maps.js.
 """
 
 from __future__ import annotations
@@ -81,18 +81,18 @@ def downsample_mean(heights: np.ndarray, factor: int) -> np.ndarray:
     return downsampled.astype(np.float32, copy=False)
 
 
-def encode_heights(heights: np.ndarray, min_height_m: float, precision_m: float) -> np.ndarray:
-    if precision_m <= 0:
-        raise ValueError("--precision-m must be greater than 0")
+def encode_heights(heights: np.ndarray, scale_z: float) -> np.ndarray:
+    if scale_z <= 0:
+        raise ValueError("--scale-z must be greater than 0")
 
-    encoded = np.rint((heights - min_height_m) / precision_m).astype(np.int64)
+    encoded = np.rint(heights / scale_z).astype(np.int64)
     min_encoded = int(encoded.min())
     max_encoded = int(encoded.max())
 
     if min_encoded < 0:
         raise ValueError(
             f"Encoded values start below zero: {min_encoded}. "
-            "Use a lower --min-height-m."
+            "heightmapPNG expects heights to be encoded from 0."
         )
 
     print(f"Encoded range: {min_encoded}..{max_encoded}")
@@ -102,7 +102,7 @@ def encode_heights(heights: np.ndarray, min_height_m: float, precision_m: float)
 def choose_format(encoded: np.ndarray, requested_format: str) -> str:
     if requested_format != "auto":
         return requested_format
-    return "gray8" if int(encoded.max()) <= 255 else "rgb16"
+    return "gray8" if int(encoded.max()) <= 255 else "gray16"
 
 
 def write_png(encoded: np.ndarray, output_path: Path, output_format: str) -> None:
@@ -112,23 +112,18 @@ def write_png(encoded: np.ndarray, output_path: Path, output_format: str) -> Non
         if int(encoded.max()) > 255:
             raise ValueError(
                 "gray8 supports only 0..255 encoded values. "
-                "Use --format rgb16 or increase --precision-m."
+                "Use --format gray16 or increase --scale-z."
             )
 
         image = Image.fromarray(encoded.astype(np.uint8), mode="L")
         image.save(output_path, format="PNG", optimize=True, compress_level=9)
         return
 
-    if output_format == "rgb16":
+    if output_format == "gray16":
         if int(encoded.max()) > 65535:
-            raise ValueError("rgb16 supports only 0..65535 encoded values. Increase --precision-m.")
+            raise ValueError("gray16 supports only 0..65535 encoded values. Increase --scale-z.")
 
-        encoded16 = encoded.astype(np.uint16)
-        rgb = np.zeros((encoded.shape[0], encoded.shape[1], 3), dtype=np.uint8)
-        rgb[..., 0] = (encoded16 >> 8).astype(np.uint8)
-        rgb[..., 1] = (encoded16 & 255).astype(np.uint8)
-
-        image = Image.fromarray(rgb, mode="RGB")
+        image = Image.fromarray(encoded.astype(np.uint16))
         image.save(output_path, format="PNG", optimize=True, compress_level=9)
         return
 
@@ -145,20 +140,18 @@ def update_meta(
     source_rows: int,
     cols: int,
     rows: int,
-    min_height_m: float,
-    precision_m: float,
+    scale_z: float,
     downsample: int,
 ) -> None:
     meta["heightmap_png"] = {
         "file": output_path.name,
-        "encoding": output_format,
+        "format": output_format,
         "cols": cols,
         "rows": rows,
         "source_cols": source_cols,
         "source_rows": source_rows,
         "downsample": downsample,
-        "min_height_m": min_height_m,
-        "precision_m": precision_m,
+        "scale": [1, 1, scale_z],
     }
 
     backup_path = meta_path.with_suffix(meta_path.suffix + ".bak")
@@ -176,22 +169,13 @@ def update_meta(
 def emit_js_block(
     *,
     output_path: Path,
-    output_format: str,
-    cols: int,
-    rows: int,
-    min_height_m: float,
-    precision_m: float,
-    downsample: int,
+    scale_z: float,
 ) -> None:
     print()
-    print("heightmapPng: {")
-    print(f'    file: "{output_path.name}",')
-    print(f'    encoding: "{output_format}",')
-    print(f"    cols: {cols},")
-    print(f"    rows: {rows},")
-    print(f"    minHeightM: {min_height_m:.6g},")
-    print(f"    precisionM: {precision_m:.6g},")
-    print(f"    downsample: {downsample},")
+    print("heightmapPNG: {")
+    if output_path.name != "heightmap.png":
+        print(f'    file: "{output_path.name}",')
+    print(f"    scale: [1, 1, {scale_z:.6g}],")
     print("}")
 
 
@@ -208,20 +192,16 @@ def parse_args() -> argparse.Namespace:
         help="Optional meta.json for validation or --update-meta.",
     )
     parser.add_argument(
+        "--scale-z",
         "--precision-m",
+        dest="scale_z",
         type=float,
         default=1.0,
-        help="Height precision in meters. Default: 1.0",
-    )
-    parser.add_argument(
-        "--min-height-m",
-        type=float,
-        default=None,
-        help="Encoding base height. Default: meta.height_min_m or data min.",
+        help="Meters per encoded PNG unit. Default: 1.0",
     )
     parser.add_argument(
         "--format",
-        choices=["auto", "gray8", "rgb16"],
+        choices=["auto", "gray8", "gray16"],
         default="auto",
         help="PNG encoding. Default: auto",
     )
@@ -234,7 +214,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--emit-js",
         action="store_true",
-        help="Print the heightmapPng block for src/data/maps.js.",
+        help="Print the heightmapPNG block for src/data/maps.js.",
     )
     parser.add_argument(
         "--update-meta",
@@ -254,16 +234,10 @@ def main() -> None:
     source_rows, source_cols = heights.shape
     heights = downsample_mean(heights, args.downsample)
 
-    min_height_m = (
-        float(args.min_height_m)
-        if args.min_height_m is not None
-        else float(meta.get("height_min_m", np.min(heights)))
-    )
-
     print(f"Height range: {float(np.min(heights)):.6f}..{float(np.max(heights)):.6f} m")
-    print(f"Encoding base minHeightM={min_height_m}, precisionM={args.precision_m}")
+    print(f"Encoding from zero with scaleZ={args.scale_z}")
 
-    encoded = encode_heights(heights, min_height_m, args.precision_m)
+    encoded = encode_heights(heights, args.scale_z)
     output_format = choose_format(encoded, args.format)
     write_png(encoded, args.output_png, output_format)
 
@@ -277,12 +251,7 @@ def main() -> None:
     if args.emit_js:
         emit_js_block(
             output_path=args.output_png,
-            output_format=output_format,
-            cols=cols,
-            rows=rows,
-            min_height_m=min_height_m,
-            precision_m=args.precision_m,
-            downsample=args.downsample,
+            scale_z=args.scale_z,
         )
 
     if args.update_meta:
@@ -297,8 +266,7 @@ def main() -> None:
             source_rows=source_rows,
             cols=cols,
             rows=rows,
-            min_height_m=min_height_m,
-            precision_m=args.precision_m,
+            scale_z=args.scale_z,
             downsample=args.downsample,
         )
 

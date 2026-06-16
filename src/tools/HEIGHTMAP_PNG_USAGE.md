@@ -1,8 +1,8 @@
 # Heightmap JSON to PNG usage
 
 This project can load PNG heightmaps without HTML canvas. The browser reads the
-PNG as bytes, decodes it with `fast-png`, and uses the metadata from `maps.js` to
-restore terrain height in meters.
+PNG as bytes, decodes it with `fast-png`, and uses `scale[2]` from `maps.js` to
+restore terrain height in meters from a zero-based encoded value.
 
 ## 1. Convert one map
 
@@ -12,7 +12,7 @@ Example for Yehorivka:
 python tools\heightmap_json_to_png.py `
   D:\DownLoads\Yehorivka\heightmap.json `
   public\img\maps\yehorivka\heightmap.png `
-  --precision-m 1 `
+  --scale-z 0.3 `
   --format auto `
   --emit-js
 ```
@@ -24,28 +24,22 @@ python tools\heightmap_json_to_png.py `
   D:\DownLoads\Yehorivka\heightmap.json `
   public\img\maps\yehorivka\heightmap.png `
   --meta-json D:\DownLoads\Yehorivka\meta.json `
-  --precision-m 1 `
+  --scale-z 0.3 `
   --format auto `
   --emit-js `
   --update-meta
 ```
 
 `meta.json` is optional for the app. The app only needs `heightmap.png` and the
-`heightmapPng` block in `src\data\maps.js`.
+`heightmapPNG` block in `src\data\maps.js`.
 
 ## 2. Add metadata to maps.js
 
 The converter prints a block like this:
 
 ```js
-heightmapPng: {
-    file: "heightmap.png",
-    encoding: "gray8",
-    cols: 500,
-    rows: 500,
-    minHeightM: -12,
-    precisionM: 1,
-    downsample: 1,
+heightmapPNG: {
+    scale: [1, 1, 0.3],
 }
 ```
 
@@ -56,14 +50,8 @@ Paste it into the target map object under `SDK_data`, next to the existing
 SDK_data: {
     minimap: { ... },
     heightmap: { ... },
-    heightmapPng: {
-        file: "heightmap.png",
-        encoding: "gray8",
-        cols: 500,
-        rows: 500,
-        minHeightM: -12,
-        precisionM: 1,
-        downsample: 1,
+    heightmapPNG: {
+        scale: [1, 1, 0.3],
     }
 }
 ```
@@ -99,25 +87,25 @@ PNG is missing or invalid, the app will try the old `heightmap.json` fallback.
 Recommended default:
 
 ```powershell
---precision-m 1 --format auto
+--scale-z 0.3 --format auto
 ```
 
-Use `gray8` when the encoded height range fits into `0..255`. Use `rgb16` when
-the range is larger or you want smaller precision, for example:
+Use `gray8` when `round(maxHeight / scaleZ)` fits into `0..255`. Use `gray16`
+when the range is larger or you want smaller scale steps, for example:
 
 ```powershell
 python tools\heightmap_json_to_png.py `
   D:\DownLoads\Yehorivka\heightmap.json `
   public\img\maps\yehorivka\heightmap.png `
-  --precision-m 0.5 `
-  --format rgb16 `
+  --scale-z 0.3 `
+  --format gray16 `
   --emit-js
 ```
 
-Expected height error is roughly half the precision:
+Expected height error is roughly half the Z scale:
 
-- `--precision-m 1`: about 0.5 m max quantization error.
-- `--precision-m 0.5`: about 0.25 m max quantization error.
+- `--scale-z 1`: about 0.5 m max quantization error.
+- `--scale-z 0.3`: about 0.15 m max quantization error.
 
 ## 5. Quick check
 

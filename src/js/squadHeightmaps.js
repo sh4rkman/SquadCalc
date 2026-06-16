@@ -28,14 +28,14 @@ export default class SquadHeightmap {
      * Load the heightmap from the best available source.
      */
     async loadHeightmap() {
-        const heightmapPng = this.map.activeMap.SDK_data?.heightmapPng;
+        const heightmapPng = this.map.activeMap.SDK_data?.heightmapPNG ?? this.map.activeMap.SDK_data?.heightmapPng;
         const legacyHeightmap = this.map.activeMap.SDK_data?.heightmap;
 
         try {
             let pngLoaded = false;
 
             if (heightmapPng) {
-                pngLoaded = await this.loadHeightmapPng(`${this.map.activeMap.mapURL}${heightmapPng.file}`);
+                pngLoaded = await this.loadHeightmapPng(`${this.map.activeMap.mapURL}${heightmapPng.file ?? "heightmap.png"}`);
             }
 
             if (!pngLoaded && legacyHeightmap) {
@@ -54,15 +54,12 @@ export default class SquadHeightmap {
      */
     async loadHeightmapPng(url) {
 
-        const metadata = this.map.activeMap.SDK_data.heightmapPng;
+        const metadata = this.map.activeMap.SDK_data.heightmapPNG;
+        const heightScale = metadata?.scale?.[2];
 
         try {
-            if (!["gray8", "rgb16"].includes(metadata.encoding)) {
-                console.error(`Unsupported heightmap PNG encoding: ${metadata.encoding}`);
-                return false;
-            }
-            if (!Number.isFinite(metadata.minHeightM) || !Number.isFinite(metadata.precisionM)) {
-                console.error("Heightmap PNG metadata requires finite minHeightM and precisionM");
+            if (!Number.isFinite(heightScale) || heightScale <= 0) {
+                console.error("Heightmap PNG metadata requires scale[2] greater than 0");
                 return false;
             }
 
@@ -76,9 +73,10 @@ export default class SquadHeightmap {
             const bytes = new Uint8Array(await response.arrayBuffer());
             const image = decode(bytes);
             const channels = image.channels ?? image.data.length / (image.width * image.height);
+            const depth = image.depth ?? image.data.BYTES_PER_ELEMENT * 8;
 
-            if (metadata.encoding === "rgb16" && channels < 2) {
-                console.error(`rgb16 heightmap PNG requires at least 2 channels, got ${channels}`);
+            if (channels !== 1 || ![8, 16].includes(depth)) {
+                console.error(`Heightmap PNG must be 8-bit or 16-bit grayscale, got channels=${channels}, depth=${depth}`);
                 return false;
             }
 
@@ -86,18 +84,8 @@ export default class SquadHeightmap {
                 data: image.data,
                 width: image.width,
                 height: image.height,
-                channels,
-                encoding: metadata.encoding,
-                minHeightM: metadata.minHeightM,
-                precisionM: metadata.precisionM,
+                heightScale,
             };
-
-            if (metadata.cols && metadata.cols !== image.width) {
-                console.warn(`Heightmap PNG width mismatch for ${this.map.activeMap.name}: expected ${metadata.cols}, got ${image.width}`);
-            }
-            if (metadata.rows && metadata.rows !== image.height) {
-                console.warn(`Heightmap PNG height mismatch for ${this.map.activeMap.name}: expected ${metadata.rows}, got ${image.height}`);
-            }
 
             return true;
         } catch (error) {
@@ -175,18 +163,7 @@ export default class SquadHeightmap {
         if (row < 0 || col < 0 || row >= this.png.height || col >= this.png.width) return height;
 
         const pixelIndex = row * this.png.width + col;
-        let encodedHeight;
-
-        if (this.png.encoding === "gray8") {
-            encodedHeight = this.png.data[pixelIndex];
-        } else if (this.png.encoding === "rgb16") {
-            const offset = pixelIndex * this.png.channels;
-            encodedHeight = (this.png.data[offset] << 8) | this.png.data[offset + 1];
-        } else {
-            return height;
-        }
-
-        return this.png.minHeightM + encodedHeight * this.png.precisionM;
+        return this.png.data[pixelIndex] * this.png.heightScale;
     }
 
     
