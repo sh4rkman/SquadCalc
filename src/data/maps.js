@@ -40,7 +40,7 @@ export const MAPS = [
                 BWlevels: [1825, 6640]
             },
             heightmapPNG: {
-                scale: [0.75, 0.75, 0.45],
+                scale: [0.75, 0.75, 0.44],
             }
         }
     },
@@ -483,7 +483,7 @@ export const MAPS = [
                 BWlevels: [952, 4074]
             },
             heightmapPNG: {
-                scale: [1.2, 1.2, 4],
+                scale: [1.2, 1.2, 4.2],
             }
         }
     },

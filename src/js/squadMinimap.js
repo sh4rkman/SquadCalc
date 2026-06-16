@@ -37,7 +37,7 @@ export const squadMinimap = Map.extend({
 
         let customOptions = {
             attributionControl: false,
-            boxZoom: true,
+            boxZoom: false,
             center: [-pixelSize/2, pixelSize/2],
             closePopupOnClick: false,
             crs: CRS.Simple,

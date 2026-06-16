@@ -1,6 +1,6 @@
 
 import { App } from "../app.js";
-import { CircleMarker, Polyline, Popup, Icon } from "leaflet";
+import { CircleMarker, Polyline, Polygon, Popup, Icon } from "leaflet";
 import SquadSimulation from "./squadSimulation.js";
 import SquadFiringSolution from "./squadFiringSolution.js";
 import TargetGrid from "./squadTargetGrid.js";
@@ -777,8 +777,11 @@ export const squadTargetMarker = squadMarker.extend({
     },
 
     _handlePointerDown: function (e) {
-        if (!e.originalEvent.altKey) return;
+        if (e.originalEvent.altKey) return this._startCarpetDrag(e);
+        if (e.originalEvent.shiftKey) return this._startRectangleDrag(e);
+    },
 
+    _startCarpetDrag: function (e) {
         e.originalEvent.preventDefault();
         this.dragging.disable();
         this.map.dragging.disable();
@@ -790,14 +793,7 @@ export const squadTargetMarker = squadMarker.extend({
         }
 
         const start = this.getLatLng();
-        const [fs] = this.getFirstAvailableWeapon();
-        const [, weaponMarker] = this.getFirstAvailableWeapon();
-        const sp = weaponMarker.angleType === "high" ? fs.spreadParameters.high : fs.spreadParameters.low;
-        const a = isNaN(sp.semiMajorAxis) ? 50 : sp.semiMajorAxis;
-        const b = isNaN(sp.semiMinorAxis) ? 50 : sp.semiMinorAxis;
-        const axis = Math.max(10, (a + b) / 2);
-        console.log(`[Carpet] spacing: ${axis.toFixed(1)}m (H:${a.toFixed(1)} V:${b.toFixed(1)})`);
-        this._carpetStep = axis * this.map.gameToMapScale;
+        this._carpetStep = this._getSpreadStep();
 
         const previewLine = new Polyline([start, start], {
             color: App.mainColor,
@@ -861,6 +857,110 @@ export const squadTargetMarker = squadMarker.extend({
         for (let i = 1; i <= count; i++) {
             const t = (i * this._carpetStep) / totalDist;
             positions.push({ lat: start.lat + dlat * t, lng: start.lng + dlng * t });
+        }
+        return positions;
+    },
+
+    // Spacing between targets, based on the average spread of the first available weapon
+    _getSpreadStep: function () {
+        const [fs] = this.getFirstAvailableWeapon();
+        const [, weaponMarker] = this.getFirstAvailableWeapon();
+        const sp = weaponMarker.angleType === "high" ? fs.spreadParameters.high : fs.spreadParameters.low;
+        const a = isNaN(sp.semiMajorAxis) ? 50 : sp.semiMajorAxis;
+        const b = isNaN(sp.semiMinorAxis) ? 50 : sp.semiMinorAxis;
+        const axis = Math.max(10, (a + b) / 2);
+        console.log(`[Grid] spacing: ${axis.toFixed(1)}m (H:${a.toFixed(1)} V:${b.toFixed(1)})`);
+        return axis * this.map.gameToMapScale;
+    },
+
+    _startRectangleDrag: function (e) {
+        e.originalEvent.preventDefault();
+        this.dragging.disable();
+        this.map.dragging.disable();
+
+        // Release implicit pointer capture so pointermove reaches document
+        const el = this.getElement();
+        if (el && e.originalEvent.pointerId != null) {
+            try { el.releasePointerCapture(e.originalEvent.pointerId); } catch (_) { /* */ }
+        }
+
+        const start = this.getLatLng();
+        this._gridStep = this._getSpreadStep();
+
+        const previewRect = new Polygon([start, start, start, start], {
+            color: App.mainColor,
+            opacity: 0.65,
+            weight: 2,
+            dashArray: "6 6",
+            fill: false,
+            showMeasurements: false,
+        }).addTo(this.map.markersGroup);
+
+        const toLatLng = (domEvent) => {
+            const rect = this.map.getContainer().getBoundingClientRect();
+            return this.map.containerPointToLatLng([
+                domEvent.clientX - rect.left,
+                domEvent.clientY - rect.top,
+            ]);
+        };
+
+        let previewDots = [];
+
+        const onPointerMove = (domEvent) => {
+            const end = toLatLng(domEvent);
+            previewRect.setLatLngs([
+                start,
+                { lat: start.lat, lng: end.lng },
+                end,
+                { lat: end.lat, lng: start.lng },
+            ]);
+
+            previewDots.forEach(d => d.removeFrom(this.map.markersGroup).remove());
+            previewDots = this._getGridPositions(start, end).map(latlng =>
+                new CircleMarker(latlng, {
+                    radius: 6,
+                    color: App.mainColor,
+                    fillColor: App.mainColor,
+                    fillOpacity: 0.5,
+                    interactive: false,
+                }).addTo(this.map.markersGroup)
+            );
+        };
+
+        const onPointerUp = (domEvent) => {
+            document.removeEventListener("pointermove", onPointerMove);
+            document.removeEventListener("pointerup", onPointerUp);
+            previewRect.removeFrom(this.map.markersGroup).remove();
+            previewDots.forEach(d => d.removeFrom(this.map.markersGroup).remove());
+            previewDots = [];
+            this.dragging.enable();
+            this.map.dragging.enable();
+
+            const end = toLatLng(domEvent);
+            this._getGridPositions(start, end)
+                .forEach(latlng => this.map.createTarget(latlng, null));
+        };
+
+        document.addEventListener("pointermove", onPointerMove);
+        document.addEventListener("pointerup", onPointerUp);
+    },
+
+    // Fills the rectangle whose diagonal goes from start to end with a grid of
+    // targets spaced by _gridStep on both axis, skipping `start` itself (already a target)
+    _getGridPositions: function (start, end) {
+        const dlat = end.lat - start.lat;
+        const dlng = end.lng - start.lng;
+        const countLat = Math.floor(Math.abs(dlat) / this._gridStep);
+        const countLng = Math.floor(Math.abs(dlng) / this._gridStep);
+        const stepLat = Math.sign(dlat) * this._gridStep;
+        const stepLng = Math.sign(dlng) * this._gridStep;
+
+        const positions = [];
+        for (let i = 0; i <= countLat; i++) {
+            for (let j = 0; j <= countLng; j++) {
+                if (i === 0 && j === 0) continue;
+                positions.push({ lat: start.lat + i * stepLat, lng: start.lng + j * stepLng });
+            }
         }
         return positions;
     },

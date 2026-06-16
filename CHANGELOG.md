@@ -2,6 +2,7 @@
 
 </br><img src="https://img.shields.io/badge/-new%20features-green">  
 - You can now create carpet bombs by holding `alt` and dragging a target marker
+- You can now create a grid of targets by holding `shift` and dragging a target marker (Thanks Sh1nS0u & YuKI !)
 - Added a link to the squad-armor.com viewer for each vehicle of the factions panel
 - You can now search the map & weapon dropdowns
 
