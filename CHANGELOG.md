@@ -6,6 +6,7 @@
 
 </br><img src="https://img.shields.io/badge/-%20improv%20-orange"> 
 - In the faction panel, vehicles images are now mirrored and facing each others
+- Remove Belaya and Flooded Narva frop map list
 
 </br><img src="https://img.shields.io/badge/-bug%20fixes-b22">   
 - Fixed Factions & Units no correctly when opening a URL holding a server id (Thanks wwrp450 !)

@@ -74,5 +74,8 @@
     "minimatch": "^10.2.1",
     "serialize-javascript": "7.0.5",
     "uuid": "^14.0.0"
+  },
+  "dependencies": {
+    "fast-png": "^8.0.0"
   }
 }
