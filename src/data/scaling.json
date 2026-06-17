@@ -1,0 +1,106 @@
+{
+  "AlBasrah": {
+    "png16_meters_per_unit": 0.000683377,
+    "png8_meters_per_unit": 0.175627905
+  },
+  "Anvil": {
+    "png16_meters_per_unit": 0.001762076,
+    "png8_meters_per_unit": 0.452853423
+  },
+  "Belaya": {
+    "png16_meters_per_unit": 0.002390559,
+    "png8_meters_per_unit": 0.61437354
+  },
+  "BlackCoast": {
+    "png16_meters_per_unit": 0.003246465,
+    "png8_meters_per_unit": 0.834341483
+  },
+  "Chora": {
+    "png16_meters_per_unit": 0.007649359,
+    "png8_meters_per_unit": 1.965885177
+  },
+  "Fallujah": {
+    "png16_meters_per_unit": 0.001151553,
+    "png8_meters_per_unit": 0.29594918
+  },
+  "FoolsRoad": {
+    "png16_meters_per_unit": 0.001569546,
+    "png8_meters_per_unit": 0.403373419
+  },
+  "GooseBay": {
+    "png16_meters_per_unit": 0.002135503,
+    "png8_meters_per_unit": 0.548824355
+  },
+  "Gorodok": {
+    "png16_meters_per_unit": 0.001351733,
+    "png8_meters_per_unit": 0.347395437
+  },
+  "Harju": {
+    "png16_meters_per_unit": 0.001789319,
+    "png8_meters_per_unit": 0.459854964
+  },
+  "Jensen": {
+    "png16_meters_per_unit": 0.001445313,
+    "png8_meters_per_unit": 0.371445454
+  },
+  "Kamdesh": {
+    "png16_meters_per_unit": 0.003016114,
+    "png8_meters_per_unit": 0.775141219
+  },
+  "Kohat": {
+    "png16_meters_per_unit": 0.005837883,
+    "png8_meters_per_unit": 1.500335985
+  },
+  "Kokan": {
+    "png16_meters_per_unit": 0.001354596,
+    "png8_meters_per_unit": 0.348131127
+  },
+  "Lashkar": {
+    "png16_meters_per_unit": 0.002498432,
+    "png8_meters_per_unit": 0.642097117
+  },
+  "Logar": {
+    "png16_meters_per_unit": 0.001930726,
+    "png8_meters_per_unit": 0.496196696
+  },
+  "Manicouagan": {
+    "png16_meters_per_unit": 0.003143655,
+    "png8_meters_per_unit": 0.807919282
+  },
+  "Mestia": {
+    "png16_meters_per_unit": 0.003843049,
+    "png8_meters_per_unit": 0.987663718
+  },
+  "Mutaha": {
+    "png16_meters_per_unit": 0.000876163,
+    "png8_meters_per_unit": 0.225173931
+  },
+  "Narva": {
+    "png16_meters_per_unit": 0.001596535,
+    "png8_meters_per_unit": 0.410309481
+  },
+  "Pacific": {
+    "png16_meters_per_unit": 0.002472408,
+    "png8_meters_per_unit": 0.635408888
+  },
+  "Sanxian": {
+    "png16_meters_per_unit": 0.001820651,
+    "png8_meters_per_unit": 0.467907343
+  },
+  "Skorpo": {
+    "png16_meters_per_unit": 0.016240594,
+    "png8_meters_per_unit": 4.173832673
+  },
+  "Sumari": {
+    "png16_meters_per_unit": 0.002083576,
+    "png8_meters_per_unit": 0.535479131
+  },
+  "Tallil": {
+    "png16_meters_per_unit": 0.001183159,
+    "png8_meters_per_unit": 0.304071769
+  },
+  "Yehorivka": {
+    "png16_meters_per_unit": 0.00378187,
+    "png8_meters_per_unit": 0.971940493
+  }
+}
