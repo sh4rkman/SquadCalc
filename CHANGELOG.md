@@ -3,13 +3,13 @@
 </br><img src="https://img.shields.io/badge/-new%20features-green">  
 - You can now create carpet bombs by holding `alt` and dragging a target marker
 - You can now create a grid of targets by holding `shift` and dragging a target marker (Thanks Sh1nS0u & YuKI !)
-- Added a link to the squad-armor.com viewer for each vehicle of the factions panel
+- Added a link to the [squad-armor.com](https://squad-armor.com) viewer for each vehicle of the factions panel
 - You can now search the map & weapon dropdowns
 
 </br><img src="https://img.shields.io/badge/-%20improv%20-orange"> 
 - In the faction panel, vehicle images are now mirrored and facing each other
 - Improved projectile simulation panel to now display the terrain before the weapon and after the target
-- Removed Belaya and Flooded Narva from the map list
+- Removed Belaya and Flooded Narva from the map list 😭
 
 </br><img src="https://img.shields.io/badge/-bug%20fixes-b22">   
 - Fixed Factions & Units not loading correctly when opening a URL holding a server id (Thanks wwrp450!)

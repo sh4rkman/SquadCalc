@@ -10,6 +10,7 @@ import { squadMarker } from "./squadMarker.js";
 import i18next from "i18next";
 
 const CARPET_MAX_TARGETS = 10;
+const GRID_MAX_SIDE = 5;
 
 export const squadTargetMarker = squadMarker.extend({
 
@@ -795,7 +796,6 @@ export const squadTargetMarker = squadMarker.extend({
         }
 
         const start = this.getLatLng();
-        this._carpetStep = this._getSpreadStep();
 
         const previewLine = new Polyline([start, start], {
             color: App.mainColor,
@@ -817,10 +817,12 @@ export const squadTargetMarker = squadMarker.extend({
 
         const onPointerMove = (domEvent) => {
             const end = toLatLng(domEvent);
-            previewLine.setLatLngs([start, end]);
+            const positions = this._getCarpetPositions(start, end);
+            const lineEnd = positions.length >= CARPET_MAX_TARGETS ? positions[positions.length - 1] : end;
+            previewLine.setLatLngs([start, lineEnd]);
 
             previewDots.forEach(d => d.removeFrom(this.map.markersGroup).remove());
-            previewDots = this._getCarpetPositions(start, end).map(latlng =>
+            previewDots = positions.map(latlng =>
                 new CircleMarker(latlng, {
                     radius: 6,
                     color: App.mainColor,
@@ -853,26 +855,28 @@ export const squadTargetMarker = squadMarker.extend({
         const dlat = end.lat - start.lat;
         const dlng = end.lng - start.lng;
         const totalDist = Math.hypot(dlat, dlng);
-        if (totalDist < this._carpetStep) return [];
-        const count = Math.min(Math.floor(totalDist / this._carpetStep), CARPET_MAX_TARGETS);
+        if (totalDist === 0) return [];
+        const latDelta = dlat * -this.map.mapToGameScale;
+        const lngDelta = dlng * this.map.mapToGameScale;
+        let dragBearing = Math.atan2(latDelta, lngDelta) * 180 / Math.PI + 90;
+        if (dragBearing < 0) dragBearing += 360;
+        const step = this._getStepAtBearing(dragBearing);
+        if (step <= 0 || totalDist < step) return [];
+        const count = Math.min(Math.floor(totalDist / step), CARPET_MAX_TARGETS);
         const positions = [];
         for (let i = 1; i <= count; i++) {
-            const t = (i * this._carpetStep) / totalDist;
+            const t = (i * step) / totalDist;
             positions.push({ lat: start.lat + dlat * t, lng: start.lng + dlng * t });
         }
         return positions;
     },
 
-    // Spacing between targets, based on the average spread of the first available weapon
-    _getSpreadStep: function () {
-        const [fs] = this.getFirstAvailableWeapon();
-        const [, weaponMarker] = this.getFirstAvailableWeapon();
-        const sp = weaponMarker.angleType === "high" ? fs.spreadParameters.high : fs.spreadParameters.low;
-        const a = isNaN(sp.semiMajorAxis) ? 50 : sp.semiMajorAxis;
-        const b = isNaN(sp.semiMinorAxis) ? 50 : sp.semiMinorAxis;
-        const axis = Math.max(10, (a + b) / 2);
-        console.log(`[Grid] spacing: ${axis.toFixed(1)}m (H:${a.toFixed(1)} V:${b.toFixed(1)})`);
-        return axis * this.map.gameToMapScale;
+    // Spacing between targets, based on the spread ellipse radius in a given
+    // compass direction (e.g. the direction the player is dragging)
+    _getStepAtBearing: function (bearingDeg) {
+        const [fs, weaponMarker] = this.getFirstAvailableWeapon();
+        const radius = fs.getSpreadRadiusAtBearing(bearingDeg, weaponMarker.angleType);
+        return radius * this.map.gameToMapScale;
     },
 
     _startRectangleDrag: function (e) {
@@ -887,7 +891,9 @@ export const squadTargetMarker = squadMarker.extend({
         }
 
         const start = this.getLatLng();
-        this._gridStep = this._getSpreadStep();
+        // lat axis runs north/south (bearing 0), lng axis runs east/west (bearing 90)
+        this._gridStepLat = this._getStepAtBearing(0);
+        this._gridStepLng = this._getStepAtBearing(90);
 
         const previewRect = new Polygon([start, start, start, start], {
             color: App.mainColor,
@@ -910,11 +916,12 @@ export const squadTargetMarker = squadMarker.extend({
 
         const onPointerMove = (domEvent) => {
             const end = toLatLng(domEvent);
+            const rectEnd = this._clampGridEnd(start, end);
             previewRect.setLatLngs([
                 start,
-                { lat: start.lat, lng: end.lng },
-                end,
-                { lat: end.lat, lng: start.lng },
+                { lat: start.lat, lng: rectEnd.lng },
+                rectEnd,
+                { lat: rectEnd.lat, lng: start.lng },
             ]);
 
             previewDots.forEach(d => d.removeFrom(this.map.markersGroup).remove());
@@ -947,15 +954,29 @@ export const squadTargetMarker = squadMarker.extend({
         document.addEventListener("pointerup", onPointerUp);
     },
 
+    // Clamps the drag endpoint so the resulting rectangle never exceeds
+    // GRID_MAX_SIDE targets per axis
+    _clampGridEnd: function (start, end) {
+        const dlat = end.lat - start.lat;
+        const dlng = end.lng - start.lng;
+        const maxOffsetLat = (GRID_MAX_SIDE - 1) * this._gridStepLat;
+        const maxOffsetLng = (GRID_MAX_SIDE - 1) * this._gridStepLng;
+        return {
+            lat: start.lat + Math.sign(dlat) * Math.min(Math.abs(dlat), maxOffsetLat),
+            lng: start.lng + Math.sign(dlng) * Math.min(Math.abs(dlng), maxOffsetLng),
+        };
+    },
+
     // Fills the rectangle whose diagonal goes from start to end with a grid of
-    // targets spaced by _gridStep on both axis, skipping `start` itself (already a target)
+    // targets spaced by _gridStepLat/_gridStepLng on each axis, skipping `start`
+    // itself (already a target), capped to a GRID_MAX_SIDE x GRID_MAX_SIDE square
     _getGridPositions: function (start, end) {
         const dlat = end.lat - start.lat;
         const dlng = end.lng - start.lng;
-        const countLat = Math.floor(Math.abs(dlat) / this._gridStep);
-        const countLng = Math.floor(Math.abs(dlng) / this._gridStep);
-        const stepLat = Math.sign(dlat) * this._gridStep;
-        const stepLng = Math.sign(dlng) * this._gridStep;
+        const countLat = Math.min(Math.floor(Math.abs(dlat) / this._gridStepLat), GRID_MAX_SIDE - 1);
+        const countLng = Math.min(Math.floor(Math.abs(dlng) / this._gridStepLng), GRID_MAX_SIDE - 1);
+        const stepLat = Math.sign(dlat) * this._gridStepLat;
+        const stepLng = Math.sign(dlng) * this._gridStepLng;
 
         const positions = [];
         for (let i = 0; i <= countLat; i++) {

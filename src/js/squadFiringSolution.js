@@ -130,12 +130,30 @@ export default class SquadFiringSolution {
      * @param {number} [timeOfFlight] - Time of flight in seconds
      * @returns {object} [semiMajorAxis, semiMinorAxis, ellipseAngle]
      */
-    getSpreadParameter(elevation, timeOfFlight){  
+    getSpreadParameter(elevation, timeOfFlight){
         return  {
             semiMajorAxis: this.getHorizontalSpread(timeOfFlight),
             semiMinorAxis: this.getVerticalSpread(elevation, this.velocity),
             ellipseAngle: (elevation * (180 / Math.PI))
         };
+    }
+
+
+    /**
+     * Radius of the spread ellipse in a given compass direction, relative
+     * to the firing bearing the ellipse is rotated to on the map.
+     * @param {number} bearingDeg - direction to measure the radius in, in degrees
+     * @param {string} angleType - "high" or "low"
+     * @returns {number} - spread radius in meters in that direction
+     */
+    getSpreadRadiusAtBearing(bearingDeg, angleType) {
+        const sp = angleType === "high" ? this.spreadParameters.high : this.spreadParameters.low;
+        const a = isNaN(sp.semiMajorAxis) ? 50 : sp.semiMajorAxis;
+        const b = isNaN(sp.semiMinorAxis) ? 50 : sp.semiMinorAxis;
+        const theta = this.degToRad(bearingDeg - this.bearing);
+        let r = (a * b) / Math.sqrt((a * Math.cos(theta)) ** 2 + (b * Math.sin(theta)) ** 2);
+        if (isNaN(r)) r = 0;
+        return r;
     }
 
 
