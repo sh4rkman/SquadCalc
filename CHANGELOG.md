@@ -1,3 +1,23 @@
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge"> **44.1.0** *(2026-0X-XX)*
+
+</br><img src="https://img.shields.io/badge/-new%20features-green">  
+- You can now create carpet bombs by holding `alt` and dragging a target marker
+- You can now create a grid of targets by holding `shift` and dragging a target marker (Thanks Sh1nS0u & YuKI !)
+- Added a link to the [squad-armor.com](https://squad-armor.com) viewer for each vehicle of the factions panel
+- You can now search the map & weapon dropdowns
+
+</br><img src="https://img.shields.io/badge/-%20improv%20-orange"> 
+- In the faction panel, vehicle images are now mirrored and facing each other
+- Improved projectile simulation panel to now display the terrain before the weapon and after the target
+- Removed Belaya and Flooded Narva from the map list 😭
+
+</br><img src="https://img.shields.io/badge/-bug%20fixes-b22">   
+- Fixed Factions & Units not loading correctly when opening a URL holding a server id (Thanks wwrp450!)
+- Fixed missing vehicles images for ZSL92 IFV & ZSL92A APC QLZ87
+
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
 
 # <img src="https://img.shields.io/badge/-major%20release-b22222?style=for-the-badge"> **44.0.0** *(2026-05-22)*
 

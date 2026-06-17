@@ -18,6 +18,9 @@ export const MAPS = [
                 size: [4081, 4081],
                 scale: [1, 1, 1],
                 BWlevels: [291, 873],
+            },
+            heightmapPNG: {
+                scale: [1, 1, 0.175627905],
             }
         }
     },
@@ -35,26 +38,29 @@ export const MAPS = [
                 size: [4081, 4081],
                 scale: [0.75, 0.75, 0.45],
                 BWlevels: [1825, 6640]
-            }
-        }
-    },
-    { 
-        name: "Belaya", 
-        mapURL: "/img/maps/belaya/",
-        radiusExclusion: FOBEXCLUSIONS.medium,
-        SDK_data: {
-            minimap: {
-                corner0: [-1954, -2080],
-                corner1: [1950, 1825],
             },
-            heightmap: {
-                origin: [-2016, -2142],
-                size: [4033, 4033],
-                scale: [1, 1, 1],
-                BWlevels: [0, 2360]
+            heightmapPNG: {
+                scale: [0.75, 0.75, 0.452853423],
             }
         }
     },
+    // { 
+    //     name: "Belaya", 
+    //     mapURL: "/img/maps/belaya/",
+    //     radiusExclusion: FOBEXCLUSIONS.medium,
+    //     SDK_data: {
+    //         minimap: {
+    //             corner0: [-1954, -2080],
+    //             corner1: [1950, 1825],
+    //         },
+    //         heightmap: {
+    //             origin: [-2016, -2142],
+    //             size: [4033, 4033],
+    //             scale: [1, 1, 1],
+    //             BWlevels: [0, 2360]
+    //         }
+    //     }
+    // },
     { 
         name: "BlackCoast", 
         mapURL: "/img/maps/blackcoast/",
@@ -69,6 +75,9 @@ export const MAPS = [
                 size: [4065, 4065],
                 scale: [1.003937, 1.003937, 0.8],
                 BWlevels: [2593, 7712]
+            },
+            heightmapPNG: {
+                scale: [1.003937, 1.003937, 0.834341483],
             }
         }
     },
@@ -86,6 +95,9 @@ export const MAPS = [
                 size: [8129, 4827],
                 scale: [0.5, 0.5, 4],
                 BWlevels: [1209, 1369]
+            },
+                heightmapPNG: {
+                scale: [0.5, 0.5, 1.965885177],
             }
         }
     },
@@ -103,6 +115,9 @@ export const MAPS = [
                 size: [4081, 4081],
                 scale: [1, 1, 1],
                 BWlevels: [39, 440]
+            },
+            heightmapPNG: {
+                scale: [1, 1, 0.29594918],
             }
         }
     },
@@ -120,6 +135,9 @@ export const MAPS = [
                 size: [2806, 2806],
                 scale: [1, 1, 3.2],
                 BWlevels: [0, 675]
+            },
+            heightmapPNG: {
+                scale: [1, 1, 0.403373419],
             }
         }
     },
@@ -135,8 +153,11 @@ export const MAPS = [
             heightmap: {
                 origin: [-2032, -2032],
                 size: [4065, 4065],
-                scale: [1, 1, 0.40],
+                scale: [1, 1, 0.4],
                 BWlevels: [0, 5516]
+            },
+            heightmapPNG: {
+                scale: [1, 1, 0.548824355],
             }
         }
     },
@@ -154,23 +175,9 @@ export const MAPS = [
                 size: [4065, 4065],
                 scale: [1, 1, 10],
                 BWlevels: [750, 950]
-            }
-        }
-    },
-    { 
-        name: "Jensen", 
-        mapURL: "/img/maps/jensen/",
-        radiusExclusion: FOBEXCLUSIONS.medium,
-        SDK_data: {
-            minimap: {
-                corner0: [-2004, -2004],
-                corner1: [2004, 2004],
             },
-            heightmap: {
-                origin: [-2040, -2040],
-                size: [4081, 4081],
-                scale: [1, 1, 1],
-                BWlevels: [4643, 5595]
+            heightmapPNG: {
+                scale: [1, 1, 0.347395437],
             }
         }
     },
@@ -188,6 +195,30 @@ export const MAPS = [
                 size: [4032, 4032],
                 scale: [1, 1, 1],
                 BWlevels: [1349, 3241]
+            },
+            heightmapPNG: {
+                scale: [1, 1, 0.459854964],
+            }
+
+        }
+    },
+    { 
+        name: "Jensen", 
+        mapURL: "/img/maps/jensen/",
+        radiusExclusion: FOBEXCLUSIONS.medium,
+        SDK_data: {
+            minimap: {
+                corner0: [-2004, -2004],
+                corner1: [2004, 2004],
+            },
+            heightmap: {
+                origin: [-2040, -2040],
+                size: [4081, 4081],
+                scale: [1, 1, 1],
+                BWlevels: [4643, 5595]
+            },
+            heightmapPNG: {
+                scale: [1, 1, 0.371445454],
             }
         }
     },
@@ -205,6 +236,9 @@ export const MAPS = [
                 size: [4033, 4033],
                 scale: [1, 1, 1.35],
                 BWlevels: [5437, 6846]
+            },
+            heightmapPNG: {
+                scale: [1, 1, 0.775141219],
             }
         }
     },
@@ -222,6 +256,9 @@ export const MAPS = [
                 size: [4065, 4065],
                 scale: [1, 1, 0.75],
                 BWlevels: [0, 9775]
+            },
+            heightmapPNG: {
+                scale: [1, 1, 1.500335985],
             }
         }
     },
@@ -239,6 +276,9 @@ export const MAPS = [
                 size: [6097, 7367],
                 scale: [0.5, 0.5, 1],
                 BWlevels: [100, 264]
+            },
+            heightmapPNG: {
+                scale: [0.5, 0.5, 0.348131127],
             }
         }
     },
@@ -256,6 +296,9 @@ export const MAPS = [
                 size: [4336, 4336],
                 scale: [1, 1, 1.5],
                 BWlevels: [5006, 6887]
+            },
+            heightmapPNG: {
+                scale: [1, 1, 0.642097117],
             }
         }
     },
@@ -273,6 +316,9 @@ export const MAPS = [
                 size: [2773, 1891],
                 scale: [1, 1, 0.5],
                 BWlevels: [6188, 8903]
+            },
+            heightmapPNG: {
+                scale: [1, 1, 0.496196696],
             }
         }
     },
@@ -290,6 +336,9 @@ export const MAPS = [
                 size: [4065, 4065],
                 scale: [1, 1, 3],
                 BWlevels: [2479, 5898]
+            },
+            heightmapPNG: {
+                scale: [1, 1, 0.807919282],
             }
         }
     },
@@ -307,6 +356,9 @@ export const MAPS = [
                 size: [3061, 2551],
                 scale: [1, 1, 1.2],
                 BWlevels: [2479, 5898]
+            },
+            heightmapPNG: {
+                scale: [1, 1, 0.987663718],
             }
         }
     },
@@ -324,6 +376,9 @@ export const MAPS = [
                 size: [4081, 4081],
                 scale: [1, 1, 0.3],
                 BWlevels: [4326, 6683]
+            },
+            heightmapPNG: {
+                scale: [1, 1, 0.225173931],
             }
         }
     },
@@ -341,26 +396,32 @@ export const MAPS = [
                 size: [4033, 4033],
                 scale: [1, 1, 1],
                 BWlevels: [4940, 5523]
-            }
-        }
-    },
-    { 
-        name: "Narva_f", 
-        mapURL: "/img/maps/narva-flooded/",
-        radiusExclusion: FOBEXCLUSIONS.medium,
-        SDK_data: {
-            minimap: {
-                corner0: [-1390, -1402],
-                corner1: [1410, 1398],
             },
-            heightmap: {
-                origin: [-2016, -2016],
-                size: [4033, 4033],
-                scale: [1, 1, 1],
-                BWlevels: [4940, 5523]
+            heightmapPNG: {
+                scale: [1, 1, 0.410309481],
             }
         }
     },
+    // { 
+    //     name: "Narva_f", 
+    //     mapURL: "/img/maps/narva-flooded/",
+    //     radiusExclusion: FOBEXCLUSIONS.medium,
+    //     SDK_data: {
+    //         minimap: {
+    //             corner0: [-1390, -1402],
+    //             corner1: [1410, 1398],
+    //         },
+    //         heightmap: {
+    //             origin: [-2016, -2016],
+    //             size: [4033, 4033],
+    //             scale: [1, 1, 1],
+    //             BWlevels: [4940, 5523]
+    //         },
+    //         heightmapPNG: {
+    //             scale: [1, 1, 0.4],
+    //         }
+    //     }
+    // },
     { 
         name: "Pacific", 
         mapURL: "/img/maps/pacific/",
@@ -375,6 +436,9 @@ export const MAPS = [
                 size: [4033, 4033],
                 scale: [1, 1, 0.28],
                 BWlevels: [410, 9643]
+            },
+            heightmapPNG: {
+                scale: [1, 1, 0.635408888],
             }
         }
     },
@@ -392,6 +456,9 @@ export const MAPS = [
                 size: [4081, 4081],
                 scale: [1, 1, 1],
                 BWlevels: [1349, 3241]
+            },
+            heightmapPNG: {
+                scale: [1, 1, 0.467907343],
             }
         }
     },
@@ -414,6 +481,9 @@ export const MAPS = [
                 size: [7113, 5081],
                 scale: [1.2, 1.2, 3.5],
                 BWlevels: [952, 4074]
+            },
+            heightmapPNG: {
+                scale: [1.2, 1.2, 4.173832673],
             }
         }
     },
@@ -431,6 +501,9 @@ export const MAPS = [
                 size: [1427, 1055],
                 scale: [1, 1, 0.75],
                 BWlevels: [1375, 1854]
+            },
+            heightmapPNG: {
+                scale: [1, 1, 0.535479131],
             }
         }
     },
@@ -448,6 +521,9 @@ export const MAPS = [
                 size: [4573, 4573],
                 scale: [1, 1, 1.25],
                 BWlevels: [3689, 4111]
+            },
+            heightmapPNG: {
+                scale: [1, 1, 0.304071769],
             }
         }
     },
@@ -465,6 +541,9 @@ export const MAPS = [
                 size: [6351, 6351],
                 scale: [1, 1, 4],
                 BWlevels: [0, 833]
+            },
+            heightmapPNG: {
+                scale: [1, 1, 0.971940493],
             }
         }
     },

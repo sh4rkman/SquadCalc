@@ -76,6 +76,7 @@
     "uuid": "^14.0.0"
   },
   "dependencies": {
-    "fast-png": "^8.0.0"
+    "fast-png": "^8.0.0",
+    "marked": "^18.0.5"
   }
 }

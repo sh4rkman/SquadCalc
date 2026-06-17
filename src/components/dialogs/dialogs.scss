@@ -12,6 +12,69 @@ dialog {
     font-size: 0.6em;
     max-width: 700px;
     overflow: visible;
+    &#changelogDialog {
+        background: variables.$mainBGColor;
+        backdrop-filter: none;
+        &::backdrop { background: transparent; }
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        @media (min-width: 48em) {
+            max-width: 680px;
+            height: 80vh;
+            max-height: 700px;
+        }
+        #changelogContent {
+            overflow-y: auto;
+            flex: 1;
+            padding: 0 2em 2em;
+            line-height: 1.8;
+            text-align: left;
+            letter-spacing: 0;
+            font-weight: 400;
+            font-size: 1.2em;
+            img {
+                display: inline;
+                margin: 0;
+                max-height: 22px;
+                height: auto;
+                vertical-align: middle;
+            }
+            a { color: variables.$mainColor; }
+            code {
+                background: rgba(255, 255, 255, 0.12);
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                border-radius: 4px;
+                padding: 0.1em 0.45em;
+                font-size: 1.1em;
+                font-family: monospace;
+                letter-spacing: 0;
+            }
+            ul {
+                padding-left: 1.8em;
+                margin: 0.5em 0 0;
+            }
+            li { margin: 0.4em 0; line-height: 1.4; }
+            h1 {
+                font-size: 1.1em;
+                font-weight: bold;
+                padding: 0 0 0.6em;
+                margin: 8em 0 0;
+                border-bottom: 2px solid rgba(255, 255, 255, 0.5);
+                &:first-of-type { margin-top: 1em; }
+                display: flex;
+                align-items: center;
+                img { order: 3; margin-left: auto; margin-right: 0; max-height: 32px; }
+                strong { order: 1; font-size: 1.4em; }
+                em { order: 2; margin-left: 0.5em; font-size: 0.85em; opacity: 0.6; font-style: italic; }
+            }
+            p {
+                margin: 2em 0 0;
+                br { display: none; }
+                img { max-height: 26px; }
+            }
+        }
+    }
     &#factionsDialog {
         max-width: 1680px;
         max-height: 100%;

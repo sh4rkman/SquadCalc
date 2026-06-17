@@ -1,11 +1,6 @@
 import { decode } from "fast-png";
 
 /**
- * @typedef {import("leaflet").LatLng} LatLng
- * @typedef {import("leaflet").Map} LeafletMap
- */
-
-/**
  * Squad Heightmap
  * Load an heightmap in memory and calculate heights for given LatLng Points
  * @class squadHeightmap
@@ -18,82 +13,15 @@ export default class SquadHeightmap {
      */
     constructor(map) {
         this.map = map;
-        this.png = null;
+        this.width = 500;
+        this.heightmapScaling = this.width / this.map.pixelSize;
+        let heightmapPath = `${process.env.API_URL}${this.map.activeMap.mapURL}heightmap.json`;
+        let heightmapPathPNG = `${process.env.API_URL}${this.map.activeMap.mapURL}heightmap.png`;
         this.json = [];
-        this.loadHeightmap();
-    }
-
-
-    /**
-     * Load the heightmap from the best available source.
-     */
-    async loadHeightmap() {
-        const heightmapPng = this.map.activeMap.SDK_data?.heightmapPNG ?? this.map.activeMap.SDK_data?.heightmapPng;
-        const legacyHeightmap = this.map.activeMap.SDK_data?.heightmap;
-
-        try {
-            let pngLoaded = false;
-
-            if (heightmapPng) {
-                pngLoaded = await this.loadHeightmapPng(`${this.map.activeMap.mapURL}${heightmapPng.file ?? "heightmap.png"}`);
-            }
-
-            if (!pngLoaded && legacyHeightmap) {
-                await this.loadHeightmapJson(`${process.env.API_URL}${this.map.activeMap.mapURL}heightmap.json`);
-            }
-        } finally {
-            $(document).trigger("heightmap:loaded");
-        }
-    }
-
-
-    /**
-     * Load the heightmap from a PNG file.
-     * @param {string} [url] - URL to the PNG file
-     * @returns {Promise<boolean>} - Whether the PNG heightmap loaded successfully
-     */
-    async loadHeightmapPng(url) {
-
-        const metadata = this.map.activeMap.SDK_data.heightmapPNG;
-        const heightScale = metadata?.scale?.[2];
-
-        try {
-            if (!Number.isFinite(heightScale) || heightScale <= 0) {
-                console.error("Heightmap PNG metadata requires scale[2] greater than 0");
-                return false;
-            }
-
-            const response = await fetch(url);
-            if (!response.ok) {
-                console.error(`Failed to load heightmap: ${url}`);
-                console.error("  -> ", `HTTP ${response.status}`);
-                return false;
-            }
-
-            const bytes = new Uint8Array(await response.arrayBuffer());
-            const image = decode(bytes);
-            const channels = image.channels ?? image.data.length / (image.width * image.height);
-            const depth = image.depth ?? image.data.BYTES_PER_ELEMENT * 8;
-
-            if (channels !== 1 || ![8, 16].includes(depth)) {
-                console.error(`Heightmap PNG must be 8-bit or 16-bit grayscale, got channels=${channels}, depth=${depth}`);
-                return false;
-            }
-
-            this.png = {
-                data: image.data,
-                width: image.width,
-                height: image.height,
-                heightScale,
-            };
-
-            return true;
-        } catch (error) {
-            console.error("Failed to load heightmap:", url);
-            console.error("  -> ", error);
-            this.png = null;
-            return false;
-        }
+        this.jsonPng = [];
+        this.scalingPNG = 0;
+        this.loadHeightmapJson(heightmapPath);
+        this.loadHeightmapPNG(heightmapPathPNG);
     }
 
 
@@ -118,6 +46,39 @@ export default class SquadHeightmap {
             console.error("  -> ", error);
             this.json = [];
             return false;
+        }
+    }
+
+
+    /**
+     * Load the heightmap from a PNG file
+     * Decodes raw bytes with fast-png (no canvas, no fingerprinting issues)
+     * Expects 8-bit greyscale (channels=1, depth=8): height = pixel * scale[2]
+     * @param {string} [url] - URL to the PNG file
+     */
+    async loadHeightmapPNG(url) {
+
+        if (!this.map.activeMap.SDK_data.heightmapPNG) return;
+
+        const { scale } = this.map.activeMap.SDK_data.heightmapPNG;
+        const heightScale = scale[2];
+
+        try {
+            const response = await fetch(url);
+            const buffer = await response.arrayBuffer();
+            const img = decode(new Uint8Array(buffer));
+            const { width, height, data } = img;
+            console.log(`[PNG] depth:${img.depth} channels:${img.channels} size:${width}x${height} midPixel:${data[Math.floor(height / 2) * width + Math.floor(width / 2)]}`);
+            this.scalingPNG = width / this.map.pixelSize;
+
+            for (let y = 0; y < height; y++) {
+                const row = [];
+                for (let x = 0; x < width; x++) row.push(data[y * width + x] * heightScale);
+                this.jsonPng.push(row);
+            }
+        } catch (error) {
+            console.error("Failed to load PNG heightmap:", url);
+            console.error("  -> ", error);
         }
     }
 
@@ -167,27 +128,55 @@ export default class SquadHeightmap {
     }
 
     
-    /**
-     * Calculate a path of heights between two points
-     * @param {LatLng} [mortarLatlng] - LatLng Point
-     * @param {LatLng} [targetLatlng] - LatLng Point
-     * @param {number} [STEP=100] - Number of samples between weapon and target
-     * @returns {Array} - Array containing all the Heights between weapon and Target in meters
-     */
-    getHeightPath(mortarLatlng, targetLatlng, STEP = 100) {
-        const END = {lat: targetLatlng.lat, lng: targetLatlng.lng};
-        const START = {lat: mortarLatlng.lat, lng: mortarLatlng.lng};
-        const heightPath = [];
-        const latDiff =  END.lat - START.lat;
-        const lngDiff =  END.lng - START.lng;
-        
-        for (let i=0; i < STEP; i++){
-            heightPath.push(this.getHeight(START));
-            START.lat += latDiff/STEP;
-            START.lng += lngDiff/STEP;
+    getHeightPNG(latlng) {
+        if (!this.jsonPng.length || !this.scalingPNG) return 0;
+
+        const row = Math.round(latlng.lat * -this.scalingPNG);
+        const col = Math.round(latlng.lng * this.scalingPNG);
+
+        if (this.jsonPng[row] && typeof this.jsonPng[row][col] !== "undefined") {
+            return this.jsonPng[row][col];
         }
-    
-        return heightPath;
+        return 0;
+    }
+
+
+    /**
+     * Calculate a path of heights between two points, with optional terrain margins
+     * @param {LatLng} mortarLatlng
+     * @param {LatLng} targetLatlng
+     * @param {number} STEP - samples between weapon and target
+     * @param {number} extraBefore - fraction of path to extend before weapon
+     * @param {number} extraAfter  - fraction of path to extend after target
+     * @returns {{ path: number[], weaponIndex: number, targetIndex: number }}
+     */
+    getHeightPath(mortarLatlng, targetLatlng, STEP = 100, extraBefore = 0.15, extraAfter = 0.15) {
+        const latDiff = targetLatlng.lat - mortarLatlng.lat;
+        const lngDiff = targetLatlng.lng - mortarLatlng.lng;
+
+        const extraBeforeSteps = Math.round(STEP * extraBefore);
+        const extraAfterSteps  = Math.round(STEP * extraAfter);
+        const totalSteps = STEP + extraBeforeSteps + extraAfterSteps;
+
+        const START = {
+            lat: mortarLatlng.lat - latDiff * extraBefore,
+            lng: mortarLatlng.lng - lngDiff * extraBefore,
+        };
+        const totalLatDiff = latDiff * (1 + extraBefore + extraAfter);
+        const totalLngDiff = lngDiff * (1 + extraBefore + extraAfter);
+
+        const path = [];
+        for (let i = 0; i < totalSteps; i++) {
+            path.push(this.getHeightPNG(START));
+            START.lat += totalLatDiff / totalSteps;
+            START.lng += totalLngDiff / totalSteps;
+        }
+
+        return {
+            path,
+            weaponIndex: extraBeforeSteps,
+            targetIndex: extraBeforeSteps + STEP - 1,
+        };
     }
 
 }

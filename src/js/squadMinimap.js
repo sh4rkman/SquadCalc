@@ -37,7 +37,7 @@ export const squadMinimap = Map.extend({
 
         let customOptions = {
             attributionControl: false,
-            boxZoom: true,
+            boxZoom: false,
             center: [-pixelSize/2, pixelSize/2],
             closePopupOnClick: false,
             crs: CRS.Simple,
@@ -527,12 +527,33 @@ export const squadMinimap = Map.extend({
      * @param {LatLng} latlng - coordinates of the new target
      * @param {Event} e - event that triggered the creation
      * @param {String} uid - Optional - unique identifier of the target if created by the session
+     * @param {Boolean} skipApiReport - Optional - if true, don't report this target to the squadcalc API (used for batch creation, e.g. carpet/rectangle bombing)
      */
-    createTarget(latlng, event, uid = false){
+    createTarget(latlng, event, uid = false, skipApiReport = false){
 
-        let target = new squadTargetMarker(latlng, {animate: App.userSettings.targetAnimation, uid: uid}, this).addTo(this.markersGroup);
+        let target = new squadTargetMarker(latlng, {animate: App.userSettings.targetAnimation, uid: uid, skipApiReport: skipApiReport}, this).addTo(this.markersGroup);
         
         console.debug("Creating new target with uid", target.uid);
+        const weaponLatlng = this.activeWeaponsMarkers.getLayers()[0]?.getLatLng();
+        if (weaponLatlng) {
+            const wJson = this.heightmap.getHeight(weaponLatlng);
+            const wPng  = this.heightmap.getHeightPNG(weaponLatlng);
+            const tJson = this.heightmap.getHeight(latlng);
+            const tPng  = this.heightmap.getHeightPNG(latlng);
+            const dJson = tJson - wJson;
+            const dPng  = tPng  - wPng;
+            const currentScale = this.activeMap.SDK_data.heightmapPNG.scale[2];
+            const idealScale = dPng !== 0 ? (currentScale * dJson / dPng).toFixed(3) : "N/A";
+            const f = v => v.toFixed(1);
+            const absDiff = Math.abs(dJson - dPng);
+            const diffIcon = absDiff < 1 ? "✅" : absDiff < 3 ? "⚠️" : "⛔";
+            const diffLabel = `${diffIcon} ${f(dJson - dPng)}`;
+            console.log(
+                `[Heightmap JSON] weapon: ${f(wJson)} | target: ${f(tJson)} | diff: ${f(dJson)}\n` +
+                `[Heightmap PNG]  weapon: ${f(wPng)}  | target: ${f(tPng)}  | diff: ${f(dPng)}\n` +
+                `[Heightmap DIFF] ${diffLabel} | ideal scale: ${idealScale}`
+            );
+        }
         if (!uid && App.session.ws && App.session.ws.readyState === WebSocket.OPEN) {
             console.debug("sending new target with uid", target.uid);
             App.session.ws.send(

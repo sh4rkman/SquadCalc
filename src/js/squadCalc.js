@@ -13,6 +13,13 @@ import SquadSession from "./squadSession.js";
 import SquadFiringSolution from "./squadFiringSolution.js";
 import SquadSettings from "./squadSettings.js";
 import packageInfo from "../../package.json";
+import { marked, Renderer } from "marked";
+
+const changelogRenderer = new Renderer();
+changelogRenderer.link = ({ href, title, text }) => {
+    const titleAttr = title ? ` title="${title}"` : "";
+    return `<a href="${href}"${titleAttr} target="_blank" rel="noopener noreferrer">${text}</a>`;
+};
 import i18next from "i18next";
 import SquadLayer from "./squadLayer.js";
 import { serverBrowserTooltips, settingsTooltips } from "./tooltips.js";
@@ -113,8 +120,6 @@ export default class SquadCalc {
     }
 
     initServerMode(serverId, sessionId = null) {
-        this.updateUrlParams({ team1: null, team1unit: null, team2: null, team2unit: null });
-
         if (!this.squadServersBrowser) {
             this.squadServersBrowser = new SquadServersBrowser();
             this.squadServersBrowser.init();
@@ -139,6 +144,9 @@ export default class SquadCalc {
                 return;
             }
 
+            // Server found — discard any URL team overrides; map/layer are overwritten by switchLayer
+            this.updateUrlParams({ team1: null, team1unit: null, team2: null, team2unit: null });
+
             this.squadServersBrowser.selectedServer = server.id;
             this.squadServersBrowser.selectedLayer = server.attributes.details.map;
 
@@ -161,16 +169,6 @@ export default class SquadCalc {
             $("#serversTableBody tr").removeClass("selected");
             $(`#serversTableBody tr[data-serverid="${serverId}"]`).addClass("selected");
             $("#servers").addClass("active");
-
-            // If a specific layer was provided in the URL, apply it after the server's layers are loaded
-            console.debug("initServerMode - urlIntent:", this.urlIntent);
-            if (this.urlIntent.layer) {
-                console.debug("URL layer detected:", this.urlIntent.layer);
-                $(document).one("layer:loaded", () => {
-                    console.debug("layer:loaded event fired, applying URL layer");
-                    this.initStaticMode({ layer: this.urlIntent.layer });
-                });
-            }
 
             if (this.squadServersBrowser.syncInterval) clearInterval(this.squadServersBrowser.syncInterval);
             this.squadServersBrowser.syncInterval = setInterval(
@@ -700,7 +698,9 @@ export default class SquadCalc {
             factions:document.querySelector("#factionsDialog"),
             servers: document.querySelector("#serversInformation"),
             shortcutCapture: document.querySelector("#shortcutCaptureDialog"),
+            changelog: document.querySelector("#changelogDialog"),
         };
+        this._changelogCache = null;
         const { calc: calcInformation, weapon: weaponInformation, help: helpDialog, factions: factionsDialog, servers: serversInformation } = this._dialogs;
 
         $(".btn-delete, .btn-undo, .btn-layer, .returnBtn, #mapLayerMenu").hide();
@@ -739,6 +739,7 @@ export default class SquadCalc {
         this.closeDialogOnClickOutside(serversInformation);
         this.closeDialogOnClickOutside(helpDialog);
         this.closeDialogOnClickOutside(factionsDialog);
+        this.closeDialogOnClickOutside(this._dialogs.changelog);
         
         const overlay = document.getElementById("dropOverlay");
         let dragCounter = 0;
@@ -840,6 +841,20 @@ export default class SquadCalc {
             settingsTooltips.hide();
             settingsTooltips.disable();
             helpDialog.showModal();
+        });
+
+        $(document).on("click", "#openChangelog", async () => {
+            const changelogDialog = this._dialogs.changelog;
+            const contentEl = document.getElementById("changelogContent");
+            changelogDialog.showModal();
+            if (this._changelogCache) {
+                contentEl.innerHTML = this._changelogCache;
+                return;
+            }
+            const { default: changelogMd } = await import("../../CHANGELOG.md");
+            const html = marked.parse(changelogMd, { renderer: changelogRenderer });
+            this._changelogCache = html;
+            contentEl.innerHTML = html;
         });
 
         $("#mapLayerMenu").find("button.btn-session").on("click", () => {
@@ -1202,8 +1217,8 @@ export default class SquadCalc {
 
     handleKeydown(event) {
 
-        const { calc, weapon, help, factions, servers } = this._dialogs;
-        if (weapon.open || calc.open || help.open || factions.open || servers.open) return;
+        const { calc, weapon, help, factions, servers, changelog } = this._dialogs;
+        if (weapon.open || calc.open || help.open || factions.open || servers.open || changelog.open) return;
 
         if ($(event.target).is("input, textarea, select")) return;
 
@@ -1915,7 +1930,7 @@ export default class SquadCalc {
         window.history.replaceState({}, "", newUrl);
     }
 
-    static sanitize(str) {
+    sanitize(str) {
         return String(str)
             .replace(/&/g, "&amp;")
             .replace(/</g, "&lt;")
