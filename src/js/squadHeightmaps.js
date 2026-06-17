@@ -9,7 +9,7 @@ export default class SquadHeightmap {
 
     /**
      * Load the heightmap for the given map
-     * @param {L.map} [map]
+     * @param {LeafletMap} [map]
      */
     constructor(map) {
         this.map = map;
@@ -28,6 +28,7 @@ export default class SquadHeightmap {
     /**
      * Load the heightmap from a JSON file
      * @param {string} [url] - URL to the JSON file
+     * @returns {Promise<boolean>} - Whether the JSON heightmap loaded successfully
      */
     async loadHeightmapJson(url) {
         
@@ -52,6 +53,7 @@ export default class SquadHeightmap {
      * Decodes raw bytes with fast-png (no canvas, no fingerprinting issues)
      * Expects 8-bit greyscale (channels=1, depth=8): height = pixel * scale[2]
      * @param {string} [url] - URL to the PNG file
+     * @returns {Promise<boolean>} - Whether the heightmap loaded successfully
      */
     async loadHeightmapPNG(url) {
 
