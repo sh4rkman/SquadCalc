@@ -9,6 +9,8 @@ import { Ellipse } from "./libs/leaflet-ellipse.js";
 import { squadMarker } from "./squadMarker.js";
 import i18next from "i18next";
 
+const CARPET_MAX_TARGETS = 10;
+
 export const squadTargetMarker = squadMarker.extend({
 
     initialize: function (latlng, options, map) {
@@ -85,7 +87,7 @@ export const squadTargetMarker = squadMarker.extend({
         this.firingSolution1 = new SquadFiringSolution(this.map.activeWeaponsMarkers.getLayers()[0].getLatLng(), this.getLatLng(), this.map, this.map.activeWeaponsMarkers.getLayers()[0].heightPadding);
 
         // Report target to squadcalc API
-        if (!options.uid) {
+        if (!options.uid && !options.skipApiReport) {
             sendTargetData({
                 lat: latlng.lat,
                 lng: latlng.lng,
@@ -840,7 +842,7 @@ export const squadTargetMarker = squadMarker.extend({
 
             const end = toLatLng(domEvent);
             this._getCarpetPositions(start, end)
-                .forEach(latlng => this.map.createTarget(latlng, null));
+                .forEach(latlng => this.map.createTarget(latlng, null, false, true));
         };
 
         document.addEventListener("pointermove", onPointerMove);
@@ -852,7 +854,7 @@ export const squadTargetMarker = squadMarker.extend({
         const dlng = end.lng - start.lng;
         const totalDist = Math.hypot(dlat, dlng);
         if (totalDist < this._carpetStep) return [];
-        const count = Math.floor(totalDist / this._carpetStep);
+        const count = Math.min(Math.floor(totalDist / this._carpetStep), CARPET_MAX_TARGETS);
         const positions = [];
         for (let i = 1; i <= count; i++) {
             const t = (i * this._carpetStep) / totalDist;
@@ -938,7 +940,7 @@ export const squadTargetMarker = squadMarker.extend({
 
             const end = toLatLng(domEvent);
             this._getGridPositions(start, end)
-                .forEach(latlng => this.map.createTarget(latlng, null));
+                .forEach(latlng => this.map.createTarget(latlng, null, false, true));
         };
 
         document.addEventListener("pointermove", onPointerMove);

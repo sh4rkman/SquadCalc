@@ -527,10 +527,11 @@ export const squadMinimap = Map.extend({
      * @param {LatLng} latlng - coordinates of the new target
      * @param {Event} e - event that triggered the creation
      * @param {String} uid - Optional - unique identifier of the target if created by the session
+     * @param {Boolean} skipApiReport - Optional - if true, don't report this target to the squadcalc API (used for batch creation, e.g. carpet/rectangle bombing)
      */
-    createTarget(latlng, event, uid = false){
+    createTarget(latlng, event, uid = false, skipApiReport = false){
 
-        let target = new squadTargetMarker(latlng, {animate: App.userSettings.targetAnimation, uid: uid}, this).addTo(this.markersGroup);
+        let target = new squadTargetMarker(latlng, {animate: App.userSettings.targetAnimation, uid: uid, skipApiReport: skipApiReport}, this).addTo(this.markersGroup);
         
         console.debug("Creating new target with uid", target.uid);
         const weaponLatlng = this.activeWeaponsMarkers.getLayers()[0]?.getLatLng();
