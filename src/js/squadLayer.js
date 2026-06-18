@@ -268,8 +268,8 @@ export default class SquadLayer {
 
                 this.flags.forEach((flag) => {
                     if (this.areLatLngsClose(flag.latlng, latlng)) {
-                        console.debug(`adding cluster ${objCluster.name} to flag ${flag.name}`);
-                        console.debug("new clustersList: ", flag.clusters);
+                        console.debug(`[LAYER] adding cluster ${objCluster.name} to flag ${flag.name}`);
+                        console.debug("[LAYER] new clustersList: ", flag.clusters);
                         flag.addCluster(objCluster);
                         flagExists = true;
                     }
@@ -297,43 +297,6 @@ export default class SquadLayer {
                 }
             });
         }
-        
-
-        // if (!this.layerData.capturePoints.lanes.laneObjects) return;
-
-        // Object.values(this.layerData.capturePoints.lanes.laneObjects).forEach((laneObject, i) => {
-        //     // attach properties directly
-        //     laneObject.points = [];
-        //     laneObject.color = this.getLaneColor(laneObject.name, i);
-            
-        //     laneObject.pointsOrder.forEach((point) => {
-        //         let latlng;
-        //         let clusterData = Object.values(this.objectives).find(obj => obj.name === point);
-
-        //         if (clusterData) {
-        //             latlng = this.convertToLatLng(clusterData.avgLocation.location_x, clusterData.avgLocation.location_y);
-        //         } else {
-        //             clusterData = Object.values(this.objectives).find(obj => obj.objectDisplayName === point);
-        //             if (clusterData) {
-        //                 latlng = this.convertToLatLng(clusterData.location_x, clusterData.location_y);
-        //             }
-        //         }
-
-        //         if (latlng) {
-        //             laneObject.points.push(latlng);
-        //         }
-        //     });
-
-        //     // create & store polyline (but don’t add to map yet if you want toggle later)
-        //     if (laneObject.points.length > 0) {
-        //         laneObject.polyline = new Polyline(laneObject.points, { 
-        //             color: laneObject.color,
-        //             weight: 10,
-        //             opacity: 0.35
-        //         }).addTo(this.map); 
-        //     }
-        // });
-
 
     }
 
@@ -786,7 +749,7 @@ export default class SquadLayer {
                             selectedFlags: [],
                         })
                     );
-                    console.debug(`Sent layer click update for flag #${flag.objectName}`);
+                    console.debug(`[LAYER] Sent layer click update for flag #${flag.objectName}`);
                 }
 
                 this._resetLayer();
@@ -794,7 +757,7 @@ export default class SquadLayer {
                 return true;
             }
 
-            console.debug("  -> Clicked Flag is in front, skipping..");
+            console.debug("[LAYER]   -> Clicked Flag is in front, skipping..");
             return false; 
         }
 
@@ -805,10 +768,10 @@ export default class SquadLayer {
             this.selectedReachableClusters.pop();
 
             let positionToReduce = (this.currentPosition - Math.abs(this.startPosition - flag.position));
-            console.debug("# of Going backward : ", positionToReduce);
+            console.debug("[LAYER] # of Going backward : ", positionToReduce);
 
             if (flag === this.selectedFlags[0]) {
-                console.debug("Can't unselect main flag");
+                console.debug("[LAYER] Can't unselect main flag");
                 if (broadcast && App.session.ws && App.session.ws.readyState === WebSocket.OPEN) {
                     App.session.ws.send(
                         JSON.stringify({
@@ -817,7 +780,7 @@ export default class SquadLayer {
                             selectedFlags: [],
                         })
                     );
-                    console.debug(`Sent layer click update for flag #${flag.objectName}`);
+                    console.debug(`[LAYER] Sent layer click update for flag #${flag.objectName}`);
                 }
                 this._resetLayer();
                 return;
@@ -897,27 +860,27 @@ export default class SquadLayer {
      */
     render(flag, preview, backward = false) {
 
-        console.debug("****************************************");
-        console.debug("              LAYER UPDATE              ");
-        console.debug("****************************************");
-        console.debug("  -> Preview:", preview);
-        console.debug("  -> Reverse:", this.reversed);
-        console.debug("  -> Selected Flag:", flag.objectName);
-        console.debug("  -> Clicked flag position", flag.position);
-        console.debug("  -> Current position", this.currentPosition);
-        console.debug("  -> Current selected Flags", this.selectedFlags);
-        console.debug("  -> Cluster History", this.selectedReachableClusters);
+        console.debug("[LAYER] ****************************************");
+        console.debug("[LAYER]               LAYER UPDATE              ");
+        console.debug("[LAYER] ****************************************");
+        console.debug("[LAYER]   -> Preview:", preview);
+        console.debug("[LAYER]   -> Reverse:", this.reversed);
+        console.debug("[LAYER]   -> Selected Flag:", flag.objectName);
+        console.debug("[LAYER]   -> Clicked flag position", flag.position);
+        console.debug("[LAYER]   -> Current position", this.currentPosition);
+        console.debug("[LAYER]   -> Current selected Flags", this.selectedFlags);
+        console.debug("[LAYER]   -> Cluster History", this.selectedReachableClusters);
 
-        console.debug("****************************************");
-        console.debug("                  DFS                   ");
-        console.debug("****************************************");
+        console.debug("[LAYER] ****************************************");
+        console.debug("[LAYER]                   DFS                   ");
+        console.debug("[LAYER] ****************************************");
 
         let reachableClusters = this.getReachableClusters(flag, preview);
         if (reachableClusters.size <= 1) return;
 
-        console.debug("****************************************");
-        console.debug("               Rendering                ");
-        console.debug("****************************************");
+        console.debug("[LAYER] ****************************************");
+        console.debug("[LAYER]                Rendering                ");
+        console.debug("[LAYER] ****************************************");
 
         this.hideClusters(flag, preview);
         let nextFlags = this.showClusters(flag, reachableClusters, preview);
@@ -958,7 +921,7 @@ export default class SquadLayer {
     showClusters(flag, reachableClusters, preview = false){
         
         let nextFlags = [];
-        console.debug("Showing Clusters");
+        console.debug("[LAYER] Showing Clusters");
 
         // Show reachable clusters
         reachableClusters.forEach((clusterName) => {
@@ -975,7 +938,7 @@ export default class SquadLayer {
 
             // If the cluster is in front of the clicked flag, show it
             if (position > this.currentPosition){
-                console.debug(`  -> ${cluster.name}`);
+                console.debug(`[LAYER]   -> ${cluster.name}`);
                 if (preview) this._fadeInCluster(cluster, flag);  
                 else this._showCluster(cluster);
 
@@ -1000,11 +963,11 @@ export default class SquadLayer {
      * @param {boolean} preview - Should we just fade out other flags or hide them
      */
     hideClusters(flag, preview = false){
-        console.debug("Hidding Clusters");
+        console.debug("[LAYER] Hidding Clusters");
         Object.values(this.objectives).forEach((cluster) => {
             // Only Hide/Fade cluster in front of us
             if (Math.abs(this.startPosition - cluster.pointPosition)+1 >= this.currentPosition) {
-                console.debug(`  -> ${cluster.name}`);
+                console.debug(`[LAYER]   -> ${cluster.name}`);
                 if (!flag.clusters.some(c => c.name === cluster.objectName)) {
                     if (preview) this._fadeOutCluster(cluster, flag);  
                     else this._hideCluster(cluster, flag);
@@ -1035,7 +998,7 @@ export default class SquadLayer {
         // Something went wrong, we are in the wrong direction
         if (reachableClusters.size === 1 && this.currentPosition === 1){
             if (!flag.isMain) return;
-            console.debug("Already blocked, Trying again in the other direction");
+            console.debug("[LAYER] Already blocked, Trying again in the other direction");
             this.reversed = !this.reversed;
             reachableClusters.clear();
             this.dfs(flag.clusters[0].objectDisplayName, reachableClusters);
@@ -1047,7 +1010,7 @@ export default class SquadLayer {
         // Store the clusters in case we need to backtrack later
         if (!preview) {
             this.selectedReachableClusters.push(reachableClusters);
-            console.debug("Cluster History updated", this.selectedReachableClusters);
+            console.debug("[LAYER] Cluster History updated", this.selectedReachableClusters);
         }
         
         return reachableClusters;
@@ -1127,11 +1090,11 @@ export default class SquadLayer {
             Array.from(reachableClusters).forEach((cluster) => {
                 if (!this.selectedReachableClusters.at(-1).has(cluster)){
                     reachableClusters.delete(cluster);
-                    console.debug(" -> filtered because wasn't previously reachable :", cluster);
+                    console.debug("[LAYER]  -> filtered because wasn't previously reachable :", cluster);
                 }
             });
         }
-        console.debug("Reachable clusters:", Array.from(reachableClusters));
+        console.debug("[LAYER] Reachable clusters:", Array.from(reachableClusters));
         return reachableClusters;
     }
      
@@ -1166,7 +1129,7 @@ export default class SquadLayer {
      * Unselects all flags and resets the layer
      */
     _resetLayer() {
-        console.debug("Resetting layer");
+        console.debug("[LAYER] Resetting layer");
 
         this.currentPosition = 0;
         this.selectedReachableClusters = [];

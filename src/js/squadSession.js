@@ -108,11 +108,11 @@ export default class SquadSession {
 
                     console.debug("[SESSION] Clicking flags for session: ");  
                     data.mapState.selectedFlags.forEach(flag => {
-                        console.debug("  looking for flag: ", flag);
+                        console.debug("[SESSION]   looking for flag: ", flag);
                         App.minimap.layer.flags.forEach((layerFlag) => {
                             if (layerFlag.objectName === flag) {
                                 if (layerFlag.isSelected) return;
-                                console.debug("found, clicking it now");
+                                console.debug("[SESSION] found, clicking it now");
                                 App.minimap.layer._handleFlagClick(layerFlag, false);
                                 return;
                             }

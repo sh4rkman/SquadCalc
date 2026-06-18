@@ -483,7 +483,7 @@ export const squadWeaponMarker = squadMarker.extend({
                 );
             }
 
-            console.debug(`Sent move request for weapon ${this.uid}, new position: (${newLatLng.lat}, ${newLatLng.lng})`);
+            console.debug(`[SESSION] Sent move request for weapon ${this.uid}, new position: (${newLatLng.lat}, ${newLatLng.lng})`);
         }
         
 
@@ -533,7 +533,7 @@ export const squadWeaponMarker = squadMarker.extend({
         // Broadcast the deletion to the session
         if (broadcast && App.session.ws && App.session.ws.readyState === WebSocket.OPEN) {
             App.session.ws.send(JSON.stringify({ type: "DELETE_WEAPON", uid: this.uid }));
-            console.debug(`Sent delete request for weapon ${this.uid}`);
+            console.debug(`[SESSION] Sent delete request for weapon ${this.uid}`);
         }
 
         this.off();
@@ -668,7 +668,7 @@ export const squadStratMarker = squadMarker.extend({
         // Broadcast to the session
         if (broadcast && App.session.ws && App.session.ws.readyState === WebSocket.OPEN) {
             App.session.ws.send(JSON.stringify({ type: "DELETE_MARKER", uid: this.uid }));
-            console.debug(`Sent delete request for marker with UID: ${this.uid}`);
+            console.debug(`[SESSION] Sent delete request for marker with UID: ${this.uid}`);
         }
 
         // Remove the marker from targets array history
@@ -748,7 +748,7 @@ export const squadStratMarker = squadMarker.extend({
                     })
                 );
 
-                console.debug(`Sent move request for marker with UID: ${uid}, new position: (${newLatLng.lat}, ${newLatLng.lng})`);
+                console.debug(`[SESSION] Sent move request for marker with UID: ${uid}, new position: (${newLatLng.lat}, ${newLatLng.lng})`);
             }
         }
         

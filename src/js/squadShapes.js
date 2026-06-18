@@ -15,8 +15,6 @@ export class MapDrawing {
         this.createDraw();
         this.polyline.addTo(this.map.activeDrawingGroup);
         this.map.activePolylines.push(this);
-
-        console.debug("Creating new draw with uid", this.uid);
     }
 
     // Creates the draw on the map
@@ -45,7 +43,7 @@ export class MapDrawing {
         $(".btn-delete, .btn-undo").show();
 
         if (broadcast && App.session.ws && App.session.ws.readyState === WebSocket.OPEN) {
-            console.debug("Sending new draw with uid", this.uid);
+            console.debug("[SESSION] Sending new draw with uid", this.uid);
             App.session.ws.send(
                 JSON.stringify({
                     type: "ADDING_DRAW",
@@ -62,7 +60,7 @@ export class MapDrawing {
 
         // Broadcast deletion to other clients
         if (broadcast && App.session.ws && App.session.ws.readyState === WebSocket.OPEN) {
-            console.debug("Deleting new draw with uid", this.uid);
+            console.debug("[SESSION] Deleting new draw with uid", this.uid);
             App.session.ws.send(
                 JSON.stringify({
                     type: "DELETE_DRAW",
@@ -116,7 +114,6 @@ export class MapArrow {
         };
         this.createArrow();
         this.map.activeArrows.push(this);
-        console.debug("Creating new arrow with uid", this.uid);
     }
 
     // Creates the arrow on the map
@@ -150,7 +147,7 @@ export class MapArrow {
     delete(broadcast = true) {
 
         if (broadcast && App.session.ws && App.session.ws.readyState === WebSocket.OPEN) {
-            console.debug("Deleting new arrow with uid", this.uid);
+            console.debug("[SESSION] Deleting new arrow with uid", this.uid);
             App.session.ws.send(
                 JSON.stringify({
                     type: "DELETE_ARROW",
@@ -189,7 +186,6 @@ export class MapRectangle {
         this.rectangle = null;
         this.createRectangle();
         this.map.activeRectangles.push(this);
-        console.debug("Creating new rectangle with uid", this.uid);
     }
 
     // Creates the rectangle on the map
@@ -221,7 +217,7 @@ export class MapRectangle {
     // Removes the rectangle from the map
     delete(broadcast = true) {
         if (broadcast && App.session.ws && App.session.ws.readyState === WebSocket.OPEN) {
-            console.debug("Deleting rectangle with uid", this.uid);
+            console.debug("[SESSION] Deleting rectangle with uid", this.uid);
             App.session.ws.send(
                 JSON.stringify({
                     type: "DELETE_RECTANGLE",
@@ -253,7 +249,6 @@ export class MapCircle {
         this.circle = null;
         this.createCircle();
         this.map.activeCircles.push(this);
-        console.debug("Creating new circle with uid", this.uid);
     }
 
     // Creates the circle on the map
@@ -287,7 +282,7 @@ export class MapCircle {
     // Removes the circle from the map
     delete(broadcast = true) {
         if (broadcast && App.session.ws && App.session.ws.readyState === WebSocket.OPEN) {
-            console.debug("Deleting circle with uid", this.uid);
+            console.debug("[SESSION] Deleting circle with uid", this.uid);
             App.session.ws.send(
                 JSON.stringify({
                     type: "DELETE_CIRCLE",

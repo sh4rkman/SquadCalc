@@ -179,7 +179,7 @@ export const squadTargetMarker = squadMarker.extend({
 
         if (broadcast && App.session.ws && App.session.ws.readyState === WebSocket.OPEN) {
             App.session.ws.send(JSON.stringify({ type: "DELETE_TARGET", uid: this.uid}));
-            console.debug(`Sent delete request for target with UID: ${this.uid}`);
+            console.debug(`[SESSION] Sent delete request for target with UID: ${this.uid}`);
         }
 
         // Unbind all custom event handlers

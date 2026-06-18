@@ -34,9 +34,9 @@ export default class SquadServersBrowser {
         this.serversData.forEach(server => {
             if (server.id == this.selectedServer) {
                 let playTime = this.toMinSec(server.attributes.details.squad_playTime);
-                console.debug(`${server.attributes.name} - ${server.attributes.details.map} - playtime : ${playTime}`);
+                console.debug(`[SERVER] ${server.attributes.name} - ${server.attributes.details.map} - playtime : ${playTime}`);
                 if (server.attributes.details.map != this.selectedLayer) {
-                    console.debug(`  LAYER CHANGED FROM ${this.selectedLayer} to ${server.attributes.details.map}`);
+                    console.debug(`[SERVER]   LAYER CHANGED FROM ${this.selectedLayer} to ${server.attributes.details.map}`);
                     this.selectedLayer = server.attributes.details.map;
                     this.switchLayer(
                         server.attributes.name,
