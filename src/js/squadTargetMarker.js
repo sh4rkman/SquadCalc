@@ -107,7 +107,7 @@ export const squadTargetMarker = squadMarker.extend({
 
         const [html1, clipboard1] = this.getContent(this.firingSolution1, this.map.activeWeaponsMarkers.getLayers()[0].angleType);
         this.calcMarker1.setContent(html1).openOn(this.map);
-        if (App.userSettings.copyTarget && !options.uid) navigator.clipboard.writeText(clipboard1);
+        if (App.userSettings.copyTarget && !options.uid && !options.skipApiReport) navigator.clipboard.writeText(clipboard1);
         
 
         // If two weapons already on the map
@@ -116,7 +116,7 @@ export const squadTargetMarker = squadMarker.extend({
             this.calcMarker1.setContent(`1. ${html1}`);
             const [html2, clipboard2] = this.getContent(this.firingSolution2, this.map.activeWeaponsMarkers.getLayers()[1].angleType);
             this.calcMarker2.setContent(`2. ${html2}`).openOn(this.map);
-            if (App.userSettings.copyTarget && !options.uid) navigator.clipboard.writeText(`${clipboard1} / ${clipboard2}`);  
+            if (App.userSettings.copyTarget && !options.uid && !options.skipApiReport) navigator.clipboard.writeText(`${clipboard1} / ${clipboard2}`);
         }
 
         // Initialise the target Grid
