@@ -208,8 +208,6 @@ export const squadWeaponMarker = squadMarker.extend({
         const MAXRADIUS = App.activeWeapon.getMaxDistance() * this.map.gameToMapScale;
         const MINRADIUS = App.activeWeapon.minDistance * this.map.gameToMapScale;
 
-        console.log("App.activeWeapon.minDistance ", App.activeWeapon.minDistance);
-
         this.angleType = App.activeWeapon.angleType;
         this.minRangeMarker.setRadius(MINRADIUS);
         this.rangeMarker.setRadius(MAXRADIUS);

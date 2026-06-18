@@ -62,9 +62,6 @@ export default class SquadSession {
             }
         });
 
-        // Enable Map Selector back
-        // App.MAP_SELECTOR.prop("disabled", false);
-        // hostOnlyTooltip.disable();
     }
 
     _handleMessage(message) {
@@ -73,7 +70,7 @@ export default class SquadSession {
         switch (data.type) {
 
         case "SESSION_CREATED": {
-            console.debug("New Session created : " + data.sessionId);
+            console.debug("[SESSION] New Session created : " + data.sessionId);
             $(".btn-session-users").html(1);
             $("#sessionActions").css("display", "flex");
             App.updateUrlParams({ session: data.sessionId });
@@ -82,8 +79,8 @@ export default class SquadSession {
         }
 
         case "SESSION_JOINED": {
-            console.debug("Successfully joined session: " + data.sessionId);
-            console.debug("Session data: ", data);
+            console.debug("[SESSION] Successfully joined session: " + data.sessionId);
+            console.debug("[SESSION] Session data: ", data);
 
             // Update MAP with custom event to skip the broadcast
             App.MAP_SELECTOR.val(data.mapState.activeMap).trigger($.Event("change", { broadcast: false }));
@@ -109,7 +106,7 @@ export default class SquadSession {
 
                     // App.minimap.layer._resetLayer(); break AAS when joining a session in AAS mode
 
-                    console.debug("Clicking flags for session: ");  
+                    console.debug("[SESSION] Clicking flags for session: ");  
                     data.mapState.selectedFlags.forEach(flag => {
                         console.debug("  looking for flag: ", flag);
                         App.minimap.layer.flags.forEach((layerFlag) => {
@@ -122,7 +119,7 @@ export default class SquadSession {
                         });
                     });
 
-                    console.debug("Received hexs from session: ", data.mapState.hexs);
+                    console.debug("[SESSION] Received hexs from session: ", data.mapState.hexs);
                     data.mapState.hexs.forEach(sessionHex => {
                         App.minimap.layer.hexs.forEach((layerHex) => {
                             if (sessionHex.number === layerHex._hexNumber) {
@@ -176,7 +173,7 @@ export default class SquadSession {
         }
 
         case "UPDATE_HEXAGON": {
-            console.debug("new hex color !", data);
+            console.debug("[SESSION] new hex color !", data);
             App.minimap.layer?.hexs?.forEach((hex) => {
                 if (hex._hexNumber === data.number) {
                     hex._cycleColor(null, false);
@@ -187,13 +184,13 @@ export default class SquadSession {
         }
 
         case "SESSION_NOT_FOUND": {
-            console.debug("Session not found");
+            console.debug("[SESSION] Session not found");
             App.openToast("error", "Session not found", data.sessionId);
             break;
         }
 
         case "ACTIVE_MEMBERS_UPDATED": {
-            console.debug("New Session Users Count: ", data.sessionUsers);
+            console.debug("[SESSION] New Session Users Count: ", data.sessionUsers);
             $(".btn-session-users").html(data.sessionUsers);
 
             // Only one left in the session
@@ -363,7 +360,7 @@ export default class SquadSession {
         /**********************************************************************/
 
         case "UPDATE_FACTION": {
-            console.debug("Received new faction: ", data.faction);
+            console.debug("[SESSION] Received new faction: ", data.faction);
             if (data.teamIndex === 0) {
                 App.FACTION1_SELECTOR.val(data.faction).trigger($.Event("change", { broadcast: false }));
             } else if (data.teamIndex === 1) {
@@ -374,7 +371,7 @@ export default class SquadSession {
 
 
         case "UPDATE_UNIT": {
-            console.debug("Received new unit: ", data.faction);
+            console.debug("[SESSION] Received new unit: ", data.faction);
             if (data.teamIndex === 0) {
                 App.minimap.layer.factions.UNIT1_SELECTOR.val(data.faction).trigger($.Event("change", { broadcast: false }));
             } else if (data.teamIndex === 1) {

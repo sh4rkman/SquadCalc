@@ -548,10 +548,9 @@ export const squadMinimap = Map.extend({
             const absDiff = Math.abs(dJson - dPng);
             const diffIcon = absDiff < 1 ? "✅" : absDiff < 3 ? "⚠️" : "⛔";
             const diffLabel = `${diffIcon} ${f(dJson - dPng)}`;
-            console.log(
-                `[Heightmap JSON] weapon: ${f(wJson)} | target: ${f(tJson)} | diff: ${f(dJson)}\n` +
-                `[Heightmap PNG]  weapon: ${f(wPng)}  | target: ${f(tPng)}  | diff: ${f(dPng)}\n` +
-                `[Heightmap DIFF] ${diffLabel} | ideal scale: ${idealScale}`
+            console.debug(
+                `[HEIGHTMAP] Old : ${f(dJson)} New : ${f(dPng)} \n` +
+                `[HEIGHTMAP] ${diffLabel}`
             );
         }
         if (!uid && App.session.ws && App.session.ws.readyState === WebSocket.OPEN) {

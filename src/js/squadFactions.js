@@ -505,7 +505,7 @@ export default class SquadFactions {
                     if (originalIndex !== -1) spawners.vehicles.splice(originalIndex, 1);
 
                 } else {
-                    console.debug("NO EMPTY SPAWNERS LEFT!");
+                    console.debug("[FACTION] NO EMPTY SPAWNERS LEFT!");
                 }
             }
         }
@@ -970,7 +970,7 @@ export default class SquadFactions {
             const broadcast = event.broadcast ?? true;
 
             if (broadcast && App.session.ws && App.session.ws.readyState === WebSocket.OPEN) {
-                console.debug("broadcasting unit1 change", event.target.value);
+                console.debug("[SESSION] broadcasting unit1 change", event.target.value);
                 App.session.ws.send(
                     JSON.stringify({
                         type: "UPDATE_UNIT",
@@ -1032,7 +1032,7 @@ export default class SquadFactions {
             const broadcast = event.broadcast ?? true;
 
             if (broadcast && App.session.ws && App.session.ws.readyState === WebSocket.OPEN) {
-                console.debug("broadcasting unit2 change", event.target.value);
+                console.debug("[SESSION] broadcasting unit2 change", event.target.value);
                 App.session.ws.send(
                     JSON.stringify({
                         type: "UPDATE_UNIT",
@@ -1077,16 +1077,16 @@ export default class SquadFactions {
                 if (this.FACTION1_SELECTOR.find(`option[value="${team1DefaultFaction}"]`).length > 0) {
                     this.FACTION1_SELECTOR.val(team1DefaultFaction).trigger($.Event("change", { broadcast: false }));
                 } else {
-                    console.debug(`Default faction for team 1 not found in dropdown: ${team1DefaultFaction}`);
-                    console.debug(`Falling back to ${factionData.teamConfigs.factions.team1Units[0].factionID}`);
+                    console.debug(`[FACTIONS] Default faction for team 1 not found in dropdown: ${team1DefaultFaction}`);
+                    console.debug(`[FACTIONS] Falling back to ${factionData.teamConfigs.factions.team1Units[0].factionID}`);
                     this.FACTION1_SELECTOR.val(factionData.teamConfigs.factions.team1Units[0].factionID).trigger($.Event("change", { broadcast: false }));
                 }
 
                 if (this.FACTION2_SELECTOR.find(`option[value="${team2DefaultFaction}"]`).length > 0) {
                     this.FACTION2_SELECTOR.val(team2DefaultFaction).trigger($.Event("change", { broadcast: false }));
                 } else {
-                    console.debug(`Default faction for team 2 not found in dropdown: ${team2DefaultFaction}`);
-                    console.debug(`Falling back to ${factionData.teamConfigs.factions.team2Units[0].factionID}`);
+                    console.debug(`[FACTIONS] Default faction for team 2 not found in dropdown: ${team2DefaultFaction}`);
+                    console.debug(`[FACTIONS] Falling back to ${factionData.teamConfigs.factions.team2Units[0].factionID}`);
                     this.FACTION2_SELECTOR.val(factionData.teamConfigs.factions.team2Units[0].factionID).trigger($.Event("change", { broadcast: false }));
                 }
 

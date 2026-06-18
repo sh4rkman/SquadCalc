@@ -100,7 +100,7 @@ async function setupWebSockets() {
         socketCoordinates.addEventListener("error", handleDisconnect);
     } catch (error) {
         handleDisconnect();
-        console.debug("Error setting up WebSocket connections", error);
+        console.debug("[SMC] Error setting up WebSocket connections", error);
     }
 }
 
@@ -189,7 +189,7 @@ async function checkServerAvailability(timeout = 2000) {
             xhr.timeout = timeout;
             xhr.send();
         } catch (error) {
-            console.debug("Error checking server availability", error);
+            console.debug("[SMC] Error checking server availability", error);
             resolve(false);
         }
     });

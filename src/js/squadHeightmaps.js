@@ -67,7 +67,10 @@ export default class SquadHeightmap {
             const buffer = await response.arrayBuffer();
             const img = decode(new Uint8Array(buffer));
             const { width, height, data } = img;
-            console.log(`[PNG] depth:${img.depth} channels:${img.channels} size:${width}x${height} midPixel:${data[Math.floor(height / 2) * width + Math.floor(width / 2)]}`);
+
+            console.debug (`[HEIGHTMAP] Loaded ${url}`)
+            console.debug(`[HEIGHTMAP] depth:${img.depth} channels:${img.channels} size:${width}x${height} precision: ${Math.round(heightScale * 100)}cm`);
+
             this.scalingPNG = width / this.map.pixelSize;
 
             for (let y = 0; y < height; y++) {

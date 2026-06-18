@@ -110,9 +110,7 @@ export default class SquadCalc {
     }
 
     applyUrlIntent() {
-        console.debug("applyUrlIntent called");
         const { server, session } = this.urlIntent;
-        console.debug("URL intent - server:", server, "session:", session, "layer:", this.urlIntent.layer);
         if (server)       this.initServerMode(server, session);
         else if (session) this.initSessionMode(session, this.urlIntent);
         else              this.initStaticMode(this.urlIntent);
@@ -203,9 +201,7 @@ export default class SquadCalc {
     }
 
     initStaticMode(intent, onLayerLoaded = null) {
-        console.debug("initStaticMode called with intent:", intent);
         if (!intent.layer) {
-            console.debug("No layer in intent, returning");
             onLayerLoaded?.();
             return;
         }

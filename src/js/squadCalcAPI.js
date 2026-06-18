@@ -16,10 +16,10 @@ export function sendMarkerData(markerData) {
         body: JSON.stringify(markerData)
     }).then(response => {
         if (!response.ok) {
-            console.debug("HTTP error:", response.status);
+            console.debug("[API] HTTP error:", response.status);
         }
     }).catch(error => {
-        console.debug("Error sending marker data:", error);
+        console.debug("[API] Error sending marker data:", error);
     });
 }
 
@@ -39,10 +39,10 @@ export function sendFOBData(FOBData) {
         body: JSON.stringify(FOBData)
     }).then(response => {
         if (!response.ok) {
-            console.debug("HTTP error:", response.status);
+            console.debug("[API] HTTP error:", response.status);
         }
     }).catch(error => {
-        console.debug("Error sending marker data:", error);
+        console.debug("[API] Error sending marker data:", error);
     });
 }
 
@@ -63,11 +63,11 @@ export function sendTargetData(targetData) {
     })
         .then(response => {
             if (!response.ok) {
-                console.debug("HTTP error:", response.status);
+                console.debug("[API] HTTP error:", response.status);
             }
         })
         .catch(error => {
-            console.debug("Error sending target data:", error);
+            console.debug("[API] Error sending target data:", error);
         });
 }
 
@@ -92,8 +92,8 @@ export const checkApiHealth = async () => {
             $("#gameDataVersion").text("Disconnected from API").addClass("error");
         }
     } catch (error) {
-        console.error("Not connected to SquadCalc API");
-        console.debug(error);
+        console.error("[API] Not connected to SquadCalc API");
+        console.debug("[API]", error);
         $("#gameDataVersion").text("Disconnected from API").addClass("error");
     }
 };
@@ -120,7 +120,7 @@ export async function fetchMarkersByMap(mapName, weapon) {
         return data;
 
     } catch (error) {
-        console.debug("Error fetching marker data:", error);
+        console.debug("[API] Error fetching marker data:", error);
         throw error;
     }
 }
@@ -136,11 +136,11 @@ export async function fetchLayersByMap(mapName) {
     const url = `${process.env.API_URL}/get/layers?map=${encodeURIComponent(mapName)}`;
     try {
         const response = await fetch(url, { headers: { "X-App-Version": App.version }, });
-        if (!response.ok) { throw new Error("Network response was not ok"); }
+        if (!response.ok) { throw new Error("[API] Network response was not ok"); }
         const data = await response.json();
         return data;
     } catch (error) {
-        console.debug("Error fetching layers data:", error);
+        console.debug("[API] Error fetching layers data:", error);
         throw error;
     }
 }
@@ -159,11 +159,11 @@ export async function fetchLayerByName(layerName, options = {}) {
             headers: { "X-App-Version": App.version },
             signal
         });
-        if (!response.ok) { throw new Error("Network response was not ok"); }
+        if (!response.ok) { throw new Error("[API] Network response was not ok"); }
         const data = await response.json();
         return data;
     } catch (error) {
-        console.debug("Error fetching layers data:", error);
+        console.debug("[API] Error fetching layers data:", error);
         throw error;
     }
 }
@@ -186,7 +186,7 @@ export async function fetchUnitByName(unitName, options = {}) {
         const data = await response.json();
         return data;
     } catch (error) {
-        console.debug("Error fetching Unit data:", error);
+        console.debug("[API] Error fetching Unit data:", error);
         throw error;
     }
 }
