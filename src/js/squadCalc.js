@@ -324,7 +324,6 @@ export default class SquadCalc {
 
             const selectedLayerText = this.LAYER_SELECTOR.find(":selected").text().replaceAll(" ", "");
             const broadcast = event.broadcast ?? true;
-            console.debug("LAYER_SELECTOR changed - selectedLayerText:", selectedLayerText, "broadcast:", broadcast);
 
             // User cleared the layer selector, remove the layer and clean the URL
             if (selectedLayerText === "") {

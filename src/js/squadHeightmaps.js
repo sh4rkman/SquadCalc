@@ -66,21 +66,35 @@ export default class SquadHeightmap {
             const response = await fetch(url);
             const buffer = await response.arrayBuffer();
             const img = decode(new Uint8Array(buffer));
-            const { width, height, data } = img;
+            const { width, height, data, channels } = img;
+
+            // R/B signed-difference encoding: r rises and b falls (or vice versa) across the
+            // full range, so (255 + r - b) gives 511 levels instead of 256 -> scale is halved.
+            const effectiveScale = channels > 1 ? heightScale / 2 : heightScale;
 
             console.debug (`[HEIGHTMAP] Loaded ${url}`)
-            console.debug(`[HEIGHTMAP] depth:${img.depth} channels:${img.channels} size:${width}x${height} precision: ${Math.round(heightScale * 100)}cm`);
+            console.debug(`[HEIGHTMAP] depth:${img.depth} channels:${channels} size:${width}x${height} precision: ${Math.round(effectiveScale * 100)}cm`);
 
             this.scalingPNG = width / this.map.pixelSize;
 
             for (let y = 0; y < height; y++) {
                 const row = [];
-                for (let x = 0; x < width; x++) row.push(data[y * width + x] * heightScale);
+                for (let x = 0; x < width; x++) {
+                    if (channels > 1) {
+                        const idx = (y * width + x) * channels;
+                        const r = data[idx];
+                        const b = data[idx + 2];
+                        const raw = 255 + r - b;
+                        row.push(raw * effectiveScale);
+                    } else {
+                        row.push(data[y * width + x] * heightScale);
+                    }
+                }
                 this.jsonPng.push(row);
             }
         } catch (error) {
-            console.error("Failed to load PNG heightmap:", url);
-            console.error("  -> ", error);
+            console.error("[HEIGHTMAP] Failed to load PNG heightmap:", url);
+            console.error("[HEIGHTMAP]   -> ", error);
         }
     }
 
@@ -91,7 +105,7 @@ export default class SquadHeightmap {
      * @param {LatLng} [latlng] - LatLng Point
      * @returns {integer} - height in meters
      */
-    getHeight(latlng){
+    getHeightOLD(latlng){
 
         // Fallback in case heightmap isn't supplied or didn't load
         if (!this.json || !Array.isArray(this.json)) return 0;
@@ -108,7 +122,7 @@ export default class SquadHeightmap {
     }
 
     
-    getHeightPNG(latlng) {
+    getHeight(latlng) {
         if (!this.jsonPng.length || !this.scalingPNG) return 0;
 
         const row = Math.round(latlng.lat * -this.scalingPNG);
@@ -147,7 +161,7 @@ export default class SquadHeightmap {
 
         const path = [];
         for (let i = 0; i < totalSteps; i++) {
-            path.push(this.getHeightPNG(START));
+            path.push(this.getHeight(START));
             START.lat += totalLatDiff / totalSteps;
             START.lng += totalLngDiff / totalSteps;
         }

@@ -535,10 +535,10 @@ export const squadMinimap = Map.extend({
         
         const weaponLatlng = this.activeWeaponsMarkers.getLayers()[0]?.getLatLng();
         if (weaponLatlng) {
-            const wJson = this.heightmap.getHeight(weaponLatlng);
-            const wPng  = this.heightmap.getHeightPNG(weaponLatlng);
-            const tJson = this.heightmap.getHeight(latlng);
-            const tPng  = this.heightmap.getHeightPNG(latlng);
+            const wJson = this.heightmap.getHeightOLD(weaponLatlng);
+            const tJson = this.heightmap.getHeightOLD(latlng);
+            const wPng  = this.heightmap.getHeight(weaponLatlng);
+            const tPng  = this.heightmap.getHeight(latlng);
             const dJson = tJson - wJson;
             const dPng  = tPng  - wPng;
             const currentScale = this.activeMap.SDK_data.heightmapPNG.scale[2];

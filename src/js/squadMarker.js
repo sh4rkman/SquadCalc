@@ -243,7 +243,7 @@ export const squadWeaponMarker = squadMarker.extend({
         const G = App.gravity * App.activeWeapon.gravityScale;
         const estimatedMaxDistance = App.activeWeapon.getMaxDistance();
         const degreesPerMeter = this.map.gameToMapScale;
-        const weaponHeight = this.map.heightmap.getHeightPNG(weaponPos) + this.heightPadding;
+        const weaponHeight = this.map.heightmap.getHeight(weaponPos) + this.heightPadding;
         const points = [];
 
         // We'll work with radians from now on
@@ -285,7 +285,7 @@ export const squadWeaponMarker = squadMarker.extend({
                 const deltaLng = mid * Math.sin(angle) * degreesPerMeter;
                 let landingX = weaponPos.lat + deltaLat;
                 let landingY = weaponPos.lng + deltaLng;
-                const landingHeight = this.map.heightmap.getHeightPNG({ lat: landingX, lng: landingY });
+                const landingHeight = this.map.heightmap.getHeight({ lat: landingX, lng: landingY });
                 let hitObstacle = false;
                 let noHit = false;
                 
