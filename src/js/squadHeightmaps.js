@@ -40,8 +40,8 @@ export default class SquadHeightmap {
             let data = await response.json();
             this.json = data;
         } catch (error) {
-            console.error("Failed to load heightmap:", url);
-            console.error("  -> ", error);
+            console.error("[HEIGHTMAP] Failed to load heightmap:", url);
+            console.error("[HEIGHTMAP]   -> ", error);
         }
         
         $(document).trigger("heightmap:loaded");
@@ -51,7 +51,7 @@ export default class SquadHeightmap {
     /**
      * Load the heightmap from a PNG file
      * Decodes raw bytes with fast-png (no canvas, no fingerprinting issues)
-     * Expects 8-bit greyscale (channels=1, depth=8): height = pixel * scale[2]
+     * Expects 8-bit-per-channel R/B images: height = (255 + r - b) * scale[2]
      * @param {string} [url] - URL to the PNG file
      * @returns {Promise<boolean>} - Whether the heightmap loaded successfully
      */
@@ -68,27 +68,19 @@ export default class SquadHeightmap {
             const img = decode(new Uint8Array(buffer));
             const { width, height, data, channels } = img;
 
-            // R/B signed-difference encoding: r rises and b falls (or vice versa) across the
-            // full range, so (255 + r - b) gives 511 levels instead of 256 -> scale is halved.
-            const effectiveScale = channels > 1 ? heightScale / 2 : heightScale;
-
             console.debug (`[HEIGHTMAP] Loaded ${url}`)
-            console.debug(`[HEIGHTMAP] depth:${img.depth} channels:${channels} size:${width}x${height} precision: ${Math.round(effectiveScale * 100)}cm`);
+            console.debug(`[HEIGHTMAP] depth:${img.depth} channels:${channels} size:${width}x${height} precision: ${Math.round(heightScale * 100)}cm`);
 
             this.scalingPNG = width / this.map.pixelSize;
 
             for (let y = 0; y < height; y++) {
                 const row = [];
                 for (let x = 0; x < width; x++) {
-                    if (channels > 1) {
-                        const idx = (y * width + x) * channels;
-                        const r = data[idx];
-                        const b = data[idx + 2];
-                        const raw = 255 + r - b;
-                        row.push(raw * effectiveScale);
-                    } else {
-                        row.push(data[y * width + x] * heightScale);
-                    }
+                    const idx = (y * width + x) * channels;
+                    const r = data[idx];
+                    const b = data[idx + 2];
+                    const raw = 255 + r - b;
+                    row.push(raw * heightScale);
                 }
                 this.jsonPng.push(row);
             }
