@@ -20,7 +20,7 @@ export const MAPS = [
                 BWlevels: [291, 873],
             },
             heightmapPNG: {
-                scale: [1, 1, 0.175627905],
+                scale: [1, 1, 0.087813952],
             }
         }
     },
@@ -40,7 +40,7 @@ export const MAPS = [
                 BWlevels: [1825, 6640]
             },
             heightmapPNG: {
-                scale: [0.75, 0.75, 0.452853423],
+                scale: [0.75, 0.75, 0.226426712],
             }
         }
     },
@@ -77,7 +77,7 @@ export const MAPS = [
                 BWlevels: [2593, 7712]
             },
             heightmapPNG: {
-                scale: [1.003937, 1.003937, 0.834341483],
+                scale: [1.003937, 1.003937, 0.417170742],
             }
         }
     },
@@ -97,7 +97,7 @@ export const MAPS = [
                 BWlevels: [1209, 1369]
             },
                 heightmapPNG: {
-                scale: [0.5, 0.5, 1.965885177],
+                scale: [0.5, 0.5, 0.982942589],
             }
         }
     },
@@ -117,7 +117,7 @@ export const MAPS = [
                 BWlevels: [39, 440]
             },
             heightmapPNG: {
-                scale: [1, 1, 0.29594918],
+                scale: [1, 1, 0.14797459],
             }
         }
     },
@@ -137,7 +137,7 @@ export const MAPS = [
                 BWlevels: [0, 675]
             },
             heightmapPNG: {
-                scale: [1, 1, 0.403373419],
+                scale: [1, 1, 0.20168671],
             }
         }
     },
@@ -157,7 +157,7 @@ export const MAPS = [
                 BWlevels: [0, 5516]
             },
             heightmapPNG: {
-                scale: [1, 1, 0.548824355],
+                scale: [1, 1, 0.274412178],
             }
         }
     },
@@ -177,7 +177,7 @@ export const MAPS = [
                 BWlevels: [750, 950]
             },
             heightmapPNG: {
-                scale: [1, 1, 0.347395437],
+                scale: [1, 1, 0.173697718],
             }
         }
     },
@@ -197,7 +197,7 @@ export const MAPS = [
                 BWlevels: [1349, 3241]
             },
             heightmapPNG: {
-                scale: [1, 1, 0.459854964],
+                scale: [1, 1, 0.229927482],
             }
 
         }
@@ -218,7 +218,7 @@ export const MAPS = [
                 BWlevels: [4643, 5595]
             },
             heightmapPNG: {
-                scale: [1, 1, 0.371445454],
+                scale: [1, 1, 0.185722727],
             }
         }
     },
@@ -238,7 +238,7 @@ export const MAPS = [
                 BWlevels: [5437, 6846]
             },
             heightmapPNG: {
-                scale: [1, 1, 0.775141219],
+                scale: [1, 1, 0.387570609],
             }
         }
     },
@@ -258,7 +258,7 @@ export const MAPS = [
                 BWlevels: [0, 9775]
             },
             heightmapPNG: {
-                scale: [1, 1, 1.500335985],
+                scale: [1, 1, 0.750167993],
             }
         }
     },
@@ -278,7 +278,7 @@ export const MAPS = [
                 BWlevels: [100, 264]
             },
             heightmapPNG: {
-                scale: [0.5, 0.5, 0.348131127],
+                scale: [0.5, 0.5, 0.174065564],
             }
         }
     },
@@ -298,7 +298,7 @@ export const MAPS = [
                 BWlevels: [5006, 6887]
             },
             heightmapPNG: {
-                scale: [1, 1, 0.642097117],
+                scale: [1, 1, 0.321048558],
             }
         }
     },
@@ -318,7 +318,7 @@ export const MAPS = [
                 BWlevels: [6188, 8903]
             },
             heightmapPNG: {
-                scale: [1, 1, 0.496196696],
+                scale: [1, 1, 0.248098348],
             }
         }
     },
@@ -338,7 +338,7 @@ export const MAPS = [
                 BWlevels: [2479, 5898]
             },
             heightmapPNG: {
-                scale: [1, 1, 0.807919282],
+                scale: [1, 1, 0.403959641],
             }
         }
     },
@@ -358,7 +358,7 @@ export const MAPS = [
                 BWlevels: [2479, 5898]
             },
             heightmapPNG: {
-                scale: [1, 1, 0.987663718],
+                scale: [1, 1, 0.493831859],
             }
         }
     },
@@ -378,7 +378,7 @@ export const MAPS = [
                 BWlevels: [4326, 6683]
             },
             heightmapPNG: {
-                scale: [1, 1, 0.225173931],
+                scale: [1, 1, 0.112586966],
             }
         }
     },
@@ -398,7 +398,7 @@ export const MAPS = [
                 BWlevels: [4940, 5523]
             },
             heightmapPNG: {
-                scale: [1, 1, 0.410309481],
+                scale: [1, 1, 0.205154741],
             }
         }
     },
@@ -438,7 +438,7 @@ export const MAPS = [
                 BWlevels: [410, 9643]
             },
             heightmapPNG: {
-                scale: [1, 1, 0.635408888],
+                scale: [1, 1, 0.317704444],
             }
         }
     },
@@ -458,7 +458,7 @@ export const MAPS = [
                 BWlevels: [1349, 3241]
             },
             heightmapPNG: {
-                scale: [1, 1, 0.467907343],
+                scale: [1, 1, 0.233953671],
             }
         }
     },
@@ -483,7 +483,7 @@ export const MAPS = [
                 BWlevels: [952, 4074]
             },
             heightmapPNG: {
-                scale: [1.2, 1.2, 4.173832673],
+                scale: [1.2, 1.2, 2.086916336],
             }
         }
     },
@@ -503,7 +503,7 @@ export const MAPS = [
                 BWlevels: [1375, 1854]
             },
             heightmapPNG: {
-                scale: [1, 1, 0.535479131],
+                scale: [1, 1, 0.267739565],
             }
         }
     },
@@ -523,7 +523,7 @@ export const MAPS = [
                 BWlevels: [3689, 4111]
             },
             heightmapPNG: {
-                scale: [1, 1, 0.304071769],
+                scale: [1, 1, 0.152035884],
             }
         }
     },
@@ -543,7 +543,7 @@ export const MAPS = [
                 BWlevels: [0, 833]
             },
             heightmapPNG: {
-                scale: [1, 1, 0.971940493],
+                scale: [1, 1, 0.485970247],
             }
         }
     },
