@@ -346,7 +346,7 @@ export var WEAPONS = [
         angleType: "low",
         elevationPrecision: 1,
         heightOffset: 2.206,
-        angleOffset: -0.07,
+        angleOffset: -0.01,
         shells : [{
             name: "default",
             minDistance: 0,
