@@ -969,6 +969,7 @@ export default class SquadCalc {
             // Remove listeners when closing weapon information to avoid stacking
             $("input[type=radio][name=angleChoice]").off();
             $(".heightPadding input").off();
+            $(".moveToBtn").off();
         });
         
         $("#canvasControls button").on("click", (event) => {

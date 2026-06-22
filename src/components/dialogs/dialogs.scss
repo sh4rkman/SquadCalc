@@ -147,6 +147,35 @@ dialog {
     }
     &#weaponInformation {
         max-width: 350px;
+        .moveToRow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.6em;
+            margin: 0 0 2em;
+            input {
+                flex: 0 0 auto;
+                width: 16.5ch;
+                font-size: 1.1em;
+            }
+            button {
+                flex-shrink: 0;
+                padding: 0.5em 1em;
+                font-size: 0.9em;
+                font-weight: bold;
+                letter-spacing: 0.1em;
+                text-transform: uppercase;
+                border-radius: 3px;
+                border: 1px solid variables.$mainColor;
+                background-color: variables.$mainColor;
+                color: #fff;
+                cursor: pointer;
+                transition: opacity 0.2s ease;
+                &:hover {
+                    opacity: 0.85;
+                }
+            }
+        }
         #angleChoiceSettings {
             input {
                 height: 15px;
