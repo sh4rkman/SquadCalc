@@ -705,9 +705,12 @@ export default class SquadFactions {
         const btn = document.getElementById(`factionBtn${team}`);
         if (!btn) return;
         const val = SELECTOR.val();
-
         const img = document.createElement("img");
-        img.src = val ? `/img/flags/${val.replace(/[^a-zA-Z0-9_-]/g, "")}.webp` : "/img/flags/unknown.webp";
+
+        // strip anything but alphanumerics/underscore/dash to prevent path traversal via faction value
+        const sanitizedVal = val ? val.replace(/[^a-zA-Z0-9_-]/g, "") : val;
+        
+        img.src = sanitizedVal ? `/img/flags/${sanitizedVal}.webp` : "/img/flags/unknown.webp";
         img.addEventListener("error", () => { img.src = "/img/flags/unknown.webp"; }, { once: true });
         btn.replaceChildren(img);
 
