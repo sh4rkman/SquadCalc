@@ -1159,7 +1159,7 @@ export default class SquadFactions {
         if (selectedUnit.characteristics) {
             Object.entries(selectedUnit.characteristics).forEach(asset => {
                 // Ignore some useless characteristics
-                if (["NoSpecial", "HeavyGrenadier", "Pathfinder", "M27s", "None", "NoEmplacements"].some(k => asset[1].includes(k))) return;
+                if (["NoSpecial", "HeavyGrenadier", "Pathfinder", "M27s", "None", "NoEmplacements", "EnemyIntel"].some(k => asset[1].includes(k))) return;
                 
                 $(DIV).append(`
                     <img src="/img/icons/shared/characteristics/${asset[1]}.webp"
