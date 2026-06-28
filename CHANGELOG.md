@@ -7,7 +7,7 @@ Heightmaps have been fully reworked, they are now way more precise (each square 
 - You can now create carpet bombs by holding `alt` and dragging a target marker
 - You can now create a grid of targets by holding `shift` and dragging a target marker (Thanks Sh1nS0u & YuKI !)
 - You can now move a weapon by typing the precise coordinate (thanks Josephant!)
-- Added a link to the [squad-armor.com](https://squad-armor.com) viewer for each vehicle of the factions panel
+- Added a link to the [squad-armor.com](https://squad-armor.com) viewer for each vehicle of the factions panel (thanks MJH1606 !)
 - Added a dialog to browse this changelog directly from squadcalc.app
 - You can now search the map & weapon dropdowns
 
@@ -20,7 +20,7 @@ Heightmaps have been fully reworked, they are now way more precise (each square 
 </br><img src="https://img.shields.io/badge/-bug%20fixes-b22">   
 - Fixed Factions & Units not loading correctly when opening a URL holding a server id (Thanks wwrp450!)
 - Fixed missing vehicles images for `ZSL92 IFV` & `ZSL92A APC QLZ87`
-
+- Fixed `map_ifv` icon (thanks driver_061 !)
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
 
