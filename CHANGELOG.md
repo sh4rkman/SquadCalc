@@ -1,4 +1,4 @@
-# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge"> **45.0.0** *(2026-07-08)*
+# <img src="https://img.shields.io/badge/-major%20release-b22222?style=for-the-badge"> **45.0.0** *(2026-07-08)*
 
 
 Heightmaps have been fully reworked: they are now way more precise (each square meter has its own average height), and they now take buildings and other assets into account! If you are shooting from or at a building, its height will now be taken into account when calculating the required elevation. Thanks a lot to **yobaNGE** for the loading mechanics and **Metroseksuaali** for the heightmap export tool!
