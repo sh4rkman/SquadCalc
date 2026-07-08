@@ -13,6 +13,8 @@
         "high": "high",
         "low": "low",
         "addHeight": "ADDITIONAL HEIGHT",
+        "moveTo": "Move to",
+        "moveToPlaceholder": "A02-3-5-2",
         "meters": "meters",
         "km": "km",
         "m": "m",

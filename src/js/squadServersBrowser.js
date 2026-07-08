@@ -34,9 +34,9 @@ export default class SquadServersBrowser {
         this.serversData.forEach(server => {
             if (server.id == this.selectedServer) {
                 let playTime = this.toMinSec(server.attributes.details.squad_playTime);
-                console.debug(`${server.attributes.name} - ${server.attributes.details.map} - playtime : ${playTime}`);
+                console.debug(`[SERVER] ${server.attributes.name} - ${server.attributes.details.map} - playtime : ${playTime}`);
                 if (server.attributes.details.map != this.selectedLayer) {
-                    console.debug(`  LAYER CHANGED FROM ${this.selectedLayer} to ${server.attributes.details.map}`);
+                    console.debug(`[SERVER]   LAYER CHANGED FROM ${this.selectedLayer} to ${server.attributes.details.map}`);
                     this.selectedLayer = server.attributes.details.map;
                     this.switchLayer(
                         server.attributes.name,
@@ -301,9 +301,9 @@ export default class SquadServersBrowser {
                 rows += `
                     <tr class="${isSelected} ${unavailable}" data-serverid="${server.id}">
                         <td class="favoriteCell">${favoriteStarHTML}</td>
-                        <td title="${server.attributes.name}"><div class="server-name">${server.attributes.name}</div></td>
+                        <td title="${App.sanitize(server.attributes.name)}"><div class="server-name">${App.sanitize(server.attributes.name)}</div></td>
                         <td class="mapdata">
-                            ${server.attributes.details.map}<br>
+                            ${App.sanitize(server.attributes.details.map)}<br>
                             ${nextLayer}
                         </td>
                         <td>${this.getPlayersHTML(server.attributes.players, server.attributes.maxPlayers)}</td>

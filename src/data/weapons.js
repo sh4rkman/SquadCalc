@@ -345,7 +345,8 @@ export var WEAPONS = [
         mod: "SteelDivision",
         angleType: "low",
         elevationPrecision: 1,
-        heightOffset: 3,
+        heightOffset: 2.206,
+        angleOffset: -0.01,
         shells : [{
             name: "default",
             minDistance: 0,

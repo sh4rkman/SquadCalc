@@ -4,6 +4,7 @@ import { Marker, Circle, CircleMarker, Popup, Polygon, Icon } from "leaflet";
 import i18next from "i18next";
 import { sendMarkerData } from "./squadCalcAPI.js";
 import { v4 as uuidv4 } from "uuid";
+import { animateCSS } from "./animations.js";
 
 
 /*
@@ -208,8 +209,6 @@ export const squadWeaponMarker = squadMarker.extend({
         const MAXRADIUS = App.activeWeapon.getMaxDistance() * this.map.gameToMapScale;
         const MINRADIUS = App.activeWeapon.minDistance * this.map.gameToMapScale;
 
-        console.log("App.activeWeapon.minDistance ", App.activeWeapon.minDistance);
-
         this.angleType = App.activeWeapon.angleType;
         this.minRangeMarker.setRadius(MINRADIUS);
         this.rangeMarker.setRadius(MAXRADIUS);
@@ -407,7 +406,11 @@ export const squadWeaponMarker = squadMarker.extend({
 
         // Additional height
         $(".heightPadding input").val(this.heightPadding);
-        
+
+        // Move To: load current weapon position as keypad
+        const currentLatLng = this.getLatLng();
+        $(".moveToInput").val(this.map.getKP(-currentLatLng.lat, currentLatLng.lng, 6));
+
         // Add listener that update angle/height & refresh targets
         weapon = weapon.sourceTarget;
         $("input[type=radio][name=angleChoice]").on("change", weapon, (e) => {
@@ -433,6 +436,15 @@ export const squadWeaponMarker = squadMarker.extend({
                         heightPadding: input.value,
                     })
                 );
+            }
+        });
+
+        $(".moveToBtn").on("click", weapon, (e) => {
+            if (weapon.moveToKeypad($(".moveToInput").val())) {
+                const newLatLng = weapon.getLatLng();
+                $(".moveToInput").val(weapon.map.getKP(-newLatLng.lat, newLatLng.lng, 6));
+            } else {
+                animateCSS($(e.currentTarget).closest(".moveToRow"), "headShake");
             }
         });
 
@@ -485,7 +497,7 @@ export const squadWeaponMarker = squadMarker.extend({
                 );
             }
 
-            console.debug(`Sent move request for weapon ${this.uid}, new position: (${newLatLng.lat}, ${newLatLng.lng})`);
+            console.debug(`[SESSION] Sent move request for weapon ${this.uid}, new position: (${newLatLng.lat}, ${newLatLng.lng})`);
         }
         
 
@@ -512,7 +524,32 @@ export const squadWeaponMarker = squadMarker.extend({
             weapon: App.activeWeapon.name,
             map: App.minimap.activeMap.name,
         });
-        
+
+    },
+
+    /**
+     * Move the weapon to the given keypad coordinates
+     * @param {string} kp - keypad coordinates, e.g. "A02-3-5-2"
+     * @returns {boolean} true if the keypad was valid and the weapon was moved
+     */
+    moveToKeypad: function(kp) {
+        if (!kp || kp.length < 3) return false;
+
+        const pos = App.getPos(kp);
+        if (Number.isNaN(pos.lat) || Number.isNaN(pos.lng)) return false;
+
+        let latlng = { lat: -pos.lng * this.map.gameToMapScale, lng: pos.lat * this.map.gameToMapScale };
+        latlng = this.keepOnMap({ latlng }).latlng;
+
+        this.setLatLng(latlng);
+        this.rangeMarker.setLatLng(latlng);
+        this.minRangeMarker.setLatLng(latlng);
+        this.miniCircle.setLatLng(latlng);
+        this.fobCircle.setLatLng(latlng);
+        this.posPopUp.setLatLng(latlng);
+
+        this._handleDragEnd();
+        return true;
     },
 
     _handleMouseOver: function(){
@@ -535,7 +572,7 @@ export const squadWeaponMarker = squadMarker.extend({
         // Broadcast the deletion to the session
         if (broadcast && App.session.ws && App.session.ws.readyState === WebSocket.OPEN) {
             App.session.ws.send(JSON.stringify({ type: "DELETE_WEAPON", uid: this.uid }));
-            console.debug(`Sent delete request for weapon ${this.uid}`);
+            console.debug(`[SESSION] Sent delete request for weapon ${this.uid}`);
         }
 
         this.off();
@@ -670,7 +707,7 @@ export const squadStratMarker = squadMarker.extend({
         // Broadcast to the session
         if (broadcast && App.session.ws && App.session.ws.readyState === WebSocket.OPEN) {
             App.session.ws.send(JSON.stringify({ type: "DELETE_MARKER", uid: this.uid }));
-            console.debug(`Sent delete request for marker with UID: ${this.uid}`);
+            console.debug(`[SESSION] Sent delete request for marker with UID: ${this.uid}`);
         }
 
         // Remove the marker from targets array history
@@ -750,7 +787,7 @@ export const squadStratMarker = squadMarker.extend({
                     })
                 );
 
-                console.debug(`Sent move request for marker with UID: ${uid}, new position: (${newLatLng.lat}, ${newLatLng.lng})`);
+                console.debug(`[SESSION] Sent move request for marker with UID: ${uid}, new position: (${newLatLng.lat}, ${newLatLng.lng})`);
             }
         }
         

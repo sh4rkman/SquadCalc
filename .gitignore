@@ -11,3 +11,5 @@ config/test-results/
 maintenance.enable
 /.fastRequest
 .claude/
+.agents/
+skills-lock.json

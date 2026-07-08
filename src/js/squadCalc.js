@@ -13,6 +13,13 @@ import SquadSession from "./squadSession.js";
 import SquadFiringSolution from "./squadFiringSolution.js";
 import SquadSettings from "./squadSettings.js";
 import packageInfo from "../../package.json";
+import { marked, Renderer } from "marked";
+
+const changelogRenderer = new Renderer();
+changelogRenderer.link = ({ href, title, text }) => {
+    const titleAttr = title ? ` title="${title}"` : "";
+    return `<a href="${href}"${titleAttr} target="_blank" rel="noopener noreferrer">${text}</a>`;
+};
 import i18next from "i18next";
 import SquadLayer from "./squadLayer.js";
 import { serverBrowserTooltips, settingsTooltips } from "./tooltips.js";
@@ -103,9 +110,7 @@ export default class SquadCalc {
     }
 
     applyUrlIntent() {
-        console.debug("applyUrlIntent called");
         const { server, session } = this.urlIntent;
-        console.debug("URL intent - server:", server, "session:", session, "layer:", this.urlIntent.layer);
         if (server)       this.initServerMode(server, session);
         else if (session) this.initSessionMode(session, this.urlIntent);
         else              this.initStaticMode(this.urlIntent);
@@ -113,8 +118,6 @@ export default class SquadCalc {
     }
 
     initServerMode(serverId, sessionId = null) {
-        this.updateUrlParams({ team1: null, team1unit: null, team2: null, team2unit: null });
-
         if (!this.squadServersBrowser) {
             this.squadServersBrowser = new SquadServersBrowser();
             this.squadServersBrowser.init();
@@ -139,6 +142,9 @@ export default class SquadCalc {
                 return;
             }
 
+            // Server found — discard any URL team overrides; map/layer are overwritten by switchLayer
+            this.updateUrlParams({ team1: null, team1unit: null, team2: null, team2unit: null });
+
             this.squadServersBrowser.selectedServer = server.id;
             this.squadServersBrowser.selectedLayer = server.attributes.details.map;
 
@@ -161,16 +167,6 @@ export default class SquadCalc {
             $("#serversTableBody tr").removeClass("selected");
             $(`#serversTableBody tr[data-serverid="${serverId}"]`).addClass("selected");
             $("#servers").addClass("active");
-
-            // If a specific layer was provided in the URL, apply it after the server's layers are loaded
-            console.debug("initServerMode - urlIntent:", this.urlIntent);
-            if (this.urlIntent.layer) {
-                console.debug("URL layer detected:", this.urlIntent.layer);
-                $(document).one("layer:loaded", () => {
-                    console.debug("layer:loaded event fired, applying URL layer");
-                    this.initStaticMode({ layer: this.urlIntent.layer });
-                });
-            }
 
             if (this.squadServersBrowser.syncInterval) clearInterval(this.squadServersBrowser.syncInterval);
             this.squadServersBrowser.syncInterval = setInterval(
@@ -205,9 +201,7 @@ export default class SquadCalc {
     }
 
     initStaticMode(intent, onLayerLoaded = null) {
-        console.debug("initStaticMode called with intent:", intent);
         if (!intent.layer) {
-            console.debug("No layer in intent, returning");
             onLayerLoaded?.();
             return;
         }
@@ -330,7 +324,6 @@ export default class SquadCalc {
 
             const selectedLayerText = this.LAYER_SELECTOR.find(":selected").text().replaceAll(" ", "");
             const broadcast = event.broadcast ?? true;
-            console.debug("LAYER_SELECTOR changed - selectedLayerText:", selectedLayerText, "broadcast:", broadcast);
 
             // User cleared the layer selector, remove the layer and clean the URL
             if (selectedLayerText === "") {
@@ -700,7 +693,9 @@ export default class SquadCalc {
             factions:document.querySelector("#factionsDialog"),
             servers: document.querySelector("#serversInformation"),
             shortcutCapture: document.querySelector("#shortcutCaptureDialog"),
+            changelog: document.querySelector("#changelogDialog"),
         };
+        this._changelogCache = null;
         const { calc: calcInformation, weapon: weaponInformation, help: helpDialog, factions: factionsDialog, servers: serversInformation } = this._dialogs;
 
         $(".btn-delete, .btn-undo, .btn-layer, .returnBtn, #mapLayerMenu").hide();
@@ -739,6 +734,7 @@ export default class SquadCalc {
         this.closeDialogOnClickOutside(serversInformation);
         this.closeDialogOnClickOutside(helpDialog);
         this.closeDialogOnClickOutside(factionsDialog);
+        this.closeDialogOnClickOutside(this._dialogs.changelog);
         
         const overlay = document.getElementById("dropOverlay");
         let dragCounter = 0;
@@ -840,6 +836,20 @@ export default class SquadCalc {
             settingsTooltips.hide();
             settingsTooltips.disable();
             helpDialog.showModal();
+        });
+
+        $(document).on("click", "#openChangelog", async () => {
+            const changelogDialog = this._dialogs.changelog;
+            const contentEl = document.getElementById("changelogContent");
+            changelogDialog.showModal();
+            if (this._changelogCache) {
+                contentEl.innerHTML = this._changelogCache;
+                return;
+            }
+            const { default: changelogMd } = await import("../../CHANGELOG.md");
+            const html = marked.parse(changelogMd, { renderer: changelogRenderer });
+            this._changelogCache = html;
+            contentEl.innerHTML = html;
         });
 
         $("#mapLayerMenu").find("button.btn-session").on("click", () => {
@@ -959,6 +969,7 @@ export default class SquadCalc {
             // Remove listeners when closing weapon information to avoid stacking
             $("input[type=radio][name=angleChoice]").off();
             $(".heightPadding input").off();
+            $(".moveToBtn").off();
         });
         
         $("#canvasControls button").on("click", (event) => {
@@ -1202,8 +1213,8 @@ export default class SquadCalc {
 
     handleKeydown(event) {
 
-        const { calc, weapon, help, factions, servers } = this._dialogs;
-        if (weapon.open || calc.open || help.open || factions.open || servers.open) return;
+        const { calc, weapon, help, factions, servers, changelog } = this._dialogs;
+        if (weapon.open || calc.open || help.open || factions.open || servers.open || changelog.open) return;
 
         if ($(event.target).is("input, textarea, select")) return;
 
@@ -1287,7 +1298,13 @@ export default class SquadCalc {
      */
     show(){
         document.body.style.visibility = "visible";
-        setTimeout(function() {
+        // Recreate the map layer behind the loader splash : layers created during
+        // boot stay stuck in Firefox's slow synchronous-decode path, making zoom
+        // very laggy until the layer is recreated. Timed so the logo stamp
+        // animation (0.6s) is done and the fade-in (0.7s) ends before the
+        // loader starts fading out at 1.8s.
+        setTimeout(() => this.minimap.changeLayer(), 800);
+        setTimeout(() => {
             const logo = document.getElementById("loaderLogo");
             logo.classList.remove("logo-stamp");
             logo.classList.add("logo-stamp-out");
@@ -1914,5 +1931,13 @@ export default class SquadCalc {
         const newUrl = `${window.location.pathname}?${sortedParams.toString()}`;
         window.history.replaceState({}, "", newUrl);
     }
-    
+
+    sanitize(str) {
+        return String(str)
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;");
+    }
+
 }

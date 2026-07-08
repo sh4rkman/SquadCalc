@@ -1,12 +1,39 @@
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge"> **45.0.0** *(2026-07-08)*
 
-# <img src="https://img.shields.io/badge/-major%20release-b22222?style=for-the-badge"> **44.0.0** *(2026-05-15)*
+
+Heightmaps have been fully reworked: they are now way more precise (each square meter has its own average height), and they now take buildings and other assets into account! If you are shooting from or at a building, its height will now be taken into account when calculating the required elevation. Thanks a lot to **yobaNGE** for the loading mechanics and **Metroseksuaali** for the heightmap export tool!
+
+</br><img src="https://img.shields.io/badge/-new%20features-green">
+- You can now create carpet bombs by holding `alt` and dragging a target marker
+- You can now create a grid of targets by holding `shift` and dragging a target marker (Thanks Sh1nS0u & YuKI!)
+- You can now move a weapon by typing precise coordinates (thanks Josephant!)
+- Added a link to the [squad-armor.com](https://squad-armor.com) viewer for each vehicle in the factions panel (thanks MJH1606!)
+- Added a dialog to browse the changelog directly from squadcalc.app
+- You can now search the map & weapon dropdowns
+
+</br><img src="https://img.shields.io/badge/-%20improv%20-orange"> 
+- In the faction panel, vehicle images are now mirrored and facing each other
+- Improved the projectile simulation panel so it now displays some terrain before the weapon and after the target
+- Removed Belaya and Flooded Narva from the map list 😭
+- Fixed `M109` height & angle offset (thanks yobaNGE, fix [#495](https://github.com/sh4rkman/SquadCalc/issues/495))
+
+</br><img src="https://img.shields.io/badge/-bug%20fixes-b22">   
+- Fixed laggy map scrolling on first load (thanks jesrt!)
+- Fixed Factions & Units not loading correctly when opening a URL containing a server id (Thanks wwrp450!)
+- Fixed missing vehicle images for `ZSL92 IFV` & `ZSL92A APC QLZ87`
+- Fixed `map_ifv` icon (thanks driver_061!)
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
+
+# <img src="https://img.shields.io/badge/-major%20release-b22222?style=for-the-badge"> **44.0.0** *(2026-05-22)*
 
 </br><img src="https://img.shields.io/badge/-new%20features-green">
 - Menu is now fully customisable from settings : show/hide the buttons you want in your toolbar
 - Added a new "Share" button that allows sharing a long URL holding the selected factions and units (thanks Hans-Vader, [#481](https://github.com/sh4rkman/SquadCalc/issues/481))
 - Weapon dialog now display the shell damage ([#483](https://github.com/sh4rkman/SquadCalc/issues/483))
-- Added PZL07 Chinese 122mm self-propelled artillery from Infinite Warfare mod (Thanks ovalnik!)
-- Added Type63 multiple rocket launcher from Supermod (Thanks MJH1606 !)
+- Added `PZL07` Chinese 122mm self-propelled artillery from Infinite Warfare mod (Thanks ovalnik!)
+- Added `Type63` multiple rocket launcher from Supermod (Thanks MJH1606 !)
 - Modded weapons rework
   - Each mod now has its own category in the weapon dropdown
   - When "Enable modded weapons" is on, individual mods can be toggled on/off in the settings
@@ -54,10 +81,10 @@
 - In the server browser, teams are now correctly hidden on mobile (fix [#472](https://github.com/sh4rkman/SquadCalc/issues/472))
 - Fixed session links sometimes not working when opening them in a new tab (fix [#458](https://github.com/sh4rkman/SquadCalc/issues/458))
 - Vehicle emplacements that disappear will now prioritise vehicles that don't respawn, as in-game.
-- Changed Hellcanon German translation (thanks Hans Wurst!)
+- Changed `Hellcanon` German translation (thanks Hans Wurst!)
 - Fixed unit characteristics not hiding when removing a faction entirely
 - Fixed the server browser tooltip staying open after closing the server list
-- Fixed FV107 missing icon
+- Fixed `FV107` missing icon
 - Fixed vehicle respawn alerts sound not playing
 - Fix attempt at caching bug that displayed the old version after each update
 
@@ -134,7 +161,7 @@
 # <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge"> **42.0.5** *(2026-01-17)*
 
 </br><img src="https://img.shields.io/badge/-bug%20fixes-b22">  
-- M1O-120-RTF1 now use milliradians as intended (Thanks Sh1nS0u_!)
+- `M1O-120-RTF1` now use milliradians as intended (Thanks Sh1nS0u_!)
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
 
@@ -148,7 +175,7 @@
 # <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge"> **42.0.3** *(2026-01-11)*
 
 </br><img src="https://img.shields.io/badge/-bug%20fixes-b22">  
-- Updated M777 velocity (Thanks ovalnik/Dutch!)
+- Updated `M777` velocity (Thanks ovalnik/Dutch!)
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
 
@@ -156,7 +183,7 @@
 # <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge"> **42.0.2** *(2026-01-09)*
 
 </br><img src="https://img.shields.io/badge/-bug%20fixes-b22">  
-- Fixed M121 having wrong velocity (Thanks Matador!)
+- Fixed `M121` having wrong velocity (Thanks Matador!)
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
 
@@ -170,13 +197,13 @@
 # <img src="https://img.shields.io/badge/-major%20release-b22222?style=for-the-badge"> **42.0.0** *(2026-01-08)*
 
 </br><img src="https://img.shields.io/badge/-new%20features-green">  
-- Added French 120 Mortar (MO120RTF1) from SuperMod *(thanks Kryger)*
-- Added Ural HellCanon from Steel Division *(Thanks Mooraragi)*
+- Added French 120 Mortar `MO120RTF1` from SuperMod *(thanks Kryger)*
+- Added `Ural HellCanon` from Steel Division *(Thanks Mooraragi)*
 
 </br><img src="https://img.shields.io/badge/-bug%20fixes-b22">  
-- Fixed missing M777 marker *(thanks Madlifer, Dutch)*
+- Fixed missing `M777` marker *(thanks Madlifer, Dutch)*
 - Fixed default value for fontsize & zoom speed settings
-- Fixed UB32 & Technical UB32 icon that were reverted
+- Fixed `UB32` & `Technical UB32` icon that were reverted
 - Marker's icons placed by other members within a session now correctly update when moved out of range
 
 </br><img src="https://img.shields.io/badge/-%20improv%20-orange"> 

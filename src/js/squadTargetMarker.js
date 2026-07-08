@@ -1,6 +1,6 @@
 
 import { App } from "../app.js";
-import { CircleMarker, Polyline, Popup, Icon } from "leaflet";
+import { CircleMarker, Polyline, Polygon, Popup, Icon } from "leaflet";
 import SquadSimulation from "./squadSimulation.js";
 import SquadFiringSolution from "./squadFiringSolution.js";
 import TargetGrid from "./squadTargetGrid.js";
@@ -8,6 +8,9 @@ import { sendTargetData } from "./squadCalcAPI.js";
 import { Ellipse } from "./libs/leaflet-ellipse.js";
 import { squadMarker } from "./squadMarker.js";
 import i18next from "i18next";
+
+const CARPET_MAX_TARGETS = 10;
+const GRID_MAX_SIDE = 5;
 
 export const squadTargetMarker = squadMarker.extend({
 
@@ -85,7 +88,7 @@ export const squadTargetMarker = squadMarker.extend({
         this.firingSolution1 = new SquadFiringSolution(this.map.activeWeaponsMarkers.getLayers()[0].getLatLng(), this.getLatLng(), this.map, this.map.activeWeaponsMarkers.getLayers()[0].heightPadding);
 
         // Report target to squadcalc API
-        if (!options.uid) {
+        if (!options.uid && !options.skipApiReport) {
             sendTargetData({
                 lat: latlng.lat,
                 lng: latlng.lng,
@@ -104,7 +107,7 @@ export const squadTargetMarker = squadMarker.extend({
 
         const [html1, clipboard1] = this.getContent(this.firingSolution1, this.map.activeWeaponsMarkers.getLayers()[0].angleType);
         this.calcMarker1.setContent(html1).openOn(this.map);
-        if (App.userSettings.copyTarget && !options.uid) navigator.clipboard.writeText(clipboard1);
+        if (App.userSettings.copyTarget && !options.uid && !options.skipApiReport) navigator.clipboard.writeText(clipboard1);
         
 
         // If two weapons already on the map
@@ -113,7 +116,7 @@ export const squadTargetMarker = squadMarker.extend({
             this.calcMarker1.setContent(`1. ${html1}`);
             const [html2, clipboard2] = this.getContent(this.firingSolution2, this.map.activeWeaponsMarkers.getLayers()[1].angleType);
             this.calcMarker2.setContent(`2. ${html2}`).openOn(this.map);
-            if (App.userSettings.copyTarget && !options.uid) navigator.clipboard.writeText(`${clipboard1} / ${clipboard2}`);  
+            if (App.userSettings.copyTarget && !options.uid && !options.skipApiReport) navigator.clipboard.writeText(`${clipboard1} / ${clipboard2}`);
         }
 
         // Initialise the target Grid
@@ -141,6 +144,7 @@ export const squadTargetMarker = squadMarker.extend({
         this.on("dragStart", this._handleDragStart, this);
         this.on("dragEnd", this._handleDragEnd, this);
         this.on("contextmenu", this._handleContextMenu, this);
+        this.on("pointerdown", this._handlePointerDown, this);
 
         if (App.hasMouse) {
             this.on("pointerover", this._handleMouseOver, this);
@@ -175,7 +179,7 @@ export const squadTargetMarker = squadMarker.extend({
 
         if (broadcast && App.session.ws && App.session.ws.readyState === WebSocket.OPEN) {
             App.session.ws.send(JSON.stringify({ type: "DELETE_TARGET", uid: this.uid}));
-            console.debug(`Sent delete request for target with UID: ${this.uid}`);
+            console.debug(`[SESSION] Sent delete request for target with UID: ${this.uid}`);
         }
 
         // Unbind all custom event handlers
@@ -554,7 +558,6 @@ export const squadTargetMarker = squadMarker.extend({
         const DIALOG = document.getElementById("calcInformation");
         let simulation2;
         let weaponPos2;
-        let heightPath2;
 
         $("#sim1").addClass("active");
         $("#sim2").removeClass("active");
@@ -562,15 +565,15 @@ export const squadTargetMarker = squadMarker.extend({
         $("#canvasControls > button").first().addClass("active");
 
         const weaponPos1 = this.map.activeWeaponsMarkers.getLayers()[0].getLatLng();
-        const heightPath1 = this._map.heightmap.getHeightPath(weaponPos1, this.getLatLng());
-        const simulation1 = new SquadSimulation("#sim1", this.firingSolution1, heightPath1, this.map.activeWeaponsMarkers.getLayers()[0].angleType, App.activeWeapon.unit);
+        const { path: heightPath1, weaponIndex: weaponIndex1, targetIndex: targetIndex1 } = this._map.heightmap.getHeightPath(weaponPos1, this.getLatLng());
+        const simulation1 = new SquadSimulation("#sim1", this.firingSolution1, heightPath1, this.map.activeWeaponsMarkers.getLayers()[0].angleType, App.activeWeapon.unit, 0, weaponIndex1, targetIndex1);
         $("#canvasControls").css("display", "none");
 
         if (this.map.activeWeaponsMarkers.getLayers().length === 2){
             $("#canvasControls").css("display", "block");
             weaponPos2 = this.map.activeWeaponsMarkers.getLayers()[1].getLatLng();
-            heightPath2 = this._map.heightmap.getHeightPath(weaponPos2, this.getLatLng());
-            simulation2 = new SquadSimulation("#sim2", this.firingSolution2, heightPath2, this.map.activeWeaponsMarkers.getLayers()[1].angleType, App.activeWeapon.unit);
+            const { path: heightPath2, weaponIndex: weaponIndex2, targetIndex: targetIndex2 } = this._map.heightmap.getHeightPath(weaponPos2, this.getLatLng());
+            simulation2 = new SquadSimulation("#sim2", this.firingSolution2, heightPath2, this.map.activeWeaponsMarkers.getLayers()[1].angleType, App.activeWeapon.unit, 0, weaponIndex2, targetIndex2);
         }
 
         // If the user close the modal, stop the animation
@@ -773,5 +776,214 @@ export const squadTargetMarker = squadMarker.extend({
                 linesBetweenTarget.removeFrom(this.map.markersGroup).remove();
             }
         }
-    }
+    },
+
+    _handlePointerDown: function (e) {
+        if (e.originalEvent.altKey) return this._startCarpetDrag(e);
+        if (e.originalEvent.shiftKey) return this._startRectangleDrag(e);
+    },
+
+    _startCarpetDrag: function (e) {
+        e.originalEvent.preventDefault();
+        this.dragging.disable();
+        this.map.dragging.disable();
+
+        // Release implicit pointer capture so pointermove reaches document
+        const el = this.getElement();
+        if (el && e.originalEvent.pointerId != null) {
+            try { el.releasePointerCapture(e.originalEvent.pointerId); } catch { /* ignore */ }
+        }
+
+        const start = this.getLatLng();
+
+        const previewLine = new Polyline([start, start], {
+            color: App.mainColor,
+            opacity: 0.65,
+            weight: 2,
+            dashArray: "6 6",
+            showMeasurements: false,
+        }).addTo(this.map.markersGroup);
+
+        const toLatLng = (domEvent) => {
+            const rect = this.map.getContainer().getBoundingClientRect();
+            return this.map.containerPointToLatLng([
+                domEvent.clientX - rect.left,
+                domEvent.clientY - rect.top,
+            ]);
+        };
+
+        let previewDots = [];
+
+        const onPointerMove = (domEvent) => {
+            const end = toLatLng(domEvent);
+            const positions = this._getCarpetPositions(start, end);
+            const lineEnd = positions.length >= CARPET_MAX_TARGETS ? positions[positions.length - 1] : end;
+            previewLine.setLatLngs([start, lineEnd]);
+
+            previewDots.forEach(d => d.removeFrom(this.map.markersGroup).remove());
+            previewDots = positions.map(latlng =>
+                new CircleMarker(latlng, {
+                    radius: 6,
+                    color: App.mainColor,
+                    fillColor: App.mainColor,
+                    fillOpacity: 0.5,
+                    interactive: false,
+                }).addTo(this.map.markersGroup)
+            );
+        };
+
+        const onPointerUp = (domEvent) => {
+            document.removeEventListener("pointermove", onPointerMove);
+            document.removeEventListener("pointerup", onPointerUp);
+            previewLine.removeFrom(this.map.markersGroup).remove();
+            previewDots.forEach(d => d.removeFrom(this.map.markersGroup).remove());
+            previewDots = [];
+            this.dragging.enable();
+            this.map.dragging.enable();
+
+            const end = toLatLng(domEvent);
+            this._getCarpetPositions(start, end)
+                .forEach(latlng => this.map.createTarget(latlng, null, false, true));
+        };
+
+        document.addEventListener("pointermove", onPointerMove);
+        document.addEventListener("pointerup", onPointerUp);
+    },
+
+    _getCarpetPositions: function (start, end) {
+        const dlat = end.lat - start.lat;
+        const dlng = end.lng - start.lng;
+        const totalDist = Math.hypot(dlat, dlng);
+        if (totalDist === 0) return [];
+        const latDelta = dlat * -this.map.mapToGameScale;
+        const lngDelta = dlng * this.map.mapToGameScale;
+        let dragBearing = Math.atan2(latDelta, lngDelta) * 180 / Math.PI + 90;
+        if (dragBearing < 0) dragBearing += 360;
+        const step = this._getStepAtBearing(dragBearing);
+        if (step <= 0 || totalDist < step) return [];
+        const count = Math.min(Math.floor(totalDist / step), CARPET_MAX_TARGETS);
+        const positions = [];
+        for (let i = 1; i <= count; i++) {
+            const t = (i * step) / totalDist;
+            positions.push({ lat: start.lat + dlat * t, lng: start.lng + dlng * t });
+        }
+        return positions;
+    },
+
+    // Spacing between targets, based on the spread ellipse radius in a given
+    // compass direction (e.g. the direction the player is dragging)
+    _getStepAtBearing: function (bearingDeg) {
+        const [fs, weaponMarker] = this.getFirstAvailableWeapon();
+        const radius = fs.getSpreadRadiusAtBearing(bearingDeg, weaponMarker.angleType);
+        return radius * this.map.gameToMapScale;
+    },
+
+    _startRectangleDrag: function (e) {
+        e.originalEvent.preventDefault();
+        this.dragging.disable();
+        this.map.dragging.disable();
+
+        // Release implicit pointer capture so pointermove reaches document
+        const el = this.getElement();
+        if (el && e.originalEvent.pointerId != null) {
+            try { el.releasePointerCapture(e.originalEvent.pointerId); } catch { /* ignore */ }
+        }
+
+        const start = this.getLatLng();
+        // lat axis runs north/south (bearing 0), lng axis runs east/west (bearing 90)
+        this._gridStepLat = this._getStepAtBearing(0);
+        this._gridStepLng = this._getStepAtBearing(90);
+
+        const previewRect = new Polygon([start, start, start, start], {
+            color: App.mainColor,
+            opacity: 0.65,
+            weight: 2,
+            dashArray: "6 6",
+            fill: false,
+            showMeasurements: false,
+        }).addTo(this.map.markersGroup);
+
+        const toLatLng = (domEvent) => {
+            const rect = this.map.getContainer().getBoundingClientRect();
+            return this.map.containerPointToLatLng([
+                domEvent.clientX - rect.left,
+                domEvent.clientY - rect.top,
+            ]);
+        };
+
+        let previewDots = [];
+
+        const onPointerMove = (domEvent) => {
+            const end = toLatLng(domEvent);
+            const rectEnd = this._clampGridEnd(start, end);
+            previewRect.setLatLngs([
+                start,
+                { lat: start.lat, lng: rectEnd.lng },
+                rectEnd,
+                { lat: rectEnd.lat, lng: start.lng },
+            ]);
+
+            previewDots.forEach(d => d.removeFrom(this.map.markersGroup).remove());
+            previewDots = this._getGridPositions(start, end).map(latlng =>
+                new CircleMarker(latlng, {
+                    radius: 6,
+                    color: App.mainColor,
+                    fillColor: App.mainColor,
+                    fillOpacity: 0.5,
+                    interactive: false,
+                }).addTo(this.map.markersGroup)
+            );
+        };
+
+        const onPointerUp = (domEvent) => {
+            document.removeEventListener("pointermove", onPointerMove);
+            document.removeEventListener("pointerup", onPointerUp);
+            previewRect.removeFrom(this.map.markersGroup).remove();
+            previewDots.forEach(d => d.removeFrom(this.map.markersGroup).remove());
+            previewDots = [];
+            this.dragging.enable();
+            this.map.dragging.enable();
+
+            const end = toLatLng(domEvent);
+            this._getGridPositions(start, end)
+                .forEach(latlng => this.map.createTarget(latlng, null, false, true));
+        };
+
+        document.addEventListener("pointermove", onPointerMove);
+        document.addEventListener("pointerup", onPointerUp);
+    },
+
+    // Clamps the drag endpoint so the resulting rectangle never exceeds
+    // GRID_MAX_SIDE targets per axis
+    _clampGridEnd: function (start, end) {
+        const dlat = end.lat - start.lat;
+        const dlng = end.lng - start.lng;
+        const maxOffsetLat = (GRID_MAX_SIDE - 1) * this._gridStepLat;
+        const maxOffsetLng = (GRID_MAX_SIDE - 1) * this._gridStepLng;
+        return {
+            lat: start.lat + Math.sign(dlat) * Math.min(Math.abs(dlat), maxOffsetLat),
+            lng: start.lng + Math.sign(dlng) * Math.min(Math.abs(dlng), maxOffsetLng),
+        };
+    },
+
+    // Fills the rectangle whose diagonal goes from start to end with a grid of
+    // targets spaced by _gridStepLat/_gridStepLng on each axis, skipping `start`
+    // itself (already a target), capped to a GRID_MAX_SIDE x GRID_MAX_SIDE square
+    _getGridPositions: function (start, end) {
+        const dlat = end.lat - start.lat;
+        const dlng = end.lng - start.lng;
+        const countLat = Math.min(Math.floor(Math.abs(dlat) / this._gridStepLat), GRID_MAX_SIDE - 1);
+        const countLng = Math.min(Math.floor(Math.abs(dlng) / this._gridStepLng), GRID_MAX_SIDE - 1);
+        const stepLat = Math.sign(dlat) * this._gridStepLat;
+        const stepLng = Math.sign(dlng) * this._gridStepLng;
+
+        const positions = [];
+        for (let i = 0; i <= countLat; i++) {
+            for (let j = 0; j <= countLng; j++) {
+                if (i === 0 && j === 0) continue;
+                positions.push({ lat: start.lat + i * stepLat, lng: start.lng + j * stepLng });
+            }
+        }
+        return positions;
+    },
 });

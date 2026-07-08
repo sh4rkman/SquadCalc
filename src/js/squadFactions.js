@@ -395,6 +395,7 @@ export default class SquadFactions {
      */
     openCard(event) {
         if ($(event.target).closest(".vehicle-type").length && !Browser.mobile) return;
+        if ($(event.target).closest(".armor-link, .wiki-link").length) return;
 
         const $card = $(event.currentTarget);
         const $image = $card.find(".image");
@@ -504,7 +505,7 @@ export default class SquadFactions {
                     if (originalIndex !== -1) spawners.vehicles.splice(originalIndex, 1);
 
                 } else {
-                    console.debug("NO EMPTY SPAWNERS LEFT!");
+                    console.debug("[FACTION] NO EMPTY SPAWNERS LEFT!");
                 }
             }
         }
@@ -538,13 +539,13 @@ export default class SquadFactions {
                         ${LEFT ? metaHTML + typeHTML : typeHTML + metaHTML}
                     </div>
                 </div>
-                ${this.getCardImgHTML(vehicle)}
+                ${this.getCardImgHTML(vehicle, LEFT)}
             </div>
         `);
     }
 
 
-    getCardImgHTML(vehicle){
+    getCardImgHTML(vehicle, LEFT = false){
         let shortVehName = vehicle.type.split(" ")[0];
         let amphibious = "";
         if (vehicle.isAmphibious) {
@@ -564,7 +565,7 @@ export default class SquadFactions {
             `;
         }
 
-        let totalSeats = vehicle.passengerSeats + vehicle.driverSeats; 
+        let totalSeats = vehicle.passengerSeats + vehicle.driverSeats;
         let passengersHTML = `
                 <div class="tag">
                     <div class="passenger">${totalSeats}</div>
@@ -572,11 +573,27 @@ export default class SquadFactions {
                 </div>
             `;
 
+        const wikiLink = `
+            <a class="tag wiki-link" href="https://squad.fandom.com/wiki/${shortVehName}" target="_blank" title="squad.fandom.com">
+                <span>WIKI</span>
+            </a>
+        `;
+
+        let armorLink = "";
+        if (vehicle.rawType) {
+            const armorSlug = vehicle.rawType.replace(/_C$/, "");
+            armorLink = `
+                <a class="tag armor-link" href="https://squad-armor.com/vehicles/${armorSlug}" target="_blank" title="squad-armor.com">
+                    <span>SQUAD<br><span class="armor-yellow">ARMOR</span></span>
+                </a>
+            `;
+        }
+
         return `
             <div class="image">
-                <a href="https://squad.fandom.com/wiki/${shortVehName}" target="_blank" class="attribution">squad.fandom.com</a>
                 <div class="tags">${passengersHTML}${amphibious}${ATGM}</div>
-                <img src="/img/vehicles/${vehicle.type}.webp" onerror="this.onerror=null; this.src='/img/vehicles/placeholder.webp';"/>
+                <div class="links">${wikiLink}${armorLink}</div>
+                <img src="/img/vehicles/${vehicle.type}.webp" onerror="this.onerror=null; this.src='/img/vehicles/placeholder.webp';" ${LEFT ? "class=\"mirrored\"" : ""}/>
             </div>
         `;
     }
@@ -672,7 +689,7 @@ export default class SquadFactions {
         const img = document.getElementById(`teamBg${team}`);
         if (!img) return;
         const fallback = team === 1 ? "Team1" : "Team2";
-        const newSrc = `/img/spawnGroup/${factionId || fallback}.webp`;
+        const newSrc = `/img/spawnGroup/${(factionId || fallback).replace(/[^a-zA-Z0-9_-]/g, "")}.webp`;
         img.style.transition = "opacity 0.15s ease";
         img.style.opacity = "0";
         setTimeout(() => {
@@ -688,9 +705,12 @@ export default class SquadFactions {
         const btn = document.getElementById(`factionBtn${team}`);
         if (!btn) return;
         const val = SELECTOR.val();
-
         const img = document.createElement("img");
-        img.src = val ? `/img/flags/${val}.webp` : "/img/flags/unknown.webp";
+
+        // strip anything but alphanumerics/underscore/dash to prevent path traversal via faction value
+        const sanitizedVal = val ? val.replace(/[^a-zA-Z0-9_-]/g, "") : val;
+        
+        img.src = sanitizedVal ? `/img/flags/${sanitizedVal}.webp` : "/img/flags/unknown.webp";
         img.addEventListener("error", () => { img.src = "/img/flags/unknown.webp"; }, { once: true });
         btn.replaceChildren(img);
 
@@ -953,7 +973,7 @@ export default class SquadFactions {
             const broadcast = event.broadcast ?? true;
 
             if (broadcast && App.session.ws && App.session.ws.readyState === WebSocket.OPEN) {
-                console.debug("broadcasting unit1 change", event.target.value);
+                console.debug("[SESSION] broadcasting unit1 change", event.target.value);
                 App.session.ws.send(
                     JSON.stringify({
                         type: "UPDATE_UNIT",
@@ -1015,7 +1035,7 @@ export default class SquadFactions {
             const broadcast = event.broadcast ?? true;
 
             if (broadcast && App.session.ws && App.session.ws.readyState === WebSocket.OPEN) {
-                console.debug("broadcasting unit2 change", event.target.value);
+                console.debug("[SESSION] broadcasting unit2 change", event.target.value);
                 App.session.ws.send(
                     JSON.stringify({
                         type: "UPDATE_UNIT",
@@ -1060,16 +1080,16 @@ export default class SquadFactions {
                 if (this.FACTION1_SELECTOR.find(`option[value="${team1DefaultFaction}"]`).length > 0) {
                     this.FACTION1_SELECTOR.val(team1DefaultFaction).trigger($.Event("change", { broadcast: false }));
                 } else {
-                    console.debug(`Default faction for team 1 not found in dropdown: ${team1DefaultFaction}`);
-                    console.debug(`Falling back to ${factionData.teamConfigs.factions.team1Units[0].factionID}`);
+                    console.debug(`[FACTIONS] Default faction for team 1 not found in dropdown: ${team1DefaultFaction}`);
+                    console.debug(`[FACTIONS] Falling back to ${factionData.teamConfigs.factions.team1Units[0].factionID}`);
                     this.FACTION1_SELECTOR.val(factionData.teamConfigs.factions.team1Units[0].factionID).trigger($.Event("change", { broadcast: false }));
                 }
 
                 if (this.FACTION2_SELECTOR.find(`option[value="${team2DefaultFaction}"]`).length > 0) {
                     this.FACTION2_SELECTOR.val(team2DefaultFaction).trigger($.Event("change", { broadcast: false }));
                 } else {
-                    console.debug(`Default faction for team 2 not found in dropdown: ${team2DefaultFaction}`);
-                    console.debug(`Falling back to ${factionData.teamConfigs.factions.team2Units[0].factionID}`);
+                    console.debug(`[FACTIONS] Default faction for team 2 not found in dropdown: ${team2DefaultFaction}`);
+                    console.debug(`[FACTIONS] Falling back to ${factionData.teamConfigs.factions.team2Units[0].factionID}`);
                     this.FACTION2_SELECTOR.val(factionData.teamConfigs.factions.team2Units[0].factionID).trigger($.Event("change", { broadcast: false }));
                 }
 
@@ -1139,7 +1159,7 @@ export default class SquadFactions {
         if (selectedUnit.characteristics) {
             Object.entries(selectedUnit.characteristics).forEach(asset => {
                 // Ignore some useless characteristics
-                if (["NoSpecial", "HeavyGrenadier", "Pathfinder", "M27s", "None", "NoEmplacements"].some(k => asset[1].includes(k))) return;
+                if (["NoSpecial", "HeavyGrenadier", "Pathfinder", "M27s", "None", "NoEmplacements", "EnemyIntel"].some(k => asset[1].includes(k))) return;
                 
                 $(DIV).append(`
                     <img src="/img/icons/shared/characteristics/${asset[1]}.webp"

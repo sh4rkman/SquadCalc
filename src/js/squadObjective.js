@@ -22,7 +22,7 @@ export class SquadObjective {
         this.isNext = false;
         this.percentage = "";
 
-        console.debug("creating flag", this.name, "at position", this.position);
+        console.debug("[LAYER] creating flag", this.name, "at position", this.position);
         let html;
         if (!this.isMain){ 
             html = this.name;
@@ -462,7 +462,6 @@ export class SquadObjective {
 
 
     hide(){
-        //console.debug("      -> Hiding flag: ", this.name);
         this.nameText.removeFrom(this.layerGroup);
         this.percentageText?.removeFrom(this.layerGroup).remove();
         this.flag.removeFrom(this.layerGroup);
