@@ -19,7 +19,8 @@ dialog {
         overflow: hidden;
         display: flex;
         flex-direction: column;
-        @media (min-width: 48em) {
+
+        @media (width >= 48em) {
             max-width: 680px;
             height: 80vh;
             max-height: 700px;
@@ -54,7 +55,10 @@ dialog {
                 padding-left: 1.8em;
                 margin: 0.5em 0 0;
             }
-            li { margin: 0.4em 0; line-height: 1.4; }
+            li { 
+                margin: 0.4em 0; 
+                line-height: 1.4; 
+            }
             h1 {
                 font-size: 1.1em;
                 font-weight: bold;
@@ -64,9 +68,23 @@ dialog {
                 &:first-of-type { margin-top: 1em; }
                 display: flex;
                 align-items: center;
-                img { order: 3; margin-left: auto; margin-right: 0; max-height: 32px; }
-                strong { order: 1; font-size: 1.4em; }
-                em { order: 2; margin-left: 0.5em; font-size: 0.85em; opacity: 0.6; font-style: italic; }
+                img { 
+                    order: 3; 
+                    margin-left: 
+                    auto; margin-right: 0; 
+                    max-height: 32px; 
+                }
+                strong {
+                    order: 1; 
+                    font-size: 1.4em;
+                }
+                em { 
+                    order: 2;
+                    margin-left: 0.5em;
+                    font-size: 0.85em;
+                    opacity: 0.6;
+                    font-style: italic;
+                }
             }
             p {
                 margin: 2em 0 0;
@@ -234,7 +252,7 @@ dialog {
                 text-transform: uppercase;
             }
             &:nth-child(2){
-                font-weight: lighter;
+                font-weight: bold;
                 text-align: right;
             }
             &.info {

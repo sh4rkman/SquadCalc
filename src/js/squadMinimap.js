@@ -541,8 +541,6 @@ export const squadMinimap = Map.extend({
             const tPng  = this.heightmap.getHeight(latlng);
             const dJson = tJson - wJson;
             const dPng  = tPng  - wPng;
-            const currentScale = this.activeMap.SDK_data.heightmapPNG.scale[2];
-            const idealScale = dPng !== 0 ? (currentScale * dJson / dPng).toFixed(3) : "N/A";
             const f = v => v.toFixed(1);
             const absDiff = Math.abs(dJson - dPng);
             const diffIcon = absDiff < 1 ? "✅" : absDiff < 3 ? "⚠️" : "⛔";

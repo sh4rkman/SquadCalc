@@ -558,7 +558,6 @@ export const squadTargetMarker = squadMarker.extend({
         const DIALOG = document.getElementById("calcInformation");
         let simulation2;
         let weaponPos2;
-        let heightPath2;
 
         $("#sim1").addClass("active");
         $("#sim2").removeClass("active");
@@ -792,7 +791,7 @@ export const squadTargetMarker = squadMarker.extend({
         // Release implicit pointer capture so pointermove reaches document
         const el = this.getElement();
         if (el && e.originalEvent.pointerId != null) {
-            try { el.releasePointerCapture(e.originalEvent.pointerId); } catch (_) { /* */ }
+            try { el.releasePointerCapture(e.originalEvent.pointerId); } catch { /* ignore */ }
         }
 
         const start = this.getLatLng();
@@ -887,7 +886,7 @@ export const squadTargetMarker = squadMarker.extend({
         // Release implicit pointer capture so pointermove reaches document
         const el = this.getElement();
         if (el && e.originalEvent.pointerId != null) {
-            try { el.releasePointerCapture(e.originalEvent.pointerId); } catch (_) { /* */ }
+            try { el.releasePointerCapture(e.originalEvent.pointerId); } catch { /* ignore */ }
         }
 
         const start = this.getLatLng();

@@ -96,7 +96,7 @@ export const MAPS = [
                 scale: [0.5, 0.5, 4],
                 BWlevels: [1209, 1369]
             },
-                heightmapPNG: {
+            heightmapPNG: {
                 scale: [0.5, 0.5, 0.982942589],
             }
         }

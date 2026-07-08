@@ -1,26 +1,27 @@
-# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge"> **44.1.0** *(2026-0X-XX)*
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge"> **45.0.0** *(2026-07-08)*
 
 
-Heightmaps have been fully reworked, they are now way more precise (each square meters have its own average height) and they now takes building and other assets into account ! If you are shooting from or at a building it will now take its height in account when calculating the elevation needed. Thanks a lot to yobaNGE for the loading mechanics and Metroseksuaali for the heightmap exportation tool !
+Heightmaps have been fully reworked: they are now way more precise (each square meter has its own average height), and they now take buildings and other assets into account! If you are shooting from or at a building, its height will now be taken into account when calculating the required elevation. Thanks a lot to **yobaNGE** for the loading mechanics and **Metroseksuaali** for the heightmap export tool!
 
 </br><img src="https://img.shields.io/badge/-new%20features-green">
 - You can now create carpet bombs by holding `alt` and dragging a target marker
-- You can now create a grid of targets by holding `shift` and dragging a target marker (Thanks Sh1nS0u & YuKI !)
-- You can now move a weapon by typing the precise coordinate (thanks Josephant!)
-- Added a link to the [squad-armor.com](https://squad-armor.com) viewer for each vehicle of the factions panel (thanks MJH1606 !)
-- Added a dialog to browse this changelog directly from squadcalc.app
+- You can now create a grid of targets by holding `shift` and dragging a target marker (Thanks Sh1nS0u & YuKI!)
+- You can now move a weapon by typing precise coordinates (thanks Josephant!)
+- Added a link to the [squad-armor.com](https://squad-armor.com) viewer for each vehicle in the factions panel (thanks MJH1606!)
+- Added a dialog to browse the changelog directly from squadcalc.app
 - You can now search the map & weapon dropdowns
 
 </br><img src="https://img.shields.io/badge/-%20improv%20-orange"> 
 - In the faction panel, vehicle images are now mirrored and facing each other
-- Improved projectile simulation panel to now display the terrain before the weapon and after the target
+- Improved the projectile simulation panel so it now displays some terrain before the weapon and after the target
 - Removed Belaya and Flooded Narva from the map list 😭
 - Fixed `M109` height & angle offset (thanks yobaNGE, fix [#495](https://github.com/sh4rkman/SquadCalc/issues/495))
 
 </br><img src="https://img.shields.io/badge/-bug%20fixes-b22">   
-- Fixed Factions & Units not loading correctly when opening a URL holding a server id (Thanks wwrp450!)
-- Fixed missing vehicles images for `ZSL92 IFV` & `ZSL92A APC QLZ87`
-- Fixed `map_ifv` icon (thanks driver_061 !)
+- Fixed laggy map scrolling on first load (thanks jesrt!)
+- Fixed Factions & Units not loading correctly when opening a URL containing a server id (Thanks wwrp450!)
+- Fixed missing vehicle images for `ZSL92 IFV` & `ZSL92A APC QLZ87`
+- Fixed `map_ifv` icon (thanks driver_061!)
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
 
