@@ -278,9 +278,14 @@
                             }
                         }           
                         input[type="range"] {
+                            // Chrome ignores ::-webkit-slider-thumb styling
+                            // unless the input itself drops native appearance
+                            -webkit-appearance: none;
+                            appearance: none;
                             width: 100%;
                             height: 2px;
                             border-radius: 1px;
+                            background: rgba(255, 255, 255, 0.25);
                             outline: none;
                             position: relative;
                             z-index: 1;
