@@ -344,6 +344,7 @@
 🖥️ Servers data provided by **[BattleMetrics](https://www.battlemetrics.com)**  
 🗣️ AI Text-To-Speech made with **[Luvvoice](https://luvvoice.com/)**  
 🔣 Icons by **[FontAwesome](https://fontawesome.com/icons)**  
+⛰️ heightmaps extracted with **[SquadHeight](https://github.com/Metroseksuaali/SquadHeight)** by [Metroseksuaali](https://github.com/Metroseksuaali)  
 👌🏼 Thanks to everyone supporting the project with kinds words, clever suggestions, and better code than mine
 
 
@@ -362,6 +363,7 @@
 * [TheMatheusDev](https://github.com/TheMatheusDev)  
 * [SphaeroX](https://github.com/SphaeroX)  
 * sitroz
+* [yobaNGE](https://github.com/yobaNGE)  
 
 
 
