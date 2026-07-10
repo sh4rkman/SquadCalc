@@ -49,6 +49,10 @@
 #factionsButton {
     display: none;
     position: absolute;
+    // Chromium clips backdrop-filter at any ancestor holding a filled (fill-mode)
+    // opacity animation, killing the faction bar blur. fadeInUp ends at the
+    // natural state anyway, so drop the fill and let the animation be discarded.
+    animation-fill-mode: none;
     bottom: 0;
     left: 0;
     right: 0;
