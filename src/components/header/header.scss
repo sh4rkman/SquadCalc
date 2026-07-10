@@ -46,6 +46,13 @@ header {
             padding-top: 1em;
         }
     }
+    // Chromium clips backdrop-filter at any ancestor holding a filled (fill-mode)
+    // opacity animation, killing the select2 dropdown blur. fadeIn ends at the
+    // natural opacity anyway, so drop the fill and let the animation be discarded.
+    .mapSelector .dropdown,
+    .weaponSelector {
+        animation-fill-mode: none;
+    }
     .mapSelector {
         padding-top: 1em;
         z-index: 5;
@@ -179,7 +186,7 @@ header {
 }
 
 .select2-dropdown--below {
-    animation: select2SlideDown 0.15s ease;
+    animation: select2-slide-down 0.15s ease;
 }
 
 .select2-dropdown--above {

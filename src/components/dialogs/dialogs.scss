@@ -17,8 +17,10 @@ dialog {
         backdrop-filter: none;
         &::backdrop { background: transparent; }
         overflow: hidden;
-        display: flex;
-        flex-direction: column;
+        &[open] {
+            display: flex;
+            flex-direction: column;
+        }
 
         @media (width >= 48em) {
             max-width: 680px;
