@@ -377,8 +377,11 @@
 
 @media screen and (width >= 87.5em) {
     header {
-        .select2-results__options {
-            font-size: 1em;
+        // Match base rules specificity in header.scss so these actually apply
+        .weaponSelector .select2-results__options,
+        .mapSelector #mapSelector .select2-results__options,
+        .mapSelector #layerSelector .select2-results__options {
+            font-size: 0.9em;
         }
     }
 }
@@ -417,10 +420,11 @@
                     padding-top: 5em;
                 }
             }
+            // .mapSelector prefix needed to outweigh base rules in header.scss
             #weaponSelector,
-            #mapSelector,
             #ammoSelector,
-            #layerSelector {
+            .mapSelector #mapSelector,
+            .mapSelector #layerSelector {
                 .select2-container {
                     min-width: 300px;
                     max-width: 300px;
@@ -428,7 +432,7 @@
                     font-size: 1.25em;
                 }
                 .select2-results__options {
-                    font-size: 1.1em;
+                    font-size: 0.9em;
                     // line-height: 1.3em;
                     max-height: 1250px;
                 }
