@@ -121,10 +121,14 @@ dialog {
         transition: all 0.4s ease-in-out;
         cursor: pointer;
         width: 20px;
+        height: 20px;
         display: flex;
         align-items: center;
         justify-content: center;
         svg {
+            // explicit size: Safari collapses viewBox-only svg flex items to 0 height
+            width: 100%;
+            height: 100%;
             fill: white;
         }
         &:hover {

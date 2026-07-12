@@ -1,3 +1,12 @@
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge"> **45.0.2** *(2026-07-12)*
+
+</br><img src="https://img.shields.io/badge/-bug%20fixes-b22">  
+- Fixed faction bar background blur effects not working on Chrome/Edge
+- Fixed responsiveness of various UX element on 1440p monitors (thanks yobaNGE!)
+- Fixed dialogs close button being invisible on Safari (fix [#503](https://github.com/sh4rkman/SquadCalc/issues/503), thanks Josephant & ButtGrinder!)
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
 # <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge"> **45.0.1** *(2026-07-10)*
 
 </br><img src="https://img.shields.io/badge/-bug%20fixes-b22">  
@@ -5,6 +14,8 @@
 - Fixed several background blur effects not working on Chrome/Edge (fix [#500](https://github.com/sh4rkman/SquadCalc/issues/500))
 - Fixed settings sliders theme on Chrome/Edge
 - Fixed missing French/Ukrainian translations in the settings dialog
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
 
 
 # <img src="https://img.shields.io/badge/-major%20release-b22222?style=for-the-badge"> **45.0.0** *(2026-07-08)*
