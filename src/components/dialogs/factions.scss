@@ -94,7 +94,7 @@
 #factionsDialog {
     border-radius: 0;
     flex-direction: column;
-    height: 100vh;
+    height: 100dvh;
     &:not([open]) {
         display: none;
     }
