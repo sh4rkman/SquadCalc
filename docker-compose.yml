@@ -1,0 +1,13 @@
+services:
+  squadcalc:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+      args:
+        API_URL: https://squadcalc.app/api
+        # SEARCH_ENGINES: "false"
+        # SMO_WEBSOCKET: "false"
+        # DISABLE_FACTIONS: "false"
+    ports:
+      - "8080:80"
+    restart: unless-stopped
