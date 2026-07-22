@@ -22,7 +22,6 @@
     "spreadDesc": "En raison de l'imprécision de la minute d'angle (MOA) de l'arme et de la longueur du projectile, les tirs peuvent se disperser selon un schéma elliptique.",
     "moaDesc": "Une minute d'angle (MOA) en artillerie mesure l'imprécision de l'arme, indiquant la dispersion des tirs. Une MOA équivaut à 1/60e de degré.",
     "velocityDesc": "La vélocité est la vitesse à laquelle un projectile quitte le canon d'une arme à feu, mesurée immédiatement après sa sortie. Elle affecte la portée et la précision du tir.",
-    "heightPaddingDesc": "Si l'arme est installée plus haut que le sol (sur des bâtiments ou des ponts), utilisez ce champ pour spécifier la hauteur supplémentaire.",
     "smoothMapTooltip": "Ajoute des animations lors du zoom ou du déplacement sur la carte. Rechargement de la page nécessaire",
     "moddedWeaponTooltip": "Ajoute la prise en charge des armes pour les mods populaires (Steel Division, Global Escalation, Squad AdminTools, ...)",
     "damageRadiusTooltip": "Affiche les zones où 100 et 25 dégâts seront infligés",
