@@ -532,7 +532,7 @@ export default class SquadLayer {
         ];
 
         // There's no border but the map bounds
-        if (this.layerData.border.length === 2) return;
+        if (this.layerData.border.length <= 2) return;
 
         let borderPath = [];
 
