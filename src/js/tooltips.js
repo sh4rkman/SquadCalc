@@ -496,15 +496,3 @@ tippy(".infVelocityTooltip", {
         tip.setContent(i18next.t("tooltips:velocityDesc"));
     },
 });
-
-tippy(".infHeightPaddingTooltip", {
-    animation: "fade",
-    placement: "top",
-    touch: false,
-    appendTo: weaponDialog,
-    theme: "infTooltips",
-    delay: [500, 0],
-    onShow(tip) {
-        tip.setContent(i18next.t("tooltips:heightPaddingDesc"));
-    },
-});

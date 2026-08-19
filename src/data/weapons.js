@@ -473,6 +473,56 @@ export var WEAPONS = [
             damageFallOff: 1,
         }]
     },
+    {
+        name: "SCUD",
+        deceleration: 0,
+        decelerationTime: 0,
+        gravityScale: 1,
+        minElevation: [10, 90],
+        unit: "deg",
+        type: "modded",
+        mod: "SteelDivision",
+        angleType: "high",
+        elevationPrecision: 1,
+        heightOffset: 3,
+        angleOffset: 0,
+        projectileLifespan: 120,
+        shells: [{
+            name: "default",
+            minDistance: 100,
+            velocity: 150,
+            moa: 120,
+            explosionDamage: 3000,
+            explosionRadius: [5, 50],
+            explosionDistanceFromImpact: 2,
+            damageFallOff: 1,
+        }]
+    },
+    {
+        name: "Shahed-136",
+        deceleration: 0,
+        decelerationTime: 0,
+        gravityScale: 1,
+        minElevation: [0, 60],
+        unit: "deg",
+        type: "modded",
+        mod: "SteelDivision",
+        angleType: "low",
+        elevationPrecision: 1,
+        heightOffset: 3,
+        angleOffset: 0,
+        projectileLifespan: 60,
+        shells: [{
+            name: "default",
+            minDistance: 100,
+            velocity: 120,
+            moa: 0,
+            explosionDamage: 1000,
+            explosionRadius: [5, 25],
+            explosionDistanceFromImpact: 2,
+            damageFallOff: 1,
+        }]
+    },
     /*
      * Squad AdminTools
      * https://steamcommunity.com/sharedfiles/filedetails/?id=3193475024
