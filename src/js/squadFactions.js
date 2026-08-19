@@ -31,7 +31,7 @@ export default class SquadFactions {
      * Images use the full prefixed factionID as-is.
      */
     _translationId(factionID) {
-        return factionID ? factionID.replace(/^SU_/, "") : factionID;
+        return factionID ? factionID.replace(/^SU_/, "").replace(/-\d+$/, "") : factionID;
     }
 
     /**
