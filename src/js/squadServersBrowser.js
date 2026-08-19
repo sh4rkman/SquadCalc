@@ -44,8 +44,8 @@ export default class SquadServersBrowser {
                         server.attributes.details.map,
                         server.team1FactionId || server.team1,
                         server.team2FactionId || server.team2,
-                        server.attributes.details.squad_teamOne,
-                        server.attributes.details.squad_teamTwo
+                        server.unit1 || server.attributes.details.squad_teamOne,
+                        server.unit2 || server.attributes.details.squad_teamTwo
                     );
                 }
             }
@@ -452,8 +452,8 @@ export default class SquadServersBrowser {
             server.attributes.details.map,
             server.team1FactionId || server.team1,
             server.team2FactionId || server.team2,
-            server.attributes.details.squad_teamOne,
-            server.attributes.details.squad_teamTwo
+            server.unit1 || server.attributes.details.squad_teamOne,
+            server.unit2 || server.attributes.details.squad_teamTwo
         );
     }
 

@@ -11,7 +11,7 @@ export function loadLanguage(LANGUAGES) {
     const LANG_SELECTOR = $(".dropbtn4");
 
     i18next.use(HttpApi).init({
-        fallbackLng: false,
+        fallbackLng: "en",
         ns: [
             "tooltips",
             "settings",

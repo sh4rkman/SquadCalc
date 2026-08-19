@@ -209,7 +209,7 @@ export default class SquadCalc {
         const applyLayer = () => {
             const urlLayerName = intent.layer.toLowerCase().replaceAll(" ", "");
             const match = this.LAYER_SELECTOR.find("option").filter((_, el) =>
-                $(el).text().toLowerCase().replaceAll(" ", "") === urlLayerName
+                ($(el).data("urlid") ?? "").toLowerCase() === urlLayerName
             );
 
             if (!match.length) {
@@ -322,11 +322,11 @@ export default class SquadCalc {
 
         this.LAYER_SELECTOR.on("change", (event) => {
 
-            const selectedLayerText = this.LAYER_SELECTOR.find(":selected").text().replaceAll(" ", "");
+            const selectedLayerValue = this.LAYER_SELECTOR.find(":selected").data("urlid") ?? "";
             const broadcast = event.broadcast ?? true;
 
             // User cleared the layer selector, remove the layer and clean the URL
-            if (selectedLayerText === "") {
+            if (selectedLayerValue === "") {
                 this.updateUrlParams({ layer: null, team1: null, team1unit: null, team2: null, team2unit: null });
                 if (abortController) { abortController.abort(); } // Abort the ongoing fetch request
                 if (this.minimap.layer) this.minimap.layer.clear();
@@ -357,9 +357,9 @@ export default class SquadCalc {
             
             // Update the the URL
             if (broadcast) {
-                this.updateUrlParams({ layer: selectedLayerText, team1: null, team1unit: null, team2: null, team2unit: null });
+                this.updateUrlParams({ layer: selectedLayerValue, team1: null, team1unit: null, team2: null, team2unit: null });
             } else {
-                this.updateUrlParams({ layer: selectedLayerText });
+                this.updateUrlParams({ layer: selectedLayerValue });
             }
 
             // Abort any in-progress layer fetch before starting a new one
@@ -432,17 +432,26 @@ export default class SquadCalc {
                 : this.LAYER_SELECTOR;
 
             vanillaLayers.forEach((layer) => {
-                vanillaContainer.append(`<option value="${layer.rawName}">${layer.shortName}</option>`);
+                vanillaContainer.append(`<option value="${layer.rawName}" data-urlid="${layer.shortName.replaceAll(" ", "")}">${layer.shortName}</option>`);
             });
 
             if (enabledMods.length) this.LAYER_SELECTOR.append(vanillaContainer);
+
+            const mapName = this.minimap.activeMap.name;
 
             enabledMods.forEach((modKey) => {
                 const label = i18next.t(`settings:${modKey}`, { defaultValue: modKey });
                 const optgroup = $(`<optgroup data-mod="${modKey}" label="${label}"></optgroup>`);
 
                 layers.filter(layer => layer.mod?.toLowerCase() === modKey.toLowerCase()).forEach((layer) => {
-                    optgroup.append(`<option value="${layer.rawName}" data-mod="${modKey}">${layer.shortName}</option>`);
+                    // rawName sometimes carries an extra variant tag between the mod prefix and the
+                    // map name (e.g. "SU_GoingDark_Anvil_AAS_v1") that shortName doesn't reflect
+                    const tokens = layer.rawName.split("_");
+                    const mapIdx = tokens.findIndex(t => t.toLowerCase() === mapName.toLowerCase());
+                    const variantTag = mapIdx > 1 ? tokens.slice(1, mapIdx).join(" ") : "";
+                    const displayName = variantTag ? `${variantTag} ${layer.shortName}` : layer.shortName;
+
+                    optgroup.append(`<option value="${layer.rawName}" data-mod="${modKey}" data-urlid="${modKey}_${displayName.replaceAll(" ", "")}">${displayName}</option>`);
                 });
 
                 if (optgroup.children().length) this.LAYER_SELECTOR.append(optgroup);
