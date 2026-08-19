@@ -29,9 +29,22 @@ export default class SquadFactions {
      * Modded factionIDs are prefixed with the mod key (e.g. "SU_RGF"), but faction
      * translations are shared with vanilla ("RGF") - strip the prefix for i18next lookup.
      * Images use the full prefixed factionID as-is.
+     *
+     * A few SuperMod factions reuse a vanilla short code for a faction with a
+     * different full name (e.g. "SU_CAF" = Canadian Ground Forces, vs vanilla
+     * "CAF" = Canadian Armed Forces) - those get their own translation key so
+     * they don't collide with the vanilla faction's displayName.
      */
+    static MODDED_TRANSLATION_OVERRIDES = ["CAF", "USMC"];
+
     _translationId(factionID) {
-        return factionID ? factionID.replace(/^SU_/, "").replace(/-\d+$/, "") : factionID;
+        if (!factionID) return factionID;
+        const isModded = factionID.startsWith("SU_");
+        const stripped = factionID.replace(/^SU_/, "").replace(/-\d+$/, "");
+        if (isModded && SquadFactions.MODDED_TRANSLATION_OVERRIDES.includes(stripped)) {
+            return `${stripped}_SU`;
+        }
+        return stripped;
     }
 
     /**
@@ -752,6 +765,9 @@ export default class SquadFactions {
         if (!btn) return;
         const val = SELECTOR.val();
         const img = document.createElement("img");
+
+        const titleEl = document.getElementById(`team${team}FactionName`);
+        if (titleEl) titleEl.textContent = val ? i18next.t(this._translationId(val) + "_displayName", { ns: "factions" }) : "";
 
         // strip anything but alphanumerics/underscore/dash to prevent path traversal via faction value
         const sanitizedVal = val ? val.replace(/[^a-zA-Z0-9_-]/g, "") : val;
