@@ -85,6 +85,8 @@ export const checkApiHealth = async () => {
             if (data.status === "OK") {
                 console.log(`Connected to ${process.env.API_URL}`);
                 if (data.version) $("#gameDataVersion").text(`Squad v${data.version}`);
+                App.layerCounts = data.layers || {};
+                App._renderModTiles();
                 App.applyUrlIntent();
             }
         } else {
@@ -129,11 +131,13 @@ export async function fetchMarkersByMap(mapName, weapon) {
 /**
  * xxxxxxxxxxxxxxxxxxxxxx
  * @param {string} mapName - The name of the map to fetch layers data for.
+ * @param {string[]} [mods] - Mod keys to include modded layers for.
  * @returns {Promise<Object>} A promise that resolves with the fetched marker data in JSON format.
  * @throws {Error} Throws an error if the network request fails or the response is not OK.
  */
-export async function fetchLayersByMap(mapName) {
-    const url = `${process.env.API_URL}/get/layers?map=${encodeURIComponent(mapName)}`;
+export async function fetchLayersByMap(mapName, mods = []) {
+    let url = `${process.env.API_URL}/get/layers?map=${encodeURIComponent(mapName)}`;
+    if (mods.length) url += `&mods=${mods.map(encodeURIComponent).join(";")}`;
     try {
         const response = await fetch(url, { headers: { "X-App-Version": App.version }, });
         if (!response.ok) { throw new Error("[API] Network response was not ok"); }

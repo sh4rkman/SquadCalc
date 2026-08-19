@@ -103,7 +103,15 @@ header {
             position: relative;
             .select2-results__options {
                 font-size: 0.9em;
-                max-height: 400px;
+                max-height: 600px;
+            }
+            .select2-results__group {
+                color: rgba(255, 255, 255, .7);
+                padding-top: 10px;
+                font-weight: 900;
+                text-align: left;
+                padding-left: 15px;
+                font-size: 1em;
             }
         }
     }

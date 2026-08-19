@@ -4,6 +4,13 @@ import i18next from "i18next";
 import "tippy.js/dist/tippy.css";
 import { FactionCtxMenu } from "./squadFactionCtxMenu.js";
 
+// Modded factionIDs are prefixed with the mod key (e.g. "SU_RGF"), but faction
+// translations are shared with vanilla ("RGF") - strip the prefix for i18next lookup.
+// Images use the full prefixed factionID as-is.
+export function translationId(factionID) {
+    return factionID ? factionID.replace(/^SU_/, "") : factionID;
+}
+
 export class SquadObjective {
 
     constructor(latlng, layer, objCluster, isMain, cluster) {
@@ -160,10 +167,10 @@ export class SquadObjective {
 
                 if (this.objectName === "00-Team1 Main") {
                     html = `<span><span data-i18n="common:team1">${i18next.t("team1", { ns: "common" })}</span>`;
-                    if ($(".dropbtn8").val() != null) html += ` : <span data-i18n="factions:${$(".dropbtn8").val()}">${i18next.t($(".dropbtn8").val(), { ns: "factions" })}</span>`;
+                    if ($(".dropbtn8").val() != null) html += ` : <span data-i18n="factions:${translationId($(".dropbtn8").val())}">${i18next.t(translationId($(".dropbtn8").val()), { ns: "factions" })}</span>`;
                 } else {
                     html = `<span><span data-i18n="common:team2">${i18next.t("team2", { ns: "common" })}</span>`;
-                    if ($(".dropbtn10").val() != null) html += ` : <span data-i18n="factions:${$(".dropbtn10").val()}">${i18next.t($(".dropbtn10").val(), { ns: "factions" })}</span>`;
+                    if ($(".dropbtn10").val() != null) html += ` : <span data-i18n="factions:${translationId($(".dropbtn10").val())}">${i18next.t(translationId($(".dropbtn10").val()), { ns: "factions" })}</span>`;
                 }
                 html += "</span>";
 
@@ -304,7 +311,7 @@ export class SquadObjective {
         if (App.userSettings.circlesFlags) className += " circleFlag";
 
         if (this.isMain) { 
-            if (this.layer.gamemode === "RAAS"){
+            if (this.layer.gamemode === "RAAS" || this.layer.gamemode === "RVAAS"){
                 className += " main selectable";
             } else {
                 className += " main unselectable";
@@ -366,7 +373,7 @@ export class SquadObjective {
         }
 
         if (this.isMain) { 
-            if (this.layer.gamemode === "RAAS") className += " main selectable";
+            if (this.layer.gamemode === "RAAS" || this.layer.gamemode === "RVAAS") className += " main selectable";
             else className += " main unselectable";
         } else {
             // if RAAS/Invasion, add the flag number and a colored icon

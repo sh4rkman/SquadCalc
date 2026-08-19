@@ -130,7 +130,7 @@ function updateContent() {
         dropdownParent: $("#layerSelector"),
         allowClear: true,
         placeholder: layerPlaceholder,
-        minimumResultsForSearch: -1,
+        minimumResultsForSearch: 1,
         width: selectorWidth,
     });
 

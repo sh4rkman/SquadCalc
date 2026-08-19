@@ -412,7 +412,9 @@ export default class SquadCalc {
         $("#layerSelector").hide();
         this.LAYER_SELECTOR.empty();
 
-        fetchLayersByMap(this.minimap.activeMap.name).then(layers => {
+        const enabledMods = this._getUniqueMods().filter(mod => this.userSettings.isModEnabled(mod));
+
+        fetchLayersByMap(this.minimap.activeMap.name, enabledMods).then(layers => {
 
             if (layers.length === 0) {
                 this.minimap.spin(false);
@@ -423,7 +425,28 @@ export default class SquadCalc {
             // Re-empty just in case user changed map while the request was on the way
             this.LAYER_SELECTOR.empty();
             this.LAYER_SELECTOR.append("<option value=></option>");
-            layers.forEach((layer) => { this.LAYER_SELECTOR.append(`<option value=${layer.rawName}>${layer.shortName}</option>`); });
+
+            const vanillaLayers = layers.filter(layer => !layer.mod);
+            const vanillaContainer = enabledMods.length
+                ? $(`<optgroup label="${i18next.t("settings:vanilla", { defaultValue: "Vanilla" })}"></optgroup>`)
+                : this.LAYER_SELECTOR;
+
+            vanillaLayers.forEach((layer) => {
+                vanillaContainer.append(`<option value="${layer.rawName}">${layer.shortName}</option>`);
+            });
+
+            if (enabledMods.length) this.LAYER_SELECTOR.append(vanillaContainer);
+
+            enabledMods.forEach((modKey) => {
+                const label = i18next.t(`settings:${modKey}`, { defaultValue: modKey });
+                const optgroup = $(`<optgroup data-mod="${modKey}" label="${label}"></optgroup>`);
+
+                layers.filter(layer => layer.mod?.toLowerCase() === modKey.toLowerCase()).forEach((layer) => {
+                    optgroup.append(`<option value="${layer.rawName}" data-mod="${modKey}">${layer.shortName}</option>`);
+                });
+
+                if (optgroup.children().length) this.LAYER_SELECTOR.append(optgroup);
+            });
 
             this.minimap.spin(false);
             $("#layerSelector").show();
@@ -579,8 +602,8 @@ export default class SquadCalc {
         }
 
 
-        // Add Experimental weapons if wanted by user settings
-        this.toggleExperimentalWeapons();
+        // Populate the Mods settings panel and apply currently enabled mods
+        this.initModsPanel();
 
         // Add Events Listeners
         this.WEAPON_SELECTOR.on("change", () => { this.changeWeapon(); });
@@ -597,38 +620,64 @@ export default class SquadCalc {
     }
 
     /**
-     * Populate #modFiltersContainer with one checkbox per mod and show #modFiltersRow
+     * Populate #modsPanelContainer with one toggle tile per mod
      */
-    _renderModFilters() {
-        const mods = this._getUniqueMods();
-        const container = $("#modFiltersContainer");
+    static MOD_TILE_ORDER = ["SuperMod", "SteelDivision"];
+
+    _renderModTiles() {
+        const mods = this._getUniqueMods().sort((a, b) => {
+            const ai = SquadCalc.MOD_TILE_ORDER.indexOf(a);
+            const bi = SquadCalc.MOD_TILE_ORDER.indexOf(b);
+            if (ai === -1 && bi === -1) return 0;
+            if (ai === -1) return 1;
+            if (bi === -1) return -1;
+            return ai - bi;
+        });
+        const container = $("#modsPanelContainer");
         container.empty();
 
-        mods.forEach(modKey => {
-            const checked = this.userSettings.isModEnabled(modKey) ? "checked" : "";
+        const statsHtml = (layers, weapons) => `
+            <span class="modTileStats">
+                <span>${i18next.t("settings:modLayersCount", { count: layers, defaultValue: `${layers} Layers` })}</span>
+                <span>${i18next.t("settings:modWeaponsCount", { count: weapons, defaultValue: `${weapons} Weapons` })}</span>
+            </span>
+        `;
+
+        const vanillaLabel = i18next.t("settings:vanilla", { defaultValue: "Squad (Base Game)" });
+        const vanillaWeapons = WEAPONS.filter(w => !w.mod).length;
+        const vanillaLayers = this.layerCounts?.vanilla ?? 0;
+        container.append(`
+            <button type="button" class="modToggleTile active locked">
+                <img class="modTileLogo" src="/img/mods/vanilla.webp" alt="" onerror="this.style.display='none'">
+                <span class="modTileName">${vanillaLabel}</span>
+                ${statsHtml(vanillaLayers, vanillaWeapons)}
+            </button>
+        `);
+
+        mods.forEach((modKey) => {
+            const active = this.userSettings.isModEnabled(modKey) ? "active" : "";
             const label = i18next.t(`settings:${modKey}`, { defaultValue: modKey });
+            const weapons = WEAPONS.filter(w => w.mod === modKey).length;
+            const layers = this.layerCounts?.[modKey.toLowerCase()] ?? 0;
             container.append(`
-                <label class="mcui-checkbox mod-filter-checkbox" data-mod="${modKey}">
-                    <input type="checkbox" class="modFilterCheckbox" data-mod="${modKey}" ${checked}>
-                    <span>
-                        <svg class="mcui-check" viewBox="-2 -2 35 35" aria-hidden="true">
-                            <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
-                        </svg>
-                    </span>
-                    <span class="mod-filter-label">${label}</span>
-                </label>
+                <button type="button" class="modToggleTile ${active}" data-mod="${modKey}">
+                    <img class="modTileLogo" src="/img/mods/${modKey.toLowerCase()}.webp" alt="" onerror="this.style.display='none'">
+                    <span class="modTileName">${label}</span>
+                    ${statsHtml(layers, weapons)}
+                </button>
             `);
         });
 
-        $(".modFilterCheckbox").on("change", (e) => {
-            const modKey = $(e.target).data("mod");
-            const enabled = $(e.target).is(":checked");
+        $(".modToggleTile").not(".locked").on("click", (e) => {
+            const tile = $(e.currentTarget);
+            const modKey = tile.data("mod");
+            const enabled = !tile.hasClass("active");
+            tile.toggleClass("active", enabled);
             this.userSettings.setModEnabled(modKey, enabled);
-            animateCSS($(e.target).closest("label"), "headShake");
+            animateCSS(tile, "headShake");
             this._rebuildModdedWeapons();
+            if (this.minimap.activeMap) this.loadLayers();
         });
-
-        $("#modFiltersRow").show();
     }
 
     /**
@@ -663,23 +712,11 @@ export default class SquadCalc {
     }
 
     /**
-     * Add/Remove Experimental Weapons from Weapons dropdown list according to user settings
+     * Initialize the Mods settings panel and apply currently enabled mods to the weapon selector
      */
-    toggleExperimentalWeapons() {
-        if (this.userSettings.experimentalWeapons) {
-            this._renderModFilters();
-            this._rebuildModdedWeapons();
-        } else {
-            $("#modFiltersRow").hide();
-            $("#modFiltersContainer").empty();
-
-            const selectedIsModded = !!(WEAPONS[this.WEAPON_SELECTOR.val()]?.mod);
-            this.WEAPON_SELECTOR.find("optgroup[data-mod]").remove();
-
-            if (selectedIsModded) {
-                this.WEAPON_SELECTOR.val(0).trigger("change");
-            }
-        }
+    initModsPanel() {
+        this._renderModTiles();
+        this._rebuildModdedWeapons();
     }
 
 

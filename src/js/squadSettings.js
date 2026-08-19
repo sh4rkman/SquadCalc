@@ -122,14 +122,6 @@ export default class SquadSettings {
                 selector: "#realMaxRangeSettings",
                 onChange: () => this.app.minimap.updateWeapons()
             },
-            experimentalWeapons: {
-                key: "settings-experimental-weapons",
-                default: false,
-                selector: "#experimentalSetting",
-                onChange: () => this.app.toggleExperimentalWeapons()
-            },
-
-
             // Calculation Display
             lowAndHigh: {
                 key: "settings-low-high",
@@ -799,7 +791,7 @@ export default class SquadSettings {
 
     isModEnabled(modKey) {
         const stored = localStorage.getItem(`settings-mod-${modKey}`);
-        return stored === null ? true : stored === "1";
+        return stored === null ? false : stored === "1";
     }
 
     setModEnabled(modKey, enabled) {

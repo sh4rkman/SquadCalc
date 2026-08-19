@@ -42,8 +42,8 @@ export default class SquadServersBrowser {
                         server.attributes.name,
                         server.mapName,
                         server.attributes.details.map,
-                        server.team1,
-                        server.team2,
+                        server.team1FactionId || server.team1,
+                        server.team2FactionId || server.team2,
                         server.attributes.details.squad_teamOne,
                         server.attributes.details.squad_teamTwo
                     );
@@ -308,8 +308,8 @@ export default class SquadServersBrowser {
                         </td>
                         <td>${this.getPlayersHTML(server.attributes.players, server.attributes.maxPlayers)}</td>
                         <td class="teamFlags">
-                            ${this.getTeamHTML(server.team1, server.attributes.details.squad_teamOne)}
-                            ${this.getTeamHTML(server.team2, server.attributes.details.squad_teamTwo)}
+                            ${this.getTeamHTML(server.team1FactionId || server.team1, server.attributes.details.squad_teamOne)}
+                            ${this.getTeamHTML(server.team2FactionId || server.team2, server.attributes.details.squad_teamTwo)}
                         </td>
                     </tr>
                 `;
@@ -450,8 +450,8 @@ export default class SquadServersBrowser {
             server.attributes.name,
             server.mapName,
             server.attributes.details.map,
-            server.team1,
-            server.team2,
+            server.team1FactionId || server.team1,
+            server.team2FactionId || server.team2,
             server.attributes.details.squad_teamOne,
             server.attributes.details.squad_teamTwo
         );

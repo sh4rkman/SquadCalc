@@ -57,6 +57,7 @@ export default class SquadLayer {
         this.phaseAeras = new FeatureGroup().addTo(this.map);
         this.flags = [];
         this.hexs = [];
+        this.stagingZones = [];
         this.reversed = false;
 
         this.spawnGroups = [];
@@ -95,11 +96,11 @@ export default class SquadLayer {
 
     /**
      * Checks if the current layer's gamemode is randomized.
-     * A layer is considered randomized if its gamemode is either "RAAS" or "Invasion"
+     * A layer is considered randomized if its gamemode is "RAAS", "RVAAS", or "Invasion"
      * @returns {boolean} True if the layer is randomized, false otherwise
      */
     isRandomized() {
-        return this.gamemode === "RAAS" || this.gamemode === "Invasion";
+        return this.gamemode === "RAAS" || this.gamemode === "RVAAS" || this.gamemode === "Invasion";
     }
 
 
@@ -119,9 +120,11 @@ export default class SquadLayer {
             this.initPredictiveLayer();
             break;
         case "TC":
+        case "TerritoryControl":
             this.initTerritoryControl(this.capturePoints);
             break;
         case "RAAS":
+        case "RVAAS":
         case "Invasion":
             this.initRandomizedLayer();
             break;
@@ -138,6 +141,7 @@ export default class SquadLayer {
         this.createSpawners();
         this.createTeamSpawns();
         this.createCameraActors();
+        //this.createStagingZones();
         //this.createTeamSpawnsPoints();
     }
 
@@ -193,6 +197,9 @@ export default class SquadLayer {
      */
     initPredictiveLayer(){
         // Set Paths
+
+        console.log(this.capturePoints);
+
         Object.values(this.capturePoints.points.links).forEach(link => {
             const nodeAFlag = Object.values(this.objectives).find(objective => objective.objectDisplayName === link.nodeA);
             const nodeBFlag = Object.values(this.objectives).find(objective => objective.objectDisplayName === link.nodeB);
@@ -381,12 +388,13 @@ export default class SquadLayer {
     /**
      * Calculates the X and Y offsets needed to align a layer object to the Map
      *
-     * @param {Array<{location_x: number, location_y: number}>} mapTextureCorners array of layers two corner
+     * @param {Array<{location_x: number, location_y: number}>} mapTextureCorners array of layers one or two corners
      * @returns {[number, number]} array containing the calculated X and Y offsets
      */
     getLayerOffsets(mapTextureCorners) {
-        let layerOriginX = Math.min(mapTextureCorners[0].location_x, mapTextureCorners[1].location_x);
-        let layerOriginY = Math.min(mapTextureCorners[0].location_y, mapTextureCorners[1].location_y);
+        const corner1 = mapTextureCorners[1] ?? mapTextureCorners[0];
+        let layerOriginX = Math.min(mapTextureCorners[0].location_x, corner1.location_x);
+        let layerOriginY = Math.min(mapTextureCorners[0].location_y, corner1.location_y);
         let layerOffsetToMapX = (this.map.activeMap.SDK_data.minimap.corner0[0] * 100) - layerOriginX;
         let layerOffsetToMapY = (this.map.activeMap.SDK_data.minimap.corner0[1] * 100) - layerOriginY;
         return [layerOriginX + layerOffsetToMapX, layerOriginY + layerOffsetToMapY];
@@ -602,6 +610,42 @@ export default class SquadLayer {
     
 
     /**
+     * Create staging zones from mapAssets.stagingZones
+     * Draws a box for every object of each zone (center + boxExtent + rotation)
+     * @param {Array} this.layerData.mapAssets.stagingZones - Array of staging zones
+     */
+    createStagingZones() {
+        if (!this.layerData.mapAssets.stagingZones) return;
+
+        this.layerData.mapAssets.stagingZones.forEach((zone) => {
+            zone.objects.forEach((box) => {
+                if (!box.isBox) return;
+
+                const [location_y, location_x] = this.convertToLatLng(box.location_x, box.location_y);
+
+                const radiusX = (box.boxExtent.extent_x / 100) * -this.map.gameToMapScale;
+                const radiusY = (box.boxExtent.extent_y / 100) * -this.map.gameToMapScale;
+
+                const bounds = [
+                    [location_y + radiusY, location_x + radiusX],
+                    [location_y - radiusY, location_x - radiusX]
+                ];
+
+                const stagingZone = new Rectangle(bounds, {
+                    color: "white",
+                    weight: 4,
+                    fillOpacity: 0,
+                }).addTo(this.activeLayerMarkers);
+
+                if (box.boxExtent.rotation_z != 0) this.rotateRectangle(stagingZone, box.boxExtent.rotation_z);
+
+                this.stagingZones.push(stagingZone);
+            });
+        });
+    }
+
+    
+    /**
      * Create protection zones and no construction zones
      * @param {Array} this.layerData.mapAssets.protectionZones - Array of protection zones
      */
@@ -739,8 +783,8 @@ export default class SquadLayer {
         // If the clicked flag is in front of the current position, skip
         if (Math.abs(this.startPosition - flag.position) > this.currentPosition) {
 
-            // In RAAS, we can click on the oposite main flag to reset the layer
-            if (this.gamemode === "RAAS" && flag.isMain){
+            // In RAAS/RVAAS, we can click on the oposite main flag to reset the layer
+            if ((this.gamemode === "RAAS" || this.gamemode === "RVAAS") && flag.isMain){
                 if (broadcast && App.session.ws && App.session.ws.readyState === WebSocket.OPEN) {
                     App.session.ws.send(
                         JSON.stringify({
@@ -1355,6 +1399,7 @@ export default class SquadLayer {
         this.spawnGroups = [];
         this.vehicleSpawners = [];
         this.hexs = [];
+        this.stagingZones = [];
     }
 
 }

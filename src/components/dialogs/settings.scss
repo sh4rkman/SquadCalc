@@ -415,17 +415,64 @@ $bezier: cubic-bezier(0.65, 0.25, 0.56, 0.96);
     }
 }
 
-#modFiltersContainer {
+#modsPanelContainer {
     display: flex;
-    flex-wrap: wrap;
-    gap: 0.25em 1em;
-    padding: 0.4em 0 0.2em 1.5em;
-    .mod-filter-checkbox {
+    flex-direction: column;
+    gap: 0.8em;
+    padding: 0.4em 1.5em 0.2em 0;
+    .modToggleTile {
+        display: flex;
+        flex-direction: column;
+        gap: 0.35em;
+        width: 100%;
+        min-height: 4.5em;
+        position: relative;
+        color: variables.$mainTxtColor;
+        background-color: transparent;
+        border: 1px solid variables.$mainTxtColor;
+        border-radius: 4px;
+        padding: 0.9em 1.2em;
+        font-size: 1.1em;
+        font-weight: bold;
+        text-align: left;
         cursor: pointer;
-        gap: 0.4em;
-        .mod-filter-label {
-            font-size: 0.9em;
+        transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+        &:hover:not(.locked) {
+            border-color: variables.$mainColor;
+            background-color: rgba(variables.$mainColor, 0.12);
+        }
+        .modTileLogo {
+            position: absolute;
+            top: 50%;
+            right: 1.2em;
+            transform: translateY(-50%);
+            max-height: calc(100% - 1.4em);
+            height: 3.2em;
+            width: auto;
+            border-radius: 3px;
+            object-fit: contain;
+        }
+        .modTileName {
+            font-size: 1em;
+            padding-right: 3.8em;
+        }
+        .modTileStats {
+            display: flex;
+            gap: 1.2em;
+            font-size: 0.85em;
+            font-weight: bold;
+            opacity: 0.7;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        &.active {
+            background-color: variables.$mainColor;
+            border-color: variables.$mainColor;
             color: variables.$mainTxtColor;
+        }
+        &.locked {
+            cursor: not-allowed;
+            opacity: 0.85;
         }
     }
 }
@@ -437,7 +484,7 @@ $bezier: cubic-bezier(0.65, 0.25, 0.56, 0.96);
     button {
         color: variables.$mainBGColor;
         background-color: white;
-        width: 20%;
+        width: 17%;
         margin-bottom: 1em;
         vertical-align: middle;
         height: 18px;
@@ -456,7 +503,7 @@ $bezier: cubic-bezier(0.65, 0.25, 0.56, 0.96);
             color: variables.$mainTxtColor;
             padding-bottom: 0;
             height: 25px;
-            width: 28%;
+            width: 22%;
             svg {
                 display: inline-block;
                 fill: variables.$mainTxtColor;

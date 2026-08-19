@@ -1,5 +1,6 @@
 import tippy, {sticky} from "tippy.js";
 import i18next from "i18next";
+import { translationId } from "./squadObjective.js";
 
 export class FactionCtxMenu {
     constructor(layer, flagName) {
@@ -100,9 +101,10 @@ export class FactionCtxMenu {
         let html = "<div class='faction-grid animate__animated animate__fadeIn animate__faster'>";
         this.FACTIONS.forEach(faction => {
             const selected = this.FACTION_SELECTOR.val() === faction.factionID ? "_selected" : "";
-            html += `<div class="faction-item ${selected}" id="${faction.factionID}" title="${i18next.t(faction.factionID + "_displayName", { ns: "factions" })}">
-                <img src="/img/flags/${faction.factionID}.webp"/>
-                <div class="faction-label">${i18next.t(faction.factionID, { ns: "factions" })}</div>
+            const translation = translationId(faction.factionID);
+            html += `<div class="faction-item ${selected}" id="${faction.factionID}" title="${i18next.t(translation + "_displayName", { ns: "factions" })}">
+                <img src="/img/flags/${faction.factionID}.webp" onerror="this.onerror=null;this.src='/img/flags/unknown.webp';"/>
+                <div class="faction-label">${i18next.t(translation, { ns: "factions" })}</div>
             </div>`;
         });
         html += "</div>";

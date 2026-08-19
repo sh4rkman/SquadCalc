@@ -25,6 +25,47 @@ export default class SquadFactions {
     }
 
 
+    /**
+     * Modded factionIDs are prefixed with the mod key (e.g. "SU_RGF"), but faction
+     * translations are shared with vanilla ("RGF") - strip the prefix for i18next lookup.
+     * Images use the full prefixed factionID as-is.
+     */
+    _translationId(factionID) {
+        return factionID ? factionID.replace(/^SU_/, "") : factionID;
+    }
+
+    /**
+     * defaultFactionUnit (e.g. "SAA_LO_Mechanized") never carries the mod's
+     * factionID decoration, while the actual factionIDs do - prefixed ("SU_SAA")
+     * on SuperMod, suffixed ("SSPR-2") on Steel Division. Strip both before
+     * comparing, and fall back to the first available faction if nothing matches.
+     */
+    _resolveDefaultFaction(defaultFactionUnit, units) {
+        const code = defaultFactionUnit?.split("_")[0];
+        const normalize = (id) => id ? id.replace(/^SU_/, "").replace(/-\d+$/, "") : id;
+        const match = units.find(u => u.factionID === code || normalize(u.factionID) === code);
+        if (match) return match.factionID;
+
+        console.debug(`[FACTIONS] Default faction not found in dropdown: ${code}`);
+        if (units[0]) {
+            console.debug(`[FACTIONS] Falling back to ${units[0].factionID}`);
+            return units[0].factionID;
+        }
+        return null;
+    }
+
+    static VEHICLE_ORDER = {
+        UH: 1, AH: 2, MBT: 3, MGS: 4, IFV: 5, APC: 6, LAV: 7,
+        MSV: 8, SPAG: 8, LTV: 9, SPAA: 10, SPA: 11, TD: 12,
+        RSV: 13, MRAP: 14, TRAN: 15, LOGI: 16, ULTV: 17,
+    };
+
+    _sortVehicles(vehicles) {
+        return [...vehicles].sort((a, b) =>
+            (SquadFactions.VEHICLE_ORDER[a.vehType] ?? 99) - (SquadFactions.VEHICLE_ORDER[b.vehType] ?? 99)
+        );
+    }
+
     /*
      *  Reset the factions button to its default state
      */
@@ -32,11 +73,12 @@ export default class SquadFactions {
         const el = document.querySelector(id);
         if (!el) return;
         const src = val ? `/img/flags/${encodeURIComponent(val.trim())}.webp` : "/img/flags/unknown.webp";
-        const name = val ? i18next.t(val, { ns: "factions" }) : "?";
+        const name = val ? i18next.t(this._translationId(val), { ns: "factions" }) : "?";
 
         const img = document.createElement("img");
         img.src = src;
         img.alt = name;
+        img.addEventListener("error", () => { img.src = "/img/flags/unknown.webp"; }, { once: true });
 
         const label = document.createElement("label");
         label.className = "factionBarFlagName";
@@ -72,17 +114,18 @@ export default class SquadFactions {
      * */
     formatFactions(state, isSelection = false) {
         if (!state.id) return state.text;
+        const translationId = this._translationId(state.element.value);
         const imgHtml = `<img src="/img/flags/${state.element.value}.webp" class="img-flag" />`;
         if (isSelection) return $(`
-            <span class="countryFlags" data-i18n-title="factions:${state.element.value}_displayName" title="${i18next.t(state.element.value + "_displayName", { ns: "factions" }) }">
+            <span class="countryFlags" data-i18n-title="factions:${translationId}_displayName" title="${i18next.t(translationId + "_displayName", { ns: "factions" }) }">
                 ${imgHtml}
             </span>
         `);
         return $(`
-            <span class="countryFlags" title="${i18next.t(state.element.value + "_displayName", { ns: "factions" }) }">
+            <span class="countryFlags" title="${i18next.t(translationId + "_displayName", { ns: "factions" }) }">
                 <p>${imgHtml}</p>
-                <span class="flag-label" data-i18n="factions:${state.element.value}">
-                    ${i18next.t("factions:" + state.element.value)}
+                <span class="flag-label" data-i18n="factions:${translationId}">
+                    ${i18next.t("factions:" + translationId)}
                 </span>
             </span>
         `);
@@ -350,7 +393,7 @@ export default class SquadFactions {
 
 
 
-        if (FACTION !== "") html += ` : <span data-i18n="factions:${FACTION}">${i18next.t(FACTION, { ns: "factions" })}</span>`;
+        if (FACTION !== "") html += ` : <span data-i18n="factions:${this._translationId(FACTION)}">${i18next.t(this._translationId(FACTION), { ns: "factions" })}</span>`;
 
         html  += "</span>";
 
@@ -582,8 +625,11 @@ export default class SquadFactions {
         let armorLink = "";
         if (vehicle.rawType) {
             const armorSlug = vehicle.rawType.replace(/_C$/, "");
+            const faction = LEFT ? this.FACTION1_SELECTOR.val() : this.FACTION2_SELECTOR.val();
+            const layerName = App.LAYER_SELECTOR.val();
+            const modParam = (faction?.startsWith("SU_") || layerName?.startsWith("SU_")) ? "?mods=SuperMod" : "";
             armorLink = `
-                <a class="tag armor-link" href="https://squad-armor.com/vehicles/${armorSlug}" target="_blank" title="squad-armor.com">
+                <a class="tag armor-link" href="https://squad-armor.com/vehicles/${armorSlug}${modParam}" target="_blank" title="squad-armor.com">
                     <span>SQUAD<br><span class="armor-yellow">ARMOR</span></span>
                 </a>
             `;
@@ -709,7 +755,7 @@ export default class SquadFactions {
 
         // strip anything but alphanumerics/underscore/dash to prevent path traversal via faction value
         const sanitizedVal = val ? val.replace(/[^a-zA-Z0-9_-]/g, "") : val;
-        
+
         img.src = sanitizedVal ? `/img/flags/${sanitizedVal}.webp` : "/img/flags/unknown.webp";
         img.addEventListener("error", () => { img.src = "/img/flags/unknown.webp"; }, { once: true });
         btn.replaceChildren(img);
@@ -769,9 +815,10 @@ export default class SquadFactions {
         let html = "<div class='faction-grid animate__animated animate__fadeIn animate__faster'>";
         factions.forEach(faction => {
             const selected = currentVal === faction.factionID ? "_selected" : "";
-            html += `<div class="faction-item ${selected}" data-faction="${faction.factionID}" title="${i18next.t(faction.factionID + "_displayName", { ns: "factions" })}">
-                <img src="/img/flags/${faction.factionID}.webp"/>
-                <div class="faction-label">${i18next.t(faction.factionID, { ns: "factions" })}</div>
+            const translationId = this._translationId(faction.factionID);
+            html += `<div class="faction-item ${selected}" data-faction="${faction.factionID}" title="${i18next.t(translationId + "_displayName", { ns: "factions" })}">
+                <img src="/img/flags/${faction.factionID}.webp" onerror="this.onerror=null;this.src='/img/flags/unknown.webp';"/>
+                <div class="faction-label">${i18next.t(translationId, { ns: "factions" })}</div>
             </div>`;
         });
         html += "</div>";
@@ -885,11 +932,11 @@ export default class SquadFactions {
         this.resetFactionsButton();
 
         factionData.teamConfigs.factions.team1Units.forEach((faction) => {
-            this.FACTION1_SELECTOR.append(`<option data-i18n=factions:${faction.factionID} value=${faction.factionID}></option>`);
+            this.FACTION1_SELECTOR.append(`<option data-i18n=factions:${this._translationId(faction.factionID)} value=${faction.factionID}></option>`);
         });
 
         factionData.teamConfigs.factions.team2Units.forEach((faction) => {
-            this.FACTION2_SELECTOR.append(`<option data-i18n=factions:${faction.factionID} value=${faction.factionID}></option>`);
+            this.FACTION2_SELECTOR.append(`<option data-i18n=factions:${this._translationId(faction.factionID)} value=${faction.factionID}></option>`);
         });
 
         
@@ -992,7 +1039,7 @@ export default class SquadFactions {
                 faction: this.FACTION1_SELECTOR.val()
             };
 
-            selectedUnit.vehicles.forEach((vehicle) => {
+            this._sortVehicles(selectedUnit.vehicles).forEach((vehicle) => {
                 // Skip boats if the team doesn't have boat spawn available
                 if (vehicle.spawnerSize === "Boat" && !factionData.team1boats) return;
                 this.generateCardHTML(vehicle, $("#team1Vehicles"), true);
@@ -1054,7 +1101,7 @@ export default class SquadFactions {
                 faction: this.FACTION2_SELECTOR.val()
             };
 
-            selectedUnit.vehicles.forEach((vehicle) => {
+            this._sortVehicles(selectedUnit.vehicles).forEach((vehicle) => {
                 // Skip boats if the team doesn't have boat spawn available
                 if (vehicle.spawnerSize === "Boat" && !factionData.team2boats) return;
                 this.generateCardHTML(vehicle, $("#team2Vehicles"), false);
@@ -1074,23 +1121,25 @@ export default class SquadFactions {
 
         if (App.userSettings.enableFactions) {
             if (App.userSettings.defaultFactions) {
-                const team1DefaultFaction = factionData.teamConfigs.team1.defaultFactionUnit.split("_")[0];
-                const team2DefaultFaction = factionData.teamConfigs.team2.defaultFactionUnit.split("_")[0];
+                const team1DefaultFaction = this._resolveDefaultFaction(
+                    factionData.teamConfigs.team1.defaultFactionUnit,
+                    factionData.teamConfigs.factions.team1Units
+                );
+                const team2DefaultFaction = this._resolveDefaultFaction(
+                    factionData.teamConfigs.team2.defaultFactionUnit,
+                    factionData.teamConfigs.factions.team2Units
+                );
 
-                if (this.FACTION1_SELECTOR.find(`option[value="${team1DefaultFaction}"]`).length > 0) {
+                if (team1DefaultFaction) {
                     this.FACTION1_SELECTOR.val(team1DefaultFaction).trigger($.Event("change", { broadcast: false }));
                 } else {
-                    console.debug(`[FACTIONS] Default faction for team 1 not found in dropdown: ${team1DefaultFaction}`);
-                    console.debug(`[FACTIONS] Falling back to ${factionData.teamConfigs.factions.team1Units[0].factionID}`);
-                    this.FACTION1_SELECTOR.val(factionData.teamConfigs.factions.team1Units[0].factionID).trigger($.Event("change", { broadcast: false }));
+                    console.debug("[FACTIONS] No factions available for team 1, skipping");
                 }
 
-                if (this.FACTION2_SELECTOR.find(`option[value="${team2DefaultFaction}"]`).length > 0) {
+                if (team2DefaultFaction) {
                     this.FACTION2_SELECTOR.val(team2DefaultFaction).trigger($.Event("change", { broadcast: false }));
                 } else {
-                    console.debug(`[FACTIONS] Default faction for team 2 not found in dropdown: ${team2DefaultFaction}`);
-                    console.debug(`[FACTIONS] Falling back to ${factionData.teamConfigs.factions.team2Units[0].factionID}`);
-                    this.FACTION2_SELECTOR.val(factionData.teamConfigs.factions.team2Units[0].factionID).trigger($.Event("change", { broadcast: false }));
+                    console.debug("[FACTIONS] No factions available for team 2, skipping");
                 }
 
             } else {

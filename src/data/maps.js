@@ -547,6 +547,27 @@ export const MAPS = [
             }
         }
     },
+    { 
+        name: "Hrodna_Border", 
+        mapURL: "/img/maps/MODS/SPM/hrdoda/", 
+        radiusExclusion: FOBEXCLUSIONS.medium,
+        singleLayer: true,
+        SDK_data: {
+            minimap: {
+                corner0: [-2016, -2016], 
+                corner1: [2016, 2016],
+            },
+            heightmap: {
+                origin: [-2016, -2016], // SDK is wrong, this is deduced instead
+                size: [6351, 6351],
+                scale: [1, 1, 1],
+                BWlevels: [139, 173]
+            },
+            heightmapPNG: {
+                scale: [1, 1, 0.034],
+            }
+        }
+    },
     // Custom Map Template
     //   * Create the necessary folders in /public/ and point mapURL to it
     //   * squadcalc will look at the folder looking for basemap/terrainmap/topomap .webp
