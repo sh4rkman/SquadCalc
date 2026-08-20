@@ -214,9 +214,9 @@ export default class SquadFactions {
             });
         }
 
-        selectedUnit.vehicles.forEach((vehicle) => {
+        this._sortVehicles(selectedUnit.vehicles).forEach((vehicle) => {
             for (let i = 0; i < vehicle.count; i++){
-                
+
                 // Filter out vehicles with respawn time < 10 minutes
                 if (App.userSettings.hideLowRespawn && vehicle.respawnTime < 5) return;
 
