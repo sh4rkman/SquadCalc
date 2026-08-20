@@ -658,7 +658,7 @@ export default class SquadCalc {
         container.append(`
             <button type="button" class="modToggleTile active locked">
                 <img class="modTileLogo" src="/img/mods/vanilla.webp" alt="" onerror="this.style.display='none'">
-                <span class="modTileName">${vanillaLabel}</span>
+                <span class="modTileName" data-i18n="settings:vanilla">${vanillaLabel}</span>
                 ${statsHtml(vanillaLayers, vanillaWeapons)}
             </button>
         `);
@@ -671,7 +671,7 @@ export default class SquadCalc {
             container.append(`
                 <button type="button" class="modToggleTile ${active}" data-mod="${modKey}">
                     <img class="modTileLogo" src="/img/mods/${modKey.toLowerCase()}.webp" alt="" onerror="this.style.display='none'">
-                    <span class="modTileName">${label}</span>
+                    <span class="modTileName" data-i18n="settings:${modKey}">${label}</span>
                     ${statsHtml(layers, weapons)}
                 </button>
             `);
@@ -702,7 +702,7 @@ export default class SquadCalc {
             if (!this.userSettings.isModEnabled(modKey)) return;
 
             const label = i18next.t(`settings:${modKey}`, { defaultValue: modKey });
-            const optgroup = $(`<optgroup data-mod="${modKey}" label="${label}"></optgroup>`);
+            const optgroup = $(`<optgroup data-mod="${modKey}" data-i18n-label="settings:${modKey}" label="${label}"></optgroup>`);
 
             for (let y = 0; y < WEAPONS.length; y++) {
                 if (WEAPONS[y].mod === modKey) {
