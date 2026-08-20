@@ -435,7 +435,7 @@ export default class SquadCalc {
                 vanillaContainer.append(`<option value="${layer.rawName}" data-urlid="${layer.shortName.replaceAll(" ", "")}">${layer.shortName}</option>`);
             });
 
-            if (enabledMods.length) this.LAYER_SELECTOR.append(vanillaContainer);
+            if (enabledMods.length && vanillaContainer.children().length) this.LAYER_SELECTOR.append(vanillaContainer);
 
             const mapName = this.minimap.activeMap.name;
 
@@ -445,9 +445,18 @@ export default class SquadCalc {
 
                 layers.filter(layer => layer.mod?.toLowerCase() === modKey.toLowerCase()).forEach((layer) => {
                     // rawName sometimes carries an extra variant tag between the mod prefix and the
-                    // map name (e.g. "SU_GoingDark_Anvil_AAS_v1") that shortName doesn't reflect
+                    // map name (e.g. "SU_GoingDark_Anvil_AAS_v1") that shortName doesn't reflect.
+                    // mapName itself can contain underscores (e.g. "Hrodna_Border"), so it's matched
+                    // as a token subsequence rather than a single token.
                     const tokens = layer.rawName.split("_");
-                    const mapIdx = tokens.findIndex(t => t.toLowerCase() === mapName.toLowerCase());
+                    const mapNameTokens = mapName.toLowerCase().split("_");
+                    let mapIdx = -1;
+                    for (let i = 0; i <= tokens.length - mapNameTokens.length; i++) {
+                        if (mapNameTokens.every((t, j) => tokens[i + j].toLowerCase() === t)) {
+                            mapIdx = i;
+                            break;
+                        }
+                    }
                     const variantTag = mapIdx > 1 ? tokens.slice(1, mapIdx).join(" ") : "";
                     const displayName = variantTag ? `${variantTag} ${layer.shortName}` : layer.shortName;
 
