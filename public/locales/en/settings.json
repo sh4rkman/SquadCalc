@@ -54,6 +54,7 @@
     "modsOptions": "Mods Options",
         "modLayersCount": "{{count}} Layers",
         "modWeaponsCount": "{{count}} Weapons",
+        "modMapsCount": "{{count}} Maps",
         "vanilla": "Squad (Base Game)",
         "SuperMod": "SuperMod",
         "InfiniteWarefare": "Infinite Warefare",

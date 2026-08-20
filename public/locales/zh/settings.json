@@ -54,6 +54,7 @@
     "modsOptions": "模组选项",
     "modLayersCount": "{{count}} 层",
     "modWeaponsCount": "{{count}} 件武器",
+    "modMapsCount": "{{count}} 张地图",
     "vanilla": "Vanilla",
     "SuperMod": "SuperMod",
     "InfiniteWarefare": "Infinite Warefare",

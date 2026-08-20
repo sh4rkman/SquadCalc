@@ -54,6 +54,7 @@
     "modsOptions": "Mod-Optionen",
     "modLayersCount": "{{count}} Layer",
     "modWeaponsCount": "{{count}} Waffen",
+    "modMapsCount": "{{count}} Karten",
     "vanilla": "Vanilla",
     "SuperMod": "SuperMod",
     "InfiniteWarefare": "Infinite Warefare",
