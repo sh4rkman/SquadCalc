@@ -458,12 +458,16 @@ $bezier: cubic-bezier(0.65, 0.25, 0.56, 0.96);
         }
         .modTileStats {
             display: flex;
-            gap: 1.2em;
+            align-items: center;
+            gap: 0.6em;
             font-size: 0.85em;
             font-weight: bold;
             opacity: 0.7;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+            .modTileStatsSeparator {
+                opacity: 0.5;
+            }
         }
         &.active {
             background-color: variables.$mainColor;

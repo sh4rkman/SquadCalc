@@ -158,8 +158,8 @@ export default class SquadCalc {
                 server.attributes.name,
                 server.mapName,
                 server.attributes.details.map,
-                server.team1,
-                server.team2,
+                server.team1FactionId || server.team1,
+                server.team2FactionId || server.team2,
                 server.attributes.details.squad_teamOne,
                 server.attributes.details.squad_teamTwo
             );
@@ -281,10 +281,8 @@ export default class SquadCalc {
         $(".dropbtn10").select2();
         $(".dropbtn11").select2();
         
-        // Load maps 
-        MAPS.forEach((map, i) => {
-            this.MAP_SELECTOR.append(`<option data-i18n="maps:${map.name}" value="${i}"></option>`);
-        });        
+        // Load maps
+        this._rebuildMapSelector();
 
         // Add event listener
         this.MAP_SELECTOR.on("change", (event) => {
@@ -410,6 +408,7 @@ export default class SquadCalc {
     loadLayers() {
         this.minimap.spin(true, this.minimap.spinOptions);
         $("#layerSelector").hide();
+        const selectedValue = this.LAYER_SELECTOR.val();
         this.LAYER_SELECTOR.empty();
 
         const enabledMods = this._getUniqueMods().filter(mod => this.userSettings.isModEnabled(mod));
@@ -465,6 +464,10 @@ export default class SquadCalc {
 
                 if (optgroup.children().length) this.LAYER_SELECTOR.append(optgroup);
             });
+
+            if (this.LAYER_SELECTOR.find(`option[value="${selectedValue}"]`).length) {
+                this.LAYER_SELECTOR.val(selectedValue).trigger("change.select2");
+            }
 
             this.minimap.spin(false);
             $("#layerSelector").show();
@@ -549,11 +552,19 @@ export default class SquadCalc {
                 this.updateUrlParams({ layer: null, team1: null, team1unit: null, team2: null, team2unit: null });
             }
         } 
-        else { 
+        else {
             // mapIndex = Math.floor(Math.random() * MAPS.length); // pick a random map
             mapIndex = 0; // New Basrah
         }
-        
+
+        // A linked map may belong to a mod that isn't enabled yet - turn it on
+        // so the map, its layers and the mods panel all agree it's active
+        const requiredMod = MAPS[mapIndex].mod;
+        if (requiredMod && !this.userSettings.isModEnabled(requiredMod)) {
+            this.userSettings.setModEnabled(requiredMod, true);
+            this._rebuildMapSelector();
+        }
+
         this.MAP_SELECTOR.val(mapIndex);
         this.minimap = new squadMinimap("map", this.MAPSIZE, MAPS[mapIndex]);
         this.minimap.draw();
@@ -654,21 +665,25 @@ export default class SquadCalc {
         const container = $("#modsPanelContainer");
         container.empty();
 
-        const statsHtml = (layers, weapons) => `
+        const statsHtml = (layers, weapons, maps) => `
             <span class="modTileStats">
                 <span>${i18next.t("settings:modLayersCount", { count: layers, defaultValue: `${layers} Layers` })}</span>
+                <span class="modTileStatsSeparator">•</span>
                 <span>${i18next.t("settings:modWeaponsCount", { count: weapons, defaultValue: `${weapons} Weapons` })}</span>
+                <span class="modTileStatsSeparator">•</span>
+                <span>${i18next.t("settings:modMapsCount", { count: maps, defaultValue: `${maps} Maps` })}</span>
             </span>
         `;
 
         const vanillaLabel = i18next.t("settings:vanilla", { defaultValue: "Squad (Base Game)" });
         const vanillaWeapons = WEAPONS.filter(w => !w.mod).length;
         const vanillaLayers = this.layerCounts?.vanilla ?? 0;
+        const vanillaMaps = MAPS.filter(m => !m.mod).length;
         container.append(`
             <button type="button" class="modToggleTile active locked">
                 <img class="modTileLogo" src="/img/mods/vanilla.webp" alt="" onerror="this.style.display='none'">
                 <span class="modTileName" data-i18n="settings:vanilla">${vanillaLabel}</span>
-                ${statsHtml(vanillaLayers, vanillaWeapons)}
+                ${statsHtml(vanillaLayers, vanillaWeapons, vanillaMaps)}
             </button>
         `);
 
@@ -677,11 +692,12 @@ export default class SquadCalc {
             const label = i18next.t(`settings:${modKey}`, { defaultValue: modKey });
             const weapons = WEAPONS.filter(w => w.mod === modKey).length;
             const layers = this.layerCounts?.[modKey.toLowerCase()] ?? 0;
+            const maps = MAPS.filter(m => m.mod === modKey).length;
             container.append(`
                 <button type="button" class="modToggleTile ${active}" data-mod="${modKey}">
                     <img class="modTileLogo" src="/img/mods/${modKey.toLowerCase()}.webp" alt="" onerror="this.style.display='none'">
                     <span class="modTileName" data-i18n="settings:${modKey}">${label}</span>
-                    ${statsHtml(layers, weapons)}
+                    ${statsHtml(layers, weapons, maps)}
                 </button>
             `);
         });
@@ -694,8 +710,57 @@ export default class SquadCalc {
             this.userSettings.setModEnabled(modKey, enabled);
             animateCSS(tile, "headShake");
             this._rebuildModdedWeapons();
-            if (this.minimap.activeMap) this.loadLayers();
+            const mapWasReset = this._rebuildMapSelector();
+            if (!mapWasReset && this.minimap.activeMap) this.loadLayers();
         });
+    }
+
+    /**
+     * Rebuild the map selector: vanilla maps always shown, plus one optgroup
+     * per enabled mod that has its own maps (same mechanics as the layer selector).
+     * Falls back to the first vanilla map if the currently active map got hidden
+     * (e.g. its mod was just disabled). Returns true if that fallback fired.
+     */
+    _rebuildMapSelector() {
+        const selectedValue = this.MAP_SELECTOR.val();
+        this.MAP_SELECTOR.empty();
+
+        const enabledMods = this._getUniqueMods().filter(modKey => this.userSettings.isModEnabled(modKey));
+
+        const vanillaContainer = enabledMods.length
+            ? $(`<optgroup data-i18n-label="settings:vanilla" label="${i18next.t("settings:vanilla", { defaultValue: "Vanilla" })}"></optgroup>`)
+            : this.MAP_SELECTOR;
+
+        MAPS.forEach((map, i) => {
+            if (!map.mod) vanillaContainer.append(`<option data-i18n="maps:${map.name}" value="${i}">${i18next.t("maps:" + map.name)}</option>`);
+        });
+
+        if (enabledMods.length && vanillaContainer.children().length) this.MAP_SELECTOR.append(vanillaContainer);
+
+        enabledMods.forEach(modKey => {
+            const label = i18next.t(`settings:${modKey}`, { defaultValue: modKey });
+            const optgroup = $(`<optgroup data-mod="${modKey}" data-i18n-label="settings:${modKey}" label="${label}"></optgroup>`);
+
+            MAPS.forEach((map, i) => {
+                if (map.mod === modKey) {
+                    optgroup.append(`<option data-i18n="maps:${map.name}" value="${i}">${i18next.t("maps:" + map.name)}</option>`);
+                }
+            });
+
+            if (optgroup.children().length) this.MAP_SELECTOR.append(optgroup);
+        });
+
+        if (this.MAP_SELECTOR.find(`option[value="${selectedValue}"]`).length) {
+            this.MAP_SELECTOR.val(selectedValue).trigger("change.select2");
+            return false;
+        }
+
+        if (this.minimap?.activeMap) {
+            this.MAP_SELECTOR.val(0).trigger("change");
+            return true;
+        }
+
+        return false;
     }
 
     /**

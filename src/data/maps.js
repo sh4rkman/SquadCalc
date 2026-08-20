@@ -547,9 +547,10 @@ export const MAPS = [
             }
         }
     },
-    { 
-        name: "Hrodna_Border", 
-        mapURL: "/img/maps/MODS/SPM/hrdoda/", 
+    {
+        name: "Hrodna_Border",
+        mod: "SuperMod",
+        mapURL: "/img/maps/MODS/SPM/hrdoda/",
         radiusExclusion: FOBEXCLUSIONS.medium,
         singleLayer: true,
         SDK_data: {
@@ -558,7 +559,7 @@ export const MAPS = [
                 corner1: [2016, 2016],
             },
             heightmap: {
-                origin: [-2016, -2016], // SDK is wrong, this is deduced instead
+                origin: [-2016, -2016],
                 size: [6351, 6351],
                 scale: [1, 1, 1],
                 BWlevels: [139, 173]

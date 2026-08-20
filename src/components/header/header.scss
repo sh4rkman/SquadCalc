@@ -96,6 +96,14 @@ header {
                 font-size: 0.9em;
                 max-height: 400px;
             }
+            .select2-results__group {
+                color: rgba(255, 255, 255, .7);
+                padding-top: 10px;
+                font-weight: 900;
+                text-align: left;
+                padding-left: 15px;
+                font-size: 1em;
+            }
         }
         #layerSelector {
             z-index: 2;

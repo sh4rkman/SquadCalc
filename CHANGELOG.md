@@ -4,7 +4,7 @@ SquadCalc now use a new layer extractor tool made by **yobaNGE** : **[SquadPipel
 
 </br><img src="https://img.shields.io/badge/-new%20features-green">
 - SuperMod & SteelDivision layers integration. You can now enable mods from `Settings > Mods` and browse modded layers and factions. It also means you can now sync with modded servers running these mods. Some gamemodes aren't integrated (yet?)
-
+- Added two new weapons from SteelDivision : `SCUD` and `Shahed-136`
 
 </br><img src="https://img.shields.io/badge/-bug%20fixes-b22">  
 - dfdfdf
