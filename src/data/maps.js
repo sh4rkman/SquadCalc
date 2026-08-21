@@ -547,12 +547,12 @@ export const MAPS = [
             }
         }
     },
-    {
-        name: "Hrodna_Border",
-        mod: "SuperMod",
-        mapURL: "/img/maps/MODS/SPM/hrdoda/",
+    { 
+        name: "Hrodna_Border", 
+        mapURL: "/img/maps/MODS/SPM/hrdoda/", 
         radiusExclusion: FOBEXCLUSIONS.medium,
         singleLayer: true,
+        mod: "SuperMod",
         SDK_data: {
             minimap: {
                 corner0: [-2016, -2016], 
@@ -565,7 +565,28 @@ export const MAPS = [
                 BWlevels: [139, 173]
             },
             heightmapPNG: {
-                scale: [1, 1, 0.034],
+                scale: [1, 1, 0.485617783],
+            }
+        }
+    },
+    { 
+        name: "Chornivsk", 
+        mapURL: "/img/maps/MODS/SPM/chornivsk/", 
+        radiusExclusion: FOBEXCLUSIONS.medium,
+        singleLayer: true,
+        mod: "SuperMod",
+        SDK_data: {
+            minimap: {
+                corner0: [-1649, -1547], 
+                corner1: [1535, 1637],
+            },
+            heightmap: {
+                origin: [-1649, -1547], // SDK is wrong, this is deduced instead
+                scale: [1, 1, 1],
+                BWlevels: [139, 173]
+            },
+            heightmapPNG: {
+                scale: [1, 1, 0.124958144],
             }
         }
     },
