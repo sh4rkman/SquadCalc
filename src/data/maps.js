@@ -549,7 +549,7 @@ export const MAPS = [
     },
     { 
         name: "Hrodna_Border", 
-        mapURL: "/img/maps/MODS/SPM/hrdoda/", 
+        mapURL: "/img/maps/MODS/SPM/hrodna/", 
         radiusExclusion: FOBEXCLUSIONS.medium,
         singleLayer: true,
         mod: "SuperMod",
