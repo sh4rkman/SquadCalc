@@ -5,6 +5,7 @@ import { App } from "../app.js";
 import "./libs/leaflet-measure-path.js";
 import SquadFactions from "./squadFactions.js";
 import { Hexagon } from "./libs/leaflet-hexagon.js";
+import { Curve } from "./libs/leaflet-curve.js";
 import { squadSpawnGroup } from "./squadSpawnGroup.js";
 import { squadCameraActor } from "./squadCameraActor.js";
 import { SquadVehicleSpawner } from "./squadVehicleSpawner.js";
@@ -560,6 +561,74 @@ export default class SquadLayer {
 
         this.borders = new Polygon([MAPBOUNDS, borderPath], {
             color: "#111",
+            fillOpacity: opacity,
+            weight: 0,
+            className: "unplayable-area",
+        }).addTo(this.activeLayerMarkers);
+    }
+
+    /**
+     * Same as createBorders() but renders the border as a spline (cubic bezier)
+     * using the arriveTangent/leaveTangent data from the extractor, instead of
+     * straight segments between border points. Not wired in yet - keeping both
+     * around until we decide whether to switch.
+     */
+    createSplineBorders() {
+        const MAPBOUNDS = [
+            [0, 0],
+            [0, this.map.pixelSize],
+            [-this.map.pixelSize, this.map.pixelSize],
+            [-this.map.pixelSize, 0],
+            [0, 0]
+        ];
+
+        // There's no border but the map bounds
+        if (this.layerData.border.length <= 2) return;
+
+        // convertToLatLng() scales+offsets a position, subtracting the same
+        // conversion at the origin turns it into a pure scale for a tangent vector
+        const zero = this.convertToLatLng(0, 0);
+        const convertVectorToLatLng = (x, y) => {
+            const v = this.convertToLatLng(x || 0, y || 0);
+            return [v[0] - zero[0], v[1] - zero[1]];
+        };
+
+        const borderPoints = this.layerData.border.map((border) => {
+            const latlng = this.convertToLatLng(border.location_x, border.location_y);
+            // keep the latlng within the map bounds
+            if (latlng[1] > this.map.pixelSize) {latlng[1] = this.map.pixelSize;}
+            if (latlng[0] < -this.map.pixelSize) {latlng[0] = -this.map.pixelSize;}
+            if (latlng[1] < 0) {latlng[1] = 0;}
+            if (latlng[0] > 0) {latlng[0] = 0;}
+            return {
+                latlng: latlng,
+                leaveTangent: convertVectorToLatLng(border.leaveTangent_x, border.leaveTangent_y),
+                arriveTangent: convertVectorToLatLng(border.arriveTangent_x, border.arriveTangent_y),
+            };
+        });
+
+        const path = ["M", MAPBOUNDS[0], "L", MAPBOUNDS[1], "L", MAPBOUNDS[2], "L", MAPBOUNDS[3], "L", MAPBOUNDS[4], "Z"];
+
+        // Hermite tangents -> cubic bezier control points (standard 1/3 scale)
+        path.push("M", borderPoints[0].latlng);
+        for (let i = 1; i < borderPoints.length; i++) {
+            const prev = borderPoints[i - 1];
+            const cur = borderPoints[i];
+            const cp1 = [prev.latlng[0] + prev.leaveTangent[0] / 3, prev.latlng[1] + prev.leaveTangent[1] / 3];
+            const cp2 = [cur.latlng[0] - cur.arriveTangent[0] / 3, cur.latlng[1] - cur.arriveTangent[1] / 3];
+            path.push("C", cp1, cp2, cur.latlng);
+        }
+        path.push("Z");
+
+        let opacity = 0.75;
+
+        if (!App.userSettings.showMapBorders) opacity = 0;
+
+        this.borders = new Curve(path, {
+            color: "#111",
+            fill: true,
+            stroke: false,
+            fillRule: "evenodd",
             fillOpacity: opacity,
             weight: 0,
             className: "unplayable-area",
