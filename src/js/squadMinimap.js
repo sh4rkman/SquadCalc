@@ -532,24 +532,7 @@ export const squadMinimap = Map.extend({
     createTarget(latlng, event, uid = false, skipApiReport = false){
 
         let target = new squadTargetMarker(latlng, {animate: App.userSettings.targetAnimation, uid: uid, skipApiReport: skipApiReport}, this).addTo(this.markersGroup);
-        
-        const weaponLatlng = this.activeWeaponsMarkers.getLayers()[0]?.getLatLng();
-        if (weaponLatlng) {
-            const wJson = this.heightmap.getHeightOLD(weaponLatlng);
-            const tJson = this.heightmap.getHeightOLD(latlng);
-            const wPng  = this.heightmap.getHeight(weaponLatlng);
-            const tPng  = this.heightmap.getHeight(latlng);
-            const dJson = tJson - wJson;
-            const dPng  = tPng  - wPng;
-            const f = v => v.toFixed(1);
-            const absDiff = Math.abs(dJson - dPng);
-            const diffIcon = absDiff < 1 ? "✅" : absDiff < 3 ? "⚠️" : "⛔";
-            const diffLabel = `${diffIcon} ${f(dJson - dPng)}`;
-            console.debug(
-                `[HEIGHTMAP] Old : ${f(dJson)} New : ${f(dPng)} \n` +
-                `[HEIGHTMAP] ${diffLabel}`
-            );
-        }
+
         if (!uid && App.session.ws && App.session.ws.readyState === WebSocket.OPEN) {
             console.debug("[SESSION] sending new target with uid", target.uid);
             App.session.ws.send(
