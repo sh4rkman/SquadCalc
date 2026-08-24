@@ -419,7 +419,7 @@ export const MAPS = [
     },
     {
         name: "Bespin",
-        mapURL: "/img/maps/MODS/GC/Bespin/",
+        mapURL: "/img/maps/MODS/GC/bespin/",
         singleLayer: true,
         mod: "GC",
         radiusExclusion: FOBEXCLUSIONS.medium,
@@ -432,7 +432,7 @@ export const MAPS = [
     },
     {
         name: "Coruscant",
-        mapURL: "/img/maps/MODS/GC/Coruscant/",
+        mapURL: "/img/maps/MODS/GC/coruscant/",
         singleLayer: true,
         mod: "GC",
         radiusExclusion: FOBEXCLUSIONS.medium,
@@ -445,7 +445,7 @@ export const MAPS = [
     },
     {
         name: "Corvette",
-        mapURL: "/img/maps/MODS/GC/Corvette/",
+        mapURL: "/img/maps/MODS/GC/corvette/",
         singleLayer: true,
         mod: "GC",
         radiusExclusion: FOBEXCLUSIONS.medium,
@@ -458,7 +458,7 @@ export const MAPS = [
     },
     {
         name: "Geonosis",
-        mapURL: "/img/maps/MODS/GC/Geonosis/",
+        mapURL: "/img/maps/MODS/GC/geonosis/",
         singleLayer: true,
         mod: "GC",
         radiusExclusion: FOBEXCLUSIONS.medium,
@@ -471,7 +471,7 @@ export const MAPS = [
     },
     {
         name: "Kashyyyk",
-        mapURL: "/img/maps/MODS/GC/Kashyyyk/",
+        mapURL: "/img/maps/MODS/GC/kashyyyk/",
         singleLayer: true,
         mod: "GC",
         radiusExclusion: FOBEXCLUSIONS.medium,
@@ -484,7 +484,7 @@ export const MAPS = [
     },
     {
         name: "Mallidon",
-        mapURL: "/img/maps/MODS/GC/Mallidon/",
+        mapURL: "/img/maps/MODS/GC/mallidon/",
         singleLayer: true,
         mod: "GC",
         radiusExclusion: FOBEXCLUSIONS.medium,
@@ -497,7 +497,7 @@ export const MAPS = [
     },
     {
         name: "Morak",
-        mapURL: "/img/maps/MODS/GC/Morak/",
+        mapURL: "/img/maps/MODS/GC/morak/",
         singleLayer: true,
         mod: "GC",
         radiusExclusion: FOBEXCLUSIONS.medium,
@@ -510,7 +510,7 @@ export const MAPS = [
     },
     {
         name: "Mygeeto",
-        mapURL: "/img/maps/MODS/GC/Mygeeto/",
+        mapURL: "/img/maps/MODS/GC/mygeeto/",
         singleLayer: true,
         mod: "GC",
         radiusExclusion: FOBEXCLUSIONS.medium,
@@ -523,7 +523,7 @@ export const MAPS = [
     },
     {
         name: "NabooPlains",
-        mapURL: "/img/maps/MODS/GC/NabooPlains/",
+        mapURL: "/img/maps/MODS/GC/nabooplains/",
         singleLayer: true,
         mod: "GC",
         radiusExclusion: FOBEXCLUSIONS.medium,
@@ -536,7 +536,7 @@ export const MAPS = [
     },
     {
         name: "Ryloth",
-        mapURL: "/img/maps/MODS/GC/Ryloth/",
+        mapURL: "/img/maps/MODS/GC/ryloth/",
         singleLayer: true,
         mod: "GC",
         radiusExclusion: FOBEXCLUSIONS.medium,
@@ -549,7 +549,7 @@ export const MAPS = [
     },
     {
         name: "SesidEquator",
-        mapURL: "/img/maps/MODS/GC/SesidEquator/",
+        mapURL: "/img/maps/MODS/GC/sesidequator/",
         singleLayer: true,
         mod: "GC",
         radiusExclusion: FOBEXCLUSIONS.medium,
@@ -562,7 +562,7 @@ export const MAPS = [
     },
     {
         name: "Sullust",
-        mapURL: "/img/maps/MODS/GC/Sullust/",
+        mapURL: "/img/maps/MODS/GC/sullust/",
         singleLayer: true,
         mod: "GC",
         radiusExclusion: FOBEXCLUSIONS.medium,
@@ -575,7 +575,7 @@ export const MAPS = [
     },
     {
         name: "Tatooine",
-        mapURL: "/img/maps/MODS/GC/Tatooine/",
+        mapURL: "/img/maps/MODS/GC/tatooine/",
         singleLayer: true,
         mod: "GC",
         radiusExclusion: FOBEXCLUSIONS.medium,
@@ -588,7 +588,7 @@ export const MAPS = [
     },
     {
         name: "Umbara",
-        mapURL: "/img/maps/MODS/GC/Umbara/",
+        mapURL: "/img/maps/MODS/GC/umbara/",
         singleLayer: true,
         mod: "GC",
         radiusExclusion: FOBEXCLUSIONS.medium,
@@ -601,7 +601,7 @@ export const MAPS = [
     },
     {
         name: "Venator",
-        mapURL: "/img/maps/MODS/GC/Venator/",
+        mapURL: "/img/maps/MODS/GC/venator/",
         singleLayer: true,
         mod: "GC",
         radiusExclusion: FOBEXCLUSIONS.medium,
@@ -614,7 +614,7 @@ export const MAPS = [
     },
     {
         name: "Yavin4",
-        mapURL: "/img/maps/MODS/GC/Yavin4/",
+        mapURL: "/img/maps/MODS/GC/yavin4/",
         singleLayer: true,
         mod: "GC",
         radiusExclusion: FOBEXCLUSIONS.medium,
