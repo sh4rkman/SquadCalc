@@ -8,9 +8,14 @@
 
 @media (height >= 35em) {
     header {
-        #mapSelector {
+        .mapSelector #mapSelector {
             .select2-results__options {
                 max-height: 470px;
+            }
+        }
+        .mapSelector #layerSelector {
+            .select2-results__options {
+                max-height: 350px;
             }
         }
         .weaponSelector #weaponSelector {
@@ -26,10 +31,15 @@
 
 @media (height >= 45em) {
     header {
-        .mapSelector #mapSelector, .weaponSelector #layerSelector {
+        .mapSelector #mapSelector {
             .select2-results__options {
                 // line-height: 0.85em;
                 max-height: 770px;
+            }
+        }
+        .mapSelector #layerSelector {
+            .select2-results__options {
+                max-height: 600px;
             }
         }
         .weaponSelector #weaponSelector {
@@ -45,9 +55,14 @@
 
 @media (height >= 50em) {
     header {
-        #mapSelector {
+        .mapSelector #mapSelector {
             .select2-results__options {
                 max-height: 850px;
+            }
+        }
+        .mapSelector #layerSelector {
+            .select2-results__options {
+                max-height: 650px;
             }
         }
     }
@@ -442,6 +457,9 @@
                 .select2-selection__rendered {
                     font-size: 1.1em;
                 }
+            }
+            .mapSelector #layerSelector .select2-results__options {
+                max-height: 1000px;
             }
         }
         #classic_ui {

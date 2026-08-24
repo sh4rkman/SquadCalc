@@ -111,7 +111,7 @@ header {
             position: relative;
             .select2-results__options {
                 font-size: 0.9em;
-                max-height: 600px;
+                max-height: 300px;
             }
             .select2-results__group {
                 color: rgba(255, 255, 255, .7);
@@ -225,6 +225,17 @@ header {
     to { 
         opacity: 1;
     }
+}
+
+
+// Our custom `.select2-results__options { max-height: … }` rules above
+// unintentionally also match select2's nested per-optgroup `<ul>`
+// (`.select2-results__options--nested`), capping its height with no
+// overflow rule set. The overflow then spills visibly onto the next
+// group below. Only the top-level list should ever be height-capped.
+
+.select2-results__options--nested {
+    max-height: none !important;
 }
 
 .select2-results__option {
