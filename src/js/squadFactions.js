@@ -586,7 +586,7 @@ export default class SquadFactions {
             <div class="vehicle-card animate__animated animate__fadeIn animate__faster">
                 <div class="card-content">
                     <div class="vehicle-icon">
-                        <img src="/img/icons/default/vehicles/${vehicle.icon}.svg" alt='${vehicle.type}'>
+                        <img src="/img/icons/default/vehicles/${vehicle.icon}.svg" alt='${vehicle.type}' onerror="this.onerror=null; this.src='/img/icons/default/vehicles/map_truck_transport.svg';">
                     </div>
                     <div class="vehicle-icon">
                         <div class="vehicle-count">×${vehicle.count}</div>
@@ -1272,7 +1272,8 @@ export default class SquadFactions {
         Object.values(selectedUnit.commanderAssets).forEach(asset => {
             $(DIV).append(`
                 <img src="/img/icons/shared/commander/${asset.icon}.webp"
-                    class="commander-asset" 
+                    onerror="this.onerror=null; this.src='/img/icons/shared/commander/unknown.webp';"
+                    class="commander-asset"
                     data-tippy-name="${asset.displayName}"
                     data-tippy-delay="${asset.delay}" />
             `);

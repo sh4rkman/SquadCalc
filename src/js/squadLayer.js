@@ -97,11 +97,11 @@ export default class SquadLayer {
 
     /**
      * Checks if the current layer's gamemode is randomized.
-     * A layer is considered randomized if its gamemode is "RAAS", "RVAAS", or "Invasion"
+     * A layer is considered randomized if its gamemode is "RAAS", "RVAAS", "RINV", or "Invasion"
      * @returns {boolean} True if the layer is randomized, false otherwise
      */
     isRandomized() {
-        return this.gamemode === "RAAS" || this.gamemode === "RVAAS" || this.gamemode === "Invasion";
+        return this.gamemode === "RAAS" || this.gamemode === "RVAAS" || this.gamemode === "Invasion" || this.gamemode === "RINV";
     }
 
 
@@ -125,12 +125,14 @@ export default class SquadLayer {
             this.initTerritoryControl(this.capturePoints);
             break;
         case "RAAS":
-        case "RVAAS":
+        case "RVAAS": // SuperMod
+        case "RINV":   // GC
         case "Invasion":
             this.initRandomizedLayer();
             break;
         default:
             this.clear();
+            this.map.spin(false);
             throw new Error(`Unsupported gamemode: "${this.gamemode}"`);
         }
 
@@ -296,7 +298,7 @@ export default class SquadLayer {
         });
 
         // Pre-select first main flag in invasion
-        if (this.gamemode === "Invasion") {
+        if (this.gamemode === "Invasion" || this.gamemode === "RINV") {
             this.mains.forEach((main) => {
                 // Invaders are always Team 1
                 if (main.objectName.toLowerCase().includes("team1")){
@@ -899,7 +901,7 @@ export default class SquadLayer {
                 return;
             }
 
-            if (flag.isMain && this.gamemode != "Invasion"){
+            if (flag.isMain && (this.gamemode != "Invasion" || this.gamemode != "RINV")){
                 this._resetLayer();
                 this._handleFlagClick(flag);
                 return;
@@ -1258,7 +1260,7 @@ export default class SquadLayer {
         });
 
         // Pre-select first main flag in invasion
-        if (this.gamemode === "Invasion") {
+        if (this.gamemode === "Invasion" || this.gamemode === "RINV") {
             this.mains.forEach((main) => {
                 if (main.objectName === this.capturePoints.clusters.listOfMains[0]){
                     this._handleFlagClick(main, false);

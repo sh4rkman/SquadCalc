@@ -417,6 +417,214 @@ export const MAPS = [
             }
         }
     },
+    {
+        name: "Bespin",
+        mapURL: "/img/maps/MODS/GC/Bespin/",
+        singleLayer: true,
+        mod: "GC",
+        radiusExclusion: FOBEXCLUSIONS.medium,
+        SDK_data: {
+            minimap: {
+                corner0: [-2031.92, -2031.92],
+                corner1: [2031.92, 2031.92],
+            },
+        }
+    },
+    {
+        name: "Coruscant",
+        mapURL: "/img/maps/MODS/GC/Coruscant/",
+        singleLayer: true,
+        mod: "GC",
+        radiusExclusion: FOBEXCLUSIONS.medium,
+        SDK_data: {
+            minimap: {
+                corner0: [-2000, -2000],
+                corner1: [2000, 2000],
+            },
+        }
+    },
+    {
+        name: "Corvette",
+        mapURL: "/img/maps/MODS/GC/Corvette/",
+        singleLayer: true,
+        mod: "GC",
+        radiusExclusion: FOBEXCLUSIONS.medium,
+        SDK_data: {
+            minimap: {
+                corner0: [-166.20, -67.40],
+                corner1: [-6.65, 70.73]
+            },
+        }
+    },
+    {
+        name: "Geonosis",
+        mapURL: "/img/maps/MODS/GC/Geonosis/",
+        singleLayer: true,
+        mod: "GC",
+        radiusExclusion: FOBEXCLUSIONS.medium,
+        SDK_data: {
+            minimap: {
+                corner0: [-2015.67, -2015.67],
+                corner1: [2015.7, 2015.7],
+            },
+        }
+    },
+    {
+        name: "Kashyyyk",
+        mapURL: "/img/maps/MODS/GC/Kashyyyk/",
+        singleLayer: true,
+        mod: "GC",
+        radiusExclusion: FOBEXCLUSIONS.medium,
+        SDK_data: {
+            minimap: {
+                corner0: [-2106.43,-2814.39],
+                corner1: [1893.56, 1185.59],
+            },
+        }
+    },
+    {
+        name: "Mallidon",
+        mapURL: "/img/maps/MODS/GC/Mallidon/",
+        singleLayer: true,
+        mod: "GC",
+        radiusExclusion: FOBEXCLUSIONS.medium,
+        SDK_data: {
+            minimap: {
+                corner0: [-2400, -2400],
+                corner1: [-400, -400]
+            },
+        }
+    },
+    {
+        name: "Morak",
+        mapURL: "/img/maps/MODS/GC/Morak/",
+        singleLayer: true,
+        mod: "GC",
+        radiusExclusion: FOBEXCLUSIONS.medium,
+        SDK_data: {
+            minimap: {
+                corner0: [-3250, -3250],
+                corner1: [3250, 3250]
+            },
+        }
+    },
+    {
+        name: "Mygeeto",
+        mapURL: "/img/maps/MODS/GC/Mygeeto/",
+        singleLayer: true,
+        mod: "GC",
+        radiusExclusion: FOBEXCLUSIONS.medium,
+        SDK_data: {
+            minimap: {
+                corner0: [-2000, -2000],
+                corner1: [2000, 2000],
+            },
+        }
+    },
+    {
+        name: "NabooPlains",
+        mapURL: "/img/maps/MODS/GC/NabooPlains/",
+        singleLayer: true,
+        mod: "GC",
+        radiusExclusion: FOBEXCLUSIONS.medium,
+        SDK_data: {
+            minimap: {
+                corner0: [-1967.98, -1967.98],
+                corner1: [1968.98, 1968.98],
+            },
+        }
+    },
+    {
+        name: "Ryloth",
+        mapURL: "/img/maps/MODS/GC/Ryloth/",
+        singleLayer: true,
+        mod: "GC",
+        radiusExclusion: FOBEXCLUSIONS.medium,
+        SDK_data: {
+            minimap: {
+                corner0: [-620, -620],
+                corner1: [620, 620],
+            },
+        }
+    },
+    {
+        name: "SesidEquator",
+        mapURL: "/img/maps/MODS/GC/SesidEquator/",
+        singleLayer: true,
+        mod: "GC",
+        radiusExclusion: FOBEXCLUSIONS.medium,
+        SDK_data: {
+            minimap: {
+                corner0: [-2400, -2400],
+                corner1: [2400, 2400],
+            },
+        }
+    },
+    {
+        name: "Sullust",
+        mapURL: "/img/maps/MODS/GC/Sullust/",
+        singleLayer: true,
+        mod: "GC",
+        radiusExclusion: FOBEXCLUSIONS.medium,
+        SDK_data: {
+            minimap: {
+                corner0: [-1078.77, -1078.77],
+                corner1: [1079.56, 1079.56],
+            },
+        }
+    },
+    {
+        name: "Tatooine",
+        mapURL: "/img/maps/MODS/GC/Tatooine/",
+        singleLayer: true,
+        mod: "GC",
+        radiusExclusion: FOBEXCLUSIONS.medium,
+        SDK_data: {
+            minimap: {
+                corner0: [-1966.20, -1865.35],
+                corner1: [1579.80, 1680.65]
+            },
+        }
+    },
+    {
+        name: "Umbara",
+        mapURL: "/img/maps/MODS/GC/Umbara/",
+        singleLayer: true,
+        mod: "GC",
+        radiusExclusion: FOBEXCLUSIONS.medium,
+        SDK_data: {
+            minimap: {
+                corner0: [-800, -800],
+                corner1: [800, 800],
+            },
+        }
+    },
+    {
+        name: "Venator",
+        mapURL: "/img/maps/MODS/GC/Venator/",
+        singleLayer: true,
+        mod: "GC",
+        radiusExclusion: FOBEXCLUSIONS.medium,
+        SDK_data: {
+            minimap: {
+                corner0: [-855.40, -855.40],
+                corner1: [644.60, 644.60],
+            },
+        }
+    },
+    {
+        name: "Yavin4",
+        mapURL: "/img/maps/MODS/GC/Yavin4/",
+        singleLayer: true,
+        mod: "GC",
+        radiusExclusion: FOBEXCLUSIONS.medium,
+        SDK_data: {
+            minimap: {
+                corner0: [-1260.02, -1260.02],
+                corner1: [1260.02, 1260.02]
+            },
+        }
+    },
     // Custom Map Template
     //   * Create the necessary folders in /public/ and point mapURL to it
     //   * squadcalc will look at the folder looking for basemap/terrainmap/topomap .webp

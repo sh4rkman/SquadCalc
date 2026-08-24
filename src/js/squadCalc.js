@@ -642,10 +642,12 @@ export default class SquadCalc {
     }
 
     /**
-     * Returns unique mod keys present in WEAPONS data
+     * Returns unique mod keys present in WEAPONS or MAPS data
      */
     _getUniqueMods() {
-        return [...new Set(WEAPONS.filter(w => w.mod).map(w => w.mod))].sort();
+        const weaponMods = WEAPONS.filter(w => w.mod).map(w => w.mod);
+        const mapMods = MAPS.filter(m => m.mod).map(m => m.mod);
+        return [...new Set([...weaponMods, ...mapMods])].sort();
     }
 
     /**
