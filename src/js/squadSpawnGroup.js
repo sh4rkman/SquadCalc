@@ -1,6 +1,6 @@
 import { Marker, Icon, Browser, DomEvent } from "leaflet";
 import { App } from "../app.js";
-import tippy from "tippy.js";
+import tippy, { sticky } from "tippy.js";
 import i18next from "i18next";
 
 
@@ -57,6 +57,7 @@ export const squadSpawnGroup = Marker.extend({
             delay: 200,
             placement: "top",
             sticky: true,
+            plugins: [sticky],
             duration: 0,
             allowHTML: true,
             interactive: true,
@@ -176,7 +177,7 @@ export const squadSpawnGroup = Marker.extend({
     _handleContextMenu(event) {
         DomEvent.preventDefault(event);
 
-        if (!this.temporary) return; 
+        if (!this.temporary) return;
 
         // clean up tooltip if needed
         if (this.tippy && this.tippy.destroy) {
