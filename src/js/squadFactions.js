@@ -640,7 +640,7 @@ export default class SquadFactions {
         `;
 
         let armorLink = "";
-        if (vehicle.rawType) {
+        if (vehicle.rawType && !isGCLayer) {
             const armorSlug = vehicle.rawType.replace(/_C$/, "");
             const faction = LEFT ? this.FACTION1_SELECTOR.val() : this.FACTION2_SELECTOR.val();
             const modParam = (faction?.startsWith("SU_") || layerName?.startsWith("SU_")) ? "?mods=SuperMod" : "";
