@@ -21,8 +21,7 @@ export default class SquadLayer {
         this.capturePoints = layerData.capturePoints;
         this.objectives = layerData.objectives;
         this.gamemode = layerData.gamemode;
-        this.isRandomized = this.isRandomized(); 
-        
+
         [this.offset_x, this.offset_y] = this.getLayerOffsets(this.layerData.mapTextureCorners);
         this.isVisible = true;
         this.currentPosition = 0;
@@ -82,6 +81,7 @@ export default class SquadLayer {
         this.mainZones.ammocrates = [];
 
         this.init();
+        this.isRandomized = this.isRandomized();
 
         if (process.env.DISABLE_FACTIONS != "true") {
             this.factions = new SquadFactions(this, broadcast);
@@ -140,8 +140,9 @@ export default class SquadLayer {
         this.createHelipads();
         this.createDeployables();
         this.createProtectionZones();
-        this.createBorders();
+        //this.createBorders();
         this.createSpawners();
+        this.createSplineBorders();
         this.createTeamSpawns();
         this.createCameraActors();
         //this.createStagingZones();
@@ -199,10 +200,15 @@ export default class SquadLayer {
      * AAS - SEED - Skirmish
      */
     initPredictiveLayer(){
+
+        if (!this.capturePoints?.points?.links) {
+            console.debug(`[LAYER] initPredictiveLayer: missing capturePoints.points.links for gamemode "${this.gamemode}", falling back to initRandomizedLayer`);
+            this.gamemode = "RAAS";
+            this.initRandomizedLayer();
+            return;
+        }
+
         // Set Paths
-
-        console.log(this.capturePoints);
-
         Object.values(this.capturePoints.points.links).forEach(link => {
             const nodeAFlag = Object.values(this.objectives).find(objective => objective.objectDisplayName === link.nodeA);
             const nodeBFlag = Object.values(this.objectives).find(objective => objective.objectDisplayName === link.nodeB);
@@ -557,12 +563,12 @@ export default class SquadLayer {
             borderPath.push(latlng);
         });
 
-        let opacity = 0.75;
+        let opacity = 0.25;
 
         if (!App.userSettings.showMapBorders) opacity = 0;
 
         this.borders = new Polygon([MAPBOUNDS, borderPath], {
-            color: "#111",
+            color: "red",
             fillOpacity: opacity,
             weight: 0,
             className: "unplayable-area",
