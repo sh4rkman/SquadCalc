@@ -453,7 +453,33 @@ export const MAPS = [
             minimap: {
                 corner0: [-166.20, -67.40],
                 corner1: [-6.65, 70.73]
-            },
+            }
+        }
+    },
+    {
+        name: "felucia",
+        mapURL: "/img/maps/MODS/GC/felucia/",
+        singleLayer: true,
+        mod: "GC",
+        radiusExclusion: FOBEXCLUSIONS.medium,
+        SDK_data: {
+            minimap: {
+                corner0: [-789.93, -3999.91],
+                corner1: [1876.70, -1333.21],
+            }
+        }
+    },
+    {
+        name: "Galban",
+        mapURL: "/img/maps/MODS/GC/galban/",
+        singleLayer: true,
+        mod: "GC",
+        radiusExclusion: FOBEXCLUSIONS.medium,
+        SDK_data: {
+            minimap: {
+                corner0: [-1784.99, -1784.97],
+                corner1: [1784.97, 1784.91],
+            }
         }
     },
     {
@@ -466,7 +492,7 @@ export const MAPS = [
             minimap: {
                 corner0: [-2015.67, -2015.67],
                 corner1: [2015.7, 2015.7],
-            },
+            }
         }
     },
     {
@@ -483,6 +509,19 @@ export const MAPS = [
         }
     },
     {
+        name: "Kavado",
+        mapURL: "/img/maps/MODS/GC/kavado/",
+        singleLayer: true,
+        mod: "GC",
+        radiusExclusion: FOBEXCLUSIONS.medium,
+        SDK_data: {
+            minimap: {
+                corner0: [-1072.36, -2098.28],
+                corner1: [2052.09, 1026.17],
+            }
+        }
+    },
+    {
         name: "Mallidon",
         mapURL: "/img/maps/MODS/GC/mallidon/",
         singleLayer: true,
@@ -492,6 +531,19 @@ export const MAPS = [
             minimap: {
                 corner0: [-2400, -2400],
                 corner1: [-400, -400]
+            },
+        }
+    },
+    {
+        name: "Miniosis",
+        mapURL: "/img/maps/MODS/GC/miniosis/",
+        singleLayer: true,
+        mod: "GC",
+        radiusExclusion: FOBEXCLUSIONS.medium,
+        SDK_data: {
+            minimap: {
+                corner0: [-1020, -1020],
+                corner1: [1020, 1020]
             },
         }
     },
@@ -535,6 +587,19 @@ export const MAPS = [
         }
     },
     {
+        name: "ortoplutonia",
+        mapURL: "/img/maps/MODS/GC/ortoplutonia/",
+        singleLayer: true,
+        mod: "GC",
+        radiusExclusion: FOBEXCLUSIONS.medium,
+        SDK_data: {
+            minimap: {
+                corner0: [-1999.95, -1999.95],
+                corner1: [2000.05, 2000.05],
+            }
+        }
+    },
+    {
         name: "Ryloth",
         mapURL: "/img/maps/MODS/GC/ryloth/",
         singleLayer: true,
@@ -544,6 +609,19 @@ export const MAPS = [
             minimap: {
                 corner0: [-620, -620],
                 corner1: [620, 620],
+            },
+        }
+    },
+    {
+        name: "Sesid",
+        mapURL: "/img/maps/MODS/GC/sesid/",
+        singleLayer: true,
+        mod: "GC",
+        radiusExclusion: FOBEXCLUSIONS.medium,
+        SDK_data: {
+            minimap: {
+                corner0: [-1880, -1880],
+                corner1: [1880, 1880],
             },
         }
     },
@@ -606,10 +684,10 @@ export const MAPS = [
         mod: "GC",
         radiusExclusion: FOBEXCLUSIONS.medium,
         SDK_data: {
-            minimap: {
-                corner0: [-855.40, -855.40],
-                corner1: [644.60, 644.60],
-            },
+minimap: {
+    corner0: [-855.40, -462.00],
+    corner1: [644.60, 1038.00],
+}
         }
     },
     {
