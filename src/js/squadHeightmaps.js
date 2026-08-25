@@ -13,38 +13,10 @@ export default class SquadHeightmap {
      */
     constructor(map) {
         this.map = map;
-        this.width = 500;
-        this.heightmapScaling = this.width / this.map.pixelSize;
-        let heightmapPath = `${process.env.API_URL}${this.map.activeMap.mapURL}heightmap.json`;
         let heightmapPathPNG = `${process.env.API_URL}${this.map.activeMap.mapURL}heightmap.png`;
-        this.json = [];
         this.jsonPng = [];
         this.scalingPNG = 0;
-        this.loadHeightmapJson(heightmapPath);
         this.loadHeightmapPNG(heightmapPathPNG);
-    }
-
-
-    /**
-     * Load the heightmap from a JSON file
-     * @param {string} [url] - URL to the JSON file
-     * @returns {Promise<boolean>} - Whether the JSON heightmap loaded successfully
-     */
-    async loadHeightmapJson(url) {
-        
-        // If no heightmap is provided, don't look for a .json file
-        if (!this.map.activeMap.SDK_data.heightmap) return;
-
-        try {
-            const response = await fetch(url); // Fetch the JSON file
-            let data = await response.json();
-            this.json = data;
-        } catch (error) {
-            console.error("[HEIGHTMAP] Failed to load heightmap:", url);
-            console.error("[HEIGHTMAP]   -> ", error);
-        }
-        
-        $(document).trigger("heightmap:loaded");
     }
 
 
@@ -57,12 +29,12 @@ export default class SquadHeightmap {
      */
     async loadHeightmapPNG(url) {
 
-        if (!this.map.activeMap.SDK_data.heightmapPNG) return;
-
-        const { scale } = this.map.activeMap.SDK_data.heightmapPNG;
-        const heightScale = scale[2];
-
         try {
+            if (!this.map.activeMap.SDK_data.heightmapPNG) return;
+
+            const { scale } = this.map.activeMap.SDK_data.heightmapPNG;
+            const heightScale = scale[2];
+
             const response = await fetch(url);
             const buffer = await response.arrayBuffer();
             const img = decode(new Uint8Array(buffer));
@@ -87,33 +59,12 @@ export default class SquadHeightmap {
         } catch (error) {
             console.error("[HEIGHTMAP] Failed to load PNG heightmap:", url);
             console.error("[HEIGHTMAP]   -> ", error);
+        } finally {
+            $(document).trigger("heightmap:loaded");
         }
     }
 
 
-    /**
-     * Calculate heights for a given LatLng Point
-     * https://github.com/sh4rkman/SquadCalc/wiki/Deducing-Altitude
-     * @param {LatLng} [latlng] - LatLng Point
-     * @returns {integer} - height in meters
-     */
-    getHeightOLD(latlng){
-
-        // Fallback in case heightmap isn't supplied or didn't load
-        if (!this.json || !Array.isArray(this.json)) return 0;
-
-        const row = Math.round(latlng.lat * -this.heightmapScaling);
-        const col = Math.round(latlng.lng * this.heightmapScaling);
-        let height = 0; // Todo: Implement a better way to handle this, like returning infinity
-
-        if (this.json[row] && typeof this.json[row][col] !== "undefined") {
-            height = this.json[row][col];
-        }
-        
-        return height;
-    }
-
-    
     getHeight(latlng) {
         if (!this.jsonPng.length || !this.scalingPNG) return 0;
 

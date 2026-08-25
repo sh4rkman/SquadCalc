@@ -5,6 +5,7 @@ import { App } from "../app.js";
 import "./libs/leaflet-measure-path.js";
 import SquadFactions from "./squadFactions.js";
 import { Hexagon } from "./libs/leaflet-hexagon.js";
+import { Curve } from "./libs/leaflet-curve.js";
 import { squadSpawnGroup } from "./squadSpawnGroup.js";
 import { squadCameraActor } from "./squadCameraActor.js";
 import { SquadVehicleSpawner } from "./squadVehicleSpawner.js";
@@ -57,6 +58,7 @@ export default class SquadLayer {
         this.phaseAeras = new FeatureGroup().addTo(this.map);
         this.flags = [];
         this.hexs = [];
+        this.stagingZones = [];
         this.reversed = false;
 
         this.spawnGroups = [];
@@ -95,11 +97,11 @@ export default class SquadLayer {
 
     /**
      * Checks if the current layer's gamemode is randomized.
-     * A layer is considered randomized if its gamemode is either "RAAS" or "Invasion"
+     * A layer is considered randomized if its gamemode is "RAAS", "RVAAS", "RINV", or "Invasion"
      * @returns {boolean} True if the layer is randomized, false otherwise
      */
     isRandomized() {
-        return this.gamemode === "RAAS" || this.gamemode === "Invasion";
+        return this.gamemode === "RAAS" || this.gamemode === "RVAAS" || this.gamemode === "Invasion" || this.gamemode === "RINV";
     }
 
 
@@ -119,14 +121,18 @@ export default class SquadLayer {
             this.initPredictiveLayer();
             break;
         case "TC":
+        case "TerritoryControl":
             this.initTerritoryControl(this.capturePoints);
             break;
         case "RAAS":
+        case "RVAAS": // SuperMod
+        case "RINV":   // GC
         case "Invasion":
             this.initRandomizedLayer();
             break;
         default:
             this.clear();
+            this.map.spin(false);
             throw new Error(`Unsupported gamemode: "${this.gamemode}"`);
         }
 
@@ -138,6 +144,7 @@ export default class SquadLayer {
         this.createSpawners();
         this.createTeamSpawns();
         this.createCameraActors();
+        //this.createStagingZones();
         //this.createTeamSpawnsPoints();
     }
 
@@ -193,6 +200,9 @@ export default class SquadLayer {
      */
     initPredictiveLayer(){
         // Set Paths
+
+        console.log(this.capturePoints);
+
         Object.values(this.capturePoints.points.links).forEach(link => {
             const nodeAFlag = Object.values(this.objectives).find(objective => objective.objectDisplayName === link.nodeA);
             const nodeBFlag = Object.values(this.objectives).find(objective => objective.objectDisplayName === link.nodeB);
@@ -288,7 +298,7 @@ export default class SquadLayer {
         });
 
         // Pre-select first main flag in invasion
-        if (this.gamemode === "Invasion") {
+        if (this.gamemode === "Invasion" || this.gamemode === "RINV") {
             this.mains.forEach((main) => {
                 // Invaders are always Team 1
                 if (main.objectName.toLowerCase().includes("team1")){
@@ -381,12 +391,13 @@ export default class SquadLayer {
     /**
      * Calculates the X and Y offsets needed to align a layer object to the Map
      *
-     * @param {Array<{location_x: number, location_y: number}>} mapTextureCorners array of layers two corner
+     * @param {Array<{location_x: number, location_y: number}>} mapTextureCorners array of layers one or two corners
      * @returns {[number, number]} array containing the calculated X and Y offsets
      */
     getLayerOffsets(mapTextureCorners) {
-        let layerOriginX = Math.min(mapTextureCorners[0].location_x, mapTextureCorners[1].location_x);
-        let layerOriginY = Math.min(mapTextureCorners[0].location_y, mapTextureCorners[1].location_y);
+        const corner1 = mapTextureCorners[1] ?? mapTextureCorners[0];
+        let layerOriginX = Math.min(mapTextureCorners[0].location_x, corner1.location_x);
+        let layerOriginY = Math.min(mapTextureCorners[0].location_y, corner1.location_y);
         let layerOffsetToMapX = (this.map.activeMap.SDK_data.minimap.corner0[0] * 100) - layerOriginX;
         let layerOffsetToMapY = (this.map.activeMap.SDK_data.minimap.corner0[1] * 100) - layerOriginY;
         return [layerOriginX + layerOffsetToMapX, layerOriginY + layerOffsetToMapY];
@@ -532,7 +543,7 @@ export default class SquadLayer {
         ];
 
         // There's no border but the map bounds
-        if (this.layerData.border.length === 2) return;
+        if (this.layerData.border.length <= 2) return;
 
         let borderPath = [];
 
@@ -552,6 +563,74 @@ export default class SquadLayer {
 
         this.borders = new Polygon([MAPBOUNDS, borderPath], {
             color: "#111",
+            fillOpacity: opacity,
+            weight: 0,
+            className: "unplayable-area",
+        }).addTo(this.activeLayerMarkers);
+    }
+
+    /**
+     * Same as createBorders() but renders the border as a spline (cubic bezier)
+     * using the arriveTangent/leaveTangent data from the extractor, instead of
+     * straight segments between border points. Not wired in yet - keeping both
+     * around until we decide whether to switch.
+     */
+    createSplineBorders() {
+        const MAPBOUNDS = [
+            [0, 0],
+            [0, this.map.pixelSize],
+            [-this.map.pixelSize, this.map.pixelSize],
+            [-this.map.pixelSize, 0],
+            [0, 0]
+        ];
+
+        // There's no border but the map bounds
+        if (this.layerData.border.length <= 2) return;
+
+        // convertToLatLng() scales+offsets a position, subtracting the same
+        // conversion at the origin turns it into a pure scale for a tangent vector
+        const zero = this.convertToLatLng(0, 0);
+        const convertVectorToLatLng = (x, y) => {
+            const v = this.convertToLatLng(x || 0, y || 0);
+            return [v[0] - zero[0], v[1] - zero[1]];
+        };
+
+        const borderPoints = this.layerData.border.map((border) => {
+            const latlng = this.convertToLatLng(border.location_x, border.location_y);
+            // keep the latlng within the map bounds
+            if (latlng[1] > this.map.pixelSize) {latlng[1] = this.map.pixelSize;}
+            if (latlng[0] < -this.map.pixelSize) {latlng[0] = -this.map.pixelSize;}
+            if (latlng[1] < 0) {latlng[1] = 0;}
+            if (latlng[0] > 0) {latlng[0] = 0;}
+            return {
+                latlng: latlng,
+                leaveTangent: convertVectorToLatLng(border.leaveTangent_x, border.leaveTangent_y),
+                arriveTangent: convertVectorToLatLng(border.arriveTangent_x, border.arriveTangent_y),
+            };
+        });
+
+        const path = ["M", MAPBOUNDS[0], "L", MAPBOUNDS[1], "L", MAPBOUNDS[2], "L", MAPBOUNDS[3], "L", MAPBOUNDS[4], "Z"];
+
+        // Hermite tangents -> cubic bezier control points (standard 1/3 scale)
+        path.push("M", borderPoints[0].latlng);
+        for (let i = 1; i < borderPoints.length; i++) {
+            const prev = borderPoints[i - 1];
+            const cur = borderPoints[i];
+            const cp1 = [prev.latlng[0] + prev.leaveTangent[0] / 3, prev.latlng[1] + prev.leaveTangent[1] / 3];
+            const cp2 = [cur.latlng[0] - cur.arriveTangent[0] / 3, cur.latlng[1] - cur.arriveTangent[1] / 3];
+            path.push("C", cp1, cp2, cur.latlng);
+        }
+        path.push("Z");
+
+        let opacity = 0.75;
+
+        if (!App.userSettings.showMapBorders) opacity = 0;
+
+        this.borders = new Curve(path, {
+            color: "#111",
+            fill: true,
+            stroke: false,
+            fillRule: "evenodd",
             fillOpacity: opacity,
             weight: 0,
             className: "unplayable-area",
@@ -601,6 +680,42 @@ export default class SquadLayer {
     }
     
 
+    /**
+     * Create staging zones from mapAssets.stagingZones
+     * Draws a box for every object of each zone (center + boxExtent + rotation)
+     * @param {Array} this.layerData.mapAssets.stagingZones - Array of staging zones
+     */
+    createStagingZones() {
+        if (!this.layerData.mapAssets.stagingZones) return;
+
+        this.layerData.mapAssets.stagingZones.forEach((zone) => {
+            zone.objects.forEach((box) => {
+                if (!box.isBox) return;
+
+                const [location_y, location_x] = this.convertToLatLng(box.location_x, box.location_y);
+
+                const radiusX = (box.boxExtent.extent_x / 100) * -this.map.gameToMapScale;
+                const radiusY = (box.boxExtent.extent_y / 100) * -this.map.gameToMapScale;
+
+                const bounds = [
+                    [location_y + radiusY, location_x + radiusX],
+                    [location_y - radiusY, location_x - radiusX]
+                ];
+
+                const stagingZone = new Rectangle(bounds, {
+                    color: "white",
+                    weight: 4,
+                    fillOpacity: 0,
+                }).addTo(this.activeLayerMarkers);
+
+                if (box.boxExtent.rotation_z != 0) this.rotateRectangle(stagingZone, box.boxExtent.rotation_z);
+
+                this.stagingZones.push(stagingZone);
+            });
+        });
+    }
+
+    
     /**
      * Create protection zones and no construction zones
      * @param {Array} this.layerData.mapAssets.protectionZones - Array of protection zones
@@ -739,8 +854,8 @@ export default class SquadLayer {
         // If the clicked flag is in front of the current position, skip
         if (Math.abs(this.startPosition - flag.position) > this.currentPosition) {
 
-            // In RAAS, we can click on the oposite main flag to reset the layer
-            if (this.gamemode === "RAAS" && flag.isMain){
+            // In RAAS/RVAAS, we can click on the oposite main flag to reset the layer
+            if ((this.gamemode === "RAAS" || this.gamemode === "RVAAS") && flag.isMain){
                 if (broadcast && App.session.ws && App.session.ws.readyState === WebSocket.OPEN) {
                     App.session.ws.send(
                         JSON.stringify({
@@ -786,7 +901,7 @@ export default class SquadLayer {
                 return;
             }
 
-            if (flag.isMain && this.gamemode != "Invasion"){
+            if (flag.isMain && (this.gamemode != "Invasion" || this.gamemode != "RINV")){
                 this._resetLayer();
                 this._handleFlagClick(flag);
                 return;
@@ -1145,7 +1260,7 @@ export default class SquadLayer {
         });
 
         // Pre-select first main flag in invasion
-        if (this.gamemode === "Invasion") {
+        if (this.gamemode === "Invasion" || this.gamemode === "RINV") {
             this.mains.forEach((main) => {
                 if (main.objectName === this.capturePoints.clusters.listOfMains[0]){
                     this._handleFlagClick(main, false);
@@ -1355,6 +1470,7 @@ export default class SquadLayer {
         this.spawnGroups = [];
         this.vehicleSpawners = [];
         this.hexs = [];
+        this.stagingZones = [];
     }
 
 }

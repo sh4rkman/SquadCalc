@@ -158,8 +158,8 @@ export default class SquadCalc {
                 server.attributes.name,
                 server.mapName,
                 server.attributes.details.map,
-                server.team1,
-                server.team2,
+                server.team1FactionId || server.team1,
+                server.team2FactionId || server.team2,
                 server.attributes.details.squad_teamOne,
                 server.attributes.details.squad_teamTwo
             );
@@ -209,7 +209,7 @@ export default class SquadCalc {
         const applyLayer = () => {
             const urlLayerName = intent.layer.toLowerCase().replaceAll(" ", "");
             const match = this.LAYER_SELECTOR.find("option").filter((_, el) =>
-                $(el).text().toLowerCase().replaceAll(" ", "") === urlLayerName
+                ($(el).data("urlid") ?? "").toLowerCase() === urlLayerName
             );
 
             if (!match.length) {
@@ -281,10 +281,8 @@ export default class SquadCalc {
         $(".dropbtn10").select2();
         $(".dropbtn11").select2();
         
-        // Load maps 
-        MAPS.forEach((map, i) => {
-            this.MAP_SELECTOR.append(`<option data-i18n="maps:${map.name}" value="${i}"></option>`);
-        });        
+        // Load maps
+        this._rebuildMapSelector();
 
         // Add event listener
         this.MAP_SELECTOR.on("change", (event) => {
@@ -322,11 +320,11 @@ export default class SquadCalc {
 
         this.LAYER_SELECTOR.on("change", (event) => {
 
-            const selectedLayerText = this.LAYER_SELECTOR.find(":selected").text().replaceAll(" ", "");
+            const selectedLayerValue = this.LAYER_SELECTOR.find(":selected").data("urlid") ?? "";
             const broadcast = event.broadcast ?? true;
 
             // User cleared the layer selector, remove the layer and clean the URL
-            if (selectedLayerText === "") {
+            if (selectedLayerValue === "") {
                 this.updateUrlParams({ layer: null, team1: null, team1unit: null, team2: null, team2unit: null });
                 if (abortController) { abortController.abort(); } // Abort the ongoing fetch request
                 if (this.minimap.layer) this.minimap.layer.clear();
@@ -357,9 +355,9 @@ export default class SquadCalc {
             
             // Update the the URL
             if (broadcast) {
-                this.updateUrlParams({ layer: selectedLayerText, team1: null, team1unit: null, team2: null, team2unit: null });
+                this.updateUrlParams({ layer: selectedLayerValue, team1: null, team1unit: null, team2: null, team2unit: null });
             } else {
-                this.updateUrlParams({ layer: selectedLayerText });
+                this.updateUrlParams({ layer: selectedLayerValue });
             }
 
             // Abort any in-progress layer fetch before starting a new one
@@ -410,9 +408,12 @@ export default class SquadCalc {
     loadLayers() {
         this.minimap.spin(true, this.minimap.spinOptions);
         $("#layerSelector").hide();
+        const selectedValue = this.LAYER_SELECTOR.val();
         this.LAYER_SELECTOR.empty();
 
-        fetchLayersByMap(this.minimap.activeMap.name).then(layers => {
+        const enabledMods = this._getUniqueMods().filter(mod => this.userSettings.isModEnabled(mod));
+
+        fetchLayersByMap(this.minimap.activeMap.name, enabledMods).then(layers => {
 
             if (layers.length === 0) {
                 this.minimap.spin(false);
@@ -423,7 +424,50 @@ export default class SquadCalc {
             // Re-empty just in case user changed map while the request was on the way
             this.LAYER_SELECTOR.empty();
             this.LAYER_SELECTOR.append("<option value=></option>");
-            layers.forEach((layer) => { this.LAYER_SELECTOR.append(`<option value=${layer.rawName}>${layer.shortName}</option>`); });
+
+            const vanillaLayers = layers.filter(layer => !layer.mod);
+            const vanillaContainer = enabledMods.length
+                ? $(`<optgroup label="${i18next.t("settings:vanilla", { defaultValue: "Vanilla" })}"></optgroup>`)
+                : this.LAYER_SELECTOR;
+
+            vanillaLayers.forEach((layer) => {
+                vanillaContainer.append(`<option value="${layer.rawName}" data-urlid="${layer.shortName.replaceAll(" ", "")}">${layer.shortName}</option>`);
+            });
+
+            if (enabledMods.length && vanillaContainer.children().length) this.LAYER_SELECTOR.append(vanillaContainer);
+
+            const mapName = this.minimap.activeMap.name;
+
+            enabledMods.forEach((modKey) => {
+                const label = i18next.t(`settings:${modKey}`, { defaultValue: modKey });
+                const optgroup = $(`<optgroup data-mod="${modKey}" label="${label}"></optgroup>`);
+
+                layers.filter(layer => layer.mod?.toLowerCase() === modKey.toLowerCase()).forEach((layer) => {
+                    // rawName sometimes carries an extra variant tag between the mod prefix and the
+                    // map name (e.g. "SU_GoingDark_Anvil_AAS_v1") that shortName doesn't reflect.
+                    // mapName itself can contain underscores (e.g. "Hrodna_Border"), so it's matched
+                    // as a token subsequence rather than a single token.
+                    const tokens = layer.rawName.split("_");
+                    const mapNameTokens = mapName.toLowerCase().split("_");
+                    let mapIdx = -1;
+                    for (let i = 0; i <= tokens.length - mapNameTokens.length; i++) {
+                        if (mapNameTokens.every((t, j) => tokens[i + j].toLowerCase() === t)) {
+                            mapIdx = i;
+                            break;
+                        }
+                    }
+                    const variantTag = mapIdx > 1 ? tokens.slice(1, mapIdx).join(" ") : "";
+                    const displayName = variantTag ? `${variantTag} ${layer.shortName}` : layer.shortName;
+
+                    optgroup.append(`<option value="${layer.rawName}" data-mod="${modKey}" data-urlid="${modKey}_${displayName.replaceAll(" ", "")}">${displayName}</option>`);
+                });
+
+                if (optgroup.children().length) this.LAYER_SELECTOR.append(optgroup);
+            });
+
+            if (this.LAYER_SELECTOR.find(`option[value="${selectedValue}"]`).length) {
+                this.LAYER_SELECTOR.val(selectedValue).trigger("change.select2");
+            }
 
             this.minimap.spin(false);
             $("#layerSelector").show();
@@ -508,11 +552,19 @@ export default class SquadCalc {
                 this.updateUrlParams({ layer: null, team1: null, team1unit: null, team2: null, team2unit: null });
             }
         } 
-        else { 
+        else {
             // mapIndex = Math.floor(Math.random() * MAPS.length); // pick a random map
             mapIndex = 0; // New Basrah
         }
-        
+
+        // A linked map may belong to a mod that isn't enabled yet - turn it on
+        // so the map, its layers and the mods panel all agree it's active
+        const requiredMod = MAPS[mapIndex].mod;
+        if (requiredMod && !this.userSettings.isModEnabled(requiredMod)) {
+            this.userSettings.setModEnabled(requiredMod, true);
+            this._rebuildMapSelector();
+        }
+
         this.MAP_SELECTOR.val(mapIndex);
         this.minimap = new squadMinimap("map", this.MAPSIZE, MAPS[mapIndex]);
         this.minimap.draw();
@@ -579,8 +631,8 @@ export default class SquadCalc {
         }
 
 
-        // Add Experimental weapons if wanted by user settings
-        this.toggleExperimentalWeapons();
+        // Populate the Mods settings panel and apply currently enabled mods
+        this.initModsPanel();
 
         // Add Events Listeners
         this.WEAPON_SELECTOR.on("change", () => { this.changeWeapon(); });
@@ -590,45 +642,127 @@ export default class SquadCalc {
     }
 
     /**
-     * Returns unique mod keys present in WEAPONS data
+     * Returns unique mod keys present in WEAPONS or MAPS data
      */
     _getUniqueMods() {
-        return [...new Set(WEAPONS.filter(w => w.mod).map(w => w.mod))].sort();
+        const weaponMods = WEAPONS.filter(w => w.mod).map(w => w.mod);
+        const mapMods = MAPS.filter(m => m.mod).map(m => m.mod);
+        return [...new Set([...weaponMods, ...mapMods])].sort();
     }
 
     /**
-     * Populate #modFiltersContainer with one checkbox per mod and show #modFiltersRow
+     * Populate #modsPanelContainer with one toggle tile per mod
      */
-    _renderModFilters() {
-        const mods = this._getUniqueMods();
-        const container = $("#modFiltersContainer");
+    static MOD_TILE_ORDER = ["SuperMod", "SteelDivision"];
+
+    _renderModTiles() {
+        const mods = this._getUniqueMods().sort((a, b) => {
+            const ai = SquadCalc.MOD_TILE_ORDER.indexOf(a);
+            const bi = SquadCalc.MOD_TILE_ORDER.indexOf(b);
+            if (ai === -1 && bi === -1) return 0;
+            if (ai === -1) return 1;
+            if (bi === -1) return -1;
+            return ai - bi;
+        });
+        const container = $("#modsPanelContainer");
         container.empty();
 
-        mods.forEach(modKey => {
-            const checked = this.userSettings.isModEnabled(modKey) ? "checked" : "";
+        const statsHtml = (layers, weapons, maps) => `
+            <span class="modTileStats">
+                <span>${i18next.t("settings:modLayersCount", { count: layers, defaultValue: `${layers} Layers` })}</span>
+                <span class="modTileStatsSeparator">•</span>
+                <span>${i18next.t("settings:modWeaponsCount", { count: weapons, defaultValue: `${weapons} Weapons` })}</span>
+                <span class="modTileStatsSeparator">•</span>
+                <span>${i18next.t("settings:modMapsCount", { count: maps, defaultValue: `${maps} Maps` })}</span>
+            </span>
+        `;
+
+        const vanillaLabel = i18next.t("settings:vanilla", { defaultValue: "Squad (Base Game)" });
+        const vanillaWeapons = WEAPONS.filter(w => !w.mod).length;
+        const vanillaLayers = this.layerCounts?.vanilla ?? 0;
+        const vanillaMaps = MAPS.filter(m => !m.mod).length;
+        container.append(`
+            <button type="button" class="modToggleTile active locked">
+                <img class="modTileLogo" src="/img/mods/vanilla.webp" alt="" onerror="this.style.display='none'">
+                <span class="modTileName" data-i18n="settings:vanilla">${vanillaLabel}</span>
+                ${statsHtml(vanillaLayers, vanillaWeapons, vanillaMaps)}
+            </button>
+        `);
+
+        mods.forEach((modKey) => {
+            const active = this.userSettings.isModEnabled(modKey) ? "active" : "";
             const label = i18next.t(`settings:${modKey}`, { defaultValue: modKey });
+            const weapons = WEAPONS.filter(w => w.mod === modKey).length;
+            const layers = this.layerCounts?.[modKey.toLowerCase()] ?? 0;
+            const maps = MAPS.filter(m => m.mod === modKey).length;
             container.append(`
-                <label class="mcui-checkbox mod-filter-checkbox" data-mod="${modKey}">
-                    <input type="checkbox" class="modFilterCheckbox" data-mod="${modKey}" ${checked}>
-                    <span>
-                        <svg class="mcui-check" viewBox="-2 -2 35 35" aria-hidden="true">
-                            <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
-                        </svg>
-                    </span>
-                    <span class="mod-filter-label">${label}</span>
-                </label>
+                <button type="button" class="modToggleTile ${active}" data-mod="${modKey}">
+                    <img class="modTileLogo" src="/img/mods/${modKey.toLowerCase()}.webp" alt="" onerror="this.style.display='none'">
+                    <span class="modTileName" data-i18n="settings:${modKey}">${label}</span>
+                    ${statsHtml(layers, weapons, maps)}
+                </button>
             `);
         });
 
-        $(".modFilterCheckbox").on("change", (e) => {
-            const modKey = $(e.target).data("mod");
-            const enabled = $(e.target).is(":checked");
+        $(".modToggleTile").not(".locked").on("click", (e) => {
+            const tile = $(e.currentTarget);
+            const modKey = tile.data("mod");
+            const enabled = !tile.hasClass("active");
+            tile.toggleClass("active", enabled);
             this.userSettings.setModEnabled(modKey, enabled);
-            animateCSS($(e.target).closest("label"), "headShake");
+            animateCSS(tile, "headShake");
             this._rebuildModdedWeapons();
+            const mapWasReset = this._rebuildMapSelector();
+            if (!mapWasReset && this.minimap.activeMap) this.loadLayers();
+        });
+    }
+
+    /**
+     * Rebuild the map selector: vanilla maps always shown, plus one optgroup
+     * per enabled mod that has its own maps (same mechanics as the layer selector).
+     * Falls back to the first vanilla map if the currently active map got hidden
+     * (e.g. its mod was just disabled). Returns true if that fallback fired.
+     */
+    _rebuildMapSelector() {
+        const selectedValue = this.MAP_SELECTOR.val();
+        this.MAP_SELECTOR.empty();
+
+        const enabledMods = this._getUniqueMods().filter(modKey => this.userSettings.isModEnabled(modKey));
+
+        const vanillaContainer = enabledMods.length
+            ? $(`<optgroup data-i18n-label="settings:vanilla" label="${i18next.t("settings:vanilla", { defaultValue: "Vanilla" })}"></optgroup>`)
+            : this.MAP_SELECTOR;
+
+        MAPS.forEach((map, i) => {
+            if (!map.mod) vanillaContainer.append(`<option data-i18n="maps:${map.name}" value="${i}">${i18next.t("maps:" + map.name)}</option>`);
         });
 
-        $("#modFiltersRow").show();
+        if (enabledMods.length && vanillaContainer.children().length) this.MAP_SELECTOR.append(vanillaContainer);
+
+        enabledMods.forEach(modKey => {
+            const label = i18next.t(`settings:${modKey}`, { defaultValue: modKey });
+            const optgroup = $(`<optgroup data-mod="${modKey}" data-i18n-label="settings:${modKey}" label="${label}"></optgroup>`);
+
+            MAPS.forEach((map, i) => {
+                if (map.mod === modKey) {
+                    optgroup.append(`<option data-i18n="maps:${map.name}" value="${i}">${i18next.t("maps:" + map.name)}</option>`);
+                }
+            });
+
+            if (optgroup.children().length) this.MAP_SELECTOR.append(optgroup);
+        });
+
+        if (this.MAP_SELECTOR.find(`option[value="${selectedValue}"]`).length) {
+            this.MAP_SELECTOR.val(selectedValue).trigger("change.select2");
+            return false;
+        }
+
+        if (this.minimap?.activeMap) {
+            this.MAP_SELECTOR.val(0).trigger("change");
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -644,7 +778,7 @@ export default class SquadCalc {
             if (!this.userSettings.isModEnabled(modKey)) return;
 
             const label = i18next.t(`settings:${modKey}`, { defaultValue: modKey });
-            const optgroup = $(`<optgroup data-mod="${modKey}" label="${label}"></optgroup>`);
+            const optgroup = $(`<optgroup data-mod="${modKey}" data-i18n-label="settings:${modKey}" label="${label}"></optgroup>`);
 
             for (let y = 0; y < WEAPONS.length; y++) {
                 if (WEAPONS[y].mod === modKey) {
@@ -663,23 +797,11 @@ export default class SquadCalc {
     }
 
     /**
-     * Add/Remove Experimental Weapons from Weapons dropdown list according to user settings
+     * Initialize the Mods settings panel and apply currently enabled mods to the weapon selector
      */
-    toggleExperimentalWeapons() {
-        if (this.userSettings.experimentalWeapons) {
-            this._renderModFilters();
-            this._rebuildModdedWeapons();
-        } else {
-            $("#modFiltersRow").hide();
-            $("#modFiltersContainer").empty();
-
-            const selectedIsModded = !!(WEAPONS[this.WEAPON_SELECTOR.val()]?.mod);
-            this.WEAPON_SELECTOR.find("optgroup[data-mod]").remove();
-
-            if (selectedIsModded) {
-                this.WEAPON_SELECTOR.val(0).trigger("change");
-            }
-        }
+    initModsPanel() {
+        this._renderModTiles();
+        this._rebuildModdedWeapons();
     }
 
 
@@ -968,7 +1090,6 @@ export default class SquadCalc {
         weaponInformation.addEventListener("close", function(){
             // Remove listeners when closing weapon information to avoid stacking
             $("input[type=radio][name=angleChoice]").off();
-            $(".heightPadding input").off();
             $(".moveToBtn").off();
         });
         

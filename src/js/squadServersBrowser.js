@@ -42,10 +42,10 @@ export default class SquadServersBrowser {
                         server.attributes.name,
                         server.mapName,
                         server.attributes.details.map,
-                        server.team1,
-                        server.team2,
-                        server.attributes.details.squad_teamOne,
-                        server.attributes.details.squad_teamTwo
+                        server.team1FactionId || server.team1,
+                        server.team2FactionId || server.team2,
+                        server.unit1 || server.attributes.details.squad_teamOne,
+                        server.unit2 || server.attributes.details.squad_teamTwo
                     );
                 }
             }
@@ -67,8 +67,8 @@ export default class SquadServersBrowser {
             // Initiate fuse index
             this.fuse = new Fuse(this.serversData, {
                 includeScore: true,
-                threshold: 0.4,
-                distance: 500,
+                threshold: 0.3,
+                distance: 100,
                 //minMatchCharLength: 3,
                 keys: ["attributes.name", "attributes.details.map"]
             });
@@ -308,8 +308,8 @@ export default class SquadServersBrowser {
                         </td>
                         <td>${this.getPlayersHTML(server.attributes.players, server.attributes.maxPlayers)}</td>
                         <td class="teamFlags">
-                            ${this.getTeamHTML(server.team1, server.attributes.details.squad_teamOne)}
-                            ${this.getTeamHTML(server.team2, server.attributes.details.squad_teamTwo)}
+                            ${this.getTeamHTML(server.team1FactionId || server.team1, server.attributes.details.squad_teamOne)}
+                            ${this.getTeamHTML(server.team2FactionId || server.team2, server.attributes.details.squad_teamTwo)}
                         </td>
                     </tr>
                 `;
@@ -450,10 +450,10 @@ export default class SquadServersBrowser {
             server.attributes.name,
             server.mapName,
             server.attributes.details.map,
-            server.team1,
-            server.team2,
-            server.attributes.details.squad_teamOne,
-            server.attributes.details.squad_teamTwo
+            server.team1FactionId || server.team1,
+            server.team2FactionId || server.team2,
+            server.unit1 || server.attributes.details.squad_teamOne,
+            server.unit2 || server.attributes.details.squad_teamTwo
         );
     }
 

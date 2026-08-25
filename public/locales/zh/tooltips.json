@@ -22,7 +22,6 @@
     "spreadDesc": "由于武器的角分 (MOA) 不精确性和弹道长度，射击会在椭圆形的模式下散布。",
     "moaDesc": "角分 (MOA) 在炮兵中衡量武器的不精确性，表示射击的散布范围。一角分等于1/60度。",
     "velocityDesc": "枪口初速是指弹丸离开枪管时的即时速度，它影响射程和精准度。",
-    "heightPaddingDesc": "当武器不是放置在海拔地面时（例如在建筑物或桥梁上），需在此输入补充高度。",
     "smoothMapTooltip": "在缩放或移动地图时添加平滑动画。需要重新加载页面",
     "moddedWeaponTooltip": "为热门模组添加武器支持（Steel Division、Global Escalation、Squad AdminTools 等)",
     "damageRadiusTooltip": "显示致死半径和25伤害半径",

@@ -106,6 +106,9 @@
         font-size: 2em;
     }
     .team-picker h2 {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
         font-size: clamp(1.6em, 6vw, 3em);
         line-height: 1;
         margin: 0;
@@ -113,6 +116,26 @@
         text-transform: uppercase;
 
         @include variables.text-outline;
+
+        .team-faction-name {
+            font-size: 0.7em;
+        }
+
+        .team-faction-name:empty {
+            display: none;
+        }
+
+        .team-label {
+            font-size: 0.55em;
+            font-weight: 700;
+            opacity: 1;
+        }
+
+        .team-faction-name:empty ~ .team-label {
+            font-size: 1em;
+            font-weight: inherit;
+            opacity: 1;
+        }
     }
     #factionTop {
         position: relative;
@@ -155,17 +178,17 @@
             opacity: 0.75;
             &#teamBg1 {
                 left: -15%;
-                mask-image: linear-gradient(to left, transparent 0%, black 25%), linear-gradient(to top, transparent 0%, black 20%);
+                mask-image: linear-gradient(to left, transparent 0%, black 25%), linear-gradient(to top, transparent 0%, black 20%), linear-gradient(to bottom, transparent 0%, black 10%);
                 mask-composite: intersect;
-                -webkit-mask-image: linear-gradient(to left, transparent 0%, black 25%), linear-gradient(to top, transparent 0%, black 20%);
+                -webkit-mask-image: linear-gradient(to left, transparent 0%, black 25%), linear-gradient(to top, transparent 0%, black 20%), linear-gradient(to bottom, transparent 0%, black 10%);
                 -webkit-mask-composite: source-in;
             }
             &#teamBg2 {
                 right: -15%;
                 transform: scaleX(-1);
-                mask-image: linear-gradient(to left, transparent 0%, black 25%), linear-gradient(to top, transparent 0%, black 20%);
+                mask-image: linear-gradient(to left, transparent 0%, black 25%), linear-gradient(to top, transparent 0%, black 20%), linear-gradient(to bottom, transparent 0%, black 10%);
                 mask-composite: intersect;
-                -webkit-mask-image: linear-gradient(to left, transparent 0%, black 25%), linear-gradient(to top, transparent 0%, black 20%);
+                -webkit-mask-image: linear-gradient(to left, transparent 0%, black 25%), linear-gradient(to top, transparent 0%, black 20%), linear-gradient(to bottom, transparent 0%, black 10%);
                 -webkit-mask-composite: source-in;
             }
         }

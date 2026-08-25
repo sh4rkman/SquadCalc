@@ -51,13 +51,6 @@ tippy("span[data-i18n='settings:mapAnimationSettings']", {
     },
 });
 
-tippy("span[data-i18n='settings:moddedWeapons']", {
-    ...commonToolipsSettings,
-    onShow(tip) {
-        tip.setContent(`${i18next.t("tooltips:moddedWeaponTooltip")}`);
-    },
-});
-
 tippy("span[data-i18n='settings:showAnimations']", {
     ...commonToolipsSettings,
     onShow(tip) {
@@ -494,17 +487,5 @@ tippy(".infVelocityTooltip", {
     delay: [500, 0],
     onShow(tip) {
         tip.setContent(i18next.t("tooltips:velocityDesc"));
-    },
-});
-
-tippy(".infHeightPaddingTooltip", {
-    animation: "fade",
-    placement: "top",
-    touch: false,
-    appendTo: weaponDialog,
-    theme: "infTooltips",
-    delay: [500, 0],
-    onShow(tip) {
-        tip.setContent(i18next.t("tooltips:heightPaddingDesc"));
     },
 });

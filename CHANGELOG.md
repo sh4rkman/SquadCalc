@@ -1,3 +1,21 @@
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge"> **46.0.0** *(2026-08-XX)*
+
+SquadCalc now use a new layer extractor tool made by **yobaNGE** : **[SquadPipeline](https://github.com/yobaNGE/squad-map-data-CUE4Parse)**. This also means squadcalc has now access to layers made by modders.
+
+</br><img src="https://img.shields.io/badge/-new%20features-green">
+- SuperMod & SteelDivision layers integration. You can now enable mods from `Settings > Mods` and browse modded layers and factions. It also means you can now sync with modded servers running these mods. Some gamemodes aren't integrated (yet?)
+- Added two new maps from SuperMod : `Chornivsk` and `Hrodna Border`
+- Added two new weapons from SteelDivision : `SCUD` and `Shahed-136`
+
+</br><img src="https://img.shields.io/badge/-bug%20fixes-b22">  
+- dfdfdf
+
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
+
+
+
 # <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge"> **45.0.2** *(2026-07-12)*
 
 </br><img src="https://img.shields.io/badge/-bug%20fixes-b22">  

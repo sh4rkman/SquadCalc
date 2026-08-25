@@ -33,6 +33,16 @@ export const squadVehicleMarker = Marker.extend({
             })
         );
 
+        // Fallback if the vehicle has no dedicated icon
+        this.on("add", () => {
+            const img = this.getElement();
+            if (!img) return;
+            img.onerror = () => {
+                img.onerror = null;
+                img.src = "/img/icons/default/vehicles/map_truck_transport.svg";
+            };
+        });
+
         this.setRotationAngle(spawner.rotation_z + 90);
 
         if (!Browser.mobile) {

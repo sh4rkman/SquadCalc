@@ -96,6 +96,14 @@ header {
                 font-size: 0.9em;
                 max-height: 400px;
             }
+            .select2-results__group {
+                color: rgba(255, 255, 255, .7);
+                padding-top: 10px;
+                font-weight: 900;
+                text-align: left;
+                padding-left: 15px;
+                font-size: 1em;
+            }
         }
         #layerSelector {
             z-index: 2;
@@ -103,7 +111,15 @@ header {
             position: relative;
             .select2-results__options {
                 font-size: 0.9em;
-                max-height: 400px;
+                max-height: 300px;
+            }
+            .select2-results__group {
+                color: rgba(255, 255, 255, .7);
+                padding-top: 10px;
+                font-weight: 900;
+                text-align: left;
+                padding-left: 15px;
+                font-size: 1em;
             }
         }
     }
@@ -209,6 +225,17 @@ header {
     to { 
         opacity: 1;
     }
+}
+
+
+// Our custom `.select2-results__options { max-height: … }` rules above
+// unintentionally also match select2's nested per-optgroup `<ul>`
+// (`.select2-results__options--nested`), capping its height with no
+// overflow rule set. The overflow then spills visibly onto the next
+// group below. Only the top-level list should ever be height-capped.
+
+.select2-results__options--nested {
+    max-height: none !important;
 }
 
 .select2-results__option {
