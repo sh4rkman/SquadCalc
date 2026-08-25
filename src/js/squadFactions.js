@@ -629,8 +629,12 @@ export default class SquadFactions {
                 </div>
             `;
 
+        const layerName = App.LAYER_SELECTOR.val();
+        const isGCLayer = layerName?.startsWith("GC_");
+
+        const wikiBase = isGCLayer ? "https://galacticcontention.wiki.gg" : "https://squad.fandom.com";
         const wikiLink = `
-            <a class="tag wiki-link" href="https://squad.fandom.com/wiki/${shortVehName}" target="_blank" title="squad.fandom.com">
+            <a class="tag wiki-link" href="${wikiBase}/wiki/${shortVehName}" target="_blank" title="${isGCLayer ? "galacticcontention.wiki.gg" : "squad.fandom.com"}">
                 <span>WIKI</span>
             </a>
         `;
@@ -639,7 +643,6 @@ export default class SquadFactions {
         if (vehicle.rawType) {
             const armorSlug = vehicle.rawType.replace(/_C$/, "");
             const faction = LEFT ? this.FACTION1_SELECTOR.val() : this.FACTION2_SELECTOR.val();
-            const layerName = App.LAYER_SELECTOR.val();
             const modParam = (faction?.startsWith("SU_") || layerName?.startsWith("SU_")) ? "?mods=SuperMod" : "";
             armorLink = `
                 <a class="tag armor-link" href="https://squad-armor.com/vehicles/${armorSlug}${modParam}" target="_blank" title="squad-armor.com">
