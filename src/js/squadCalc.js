@@ -328,7 +328,7 @@ export default class SquadCalc {
                 this.updateUrlParams({ layer: null, team1: null, team1unit: null, team2: null, team2unit: null });
                 if (abortController) { abortController.abort(); } // Abort the ongoing fetch request
                 if (this.minimap.layer) this.minimap.layer.clear();
-                $(".btn-layer").hide();
+                $(".btn-layer, .btn-layer-info").hide();
                 $(".btn-share").hide();
                 $("#factionsTab, #factionsButton").hide();
 
@@ -383,6 +383,7 @@ export default class SquadCalc {
                     if (this.minimap.layer) this.minimap.layer.clear();
                     this.minimap.layer = new SquadLayer(this.minimap, layerData, broadcast);
                     $(".btn-layer").addClass("active").show();
+                    $(".btn-layer-info").show();
                     $(".btn-share").show();
 
                     if (broadcast && this.session.ws?.readyState === WebSocket.OPEN) {
@@ -854,11 +855,12 @@ export default class SquadCalc {
             servers: document.querySelector("#serversInformation"),
             shortcutCapture: document.querySelector("#shortcutCaptureDialog"),
             changelog: document.querySelector("#changelogDialog"),
+            layerInfo: document.querySelector("#layerInformation"),
         };
         this._changelogCache = null;
-        const { calc: calcInformation, weapon: weaponInformation, help: helpDialog, factions: factionsDialog, servers: serversInformation } = this._dialogs;
+        const { calc: calcInformation, weapon: weaponInformation, help: helpDialog, factions: factionsDialog, servers: serversInformation, layerInfo: layerInfoDialog } = this._dialogs;
 
-        $(".btn-delete, .btn-undo, .btn-layer, .returnBtn, #mapLayerMenu").hide();
+        $(".btn-delete, .btn-undo, .btn-layer, .btn-layer-info, .returnBtn, #mapLayerMenu").hide();
 
         this.ui = localStorage.getItem("data-ui");
 
@@ -895,6 +897,7 @@ export default class SquadCalc {
         this.closeDialogOnClickOutside(helpDialog);
         this.closeDialogOnClickOutside(factionsDialog);
         this.closeDialogOnClickOutside(this._dialogs.changelog);
+        this.closeDialogOnClickOutside(layerInfoDialog);
         
         const overlay = document.getElementById("dropOverlay");
         let dragCounter = 0;
@@ -985,6 +988,61 @@ export default class SquadCalc {
         });
         $(".btn-undo").on("click", () => { if (this.minimap.history.length > 0) this.minimap.history.at(-1).delete(); });
         $(".btn-layer").on("click", () => { this.minimap.layer.toggleVisibility(); });
+        $(".btn-layer-info").on("click", () => {
+            const layerData = this.minimap.layer?.layerData;
+            if (!layerData) return;
+
+            $(".infLayerMap").text(layerData.Name ?? layerData.rawName ?? "");
+            $(".infLayerGamemode").text(layerData.gamemode ?? "");
+            $(".infLayerVersion").text(layerData.layerVersion ?? "");
+            $(".infLayerSize").text(layerData.mapSize ?? "");
+            $(".infLayerTeam1Tickets").text(layerData.teamConfigs?.team1?.tickets ?? "");
+            $(".infLayerTeam2Tickets").text(layerData.teamConfigs?.team2?.tickets ?? "");
+
+            // The compact "unitType" token AdminChangeLayer/AdminSetNextLayer expect (e.g. "CombinedArms",
+            // "Mechanized") only shows up for a faction's non-default subfactions, in teamConfigs.factions'
+            // "types" list. The default subfaction (not always "CombinedArms" - some modded factions default
+            // to something else) isn't listed there, so fall back to the descriptive "type" name from the
+            // layer's units list, stripped of spaces and any parenthetical qualifier (e.g. "Mechanized
+            // (Wheeled)" -> "Mechanized"), which for a faction's default entry is always the plain type name.
+            const allUnits = [...(layerData.units?.team1Units ?? []), ...(layerData.units?.team2Units ?? [])];
+            const compactType = (raw) => raw ? raw.replace(/\s*\(.*?\)/g, "").replace(/\s+/g, "") : "";
+            const unitTypeOf = (teamKey, unitObjectName) => {
+                if (!unitObjectName) return "";
+                for (const faction of layerData.teamConfigs?.factions?.[`${teamKey}Units`] ?? []) {
+                    const match = faction.types?.find((t) => t.unit === unitObjectName);
+                    if (match) return match.unitType;
+                }
+                const unit = allUnits.find((u) => u.unitObjectName === unitObjectName);
+                return unit ? compactType(unit.type) : "";
+            };
+            const team1Faction = this.FACTION1_SELECTOR.val();
+            const team2Faction = this.FACTION2_SELECTOR.val();
+            const factionUnitArgs = (team1Faction && team2Faction)
+                ? ` ${team1Faction}+${unitTypeOf("team1", this.UNIT1_SELECTOR.val())} ${team2Faction}+${unitTypeOf("team2", this.UNIT2_SELECTOR.val())}`
+                : "";
+
+            $(".layerCommandInput").val(`AdminSetNextLayer ${layerData.rawName}${factionUnitArgs}`);
+            $(".layerChangeCommandInput").val(`AdminChangeLayer ${layerData.rawName}${factionUnitArgs}`);
+
+            $(".layerShareUrlInput").val(this.buildShareUrl());
+
+            $(".layerThumbnail")
+                .show()
+                .attr("src", `${process.env.API_URL}/img/thumbnails/${encodeURIComponent(layerData.rawName)}.webp`);
+
+            layerInfoDialog.showModal();
+        });
+        $(".layerCommandCopyBtn").on("click", (event) => {
+            const input = event.currentTarget.closest(".layerCommandRow").querySelector("input");
+            if (navigator.clipboard?.writeText) {
+                navigator.clipboard.writeText(input.value);
+            } else {
+                input.select();
+                document.execCommand("copy");
+            }
+            this.openToast("success", "copied", "");
+        });
         $(".btn-drawingMode").on("click", () => { this.minimap.disableDrawingMode(); });
         $(".btn-legacy").on("click", () => { if (this.ui !== 0) this.switchUI(); });
         $("#factionsButton .factionBar-top").on("click", (e) => {
@@ -1155,7 +1213,7 @@ export default class SquadCalc {
     }
 
 
-    shareLoadout() {
+    buildShareUrl() {
         const cur    = new URLSearchParams(window.location.search);
         const params = new URLSearchParams();
         if (cur.has("map"))   params.set("map", cur.get("map"));
@@ -1170,8 +1228,11 @@ export default class SquadCalc {
         if (t2) params.set("team2", t2);
         if (u2) params.set("team2unit", u2);
 
-        const url = `${window.location.origin}${window.location.pathname}?${params.toString()}`;
-        navigator.clipboard.writeText(url);
+        return `${window.location.origin}${window.location.pathname}?${params.toString()}`;
+    }
+
+    shareLoadout() {
+        navigator.clipboard.writeText(this.buildShareUrl());
         this.openToast("success", "copied", "");
     }
 

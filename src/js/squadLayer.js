@@ -1473,6 +1473,7 @@ export default class SquadLayer {
         this.phaseAeras.removeFrom(this.map).clearLayers();
         if (this.factions) this.factions.unpinUnit();
         $(".btn-layer").removeClass("active").hide();
+        $(".btn-layer-info").hide();
         this.spawnGroups = [];
         this.vehicleSpawners = [];
         this.hexs = [];

@@ -167,7 +167,72 @@ dialog {
         width: 90%;        
     }
     &#calcInformation {
-        overflow:hidden;
+        overflow: hidden;
+    }
+    &#layerInformation {
+        max-width: 800px;
+        .layerThumbnail {
+            display: block;
+            width: 250px;
+            margin: 0 auto 1.5em;
+            border-radius: 6px;
+        }
+        .layerCommandGroup {
+            clear: both;
+            margin: 0 1.25em 2em;
+        }
+        .layerCommandLabel {
+            display: block;
+            margin-bottom: 0.5em;
+            font-size: 0.9em;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .layerCommandRow {
+            position: relative;
+            input {
+                width: 100%;
+                height: auto;
+                padding: 0.1em 2.4em 0.1em 0.7em;
+                background-color: rgba(255, 255, 255, 0.08);
+                border: 1px solid rgba(255, 255, 255, 0.15);
+                border-radius: 3px;
+                color: variables.$mainTxtColor;
+                font-family: monospace;
+                font-size: 1.3em;
+                font-weight: normal;
+                text-transform: none;
+                cursor: text;
+            }
+            .layerCommandCopyBtn {
+                position: absolute;
+                top: 50%;
+                right: 0.4em;
+                transform: translateY(-50%);
+                width: 1.8em;
+                height: 1.8em;
+                padding: 0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background: transparent;
+                border: none;
+                border-radius: 3px;
+                color: variables.$mainTxtColor;
+                cursor: pointer;
+                transition: color 0.2s ease, background-color 0.2s ease;
+                svg {
+                    width: 1em;
+                    height: 1em;
+                    fill: currentcolor;
+                }
+                &:hover {
+                    color: variables.$mainColor;
+                    background-color: rgba(255, 255, 255, 0.08);
+                }
+            }
+        }
     }
     &#weaponInformation {
         max-width: 350px;
@@ -228,7 +293,7 @@ dialog {
 
 }
 
-#calcInformation, #weaponInformation {
+#calcInformation, #weaponInformation, #layerInformation {
     .sim {
         display: none;
         &.active {
