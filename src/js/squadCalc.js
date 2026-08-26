@@ -456,8 +456,46 @@ export default class SquadCalc {
                             break;
                         }
                     }
-                    const variantTag = mapIdx > 1 ? tokens.slice(1, mapIdx).join(" ") : "";
-                    const displayName = variantTag ? `${variantTag} ${layer.shortName}` : layer.shortName;
+                    const prefixTag = mapIdx > 1 ? tokens.slice(1, mapIdx).join(" ") : "";
+                    const tagsBeforeShortName = [prefixTag];
+
+                    // rawName can also carry an extra tag AFTER the version number that shortName
+                    // doesn't reflect (e.g. "SU_Chornivsk_RVAAS_v1_Large" vs "..._v1", or GC's
+                    // "GC_VenatorAssault_INV_V1_R" / "..._V1_S" faction-locked variants, sometimes
+                    // hyphenated onto the version token itself like "GC_Venator_SKM_V1-L").
+                    // Anything found after/attached to the version token is treated as a suffix tag.
+                    let suffixTag = "";
+                    const verIdx = tokens.findIndex(t => /^v\d+/i.test(t));
+                    if (verIdx !== -1) {
+                        const [, dashSuffix] = tokens[verIdx].split("-");
+                        const typeTokenIdx = verIdx - 1;
+                        const typeToken = typeTokenIdx >= 0 ? tokens[typeTokenIdx] : null;
+                        const firstWord = layer.shortName.trim().split(" ")[0];
+
+                        // A separate tag can also sit between the map name and the type token
+                        // (e.g. "SD_AlBasrah_Legacy_Invasion_v1" vs "SD_AlBasrah_Invasion_v1").
+                        if (mapIdx !== -1 && typeTokenIdx > mapIdx + mapNameTokens.length) {
+                            tagsBeforeShortName.push(tokens.slice(mapIdx + mapNameTokens.length, typeTokenIdx).join(" "));
+                        }
+
+                        let typeSuffix = "";
+                        if (typeToken && typeToken.toLowerCase() !== firstWord.toLowerCase()) {
+                            if (typeToken.length > firstWord.length && typeToken.toLowerCase().startsWith(firstWord.toLowerCase())) {
+                                // glued-on suffix, e.g. "SeedVehicle" vs "Seed"
+                                typeSuffix = typeToken.slice(firstWord.length);
+                            } else if (typeToken !== typeToken.toUpperCase()) {
+                                // A genuinely different mode name mapped to the same shortName
+                                // (e.g. "Rampage"/"Track_Attack" both showing as "Invasion"/"RAAS"),
+                                // as opposed to an all-caps abbreviation like "INV"/"SKM" that's just
+                                // shorthand for a shortName word it doesn't otherwise match.
+                                tagsBeforeShortName.push(typeToken);
+                            }
+                        }
+
+                        suffixTag = [typeSuffix, dashSuffix, ...tokens.slice(verIdx + 1)].filter(Boolean).join(" ");
+                    }
+
+                    const displayName = [...tagsBeforeShortName, layer.shortName.trim(), suffixTag].filter(Boolean).join(" ");
 
                     optgroup.append(`<option value="${layer.rawName}" data-mod="${modKey}" data-urlid="${modKey}_${displayName.replaceAll(" ", "")}">${displayName}</option>`);
                 });
