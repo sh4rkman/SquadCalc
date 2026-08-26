@@ -172,6 +172,7 @@ dialog {
     &#layerInformation {
         max-width: 800px;
         .layerThumbnail {
+            border: solid rgba(255, 255, 255, 0.6) 3px;
             display: block;
             width: 250px;
             margin: 0 auto 1.5em;
