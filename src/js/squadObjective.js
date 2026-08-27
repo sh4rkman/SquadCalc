@@ -8,7 +8,7 @@ import { FactionCtxMenu } from "./squadFactionCtxMenu.js";
 // translations are shared with vanilla ("RGF") - strip the prefix for i18next lookup.
 // Images use the full prefixed factionID as-is.
 export function translationId(factionID) {
-    return factionID ? factionID.replace(/^SU_/, "").replace(/-\d+$/, "") : factionID;
+    return factionID ? factionID.replace(/^SU_/, "").replace(/-\d+$/, "").replace(/P[12]$/, "") : factionID;
 }
 
 export class SquadObjective {

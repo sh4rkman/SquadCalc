@@ -30,10 +30,9 @@ export default class SquadHeightmap {
     async loadHeightmapPNG(url) {
 
         try {
-            if (!this.map.activeMap.SDK_data.heightmapPNG) return;
+            if (!this.map.activeMap.SDK_data.landscapeScale) return;
 
-            const { scale } = this.map.activeMap.SDK_data.heightmapPNG;
-            const heightScale = scale[2];
+            const heightScale = this.map.activeMap.SDK_data.landscapeScale[2];
 
             const response = await fetch(url);
             const buffer = await response.arrayBuffer();

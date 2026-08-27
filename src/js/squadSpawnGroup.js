@@ -82,7 +82,7 @@ export const squadSpawnGroup = Marker.extend({
         if (this.data.team === "Team One" || this.data.team === "Team Neutral") {
             if (this.layer.factions?.FACTION1_SELECTOR.val() && App.userSettings.enableFactions && process.env.DISABLE_FACTIONS != "true") {
                 team = this.layer.factions.FACTION1_SELECTOR.val();
-                teamName = i18next.t(`factions:${team.replace(/^SU_/, "").replace(/-\d+$/, "")}`);
+                teamName = i18next.t(`factions:${team.replace(/^SU_/, "").replace(/-\d+$/, "").replace(/P[12]$/, "")}`);
             } 
             else {
                 team = "Team1";
@@ -92,7 +92,7 @@ export const squadSpawnGroup = Marker.extend({
         else {
             if (this.layer.factions?.FACTION2_SELECTOR.val() && App.userSettings.enableFactions && process.env.DISABLE_FACTIONS != "true") {
                 team = this.layer.factions.FACTION2_SELECTOR.val();
-                teamName = i18next.t(`factions:${team.replace(/^SU_/, "").replace(/-\d+$/, "")}`);
+                teamName = i18next.t(`factions:${team.replace(/^SU_/, "").replace(/-\d+$/, "").replace(/P[12]$/, "")}`);
             } 
             else {
                 team = "Team2";

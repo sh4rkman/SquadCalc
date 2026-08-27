@@ -40,7 +40,7 @@ export default class SquadFactions {
     _translationId(factionID) {
         if (!factionID) return factionID;
         const isModded = factionID.startsWith("SU_");
-        const stripped = factionID.replace(/^SU_/, "").replace(/-\d+$/, "");
+        const stripped = factionID.replace(/^SU_/, "").replace(/-\d+$/, "").replace(/P[12]$/, "");
         if (isModded && SquadFactions.MODDED_TRANSLATION_OVERRIDES.includes(stripped)) {
             return `${stripped}_SU`;
         }
@@ -203,7 +203,7 @@ export default class SquadFactions {
                 $("#pinnedVehiclesTab").append(`
                     <div class="pinnedVehicles animate__animated animate__fadeInLeft" data-vehiclename="${asset.displayName}" data-vehtype="${tactical}" data-vehicon="${tactical}"data-respawntime="${asset.delay}">
                         <button type="button" class="btn-pined" aria-label="Select Factions">
-                            <img src="/img/icons/shared/commander/${asset.icon}.webp" alt="Faction Icon"/>
+                            <img src="/img/icons/shared/commander/${asset.icon}.webp" alt="Faction Icon" onerror="this.onerror=null; this.src='/img/icons/shared/commander/unknown.webp';"/>
                         </button>
                         <div class="pinedVehiclesMeta">
                             <div class="pinedVehiclesName" data-i18n="vehicles:${asset.displayName}">${i18next.t(asset.displayName, { ns: "vehicles" })}</div>
@@ -226,7 +226,7 @@ export default class SquadFactions {
                 $("#pinnedVehiclesTab").append(`
                     <div class="pinnedVehicles animate__animated animate__fadeInLeft" data-vehiclename="${vehicle.type}" data-vehtype="${vehicle.vehType}" data-vehicon="${vehicle.icon}" data-respawntime="${vehicle.respawnTime}">
                         <button type="button" class="btn-pined" aria-label="Select Factions">
-                            <img src="/img/icons/default/vehicles/${vehicle.icon}.svg" alt="Faction Icon"/>
+                            <img src="/img/icons/default/vehicles/${vehicle.icon}.svg" alt="Faction Icon" onerror="this.onerror=null; this.src='/img/icons/default/vehicles/map_truck_transport.svg';"/>
                         </button>
                         <div class="pinedVehiclesMeta">
                             <div class="pinedVehiclesName" data-i18n="vehicles:${vehicle.type}">${i18next.t(vehicle.type, { ns: "vehicles" })}</div>
