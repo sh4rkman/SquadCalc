@@ -742,81 +742,86 @@ export default class SquadLayer {
             // Skip weird protection zones
             if (pZone.teamid === "0") return;
 
-            // Center of the protection zone
-            let [location_y, location_x] = this.convertToLatLng(pZone.objects[0].location_x, pZone.objects[0].location_y);
-
-            // Protection Zone is a Rectangle/Capsule
-            // We're drawing capsule as a rectangle cause it's easier
-            //if (pZone.objects[0].isBox || pZone.objects[0].isCapsule) {  
-            if (pZone.objects[0].isBox) {              
-
-                // Radiis
-                let protectRadiusX = ( pZone.objects[0].boxExtent.extent_x / 100 ) * -this.map.gameToMapScale;
-                let protectRadiusY = ( pZone.objects[0].boxExtent.extent_y / 100 ) * -this.map.gameToMapScale;
-
-                let nodeploRadiusX = protectRadiusX + ( pZone.deployableLockDistance / 100 ) * -this.map.gameToMapScale;
-                let nodeploRadiusY = protectRadiusY + ( pZone.deployableLockDistance / 100 ) * -this.map.gameToMapScale;
-
-                // Bounds
-                let protectNWCorner = [(location_y + protectRadiusY) , (location_x + protectRadiusX)];
-                let protectSECorner = [(location_y - protectRadiusY), (location_x - protectRadiusX)];
-                let protectBounds = [protectNWCorner, protectSECorner];
-
-                let noDeployNWCorner = [(location_y + nodeploRadiusY) , (location_x + nodeploRadiusX)];
-                let noDeploySECorner = [(location_y - nodeploRadiusY), (location_x - nodeploRadiusX)];
-                let noDeployBounds = [noDeployNWCorner, noDeploySECorner];
-
-                let protectionZone = new Rectangle(protectBounds, {
-                    color: PZONECOLOR,
-                    opacity: 1,
-                    weight: 2,
-                }).addTo(this.activeLayerMarkers);
-
-                let noDeployZone = new Rectangle(noDeployBounds, {
-                    color: PZONECOLOR,
-                    dashArray: "10,20",
-                    opacity: 1,
-                    weight: 1,
-                }).addTo(this.activeLayerMarkers);
-
-                if (pZone.objects[0].boxExtent.rotation_z != 0){
-                    this.rotateRectangle(protectionZone, pZone.objects[0].boxExtent.rotation_z);
-                    this.rotateRectangle(noDeployZone, pZone.objects[0].boxExtent.rotation_z);
-                }
-
-                this.mainZones.rectangles.push(protectionZone);
-                this.mainZones.rectangles.push(noDeployZone);
-                return;
-            }
-
-            // Protection is a Sphere
-            if (pZone.objects[0].isSphere) {
+            // A protection zone can be made of several shapes (e.g. Tatooine's team
+            // zones = box + sphere) - draw all of them.
+            pZone.objects.forEach((zoneObject) => {
 
                 // Center of the protection zone
-                let latlngSphere = [location_y, location_x];
+                let [location_y, location_x] = this.convertToLatLng(zoneObject.location_x, zoneObject.location_y);
 
-                // Protection & NoDeployementZone radiis
-                let protectRadius = pZone.objects[0].sphereRadius / 100 * this.map.gameToMapScale;
-                let noDeployRadius = (pZone.objects[0].sphereRadius + pZone.deployableLockDistance) / 100 * this.map.gameToMapScale;
+                // Protection Zone is a Rectangle/Capsule
+                // We're drawing capsule as a rectangle cause it's easier
+                //if (zoneObject.isBox || zoneObject.isCapsule) {
+                if (zoneObject.isBox) {
 
-                let protectionZone = new Circle(latlngSphere, {
-                    color: App.mainColor,
-                    opacity: 1,
-                    weight: 2,
-                    radius: protectRadius,
-                }).addTo(this.activeLayerMarkers);
+                    // Radiis
+                    let protectRadiusX = ( zoneObject.boxExtent.extent_x / 100 ) * -this.map.gameToMapScale;
+                    let protectRadiusY = ( zoneObject.boxExtent.extent_y / 100 ) * -this.map.gameToMapScale;
 
-                let noDeployZone = new Circle(latlngSphere, {
-                    color: App.mainColor,
-                    dashArray: "10,20",
-                    opacity: 1,
-                    weight: 1,
-                    radius: noDeployRadius,
-                }).addTo(this.activeLayerMarkers);
+                    let nodeploRadiusX = protectRadiusX + ( pZone.deployableLockDistance / 100 ) * -this.map.gameToMapScale;
+                    let nodeploRadiusY = protectRadiusY + ( pZone.deployableLockDistance / 100 ) * -this.map.gameToMapScale;
 
-                this.mainZones.rectangles.push(protectionZone);
-                this.mainZones.rectangles.push(noDeployZone);
-            }
+                    // Bounds
+                    let protectNWCorner = [(location_y + protectRadiusY) , (location_x + protectRadiusX)];
+                    let protectSECorner = [(location_y - protectRadiusY), (location_x - protectRadiusX)];
+                    let protectBounds = [protectNWCorner, protectSECorner];
+
+                    let noDeployNWCorner = [(location_y + nodeploRadiusY) , (location_x + nodeploRadiusX)];
+                    let noDeploySECorner = [(location_y - nodeploRadiusY), (location_x - nodeploRadiusX)];
+                    let noDeployBounds = [noDeployNWCorner, noDeploySECorner];
+
+                    let protectionZone = new Rectangle(protectBounds, {
+                        color: PZONECOLOR,
+                        opacity: 1,
+                        weight: 2,
+                    }).addTo(this.activeLayerMarkers);
+
+                    let noDeployZone = new Rectangle(noDeployBounds, {
+                        color: PZONECOLOR,
+                        dashArray: "10,20",
+                        opacity: 1,
+                        weight: 1,
+                    }).addTo(this.activeLayerMarkers);
+
+                    if (zoneObject.boxExtent.rotation_z != 0){
+                        this.rotateRectangle(protectionZone, zoneObject.boxExtent.rotation_z);
+                        this.rotateRectangle(noDeployZone, zoneObject.boxExtent.rotation_z);
+                    }
+
+                    this.mainZones.rectangles.push(protectionZone);
+                    this.mainZones.rectangles.push(noDeployZone);
+                    return;
+                }
+
+                // Protection is a Sphere
+                if (zoneObject.isSphere) {
+
+                    // Center of the protection zone
+                    let latlngSphere = [location_y, location_x];
+
+                    // Protection & NoDeployementZone radiis
+                    let protectRadius = zoneObject.sphereRadius / 100 * this.map.gameToMapScale;
+                    let noDeployRadius = (zoneObject.sphereRadius + pZone.deployableLockDistance) / 100 * this.map.gameToMapScale;
+
+                    let protectionZone = new Circle(latlngSphere, {
+                        color: PZONECOLOR,
+                        opacity: 1,
+                        weight: 2,
+                        radius: protectRadius,
+                    }).addTo(this.activeLayerMarkers);
+
+                    let noDeployZone = new Circle(latlngSphere, {
+                        color: PZONECOLOR,
+                        dashArray: "10,20",
+                        opacity: 1,
+                        weight: 1,
+                        radius: noDeployRadius,
+                    }).addTo(this.activeLayerMarkers);
+
+                    this.mainZones.rectangles.push(protectionZone);
+                    this.mainZones.rectangles.push(noDeployZone);
+                }
+            });
 
         });
     }

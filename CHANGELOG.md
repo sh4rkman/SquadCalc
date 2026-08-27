@@ -8,7 +8,8 @@ SquadCalc now use a new layer extractor tool made by **yobaNGE** : **[SquadPipel
 - Added two new weapons from SteelDivision : `SCUD` and `Shahed-136`
 
 </br><img src="https://img.shields.io/badge/-bug%20fixes-b22">  
-- dfdfdf
+- Fixed Squadcalc now drawing some rare protection zones
+- Temporary Spawns no shows "1mn20s" instead of "1.33mn"
 
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
