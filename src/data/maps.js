@@ -13,9 +13,7 @@ export const MAPS = [
                 corner0: [-2000, -2000],
                 corner1: [2000, 2000],
             },
-            heightmapPNG: {
-                scale: [1, 1, 0.087813952],
-            }
+            landscapeScale: [1, 1, 0.087813952],
         }
     },
     { 
@@ -27,9 +25,7 @@ export const MAPS = [
                 corner0: [-2040, -2040],
                 corner1: [1020, 1020],
             },
-            heightmapPNG: {
-                scale: [0.75, 0.75, 0.226426712],
-            }
+            landscapeScale: [0.75, 0.75, 0.226426712],
         }
     },
     // { 
@@ -52,9 +48,7 @@ export const MAPS = [
                 corner0: [-2299, -2127],
                 corner1: [2299, 2472],
             },
-            heightmapPNG: {
-                scale: [1.003937, 1.003937, 0.417170742],
-            }
+            landscapeScale: [1.003937, 1.003937, 0.417170742],
         }
     },
     { 
@@ -66,9 +60,7 @@ export const MAPS = [
                 corner0: [-2464, -2664],
                 corner1: [1600, 1400],
             },
-            heightmapPNG: {
-                scale: [0.5, 0.5, 0.982942589],
-            }
+            landscapeScale: [0.5, 0.5, 0.982942589],
         }
     },
     { 
@@ -80,9 +72,7 @@ export const MAPS = [
                 corner0: [-1315, -1545],
                 corner1: [1690, 1460],
             },
-            heightmapPNG: {
-                scale: [1, 1, 0.14797459],
-            }
+            landscapeScale: [1, 1, 0.14797459],
         }
     },
     { 
@@ -94,9 +84,7 @@ export const MAPS = [
                 corner0: [-1326, -1326],
                 corner1: [448, 448],
             },
-            heightmapPNG: {
-                scale: [1, 1, 0.20168671],
-            }
+            landscapeScale: [1, 1, 0.20168671],
         }
     },
     { 
@@ -108,9 +96,7 @@ export const MAPS = [
                 corner0: [-2016, -2016],
                 corner1: [2015, 2015],
             },
-            heightmapPNG: {
-                scale: [1, 1, 0.274412178],
-            }
+            landscapeScale: [1, 1, 0.274412178],
         }
     },
     { 
@@ -122,9 +108,7 @@ export const MAPS = [
                 corner0: [-2032, -2032],
                 corner1: [2032, 2032],
             },
-            heightmapPNG: {
-                scale: [1, 1, 0.173697718],
-            }
+            landscapeScale: [1, 1, 0.173697718],
         }
     },
     { 
@@ -136,9 +120,7 @@ export const MAPS = [
                 corner0: [-2016, -2016],
                 corner1: [2016, 2016],
             },
-            heightmapPNG: {
-                scale: [1, 1, 0.229927482],
-            }
+            landscapeScale: [1, 1, 0.229927482],
 
         }
     },
@@ -151,9 +133,7 @@ export const MAPS = [
                 corner0: [-2004, -2004],
                 corner1: [2004, 2004],
             },
-            heightmapPNG: {
-                scale: [1, 1, 0.185722727],
-            }
+            landscapeScale: [1, 1, 0.185722727],
         }
     },
     { 
@@ -165,9 +145,7 @@ export const MAPS = [
                 corner0: [-2016, -2016],
                 corner1: [2016, 2016],
             },
-            heightmapPNG: {
-                scale: [1, 1, 0.387570609],
-            }
+            landscapeScale: [1, 1, 0.387570609],
         }
     },
     { 
@@ -179,9 +157,7 @@ export const MAPS = [
                 corner0: [-2300, -2300],
                 corner1: [2317, 2317],
             },
-            heightmapPNG: {
-                scale: [1, 1, 0.750167993],
-            }
+            landscapeScale: [1, 1, 0.750167993],
         }
     },
     { 
@@ -193,9 +169,7 @@ export const MAPS = [
                 corner0: [-1076, -1076],
                 corner1: [1420, 1420],
             },
-            heightmapPNG: {
-                scale: [0.5, 0.5, 0.174065564],
-            }
+            landscapeScale: [0.5, 0.5, 0.174065564],
         }
     },
     { 
@@ -207,9 +181,7 @@ export const MAPS = [
                 corner0: [-2167, -2167],
                 corner1: [2167, 2167],
             },
-            heightmapPNG: {
-                scale: [1, 1, 0.321048558],
-            }
+            landscapeScale: [1, 1, 0.321048558],
         }
     },
     { 
@@ -221,9 +193,7 @@ export const MAPS = [
                 corner0: [-881, -1132],
                 corner1: [880, 629],
             },
-            heightmapPNG: {
-                scale: [1, 1, 0.248098348],
-            }
+            landscapeScale: [1, 1, 0.248098348],
         }
     },
     { 
@@ -235,9 +205,7 @@ export const MAPS = [
                 corner0: [-2016, -2016],
                 corner1: [2015, 2015],
             },
-            heightmapPNG: {
-                scale: [1, 1, 0.403959641],
-            }
+            landscapeScale: [1, 1, 0.403959641],
         }
     },
     { 
@@ -249,9 +217,7 @@ export const MAPS = [
                 corner0: [-1200, -1100],
                 corner1: [1200, 1300],
             },
-            heightmapPNG: {
-                scale: [1, 1, 0.493831859],
-            }
+            landscapeScale: [1, 1, 0.493831859],
         }
     },
     { 
@@ -263,9 +229,7 @@ export const MAPS = [
                 corner0: [-935, -1140],
                 corner1: [1820, 1615],
             },
-            heightmapPNG: {
-                scale: [1, 1, 0.112586966],
-            }
+            landscapeScale: [1, 1, 0.112586966],
         }
     },
     { 
@@ -277,9 +241,7 @@ export const MAPS = [
                 corner0: [-1390, -1402],
                 corner1: [1410, 1398],
             },
-            heightmapPNG: {
-                scale: [1, 1, 0.205154741],
-            }
+            landscapeScale: [1, 1, 0.205154741],
         }
     },
     // { 
@@ -305,9 +267,7 @@ export const MAPS = [
                 corner0: [-2016, -2016],
                 corner1: [2016, 2016],
             },
-            heightmapPNG: {
-                scale: [1, 1, 0.317704444],
-            }
+            landscapeScale: [1, 1, 0.317704444],
         }
     },
     { 
@@ -319,9 +279,7 @@ export const MAPS = [
                 corner0: [-2300, -2050],
                 corner1: [2300, 2550],
             },
-            heightmapPNG: {
-                scale: [1, 1, 0.233953671],
-            }
+            landscapeScale: [1, 1, 0.233953671],
         }
     },
     { 
@@ -338,9 +296,7 @@ export const MAPS = [
                 corner0: [-3611, -3293],
                 corner1: [3238, 3576],
             },
-            heightmapPNG: {
-                scale: [1.2, 1.2, 2.086916336],
-            }
+            landscapeScale: [1.2, 1.2, 2.086916336],
         }
     },
     { 
@@ -352,9 +308,7 @@ export const MAPS = [
                 corner0: [-640, -447],
                 corner1: [660, 853],
             },
-            heightmapPNG: {
-                scale: [1, 1, 0.267739565],
-            }
+            landscapeScale: [1, 1, 0.267739565],
         }
     },
     { 
@@ -366,9 +320,7 @@ export const MAPS = [
                 corner0: [-2340, -2340],
                 corner1: [2340, 2340],
             },
-            heightmapPNG: {
-                scale: [1, 1, 0.152035884],
-            }
+            landscapeScale: [1, 1, 0.152035884],
         }
     },
     { 
@@ -380,9 +332,7 @@ export const MAPS = [
                 corner0: [-3302, -3302], 
                 corner1: [3048, 3048],
             },
-            heightmapPNG: {
-                scale: [1, 1, 0.485970247],
-            }
+            landscapeScale: [1, 1, 0.485970247],
         }
     },
     { 
@@ -396,9 +346,7 @@ export const MAPS = [
                 corner0: [-2016, -2016], 
                 corner1: [2016, 2016],
             },
-            heightmapPNG: {
-                scale: [1, 1, 0.485617783],
-            }
+            landscapeScale: [1, 1, 0.485617783],
         }
     },
     { 
@@ -412,9 +360,7 @@ export const MAPS = [
                 corner0: [-1649, -1547], 
                 corner1: [1535, 1637],
             },
-            heightmapPNG: {
-                scale: [1, 1, 0.124958144],
-            }
+            landscapeScale: [1, 1, 0.124958144],
         }
     },
     {
@@ -684,10 +630,10 @@ export const MAPS = [
         mod: "GC",
         radiusExclusion: FOBEXCLUSIONS.medium,
         SDK_data: {
-minimap: {
-    corner0: [-855.40, -462.00],
-    corner1: [644.60, 1038.00],
-}
+            minimap: {
+                corner0: [-855.40, -462.00],
+                corner1: [644.60, 1038.00],
+            }
         }
     },
     {
