@@ -85,7 +85,7 @@ export default class SquadFactions {
     setBarFlag(id, val) {
         const el = document.querySelector(id);
         if (!el) return;
-        const src = val ? `/img/flags/${encodeURIComponent(val.trim())}.webp` : "/img/flags/unknown.webp";
+        const src = val ? `/img/flags/${this.squadLayer.modFolder}/${encodeURIComponent(val.trim())}.webp` : "/img/flags/unknown.webp";
         const name = val ? i18next.t(this._translationId(val), { ns: "factions" }) : "?";
 
         const img = document.createElement("img");
@@ -128,7 +128,7 @@ export default class SquadFactions {
     formatFactions(state, isSelection = false) {
         if (!state.id) return state.text;
         const translationId = this._translationId(state.element.value);
-        const imgHtml = `<img src="/img/flags/${state.element.value}.webp" class="img-flag" />`;
+        const imgHtml = `<img src="/img/flags/${this.squadLayer.modFolder}/${state.element.value}.webp" class="img-flag" />`;
         if (isSelection) return $(`
             <span class="countryFlags" data-i18n-title="factions:${translationId}_displayName" title="${i18next.t(translationId + "_displayName", { ns: "factions" }) }">
                 ${imgHtml}
@@ -475,7 +475,7 @@ export default class SquadFactions {
             for (const spawner of validSpawners) {
                 if (spawner.maxNum > 0) {
                     const latlng = this.squadLayer.convertToLatLng(spawner.location_x, spawner.location_y);
-                    this.squadLayer.mainZones.assets.push(new squadVehicleMarker(latlng, spawner, vehicle, spawners.faction, true).addTo(activeFactionMarkers));
+                    this.squadLayer.mainZones.assets.push(new squadVehicleMarker(latlng, spawner, vehicle, spawners.faction, true, this.squadLayer.modFolder).addTo(activeFactionMarkers));
                     spawners.vehicles = spawners.vehicles.filter(s => s !== spawner);
                     return;
                 }
@@ -490,7 +490,7 @@ export default class SquadFactions {
                 const spawner = spawners.helicopters[randIndex];
                 const latlng = this.squadLayer.convertToLatLng(spawner.location_x, spawner.location_y);
                 vehicle.dedicatedSpawn = true;
-                this.squadLayer.mainZones.assets.push(new squadVehicleMarker(latlng, spawner, vehicle, spawners.faction, true).addTo(activeFactionMarkers));
+                this.squadLayer.mainZones.assets.push(new squadVehicleMarker(latlng, spawner, vehicle, spawners.faction, true, this.squadLayer.modFolder).addTo(activeFactionMarkers));
                 // remove the used spawner
                 spawners.helicopters.splice(randIndex, 1);
             }
@@ -503,7 +503,7 @@ export default class SquadFactions {
                 // Pick first spawner in the list
                 const spawner = spawners.bikes[0];
                 const latlng = this.squadLayer.convertToLatLng(spawner.location_x, spawner.location_y);
-                this.squadLayer.mainZones.assets.push(new squadVehicleMarker(latlng, spawner, vehicle, spawners.faction, true).addTo(activeFactionMarkers));
+                this.squadLayer.mainZones.assets.push(new squadVehicleMarker(latlng, spawner, vehicle, spawners.faction, true, this.squadLayer.modFolder).addTo(activeFactionMarkers));
                 // remove the used spawner
                 spawners.bikes.splice(0, 1);
             }
@@ -517,7 +517,7 @@ export default class SquadFactions {
                 const randIndex = Math.floor(Math.random() * spawners.boats.length);
                 const spawner = spawners.boats[randIndex];
                 const latlng = this.squadLayer.convertToLatLng(spawner.location_x, spawner.location_y);
-                this.squadLayer.mainZones.assets.push(new squadVehicleMarker(latlng, spawner, vehicle, spawners.faction, true).addTo(activeFactionMarkers));
+                this.squadLayer.mainZones.assets.push(new squadVehicleMarker(latlng, spawner, vehicle, spawners.faction, true, this.squadLayer.modFolder).addTo(activeFactionMarkers));
                 // remove the used spawner
                 spawners.boats.splice(randIndex, 1);
             }
@@ -540,7 +540,7 @@ export default class SquadFactions {
                 const spawner = validSpawners[randIndex];
                 foundDedicated = true;
                 const latlng = this.squadLayer.convertToLatLng(spawner.location_x, spawner.location_y);
-                this.squadLayer.mainZones.assets.push(new squadVehicleMarker(latlng, spawner, vehicle, spawners.faction, true).addTo(activeFactionMarkers));
+                this.squadLayer.mainZones.assets.push(new squadVehicleMarker(latlng, spawner, vehicle, spawners.faction, true, this.squadLayer.modFolder).addTo(activeFactionMarkers));
                 // remove the chosen spawner from the main pool
                 spawners.vehicles = spawners.vehicles.filter(s => s !== spawner);
             }
@@ -556,7 +556,7 @@ export default class SquadFactions {
                     const randomIndex = Math.floor(Math.random() * fallbackSpawners.length);
                     const spawner = fallbackSpawners[randomIndex];
                     const latlng = this.squadLayer.convertToLatLng(spawner.location_x, spawner.location_y);
-                    this.squadLayer.mainZones.assets.push(new squadVehicleMarker(latlng, spawner, vehicle, spawners.faction, false).addTo(activeFactionMarkers));
+                    this.squadLayer.mainZones.assets.push(new squadVehicleMarker(latlng, spawner, vehicle, spawners.faction, false, this.squadLayer.modFolder).addTo(activeFactionMarkers));
                     const originalIndex = spawners.vehicles.indexOf(spawner);
                     if (originalIndex !== -1) spawners.vehicles.splice(originalIndex, 1);
 
@@ -751,7 +751,9 @@ export default class SquadFactions {
         const img = document.getElementById(`teamBg${team}`);
         if (!img) return;
         const fallback = team === 1 ? "Team1" : "Team2";
-        const newSrc = `/img/spawnGroup/${(factionId || fallback).replace(/[^a-zA-Z0-9_-]/g, "")}.webp`;
+        const name = (factionId || fallback).replace(/[^a-zA-Z0-9_-]/g, "");
+        const folder = factionId ? `${this.squadLayer.modFolder}/` : "";
+        const newSrc = `/img/spawnGroup/${folder}${name}.webp`;
         img.style.transition = "opacity 0.15s ease";
         img.style.opacity = "0";
         setTimeout(() => {
@@ -775,7 +777,7 @@ export default class SquadFactions {
         // strip anything but alphanumerics/underscore/dash to prevent path traversal via faction value
         const sanitizedVal = val ? val.replace(/[^a-zA-Z0-9_-]/g, "") : val;
 
-        img.src = sanitizedVal ? `/img/flags/${sanitizedVal}.webp` : "/img/flags/unknown.webp";
+        img.src = sanitizedVal ? `/img/flags/${this.squadLayer.modFolder}/${sanitizedVal}.webp` : "/img/flags/unknown.webp";
         img.addEventListener("error", () => { img.src = "/img/flags/unknown.webp"; }, { once: true });
         btn.replaceChildren(img);
 
@@ -836,7 +838,7 @@ export default class SquadFactions {
             const selected = currentVal === faction.factionID ? "_selected" : "";
             const translationId = this._translationId(faction.factionID);
             html += `<div class="faction-item ${selected}" data-faction="${faction.factionID}" title="${i18next.t(translationId + "_displayName", { ns: "factions" })}">
-                <img src="/img/flags/${faction.factionID}.webp" onerror="this.onerror=null;this.src='/img/flags/unknown.webp';"/>
+                <img src="/img/flags/${this.squadLayer.modFolder}/${faction.factionID}.webp" onerror="this.onerror=null;this.src='/img/flags/unknown.webp';"/>
                 <div class="faction-label">${i18next.t(translationId, { ns: "factions" })}</div>
             </div>`;
         });

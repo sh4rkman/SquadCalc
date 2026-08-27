@@ -12,8 +12,12 @@ import { SquadVehicleSpawner } from "./squadVehicleSpawner.js";
 
 export default class SquadLayer {
 
-    constructor(map, layerData, broadcast) {
+    constructor(map, layerData, broadcast, mod) {
         this.map = map;
+        // Vanilla (no mod) assets live in .../vanilla/, modded assets live in .../<mod key lowercased>/
+        // (e.g. "GC" -> gc/, "SuperMod" -> supermod/). Referenced by every class that builds a
+        // /img/flags/ or /img/spawnGroup/ path for this layer.
+        this.modFolder = mod ? mod.toLowerCase() : "vanilla";
         this.activeLayerMarkers = new LayerGroup().addTo(this.map);
         this.activeFaction1Markers = new LayerGroup();
         this.activeFaction2Markers = new LayerGroup();

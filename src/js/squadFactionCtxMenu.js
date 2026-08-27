@@ -103,7 +103,7 @@ export class FactionCtxMenu {
             const selected = this.FACTION_SELECTOR.val() === faction.factionID ? "_selected" : "";
             const translation = translationId(faction.factionID);
             html += `<div class="faction-item ${selected}" id="${faction.factionID}" title="${i18next.t(translation + "_displayName", { ns: "factions" })}">
-                <img src="/img/flags/${faction.factionID}.webp" onerror="this.onerror=null;this.src='/img/flags/unknown.webp';"/>
+                <img src="/img/flags/${this.layer.modFolder}/${faction.factionID}.webp" onerror="this.onerror=null;this.src='/img/flags/unknown.webp';"/>
                 <div class="faction-label">${i18next.t(translation, { ns: "factions" })}</div>
             </div>`;
         });

@@ -110,9 +110,14 @@ export class SquadObjective {
         }
 
         fileName = $(dropdownSelector).val();
-        if (!fileName || !App.userSettings.enableFactions) fileName = "main";
-        if (App.userSettings.circlesFlags) fileName = `circles/${fileName}`;
-        this.flag.getElement().style.backgroundImage = `url('/img/flags/${fileName}.webp')`;
+        const isMainFallback = !fileName || !App.userSettings.enableFactions;
+        const folder = isMainFallback ? "" : `${this.layer.modFolder}/`;
+        if (isMainFallback) {
+            fileName = App.userSettings.circlesFlags ? "main_circle" : "main";
+        } else if (App.userSettings.circlesFlags) {
+            fileName = `circles/${fileName}`;
+        }
+        this.flag.getElement().style.backgroundImage = `url('/img/flags/${folder}${fileName}.webp')`;
     }
 
 

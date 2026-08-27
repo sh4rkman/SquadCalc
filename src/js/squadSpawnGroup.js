@@ -113,7 +113,7 @@ export const squadSpawnGroup = Marker.extend({
                     ${this.getDelayHTML()}
                     ${this.getSpawningEnabledHTML()}
                 </div>
-                <img src="/img/spawnGroup/${team}.webp"/>
+                <img src="/img/spawnGroup/${team === "Team1" || team === "Team2" ? "" : `${this.layer.modFolder}/`}${team}.webp"/>
             </div>
         `;
         

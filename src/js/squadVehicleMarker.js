@@ -15,14 +15,15 @@ export const squadVehicleMarker = Marker.extend({
     },
 
     // Constructor
-    initialize: function (latlng, spawner, vehicle, faction, dedicatedSpawn, options) {
-        
+    initialize: function (latlng, spawner, vehicle, faction, dedicatedSpawn, modFolder, options) {
+
         Marker.prototype.initialize.call(this, latlng, options);
 
         this.spawner = spawner;
         this.vehicle = vehicle;
         this.dedicatedSpawn = dedicatedSpawn;
         this.faction = faction;
+        this.modFolder = modFolder;
 
         this.setIcon(
             new Icon({
@@ -92,7 +93,7 @@ export const squadVehicleMarker = Marker.extend({
 
                 <div class="vehTitle">
                     <div class="vehName">${i18next.t(this.vehicle.type, { ns: "vehicles" })}</div>
-                    <img class="vehFlag" src="/img/flags/${this.faction}.webp" class="img-flag" />
+                    <img class="vehFlag" src="/img/flags/${this.modFolder}/${this.faction}.webp" class="img-flag" />
                 </div>
 
                 <div class="statsHolder">

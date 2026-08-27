@@ -266,11 +266,14 @@ export default class SquadServersBrowser {
      * Returns the flag icon HTML for a team
      * @param {string|null} team
      * @param {string} label
+     * @param {string|null} mapName
      * @returns {string}
      */
-    getTeamHTML(team, label) {
+    getTeamHTML(team, label, mapName) {
         if (team) {
-            return `<img title="${label}" src="/img/flags/${team}.webp" alt="${team}" class="flag-icon">`;
+            const map = MAPS.find(m => m.name.toLowerCase() === (mapName || "").toLowerCase());
+            const modFolder = map?.mod ? map.mod.toLowerCase() : "vanilla";
+            return `<img title="${label}" src="/img/flags/${modFolder}/${team}.webp" alt="${team}" class="flag-icon">`;
         } else {
             return `<img title="${label}" src="/img/flags/unknown.webp" alt="Unknown" class="flag-icon">`;
         }
@@ -308,8 +311,8 @@ export default class SquadServersBrowser {
                         </td>
                         <td>${this.getPlayersHTML(server.attributes.players, server.attributes.maxPlayers)}</td>
                         <td class="teamFlags">
-                            ${this.getTeamHTML(server.team1FactionId || server.team1, server.attributes.details.squad_teamOne)}
-                            ${this.getTeamHTML(server.team2FactionId || server.team2, server.attributes.details.squad_teamTwo)}
+                            ${this.getTeamHTML(server.team1FactionId || server.team1, server.attributes.details.squad_teamOne, server.mapName)}
+                            ${this.getTeamHTML(server.team2FactionId || server.team2, server.attributes.details.squad_teamTwo, server.mapName)}
                         </td>
                     </tr>
                 `;

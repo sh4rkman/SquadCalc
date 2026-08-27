@@ -321,6 +321,7 @@ export default class SquadCalc {
         this.LAYER_SELECTOR.on("change", (event) => {
 
             const selectedLayerValue = this.LAYER_SELECTOR.find(":selected").data("urlid") ?? "";
+            const selectedLayerMod = this.LAYER_SELECTOR.find(":selected").data("mod");
             const broadcast = event.broadcast ?? true;
 
             // User cleared the layer selector, remove the layer and clean the URL
@@ -381,7 +382,7 @@ export default class SquadCalc {
                     if (!layerData) return; // prevent continuing on fetch failure
 
                     if (this.minimap.layer) this.minimap.layer.clear();
-                    this.minimap.layer = new SquadLayer(this.minimap, layerData, broadcast);
+                    this.minimap.layer = new SquadLayer(this.minimap, layerData, broadcast, selectedLayerMod);
                     $(".btn-layer").addClass("active").show();
                     $(".btn-layer-info").show();
                     $(".btn-share").show();
