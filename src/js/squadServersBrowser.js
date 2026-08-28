@@ -266,13 +266,19 @@ export default class SquadServersBrowser {
      * Returns the flag icon HTML for a team
      * @param {string|null} team
      * @param {string} label
-     * @param {string|null} mapName
+     * @param {string|null} rawLayerName - server.attributes.details.map (e.g. "SU_Gorodok_Invasion_v3")
      * @returns {string}
      */
-    getTeamHTML(team, label, mapName) {
+    getTeamHTML(team, label, rawLayerName) {
         if (team) {
-            const map = MAPS.find(m => m.name.toLowerCase() === (mapName || "").toLowerCase());
-            const modFolder = map?.mod ? map.mod.toLowerCase() : "vanilla";
+            // SuperMod/SteelDivision reuse vanilla map names (mapName alone can't tell
+            // them apart from vanilla), but their rawLayerName carries the mod prefix -
+            // same convention as GC's own exclusive maps.
+            let modFolder = "vanilla";
+            if (rawLayerName?.startsWith("SU_")) modFolder = "supermod";
+            else if (rawLayerName?.startsWith("SD_")) modFolder = "steeldivision";
+            else if (rawLayerName?.startsWith("GC_")) modFolder = "gc";
+
             return `<img title="${label}" src="/img/flags/${modFolder}/${team}.webp" alt="${team}" class="flag-icon">`;
         } else {
             return `<img title="${label}" src="/img/flags/unknown.webp" alt="Unknown" class="flag-icon">`;
@@ -311,8 +317,8 @@ export default class SquadServersBrowser {
                         </td>
                         <td>${this.getPlayersHTML(server.attributes.players, server.attributes.maxPlayers)}</td>
                         <td class="teamFlags">
-                            ${this.getTeamHTML(server.team1FactionId || server.team1, server.attributes.details.squad_teamOne, server.mapName)}
-                            ${this.getTeamHTML(server.team2FactionId || server.team2, server.attributes.details.squad_teamTwo, server.mapName)}
+                            ${this.getTeamHTML(server.team1FactionId || server.team1, server.attributes.details.squad_teamOne, server.attributes.details.map)}
+                            ${this.getTeamHTML(server.team2FactionId || server.team2, server.attributes.details.squad_teamTwo, server.attributes.details.map)}
                         </td>
                     </tr>
                 `;
