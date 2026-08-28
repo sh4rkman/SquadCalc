@@ -546,6 +546,19 @@ export const MAPS = [
         }
     },
     {
+        name: "Rhenvar",
+        mapURL: "/img/maps/MODS/GC/rhenvar/",
+        singleLayer: true,
+        mod: "GC",
+        radiusExclusion: FOBEXCLUSIONS.medium,
+        SDK_data: {
+            minimap: {
+                corner0: [-4079.85, -4079.85],
+                corner1: [4053.6, 4053.6],
+            },
+        }
+    },
+    {
         name: "Ryloth",
         mapURL: "/img/maps/MODS/GC/ryloth/",
         singleLayer: true,
