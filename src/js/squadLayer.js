@@ -134,6 +134,9 @@ export default class SquadLayer {
         case "Invasion":
             this.initRandomizedLayer();
             break;
+        case "TDM":
+            this.initTDM();
+            break;
         default:
             this.clear();
             this.map.spin(false);
@@ -240,6 +243,7 @@ export default class SquadLayer {
 
         this.polyline.setLatLngs(this.path);
     }
+
 
     /**
      * Initialize TC
@@ -385,6 +389,28 @@ export default class SquadLayer {
                         iconAnchor: [25, 25]
                     })
                 }).addTo(this.phaseNumber);
+            });
+        });
+    }
+
+
+    /**
+     * Initialize TDM layer - no capture points/objectives, just the two team mains,
+     * built from mapAssets.protectionZones since layerData.objectives is empty for TDM.
+     */
+    initTDM() {
+        this.layerData.mapAssets.protectionZones.forEach((pZone) => {
+            const zoneObject = pZone.objects[0];
+            const isTeam1 = pZone.teamid === "1";
+
+            this.createMainObjective({
+                name: "Main",
+                objectName: isTeam1 ? "00-Team1 Main" : "Z-Team2 Main",
+                objectDisplayName: isTeam1 ? "00-Team1 Main" : "Z-Team2 Main",
+                location_x: zoneObject.location_x,
+                location_y: zoneObject.location_y,
+                location_z: zoneObject.location_z,
+                pointPosition: isTeam1 ? 1 : 2,
             });
         });
     }
