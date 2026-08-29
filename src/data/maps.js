@@ -397,8 +397,8 @@ export const MAPS = [
         radiusExclusion: FOBEXCLUSIONS.medium,
         SDK_data: {
             minimap: {
-                corner0: [-166.20, -67.40],
-                corner1: [-6.65, 70.73]
+                corner0: [-166.20, -78.11],
+                corner1: [-6.65, 81.44]
             }
         }
     },
