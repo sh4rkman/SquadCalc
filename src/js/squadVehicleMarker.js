@@ -104,7 +104,7 @@ export const squadVehicleMarker = Marker.extend({
                 </div>
 
                 ${this.getTagsHTML()}
-                <img src="/img/vehicles/${this.vehicle.type}.webp" onerror="this.onerror=null; this.src='/img/vehicles/placeholder.webp';"/>
+                <img src="/img/vehicles/${this.modFolder}/${this.vehicle.type}.webp" onerror="this.onerror=null; this.src='/img/vehicles/placeholder.webp';"/>
             </div>
         `;
         

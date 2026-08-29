@@ -632,9 +632,9 @@ export default class SquadFactions {
         const layerName = App.LAYER_SELECTOR.val();
         const isGCLayer = layerName?.startsWith("GC_");
 
-        const wikiBase = isGCLayer ? "https://galacticcontention.wiki.gg" : "https://squad.fandom.com";
+        const wikiBase = isGCLayer ? "https://galactic-contention.fandom.com" : "https://squad.fandom.com";
         const wikiLink = `
-            <a class="tag wiki-link" href="${wikiBase}/wiki/${shortVehName}" target="_blank" title="${isGCLayer ? "galacticcontention.wiki.gg" : "squad.fandom.com"}">
+            <a class="tag wiki-link" href="${wikiBase}/wiki/${shortVehName}" target="_blank" title="${isGCLayer ? "galactic-contention.fandom.com" : "squad.fandom.com"}">
                 <span>WIKI</span>
             </a>
         `;
@@ -655,7 +655,7 @@ export default class SquadFactions {
             <div class="image">
                 <div class="tags">${passengersHTML}${amphibious}${ATGM}</div>
                 <div class="links">${wikiLink}${armorLink}</div>
-                <img src="/img/vehicles/${vehicle.type}.webp" onerror="this.onerror=null; this.src='/img/vehicles/placeholder.webp';" ${LEFT ? "class=\"mirrored\"" : ""}/>
+                <img src="/img/vehicles/${this.squadLayer.modFolder}/${vehicle.type}.webp" onerror="this.onerror=null; this.src='/img/vehicles/placeholder.webp';" ${LEFT ? "class=\"mirrored\"" : ""}/>
             </div>
         `;
     }
