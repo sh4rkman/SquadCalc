@@ -40,7 +40,7 @@ export default class SquadFactions {
     _translationId(factionID) {
         if (!factionID) return factionID;
         const isModded = factionID.startsWith("SU_");
-        const stripped = factionID.replace(/^SU_/, "").replace(/-\d+$/, "").replace(/P[12]$/, "");
+        const stripped = factionID.replace(/^SU_/, "").replace(/-\d+$/, "").replace(/P[123]$/, "");
         if (isModded && SquadFactions.MODDED_TRANSLATION_OVERRIDES.includes(stripped)) {
             return `${stripped}_SU`;
         }
