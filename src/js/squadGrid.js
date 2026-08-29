@@ -171,13 +171,15 @@ export default LayerGroup.extend({
 
         // Define and scale line's intervals
         // This handle rectangle map stretched into a rectangle
-        const kpX = (300 / 3 ** 0) * this.map.gameToMapScale;
-        const s1X = (300 / 3 ** 1) * this.map.gameToMapScale;
-        const s2X = (300 / 3 ** 2) * this.map.gameToMapScale;
+        const gridSize = this.map.gridSize ?? 300;
 
-        const kpY = (300 / 3 ** 0) * this.map.gameToMapScaleY;
-        const s1Y = (300 / 3 ** 1) * this.map.gameToMapScaleY;
-        const s2Y = (300 / 3 ** 2) * this.map.gameToMapScaleY;
+        const kpX = (gridSize / 3 ** 0) * this.map.gameToMapScale;
+        const s1X = (gridSize / 3 ** 1) * this.map.gameToMapScale;
+        const s2X = (gridSize / 3 ** 2) * this.map.gameToMapScale;
+
+        const kpY = (gridSize / 3 ** 0) * this.map.gameToMapScaleY;
+        const s1Y = (gridSize / 3 ** 1) * this.map.gameToMapScaleY;
+        const s2Y = (gridSize / 3 ** 2) * this.map.gameToMapScaleY;
 
         // for complete grid drawing we take lowest interval, as we want to draw all lines
         // whether or not they will be seen is dependant on another function setting

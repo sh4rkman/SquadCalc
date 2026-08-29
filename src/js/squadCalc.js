@@ -1951,6 +1951,7 @@ export default class SquadCalc {
     getPos(kp) {
         const FORMATTED_KEYPAD = this.formatKeyPad(kp);
         const PARTS = FORMATTED_KEYPAD.split("-");
+        const gridSize = this.minimap.gridSize;
         let interval;
         let lat = 0;
         let lng = 0;
@@ -1963,8 +1964,8 @@ export default class SquadCalc {
                 const LETTERINDEX = LETTERCODE - 65;
                 if (PARTS[i].charCodeAt(0) < 65) { return { lat: NaN, lng: NaN }; }
                 const KEYPADNB = Number(PARTS[i].slice(1)) - 1;
-                lat += 300 * LETTERINDEX;
-                lng += 300 * KEYPADNB;
+                lat += gridSize * LETTERINDEX;
+                lng += gridSize * KEYPADNB;
 
             } else {
                 // opposite of calculations in getKP()
@@ -1973,7 +1974,7 @@ export default class SquadCalc {
                 const subX = (SUB - 1) % 3;
                 const subY = 2 - (Math.ceil(SUB / 3) - 1);
 
-                interval = 300 / 3 ** i;
+                interval = gridSize / 3 ** i;
                 lat += interval * subX;
                 lng += interval * subY;
             }
@@ -1981,7 +1982,7 @@ export default class SquadCalc {
         }
 
         // at the end, add half of last interval, so it points to the center of the deepest sub-keypad
-        interval = 300 / 3 ** (i - 1);
+        interval = gridSize / 3 ** (i - 1);
         lat += interval / 2;
         lng += interval / 2;
 

@@ -551,6 +551,7 @@ export const MAPS = [
         singleLayer: true,
         mod: "GC",
         radiusExclusion: FOBEXCLUSIONS.medium,
+        gridSize: 900,
         SDK_data: {
             minimap: {
                 corner0: [-4079.85, -4079.85],
