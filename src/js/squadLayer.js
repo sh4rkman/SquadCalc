@@ -763,7 +763,7 @@ export default class SquadLayer {
         this.layerData.mapAssets.protectionZones.forEach((pZone) => {
 
             // Skip small protection zones (old basrah)
-            if (pZone.objects[0].boxExtent.extent_x < 100) return;
+            if (Math.abs(pZone.objects[0].boxExtent.extent_x) < 100) return;
 
             // Skip weird protection zones
             if (pZone.teamid === "0") return;
@@ -781,8 +781,8 @@ export default class SquadLayer {
                 if (zoneObject.isBox) {
 
                     // Radiis
-                    let protectRadiusX = ( zoneObject.boxExtent.extent_x / 100 ) * -this.map.gameToMapScale;
-                    let protectRadiusY = ( zoneObject.boxExtent.extent_y / 100 ) * -this.map.gameToMapScale;
+                    let protectRadiusX = ( Math.abs(zoneObject.boxExtent.extent_x) / 100 ) * -this.map.gameToMapScale;
+                    let protectRadiusY = ( Math.abs(zoneObject.boxExtent.extent_y) / 100 ) * -this.map.gameToMapScale;
 
                     let nodeploRadiusX = protectRadiusX + ( pZone.deployableLockDistance / 100 ) * -this.map.gameToMapScale;
                     let nodeploRadiusY = protectRadiusY + ( pZone.deployableLockDistance / 100 ) * -this.map.gameToMapScale;
