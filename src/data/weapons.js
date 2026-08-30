@@ -550,4 +550,31 @@ export var WEAPONS = [
             damageFallOff: 4,
         }]
     },
+    /*
+     * Galactic Contention
+     * https://steamcommunity.com/sharedfiles/filedetails/?id=2428425228
+     */
+    {
+        name: "Mortar",
+        deceleration: 0,
+        decelerationTime: 0,
+        gravityScale: 1,
+        minElevation: [45, 88.875],
+        unit: "mil",
+        type: "deployables",
+        mod: "GC",
+        angleType: "high",
+        elevationPrecision: 0,
+        heightOffset: 1,
+        shells : [{
+            name: "default",
+            minDistance: 51,
+            velocity: 110,
+            moa: 50,
+            explosionDamage: 350,
+            explosionRadius: [0, 40],
+            explosionDistanceFromImpact: 1,
+            damageFallOff: 7,
+        }]
+    },
 ];
