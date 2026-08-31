@@ -63,6 +63,18 @@ $flag-circle-opacity: 0.2;
     &.flag5 { @include flag-color(rgb(43, 255, 255), rgb(43, 255, 255)); }
     &.flag6 { @include flag-color(rgb(200, 48, 102), rgb(200, 48, 102)); }
     &.flag7 { @include flag-color(rgb(255, 105, 0), rgb(255, 105, 0)); }
+    // "6/7"-style labels are wider than a single digit - shrink to fit the box
+    &.multiPos {
+        font-size: 1.1em;
+        letter-spacing: 0.02em;
+    }
+    // circleFlag is a fixed 30x30px box - 3+ positions ("4/5/6") need to
+    // shrink further and stay on one line, or it wraps and overflows the circle
+    &.circleFlag.multiPosMany {
+        font-size: 0.8em;
+        letter-spacing: -0.03em;
+        white-space: nowrap;
+    }
     &.selected {
         font-size: 1.3em;
         background-color: rgba(0, 128, 0, 0.9);

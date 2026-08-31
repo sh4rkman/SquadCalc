@@ -148,8 +148,8 @@ export default class SquadLayer {
         this.createDeployables();
         this.createProtectionZones();
         //this.createBorders();
+        //this.createSplineBorders();
         this.createSpawners();
-        this.createSplineBorders();
         this.createTeamSpawns();
         this.createCameraActors();
         //this.createStagingZones();
@@ -1040,7 +1040,12 @@ export default class SquadLayer {
 
         this.hideClusters(flag, preview);
         let nextFlags = this.showClusters(flag, reachableClusters, preview);
-        if (!preview) this.handleNextFlags(nextFlags, backward, reachableClusters);
+        if (!preview) {
+            // Reachable clusters just changed - refresh every flag's number/alternates label
+            // before handleNextFlags() marks the next ones and shows their percentage
+            this.flags.forEach((f) => f.update());
+            this.handleNextFlags(nextFlags, backward, reachableClusters);
+        }
         //this.refreshLane(flag);
     }
 

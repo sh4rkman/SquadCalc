@@ -134,7 +134,9 @@ export class SquadObjective {
             className += " main";
         } else {
             position = Math.abs(this.layer.startPosition - this.position);
-            html = position;
+            const positions = this._reachableAlternatePositions().map(p => Math.abs(this.layer.startPosition - p)).sort((a, b) => a - b);
+            html = positions.length > 1 ? positions.join("/") : position;
+            if (positions.length > 1) className += positions.length > 2 ? " multiPos multiPosMany" : " multiPos";
         }
 
         this.updateMarker(className, html);
@@ -310,12 +312,12 @@ export class SquadObjective {
 
     unselect(){
         let html = "";
-        let position = Math.abs(this.layer.startPosition - this.position); 
+        let position = Math.abs(this.layer.startPosition - this.position);
         let className = "flag";
 
         if (App.userSettings.circlesFlags) className += " circleFlag";
 
-        if (this.isMain) { 
+        if (this.isMain) {
             if (this.layer.gamemode === "RAAS" || this.layer.gamemode === "RVAAS"){
                 className += " main selectable";
             } else {
@@ -323,14 +325,16 @@ export class SquadObjective {
             }
         } else {
             if (this.layer.isRandomized){
-                html = position;
+                const positions = this._reachableAlternatePositions().map(p => Math.abs(this.layer.startPosition - p)).sort((a, b) => a - b);
+                html = positions.length > 1 ? positions.join("/") : position;
                 className += " flag" + position;
+                if (positions.length > 1) className += positions.length > 2 ? " multiPos multiPosMany" : " multiPos";
             }
-        } 
+        }
 
         if (Math.abs(this.layer.startPosition - this.position) === this.layer.currentPosition){
             if (this.layer.isRandomized){
-                className += " next"; 
+                className += " next";
             }
         } else this.isNext = false;
 
@@ -349,6 +353,42 @@ export class SquadObjective {
     }
 
     
+    /**
+     * Find every cluster (lane) that has a point sharing this flag's name
+     * (a point can be one of several alternates in more than one lane,
+     * at different lane depths).
+     * @returns {object[]} clusters with a matching point
+     */
+    _alternateClusters() {
+        return Object.values(this.layer.objectives).filter(
+            (c) => c.points && c.points.some((p) => p.name === this.name)
+        );
+    }
+
+
+    /**
+     * Distinct pointPositions where this flag's name still has a reachable
+     * alternate - dropped once its own cluster (lane) is no longer part of
+     * the layer's live reachable-clusters set (branch eliminated, or the
+     * step itself already passed).
+     * @returns {number[]} sorted distinct reachable pointPositions
+     */
+    _reachableAlternatePositions() {
+        const reachable = this.layer.selectedReachableClusters.at(-1);
+        // A cluster can hold several mutually-exclusive names in the same slot
+        // (e.g. "Pipeline" or "Paseka" both live in the same cluster) - once a
+        // flag has actually been clicked, its own cluster(s) are locked to that
+        // outcome and no longer count as an alternate for any other name.
+        const consumedClusters = new Set(this.layer.selectedFlags.flatMap((f) => f.clusters));
+        return [...new Set(
+            this._alternateClusters()
+                .filter((c) => !reachable || reachable.has(c.name))
+                .filter((c) => !consumedClusters.has(c))
+                .map((c) => c.pointPosition)
+        )].sort((a, b) => a - b);
+    }
+
+
     addCluster(cluster){
         this.clusters.push(cluster);
         this.updatePosition();
@@ -384,7 +424,9 @@ export class SquadObjective {
             // if RAAS/Invasion, add the flag number and a colored icon
             if (this.layer.isRandomized) {
                 className += " flag" + this.position;
-                html = this.position;
+                const positions = this._reachableAlternatePositions();
+                html = positions.length > 1 ? positions.join("/") : this.position;
+                if (positions.length > 1) className += positions.length > 2 ? " multiPos multiPosMany" : " multiPos";
             }
         }
 
