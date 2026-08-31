@@ -330,7 +330,6 @@ export default class SquadCalc {
                 if (abortController) { abortController.abort(); } // Abort the ongoing fetch request
                 if (this.minimap.layer) this.minimap.layer.clear();
                 $(".btn-layer, .btn-layer-info").hide();
-                $(".btn-share").hide();
                 $("#factionsTab, #factionsButton").hide();
 
                 // Empty Factions&Units selectors
