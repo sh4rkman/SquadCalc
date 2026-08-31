@@ -482,7 +482,7 @@ export var WEAPONS = [
         unit: "deg",
         type: "modded",
         mod: "SteelDivision",
-        angleType: "high",
+        angleType: "low",
         elevationPrecision: 1,
         heightOffset: 3,
         angleOffset: 0,
