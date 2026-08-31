@@ -379,8 +379,8 @@ export default class SquadServersBrowser {
                             <th class="sortable" data-sort="map" data-i18n="common:currentMap">
                                 ${i18next.t("currentMap", { ns: "common" })} <span class="sort-indicator">⇅</span>
                             </th>
-                            <th data-i18n="common:players">
-                                ${i18next.t("players", { ns: "common" })}
+                            <th class="sortable" data-sort="players" data-i18n="common:players">
+                                ${i18next.t("players", { ns: "common" })} <span class="sort-indicator">⇅</span>
                             </th>
                             <th data-i18n="common:teams">
                                 ${i18next.t("teams", { ns: "common" })}
