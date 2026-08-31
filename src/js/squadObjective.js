@@ -135,7 +135,7 @@ export class SquadObjective {
         } else {
             position = Math.abs(this.layer.startPosition - this.position);
             const positions = this._reachableAlternatePositions().map(p => Math.abs(this.layer.startPosition - p)).sort((a, b) => a - b);
-            html = positions.length > 1 ? positions.join("/") : position;
+            html = positions.length > 1 ? positions.join("·") : position;
             if (positions.length > 1) className += positions.length > 2 ? " multiPos multiPosMany" : " multiPos";
         }
 
@@ -326,7 +326,7 @@ export class SquadObjective {
         } else {
             if (this.layer.isRandomized){
                 const positions = this._reachableAlternatePositions().map(p => Math.abs(this.layer.startPosition - p)).sort((a, b) => a - b);
-                html = positions.length > 1 ? positions.join("/") : position;
+                html = positions.length > 1 ? positions.join("·") : position;
                 className += " flag" + position;
                 if (positions.length > 1) className += positions.length > 2 ? " multiPos multiPosMany" : " multiPos";
             }
@@ -354,14 +354,22 @@ export class SquadObjective {
 
     
     /**
-     * Find every cluster (lane) that has a point sharing this flag's name
-     * (a point can be one of several alternates in more than one lane,
-     * at different lane depths).
+     * Find every cluster (lane) that has a point at this flag's physical
+     * location - the RAAS randomizer can offer the same real-world capture zone
+     * as a candidate at more than one lane depth. Matching by name alone is
+     * wrong: maps can reuse a generic label (e.g. "Forest") for entirely
+     * unrelated spots that just happen to be named the same. A small tolerance
+     * absorbs float rounding between the two copies of the same point (e.g.
+     * -232245.875 vs -232245.890625).
      * @returns {object[]} clusters with a matching point
      */
     _alternateClusters() {
+        const { location_x, location_y } = this.objCluster;
+        const tolerance = 1;
         return Object.values(this.layer.objectives).filter(
-            (c) => c.points && c.points.some((p) => p.name === this.name)
+            (c) => c.points && c.points.some((p) =>
+                Math.abs(p.location_x - location_x) < tolerance && Math.abs(p.location_y - location_y) < tolerance
+            )
         );
     }
 
@@ -425,7 +433,7 @@ export class SquadObjective {
             if (this.layer.isRandomized) {
                 className += " flag" + this.position;
                 const positions = this._reachableAlternatePositions();
-                html = positions.length > 1 ? positions.join("/") : this.position;
+                html = positions.length > 1 ? positions.join("·") : this.position;
                 if (positions.length > 1) className += positions.length > 2 ? " multiPos multiPosMany" : " multiPos";
             }
         }
