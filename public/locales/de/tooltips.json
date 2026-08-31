@@ -58,6 +58,7 @@
     "invalidSession": "Ungültige Sitzungs-ID",
     "invalidSessionRules": "Sitzungs-ID muss 6-20 alphanumerische Zeichen enthalten",
     "toggleLayer": "Layer ein-/ausblenden",
+    "layerInfo": "Layer-Informationen",
     "fileNotSupported": "Datei wird nicht unterstützt",
     "openIssue": "Melde ein Problem auf Github/Discord, wenn du denkst, dass dies ein Fehler ist",
     "mapSaved": "Karte in Datei gespeichert",

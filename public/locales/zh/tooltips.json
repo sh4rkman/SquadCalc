@@ -58,6 +58,7 @@
     "enter": "Enter",
     "delete": "Delete",
     "toggleLayer": "显示/隐藏图层",
+    "layerInfo": "图层信息",
     "fileNotSupported": "不支持的文件",
     "openIssue": "如果你认为这是一个漏洞，请在 Github 或 Discord 上报告问题",
     "mapSaved": "地图已保存到文件",

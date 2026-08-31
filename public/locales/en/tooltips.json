@@ -58,6 +58,7 @@
     "invalidSession": "Invalid SessionID",
     "invalidSessionRules": "SessionID must be 6-20 alphanumeric characters",
     "toggleLayer": "Show/Hide layer",
+    "layerInfo": "Layer Information",
     "fileNotSupported": "File not supported",
     "openIssue": "Report an issue on Github/Discord if you think this is a bug",
     "mapSaved": "Map saved to file",

@@ -58,6 +58,7 @@
     "enter": "Enter",
     "delete": "Delete",
     "toggleLayer": "Показать/скрыть слой",
+    "layerInfo": "Информация о слое",
     "fileNotSupported": "Тип файла не поддерживается",
     "openIssue": "Сообщить об ошибке в Github/Discord, если вы считаете что нашли баг",
     "mapSaved": "Карта и маркеры сохранены в файл",

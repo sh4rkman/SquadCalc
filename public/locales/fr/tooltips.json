@@ -58,6 +58,7 @@
     "enter": "Enter",
     "delete": "Delete",
     "toggleLayer": "Afficher/Masquer le layer",
+    "layerInfo": "Informations du layer",
     "fileNotSupported": "Fichier non pris en charge",
     "openIssue": "Signalez un problème sur Github/Discord si vous pensez qu'il s'agit d'un bug",
     "mapSaved": "Carte sauvegardée",

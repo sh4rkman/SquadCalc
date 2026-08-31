@@ -281,6 +281,12 @@ tippy(".btn-hd", {
         tip.setContent(i18next.t("settings:highquality"));
     },
 });
+tippy(".btn-layer-info", {
+    ...commonMapMenuToolipsSettings,
+    onShow(tip) {
+        tip.setContent(i18next.t("tooltips:layerInfo"));
+    },
+});
 tippy(".btn-legacy", {
     ...commonMapMenuToolipsSettings,
     onShow(tip) {
