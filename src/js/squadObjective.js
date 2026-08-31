@@ -4,11 +4,11 @@ import i18next from "i18next";
 import "tippy.js/dist/tippy.css";
 import { FactionCtxMenu } from "./squadFactionCtxMenu.js";
 
-// Modded factionIDs are prefixed with the mod key (e.g. "SU_RGF"), but faction
-// translations are shared with vanilla ("RGF") - strip the prefix for i18next lookup.
-// Images use the full prefixed factionID as-is.
+// Modded factionIDs are prefixed with the mod key (e.g. "SU_RGF", "WZ_RGF"), but
+// faction translations are shared with vanilla ("RGF") - strip the prefix for
+// i18next lookup. Images use the full prefixed factionID as-is.
 export function translationId(factionID) {
-    return factionID ? factionID.replace(/^SU_/, "").replace(/-\d+$/, "").replace(/P[12]$/, "") : factionID;
+    return factionID ? factionID.replace(/^(SU|WZ)_/, "").replace(/-\d+$/, "").replace(/P[12]$/, "") : factionID;
 }
 
 export class SquadObjective {

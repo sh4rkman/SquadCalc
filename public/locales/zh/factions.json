@@ -1,4 +1,4 @@
-{   
+{
     "AFU": "乌军",
     "ADF": "澳军",
     "BAF": "英军",
@@ -86,5 +86,11 @@
     "SAR_displayName": "Sa'rim Tusken Raiders",
     "TUS_displayName": "Tusken Raiders",
     "TUSKENS_displayName": "Tusken Raiders",
-    "UDF_displayName": "Umbara Defense Force"
+    "UDF_displayName": "Umbara Defense Force",
+    "75RNG": "75RNG",
+    "DEVGRU": "DEVGRU",
+    "75RNG_displayName": "75th Ranger Regiment",
+    "DEVGRU_displayName": "Russian Ground Forces",
+    "AFU_NATO": "AFU_NATO",
+    "AFU_NATO_displayName": "Armed Forces of Ukraine (NATO)"
 }

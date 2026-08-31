@@ -1,5 +1,6 @@
 import { MAPS, initMapsProperties } from "../data/maps.js";
 import { WEAPONS, WEAPONSTYPE } from "../data/weapons.js";
+import { MODS } from "../data/mods.js";
 import { squadMinimap } from "./squadMinimap.js";
 import { Weapon } from "./squadWeapons.js";
 import { animateCSS, animateCalc } from "./animations.js";
@@ -680,12 +681,15 @@ export default class SquadCalc {
     }
 
     /**
-     * Returns unique mod keys present in WEAPONS or MAPS data
+     * Returns known mod keys - the explicit MODS list (source of truth, so a
+     * mod that only ships layers for vanilla maps still gets a settings toggle),
+     * unioned with any mod key found in WEAPONS/MAPS in case one was added
+     * there without being added to MODS yet.
      */
     _getUniqueMods() {
         const weaponMods = WEAPONS.filter(w => w.mod).map(w => w.mod);
         const mapMods = MAPS.filter(m => m.mod).map(m => m.mod);
-        return [...new Set([...weaponMods, ...mapMods])].sort();
+        return [...new Set([...MODS, ...weaponMods, ...mapMods])].sort();
     }
 
     /**

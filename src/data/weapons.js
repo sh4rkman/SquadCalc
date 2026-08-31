@@ -562,7 +562,7 @@ export var WEAPONS = [
         minElevation: [45, 88.875],
         unit: "mil",
         type: "deployables",
-        mod: "GC",
+        mod: "GalacticContention",
         angleType: "high",
         elevationPrecision: 0,
         heightOffset: 1,

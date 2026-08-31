@@ -277,7 +277,8 @@ export default class SquadServersBrowser {
             let modFolder = "vanilla";
             if (rawLayerName?.startsWith("SU_")) modFolder = "supermod";
             else if (rawLayerName?.startsWith("SD_")) modFolder = "steeldivision";
-            else if (rawLayerName?.startsWith("GC_")) modFolder = "gc";
+            else if (rawLayerName?.startsWith("GC_")) modFolder = "galacticcontention";
+            else if (rawLayerName?.startsWith("WZ_")) modFolder = "warzone";
 
             return `<img title="${label}" src="/img/flags/${modFolder}/${team}.webp" alt="${team}" class="flag-icon">`;
         } else {

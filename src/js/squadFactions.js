@@ -26,9 +26,9 @@ export default class SquadFactions {
 
 
     /**
-     * Modded factionIDs are prefixed with the mod key (e.g. "SU_RGF"), but faction
-     * translations are shared with vanilla ("RGF") - strip the prefix for i18next lookup.
-     * Images use the full prefixed factionID as-is.
+     * Modded factionIDs are prefixed with the mod key (e.g. "SU_RGF", "WZ_RGF"), but
+     * faction translations are shared with vanilla ("RGF") - strip the prefix for
+     * i18next lookup. Images use the full prefixed factionID as-is.
      *
      * A few SuperMod factions reuse a vanilla short code for a faction with a
      * different full name (e.g. "SU_CAF" = Canadian Ground Forces, vs vanilla
@@ -39,8 +39,8 @@ export default class SquadFactions {
 
     _translationId(factionID) {
         if (!factionID) return factionID;
-        const isModded = factionID.startsWith("SU_");
-        const stripped = factionID.replace(/^SU_/, "").replace(/-\d+$/, "").replace(/P[123]$/, "");
+        const isModded = /^(SU|WZ)_/.test(factionID);
+        const stripped = factionID.replace(/^(SU|WZ)_/, "").replace(/-\d+$/, "").replace(/P[123]$/, "");
         if (isModded && SquadFactions.MODDED_TRANSLATION_OVERRIDES.includes(stripped)) {
             return `${stripped}_SU`;
         }
@@ -48,14 +48,15 @@ export default class SquadFactions {
     }
 
     /**
-     * defaultFactionUnit (e.g. "SAA_LO_Mechanized") never carries the mod's
-     * factionID decoration, while the actual factionIDs do - prefixed ("SU_SAA")
-     * on SuperMod, suffixed ("SSPR-2") on Steel Division. Strip both before
-     * comparing, and fall back to the first available faction if nothing matches.
+     * defaultFactionUnit (e.g. "SAA_LO_Mechanized") usually doesn't carry the mod's
+     * factionID decoration, but some mods (WarZone) do include it ("WZ_USA_LO_...").
+     * The actual factionIDs are prefixed ("SU_SAA", "WZ_USA") on SuperMod/WarZone,
+     * suffixed ("SSPR-2") on Steel Division. Strip both before comparing, and fall
+     * back to the first available faction if nothing matches.
      */
     _resolveDefaultFaction(defaultFactionUnit, units) {
-        const code = defaultFactionUnit?.split("_")[0];
-        const normalize = (id) => id ? id.replace(/^SU_/, "").replace(/-\d+$/, "") : id;
+        const code = defaultFactionUnit?.replace(/^(SU|WZ)_/, "").split("_")[0];
+        const normalize = (id) => id ? id.replace(/^(SU|WZ)_/, "").replace(/-\d+$/, "") : id;
         const match = units.find(u => u.factionID === code || normalize(u.factionID) === code);
         if (match) return match.factionID;
 

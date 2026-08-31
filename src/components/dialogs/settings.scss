@@ -418,21 +418,21 @@ $bezier: cubic-bezier(0.65, 0.25, 0.56, 0.96);
 #modsPanelContainer {
     display: flex;
     flex-direction: column;
-    gap: 0.8em;
+    gap: 0.65em;
     padding: 0.4em 1.5em 0.2em 0;
     .modToggleTile {
         display: flex;
         flex-direction: column;
-        gap: 0.35em;
+        gap: 0.3em;
         width: 100%;
-        min-height: 4.5em;
+        min-height: 4em;
         position: relative;
         color: variables.$mainTxtColor;
         background-color: transparent;
         border: 1px solid variables.$mainTxtColor;
         border-radius: 4px;
-        padding: 0.9em 1.2em;
-        font-size: 1.1em;
+        padding: 0.75em 1.1em;
+        font-size: 1.02em;
         font-weight: bold;
         text-align: left;
         cursor: pointer;
@@ -444,23 +444,23 @@ $bezier: cubic-bezier(0.65, 0.25, 0.56, 0.96);
         .modTileLogo {
             position: absolute;
             top: 50%;
-            right: 1.2em;
+            right: 1.1em;
             transform: translateY(-50%);
-            max-height: calc(100% - 1.4em);
-            height: 3.2em;
+            max-height: calc(100% - 1.2em);
+            height: 2.8em;
             width: auto;
             border-radius: 3px;
             object-fit: contain;
         }
         .modTileName {
             font-size: 1em;
-            padding-right: 3.8em;
+            padding-right: 3.5em;
         }
         .modTileStats {
             display: flex;
             align-items: center;
-            gap: 0.6em;
-            font-size: 0.85em;
+            gap: 0.55em;
+            font-size: 0.8em;
             font-weight: bold;
             opacity: 0.7;
             text-transform: uppercase;

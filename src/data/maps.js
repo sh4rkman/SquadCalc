@@ -383,7 +383,7 @@ export const MAPS = [
         name: "Bespin",
         mapURL: "/img/maps/MODS/GC/bespin/",
         singleLayer: true,
-        mod: "GC",
+        mod: "GalacticContention",
         radiusExclusion: FOBEXCLUSIONS.medium,
         SDK_data: {
             minimap: {
@@ -396,7 +396,7 @@ export const MAPS = [
         name: "Coruscant",
         mapURL: "/img/maps/MODS/GC/coruscant/",
         singleLayer: true,
-        mod: "GC",
+        mod: "GalacticContention",
         radiusExclusion: FOBEXCLUSIONS.medium,
         SDK_data: {
             minimap: {
@@ -409,7 +409,7 @@ export const MAPS = [
         name: "Corvette",
         mapURL: "/img/maps/MODS/GC/corvette/",
         singleLayer: true,
-        mod: "GC",
+        mod: "GalacticContention",
         radiusExclusion: FOBEXCLUSIONS.medium,
         SDK_data: {
             minimap: {
@@ -422,7 +422,7 @@ export const MAPS = [
         name: "Felucia",
         mapURL: "/img/maps/MODS/GC/felucia/",
         singleLayer: true,
-        mod: "GC",
+        mod: "GalacticContention",
         radiusExclusion: FOBEXCLUSIONS.medium,
         SDK_data: {
             minimap: {
@@ -435,7 +435,7 @@ export const MAPS = [
         name: "Galban",
         mapURL: "/img/maps/MODS/GC/galban/",
         singleLayer: true,
-        mod: "GC",
+        mod: "GalacticContention",
         radiusExclusion: FOBEXCLUSIONS.medium,
         SDK_data: {
             minimap: {
@@ -448,7 +448,7 @@ export const MAPS = [
         name: "Geonosis",
         mapURL: "/img/maps/MODS/GC/geonosis/",
         singleLayer: true,
-        mod: "GC",
+        mod: "GalacticContention",
         radiusExclusion: FOBEXCLUSIONS.medium,
         SDK_data: {
             minimap: {
@@ -461,7 +461,7 @@ export const MAPS = [
         name: "Kashyyyk",
         mapURL: "/img/maps/MODS/GC/kashyyyk/",
         singleLayer: true,
-        mod: "GC",
+        mod: "GalacticContention",
         radiusExclusion: FOBEXCLUSIONS.medium,
         SDK_data: {
             minimap: {
@@ -474,7 +474,7 @@ export const MAPS = [
         name: "Kavado",
         mapURL: "/img/maps/MODS/GC/kavado/",
         singleLayer: true,
-        mod: "GC",
+        mod: "GalacticContention",
         radiusExclusion: FOBEXCLUSIONS.medium,
         SDK_data: {
             minimap: {
@@ -487,7 +487,7 @@ export const MAPS = [
         name: "Mallidon",
         mapURL: "/img/maps/MODS/GC/mallidon/",
         singleLayer: true,
-        mod: "GC",
+        mod: "GalacticContention",
         radiusExclusion: FOBEXCLUSIONS.medium,
         SDK_data: {
             minimap: {
@@ -500,7 +500,7 @@ export const MAPS = [
         name: "Miniosis",
         mapURL: "/img/maps/MODS/GC/miniosis/",
         singleLayer: true,
-        mod: "GC",
+        mod: "GalacticContention",
         radiusExclusion: FOBEXCLUSIONS.medium,
         SDK_data: {
             minimap: {
@@ -513,7 +513,7 @@ export const MAPS = [
         name: "Morak",
         mapURL: "/img/maps/MODS/GC/morak/",
         singleLayer: true,
-        mod: "GC",
+        mod: "GalacticContention",
         radiusExclusion: FOBEXCLUSIONS.medium,
         SDK_data: {
             minimap: {
@@ -526,7 +526,7 @@ export const MAPS = [
         name: "Mygeeto",
         mapURL: "/img/maps/MODS/GC/mygeeto/",
         singleLayer: true,
-        mod: "GC",
+        mod: "GalacticContention",
         radiusExclusion: FOBEXCLUSIONS.medium,
         SDK_data: {
             minimap: {
@@ -539,7 +539,7 @@ export const MAPS = [
         name: "NabooPlains",
         mapURL: "/img/maps/MODS/GC/nabooplains/",
         singleLayer: true,
-        mod: "GC",
+        mod: "GalacticContention",
         radiusExclusion: FOBEXCLUSIONS.medium,
         SDK_data: {
             minimap: {
@@ -552,7 +552,7 @@ export const MAPS = [
         name: "Ortoplutonia",
         mapURL: "/img/maps/MODS/GC/ortoplutonia/",
         singleLayer: true,
-        mod: "GC",
+        mod: "GalacticContention",
         radiusExclusion: FOBEXCLUSIONS.medium,
         SDK_data: {
             minimap: {
@@ -565,7 +565,7 @@ export const MAPS = [
         name: "Rhenvar",
         mapURL: "/img/maps/MODS/GC/rhenvar/",
         singleLayer: true,
-        mod: "GC",
+        mod: "GalacticContention",
         radiusExclusion: FOBEXCLUSIONS.medium,
         gridSize: 900,
         SDK_data: {
@@ -579,7 +579,7 @@ export const MAPS = [
         name: "Ryloth",
         mapURL: "/img/maps/MODS/GC/ryloth/",
         singleLayer: true,
-        mod: "GC",
+        mod: "GalacticContention",
         radiusExclusion: FOBEXCLUSIONS.medium,
         SDK_data: {
             minimap: {
@@ -592,7 +592,7 @@ export const MAPS = [
     //     name: "Ryloth_Canyons",
     //     mapURL: "/img/maps/MODS/GC/ryloth_canyons/",
     //     singleLayer: true,
-    //     mod: "GC",
+    //     mod: "GalacticContention",
     //     radiusExclusion: FOBEXCLUSIONS.medium,
     //     SDK_data: {
     //         minimap: {
@@ -605,7 +605,7 @@ export const MAPS = [
         name: "Sesid",
         mapURL: "/img/maps/MODS/GC/sesid/",
         singleLayer: true,
-        mod: "GC",
+        mod: "GalacticContention",
         radiusExclusion: FOBEXCLUSIONS.medium,
         SDK_data: {
             minimap: {
@@ -618,7 +618,7 @@ export const MAPS = [
         name: "SesidEquator",
         mapURL: "/img/maps/MODS/GC/sesidequator/",
         singleLayer: true,
-        mod: "GC",
+        mod: "GalacticContention",
         radiusExclusion: FOBEXCLUSIONS.medium,
         SDK_data: {
             minimap: {
@@ -631,7 +631,7 @@ export const MAPS = [
         name: "Sullust",
         mapURL: "/img/maps/MODS/GC/sullust/",
         singleLayer: true,
-        mod: "GC",
+        mod: "GalacticContention",
         radiusExclusion: FOBEXCLUSIONS.medium,
         SDK_data: {
             minimap: {
@@ -644,7 +644,7 @@ export const MAPS = [
         name: "Tatooine",
         mapURL: "/img/maps/MODS/GC/tatooine/",
         singleLayer: true,
-        mod: "GC",
+        mod: "GalacticContention",
         radiusExclusion: FOBEXCLUSIONS.medium,
         SDK_data: {
             minimap: {
@@ -657,7 +657,7 @@ export const MAPS = [
         name: "Umbara",
         mapURL: "/img/maps/MODS/GC/umbara/",
         singleLayer: true,
-        mod: "GC",
+        mod: "GalacticContention",
         radiusExclusion: FOBEXCLUSIONS.medium,
         SDK_data: {
             minimap: {
@@ -670,7 +670,7 @@ export const MAPS = [
         name: "VenatorAssault",
         mapURL: "/img/maps/MODS/GC/venator/",
         singleLayer: true,
-        mod: "GC",
+        mod: "GalacticContention",
         radiusExclusion: FOBEXCLUSIONS.medium,
         SDK_data: {
             minimap: {
@@ -683,7 +683,7 @@ export const MAPS = [
         name: "VenatorAssault2",
         mapURL: "/img/maps/MODS/GC/venator2/",
         singleLayer: true,
-        mod: "GC",
+        mod: "GalacticContention",
         radiusExclusion: FOBEXCLUSIONS.medium,
         SDK_data: {
             minimap: {
@@ -696,7 +696,7 @@ export const MAPS = [
         name: "Yavin4",
         mapURL: "/img/maps/MODS/GC/yavin4/",
         singleLayer: true,
-        mod: "GC",
+        mod: "GalacticContention",
         radiusExclusion: FOBEXCLUSIONS.medium,
         SDK_data: {
             minimap: {
