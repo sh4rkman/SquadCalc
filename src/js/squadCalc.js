@@ -384,7 +384,6 @@ export default class SquadCalc {
                     this.minimap.layer = new SquadLayer(this.minimap, layerData, broadcast, selectedLayerMod);
                     $(".btn-layer").addClass("active").show();
                     $(".btn-layer-info").show();
-                    $(".btn-share").show();
 
                     if (broadcast && this.session.ws?.readyState === WebSocket.OPEN) {
                         this.session.ws.send(
@@ -1207,8 +1206,6 @@ export default class SquadCalc {
 
         $("#settingsControls button[value='panel4']").on("click", () => this.initShortcutsPanel());
 
-        $(".btn-share").on("click", () => this.shareLoadout());
-
         this.show();
     }
 
@@ -1230,12 +1227,6 @@ export default class SquadCalc {
 
         return `${window.location.origin}${window.location.pathname}?${params.toString()}`;
     }
-
-    shareLoadout() {
-        navigator.clipboard.writeText(this.buildShareUrl());
-        this.openToast("success", "copied", "");
-    }
-
 
     closeToast() {
         const toast = document.querySelector("#toast");

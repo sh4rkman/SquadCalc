@@ -672,7 +672,6 @@ export default class SquadSettings {
             { key: "settings-btn-focus",   sharedContainer: "#mapBtnMain",    buttons: ".btn-focus",                                 default: false },
             { key: "settings-btn-servers", sharedContainer: "#mapBtnServers", buttons: "#servers",                                  default: true },
             { key: "settings-btn-session", sharedContainer: "#mapBtnServers", buttons: ".btn-session",                              default: true },
-            { key: "settings-btn-share",   sharedContainer: "#mapBtnMain",    buttons: ".btn-share",                                default: false },
             { key: "settings-btn-undo",        sharedContainer: "#mapBtnActions",     buttons: ".btn-undo",         default: true },
             { key: "settings-btn-delete",      sharedContainer: "#mapBtnActions",     buttons: ".btn-delete",       default: true },
             { key: "settings-btn-download",    sharedContainer: "#mapBtnMain",        buttons: ".btn-download",     default: false },
