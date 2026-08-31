@@ -335,6 +335,7 @@ export const MAPS = [
             landscapeScale: [1, 1, 0.485970247],
         }
     },
+    // SPM
     { 
         name: "Hrodna_Border", 
         mapURL: "/img/maps/MODS/SPM/hrodna/", 
@@ -363,6 +364,21 @@ export const MAPS = [
             landscapeScale: [1, 1, 0.124958144],
         }
     },
+    //SD
+    {
+        name: "AlBasrah_legacy",
+        mapURL: "/img/maps/MODS/SD/albasrah_legacy/",
+        radiusExclusion: FOBEXCLUSIONS.medium,
+        mod: "SteelDivision",
+        SDK_data: {
+            minimap: {
+                corner0: [-1520,-1520],
+                corner1: [1520,1520],
+            },
+            landscapeScale: [1, 1, 0.087813952],
+        }
+    },
+    // GC
     {
         name: "Bespin",
         mapURL: "/img/maps/MODS/GC/bespin/",
@@ -403,7 +419,7 @@ export const MAPS = [
         }
     },
     {
-        name: "felucia",
+        name: "Felucia",
         mapURL: "/img/maps/MODS/GC/felucia/",
         singleLayer: true,
         mod: "GC",
@@ -533,7 +549,7 @@ export const MAPS = [
         }
     },
     {
-        name: "ortoplutonia",
+        name: "Ortoplutonia",
         mapURL: "/img/maps/MODS/GC/ortoplutonia/",
         singleLayer: true,
         mod: "GC",
@@ -572,6 +588,19 @@ export const MAPS = [
             },
         }
     },
+    // {
+    //     name: "Ryloth_Canyons",
+    //     mapURL: "/img/maps/MODS/GC/ryloth_canyons/",
+    //     singleLayer: true,
+    //     mod: "GC",
+    //     radiusExclusion: FOBEXCLUSIONS.medium,
+    //     SDK_data: {
+    //         minimap: {
+    //             corner0: [-220, -220],
+    //             corner1: [220, 220],
+    //         },
+    //     }
+    // },
     {
         name: "Sesid",
         mapURL: "/img/maps/MODS/GC/sesid/",
@@ -638,15 +667,28 @@ export const MAPS = [
         }
     },
     {
-        name: "Venator",
+        name: "VenatorAssault",
         mapURL: "/img/maps/MODS/GC/venator/",
         singleLayer: true,
         mod: "GC",
         radiusExclusion: FOBEXCLUSIONS.medium,
         SDK_data: {
             minimap: {
-                corner0: [-855.40, -462.00],
-                corner1: [644.60, 1038.00],
+                corner0: [-400.3, -399.6],
+                corner1: [399.7, 400.4],
+            }
+        }
+    },
+    {
+        name: "VenatorAssault2",
+        mapURL: "/img/maps/MODS/GC/venator2/",
+        singleLayer: true,
+        mod: "GC",
+        radiusExclusion: FOBEXCLUSIONS.medium,
+        SDK_data: {
+            minimap: {
+                corner0: [-855.4, -462],
+                corner1: [644.6, 1038],
             }
         }
     },
