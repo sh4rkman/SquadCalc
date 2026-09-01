@@ -9,6 +9,7 @@ import { Curve } from "./libs/leaflet-curve.js";
 import { squadSpawnGroup } from "./squadSpawnGroup.js";
 import { squadCameraActor } from "./squadCameraActor.js";
 import { SquadVehicleSpawner } from "./squadVehicleSpawner.js";
+import SquadLaneSolver from "./squadLaneSolver.js";
 
 export default class SquadLayer {
 
@@ -28,7 +29,6 @@ export default class SquadLayer {
 
         [this.offset_x, this.offset_y] = this.getLayerOffsets(this.layerData.mapTextureCorners);
         this.isVisible = true;
-        this.currentPosition = 0;
 
         // latlng's of the currently selected flags
         this.path = [];
@@ -44,12 +44,28 @@ export default class SquadLayer {
 
         if (!App.userSettings.showFlagsDistance) this.polyline.hideMeasurements();
 
-        // Currently selected flags
-        this.selectedFlags = [];
-        this.selectedReachableClusters = [];
+        // On randomized layers the chain is drawn as one polyline per run of adjacent
+        // confirmed points, so no line crosses a gap the user has not confirmed.
+        this.pathLines = [];
 
-        // Hold the availables clusters at all time
-        this.currentReachableClusters = new Set();
+        // Capture points the user has confirmed, in no particular order.
+        // See squadLaneSolver.js.
+        this.selectedFlags = [];
+
+        // Depth each confirmed flag is pinned to. A point that could sit at two depths is
+        // pinned to the shallowest one still open. Confirm the points before it to pin it
+        // deeper.
+        this.confirmedStep = new Map();
+
+        // Latest solver output, recalculated on every confirmation. SquadObjective reads
+        // it to decide what each flag shows and whether it is still possible.
+        this.solverResult = null;
+        this.nextStep = 1;
+
+        // Which main the depth numbers are counted from. Defaults to the main the routes
+        // start from.
+        this.perspectiveMain = null;
+        this.countFromEnd = false;
         this.mains = [];
         this.mainZones = {
             rectangles: [],
@@ -62,7 +78,6 @@ export default class SquadLayer {
         this.flags = [];
         this.hexs = [];
         this.stagingZones = [];
-        this.reversed = false;
 
         this.spawnGroups = [];
         this.vehicleSpawners = [];
@@ -84,8 +99,19 @@ export default class SquadLayer {
 
         this.mainZones.ammocrates = [];
 
-        this.init();
         this.isRandomized = this.isRandomized();
+
+        // Randomized layers are resolved from their route space instead of walked step by
+        // step, so the solver has to exist before the flags are drawn.
+        if (this.isRandomized) this.solver = new SquadLaneSolver(layerData);
+
+        this.init();
+
+        if (this.solver?.ok) {
+            this.perspectiveMain = this._mainForNode(this.solver.start);
+            this._renderFromSolver();
+        }
+        else if (this.isRandomized) console.debug("[LAYER] no usable route graph, lane prediction disabled");
 
         if (process.env.DISABLE_FACTIONS != "true") {
             this.factions = new SquadFactions(this, broadcast);
@@ -294,7 +320,7 @@ export default class SquadLayer {
                     if (this.areLatLngsClose(flag.latlng, latlng)) {
                         console.debug(`[LAYER] adding cluster ${objCluster.name} to flag ${flag.name}`);
                         console.debug("[LAYER] new clustersList: ", flag.clusters);
-                        flag.addCluster(objCluster);
+                        flag.addCluster(objCluster, obj);
                         flagExists = true;
                     }
                 });
@@ -310,17 +336,6 @@ export default class SquadLayer {
                 }
             });
         });
-
-        // Pre-select first main flag in invasion
-        if (this.gamemode === "Invasion" || this.gamemode === "RINV") {
-            this.mains.forEach((main) => {
-                // Invaders are always Team 1
-                if (main.objectName.toLowerCase().includes("team1")){
-                    this._handleFlagClick(main, false);
-                    return;
-                }
-            });
-        }
 
     }
 
@@ -881,173 +896,242 @@ export default class SquadLayer {
     }
 
 
+    /**
+     * Confirm or un-confirm a capture point.
+     *
+     * Confirmations are a set, not a sequence. With free selection on, any point on the
+     * map can be clicked, and clicking a confirmed point removes it. The solver
+     * recalculates everything from the whole set, so click order does not matter.
+     *
+     * @param {SquadObjective} flag - the clicked flag
+     * @param {boolean} broadcast - forward the click to the collaborative session
+     * @returns {boolean} true if the click changed anything
+     */
     _handleFlagClick(flag, broadcast = true) {
-        
-        let backward = false;
 
-        if (this.selectedFlags.length === 0){
-            this.startPosition = flag.position;
-            if (flag.position > 1){
-                this.reversed = true;
+        if (!this.solver?.ok) return false;
+
+        if (flag.isMain) {
+            // Mains are not capture points. Clicking one points the depth numbering at
+            // that side. Clicking the side already selected clears every confirmation.
+            if (flag === this.perspectiveMain) {
+                this._resetLayer();
+            } else {
+                this.perspectiveMain = flag;
+                this.countFromEnd = flag === this._mainForNode(this.solver.end);
+                this._renderFromSolver();
             }
-        }
+        } else {
+            const pinnedAt = this.confirmedStep.get(flag);
 
-        // If the clicked flag is in front of the current position, skip
-        if (Math.abs(this.startPosition - flag.position) > this.currentPosition) {
-
-            // In RAAS/RVAAS, we can click on the oposite main flag to reset the layer
-            if ((this.gamemode === "RAAS" || this.gamemode === "RVAAS") && flag.isMain){
-                if (broadcast && App.session.ws && App.session.ws.readyState === WebSocket.OPEN) {
-                    App.session.ws.send(
-                        JSON.stringify({
-                            type: "CLICK_LAYER",
-                            flag: flag.objectName,
-                            selectedFlags: [],
-                        })
-                    );
-                    console.debug(`[LAYER] Sent layer click update for flag #${flag.objectName}`);
+            if (pinnedAt == null) {
+                const step = this._stepForClick(flag);
+                if (step == null) {
+                    console.debug(`[LAYER] ${flag.name} cannot be confirmed right now, ignoring`);
+                    return false;
                 }
-
-                this._resetLayer();
-                this._handleFlagClick(flag, false);
-                return true;
+                this.selectedFlags.push(flag);
+                this.confirmedStep.set(flag, step);
+            } else if (App.userSettings.freePointSelection) {
+                // Clicking a confirmed point removes it.
+                this._release(flag);
+            } else {
+                // Ordered mode walks back down the chain: releasing a point also releases
+                // everything confirmed after it.
+                this.selectedFlags
+                    .filter((other) => (this.confirmedStep.get(other) ?? 0) >= pinnedAt)
+                    .forEach((other) => this._release(other));
             }
-
-            console.debug("[LAYER]   -> Clicked Flag is in front, skipping..");
-            return false; 
+            this._renderFromSolver();
         }
 
-        // Going backward
-        if (Math.abs(this.startPosition - flag.position)+1 <= this.currentPosition){
-
-            backward = true;
-            this.selectedReachableClusters.pop();
-
-            let positionToReduce = (this.currentPosition - Math.abs(this.startPosition - flag.position));
-            console.debug("[LAYER] # of Going backward : ", positionToReduce);
-
-            if (flag === this.selectedFlags[0]) {
-                console.debug("[LAYER] Can't unselect main flag");
-                if (broadcast && App.session.ws && App.session.ws.readyState === WebSocket.OPEN) {
-                    App.session.ws.send(
-                        JSON.stringify({
-                            type: "CLICK_LAYER",
-                            flag: flag.objectName,
-                            selectedFlags: [],
-                        })
-                    );
-                    console.debug(`[LAYER] Sent layer click update for flag #${flag.objectName}`);
-                }
-                this._resetLayer();
-                return;
-            }
-
-            if (flag.isMain && (this.gamemode != "Invasion" || this.gamemode != "RINV")){
-                this._resetLayer();
-                this._handleFlagClick(flag);
-                return;
-            }
-            
-            // Remove the selectedFlags from the end
-            for (let i = 0; i < positionToReduce; i++){
-                this.selectedFlags.at(-1).unselect();
-                this.selectedFlags.pop();
-                // remove last entry from this.selectedReachableClusters
-                this.selectedReachableClusters.pop();
-                this.currentPosition--;
-                this.path.pop();
-            }
-
-
-            // update the path and DFS from the last selected flag
-            this.polyline.setLatLngs(this.path);
-
-            if (broadcast && App.session.ws && App.session.ws.readyState === WebSocket.OPEN) {
-                let selectedFlags = [];
-                this.selectedFlags.forEach(flag => {
-                    selectedFlags.push(flag.objectName);
-                });
-                App.session.ws.send(
-                    JSON.stringify({
-                        type: "CLICK_LAYER",
-                        flag: flag.objectName,
-                        selectedFlags: selectedFlags,
-                    })
-                );
-            }
-
-            flag = this.selectedFlags.at(-1);
-        }
-        // Going forward
-        else {
-            // Add the clicked flag to the selected flags
-            flag.select();
-            this.selectedFlags.push(flag);
-            this.currentPosition++;
-            // Update the path
-            this.path.push(flag.latlng);
-            this.polyline.setLatLngs(this.path);
-
-            if (broadcast && App.session.ws && App.session.ws.readyState === WebSocket.OPEN) {
-                let selectedFlags = [];
-                this.selectedFlags.forEach(flag => {
-                    selectedFlags.push(flag.objectName);
-                });
-                App.session.ws.send(
-                    JSON.stringify({
-                        type: "CLICK_LAYER",
-                        flag: flag.objectName,
-                        selectedFlags: selectedFlags,
-                    })
-                );
-            }
+        if (broadcast && App.session.ws && App.session.ws.readyState === WebSocket.OPEN) {
+            App.session.ws.send(
+                JSON.stringify({
+                    type: "CLICK_LAYER",
+                    flag: flag.objectName,
+                    selectedFlags: this.selectedFlags.map((f) => f.objectName),
+                })
+            );
+            console.debug(`[LAYER] Sent layer click update for flag #${flag.objectName}`);
         }
 
-        this.render(flag, false, backward);
-
+        return true;
     }
+
 
     /**
-     * For a given flag render the layer
-     * Start a DFS from the flag, hide every not-already-selected flags & show the reachable ones
-     * @param {Objectives} flag - Flag from where to start
-     * @param {boolean} preview - Should we just fade out other flags or hide them
-     * @param {boolean} backward - User is going backward (unselecting flags)
+     * Solver constraints for the confirmed flags. A flag owns several candidate ids when
+     * the randomizer offers the same point on more than one route, so each entry means
+     * "any one of these ids, at this depth".
+     * @param {SquadObjective[]} [flags] - defaults to every confirmed flag
+     * @returns {{ids: string[], step: ?number}[]}
      */
-    render(flag, preview, backward = false) {
-
-        console.debug("[LAYER] ****************************************");
-        console.debug("[LAYER]               LAYER UPDATE              ");
-        console.debug("[LAYER] ****************************************");
-        console.debug("[LAYER]   -> Preview:", preview);
-        console.debug("[LAYER]   -> Reverse:", this.reversed);
-        console.debug("[LAYER]   -> Selected Flag:", flag.objectName);
-        console.debug("[LAYER]   -> Clicked flag position", flag.position);
-        console.debug("[LAYER]   -> Current position", this.currentPosition);
-        console.debug("[LAYER]   -> Current selected Flags", this.selectedFlags);
-        console.debug("[LAYER]   -> Cluster History", this.selectedReachableClusters);
-
-        console.debug("[LAYER] ****************************************");
-        console.debug("[LAYER]                   DFS                   ");
-        console.debug("[LAYER] ****************************************");
-
-        let reachableClusters = this.getReachableClusters(flag, preview);
-        if (reachableClusters.size <= 1) return;
-
-        console.debug("[LAYER] ****************************************");
-        console.debug("[LAYER]                Rendering                ");
-        console.debug("[LAYER] ****************************************");
-
-        this.hideClusters(flag, preview);
-        let nextFlags = this.showClusters(flag, reachableClusters, preview);
-        if (!preview) {
-            // Reachable clusters just changed - refresh every flag's number/alternates label
-            // before handleNextFlags() marks the next ones and shows their percentage
-            this.flags.forEach((f) => f.update());
-            this.handleNextFlags(nextFlags, backward, reachableClusters);
-        }
-        //this.refreshLane(flag);
+    _constraints(flags = this.selectedFlags) {
+        return flags.map((flag) => ({
+            ids: flag.candidateIds,
+            step: this.confirmedStep.get(flag) ?? null,
+        }));
     }
+
+
+    /**
+     * Drop a flag's confirmation.
+     * @param {SquadObjective} flag
+     */
+    _release(flag) {
+        const at = this.selectedFlags.indexOf(flag);
+        if (at !== -1) this.selectedFlags.splice(at, 1);
+        this.confirmedStep.delete(flag);
+    }
+
+
+    /**
+     * Depth a click would confirm this flag at, or null if it cannot be confirmed now.
+     *
+     * Ordered mode, the default, only accepts the next point in the chain. With free
+     * selection on, any still-possible point can be confirmed at the shallowest depth it
+     * can occupy. Confirming the points before it pins it deeper.
+     * @param {SquadObjective} flag
+     * @returns {?number}
+     */
+    _stepForClick(flag) {
+        const options = this._stepOptionsFor(flag);
+        if (App.userSettings.freePointSelection) return options[0] ?? null;
+        return options.includes(this.nextStep) ? this.nextStep : null;
+    }
+
+
+    /**
+     * Depths a flag could still be pinned to, ignoring its own current confirmation.
+     * @param {SquadObjective} flag
+     * @returns {number[]} sorted, empty if the other confirmations already rule it out
+     */
+    _stepOptionsFor(flag) {
+        const others = this.selectedFlags.filter((other) => other !== flag);
+        const result = this.solver.solve(this._constraints(others), this.countFromEnd);
+        const steps = new Set();
+        flag.candidateIds.forEach((id) => result.byId.get(id)?.steps.forEach((step) => steps.add(step)));
+        return [...steps].sort((a, b) => a - b);
+    }
+
+
+    /**
+     * Recalculate the board from the confirmed set and paint it.
+     * @param {SquadObjective} [previewFlag] - painted as if confirmed, without confirming it
+     */
+    _renderFromSolver(previewFlag = null) {
+
+        if (!this.solver?.ok) return;
+
+        const constraints = this._constraints();
+
+        if (previewFlag) {
+            // Preview what clicking would do, including the depth it would pin.
+            const step = this._stepForClick(previewFlag);
+            if (step == null) return;
+            constraints.push({ ids: previewFlag.candidateIds, step });
+        }
+
+        const result = this.solver.solve(constraints, this.countFromEnd);
+        if (previewFlag && !result.alive) return;
+
+        this.solverResult = result;
+
+        // Shallowest step not yet pinned. Flags that can fill it are marked "next".
+        const confirmedSteps = new Set();
+        this.selectedFlags.forEach((flag) => flag.solverSteps().forEach((step) => confirmedSteps.add(step)));
+        let nextStep = 1;
+        while (confirmedSteps.has(nextStep)) nextStep++;
+        this.nextStep = nextStep;
+
+        this.flags.forEach((flag) => flag.applySolverResult(previewFlag !== null));
+
+        if (previewFlag === null) this._drawPath();
+    }
+
+
+    /**
+     * The main flag a route graph node id refers to. Links address mains by
+     * objectDisplayName, so match that first.
+     * @param {string} node
+     * @returns {SquadObjective|undefined}
+     */
+    _mainForNode(node) {
+        if (!node) return undefined;
+        return this.mains.find(
+            (main) => (main.objCluster.objectDisplayName ?? main.objectName) === node
+        );
+    }
+
+
+    /**
+     * Draw the chain through the confirmed points.
+     *
+     * Only points next to each other in the chain are joined. Knowing the first and the
+     * last point says nothing about the route between them, so a single line across the
+     * map would show a path that has not been confirmed. Each run of adjacent points
+     * becomes its own polyline, which also keeps the distance labels on confirmed legs.
+     */
+    _drawPath() {
+
+        this.pathLines.forEach((line) => line.removeFrom(this.activeLayerMarkers).remove());
+        this.pathLines = [];
+
+        const points = this.selectedFlags
+            .map((flag) => ({ step: flag.solverSteps()[0], latlng: flag.latlng }))
+            .filter((point) => point.step != null)
+            .sort((a, b) => a.step - b.step);
+
+        // The mains bracket the chain. The one the numbering counts from sits one step
+        // before the first capture point, the other one step after the last. The far main
+        // is joined only once the deepest point is confirmed.
+        if (points.length && this.perspectiveMain) {
+            points.unshift({ step: 0, latlng: this.perspectiveMain.latlng });
+
+            const farMain = this.mains.find((main) => main !== this.perspectiveMain);
+            if (farMain && points.some((point) => point.step === this.solver.stepCount)) {
+                points.push({ step: this.solver.stepCount + 1, latlng: farMain.latlng });
+            }
+        }
+
+        let run = [];
+        const flush = () => {
+            if (run.length > 1) this.pathLines.push(this._createPathLine(run.map((point) => point.latlng)));
+            run = [];
+        };
+
+        points.forEach((point, index) => {
+            if (index && point.step !== points[index - 1].step + 1) flush();
+            run.push(point);
+        });
+        flush();
+
+        this.path = this.pathLines.map((line) => line.getLatLngs());
+    }
+
+
+    /**
+     * One leg of the confirmed chain.
+     * @param {Array} latlngs
+     * @returns {Polyline}
+     */
+    _createPathLine(latlngs) {
+        const line = new Polyline(latlngs, {
+            color: "white",
+            opacity: this.isVisible ? 0.9 : 0,
+            showMeasurements: true,
+            measurementOptions: {
+                minPixelDistance: 50,
+                scaling: this.map.mapToGameScale,
+            }
+        }).addTo(this.activeLayerMarkers);
+
+        if (!App.userSettings.showFlagsDistance || !this.isVisible) line.hideMeasurements();
+
+        return line;
+    }
+
 
     // WIP
     refreshLane(flag) {
@@ -1075,245 +1159,15 @@ export default class SquadLayer {
 
 
     /**
-     * Return the reachable clusters
-     * @param {Objectives} flag - Flag from where to start
-     * @param {boolean} preview - Should we just fade in other flags or hide them
-     */
-    showClusters(flag, reachableClusters, preview = false){
-        
-        let nextFlags = [];
-        console.debug("[LAYER] Showing Clusters");
-
-        // Show reachable clusters
-        reachableClusters.forEach((clusterName) => {
-
-            let cluster = this.objectives[clusterName];
-
-            // If the cluster is not found directly, search for a matching displayName (mains)
-            if (!cluster) {
-                cluster = Object.values(this.objectives).find((obj) => obj.objectDisplayName === clusterName);
-            }
-
-            let position = Math.abs(this.startPosition - cluster.pointPosition);
-            if (!preview) position += 1;
-
-            // If the cluster is in front of the clicked flag, show it
-            if (position > this.currentPosition){
-                console.debug(`[LAYER]   -> ${cluster.name}`);
-                if (preview) this._fadeInCluster(cluster, flag);  
-                else this._showCluster(cluster);
-
-                // If cluster is directly in front of the clicked flag, count the next flags
-                if (Math.abs(position) === this.currentPosition+1){
-                    const futurFlags = this.flags.filter((f) => f.clusters.includes(cluster));
-                    futurFlags.forEach((flag) => {
-                        // Only add if not already in the list
-                        if (!nextFlags.includes(flag)) nextFlags.push(flag);
-                    });
-                }
-                
-            }
-        });
-
-        return nextFlags;
-    }
-
-    /**
-     * Hide Clusters in front of a given flag
-     * @param {Objectives} flag - Flag from where to start
-     * @param {boolean} preview - Should we just fade out other flags or hide them
-     */
-    hideClusters(flag, preview = false){
-        console.debug("[LAYER] Hidding Clusters");
-        Object.values(this.objectives).forEach((cluster) => {
-            // Only Hide/Fade cluster in front of us
-            if (Math.abs(this.startPosition - cluster.pointPosition)+1 >= this.currentPosition) {
-                console.debug(`[LAYER]   -> ${cluster.name}`);
-                if (!flag.clusters.some(c => c.name === cluster.objectName)) {
-                    if (preview) this._fadeOutCluster(cluster, flag);  
-                    else this._hideCluster(cluster, flag);
-                }
-            }
-        });
-    }
-
-
-    /**
-     * Return the reachable clusters
-     * @param {Objectives} flag - Flag from where to start
-     * @return {Set} Set of cluster reachable in front of the flag
-     */
-    getReachableClusters(flag, preview) {
-        let reachableClusters = new Set();
-        // Start DFS from each clicked flag clusters
-        flag.clusters.forEach((cluster) => {
-            let position = Math.abs(this.startPosition - cluster.pointPosition);
-            if (!preview) position += 1;
-            if (position == this.currentPosition){
-                // Only start DFS from clusters that are from our current position
-                const clusterName = cluster.name === "Main" ? cluster.objectDisplayName : cluster.name;
-                this.dfs(clusterName, reachableClusters);
-            }
-        });
-
-        // Something went wrong, we are in the wrong direction
-        if (reachableClusters.size === 1 && this.currentPosition === 1){
-            if (!flag.isMain) return;
-            console.debug("[LAYER] Already blocked, Trying again in the other direction");
-            this.reversed = !this.reversed;
-            reachableClusters.clear();
-            this.dfs(flag.clusters[0].objectDisplayName, reachableClusters);
-        }
-
-        // Remove clusters that were not reachable from the previous flag
-        reachableClusters = this._filterClusters(reachableClusters);
-
-        // Store the clusters in case we need to backtrack later
-        if (!preview) {
-            this.selectedReachableClusters.push(reachableClusters);
-            console.debug("[LAYER] Cluster History updated", this.selectedReachableClusters);
-        }
-        
-        return reachableClusters;
-    }
-    
-
-    /**
-     * Handle next flags behaviour
-     * Hightlight the next flags / show their % / Click the next flag if only one
-     * @param {Array} nextFlags - Array of next flags
-     * @param {boolean} backward - True if we are going backward
-     */
-    handleNextFlags(nextFlags, backward, reachableClusters) {
-
-        // Only one flag in front ? Click it adn stop here
-        if (nextFlags.length === 1 && !backward) {
-            this._handleFlagClick(nextFlags[0], false);
-            return;
-        } 
-
-        // Highlight the next flags with a proper class
-        nextFlags.forEach(flag => {
-            flag.flag._icon.classList.add("next");
-            flag.flag.options.icon.options.className = "flag flag" + flag.position + " next";
-            flag.isNext = true;
-        });
-
-
-        // Collect only reachable clusters
-        const validClusters = nextFlags
-            .flatMap(flag => flag.clusters)
-            .filter(c =>
-                reachableClusters.has(c.name) &&
-                Math.abs(this.startPosition - c.pointPosition) === this.currentPosition
-            );
-
-        // Deduplicate clusters by name
-        const uniqueClusters = [...new Map(validClusters.map(c => [c.name, c])).values()];
-
-        // Each valid cluster gets equal weight
-        const clusterWeight = uniqueClusters.length > 0 ? 100 / uniqueClusters.length : 0;
-
-        nextFlags.forEach(flag => {
-            let percentage = 0;          
-
-            // Only check reachable clusters
-            uniqueClusters.forEach(cluster => {
-
-                if (flag.clusters.some(c => c.name === cluster.name)) {
-                    // Count how many flags in this reachable cluster
-                    const flagsInCluster = nextFlags.filter(f =>
-                        f.clusters.some(c =>
-                            c.name === cluster.name &&
-                            reachableClusters.has(c.name) &&
-                            Math.abs(this.startPosition - c.pointPosition) === this.currentPosition
-                        )
-                    ).length;
-                    percentage += clusterWeight / flagsInCluster;
-                }
-            });
-
-            flag.percentage = percentage;
-            if (App.userSettings.showNextFlagsPercentages) flag.showPercentage();
-
-        });
-
-    }
-
-
-    /**
-     * Remove clusters that were not reachable from the previous position
-     * @param {Set} reachableClusters - Set of reachable clusters
-     * @returns {Array} - List of reachable clusters
-     */
-    _filterClusters(reachableClusters) {
-        if (this.selectedReachableClusters.length > 0){
-            Array.from(reachableClusters).forEach((cluster) => {
-                if (!this.selectedReachableClusters.at(-1).has(cluster)){
-                    reachableClusters.delete(cluster);
-                    console.debug("[LAYER]  -> filtered because wasn't previously reachable :", cluster);
-                }
-            });
-        }
-        console.debug("[LAYER] Reachable clusters:", Array.from(reachableClusters));
-        return reachableClusters;
-    }
-     
-     
-    /**
-     * Deep First Search to find all reachable clusters from a given cluster
-     * @param {String} clusterName 
-     * @param {Array} reachableClusters - Set to store reachable clusters
-     */
-    dfs(clusterName, reachableClusters) {
-        if (reachableClusters.has(clusterName)) return;  // If already visited, skip
-        reachableClusters.add(clusterName); // Mark this cluster as reachable)
-
-        // Sometimes links are stored in clusters, sometimes in lanes
-        const links = this.capturePoints.lanes.links || this.capturePoints.clusters.links;
-
-        // Traverse each link to find connected clusters
-        links.forEach((link) => {
-            if (this.reversed){
-                if (link.nodeB === clusterName && !reachableClusters.has(link.nodeA)) {
-                    this.dfs(link.nodeA, reachableClusters);  // Traverse from nodeB to nodeA
-                }
-            }
-            else if (link.nodeA === clusterName && !reachableClusters.has(link.nodeB)) {
-                this.dfs(link.nodeB, reachableClusters);  // Traverse from nodeA to nodeB
-            }
-        });
-    }
-
-
-    /**
-     * Unselects all flags and resets the layer
+     * Drop every confirmation and show the whole layer again.
      */
     _resetLayer() {
         console.debug("[LAYER] Resetting layer");
-
-        this.currentPosition = 0;
-        this.selectedReachableClusters = [];
         this.selectedFlags = [];
-        this.reversed = false;
-        this.path = [];
-        //this.hexs = [];
-        this.polyline.setLatLngs([]);
-
-        this.flags.forEach((flag) => {
-            flag.unselect();
-            if (!flag.isMain) flag.hide();
-        });
-
-        // Pre-select first main flag in invasion
-        if (this.gamemode === "Invasion" || this.gamemode === "RINV") {
-            this.mains.forEach((main) => {
-                if (main.objectName === this.capturePoints.clusters.listOfMains[0]){
-                    this._handleFlagClick(main, false);
-                }
-            });
-        }
+        this.confirmedStep.clear();
+        this._renderFromSolver();
     }
+
 
     /**
      * Set the opacity of the layer
@@ -1323,6 +1177,7 @@ export default class SquadLayer {
         
         // Polyline opacity
         this.polyline.setStyle({ opacity: value });
+        this.pathLines.forEach((line) => line.setStyle({ opacity: value }));
 
         // Flags opacity
         this.flags.forEach((flag) => {
@@ -1350,114 +1205,11 @@ export default class SquadLayer {
     }
 
 
-    _showCluster(cluster) {
-        if (cluster.name === "Main") return;
-
-        const flagsToShow = this.flags.filter((f) =>
-            f.clusters.includes(cluster)
-        );
-
-        flagsToShow.forEach((flagToShow) => {
-
-            const foundClusters = [];
-
-            // Filters the clusters that were reachable from the previous flag
-            flagToShow.clusters.forEach((cluster) => {
-                if (this.selectedReachableClusters.at(-1).has(cluster.name)){
-                    foundClusters.push(cluster);
-                }
-            });
-
-            let newPos;
-
-            if (this.reversed){
-                newPos = 0;
-                for (const item of foundClusters) {
-                    if (Math.abs(this.startPosition - item.pointPosition) >= this.currentPosition && item.pointPosition > newPos) {
-                        newPos = item.pointPosition;
-                    }
-                }
-            } else {
-                newPos = Infinity;
-                for (const item of foundClusters) {
-                    if (item.pointPosition > this.currentPosition && item.pointPosition < newPos) {
-                        newPos = item.pointPosition;
-                    }
-                }
-                // Something went wrong, try the opposite
-                if (newPos === Infinity){
-                    newPos = 0;
-                    for (const item of foundClusters) {
-                        if (item.pointPosition <= this.currentPosition && item.pointPosition > newPos) {
-                            newPos = item.pointPosition;
-                        }
-                    }
-                }
-            }
-            flagToShow.position = newPos;
-            flagToShow.show();
-        });
-
-    }
-
-    _hideCluster(cluster, clickedFlag) {
-
-        if (cluster.name === "Main") return;
-
-        const flagsToHide = this.flags.filter((f) =>
-            f !== clickedFlag && f.clusters.includes(cluster)
-        );
-
-        // Show each flag that was found
-        flagsToHide.forEach((flagToHide) => {
-            if (!this.selectedFlags.includes(flagToHide)){
-                flagToHide.hide();
-            }
-        });
-    }
-
-    _fadeInCluster(cluster, clickedFlag) {
-
-        if (cluster.name === "Main") return;
-
-        const flagsToHide = this.flags.filter((f) =>
-            f !== clickedFlag && f.clusters.includes(cluster)
-        );
-
-        // Show each flag that was found
-        flagsToHide.forEach((flagToHide) => {
-            if (!this.selectedFlags.includes(flagToHide)){
-                flagToHide._fadeIn();
-                if (!App.userSettings.capZoneOnHover) {
-                    if (this.map.getZoom() > this.map.detailedZoomThreshold){
-                        flagToHide.revealCapZones();
-                    }
-                }
-            }
-        });
-    }
-
-    _fadeOutCluster(cluster, clickedFlag) {
-
-        if (cluster.name === "Main") return;
-
-        const flagsToHide = this.flags.filter((f) =>
-            f !== clickedFlag && f.clusters.includes(cluster)
-        );
-
-        // Show each flag that was found
-        flagsToHide.forEach((flagToHide) => {
-            if (!this.selectedFlags.includes(flagToHide)){
-                flagToHide._fadeOut();
-                flagToHide.hideCapZones();
-            }
-        });
-    }
-
     toggleVisibility() {
         if (this.isVisible) {
             this._setOpacity(0);
             this.polyline.hideMeasurements();
+            this.pathLines.forEach((line) => line.hideMeasurements());
             this.isVisible = false;
             $(".btn-layer").removeClass("active");
             this.hideAllCapzones();
@@ -1473,10 +1225,9 @@ export default class SquadLayer {
             this._setOpacity(1);
             this.setMainZoneOpacity(true);
             if (App.userSettings.showFlagsDistance) {
-                this.polyline.showMeasurements({
-                    minPixelDistance: 50,
-                    scaling: this.map.mapToGameScale,
-                });
+                const measurementOptions = { minPixelDistance: 50, scaling: this.map.mapToGameScale };
+                this.polyline.showMeasurements(measurementOptions);
+                this.pathLines.forEach((line) => line.showMeasurements(measurementOptions));
             }
             $(".btn-layer").addClass("active");
             this.isVisible = true;
@@ -1518,6 +1269,9 @@ export default class SquadLayer {
         this.vehicleSpawners = [];
         this.hexs = [];
         this.stagingZones = [];
+        this.selectedFlags = [];
+        this.confirmedStep.clear();
+        this.solverResult = null;
     }
 
 }
