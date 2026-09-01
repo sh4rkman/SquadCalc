@@ -1426,6 +1426,7 @@ export default class SquadCalc {
         }
 
         if (this.matchesShortcut(event, "toggleMap")) {
+            if (this.minimap.activeMap.singleLayer) return;
             const layers = ["topomap", "terrainmap", "basemap"];
             const currentLayer = $("#mapLayerMenu .layers.active").attr("value") || "basemap";
             const nextIndex = (layers.indexOf(currentLayer) + 1) % layers.length;

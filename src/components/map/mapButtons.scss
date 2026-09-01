@@ -425,10 +425,13 @@
             }
         }
         &:disabled {
-            pointer-events: none;
+            cursor: not-allowed;
             background-color: #1e1e1e;
             svg path {
                 fill: #555;
+            }
+            &:hover svg {
+                transform: none;
             }
         }
         svg {

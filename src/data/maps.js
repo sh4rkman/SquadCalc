@@ -340,7 +340,6 @@ export const MAPS = [
         name: "Hrodna_Border", 
         mapURL: "/img/maps/MODS/SPM/hrodna/", 
         radiusExclusion: FOBEXCLUSIONS.medium,
-        singleLayer: true,
         mod: "SuperMod",
         SDK_data: {
             minimap: {
@@ -354,7 +353,6 @@ export const MAPS = [
         name: "Chornivsk", 
         mapURL: "/img/maps/MODS/SPM/chornivsk/", 
         radiusExclusion: FOBEXCLUSIONS.medium,
-        singleLayer: true,
         mod: "SuperMod",
         SDK_data: {
             minimap: {

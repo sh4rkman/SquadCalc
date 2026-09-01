@@ -138,6 +138,15 @@ export const squadMinimap = Map.extend({
         this.grid = new squadGrid(this, {opacity: App.userSettings.gridOpacity}).addTo(this.layerGroup);
         this.grid.setBounds([[0,0], [-this.pixelSize, this.pixelSize]]);
 
+        // Some maps only ship a basemap - disable the other layer buttons
+        // and fall back to basemap visually (URL type param is left untouched)
+        const singleLayer = this.activeMap.singleLayer === true;
+        $(".btn-topomap, .btn-terrainmap").prop("disabled", singleLayer);
+        if (singleLayer) {
+            $("#mapLayerMenu .layers").removeClass("active");
+            $(".btn-basemap").addClass("active");
+        }
+
         // load map
         this.changeLayer(true);
     },
@@ -147,7 +156,7 @@ export const squadMinimap = Map.extend({
      * remove existing layer and replace it
      */
     changeLayer: function(changemap = false) {
-        const LAYERMODE = $("#mapLayerMenu .active").attr("value");
+        const LAYERMODE = this.activeMap.singleLayer ? "basemap" : $("#mapLayerMenu .active").attr("value");
         const OLDLAYER = this.activeLayer;
 
         // Show spinner
