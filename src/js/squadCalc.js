@@ -709,27 +709,13 @@ export default class SquadCalc {
         const container = $("#modsPanelContainer");
         container.empty();
 
-        const statsHtml = (layers, weapons, maps) => `
-            <span class="modTileStats">
-                <span>${i18next.t("settings:modLayersCount", { count: layers, defaultValue: `${layers} Layers` })}</span>
-                <span class="modTileStatsSeparator">•</span>
-                <span>${i18next.t("settings:modWeaponsCount", { count: weapons, defaultValue: `${weapons} Weapons` })}</span>
-                <span class="modTileStatsSeparator">•</span>
-                <span>${i18next.t("settings:modMapsCount", { count: maps, defaultValue: `${maps} Maps` })}</span>
-            </span>
-        `;
-
-        const vanillaLabel = i18next.t("settings:vanilla", { defaultValue: "Squad (Base Game)" });
-        const vanillaWeapons = WEAPONS.filter(w => !w.mod).length;
-        const vanillaLayers = this.layerCounts?.vanilla ?? 0;
-        const vanillaMaps = MAPS.filter(m => !m.mod).length;
-        container.append(`
-            <button type="button" class="modToggleTile active locked">
-                <img class="modTileLogo" src="/img/mods/vanilla.webp" alt="" onerror="this.style.display='none'">
-                <span class="modTileName" data-i18n="settings:vanilla">${vanillaLabel}</span>
-                ${statsHtml(vanillaLayers, vanillaWeapons, vanillaMaps)}
-            </button>
-        `);
+        const statsHtml = (layers, weapons, maps) => {
+            const parts = [];
+            if (layers > 0) parts.push(`<span>${i18next.t("settings:modLayersCount", { count: layers, defaultValue: `${layers} Layers` })}</span>`);
+            if (weapons > 0) parts.push(`<span>${i18next.t("settings:modWeaponsCount", { count: weapons, defaultValue: `${weapons} Weapons` })}</span>`);
+            if (maps > 0) parts.push(`<span>${i18next.t("settings:modMapsCount", { count: maps, defaultValue: `${maps} Maps` })}</span>`);
+            return `<span class="modTileStats">${parts.join(`<span class="modTileStatsSeparator">•</span>`)}</span>`;
+        };
 
         mods.forEach((modKey) => {
             const active = this.userSettings.isModEnabled(modKey) ? "active" : "";
