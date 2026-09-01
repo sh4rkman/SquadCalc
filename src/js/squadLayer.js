@@ -921,27 +921,26 @@ export default class SquadLayer {
                 this.countFromEnd = flag === this._mainForNode(this.solver.end);
                 this._renderFromSolver();
             }
-        } else {
-            const pinnedAt = this.confirmedStep.get(flag);
-
-            if (pinnedAt == null) {
-                const step = this._stepForClick(flag);
-                if (step == null) {
-                    console.debug(`[LAYER] ${flag.name} cannot be confirmed right now, ignoring`);
-                    return false;
-                }
-                this.selectedFlags.push(flag);
-                this.confirmedStep.set(flag, step);
-            } else if (App.userSettings.freePointSelection) {
-                // Clicking a confirmed point removes it.
-                this._release(flag);
-            } else {
-                // Ordered mode walks back down the chain: releasing a point also releases
-                // everything confirmed after it.
-                this.selectedFlags
-                    .filter((other) => (this.confirmedStep.get(other) ?? 0) >= pinnedAt)
-                    .forEach((other) => this._release(other));
+        } else if (!this.selectedFlags.includes(flag)) {
+            const confirmation = this._confirmationFor(flag);
+            if (!confirmation) {
+                console.debug(`[LAYER] ${flag.name} cannot be confirmed right now, ignoring`);
+                return false;
             }
+            this.selectedFlags.push(flag);
+            this.confirmedStep.set(flag, confirmation.step);
+            this._renderFromSolver();
+        } else if (App.userSettings.freePointSelection) {
+            // Clicking a confirmed point removes it.
+            this._release(flag);
+            this._renderFromSolver();
+        } else {
+            // Ordered mode walks back down the chain: releasing a point also releases
+            // everything confirmed after it.
+            const pinnedAt = this.confirmedStep.get(flag);
+            this.selectedFlags
+                .filter((other) => (this.confirmedStep.get(other) ?? 0) >= pinnedAt)
+                .forEach((other) => this._release(other));
             this._renderFromSolver();
         }
 
@@ -987,18 +986,23 @@ export default class SquadLayer {
 
 
     /**
-     * Depth a click would confirm this flag at, or null if it cannot be confirmed now.
+     * What a click would confirm about this flag, or null if it cannot be confirmed now.
      *
-     * Ordered mode, the default, only accepts the next point in the chain. With free
-     * selection on, any still-possible point can be confirmed at the shallowest depth it
-     * can occupy. Confirming the points before it pins it deeper.
+     * A point that could still sit at the next open depth is pinned there, which is the
+     * user saying "this is my next point". A point further along is confirmed without a
+     * depth: all it says is that the point is on the route. Pinning it to its shallowest
+     * depth would silently discard the routes carrying it deeper, and those are often the
+     * majority. Its depth resolves once the points before it are confirmed.
+     *
+     * Ordered mode only accepts the next point, so it never confirms without a depth.
      * @param {SquadObjective} flag
-     * @returns {?number}
+     * @returns {?{step: ?number}}
      */
-    _stepForClick(flag) {
+    _confirmationFor(flag) {
         const options = this._stepOptionsFor(flag);
-        if (App.userSettings.freePointSelection) return options[0] ?? null;
-        return options.includes(this.nextStep) ? this.nextStep : null;
+        if (!options.length) return null;
+        if (options.includes(this.nextStep)) return { step: this.nextStep };
+        return App.userSettings.freePointSelection ? { step: null } : null;
     }
 
 
@@ -1028,9 +1032,9 @@ export default class SquadLayer {
 
         if (previewFlag) {
             // Preview what clicking would do, including the depth it would pin.
-            const step = this._stepForClick(previewFlag);
-            if (step == null) return;
-            constraints.push({ ids: previewFlag.candidateIds, step });
+            const confirmation = this._confirmationFor(previewFlag);
+            if (!confirmation) return;
+            constraints.push({ ids: previewFlag.candidateIds, step: confirmation.step });
         }
 
         const result = this.solver.solve(constraints, this.countFromEnd);
@@ -1039,10 +1043,11 @@ export default class SquadLayer {
         this.solverResult = result;
 
         // Shallowest step not yet pinned. Flags that can fill it are marked "next".
-        const confirmedSteps = new Set();
-        this.selectedFlags.forEach((flag) => flag.solverSteps().forEach((step) => confirmedSteps.add(step)));
+        // Confirmations without a depth do not take a slot, since which one they fill
+        // is still open.
+        const pinned = new Set([...this.confirmedStep.values()].filter((step) => step != null));
         let nextStep = 1;
-        while (confirmedSteps.has(nextStep)) nextStep++;
+        while (pinned.has(nextStep)) nextStep++;
         this.nextStep = nextStep;
 
         this.flags.forEach((flag) => flag.applySolverResult(previewFlag !== null));
@@ -1078,9 +1083,11 @@ export default class SquadLayer {
         this.pathLines.forEach((line) => line.removeFrom(this.activeLayerMarkers).remove());
         this.pathLines = [];
 
+        // A confirmed point whose depth is still open has no place in the chain yet.
         const points = this.selectedFlags
-            .map((flag) => ({ step: flag.solverSteps()[0], latlng: flag.latlng }))
-            .filter((point) => point.step != null)
+            .map((flag) => ({ steps: flag.solverSteps(), latlng: flag.latlng }))
+            .filter((point) => point.steps.length === 1)
+            .map((point) => ({ step: point.steps[0], latlng: point.latlng }))
             .sort((a, b) => a.step - b.step);
 
         // The mains bracket the chain. The one the numbering counts from sits one step
