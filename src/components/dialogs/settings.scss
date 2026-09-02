@@ -226,9 +226,14 @@
                 opacity: 0.3;
                 filter: grayscale(1);
             }
-            &:hover {
-                opacity: 1;
-                filter: none;
+            &:focus {
+                outline: none;
+            }
+            @media (hover: hover) {
+                &:hover {
+                    opacity: 1;
+                    filter: none;
+                }
             }
         }
     }
@@ -419,7 +424,7 @@ $bezier: cubic-bezier(0.65, 0.25, 0.56, 0.96);
     display: flex;
     flex-direction: column;
     gap: 0.95em;
-    padding: 0.4em 1.5em 0.2em 0;
+    padding: 0.4em 1.5em 0.2em;
     .modToggleTile {
         display: flex;
         flex-direction: column;

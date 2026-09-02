@@ -104,6 +104,33 @@
     #commanderAssets .commanderAssets img {
         height: 35px;
     }
+    dialog#layerInformation {
+        .layerThumbnail {
+            width: 170px;
+        }
+        .layerCommandRow {
+            input {
+                padding: 0.6em 2.8em 0.6em 0.7em;
+            }
+            .layerCommandCopyBtn {
+                width: 2.4em;
+                height: 2.4em;
+            }
+        }
+    }
+    #modsPanelContainer {
+        gap: 0.7em;
+        .modToggleTile {
+            min-height: 6em;
+            padding: 1.1em 1.3em;
+            .modTileLogo {
+                width: 6em;
+            }
+            .modTileName {
+                padding-right: 5.7em;
+            }
+        }
+    }
     #characteristics .characteristics img {
         height: 30px;
     }
@@ -347,6 +374,16 @@
     }
 }
 
+
+/* < 992px: layerInformation's two tables wrap into a vertical stack instead of
+   sitting side by side, so kill the bottom margin between them. Horizontal
+   side margins are untouched, and the >= 992px side-by-side layout below
+   still sets its own margin. */
+@media screen and (width < 62em) {
+    dialog#layerInformation table:first-of-type {
+        margin-bottom: 0;
+    }
+}
 
 /* ≥ 992px */
 

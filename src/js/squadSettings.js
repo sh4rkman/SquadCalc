@@ -740,7 +740,6 @@ export default class SquadSettings {
             const newVal = !btn.hasClass("active");
             btn.toggleClass("active", newVal);
             localStorage.setItem(key, newVal ? 1 : 0);
-            animateCSS(btn, "headShake");
 
             if (newVal) {
                 this._restoreButtons(def);

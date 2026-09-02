@@ -695,16 +695,11 @@ export default class SquadCalc {
     /**
      * Populate #modsPanelContainer with one toggle tile per mod
      */
-    static MOD_TILE_ORDER = ["SuperMod", "SteelDivision"];
-
     _renderModTiles() {
         const mods = this._getUniqueMods().sort((a, b) => {
-            const ai = SquadCalc.MOD_TILE_ORDER.indexOf(a);
-            const bi = SquadCalc.MOD_TILE_ORDER.indexOf(b);
-            if (ai === -1 && bi === -1) return 0;
-            if (ai === -1) return 1;
-            if (bi === -1) return -1;
-            return ai - bi;
+            const labelA = i18next.t(`settings:${a}`, { defaultValue: a });
+            const labelB = i18next.t(`settings:${b}`, { defaultValue: b });
+            return labelA.localeCompare(labelB);
         });
         const container = $("#modsPanelContainer");
         container.empty();
