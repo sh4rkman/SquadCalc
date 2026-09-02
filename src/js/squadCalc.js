@@ -738,7 +738,6 @@ export default class SquadCalc {
             const enabled = !tile.hasClass("active");
             tile.toggleClass("active", enabled);
             this.userSettings.setModEnabled(modKey, enabled);
-            animateCSS(tile, "headShake");
             this._rebuildModdedWeapons();
             const mapWasReset = this._rebuildMapSelector();
             if (!mapWasReset && this.minimap.activeMap) this.loadLayers();
