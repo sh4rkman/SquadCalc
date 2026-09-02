@@ -1,5 +1,6 @@
 {
     "basemode": "Base Map",
+    "hdUnavailable": "HD version of this map isn't available",
     "terrainmode": "Terrain Map",
     "topographicmode": "Topographic Map",
     "helpmode": "Show frequent weapon locations",

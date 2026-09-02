@@ -142,9 +142,15 @@ export const squadMinimap = Map.extend({
         // and fall back to basemap visually (URL type param is left untouched)
         const singleLayer = this.activeMap.singleLayer === true;
         $(".btn-topomap, .btn-terrainmap").prop("disabled", singleLayer);
+        // .btn-hd stays a real (non-disabled) button so its tippy tooltip
+        // can still show on hover/touch to explain why it's locked
+        $(".btn-hd").toggleClass("locked", singleLayer);
         if (singleLayer) {
             $("#mapLayerMenu .layers").removeClass("active");
             $(".btn-basemap").addClass("active");
+            $(".btn-hd").removeClass("active");
+        } else {
+            $(".btn-hd").toggleClass("active", App.userSettings.highQualityImages);
         }
 
         // load map
@@ -163,8 +169,9 @@ export const squadMinimap = Map.extend({
         this.spin(true, this.spinOptions);
 
         let imagePath = `${this.activeMap.mapURL}${LAYERMODE}`;
+        const useHQ = App.userSettings.highQualityImages && !this.activeMap.singleLayer;
 
-        if (App.userSettings.highQualityImages) {
+        if (useHQ) {
             // Use TileLayer for high-quality images
             let tilePath = `${process.env.API_URL}${imagePath}_hq/{z}_{x}_{y}.webp`;
             this.activeLayer = new TileLayer(tilePath, {
@@ -185,7 +192,7 @@ export const squadMinimap = Map.extend({
     
 
         this.activeLayer.once("load", () => {
-            if (App.userSettings.highQualityImages) {
+            if (useHQ) {
                 if (OLDLAYER) OLDLAYER.remove();
                 this.spin(false);
             }

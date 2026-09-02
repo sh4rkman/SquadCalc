@@ -424,7 +424,7 @@
                 fill: white;
             }
         }
-        &:disabled {
+        &:disabled, &.locked {
             cursor: not-allowed;
             background-color: #1e1e1e;
             svg path {

@@ -1108,6 +1108,7 @@ export default class SquadCalc {
         });
 
         $("#mapLayerMenu").find("button.btn-hd").on("click", () => {
+            if ($(".btn-hd").hasClass("locked")) return;
             const VAL = !$(".btn-hd").hasClass("active");
             $(".btn-hd").toggleClass("active");
             this.userSettings.highQualityImages = VAL;

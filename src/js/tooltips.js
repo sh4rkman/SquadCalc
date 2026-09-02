@@ -278,7 +278,8 @@ tippy(".btn-hd", {
     ...commonMapMenuToolipsSettings,
     placement: "left",
     onShow(tip) {
-        tip.setContent(i18next.t("settings:highquality"));
+        const locked = tip.reference.classList.contains("locked");
+        tip.setContent(i18next.t(locked ? "tooltips:hdUnavailable" : "settings:highquality"));
     },
 });
 tippy(".btn-layer-info", {

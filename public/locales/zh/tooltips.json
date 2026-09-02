@@ -1,5 +1,6 @@
 {
     "basemode": "基础地图",
+    "hdUnavailable": "该地图没有高清版本",
     "terrainmode": "地势图",
     "topographicmode": "地形图",
     "helpmode": "显示大家都在用的武器位置",

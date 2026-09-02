@@ -1,5 +1,6 @@
 {
     "basemode": "Carte de base",
+    "hdUnavailable": "La version HD de cette carte n'est pas disponible",
     "terrainmode": "Carte de reliefs",
     "topographicmode": "Carte topographique",
     "helpmode": "Emplacements d'arme fréquemment utilisés",
