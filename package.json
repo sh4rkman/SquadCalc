@@ -52,7 +52,7 @@
     "leaflet": "^2.0.0-alpha.1",
     "mini-css-extract-plugin": "^2.9.2",
     "path": "^0.12.7",
-    "postcss": ">=8.4.49",
+    "postcss": ">=8.5.26",
     "purecss": "^3.0.0",
     "robotstxt-webpack-plugin": "^8.0.0",
     "sass": "^1.83.0",
