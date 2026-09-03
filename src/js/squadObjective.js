@@ -22,6 +22,11 @@ export class SquadObjective {
         this.layer = layer;
         this.latlng = latlng;
         this.clusters = [];
+
+        // Every candidate slot this flag occupies, by point objectName. The randomizer can
+        // offer the same capture zone on several routes and at several depths. objectName is
+        // unique per layer, name is not, so the solver identifies points by it.
+        this.candidateIds = [];
         this.capZones = new LayerGroup();
         this.isMain = isMain;
         this.isHidden = false;
@@ -62,7 +67,7 @@ export class SquadObjective {
         });
 
         this.flag = new Marker(latlng, {icon : tempIcon}).addTo(this.layerGroup);
-        this.addCluster(cluster);
+        this.addCluster(cluster, objCluster);
         this.updateMainIcon();
 
         this.flag.on("click", this._handleClick, this);
@@ -122,7 +127,6 @@ export class SquadObjective {
 
 
     select(){
-        let position;
         let html = "";
         let className = "flag selected";
         this.isNext = false;
@@ -133,9 +137,8 @@ export class SquadObjective {
         if (this.isMain) {
             className += " main";
         } else {
-            position = Math.abs(this.layer.startPosition - this.position);
-            const positions = this._reachableAlternatePositions().map(p => Math.abs(this.layer.startPosition - p)).sort((a, b) => a - b);
-            html = positions.length > 1 ? positions.join("·") : position;
+            const positions = this.solverSteps();
+            html = positions.length > 1 ? positions.join("·") : (positions[0] ?? "");
             if (positions.length > 1) className += positions.length > 2 ? " multiPos multiPosMany" : " multiPos";
         }
 
@@ -312,30 +315,25 @@ export class SquadObjective {
 
     unselect(){
         let html = "";
-        let position = Math.abs(this.layer.startPosition - this.position);
         let className = "flag";
+        const positions = this.layer.isRandomized ? this.solverSteps() : [];
 
         if (App.userSettings.circlesFlags) className += " circleFlag";
 
         if (this.isMain) {
-            if (this.layer.gamemode === "RAAS" || this.layer.gamemode === "RVAAS"){
-                className += " main selectable";
-            } else {
-                className += " main unselectable";
-            }
+            className += this.layer.isRandomized ? " main selectable" : " main unselectable";
         } else {
-            if (this.layer.isRandomized){
-                const positions = this._reachableAlternatePositions().map(p => Math.abs(this.layer.startPosition - p)).sort((a, b) => a - b);
-                html = positions.length > 1 ? positions.join("·") : position;
-                className += " flag" + position;
+            if (this.layer.isRandomized && positions.length){
+                html = positions.length > 1 ? positions.join("·") : positions[0];
+                className += " flag" + positions[0];
                 if (positions.length > 1) className += positions.length > 2 ? " multiPos multiPosMany" : " multiPos";
             }
         }
 
-        if (Math.abs(this.layer.startPosition - this.position) === this.layer.currentPosition){
-            if (this.layer.isRandomized){
-                className += " next";
-            }
+        // "Next" is the shallowest depth still unconfirmed.
+        if (this.layer.isRandomized && positions.includes(this.layer.nextStep)){
+            className += " next";
+            this.isNext = true;
         } else this.isNext = false;
 
         this.flag.removeFrom(this.layerGroup).remove();
@@ -354,88 +352,126 @@ export class SquadObjective {
 
     
     /**
-     * Find every cluster (lane) that has a point at this flag's physical
-     * location - the RAAS randomizer can offer the same real-world capture zone
-     * as a candidate at more than one lane depth. Matching by name alone is
-     * wrong: maps can reuse a generic label (e.g. "Forest") for entirely
-     * unrelated spots that just happen to be named the same. A small tolerance
-     * absorbs float rounding between the two copies of the same point (e.g.
-     * -232245.875 vs -232245.890625).
-     * @returns {object[]} clusters with a matching point
+     * Attach one more cluster (lane slot) that offers this same physical point.
+     * @param {object} cluster - the capture-zone cluster
+     * @param {object} [point] - the candidate inside that cluster. Its objectName identifies the slot.
      */
-    _alternateClusters() {
-        const { location_x, location_y } = this.objCluster;
-        const tolerance = 1;
-        return Object.values(this.layer.objectives).filter(
-            (c) => c.points && c.points.some((p) =>
-                Math.abs(p.location_x - location_x) < tolerance && Math.abs(p.location_y - location_y) < tolerance
-            )
-        );
-    }
-
-
-    /**
-     * Distinct pointPositions where this flag's name still has a reachable
-     * alternate - dropped once its own cluster (lane) is no longer part of
-     * the layer's live reachable-clusters set (branch eliminated, or the
-     * step itself already passed).
-     * @returns {number[]} sorted distinct reachable pointPositions
-     */
-    _reachableAlternatePositions() {
-        const reachable = this.layer.selectedReachableClusters.at(-1);
-        // A cluster can hold several mutually-exclusive names in the same slot
-        // (e.g. "Pipeline" or "Paseka" both live in the same cluster) - once a
-        // flag has actually been clicked, its own cluster(s) are locked to that
-        // outcome and no longer count as an alternate for any other name.
-        const consumedClusters = new Set(this.layer.selectedFlags.flatMap((f) => f.clusters));
-        return [...new Set(
-            this._alternateClusters()
-                .filter((c) => !reachable || reachable.has(c.name))
-                .filter((c) => !consumedClusters.has(c))
-                .map((c) => c.pointPosition)
-        )].sort((a, b) => a - b);
-    }
-
-
-    addCluster(cluster){
+    addCluster(cluster, point){
         this.clusters.push(cluster);
+        if (point?.objectName && !this.candidateIds.includes(point.objectName)) {
+            this.candidateIds.push(point.objectName);
+        }
         this.updatePosition();
     }
 
 
+    /**
+     * This flag's state in the layer's latest solve.
+     * @returns {{steps: number[], probability: number}} depths where it is still possible
+     *          (1 = first point after the main), and the chance it is on the route
+     */
+    solverInfo(){
+        const result = this.layer.solverResult;
+        const steps = new Set();
+        let probability = 0;
+
+        if (result) {
+            this.candidateIds.forEach((id) => {
+                const entry = result.byId.get(id);
+                if (!entry) return;
+                entry.steps.forEach((step) => steps.add(step));
+                probability += entry.probability;
+            });
+        }
+
+        return { steps: [...steps].sort((a, b) => a - b), probability };
+    }
+
+
+    /**
+     * Depths where this flag is still possible.
+     * @returns {number[]}
+     */
+    solverSteps(){
+        return this.solverInfo().steps;
+    }
+
+
+    /**
+     * Repaint this flag from the layer's latest solve: hidden when no longer possible,
+     * selected when confirmed, otherwise numbered with its remaining depths.
+     * @param {boolean} preview - hover preview, so fade instead of rebuilding
+     */
+    applySolverResult(preview = false){
+
+        if (this.isMain) {
+            // Mains carry no candidates. They only show which side the depths count from.
+            if (preview) return;
+            if (this === this.layer.perspectiveMain) this.select();
+            else this.unselect();
+            return;
+        }
+
+        const { steps, probability } = this.solverInfo();
+
+        if (preview) {
+            if (steps.length) { if (this.isFadeOut) this._fadeIn(); }
+            else this._fadeOut();
+            return;
+        }
+
+        if (!steps.length) {
+            if (!this.isHidden) this.hide();
+            return;
+        }
+
+        if (this.isHidden) this.show();
+
+        if (this.layer.selectedFlags.includes(this)) {
+            this.select();
+            return;
+        }
+
+        this.unselect();
+
+        // Shown for every still-possible point, not only the next one. A point that has
+        // become certain shows 100%.
+        if (App.userSettings.showNextFlagsPercentages) {
+            this.percentage = probability * 100;
+            this.showPercentage();
+        }
+    }
+
+
+    /**
+     * Refresh this flag's icon. The depth label comes from the solver, which does not
+     * exist yet during construction, so the flag starts unnumbered and the layer paints
+     * it after init().
+     */
     updatePosition() {
 
-        let lowestPossiblePosition;
         let className = "flag";
         let html = "";
+        const positions = this.layer.isRandomized ? this.solverSteps() : [];
 
-        if (this.layer.reversed) {
-            lowestPossiblePosition = this.clusters.reduce((max, item) => {
-                return item.pointPosition - 1 > max ? item.pointPosition : max;
-            }, this.clusters[0].pointPosition);
-        } else {
-            lowestPossiblePosition = this.clusters.reduce((min, item) => {
-                return item.pointPosition < min ? item.pointPosition : min;
-            }, this.clusters[0].pointPosition);
-        }
-        
-        this.position = lowestPossiblePosition;
-    
+        // Shallowest remaining depth, or the raw cluster data before the first solve.
+        // Only used for the colour class.
+        this.position = positions[0] ?? this.clusters.reduce(
+            (min, item) => (item.pointPosition != null && item.pointPosition < min ? item.pointPosition : min),
+            Infinity
+        );
+        if (!Number.isFinite(this.position)) this.position = 0;
+
         if (App.userSettings.circlesFlags){
             className += " circleFlag";
         }
 
-        if (this.isMain) { 
-            if (this.layer.gamemode === "RAAS" || this.layer.gamemode === "RVAAS") className += " main selectable";
-            else className += " main unselectable";
-        } else {
-            // if RAAS/Invasion, add the flag number and a colored icon
-            if (this.layer.isRandomized) {
-                className += " flag" + this.position;
-                const positions = this._reachableAlternatePositions();
-                html = positions.length > 1 ? positions.join("·") : this.position;
-                if (positions.length > 1) className += positions.length > 2 ? " multiPos multiPosMany" : " multiPos";
-            }
+        if (this.isMain) {
+            className += this.layer.isRandomized ? " main selectable" : " main unselectable";
+        } else if (this.layer.isRandomized && positions.length) {
+            className += " flag" + positions[0];
+            html = positions.length > 1 ? positions.join("·") : positions[0];
+            if (positions.length > 1) className += positions.length > 2 ? " multiPos multiPosMany" : " multiPos";
         }
 
         // Refresh the flag icon
@@ -446,6 +482,7 @@ export class SquadObjective {
             iconAnchor: [22, 11]
         }));
     }
+
 
     _handleClick(){
         clearTimeout(this.mouseOverTimeout);
@@ -473,9 +510,11 @@ export class SquadObjective {
 
         // On RAAS/Invasion, preview the lane on hover
         if (this.layer.isRandomized) {
-            if (this.isNext && App.userSettings.revealLayerOnHover) {
+            // In ordered mode only the next point can be clicked, so preview only that one.
+            const clickable = App.userSettings.freePointSelection || this.isNext;
+            if (clickable && !this.isSelected && !this.isHidden && App.userSettings.revealLayerOnHover) {
                 this.mouseOverTimeout = setTimeout(() => {
-                    this.layer.render(this, true);
+                    this.layer._renderFromSolver(this);
                 }, 250);
             }
         }
