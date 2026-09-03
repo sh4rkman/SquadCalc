@@ -51,7 +51,7 @@
         "hideLowRespawn": "Only Track High Respawn Times Vehicles",
         "disableSounds": "Disable Respawn Notification Sounds",
         "minimizeFactionBar": "Minimize Faction Bar by Default",
-    "modsOptions": "Mods Options",
+    "modsOptions": "Available Mods",
         "modLayersCount": "{{count}} Layers",
         "modWeaponsCount": "{{count}} Weapons",
         "modMapsCount": "{{count}} Maps",
