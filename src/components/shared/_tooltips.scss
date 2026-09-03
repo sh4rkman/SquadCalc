@@ -97,6 +97,86 @@
         border-radius: 8px;
         padding: 8px;
     }
+    &[data-theme~='laneInfo'] {
+        background: rgba(30, 30, 30, 0.7);
+        backdrop-filter: blur(6px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+        border-radius: 8px;
+        text-align: left;
+        .tippy-content {
+            padding: 0;
+        }
+        &[data-placement^='top']>.tippy-arrow::before {
+            display: none;
+        }
+        &[data-placement^='bottom']>.tippy-arrow::before {
+            display: none;
+        }
+        &[data-placement^='left']>.tippy-arrow::before {
+            border-left-color: rgba(30, 30, 30, 0.7);
+        }
+        &[data-placement^='right']>.tippy-arrow::before {
+            border-right-color: rgba(30, 30, 30, 0.7);
+        }
+        .laneTooltipCard {
+            padding: 10px 14px;
+            min-width: 140px;
+        }
+        .laneTooltipTitle {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding-bottom: 6px;
+            margin-bottom: 6px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        .laneTooltipName {
+            font-size: 1em;
+            font-weight: bold;
+            letter-spacing: 0.02em;
+            text-transform: uppercase;
+            color: variables.$mainTxtColor;
+        }
+        .laneTooltipTotal {
+            flex-shrink: 0;
+            font-size: 0.8em;
+            font-weight: bold;
+            color: variables.$mainTxtColor;
+            background: variables.$mainColor;
+            border-radius: 10px;
+            padding: 1px 8px;
+        }
+        .laneTooltipBody {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .laneTooltipStep {
+            font-size: 0.9em;
+            line-height: 1.35em;
+            white-space: nowrap;
+            color: rgb(210, 210, 210);
+            display: flex;
+            justify-content: space-between;
+            gap: 14px;
+            span {
+                color: #ffd479;
+                font-weight: bold;
+            }
+        }
+        .laneTooltipLanes {
+            margin-top: 6px;
+            padding-top: 6px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            font-size: 0.8em;
+            color: rgb(200, 200, 200);
+            white-space: nowrap;
+            span {
+                font-weight: bold;
+            }
+        }
+    }
     &[data-theme~='settingsTooltips'] {
         margin-top: 2px;
         font-size: 0.9em;

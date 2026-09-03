@@ -104,6 +104,7 @@ export default class SquadLayer {
         // Randomized layers are resolved from their route space instead of walked step by
         // step, so the solver has to exist before the flags are drawn.
         if (this.isRandomized) this.solver = new SquadLaneSolver(layerData);
+        if (this.solver?.ok) this._buildLaneLines();
 
         this.init();
 
@@ -343,6 +344,50 @@ export default class SquadLayer {
     getLaneColor(laneName, i) {
         const colors = ["red", "blue", "green", "purple", "white", "yellow", "orange"];
         return colors[i % colors.length]; // cycle through colors
+    }
+
+
+    /**
+     * Draw every lane (main to main, through each of its clusters' avgLocation) as
+     * a hidden polyline, indexed like this.solver.routes so a flag's `lanes` (from
+     * SquadObjective.solverInfo()) map straight to this.lanePolylines[index].
+     */
+    _buildLaneLines() {
+        const coordOf = (objective) => {
+            const loc = objective.avgLocation ?? objective;
+            return this.convertToLatLng(loc.location_x, loc.location_y);
+        };
+
+        this.lanePolylines = this.solver.routes.map((route, i) => {
+            const latlngs = [
+                this.objectives[this.solver.start],
+                ...route.map((step) => this.objectives[step.cluster]),
+                this.objectives[this.solver.end],
+            ].map(coordOf);
+
+            return new Polyline(latlngs, {
+                color: this.getLaneColor(SquadLaneSolver.laneLabel(i), i),
+                weight: 10,
+                opacity: 0,
+                interactive: false,
+                className: "laneLine",
+            }).addTo(this.activeLayerMarkers);
+        });
+    }
+
+
+    /**
+     * Reveal only the given lanes (by route index), hide the rest.
+     * @param {number[]} indices
+     */
+    showLanes(indices) {
+        this.lanePolylines?.forEach((line, i) => line.setStyle({ opacity: indices.includes(i) ? 0.45 : 0 }));
+    }
+
+
+    /** Hide every lane. */
+    hideLanes() {
+        this.lanePolylines?.forEach((line) => line.setStyle({ opacity: 0 }));
     }
 
 
@@ -1040,6 +1085,10 @@ export default class SquadLayer {
         const result = this.solver.solve(constraints, this.countFromEnd);
         if (previewFlag && !result.alive) return;
 
+        // Preview reuses solverResult as the channel applySolverResult() reads from, but
+        // must not leave the board's real solve state contaminated once the hover ends -
+        // nothing else re-solves on mouseout to fix it back up.
+        const previousResult = this.solverResult;
         this.solverResult = result;
 
         // Shallowest step not yet pinned. Flags that can fill it are marked "next".
@@ -1053,6 +1102,7 @@ export default class SquadLayer {
         this.flags.forEach((flag) => flag.applySolverResult(previewFlag !== null));
 
         if (previewFlag === null) this._drawPath();
+        else this.solverResult = previousResult;
     }
 
 

@@ -1,8 +1,10 @@
 import { DivIcon, Marker, Circle, LayerGroup, Rectangle } from "leaflet";
 import { App } from "../app.js";
 import i18next from "i18next";
+import tippy from "tippy.js";
 import "tippy.js/dist/tippy.css";
 import { FactionCtxMenu } from "./squadFactionCtxMenu.js";
+import SquadLaneSolver from "./squadLaneSolver.js";
 
 // Modded factionIDs are prefixed with the mod key (e.g. "SU_RGF", "WZ_RGF"), but
 // faction translations are shared with vanilla ("RGF") - strip the prefix for
@@ -79,19 +81,76 @@ export class SquadObjective {
 
 
     showPercentage() {
+        const html = Math.round(this.percentage) + "%";
+
         this.percentageText = new Marker(this.latlng, {
             interactive: false,
             keyboard: false,
             icon: new DivIcon({
                 className: "objText",
                 keyboard: false,
-                html: Math.round(this.percentage) + "%",
+                html,
                 iconSize: [300, 20],
                 iconAnchor: App.userSettings.circlesFlags ? [150, -18] : [150, -12],
                 shadowUrl: "../img/icons/markers/weapons/marker_shadow.webp",
                 shadowSize: [0, 0],
             })
         }).addTo(this.layerGroup);
+    }
+
+
+    /**
+     * Per-depth breakdown tooltip on the flag icon, for every objective that has
+     * a solved percentage (even a single-depth one, to spell out its one step).
+     */
+    _showPercentageTooltip() {
+        if (!this.percentageBreakdown?.length) return;
+
+        const el = this.flag.getElement();
+        // Don't clobber a tippy owned by something else on this element (e.g. the
+        // faction context menu on a main flag).
+        if (!el || (el._tippy && el._tippy !== this.percentageTippy)) return;
+        if (el._tippy) el._tippy.destroy();
+
+        const rows = this.percentageBreakdown
+            .map(({ step, value }) => `<div class="laneTooltipStep">As flag #${step}<span>${Math.round(value)}%</span></div>`)
+            .join("");
+
+        // Only lanes still alive in the current solve carry this flag - eliminated
+        // lanes never contributed to byId in the first place, so this.lanes is
+        // already the "remaining" set.
+        const laneLine = this.lanes?.length
+            ? `<div class="laneTooltipLanes">Lane${this.lanes.length > 1 ? "s" : ""}: ${this.lanes
+                .map((l) => `<span style="color:${this.layer.getLaneColor(SquadLaneSolver.laneLabel(l), l)}">${SquadLaneSolver.laneLabel(l)}</span>`)
+                .join(", ")}</div>`
+            : "";
+
+        const html = `
+            <div class="laneTooltipCard">
+                <div class="laneTooltipTitle">
+                    <span class="laneTooltipName">${this.name}</span>
+                    <span class="laneTooltipTotal">${Math.round(this.percentage)}%</span>
+                </div>
+                <div class="laneTooltipBody">${rows}</div>
+                ${laneLine}
+            </div>
+        `;
+
+        this.percentageTippy = tippy(el, {
+            content: html,
+            allowHTML: true,
+            placement: "right",
+            theme: "laneInfo",
+            animation: "fade",
+            delay: [200, 0],
+        });
+        this.percentageTippy.show();
+    }
+
+    _hidePercentageTooltip() {
+        const el = this.flag.getElement();
+        if (el?._tippy && el._tippy === this.percentageTippy) el._tippy.destroy();
+        this.percentageTippy = null;
     }
 
     update(){
@@ -336,6 +395,12 @@ export class SquadObjective {
             this.isNext = true;
         } else this.isNext = false;
 
+        // Free point selection lets any still-possible flag be clicked, not only
+        // the next one - matches _confirmationFor()'s own eligibility check.
+        if (!this.isMain && positions.length && !this.isNext && App.userSettings.freePointSelection) {
+            className += " clickable";
+        }
+
         this.flag.removeFrom(this.layerGroup).remove();
         this.updateMarker(className, html);
 
@@ -367,12 +432,15 @@ export class SquadObjective {
 
     /**
      * This flag's state in the layer's latest solve.
-     * @returns {{steps: number[], probability: number}} depths where it is still possible
-     *          (1 = first point after the main), and the chance it is on the route
+     * @returns {{steps: number[], probability: number, byStep: Map<number, number>}} depths
+     *          where it is still possible (1 = first point after the main), the chance it is
+     *          on the route overall, and that same chance broken down per depth
      */
     solverInfo(){
         const result = this.layer.solverResult;
         const steps = new Set();
+        const byStep = new Map();
+        const lanes = new Set();
         let probability = 0;
 
         if (result) {
@@ -381,10 +449,12 @@ export class SquadObjective {
                 if (!entry) return;
                 entry.steps.forEach((step) => steps.add(step));
                 probability += entry.probability;
+                entry.byStep.forEach((share, step) => byStep.set(step, (byStep.get(step) || 0) + share));
+                entry.lanes.forEach((lane) => lanes.add(lane));
             });
         }
 
-        return { steps: [...steps].sort((a, b) => a - b), probability };
+        return { steps: [...steps].sort((a, b) => a - b), probability, byStep, lanes: [...lanes].sort((a, b) => a - b) };
     }
 
 
@@ -412,7 +482,7 @@ export class SquadObjective {
             return;
         }
 
-        const { steps, probability } = this.solverInfo();
+        const { steps, probability, byStep, lanes } = this.solverInfo();
 
         if (preview) {
             if (steps.length) { if (this.isFadeOut) this._fadeIn(); }
@@ -434,10 +504,15 @@ export class SquadObjective {
 
         this.unselect();
 
-        // Shown for every still-possible point, not only the next one. A point that has
-        // become certain shows 100%.
+        // Computed for every still-possible point, not only the next one, regardless of
+        // the setting below - the tooltip (hover) always needs it, the on-map label doesn't.
+        this.percentage = probability * 100;
+        this.percentageBreakdown = [...byStep.entries()]
+            .sort((a, b) => a[0] - b[0])
+            .map(([step, share]) => ({ step, value: share * 100 }));
+        this.lanes = lanes;
+
         if (App.userSettings.showNextFlagsPercentages) {
-            this.percentage = probability * 100;
             this.showPercentage();
         }
     }
@@ -486,6 +561,9 @@ export class SquadObjective {
 
     _handleClick(){
         clearTimeout(this.mouseOverTimeout);
+        clearTimeout(this.percentageHoverTimeout);
+        this._hidePercentageTooltip();
+        this.layer.hideLanes();
         if (!this.layer.isRandomized) return;
         this.layer._handleFlagClick(this);
     }
@@ -497,7 +575,12 @@ export class SquadObjective {
 
     
     _handleContextMenu(e){
-        
+
+        clearTimeout(this.mouseOverTimeout);
+        clearTimeout(this.percentageHoverTimeout);
+        this._hidePercentageTooltip();
+        this.layer.hideLanes();
+
         if (this.isMain && App.userSettings.enableFactions && process.env.DISABLE_FACTIONS != "true") {
             this.ctxMenu = new FactionCtxMenu(this.layer, this.objCluster.objectDisplayName).open(e);
             return;
@@ -515,7 +598,7 @@ export class SquadObjective {
             if (clickable && !this.isSelected && !this.isHidden && App.userSettings.revealLayerOnHover) {
                 this.mouseOverTimeout = setTimeout(() => {
                     this.layer._renderFromSolver(this);
-                }, 250);
+                }, 500);
             }
         }
 
@@ -526,11 +609,21 @@ export class SquadObjective {
             }
         }
 
+        this.percentageHoverTimeout = setTimeout(() => {
+            this._showPercentageTooltip();
+            if (!this.isMain) this.layer.showLanes(this.solverInfo().lanes);
+        }, 500);
+
     }
 
     _handleMouseOut(){
         // Cancel the timeout if the user moves the mouse out before 1 second
         clearTimeout(this.mouseOverTimeout);
+        clearTimeout(this.percentageHoverTimeout);
+
+        this._hidePercentageTooltip();
+
+        this.layer.hideLanes();
 
         if (App.userSettings.capZoneOnHover) this.hideCapZones();
 

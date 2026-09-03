@@ -125,6 +125,16 @@ export default class SquadLaneSolver {
     }
 
     /**
+     * Human-facing label for a route index (this.routes' position is stable across
+     * solves, since only _build() creates routes). A-Z, then L27, L28...
+     * @param {number} index
+     * @returns {string}
+     */
+    static laneLabel(index) {
+        return index < 26 ? String.fromCharCode(65 + index) : `L${index + 1}`;
+    }
+
+    /**
      * Resolve the layer against a set of confirmations.
      *
      * @param {{ids: string[], step: ?number}[]} constraints - one entry per confirmed flag.
@@ -134,12 +144,14 @@ export default class SquadLaneSolver {
      * @param {boolean} [fromEnd] - number the steps from the end main instead of the start
      *                              main, so depths read from the side the user plays
      * @returns {{alive: number, total: number, steps: Map<number, Map<string, number>>,
-     *            byId: Map<string, {steps: Set<number>, probability: number}>, impossible: boolean}}
+     *            byId: Map<string, {steps: Set<number>, probability: number, byStep: Map<number, number>,
+     *            lanes: Set<number>}>, impossible: boolean}}
      */
     solve(constraints = [], fromEnd = false) {
         const survivors = [];
 
-        for (const route of this.routes) {
+        for (let routeIndex = 0; routeIndex < this.routes.length; routeIndex++) {
+            const route = this.routes[routeIndex];
             const locks = new Map();      // step index -> the id that must sit there
             const hitsPerConstraint = [];
             let viable = true;
@@ -179,14 +191,14 @@ export default class SquadLaneSolver {
                 }
             }
 
-            if (viable) survivors.push({ route, locks });
+            if (viable) survivors.push({ route, locks, index: routeIndex });
         }
 
         const steps = new Map();
         const byId = new Map();
         const routeWeight = survivors.length ? 1 / survivors.length : 0;
 
-        survivors.forEach(({ route, locks }) => {
+        survivors.forEach(({ route, locks, index: laneIndex }) => {
             route.forEach((step, index) => {
                 const ids = locks.has(index) ? [locks.get(index)] : step.ids;
                 const share = routeWeight / ids.length;
@@ -198,9 +210,11 @@ export default class SquadLaneSolver {
                 ids.forEach((id) => {
                     atStep.set(id, (atStep.get(id) || 0) + share);
                     let entry = byId.get(id);
-                    if (!entry) { entry = { steps: new Set(), probability: 0 }; byId.set(id, entry); }
+                    if (!entry) { entry = { steps: new Set(), probability: 0, byStep: new Map(), lanes: new Set() }; byId.set(id, entry); }
                     entry.steps.add(stepNumber);
                     entry.probability += share;
+                    entry.byStep.set(stepNumber, (entry.byStep.get(stepNumber) || 0) + share);
+                    entry.lanes.add(laneIndex);
                 });
             });
         });

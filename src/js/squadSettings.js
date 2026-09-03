@@ -307,7 +307,7 @@ export default class SquadSettings {
                     if (this.app.minimap.layer) {
                         if (val) {
                             this.app.minimap.layer.flags.forEach(flag => {
-                                if (flag.isNext) flag.showPercentage();
+                                if (flag.percentageBreakdown?.length) flag.showPercentage();
                             });
                         } else {
                             this.app.minimap.layer.flags.forEach(flag => {

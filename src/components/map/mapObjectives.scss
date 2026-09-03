@@ -13,13 +13,20 @@ $flag-circle-opacity: 0.2;
     }
 }
 
+// Leaflet's SVG renderer sets opacity as an attribute (stroke-opacity), not inline
+// style, but it's still a transitionable CSS property.
+.laneLine {
+    transition: stroke-opacity 0.35s ease-in-out;
+}
+
 .objText {
     @include variables.light-text-outline;
     font-size: var(--font-size-objtext);
     font-family: roboto, Verdana, Geneva, Tahoma, sans-serif;
     letter-spacing: 0.02em;
-    align-content: center;
-    display: grid;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     // &.main {
     //     //text-transform: uppercase;
     //     //border: solid red 1px;
@@ -134,7 +141,7 @@ $flag-circle-opacity: 0.2;
             content: "";
         }
     }
-    &.selected, &.next, &.main {
+    &.selected, &.next, &.main, &.clickable {
         cursor: pointer;
         pointer-events: all;
         box-shadow: 0 8px 12px rgba(0, 0, 0, 0.7);
