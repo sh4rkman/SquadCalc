@@ -3,16 +3,22 @@
 SquadCalc now use a new layer extractor tool made by **yobaNGE** : **[SquadPipeline](https://github.com/yobaNGE/squad-map-data-CUE4Parse)**. This also means squadcalc has now access to layers made by modders.
 
 </br><img src="https://img.shields.io/badge/-new%20features-green">
-- SuperMod & SteelDivision layers integration. You can now enable mods from `Settings > Mods` and browse modded layers and factions. It also means you can now sync with modded servers running these mods. Some gamemodes aren't integrated (yet?)
-- Added two new maps from SuperMod : `Chornivsk` and `Hrodna Border`
-- Added two new weapons from SteelDivision : `SCUD` and `Shahed-136`
-- Multi-position flags:
-- you can now sort servers by player count
+
+- Added Maps/Layers/Factions support for X mods. You can enable them from `Settings > Mods` and browse modded layers and factions. It also means you can now sync with modded servers running these mods : 
+  - Galactic Contention (170+ Layers, 24 maps)
+  - Steel Division (110+ layers)
+  - SuperMod (190+ layers, 2 maps: `Chornivsk` and `Hrodna Border`)
+  - SquadAdminTools (2 seeding layers)
+  - Warzone (170+ layers)
+- Added two new weapons from SteelDivision : `SCUD` and `Shahed-136` 
+- In RAAS/Invasion, squadcalc now display the differents position possibilities when a flag can be a different position in a layer
+- You can now sort servers by player count
+
 
 </br><img src="https://img.shields.io/badge/-bug%20fixes-b22">  
 - Fixed Squadcalc now drawing some rare protection zones
 - Temporary Spawns no shows "1mn20s" instead of "1.33mn"
-
+- Fixed faction panel displaying _"undefined"_ when a vehicles has to ticket value (Training layers)
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
 
