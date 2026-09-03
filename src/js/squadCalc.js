@@ -23,7 +23,7 @@ changelogRenderer.link = ({ href, title, text }) => {
 };
 import i18next from "i18next";
 import SquadLayer from "./squadLayer.js";
-import { serverBrowserTooltips, settingsTooltips } from "./tooltips.js";
+import { serverBrowserTooltips, settingsTooltips, layerInfoTooltips } from "./tooltips.js";
 import { MapDrawing, MapArrow, MapCircle, MapRectangle } from "./squadShapes.js";
 
 
@@ -939,6 +939,10 @@ export default class SquadCalc {
         helpDialog.addEventListener("close", () => {
             setTimeout(() => settingsTooltips.enable(), 50);
         });
+
+        layerInfoDialog.addEventListener("close", () => {
+            setTimeout(() => layerInfoTooltips.enable(), 50);
+        });
           
         window.addEventListener("drop", e => {
             e.preventDefault();
@@ -974,6 +978,9 @@ export default class SquadCalc {
         $(".btn-layer-info").on("click", () => {
             const layerData = this.minimap.layer?.layerData;
             if (!layerData) return;
+
+            layerInfoTooltips.hide();
+            layerInfoTooltips.disable();
 
             $(".infLayerMap").text(layerData.Name ?? layerData.rawName ?? "");
             $(".infLayerGamemode").text(layerData.gamemode ?? "");
