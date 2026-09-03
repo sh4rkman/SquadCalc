@@ -48,24 +48,18 @@ export default class SquadFactions {
     }
 
     /**
-     * defaultFactionUnit (e.g. "SAA_LO_Mechanized") usually doesn't carry the mod's
-     * factionID decoration, but some mods (WarZone) do include it ("WZ_USA_LO_...").
-     * The actual factionIDs are prefixed ("SU_SAA", "WZ_USA") on SuperMod/WarZone,
-     * suffixed ("SSPR-2") on Steel Division. Strip both before comparing, and fall
-     * back to the first available faction if nothing matches.
+     * Preselect defaultFactionUnit in the unit SELECTOR if it made it into the
+     * options loadUnits() just built for the chosen faction. If it's not there
+     * (unit removed/renamed, faction mismatch, etc.), leave loadUnits()'s own
+     * first-option fallback in place.
      */
-    _resolveDefaultFaction(defaultFactionUnit, units) {
-        const code = defaultFactionUnit?.replace(/^(SU|WZ)_/, "").split("_")[0];
-        const normalize = (id) => id ? id.replace(/^(SU|WZ)_/, "").replace(/-\d+$/, "") : id;
-        const match = units.find(u => u.factionID === code || normalize(u.factionID) === code);
-        if (match) return match.factionID;
-
-        console.debug(`[FACTIONS] Default faction not found in dropdown: ${code}`);
-        if (units[0]) {
-            console.debug(`[FACTIONS] Falling back to ${units[0].factionID}`);
-            return units[0].factionID;
+    _selectPreferredUnit(SELECTOR, defaultFactionUnit) {
+        if (!defaultFactionUnit) return;
+        if (SELECTOR.find(`option[value="${defaultFactionUnit}"]`).length) {
+            SELECTOR.val(defaultFactionUnit).trigger($.Event("change", { broadcast: false }));
+        } else {
+            console.debug(`[FACTIONS] Default unit not found in dropdown: ${defaultFactionUnit}`);
         }
-        return null;
     }
 
     static VEHICLE_ORDER = {
@@ -412,7 +406,7 @@ export default class SquadFactions {
         html  += "</span>";
 
         // Update the name text icon
-        mainFlag.nameText.setIcon(
+        mainFlag?.nameText.setIcon(
             new DivIcon({
                 className: "objText main",
                 keyboard: false,
@@ -424,7 +418,7 @@ export default class SquadFactions {
             })
         );
 
-        mainFlag.updateMainIcon();
+        mainFlag?.updateMainIcon();
     }
 
 
@@ -562,7 +556,7 @@ export default class SquadFactions {
                     if (originalIndex !== -1) spawners.vehicles.splice(originalIndex, 1);
 
                 } else {
-                    console.debug("[FACTION] NO EMPTY SPAWNERS LEFT!");
+                    console.debug(`[FACTION] NO EMPTY SPAWNERS LEFT! Could not spawn "${vehicle.type}" (vehType: ${vehType})`);
                 }
             }
         }
@@ -664,7 +658,8 @@ export default class SquadFactions {
 
 
     getCardTicketHTML(vehicle, iconLeft = true) {
-        if (!vehicle.ticketValue || vehicle.ticketValue == 0) return;
+
+        if (!vehicle.ticketValue || vehicle.ticketValue == 0) return "";
 
         const oneOrMoreTickets = vehicle.ticketValue === 1 ? "ticket" : "tickets";
 
@@ -1143,23 +1138,19 @@ export default class SquadFactions {
 
         if (App.userSettings.enableFactions) {
             if (App.userSettings.defaultFactions) {
-                const team1DefaultFaction = this._resolveDefaultFaction(
-                    factionData.teamConfigs.team1.defaultFactionUnit,
-                    factionData.teamConfigs.factions.team1Units
-                );
-                const team2DefaultFaction = this._resolveDefaultFaction(
-                    factionData.teamConfigs.team2.defaultFactionUnit,
-                    factionData.teamConfigs.factions.team2Units
-                );
+                const team1DefaultFaction = factionData.teamConfigs.team1.defaultFaction;
+                const team2DefaultFaction = factionData.teamConfigs.team2.defaultFaction;
 
                 if (team1DefaultFaction) {
                     this.FACTION1_SELECTOR.val(team1DefaultFaction).trigger($.Event("change", { broadcast: false }));
+                    this._selectPreferredUnit(this.UNIT1_SELECTOR, factionData.teamConfigs.team1.defaultFactionUnit);
                 } else {
                     console.debug("[FACTIONS] No factions available for team 1, skipping");
                 }
 
                 if (team2DefaultFaction) {
                     this.FACTION2_SELECTOR.val(team2DefaultFaction).trigger($.Event("change", { broadcast: false }));
+                    this._selectPreferredUnit(this.UNIT2_SELECTOR, factionData.teamConfigs.team2.defaultFactionUnit);
                 } else {
                     console.debug("[FACTIONS] No factions available for team 2, skipping");
                 }

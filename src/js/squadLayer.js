@@ -148,7 +148,7 @@ export default class SquadLayer {
         this.createDeployables();
         this.createProtectionZones();
         //this.createBorders();
-        //this.createSplineBorders();
+        this.createSplineBorders();
         this.createSpawners();
         this.createTeamSpawns();
         this.createCameraActors();
