@@ -952,7 +952,7 @@ export default class SquadLayer {
      * @param {boolean} broadcast - forward the click to the collaborative session
      * @returns {boolean} true if the click changed anything
      */
-    _handleFlagClick(flag, broadcast = true) {
+    _handleFlagClick(flag, broadcast = true, singleRelease = false) {
 
         if (!this.solver?.ok) return false;
 
@@ -975,16 +975,20 @@ export default class SquadLayer {
             this.selectedFlags.push(flag);
             this.confirmedStep.set(flag, confirmation.step);
             this._renderFromSolver();
-        } else if (App.userSettings.freePointSelection) {
-            // Clicking a confirmed point removes it.
+        } else if (singleRelease) {
+            // Right-click releases just this point.
             this._release(flag);
             this._renderFromSolver();
         } else {
-            // Ordered mode walks back down the chain: releasing a point also releases
-            // everything confirmed after it.
-            const pinnedAt = this.confirmedStep.get(flag);
+            // Left-click walks back down the chain: releasing a point also releases
+            // everything confirmed after it. A confirmation without a resolved depth
+            // (step === null, see _confirmationFor) is always further along the route
+            // than any pinned one, never shallower - treat it as infinitely deep so it
+            // isn't mistaken for a step-0 point and skipped by the cascade.
+            const depthOf = (f) => this.confirmedStep.get(f) ?? Infinity;
+            const pinnedAt = depthOf(flag);
             this.selectedFlags
-                .filter((other) => (this.confirmedStep.get(other) ?? 0) >= pinnedAt)
+                .filter((other) => depthOf(other) >= pinnedAt)
                 .forEach((other) => this._release(other));
             this._renderFromSolver();
         }
@@ -995,6 +999,7 @@ export default class SquadLayer {
                     type: "CLICK_LAYER",
                     flag: flag.objectName,
                     selectedFlags: this.selectedFlags.map((f) => f.objectName),
+                    singleRelease,
                 })
             );
             console.debug(`[LAYER] Sent layer click update for flag #${flag.objectName}`);
@@ -1039,7 +1044,6 @@ export default class SquadLayer {
      * depth would silently discard the routes carrying it deeper, and those are often the
      * majority. Its depth resolves once the points before it are confirmed.
      *
-     * Ordered mode only accepts the next point, so it never confirms without a depth.
      * @param {SquadObjective} flag
      * @returns {?{step: ?number}}
      */
@@ -1047,7 +1051,7 @@ export default class SquadLayer {
         const options = this._stepOptionsFor(flag);
         if (!options.length) return null;
         if (options.includes(this.nextStep)) return { step: this.nextStep };
-        return App.userSettings.freePointSelection ? { step: null } : null;
+        return { step: null };
     }
 
 

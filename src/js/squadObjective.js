@@ -400,9 +400,9 @@ export class SquadObjective {
             this.isNext = true;
         } else this.isNext = false;
 
-        // Free point selection lets any still-possible flag be clicked, not only
-        // the next one - matches _confirmationFor()'s own eligibility check.
-        if (!this.isMain && positions.length && !this.isNext && App.userSettings.freePointSelection) {
+        // Any still-possible flag can be clicked, not only the next one - matches
+        // _confirmationFor()'s own eligibility check.
+        if (!this.isMain && positions.length && !this.isNext) {
             className += " clickable";
         }
 
@@ -602,16 +602,14 @@ export class SquadObjective {
             return;
         }
 
-        if (this.layer.isRandomized && this.isSelected) this.layer._handleFlagClick(this);
+        if (this.layer.isRandomized && this.isSelected) this.layer._handleFlagClick(this, true, true);
     }
 
     _handleMouseOver() {
 
         // On RAAS/Invasion, preview the lane on hover
         if (this.layer.isRandomized) {
-            // In ordered mode only the next point can be clicked, so preview only that one.
-            const clickable = App.userSettings.freePointSelection || this.isNext;
-            if (clickable && !this.isSelected && !this.isHidden && App.userSettings.revealLayerOnHover) {
+            if (!this.isSelected && !this.isHidden && App.userSettings.revealLayerOnHover) {
                 this.mouseOverTimeout = setTimeout(() => {
                     this.layer._renderFromSolver(this);
                 }, 500);
@@ -625,12 +623,14 @@ export class SquadObjective {
             }
         }
 
-        this.percentageHoverTimeout = setTimeout(() => {
-            this.nameText.setOpacity(0);
-            this.percentageText?.setOpacity(0);
-            this._showPercentageTooltip();
-            if (!this.isMain) this.layer.showLanes(this.solverInfo().lanes);
-        }, 500);
+        if (this.layer.isRandomized) {
+            this.percentageHoverTimeout = setTimeout(() => {
+                this.nameText.setOpacity(0);
+                this.percentageText?.setOpacity(0);
+                this._showPercentageTooltip();
+                if (!this.isMain) this.layer.showLanes(this.solverInfo().lanes);
+            }, 500);
+        }
 
     }
 

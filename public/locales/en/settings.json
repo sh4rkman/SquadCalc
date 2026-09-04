@@ -35,7 +35,6 @@
         "showTimeOfFlight": "Time of Flight",
         "showHeightDiff": "Height Difference",
     "LaneFinderOptions": "Layers Options", 
-        "freePointSelection": "Allow selecting points in any order",
         "capZoneOnHover": "Only show capzones when hovering",
         "revealLayerOnHover" : "Reveal layer when hovering a flag",
         "circlesFlags": "Show Flags as circles",

@@ -390,7 +390,7 @@ export default class SquadSession {
             if (!App.minimap.layer) return;
             App.minimap.layer.flags.forEach((flag) => {
                 if (flag.objectName === data.flag) {
-                    App.minimap.layer._handleFlagClick(flag, false);
+                    App.minimap.layer._handleFlagClick(flag, false, data.singleRelease);
                     return;
                 }
             });

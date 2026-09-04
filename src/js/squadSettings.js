@@ -259,16 +259,6 @@ export default class SquadSettings {
                 default: true,
                 selector: "#revealLayerOnHoverSettings"
             },
-            freePointSelection: {
-                key: "settings-free-point-selection",
-                default: false,
-                selector: "#freePointSelectionSettings",
-                onChange: () => {
-                    // Confirmations made out of order cannot survive a switch to ordered
-                    // mode, so reset the layer either way.
-                    if (this.app.minimap.layer?.solver?.ok) this.app.minimap.layer._resetLayer();
-                }
-            },
             capZoneOnHover: {
                 key: "settings-capZone-onHover",
                 default: false,
