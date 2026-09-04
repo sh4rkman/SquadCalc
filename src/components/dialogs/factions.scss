@@ -72,6 +72,13 @@
             background-color: color.adjust(variables.$mainColor, $lightness: -8%);
         }
     }
+    &:disabled {
+        cursor: not-allowed;
+        opacity: 0.4;
+        &:hover {
+            background-color: white;
+        }
+    }
 }
 
 .countryFlags {
@@ -337,8 +344,15 @@
         display: flex;
         flex-direction: row;
         overflow-y: scroll;
-        scrollbar-width: none; 
+        scrollbar-width: none;
         max-height: 75%;
+        .no-vehicle {
+            width: 100%;
+            text-align: center;
+            padding: 1em 0;
+            color: #888;
+            font-style: italic;
+        }
         .vehicle-card {
             font-weight: bold;
             display: flex;

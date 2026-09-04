@@ -1056,12 +1056,18 @@ export default class SquadFactions {
                 faction: this.FACTION1_SELECTOR.val()
             };
 
-            this._sortVehicles(selectedUnit.vehicles).forEach((vehicle) => {
-                // Skip boats if the team doesn't have boat spawn available
-                if (vehicle.spawnerSize === "Boat" && !factionData.team1boats) return;
-                this.generateCardHTML(vehicle, $("#team1Vehicles"), true);
-                this.spawnVehicle(vehicle, spawners, this.squadLayer.activeFaction1Markers);
-            });
+            const hasSpawners1 = spawners.helicopters.length + spawners.boats.length + spawners.vehicles.length + spawners.bikes.length > 0;
+            $("#team1PinButton").prop("disabled", !hasSpawners1);
+            if (!hasSpawners1) {
+                $("#team1Vehicles").append(`<div class="no-vehicle">${i18next.t("noVehicle", { ns: "common" })}</div>`);
+            } else {
+                this._sortVehicles(selectedUnit.vehicles).forEach((vehicle) => {
+                    // Skip boats if the team doesn't have boat spawn available
+                    if (vehicle.spawnerSize === "Boat" && !factionData.team1boats) return;
+                    this.generateCardHTML(vehicle, $("#team1Vehicles"), true);
+                    this.spawnVehicle(vehicle, spawners, this.squadLayer.activeFaction1Markers);
+                });
+            }
 
             // Handle click-to-copy
             $(".vehicle-card").off("click").on("click", (event) => { this.openCard(event); });
@@ -1118,12 +1124,18 @@ export default class SquadFactions {
                 faction: this.FACTION2_SELECTOR.val()
             };
 
-            this._sortVehicles(selectedUnit.vehicles).forEach((vehicle) => {
-                // Skip boats if the team doesn't have boat spawn available
-                if (vehicle.spawnerSize === "Boat" && !factionData.team2boats) return;
-                this.generateCardHTML(vehicle, $("#team2Vehicles"), false);
-                this.spawnVehicle(vehicle, spawners, this.squadLayer.activeFaction2Markers);
-            });
+            const hasSpawners2 = spawners.helicopters.length + spawners.boats.length + spawners.vehicles.length + spawners.bikes.length > 0;
+            $("#team2PinButton").prop("disabled", !hasSpawners2);
+            if (!hasSpawners2) {
+                $("#team2Vehicles").append(`<div class="no-vehicle">${i18next.t("noVehicle", { ns: "common" })}</div>`);
+            } else {
+                this._sortVehicles(selectedUnit.vehicles).forEach((vehicle) => {
+                    // Skip boats if the team doesn't have boat spawn available
+                    if (vehicle.spawnerSize === "Boat" && !factionData.team2boats) return;
+                    this.generateCardHTML(vehicle, $("#team2Vehicles"), false);
+                    this.spawnVehicle(vehicle, spawners, this.squadLayer.activeFaction2Markers);
+                });
+            }
 
             // Load Commanders Icons & Tooltips
             this.loadCommanderAssets("#team2CommanderAsset", selectedUnit);

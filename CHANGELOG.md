@@ -20,6 +20,7 @@ SquadCalc now use a new layer extractor tool made by **yobaNGE** : **[SquadPipel
 - Temporary Spawns no shows "1mn20s" instead of "1.33mn"
 - Fixed faction panel displaying _"undefined"_ when a vehicles has to ticket value (Training layers)
 
+
 </br></br><!-- CHANGELOG SPLIT MARKER -->
 
 
