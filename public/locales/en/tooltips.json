@@ -1,4 +1,5 @@
 {
+    "positionStep": "Position {{step}}",
     "basemode": "Base Map",
     "hdUnavailable": "HD version of this map isn't available",
     "terrainmode": "Terrain Map",

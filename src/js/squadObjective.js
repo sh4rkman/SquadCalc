@@ -112,34 +112,39 @@ export class SquadObjective {
         if (!el || (el._tippy && el._tippy !== this.percentageTippy)) return;
         if (el._tippy) el._tippy.destroy();
 
+        // Each row's own lanes (not the flag's overall set) - a flag's steps can come
+        // from different lanes, so the badges must match the step they're next to.
         const rows = this.percentageBreakdown
-            .map(({ step, value }) => `<div class="laneTooltipStep">As flag #${step}<span>${Math.round(value)}%</span></div>`)
+            .map(({ step, value, lanes }) => {
+                const badges = lanes
+                    .map((l) => `<span style="background-color:${this.layer.getLaneColor(SquadLaneSolver.laneLabel(l), l)}">${SquadLaneSolver.laneLabel(l)}</span>`)
+                    .join("");
+                return `
+                    <div class="laneTooltipStep">
+                        <span class="laneTooltipStepLanes">${badges}</span>
+                        <span class="laneTooltipStepLead">${i18next.t("positionStep", { ns: "tooltips", step })}</span>
+                        <span class="laneTooltipStepValue">${Math.round(value)}%</span>
+                    </div>`;
+            })
             .join("");
-
-        // Only lanes still alive in the current solve carry this flag - eliminated
-        // lanes never contributed to byId in the first place, so this.lanes is
-        // already the "remaining" set.
-        const laneLine = this.lanes?.length
-            ? `<div class="laneTooltipLanes">Lane${this.lanes.length > 1 ? "s" : ""}: ${this.lanes
-                .map((l) => `<span style="color:${this.layer.getLaneColor(SquadLaneSolver.laneLabel(l), l)}">${SquadLaneSolver.laneLabel(l)}</span>`)
-                .join(", ")}</div>`
-            : "";
 
         const html = `
             <div class="laneTooltipCard">
                 <div class="laneTooltipTitle">
-                    <span class="laneTooltipName">${this.name}</span>
+                    <span class="laneTooltipName" title="${this.name}">${this.name}</span>
                     <span class="laneTooltipTotal">${Math.round(this.percentage)}%</span>
                 </div>
                 <div class="laneTooltipBody">${rows}</div>
-                ${laneLine}
             </div>
         `;
 
         this.percentageTippy = tippy(el, {
             content: html,
             allowHTML: true,
-            placement: "right",
+            placement: "top",
+            popperOptions: {
+                modifiers: [{ name: "flip", options: { fallbackPlacements: ["bottom"] } }],
+            },
             theme: "laneInfo",
             animation: "fade",
             delay: [200, 0],
@@ -441,6 +446,7 @@ export class SquadObjective {
         const steps = new Set();
         const byStep = new Map();
         const lanes = new Set();
+        const lanesByStep = new Map();
         let probability = 0;
 
         if (result) {
@@ -451,10 +457,20 @@ export class SquadObjective {
                 probability += entry.probability;
                 entry.byStep.forEach((share, step) => byStep.set(step, (byStep.get(step) || 0) + share));
                 entry.lanes.forEach((lane) => lanes.add(lane));
+                entry.lanesByStep.forEach((stepLanes, step) => {
+                    if (!lanesByStep.has(step)) lanesByStep.set(step, new Set());
+                    stepLanes.forEach((lane) => lanesByStep.get(step).add(lane));
+                });
             });
         }
 
-        return { steps: [...steps].sort((a, b) => a - b), probability, byStep, lanes: [...lanes].sort((a, b) => a - b) };
+        return {
+            steps: [...steps].sort((a, b) => a - b),
+            probability,
+            byStep,
+            lanes: [...lanes].sort((a, b) => a - b),
+            lanesByStep,
+        };
     }
 
 
@@ -482,7 +498,7 @@ export class SquadObjective {
             return;
         }
 
-        const { steps, probability, byStep, lanes } = this.solverInfo();
+        const { steps, probability, byStep, lanes, lanesByStep } = this.solverInfo();
 
         if (preview) {
             if (steps.length) { if (this.isFadeOut) this._fadeIn(); }
@@ -509,7 +525,7 @@ export class SquadObjective {
         this.percentage = probability * 100;
         this.percentageBreakdown = [...byStep.entries()]
             .sort((a, b) => a[0] - b[0])
-            .map(([step, share]) => ({ step, value: share * 100 }));
+            .map(([step, share]) => ({ step, value: share * 100, lanes: [...(lanesByStep.get(step) ?? [])].sort((a, b) => a - b) }));
         this.lanes = lanes;
 
         if (App.userSettings.showNextFlagsPercentages) {
@@ -610,6 +626,8 @@ export class SquadObjective {
         }
 
         this.percentageHoverTimeout = setTimeout(() => {
+            this.nameText.setOpacity(0);
+            this.percentageText?.setOpacity(0);
             this._showPercentageTooltip();
             if (!this.isMain) this.layer.showLanes(this.solverInfo().lanes);
         }, 500);
@@ -620,6 +638,10 @@ export class SquadObjective {
         // Cancel the timeout if the user moves the mouse out before 1 second
         clearTimeout(this.mouseOverTimeout);
         clearTimeout(this.percentageHoverTimeout);
+
+        const opacity = this.isFadeOut ? 0.15 : 1;
+        this.nameText.setOpacity(opacity);
+        this.percentageText?.setOpacity(opacity);
 
         this._hidePercentageTooltip();
 

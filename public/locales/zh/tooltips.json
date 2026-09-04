@@ -1,4 +1,5 @@
 {
+    "positionStep": "位置{{step}}",
     "basemode": "基础地图",
     "hdUnavailable": "该地图没有高清版本",
     "terrainmode": "地势图",

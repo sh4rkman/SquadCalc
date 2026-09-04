@@ -145,7 +145,7 @@ export default class SquadLaneSolver {
      *                              main, so depths read from the side the user plays
      * @returns {{alive: number, total: number, steps: Map<number, Map<string, number>>,
      *            byId: Map<string, {steps: Set<number>, probability: number, byStep: Map<number, number>,
-     *            lanes: Set<number>}>, impossible: boolean}}
+     *            lanes: Set<number>, lanesByStep: Map<number, Set<number>>}>, impossible: boolean}}
      */
     solve(constraints = [], fromEnd = false) {
         const survivors = [];
@@ -210,11 +210,13 @@ export default class SquadLaneSolver {
                 ids.forEach((id) => {
                     atStep.set(id, (atStep.get(id) || 0) + share);
                     let entry = byId.get(id);
-                    if (!entry) { entry = { steps: new Set(), probability: 0, byStep: new Map(), lanes: new Set() }; byId.set(id, entry); }
+                    if (!entry) { entry = { steps: new Set(), probability: 0, byStep: new Map(), lanes: new Set(), lanesByStep: new Map() }; byId.set(id, entry); }
                     entry.steps.add(stepNumber);
                     entry.probability += share;
                     entry.byStep.set(stepNumber, (entry.byStep.get(stepNumber) || 0) + share);
                     entry.lanes.add(laneIndex);
+                    if (!entry.lanesByStep.has(stepNumber)) entry.lanesByStep.set(stepNumber, new Set());
+                    entry.lanesByStep.get(stepNumber).add(laneIndex);
                 });
             });
         });

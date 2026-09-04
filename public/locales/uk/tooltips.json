@@ -1,4 +1,5 @@
 {
+    "positionStep": "Позиція {{step}}",
     "basemode": "Базова карта",
     "hdUnavailable": "HD-версія цієї карти недоступна",
     "terrainmode": "Теренна карта",

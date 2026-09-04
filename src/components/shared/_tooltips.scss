@@ -121,6 +121,7 @@
         .laneTooltipCard {
             padding: 10px 14px;
             min-width: 140px;
+            max-width: 260px;
         }
         .laneTooltipTitle {
             display: flex;
@@ -137,6 +138,9 @@
             letter-spacing: 0.02em;
             text-transform: uppercase;
             color: variables.$mainTxtColor;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
         }
         .laneTooltipTotal {
             flex-shrink: 0;
@@ -155,26 +159,32 @@
         .laneTooltipStep {
             font-size: 0.9em;
             line-height: 1.35em;
-            white-space: nowrap;
             color: rgb(210, 210, 210);
             display: flex;
-            justify-content: space-between;
-            gap: 14px;
+            align-items: center;
+            flex-wrap: wrap;
+            row-gap: 2px;
+            column-gap: 6px;
+        }
+        .laneTooltipStepLanes {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
             span {
-                color: #ffd479;
+                color: variables.$mainTxtColor;
                 font-weight: bold;
+                border-radius: 10px;
+                padding: 1px 7px;
             }
         }
-        .laneTooltipLanes {
-            margin-top: 6px;
-            padding-top: 6px;
-            border-top: 1px solid rgba(255, 255, 255, 0.15);
-            font-size: 0.8em;
-            color: rgb(200, 200, 200);
+        .laneTooltipStepLead {
             white-space: nowrap;
-            span {
-                font-weight: bold;
-            }
+        }
+        .laneTooltipStepValue {
+            flex-shrink: 0;
+            margin-left: auto;
+            color: #ffd479;
+            font-weight: bold;
         }
     }
     &[data-theme~='settingsTooltips'] {

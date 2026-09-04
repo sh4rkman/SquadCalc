@@ -342,7 +342,7 @@ export default class SquadLayer {
 
 
     getLaneColor(laneName, i) {
-        const colors = ["red", "blue", "green", "purple", "white", "yellow", "orange"];
+        const colors = ["red", "blue", "green", "purple", "teal", "magenta", "orange"];
         return colors[i % colors.length]; // cycle through colors
     }
 
@@ -367,7 +367,7 @@ export default class SquadLayer {
 
             return new Polyline(latlngs, {
                 color: this.getLaneColor(SquadLaneSolver.laneLabel(i), i),
-                weight: 10,
+                weight: 18,
                 opacity: 0,
                 interactive: false,
                 className: "laneLine",
