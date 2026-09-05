@@ -164,6 +164,9 @@ export default class SquadLayer {
         case "TDM":
             this.initTDM();
             break;
+        case "Training":
+            this.initTDM();
+            break;
         default:
             this.clear();
             this.map.spin(false);
