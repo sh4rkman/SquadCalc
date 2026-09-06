@@ -695,8 +695,23 @@ export default class SquadLayer {
             [0, 0]
         ];
 
+        // These modded layers have a weird border that get overwrite by
+        // a runtime generated mask that can't be exported 
+        // see: https://github.com/yobaNGE/squad-map-data-CUE4Parse/issues/38
+        const BUGGED_LAYERS = [
+            "GC_BespinPlatforms_AAS_V2",
+            "GC_BespinPlatforms_SKM_V1",
+            "SD_AlBasrah_Legacy_Invasion_v1",
+            "SD_AlBasrah_Legacy_Invasion_v2",
+            "SD_AlBasrah_Legacy_Invasion_v3",
+            "SD_AlBasrah_Legacy_RAAS_v1"
+        ];
+
         // There's no border but the map bounds
         if (this.layerData.border.length <= 2) return;
+
+        // Ignore bugged layers
+        if (BUGGED_LAYERS.includes(this.layerData.rawName)) return;
 
         // convertToLatLng() scales+offsets a position, subtracting the same
         // conversion at the origin turns it into a pure scale for a tangent vector
