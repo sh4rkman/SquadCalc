@@ -111,6 +111,7 @@ export default class SquadLayer {
         if (this.solver?.ok) {
             this.perspectiveMain = this._mainForNode(this.solver.start);
             this._renderFromSolver();
+            this._autoConfirmNextFlag();
         }
         else if (this.isRandomized) console.debug("[LAYER] no usable route graph, lane prediction disabled");
 
@@ -133,6 +134,17 @@ export default class SquadLayer {
      */
     isRandomized() {
         return this.gamemode === "RAAS" || this.gamemode === "RVAAS" || this.gamemode === "Invasion" || this.gamemode === "RINV";
+    }
+
+
+    /**
+     * Invasion is asymmetric - one team always attacks from a fixed main, the other
+     * always defends. Unlike RAAS/RVAAS, the depth-counting perspective cannot be
+     * flipped to the defender's main.
+     * @returns {boolean}
+     */
+    isInvasion() {
+        return this.gamemode === "Invasion" || this.gamemode === "RINV";
     }
 
 
@@ -991,10 +1003,16 @@ export default class SquadLayer {
             // that side. Clicking the side already selected clears every confirmation.
             if (flag === this.perspectiveMain) {
                 this._resetLayer();
+            } else if (this.isInvasion()) {
+                // Invasion always counts from the attacker's main, the defender's main
+                // is not a valid perspective.
+                console.debug(`[LAYER] ${flag.name} is the defender's main, ignoring`);
+                return false;
             } else {
                 this.perspectiveMain = flag;
                 this.countFromEnd = flag === this._mainForNode(this.solver.end);
                 this._renderFromSolver();
+                this._autoConfirmNextFlag();
             }
         } else if (!this.selectedFlags.includes(flag)) {
             const confirmation = this._confirmationFor(flag);
@@ -1005,6 +1023,7 @@ export default class SquadLayer {
             this.selectedFlags.push(flag);
             this.confirmedStep.set(flag, confirmation.step);
             this._renderFromSolver();
+            this._autoConfirmNextFlag();
         } else if (singleRelease) {
             // Right-click releases just this point.
             this._release(flag);
@@ -1082,6 +1101,23 @@ export default class SquadLayer {
         if (!options.length) return null;
         if (options.includes(this.nextStep)) return { step: this.nextStep };
         return { step: null };
+    }
+
+
+    /**
+     * If only one flag could still fill the next open depth, confirm it for the user.
+     * Called only after forward progress (a confirm, a main pick, or a reset) - never
+     * after a release, otherwise releasing an auto-confirmed flag would immediately
+     * re-confirm it since it is still the sole candidate for that depth.
+     * Cascades: each auto-confirm triggers another render, which re-checks the new
+     * next depth. Not broadcast - a peer receiving the real click derives the same
+     * cascade locally.
+     */
+    _autoConfirmNextFlag() {
+        const candidates = this.flags.filter((flag) =>
+            !flag.isMain && !this.selectedFlags.includes(flag) && flag.solverSteps().includes(this.nextStep)
+        );
+        if (candidates.length === 1) this._handleFlagClick(candidates[0], false);
     }
 
 
@@ -1257,6 +1293,7 @@ export default class SquadLayer {
         this.selectedFlags = [];
         this.confirmedStep.clear();
         this._renderFromSolver();
+        this._autoConfirmNextFlag();
     }
 
 

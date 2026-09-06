@@ -385,7 +385,7 @@ export class SquadObjective {
         if (App.userSettings.circlesFlags) className += " circleFlag";
 
         if (this.isMain) {
-            className += this.layer.isRandomized ? " main selectable" : " main unselectable";
+            className += this.isPerspectiveSelectable() ? " main selectable" : " main unselectable";
         } else {
             if (this.layer.isRandomized && positions.length){
                 html = positions.length > 1 ? positions.join("·") : positions[0];
@@ -484,6 +484,18 @@ export class SquadObjective {
 
 
     /**
+     * Whether clicking this main would be accepted as the depth-counting perspective.
+     * On Invasion, only the attacker's main qualifies - see SquadLayer.isInvasion().
+     * @returns {boolean}
+     */
+    isPerspectiveSelectable(){
+        if (!this.layer.isRandomized) return false;
+        if (!this.layer.isInvasion()) return true;
+        return this === this.layer._mainForNode(this.layer.solver.start);
+    }
+
+
+    /**
      * Repaint this flag from the layer's latest solve: hidden when no longer possible,
      * selected when confirmed, otherwise numbered with its remaining depths.
      * @param {boolean} preview - hover preview, so fade instead of rebuilding
@@ -558,7 +570,7 @@ export class SquadObjective {
         }
 
         if (this.isMain) {
-            className += this.layer.isRandomized ? " main selectable" : " main unselectable";
+            className += this.isPerspectiveSelectable() ? " main selectable" : " main unselectable";
         } else if (this.layer.isRandomized && positions.length) {
             className += " flag" + positions[0];
             html = positions.length > 1 ? positions.join("·") : positions[0];
