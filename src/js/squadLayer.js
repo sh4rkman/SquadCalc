@@ -164,8 +164,10 @@ export default class SquadLayer {
         case "TDM":
             this.initTDM();
             break;
-        case "Training":
         case "GLOP":
+            this.initGLOP();
+            break;
+        case "Training":
             break;
         default:
             this.clear();
@@ -453,6 +455,16 @@ export default class SquadLayer {
                     })
                 }).addTo(this.phaseNumber);
             });
+        });
+    }
+
+
+    /**
+     * Initialize GLOP layer - just the two team mains, built from capturePoints.points.objectives
+     */
+    initGLOP() {
+        Object.values(this.capturePoints.points.objectives).forEach((main) => {
+            this.createMainObjective(main);
         });
     }
 
