@@ -623,12 +623,12 @@ export class SquadObjective {
             }
         }
 
-        if (this.layer.isRandomized) {
+        if (this.layer.isRandomized && !this.isMain) {
             this.percentageHoverTimeout = setTimeout(() => {
                 this.nameText.setOpacity(0);
                 this.percentageText?.setOpacity(0);
                 this._showPercentageTooltip();
-                if (!this.isMain) this.layer.showLanes(this.solverInfo().lanes);
+                this.layer.showLanes(this.solverInfo().lanes);
             }, 500);
         }
 
