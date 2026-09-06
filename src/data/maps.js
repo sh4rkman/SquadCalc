@@ -521,6 +521,19 @@ export const MAPS = [
         }
     },
     {
+        name: "MorakLegacy",
+        mapURL: "/img/maps/MODS/GC/moraklegacy/",
+        singleLayer: true,
+        mod: "GalacticContention",
+        radiusExclusion: FOBEXCLUSIONS.medium,
+        SDK_data: {
+            minimap: {
+                corner0: [-2102.47, -2301.85],
+                corner1: [2102.47, 2301.85]
+            },
+        }
+    },
+    {
         name: "Mygeeto",
         mapURL: "/img/maps/MODS/GC/mygeeto/",
         singleLayer: true,
