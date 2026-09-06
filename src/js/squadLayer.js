@@ -165,7 +165,7 @@ export default class SquadLayer {
             this.initTDM();
             break;
         case "Training":
-            this.initTDM();
+        case "GLOP":
             break;
         default:
             this.clear();
