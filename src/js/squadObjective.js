@@ -503,9 +503,11 @@ export class SquadObjective {
     applySolverResult(preview = false){
 
         if (this.isMain) {
-            // Mains carry no candidates. They only show which side the depths count from.
+            // Mains carry no candidates. They only show which side the depths count from,
+            // and the far main lights up once the chain has reached it.
             if (preview) return;
             if (this === this.layer.perspectiveMain) this.select();
+            else if (this === this.layer._farMain() && this.layer._routeComplete()) this.select();
             else this.unselect();
             return;
         }

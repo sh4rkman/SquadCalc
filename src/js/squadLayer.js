@@ -20,6 +20,16 @@ export default class SquadLayer {
         // /img/flags/ or /img/spawnGroup/ path for this layer.
         this.modFolder = mod ? mod.toLowerCase() : "vanilla";
         this.activeLayerMarkers = new LayerGroup().addTo(this.map);
+
+        // Lane highlight lines (full route + flag connectors) live in their own pane so
+        // the 0.45 fade can be applied to the pane as a whole instead of to each path -
+        // dimming a single composited layer instead of stacking per-path transparency,
+        // which is what made overlapping lines look muddy.
+        if (!this.map.getPane("lanePane")) {
+            this.map.createPane("lanePane");
+            this.map.getPane("lanePane").style.zIndex = 450;
+            this.map.getPane("lanePane").style.opacity = 0.45;
+        }
         this.activeFaction1Markers = new LayerGroup();
         this.activeFaction2Markers = new LayerGroup();
         this.layerData = layerData;
@@ -47,6 +57,10 @@ export default class SquadLayer {
         // On randomized layers the chain is drawn as one polyline per run of adjacent
         // confirmed points, so no line crosses a gap the user has not confirmed.
         this.pathLines = [];
+
+        // Segments connecting every flag on a shown lane to its exact position on it.
+        // See _showLaneConnectors().
+        this.laneConnectorLines = [];
 
         // Capture points the user has confirmed, in no particular order.
         // See squadLaneSolver.js.
@@ -383,6 +397,7 @@ export default class SquadLayer {
             ].map(coordOf);
 
             return new Polyline(latlngs, {
+                pane: "lanePane",
                 color: this.getLaneColor(SquadLaneSolver.laneLabel(i), i),
                 weight: 18,
                 opacity: 0,
@@ -394,17 +409,62 @@ export default class SquadLayer {
 
 
     /**
-     * Reveal only the given lanes (by route index), hide the rest.
+     * Reveal only the given lanes (by route index), hide the rest, and draw every
+     * flag on those lanes' connector to its exact spot on each (see
+     * _showLaneConnectors()). Full opacity per path - the pane itself carries the
+     * fade, so lines crossing within the group don't stack transparency.
      * @param {number[]} indices
      */
     showLanes(indices) {
-        this.lanePolylines?.forEach((line, i) => line.setStyle({ opacity: indices.includes(i) ? 0.45 : 0 }));
+        this.lanePolylines?.forEach((line, i) => line.setStyle({ opacity: indices.includes(i) ? 1 : 0 }));
+        this._showLaneConnectors(indices);
     }
 
 
-    /** Hide every lane. */
+    /** Hide every lane and its flag connectors. */
     hideLanes() {
         this.lanePolylines?.forEach((line) => line.setStyle({ opacity: 0 }));
+        this.laneConnectorLines.forEach((line) => line.removeFrom(this.activeLayerMarkers).remove());
+        this.laneConnectorLines = [];
+    }
+
+
+    /**
+     * A lane line runs through each cluster's avgLocation, not through the exact
+     * marker of any flag in that cluster. Draw a short segment, in the lane's own
+     * color, from every flag on each given lane to where it actually sits on it -
+     * so the highlighted route also shows which point is which.
+     * @param {number[]} indices - route indices, as passed to showLanes()
+     */
+    _showLaneConnectors(indices) {
+        if (!this.solver?.ok) return;
+
+        this.flags.forEach((flag) => {
+            if (flag.isMain || flag.isHidden || flag.isFadeOut) return;
+
+            const seen = new Set();
+            indices.forEach((routeIndex) => {
+                const step = this.solver.routes[routeIndex]?.find(
+                    (s) => s.ids.some((id) => flag.candidateIds.includes(id))
+                );
+                const cluster = step && this.objectives[step.cluster];
+                if (!cluster || seen.has(cluster.name)) return;
+                seen.add(cluster.name);
+
+                const loc = cluster.avgLocation ?? cluster;
+                const latlng = this.convertToLatLng(loc.location_x, loc.location_y);
+                if (this.areLatLngsClose(flag.latlng, latlng)) return;
+
+                this.laneConnectorLines.push(new Polyline([flag.latlng, latlng], {
+                    pane: "lanePane",
+                    color: this.getLaneColor(SquadLaneSolver.laneLabel(routeIndex), routeIndex),
+                    weight: 9,
+                    opacity: 1,
+                    interactive: false,
+                    className: "laneLine",
+                }).addTo(this.activeLayerMarkers));
+            });
+        });
     }
 
 
@@ -1009,6 +1069,11 @@ export default class SquadLayer {
                 console.debug(`[LAYER] ${flag.name} is the defender's main, ignoring`);
                 return false;
             } else {
+                // Confirmed depths are numbered from the old perspective and make no
+                // sense from the new one - carrying them over leaves the solver
+                // contradicted and every flag hidden instead of renumbered.
+                this.selectedFlags = [];
+                this.confirmedStep.clear();
                 this.perspectiveMain = flag;
                 this.countFromEnd = flag === this._mainForNode(this.solver.end);
                 this._renderFromSolver();
@@ -1191,6 +1256,27 @@ export default class SquadLayer {
 
 
     /**
+     * True once the deepest capture point is pinned, so the chain reaches the far main.
+     * @returns {boolean}
+     */
+    _routeComplete() {
+        return this.selectedFlags.some((flag) => {
+            const steps = flag.solverSteps();
+            return steps.length === 1 && steps[0] === this.solver.stepCount;
+        });
+    }
+
+
+    /**
+     * The main the numbering counts from is `perspectiveMain`; this is the other one.
+     * @returns {?SquadObjective}
+     */
+    _farMain() {
+        return this.mains.find((main) => main !== this.perspectiveMain);
+    }
+
+
+    /**
      * Draw the chain through the confirmed points.
      *
      * Only points next to each other in the chain are joined. Knowing the first and the
@@ -1216,8 +1302,8 @@ export default class SquadLayer {
         if (points.length && this.perspectiveMain) {
             points.unshift({ step: 0, latlng: this.perspectiveMain.latlng });
 
-            const farMain = this.mains.find((main) => main !== this.perspectiveMain);
-            if (farMain && points.some((point) => point.step === this.solver.stepCount)) {
+            const farMain = this._farMain();
+            if (farMain && this._routeComplete()) {
                 points.push({ step: this.solver.stepCount + 1, latlng: farMain.latlng });
             }
         }
