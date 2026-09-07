@@ -642,7 +642,7 @@ export class SquadObjective {
                 this.nameText.setOpacity(0);
                 this.percentageText?.setOpacity(0);
                 this._showPercentageTooltip();
-                this.layer.showLanes(this.solverInfo().lanes);
+                this.layer.showLanes(this.layer._previewLanesFor(this));
             }, 500);
         }
 

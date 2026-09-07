@@ -11,15 +11,16 @@ SquadCalc now use a new layer extractor tool made by **yobaNGE** : **[SquadPipel
   - SquadAdminTools (2 seeding layers)
   - Warzone (170+ layers)
 - Added two new weapons from SteelDivision : `SCUD` and `Shahed-136` 
-- In RAAS/Invasion, squadcalc now display the differents position possibilities when a flag can be a different position in a layer
+- LANE SOLVER REWORK
+  - In RAAS/Invasion, squadcalc now display the differents position possibilities when a flag can be a different position in a layer
+  - select/unselect flags even at any steps
+  - lane preview on hover
 - You can now sort servers by player count
+
 
 
 </br><img src="https://img.shields.io/badge/-bug%20fixes-b22">  
 - Fixed Squadcalc now drawing some rare protection zones
-- Temporary Spawns no shows "1mn20s" instead of "1.33mn"
-- Fixed faction panel displaying _"undefined"_ when a vehicles has to ticket value (Training layers)
-
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
 

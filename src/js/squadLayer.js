@@ -15,16 +15,8 @@ export default class SquadLayer {
 
     constructor(map, layerData, broadcast, mod) {
         this.map = map;
-        // Vanilla (no mod) assets live in .../vanilla/, modded assets live in .../<mod key lowercased>/
-        // (e.g. "GalacticContention" -> galacticcontention/, "SuperMod" -> supermod/). Referenced by every class that builds a
-        // /img/flags/ or /img/spawnGroup/ path for this layer.
         this.modFolder = mod ? mod.toLowerCase() : "vanilla";
         this.activeLayerMarkers = new LayerGroup().addTo(this.map);
-
-        // Lane highlight lines (full route + flag connectors) live in their own pane so
-        // the 0.45 fade can be applied to the pane as a whole instead of to each path -
-        // dimming a single composited layer instead of stacking per-path transparency,
-        // which is what made overlapping lines look muddy.
         if (!this.map.getPane("lanePane")) {
             this.map.createPane("lanePane");
             this.map.getPane("lanePane").style.zIndex = 450;
@@ -458,7 +450,7 @@ export default class SquadLayer {
                 this.laneConnectorLines.push(new Polyline([flag.latlng, latlng], {
                     pane: "lanePane",
                     color: this.getLaneColor(SquadLaneSolver.laneLabel(routeIndex), routeIndex),
-                    weight: 9,
+                    weight: 5,
                     opacity: 1,
                     interactive: false,
                     className: "laneLine",
@@ -1166,6 +1158,34 @@ export default class SquadLayer {
         if (!options.length) return null;
         if (options.includes(this.nextStep)) return { step: this.nextStep };
         return { step: null };
+    }
+
+
+    /**
+     * Lanes still alive with this flag pinned to a single depth - its real one if
+     * already confirmed, otherwise whatever _confirmationFor() would pin a click to -
+     * instead of every lane any of its ids could ever occupy. A flag can hold ids from
+     * two lanes at two different depths (e.g. one physical point offering step 1 on
+     * lane C and step 2 on lane B); pinning one depth for every id at once can rule a
+     * lane out even though the id alone still looks reachable. Matches the fade
+     * _renderFromSolver(flag) paints on hover, without touching the board's real
+     * solve state.
+     * @param {SquadObjective} flag
+     * @returns {number[]}
+     */
+    _previewLanesFor(flag) {
+        if (!this.solver?.ok) return [];
+
+        const isConfirmed = this.selectedFlags.includes(flag);
+        const step = isConfirmed ? (this.confirmedStep.get(flag) ?? null) : this._confirmationFor(flag)?.step;
+        if (step === undefined) return [];
+
+        const others = isConfirmed ? this.selectedFlags.filter((other) => other !== flag) : this.selectedFlags;
+        const constraints = [...this._constraints(others), { ids: flag.candidateIds, step }];
+        const result = this.solver.solve(constraints, this.countFromEnd);
+        const lanes = new Set();
+        flag.candidateIds.forEach((id) => result.byId.get(id)?.lanes.forEach((lane) => lanes.add(lane)));
+        return [...lanes].sort((a, b) => a - b);
     }
 
 
