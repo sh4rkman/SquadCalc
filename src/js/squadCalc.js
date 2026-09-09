@@ -381,6 +381,11 @@ export default class SquadCalc {
                 .then(layerData => {
                     if (!layerData) return; // prevent continuing on fetch failure
 
+                    // Warm the browser cache now so the layer info dialog's thumbnail
+                    // is already loaded by the time the user opens it, instead of
+                    // flashing the previous layer's image while this one loads.
+                    new Image().src = `${process.env.API_URL}/img/thumbnails/${encodeURIComponent(layerData.rawName)}.webp`;
+
                     if (this.minimap.layer) this.minimap.layer.clear();
                     this.minimap.layer = new SquadLayer(this.minimap, layerData, broadcast, selectedLayerMod);
                     $(".btn-layer").addClass("active").show();
