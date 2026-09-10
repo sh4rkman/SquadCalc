@@ -1,10 +1,14 @@
-import { DivIcon, Marker, Circle, LayerGroup, Rectangle } from "leaflet";
+import { DivIcon, Marker, LayerGroup, Polygon } from "leaflet";
+import polygonClipping from "polygon-clipping";
 import { App } from "../app.js";
 import i18next from "i18next";
 import tippy from "tippy.js";
 import "tippy.js/dist/tippy.css";
 import { FactionCtxMenu } from "./squadFactionCtxMenu.js";
 import SquadLaneSolver from "./squadLaneSolver.js";
+
+// Number of points used to draw a round capzone edge
+const CAPZONE_ARC_SEGMENTS = 128;
 
 // Modded factionIDs are prefixed with the mod key (e.g. "SU_RGF", "WZ_RGF"), but
 // faction translations are shared with vanilla ("RGF") - strip the prefix for
@@ -275,7 +279,121 @@ export class SquadObjective {
     }
 
 
-    createCapZone(cap){
+    /**
+     * Rotate a point around a center
+     * @param {Array} point - [lat, lng] to rotate
+     * @param {number} angle - The angle in degrees
+     * @param {Array} center - [lat, lng] center of rotation
+     * @returns {Array} The rotated [lat, lng]
+     */
+    _rotatePoint([lat, lng], angle, [centerLat, centerLng]) {
+        const radians = (Math.PI / 180) * angle;
+        const latDiff = lat - centerLat;
+        const lngDiff = lng - centerLng;
+        return [
+            centerLat + (latDiff * Math.cos(radians) - lngDiff * Math.sin(radians)),
+            centerLng + (latDiff * Math.sin(radians) + lngDiff * Math.cos(radians))
+        ];
+    }
+
+
+    /**
+     * Turn a circle into a polygon so it can be merged with the other shapes
+     * @param {Array} center - [lat, lng] center of the circle
+     * @param {number} radius - Radius in map units
+     * @returns {Array} A ring of [lat, lng]
+     */
+    _circleRing([lat, lng], radius) {
+        const r = Math.abs(radius);
+        const ring = [];
+        for (let i = 0; i < CAPZONE_ARC_SEGMENTS; i++) {
+            const angle = (i / CAPZONE_ARC_SEGMENTS) * 2 * Math.PI;
+            ring.push([lat + r * Math.sin(angle), lng + r * Math.cos(angle)]);
+        }
+        return ring;
+    }
+
+
+    /**
+     * Build the outlines of one capzone shape
+     * @param {object} cap - One entry of objective.objects
+     * @returns {Array} Array of rings, each an array of [lat, lng]
+     */
+    _capShapeRings(cap) {
+        const SCALE = this.layer.map.gameToMapScale;
+
+        // Capzone location whatever shape it has
+        const location_x = -(cap.location_x - this.layer.offset_x) / 100 * -SCALE;
+        const location_y = (cap.location_y - this.layer.offset_y) / 100 * -SCALE;
+
+        // Capzone is a Sphere
+        if (cap.isSphere) {
+            return [this._circleRing([location_y, location_x], cap.sphereRadius / 100 * SCALE)];
+        }
+
+        // Capzone is a Rectangle/Capsule
+        if (!cap.isBox && !cap.isCapsule) return [];
+
+        let rectangleRadiusX;
+        let rectangleRadiusY;
+        let totalRotation = cap.boxExtent.rotation_z;
+
+        // If object is on his side (often the case for capsules) take x/y/z in account
+        // Sometime it can be -89.98 or 90.04 so we need to take a range
+        if (Math.abs(cap.boxExtent.rotation_y) > 89 && Math.abs(cap.boxExtent.rotation_y) < 91) {
+            if (cap.boxExtent.rotation_y > 0) {
+                totalRotation -= cap.boxExtent.rotation_x + cap.boxExtent.rotation_y;
+            } else {
+                totalRotation += cap.boxExtent.rotation_x + cap.boxExtent.rotation_y;
+            }
+        }
+
+        // Cap radiis
+        if (cap.isBox) {
+            rectangleRadiusX = (cap.boxExtent.extent_x / 100) * cap.boxExtent.scaling_x * -SCALE;
+            rectangleRadiusY = (cap.boxExtent.extent_y / 100) * cap.boxExtent.scaling_y * -SCALE;
+        }
+        else {
+            rectangleRadiusX = cap.capsuleRadius / 100 * -SCALE;
+            rectangleRadiusY = (cap.capsuleLength - cap.capsuleRadius) / 100 * -SCALE;
+        }
+
+        const center = [location_y, location_x];
+        const lat1 = location_y + rectangleRadiusY;
+        const lat2 = location_y - rectangleRadiusY;
+        const lng1 = location_x + rectangleRadiusX;
+        const lng2 = location_x - rectangleRadiusX;
+        const rings = [];
+
+        // A capsule as long as it is wide has no rectangle, only the two circles
+        if (rectangleRadiusX !== 0 && rectangleRadiusY !== 0) {
+            rings.push(
+                [[lat1, lng1], [lat1, lng2], [lat2, lng2], [lat2, lng1]]
+                    .map(corner => this._rotatePoint(corner, totalRotation, center))
+            );
+        }
+
+        // Capsules also get a circle on each end of the rectangle
+        if (cap.isCapsule) {
+            const capsuleRadius = cap.capsuleRadius / 100 * SCALE;
+            // Only rotate the circles if the capsule is not vertical
+            const rotation = cap.capsuleLength != cap.capsuleRadius ? totalRotation : 0;
+
+            [lat1, lat2].forEach(lat => {
+                const [rotatedLat, rotatedLng] = this._rotatePoint([lat, location_x], rotation, center);
+                rings.push(this._circleRing([rotatedLat, rotatedLng], capsuleRadius));
+            });
+        }
+
+        return rings;
+    }
+
+
+    /**
+     * Merge every capzone shape of this objective into a single outline
+     * @param {Array} caps - The objective.objects array
+     */
+    createCapZones(caps) {
         const CZOPACITY = 0;
         const CZFILLOPACITY = 0;
         const CZCOLOR = "rgb(255, 255, 255)";
@@ -287,93 +405,33 @@ export class SquadObjective {
             fillColor: CZCOLOR,
             fillOpacity: CZFILLOPACITY,
             weight: CZWEIGHT,
+            // Keep every point, Leaflet's default simplification makes the curves jagged
+            smoothFactor: 0,
             className: "capZone"
         };
 
+        const rings = caps.flatMap(cap => this._capShapeRings(cap));
+        if (rings.length === 0) return;
 
-        // Capzone location whatever shape it has
-        let location_x = -(cap.location_x - this.layer.offset_x) / 100 * -this.layer.map.gameToMapScale;
-        let location_y = (cap.location_y - this.layer.offset_y) / 100 * -this.layer.map.gameToMapScale;
+        let geometry;
 
-        // Capzone is a Sphere
-        if (cap.isSphere) {
-            let latlng = [location_y , location_x];
-            let radius = cap.sphereRadius / 100 * this.layer.map.gameToMapScale;
-            let capZone = new Circle(latlng, {
-                radius: radius,
-                ...CZOPTIONS,
-            }).addTo(this.layer.activeLayerMarkers);
-            this.capZones.addLayer(capZone);
-            return;
+        if (rings.length === 1) {
+            geometry = [rings[0]];
+        } else {
+            try {
+                // polygon-clipping repeats the first point at the end, Leaflet does not want it
+                geometry = polygonClipping.union(...rings.map(ring => [ring]))
+                    .map(polygon => polygon.map(ring => ring.slice(0, -1)));
+                if (geometry.length === 0) throw new Error("empty union");
+            } catch (error) {
+                // If the merge fails, draw the shapes separately like before
+                console.warn("[LAYER] capzone union failed, drawing shapes separately", error);
+                geometry = rings.map(ring => [ring]);
+            }
         }
 
-        // Capzone is a Rectangle/Capsule
-        if (cap.isBox || cap.isCapsule) {
-            let rectangleRadiusX;
-            let rectangleRadiusY;
-            let totalRotation = cap.boxExtent.rotation_z;
-
-            // If object is on his side (often the case for capsules) take x/y/z in account 
-            // Sometime it can be -89.98 or 90.04 so we need to take a range
-            if (Math.abs(cap.boxExtent.rotation_y) > 89 && Math.abs(cap.boxExtent.rotation_y) < 91) {
-                if (cap.boxExtent.rotation_y > 0) {
-                    totalRotation -= cap.boxExtent.rotation_x + cap.boxExtent.rotation_y;
-                } else {
-                    totalRotation += cap.boxExtent.rotation_x + cap.boxExtent.rotation_y;
-                }
-            }
-
-            // Cap radiis
-            if (cap.isBox) {
-                rectangleRadiusX = (cap.boxExtent.extent_x / 100) * cap.boxExtent.scaling_x * -this.layer.map.gameToMapScale;
-                rectangleRadiusY = (cap.boxExtent.extent_y / 100) * cap.boxExtent.scaling_y * -this.layer.map.gameToMapScale;
-            }
-            else if (cap.isCapsule) {
-                rectangleRadiusX = cap.capsuleRadius / 100 * -this.layer.map.gameToMapScale;
-                rectangleRadiusY = (cap.capsuleLength - cap.capsuleRadius) / 100 * -this.layer.map.gameToMapScale;
-            }
-
-            // Cap Zone bounds
-            let capNWCorner = [(location_y + rectangleRadiusY) , (location_x + rectangleRadiusX)];
-            let capSECorner = [(location_y - rectangleRadiusY), (location_x - rectangleRadiusX)];
-            let capBounds = [capNWCorner, capSECorner];
-
-            let capZone = new Rectangle(capBounds, {...CZOPTIONS}).addTo(this.layer.activeLayerMarkers);
-            this.capZones.addLayer(capZone);
-        
-            // For capsules we'll need to create 2 circles aswell
-            if (cap.isCapsule) {
-                let latSphere1 = (capZone.getBounds().getNorthEast().lat + capZone.getBounds().getNorthWest().lat ) / 2;
-                let lngSphere1 = (capZone.getBounds().getNorthEast().lng + capZone.getBounds().getNorthWest().lng ) / 2;
-                let latlng1 = { lat: latSphere1, lng: lngSphere1 };
-
-                let latSphere2 = (capZone.getBounds().getSouthEast().lat + capZone.getBounds().getSouthWest().lat ) / 2;
-                let lngSphere2 = (capZone.getBounds().getSouthEast().lng + capZone.getBounds().getSouthWest().lng ) / 2;
-                let latlng2 = { lat: latSphere2, lng: lngSphere2 };
-
-                let circle1 = new Circle(latlng1, {
-                    radius: cap.capsuleRadius / 100 * this.layer.map.gameToMapScale,
-                    ...CZOPTIONS,
-                }).addTo(this.layer.activeLayerMarkers);
-                this.capZones.addLayer(circle1);
-
-                let circle2 = new Circle(latlng2, {
-                    radius: cap.capsuleRadius / 100 * this.layer.map.gameToMapScale,
-                    ...CZOPTIONS,
-                }).addTo(this.layer.activeLayerMarkers);
-                this.capZones.addLayer(circle2);
-
-                // Only rotate the circles if the capsule is not vertical
-                if (cap.capsuleLength != cap.capsuleRadius) {
-                    this.layer.rotateCircle(circle1, totalRotation, capZone.getCenter());
-                    this.layer.rotateCircle(circle2, totalRotation, capZone.getCenter());
-                }
-            }
-
-            this.layer.rotateRectangle(capZone, totalRotation);
-            this.capZones.addLayer(capZone);
-        }
-
+        const capZone = new Polygon(geometry, {...CZOPTIONS}).addTo(this.layer.activeLayerMarkers);
+        this.capZones.addLayer(capZone);
     }
 
 
