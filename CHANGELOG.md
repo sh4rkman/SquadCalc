@@ -15,6 +15,7 @@ SquadCalc now use a new layer extractor tool made by **yobaNGE** : **[SquadPipel
   - In RAAS/Invasion, squadcalc now display the differents position possibilities when a flag can be a different position in a layer
   - select/unselect flags even at any steps
   - lane preview on hover
+- CAPZONE REWORK
 - You can now sort servers by player count
 
 

@@ -286,7 +286,7 @@ export default class SquadLayer {
             const newFlag = new SquadObjective(latlng, this, obj, 0, obj);
             this.flags.push(newFlag);
 
-            newFlag.createCapZones(obj.objects);
+            newFlag.capZone.add(obj.objects);
         });
 
         this.polyline.setLatLngs(this.path);
@@ -352,7 +352,7 @@ export default class SquadLayer {
                     this.flags.push(newFlag);
                     newFlag.hide();
                     // Adding capzones to the flag object
-                    newFlag.createCapZones(obj.objects);
+                    newFlag.capZone.add(obj.objects);
                 }
             });
         });
@@ -581,7 +581,7 @@ export default class SquadLayer {
     revealAllCapzones() {
         if (App.userSettings.capZoneOnHover || !this.isVisible) return;
         this.flags.forEach(flag => {
-            if (!flag.isHidden && !flag.isFadeOut) flag.revealCapZones();
+            if (!flag.isHidden && !flag.isFadeOut) flag.capZone.reveal();
         });
     }
 
@@ -590,7 +590,7 @@ export default class SquadLayer {
      * Hide all capzones on the map
      */
     hideAllCapzones() {
-        this.flags.forEach(flag => { flag.hideCapZones(); });
+        this.flags.forEach(flag => { flag.capZone.hide(); });
     }
 
     
