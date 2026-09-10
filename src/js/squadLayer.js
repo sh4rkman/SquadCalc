@@ -262,9 +262,7 @@ export default class SquadLayer {
             const newFlag = new SquadObjective(latlng, this, obj, 0, obj);
             this.flags.push(newFlag);
 
-            obj.objects.forEach(cap => {
-                newFlag.createCapZone(cap);
-            });
+            newFlag.createCapZones(obj.objects);
         });
 
         this.polyline.setLatLngs(this.path);
@@ -330,9 +328,7 @@ export default class SquadLayer {
                     this.flags.push(newFlag);
                     newFlag.hide();
                     // Adding capzones to the flag object
-                    obj.objects.forEach((cap) => {
-                        newFlag.createCapZone(cap);
-                    });
+                    newFlag.createCapZones(obj.objects);
                 }
             });
         });
