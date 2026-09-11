@@ -373,7 +373,7 @@ export const MAPS = [
                 corner0: [-1520,-1520],
                 corner1: [1520,1520],
             },
-            landscapeScale: [1, 1, 0.087813952],
+            landscapeScale: [1, 1, 0.084748958],
         }
     },
     // GC
@@ -388,6 +388,7 @@ export const MAPS = [
                 corner0: [-2031.92, -2031.92],
                 corner1: [2031.92, 2031.92],
             },
+            landscapeScale: [1, 1, 4.947832833],
         }
     },
     {
@@ -401,6 +402,7 @@ export const MAPS = [
                 corner0: [-2000, -2000],
                 corner1: [2000, 2000],
             },
+            landscapeScale: [1, 1, 12.178692268],
         }
     },
     {
@@ -413,7 +415,8 @@ export const MAPS = [
             minimap: {
                 corner0: [-166.20, -78.11],
                 corner1: [-6.65, 81.44]
-            }
+            },
+            landscapeScale: [1, 1, 0.015758521],
         }
     },
     {
@@ -426,7 +429,8 @@ export const MAPS = [
             minimap: {
                 corner0: [-789.93, -3999.91],
                 corner1: [1876.70, -1333.21],
-            }
+            },
+            landscapeScale: [1, 1, 0.667760064],
         }
     },
     {
@@ -439,7 +443,8 @@ export const MAPS = [
             minimap: {
                 corner0: [-1784.99, -1784.97],
                 corner1: [1784.97, 1784.91],
-            }
+            },
+            landscapeScale: [1, 1, 4.036845955],
         }
     },
     {
@@ -452,7 +457,8 @@ export const MAPS = [
             minimap: {
                 corner0: [-2015.67, -2015.67],
                 corner1: [2015.7, 2015.7],
-            }
+            },
+            landscapeScale: [1, 1, 7.295198568],
         }
     },
     {
@@ -466,6 +472,7 @@ export const MAPS = [
                 corner0: [-2106.43,-2814.39],
                 corner1: [1893.56, 1185.59],
             },
+            landscapeScale: [1, 1, 0.368167],
         }
     },
     {
@@ -478,7 +485,8 @@ export const MAPS = [
             minimap: {
                 corner0: [-1072.36, -2098.28],
                 corner1: [2052.09, 1026.17],
-            }
+            },
+            landscapeScale: [1, 1, 1.536714457],
         }
     },
     {
@@ -492,6 +500,7 @@ export const MAPS = [
                 corner0: [-2400, -2400],
                 corner1: [-400, -400]
             },
+            landscapeScale: [1, 1, 0.754785829],
         }
     },
     {
@@ -505,6 +514,7 @@ export const MAPS = [
                 corner0: [-1020, -1020],
                 corner1: [1020, 1020]
             },
+            landscapeScale: [1, 1, 0.891445085],
         }
     },
     {
@@ -518,6 +528,7 @@ export const MAPS = [
                 corner0: [-3250, -3250],
                 corner1: [3250, 3250]
             },
+            landscapeScale: [1, 1, 2.244150079],
         }
     },
     {
@@ -531,6 +542,7 @@ export const MAPS = [
                 corner0: [-2102.47, -2301.85],
                 corner1: [2102.47, 2301.85]
             },
+            landscapeScale: [1, 1, 1.821209448],
         }
     },
     {
@@ -544,6 +556,7 @@ export const MAPS = [
                 corner0: [-2000, -2000],
                 corner1: [2000, 2000],
             },
+            landscapeScale: [1, 1, 7.458831189],
         }
     },
     {
@@ -557,6 +570,7 @@ export const MAPS = [
                 corner0: [-1967.98, -1967.98],
                 corner1: [1968.98, 1968.98],
             },
+            landscapeScale: [1, 1, 0.355040546],
         }
     },
     {
@@ -569,7 +583,8 @@ export const MAPS = [
             minimap: {
                 corner0: [-1999.95, -1999.95],
                 corner1: [2000.05, 2000.05],
-            }
+            },
+            landscapeScale: [1, 1, 1.211747024],
         }
     },
     {
@@ -584,6 +599,7 @@ export const MAPS = [
                 corner0: [-4079.85, -4079.85],
                 corner1: [4053.6, 4053.6],
             },
+            landscapeScale: [1, 1, 1.200851022],
         }
     },
     {
@@ -623,6 +639,7 @@ export const MAPS = [
                 corner0: [-1880, -1880],
                 corner1: [1880, 1880],
             },
+            landscapeScale: [1, 1, 0.819146736],
         }
     },
     {
@@ -636,6 +653,7 @@ export const MAPS = [
                 corner0: [-2400, -2400],
                 corner1: [2400, 2400],
             },
+            landscapeScale: [1, 1, 1.794266345],
         }
     },
     {
@@ -649,6 +667,7 @@ export const MAPS = [
                 corner0: [-1078.77, -1078.77],
                 corner1: [1079.56, 1079.56],
             },
+            landscapeScale: [1, 1, 7.976126518],
         }
     },
     {
@@ -662,6 +681,7 @@ export const MAPS = [
                 corner0: [-1966.20, -1865.35],
                 corner1: [1579.80, 1680.65]
             },
+            landscapeScale: [1, 1, 1.187478002],
         }
     },
     {
@@ -675,6 +695,7 @@ export const MAPS = [
                 corner0: [-800, -800],
                 corner1: [800, 800],
             },
+            landscapeScale: [1, 1, 0.210430224],
         }
     },
     {
@@ -687,7 +708,8 @@ export const MAPS = [
             minimap: {
                 corner0: [-400.3, -399.6],
                 corner1: [399.7, 400.4],
-            }
+            },
+            landscapeScale: [1, 1, 0.545954917],
         }
     },
     {
@@ -700,7 +722,8 @@ export const MAPS = [
             minimap: {
                 corner0: [-855.4, -462],
                 corner1: [644.6, 1038],
-            }
+            },
+            landscapeScale: [1, 1, 0.545954917],
         }
     },
     {
@@ -714,6 +737,7 @@ export const MAPS = [
                 corner0: [-1260.02, -1260.02],
                 corner1: [1260.02, 1260.02]
             },
+            landscapeScale: [1, 1, 0.721582271],
         }
     },
     // Custom Map Template
