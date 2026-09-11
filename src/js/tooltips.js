@@ -288,6 +288,13 @@ export const layerInfoTooltips = tippy(".btn-layer-info", {
         tip.setContent(i18next.t("tooltips:layerInfo"));
     },
 })[0];
+export const threeDTooltips = tippy(".btn-3d", {
+    ...commonMapMenuToolipsSettings,
+    placement: "left",
+    onShow(tip) {
+        tip.setContent(i18next.t("tooltips:view3D"));
+    },
+})[0];
 tippy(".btn-legacy", {
     ...commonMapMenuToolipsSettings,
     onShow(tip) {

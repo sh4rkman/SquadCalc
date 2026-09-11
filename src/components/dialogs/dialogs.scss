@@ -240,6 +240,140 @@ dialog {
             }
         }
     }
+    &#threeDView {
+        width: 100%;
+        height: 100%;
+        max-width: 100%;
+        max-height: 100%;
+        margin: 0;
+        border-radius: 0;
+        background: variables.$mainBGColor;
+        backdrop-filter: none;
+        &::backdrop { background: transparent; }
+        &[open] {
+            display: flex;
+            flex-direction: column;
+        }
+        h2 { flex: 0 0 auto; }
+        .threeDViewport {
+            position: relative;
+            flex: 1;
+            canvas { display: block; }
+        }
+        .threeDOverlay {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5em;
+            background: rgba(0, 0, 0, 0.55);
+            color: variables.$mainTxtColor;
+            cursor: pointer;
+            text-align: center;
+            padding: 0 1em;
+            &[hidden] { display: none; }
+            p { margin: 0; }
+        }
+        .threeDLoading {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: variables.$mainBGColor;
+            color: variables.$mainTxtColor;
+            font-size: 1.1em;
+            letter-spacing: 0.02em;
+            &[hidden] { display: none; }
+        }
+        .threeDOverlayHint {
+            font-size: 0.85em;
+            opacity: 0.75;
+            kbd {
+                background: rgba(255, 255, 255, 0.12);
+                border: 1px solid rgba(255, 255, 255, 0.25);
+                border-radius: 4px;
+                padding: 0.1em 0.4em;
+                margin: 0 0.05em;
+                font-size: 0.9em;
+            }
+        }
+        .threeDSpeedHUD {
+            position: absolute;
+            left: 50%;
+            bottom: 10%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.35em;
+            background: rgba(0, 0, 0, 0.6);
+            color: variables.$mainTxtColor;
+            padding: 0.5em 1em;
+            border-radius: 8px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+            &.visible { opacity: 1; }
+        }
+        .threeDSpeedHUDLabel {
+            font-size: 0.75em;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            opacity: 0.75;
+        }
+        .threeDSpeedHUDRow {
+            display: flex;
+            align-items: center;
+            gap: 0.7em;
+        }
+        .threeDSpeedHUDBar {
+            width: 140px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        .threeDSpeedHUDFill {
+            height: 100%;
+            background: variables.$mainColor;
+            border-radius: 3px;
+        }
+        .threeDSpeedHUDValue {
+            font-size: 0.85em;
+            min-width: 3.5ch;
+            text-align: right;
+        }
+        .threeDMinimap {
+            position: absolute;
+            right: 1em;
+            bottom: 1em;
+            width: 160px;
+            height: 160px;
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            border-radius: 6px;
+            overflow: hidden;
+            background: rgba(0, 0, 0, 0.4);
+        }
+        .threeDMinimapImage {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .threeDMinimapDot {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            width: 22px;
+            height: 22px;
+            filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.9));
+            transform: translate(-50%, -50%);
+        }
+    }
     &#weaponInformation {
         max-width: 350px;
         .moveToRow {

@@ -48,7 +48,7 @@ export const MAPS = [
                 corner0: [-2299, -2127],
                 corner1: [2299, 2472],
             },
-            landscapeScale: [1.003937, 1.003937, 0.417170742],
+            landscapeScale: [1.003937, 1.003937, 0.358381824],
         }
     },
     { 

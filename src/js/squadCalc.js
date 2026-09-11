@@ -23,7 +23,8 @@ changelogRenderer.link = ({ href, title, text }) => {
 };
 import i18next from "i18next";
 import SquadLayer from "./squadLayer.js";
-import { serverBrowserTooltips, settingsTooltips, layerInfoTooltips } from "./tooltips.js";
+import Squad3DSimulation from "./squad3DSimulation.js";
+import { serverBrowserTooltips, settingsTooltips, layerInfoTooltips, threeDTooltips } from "./tooltips.js";
 import { MapDrawing, MapArrow, MapCircle, MapRectangle } from "./squadShapes.js";
 
 
@@ -714,7 +715,7 @@ export default class SquadCalc {
             if (layers > 0) parts.push(`<span>${i18next.t("settings:modLayersCount", { count: layers, defaultValue: `${layers} Layers` })}</span>`);
             if (weapons > 0) parts.push(`<span>${i18next.t("settings:modWeaponsCount", { count: weapons, defaultValue: `${weapons} Weapons` })}</span>`);
             if (maps > 0) parts.push(`<span>${i18next.t("settings:modMapsCount", { count: maps, defaultValue: `${maps} Maps` })}</span>`);
-            return `<span class="modTileStats">${parts.join(`<span class="modTileStatsSeparator">•</span>`)}</span>`;
+            return `<span class="modTileStats">${parts.join("<span class=\"modTileStatsSeparator\">•</span>")}</span>`;
         };
 
         mods.forEach((modKey) => {
@@ -844,9 +845,17 @@ export default class SquadCalc {
             shortcutCapture: document.querySelector("#shortcutCaptureDialog"),
             changelog: document.querySelector("#changelogDialog"),
             layerInfo: document.querySelector("#layerInformation"),
+            threeD:  document.querySelector("#threeDView"),
         };
         this._changelogCache = null;
-        const { calc: calcInformation, weapon: weaponInformation, help: helpDialog, factions: factionsDialog, servers: serversInformation, layerInfo: layerInfoDialog } = this._dialogs;
+        const { calc: calcInformation, weapon: weaponInformation, help: helpDialog, factions: factionsDialog, servers: serversInformation, layerInfo: layerInfoDialog, threeD: threeDDialog } = this._dialogs;
+
+        this.simulation3D = new Squad3DSimulation(document.querySelector(".threeDViewport"));
+        threeDDialog.addEventListener("close", () => this.simulation3D.close());
+
+        // DEBUG: auto-open the 3D dialog on load. Remove once the feature is done.
+        threeDDialog.showModal();
+        this.simulation3D.open(this.minimap.activeMap);
 
         $(".btn-delete, .btn-undo, .btn-layer, .btn-layer-info, .returnBtn, #mapLayerMenu").hide();
 
@@ -886,7 +895,8 @@ export default class SquadCalc {
         this.closeDialogOnClickOutside(factionsDialog);
         this.closeDialogOnClickOutside(this._dialogs.changelog);
         this.closeDialogOnClickOutside(layerInfoDialog);
-        
+        this.closeDialogOnClickOutside(threeDDialog);
+
         const overlay = document.getElementById("dropOverlay");
         let dragCounter = 0;
         
@@ -947,6 +957,10 @@ export default class SquadCalc {
 
         layerInfoDialog.addEventListener("close", () => {
             setTimeout(() => layerInfoTooltips.enable(), 50);
+        });
+
+        threeDDialog.addEventListener("close", () => {
+            setTimeout(() => threeDTooltips.enable(), 50);
         });
           
         window.addEventListener("drop", e => {
@@ -1027,6 +1041,12 @@ export default class SquadCalc {
                 .attr("src", `${process.env.API_URL}/img/thumbnails/${encodeURIComponent(layerData.rawName)}.webp`);
 
             layerInfoDialog.showModal();
+        });
+        $(".btn-3d").on("click", () => {
+            threeDTooltips.hide();
+            threeDTooltips.disable();
+            threeDDialog.showModal();
+            this.simulation3D.open(this.minimap.activeMap);
         });
         $(".layerCommandCopyBtn").on("click", (event) => {
             const input = event.currentTarget.closest(".layerCommandRow").querySelector("input");
