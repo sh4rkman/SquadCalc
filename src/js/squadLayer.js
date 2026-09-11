@@ -115,7 +115,10 @@ export default class SquadLayer {
         this.init();
 
         if (this.solver?.ok) {
-            this.perspectiveMain = this._mainForNode(this.solver.start);
+            // Invasion is asymmetric - the attacker's main is the only valid perspective,
+            // so it can be picked automatically. RAAS/RVAAS are symmetric: either main is
+            // valid, so the perspective is left for the user to pick by clicking one.
+            if (this.isInvasion()) this.perspectiveMain = this._mainForNode(this.solver.start);
             this._renderFromSolver();
             this._autoConfirmNextFlag();
         }
@@ -764,7 +767,12 @@ export default class SquadLayer {
             "SD_AlBasrah_Legacy_Invasion_v1",
             "SD_AlBasrah_Legacy_Invasion_v2",
             "SD_AlBasrah_Legacy_Invasion_v3",
-            "SD_AlBasrah_Legacy_RAAS_v1"
+            "SD_AlBasrah_Legacy_RAAS_v1",
+            "GC_Ryloth_AAS_V1",
+            "GC_Ryloth_AAS_V2",
+            "GC_Ryloth_AAS_V3",
+            "GC_Ryloth_INV_V1",
+            "GC_Ryloth_INV_V2",
         ];
 
         // There's no border but the map bounds
