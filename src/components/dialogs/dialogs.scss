@@ -273,6 +273,7 @@ dialog {
             background: rgba(0, 0, 0, 0.55);
             color: variables.$mainTxtColor;
             padding: 0 1em;
+            user-select: none;
             &[hidden] { display: none; }
         }
         .threeDOverlayCard {
@@ -308,13 +309,24 @@ dialog {
             inset: 0;
             z-index: 1;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
+            gap: 1.2em;
             background: variables.$mainBGColor;
             color: variables.$mainTxtColor;
-            font-size: 1.1em;
-            letter-spacing: 0.02em;
+            font-size: 1.6em;
+            font-weight: 600;
+            letter-spacing: 0.03em;
             &[hidden] { display: none; }
+        }
+        .threeDLoadingSpinner {
+            width: 3em;
+            height: 3em;
+            border: 0.3em solid rgba(255, 255, 255, 0.15);
+            border-top-color: variables.$mainColor;
+            border-radius: 50%;
+            animation: three-d-loading-spin 0.9s linear infinite;
         }
         .threeDOverlayHint {
             display: grid;
@@ -368,25 +380,45 @@ dialog {
                 accent-color: variables.$mainColor;
             }
         }
-        .threeDGoButton {
-            margin-top: 0.3em;
-            padding: 0.7em 0;
+        .threeDGoButton, .threeDQuitButton {
+            // border-box + shared height, padding reset to 0 (a bare button has its own
+            // UA default) - without that reset, Go's borderless box and Quit's 1px-border
+            // box round to different pixel heights even with the same min-height.
+            box-sizing: border-box;
+            height: 2.9em;
+            padding: 0;
             width: 100%;
-            border: none;
             border-radius: 8px;
-            background: variables.$mainColor;
-            color: #fff;
             font-size: 1.15em;
             font-weight: 600;
             letter-spacing: 0.03em;
             text-transform: uppercase;
             cursor: pointer;
+        }
+        .threeDGoButton {
+            margin-top: 0.3em;
+            border: none;
+            background: variables.$mainColor;
+            color: #fff;
             transition: filter 0.15s ease, transform 0.1s ease;
 
             @media (hover: hover) {
                 &:hover { filter: brightness(1.12); }
             }
             &:active { transform: scale(0.98); }
+        }
+        .threeDQuitButton {
+            // Pulls in closer to the Go button than the card's own 0.9em gap.
+            margin-top: -0.4em;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            background: transparent;
+            color: variables.$mainTxtColor;
+            transition: background-color 0.15s ease;
+
+            @media (hover: hover) {
+                &:hover { background: rgba(255, 255, 255, 0.08); }
+            }
+            &:active { opacity: 0.8; }
         }
         .threeDSpeedHUD {
             position: absolute;
@@ -571,4 +603,8 @@ dialog {
             color: white;
         }
     }
+}
+
+@keyframes three-d-loading-spin {
+    to { transform: rotate(360deg); }
 }

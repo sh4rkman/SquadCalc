@@ -1,7 +1,8 @@
 import * as THREE from "three";
 import { decode } from "fast-png";
 import { PointerLockControls } from "three/addons/controls/PointerLockControls.js";
-import { Sky } from "three/addons/objects/Sky.js";
+import { RGBELoader } from "three/addons/loaders/RGBELoader.js";
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 
 // Default vertices per side of the terrain grid, sampled from the full-resolution
 // heightmap - user-adjustable via the resolution selector (see _setResolution()).
@@ -25,6 +26,37 @@ const LABEL_WORLD_HEIGHT = 12;
 
 // Flag-path pipe radius (5m diameter) - see _drawFlagPath().
 const PATH_RADIUS = 2.5;
+
+// Deployable models, one glTF per asset type. Only "Ammo Crate" for now - add other
+// deployables.assets .type values here as models for them show up.
+const DEPLOYABLE_MODELS = {
+    "Ammo Crate": "/img/models/ammocrate.glb",
+    "Repair Station": "/img/models/repairstation.glb",
+    "Helipad": "/img/models/helipad.glb",
+};
+
+// localStorage keys for the settings card's own options - same "settings-*" naming and
+// "1"/"0" boolean convention as SquadSettings, kept local to this class since none of
+// these are checkbox/slider definitions SquadSettings' binding system can express (two
+// are <select> values, and the toggles live in a dialog SquadSettings doesn't own).
+const STORAGE_KEYS = {
+    capzonesVisible: "settings-3d-capzones",
+    minimapVisible: "settings-3d-minimap",
+    pathVisible: "settings-3d-path",
+    gridResolution: "settings-3d-resolution",
+    textureName: "settings-3d-texture",
+};
+
+/**
+ * Reads one of STORAGE_KEYS, or falls back to `fallback` if unset.
+ * @param {string} key
+ * @param {string} fallback
+ * @returns {string}
+ */
+function loadSetting(key, fallback) {
+    const stored = localStorage.getItem(key);
+    return stored === null ? fallback : stored;
+}
 
 // Movement bindings by event.code (physical key position), not event.key (the
 // character it produces) - so AZERTY (ZQSD) and QWERTY (WASD) both work: AZERTY's W/A
@@ -70,16 +102,20 @@ export default class Squad3DSimulation {
         this.terrainMesh = null;
         this.terrainSize = 0;
         this.heights = null;
-        this.gridResolution = DEFAULT_GRID_RESOLUTION;
-        this.textureName = "basemap"; // "basemap" | "topomap" - the select's own options.
-        this.sky = null;
+        this.gridResolution = Number(loadSetting(STORAGE_KEYS.gridResolution, DEFAULT_GRID_RESOLUTION));
+        this.textureName = loadSetting(STORAGE_KEYS.textureName, "basemap"); // "basemap" | "topomap" - the select's own options.
         this.sunLight = null;
         this.capzoneGroup = null;
         this.labelGroup = null;
         this.pathLine = null;
-        this.capzonesVisible = true;
-        this.minimapVisible = true;
-        this.pathVisible = true;
+        this.deployableGroup = null;
+        this.capzonesVisible = loadSetting(STORAGE_KEYS.capzonesVisible, "1") === "1";
+        this.minimapVisible = loadSetting(STORAGE_KEYS.minimapVisible, "1") === "1";
+        this.pathVisible = loadSetting(STORAGE_KEYS.pathVisible, "1") === "1";
+
+        // Deployable glTF templates, cached and loaded once per asset type - see
+        // _drawDeployables(). Instances are shallow clones sharing this geometry/material.
+        this._deployableModels = {};
         this.sunDir = new THREE.Vector3();
         this._minimapForward = new THREE.Vector3();
         this.loadedMapURL = null;
@@ -131,6 +167,8 @@ export default class Squad3DSimulation {
         // Cheap enough to redo every open() - the layer can change independently of the map.
         this._drawCapzones(layer, activeMap);
         this._drawFlagPath(layer, activeMap);
+        this._updateMinimapImage(layer, activeMap);
+        this._drawDeployables(layer, activeMap);
 
         this.overlay.hidden = false;
         window.addEventListener("resize", this._onResize);
@@ -162,30 +200,35 @@ export default class Squad3DSimulation {
         this.renderer = new THREE.WebGLRenderer({ antialias: true });
         this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
-        this.renderer.toneMappingExposure = 1.1;
-        this.renderer.shadowMap.enabled = true;
-        this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        this.renderer.toneMappingExposure = 1;
         this.container.appendChild(this.renderer.domElement);
 
-        this.scene.add(new THREE.AmbientLight(0xffffff, 0.8));
-        this.sunLight = new THREE.DirectionalLight(0xffffff, 2.2);
-        this.sunLight.castShadow = true;
-        this.sunLight.shadow.mapSize.set(2048, 2048);
+        // No shadow mapping - a single hard-shadowed sun is what was making everything
+        // look too contrasted; flat lighting (matching the original proof-of-concept) reads
+        // better here than a literally-accurate sun/shadow setup.
+        this.scene.add(new THREE.AmbientLight(0xffffff, 0.5));
+        this.sunLight = new THREE.DirectionalLight(0xffffff, 1.6);
         this.scene.add(this.sunLight);
 
-        this.sky = new Sky();
-        this.sky.scale.setScalar(20000);
-        this.sky.material.uniforms.turbidity.value = 4;
-        this.sky.material.uniforms.rayleigh.value = 3;
-        this.sky.material.uniforms.mieCoefficient.value = 0.005;
-        this.sky.material.uniforms.mieDirectionalG.value = 0.8;
-        this.scene.add(this.sky);
+        // A real HDRI reads far better than the procedural Sky shader did - loaded once
+        // and reused as the background for every map/open() since it never changes.
+        new RGBELoader().load("/img/sky/skybox.hdr", (texture) => {
+            texture.mapping = THREE.EquirectangularReflectionMapping;
+            this.scene.background = texture;
+        });
         this._updateSun();
+
+        // Fixed real-world sight distances (meters), not relative to the map's own size -
+        // gives distant terrain the hazy falloff that was missing and reads as depth instead
+        // of everything looking equally flat regardless of distance.
+        this.scene.fog = new THREE.Fog(0xbfd6e8, 400, 4000);
 
         this.capzoneGroup = new THREE.Group();
         this.scene.add(this.capzoneGroup);
         this.labelGroup = new THREE.Group();
         this.scene.add(this.labelGroup);
+        this.deployableGroup = new THREE.Group();
+        this.scene.add(this.deployableGroup);
 
         this.clock = new THREE.Clock();
         this.controls = new PointerLockControls(this.camera, this.renderer.domElement);
@@ -198,22 +241,8 @@ export default class Squad3DSimulation {
         const theta = THREE.MathUtils.degToRad(SUN_AZIMUTH);
         this.sunDir.setFromSphericalCoords(1, phi, theta);
 
-        this.sky.material.uniforms.sunPosition.value.copy(this.sunDir);
-
         const size = this.terrainSize || 1;
         this.sunLight.position.copy(this.sunDir).multiplyScalar(size * 5);
-
-        // Shadow camera is an orthographic frustum covering the terrain footprint,
-        // sized to the real map so shadow resolution doesn't degrade on bigger maps.
-        const halfSize = size * 0.6;
-        const shadowCam = this.sunLight.shadow.camera;
-        shadowCam.left = -halfSize;
-        shadowCam.right = halfSize;
-        shadowCam.top = halfSize;
-        shadowCam.bottom = -halfSize;
-        shadowCam.near = size * 0.1;
-        shadowCam.far = size * 10;
-        shadowCam.updateProjectionMatrix();
     }
 
 
@@ -231,13 +260,19 @@ export default class Squad3DSimulation {
 
         const options = this.container.querySelector(".threeDOverlayOptions");
 
+        // Toggles restore a persisted value into `checked`, but that alone doesn't apply
+        // it - unlike gridResolution/textureName (read straight from `this.x` whenever
+        // the terrain/capzones next draw), visibility is only ever applied inside these
+        // setters, so a persisted "off" needs an explicit call here too.
         const capzonesToggle = options.querySelector(".threeDCapzonesToggle");
         capzonesToggle.checked = this.capzonesVisible;
+        this._setCapzonesVisible(this.capzonesVisible);
         capzonesToggle.addEventListener("change", () => this._setCapzonesVisible(capzonesToggle.checked));
 
         this.minimap = this.container.querySelector(".threeDMinimap");
         const minimapToggle = options.querySelector(".threeDMinimapToggle");
         minimapToggle.checked = this.minimapVisible;
+        this._setMinimapVisible(this.minimapVisible);
         minimapToggle.addEventListener("change", () => this._setMinimapVisible(minimapToggle.checked));
 
         const pathToggle = options.querySelector(".threeDPathToggle");
@@ -330,7 +365,7 @@ export default class Squad3DSimulation {
     async _loadTerrain(activeMap) {
         const base = `${process.env.API_URL}${activeMap.mapURL}`;
         this._heightScale = activeMap.SDK_data?.landscapeScale?.[2] ?? 1;
-        this.minimapImage.src = `${base}basemap.webp`;
+        this.minimapImage.src = `${base}basemap.webp`; // instant placeholder while the map loads - see open()'s _updateMinimapImage()
 
         const [heightBuffer, texture] = await Promise.all([
             fetch(`${base}heightmap.png`).then((response) => response.arrayBuffer()),
@@ -353,6 +388,20 @@ export default class Squad3DSimulation {
         const groundY = this.terrainHeightAt(0.5, 0.5);
         this.camera.position.set(0, groundY + 200, 0);
         this.camera.lookAt(0, groundY + 200, -1);
+    }
+
+
+    /**
+     * Points the minimap image at the selected layer's own thumbnail (the same one the
+     * layer-info dialog uses) instead of the bare map basemap, so the minimap actually
+     * shows the flags/capzones for that layer. Falls back to the basemap with no layer.
+     * @param {?SquadLayer} layer
+     * @param {object} activeMap
+     */
+    _updateMinimapImage(layer, activeMap) {
+        this.minimapImage.src = layer?.layerData?.rawName
+            ? `${process.env.API_URL}/img/thumbnails/${encodeURIComponent(layer.layerData.rawName)}.webp`
+            : `${process.env.API_URL}${activeMap.mapURL}basemap.webp`;
     }
 
 
@@ -380,8 +429,6 @@ export default class Squad3DSimulation {
         }
         const material = new THREE.MeshStandardMaterial({ map: this._terrainTexture, roughness: 0.9, metalness: 0 });
         this.terrainMesh = new THREE.Mesh(geometry, material);
-        this.terrainMesh.receiveShadow = true;
-        this.terrainMesh.castShadow = true;
         this.scene.add(this.terrainMesh);
     }
 
@@ -395,9 +442,11 @@ export default class Squad3DSimulation {
     _setResolution(resolution) {
         if (resolution === this.gridResolution || !this._heightmapPng) return;
         this.gridResolution = resolution;
+        localStorage.setItem(STORAGE_KEYS.gridResolution, resolution);
         this._rebuildTerrainMesh();
         this._drawCapzones(this._lastLayer, this._lastActiveMap);
         this._drawFlagPath(this._lastLayer, this._lastActiveMap);
+        this._drawDeployables(this._lastLayer, this._lastActiveMap);
     }
 
 
@@ -422,6 +471,7 @@ export default class Squad3DSimulation {
         texture.colorSpace = THREE.SRGBColorSpace;
 
         this.textureName = name;
+        localStorage.setItem(STORAGE_KEYS.textureName, name);
         this._terrainTexture.dispose();
         this._terrainTexture = texture;
         this.terrainMesh.material.map = texture;
@@ -435,6 +485,7 @@ export default class Squad3DSimulation {
      */
     _setCapzonesVisible(visible) {
         this.capzonesVisible = visible;
+        localStorage.setItem(STORAGE_KEYS.capzonesVisible, visible ? "1" : "0");
         this.capzoneGroup.visible = visible;
         this.labelGroup.visible = visible;
     }
@@ -446,6 +497,7 @@ export default class Squad3DSimulation {
      */
     _setMinimapVisible(visible) {
         this.minimapVisible = visible;
+        localStorage.setItem(STORAGE_KEYS.minimapVisible, visible ? "1" : "0");
         this.minimap.hidden = !visible;
     }
 
@@ -456,6 +508,7 @@ export default class Squad3DSimulation {
      */
     _setPathVisible(visible) {
         this.pathVisible = visible;
+        localStorage.setItem(STORAGE_KEYS.pathVisible, visible ? "1" : "0");
         if (this.pathLine) this.pathLine.visible = visible;
     }
 
@@ -792,6 +845,74 @@ export default class Squad3DSimulation {
         }
         this.pathLine.visible = this.pathVisible;
         this.scene.add(this.pathLine);
+    }
+
+
+    /**
+     * Loads (and caches) the glTF template model for one deployable type, from
+     * DEPLOYABLE_MODELS. Only fetched once per type for the simulation's lifetime -
+     * every placed instance is a clone() sharing this template's geometry/material.
+     * @param {string} type - a DEPLOYABLE_MODELS key, e.g. "Ammo Crate"
+     * @returns {Promise<THREE.Object3D>}
+     */
+    _loadDeployableModel(type) {
+        if (!this._deployableModels[type]) {
+            this._deployableModels[type] = new GLTFLoader()
+                .loadAsync(DEPLOYABLE_MODELS[type])
+                .then((gltf) => gltf.scene);
+        }
+        return this._deployableModels[type];
+    }
+
+
+    /**
+     * Places 3D models for deployable assets (see DEPLOYABLE_MODELS) from
+     * layerData.assets.deployables - the same flat array and "type" field
+     * squadLayer.js's createDeployables() reads for the 2D icons - plus
+     * layerData.assets.helipads (createHelipads()'s own separate array).
+     * @param {?SquadLayer} layer
+     * @param {object} activeMap
+     */
+    async _drawDeployables(layer, activeMap) {
+        this.deployableGroup.clear();
+
+        if (!layer) return;
+        const corner0 = activeMap.SDK_data?.minimap?.corner0;
+        const deployables = layer.layerData?.assets?.deployables ?? [];
+        const helipads = layer.layerData?.assets?.helipads ?? [];
+        if (!corner0 || (!deployables.length && !helipads.length)) return;
+
+        const byType = {};
+        for (const asset of deployables) {
+            if (!DEPLOYABLE_MODELS[asset.type]) continue;
+            (byType[asset.type] ??= []).push(asset);
+        }
+        // Helipads are their own array, not part of deployables, and their own "type"
+        // field is a per-pad id (e.g. "Team1HelicopterRepairPad1"), not a model selector -
+        // every entry here is a helipad.
+        if (helipads.length) (byType.Helipad ??= []).push(...helipads);
+        if (!Object.keys(byType).length) return;
+
+        const zOffset = this._calibrateZOffset(layer, activeMap, corner0);
+
+        for (const [type, assets] of Object.entries(byType)) {
+            const template = await this._loadDeployableModel(type);
+
+            // The layer may have changed (or the dialog closed) while the model was
+            // loading - drop this batch rather than place stale instances on top of
+            // whatever _drawDeployables() ran for the new layer in the meantime.
+            if (this._lastLayer !== layer) return;
+
+            for (const asset of assets) {
+                const { x, z } = this._gameToWorldXZ(asset.location_x, asset.location_y, corner0);
+                const y = asset.location_z / 100 + zOffset;
+
+                const model = template.clone();
+                model.position.set(x, y, z);
+                model.rotation.y = -THREE.MathUtils.degToRad(asset.rotation_z ?? 0);
+                this.deployableGroup.add(model);
+            }
+        }
     }
 
 

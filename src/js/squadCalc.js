@@ -1057,6 +1057,7 @@ export default class SquadCalc {
             this.simulation3D.open(this.minimap.activeMap, this.minimap.layer);
             this.updateUrlParams({ "3d": "" });
         });
+        $(".threeDQuitButton").on("click", () => threeDDialog.close());
         $(".layerCommandCopyBtn").on("click", (event) => {
             const input = event.currentTarget.closest(".layerCommandRow").querySelector("input");
             if (navigator.clipboard?.writeText) {

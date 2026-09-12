@@ -7,7 +7,8 @@
 
     <div class="threeDViewport">
         <div class="threeDLoading" hidden>
-            <p data-i18n="common:threeDLoading">Loading map&hellip;</p>
+            <div class="threeDLoadingSpinner"></div>
+            <p data-i18n="common:threeDLoading">Loading 3D World&hellip;</p>
         </div>
         <div class="threeDOverlay">
             <div class="threeDOverlayCard">
@@ -49,6 +50,7 @@
                         <select class="threeDResolutionSelect">
                             <option value="512">512</option>
                             <option value="1024">1024</option>
+                            <option value="1536">1536</option>
                             <option value="2048" selected>2048</option>
                         </select>
                     </label>
@@ -62,6 +64,7 @@
                 </div>
 
                 <button type="button" class="threeDGoButton" data-i18n="common:threeDGo">Go</button>
+                <button type="button" class="threeDQuitButton" data-i18n="common:threeDQuit">Quit</button>
             </div>
         </div>
         <div class="threeDSpeedHUD">
