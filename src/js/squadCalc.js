@@ -855,7 +855,7 @@ export default class SquadCalc {
 
         // DEBUG: auto-open the 3D dialog on load. Remove once the feature is done.
         threeDDialog.showModal();
-        this.simulation3D.open(this.minimap.activeMap);
+        this.simulation3D.open(this.minimap.activeMap, this.minimap.layer);
 
         $(".btn-delete, .btn-undo, .btn-layer, .btn-layer-info, .returnBtn, #mapLayerMenu").hide();
 
@@ -1046,7 +1046,7 @@ export default class SquadCalc {
             threeDTooltips.hide();
             threeDTooltips.disable();
             threeDDialog.showModal();
-            this.simulation3D.open(this.minimap.activeMap);
+            this.simulation3D.open(this.minimap.activeMap, this.minimap.layer);
         });
         $(".layerCommandCopyBtn").on("click", (event) => {
             const input = event.currentTarget.closest(".layerCommandRow").querySelector("input");

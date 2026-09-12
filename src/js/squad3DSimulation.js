@@ -61,6 +61,8 @@ export default class Squad3DSimulation {
         this.heights = null;
         this.sky = null;
         this.sunLight = null;
+        this.capzoneGroup = null;
+        this.labelGroup = null;
         this.sunDir = new THREE.Vector3();
         this._minimapForward = new THREE.Vector3();
         this.loadedMapURL = null;
@@ -81,8 +83,9 @@ export default class Squad3DSimulation {
      * Opens the simulation for the given map, (re)building the terrain only if the
      * map changed since the last open.
      * @param {object} activeMap - SquadMinimap's activeMap (mapURL, SDK_data.landscapeScale, size)
+     * @param {?SquadLayer} layer - the currently selected layer, if any - drives the capzone overlay
      */
-    async open(activeMap) {
+    async open(activeMap, layer = null) {
         if (!this.renderer) this._initScene();
 
         if (this.loadedMapURL !== activeMap.mapURL) {
@@ -97,6 +100,9 @@ export default class Squad3DSimulation {
                 this.loadingScreen.hidden = true;
             }
         }
+
+        // Cheap enough to redo every open() - the layer can change independently of the map.
+        this._drawCapzones(layer, activeMap);
 
         this.overlay.hidden = false;
         window.addEventListener("resize", this._onResize);
@@ -128,13 +134,13 @@ export default class Squad3DSimulation {
         this.renderer = new THREE.WebGLRenderer({ antialias: true });
         this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
-        this.renderer.toneMappingExposure = 0.5;
+        this.renderer.toneMappingExposure = 1.1;
         this.renderer.shadowMap.enabled = true;
         this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
         this.container.appendChild(this.renderer.domElement);
 
-        this.scene.add(new THREE.AmbientLight(0xffffff, 0.5));
-        this.sunLight = new THREE.DirectionalLight(0xffffff, 1.6);
+        this.scene.add(new THREE.AmbientLight(0xffffff, 0.8));
+        this.sunLight = new THREE.DirectionalLight(0xffffff, 2.2);
         this.sunLight.castShadow = true;
         this.sunLight.shadow.mapSize.set(2048, 2048);
         this.scene.add(this.sunLight);
@@ -142,11 +148,16 @@ export default class Squad3DSimulation {
         this.sky = new Sky();
         this.sky.scale.setScalar(20000);
         this.sky.material.uniforms.turbidity.value = 4;
-        this.sky.material.uniforms.rayleigh.value = 4;
-        this.sky.material.uniforms.mieCoefficient.value = 0.003;
-        this.sky.material.uniforms.mieDirectionalG.value = 0.7;
+        this.sky.material.uniforms.rayleigh.value = 3;
+        this.sky.material.uniforms.mieCoefficient.value = 0.005;
+        this.sky.material.uniforms.mieDirectionalG.value = 0.8;
         this.scene.add(this.sky);
         this._updateSun();
+
+        this.capzoneGroup = new THREE.Group();
+        this.scene.add(this.capzoneGroup);
+        this.labelGroup = new THREE.Group();
+        this.scene.add(this.labelGroup);
 
         this.clock = new THREE.Clock();
         this.controls = new PointerLockControls(this.camera, this.renderer.domElement);
@@ -293,6 +304,134 @@ export default class Squad3DSimulation {
         const groundY = this.terrainHeightAt(0.5, 0.5);
         this.camera.position.set(0, groundY + 1.7, 0);
         this.camera.lookAt(0, groundY + 1.7, -1);
+    }
+
+
+    /**
+     * Draws each AAS objective's capture-zone boxes as translucent 3D volumes, plus a
+     * billboarded name label floating above each one. Unlike the 2D map (see
+     * squadCapZone.js), each shape is drawn on its own - merging overlapping shapes into
+     * one outline only matters for a flat 2D outline.
+     * @param {?SquadLayer} layer
+     * @param {object} activeMap
+     */
+    _drawCapzones(layer, activeMap) {
+        this.capzoneGroup.children.forEach((mesh) => {
+            mesh.geometry.dispose();
+            mesh.material.dispose();
+            const edges = mesh.children[0];
+            edges.geometry.dispose();
+            edges.material.dispose();
+        });
+        this.capzoneGroup.clear();
+
+        this.labelGroup.children.forEach((sprite) => {
+            sprite.material.map.dispose();
+            sprite.material.dispose();
+        });
+        this.labelGroup.clear();
+
+        if (!layer || layer.gamemode !== "AAS") return;
+        const corner0 = activeMap.SDK_data?.minimap?.corner0;
+        if (!corner0) return;
+
+        const boxMaterial = new THREE.MeshBasicMaterial({
+            color: 0x22ccff, transparent: true, opacity: 0.28, depthWrite: false
+        });
+        const edgeMaterial = new THREE.LineBasicMaterial({ color: 0x22ccff });
+        const LABEL_MARGIN = 8; // meters above the tallest box, so it clears the volume
+
+        for (const objective of Object.values(layer.objectives ?? {})) {
+            const objectivePos = this._gameToWorldXZ(objective.location_x, objective.location_y, corner0);
+            let topY = this.terrainHeightAt(objectivePos.u, objectivePos.v);
+
+            for (const shape of objective.objects ?? []) {
+                if (!shape.isBox) continue;
+
+                const { x, z, u, v } = this._gameToWorldXZ(shape.location_x, shape.location_y, corner0);
+                const extent = shape.boxExtent ?? {};
+                const sizeX = (extent.extent_x ?? 0) / 100 * (extent.scaling_x ?? 1) * 2;
+                const sizeY = (extent.extent_y ?? 0) / 100 * (extent.scaling_y ?? 1) * 2;
+                const sizeZ = (extent.extent_z ?? 0) / 100 * (extent.scaling_z ?? 1) * 2;
+
+                const geometry = new THREE.BoxGeometry(sizeX, sizeZ, sizeY);
+                const mesh = new THREE.Mesh(geometry, boxMaterial);
+                mesh.add(new THREE.LineSegments(new THREE.EdgesGeometry(geometry), edgeMaterial));
+
+                // Rests on our own decoded heightmap rather than the box's raw location_z:
+                // that raw value's datum isn't consistent across maps (matched the terrain
+                // within ~2m on AlBasrah, but sat ~70m below it on Anvil), so it can't be
+                // trusted as an absolute height on its own.
+                const groundY = this.terrainHeightAt(u, v);
+                mesh.position.set(x, groundY + sizeZ / 2, z);
+                // Sign unverified against an in-game reference - flip if boxes look mirrored/rotated wrong.
+                mesh.rotation.y = -THREE.MathUtils.degToRad(extent.rotation_z ?? 0);
+
+                this.capzoneGroup.add(mesh);
+                topY = Math.max(topY, groundY + sizeZ);
+            }
+
+            const label = this._createLabelSprite(objective.name ?? objective.objectDisplayName ?? "");
+            label.position.set(objectivePos.x, topY + LABEL_MARGIN, objectivePos.z);
+            this.labelGroup.add(label);
+        }
+    }
+
+
+    /**
+     * A billboarded text label (always faces the camera - THREE.Sprite's default behavior)
+     * for a flag name, rendered on top of everything so distance/terrain never occludes it.
+     * @param {string} text
+     * @returns {THREE.Sprite}
+     */
+    _createLabelSprite(text) {
+        const fontSize = 48;
+        const paddingX = 24;
+        const paddingY = 16;
+
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+        ctx.font = `bold ${fontSize}px sans-serif`;
+        canvas.width = Math.ceil(ctx.measureText(text).width) + paddingX * 2;
+        canvas.height = fontSize + paddingY * 2;
+
+        // Sizing the canvas resets its 2D context, so the font has to be set again.
+        ctx.font = `bold ${fontSize}px sans-serif`;
+        ctx.fillStyle = "rgba(0, 0, 0, 0.6)";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = "white";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(text, canvas.width / 2, canvas.height / 2 + 2);
+
+        const texture = new THREE.CanvasTexture(canvas);
+        texture.colorSpace = THREE.SRGBColorSpace;
+        const material = new THREE.SpriteMaterial({ map: texture, depthTest: false, depthWrite: false });
+        const sprite = new THREE.Sprite(material);
+
+        const worldHeight = 6; // meters
+        sprite.scale.set(worldHeight * (canvas.width / canvas.height), worldHeight, 1);
+        return sprite;
+    }
+
+
+    /**
+     * Converts a raw game-unit location (cm, Unreal-style) to this map's world space
+     * (meters, origin at map center) - the same transform squadLayer.js's
+     * convertToLatLng()/getLayerOffsets() use for the 2D map, collapsed to one map-level
+     * offset (SDK_data.minimap.corner0) since the per-layer texture-origin term cancels out.
+     * @param {number} locationX
+     * @param {number} locationY
+     * @param {[number, number]} corner0 - activeMap.SDK_data.minimap.corner0, in meters
+     * @returns {{x: number, z: number, u: number, v: number}} world X/Z (meters) and the
+     * normalized (u, v) fraction terrainHeightAt() takes
+     */
+    _gameToWorldXZ(locationX, locationY, corner0) {
+        const metersX = locationX / 100 - corner0[0];
+        const metersY = locationY / 100 - corner0[1];
+        const u = metersX / this.terrainSize;
+        const v = metersY / this.terrainSize;
+        return { x: metersX - this.terrainSize / 2, z: metersY - this.terrainSize / 2, u, v };
     }
 
 
