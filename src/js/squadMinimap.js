@@ -153,6 +153,11 @@ export const squadMinimap = Map.extend({
             $(".btn-hd").toggleClass("active", App.userSettings.highQualityImages);
         }
 
+        // Some maps (e.g. fully underground ones) have no meaningful surface terrain -
+        // same locked-but-hoverable treatment as .btn-hd above, so the tooltip can still
+        // explain why.
+        $(".btn-3d").toggleClass("locked", this.activeMap.no3D === true);
+
         // load map
         this.changeLayer(true);
     },

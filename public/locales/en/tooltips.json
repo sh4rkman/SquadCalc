@@ -62,6 +62,7 @@
     "toggleLayer": "Show/Hide layer",
     "layerInfo": "Layer Information",
     "view3D": "3D View",
+    "view3DUnavailable": "3D View isn't available for this map",
     "fileNotSupported": "File not supported",
     "openIssue": "Report an issue on Github/Discord if you think this is a bug",
     "mapSaved": "Map saved to file",

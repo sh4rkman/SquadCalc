@@ -450,6 +450,11 @@
             font-size: 0.85em;
             font-weight: 700;
             letter-spacing: 0.02em;
+            // The shared :disabled/.locked rule above only dims an svg path's fill - this
+            // button has plain text instead, so it needs its own dimmed color here.
+            &.locked {
+                color: #555;
+            }
         }
         &#btn-map-choices svg {
             width: 1.3em;

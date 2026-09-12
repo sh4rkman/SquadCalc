@@ -125,9 +125,24 @@ export default class SquadCalc {
      * after the map loads if the URL has no layer, or after the layer loads if it does.
      */
     _openInitial3D() {
-        if (!this.urlIntent.threeD) return;
+        if (!this.urlIntent.threeD || this.minimap.activeMap.no3D) return;
         this._dialogs.threeD.showModal();
-        this.simulation3D.open(this.minimap.activeMap, this.minimap.layer);
+        this.simulation3D.open(this.minimap.activeMap, this.minimap.layer, this.minimap);
+    }
+
+    /**
+     * Opens the 3D view - shared by the map's own "3D" button and the target dialog's
+     * "See in 3D" button (squadTargetMarker.js, via App.open3D()).
+     * @param {?{firingSolution: object, angleType: string}} [arcRequest] - draws a
+     * single projectile arc for this exact weapon/target/angle - see
+     * Squad3DSimulation.open()/_drawProjectileArc()
+     */
+    open3D(arcRequest = null) {
+        threeDTooltips.hide();
+        threeDTooltips.disable();
+        this._dialogs.threeD.showModal();
+        this.simulation3D.open(this.minimap.activeMap, this.minimap.layer, this.minimap, arcRequest);
+        this.updateUrlParams({ "3d": "" });
     }
 
     initServerMode(serverId, sessionId = null) {
@@ -1051,11 +1066,8 @@ export default class SquadCalc {
             layerInfoDialog.showModal();
         });
         $(".btn-3d").on("click", () => {
-            threeDTooltips.hide();
-            threeDTooltips.disable();
-            threeDDialog.showModal();
-            this.simulation3D.open(this.minimap.activeMap, this.minimap.layer);
-            this.updateUrlParams({ "3d": "" });
+            if ($(".btn-3d").hasClass("locked")) return;
+            this.open3D();
         });
         $(".threeDQuitButton").on("click", () => threeDDialog.close());
         $(".layerCommandCopyBtn").on("click", (event) => {

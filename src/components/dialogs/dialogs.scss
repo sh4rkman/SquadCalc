@@ -293,10 +293,17 @@ dialog {
             font-size: 1.05em;
             h3 {
                 margin: 0;
+                padding: 0;
                 font-size: 1.3em;
                 letter-spacing: 0.02em;
             }
             p { margin: 0; }
+        }
+        .threeDOverlaySubtitle {
+            margin-top: -0.8em;
+            padding-bottom: 0.5em;
+            font-size: 0.95em;
+            opacity: 0.65;
         }
         .threeDOverlayDivider {
             width: 100%;
@@ -364,6 +371,7 @@ dialog {
             select {
                 box-sizing: border-box;
                 height: 22px;
+                width: 8em;
                 background: rgba(255, 255, 255, 0.1);
                 color: variables.$mainTxtColor;
                 border: 1px solid rgba(255, 255, 255, 0.25);
@@ -428,18 +436,18 @@ dialog {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 0.35em;
+            gap: 0.5em;
             background: rgba(0, 0, 0, 0.6);
             color: variables.$mainTxtColor;
-            padding: 0.5em 1em;
-            border-radius: 8px;
+            padding: 0.9em 1.6em;
+            border-radius: 10px;
             opacity: 0;
             pointer-events: none;
             transition: opacity 0.2s ease;
             &.visible { opacity: 1; }
         }
         .threeDSpeedHUDLabel {
-            font-size: 0.75em;
+            font-size: 1.05em;
             text-transform: uppercase;
             letter-spacing: 0.05em;
             opacity: 0.75;
@@ -447,23 +455,23 @@ dialog {
         .threeDSpeedHUDRow {
             display: flex;
             align-items: center;
-            gap: 0.7em;
+            gap: 1em;
         }
         .threeDSpeedHUDBar {
-            width: 140px;
-            height: 6px;
+            width: 220px;
+            height: 10px;
             background: rgba(255, 255, 255, 0.2);
-            border-radius: 3px;
+            border-radius: 5px;
             overflow: hidden;
         }
         .threeDSpeedHUDFill {
             height: 100%;
             background: variables.$mainColor;
-            border-radius: 3px;
+            border-radius: 5px;
         }
         .threeDSpeedHUDValue {
-            font-size: 0.85em;
-            min-width: 3.5ch;
+            font-size: 1.15em;
+            min-width: 4ch;
             text-align: right;
         }
         .threeDMinimap {
@@ -584,6 +592,32 @@ dialog {
         max-width: 100%;
         margin-bottom: -5px;
         transform: rotate(180deg) scaleX(-1);
+    }
+    .heightGraphWrapper {
+        position: relative;
+        clear: both;
+    }
+    .seeIn3DButton {
+        position: absolute;
+        top: 1.5em;
+        left: 1.5em;
+        z-index: 1;
+        padding: 0.9em;
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        border-radius: 4px;
+        background: rgba(17, 17, 17, 0.75);
+        backdrop-filter: blur(6px);
+        color: #fff;
+        font-size: 0.85em;
+        font-weight: bold;
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+        cursor: pointer;
+        transition: background-color 0.15s ease;
+
+        @media (hover: hover) {
+            &:hover { background: variables.$mainColor; }
+        }
     }
 }
 

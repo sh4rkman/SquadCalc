@@ -292,7 +292,8 @@ export const threeDTooltips = tippy(".btn-3d", {
     ...commonMapMenuToolipsSettings,
     placement: "left",
     onShow(tip) {
-        tip.setContent(i18next.t("tooltips:view3D"));
+        const locked = tip.reference.classList.contains("locked");
+        tip.setContent(i18next.t(locked ? "tooltips:view3DUnavailable" : "tooltips:view3D"));
     },
 })[0];
 tippy(".btn-legacy", {

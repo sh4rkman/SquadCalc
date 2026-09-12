@@ -27,6 +27,23 @@ const LABEL_WORLD_HEIGHT = 12;
 // Flag-path pipe radius (5m diameter) - see _drawFlagPath().
 const PATH_RADIUS = 2.5;
 
+// Billboard size (meters) for a placed weapon/target marker's icon sprite - see _drawMarkers().
+const MARKER_WORLD_SIZE = 18;
+
+// Target markers read slightly smaller than weapon markers, to visually rank behind them.
+const TARGET_MARKER_WORLD_SIZE = MARKER_WORLD_SIZE * 0.75;
+
+// Meters a target's spread ellipse floats above the ground, just enough to avoid
+// z-fighting with the terrain - see _drawTargetSpreads().
+const SPREAD_GROUND_OFFSET = 0.2;
+
+// Projectile arc tube radius (meters) - see _drawProjectileArc().
+const ARC_TUBE_RADIUS = 0.8;
+
+// Horizontal/vertical offset (meters) of the camera spawn from a placed weapon - see
+// _spawnCamera(). Equal on both axes for an exact 45-degree down angle.
+const WEAPON_SPAWN_DISTANCE = 150;
+
 // Deployable models, one glTF per asset type. Only "Ammo Crate" for now - add other
 // deployables.assets .type values here as models for them show up.
 const DEPLOYABLE_MODELS = {
@@ -109,6 +126,9 @@ export default class Squad3DSimulation {
         this.labelGroup = null;
         this.pathLine = null;
         this.deployableGroup = null;
+        this.markerGroup = null;
+        this.spreadGroup = null;
+        this.arcGroup = null;
         this.capzonesVisible = loadSetting(STORAGE_KEYS.capzonesVisible, "1") === "1";
         this.minimapVisible = loadSetting(STORAGE_KEYS.minimapVisible, "1") === "1";
         this.pathVisible = loadSetting(STORAGE_KEYS.pathVisible, "1") === "1";
@@ -116,6 +136,10 @@ export default class Squad3DSimulation {
         // Deployable glTF templates, cached and loaded once per asset type - see
         // _drawDeployables(). Instances are shallow clones sharing this geometry/material.
         this._deployableModels = {};
+
+        // Weapon/target marker icon textures, cached and loaded once per icon URL - see
+        // _drawMarkers().
+        this._markerIconTextures = {};
         this.sunDir = new THREE.Vector3();
         this._minimapForward = new THREE.Vector3();
         this.loadedMapURL = null;
@@ -129,6 +153,7 @@ export default class Squad3DSimulation {
         this._terrainTexture = null;
         this._lastLayer = null;
         this._lastActiveMap = null;
+        this._lastMinimap = null;
 
         // Fly-camera movement state, keyed by the action names in KEY_BINDINGS.
         this.move = { forward: false, back: false, left: false, right: false, up: false, down: false };
@@ -145,11 +170,16 @@ export default class Squad3DSimulation {
      * map changed since the last open.
      * @param {object} activeMap - SquadMinimap's activeMap (mapURL, SDK_data.landscapeScale, size)
      * @param {?SquadLayer} layer - the currently selected layer, if any - drives the capzone overlay
+     * @param {?object} minimap - SquadMinimap instance, if any - drives the placed weapon/target markers overlay
+     * @param {?{firingSolution: object, angleType: string}} [arcRequest] - draws a single
+     * projectile arc for this exact weapon/target/angle, from the target dialog's
+     * "See in 3D" button (squadTargetMarker.js) - see _drawProjectileArc()
      */
-    async open(activeMap, layer = null) {
+    async open(activeMap, layer = null, minimap = null, arcRequest = null) {
         if (!this.renderer) this._initScene();
         this._lastLayer = layer;
         this._lastActiveMap = activeMap;
+        this._lastMinimap = minimap;
 
         if (this.loadedMapURL !== activeMap.mapURL) {
             // Covers the still-visible last frame of the previous map (the canvas keeps
@@ -169,6 +199,10 @@ export default class Squad3DSimulation {
         this._drawFlagPath(layer, activeMap);
         this._updateMinimapImage(layer, activeMap);
         this._drawDeployables(layer, activeMap);
+        this._drawMarkers(minimap, activeMap);
+        this._drawTargetSpreads(minimap, activeMap);
+        this._drawProjectileArc(arcRequest, minimap, activeMap);
+        this._spawnCamera(activeMap, minimap, arcRequest);
 
         this.overlay.hidden = false;
         window.addEventListener("resize", this._onResize);
@@ -229,6 +263,12 @@ export default class Squad3DSimulation {
         this.scene.add(this.labelGroup);
         this.deployableGroup = new THREE.Group();
         this.scene.add(this.deployableGroup);
+        this.markerGroup = new THREE.Group();
+        this.scene.add(this.markerGroup);
+        this.spreadGroup = new THREE.Group();
+        this.scene.add(this.spreadGroup);
+        this.arcGroup = new THREE.Group();
+        this.scene.add(this.arcGroup);
 
         this.clock = new THREE.Clock();
         this.controls = new PointerLockControls(this.camera, this.renderer.domElement);
@@ -382,12 +422,85 @@ export default class Squad3DSimulation {
         this._updateSun();
         this._rebuildTerrainMesh();
 
+    }
+
+
+    /**
+     * Places the camera on every open(). Spawns on the map-center side of a focus
+     * point, 50m above the ground and 50m horizontally back towards the center (an
+     * exact 45-degree down angle), looking at it - the focus point is the arc's target
+     * when opened from the "See in 3D" button (arcRequest), otherwise the first weapon
+     * placed on the 2D map. Falls back to a plain overview 200m above the map's
+     * center, facing north, when neither exists.
+     * @param {object} activeMap
+     * @param {?object} minimap - SquadMinimap instance, if any
+     * @param {?{firingSolution: object, angleType: string}} [arcRequest]
+     */
+    _spawnCamera(activeMap, minimap, arcRequest = null) {
+        const corner0 = activeMap.SDK_data?.minimap?.corner0;
+        const focusLatLng = arcRequest
+            ? arcRequest.firingSolution.targetLatLng
+            : minimap?.activeWeaponsMarkers?.getLayers()?.[0]?.getLatLng();
+
+        if (focusLatLng && corner0) {
+            const { x, z, u, v } = this._latLngToWorldXZ(focusLatLng.lat, focusLatLng.lng, minimap, corner0);
+            const groundY = this.terrainHeightAt(u, v);
+
+            // Horizontal direction from the focus point towards the map's center (world
+            // origin) - the camera sits WEAPON_SPAWN_DISTANCE along it, and the same
+            // distance above ground, so the vertical and horizontal offsets from it
+            // match (45 degrees down).
+            const toCenter = new THREE.Vector2(-x, -z);
+            if (toCenter.lengthSq() < 1) toCenter.set(0, -1);
+            toCenter.normalize();
+
+            this.camera.position.set(
+                x + toCenter.x * WEAPON_SPAWN_DISTANCE,
+                groundY + WEAPON_SPAWN_DISTANCE,
+                z + toCenter.y * WEAPON_SPAWN_DISTANCE
+            );
+            this.camera.lookAt(x, groundY + MARKER_WORLD_SIZE / 2, z);
+            return;
+        }
+
         // Drop the camera 200m above the map's center, facing north, instead of at eye
         // height or a far-away overview - high enough to get a lay of the land right away
         // without clipping into terrain on a hilly map.
         const groundY = this.terrainHeightAt(0.5, 0.5);
         this.camera.position.set(0, groundY + 200, 0);
         this.camera.lookAt(0, groundY + 200, -1);
+    }
+
+
+    /**
+     * World X/Z (plus the (u, v) fraction terrainHeightAt() takes) for a Leaflet
+     * lat/lng - the inverse of squadLayer.js's convertToLatLng(), using the minimap's
+     * own scale factors since offset_x/offset_y there always equal corner0 * 100 (see
+     * getLayerOffsets()), so no layer reference is needed here.
+     * @param {number} lat
+     * @param {number} lng
+     * @param {object} minimap - SquadMinimap instance
+     * @param {[number, number]} corner0 - activeMap.SDK_data.minimap.corner0
+     * @returns {{x: number, z: number, u: number, v: number}}
+     */
+    _latLngToWorldXZ(lat, lng, minimap, corner0) {
+        const locationX = (corner0[0] + lng / minimap.gameToMapScale) * 100;
+        const locationY = (corner0[1] - lat / minimap.gameToMapScaleY) * 100;
+        return this._gameToWorldXZ(locationX, locationY, corner0);
+    }
+
+
+    /**
+     * World X/Z (plus the (u, v) fraction terrainHeightAt() takes) for a placed weapon
+     * or target marker.
+     * @param {object} marker - a Leaflet marker, from minimap.activeWeaponsMarkers/activeTargetsMarkers
+     * @param {object} minimap - SquadMinimap instance
+     * @param {[number, number]} corner0 - activeMap.SDK_data.minimap.corner0
+     * @returns {{x: number, z: number, u: number, v: number}}
+     */
+    _markerWorldPosition(marker, minimap, corner0) {
+        const { lat, lng } = marker.getLatLng();
+        return this._latLngToWorldXZ(lat, lng, minimap, corner0);
     }
 
 
@@ -554,6 +667,14 @@ export default class Squad3DSimulation {
         });
         const mainEdgeMaterial = new THREE.LineBasicMaterial({ color: 0x0000cd, transparent: true, opacity: 0.35 });
 
+        // A flag that's "capped" - confirmed/selected in the lane solver's route, same
+        // SquadObjective.isSelected the 2D map renders with its "flag selected" style -
+        // turns green instead of the generic cyan.
+        const selectedBoxMaterial = new THREE.MeshBasicMaterial({
+            color: 0x22aa44, transparent: true, opacity: 0.28, depthWrite: false
+        });
+        const selectedEdgeMaterial = new THREE.LineBasicMaterial({ color: 0x22aa44, transparent: true, opacity: 0.35 });
+
         // location_z is the box's real (Unreal-absolute) height, but each map's landscape
         // sits at a different absolute world Z, and our decoded heightmap is relative to
         // that landscape's own local origin - so the two datums are offset by a per-map
@@ -564,6 +685,7 @@ export default class Squad3DSimulation {
         for (const objective of this._flattenObjectivePoints(layer)) {
             const objectivePos = this._gameToWorldXZ(objective.location_x, objective.location_y, corner0);
             const isMain = objective.name === "Main";
+            const isSelected = !isMain && layer.selectedFlags.some((flag) => flag.objCluster === objective);
 
             for (const shape of objective.objects ?? []) {
                 if (!shape.isBox && !shape.isSphere && !shape.isCapsule) continue;
@@ -593,8 +715,10 @@ export default class Squad3DSimulation {
                     geometry = new THREE.SphereGeometry(radius, 12, 8);
                 }
 
-                const mesh = new THREE.Mesh(geometry, isMain ? mainBoxMaterial : boxMaterial);
-                mesh.add(new THREE.LineSegments(new THREE.EdgesGeometry(geometry), isMain ? mainEdgeMaterial : edgeMaterial));
+                const boxMat = isMain ? mainBoxMaterial : isSelected ? selectedBoxMaterial : boxMaterial;
+                const edgeMat = isMain ? mainEdgeMaterial : isSelected ? selectedEdgeMaterial : edgeMaterial;
+                const mesh = new THREE.Mesh(geometry, boxMat);
+                mesh.add(new THREE.LineSegments(new THREE.EdgesGeometry(geometry), edgeMat));
                 mesh.position.set(x, centerY, z);
                 if (shape.isBox) {
                     // Sign unverified against an in-game reference - flip if boxes look mirrored/rotated wrong.
@@ -627,11 +751,8 @@ export default class Squad3DSimulation {
 
             const topY = this._objectiveTopY(objective, corner0, zOffset);
             const labelWorldHeight = isMain ? LABEL_WORLD_HEIGHT * 1.5 : LABEL_WORLD_HEIGHT;
-            const label = this._createLabelSprite(
-                this._objectiveLabelText(objective),
-                isMain ? "rgba(0, 0, 205, 0.7)" : undefined,
-                labelWorldHeight
-            );
+            const labelBg = isMain ? "rgba(0, 0, 205, 0.7)" : isSelected ? "rgba(34, 170, 68, 0.7)" : undefined;
+            const label = this._createLabelSprite(this._objectiveLabelText(objective), labelBg, labelWorldHeight);
             // Grows upward from the same bottom edge every label shares (see _drawFlagPath()'s
             // labelBottomY) rather than around a fixed center, so a bigger main label doesn't
             // dip lower and start crossing the flag-order path underneath it.
@@ -731,53 +852,43 @@ export default class Squad3DSimulation {
 
 
     /**
-     * Flattens layer.objectives to one entry per point (each with its own .objects[] and
-     * location_x/y/z), matching squadLayer.js's initRandomizedLayer(): on RAAS/Invasion,
-     * objectives are keyed by *cluster*, and the real points - one per random-route
-     * candidate - live under cluster.points[]; AAS objectives and mains have no .points
-     * and already are a single point. No dependency on the lane solver's confirmation
-     * state, so every candidate point in every cluster is included, not just the one a
-     * live match would actually pick.
-     *
-     * Some physical flags sit in more than one cluster's candidate list (they're reachable
-     * from several lane combinations) - each cluster gives its copy its own prefixed name
-     * (e.g. "A1-Monastery" vs "B1-Monastery" for the very same building, confirmed same
-     * location_x/y/z), so the same physical flag can otherwise show up twice here -
-     * stacking two identical translucent capzone shapes on top of each other and making
-     * that flag visibly more opaque than the rest. Deduped by location instead of name to
-     * draw each physical flag once.
-     *
-     * TC and Destruction have no layer.objectives at all (matching squadLayer.js's
-     * initTerritoryControl()/initDestruction()) - their two mains live only under
-     * capturePoints.points.objectives instead, so that's included too. Every other
-     * gamemode we draw capzones for leaves that field empty, so this is a no-op there.
+     * The physical flags currently "in play" - one entry per flag (each with its own
+     * .objects[] and location_x/y/z), sourced from layer.flags instead of raw
+     * layer.objectives so the 3D view matches whatever the 2D map is currently showing:
+     * - layer.flags already has exactly one SquadObjective per physical flag, for every
+     *   gamemode - squadLayer.js's initRandomizedLayer() merges same-location RAAS/
+     *   Invasion candidates from different clusters into one flag via addCluster()
+     *   instead of creating duplicates, so no location-based dedup is needed here anymore.
+     * - flags the lane solver has ruled out (SquadObjective.isHidden, toggled by
+     *   applySolverResult() as the user confirms a route) are skipped, same as the 2D map.
+     * - flag.objCluster is a direct reference to the same raw point/objective object this
+     *   method used to read straight from layer.objectives (location_x/y/z, .objects[],
+     *   name, objectDisplayName, pointPosition) - every existing caller keeps working
+     *   unchanged.
+     * - createMainObjective() pushes into layer.flags for every gamemode (AAS, RAAS/
+     *   Invasion, TC, Destruction, GLOP, TDM), so mains no longer need the separate
+     *   capturePoints.points.objectives branch this method used to have for TC/Destruction.
      * @param {SquadLayer} layer
      * @returns {object[]}
      */
     _flattenObjectivePoints(layer) {
-        const points = [...(layer.capturePoints?.points?.objectives ?? [])];
-        for (const objective of Object.values(layer.objectives ?? {})) {
-            if (objective.points) points.push(...objective.points);
-            else points.push(objective);
-        }
-
-        const seen = new Set();
-        return points.filter((point) => {
-            const key = `${point.location_x},${point.location_y},${point.location_z}`;
-            if (seen.has(key)) return false;
-            seen.add(key);
-            return true;
-        });
+        return (layer.flags ?? [])
+            .filter((flag) => !flag.isHidden)
+            .map((flag) => flag.objCluster);
     }
 
 
     /**
-     * Draws the fixed flag order for AAS/Seed/Skirmish ("predictive") layers as a chain of
-     * translucent 5m-diameter cylinder segments, one per link, floating just under each
-     * flag's label height, through capturePoints.points.links - the same field and node-
-     * by-displayName lookup squadLayer.js's initPredictiveLayer() uses to build its 2D
-     * polyline. RAAS/Invasion have no fixed order (their path only exists once the lane
-     * solver picks a route), so they're skipped entirely.
+     * Draws the flag-order path as one or more chains of translucent 5m-diameter cylinder
+     * segments, floating just under each flag's label height:
+     * - AAS/Seed/Skirmish ("predictive") layers have a fixed order, always fully known -
+     *   one continuous chain through capturePoints.points.links (node-by-displayName
+     *   lookup, same field squadLayer.js's initPredictiveLayer() uses for its 2D polyline).
+     * - RAAS/Invasion ("randomized") layers only have a path once the lane solver has a
+     *   perspective and the user starts confirming steps - mirrors squadLayer.js's
+     *   _drawPath(): one run per contiguous span of confirmed steps (a gap - an unconfirmed
+     *   depth - breaks the chain into separate runs, same as the 2D map), bracketed by
+     *   perspectiveMain at step 0 and the far main once the route is fully confirmed.
      * @param {?SquadLayer} layer
      * @param {object} activeMap
      */
@@ -789,22 +900,29 @@ export default class Squad3DSimulation {
             this.pathLine = null;
         }
 
-        if (!layer || !["AAS", "Seed", "Skirmish"].includes(layer.gamemode)) return;
-        const links = layer.capturePoints?.points?.links;
+        if (!layer) return;
         const corner0 = activeMap.SDK_data?.minimap?.corner0;
-        if (!links || !corner0) return;
+        if (!corner0) return;
 
-        const objectives = Object.values(layer.objectives ?? {});
-        const findByDisplayName = (name) => objectives.find((o) => o.objectDisplayName === name);
+        let runs;
+        if (["AAS", "Seed", "Skirmish"].includes(layer.gamemode)) {
+            runs = this._predictiveLinkRuns(layer);
+        } else if (layer.isRandomized) {
+            runs = this._confirmedChainRuns(layer);
+        } else {
+            return;
+        }
+        if (!runs.length) return;
+
         const zOffset = this._calibrateZOffset(layer, activeMap, corner0);
+        this.pathLine = new THREE.Group();
+        const material = new THREE.MeshBasicMaterial({
+            color: 0xffffff, transparent: true, opacity: 0.75, depthWrite: false
+        });
 
-        const points = [];
-        for (const link of Object.values(links)) {
-            const nodeA = findByDisplayName(link.nodeA);
-            const nodeB = findByDisplayName(link.nodeB);
-            if (!nodeA || !nodeB) continue;
-
-            for (const node of [nodeA, nodeB]) {
+        for (const run of runs) {
+            const points = [];
+            for (const node of run) {
                 const { x, z } = this._gameToWorldXZ(node.location_x, node.location_y, corner0);
                 const topY = this._objectiveTopY(node, corner0, zOffset);
                 // The label sprite is centered at topY + GROUND_CLEARANCE with half-height
@@ -814,23 +932,34 @@ export default class Squad3DSimulation {
                 const y = labelBottomY - PATH_RADIUS - 1.5;
                 const point = new THREE.Vector3(x, y, z);
 
-                // Links share endpoints (nodeB of one is nodeA of the next) - skip the
+                // Adjacent nodes can coincide (predictive links share endpoints) - skip the
                 // repeat so it doesn't become a zero-length cylinder below.
                 if (points.length === 0 || points[points.length - 1].distanceToSquared(point) > 1e-6) {
                     points.push(point);
                 }
             }
+            this._addPathRun(points, material);
         }
-        if (points.length < 2) return;
+        if (!this.pathLine.children.length) {
+            this.pathLine = null;
+            return;
+        }
 
-        // One independent cylinder per straight segment, not a single TubeGeometry along
-        // a CurvePath - a tube's frame twists visibly at a sharp corner between two
-        // sub-curves; separate cylinders have no shared frame to twist, at the cost of a
-        // small seam at each turn instead of a smooth joint.
-        const material = new THREE.MeshBasicMaterial({
-            color: 0xffffff, transparent: true, opacity: 0.75, depthWrite: false
-        });
-        this.pathLine = new THREE.Group();
+        this.pathLine.visible = this.pathVisible;
+        this.scene.add(this.pathLine);
+    }
+
+
+    /**
+     * Appends one independent cylinder per straight segment of `points` to this.pathLine -
+     * not a single TubeGeometry along a CurvePath, since a tube's frame twists visibly at a
+     * sharp corner between two sub-curves; separate cylinders have no shared frame to
+     * twist, at the cost of a small seam at each turn instead of a smooth joint.
+     * @param {THREE.Vector3[]} points
+     * @param {THREE.Material} material
+     */
+    _addPathRun(points, material) {
+        if (points.length < 2) return;
         const up = new THREE.Vector3(0, 1, 0);
         for (let i = 0; i < points.length - 1; i++) {
             const start = points[i];
@@ -843,8 +972,70 @@ export default class Squad3DSimulation {
             mesh.quaternion.setFromUnitVectors(up, offset.normalize());
             this.pathLine.add(mesh);
         }
-        this.pathLine.visible = this.pathVisible;
-        this.scene.add(this.pathLine);
+    }
+
+
+    /**
+     * The single continuous run of nodes for a predictive (AAS/Seed/Skirmish) layer's fixed
+     * flag order, walked through capturePoints.points.links.
+     * @param {SquadLayer} layer
+     * @returns {object[][]} zero or one run
+     */
+    _predictiveLinkRuns(layer) {
+        const links = layer.capturePoints?.points?.links;
+        if (!links) return [];
+
+        const objectives = this._flattenObjectivePoints(layer);
+        const findByDisplayName = (name) => objectives.find((o) => o.objectDisplayName === name);
+
+        const run = [];
+        for (const link of Object.values(links)) {
+            const nodeA = findByDisplayName(link.nodeA);
+            const nodeB = findByDisplayName(link.nodeB);
+            if (!nodeA || !nodeB) continue;
+            run.push(nodeA, nodeB);
+        }
+        return run.length ? [run] : [];
+    }
+
+
+    /**
+     * The confirmed-chain runs for a randomized (RAAS/Invasion) layer, mirroring
+     * squadLayer.js's _drawPath(): only points confirmed to a single resolved depth
+     * (flag.solverSteps().length === 1) count, bracketed by perspectiveMain at step 0 and
+     * the far main once the route is fully confirmed (_routeComplete()). A gap between two
+     * confirmed steps - a depth not confirmed yet - starts a new run instead of connecting
+     * across it, same as the 2D map never drawing a line over an unconfirmed leg.
+     * @param {SquadLayer} layer
+     * @returns {object[][]}
+     */
+    _confirmedChainRuns(layer) {
+        const points = layer.selectedFlags
+            .map((flag) => ({ steps: flag.solverSteps(), flag }))
+            .filter((p) => p.steps.length === 1)
+            .map((p) => ({ step: p.steps[0], node: p.flag.objCluster }))
+            .sort((a, b) => a.step - b.step);
+
+        if (points.length && layer.perspectiveMain) {
+            points.unshift({ step: 0, node: layer.perspectiveMain.objCluster });
+
+            const farMain = layer._farMain();
+            if (farMain && layer._routeComplete()) {
+                points.push({ step: layer.solver.stepCount + 1, node: farMain.objCluster });
+            }
+        }
+
+        const runs = [];
+        let run = [];
+        points.forEach((point, index) => {
+            if (index && point.step !== points[index - 1].step + 1) {
+                if (run.length > 1) runs.push(run);
+                run = [];
+            }
+            run.push(point.node);
+        });
+        if (run.length > 1) runs.push(run);
+        return runs;
     }
 
 
@@ -913,6 +1104,222 @@ export default class Squad3DSimulation {
                 this.deployableGroup.add(model);
             }
         }
+    }
+
+
+    /**
+     * Loads (and caches) the icon texture for one marker icon URL. Only fetched once
+     * per URL for the simulation's lifetime.
+     * @param {string} url
+     * @returns {Promise<THREE.Texture>}
+     */
+    _loadMarkerIconTexture(url) {
+        if (!this._markerIconTextures[url]) {
+            this._markerIconTextures[url] = new THREE.TextureLoader().loadAsync(url);
+        }
+        return this._markerIconTextures[url];
+    }
+
+
+    /**
+     * Places a camera-facing icon sprite for every weapon (mortar/artillery) and target
+     * marker currently placed on the 2D map (minimap.activeWeaponsMarkers /
+     * activeTargetsMarkers), dropped to ground level since a Leaflet-placed marker has
+     * no location_z. Snapshot taken once per open(), like every other overlay here -
+     * doesn't live-update while the dialog stays open.
+     * @param {?object} minimap - SquadMinimap instance
+     * @param {object} activeMap
+     */
+    async _drawMarkers(minimap, activeMap) {
+        this.markerGroup.clear();
+
+        const markers = [
+            ...(minimap?.activeWeaponsMarkers?.getLayers() ?? []).map((marker) => ({ marker, size: MARKER_WORLD_SIZE })),
+            ...(minimap?.activeTargetsMarkers?.getLayers() ?? []).map((marker) => ({ marker, size: TARGET_MARKER_WORLD_SIZE })),
+        ];
+        const corner0 = activeMap.SDK_data?.minimap?.corner0;
+        if (!corner0 || !markers.length) return;
+
+        for (const { marker, size } of markers) {
+            const { x, z, u, v } = this._markerWorldPosition(marker, minimap, corner0);
+            const y = this.terrainHeightAt(u, v) + size / 2;
+
+            const texture = await this._loadMarkerIconTexture(marker.getIcon().options.iconUrl);
+
+            // The map (or the dialog) may have changed while the texture was loading.
+            if (this._lastActiveMap !== activeMap) return;
+
+            const sprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: texture, transparent: true, depthWrite: false }));
+            sprite.scale.set(size, size, 1);
+            sprite.position.set(x, y, z);
+            this.markerGroup.add(sprite);
+        }
+    }
+
+
+    /**
+     * Draws each target's currently active spread ellipse(s) flat on the ground - the
+     * dispersion footprint squadTargetMarker.js already computes and shows on the 2D
+     * map (target.spreadMarker1/spreadMarker11/spreadMarker2), read directly instead of
+     * re-deriving which weapon/elevation solution is currently active. A "spread"
+     * ellipse is only ever drawn when squadTargetMarker.js's spreadOptionsOn style is
+     * applied (fillOpacity > 0) - the 100/25 damage radius circles use a different,
+     * always-unfilled style and are skipped here since they're not this ellipse array.
+     * @param {?object} minimap - SquadMinimap instance
+     * @param {object} activeMap
+     */
+    _drawTargetSpreads(minimap, activeMap) {
+        this.spreadGroup.clear();
+
+        const targets = minimap?.activeTargetsMarkers?.getLayers() ?? [];
+        const corner0 = activeMap.SDK_data?.minimap?.corner0;
+        if (!corner0 || !targets.length) return;
+
+        for (const target of targets) {
+            const { x, z } = this._markerWorldPosition(target, minimap, corner0);
+
+            for (const ellipse of [target.spreadMarker1, target.spreadMarker11, target.spreadMarker2]) {
+                if (!ellipse || !(ellipse.options.fillOpacity > 0)) continue;
+
+                // Ellipse radii live in the same lat/lng-scaled space as the 2D map
+                // (see squadTargetMarker.js's updateSpread(): semiMajorAxis * gameToMapScale)
+                // - dividing back by that same scale gives real-world meters.
+                const radius = ellipse.getRadius();
+                const radiusX = radius.x / minimap.gameToMapScale;
+                const radiusZ = radius.y / minimap.gameToMapScale;
+
+                const mesh = new THREE.Mesh(
+                    this._projectedEllipseGeometry(x, z, radiusX, radiusZ, ellipse._tiltDeg),
+                    new THREE.MeshBasicMaterial({
+                        color: 0xff2200,
+                        transparent: true,
+                        opacity: 0.28,
+                        side: THREE.DoubleSide,
+                        depthWrite: false,
+                    })
+                );
+                this.spreadGroup.add(mesh);
+            }
+        }
+    }
+
+
+    /**
+     * Filled-ellipse geometry draped over the terrain instead of a single flat plane -
+     * every vertex (built as concentric rings around the center, not just the outer
+     * edge, so the interior follows slopes too) is placed in world space with its own
+     * terrainHeightAt() sample, so the shape doesn't clip below the ground or float
+     * above it on hilly terrain.
+     * @param {number} centerX - world X of the ellipse's center
+     * @param {number} centerZ - world Z of the ellipse's center
+     * @param {number} radiusX - semi-axis (meters) along local +X (east) before tilt
+     * @param {number} radiusZ - semi-axis (meters) along local +Z (south) before tilt
+     * @param {number} tiltDeg - leaflet-ellipse.js's own _tiltDeg. World X/Z here match
+     * the Canvas renderer's pixel axes exactly (+X = east = lng, +Z = south = lat), so
+     * this rotates vertices with the identical formula _updateEllipse() applies via
+     * ctx.rotate(tilt) - no Three.js rotation.y sign flip involved, since these are
+     * plain manually-built world-space vertices, not a mesh.rotation.y Euler rotation.
+     * @param {number} [segments] - points per ring
+     * @param {number} [rings] - concentric rings between the center and the outer edge
+     * @returns {THREE.BufferGeometry}
+     */
+    _projectedEllipseGeometry(centerX, centerZ, radiusX, radiusZ, tiltDeg, segments = 48, rings = 4) {
+        const heightAt = (worldX, worldZ) => this.terrainHeightAt(
+            worldX / this.terrainSize + 0.5,
+            worldZ / this.terrainSize + 0.5
+        ) + SPREAD_GROUND_OFFSET;
+
+        const theta = THREE.MathUtils.degToRad(tiltDeg);
+        const cosT = Math.cos(theta);
+        const sinT = Math.sin(theta);
+
+        const positions = [centerX, heightAt(centerX, centerZ), centerZ];
+        for (let ring = 1; ring <= rings; ring++) {
+            const fraction = ring / rings;
+            for (let i = 0; i < segments; i++) {
+                const t = (i / segments) * Math.PI * 2;
+                const localX = radiusX * fraction * Math.cos(t);
+                const localZ = radiusZ * fraction * Math.sin(t);
+                const worldX = centerX + (localX * cosT - localZ * sinT);
+                const worldZ = centerZ + (localX * sinT + localZ * cosT);
+                positions.push(worldX, heightAt(worldX, worldZ), worldZ);
+            }
+        }
+
+        const vertexIndex = (ring, i) => (ring === 0 ? 0 : 1 + (ring - 1) * segments + (i % segments));
+        const indices = [];
+        for (let i = 0; i < segments; i++) indices.push(vertexIndex(0, 0), vertexIndex(1, i), vertexIndex(1, i + 1));
+        for (let ring = 1; ring < rings; ring++) {
+            for (let i = 0; i < segments; i++) {
+                const a = vertexIndex(ring, i);
+                const b = vertexIndex(ring, i + 1);
+                const c = vertexIndex(ring + 1, i);
+                const d = vertexIndex(ring + 1, i + 1);
+                indices.push(a, b, d, a, d, c);
+            }
+        }
+
+        const geometry = new THREE.BufferGeometry();
+        geometry.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
+        geometry.setIndex(indices);
+        return geometry;
+    }
+
+
+    /**
+     * Draws a single projectile arc between one weapon/target pair, from the target
+     * dialog's "See in 3D" button - the physics-shaped path a shot along
+     * firingSolution/angleType actually takes, not just a straight line.
+     *
+     * Horizontal position is a plain fraction-of-time lerp between the two ground
+     * points (exact, since horizontal velocity is constant - distance(t) is linear in
+     * t). Height uses the same projectile motion the firing solution was solved from
+     * (velocity * sin(elevation) * t - 0.5 * gravity * t^2, relative to the launch
+     * point), then a small linear correction is subtracted so the arc lands exactly on
+     * the target's own 3D ground height - the 2D heightmap sampling behind
+     * firingSolution.heightDiff and this file's terrainHeightAt() (a different
+     * resolution/grid) can disagree by a meter or so, which would otherwise leave a
+     * visible gap or clip at the target end.
+     * @param {?{firingSolution: object, angleType: string}} arcRequest
+     * @param {?object} minimap - SquadMinimap instance
+     * @param {object} activeMap
+     */
+    _drawProjectileArc(arcRequest, minimap, activeMap) {
+        this.arcGroup.clear();
+        if (!arcRequest || !minimap) return;
+
+        const corner0 = activeMap.SDK_data?.minimap?.corner0;
+        if (!corner0) return;
+
+        const { firingSolution, angleType } = arcRequest;
+        const elevation = angleType === "high" ? firingSolution.elevation.high.rad : firingSolution.elevation.low.rad;
+        const timeOfFlight = angleType === "high" ? firingSolution.timeOfFlight.high : firingSolution.timeOfFlight.low;
+        if (!Number.isFinite(elevation) || !Number.isFinite(timeOfFlight) || timeOfFlight <= 0) return;
+
+        const weaponPos = this._latLngToWorldXZ(firingSolution.weaponLatLng.lat, firingSolution.weaponLatLng.lng, minimap, corner0);
+        const targetPos = this._latLngToWorldXZ(firingSolution.targetLatLng.lat, firingSolution.targetLatLng.lng, minimap, corner0);
+        const weaponY = this.terrainHeightAt(weaponPos.u, weaponPos.v);
+        const targetY = this.terrainHeightAt(targetPos.u, targetPos.v);
+
+        const { velocity, gravity } = firingSolution;
+        const arcHeight = (t) => velocity * Math.sin(elevation) * t - 0.5 * gravity * t * t;
+        const heightCorrection = arcHeight(timeOfFlight) - (targetY - weaponY);
+
+        const segments = 48;
+        const points = [];
+        for (let i = 0; i <= segments; i++) {
+            const fraction = i / segments;
+            const t = fraction * timeOfFlight;
+            const x = THREE.MathUtils.lerp(weaponPos.x, targetPos.x, fraction);
+            const z = THREE.MathUtils.lerp(weaponPos.z, targetPos.z, fraction);
+            const y = weaponY + arcHeight(t) - fraction * heightCorrection;
+            points.push(new THREE.Vector3(x, y, z));
+        }
+
+        const curve = new THREE.CatmullRomCurve3(points);
+        const geometry = new THREE.TubeGeometry(curve, segments * 2, ARC_TUBE_RADIUS, 8, false);
+        const material = new THREE.MeshBasicMaterial({ color: 0xffcc00 });
+        this.arcGroup.add(new THREE.Mesh(geometry, material));
     }
 
 

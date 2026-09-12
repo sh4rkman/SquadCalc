@@ -12,7 +12,8 @@
         </div>
         <div class="threeDOverlay">
             <div class="threeDOverlayCard">
-                <h3 data-i18n="common:threeDView">3D View</h3>
+                <h3 data-i18n="common:threeDView">3D Mode</h3>
+                <p class="threeDOverlaySubtitle" data-i18n="common:threeDViewSubtitle">Preview and explore the terrain</p>
                 <div class="threeDOverlayHint">
                     <span class="threeDOverlayHintKey"><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd></span>
                     <span data-i18n="common:threeDMoveHint">move</span>
@@ -48,17 +49,17 @@
                     <label class="threeDOverlayOption">
                         <span data-i18n="common:threeDResolution">Resolution</span>
                         <select class="threeDResolutionSelect">
-                            <option value="512">512</option>
-                            <option value="1024">1024</option>
-                            <option value="1536">1536</option>
-                            <option value="2048" selected>2048</option>
+                            <option value="512" data-i18n="common:threeDResVeryLow">Very Low</option>
+                            <option value="1024" data-i18n="common:threeDResLow">Low</option>
+                            <option value="1536" data-i18n="common:threeDResMedium">Medium</option>
+                            <option value="2048" data-i18n="common:threeDResHigh" selected>High</option>
                         </select>
                     </label>
                     <label class="threeDOverlayOption">
                         <span data-i18n="common:threeDTexture">Texture</span>
                         <select class="threeDTextureSelect">
-                            <option value="basemap" data-i18n="common:threeDBasemap" selected>Basemap</option>
-                            <option value="topomap" data-i18n="common:threeDTopomap">Topomap</option>
+                            <option value="basemap" data-i18n="common:threeDBasemap" selected>Default</option>
+                            <option value="topomap" data-i18n="common:threeDTopomap">Topographic</option>
                         </select>
                     </label>
                 </div>

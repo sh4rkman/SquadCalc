@@ -411,6 +411,13 @@ export class SquadObjective {
             return;
         }
 
+        // RAAS/RVAAS are symmetric - until a main is picked to count depths from, no
+        // candidate can be ruled in or out yet, so nothing but the mains shows.
+        if (!this.layer.perspectiveMain) {
+            if (!preview && !this.isHidden) this.hide();
+            return;
+        }
+
         const { steps, probability, byStep, lanes, lanesByStep } = this.solverInfo();
 
         if (preview) {
