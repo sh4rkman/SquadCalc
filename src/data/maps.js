@@ -14,6 +14,7 @@ export const MAPS = [
                 corner1: [2000, 2000],
             },
             landscapeScale: [1, 1, 0.087813952],
+            zOffset: 2.0,
         }
     },
     { 
@@ -26,6 +27,7 @@ export const MAPS = [
                 corner1: [1020, 1020],
             },
             landscapeScale: [0.75, 0.75, 0.226426712],
+            zOffset: -71.5835,
         }
     },
     // { 
@@ -49,6 +51,7 @@ export const MAPS = [
                 corner1: [2299, 2472],
             },
             landscapeScale: [1.003937, 1.003937, 0.358381824],
+            zOffset: -31.0188,
         }
     },
     { 
@@ -61,6 +64,7 @@ export const MAPS = [
                 corner1: [1600, 1400],
             },
             landscapeScale: [0.5, 0.5, 0.982942589],
+            zOffset: -793.5477,
         }
     },
     { 
@@ -73,6 +77,7 @@ export const MAPS = [
                 corner1: [1690, 1460],
             },
             landscapeScale: [1, 1, 0.14797459],
+            zOffset: -48.43,
         }
     },
     { 
@@ -85,6 +90,7 @@ export const MAPS = [
                 corner1: [448, 448],
             },
             landscapeScale: [1, 1, 0.20168671],
+            zOffset: -61.5903,
         }
     },
     { 
@@ -97,6 +103,7 @@ export const MAPS = [
                 corner1: [2015, 2015],
             },
             landscapeScale: [1, 1, 0.274412178],
+            zOffset: -245.0,
         }
     },
     { 
@@ -109,6 +116,7 @@ export const MAPS = [
                 corner1: [2032, 2032],
             },
             landscapeScale: [1, 1, 0.173697718],
+            zOffset: -62.8744,
         }
     },
     { 
@@ -121,7 +129,7 @@ export const MAPS = [
                 corner1: [2016, 2016],
             },
             landscapeScale: [1, 1, 0.229927482],
-
+            zOffset: -21.1422,
         }
     },
     { 
@@ -134,6 +142,7 @@ export const MAPS = [
                 corner1: [2004, 2004],
             },
             landscapeScale: [1, 1, 0.185722727],
+            zOffset: -15.5078,
         }
     },
     { 
@@ -146,6 +155,7 @@ export const MAPS = [
                 corner1: [2016, 2016],
             },
             landscapeScale: [1, 1, 0.387570609],
+            zOffset: 31.6808,
         }
     },
     { 
@@ -158,6 +168,7 @@ export const MAPS = [
                 corner1: [2317, 2317],
             },
             landscapeScale: [1, 1, 0.750167993],
+            zOffset: 9.4085,
         }
     },
     { 
@@ -170,6 +181,7 @@ export const MAPS = [
                 corner1: [1420, 1420],
             },
             landscapeScale: [0.5, 0.5, 0.174065564],
+            zOffset: -255.0,
         }
     },
     { 
@@ -182,6 +194,7 @@ export const MAPS = [
                 corner1: [2167, 2167],
             },
             landscapeScale: [1, 1, 0.321048558],
+            zOffset: 1.9652,
         }
     },
     { 
@@ -194,6 +207,7 @@ export const MAPS = [
                 corner1: [880, 629],
             },
             landscapeScale: [1, 1, 0.248098348],
+            zOffset: 4.1729,
         }
     },
     { 
@@ -206,6 +220,7 @@ export const MAPS = [
                 corner1: [2015, 2015],
             },
             landscapeScale: [1, 1, 0.403959641],
+            zOffset: 38.0,
         }
     },
     { 
@@ -218,6 +233,7 @@ export const MAPS = [
                 corner1: [1200, 1300],
             },
             landscapeScale: [1, 1, 0.493831859],
+            zOffset: -153.9385,
         }
     },
     { 
@@ -230,6 +246,7 @@ export const MAPS = [
                 corner1: [1820, 1615],
             },
             landscapeScale: [1, 1, 0.112586966],
+            zOffset: -8.7821,
         }
     },
     { 
@@ -242,6 +259,7 @@ export const MAPS = [
                 corner1: [1410, 1398],
             },
             landscapeScale: [1, 1, 0.205154741],
+            zOffset: -17.9298,
         }
     },
     // { 
@@ -268,6 +286,7 @@ export const MAPS = [
                 corner1: [2016, 2016],
             },
             landscapeScale: [1, 1, 0.317704444],
+            zOffset: -79.18,
         }
     },
     { 
@@ -280,6 +299,7 @@ export const MAPS = [
                 corner1: [2300, 2550],
             },
             landscapeScale: [1, 1, 0.233953671],
+            zOffset: 0.0,
         }
     },
     { 
@@ -297,6 +317,7 @@ export const MAPS = [
                 corner1: [3238, 3576],
             },
             landscapeScale: [1.2, 1.2, 2.086916336],
+            zOffset: -360.7172,
         }
     },
     { 
@@ -309,6 +330,7 @@ export const MAPS = [
                 corner1: [660, 853],
             },
             landscapeScale: [1, 1, 0.267739565],
+            zOffset: -138.0639,
         }
     },
     { 
@@ -321,6 +343,7 @@ export const MAPS = [
                 corner1: [2340, 2340],
             },
             landscapeScale: [1, 1, 0.152035884],
+            zOffset: -83.457,
         }
     },
     { 
@@ -333,6 +356,7 @@ export const MAPS = [
                 corner1: [3048, 3048],
             },
             landscapeScale: [1, 1, 0.485970247],
+            zOffset: -65.4916,
         }
     },
     // SPM

@@ -231,6 +231,7 @@ dialog {
                 &:focus {
                     outline: none;
                 }
+
                 @media (hover: hover) {
                     &:hover {
                         color: variables.$mainColor;
@@ -254,7 +255,9 @@ dialog {
             display: flex;
             flex-direction: column;
         }
-        h2 { flex: 0 0 auto; }
+        .closeModal svg {
+            filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.8));
+        }
         .threeDViewport {
             position: relative;
             flex: 1;
@@ -263,18 +266,42 @@ dialog {
         .threeDOverlay {
             position: absolute;
             inset: 0;
+            z-index: 2;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 0.5em;
             background: rgba(0, 0, 0, 0.55);
             color: variables.$mainTxtColor;
-            cursor: pointer;
-            text-align: center;
             padding: 0 1em;
             &[hidden] { display: none; }
+        }
+        .threeDOverlayCard {
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            gap: 0.9em;
+            width: 340px;
+            max-width: 100%;
+            background: rgba(20, 20, 24, 0.82);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+            padding: 1.6em 1.8em;
+            text-align: center;
+            font-size: 1.05em;
+            h3 {
+                margin: 0;
+                font-size: 1.3em;
+                letter-spacing: 0.02em;
+            }
             p { margin: 0; }
+        }
+        .threeDOverlayDivider {
+            width: 100%;
+            border: none;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            margin: 0;
         }
         .threeDLoading {
             position: absolute;
@@ -290,16 +317,76 @@ dialog {
             &[hidden] { display: none; }
         }
         .threeDOverlayHint {
-            font-size: 0.85em;
+            display: grid;
+            grid-template-columns: auto auto;
+            align-self: center;
+            place-items: center start;
+            gap: 0.5em 0.8em;
+            font-size: 1em;
             opacity: 0.75;
+        }
+        .threeDOverlayHintKey {
+            justify-self: end;
+            display: flex;
+            gap: 0.2em;
             kbd {
                 background: rgba(255, 255, 255, 0.12);
                 border: 1px solid rgba(255, 255, 255, 0.25);
                 border-radius: 4px;
                 padding: 0.1em 0.4em;
-                margin: 0 0.05em;
                 font-size: 0.9em;
             }
+        }
+        .threeDOverlayOptions {
+            display: flex;
+            flex-direction: column;
+            gap: 0.7em;
+        }
+        .threeDOverlayOption {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.8em;
+            height: 22px;
+            cursor: pointer;
+            select {
+                box-sizing: border-box;
+                height: 22px;
+                background: rgba(255, 255, 255, 0.1);
+                color: variables.$mainTxtColor;
+                border: 1px solid rgba(255, 255, 255, 0.25);
+                border-radius: 4px;
+                padding: 0 0.6em;
+                font-size: 0.95em;
+                cursor: pointer;
+            }
+            input[type="checkbox"] {
+                width: 22px;
+                height: 22px;
+                margin: 0;
+                cursor: pointer;
+                accent-color: variables.$mainColor;
+            }
+        }
+        .threeDGoButton {
+            margin-top: 0.3em;
+            padding: 0.7em 0;
+            width: 100%;
+            border: none;
+            border-radius: 8px;
+            background: variables.$mainColor;
+            color: #fff;
+            font-size: 1.15em;
+            font-weight: 600;
+            letter-spacing: 0.03em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: filter 0.15s ease, transform 0.1s ease;
+
+            @media (hover: hover) {
+                &:hover { filter: brightness(1.12); }
+            }
+            &:active { transform: scale(0.98); }
         }
         .threeDSpeedHUD {
             position: absolute;
@@ -351,8 +438,8 @@ dialog {
             position: absolute;
             right: 1em;
             bottom: 1em;
-            width: 160px;
-            height: 160px;
+            width: 280px;
+            height: 280px;
             border: 2px solid rgba(255, 255, 255, 0.4);
             border-radius: 6px;
             overflow: hidden;

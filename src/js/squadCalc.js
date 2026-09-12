@@ -108,6 +108,7 @@ export default class SquadCalc {
             team1unit: p.get("team1unit"),
             team2:     p.get("team2"),
             team2unit: p.get("team2unit"),
+            threeD:    p.has("3d"),
         };
     }
 
@@ -115,8 +116,18 @@ export default class SquadCalc {
         const { server, session } = this.urlIntent;
         if (server)       this.initServerMode(server, session);
         else if (session) this.initSessionMode(session, this.urlIntent);
-        else              this.initStaticMode(this.urlIntent);
+        else              this.initStaticMode(this.urlIntent, () => this._openInitial3D());
         this.initFavoriteServers();
+    }
+
+    /**
+     * If the URL asked for the 3D view (?3d=1), opens it once on initial page load -
+     * after the map loads if the URL has no layer, or after the layer loads if it does.
+     */
+    _openInitial3D() {
+        if (!this.urlIntent.threeD) return;
+        this._dialogs.threeD.showModal();
+        this.simulation3D.open(this.minimap.activeMap, this.minimap.layer);
     }
 
     initServerMode(serverId, sessionId = null) {
@@ -853,10 +864,6 @@ export default class SquadCalc {
         this.simulation3D = new Squad3DSimulation(document.querySelector(".threeDViewport"));
         threeDDialog.addEventListener("close", () => this.simulation3D.close());
 
-        // DEBUG: auto-open the 3D dialog on load. Remove once the feature is done.
-        threeDDialog.showModal();
-        this.simulation3D.open(this.minimap.activeMap, this.minimap.layer);
-
         $(".btn-delete, .btn-undo, .btn-layer, .btn-layer-info, .returnBtn, #mapLayerMenu").hide();
 
         this.ui = localStorage.getItem("data-ui");
@@ -961,6 +968,7 @@ export default class SquadCalc {
 
         threeDDialog.addEventListener("close", () => {
             setTimeout(() => threeDTooltips.enable(), 50);
+            this.updateUrlParams({ "3d": null });
         });
           
         window.addEventListener("drop", e => {
@@ -1047,6 +1055,7 @@ export default class SquadCalc {
             threeDTooltips.disable();
             threeDDialog.showModal();
             this.simulation3D.open(this.minimap.activeMap, this.minimap.layer);
+            this.updateUrlParams({ "3d": "" });
         });
         $(".layerCommandCopyBtn").on("click", (event) => {
             const input = event.currentTarget.closest(".layerCommandRow").querySelector("input");
@@ -1441,8 +1450,8 @@ export default class SquadCalc {
 
     handleKeydown(event) {
 
-        const { calc, weapon, help, factions, servers, changelog } = this._dialogs;
-        if (weapon.open || calc.open || help.open || factions.open || servers.open || changelog.open) return;
+        const { calc, weapon, help, factions, servers, changelog, threeD } = this._dialogs;
+        if (weapon.open || calc.open || help.open || factions.open || servers.open || changelog.open || threeD.open) return;
 
         if ($(event.target).is("input, textarea, select")) return;
 
@@ -2147,7 +2156,7 @@ export default class SquadCalc {
         const sortedParams = new URLSearchParams();
 
         // Add parameters in the order defined by paramOrder
-        ["map", "layer", "type", "session", "server"].forEach((param) => {
+        ["map", "layer", "type", "3d", "session", "server"].forEach((param) => {
             if (urlParams.has(param)) {
                 sortedParams.set(param, urlParams.get(param));
                 urlParams.delete(param);
@@ -2157,8 +2166,10 @@ export default class SquadCalc {
         // Add any remaining parameters
         for (const [key, value] of urlParams.entries()) sortedParams.set(key, value);
 
-        // Construct the new URL
-        const newUrl = `${window.location.pathname}?${sortedParams.toString()}`;
+        // Construct the new URL - bare flags (empty value, e.g. "3d") drop the
+        // trailing "=" that URLSearchParams.toString() would otherwise leave.
+        const query = sortedParams.toString().replace(/=(&|$)/g, "$1");
+        const newUrl = `${window.location.pathname}?${query}`;
         window.history.replaceState({}, "", newUrl);
     }
 

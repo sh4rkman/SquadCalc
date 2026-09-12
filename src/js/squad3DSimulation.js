@@ -3,17 +3,28 @@ import { decode } from "fast-png";
 import { PointerLockControls } from "three/addons/controls/PointerLockControls.js";
 import { Sky } from "three/addons/objects/Sky.js";
 
-// Vertices per side of the terrain grid. Sampled from the full-resolution heightmap
-// at this fixed size for now - configurable resolution is a later step.
-const GRID_RESOLUTION = 2048;
+// Default vertices per side of the terrain grid, sampled from the full-resolution
+// heightmap - user-adjustable via the resolution selector (see _setResolution()).
+const DEFAULT_GRID_RESOLUTION = 2048;
 
 // World units are meters (terrainSize comes from the map's real-world size), so this
 // is the fly speed in meters/second.
-const MAX_MOVE_SPEED = 300;
+const MAX_MOVE_SPEED = 500;
 
 // Default sun position (degrees) - fixed for now, no time-of-day control yet.
 const SUN_ELEVATION = 35;
 const SUN_AZIMUTH = 130;
+
+// Meters flag labels/paths float above the ground, so they read as clearly above the
+// terrain (and any capzone volumes) rather than skimming it.
+const GROUND_CLEARANCE = 8;
+
+// Vertical size of a flag name label sprite (see _createLabelSprite()) - shared with
+// _drawFlagPath() so the path can be kept clear of the label's own bounding box.
+const LABEL_WORLD_HEIGHT = 12;
+
+// Flag-path pipe radius (5m diameter) - see _drawFlagPath().
+const PATH_RADIUS = 2.5;
 
 // Movement bindings by event.code (physical key position), not event.key (the
 // character it produces) - so AZERTY (ZQSD) and QWERTY (WASD) both work: AZERTY's W/A
@@ -59,15 +70,29 @@ export default class Squad3DSimulation {
         this.terrainMesh = null;
         this.terrainSize = 0;
         this.heights = null;
+        this.gridResolution = DEFAULT_GRID_RESOLUTION;
+        this.textureName = "basemap"; // "basemap" | "topomap" - the select's own options.
         this.sky = null;
         this.sunLight = null;
         this.capzoneGroup = null;
         this.labelGroup = null;
+        this.pathLine = null;
+        this.capzonesVisible = true;
+        this.minimapVisible = true;
+        this.pathVisible = true;
         this.sunDir = new THREE.Vector3();
         this._minimapForward = new THREE.Vector3();
         this.loadedMapURL = null;
         this._frameId = null;
         this._onResize = () => this._resize();
+
+        // Cached from the last _loadTerrain(), so a resolution change can resample
+        // without re-fetching the heightmap/basemap, and so it knows what to redraw.
+        this._heightmapPng = null;
+        this._heightScale = 1;
+        this._terrainTexture = null;
+        this._lastLayer = null;
+        this._lastActiveMap = null;
 
         // Fly-camera movement state, keyed by the action names in KEY_BINDINGS.
         this.move = { forward: false, back: false, left: false, right: false, up: false, down: false };
@@ -87,6 +112,8 @@ export default class Squad3DSimulation {
      */
     async open(activeMap, layer = null) {
         if (!this.renderer) this._initScene();
+        this._lastLayer = layer;
+        this._lastActiveMap = activeMap;
 
         if (this.loadedMapURL !== activeMap.mapURL) {
             // Covers the still-visible last frame of the previous map (the canvas keeps
@@ -103,6 +130,7 @@ export default class Squad3DSimulation {
 
         // Cheap enough to redo every open() - the layer can change independently of the map.
         this._drawCapzones(layer, activeMap);
+        this._drawFlagPath(layer, activeMap);
 
         this.overlay.hidden = false;
         window.addEventListener("resize", this._onResize);
@@ -191,19 +219,58 @@ export default class Squad3DSimulation {
 
     _setupFlyControls() {
         this.overlay = this.container.querySelector(".threeDOverlay");
-        this.overlay.addEventListener("click", () => this.controls.lock());
         this.controls.addEventListener("lock", () => { this.overlay.hidden = true; });
         this.controls.addEventListener("unlock", () => { this.overlay.hidden = false; });
+
+        const goButton = this.container.querySelector(".threeDGoButton");
+        goButton.addEventListener("click", () => this.controls.lock());
 
         this.speedHUD = this.container.querySelector(".threeDSpeedHUD");
         this.speedHUDFill = this.speedHUD.querySelector(".threeDSpeedHUDFill");
         this.speedHUDValue = this.speedHUD.querySelector(".threeDSpeedHUDValue");
 
+        const options = this.container.querySelector(".threeDOverlayOptions");
+
+        const capzonesToggle = options.querySelector(".threeDCapzonesToggle");
+        capzonesToggle.checked = this.capzonesVisible;
+        capzonesToggle.addEventListener("change", () => this._setCapzonesVisible(capzonesToggle.checked));
+
+        this.minimap = this.container.querySelector(".threeDMinimap");
+        const minimapToggle = options.querySelector(".threeDMinimapToggle");
+        minimapToggle.checked = this.minimapVisible;
+        minimapToggle.addEventListener("change", () => this._setMinimapVisible(minimapToggle.checked));
+
+        const pathToggle = options.querySelector(".threeDPathToggle");
+        pathToggle.checked = this.pathVisible;
+        pathToggle.addEventListener("change", () => this._setPathVisible(pathToggle.checked));
+
+        const resolutionSelect = options.querySelector(".threeDResolutionSelect");
+        resolutionSelect.value = String(this.gridResolution);
+        resolutionSelect.addEventListener("change", () => this._setResolution(Number(resolutionSelect.value)));
+
+        const textureSelect = options.querySelector(".threeDTextureSelect");
+        textureSelect.value = this.textureName;
+        textureSelect.addEventListener("change", async () => {
+            await this._setTexture(textureSelect.value);
+            textureSelect.value = this.textureName; // reverts the dropdown on load failure
+        });
+
         window.addEventListener("keydown", (event) => {
             const action = KEY_BINDINGS[event.code];
-            if (!action) return;
-            if (this.controls.isLocked) event.preventDefault();
-            this.move[action] = true;
+            if (action) {
+                if (this.controls.isLocked) event.preventDefault();
+                this.move[action] = true;
+                return;
+            }
+
+            // Enter takes control from the settings card, like clicking Go, but only
+            // while the 3D dialog is actually open - this listener stays registered
+            // for the dialog's whole lifetime, not just while it's shown.
+            if (!this.controls.isLocked && (event.code === "Enter" || event.code === "NumpadEnter")
+                && this.container.closest("dialog")?.open) {
+                event.preventDefault();
+                this.controls.lock();
+            }
         });
         window.addEventListener("keyup", (event) => {
             const action = KEY_BINDINGS[event.code];
@@ -262,23 +329,42 @@ export default class Squad3DSimulation {
 
     async _loadTerrain(activeMap) {
         const base = `${process.env.API_URL}${activeMap.mapURL}`;
-        const heightScale = activeMap.SDK_data?.landscapeScale?.[2] ?? 1;
+        this._heightScale = activeMap.SDK_data?.landscapeScale?.[2] ?? 1;
         this.minimapImage.src = `${base}basemap.webp`;
 
         const [heightBuffer, texture] = await Promise.all([
             fetch(`${base}heightmap.png`).then((response) => response.arrayBuffer()),
-            new THREE.TextureLoader().loadAsync(`${base}basemap.webp`),
+            new THREE.TextureLoader().loadAsync(`${base}${this.textureName}.webp`),
         ]);
         texture.colorSpace = THREE.SRGBColorSpace;
 
-        const png = decode(new Uint8Array(heightBuffer));
-        this.heights = this._sampleHeights(png, heightScale, GRID_RESOLUTION);
+        this._heightmapPng = decode(new Uint8Array(heightBuffer));
+        this._terrainTexture = texture;
 
         // Real-world map size (meters) - the heightmap's own pixel resolution can differ
         // from it, so the grid is sampled to fit this footprint rather than the PNG's.
-        this.terrainSize = activeMap.size ?? png.width;
+        this.terrainSize = activeMap.size ?? this._heightmapPng.width;
         this._updateSun();
-        const segments = GRID_RESOLUTION - 1;
+        this._rebuildTerrainMesh();
+
+        // Drop the camera 200m above the map's center, facing north, instead of at eye
+        // height or a far-away overview - high enough to get a lay of the land right away
+        // without clipping into terrain on a hilly map.
+        const groundY = this.terrainHeightAt(0.5, 0.5);
+        this.camera.position.set(0, groundY + 200, 0);
+        this.camera.lookAt(0, groundY + 200, -1);
+    }
+
+
+    /**
+     * (Re)builds the terrain mesh from the cached decoded heightmap/texture at the current
+     * gridResolution, without touching the camera - shared by _loadTerrain() (first build)
+     * and _setResolution() (resolution change on an already-loaded map).
+     */
+    _rebuildTerrainMesh() {
+        this.heights = this._sampleHeights(this._heightmapPng, this._heightScale, this.gridResolution);
+
+        const segments = this.gridResolution - 1;
         const geometry = new THREE.PlaneGeometry(this.terrainSize, this.terrainSize, segments, segments);
         geometry.rotateX(-Math.PI / 2);
 
@@ -287,31 +373,99 @@ export default class Squad3DSimulation {
         positions.needsUpdate = true;
         geometry.computeVertexNormals();
 
-        const material = new THREE.MeshStandardMaterial({ map: texture, roughness: 0.9, metalness: 0 });
-
         if (this.terrainMesh) {
             this.terrainMesh.geometry.dispose();
             this.terrainMesh.material.dispose();
             this.scene.remove(this.terrainMesh);
         }
+        const material = new THREE.MeshStandardMaterial({ map: this._terrainTexture, roughness: 0.9, metalness: 0 });
         this.terrainMesh = new THREE.Mesh(geometry, material);
         this.terrainMesh.receiveShadow = true;
         this.terrainMesh.castShadow = true;
         this.scene.add(this.terrainMesh);
-
-        // Drop the camera at eye height above the map's center, facing north, instead
-        // of a far-away overview - immediately walkable once the user clicks to look around.
-        const groundY = this.terrainHeightAt(0.5, 0.5);
-        this.camera.position.set(0, groundY + 1.7, 0);
-        this.camera.lookAt(0, groundY + 1.7, -1);
     }
 
 
     /**
-     * Draws each AAS objective's capture-zone boxes as translucent 3D volumes, plus a
-     * billboarded name label floating above each one. Unlike the 2D map (see
-     * squadCapZone.js), each shape is drawn on its own - merging overlapping shapes into
-     * one outline only matters for a flat 2D outline.
+     * Switches the terrain grid resolution and rebuilds it from the already-downloaded
+     * heightmap (no network refetch), then redraws the capzones and flag path since their
+     * ground-height sampling depends on the same grid.
+     * @param {number} resolution
+     */
+    _setResolution(resolution) {
+        if (resolution === this.gridResolution || !this._heightmapPng) return;
+        this.gridResolution = resolution;
+        this._rebuildTerrainMesh();
+        this._drawCapzones(this._lastLayer, this._lastActiveMap);
+        this._drawFlagPath(this._lastLayer, this._lastActiveMap);
+    }
+
+
+    /**
+     * Switches the terrain surface texture (e.g. basemap <-> topomap), fetching it fresh -
+     * unlike resolution, a different texture is a different file, not something the
+     * already-downloaded data can be resampled into. The minimap keeps using basemap
+     * regardless, for consistent navigation.
+     * @param {string} name - "basemap" | "topomap"
+     */
+    async _setTexture(name) {
+        if (name === this.textureName || !this._lastActiveMap || !this.terrainMesh) return;
+
+        const base = `${process.env.API_URL}${this._lastActiveMap.mapURL}`;
+        let texture;
+        try {
+            texture = await new THREE.TextureLoader().loadAsync(`${base}${name}.webp`);
+        } catch (error) {
+            console.error(`[3D] Failed to load ${name}.webp for this map:`, error);
+            return;
+        }
+        texture.colorSpace = THREE.SRGBColorSpace;
+
+        this.textureName = name;
+        this._terrainTexture.dispose();
+        this._terrainTexture = texture;
+        this.terrainMesh.material.map = texture;
+        this.terrainMesh.material.needsUpdate = true;
+    }
+
+
+    /**
+     * Shows/hides the capzone boxes/spheres/capsules and their name labels together.
+     * @param {boolean} visible
+     */
+    _setCapzonesVisible(visible) {
+        this.capzonesVisible = visible;
+        this.capzoneGroup.visible = visible;
+        this.labelGroup.visible = visible;
+    }
+
+
+    /**
+     * Shows/hides the bottom-right minimap (basemap + camera dot).
+     * @param {boolean} visible
+     */
+    _setMinimapVisible(visible) {
+        this.minimapVisible = visible;
+        this.minimap.hidden = !visible;
+    }
+
+
+    /**
+     * Shows/hides the fixed AAS/Seed/Skirmish flag-order path.
+     * @param {boolean} visible
+     */
+    _setPathVisible(visible) {
+        this.pathVisible = visible;
+        if (this.pathLine) this.pathLine.visible = visible;
+    }
+
+
+
+    /**
+     * Draws each objective's capture-zone shapes (boxes, spheres, capsules), whatever the
+     * gamemode, as translucent 3D volumes, plus a billboarded name label floating above
+     * each one. Unlike the 2D map (see squadCapZone.js), each shape is drawn on its own -
+     * merging overlapping shapes into one outline only matters for a flat 2D outline.
      * @param {?SquadLayer} layer
      * @param {object} activeMap
      */
@@ -331,50 +485,313 @@ export default class Squad3DSimulation {
         });
         this.labelGroup.clear();
 
-        if (!layer || layer.gamemode !== "AAS") return;
+        if (!layer) return;
         const corner0 = activeMap.SDK_data?.minimap?.corner0;
         if (!corner0) return;
 
         const boxMaterial = new THREE.MeshBasicMaterial({
             color: 0x22ccff, transparent: true, opacity: 0.28, depthWrite: false
         });
-        const edgeMaterial = new THREE.LineBasicMaterial({ color: 0x22ccff });
-        const LABEL_MARGIN = 8; // meters above the tallest box, so it clears the volume
+        const edgeMaterial = new THREE.LineBasicMaterial({ color: 0x22ccff, transparent: true, opacity: 0.35 });
 
-        for (const objective of Object.values(layer.objectives ?? {})) {
+        // Mains get one shared color instead of the generic capzone cyan, so they stand
+        // out as mains regardless of team.
+        const mainBoxMaterial = new THREE.MeshBasicMaterial({
+            color: 0x0000cd, transparent: true, opacity: 0.28, depthWrite: false
+        });
+        const mainEdgeMaterial = new THREE.LineBasicMaterial({ color: 0x0000cd, transparent: true, opacity: 0.35 });
+
+        // location_z is the box's real (Unreal-absolute) height, but each map's landscape
+        // sits at a different absolute world Z, and our decoded heightmap is relative to
+        // that landscape's own local origin - so the two datums are offset by a per-map
+        // constant, applied to every box so real relative heights (tunnels, half-buried
+        // zones) stay intact instead of forcing everything onto the visible ground.
+        const zOffset = this._calibrateZOffset(layer, activeMap, corner0);
+
+        for (const objective of this._flattenObjectivePoints(layer)) {
             const objectivePos = this._gameToWorldXZ(objective.location_x, objective.location_y, corner0);
-            let topY = this.terrainHeightAt(objectivePos.u, objectivePos.v);
+            const isMain = objective.name === "Main";
 
             for (const shape of objective.objects ?? []) {
-                if (!shape.isBox) continue;
+                if (!shape.isBox && !shape.isSphere && !shape.isCapsule) continue;
 
-                const { x, z, u, v } = this._gameToWorldXZ(shape.location_x, shape.location_y, corner0);
-                const extent = shape.boxExtent ?? {};
-                const sizeX = (extent.extent_x ?? 0) / 100 * (extent.scaling_x ?? 1) * 2;
-                const sizeY = (extent.extent_y ?? 0) / 100 * (extent.scaling_y ?? 1) * 2;
-                const sizeZ = (extent.extent_z ?? 0) / 100 * (extent.scaling_z ?? 1) * 2;
+                const { x, z } = this._gameToWorldXZ(shape.location_x, shape.location_y, corner0);
+                const centerY = shape.location_z / 100 + zOffset;
 
-                const geometry = new THREE.BoxGeometry(sizeX, sizeZ, sizeY);
-                const mesh = new THREE.Mesh(geometry, boxMaterial);
-                mesh.add(new THREE.LineSegments(new THREE.EdgesGeometry(geometry), edgeMaterial));
+                let geometry;
+                if (shape.isBox) {
+                    const extent = shape.boxExtent ?? {};
+                    const sizeX = (extent.extent_x ?? 0) / 100 * (extent.scaling_x ?? 1) * 2;
+                    const sizeY = (extent.extent_y ?? 0) / 100 * (extent.scaling_y ?? 1) * 2;
+                    const sizeZ = (extent.extent_z ?? 0) / 100 * (extent.scaling_z ?? 1) * 2;
+                    geometry = new THREE.BoxGeometry(sizeX, sizeZ, sizeY);
+                } else if (shape.isCapsule) {
+                    // capsuleLength is the straight cylinder segment only (excluding the two
+                    // hemispherical caps) - the same convention THREE.CapsuleGeometry takes.
+                    // Capture-zone capsules are always lying flat (matches squadCapZone.js's
+                    // _shapeRings(), which only ever draws them as a flat rectangle + two end
+                    // circles - never a vertical pole), so it's tipped 90deg below regardless
+                    // of the raw rotation_x/y/z split.
+                    const radius = parseFloat(shape.capsuleRadius) / 100;
+                    const length = parseFloat(shape.capsuleLength) / 100;
+                    geometry = new THREE.CapsuleGeometry(radius, length, 4, 8);
+                } else {
+                    const radius = parseFloat(shape.sphereRadius) / 100;
+                    geometry = new THREE.SphereGeometry(radius, 12, 8);
+                }
 
-                // Rests on our own decoded heightmap rather than the box's raw location_z:
-                // that raw value's datum isn't consistent across maps (matched the terrain
-                // within ~2m on AlBasrah, but sat ~70m below it on Anvil), so it can't be
-                // trusted as an absolute height on its own.
-                const groundY = this.terrainHeightAt(u, v);
-                mesh.position.set(x, groundY + sizeZ / 2, z);
-                // Sign unverified against an in-game reference - flip if boxes look mirrored/rotated wrong.
-                mesh.rotation.y = -THREE.MathUtils.degToRad(extent.rotation_z ?? 0);
+                const mesh = new THREE.Mesh(geometry, isMain ? mainBoxMaterial : boxMaterial);
+                mesh.add(new THREE.LineSegments(new THREE.EdgesGeometry(geometry), isMain ? mainEdgeMaterial : edgeMaterial));
+                mesh.position.set(x, centerY, z);
+                if (shape.isBox) {
+                    // Sign unverified against an in-game reference - flip if boxes look mirrored/rotated wrong.
+                    mesh.rotation.y = -THREE.MathUtils.degToRad(shape.boxExtent?.rotation_z ?? 0);
+                } else if (shape.isCapsule) {
+                    // Same yaw-correction heuristic as squadCapZone.js's _shapeRings(): rotation_z
+                    // alone is only reliable unless the capsule was tipped onto its side via
+                    // rotation_y near +-90deg (the classic pitch gimbal-lock case), where
+                    // rotation_x/y have to be folded back in to recover the true yaw.
+                    const rot = shape.boxExtent ?? {};
+                    let totalRotation = rot.rotation_z ?? 0;
+                    if (Math.abs(rot.rotation_y ?? 0) > 89 && Math.abs(rot.rotation_y ?? 0) < 91) {
+                        if (rot.rotation_y > 0) totalRotation -= (rot.rotation_x ?? 0) + rot.rotation_y;
+                        else totalRotation += (rot.rotation_x ?? 0) + rot.rotation_y;
+                    }
+
+                    // Tip the capsule (THREE builds it standing along local Y) onto its side
+                    // first, then yaw it around world Y - composed as quaternions since a
+                    // plain Euler .set() would apply the yaw around the capsule's own
+                    // already-tipped local Y axis instead of the world-vertical one.
+                    const tip = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1, 0, 0), Math.PI / 2);
+                    const yaw = new THREE.Quaternion().setFromAxisAngle(
+                        new THREE.Vector3(0, 1, 0), -THREE.MathUtils.degToRad(totalRotation)
+                    );
+                    mesh.quaternion.copy(yaw).multiply(tip);
+                }
 
                 this.capzoneGroup.add(mesh);
-                topY = Math.max(topY, groundY + sizeZ);
             }
 
-            const label = this._createLabelSprite(objective.name ?? objective.objectDisplayName ?? "");
-            label.position.set(objectivePos.x, topY + LABEL_MARGIN, objectivePos.z);
+            const topY = this._objectiveTopY(objective, corner0, zOffset);
+            const labelWorldHeight = isMain ? LABEL_WORLD_HEIGHT * 1.5 : LABEL_WORLD_HEIGHT;
+            const label = this._createLabelSprite(
+                this._objectiveLabelText(objective),
+                isMain ? "rgba(0, 0, 205, 0.7)" : undefined,
+                labelWorldHeight
+            );
+            // Grows upward from the same bottom edge every label shares (see _drawFlagPath()'s
+            // labelBottomY) rather than around a fixed center, so a bigger main label doesn't
+            // dip lower and start crossing the flag-order path underneath it.
+            const labelBottomY = topY + GROUND_CLEARANCE - LABEL_WORLD_HEIGHT / 2;
+            label.position.set(objectivePos.x, labelBottomY + labelWorldHeight / 2, objectivePos.z);
             this.labelGroup.add(label);
         }
+    }
+
+
+    /**
+     * The name to show on an objective's floating label. Mains carry the generic raw
+     * name "Main" (see squadLayer.js's initPredictiveLayer()/createMainObjective()) with
+     * the team told apart only by pointPosition (1 or 2, same convention as any other
+     * objective's position in the flag order) - everything else already has a proper name.
+     * @param {object} objective
+     * @returns {string}
+     */
+    _objectiveLabelText(objective) {
+        if (objective.name === "Main") return `Team ${objective.pointPosition} Main`;
+        return objective.name ?? objective.objectDisplayName ?? "";
+    }
+
+
+    /**
+     * Half-height (meters) of one capzone shape along its own vertical axis - box's
+     * extent_z, or the radius for a sphere/capsule (both lie/curve back down within one
+     * radius of their center). Shared by _drawCapzones()'s mesh sizing and
+     * _objectiveTopY()'s label/path clearance so the two never disagree.
+     * @param {object} shape
+     * @returns {number}
+     */
+    _shapeHalfHeight(shape) {
+        if (shape.isBox) {
+            const extent = shape.boxExtent ?? {};
+            return (extent.extent_z ?? 0) / 100 * (extent.scaling_z ?? 1);
+        }
+        if (shape.isCapsule) return parseFloat(shape.capsuleRadius) / 100;
+        return parseFloat(shape.sphereRadius) / 100; // isSphere
+    }
+
+
+    /**
+     * The height (world Y) a flag label - or anything else that should clear this
+     * objective's capzone volumes - starts from, before adding GROUND_CLEARANCE: the
+     * decoded ground height, or the top of its tallest box/sphere/capsule if that's higher.
+     * @param {object} objective
+     * @param {[number, number]} corner0
+     * @param {number} zOffset - see _calibrateZOffset()
+     * @returns {number}
+     */
+    _objectiveTopY(objective, corner0, zOffset) {
+        const { u, v } = this._gameToWorldXZ(objective.location_x, objective.location_y, corner0);
+        let topY = this.terrainHeightAt(u, v);
+        for (const shape of objective.objects ?? []) {
+            if (!shape.isBox && !shape.isSphere && !shape.isCapsule) continue;
+            const centerY = shape.location_z / 100 + zOffset;
+            topY = Math.max(topY, centerY + this._shapeHalfHeight(shape));
+        }
+        return topY;
+    }
+
+
+    /**
+     * The per-map constant that aligns location_z's absolute datum with our decoded
+     * heightmap's landscape-relative one (see _drawCapzones()).
+     *
+     * The heightmap encoding is normalized per map (its lowest scanned point is always
+     * raw height 0), so it has no idea what that point's real absolute world Z is -
+     * that's exactly what activeMap.SDK_data.zOffset carries (the exporter's own
+     * `z_offset_m`, verified against every AAS layer we had data for: worldZ = decoded
+     * height + z_offset_m, so decoded height = location_z/100 - z_offset_m). Falls back
+     * to a median-based estimate (decoded ground height - location_z across every capzone
+     * box, median so a few genuinely underground/elevated boxes don't skew it) for a map
+     * missing that field.
+     * @param {SquadLayer} layer
+     * @param {object} activeMap
+     * @param {[number, number]} corner0
+     * @returns {number} meters to add to location_z/100
+     */
+    _calibrateZOffset(layer, activeMap, corner0) {
+        const zOffsetM = activeMap.SDK_data?.zOffset;
+        if (zOffsetM !== undefined) return -zOffsetM;
+
+        const samples = [];
+        for (const objective of this._flattenObjectivePoints(layer)) {
+            for (const shape of objective.objects ?? []) {
+                if (!shape.isBox && !shape.isSphere && !shape.isCapsule) continue;
+                const { u, v } = this._gameToWorldXZ(shape.location_x, shape.location_y, corner0);
+                samples.push(this.terrainHeightAt(u, v) - shape.location_z / 100);
+            }
+        }
+        if (!samples.length) return 0;
+        samples.sort((a, b) => a - b);
+        return samples[Math.floor(samples.length / 2)];
+    }
+
+
+    /**
+     * Flattens layer.objectives to one entry per point (each with its own .objects[] and
+     * location_x/y/z), matching squadLayer.js's initRandomizedLayer(): on RAAS/Invasion,
+     * objectives are keyed by *cluster*, and the real points - one per random-route
+     * candidate - live under cluster.points[]; AAS objectives and mains have no .points
+     * and already are a single point. No dependency on the lane solver's confirmation
+     * state, so every candidate point in every cluster is included, not just the one a
+     * live match would actually pick.
+     *
+     * Some physical flags sit in more than one cluster's candidate list (they're reachable
+     * from several lane combinations) - each cluster gives its copy its own prefixed name
+     * (e.g. "A1-Monastery" vs "B1-Monastery" for the very same building, confirmed same
+     * location_x/y/z), so the same physical flag can otherwise show up twice here -
+     * stacking two identical translucent capzone shapes on top of each other and making
+     * that flag visibly more opaque than the rest. Deduped by location instead of name to
+     * draw each physical flag once.
+     *
+     * TC and Destruction have no layer.objectives at all (matching squadLayer.js's
+     * initTerritoryControl()/initDestruction()) - their two mains live only under
+     * capturePoints.points.objectives instead, so that's included too. Every other
+     * gamemode we draw capzones for leaves that field empty, so this is a no-op there.
+     * @param {SquadLayer} layer
+     * @returns {object[]}
+     */
+    _flattenObjectivePoints(layer) {
+        const points = [...(layer.capturePoints?.points?.objectives ?? [])];
+        for (const objective of Object.values(layer.objectives ?? {})) {
+            if (objective.points) points.push(...objective.points);
+            else points.push(objective);
+        }
+
+        const seen = new Set();
+        return points.filter((point) => {
+            const key = `${point.location_x},${point.location_y},${point.location_z}`;
+            if (seen.has(key)) return false;
+            seen.add(key);
+            return true;
+        });
+    }
+
+
+    /**
+     * Draws the fixed flag order for AAS/Seed/Skirmish ("predictive") layers as a chain of
+     * translucent 5m-diameter cylinder segments, one per link, floating just under each
+     * flag's label height, through capturePoints.points.links - the same field and node-
+     * by-displayName lookup squadLayer.js's initPredictiveLayer() uses to build its 2D
+     * polyline. RAAS/Invasion have no fixed order (their path only exists once the lane
+     * solver picks a route), so they're skipped entirely.
+     * @param {?SquadLayer} layer
+     * @param {object} activeMap
+     */
+    _drawFlagPath(layer, activeMap) {
+        if (this.pathLine) {
+            this.pathLine.children.forEach((mesh) => mesh.geometry.dispose());
+            this.pathLine.children[0]?.material.dispose();
+            this.scene.remove(this.pathLine);
+            this.pathLine = null;
+        }
+
+        if (!layer || !["AAS", "Seed", "Skirmish"].includes(layer.gamemode)) return;
+        const links = layer.capturePoints?.points?.links;
+        const corner0 = activeMap.SDK_data?.minimap?.corner0;
+        if (!links || !corner0) return;
+
+        const objectives = Object.values(layer.objectives ?? {});
+        const findByDisplayName = (name) => objectives.find((o) => o.objectDisplayName === name);
+        const zOffset = this._calibrateZOffset(layer, activeMap, corner0);
+
+        const points = [];
+        for (const link of Object.values(links)) {
+            const nodeA = findByDisplayName(link.nodeA);
+            const nodeB = findByDisplayName(link.nodeB);
+            if (!nodeA || !nodeB) continue;
+
+            for (const node of [nodeA, nodeB]) {
+                const { x, z } = this._gameToWorldXZ(node.location_x, node.location_y, corner0);
+                const topY = this._objectiveTopY(node, corner0, zOffset);
+                // The label sprite is centered at topY + GROUND_CLEARANCE with half-height
+                // LABEL_WORLD_HEIGHT/2, so its own bottom edge sits at topY + 2 - keep the
+                // (much wider) pipe's top comfortably under that instead of crossing the name.
+                const labelBottomY = topY + GROUND_CLEARANCE - LABEL_WORLD_HEIGHT / 2;
+                const y = labelBottomY - PATH_RADIUS - 1.5;
+                const point = new THREE.Vector3(x, y, z);
+
+                // Links share endpoints (nodeB of one is nodeA of the next) - skip the
+                // repeat so it doesn't become a zero-length cylinder below.
+                if (points.length === 0 || points[points.length - 1].distanceToSquared(point) > 1e-6) {
+                    points.push(point);
+                }
+            }
+        }
+        if (points.length < 2) return;
+
+        // One independent cylinder per straight segment, not a single TubeGeometry along
+        // a CurvePath - a tube's frame twists visibly at a sharp corner between two
+        // sub-curves; separate cylinders have no shared frame to twist, at the cost of a
+        // small seam at each turn instead of a smooth joint.
+        const material = new THREE.MeshBasicMaterial({
+            color: 0xffffff, transparent: true, opacity: 0.75, depthWrite: false
+        });
+        this.pathLine = new THREE.Group();
+        const up = new THREE.Vector3(0, 1, 0);
+        for (let i = 0; i < points.length - 1; i++) {
+            const start = points[i];
+            const end = points[i + 1];
+            const offset = new THREE.Vector3().subVectors(end, start);
+
+            const geometry = new THREE.CylinderGeometry(PATH_RADIUS, PATH_RADIUS, offset.length(), 8);
+            const mesh = new THREE.Mesh(geometry, material);
+            mesh.position.copy(start).addScaledVector(offset, 0.5);
+            mesh.quaternion.setFromUnitVectors(up, offset.normalize());
+            this.pathLine.add(mesh);
+        }
+        this.pathLine.visible = this.pathVisible;
+        this.scene.add(this.pathLine);
     }
 
 
@@ -382,9 +799,13 @@ export default class Squad3DSimulation {
      * A billboarded text label (always faces the camera - THREE.Sprite's default behavior)
      * for a flag name, rendered on top of everything so distance/terrain never occludes it.
      * @param {string} text
+     * @param {string} [bgColor] - defaults to a neutral translucent black; mains pass a
+     * different color instead (see _drawCapzones()) so they stand out from regular flags.
+     * @param {number} [worldHeight] - defaults to LABEL_WORLD_HEIGHT; mains pass a larger
+     * value so their name reads bigger than a regular flag's.
      * @returns {THREE.Sprite}
      */
-    _createLabelSprite(text) {
+    _createLabelSprite(text, bgColor = "rgba(0, 0, 0, 0.6)", worldHeight = LABEL_WORLD_HEIGHT) {
         const fontSize = 48;
         const paddingX = 24;
         const paddingY = 16;
@@ -397,7 +818,7 @@ export default class Squad3DSimulation {
 
         // Sizing the canvas resets its 2D context, so the font has to be set again.
         ctx.font = `bold ${fontSize}px sans-serif`;
-        ctx.fillStyle = "rgba(0, 0, 0, 0.6)";
+        ctx.fillStyle = bgColor;
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         ctx.fillStyle = "white";
         ctx.textAlign = "center";
@@ -409,7 +830,6 @@ export default class Squad3DSimulation {
         const material = new THREE.SpriteMaterial({ map: texture, depthTest: false, depthWrite: false });
         const sprite = new THREE.Sprite(material);
 
-        const worldHeight = 6; // meters
         sprite.scale.set(worldHeight * (canvas.width / canvas.height), worldHeight, 1);
         return sprite;
     }
@@ -443,9 +863,10 @@ export default class Squad3DSimulation {
      * @returns {number}
      */
     terrainHeightAt(u, v) {
-        const ix = THREE.MathUtils.clamp(Math.round(u * (GRID_RESOLUTION - 1)), 0, GRID_RESOLUTION - 1);
-        const iy = THREE.MathUtils.clamp(Math.round(v * (GRID_RESOLUTION - 1)), 0, GRID_RESOLUTION - 1);
-        return this.heights[iy * GRID_RESOLUTION + ix];
+        const resolution = this.gridResolution;
+        const ix = THREE.MathUtils.clamp(Math.round(u * (resolution - 1)), 0, resolution - 1);
+        const iy = THREE.MathUtils.clamp(Math.round(v * (resolution - 1)), 0, resolution - 1);
+        return this.heights[iy * resolution + ix];
     }
 
 
@@ -460,11 +881,12 @@ export default class Squad3DSimulation {
         this.minimapDot.style.left = `${u * 100}%`;
         this.minimapDot.style.top = `${v * 100}%`;
 
-        // Heading clockwise from north (-Z, the minimap's "up"): 0deg matches the
-        // arrow's own resting orientation (pointing up), so no offset is needed.
+        // Heading clockwise from north (-Z, the minimap's "up"). camera.webp's own artwork
+        // faces right (east) at 0deg rotation rather than up, so it needs a -90deg
+        // correction to point up (i.e. north) when heading is 0.
         this.camera.getWorldDirection(this._minimapForward);
         const heading = THREE.MathUtils.radToDeg(Math.atan2(this._minimapForward.x, -this._minimapForward.z));
-        this.minimapDot.style.transform = `translate(-50%, -50%) rotate(${heading}deg)`;
+        this.minimapDot.style.transform = `translate(-50%, -50%) rotate(${heading - 90}deg)`;
     }
 
 

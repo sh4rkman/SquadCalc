@@ -5,21 +5,64 @@
         </button>
     </form>
 
-    <h2 data-i18n="common:threeDView">3D View</h2>
-
     <div class="threeDViewport">
         <div class="threeDLoading" hidden>
             <p data-i18n="common:threeDLoading">Loading map&hellip;</p>
         </div>
         <div class="threeDOverlay">
-            <p data-i18n="common:threeDClickToLook">Click to look around</p>
-            <p class="threeDOverlayHint">
-                <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> / <kbd>Z</kbd><kbd>Q</kbd><kbd>S</kbd><kbd>D</kbd>
-                <span data-i18n="common:threeDMoveHint">to move</span>
-                &middot; <kbd>Space</kbd> <span data-i18n="common:threeDUpHint">up</span>
-                &middot; <kbd>Shift</kbd> <span data-i18n="common:threeDDownHint">down</span>
-                &middot; <kbd>Esc</kbd> <span data-i18n="common:threeDReleaseHint">to release</span>
-            </p>
+            <div class="threeDOverlayCard">
+                <h3 data-i18n="common:threeDView">3D View</h3>
+                <div class="threeDOverlayHint">
+                    <span class="threeDOverlayHintKey"><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd></span>
+                    <span data-i18n="common:threeDMoveHint">move</span>
+
+                    <span class="threeDOverlayHintKey"><kbd>Space</kbd></span>
+                    <span data-i18n="common:threeDUpHint">up</span>
+
+                    <span class="threeDOverlayHintKey"><kbd>Shift</kbd></span>
+                    <span data-i18n="common:threeDDownHint">down</span>
+
+                    <span class="threeDOverlayHintKey"><kbd>Scroll</kbd></span>
+                    <span data-i18n="common:threeDSpeedHint">speed</span>
+
+                    <span class="threeDOverlayHintKey"><kbd>Esc</kbd></span>
+                    <span data-i18n="common:threeDReleaseHint">release</span>
+                </div>
+
+                <hr class="threeDOverlayDivider">
+
+                <div class="threeDOverlayOptions">
+                    <label class="threeDOverlayOption">
+                        <span data-i18n="common:threeDShowCapzones">Show Capzones</span>
+                        <input type="checkbox" class="threeDCapzonesToggle" checked>
+                    </label>
+                    <label class="threeDOverlayOption">
+                        <span data-i18n="common:threeDShowMinimap">Show Minimap</span>
+                        <input type="checkbox" class="threeDMinimapToggle" checked>
+                    </label>
+                    <label class="threeDOverlayOption">
+                        <span data-i18n="common:threeDShowPath">Show Path</span>
+                        <input type="checkbox" class="threeDPathToggle" checked>
+                    </label>
+                    <label class="threeDOverlayOption">
+                        <span data-i18n="common:threeDResolution">Resolution</span>
+                        <select class="threeDResolutionSelect">
+                            <option value="512">512</option>
+                            <option value="1024">1024</option>
+                            <option value="2048" selected>2048</option>
+                        </select>
+                    </label>
+                    <label class="threeDOverlayOption">
+                        <span data-i18n="common:threeDTexture">Texture</span>
+                        <select class="threeDTextureSelect">
+                            <option value="basemap" data-i18n="common:threeDBasemap" selected>Basemap</option>
+                            <option value="topomap" data-i18n="common:threeDTopomap">Topomap</option>
+                        </select>
+                    </label>
+                </div>
+
+                <button type="button" class="threeDGoButton" data-i18n="common:threeDGo">Go</button>
+            </div>
         </div>
         <div class="threeDSpeedHUD">
             <div class="threeDSpeedHUDLabel" data-i18n="common:threeDSpeed">Camera Speed</div>
