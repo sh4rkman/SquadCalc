@@ -42,7 +42,8 @@ var options = {
         ["uk", "UKR"],
         ["ru", "РУС"],
         ["fr", "FR"],
-        ["de", "DE"]
+        ["de", "DE"],
+        ["pt", "PT-BR"]
     ],
     gravity: 9.78,
     mapSize: 256,
