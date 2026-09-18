@@ -1,0 +1,21 @@
+{
+    "deployables": "Kurulabilir Yapılar",
+        "Mortar": "81mm Havan",
+        "UB-32": "UB-32",
+        "HellCannon": "Hell Cannon",
+    "vehicles": "Araçlar",
+        "Tech.Mortar": "Tech. Havan",
+        "Tech.UB-32": "Tech. UB-32",
+        "BM-21Grad": "BM-21 Grad",
+        "M1064M121": "M1064 M121",
+            "impact": "Çarpma",
+            "nearSurface": "Yüzeye Yakın",
+        "Mk19": "MK19-RWS",
+    "modded": "Modlu",
+        "M109": "M109A7 Paladin",
+        "T62.DUMP.TRUCK": "T62 Damperli Kamyon",
+        "MTLB_FAB500": "MTLB БЕГЕМОТ",
+        "HIMARS": "M142 HIMARS",
+        "TOS-1A": "TOS-1A",
+        "type_63": "Type 63"
+}
