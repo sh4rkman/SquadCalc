@@ -17,12 +17,16 @@ SquadCalc now use a new layer extractor tool made by **yobaNGE** : **[SquadPipel
   - lane preview on hover
 - CAPZONE REWORK
 - You can now sort servers by player count
-
+- PT/BZ translations
+- TK translations
+- 3D MAPS
+- IMF FLAG
 
 
 </br><img src="https://img.shields.io/badge/-bug%20fixes-b22">  
 - Fixed Squadcalc now drawing some rare protection zones
 - Fixed some buildings not registered into BlackCoast heightmap (Thanks yobaNGE)
+- Fixed Ghost building appearing on Sanxian heightmap (Thanks Metroseksuaali)
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
 

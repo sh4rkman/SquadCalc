@@ -133,9 +133,9 @@ export default class SquadCalc {
     /**
      * Opens the 3D view - shared by the map's own "3D" button and the target dialog's
      * "See in 3D" button (squadTargetMarker.js, via App.open3D()).
-     * @param {?{firingSolution: object, angleType: string}} [arcRequest] - draws a
-     * single projectile arc for this exact weapon/target/angle - see
-     * Squad3DSimulation.open()/_drawProjectileArc()
+     * @param {?{firingSolution: object, angleType: string}} [arcRequest] - additionally
+     * highlights this exact weapon/target/angle - see
+     * Squad3DSimulation.open()/_drawProjectileArcs()
      */
     open3D(arcRequest = null) {
         threeDTooltips.hide();

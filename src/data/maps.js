@@ -15,10 +15,14 @@ export const MAPS = [
             },
             landscapeScale: [1, 1, 0.087813952],
             zOffset: 2.0,
+            landscape3D: {
+                landscapeScale: [1, 1, 0.071966283],
+                zOffset: -12.7577,
+            },
         }
     },
-    { 
-        name: "Anvil", 
+    {
+        name: "Anvil",
         mapURL: "/img/maps/anvil/",
         radiusExclusion: FOBEXCLUSIONS.medium,
         SDK_data: {
@@ -28,6 +32,10 @@ export const MAPS = [
             },
             landscapeScale: [0.75, 0.75, 0.226426712],
             zOffset: -71.5835,
+            landscape3D: {
+                landscapeScale: [0.75, 0.75, 0.226426712],
+                zOffset: -71.5835,
+            },
         }
     },
     // { 
@@ -52,6 +60,10 @@ export const MAPS = [
             },
             landscapeScale: [1.003937, 1.003937, 0.358381824],
             zOffset: -31.0188,
+            landscape3D: {
+                landscapeScale: [1.003937, 1.003937, 0.417170742],
+                zOffset: -31.0188,
+            },
         }
     },
     { 
@@ -65,6 +77,10 @@ export const MAPS = [
             },
             landscapeScale: [0.5, 0.5, 0.982942589],
             zOffset: -793.5477,
+            landscape3D: {
+                landscapeScale: [0.5, 0.5, 0.982942589],
+                zOffset: -793.5477,
+            },
         }
     },
     { 
@@ -78,6 +94,10 @@ export const MAPS = [
             },
             landscapeScale: [1, 1, 0.14797459],
             zOffset: -48.43,
+            landscape3D: {
+                landscapeScale: [1, 1, 0.077971825],
+                zOffset: -54.875,
+            },
         }
     },
     { 
@@ -91,6 +111,10 @@ export const MAPS = [
             },
             landscapeScale: [1, 1, 0.20168671],
             zOffset: -61.5903,
+            landscape3D: {
+                landscapeScale: [1, 1, 0.205997796],
+                zOffset: -63.789,
+            },
         }
     },
     { 
@@ -104,6 +128,10 @@ export const MAPS = [
             },
             landscapeScale: [1, 1, 0.274412178],
             zOffset: -245.0,
+            landscape3D: {
+                landscapeScale: [1, 1, 0.233836963],
+                zOffset: -248.43,
+            },
         }
     },
     { 
@@ -117,10 +145,14 @@ export const MAPS = [
             },
             landscapeScale: [1, 1, 0.173697718],
             zOffset: -62.8744,
+            landscape3D: {
+                landscapeScale: [1, 1, 0.126346801],
+                zOffset: -62.8744,
+            },
         }
     },
-    { 
-        name: "Harju", 
+    {
+        name: "Harju",
         mapURL: "/img/maps/harju/",
         radiusExclusion: FOBEXCLUSIONS.medium,
         SDK_data: {
@@ -130,6 +162,10 @@ export const MAPS = [
             },
             landscapeScale: [1, 1, 0.229927482],
             zOffset: -21.1422,
+            landscape3D: {
+                landscapeScale: [1, 1, 0.166038648],
+                zOffset: -21.1422,
+            },
         }
     },
     { 
@@ -143,6 +179,10 @@ export const MAPS = [
             },
             landscapeScale: [1, 1, 0.185722727],
             zOffset: -15.5078,
+            landscape3D: {
+                landscapeScale: [1, 1, 0.089362846],
+                zOffset: -15.5078,
+            },
         }
     },
     { 
@@ -156,6 +196,10 @@ export const MAPS = [
             },
             landscapeScale: [1, 1, 0.387570609],
             zOffset: 31.6808,
+            landscape3D: {
+                landscapeScale: [1, 1, 0.387570609],
+                zOffset: 31.6808,
+            },
         }
     },
     { 
@@ -169,6 +213,10 @@ export const MAPS = [
             },
             landscapeScale: [1, 1, 0.750167993],
             zOffset: 9.4085,
+            landscape3D: {
+                landscapeScale: [1, 1, 0.750167993],
+                zOffset: 9.4085,
+            },
         }
     },
     { 
@@ -182,6 +230,10 @@ export const MAPS = [
             },
             landscapeScale: [0.5, 0.5, 0.174065564],
             zOffset: -255.0,
+            landscape3D: {
+                landscapeScale: [0.5, 0.5, 0.174065564],
+                zOffset: -255.0,
+            },
         }
     },
     { 
@@ -195,6 +247,10 @@ export const MAPS = [
             },
             landscapeScale: [1, 1, 0.321048558],
             zOffset: 1.9652,
+            landscape3D: {
+                landscapeScale: [1, 1, 0.298333727],
+                zOffset: 1.9652,
+            },
         }
     },
     { 
@@ -208,6 +264,10 @@ export const MAPS = [
             },
             landscapeScale: [1, 1, 0.248098348],
             zOffset: 4.1729,
+            landscape3D: {
+                landscapeScale: [1, 1, 0.248098348],
+                zOffset: 4.1729,
+            },
         }
     },
     { 
@@ -221,6 +281,10 @@ export const MAPS = [
             },
             landscapeScale: [1, 1, 0.403959641],
             zOffset: 38.0,
+            landscape3D: {
+                landscapeScale: [1, 1, 0.424812134],
+                zOffset: 27.3652,
+            },
         }
     },
     { 
@@ -234,6 +298,10 @@ export const MAPS = [
             },
             landscapeScale: [1, 1, 0.493831859],
             zOffset: -153.9385,
+            landscape3D: {
+                landscapeScale: [1, 1, 0.493831859],
+                zOffset: -153.9385,
+            },
         }
     },
     { 
@@ -247,6 +315,10 @@ export const MAPS = [
             },
             landscapeScale: [1, 1, 0.112586966],
             zOffset: -8.7821,
+            landscape3D: {
+                landscapeScale: [1, 1, 0.063912573],
+                zOffset: -8.7821,
+            },
         }
     },
     { 
@@ -260,6 +332,10 @@ export const MAPS = [
             },
             landscapeScale: [1, 1, 0.205154741],
             zOffset: -17.9298,
+            landscape3D: {
+                landscapeScale: [1, 1, 0.123498984],
+                zOffset: -17.9298,
+            },
         }
     },
     // { 
@@ -287,6 +363,10 @@ export const MAPS = [
             },
             landscapeScale: [1, 1, 0.317704444],
             zOffset: -79.18,
+            landscape3D: {
+                landscapeScale: [1, 1, 0.281076588],
+                zOffset: -79.18,
+            },
         }
     },
     { 
@@ -300,6 +380,10 @@ export const MAPS = [
             },
             landscapeScale: [1, 1, 0.233953671],
             zOffset: 0.0,
+            landscape3D: {
+                landscapeScale: [1, 1, 0.19664528],
+                zOffset: -43.1094,
+            },
         }
     },
     { 
@@ -318,6 +402,10 @@ export const MAPS = [
             },
             landscapeScale: [1.2, 1.2, 2.086916336],
             zOffset: -360.7172,
+            landscape3D: {
+                landscapeScale: [1.2, 1.2, 2.086916336],
+                zOffset: -360.7172,
+            },
         }
     },
     { 
@@ -331,6 +419,10 @@ export const MAPS = [
             },
             landscapeScale: [1, 1, 0.267739565],
             zOffset: -138.0639,
+            landscape3D: {
+                landscapeScale: [1, 1, 0.267739745],
+                zOffset: -138.064,
+            },
         }
     },
     { 
@@ -344,6 +436,10 @@ export const MAPS = [
             },
             landscapeScale: [1, 1, 0.152035884],
             zOffset: -83.457,
+            landscape3D: {
+                landscapeScale: [1, 1, 0.152035884],
+                zOffset: -83.457,
+            },
         }
     },
     { 
@@ -357,6 +453,10 @@ export const MAPS = [
             },
             landscapeScale: [1, 1, 0.485970247],
             zOffset: -65.4916,
+            landscape3D: {
+                landscapeScale: [1, 1, 0.485970247],
+                zOffset: -65.4916,
+            },
         }
     },
     // SPM

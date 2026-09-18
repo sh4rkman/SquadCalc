@@ -3,6 +3,8 @@ import { decode } from "fast-png";
 import { PointerLockControls } from "three/addons/controls/PointerLockControls.js";
 import { RGBELoader } from "three/addons/loaders/RGBELoader.js";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+import { loadProps } from "./squad3DProps.js";
+import { loadTrees } from "./squad3DTrees.js";
 
 // Default vertices per side of the terrain grid, sampled from the full-resolution
 // heightmap - user-adjustable via the resolution selector (see _setResolution()).
@@ -37,8 +39,24 @@ const TARGET_MARKER_WORLD_SIZE = MARKER_WORLD_SIZE * 0.75;
 // z-fighting with the terrain - see _drawTargetSpreads().
 const SPREAD_GROUND_OFFSET = 0.2;
 
-// Projectile arc tube radius (meters) - see _drawProjectileArc().
+// Projectile arc tube radius (meters) - see _drawProjectileArcs().
 const ARC_TUBE_RADIUS = 0.8;
+
+// Seconds between FPS HUD updates - a plain per-frame 1/delta reading jitters too much to
+// read, so it's averaged over this window instead.
+const FPS_UPDATE_INTERVAL = 0.5;
+
+// requestAnimationFrame fires at the display's own refresh rate (vsync-locked) with no
+// cap of its own - on a high-refresh monitor that's more render/movement-update work than
+// this scene needs. Frames still get requested at the display's full rate, but the actual
+// update+render work (and the FPS counter, which measures exactly that work) is skipped
+// until at least 1/MAX_FPS seconds have accumulated.
+const MAX_FPS = 100;
+const MIN_FRAME_INTERVAL = 1 / MAX_FPS;
+
+// NDC coordinates of the screen center (where the crosshair sits) - see the debug
+// left-click raycast in _setupFlyControls().
+const _screenCenter = new THREE.Vector2(0, 0);
 
 // Horizontal/vertical offset (meters) of the camera spawn from a placed weapon - see
 // _spawnCamera(). Equal on both axes for an exact 45-degree down angle.
@@ -60,6 +78,11 @@ const STORAGE_KEYS = {
     capzonesVisible: "settings-3d-capzones",
     minimapVisible: "settings-3d-minimap",
     pathVisible: "settings-3d-path",
+    arcsVisible: "settings-3d-arcs",
+    treesVisible: "settings-3d-trees",
+    propsVisible: "settings-3d-props",
+    crosshairVisible: "settings-3d-crosshair",
+    fpsVisible: "settings-3d-fps",
     gridResolution: "settings-3d-resolution",
     textureName: "settings-3d-texture",
 };
@@ -129,9 +152,16 @@ export default class Squad3DSimulation {
         this.markerGroup = null;
         this.spreadGroup = null;
         this.arcGroup = null;
+        this.propsGroup = null;
+        this.treesGroup = null;
         this.capzonesVisible = loadSetting(STORAGE_KEYS.capzonesVisible, "1") === "1";
         this.minimapVisible = loadSetting(STORAGE_KEYS.minimapVisible, "1") === "1";
         this.pathVisible = loadSetting(STORAGE_KEYS.pathVisible, "1") === "1";
+        this.arcsVisible = loadSetting(STORAGE_KEYS.arcsVisible, "1") === "1";
+        this.treesVisible = loadSetting(STORAGE_KEYS.treesVisible, "1") === "1";
+        this.propsVisible = loadSetting(STORAGE_KEYS.propsVisible, "1") === "1";
+        this.crosshairVisible = loadSetting(STORAGE_KEYS.crosshairVisible, "1") === "1";
+        this.fpsVisible = loadSetting(STORAGE_KEYS.fpsVisible, "1") === "1";
 
         // Deployable glTF templates, cached and loaded once per asset type - see
         // _drawDeployables(). Instances are shallow clones sharing this geometry/material.
@@ -145,6 +175,18 @@ export default class Squad3DSimulation {
         this.loadedMapURL = null;
         this._frameId = null;
         this._onResize = () => this._resize();
+
+        // Rolling counters for the FPS HUD - updated once per FPS_UPDATE_INTERVAL instead
+        // of every frame, so the displayed number doesn't flicker.
+        this._fpsAccumTime = 0;
+        this._fpsAccumFrames = 0;
+
+        // Seconds accumulated since the last actual update+render - see MAX_FPS.
+        this._frameCapAccum = 0;
+
+        // Debug left-click raycast (see _setupFlyControls()) - reused every click instead
+        // of allocating a new Raycaster each time.
+        this._raycaster = new THREE.Raycaster();
 
         // Cached from the last _loadTerrain(), so a resolution change can resample
         // without re-fetching the heightmap/basemap, and so it knows what to redraw.
@@ -171,9 +213,9 @@ export default class Squad3DSimulation {
      * @param {object} activeMap - SquadMinimap's activeMap (mapURL, SDK_data.landscapeScale, size)
      * @param {?SquadLayer} layer - the currently selected layer, if any - drives the capzone overlay
      * @param {?object} minimap - SquadMinimap instance, if any - drives the placed weapon/target markers overlay
-     * @param {?{firingSolution: object, angleType: string}} [arcRequest] - draws a single
-     * projectile arc for this exact weapon/target/angle, from the target dialog's
-     * "See in 3D" button (squadTargetMarker.js) - see _drawProjectileArc()
+     * @param {?{firingSolution: object, angleType: string}} [arcRequest] - additionally
+     * highlights this exact weapon/target/angle, from the target dialog's "See in 3D"
+     * button (squadTargetMarker.js) - see _drawProjectileArcs()
      */
     async open(activeMap, layer = null, minimap = null, arcRequest = null) {
         if (!this.renderer) this._initScene();
@@ -188,6 +230,7 @@ export default class Squad3DSimulation {
             this.overlay.hidden = true;
             try {
                 await this._loadTerrain(activeMap);
+                await this._loadPropsAndTrees(activeMap);
                 this.loadedMapURL = activeMap.mapURL;
             } finally {
                 this.loadingScreen.hidden = true;
@@ -201,7 +244,7 @@ export default class Squad3DSimulation {
         this._drawDeployables(layer, activeMap);
         this._drawMarkers(minimap, activeMap);
         this._drawTargetSpreads(minimap, activeMap);
-        this._drawProjectileArc(arcRequest, minimap, activeMap);
+        this._drawProjectileArcs(minimap, activeMap, arcRequest);
         this._spawnCamera(activeMap, minimap, arcRequest);
 
         this.overlay.hidden = false;
@@ -234,7 +277,7 @@ export default class Squad3DSimulation {
         this.renderer = new THREE.WebGLRenderer({ antialias: true });
         this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
-        this.renderer.toneMappingExposure = 1;
+        this.renderer.toneMappingExposure = 0.85;
         this.container.appendChild(this.renderer.domElement);
 
         // No shadow mapping - a single hard-shadowed sun is what was making everything
@@ -246,10 +289,15 @@ export default class Squad3DSimulation {
 
         // A real HDRI reads far better than the procedural Sky shader did - loaded once
         // and reused as the background for every map/open() since it never changes.
+        // Also set as scene.environment, not just .background - every MeshStandardMaterial
+        // here (terrain/props/trees) sets its own envMapIntensity expecting real ambient/
+        // reflected sky light from this map, which .background alone never provides.
         new RGBELoader().load("/img/sky/skybox.hdr", (texture) => {
             texture.mapping = THREE.EquirectangularReflectionMapping;
             this.scene.background = texture;
+            this.scene.environment = texture;
         });
+        this.scene.environmentIntensity = 0.5;
         this._updateSun();
 
         // Fixed real-world sight distances (meters), not relative to the map's own size -
@@ -269,6 +317,10 @@ export default class Squad3DSimulation {
         this.scene.add(this.spreadGroup);
         this.arcGroup = new THREE.Group();
         this.scene.add(this.arcGroup);
+        this.propsGroup = new THREE.Group();
+        this.scene.add(this.propsGroup);
+        this.treesGroup = new THREE.Group();
+        this.scene.add(this.treesGroup);
 
         this.clock = new THREE.Clock();
         this.controls = new PointerLockControls(this.camera, this.renderer.domElement);
@@ -288,8 +340,23 @@ export default class Squad3DSimulation {
 
     _setupFlyControls() {
         this.overlay = this.container.querySelector(".threeDOverlay");
-        this.controls.addEventListener("lock", () => { this.overlay.hidden = true; });
-        this.controls.addEventListener("unlock", () => { this.overlay.hidden = false; });
+        this.crosshair = this.container.querySelector(".threeDCrosshair");
+        this.fpsCounter = this.container.querySelector(".threeDFpsCounter");
+        // PointerLockControls dispatches "lock"/"unlock" BEFORE updating its own isLocked
+        // flag, so reading this.controls.isLocked from inside these listeners would still
+        // see the previous (stale) state - the locked/unlocked value is passed explicitly
+        // instead of relying on it.
+        this.controls.addEventListener("lock", () => { this.overlay.hidden = true; this._updateCrosshairVisibility(true); });
+        this.controls.addEventListener("unlock", () => { this.overlay.hidden = false; this._updateCrosshairVisibility(false); });
+
+        // Debug: left-click while flying raycasts from the crosshair (screen center)
+        // straight down the camera's view direction and logs whatever it hits.
+        this.renderer.domElement.addEventListener("click", () => {
+            if (!this.controls.isLocked) return;
+            this._raycaster.setFromCamera(_screenCenter, this.camera);
+            const hit = this._raycaster.intersectObjects(this.scene.children, true)[0];
+            console.debug(hit ? hit.object : null);
+        });
 
         const goButton = this.container.querySelector(".threeDGoButton");
         goButton.addEventListener("click", () => this.controls.lock());
@@ -318,6 +385,31 @@ export default class Squad3DSimulation {
         const pathToggle = options.querySelector(".threeDPathToggle");
         pathToggle.checked = this.pathVisible;
         pathToggle.addEventListener("change", () => this._setPathVisible(pathToggle.checked));
+
+        const arcsToggle = options.querySelector(".threeDArcsToggle");
+        arcsToggle.checked = this.arcsVisible;
+        this._setArcsVisible(this.arcsVisible);
+        arcsToggle.addEventListener("change", () => this._setArcsVisible(arcsToggle.checked));
+
+        const treesToggle = options.querySelector(".threeDTreesToggle");
+        treesToggle.checked = this.treesVisible;
+        this._setTreesVisible(this.treesVisible);
+        treesToggle.addEventListener("change", () => this._setTreesVisible(treesToggle.checked));
+
+        const propsToggle = options.querySelector(".threeDPropsToggle");
+        propsToggle.checked = this.propsVisible;
+        this._setPropsVisible(this.propsVisible);
+        propsToggle.addEventListener("change", () => this._setPropsVisible(propsToggle.checked));
+
+        const crosshairToggle = options.querySelector(".threeDCrosshairToggle");
+        crosshairToggle.checked = this.crosshairVisible;
+        this._setCrosshairVisible(this.crosshairVisible);
+        crosshairToggle.addEventListener("change", () => this._setCrosshairVisible(crosshairToggle.checked));
+
+        const fpsToggle = options.querySelector(".threeDFpsToggle");
+        fpsToggle.checked = this.fpsVisible;
+        this._setFpsVisible(this.fpsVisible);
+        fpsToggle.addEventListener("change", () => this._setFpsVisible(fpsToggle.checked));
 
         const resolutionSelect = options.querySelector(".threeDResolutionSelect");
         resolutionSelect.value = String(this.gridResolution);
@@ -404,11 +496,11 @@ export default class Squad3DSimulation {
 
     async _loadTerrain(activeMap) {
         const base = `${process.env.API_URL}${activeMap.mapURL}`;
-        this._heightScale = activeMap.SDK_data?.landscapeScale?.[2] ?? 1;
+        this._heightScale = this._landscapeCalibration(activeMap).heightScale;
         this.minimapImage.src = `${base}basemap.webp`; // instant placeholder while the map loads - see open()'s _updateMinimapImage()
 
         const [heightBuffer, texture] = await Promise.all([
-            fetch(`${base}heightmap.png`).then((response) => response.arrayBuffer()),
+            fetch(`${base}landscape.png`).then((response) => response.arrayBuffer()),
             new THREE.TextureLoader().loadAsync(`${base}${this.textureName}.webp`),
         ]);
         texture.colorSpace = THREE.SRGBColorSpace;
@@ -422,6 +514,58 @@ export default class Squad3DSimulation {
         this._updateSun();
         this._rebuildTerrainMesh();
 
+    }
+
+
+    /**
+     * Loads a map's real building/wall geometry (props.bin) and tree/vegetation/generic-
+     * building-placeholder instances (trees.bin) - see squad3DProps.js/squad3DTrees.js.
+     * Only reloaded when the map itself changes (see open()), same as the terrain -
+     * unlike capzones/deployables/flag-path, props/trees are map-level static geometry,
+     * not per-layer.
+     *
+     * Both files ship positions in real absolute-meters - the same frame as
+     * activeMap.SDK_data.minimap.corner0/zOffset (and squadLayer.js's location_x/
+     * location_y/location_z, divided by 100), not yet shifted into this simulation's
+     * centered/landscape-relative world space. Every vertex/instance in a given file
+     * needs the exact same offset, so rather than transforming each one individually
+     * (like _gameToWorldXZ() does per deployable/capzone shape), it's simplest to just
+     * position each returned group once - same math as _gameToWorldXZ()'s tail end
+     * (corner0-relative, then centered by half the terrain footprint) plus the same
+     * absolute-to-landscape-relative height shift _calibrateZOffset() applies.
+     * @param {object} activeMap
+     */
+    async _loadPropsAndTrees(activeMap) {
+        for (const group of [this.propsGroup, this.treesGroup]) {
+            group.children.forEach((mesh) => {
+                mesh.geometry.dispose();
+                mesh.material.dispose();
+            });
+            group.clear();
+        }
+
+        const corner0 = activeMap.SDK_data?.minimap?.corner0;
+        if (!corner0) return;
+
+        const mapBase = `${process.env.API_URL}${activeMap.mapURL}`;
+        const [propMeshes, { vegetation, structures }] = await Promise.all([
+            loadProps(mapBase),
+            loadTrees(mapBase),
+        ]);
+
+        // The map (or the dialog) may have changed while this was loading.
+        if (this._lastActiveMap !== activeMap) return;
+
+        const zOffsetM = this._landscapeCalibration(activeMap).zOffsetM ?? 0;
+        this.propsGroup.position.set(-corner0[0] - this.terrainSize / 2, -zOffsetM, -corner0[1] - this.terrainSize / 2);
+        this.treesGroup.position.copy(this.propsGroup.position);
+
+        // structures (trees.bin's generic box/house/lshape/etc building placeholders) join
+        // props.bin's real buildings under propsGroup, so "show buildings" and "show
+        // trees" each control only what they say - see loadTrees()'s own comment.
+        propMeshes.forEach((mesh) => this.propsGroup.add(mesh));
+        structures.forEach((mesh) => this.propsGroup.add(mesh));
+        vegetation.forEach((mesh) => this.treesGroup.add(mesh));
     }
 
 
@@ -626,6 +770,76 @@ export default class Squad3DSimulation {
     }
 
 
+    /**
+     * Shows/hides the weapon-to-target projectile arcs (see _drawProjectileArcs()).
+     * @param {boolean} visible
+     */
+    _setArcsVisible(visible) {
+        this.arcsVisible = visible;
+        localStorage.setItem(STORAGE_KEYS.arcsVisible, visible ? "1" : "0");
+        this.arcGroup.visible = visible;
+    }
+
+
+    /**
+     * Shows/hides the tree/vegetation/generic-placeholder instances (see
+     * squad3DTrees.js's loadTrees()).
+     * @param {boolean} visible
+     */
+    _setTreesVisible(visible) {
+        this.treesVisible = visible;
+        localStorage.setItem(STORAGE_KEYS.treesVisible, visible ? "1" : "0");
+        this.treesGroup.visible = visible;
+    }
+
+
+    /**
+     * Shows/hides the real baked building/wall/etc prop geometry (see squad3DProps.js's
+     * loadProps()).
+     * @param {boolean} visible
+     */
+    _setPropsVisible(visible) {
+        this.propsVisible = visible;
+        localStorage.setItem(STORAGE_KEYS.propsVisible, visible ? "1" : "0");
+        this.propsGroup.visible = visible;
+    }
+
+
+    /**
+     * Shows/hides the center crosshair. Only actually shown while flying (pointer-locked)
+     * even when enabled - see _updateCrosshairVisibility().
+     * @param {boolean} visible
+     */
+    _setCrosshairVisible(visible) {
+        this.crosshairVisible = visible;
+        localStorage.setItem(STORAGE_KEYS.crosshairVisible, visible ? "1" : "0");
+        this._updateCrosshairVisibility();
+    }
+
+
+    /**
+     * Applies crosshairVisible together with the pointer-lock state - the crosshair only
+     * makes sense while actually flying, not over the start menu.
+     * @param {boolean} [locked] - defaults to this.controls.isLocked; the "lock"/"unlock"
+     * listeners pass it explicitly instead, since PointerLockControls dispatches those
+     * events before updating isLocked itself.
+     */
+    _updateCrosshairVisibility(locked = this.controls.isLocked) {
+        this.crosshair.hidden = !(this.crosshairVisible && locked);
+    }
+
+
+    /**
+     * Shows/hides the top-left FPS counter.
+     * @param {boolean} visible
+     */
+    _setFpsVisible(visible) {
+        this.fpsVisible = visible;
+        localStorage.setItem(STORAGE_KEYS.fpsVisible, visible ? "1" : "0");
+        this.fpsCounter.hidden = !visible;
+    }
+
+
 
     /**
      * Draws each objective's capture-zone shapes (boxes, spheres, capsules), whatever the
@@ -817,12 +1031,33 @@ export default class Squad3DSimulation {
 
 
     /**
+     * The map's own real absolute-meters height calibration - landscapeScale[2] (meters
+     * per decoded heightmap unit) and zOffset (meters to add to a decoded height sample
+     * to recover real absolute Unreal Z). Prefers the map's own SDK_data.landscape3D entry -
+     * calibrated specifically against landscape.png, this simulation's own terrain source -
+     * over the top-level SDK_data one (calibrated against heightmap.png, the source
+     * squadHeightmaps.js's 2D height-difference calc still uses) whenever a map has both;
+     * falls back to the top-level values for a map without its own landscape3D entry yet
+     * (see src/data/maps.js).
+     * @param {object} activeMap
+     * @returns {{heightScale: number, zOffsetM: ?number}}
+     */
+    _landscapeCalibration(activeMap) {
+        const sdk = activeMap.SDK_data;
+        return {
+            heightScale: sdk?.landscape3D?.landscapeScale?.[2] ?? sdk?.landscapeScale?.[2] ?? 1,
+            zOffsetM: sdk?.landscape3D?.zOffset ?? sdk?.zOffset,
+        };
+    }
+
+
+    /**
      * The per-map constant that aligns location_z's absolute datum with our decoded
      * heightmap's landscape-relative one (see _drawCapzones()).
      *
      * The heightmap encoding is normalized per map (its lowest scanned point is always
      * raw height 0), so it has no idea what that point's real absolute world Z is -
-     * that's exactly what activeMap.SDK_data.zOffset carries (the exporter's own
+     * that's exactly what _landscapeCalibration() carries (the exporter's own
      * `z_offset_m`, verified against every AAS layer we had data for: worldZ = decoded
      * height + z_offset_m, so decoded height = location_z/100 - z_offset_m). Falls back
      * to a median-based estimate (decoded ground height - location_z across every capzone
@@ -834,7 +1069,7 @@ export default class Squad3DSimulation {
      * @returns {number} meters to add to location_z/100
      */
     _calibrateZOffset(layer, activeMap, corner0) {
-        const zOffsetM = activeMap.SDK_data?.zOffset;
+        const zOffsetM = this._landscapeCalibration(activeMap).zOffsetM;
         if (zOffsetM !== undefined) return -zOffsetM;
 
         const samples = [];
@@ -1267,9 +1502,49 @@ export default class Squad3DSimulation {
 
 
     /**
-     * Draws a single projectile arc between one weapon/target pair, from the target
-     * dialog's "See in 3D" button - the physics-shaped path a shot along
-     * firingSolution/angleType actually takes, not just a straight line.
+     * Draws a projectile arc for every weapon/target pair currently placed on the 2D
+     * map (minimap.activeWeaponsMarkers/activeTargetsMarkers) - so trajectories stay
+     * visible for as long as 3D mode is open, not just when jumping in via the target
+     * dialog's "See in 3D" button. Each target's own firingSolution1/firingSolution2
+     * (computed by squadTargetMarker.js against weapon 1/2) is drawn using that
+     * weapon's currently selected angleType, the same low/high choice the 2D popup and
+     * marker icon already use.
+     *
+     * `arcRequest` (from "See in 3D") is drawn on top of that - it lets the low/high
+     * simulation dialog highlight one exact firingSolution/angleType, which can differ
+     * from the target's default angleType when "lowAndHigh" is enabled.
+     * @param {?object} minimap - SquadMinimap instance
+     * @param {object} activeMap
+     * @param {?{firingSolution: object, angleType: string}} [arcRequest]
+     */
+    _drawProjectileArcs(minimap, activeMap, arcRequest = null) {
+        this.arcGroup.clear();
+        if (!minimap) return;
+
+        const corner0 = activeMap.SDK_data?.minimap?.corner0;
+        if (!corner0) return;
+
+        const weapons = minimap.activeWeaponsMarkers.getLayers();
+        const targets = minimap.activeTargetsMarkers.getLayers();
+
+        for (const target of targets) {
+            if (weapons[0] && target.firingSolution1) {
+                this._addProjectileArc(target.firingSolution1, weapons[0].angleType, minimap, corner0);
+            }
+            if (weapons[1] && target.firingSolution2) {
+                this._addProjectileArc(target.firingSolution2, weapons[1].angleType, minimap, corner0);
+            }
+        }
+
+        if (arcRequest) this._addProjectileArc(arcRequest.firingSolution, arcRequest.angleType, minimap, corner0);
+    }
+
+
+    /**
+     * Builds and adds a single projectile arc mesh between one weapon/target pair -
+     * the physics-shaped path a shot along firingSolution/angleType actually takes,
+     * not just a straight line. Shared by _drawProjectileArcs() for every placed
+     * weapon/target pair and for the "See in 3D" highlighted arcRequest.
      *
      * Horizontal position is a plain fraction-of-time lerp between the two ground
      * points (exact, since horizontal velocity is constant - distance(t) is linear in
@@ -1280,18 +1555,12 @@ export default class Squad3DSimulation {
      * firingSolution.heightDiff and this file's terrainHeightAt() (a different
      * resolution/grid) can disagree by a meter or so, which would otherwise leave a
      * visible gap or clip at the target end.
-     * @param {?{firingSolution: object, angleType: string}} arcRequest
-     * @param {?object} minimap - SquadMinimap instance
-     * @param {object} activeMap
+     * @param {object} firingSolution
+     * @param {string} angleType
+     * @param {object} minimap - SquadMinimap instance
+     * @param {[number, number]} corner0 - activeMap.SDK_data.minimap.corner0
      */
-    _drawProjectileArc(arcRequest, minimap, activeMap) {
-        this.arcGroup.clear();
-        if (!arcRequest || !minimap) return;
-
-        const corner0 = activeMap.SDK_data?.minimap?.corner0;
-        if (!corner0) return;
-
-        const { firingSolution, angleType } = arcRequest;
+    _addProjectileArc(firingSolution, angleType, minimap, corner0) {
         const elevation = angleType === "high" ? firingSolution.elevation.high.rad : firingSolution.elevation.low.rad;
         const timeOfFlight = angleType === "high" ? firingSolution.timeOfFlight.high : firingSolution.timeOfFlight.low;
         if (!Number.isFinite(elevation) || !Number.isFinite(timeOfFlight) || timeOfFlight <= 0) return;
@@ -1456,12 +1725,34 @@ export default class Squad3DSimulation {
     _startLoop() {
         const renderFrame = () => {
             this._frameId = requestAnimationFrame(renderFrame);
-            const delta = Math.min(this.clock.getDelta(), 0.1);
+
+            this._frameCapAccum += this.clock.getDelta();
+            if (this._frameCapAccum < MIN_FRAME_INTERVAL) return;
+            const delta = Math.min(this._frameCapAccum, 0.1);
+            this._frameCapAccum = 0;
+
             this._updateFlyMovement(delta);
             this._updateMinimapDot();
+            this._updateFpsCounter(delta);
             this.renderer.render(this.scene, this.camera);
         };
         renderFrame();
+    }
+
+
+    /**
+     * Updates the top-left FPS counter, averaged over FPS_UPDATE_INTERVAL rather than
+     * read fresh every frame (1/delta alone jitters too much to be readable).
+     * @param {number} delta - seconds since the last frame
+     */
+    _updateFpsCounter(delta) {
+        this._fpsAccumTime += delta;
+        this._fpsAccumFrames++;
+        if (this._fpsAccumTime < FPS_UPDATE_INTERVAL) return;
+
+        this.fpsCounter.textContent = Math.round(this._fpsAccumFrames / this._fpsAccumTime);
+        this._fpsAccumTime = 0;
+        this._fpsAccumFrames = 0;
     }
 
 

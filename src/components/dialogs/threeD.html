@@ -47,6 +47,26 @@
                         <input type="checkbox" class="threeDPathToggle" checked>
                     </label>
                     <label class="threeDOverlayOption">
+                        <span data-i18n="common:threeDShowTrajectories">Show Trajectories</span>
+                        <input type="checkbox" class="threeDArcsToggle" checked>
+                    </label>
+                    <label class="threeDOverlayOption">
+                        <span data-i18n="common:threeDShowTrees">Show Trees</span>
+                        <input type="checkbox" class="threeDTreesToggle" checked>
+                    </label>
+                    <label class="threeDOverlayOption">
+                        <span data-i18n="common:threeDShowBuildings">Show Buildings</span>
+                        <input type="checkbox" class="threeDPropsToggle" checked>
+                    </label>
+                    <label class="threeDOverlayOption">
+                        <span data-i18n="common:threeDShowCrosshair">Show Crosshair</span>
+                        <input type="checkbox" class="threeDCrosshairToggle" checked>
+                    </label>
+                    <label class="threeDOverlayOption">
+                        <span data-i18n="common:threeDShowFPS">Show FPS</span>
+                        <input type="checkbox" class="threeDFpsToggle" checked>
+                    </label>
+                    <label class="threeDOverlayOption">
                         <span data-i18n="common:threeDResolution">Resolution</span>
                         <select class="threeDResolutionSelect">
                             <option value="512" data-i18n="common:threeDResVeryLow">Very Low</option>
@@ -68,6 +88,8 @@
                 <button type="button" class="threeDQuitButton" data-i18n="common:threeDQuit">Quit</button>
             </div>
         </div>
+        <div class="threeDCrosshair" hidden></div>
+        <div class="threeDFpsCounter" hidden></div>
         <div class="threeDSpeedHUD">
             <div class="threeDSpeedHUDLabel" data-i18n="common:threeDSpeed">Camera Speed</div>
             <div class="threeDSpeedHUDRow">

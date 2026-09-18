@@ -428,6 +428,46 @@ dialog {
             }
             &:active { opacity: 0.8; }
         }
+        .threeDFpsCounter {
+            position: absolute;
+            top: 0.6em;
+            left: 0.6em;
+            color: rgba(255, 255, 255, 0.85);
+            text-shadow: 0 0 3px rgba(0, 0, 0, 0.9);
+            font-size: 0.9em;
+            pointer-events: none;
+            z-index: 1;
+        }
+        .threeDCrosshair {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 16px;
+            height: 16px;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 1;
+            &::before, &::after {
+                content: "";
+                position: absolute;
+                background: rgba(255, 255, 255, 0.85);
+                box-shadow: 0 0 2px rgba(0, 0, 0, 0.8);
+            }
+            &::before {
+                left: 50%;
+                top: 0;
+                bottom: 0;
+                width: 2px;
+                transform: translateX(-50%);
+            }
+            &::after {
+                top: 50%;
+                left: 0;
+                right: 0;
+                height: 2px;
+                transform: translateY(-50%);
+            }
+        }
         .threeDSpeedHUD {
             position: absolute;
             left: 50%;
