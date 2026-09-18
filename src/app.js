@@ -43,6 +43,7 @@ var options = {
         ["ru", "РУС"],
         ["fr", "FR"],
         ["de", "DE"],
+        ["tr", "TR"],
         ["pt", "PT-BR"]
     ],
     gravity: 9.78,
