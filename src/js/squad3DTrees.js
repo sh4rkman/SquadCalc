@@ -68,7 +68,8 @@ function buildGenericTreeGeometry() {
     // height - callers scale both InstancedMeshes by the same factor
     // (naturalHeight / height) so they still line up as one tree.
     const trunkHeight = 1.6;
-    const trunk = new THREE.CylinderGeometry(0.12, 0.22, trunkHeight, 6).toNonIndexed();
+    // Radius reduced by a third (x2/3) per user request - was (0.12, 0.22).
+    const trunk = new THREE.CylinderGeometry(0.08, 0.1467, trunkHeight, 6).toNonIndexed();
     trunk.translate(0, trunkHeight / 2, 0);
     const trunkColor = new THREE.Color(0x5c4530);
     trunk.setAttribute("color", new THREE.BufferAttribute(
@@ -188,6 +189,7 @@ const DEFAULT_BOX_COLOR = 0x8a8f94;
 const BOX_COLOR_BY_NAME_KEYWORD = [
     [/^SM_ME_UrbRes_Bld_Med_09$/i, 0x555145],
     [/^SM_ME_UrbRes_Bld_Med_12$/i, 0x638085],
+    [/^SM_Factory_Chimney_01/i, 0xb07f68],
     [/SM_ShippingContainer.*White/i, 0xc9c9c4],
     [/SM_ShippingContainer.*Green/i, 0x3f5c3a],
     [/SM_ShippingContainer.*Red/i, 0x8a3328],
@@ -461,6 +463,27 @@ function buildGenericCylinderGeometry() {
     return geometry;
 }
 
+// Box base height as a fraction of the unit cube, and shaft radius (unit-space, base
+// spans 0-1) - calibrated for SM_Factory_Chimney_01's real ~23.16m height (~4m base).
+const CHIMNEY_BASE_HEIGHT_FRACTION = 0.1727;
+const CHIMNEY_SHAFT_RADIUS = 0.3;
+
+function buildGenericChimneyGeometry() {
+    // Box base + cylinder shaft - for factory chimney species where a plain cylinder or
+    // box placeholder reads wrong on its own. Spans the unit cube (0,0,0)-(1,1,1) like
+    // every other buildInstancedBoxProps shape.
+    const base = new THREE.BoxGeometry(1, CHIMNEY_BASE_HEIGHT_FRACTION, 1).toNonIndexed();
+    base.translate(0.5, CHIMNEY_BASE_HEIGHT_FRACTION / 2, 0.5);
+    const shaftHeight = 1 - CHIMNEY_BASE_HEIGHT_FRACTION;
+    const shaft = new THREE.CylinderGeometry(CHIMNEY_SHAFT_RADIUS, CHIMNEY_SHAFT_RADIUS, shaftHeight, 20).toNonIndexed();
+    shaft.translate(0.5, CHIMNEY_BASE_HEIGHT_FRACTION + shaftHeight / 2, 0.5);
+    const geometry = mergeGeometries([base, shaft], false);
+    geometry.setAttribute("color", new THREE.BufferAttribute(
+        new Float32Array(geometry.attributes.position.count * 3).fill(1), 3
+    ));
+    return geometry;
+}
+
 function buildGenericLogGeometry() {
     // A single cylinder lying on its side, length along local Z instead of Y - for
     // fallen-log species whose long axis is horizontal.
@@ -634,11 +657,16 @@ function roofColorForSpecies(label) {
 }
 
 // Round-tree canopy color - summer green, except a "Fall"-flagged species (e.g.
-// SM_BirchLarge03_Fall), which gets autumn orange/maroon instead.
+// SM_BirchLarge03_Fall), which gets autumn orange/maroon instead, and a "snowy"-flagged
+// species (e.g. SM_ScotsPinesnowymid02_cut), which gets a pale snow-dusted green/grey -
+// checked before the fall check.
 const DEFAULT_CANOPY_COLOR = 0x4a7c3f;
 const FALL_CANOPY_COLOR = 0x705c3a;
 const FALL_SPECIES_PATTERN = /fall/i;
+const SNOWY_CANOPY_COLOR = 0xaabc82;
+const SNOWY_SPECIES_PATTERN = /snowy/i;
 function canopyColorForSpecies(label) {
+    if (SNOWY_SPECIES_PATTERN.test(label)) return SNOWY_CANOPY_COLOR;
     return FALL_SPECIES_PATTERN.test(label) ? FALL_CANOPY_COLOR : DEFAULT_CANOPY_COLOR;
 }
 
@@ -1180,7 +1208,7 @@ function buildInstancedBoxProps(entries, buf, geometry, meshName, colorFn) {
  */
 export async function loadTrees(mapBase) {
     const empty = { vegetation: [], structures: [] };
-    const manifestRes = await fetch(`${mapBase}trees.json`);
+    const manifestRes = await fetch(`${mapBase}3d/trees.json`);
     if (!manifestRes.ok || !(manifestRes.headers.get("content-type") || "").includes("json")) return empty;
     let manifest;
     try {
@@ -1189,14 +1217,14 @@ export async function loadTrees(mapBase) {
         return empty;
     }
 
-    const buf = await fetch(`${mapBase}trees.bin`).then((res) => res.arrayBuffer());
+    const buf = await fetch(`${mapBase}3d/trees.bin`).then((res) => res.arrayBuffer());
 
     // Only primitive 0 per tree/bush species - other primitives (e.g. a tree's separate
     // leaves primitive) share the exact same per-instance transforms, so including them
     // would just duplicate matrices for no benefit. Box/house/lshape/tshape/etc species
     // are the exception: a "split primitive" species legitimately has one real part per
     // primitive, not a duplicate, so every primitive stays.
-    const boxLikeKinds = new Set(["box", "house", "monoslopehouse", "toppedbox", "notchedapartment", "facadehouse", "lshape", "lshapehouse", "lshapehouse2", "tshape", "doublegable", "cylinder", "log", "lshapebox", "lshapebox2", "logpile", "bunker", "tubehangar"]);
+    const boxLikeKinds = new Set(["box", "house", "monoslopehouse", "toppedbox", "notchedapartment", "facadehouse", "lshape", "lshapehouse", "lshapehouse2", "tshape", "doublegable", "cylinder", "chimney", "log", "lshapebox", "lshapebox2", "logpile", "bunker", "tubehangar"]);
     const primaryEntries = manifest.species.filter((s) => s.label.endsWith("_0") || boxLikeKinds.has(s.kind));
     const bushEntries = primaryEntries.filter((s) => s.kind === "bush");
     const boxEntries = primaryEntries.filter((s) => s.kind === "box");
@@ -1215,6 +1243,7 @@ export async function loadTrees(mapBase) {
     const doublegableEntries = doublegableEntriesAll.filter((s) => !isDoubleGableRidgeAlongZ(s.label.replace(/_0$/, "")));
     const doublegableEntriesRidgeZ = doublegableEntriesAll.filter((s) => isDoubleGableRidgeAlongZ(s.label.replace(/_0$/, "")));
     const cylinderEntries = primaryEntries.filter((s) => s.kind === "cylinder");
+    const chimneyEntries = primaryEntries.filter((s) => s.kind === "chimney");
     const logEntries = primaryEntries.filter((s) => s.kind === "log");
     const lshapeboxEntries = primaryEntries.filter((s) => s.kind === "lshapebox");
     const lshapebox2Entries = primaryEntries.filter((s) => s.kind === "lshapebox2");
@@ -1246,6 +1275,7 @@ export async function loadTrees(mapBase) {
     const doublegable = buildGenericDoubleGableGeometry();
     const doublegableRidgeZ = buildGenericDoubleGableGeometry(true);
     const cylinder = buildGenericCylinderGeometry();
+    const chimney = buildGenericChimneyGeometry();
     const log = buildGenericLogGeometry();
     const lshapebox = buildGenericLShapeBoxGeometry();
     const lshapebox2 = buildGenericLShapeBox2Geometry();
@@ -1295,6 +1325,7 @@ export async function loadTrees(mapBase) {
     addStruct(buildInstancedBoxProps(doublegableEntriesRidgeZ, buf, doublegableRidgeZ.walls, "doublegable_props_walls_ridgez", wallColorForSpecies));
     addStruct(buildInstancedBoxProps(doublegableEntriesRidgeZ, buf, doublegableRidgeZ.roof, "doublegable_props_roof_ridgez", roofColorForSpecies));
     addStruct(buildInstancedBoxProps(cylinderEntries, buf, cylinder, "cylinder_props_generic", boxColorForSpecies));
+    addStruct(buildInstancedBoxProps(chimneyEntries, buf, chimney, "chimney_props_generic", boxColorForSpecies));
     addStruct(buildInstancedBoxProps(logEntries, buf, log, "log_props_generic", boxColorForSpecies));
     addStruct(buildInstancedBoxProps(lshapeboxEntries, buf, lshapebox, "lshapebox_props_generic", boxColorForSpecies));
     addStruct(buildInstancedBoxProps(lshapebox2Entries, buf, lshapebox2, "lshapebox2_props_generic", boxColorForSpecies));

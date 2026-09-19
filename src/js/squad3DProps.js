@@ -38,7 +38,7 @@ function readIndexArray(buf, indices) {
  * @returns {Promise<THREE.Mesh[]>}
  */
 export async function loadProps(mapBase) {
-    const manifestRes = await fetch(`${mapBase}props.json`);
+    const manifestRes = await fetch(`${mapBase}3d/props.json`);
     if (!manifestRes.ok || !(manifestRes.headers.get("content-type") || "").includes("json")) return [];
     let manifest;
     try {
@@ -47,7 +47,7 @@ export async function loadProps(mapBase) {
         return [];
     }
 
-    const buf = await fetch(`${mapBase}props.bin`).then((res) => res.arrayBuffer());
+    const buf = await fetch(`${mapBase}3d/props.bin`).then((res) => res.arrayBuffer());
 
     // Bake each part's flat color into a per-vertex color attribute, then merge all parts
     // sharing a category into one BufferGeometry. No normal attribute - the material below

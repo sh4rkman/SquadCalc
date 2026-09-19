@@ -54,7 +54,7 @@ const FPS_UPDATE_INTERVAL = 0.5;
 const MAX_FPS = 100;
 const MIN_FRAME_INTERVAL = 1 / MAX_FPS;
 
-// NDC coordinates of the screen center (where the crosshair sits) - see the debug
+// NDC coordinates of the screen center (where the crosshair sits) - see the
 // left-click raycast in _setupFlyControls().
 const _screenCenter = new THREE.Vector2(0, 0);
 
@@ -115,7 +115,8 @@ const KEY_BINDINGS = {
     ArrowRight: "right",
     Space: "up",
     ShiftLeft: "down",
-    ControlLeft: "down",
+    // ControlLeft deliberately not bound to "down" - W+Ctrl (a natural forward+down combo)
+    // collides with the browser's own close-tab shortcut, which the page can't override.
 };
 
 /**
@@ -175,6 +176,12 @@ export default class Squad3DSimulation {
         this.loadedMapURL = null;
         this._frameId = null;
         this._onResize = () => this._resize();
+
+        // Safety net for accidental tab-close while flying (e.g. Ctrl+W) - registered only
+        // while the 3D dialog is actually open (see open()/close()), not for the app's
+        // whole lifetime. The browser ignores any custom message text and shows its own
+        // generic "leave site?" confirmation, but that's enough to let a misclick be undone.
+        this._onBeforeUnload = (event) => { event.preventDefault(); event.returnValue = ""; };
 
         // Rolling counters for the FPS HUD - updated once per FPS_UPDATE_INTERVAL instead
         // of every frame, so the displayed number doesn't flicker.
@@ -249,6 +256,7 @@ export default class Squad3DSimulation {
 
         this.overlay.hidden = false;
         window.addEventListener("resize", this._onResize);
+        window.addEventListener("beforeunload", this._onBeforeUnload);
         this._resize();
         this.clock.getDelta(); // drop the idle time since the last close()
         this._startLoop();
@@ -260,6 +268,7 @@ export default class Squad3DSimulation {
      */
     close() {
         window.removeEventListener("resize", this._onResize);
+        window.removeEventListener("beforeunload", this._onBeforeUnload);
         this._stopLoop();
         this.controls.unlock();
         for (const key of Object.keys(this.move)) this.move[key] = false;
@@ -349,11 +358,28 @@ export default class Squad3DSimulation {
         this.controls.addEventListener("lock", () => { this.overlay.hidden = true; this._updateCrosshairVisibility(true); });
         this.controls.addEventListener("unlock", () => { this.overlay.hidden = false; this._updateCrosshairVisibility(false); });
 
-        // Debug: left-click while flying raycasts from the crosshair (screen center)
-        // straight down the camera's view direction and logs whatever it hits.
+        // Left-click while flying raycasts from the crosshair (screen center) straight
+        // down the camera's view direction.
         this.renderer.domElement.addEventListener("click", () => {
             if (!this.controls.isLocked) return;
             this._raycaster.setFromCamera(_screenCenter, this.camera);
+
+            // Tier 1: capzone-only hit test. Capzones are semi-transparent/always-visible
+            // (unlike 2D's hover-only reveal) and have no occlusion concept in 2D either,
+            // so restrict the test to capzoneGroup instead of the full scene - a tree/prop
+            // mesh sitting in front of a capzone must not be able to eat the click.
+            const capHit = this._raycaster.intersectObjects(this.capzoneGroup.children, true)[0];
+            if (capHit) {
+                const objective = capHit.object.userData.objective ?? capHit.object.parent?.userData.objective;
+                const flag = this._lastLayer?.flags.find((f) => f.objCluster === objective);
+                if (flag && this._lastLayer._handleFlagClick(flag)) {
+                    this._drawCapzones(this._lastLayer, this._lastActiveMap);
+                    this._drawFlagPath(this._lastLayer, this._lastActiveMap);
+                }
+                return;
+            }
+
+            // Tier 2: debug fallback for anything that isn't a capzone.
             const hit = this._raycaster.intersectObjects(this.scene.children, true)[0];
             console.debug(hit ? hit.object : null);
         });
@@ -500,7 +526,7 @@ export default class Squad3DSimulation {
         this.minimapImage.src = `${base}basemap.webp`; // instant placeholder while the map loads - see open()'s _updateMinimapImage()
 
         const [heightBuffer, texture] = await Promise.all([
-            fetch(`${base}landscape.png`).then((response) => response.arrayBuffer()),
+            fetch(`${base}3d/landscape.png`).then((response) => response.arrayBuffer()),
             new THREE.TextureLoader().loadAsync(`${base}${this.textureName}.webp`),
         ]);
         texture.colorSpace = THREE.SRGBColorSpace;
@@ -933,6 +959,8 @@ export default class Squad3DSimulation {
                 const edgeMat = isMain ? mainEdgeMaterial : isSelected ? selectedEdgeMaterial : edgeMaterial;
                 const mesh = new THREE.Mesh(geometry, boxMat);
                 mesh.add(new THREE.LineSegments(new THREE.EdgesGeometry(geometry), edgeMat));
+                // Back-reference for the click-to-select raycast in _setupFlyControls().
+                mesh.userData.objective = objective;
                 mesh.position.set(x, centerY, z);
                 if (shape.isBox) {
                     // Sign unverified against an in-game reference - flip if boxes look mirrored/rotated wrong.
