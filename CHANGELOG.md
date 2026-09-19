@@ -22,6 +22,8 @@ SquadCalc now use a new layer extractor tool made by **yobaNGE** : **[SquadPipel
 - 3D MAPS
 - IMF FLAG
 
+</br><img src="https://img.shields.io/badge/-%20improv%20-orange"> 
+- Languages are now sorted by alpha
 
 </br><img src="https://img.shields.io/badge/-bug%20fixes-b22">  
 - Fixed Squadcalc now drawing some rare protection zones
