@@ -87,5 +87,7 @@
     "legacyMode": "Zum einfachen Modus wechseln",
     "returnToMap": "Zur Kartenansicht wechseln",
     "settings": "Einstellungen",
-    "openFactionSelection": "Klicken um die Fraktionsauswahl zu öffnen"
+    "openFactionSelection": "Klicken um die Fraktionsauswahl zu öffnen",
+    "view3D": "3D-Ansicht",
+    "view3DUnavailable": "3D-Ansicht ist für diese Karte nicht verfügbar"
 }

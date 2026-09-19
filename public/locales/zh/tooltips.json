@@ -87,5 +87,7 @@
     "legacyMode": "切换到简单模式",
     "returnToMap": "切换到地图模式",
     "settings": "设置",
-    "openFactionSelection": "点击打开派系选择"
+    "openFactionSelection": "点击打开派系选择",
+    "view3D": "3D视图",
+    "view3DUnavailable": "该地图不支持3D视图"
 }

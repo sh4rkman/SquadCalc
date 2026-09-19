@@ -85,5 +85,7 @@
     "legacyMode": "Basit moda geç",
     "returnToMap": "Harita moduna geç",
     "settings": "Ayarlar",
-    "openFactionSelection": "Taraf seçimini açmak için tıklayın"
+    "openFactionSelection": "Taraf seçimini açmak için tıklayın",
+    "view3D": "3D Görünüm",
+    "view3DUnavailable": "3D Görünüm bu harita için kullanılamıyor"
 }
