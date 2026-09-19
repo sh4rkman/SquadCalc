@@ -259,6 +259,25 @@ function buildPrismGeometry(points, height) {
     return geometry;
 }
 
+// Rotates a unit-cube-space (0,0,0)-(1,1,1) geometry 90 degrees around the cube's own
+// vertical center axis, in place - (x, z) -> (z, 1 - x) maps the unit square to itself
+// (each corner cycles to the next), unlike a plain THREE.Object3D.rotateY() which would
+// rotate around the geometry's local origin and carry it outside the unit cube instead of
+// keeping it in the same (0,0,0)-(1,1,1) space every buildInstancedBoxProps shape expects.
+// Used by buildGenericMonoSlopeHouseDoorGeometry() to turn buildGenericMonoSlopeHouseGeometry's
+// z=1 tall end wall into the x=1 face its door belongs on.
+function rotateXZPlus90(geometry) {
+    const pos = geometry.attributes.position;
+    for (let i = 0; i < pos.count; i++) {
+        const x = pos.getX(i);
+        const z = pos.getZ(i);
+        pos.setX(i, z);
+        pos.setZ(i, 1 - x);
+    }
+    pos.needsUpdate = true;
+    return geometry;
+}
+
 // Local-space height split for buildGenericToppedBoxGeometry, calibrated for
 // SM_Apartment_Block_8story_Base02's real bbox height (~32.82m).
 const TOPPEDBOX_MAIN_HEIGHT_FRACTION = 0.9184;
@@ -1081,6 +1100,36 @@ function buildGenericMonoSlopeHouseGeometry() {
     return { walls, roof };
 }
 
+// Fixed colors for buildGenericMonoSlopeHouseDoorGeometry - all three meshes are
+// fixed-color (not per-species like wallColorForSpecies/roofColorForSpecies), since this
+// shape stands in for one specific real species rather than a whole family of them.
+const MONOSLOPEHOUSEDOOR_ROOF_COLOR = 0x8fa695;
+const MONOSLOPEHOUSEDOOR_WALL_COLOR = 0xa0927f;
+const MONOSLOPEHOUSEDOOR_DOOR_COLOR = 0x403326;
+
+function buildGenericMonoSlopeHouseDoorGeometry() {
+    // Same mono-slope shed shape as buildGenericMonoSlopeHouseGeometry, rotated 90 degrees
+    // (see rotateXZPlus90()) so the tall end wall - originally at z=1, where the roof
+    // meets its high edge - ends up on the x=1 face instead, plus a door on that face.
+    // Door face/size taken from real ground truth: EU_shed_med_wood_01's actual mesh has a
+    // WarehouseDoor-material primitive near the max-X face.
+    const { walls, roof } = buildGenericMonoSlopeHouseGeometry();
+    rotateXZPlus90(walls);
+    rotateXZPlus90(roof);
+
+    const THICKNESS = 0.005;
+    const DOOR_HEIGHT = 0.593; // real 2.04m of 3.44m
+    const DOOR_WIDTH = 0.549; // real 2.06m of 3.75m (Z depth) - matches the real WarehouseDoor primitive's width exactly
+
+    const door = new THREE.BoxGeometry(THICKNESS, DOOR_HEIGHT, DOOR_WIDTH).toNonIndexed();
+    door.deleteAttribute("normal");
+    door.deleteAttribute("uv");
+    door.translate(1 + THICKNESS / 2, DOOR_HEIGHT / 2, 0.5);
+    setUniformColor(door, 1, 1, 1);
+
+    return { walls, roof, door };
+}
+
 function buildGenericLShapeGeometry() {
     // Two equal-sized rectangular wings meeting at a corner. The notch (missing quadrant)
     // is always at the local (maxX, minZ) corner.
@@ -1448,7 +1497,7 @@ export async function loadTrees(mapBase) {
     // would just duplicate matrices for no benefit. Box/house/lshape/tshape/etc species
     // are the exception: a "split primitive" species legitimately has one real part per
     // primitive, not a duplicate, so every primitive stays.
-    const boxLikeKinds = new Set(["box", "house", "monoslopehouse", "toppedbox", "notchedapartment", "facadehouse", "fourstoryapartment", "threestorysmallapartment", "industrialoffice", "lshape", "lshapehouse", "lshapehouse2", "tshape", "doublegable", "cylinder", "chimney", "log", "lshapebox", "lshapebox2", "logpile", "bunker", "tubehangar"]);
+    const boxLikeKinds = new Set(["box", "house", "monoslopehouse", "monoslopehousedoor", "toppedbox", "notchedapartment", "facadehouse", "fourstoryapartment", "threestorysmallapartment", "industrialoffice", "lshape", "lshapehouse", "lshapehouse2", "tshape", "doublegable", "cylinder", "chimney", "log", "lshapebox", "lshapebox2", "logpile", "bunker", "tubehangar"]);
     const primaryEntries = manifest.species.filter((s) => s.label.endsWith("_0") || boxLikeKinds.has(s.kind));
     const bushEntries = primaryEntries.filter((s) => s.kind === "bush");
     const boxEntries = primaryEntries.filter((s) => s.kind === "box");
@@ -1456,6 +1505,7 @@ export async function loadTrees(mapBase) {
     const houseEntries = houseEntriesAll.filter((s) => !isHouseRoofRidgeAlongX(s.label.replace(/_0$/, "")));
     const houseEntriesRidgeX = houseEntriesAll.filter((s) => isHouseRoofRidgeAlongX(s.label.replace(/_0$/, "")));
     const monoslopeHouseEntries = primaryEntries.filter((s) => s.kind === "monoslopehouse");
+    const monoslopeHouseDoorEntries = primaryEntries.filter((s) => s.kind === "monoslopehousedoor");
     const toppedBoxEntries = primaryEntries.filter((s) => s.kind === "toppedbox");
     const notchedApartmentEntries = primaryEntries.filter((s) => s.kind === "notchedapartment");
     const facadeHouseEntries = primaryEntries.filter((s) => s.kind === "facadehouse");
@@ -1492,6 +1542,7 @@ export async function loadTrees(mapBase) {
     const house = buildGenericHouseGeometry();
     const houseRidgeX = buildGenericHouseGeometry(true);
     const monoslopeHouse = buildGenericMonoSlopeHouseGeometry();
+    const monoslopeHouseDoor = buildGenericMonoSlopeHouseDoorGeometry();
     const toppedBox = buildGenericToppedBoxGeometry();
     const notchedApartment = buildGenericNotchedApartmentGeometry();
     const facadeHouse = buildGenericFacadeHouseGeometry();
@@ -1538,6 +1589,9 @@ export async function loadTrees(mapBase) {
     // roofColorForSpecies.
     addStruct(buildInstancedBoxProps(monoslopeHouseEntries, buf, monoslopeHouse.walls, "monoslopehouse_props_walls", wallColorForSpecies));
     addStruct(buildInstancedBoxProps(monoslopeHouseEntries, buf, monoslopeHouse.roof, "monoslopehouse_props_roof", () => MONOSLOPE_ROOF_COLOR));
+    addStruct(buildInstancedBoxProps(monoslopeHouseDoorEntries, buf, monoslopeHouseDoor.walls, "monoslopehousedoor_props_walls", () => MONOSLOPEHOUSEDOOR_WALL_COLOR));
+    addStruct(buildInstancedBoxProps(monoslopeHouseDoorEntries, buf, monoslopeHouseDoor.roof, "monoslopehousedoor_props_roof", () => MONOSLOPEHOUSEDOOR_ROOF_COLOR));
+    addStruct(buildInstancedBoxProps(monoslopeHouseDoorEntries, buf, monoslopeHouseDoor.door, "monoslopehousedoor_props_door", () => MONOSLOPEHOUSEDOOR_DOOR_COLOR));
     addStruct(buildInstancedBoxProps(toppedBoxEntries, buf, toppedBox, "toppedbox_props_generic", boxColorForSpecies));
     addStruct(buildInstancedBoxProps(notchedApartmentEntries, buf, notchedApartment, "notchedapartment_props_generic", boxColorForSpecies));
     // Walls carry the doors/windows baked in, tinted via wallColorForSpecies; roof keeps

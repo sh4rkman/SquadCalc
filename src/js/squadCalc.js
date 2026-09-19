@@ -23,7 +23,7 @@ changelogRenderer.link = ({ href, title, text }) => {
 };
 import i18next from "i18next";
 import SquadLayer from "./squadLayer.js";
-import Squad3DSimulation from "./squad3DSimulation.js";
+import Squad3DSimulation, { decodeShareToken } from "./squad3DSimulation.js";
 import { serverBrowserTooltips, settingsTooltips, layerInfoTooltips, threeDTooltips } from "./tooltips.js";
 import { MapDrawing, MapArrow, MapCircle, MapRectangle } from "./squadShapes.js";
 
@@ -99,6 +99,14 @@ export default class SquadCalc {
 
     parseUrlIntent() {
         const p = new URLSearchParams(window.location.search);
+
+        // "?3d" alone just opens the 3D view; "?3d=<token>" (see threeDShareButton, in
+        // loadUI(), and decodeShareToken()) also spawns the camera at that exact world
+        // position/facing - _openInitial3D() strips the token back down to a bare "3d"
+        // flag once it's been consumed, so this only ever matters on the very first load.
+        const threeDValue = p.get("3d");
+        const threeDPosition = threeDValue ? decodeShareToken(threeDValue) : null;
+
         return {
             server:    p.get("server"),
             session:   p.get("session"),
@@ -109,6 +117,7 @@ export default class SquadCalc {
             team2:     p.get("team2"),
             team2unit: p.get("team2unit"),
             threeD:    p.has("3d"),
+            threeDPosition,
         };
     }
 
@@ -127,7 +136,10 @@ export default class SquadCalc {
     _openInitial3D() {
         if (!this.urlIntent.threeD || this.minimap.activeMap.no3D) return;
         this._dialogs.threeD.showModal();
-        this.simulation3D.open(this.minimap.activeMap, this.minimap.layer, this.minimap);
+        this.simulation3D.open(this.minimap.activeMap, this.minimap.layer, this.minimap, null, this.urlIntent.threeDPosition);
+        // The share token's only useful once, to spawn the camera above - drop it back
+        // down to a bare "3d" flag so it doesn't linger in the address bar afterwards.
+        if (this.urlIntent.threeDPosition) this.updateUrlParams({ "3d": "" });
     }
 
     /**
@@ -1070,6 +1082,14 @@ export default class SquadCalc {
             this.open3D();
         });
         $(".threeDQuitButton").on("click", () => threeDDialog.close());
+        $(".threeDShareButton").on("click", () => {
+            // Builds the URL for the clipboard only, same as buildShareUrl() - the
+            // sharer's own address bar isn't meant to change, just what gets copied.
+            const params = new URLSearchParams(window.location.search);
+            params.set("3d", this.simulation3D.getShareToken());
+            navigator.clipboard.writeText(`${window.location.origin}${window.location.pathname}?${params.toString()}`);
+            this.openToast("success", "copied", "");
+        });
         $(".layerCommandCopyBtn").on("click", (event) => {
             const input = event.currentTarget.closest(".layerCommandRow").querySelector("input");
             if (navigator.clipboard?.writeText) {

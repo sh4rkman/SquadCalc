@@ -67,6 +67,46 @@ const MIN_FRAME_INTERVAL = 1 / MAX_FPS;
 // left-click raycast in _setupFlyControls().
 const _screenCenter = new THREE.Vector2(0, 0);
 
+// Packs a camera position + look-at target (6 world-meter coordinates) into a compact,
+// URL-safe opaque token instead of a readable "x;y;z;..." list - see
+// Squad3DSimulation.getShareToken()/threeDShareButton (squadCalc.js). Each coordinate
+// rounds to the nearest meter and packs as a little-endian Int16 (plenty of range for any
+// map's world extent), base64url-encoded: 12 bytes -> exactly 16 chars, no padding.
+function encodeShareToken(position, target) {
+    const values = [position.x, position.y, position.z, target.x, target.y, target.z];
+    const buf = new ArrayBuffer(12);
+    const view = new DataView(buf);
+    values.forEach((v, i) => view.setInt16(i * 2, THREE.MathUtils.clamp(Math.round(v), -32768, 32767), true));
+    const binary = String.fromCharCode(...new Uint8Array(buf));
+    return btoa(binary).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+}
+
+/**
+ * Inverse of encodeShareToken() - decodes a "?3d=<token>" share token (see squadCalc.js's
+ * parseUrlIntent()) back into a camera position + look-at target. Returns null instead of
+ * throwing on anything malformed (a hand-edited or truncated URL), same "degrade to
+ * empty/default" convention as this file's other manifest/heightmap parsing.
+ * @param {string} token
+ * @returns {?{position: {x: number, y: number, z: number}, target: {x: number, y: number, z: number}}}
+ */
+export function decodeShareToken(token) {
+    try {
+        const padded = token.replace(/-/g, "+").replace(/_/g, "/").padEnd(Math.ceil(token.length / 4) * 4, "=");
+        const binary = atob(padded);
+        if (binary.length !== 12) return null;
+        const bytes = new Uint8Array(binary.length);
+        for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+        const view = new DataView(bytes.buffer);
+        const values = Array.from({ length: 6 }, (_, i) => view.getInt16(i * 2, true));
+        return {
+            position: { x: values[0], y: values[1], z: values[2] },
+            target: { x: values[3], y: values[4], z: values[5] },
+        };
+    } catch {
+        return null;
+    }
+}
+
 // Horizontal/vertical offset (meters) of the camera spawn from a placed weapon - see
 // _spawnCamera(). Equal on both axes for an exact 45-degree down angle.
 const WEAPON_SPAWN_DISTANCE = 150;
@@ -232,8 +272,13 @@ export default class Squad3DSimulation {
      * @param {?{firingSolution: object, angleType: string}} [arcRequest] - additionally
      * highlights this exact weapon/target/angle, from the target dialog's "See in 3D"
      * button (squadTargetMarker.js) - see _drawProjectileArcs()
+     * @param {?{position: {x: number, y: number, z: number}, target: {x: number, y: number, z: number}}} [sharedPosition] -
+     * spawns the camera at this exact world position and facing instead of the usual
+     * weapon/arc/overview logic, decoded from a "?3d=<token>" share URL (see
+     * decodeShareToken(), squadCalc.js's parseUrlIntent()/_openInitial3D(), and the
+     * threeDShareButton handler/getShareToken()) - see _spawnCamera()
      */
-    async open(activeMap, layer = null, minimap = null, arcRequest = null) {
+    async open(activeMap, layer = null, minimap = null, arcRequest = null, sharedPosition = null) {
         if (!this.renderer) this._initScene();
         this._lastLayer = layer;
         this._lastActiveMap = activeMap;
@@ -261,7 +306,7 @@ export default class Squad3DSimulation {
         this._drawMarkers(minimap, activeMap);
         this._drawTargetSpreads(minimap, activeMap);
         this._drawProjectileArcs(minimap, activeMap, arcRequest);
-        this._spawnCamera(activeMap, minimap, arcRequest);
+        this._spawnCamera(activeMap, minimap, arcRequest, sharedPosition);
 
         this.overlay.hidden = false;
         window.addEventListener("resize", this._onResize);
@@ -633,17 +678,29 @@ export default class Squad3DSimulation {
 
 
     /**
-     * Places the camera on every open(). Spawns on the map-center side of a focus
-     * point, 50m above the ground and 50m horizontally back towards the center (an
-     * exact 45-degree down angle), looking at it - the focus point is the arc's target
-     * when opened from the "See in 3D" button (arcRequest), otherwise the first weapon
-     * placed on the 2D map. Falls back to a plain overview 200m above the map's
-     * center, facing north, when neither exists.
+     * Places the camera on every open(). A sharedPosition (decoded from a "?3d=<token>"
+     * URL - see decodeShareToken()/getShareToken()) takes priority over everything else -
+     * it's an explicit request for this exact spot and facing, not a default to fall back
+     * on. Otherwise spawns on the map-center side of a focus point, 50m above the ground
+     * and 50m horizontally back towards the center (an exact 45-degree down angle),
+     * looking at it - the focus point is the arc's target when opened from the "See in 3D"
+     * button (arcRequest), otherwise the first weapon placed on the 2D map. Falls back to
+     * a plain overview 200m above the map's center, facing north, when neither exists.
      * @param {object} activeMap
      * @param {?object} minimap - SquadMinimap instance, if any
      * @param {?{firingSolution: object, angleType: string}} [arcRequest]
+     * @param {?{position: {x: number, y: number, z: number}, target: {x: number, y: number, z: number}}} [sharedPosition]
      */
-    _spawnCamera(activeMap, minimap, arcRequest = null) {
+    _spawnCamera(activeMap, minimap, arcRequest = null, sharedPosition = null) {
+        if (sharedPosition) {
+            const { position, target } = sharedPosition;
+            this.camera.position.set(position.x, position.y, position.z);
+            const targetVec = new THREE.Vector3(target.x, target.y, target.z);
+            this.camera.lookAt(targetVec);
+            if (this._orbitMode) { this.controls.target.copy(targetVec); this.controls.update(); }
+            return;
+        }
+
         const corner0 = activeMap.SDK_data?.minimap?.corner0;
         const focusLatLng = arcRequest
             ? arcRequest.firingSolution.targetLatLng
@@ -689,6 +746,19 @@ export default class Squad3DSimulation {
             this.camera.position.set(0, groundY + 200, 0);
             this.camera.lookAt(0, groundY + 200, -1);
         }
+    }
+
+
+    /**
+     * A compact opaque token (see decodeShareToken()) encoding the current camera position
+     * and a look-at point 100m ahead of it along its current facing, for the
+     * threeDShareButton (squadCalc.js) to put in a "?3d=<token>" URL.
+     * @returns {string}
+     */
+    getShareToken() {
+        const direction = this.camera.getWorldDirection(new THREE.Vector3());
+        const target = this.camera.position.clone().addScaledVector(direction, 100);
+        return encodeShareToken(this.camera.position, target);
     }
 
 

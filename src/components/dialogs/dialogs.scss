@@ -391,7 +391,7 @@ dialog {
                 accent-color: variables.$mainColor;
             }
         }
-        .threeDGoButton, .threeDQuitButton {
+        .threeDGoButton, .threeDShareButton, .threeDQuitButton {
             // border-box + shared height, padding reset to 0 (a bare button has its own
             // UA default) - without that reset, Go's borderless box and Quit's 1px-border
             // box round to different pixel heights even with the same min-height.
@@ -418,8 +418,8 @@ dialog {
             }
             &:active { transform: scale(0.98); }
         }
-        .threeDQuitButton {
-            // Pulls in closer to the Go button than the card's own 0.9em gap.
+        .threeDShareButton, .threeDQuitButton {
+            // Pulls in closer to the button above than the card's own 0.9em gap.
             margin-top: -0.4em;
             border: 1px solid rgba(255, 255, 255, 0.25);
             background: transparent;
