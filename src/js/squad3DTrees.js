@@ -678,6 +678,7 @@ const WALL_COLOR_BY_NAME_KEYWORD = [
     [/^SM_Norwayhouse_2b$/i, 0x908f51],
     [/^SM_Norwayhouse_(6a|5a)$/i, 0x613133],
     [/^SM_Norwayhouse_3c$/i, 0x1f3965],
+    [/^(industrial_office1(_plain)?|CAF_industrial_office1)$/i, 0x636963],
 ];
 function wallColorForSpecies(label) {
     for (const [re, color] of WALL_COLOR_BY_NAME_KEYWORD) {
@@ -780,6 +781,229 @@ function buildGenericFacadeHouseGeometry() {
 
     const facadeWalls = mergeGeometries([walls, ...openings], false);
     return { walls: facadeWalls, roof };
+}
+
+function buildGenericFourStoryApartmentGeometry() {
+    // Same gable house shape as buildGenericHouseGeometry, with a 4-floor door/window
+    // facade - buildGenericFacadeHouseGeometry's bigger sibling. Door face is x=1, same
+    // 10 evenly-spaced Z positions with 2 door columns (index 2 and 7). Ground floor:
+    // door columns get a door on the door face only, nothing else anywhere (opposite
+    // face and non-door columns stay fully blank) - the door is the only ground-floor
+    // opening, matching a real apartment entrance with no ground-floor windows. Floors
+    // 1-3: door columns get 2 stairwell windows on BOTH faces, sitting at the floor
+    // BOUNDARIES above the door (y = 2*FLOOR_HEIGHT and 3*FLOOR_HEIGHT) rather than
+    // centered in either floor's own band - reads as a stairwell landing window, not a
+    // room window. Non-door columns get a regular window centered in its own band on
+    // both faces, once per floor for floors 1-3.
+    const { walls, roof } = buildGenericHouseGeometry();
+
+    const wallHeight = 0.62;
+    const FLOOR_COUNT = 4;
+    const FLOOR_HEIGHT = wallHeight / FLOOR_COUNT;
+    const DOOR_HEIGHT = FLOOR_HEIGHT * 0.7;
+    const WINDOW_HEIGHT = FLOOR_HEIGHT * 0.5;
+    const DOOR_HALF_WIDTH = 0.022;
+    const WINDOW_HALF_WIDTH = 0.018;
+    const THICKNESS = 0.005;
+
+    // Same 10-position door-face layout as buildGenericFacadeHouseGeometry.
+    const positions = Array.from({ length: 10 }, (_, i) => 0.05 + (i + 0.5) * 0.09);
+    const DOOR_INDICES = new Set([2, 7]);
+
+    function buildOpening(onMaxXFace, z, y, isDoor) {
+        const height = isDoor ? DOOR_HEIGHT : WINDOW_HEIGHT;
+        const halfWidth = isDoor ? DOOR_HALF_WIDTH : WINDOW_HALF_WIDTH;
+        const piece = new THREE.BoxGeometry(THICKNESS, height, halfWidth * 2).toNonIndexed();
+        piece.deleteAttribute("normal");
+        piece.deleteAttribute("uv");
+        const x = onMaxXFace ? 1 + THICKNESS / 2 : -THICKNESS / 2;
+        piece.translate(x, y, z);
+        if (isDoor) setUniformColor(piece, 0.25, 0.2, 0.15);
+        else setUniformColor(piece, 0.25, 0.3, 0.35);
+        return piece;
+    }
+
+    const openings = [];
+    positions.forEach((z, i) => {
+        const isDoorColumn = DOOR_INDICES.has(i);
+        if (isDoorColumn) {
+            openings.push(buildOpening(true, z, DOOR_HEIGHT / 2, true)); // door, ground floor
+            openings.push(buildOpening(true, z, 2 * FLOOR_HEIGHT, false)); // stairwell window, floor 2/3 boundary
+            openings.push(buildOpening(true, z, 3 * FLOOR_HEIGHT, false)); // stairwell window, floor 3/4 boundary
+            openings.push(buildOpening(false, z, 2 * FLOOR_HEIGHT, false));
+            openings.push(buildOpening(false, z, 3 * FLOOR_HEIGHT, false));
+        } else {
+            for (let floor = 1; floor < FLOOR_COUNT; floor++) {
+                const y = floor * FLOOR_HEIGHT + FLOOR_HEIGHT / 2;
+                openings.push(buildOpening(true, z, y, false));
+                openings.push(buildOpening(false, z, y, false));
+            }
+        }
+    });
+
+    const facadeWalls = mergeGeometries([walls, ...openings], false);
+    return { walls: facadeWalls, roof };
+}
+
+function buildGenericThreeStorySmallApartmentGeometry() {
+    // Same gable house shape, 3-floor facade with real-world-calibrated opening sizes
+    // (this species' real bbox is 13.62 x 16.43 x 18.50, X/Y/Z) instead of the fractional
+    // FLOOR_HEIGHT-relative sizing buildGenericFourStoryApartmentGeometry uses - small
+    // enough that a fraction of wallHeight read too large. Door face is x=1, 5 evenly-
+    // spaced Z positions with a single door column (index 2, the middle one). Door rows
+    // are packed between the door top and the roofline (ROW_GAP margin on each end)
+    // rather than split into even FLOOR_HEIGHT bands, so 3 window rows fit cleanly above
+    // the door without one colliding with it. Door column gets 2 stairwell windows at the
+    // midpoints between row 1/2 and row 2/3 (door face only); every other column gets a
+    // regular window on all 3 rows, both faces.
+    const { walls, roof } = buildGenericHouseGeometry();
+
+    const wallHeight = 0.62;
+    const FLOOR_COUNT = 3;
+    // Real bbox for this species: 13.62 x 16.43 x 18.50 (X/Y/Z).
+    const WINDOW_HEIGHT = 1.2 / 16.43; // ~1.2m real
+    const WINDOW_HALF_WIDTH = (1.2 / 18.50) / 2;
+    const DOOR_HEIGHT = 2.80 / 16.43; // ~2.80m real
+    const DOOR_HALF_WIDTH = (1.47 / 18.50) / 2; // ~1.47m real
+    const THICKNESS = 0.005;
+
+    const positions = Array.from({ length: 5 }, (_, i) => 0.05 + (i + 0.5) * 0.18);
+    const DOOR_INDEX = 2;
+
+    const ROW_GAP = 0.02;
+    const rowsBottom = DOOR_HEIGHT + ROW_GAP;
+    const rowsTop = wallHeight - ROW_GAP;
+    const rowSegment = (rowsTop - rowsBottom) / FLOOR_COUNT;
+    const rowY = Array.from({ length: FLOOR_COUNT }, (_, i) => rowsBottom + (i + 0.5) * rowSegment);
+
+    function buildOpening(onMaxXFace, z, y, isDoor) {
+        const height = isDoor ? DOOR_HEIGHT : WINDOW_HEIGHT;
+        const halfWidth = isDoor ? DOOR_HALF_WIDTH : WINDOW_HALF_WIDTH;
+        const piece = new THREE.BoxGeometry(THICKNESS, height, halfWidth * 2).toNonIndexed();
+        piece.deleteAttribute("normal");
+        piece.deleteAttribute("uv");
+        const x = onMaxXFace ? 1 + THICKNESS / 2 : -THICKNESS / 2;
+        piece.translate(x, y, z);
+        if (isDoor) setUniformColor(piece, 0.25, 0.2, 0.15);
+        else setUniformColor(piece, 0.25, 0.3, 0.35);
+        return piece;
+    }
+
+    const openings = [];
+    positions.forEach((z, i) => {
+        if (i === DOOR_INDEX) {
+            openings.push(buildOpening(true, z, DOOR_HEIGHT / 2, true));
+            openings.push(buildOpening(true, z, (rowY[0] + rowY[1]) / 2, false));
+            openings.push(buildOpening(true, z, (rowY[1] + rowY[2]) / 2, false));
+        } else {
+            for (let floor = 0; floor < FLOOR_COUNT; floor++) {
+                openings.push(buildOpening(true, z, rowY[floor], false));
+                openings.push(buildOpening(false, z, rowY[floor], false));
+            }
+        }
+    });
+
+    const facadeWalls = mergeGeometries([walls, ...openings], false);
+    return { walls: facadeWalls, roof };
+}
+
+// Fixed colors for buildGenericIndustrialOfficeGeometry's windows/door - kept off the
+// walls mesh (and off wallColorForSpecies/instanceColor) since merging them in would let
+// the per-species wall tint wrongly multiply the window/door colors too.
+const INDUSTRIALOFFICE_WINDOW_COLOR = 0x404d59;
+const INDUSTRIALOFFICE_DOOR_COLOR = 0x403326;
+
+function buildGenericIndustrialOfficeGeometry() {
+    // Plain box body (industrial_office1's real shape has no roof overhang worth a
+    // separate mesh, unlike the gable-house shapes) with 3 separately-instanced overlay
+    // meshes: walls (per-species tinted, see wallColorForSpecies), windows and door (both
+    // fixed-color, see INDUSTRIALOFFICE_WINDOW_COLOR/_DOOR_COLOR). All real-world sizes
+    // below (2.2, 1.6, 3.8, 1.8, 13.04, 11.6, 31.93, etc.) are hardcoded to
+    // industrial_office1's specific real bbox (~13 x 11.6 x 32, X/Y/Z) - not reusable
+    // as-is for a different species' bbox.
+    const box = new THREE.BoxGeometry(1, 1, 1).toNonIndexed();
+    box.translate(0.5, 0.5, 0.5);
+    box.deleteAttribute("normal");
+    box.deleteAttribute("uv");
+    setUniformColor(box, 1, 1, 1);
+
+    const FLOOR_COUNT = 2;
+    const FLOOR_HEIGHT = 1 / FLOOR_COUNT;
+    const WINDOW_HEIGHT = 2.2 / 11.6;
+    const WINDOW_HALF_WIDTH = 1.6 / 31.93;
+    const WINDOW_WIDTH = WINDOW_HALF_WIDTH * 2;
+    const WINDOW_BOTTOM_MARGIN_BY_FLOOR = [2.5 / 11.6, 1.8 / 11.6];
+    const THICKNESS = 0.005;
+    const WINDOW_COUNT = 7;
+
+    const GAP = (1 - WINDOW_COUNT * WINDOW_WIDTH) / (WINDOW_COUNT + 1);
+    const positions = Array.from({ length: WINDOW_COUNT }, (_, i) => GAP * (i + 1) + WINDOW_WIDTH * (i + 0.5));
+
+    function buildWindow(z, floor) {
+        const y = floor * FLOOR_HEIGHT + WINDOW_BOTTOM_MARGIN_BY_FLOOR[floor] + WINDOW_HEIGHT / 2;
+        const piece = new THREE.BoxGeometry(THICKNESS, WINDOW_HEIGHT, WINDOW_WIDTH).toNonIndexed();
+        piece.deleteAttribute("normal");
+        piece.deleteAttribute("uv");
+        piece.translate(-THICKNESS / 2, y, z);
+        setUniformColor(piece, 1, 1, 1);
+        return piece;
+    }
+
+    // North-face door (ground floor, 3rd window slot).
+    const DOOR_INDEX = 2;
+    const DOOR_HEIGHT = 3.8 / 11.6;
+    function buildDoor(z) {
+        const piece = new THREE.BoxGeometry(THICKNESS, DOOR_HEIGHT, WINDOW_WIDTH).toNonIndexed();
+        piece.deleteAttribute("normal");
+        piece.deleteAttribute("uv");
+        piece.translate(-THICKNESS / 2, DOOR_HEIGHT / 2, z);
+        setUniformColor(piece, 1, 1, 1);
+        return piece;
+    }
+
+    // East/west (short end wall) doors, 2nd floor.
+    const END_DOOR_WIDTH = 1.8 / 13.04;
+    const END_DOOR_HEIGHT = 3.2 / 11.6;
+    function buildEndDoor(onMaxZFace) {
+        const piece = new THREE.BoxGeometry(END_DOOR_WIDTH, END_DOOR_HEIGHT, THICKNESS).toNonIndexed();
+        piece.deleteAttribute("normal");
+        piece.deleteAttribute("uv");
+        const y = FLOOR_HEIGHT + END_DOOR_HEIGHT / 2;
+        const z = onMaxZFace ? 1 + THICKNESS / 2 : -THICKNESS / 2;
+        piece.translate(0.5, y, z);
+        setUniformColor(piece, 1, 1, 1);
+        return piece;
+    }
+
+    const windows = [];
+    for (let floor = 0; floor < FLOOR_COUNT; floor++) {
+        positions.forEach((z, i) => {
+            if (floor === 0 && i === DOOR_INDEX) return;
+            windows.push(buildWindow(z, floor));
+        });
+    }
+    const door = mergeGeometries([buildDoor(positions[DOOR_INDEX]), buildEndDoor(true), buildEndDoor(false)], false);
+
+    // South-face top row: 4 wide windows near the roofline.
+    const TOP_WINDOW_COUNT = 4;
+    const TOP_WINDOW_HEIGHT = 1.0 / 11.6;
+    const TOP_WINDOW_HALF_WIDTH = 2.0 / 31.93;
+    const TOP_WINDOW_TOP_MARGIN = 1.0 / 11.6;
+    const TOP_WINDOW_WIDTH = TOP_WINDOW_HALF_WIDTH * 2;
+    const topGap = (1 - TOP_WINDOW_COUNT * TOP_WINDOW_WIDTH) / (TOP_WINDOW_COUNT + 1);
+    const topPositions = Array.from({ length: TOP_WINDOW_COUNT }, (_, i) => topGap * (i + 1) + TOP_WINDOW_WIDTH * (i + 0.5));
+    const topY = 1 - TOP_WINDOW_TOP_MARGIN - TOP_WINDOW_HEIGHT / 2;
+    function buildTopWindow(z) {
+        const piece = new THREE.BoxGeometry(THICKNESS, TOP_WINDOW_HEIGHT, TOP_WINDOW_WIDTH).toNonIndexed();
+        piece.deleteAttribute("normal");
+        piece.deleteAttribute("uv");
+        piece.translate(1 + THICKNESS / 2, topY, z);
+        setUniformColor(piece, 1, 1, 1);
+        return piece;
+    }
+    for (const z of topPositions) windows.push(buildTopWindow(z));
+
+    return { walls: box, windows: mergeGeometries(windows, false), door };
 }
 
 // Fixed grey for buildGenericMonoSlopeHouseGeometry's roof - a flat industrial roof tone,
@@ -1224,7 +1448,7 @@ export async function loadTrees(mapBase) {
     // would just duplicate matrices for no benefit. Box/house/lshape/tshape/etc species
     // are the exception: a "split primitive" species legitimately has one real part per
     // primitive, not a duplicate, so every primitive stays.
-    const boxLikeKinds = new Set(["box", "house", "monoslopehouse", "toppedbox", "notchedapartment", "facadehouse", "lshape", "lshapehouse", "lshapehouse2", "tshape", "doublegable", "cylinder", "chimney", "log", "lshapebox", "lshapebox2", "logpile", "bunker", "tubehangar"]);
+    const boxLikeKinds = new Set(["box", "house", "monoslopehouse", "toppedbox", "notchedapartment", "facadehouse", "fourstoryapartment", "threestorysmallapartment", "industrialoffice", "lshape", "lshapehouse", "lshapehouse2", "tshape", "doublegable", "cylinder", "chimney", "log", "lshapebox", "lshapebox2", "logpile", "bunker", "tubehangar"]);
     const primaryEntries = manifest.species.filter((s) => s.label.endsWith("_0") || boxLikeKinds.has(s.kind));
     const bushEntries = primaryEntries.filter((s) => s.kind === "bush");
     const boxEntries = primaryEntries.filter((s) => s.kind === "box");
@@ -1235,6 +1459,9 @@ export async function loadTrees(mapBase) {
     const toppedBoxEntries = primaryEntries.filter((s) => s.kind === "toppedbox");
     const notchedApartmentEntries = primaryEntries.filter((s) => s.kind === "notchedapartment");
     const facadeHouseEntries = primaryEntries.filter((s) => s.kind === "facadehouse");
+    const fourStoryApartmentEntries = primaryEntries.filter((s) => s.kind === "fourstoryapartment");
+    const threeStorySmallApartmentEntries = primaryEntries.filter((s) => s.kind === "threestorysmallapartment");
+    const industrialOfficeEntries = primaryEntries.filter((s) => s.kind === "industrialoffice");
     const lshapeEntries = primaryEntries.filter((s) => s.kind === "lshape");
     const lshapehouseEntries = primaryEntries.filter((s) => s.kind === "lshapehouse");
     const lshapehouse2Entries = primaryEntries.filter((s) => s.kind === "lshapehouse2");
@@ -1268,6 +1495,9 @@ export async function loadTrees(mapBase) {
     const toppedBox = buildGenericToppedBoxGeometry();
     const notchedApartment = buildGenericNotchedApartmentGeometry();
     const facadeHouse = buildGenericFacadeHouseGeometry();
+    const fourStoryApartment = buildGenericFourStoryApartmentGeometry();
+    const threeStorySmallApartment = buildGenericThreeStorySmallApartmentGeometry();
+    const industrialOffice = buildGenericIndustrialOfficeGeometry();
     const lshape = buildGenericLShapeGeometry();
     const lshapehouse = buildGenericLShapeHouseGeometry();
     const lshapehouse2 = buildGenericLShapeHouseGeometry2();
@@ -1314,6 +1544,15 @@ export async function loadTrees(mapBase) {
     // the standard per-species roofColorForSpecies variation.
     addStruct(buildInstancedBoxProps(facadeHouseEntries, buf, facadeHouse.walls, "facadehouse_props_walls", wallColorForSpecies));
     addStruct(buildInstancedBoxProps(facadeHouseEntries, buf, facadeHouse.roof, "facadehouse_props_roof", roofColorForSpecies));
+    addStruct(buildInstancedBoxProps(fourStoryApartmentEntries, buf, fourStoryApartment.walls, "fourstoryapartment_props_walls", wallColorForSpecies));
+    addStruct(buildInstancedBoxProps(fourStoryApartmentEntries, buf, fourStoryApartment.roof, "fourstoryapartment_props_roof", roofColorForSpecies));
+    addStruct(buildInstancedBoxProps(threeStorySmallApartmentEntries, buf, threeStorySmallApartment.walls, "threestorysmallapartment_props_walls", wallColorForSpecies));
+    addStruct(buildInstancedBoxProps(threeStorySmallApartmentEntries, buf, threeStorySmallApartment.roof, "threestorysmallapartment_props_roof", roofColorForSpecies));
+    // Three separately-instanced meshes: walls tinted per-species, windows/door fixed-color
+    // - merging them into one mesh would let the wall tint wrongly multiply the other two.
+    addStruct(buildInstancedBoxProps(industrialOfficeEntries, buf, industrialOffice.walls, "industrialoffice_props_walls", wallColorForSpecies));
+    addStruct(buildInstancedBoxProps(industrialOfficeEntries, buf, industrialOffice.windows, "industrialoffice_props_windows", () => INDUSTRIALOFFICE_WINDOW_COLOR));
+    addStruct(buildInstancedBoxProps(industrialOfficeEntries, buf, industrialOffice.door, "industrialoffice_props_door", () => INDUSTRIALOFFICE_DOOR_COLOR));
     addStruct(buildInstancedBoxProps(lshapeEntries, buf, lshape, "lshape_props_generic"));
     addStruct(buildInstancedBoxProps(lshapehouseEntries, buf, lshapehouse.walls, "lshapehouse_props_walls", wallColorForSpecies));
     addStruct(buildInstancedBoxProps(lshapehouseEntries, buf, lshapehouse.roof, "lshapehouse_props_roof", roofColorForSpecies));
