@@ -343,6 +343,9 @@ dialog {
             gap: 0.5em 0.8em;
             font-size: 1em;
             opacity: 0.75;
+            // Hidden on touch (desktop-only keyboard/scroll hints) - the class's own
+            // unconditional `display: grid` above would otherwise beat the UA [hidden] rule.
+            &[hidden] { display: none; }
         }
         .threeDOverlayHintKey {
             justify-self: end;

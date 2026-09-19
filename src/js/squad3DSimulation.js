@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import { decode } from "fast-png";
 import { PointerLockControls } from "three/addons/controls/PointerLockControls.js";
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { RGBELoader } from "three/addons/loaders/RGBELoader.js";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { loadProps } from "./squad3DProps.js";
@@ -13,6 +14,14 @@ const DEFAULT_GRID_RESOLUTION = 2048;
 // World units are meters (terrainSize comes from the map's real-world size), so this
 // is the fly speed in meters/second.
 const MAX_MOVE_SPEED = 500;
+
+// True when the device's PRIMARY pointing input is touch (phones/tablets) rather than a
+// mouse/trackpad - "(pointer: coarse)" reflects the primary input's precision, unlike
+// "ontouchstart" in window which false-positives on touch-enabled laptops that are
+// actually driven by a mouse. PointerLockControls' pointer-lock-and-mouse-delta scheme
+// has no touch equivalent at all (iOS Safari doesn't implement Pointer Lock and Android's
+// support is inconsistent), so touch devices get OrbitControls instead - see _initScene().
+const IS_TOUCH_DEVICE = window.matchMedia("(pointer: coarse)").matches;
 
 // Default sun position (degrees) - fixed for now, no time-of-day control yet.
 const SUN_ELEVATION = 35;
@@ -270,7 +279,7 @@ export default class Squad3DSimulation {
         window.removeEventListener("resize", this._onResize);
         window.removeEventListener("beforeunload", this._onBeforeUnload);
         this._stopLoop();
-        this.controls.unlock();
+        if (!this._orbitMode) this.controls.unlock();
         for (const key of Object.keys(this.move)) this.move[key] = false;
         this.velocity.set(0, 0, 0);
         clearTimeout(this._speedHUDTimeout);
@@ -332,7 +341,18 @@ export default class Squad3DSimulation {
         this.scene.add(this.treesGroup);
 
         this.clock = new THREE.Clock();
-        this.controls = new PointerLockControls(this.camera, this.renderer.domElement);
+        this._orbitMode = IS_TOUCH_DEVICE;
+        if (this._orbitMode) {
+            this.controls = new OrbitControls(this.camera, this.renderer.domElement);
+            this.controls.enableDamping = true;
+            this.controls.minDistance = 5;
+            this.controls.maxDistance = 20000;
+            // Just shy of the horizon - keeps the camera from ever orbiting below the
+            // target's ground level (there's no "underground" view worth reaching here).
+            this.controls.maxPolarAngle = Math.PI / 2 - 0.02;
+        } else {
+            this.controls = new PointerLockControls(this.camera, this.renderer.domElement);
+        }
         this._setupFlyControls();
     }
 
@@ -351,12 +371,22 @@ export default class Squad3DSimulation {
         this.overlay = this.container.querySelector(".threeDOverlay");
         this.crosshair = this.container.querySelector(".threeDCrosshair");
         this.fpsCounter = this.container.querySelector(".threeDFpsCounter");
-        // PointerLockControls dispatches "lock"/"unlock" BEFORE updating its own isLocked
-        // flag, so reading this.controls.isLocked from inside these listeners would still
-        // see the previous (stale) state - the locked/unlocked value is passed explicitly
-        // instead of relying on it.
-        this.controls.addEventListener("lock", () => { this.overlay.hidden = true; this._updateCrosshairVisibility(true); });
-        this.controls.addEventListener("unlock", () => { this.overlay.hidden = false; this._updateCrosshairVisibility(false); });
+
+        // Touch has no equivalent of pointer-lock-driven mouselook, so OrbitControls
+        // drives the camera directly off touch drag/pinch instead - no lock step, and none
+        // of PointerLockControls' lock/unlock/Enter-to-lock/wheel-speed wiring applies.
+        // The WASD/Scroll/Esc keyboard hints on the start card are desktop-only too.
+        if (this._orbitMode) {
+            const hint = this.container.querySelector(".threeDOverlayHint");
+            if (hint) hint.hidden = true;
+        } else {
+            // PointerLockControls dispatches "lock"/"unlock" BEFORE updating its own isLocked
+            // flag, so reading this.controls.isLocked from inside these listeners would still
+            // see the previous (stale) state - the locked/unlocked value is passed explicitly
+            // instead of relying on it.
+            this.controls.addEventListener("lock", () => { this.overlay.hidden = true; this._updateCrosshairVisibility(true); });
+            this.controls.addEventListener("unlock", () => { this.overlay.hidden = false; this._updateCrosshairVisibility(false); });
+        }
 
         // Left-click while flying raycasts from the crosshair (screen center) straight
         // down the camera's view direction.
@@ -385,7 +415,13 @@ export default class Squad3DSimulation {
         });
 
         const goButton = this.container.querySelector(".threeDGoButton");
-        goButton.addEventListener("click", () => this.controls.lock());
+        // OrbitControls needs no lock step - it's already live off touch input, so Go just
+        // dismisses the start card. Re-opening it isn't wired up yet on touch (no Esc);
+        // quitting and reopening the 3D view is the way back to it for now.
+        goButton.addEventListener("click", () => {
+            if (this._orbitMode) this.overlay.hidden = true;
+            else this.controls.lock();
+        });
 
         this.speedHUD = this.container.querySelector(".threeDSpeedHUD");
         this.speedHUDFill = this.speedHUD.querySelector(".threeDSpeedHUDFill");
@@ -458,8 +494,9 @@ export default class Squad3DSimulation {
 
             // Enter takes control from the settings card, like clicking Go, but only
             // while the 3D dialog is actually open - this listener stays registered
-            // for the dialog's whole lifetime, not just while it's shown.
-            if (!this.controls.isLocked && (event.code === "Enter" || event.code === "NumpadEnter")
+            // for the dialog's whole lifetime, not just while it's shown. Not applicable
+            // in orbit mode - controls.lock() doesn't exist on OrbitControls.
+            if (!this._orbitMode && !this.controls.isLocked && (event.code === "Enter" || event.code === "NumpadEnter")
                 && this.container.closest("dialog")?.open) {
                 event.preventDefault();
                 this.controls.lock();
@@ -629,7 +666,9 @@ export default class Squad3DSimulation {
                 groundY + WEAPON_SPAWN_DISTANCE,
                 z + toCenter.y * WEAPON_SPAWN_DISTANCE
             );
-            this.camera.lookAt(x, groundY + MARKER_WORLD_SIZE / 2, z);
+            const target = new THREE.Vector3(x, groundY + MARKER_WORLD_SIZE / 2, z);
+            this.camera.lookAt(target);
+            if (this._orbitMode) { this.controls.target.copy(target); this.controls.update(); }
             return;
         }
 
@@ -637,8 +676,19 @@ export default class Squad3DSimulation {
         // height or a far-away overview - high enough to get a lay of the land right away
         // without clipping into terrain on a hilly map.
         const groundY = this.terrainHeightAt(0.5, 0.5);
-        this.camera.position.set(0, groundY + 200, 0);
-        this.camera.lookAt(0, groundY + 200, -1);
+        if (this._orbitMode) {
+            // Same offset horizontally as vertically (45 degrees down), like the focus-point
+            // case above - orbiting a target with zero horizontal camera offset (looking
+            // straight down) sits right on OrbitControls' polar singularity.
+            this.camera.position.set(0, groundY + 200, 200);
+            const target = new THREE.Vector3(0, groundY, 0);
+            this.camera.lookAt(target);
+            this.controls.target.copy(target);
+            this.controls.update();
+        } else {
+            this.camera.position.set(0, groundY + 200, 0);
+            this.camera.lookAt(0, groundY + 200, -1);
+        }
     }
 
 
@@ -1759,7 +1809,10 @@ export default class Squad3DSimulation {
             const delta = Math.min(this._frameCapAccum, 0.1);
             this._frameCapAccum = 0;
 
-            this._updateFlyMovement(delta);
+            // OrbitControls owns the camera entirely (touch drag/pinch) and needs its own
+            // per-frame update() for damping inertia - no WASD fly movement to apply.
+            if (this._orbitMode) this.controls.update();
+            else this._updateFlyMovement(delta);
             this._updateMinimapDot();
             this._updateFpsCounter(delta);
             this.renderer.render(this.scene, this.camera);
