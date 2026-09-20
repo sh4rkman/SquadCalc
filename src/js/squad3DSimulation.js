@@ -556,7 +556,8 @@ export default class Squad3DSimulation {
         window.addEventListener("wheel", (event) => {
             if (!this.controls.isLocked) return;
             event.preventDefault();
-            this.moveSpeedPercent = THREE.MathUtils.clamp(this.moveSpeedPercent - event.deltaY * 0.05, 0, 100);
+            if(this.moveSpeedPercent === 1) this.moveSpeedPercent = 0; // since min is 1 we avoid speed being 6/11/16...
+            this.moveSpeedPercent = THREE.MathUtils.clamp(this.moveSpeedPercent - event.deltaY * 0.05, 1, 100);
             this._showSpeedHUD();
         }, { passive: false });
     }
