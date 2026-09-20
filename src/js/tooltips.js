@@ -284,6 +284,7 @@ tippy(".btn-hd", {
 });
 export const layerInfoTooltips = tippy(".btn-layer-info", {
     ...commonMapMenuToolipsSettings,
+    placement: "left",
     onShow(tip) {
         tip.setContent(i18next.t("tooltips:layerInfo"));
     },
