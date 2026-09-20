@@ -436,10 +436,10 @@ dialog {
             top: 0.6em;
             left: 0.6em;
             color: rgba(255, 255, 255, 0.85);
-            text-shadow: 0 0 3px rgba(0, 0, 0, 0.9);
-            font-size: 0.9em;
+            font-size: 1em;
             pointer-events: none;
             z-index: 1;
+            @include variables.light-text-outline;
         }
         .threeDCrosshair {
             position: absolute;
