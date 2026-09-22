@@ -4,34 +4,39 @@ SquadCalc now use a new layer extractor tool made by **yobaNGE** : **[SquadPipel
 
 </br><img src="https://img.shields.io/badge/-new%20features-green">
 
-- Added Maps/Layers/Factions support for X mods. You can enable them from `Settings > Mods` and browse modded layers and factions. It also means you can now sync with modded servers running these mods : 
+- **Mods !**  
+Added Maps/Layers/Factions/servers support for 6 new mods. You can enable them from `Settings > Mods` and browse modded layers and factions. It also means you can now sync with modded servers running these mods : 
   - Galactic Contention (170+ Layers, 24 maps)
   - Steel Division (110+ layers)
   - SuperMod (190+ layers, 2 maps: `Chornivsk` and `Hrodna Border`)
   - SquadAdminTools (2 seeding layers)
   - Warzone (170+ layers)
-- Added two new weapons from SteelDivision : `SCUD` and `Shahed-136` 
-- LANE SOLVER REWORK
+  - InfiniteWarefare (1 weapon)
+
+- **3D Maps !**  
+You can now browse every vanilla maps in 3D ! Visualise terrain, buildings, vegetation and layers while flying in camera mode.
+
+- **Lane logic rework** (Thanks Metroseksuaali!)
   - In RAAS/Invasion, squadcalc now display the differents position possibilities when a flag can be a different position in a layer
   - select/unselect flags even at any steps
   - lane preview on hover
-- CAPZONE REWORK
-- You can now sort servers by player count
-- PT/BZ translations
-- TK translations
-- 3D MAPS
-- IMF FLAG
+
+- Added two new weapons from SteelDivision : `SCUD` and `Shahed-136` (thanks yobaNGE!)
+- Added Brazillian Portuguese translations by Eduardo Nonemacher ([#511](https://github.com/sh4rkman/SquadCalc/pull/511))
+- Added Turkish translations by Kauda
+- LAYER INFO BUTTON
 
 </br><img src="https://img.shields.io/badge/-%20improv%20-orange"> 
+- Multiparts capzones on 2D map now shows as a single shape instead of multiple shape stacking (Thanks Metroseksuaali!)
 - Languages are now sorted by alpha
+- You can now sort servers by player count
 
 </br><img src="https://img.shields.io/badge/-bug%20fixes-b22">  
 - Fixed Squadcalc now drawing some rare protection zones
-- Fixed some buildings not registered into BlackCoast heightmap (Thanks yobaNGE)
-- Fixed Ghost building appearing on Sanxian heightmap (Thanks Metroseksuaali)
+- Fixed some buildings not registered into BlackCoast heightmap (Thanks yobaNGE!)
+- Fixed invisible building appearing on Sanxian heightmap (Thanks Metroseksuaali!)
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
-
 
 
 
