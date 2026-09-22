@@ -21,7 +21,7 @@ export default class SquadContextMenu {
             plugins: [followCursor],
             duration: 0,
             arrow: false,
-            offset: [73, -15],
+            offset: [58, -15],
             onHide: () => {
                 $(".ctxButton").off("click");
                 document.removeEventListener("contextmenu", this.boundHandleContextMenu);
@@ -29,6 +29,9 @@ export default class SquadContextMenu {
             onShow: (tip) => {
                 tip.setContent(
                     `<div class="contextmenu">
+                        <button class="ctxButton">
+                            <span class="3DContext" data-team="shared" data-category="ctx" data-icon="3D"></span>
+                        </button>
                         <button class="ctxButton middleContextButton">
                             <span class="middleContext" data-team="shared" data-category="ctx" data-icon="middleContext"></span>
                         </button>
@@ -66,6 +69,13 @@ export default class SquadContextMenu {
                             this.close();
                             return;
                         } 
+
+                        // Open3D mode
+                        if (target.dataset.icon === "3D") {
+                            App.open3DAt(tip.e.latlng);
+                            this.close();
+                            return;
+                        }
 
                         App.minimap.createMarker(tip.e.latlng, target.dataset.team, target.dataset.category, target.dataset.icon);     
                         this.close();

@@ -157,6 +157,20 @@ export default class SquadCalc {
         this.updateUrlParams({ "3d": "" });
     }
 
+    /**
+     * Opens the 3D view standing at a clicked point on the 2D map - the right-click
+     * context menu's "3D" item (squadContextMenu.js).
+     * @param {object} latlng - Leaflet latlng to spawn the camera at
+     */
+    open3DAt(latlng) {
+        if (this.minimap.activeMap.no3D) return;
+        threeDTooltips.hide();
+        threeDTooltips.disable();
+        this._dialogs.threeD.showModal();
+        this.simulation3D.open(this.minimap.activeMap, this.minimap.layer, this.minimap, null, null, latlng);
+        this.updateUrlParams({ "3d": "" });
+    }
+
     initServerMode(serverId, sessionId = null) {
         if (!this.squadServersBrowser) {
             this.squadServersBrowser = new SquadServersBrowser();

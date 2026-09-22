@@ -111,6 +111,11 @@ export function decodeShareToken(token) {
 // _spawnCamera(). Equal on both axes for an exact 45-degree down angle.
 const WEAPON_SPAWN_DISTANCE = 150;
 
+// Camera height (meters) above the ground when spawning at a clicked point on the 2D
+// map (the context menu's "3D" item) - roughly a standing soldier's eye level - see
+// _spawnCamera()'s spawnLatLng branch.
+const EYE_HEIGHT = 2;
+
 // Deployable models, one glTF per asset type. Only "Ammo Crate" for now - add other
 // deployables.assets .type values here as models for them show up.
 const DEPLOYABLE_MODELS = {
@@ -277,8 +282,12 @@ export default class Squad3DSimulation {
      * weapon/arc/overview logic, decoded from a "?3d=<token>" share URL (see
      * decodeShareToken(), squadCalc.js's parseUrlIntent()/_openInitial3D(), and the
      * threeDShareButton handler/getShareToken()) - see _spawnCamera()
+     * @param {?object} [spawnLatLng] - spawns the camera standing at this Leaflet latlng
+     * (EYE_HEIGHT above the ground, facing the map center) instead of the usual
+     * weapon/arc/overview logic - from the 2D map's own right-click "3D" context menu
+     * item (squadContextMenu.js, via App.open3DAt()) - see _spawnCamera()
      */
-    async open(activeMap, layer = null, minimap = null, arcRequest = null, sharedPosition = null) {
+    async open(activeMap, layer = null, minimap = null, arcRequest = null, sharedPosition = null, spawnLatLng = null) {
         if (!this.renderer) this._initScene();
         this._lastLayer = layer;
         this._lastActiveMap = activeMap;
@@ -306,7 +315,7 @@ export default class Squad3DSimulation {
         this._drawMarkers(minimap, activeMap);
         this._drawTargetSpreads(minimap, activeMap);
         this._drawProjectileArcs(minimap, activeMap, arcRequest);
-        this._spawnCamera(activeMap, minimap, arcRequest, sharedPosition);
+        this._spawnCamera(activeMap, minimap, arcRequest, sharedPosition, spawnLatLng);
 
         this.overlay.hidden = false;
         window.addEventListener("resize", this._onResize);
@@ -682,17 +691,21 @@ export default class Squad3DSimulation {
      * Places the camera on every open(). A sharedPosition (decoded from a "?3d=<token>"
      * URL - see decodeShareToken()/getShareToken()) takes priority over everything else -
      * it's an explicit request for this exact spot and facing, not a default to fall back
-     * on. Otherwise spawns on the map-center side of a focus point, 50m above the ground
-     * and 50m horizontally back towards the center (an exact 45-degree down angle),
-     * looking at it - the focus point is the arc's target when opened from the "See in 3D"
-     * button (arcRequest), otherwise the first weapon placed on the 2D map. Falls back to
-     * a plain overview 200m above the map's center, facing north, when neither exists.
+     * on. A spawnLatLng (the 2D map's right-click "3D" context menu item) comes next -
+     * also an explicit request, standing EYE_HEIGHT above the ground at that point, facing
+     * the map center. Otherwise spawns on the map-center side of a focus point, 50m above
+     * the ground and 50m horizontally back towards the center (an exact 45-degree down
+     * angle), looking at it - the focus point is the arc's target when opened from the
+     * "See in 3D" button (arcRequest), otherwise the first weapon placed on the 2D map.
+     * Falls back to a plain overview 200m above the map's center, facing north, when none
+     * of the above apply.
      * @param {object} activeMap
      * @param {?object} minimap - SquadMinimap instance, if any
      * @param {?{firingSolution: object, angleType: string}} [arcRequest]
      * @param {?{position: {x: number, y: number, z: number}, target: {x: number, y: number, z: number}}} [sharedPosition]
+     * @param {?object} [spawnLatLng] - Leaflet latlng, from the "3D" context menu item
      */
-    _spawnCamera(activeMap, minimap, arcRequest = null, sharedPosition = null) {
+    _spawnCamera(activeMap, minimap, arcRequest = null, sharedPosition = null, spawnLatLng = null) {
         if (sharedPosition) {
             const { position, target } = sharedPosition;
             this.camera.position.set(position.x, position.y, position.z);
@@ -703,6 +716,24 @@ export default class Squad3DSimulation {
         }
 
         const corner0 = activeMap.SDK_data?.minimap?.corner0;
+
+        if (spawnLatLng && corner0) {
+            const { x, z, u, v } = this._latLngToWorldXZ(spawnLatLng.lat, spawnLatLng.lng, minimap, corner0);
+            const eyeY = this.terrainHeightAt(u, v) + EYE_HEIGHT;
+            this.camera.position.set(x, eyeY, z);
+
+            // Face the map center, at eye level (not looking down) - same horizontal
+            // direction _spawnCamera()'s focus-point branch uses, just leveled off.
+            const toCenter = new THREE.Vector2(-x, -z);
+            if (toCenter.lengthSq() < 1) toCenter.set(0, -1);
+            toCenter.normalize();
+
+            const target = new THREE.Vector3(x + toCenter.x, eyeY, z + toCenter.y);
+            this.camera.lookAt(target);
+            if (this._orbitMode) { this.controls.target.copy(target); this.controls.update(); }
+            return;
+        }
+
         const focusLatLng = arcRequest
             ? arcRequest.firingSolution.targetLatLng
             : minimap?.activeWeaponsMarkers?.getLayers()?.[0]?.getLatLng();
