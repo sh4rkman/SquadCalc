@@ -44,6 +44,15 @@ const MARKER_WORLD_SIZE = 18;
 // Target markers read slightly smaller than weapon markers, to visually rank behind them.
 const TARGET_MARKER_WORLD_SIZE = MARKER_WORLD_SIZE * 0.75;
 
+// Text size (meters) of a target's elevation/bearing label - see _drawMarkers()'s
+// _targetLabelText(). Smaller than a flag's LABEL_WORLD_HEIGHT since it's a secondary
+// annotation on a marker, not a flag name.
+const TARGET_LABEL_WORLD_HEIGHT = 6;
+
+// Meters a target's elevation/bearing label floats above its own icon sprite - see
+// _drawMarkers().
+const TARGET_LABEL_CLEARANCE = 3;
+
 // Meters a target's spread ellipse floats above the ground, just enough to avoid
 // z-fighting with the terrain - see _drawTargetSpreads().
 const SPREAD_GROUND_OFFSET = 0.2;
@@ -1540,7 +1549,9 @@ export default class Squad3DSimulation {
      * Places a camera-facing icon sprite for every weapon (mortar/artillery) and target
      * marker currently placed on the 2D map (minimap.activeWeaponsMarkers /
      * activeTargetsMarkers), dropped to ground level since a Leaflet-placed marker has
-     * no location_z. Snapshot taken once per open(), like every other overlay here -
+     * no location_z. Each target also gets a floating elevation/bearing text label,
+     * drawn the same way as a flag name (see _createLabelSprite()) - see
+     * _targetLabelText(). Snapshot taken once per open(), like every other overlay here -
      * doesn't live-update while the dialog stays open.
      * @param {?object} minimap - SquadMinimap instance
      * @param {object} activeMap
@@ -1548,16 +1559,18 @@ export default class Squad3DSimulation {
     async _drawMarkers(minimap, activeMap) {
         this.markerGroup.clear();
 
+        const weapons = minimap?.activeWeaponsMarkers?.getLayers() ?? [];
         const markers = [
-            ...(minimap?.activeWeaponsMarkers?.getLayers() ?? []).map((marker) => ({ marker, size: MARKER_WORLD_SIZE })),
-            ...(minimap?.activeTargetsMarkers?.getLayers() ?? []).map((marker) => ({ marker, size: TARGET_MARKER_WORLD_SIZE })),
+            ...weapons.map((marker) => ({ marker, size: MARKER_WORLD_SIZE, isTarget: false })),
+            ...(minimap?.activeTargetsMarkers?.getLayers() ?? []).map((marker) => ({ marker, size: TARGET_MARKER_WORLD_SIZE, isTarget: true })),
         ];
         const corner0 = activeMap.SDK_data?.minimap?.corner0;
         if (!corner0 || !markers.length) return;
 
-        for (const { marker, size } of markers) {
+        for (const { marker, size, isTarget } of markers) {
             const { x, z, u, v } = this._markerWorldPosition(marker, minimap, corner0);
-            const y = this.terrainHeightAt(u, v) + size / 2;
+            const groundY = this.terrainHeightAt(u, v);
+            const y = groundY + size / 2;
 
             const texture = await this._loadMarkerIconTexture(marker.getIcon().options.iconUrl);
 
@@ -1568,7 +1581,67 @@ export default class Squad3DSimulation {
             sprite.scale.set(size, size, 1);
             sprite.position.set(x, y, z);
             this.markerGroup.add(sprite);
+
+            if (!isTarget) continue;
+            const text = this._targetLabelText(marker, weapons);
+            if (!text) continue;
+
+            const label = this._createLabelSprite(text, undefined, TARGET_LABEL_WORLD_HEIGHT);
+            label.position.set(x, groundY + size + TARGET_LABEL_CLEARANCE, z);
+            this.markerGroup.add(label);
         }
+    }
+
+
+    /**
+     * Elevation/bearing text for a target's floating label (see _drawMarkers()), one
+     * line per weapon currently placed - reuses SquadTargetMarker's own getContent(),
+     * the exact same HTML the 2D calc popups (calcMarker1/calcMarker2) show, so the
+     * label always matches whatever the user has customized (showBearing/showDistance/
+     * showTimeOfFlight/showHeight, lastDigits, lowAndHigh, unit) instead of a fixed
+     * format of our own. getContent() returns HTML though, so it's flattened to plain
+     * text via _htmlToText() first - a canvas 2D context (_createLabelSprite()) can't
+     * render markup. Same "1./2." prefixing as the popups only once a second weapon is
+     * placed (squadTargetMarker.js's initialize()/updateCalcMarkers()). A weapon that's
+     * been removed since the target was placed (target.firingSolutionN stays set, but
+     * weapons[n] no longer exists) is skipped.
+     * @param {object} target - a SquadTargetMarker (minimap.activeTargetsMarkers layer)
+     * @param {object[]} weapons - minimap.activeWeaponsMarkers.getLayers()
+     * @returns {string}
+     */
+    _targetLabelText(target, weapons) {
+        const lines = [];
+        if (weapons[0] && target.firingSolution1) {
+            const [html1] = target.getContent(target.firingSolution1, weapons[0].angleType);
+            const text1 = this._htmlToText(html1);
+            if (text1) lines.push(weapons.length === 2 ? `1. ${text1}` : text1);
+        }
+        if (weapons[1] && target.firingSolution2) {
+            const [html2] = target.getContent(target.firingSolution2, weapons[1].angleType);
+            const text2 = this._htmlToText(html2);
+            if (text2) lines.push(`2. ${text2}`);
+        }
+        return lines.join("\n");
+    }
+
+
+    /**
+     * Flattens one of getContent()'s HTML fragments (squadTargetMarker.js) down to
+     * plain text for _createLabelSprite()'s canvas rendering - "<br>" becomes a line
+     * break (kept as "\n" through the DOM round-trip below, since textContent preserves
+     * literal whitespace/newlines in text nodes) and every other tag (the empty
+     * ".calcNumber" placeholder span, the elevation/bearing/etc wrapper spans) is
+     * dropped, leaving just the text those spans already contain - i18next.t() was
+     * already interpolated into it when getContent() built the string, so no
+     * translation step is needed here.
+     * @param {string} html
+     * @returns {string}
+     */
+    _htmlToText(html) {
+        const withBreaks = html.replace(/<br\s*\/?>/gi, "\n");
+        const div = document.createElement("div");
+        div.innerHTML = withBreaks;
+        return div.textContent.trim();
     }
 
 
@@ -1774,24 +1847,31 @@ export default class Squad3DSimulation {
 
     /**
      * A billboarded text label (always faces the camera - THREE.Sprite's default behavior)
-     * for a flag name, rendered on top of everything so distance/terrain never occludes it.
+     * for a flag name or a target's elevation/bearing (see _targetLabelText()), rendered
+     * on top of everything so distance/terrain never occludes it. `text` may hold several
+     * "\n"-separated lines (one per weapon, for a target) - each renders at `worldHeight`
+     * tall, so the sprite's total height grows with the line count instead of squeezing
+     * every line into one flag-label-sized box.
      * @param {string} text
      * @param {string} [bgColor] - defaults to a neutral translucent black; mains pass a
      * different color instead (see _drawCapzones()) so they stand out from regular flags.
-     * @param {number} [worldHeight] - defaults to LABEL_WORLD_HEIGHT; mains pass a larger
-     * value so their name reads bigger than a regular flag's.
+     * @param {number} [worldHeight] - per-line height; defaults to LABEL_WORLD_HEIGHT,
+     * mains pass a larger value so their name reads bigger than a regular flag's.
      * @returns {THREE.Sprite}
      */
     _createLabelSprite(text, bgColor = "rgba(0, 0, 0, 0.6)", worldHeight = LABEL_WORLD_HEIGHT) {
         const fontSize = 48;
         const paddingX = 24;
         const paddingY = 16;
+        const lineHeight = fontSize * 1.15;
+        const lines = text.split("\n");
 
         const canvas = document.createElement("canvas");
         const ctx = canvas.getContext("2d");
         ctx.font = `bold ${fontSize}px sans-serif`;
-        canvas.width = Math.ceil(ctx.measureText(text).width) + paddingX * 2;
-        canvas.height = fontSize + paddingY * 2;
+        const textWidth = Math.max(...lines.map((line) => ctx.measureText(line).width));
+        canvas.width = Math.ceil(textWidth) + paddingX * 2;
+        canvas.height = Math.round(lineHeight * lines.length) + paddingY * 2;
 
         // Sizing the canvas resets its 2D context, so the font has to be set again.
         ctx.font = `bold ${fontSize}px sans-serif`;
@@ -1800,14 +1880,17 @@ export default class Squad3DSimulation {
         ctx.fillStyle = "white";
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
-        ctx.fillText(text, canvas.width / 2, canvas.height / 2 + 2);
+        lines.forEach((line, i) => {
+            ctx.fillText(line, canvas.width / 2, paddingY + lineHeight * (i + 0.5) + 2);
+        });
 
         const texture = new THREE.CanvasTexture(canvas);
         texture.colorSpace = THREE.SRGBColorSpace;
         const material = new THREE.SpriteMaterial({ map: texture, depthTest: false, depthWrite: false });
         const sprite = new THREE.Sprite(material);
 
-        sprite.scale.set(worldHeight * (canvas.width / canvas.height), worldHeight, 1);
+        const totalWorldHeight = worldHeight * lines.length;
+        sprite.scale.set(totalWorldHeight * (canvas.width / canvas.height), totalWorldHeight, 1);
         return sprite;
     }
 
