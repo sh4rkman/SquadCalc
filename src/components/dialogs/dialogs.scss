@@ -1,6 +1,8 @@
 @use '../shared/variables';
 
-dialog {
+dialog, #threeDView {
+    // #threeDView is a plain <div> (not a modal dialog, so the header can sit on top of it)
+    // but still shares the dialogs' base look - font size, colors, etc.
     width: calc(100% - 10%);
     text-align: left;
     border-radius: 10px;
@@ -242,6 +244,11 @@ dialog {
         }
     }
     &#threeDView {
+        position: fixed;
+        inset: 0;
+        z-index: 3; // above #map_ui's buttons, below the header (raised by body.threeD-open)
+        display: flex;
+        flex-direction: column;
         width: 100%;
         height: 100%;
         max-width: 100%;
@@ -250,14 +257,7 @@ dialog {
         border-radius: 0;
         background: variables.$mainBGColor;
         backdrop-filter: none;
-        &::backdrop { background: transparent; }
-        &[open] {
-            display: flex;
-            flex-direction: column;
-        }
-        .closeModal svg {
-            filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.8));
-        }
+        &[hidden] { display: none; }
         .threeDViewport {
             position: relative;
             flex: 1;
@@ -281,7 +281,7 @@ dialog {
             flex-direction: column;
             align-items: stretch;
             gap: 0.9em;
-            width: 340px;
+            width: 520px;
             max-width: 100%;
             background: rgba(20, 20, 24, 0.82);
             backdrop-filter: blur(10px);
@@ -362,7 +362,22 @@ dialog {
         .threeDOverlayOptions {
             display: flex;
             flex-direction: column;
-            gap: 0.7em;
+            gap: 1.1em;
+        }
+        // Two columns of checkboxes, then the two selects side by side on their own row -
+        // single column again on narrow screens.
+        .threeDOverlayToggles, .threeDOverlaySelects {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.7em 2em;
+
+            @media (width < 36em) {
+                grid-template-columns: 1fr;
+            }
+        }
+        .threeDOverlaySelects {
+            padding-top: 1.1em;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
         }
         .threeDOverlayOption {
             display: flex;

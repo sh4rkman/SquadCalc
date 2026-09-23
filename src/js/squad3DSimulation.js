@@ -7,9 +7,8 @@ import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { loadProps } from "./squad3DProps.js";
 import { loadTrees } from "./squad3DTrees.js";
 
-// Default vertices per side of the terrain grid, sampled from the full-resolution
-// heightmap - user-adjustable via the resolution selector (see _setResolution()).
-const DEFAULT_GRID_RESOLUTION = 2048;
+// Vertices per side of the terrain grid, sampled from the full-resolution heightmap.
+const GRID_RESOLUTION = 512;
 
 // World units are meters (terrainSize comes from the map's real-world size), so this
 // is the fly speed in meters/second.
@@ -116,7 +115,7 @@ export function decodeShareToken(token) {
     }
 }
 
-// Horizontal/vertical offset (meters) of the camera spawn from a placed weapon - see
+// Horizontal/vertical offset (meters) of the camera spawn from the "See in 3D" arc target - see
 // _spawnCamera(). Equal on both axes for an exact 45-degree down angle.
 const WEAPON_SPAWN_DISTANCE = 150;
 
@@ -133,10 +132,15 @@ const DEPLOYABLE_MODELS = {
     "Helipad": "/img/models/helipad.glb",
 };
 
+// DEPLOYABLE_MODELS whose glTF pivot sits at the model's center rather than its base -
+// placed as-is at the asset's location_z (ground level), half the model ends up buried.
+// _loadDeployableModel() lifts these so their bounding box's bottom sits on the pivot.
+const GROUND_ALIGNED_MODELS = new Set(["Ammo Crate"]);
+
 // localStorage keys for the settings card's own options - same "settings-*" naming and
 // "1"/"0" boolean convention as SquadSettings, kept local to this class since none of
-// these are checkbox/slider definitions SquadSettings' binding system can express (two
-// are <select> values, and the toggles live in a dialog SquadSettings doesn't own).
+// these are checkbox/slider definitions SquadSettings' binding system can express (one
+// is a <select> value, and the toggles live in a card SquadSettings doesn't own).
 const STORAGE_KEYS = {
     capzonesVisible: "settings-3d-capzones",
     minimapVisible: "settings-3d-minimap",
@@ -146,7 +150,6 @@ const STORAGE_KEYS = {
     propsVisible: "settings-3d-props",
     crosshairVisible: "settings-3d-crosshair",
     fpsVisible: "settings-3d-fps",
-    gridResolution: "settings-3d-resolution",
     textureName: "settings-3d-texture",
 };
 
@@ -206,7 +209,7 @@ export default class Squad3DSimulation {
         this.terrainMesh = null;
         this.terrainSize = 0;
         this.heights = null;
-        this.gridResolution = Number(loadSetting(STORAGE_KEYS.gridResolution, DEFAULT_GRID_RESOLUTION));
+        this.gridResolution = GRID_RESOLUTION;
         this.textureName = loadSetting(STORAGE_KEYS.textureName, "basemap"); // "basemap" | "topomap" - the select's own options.
         this.sunLight = null;
         this.capzoneGroup = null;
@@ -226,7 +229,6 @@ export default class Squad3DSimulation {
         this.propsVisible = loadSetting(STORAGE_KEYS.propsVisible, "1") === "1";
         this.crosshairVisible = loadSetting(STORAGE_KEYS.crosshairVisible, "1") === "1";
         this.fpsVisible = loadSetting(STORAGE_KEYS.fpsVisible, "1") === "1";
-
         // Deployable glTF templates, cached and loaded once per asset type - see
         // _drawDeployables(). Instances are shallow clones sharing this geometry/material.
         this._deployableModels = {};
@@ -237,11 +239,14 @@ export default class Squad3DSimulation {
         this.sunDir = new THREE.Vector3();
         this._minimapForward = new THREE.Vector3();
         this.loadedMapURL = null;
+        this._mapLoadChain = null; // see _ensureMapLoaded()
+        this._cameraMapURL = null; // map the camera was last placed on - see open()
+        this._isOpen = false; // between open() and close() - see refresh()
         this._frameId = null;
         this._onResize = () => this._resize();
 
         // Safety net for accidental tab-close while flying (e.g. Ctrl+W) - registered only
-        // while the 3D dialog is actually open (see open()/close()), not for the app's
+        // while the 3D view is actually open (see open()/close()), not for the app's
         // whole lifetime. The browser ignores any custom message text and shows its own
         // generic "leave site?" confirmation, but that's enough to let a misclick be undone.
         this._onBeforeUnload = (event) => { event.preventDefault(); event.returnValue = ""; };
@@ -262,6 +267,7 @@ export default class Squad3DSimulation {
         // without re-fetching the heightmap/basemap, and so it knows what to redraw.
         this._heightmapPng = null;
         this._heightScale = 1;
+        this._usingLandscapePng = true; // false when the terrain fell back to heightmap.png - see _fetchHeightmap()
         this._terrainTexture = null;
         this._lastLayer = null;
         this._lastActiveMap = null;
@@ -288,12 +294,12 @@ export default class Squad3DSimulation {
      * button (squadTargetMarker.js) - see _drawProjectileArcs()
      * @param {?{position: {x: number, y: number, z: number}, target: {x: number, y: number, z: number}}} [sharedPosition] -
      * spawns the camera at this exact world position and facing instead of the usual
-     * weapon/arc/overview logic, decoded from a "?3d=<token>" share URL (see
+     * arc/overview logic, decoded from a "?3d=<token>" share URL (see
      * decodeShareToken(), squadCalc.js's parseUrlIntent()/_openInitial3D(), and the
      * threeDShareButton handler/getShareToken()) - see _spawnCamera()
      * @param {?object} [spawnLatLng] - spawns the camera standing at this Leaflet latlng
      * (EYE_HEIGHT above the ground, facing the map center) instead of the usual
-     * weapon/arc/overview logic - from the 2D map's own right-click "3D" context menu
+     * arc/overview logic - from the 2D map's own right-click "3D" context menu
      * item (squadContextMenu.js, via App.open3DAt()) - see _spawnCamera()
      */
     async open(activeMap, layer = null, minimap = null, arcRequest = null, sharedPosition = null, spawnLatLng = null) {
@@ -301,22 +307,101 @@ export default class Squad3DSimulation {
         this._lastLayer = layer;
         this._lastActiveMap = activeMap;
         this._lastMinimap = minimap;
+        this._isOpen = true;
 
-        if (this.loadedMapURL !== activeMap.mapURL) {
-            // Covers the still-visible last frame of the previous map (the canvas keeps
-            // showing it until the new terrain is actually rendered) while it loads.
-            this.loadingScreen.hidden = false;
-            this.overlay.hidden = true;
-            try {
-                await this._loadTerrain(activeMap);
-                await this._loadPropsAndTrees(activeMap);
-                this.loadedMapURL = activeMap.mapURL;
-            } finally {
-                this.loadingScreen.hidden = true;
-            }
-        }
+        await this._ensureMapLoaded(activeMap);
+
+        // Closed, or superseded by another open()/refresh() for a different map, while
+        // the terrain was loading.
+        if (!this._isOpen || this._lastActiveMap !== activeMap) return;
 
         // Cheap enough to redo every open() - the layer can change independently of the map.
+        this._drawLayerOverlays(this._lastLayer, activeMap, this._lastMinimap, arcRequest);
+        // The camera is kept across close()/open() - only (re)placed for a different map
+        // than it was last placed on, or an explicit spawn request (share link, context
+        // menu point, "See in 3D").
+        if (arcRequest || sharedPosition || spawnLatLng || this._cameraMapURL !== activeMap.mapURL) {
+            this._spawnCamera(activeMap, this._lastMinimap, arcRequest, sharedPosition, spawnLatLng);
+            this._cameraMapURL = activeMap.mapURL;
+        }
+
+        this.overlay.hidden = false;
+        this._resize();
+
+        // open() can run again while already open (see refresh()) - only start once.
+        if (this._frameId === null) {
+            window.addEventListener("resize", this._onResize);
+            window.addEventListener("beforeunload", this._onBeforeUnload);
+            this.clock.getDelta(); // drop the idle time since the last close()
+            this._startLoop();
+        }
+    }
+
+
+    /**
+     * Follows a map/layer change made from the header's selectors while the view is
+     * already open. A different map goes through the full open() (terrain reload +
+     * camera respawn); the same map only redraws the layer-dependent overlays, leaving
+     * the camera where it is.
+     * @param {object} activeMap - SquadMinimap's activeMap
+     * @param {?SquadLayer} layer - the currently selected layer, if any
+     * @param {?object} minimap - SquadMinimap instance
+     */
+    async refresh(activeMap, layer = null, minimap = null) {
+        if (!this._isOpen) return;
+        if (this._lastActiveMap !== activeMap) {
+            await this.open(activeMap, layer, minimap);
+            return;
+        }
+        this._lastLayer = layer;
+        this._lastMinimap = minimap;
+        // Same map but its terrain is still loading: the pending open() draws the
+        // overlays from _lastLayer/_lastMinimap once it's done (and keeps its own
+        // camera spawn, e.g. a "?3d=<token>" shared position).
+        if (this.loadedMapURL !== activeMap.mapURL) return;
+        this._drawLayerOverlays(layer, activeMap, minimap, null);
+    }
+
+
+    /**
+     * Loads the terrain and props/trees for activeMap unless they already are. Loads are
+     * chained one after another, so a quick map switch (or a refresh() racing an open())
+     * never has two maps' terrain loading into the same scene at once; a queued load
+     * whose map has since been switched away from is skipped.
+     * @param {object} activeMap
+     * @returns {Promise<void>}
+     */
+    _ensureMapLoaded(activeMap) {
+        this._mapLoadChain = (this._mapLoadChain ?? Promise.resolve())
+            .catch(() => {}) // a previous failed load mustn't block the next one
+            .then(async () => {
+                if (this.loadedMapURL === activeMap.mapURL || this._lastActiveMap !== activeMap) return;
+
+                // Covers the still-visible last frame of the previous map (the canvas keeps
+                // showing it until the new terrain is actually rendered) while it loads.
+                this.loadingScreen.hidden = false;
+                this.overlay.hidden = true;
+                this.loadedMapURL = null;
+                try {
+                    await this._loadTerrain(activeMap);
+                    await this._loadPropsAndTrees(activeMap);
+                    this.loadedMapURL = activeMap.mapURL;
+                } finally {
+                    this.loadingScreen.hidden = true;
+                }
+            });
+        return this._mapLoadChain;
+    }
+
+
+    /**
+     * Draws everything that depends on the layer/placed markers rather than the map itself.
+     * @param {?SquadLayer} layer
+     * @param {object} activeMap
+     * @param {?object} minimap
+     * @param {?{firingSolution: object, angleType: string}} arcRequest
+     */
+    _drawLayerOverlays(layer, activeMap, minimap, arcRequest) {
         this._drawCapzones(layer, activeMap);
         this._drawFlagPath(layer, activeMap);
         this._updateMinimapImage(layer, activeMap);
@@ -324,14 +409,6 @@ export default class Squad3DSimulation {
         this._drawMarkers(minimap, activeMap);
         this._drawTargetSpreads(minimap, activeMap);
         this._drawProjectileArcs(minimap, activeMap, arcRequest);
-        this._spawnCamera(activeMap, minimap, arcRequest, sharedPosition, spawnLatLng);
-
-        this.overlay.hidden = false;
-        window.addEventListener("resize", this._onResize);
-        window.addEventListener("beforeunload", this._onBeforeUnload);
-        this._resize();
-        this.clock.getDelta(); // drop the idle time since the last close()
-        this._startLoop();
     }
 
 
@@ -339,6 +416,7 @@ export default class Squad3DSimulation {
      * Stops rendering. The scene and terrain are kept so reopening the same map is instant.
      */
     close() {
+        this._isOpen = false;
         window.removeEventListener("resize", this._onResize);
         window.removeEventListener("beforeunload", this._onBeforeUnload);
         this._stopLoop();
@@ -380,11 +458,6 @@ export default class Squad3DSimulation {
         });
         this.scene.environmentIntensity = 0.5;
         this._updateSun();
-
-        // Fixed real-world sight distances (meters), not relative to the map's own size -
-        // gives distant terrain the hazy falloff that was missing and reads as depth instead
-        // of everything looking equally flat regardless of distance.
-        this.scene.fog = new THREE.Fog(0xbfd6e8, 400, 4000);
 
         this.capzoneGroup = new THREE.Group();
         this.scene.add(this.capzoneGroup);
@@ -493,8 +566,8 @@ export default class Squad3DSimulation {
         const options = this.container.querySelector(".threeDOverlayOptions");
 
         // Toggles restore a persisted value into `checked`, but that alone doesn't apply
-        // it - unlike gridResolution/textureName (read straight from `this.x` whenever
-        // the terrain/capzones next draw), visibility is only ever applied inside these
+        // it - unlike textureName (read straight from `this.textureName` whenever the
+        // terrain next loads), visibility is only ever applied inside these
         // setters, so a persisted "off" needs an explicit call here too.
         const capzonesToggle = options.querySelector(".threeDCapzonesToggle");
         capzonesToggle.checked = this.capzonesVisible;
@@ -535,11 +608,6 @@ export default class Squad3DSimulation {
         fpsToggle.checked = this.fpsVisible;
         this._setFpsVisible(this.fpsVisible);
         fpsToggle.addEventListener("change", () => this._setFpsVisible(fpsToggle.checked));
-
-        const resolutionSelect = options.querySelector(".threeDResolutionSelect");
-        resolutionSelect.value = String(this.gridResolution);
-        resolutionSelect.addEventListener("change", () => this._setResolution(Number(resolutionSelect.value)));
-
         const textureSelect = options.querySelector(".threeDTextureSelect");
         textureSelect.value = this.textureName;
         textureSelect.addEventListener("change", async () => {
@@ -556,11 +624,12 @@ export default class Squad3DSimulation {
             }
 
             // Enter takes control from the settings card, like clicking Go, but only
-            // while the 3D dialog is actually open - this listener stays registered
-            // for the dialog's whole lifetime, not just while it's shown. Not applicable
-            // in orbit mode - controls.lock() doesn't exist on OrbitControls.
+            // while the 3D view is actually open - this listener stays registered
+            // for the app's whole lifetime, not just while it's shown. Not applicable
+            // in orbit mode - controls.lock() doesn't exist on OrbitControls. Also skipped
+            // while typing in a header select2 search box, which now sits on top of the view.
             if (!this._orbitMode && !this.controls.isLocked && (event.code === "Enter" || event.code === "NumpadEnter")
-                && this.container.closest("dialog")?.open) {
+                && this._isOpen && !event.target.closest?.("input, textarea, select")) {
                 event.preventDefault();
                 this.controls.lock();
             }
@@ -623,14 +692,14 @@ export default class Squad3DSimulation {
 
     async _loadTerrain(activeMap) {
         const base = `${process.env.API_URL}${activeMap.mapURL}`;
-        this._heightScale = this._landscapeCalibration(activeMap).heightScale;
         this.minimapImage.src = `${base}basemap.webp`; // instant placeholder while the map loads - see open()'s _updateMinimapImage()
 
         const [heightBuffer, texture] = await Promise.all([
-            fetch(`${base}3d/landscape.png`).then((response) => response.arrayBuffer()),
+            this._fetchHeightmap(base),
             new THREE.TextureLoader().loadAsync(`${base}${this.textureName}.webp`),
         ]);
         texture.colorSpace = THREE.SRGBColorSpace;
+        this._heightScale = this._landscapeCalibration(activeMap).heightScale;
 
         this._heightmapPng = decode(new Uint8Array(heightBuffer));
         this._terrainTexture = texture;
@@ -641,6 +710,31 @@ export default class Squad3DSimulation {
         this._updateSun();
         this._rebuildTerrainMesh();
 
+    }
+
+
+    /**
+     * Fetches the terrain heightmap - the dedicated 3d/landscape.png when the map has one,
+     * otherwise the 2D heightmap.png (squadHeightmaps.js's source; e.g. modded maps that
+     * never got a landscape export). fetch() doesn't reject on a 404, so response.ok is
+     * checked explicitly - decoding the server's error page is what used to throw
+     * "wrong PNG signature". Records which one was used in _usingLandscapePng, so
+     * _landscapeCalibration() picks the matching height calibration.
+     * @param {string} base - API_URL + the map's mapURL
+     * @returns {Promise<ArrayBuffer>}
+     */
+    async _fetchHeightmap(base) {
+        const landscape = await fetch(`${base}3d/landscape.png`);
+        if (landscape.ok) {
+            this._usingLandscapePng = true;
+            return landscape.arrayBuffer();
+        }
+
+        console.debug(`[3D] No 3d/landscape.png for this map (HTTP ${landscape.status}), falling back to heightmap.png`);
+        const heightmap = await fetch(`${base}heightmap.png`);
+        if (!heightmap.ok) throw new Error(`[3D] Failed to load heightmap.png (HTTP ${heightmap.status})`);
+        this._usingLandscapePng = false;
+        return heightmap.arrayBuffer();
     }
 
 
@@ -680,7 +774,7 @@ export default class Squad3DSimulation {
             loadTrees(mapBase),
         ]);
 
-        // The map (or the dialog) may have changed while this was loading.
+        // The map (or the view) may have changed while this was loading.
         if (this._lastActiveMap !== activeMap) return;
 
         const zOffsetM = this._landscapeCalibration(activeMap).zOffsetM ?? 0;
@@ -697,17 +791,16 @@ export default class Squad3DSimulation {
 
 
     /**
-     * Places the camera on every open(). A sharedPosition (decoded from a "?3d=<token>"
+     * Places the camera - on open() for a new map or an explicit spawn request, otherwise
+     * the camera stays where it was left (see open()). A sharedPosition (decoded from a "?3d=<token>"
      * URL - see decodeShareToken()/getShareToken()) takes priority over everything else -
      * it's an explicit request for this exact spot and facing, not a default to fall back
      * on. A spawnLatLng (the 2D map's right-click "3D" context menu item) comes next -
      * also an explicit request, standing EYE_HEIGHT above the ground at that point, facing
-     * the map center. Otherwise spawns on the map-center side of a focus point, 50m above
-     * the ground and 50m horizontally back towards the center (an exact 45-degree down
-     * angle), looking at it - the focus point is the arc's target when opened from the
-     * "See in 3D" button (arcRequest), otherwise the first weapon placed on the 2D map.
-     * Falls back to a plain overview 200m above the map's center, facing north, when none
-     * of the above apply.
+     * the map center. Then an arcRequest (the "See in 3D" button) spawns on the map-center
+     * side of the arc's target, WEAPON_SPAWN_DISTANCE above the ground and as far back
+     * towards the center (an exact 45-degree down angle), looking at it. Falls back to a
+     * plain overview 200m above the map's center, facing north, when none of the above apply.
      * @param {object} activeMap
      * @param {?object} minimap - SquadMinimap instance, if any
      * @param {?{firingSolution: object, angleType: string}} [arcRequest]
@@ -743,9 +836,7 @@ export default class Squad3DSimulation {
             return;
         }
 
-        const focusLatLng = arcRequest
-            ? arcRequest.firingSolution.targetLatLng
-            : minimap?.activeWeaponsMarkers?.getLayers()?.[0]?.getLatLng();
+        const focusLatLng = arcRequest?.firingSolution.targetLatLng;
 
         if (focusLatLng && corner0) {
             const { x, z, u, v } = this._latLngToWorldXZ(focusLatLng.lat, focusLatLng.lng, minimap, corner0);
@@ -850,9 +941,8 @@ export default class Squad3DSimulation {
 
 
     /**
-     * (Re)builds the terrain mesh from the cached decoded heightmap/texture at the current
-     * gridResolution, without touching the camera - shared by _loadTerrain() (first build)
-     * and _setResolution() (resolution change on an already-loaded map).
+     * (Re)builds the terrain mesh from the cached decoded heightmap/texture at
+     * gridResolution, without touching the camera - see _loadTerrain().
      */
     _rebuildTerrainMesh() {
         this.heights = this._sampleHeights(this._heightmapPng, this._heightScale, this.gridResolution);
@@ -878,26 +968,8 @@ export default class Squad3DSimulation {
 
 
     /**
-     * Switches the terrain grid resolution and rebuilds it from the already-downloaded
-     * heightmap (no network refetch), then redraws the capzones and flag path since their
-     * ground-height sampling depends on the same grid.
-     * @param {number} resolution
-     */
-    _setResolution(resolution) {
-        if (resolution === this.gridResolution || !this._heightmapPng) return;
-        this.gridResolution = resolution;
-        localStorage.setItem(STORAGE_KEYS.gridResolution, resolution);
-        this._rebuildTerrainMesh();
-        this._drawCapzones(this._lastLayer, this._lastActiveMap);
-        this._drawFlagPath(this._lastLayer, this._lastActiveMap);
-        this._drawDeployables(this._lastLayer, this._lastActiveMap);
-    }
-
-
-    /**
      * Switches the terrain surface texture (e.g. basemap <-> topomap), fetching it fresh -
-     * unlike resolution, a different texture is a different file, not something the
-     * already-downloaded data can be resampled into. The minimap keeps using basemap
+     * a different texture is a different file. The minimap keeps using basemap
      * regardless, for consistent navigation.
      * @param {string} name - "basemap" | "topomap"
      */
@@ -1025,7 +1097,6 @@ export default class Squad3DSimulation {
         localStorage.setItem(STORAGE_KEYS.fpsVisible, visible ? "1" : "0");
         this.fpsCounter.hidden = !visible;
     }
-
 
 
     /**
@@ -1227,15 +1298,17 @@ export default class Squad3DSimulation {
      * over the top-level SDK_data one (calibrated against heightmap.png, the source
      * squadHeightmaps.js's 2D height-difference calc still uses) whenever a map has both;
      * falls back to the top-level values for a map without its own landscape3D entry yet
-     * (see src/data/maps.js).
+     * (see src/data/maps.js), or whenever the terrain itself fell back to heightmap.png
+     * (see _fetchHeightmap()) - landscape3D's values would be wrong for that file.
      * @param {object} activeMap
      * @returns {{heightScale: number, zOffsetM: ?number}}
      */
     _landscapeCalibration(activeMap) {
         const sdk = activeMap.SDK_data;
+        const landscape3D = this._usingLandscapePng ? sdk?.landscape3D : null;
         return {
-            heightScale: sdk?.landscape3D?.landscapeScale?.[2] ?? sdk?.landscapeScale?.[2] ?? 1,
-            zOffsetM: sdk?.landscape3D?.zOffset ?? sdk?.zOffset,
+            heightScale: landscape3D?.landscapeScale?.[2] ?? sdk?.landscapeScale?.[2] ?? 1,
+            zOffsetM: landscape3D?.zOffset ?? sdk?.zOffset,
         };
     }
 
@@ -1467,6 +1540,9 @@ export default class Squad3DSimulation {
      * Loads (and caches) the glTF template model for one deployable type, from
      * DEPLOYABLE_MODELS. Only fetched once per type for the simulation's lifetime -
      * every placed instance is a clone() sharing this template's geometry/material.
+     * GROUND_ALIGNED_MODELS come back wrapped in a Group, with the model itself shifted up
+     * inside it - _drawDeployables() overwrites each clone's own position, so the offset
+     * has to live one level down to survive that.
      * @param {string} type - a DEPLOYABLE_MODELS key, e.g. "Ammo Crate"
      * @returns {Promise<THREE.Object3D>}
      */
@@ -1474,7 +1550,14 @@ export default class Squad3DSimulation {
         if (!this._deployableModels[type]) {
             this._deployableModels[type] = new GLTFLoader()
                 .loadAsync(DEPLOYABLE_MODELS[type])
-                .then((gltf) => gltf.scene);
+                .then((gltf) => {
+                    if (!GROUND_ALIGNED_MODELS.has(type)) return gltf.scene;
+                    const bottomY = new THREE.Box3().setFromObject(gltf.scene).min.y;
+                    gltf.scene.position.y -= bottomY;
+                    const wrapper = new THREE.Group();
+                    wrapper.add(gltf.scene);
+                    return wrapper;
+                });
         }
         return this._deployableModels[type];
     }
@@ -1513,7 +1596,7 @@ export default class Squad3DSimulation {
         for (const [type, assets] of Object.entries(byType)) {
             const template = await this._loadDeployableModel(type);
 
-            // The layer may have changed (or the dialog closed) while the model was
+            // The layer may have changed (or the view closed) while the model was
             // loading - drop this batch rather than place stale instances on top of
             // whatever _drawDeployables() ran for the new layer in the meantime.
             if (this._lastLayer !== layer) return;
@@ -1551,8 +1634,8 @@ export default class Squad3DSimulation {
      * activeTargetsMarkers), dropped to ground level since a Leaflet-placed marker has
      * no location_z. Each target also gets a floating elevation/bearing text label,
      * drawn the same way as a flag name (see _createLabelSprite()) - see
-     * _targetLabelText(). Snapshot taken once per open(), like every other overlay here -
-     * doesn't live-update while the dialog stays open.
+     * _targetLabelText(). Snapshot taken once per open()/refresh(), like every other overlay here -
+     * doesn't live-update when markers move while the view stays open.
      * @param {?object} minimap - SquadMinimap instance
      * @param {object} activeMap
      */
@@ -1574,7 +1657,7 @@ export default class Squad3DSimulation {
 
             const texture = await this._loadMarkerIconTexture(marker.getIcon().options.iconUrl);
 
-            // The map (or the dialog) may have changed while the texture was loading.
+            // The map (or the view) may have changed while the texture was loading.
             if (this._lastActiveMap !== activeMap) return;
 
             const sprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: texture, transparent: true, depthWrite: false }));

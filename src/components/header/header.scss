@@ -17,6 +17,10 @@ header {
     &.ui {
         position: fixed;
     }
+    // Stay on top of the 3D view (#threeDView, z-index 3) so the map/layer/etc selectors remain usable
+    .threeD-open & {
+        z-index: 4;
+    }
     .weaponSelector {
         z-index: 4;
         padding-top: 1em;

@@ -732,6 +732,7 @@ export const MAPS = [
         singleLayer: true,
         mod: "GalacticContention",
         radiusExclusion: FOBEXCLUSIONS.medium,
+        no3D: true,
         SDK_data: {
             minimap: {
                 corner0: [-620, -620],

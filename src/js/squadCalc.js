@@ -135,7 +135,7 @@ export default class SquadCalc {
      */
     _openInitial3D() {
         if (!this.urlIntent.threeD || this.minimap.activeMap.no3D) return;
-        this._dialogs.threeD.showModal();
+        this.show3D();
         this.simulation3D.open(this.minimap.activeMap, this.minimap.layer, this.minimap, null, this.urlIntent.threeDPosition);
         // The share token's only useful once, to spawn the camera above - drop it back
         // down to a bare "3d" flag so it doesn't linger in the address bar afterwards.
@@ -150,9 +150,7 @@ export default class SquadCalc {
      * Squad3DSimulation.open()/_drawProjectileArcs()
      */
     open3D(arcRequest = null) {
-        threeDTooltips.hide();
-        threeDTooltips.disable();
-        this._dialogs.threeD.showModal();
+        this.show3D();
         this.simulation3D.open(this.minimap.activeMap, this.minimap.layer, this.minimap, arcRequest);
         this.updateUrlParams({ "3d": "" });
     }
@@ -164,11 +162,57 @@ export default class SquadCalc {
      */
     open3DAt(latlng) {
         if (this.minimap.activeMap.no3D) return;
-        threeDTooltips.hide();
-        threeDTooltips.disable();
-        this._dialogs.threeD.showModal();
+        this.show3D();
         this.simulation3D.open(this.minimap.activeMap, this.minimap.layer, this.minimap, null, null, latlng);
         this.updateUrlParams({ "3d": "" });
+    }
+
+    /**
+     * Whether the 3D view (#threeDView) is currently shown.
+     * @returns {boolean}
+     */
+    get is3DOpen() {
+        return !this.threeDView.hidden;
+    }
+
+    /**
+     * Shows the 3D view container. It's a plain fixed <div>, not a modal dialog, so the
+     * header's map/layer selectors stay usable on top of it - see header.scss's
+     * .threeD-open rule. Callers still start the simulation themselves (open()).
+     */
+    show3D() {
+        threeDTooltips.hide();
+        threeDTooltips.disable();
+        this.threeDView.hidden = false;
+        document.body.classList.add("threeD-open");
+    }
+
+    /**
+     * Hides the 3D view and stops the simulation - Quit button, Esc, or switching
+     * to a map without 3D data.
+     */
+    hide3D() {
+        if (!this.is3DOpen) return;
+        this.threeDView.hidden = true;
+        document.body.classList.remove("threeD-open");
+        this.simulation3D.close();
+        setTimeout(() => threeDTooltips.enable(), 50);
+        this.updateUrlParams({ "3d": null });
+    }
+
+    /**
+     * Keeps an open 3D view in sync with the header's map/layer selectors - see
+     * Squad3DSimulation.refresh().
+     * @param {?SquadLayer} [layer] - defaults to the current layer; null right after a map
+     * change, before the new map's layer has loaded (minimap.layer is still the old one)
+     */
+    refresh3D(layer = this.minimap.layer) {
+        if (!this.is3DOpen) return;
+        if (this.minimap.activeMap.no3D) {
+            this.hide3D();
+            return;
+        }
+        this.simulation3D.refresh(this.minimap.activeMap, layer, this.minimap);
     }
 
     initServerMode(serverId, sessionId = null) {
@@ -359,6 +403,10 @@ export default class SquadCalc {
             // Refresh layer selector
             this.loadLayers();
 
+            // Start loading the new map's terrain in an open 3D view right away - its
+            // layer follows on "layer:loaded"
+            this.refresh3D(null);
+
             if (broadcast && this.session.ws && this.session.ws.readyState === WebSocket.OPEN) {
                 this.session.ws.send(
                     JSON.stringify({
@@ -385,6 +433,7 @@ export default class SquadCalc {
                 if (this.minimap.layer) this.minimap.layer.clear();
                 $(".btn-layer, .btn-layer-info").hide();
                 $("#factionsTab, #factionsButton").hide();
+                this.refresh3D(null);
 
                 // Empty Factions&Units selectors
                 this.FACTION1_SELECTOR.empty();
@@ -456,6 +505,7 @@ export default class SquadCalc {
 
                     this.layerLoaded = true;
                     $(document).trigger("layer:loaded");
+                    this.refresh3D();
                     this.minimap.spin(false);
                 });
         });
@@ -897,13 +947,12 @@ export default class SquadCalc {
             shortcutCapture: document.querySelector("#shortcutCaptureDialog"),
             changelog: document.querySelector("#changelogDialog"),
             layerInfo: document.querySelector("#layerInformation"),
-            threeD:  document.querySelector("#threeDView"),
         };
         this._changelogCache = null;
-        const { calc: calcInformation, weapon: weaponInformation, help: helpDialog, factions: factionsDialog, servers: serversInformation, layerInfo: layerInfoDialog, threeD: threeDDialog } = this._dialogs;
+        const { calc: calcInformation, weapon: weaponInformation, help: helpDialog, factions: factionsDialog, servers: serversInformation, layerInfo: layerInfoDialog } = this._dialogs;
 
+        this.threeDView = document.querySelector("#threeDView");
         this.simulation3D = new Squad3DSimulation(document.querySelector(".threeDViewport"));
-        threeDDialog.addEventListener("close", () => this.simulation3D.close());
 
         $(".btn-delete, .btn-undo, .btn-layer, .btn-layer-info, .returnBtn, #mapLayerMenu").hide();
 
@@ -943,7 +992,6 @@ export default class SquadCalc {
         this.closeDialogOnClickOutside(factionsDialog);
         this.closeDialogOnClickOutside(this._dialogs.changelog);
         this.closeDialogOnClickOutside(layerInfoDialog);
-        this.closeDialogOnClickOutside(threeDDialog);
 
         const overlay = document.getElementById("dropOverlay");
         let dragCounter = 0;
@@ -1007,9 +1055,15 @@ export default class SquadCalc {
             setTimeout(() => layerInfoTooltips.enable(), 50);
         });
 
-        threeDDialog.addEventListener("close", () => {
-            setTimeout(() => threeDTooltips.enable(), 50);
-            this.updateUrlParams({ "3d": null });
+        // Esc closes the 3D view (like the modal dialog it used to be) once the pointer is
+        // released - while flying, the browser spends that Esc on exiting pointer lock
+        // and never delivers it to the page.
+        document.addEventListener("keydown", (event) => {
+            if (event.key !== "Escape" || !this.is3DOpen || this.simulation3D.controls?.isLocked) return;
+            // Esc from a header select2 (or any other field) just closes/leaves that field -
+            // select2 has already closed its dropdown by the time this bubbles up here.
+            if ($(event.target).closest(".select2-container, input, textarea, select").length) return;
+            this.hide3D();
         });
           
         window.addEventListener("drop", e => {
@@ -1095,7 +1149,7 @@ export default class SquadCalc {
             if ($(".btn-3d").hasClass("locked")) return;
             this.open3D();
         });
-        $(".threeDQuitButton").on("click", () => threeDDialog.close());
+        $(".threeDQuitButton").on("click", () => this.hide3D());
         $(".threeDShareButton").on("click", () => {
             // Builds the URL for the clipboard only, same as buildShareUrl() - the
             // sharer's own address bar isn't meant to change, just what gets copied.
@@ -1497,8 +1551,8 @@ export default class SquadCalc {
 
     handleKeydown(event) {
 
-        const { calc, weapon, help, factions, servers, changelog, threeD } = this._dialogs;
-        if (weapon.open || calc.open || help.open || factions.open || servers.open || changelog.open || threeD.open) return;
+        const { calc, weapon, help, factions, servers, changelog } = this._dialogs;
+        if (weapon.open || calc.open || help.open || factions.open || servers.open || changelog.open || this.is3DOpen) return;
 
         if ($(event.target).is("input, textarea, select")) return;
 
