@@ -498,6 +498,11 @@ export const MAPS = [
                 corner1: [1520,1520],
             },
             landscapeScale: [1, 1, 0.084748958],
+            zOffset: -15.7523,
+            landscape3D: {
+                landscapeScale: [1, 1, 0.053469267],
+                zOffset: -15.7523,
+            },
         }
     },
     // GC
