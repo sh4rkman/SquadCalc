@@ -764,15 +764,18 @@ export default class SquadLayer {
         const BUGGED_LAYERS = [
             "GC_BespinPlatforms_AAS_V2",
             "GC_BespinPlatforms_SKM_V1",
-            "SD_AlBasrah_Legacy_Invasion_v1",
-            "SD_AlBasrah_Legacy_Invasion_v2",
-            "SD_AlBasrah_Legacy_Invasion_v3",
-            "SD_AlBasrah_Legacy_RAAS_v1",
             "GC_Ryloth_AAS_V1",
             "GC_Ryloth_AAS_V2",
             "GC_Ryloth_AAS_V3",
             "GC_Ryloth_INV_V1",
             "GC_Ryloth_INV_V2",
+            "GC_Yavin4_INV_V1",
+            "GC_Yavin4_INV_V2",
+            "GC_Yavin4_INV_V3",
+            "SD_AlBasrah_Legacy_Invasion_v1",
+            "SD_AlBasrah_Legacy_Invasion_v2",
+            "SD_AlBasrah_Legacy_Invasion_v3",
+            "SD_AlBasrah_Legacy_RAAS_v1",
         ];
 
         // There's no border but the map bounds
