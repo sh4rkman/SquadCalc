@@ -29,6 +29,7 @@
     "threeDUpHint": "up",
     "threeDDownHint": "down",
     "threeDReleaseHint": "release",
+    "threeDBackToMenu": "Back to menu",
     "threeDSpeedHint": "camera speed",
     "threeDSpeed": "Camera Speed",
     "threeDLoading": "Loading 3D World…",

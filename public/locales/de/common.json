@@ -25,6 +25,7 @@
     "threeDUpHint": "hoch",
     "threeDDownHint": "runter",
     "threeDReleaseHint": "freigeben",
+    "threeDBackToMenu": "Zurück zum Menü",
     "threeDSpeedHint": "Kamerageschwindigkeit",
     "threeDSpeed": "Kamerageschwindigkeit",
     "threeDLoading": "3D-Welt wird geladen…",

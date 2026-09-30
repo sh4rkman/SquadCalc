@@ -29,6 +29,7 @@
     "threeDUpHint": "subir",
     "threeDDownHint": "descer",
     "threeDReleaseHint": "soltar",
+    "threeDBackToMenu": "Voltar ao menu",
     "threeDSpeedHint": "velocidade da câmera",
     "threeDSpeed": "Velocidade da Câmera",
     "threeDLoading": "Carregando mundo 3D…",
