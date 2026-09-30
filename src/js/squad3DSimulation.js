@@ -547,11 +547,9 @@ export default class Squad3DSimulation {
             // outright. Fall back to drag-look for the rest of the session: WASD still
             // flies, but looking around means holding left click and dragging, with the
             // cursor left visible. The Go click that triggered this starts flying right away.
-            document.addEventListener("pointerlockerror", () => {
-                if (!this._isOpen) return;
-                this._dragLookMode = true;
-                this._setDragFlying(true);
-            });
+            // Newer browsers also reject requestPointerLock()'s promise - see _startFlying();
+            // this event covers older ones where it returns nothing.
+            document.addEventListener("pointerlockerror", () => this._enableDragLook());
             this._setupDragLook();
         }
 
@@ -713,9 +711,40 @@ export default class Squad3DSimulation {
      * Go button / Enter: dismisses the start card and hands control to the camera.
      */
     _startFlying() {
-        if (this._orbitMode) this.overlay.hidden = true;
-        else if (this._dragLookMode) this._setDragFlying(true);
-        else this.controls.lock();
+        if (this._orbitMode) {
+            this.overlay.hidden = true;
+            return;
+        }
+        if (this._dragLookMode) {
+            this._setDragFlying(true);
+            return;
+        }
+
+        // Calls requestPointerLock() directly rather than controls.lock(), which drops its
+        // promise - a refused lock would then log an uncaught rejection. A missing or
+        // throwing requestPointerLock never fires pointerlockerror, so it's caught here too.
+        const canvas = this.renderer.domElement;
+        if (typeof canvas.requestPointerLock !== "function") {
+            this._enableDragLook();
+            return;
+        }
+        try {
+            canvas.requestPointerLock({ unadjustedMovement: false })?.catch?.(() => this._enableDragLook());
+        } catch {
+            this._enableDragLook();
+        }
+    }
+
+
+    /**
+     * Switches to the drag-look fallback for the rest of the session and starts flying -
+     * called on any pointer-lock failure (see _startFlying()). Safe to call twice, as a
+     * refused lock both rejects the promise and fires pointerlockerror.
+     */
+    _enableDragLook() {
+        if (!this._isOpen) return;
+        this._dragLookMode = true;
+        this._setDragFlying(true);
     }
 
 
@@ -1357,13 +1386,14 @@ export default class Squad3DSimulation {
     /**
      * The name to show on an objective's floating label. Mains carry the generic raw
      * name "Main" (see squadLayer.js's initPredictiveLayer()/createMainObjective()) with
-     * the team told apart only by pointPosition (1 or 2, same convention as any other
-     * objective's position in the flag order) - everything else already has a proper name.
+     * the team told apart by objectName, same as squadObjective.js - not pointPosition,
+     * which is the main's slot in the flag order (Team 2's is flag count + 1, e.g. 7).
+     * Everything else already has a proper name.
      * @param {object} objective
      * @returns {string}
      */
     _objectiveLabelText(objective) {
-        if (objective.name === "Main") return `Team ${objective.pointPosition} Main`;
+        if (objective.name === "Main") return `Team ${objective.objectName === "00-Team1 Main" ? 1 : 2} Main`;
         return objective.name ?? objective.objectDisplayName ?? "";
     }
 
