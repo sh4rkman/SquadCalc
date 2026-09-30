@@ -455,6 +455,35 @@ dialog, #threeDView {
             pointer-events: none;
             z-index: 1;
             @include variables.light-text-outline;
+
+            .threeDFpsUnit {
+                margin-left: 0.15em;
+                font-size: 0.7em;
+            }
+        }
+        // Drag-look fallback only (see _setDragFlying()) - with no pointer lock, the
+        // browser may spend Esc on something else (the Steam overlay closes on it).
+        .threeDMenuButton {
+            position: absolute;
+            top: 0.8em;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1;
+            padding: 0.6em 1.6em;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.55);
+            color: #fff;
+            font-size: 1.15em;
+            font-weight: 600;
+            letter-spacing: 0.03em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: background-color 0.15s ease;
+
+            @media (hover: hover) {
+                &:hover { background: rgba(0, 0, 0, 0.75); }
+            }
         }
         .threeDCrosshair {
             position: absolute;

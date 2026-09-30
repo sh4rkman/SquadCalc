@@ -61,8 +61,8 @@ export const MAPS = [
             landscapeScale: [1.003937, 1.003937, 0.358381824],
             zOffset: -31.0188,
             landscape3D: {
-                landscapeScale: [1.003937, 1.003937, 0.417170742],
-                zOffset: -31.0188,
+                landscapeScale: [1.003937, 1.003937, 0.358284579],
+                zOffset: -0.9868,
             },
         }
     },

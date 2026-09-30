@@ -75,6 +75,15 @@ const MIN_FRAME_INTERVAL = 1 / MAX_FPS;
 // left-click raycast in _setupFlyControls().
 const _screenCenter = new THREE.Vector2(0, 0);
 
+// Cursor position in NDC for the drag-look fallback's click raycast, and the Euler
+// reused by its mouselook - see _setupFlyControls().
+const _cursorNdc = new THREE.Vector2();
+const _lookEuler = new THREE.Euler(0, 0, 0, "YXZ");
+
+// Pixels the mouse may move between press and release for it to still count as a
+// click (flag select) rather than a drag-look, in the drag-look fallback.
+const DRAG_CLICK_THRESHOLD = 4;
+
 // Packs a camera position + look-at target (6 world-meter coordinates) into a compact,
 // URL-safe opaque token instead of a readable "x;y;z;..." list - see
 // Squad3DSimulation.getShareToken()/threeDShareButton (squadCalc.js). Each coordinate
@@ -277,6 +286,14 @@ export default class Squad3DSimulation {
         this.move = { forward: false, back: false, left: false, right: false, up: false, down: false };
         this.velocity = new THREE.Vector3();
 
+        // Drag-look fallback for desktop browsers that refuse pointer lock (e.g. the Steam
+        // overlay browser) - see _setupFlyControls(). _dragLookMode is set for good on the
+        // first pointerlockerror; _dragFlying stands in for controls.isLocked while in it.
+        this._dragLookMode = false;
+        this._dragFlying = false;
+        this._dragging = false; // left button held on the canvas
+        this._dragDistance = 0; // px moved since the button went down - tells a click from a drag
+
         // % of MAX_MOVE_SPEED, adjusted with the scroll wheel while locked.
         this.moveSpeedPercent = 50;
         this._speedHUDTimeout = null;
@@ -421,6 +438,8 @@ export default class Squad3DSimulation {
         window.removeEventListener("beforeunload", this._onBeforeUnload);
         this._stopLoop();
         if (!this._orbitMode) this.controls.unlock();
+        this._setDragFlying(false);
+        this._dragging = false;
         for (const key of Object.keys(this.move)) this.move[key] = false;
         this.velocity.set(0, 0, 0);
         clearTimeout(this._speedHUDTimeout);
@@ -507,6 +526,7 @@ export default class Squad3DSimulation {
         this.overlay = this.container.querySelector(".threeDOverlay");
         this.crosshair = this.container.querySelector(".threeDCrosshair");
         this.fpsCounter = this.container.querySelector(".threeDFpsCounter");
+        this.fpsValue = this.fpsCounter.querySelector(".threeDFpsValue");
 
         // Touch has no equivalent of pointer-lock-driven mouselook, so OrbitControls
         // drives the camera directly off touch drag/pinch instead - no lock step, and none
@@ -522,13 +542,35 @@ export default class Squad3DSimulation {
             // instead of relying on it.
             this.controls.addEventListener("lock", () => { this.overlay.hidden = true; this._updateCrosshairVisibility(true); });
             this.controls.addEventListener("unlock", () => { this.overlay.hidden = false; this._updateCrosshairVisibility(false); });
+
+            // Some desktop browsers (e.g. the Steam overlay browser) refuse pointer lock
+            // outright. Fall back to drag-look for the rest of the session: WASD still
+            // flies, but looking around means holding left click and dragging, with the
+            // cursor left visible. The Go click that triggered this starts flying right away.
+            document.addEventListener("pointerlockerror", () => {
+                if (!this._isOpen) return;
+                this._dragLookMode = true;
+                this._setDragFlying(true);
+            });
+            this._setupDragLook();
         }
 
         // Left-click while flying raycasts from the crosshair (screen center) straight
-        // down the camera's view direction.
-        this.renderer.domElement.addEventListener("click", () => {
-            if (!this.controls.isLocked) return;
-            this._raycaster.setFromCamera(_screenCenter, this.camera);
+        // down the camera's view direction - or from the cursor in drag-look mode, where
+        // the cursor stays visible and the crosshair is hidden.
+        this.renderer.domElement.addEventListener("click", (event) => {
+            if (!this.isFlying()) return;
+            if (this._dragLookMode) {
+                if (this._dragDistance > DRAG_CLICK_THRESHOLD) return; // end of a drag-look, not a click
+                const rect = this.renderer.domElement.getBoundingClientRect();
+                _cursorNdc.set(
+                    ((event.clientX - rect.left) / rect.width) * 2 - 1,
+                    -((event.clientY - rect.top) / rect.height) * 2 + 1,
+                );
+                this._raycaster.setFromCamera(_cursorNdc, this.camera);
+            } else {
+                this._raycaster.setFromCamera(_screenCenter, this.camera);
+            }
 
             // Tier 1: capzone-only hit test. Capzones are semi-transparent/always-visible
             // (unlike 2D's hover-only reveal) and have no occlusion concept in 2D either,
@@ -554,10 +596,10 @@ export default class Squad3DSimulation {
         // OrbitControls needs no lock step - it's already live off touch input, so Go just
         // dismisses the start card. Re-opening it isn't wired up yet on touch (no Esc);
         // quitting and reopening the 3D view is the way back to it for now.
-        goButton.addEventListener("click", () => {
-            if (this._orbitMode) this.overlay.hidden = true;
-            else this.controls.lock();
-        });
+        goButton.addEventListener("click", () => this._startFlying());
+
+        this.menuButton = this.container.querySelector(".threeDMenuButton");
+        this.menuButton.addEventListener("click", () => this._setDragFlying(false));
 
         this.speedHUD = this.container.querySelector(".threeDSpeedHUD");
         this.speedHUDFill = this.speedHUD.querySelector(".threeDSpeedHUDFill");
@@ -618,8 +660,15 @@ export default class Squad3DSimulation {
         window.addEventListener("keydown", (event) => {
             const action = KEY_BINDINGS[event.code];
             if (action) {
-                if (this.controls.isLocked) event.preventDefault();
+                if (this.isFlying()) event.preventDefault();
                 this.move[action] = true;
+                return;
+            }
+
+            // Drag-look has no browser-handled lock to release, so Esc is handled here
+            // instead - squadCalc's own Esc-closes-3D listener skips it while isFlying().
+            if (event.code === "Escape" && this._dragFlying) {
+                this._setDragFlying(false);
                 return;
             }
 
@@ -628,10 +677,10 @@ export default class Squad3DSimulation {
             // for the app's whole lifetime, not just while it's shown. Not applicable
             // in orbit mode - controls.lock() doesn't exist on OrbitControls. Also skipped
             // while typing in a header select2 search box, which now sits on top of the view.
-            if (!this._orbitMode && !this.controls.isLocked && (event.code === "Enter" || event.code === "NumpadEnter")
+            if (!this._orbitMode && !this.isFlying() && (event.code === "Enter" || event.code === "NumpadEnter")
                 && this._isOpen && !event.target.closest?.("input, textarea, select")) {
                 event.preventDefault();
-                this.controls.lock();
+                this._startFlying();
             }
         });
         window.addEventListener("keyup", (event) => {
@@ -641,12 +690,79 @@ export default class Squad3DSimulation {
 
         // Mouse wheel adjusts move speed while flying, instead of zooming.
         window.addEventListener("wheel", (event) => {
-            if (!this.controls.isLocked) return;
+            if (!this.isFlying()) return;
             event.preventDefault();
             if(this.moveSpeedPercent === 1) this.moveSpeedPercent = 0; // since min is 1 we avoid speed being 6/11/16...
             this.moveSpeedPercent = THREE.MathUtils.clamp(this.moveSpeedPercent - event.deltaY * 0.05, 1, 100);
             this._showSpeedHUD();
         }, { passive: false });
+    }
+
+
+    /**
+     * Whether the fly camera is live (start card dismissed) - pointer-locked, or flying
+     * in the drag-look fallback. Always false in orbit mode (OrbitControls has no isLocked).
+     * @returns {boolean}
+     */
+    isFlying() {
+        return Boolean(this.controls?.isLocked) || this._dragFlying;
+    }
+
+
+    /**
+     * Go button / Enter: dismisses the start card and hands control to the camera.
+     */
+    _startFlying() {
+        if (this._orbitMode) this.overlay.hidden = true;
+        else if (this._dragLookMode) this._setDragFlying(true);
+        else this.controls.lock();
+    }
+
+
+    /**
+     * Drag-look fallback's equivalent of PointerLockControls' lock/unlock.
+     * @param {boolean} active
+     */
+    _setDragFlying(active) {
+        if (!this._dragLookMode) return;
+        this._dragFlying = active;
+        this.overlay.hidden = active;
+        this.menuButton.hidden = !active;
+        this._updateCrosshairVisibility(active);
+    }
+
+
+    /**
+     * Drag-look fallback mouselook: holding left click on the canvas and dragging turns
+     * the camera, the same way PointerLockControls does off pointer-locked mouse deltas
+     * (same pointerSpeed/pitch limits). Chromium still reports movementX/Y without a
+     * lock, the cursor just stays visible and can hit the screen edge.
+     */
+    _setupDragLook() {
+        const canvas = this.renderer.domElement;
+
+        canvas.addEventListener("pointerdown", (event) => {
+            if (!this._dragFlying || event.button !== 0) return;
+            this._dragging = true;
+            this._dragDistance = 0;
+            canvas.setPointerCapture(event.pointerId); // keep receiving moves if the cursor leaves the canvas
+        });
+
+        canvas.addEventListener("pointermove", (event) => {
+            if (!this._dragging) return;
+            this._dragDistance += Math.abs(event.movementX) + Math.abs(event.movementY);
+
+            const { pointerSpeed, minPolarAngle, maxPolarAngle } = this.controls;
+            _lookEuler.setFromQuaternion(this.camera.quaternion);
+            _lookEuler.y -= event.movementX * 0.002 * pointerSpeed;
+            _lookEuler.x -= event.movementY * 0.002 * pointerSpeed;
+            _lookEuler.x = THREE.MathUtils.clamp(_lookEuler.x, Math.PI / 2 - maxPolarAngle, Math.PI / 2 - minPolarAngle);
+            this.camera.quaternion.setFromEuler(_lookEuler);
+        });
+
+        const endDrag = () => { this._dragging = false; };
+        canvas.addEventListener("pointerup", endDrag);
+        canvas.addEventListener("pointercancel", endDrag);
     }
 
 
@@ -665,7 +781,7 @@ export default class Squad3DSimulation {
 
 
     _updateFlyMovement(delta) {
-        if (!this.controls.isLocked) return;
+        if (!this.isFlying()) return;
 
         const maxSpeed = (this.moveSpeedPercent / 100) * MAX_MOVE_SPEED;
 
@@ -1078,13 +1194,14 @@ export default class Squad3DSimulation {
 
     /**
      * Applies crosshairVisible together with the pointer-lock state - the crosshair only
-     * makes sense while actually flying, not over the start menu.
-     * @param {boolean} [locked] - defaults to this.controls.isLocked; the "lock"/"unlock"
+     * makes sense while actually flying, not over the start menu. Always hidden in the
+     * drag-look fallback, where clicks aim with the visible cursor instead.
+     * @param {boolean} [locked] - defaults to isFlying(); the "lock"/"unlock"
      * listeners pass it explicitly instead, since PointerLockControls dispatches those
      * events before updating isLocked itself.
      */
-    _updateCrosshairVisibility(locked = this.controls.isLocked) {
-        this.crosshair.hidden = !(this.crosshairVisible && locked);
+    _updateCrosshairVisibility(locked = this.isFlying()) {
+        this.crosshair.hidden = !(this.crosshairVisible && locked && !this._dragLookMode);
     }
 
 
@@ -2099,7 +2216,7 @@ export default class Squad3DSimulation {
         this._fpsAccumFrames++;
         if (this._fpsAccumTime < FPS_UPDATE_INTERVAL) return;
 
-        this.fpsCounter.textContent = Math.round(this._fpsAccumFrames / this._fpsAccumTime);
+        this.fpsValue.textContent = Math.round(this._fpsAccumFrames / this._fpsAccumTime);
         this._fpsAccumTime = 0;
         this._fpsAccumFrames = 0;
     }
