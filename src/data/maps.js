@@ -16,8 +16,8 @@ export const MAPS = [
             landscapeScale: [1, 1, 0.087813952],
             zOffset: 2.0,
             landscape3D: {
-                landscapeScale: [1, 1, 0.071966283],
-                zOffset: -12.7577,
+                landscapeScale: [1, 1, 0.043029724],
+                zOffset: 2,
             },
         }
     },
@@ -95,8 +95,8 @@ export const MAPS = [
             landscapeScale: [1, 1, 0.14797459],
             zOffset: -48.43,
             landscape3D: {
-                landscapeScale: [1, 1, 0.077971825],
-                zOffset: -54.875,
+                landscapeScale: [1, 1, 0.065334541],
+                zOffset: -48.43,
             },
         }
     },
@@ -129,8 +129,8 @@ export const MAPS = [
             landscapeScale: [1, 1, 0.274412178],
             zOffset: -245.0,
             landscape3D: {
-                landscapeScale: [1, 1, 0.233836963],
-                zOffset: -248.43,
+                landscapeScale: [1, 1, 0.227111487],
+                zOffset: -245,
             },
         }
     },
@@ -163,8 +163,8 @@ export const MAPS = [
             landscapeScale: [1, 1, 0.229927482],
             zOffset: -21.1422,
             landscape3D: {
-                landscapeScale: [1, 1, 0.166038648],
-                zOffset: -21.1422,
+                landscapeScale: [1, 1, 0.124975537],
+                zOffset: -0.2,
             },
         }
     },
@@ -231,8 +231,8 @@ export const MAPS = [
             landscapeScale: [0.5, 0.5, 0.174065564],
             zOffset: -255.0,
             landscape3D: {
-                landscapeScale: [0.5, 0.5, 0.174065564],
-                zOffset: -255.0,
+                landscapeScale: [0.5, 0.5, 0.162908726],
+                zOffset: -249.31,
             },
         }
     },
@@ -282,8 +282,8 @@ export const MAPS = [
             landscapeScale: [1, 1, 0.403959641],
             zOffset: 38.0,
             landscape3D: {
-                landscapeScale: [1, 1, 0.424812134],
-                zOffset: 27.3652,
+                landscapeScale: [1, 1, 0.403959641],
+                zOffset: 38,
             },
         }
     },
@@ -316,8 +316,8 @@ export const MAPS = [
             landscapeScale: [1, 1, 0.112586966],
             zOffset: -8.7821,
             landscape3D: {
-                landscapeScale: [1, 1, 0.063912573],
-                zOffset: -8.7821,
+                landscapeScale: [1, 1, 0.060502473],
+                zOffset: -7.043,
             },
         }
     },
@@ -364,8 +364,8 @@ export const MAPS = [
             landscapeScale: [1, 1, 0.317704444],
             zOffset: -79.18,
             landscape3D: {
-                landscapeScale: [1, 1, 0.281076588],
-                zOffset: -79.18,
+                landscapeScale: [1, 1, 0.118174655],
+                zOffset: 3.9,
             },
         }
     },
@@ -381,8 +381,8 @@ export const MAPS = [
             landscapeScale: [1, 1, 0.233953671],
             zOffset: 0.0,
             landscape3D: {
-                landscapeScale: [1, 1, 0.19664528],
-                zOffset: -43.1094,
+                landscapeScale: [1, 1, 0.11211708],
+                zOffset: 0,
             },
         }
     },
@@ -403,8 +403,8 @@ export const MAPS = [
             landscapeScale: [1.2, 1.2, 2.086916336],
             zOffset: -360.7172,
             landscape3D: {
-                landscapeScale: [1.2, 1.2, 2.086916336],
-                zOffset: -360.7172,
+                landscapeScale: [1.2, 1.2, 1.955089913],
+                zOffset: -293.4857,
             },
         }
     },
@@ -437,8 +437,8 @@ export const MAPS = [
             landscapeScale: [1, 1, 0.152035884],
             zOffset: -83.457,
             landscape3D: {
-                landscapeScale: [1, 1, 0.152035884],
-                zOffset: -83.457,
+                landscapeScale: [1, 1, 0.148738475],
+                zOffset: -81.7753,
             },
         }
     },
@@ -500,8 +500,8 @@ export const MAPS = [
             landscapeScale: [1, 1, 0.084748958],
             zOffset: -15.7523,
             landscape3D: {
-                landscapeScale: [1, 1, 0.053469267],
-                zOffset: -15.7523,
+                landscapeScale: [1, 1, 0.043778399],
+                zOffset: -10.81,
             },
         }
     },
