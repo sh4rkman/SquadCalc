@@ -1,40 +1,43 @@
-# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge"> **46.0.0** *(2026-08-XX)*
+# <img src="https://img.shields.io/badge/-major%20release-b22222?style=for-the-badge"> **46.0.0** *(2026-10-02)*
 
-SquadCalc now use a new layer extractor tool made by **yobaNGE** : **[SquadPipeline](https://github.com/yobaNGE/squad-map-data-CUE4Parse)**. This also means squadcalc has now access to layers made by modders.
+SquadCalc now uses a new layer extractor tool made by **yobaNGE**: **[SquadPipeline](https://github.com/yobaNGE/squad-map-data-CUE4Parse)**.
 
 </br><img src="https://img.shields.io/badge/-new%20features-green">
 
-- **Mods !**  
-Added Maps/Layers/Factions/servers support for 6 new mods. You can enable them from `Settings > Mods` and browse modded layers and factions. It also means you can now sync with modded servers running these mods : 
-  - Galactic Contention (170+ Layers, 24 maps)
+- **Mods!**   
+Added maps, layers, factions and server support for 6 new mods. You can enable them from `Settings > Mods` to browse modded layers and factions. You can also sync with modded servers running these mods:
+  - Galactic Contention (170+ layers, 24 maps)
   - Steel Division (110+ layers)
   - SuperMod (190+ layers, 2 maps: `Chornivsk` and `Hrodna Border`)
-  - SquadAdminTools (2 seeding layers)
+  - Squad Admin Tools (2 seeding layers)
   - Warzone (170+ layers)
-  - InfiniteWarefare (1 weapon)
+  - Infinite Warefare (1 weapon)
 
-- **3D Maps !**  
-You can now browse every vanilla maps in 3D ! Visualise terrain, buildings, vegetation and layers while flying in camera mode.
+- **3D Maps!**  
+You can now browse every vanilla map in 3D! Visualise terrain, buildings, vegetation and layers while flying around in camera mode.
+  - Open the 3D view at any point by right-clicking the map
+  - Share your exact camera position with a link
 
 - **Lane logic rework** (Thanks Metroseksuaali!)
-  - In RAAS/Invasion, squadcalc now display the differents position possibilities when a flag can be a different position in a layer
-  - select/unselect flags even at any steps
-  - lane preview on hover
+  - In RAAS/Invasion, SquadCalc now displays every possible position for flags that can spawn in more than one spot
+  - Flags can now be selected at any step
+  - Hovering a flag now previews its possible lanes
 
-- Added two new weapons from SteelDivision : `SCUD` and `Shahed-136` (thanks yobaNGE!)
-- Added Brazillian Portuguese translations by Eduardo Nonemacher ([#511](https://github.com/sh4rkman/SquadCalc/pull/511))
+- Updated IMF flag and Goose Bay minimap to the 10.6 version
+- Added two new weapons from Steel Division: `SCUD` and `Shahed-136` (thanks yobaNGE!)
+- Added a new layer information panel that displays layer details and the admin commands to set the layer (thanks lillg4!)
+- Added Brazilian Portuguese translations by Eduardo Nonemacher ([#511](https://github.com/sh4rkman/SquadCalc/pull/511))
 - Added Turkish translations by Kauda
-- LAYER INFO BUTTON
 
-</br><img src="https://img.shields.io/badge/-%20improv%20-orange"> 
-- Multiparts capzones on 2D map now shows as a single shape instead of multiple shape stacking (Thanks Metroseksuaali!)
-- Languages are now sorted by alpha
+</br><img src="https://img.shields.io/badge/-%20improv%20-orange">  
+- Multi-part capture zones on the 2D map now show as a single outline instead of stacked shapes (Thanks Metroseksuaali!)
+- Languages are now sorted alphabetically
 - You can now sort servers by player count
 
 </br><img src="https://img.shields.io/badge/-bug%20fixes-b22">  
-- Fixed Squadcalc now drawing some rare protection zones
-- Fixed some buildings not registered into BlackCoast heightmap (Thanks yobaNGE!)
-- Fixed invisible building appearing on Sanxian heightmap (Thanks Metroseksuaali!)
+- Fixed SquadCalc not drawing some rare protection zones
+- Fixed some buildings not registered in the Black Coast heightmap (Thanks yobaNGE!)
+- Fixed invisible buildings appearing on the Sanxian heightmap (Thanks Metroseksuaali!)
 
 </br></br><!-- CHANGELOG SPLIT MARKER -->
 
@@ -94,7 +97,7 @@ Heightmaps have been fully reworked: they are now way more precise (each square 
 - Menu is now fully customisable from settings : show/hide the buttons you want in your toolbar
 - Added a new "Share" button that allows sharing a long URL holding the selected factions and units (thanks Hans-Vader, [#481](https://github.com/sh4rkman/SquadCalc/issues/481))
 - Weapon dialog now display the shell damage ([#483](https://github.com/sh4rkman/SquadCalc/issues/483))
-- Added `PZL07` Chinese 122mm self-propelled artillery from Infinite Warfare mod (Thanks ovalnik!)
+- Added `PZL07` Chinese 122mm self-propelled artillery from Infinite Warefare mod (Thanks ovalnik!)
 - Added `Type63` multiple rocket launcher from Supermod (Thanks MJH1606 !)
 - Modded weapons rework
   - Each mod now has its own category in the weapon dropdown
