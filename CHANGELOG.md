@@ -12,21 +12,18 @@ Added maps, layers, factions and server support for 6 new mods. You can enable t
   - Squad Admin Tools (2 seeding layers)
   - Warzone (170+ layers)
   - Infinite Warefare (1 weapon)
-
 - **3D Maps!**  
 You can now browse every vanilla map in 3D! Visualise terrain, buildings, vegetation and layers while flying around in camera mode.
   - Open the 3D view at any point by right-clicking the map
   - Share your exact camera position with a link
-
 - **Lane logic rework** (Thanks Metroseksuaali!)
   - In RAAS/Invasion, SquadCalc now displays every possible position for flags that can spawn in more than one spot
   - Flags can now be selected at any step
   - Hovering a flag now previews its possible lanes
-
 - Updated IMF flag and Goose Bay minimap to the 10.6 version
 - Added two new weapons from Steel Division: `SCUD` and `Shahed-136` (thanks yobaNGE!)
 - Added a new layer information panel that displays layer details and the admin commands to set the layer (thanks lillg4!)
-- Added Brazilian Portuguese translations by Eduardo Nonemacher ([#511](https://github.com/sh4rkman/SquadCalc/pull/511))
+- Added Brazilian-Portuguese translations by Eduardo Nonemacher ([#511](https://github.com/sh4rkman/SquadCalc/pull/511))
 - Added Turkish translations by Kauda
 
 </br><img src="https://img.shields.io/badge/-%20improv%20-orange">  

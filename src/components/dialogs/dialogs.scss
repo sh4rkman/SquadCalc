@@ -92,9 +92,9 @@ dialog, #threeDView {
             }
             p {
                 margin: 2em 0 0;
-                br { display: none; }
                 img { max-height: 26px; }
             }
+            > p br { display: none; }
         }
     }
     &#factionsDialog {
