@@ -162,8 +162,10 @@ export class SquadObjective {
     update(){
         if (this.isSelected){
             this.select();
-        } else {
-            if (!this.isHidden) this.unselect();
+        } else if (!this.isHidden) {
+            this.unselect();
+            // unselect() → updateMarker() drops percentageText, so put it back
+            if (App.userSettings.showNextFlagsPercentages && this.percentageBreakdown?.length) this.showPercentage();
         }
     }
 
