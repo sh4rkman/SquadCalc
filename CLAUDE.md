@@ -60,7 +60,10 @@ App.sanitize(str); // HTML escape utility (static method)
 
 ### Modded weapons
 - `type: "modded"` kept for legacy compat; filtering now uses `mod:` property
-- Current mods: `SuperMod`, `InfiniteWarefare`, `SteelDivision`, `SquadAdminTools`
+- Known mod keys live in `src/data/mods.js` (`MODS`) — the source of truth, not derived
+  from `weapons.js`/`maps.js`. A mod that only ships alternate layers for vanilla maps
+  (no weapons or maps of its own) still needs an entry there to get a settings toggle
+  and be included in `loadLayers()`'s `enabledMods` filtering.
 - Each mod gets its own `<optgroup data-mod="${modKey}">` in the weapon dropdown
 - Per-mod toggles appear in settings when "Enable modded weapons" is on (`#modFiltersRow`)
 - Mod display names: `public/locales/*/settings.json` (same key as `mod:` value)

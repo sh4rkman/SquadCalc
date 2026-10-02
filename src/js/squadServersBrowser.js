@@ -42,10 +42,10 @@ export default class SquadServersBrowser {
                         server.attributes.name,
                         server.mapName,
                         server.attributes.details.map,
-                        server.team1,
-                        server.team2,
-                        server.attributes.details.squad_teamOne,
-                        server.attributes.details.squad_teamTwo
+                        server.team1FactionId || server.team1,
+                        server.team2FactionId || server.team2,
+                        server.unit1 || server.attributes.details.squad_teamOne,
+                        server.unit2 || server.attributes.details.squad_teamTwo
                     );
                 }
             }
@@ -67,8 +67,8 @@ export default class SquadServersBrowser {
             // Initiate fuse index
             this.fuse = new Fuse(this.serversData, {
                 includeScore: true,
-                threshold: 0.4,
-                distance: 500,
+                threshold: 0.3,
+                distance: 100,
                 //minMatchCharLength: 3,
                 keys: ["attributes.name", "attributes.details.map"]
             });
@@ -266,11 +266,21 @@ export default class SquadServersBrowser {
      * Returns the flag icon HTML for a team
      * @param {string|null} team
      * @param {string} label
+     * @param {string|null} rawLayerName - server.attributes.details.map (e.g. "SU_Gorodok_Invasion_v3")
      * @returns {string}
      */
-    getTeamHTML(team, label) {
+    getTeamHTML(team, label, rawLayerName) {
         if (team) {
-            return `<img title="${label}" src="/img/flags/${team}.webp" alt="${team}" class="flag-icon">`;
+            // SuperMod/SteelDivision reuse vanilla map names (mapName alone can't tell
+            // them apart from vanilla), but their rawLayerName carries the mod prefix -
+            // same convention as GC's own exclusive maps.
+            let modFolder = "vanilla";
+            if (rawLayerName?.startsWith("SU_")) modFolder = "supermod";
+            else if (rawLayerName?.startsWith("SD_")) modFolder = "steeldivision";
+            else if (rawLayerName?.startsWith("GC_")) modFolder = "galacticcontention";
+            else if (rawLayerName?.startsWith("WZ_")) modFolder = "warzone";
+
+            return `<img title="${label}" src="/img/flags/${modFolder}/${team}.webp" alt="${team}" class="flag-icon">`;
         } else {
             return `<img title="${label}" src="/img/flags/unknown.webp" alt="Unknown" class="flag-icon">`;
         }
@@ -308,8 +318,8 @@ export default class SquadServersBrowser {
                         </td>
                         <td>${this.getPlayersHTML(server.attributes.players, server.attributes.maxPlayers)}</td>
                         <td class="teamFlags">
-                            ${this.getTeamHTML(server.team1, server.attributes.details.squad_teamOne)}
-                            ${this.getTeamHTML(server.team2, server.attributes.details.squad_teamTwo)}
+                            ${this.getTeamHTML(server.team1FactionId || server.team1, server.attributes.details.squad_teamOne, server.attributes.details.map)}
+                            ${this.getTeamHTML(server.team2FactionId || server.team2, server.attributes.details.squad_teamTwo, server.attributes.details.map)}
                         </td>
                     </tr>
                 `;
@@ -370,8 +380,8 @@ export default class SquadServersBrowser {
                             <th class="sortable" data-sort="map" data-i18n="common:currentMap">
                                 ${i18next.t("currentMap", { ns: "common" })} <span class="sort-indicator">⇅</span>
                             </th>
-                            <th data-i18n="common:players">
-                                ${i18next.t("players", { ns: "common" })}
+                            <th class="sortable" data-sort="players" data-i18n="common:players">
+                                ${i18next.t("players", { ns: "common" })} <span class="sort-indicator">⇅</span>
                             </th>
                             <th data-i18n="common:teams">
                                 ${i18next.t("teams", { ns: "common" })}
@@ -450,10 +460,10 @@ export default class SquadServersBrowser {
             server.attributes.name,
             server.mapName,
             server.attributes.details.map,
-            server.team1,
-            server.team2,
-            server.attributes.details.squad_teamOne,
-            server.attributes.details.squad_teamTwo
+            server.team1FactionId || server.team1,
+            server.team2FactionId || server.team2,
+            server.unit1 || server.attributes.details.squad_teamOne,
+            server.unit2 || server.attributes.details.squad_teamTwo
         );
     }
 

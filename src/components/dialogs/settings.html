@@ -46,6 +46,14 @@
                 </svg>
             </span>
         </button>
+        <button type="button" value="panel5" aria-label="panel5">
+            <span data-i18n="settings:mods"></span>
+            <span>
+                <svg class="animate__animated animate__fadeInRight" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
+                    <path d="M541.4 162.6C549 155 561.7 156.9 565.5 166.9C572.3 184.6 576 203.9 576 224C576 312.4 504.4 384 416 384C398.5 384 381.6 381.2 365.8 376L178.9 562.9C150.8 591 105.2 591 77.1 562.9C49 534.8 49 489.2 77.1 461.1L264 274.2C258.8 258.4 256 241.6 256 224C256 135.6 327.6 64 416 64C436.1 64 455.4 67.7 473.1 74.5C483.1 78.3 484.9 91 477.4 98.6L388.7 187.3C385.7 190.3 384 194.4 384 198.6L384 240C384 248.8 391.2 256 400 256L441.4 256C445.6 256 449.7 254.3 452.7 251.3L541.4 162.6z"/>
+                </svg>
+            </span>
+        </button>
     </div>
 
     <div id="panel1" class="panel active">
@@ -122,7 +130,7 @@
       </table>
 
       <table class="userSettings">
-          <caption><span data-i18n="settings:mapButtons"></span> <sup class="new">new</sup></caption>
+          <caption><span data-i18n="settings:mapButtons"></span></caption>
           <tbody><tr><td colspan="2"><div id="mapBtnToggles">
 
               <button type="button" class="mapBtnToggle active" data-key="settings-btn-layers" title="Map Layers">
@@ -131,6 +139,10 @@
 
               <button type="button" class="mapBtnToggle active" data-key="settings-btn-hd" title="HD Images">
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path d="M0 96C0 60.7 28.7 32 64 32l448 0c35.3 0 64 28.7 64 64l0 320c0 35.3-28.7 64-64 64L64 480c-35.3 0-64-28.7-64-64L0 96zm304 88l0 144c0 13.3 10.7 24 24 24l56 0c53 0 96-43 96-96s-43-96-96-96l-56 0c-13.3 0-24 10.7-24 24zm80 24c26.5 0 48 21.5 48 48s-21.5 48-48 48l-32 0 0-96 32 0zM160 184c0-13.3-10.7-24-24-24s-24 10.7-24 24l0 72 0 72c0 13.3 10.7 24 24 24s24-10.7 24-24l0-48 64 0 0 48c0 13.3 10.7 24 24 24s24-10.7 24-24l0-72 0-72c0-13.3-10.7-24-24-24s-24 10.7-24 24l0 48-64 0 0-48z"/></svg>
+              </button>
+
+              <button type="button" class="mapBtnToggle active" data-key="settings-btn-layer-info" title="Layer Info">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM216 336l24 0 0-64-24 0c-13.3 0-24-10.7-24-24s10.7-24 24-24l48 0c13.3 0 24 10.7 24 24l0 88 8 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-80 0c-13.3 0-24-10.7-24-24s10.7-24 24-24zm40-208a32 32 0 1 1 0 64 32 32 0 1 1 0-64z"/></svg>
               </button>
 
               <button type="button" class="mapBtnToggle" data-key="settings-btn-legacy" title="Legacy UI">
@@ -151,10 +163,6 @@
 
               <button type="button" class="mapBtnToggle" data-key="settings-btn-upload" title="Upload">
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="128 64 384 512"><path d="M128 128C128 92.7 156.7 64 192 64L341.5 64C358.5 64 374.8 70.7 386.8 82.7L493.3 189.3C505.3 201.3 512 217.6 512 234.6L512 512C512 547.3 483.3 576 448 576L192 576C156.7 576 128 547.3 128 512L128 128zM336 122.5L336 216C336 229.3 346.7 240 360 240L453.5 240L336 122.5zM337 327C327.6 317.6 312.4 317.6 303.1 327L239.1 391C229.7 400.4 229.7 415.6 239.1 424.9C248.5 434.2 263.7 434.3 273 424.9L296 401.9L296 488C296 501.3 306.7 512 320 512C333.3 512 344 501.3 344 488L344 401.9L367 424.9C376.4 434.3 391.6 434.3 400.9 424.9C410.2 415.5 410.3 400.3 400.9 391L336.9 327z"/></svg>
-              </button>
-
-              <button type="button" class="mapBtnToggle" data-key="settings-btn-share" title="Share">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M352 224c53 0 96-43 96-96s-43-96-96-96-96 43-96 96c0 4 .2 8 .7 11.9l-94.1 47C145.4 170.2 121.9 160 96 160c-53 0-96 43-96 96s43 96 96 96c25.9 0 49.4-10.2 66.6-26.9l94.1 47c-.5 3.9-.7 7.9-.7 11.9 0 53 43 96 96 96s96-43 96-96-43-96-96-96c-25.9 0-49.4 10.2-66.6 26.9l-94.1-47c.5-3.9.7-7.9.7-11.9s-.2-8-.7-11.9l94.1-47C302.6 213.8 326.1 224 352 224z"/></svg>
               </button>
 
               <button type="button" class="mapBtnToggle active" data-key="settings-btn-servers" title="Servers">
@@ -322,28 +330,6 @@
             </td>
             <td>
               <span data-i18n="settings:realMaxRange" class="toggleCheckbox"></span>
-            </td>
-          </tr>
-
-            <tr class="experimentalSetting">
-              <td>
-                  <label class="mcui-checkbox">
-                      <input id="experimentalSetting" type="checkbox">
-                      <span>
-                        <svg class="mcui-check" viewBox="-2 -2 35 35" aria-hidden="true">
-                          <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
-                        </svg>
-                      </span>
-                    </label>
-              </td>
-              <td>
-                <span data-i18n="settings:moddedWeapons" class="toggleCheckbox"></span>
-              </td>
-          </tr>
-
-          <tr id="modFiltersRow" style="display:none">
-            <td colspan="2">
-              <div id="modFiltersContainer"></div>
             </td>
           </tr>
 
@@ -813,7 +799,6 @@
             </td>
             <td>
               <span data-i18n="settings:minimizeFactionBar" class="toggleCheckbox"></span>
-               <sup class="new">new</sup>
             </td>
           </tr>
 
@@ -834,6 +819,19 @@
                 </tr>
             </thead>
             <tbody></tbody>
+        </table>
+    </div>
+
+    <div id="panel5" class="panel">
+        <table class="userSettings">
+            <caption data-i18n="settings:modsOptions"></caption>
+            <tbody>
+                <tr>
+                    <td colspan="2">
+                        <div id="modsPanelContainer"></div>
+                    </td>
+                </tr>
+            </tbody>
         </table>
     </div>
 

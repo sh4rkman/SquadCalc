@@ -8,9 +8,14 @@
 
 @media (height >= 35em) {
     header {
-        #mapSelector {
+        .mapSelector #mapSelector {
             .select2-results__options {
                 max-height: 470px;
+            }
+        }
+        .mapSelector #layerSelector {
+            .select2-results__options {
+                max-height: 350px;
             }
         }
         .weaponSelector #weaponSelector {
@@ -26,10 +31,15 @@
 
 @media (height >= 45em) {
     header {
-        .mapSelector #mapSelector, .weaponSelector #layerSelector {
+        .mapSelector #mapSelector {
             .select2-results__options {
                 // line-height: 0.85em;
                 max-height: 770px;
+            }
+        }
+        .mapSelector #layerSelector {
+            .select2-results__options {
+                max-height: 600px;
             }
         }
         .weaponSelector #weaponSelector {
@@ -45,9 +55,14 @@
 
 @media (height >= 50em) {
     header {
-        #mapSelector {
+        .mapSelector #mapSelector {
             .select2-results__options {
-                max-height: 850px;
+                max-height: 650px;
+            }
+        }
+        .mapSelector #layerSelector {
+            .select2-results__options {
+                max-height: 650px;
             }
         }
     }
@@ -88,6 +103,33 @@
     }
     #commanderAssets .commanderAssets img {
         height: 35px;
+    }
+    dialog#layerInformation {
+        .layerThumbnail {
+            width: 170px;
+        }
+        .layerCommandRow {
+            input {
+                padding: 0.6em 2.8em 0.6em 0.7em;
+            }
+            .layerCommandCopyBtn {
+                width: 2.4em;
+                height: 2.4em;
+            }
+        }
+    }
+    #modsPanelContainer {
+        gap: 0.7em;
+        .modToggleTile {
+            min-height: 6em;
+            padding: 1.1em 1.3em;
+            .modTileLogo {
+                width: 6em;
+            }
+            .modTileName {
+                padding-right: 5.7em;
+            }
+        }
     }
     #characteristics .characteristics img {
         height: 30px;
@@ -179,7 +221,7 @@
             }
         }
     }
-    #helpDialog, #changelogDialog {
+    #helpDialog, #changelogDialog, #layerInformation {
         width: 100vw;
         height: 100dvh;
         max-width: 100%;
@@ -333,6 +375,16 @@
 }
 
 
+/* < 992px: layerInformation's two tables wrap into a vertical stack instead of
+   sitting side by side, so kill the bottom margin between them. Horizontal
+   side margins are untouched, and the >= 992px side-by-side layout below
+   still sets its own margin. */
+@media screen and (width < 62em) {
+    dialog#layerInformation table:first-of-type {
+        margin-bottom: 0;
+    }
+}
+
 /* ≥ 992px */
 
 @media screen and (width >= 62em) {
@@ -342,7 +394,7 @@
             min-width: 250px;
         }
     }
-    dialog {
+    dialog, #threeDView {
         font-size: 0.7em;
         table {
             width: 44%;
@@ -350,6 +402,9 @@
         }
         &#weaponInformation {
             max-width: 600px;
+        }
+        &#layerInformation {
+            max-width: 800px;
         }
         &#helpDialog {
             font-size: 0.7em;
@@ -442,6 +497,9 @@
                 .select2-selection__rendered {
                     font-size: 1.1em;
                 }
+            }
+            .mapSelector #layerSelector .select2-results__options {
+                max-height: 1000px;
             }
         }
         #classic_ui {

@@ -1,5 +1,5 @@
 import { Marker, Icon, Browser, DomEvent } from "leaflet";
-import tippy from "tippy.js";
+import tippy, { sticky } from "tippy.js";
 import i18next from "i18next";
 import "./libs/leaflet-rotatedMarker.js";
 
@@ -58,6 +58,7 @@ export const squadCameraActor = Marker.extend({
             delay: 200,
             placement: "top",
             sticky: true,
+            plugins: [sticky],
             duration: 0,
             allowHTML: true,
             interactive: true,

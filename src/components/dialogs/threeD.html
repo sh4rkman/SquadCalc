@@ -1,0 +1,96 @@
+<div id="threeDView" class="animate__animated animate__zoomIn" hidden>
+    <div class="threeDViewport">
+        <div class="threeDLoading" hidden>
+            <div class="threeDLoadingSpinner"></div>
+            <p data-i18n="common:threeDLoading">Loading 3D World&hellip;</p>
+        </div>
+        <div class="threeDOverlay">
+            <div class="threeDOverlayCard">
+                <h3 data-i18n="common:threeDView">3D Mode</h3>
+                <p class="threeDOverlaySubtitle" data-i18n="common:threeDViewSubtitle">Preview and explore the terrain</p>
+                <div class="threeDOverlayHint">
+                    <span class="threeDOverlayHintKey"><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd></span>
+                    <span data-i18n="common:threeDMoveHint">move</span>
+
+                    <span class="threeDOverlayHintKey"><kbd>Space</kbd></span>
+                    <span data-i18n="common:threeDUpHint">up</span>
+
+                    <span class="threeDOverlayHintKey"><kbd>Shift</kbd></span>
+                    <span data-i18n="common:threeDDownHint">down</span>
+
+                    <span class="threeDOverlayHintKey"><kbd>Scroll</kbd></span>
+                    <span data-i18n="common:threeDSpeedHint">speed</span>
+
+                    <span class="threeDOverlayHintKey"><kbd>Esc</kbd></span>
+                    <span data-i18n="common:threeDReleaseHint">release</span>
+                </div>
+
+                <hr class="threeDOverlayDivider">
+
+                <div class="threeDOverlayOptions">
+                    <div class="threeDOverlayToggles">
+                        <label class="threeDOverlayOption">
+                            <span data-i18n="common:threeDShowCapzones">Show Capzones</span>
+                            <input type="checkbox" class="threeDCapzonesToggle" checked>
+                        </label>
+                        <label class="threeDOverlayOption">
+                            <span data-i18n="common:threeDShowMinimap">Show Minimap</span>
+                            <input type="checkbox" class="threeDMinimapToggle" checked>
+                        </label>
+                        <label class="threeDOverlayOption">
+                            <span data-i18n="common:threeDShowPath">Show Path</span>
+                            <input type="checkbox" class="threeDPathToggle" checked>
+                        </label>
+                        <label class="threeDOverlayOption">
+                            <span data-i18n="common:threeDShowTrajectories">Show Trajectories</span>
+                            <input type="checkbox" class="threeDArcsToggle" checked>
+                        </label>
+                        <label class="threeDOverlayOption">
+                            <span data-i18n="common:threeDShowTrees">Show Trees</span>
+                            <input type="checkbox" class="threeDTreesToggle" checked>
+                        </label>
+                        <label class="threeDOverlayOption">
+                            <span data-i18n="common:threeDShowBuildings">Show Buildings</span>
+                            <input type="checkbox" class="threeDPropsToggle" checked>
+                        </label>
+                        <label class="threeDOverlayOption">
+                            <span data-i18n="common:threeDShowCrosshair">Show Crosshair</span>
+                            <input type="checkbox" class="threeDCrosshairToggle" checked>
+                        </label>
+                        <label class="threeDOverlayOption">
+                            <span data-i18n="common:threeDShowFPS">Show FPS</span>
+                            <input type="checkbox" class="threeDFpsToggle" checked>
+                        </label>
+                    </div>
+                    <div class="threeDOverlaySelects">
+                        <label class="threeDOverlayOption">
+                            <span data-i18n="common:threeDTexture">Texture</span>
+                            <select class="threeDTextureSelect">
+                                <option value="basemap" data-i18n="common:threeDBasemap" selected>Default</option>
+                                <option value="topomap" data-i18n="common:threeDTopomap">Topographic</option>
+                            </select>
+                        </label>
+                    </div>
+                </div>
+
+                <button type="button" class="threeDGoButton" data-i18n="common:threeDGo">Go</button>
+                <button type="button" class="threeDShareButton" data-i18n="common:threeDShare">Share Current View</button>
+                <button type="button" class="threeDQuitButton" data-i18n="common:threeDQuit">Quit</button>
+            </div>
+        </div>
+        <div class="threeDCrosshair" hidden></div>
+        <button type="button" class="threeDMenuButton" data-i18n="common:threeDBackToMenu" hidden>Back to menu</button>
+        <div class="threeDFpsCounter" hidden><span class="threeDFpsValue">0</span><span class="threeDFpsUnit">FPS</span></div>
+        <div class="threeDSpeedHUD">
+            <div class="threeDSpeedHUDLabel" data-i18n="common:threeDSpeed">Camera Speed</div>
+            <div class="threeDSpeedHUDRow">
+                <div class="threeDSpeedHUDBar"><div class="threeDSpeedHUDFill"></div></div>
+                <div class="threeDSpeedHUDValue">50%</div>
+            </div>
+        </div>
+        <div class="threeDMinimap">
+            <img class="threeDMinimapImage" alt="">
+            <img class="threeDMinimapDot" alt="">
+        </div>
+    </div>
+</div>

@@ -1,5 +1,6 @@
 import { MAPS, initMapsProperties } from "../data/maps.js";
 import { WEAPONS, WEAPONSTYPE } from "../data/weapons.js";
+import { MODS } from "../data/mods.js";
 import { squadMinimap } from "./squadMinimap.js";
 import { Weapon } from "./squadWeapons.js";
 import { animateCSS, animateCalc } from "./animations.js";
@@ -22,7 +23,8 @@ changelogRenderer.link = ({ href, title, text }) => {
 };
 import i18next from "i18next";
 import SquadLayer from "./squadLayer.js";
-import { serverBrowserTooltips, settingsTooltips } from "./tooltips.js";
+import Squad3DSimulation, { decodeShareToken } from "./squad3DSimulation.js";
+import { serverBrowserTooltips, settingsTooltips, layerInfoTooltips, threeDTooltips } from "./tooltips.js";
 import { MapDrawing, MapArrow, MapCircle, MapRectangle } from "./squadShapes.js";
 
 
@@ -97,6 +99,14 @@ export default class SquadCalc {
 
     parseUrlIntent() {
         const p = new URLSearchParams(window.location.search);
+
+        // "?3d" alone just opens the 3D view; "?3d=<token>" (see threeDShareButton, in
+        // loadUI(), and decodeShareToken()) also spawns the camera at that exact world
+        // position/facing - _openInitial3D() strips the token back down to a bare "3d"
+        // flag once it's been consumed, so this only ever matters on the very first load.
+        const threeDValue = p.get("3d");
+        const threeDPosition = threeDValue ? decodeShareToken(threeDValue) : null;
+
         return {
             server:    p.get("server"),
             session:   p.get("session"),
@@ -106,6 +116,8 @@ export default class SquadCalc {
             team1unit: p.get("team1unit"),
             team2:     p.get("team2"),
             team2unit: p.get("team2unit"),
+            threeD:    p.has("3d"),
+            threeDPosition,
         };
     }
 
@@ -113,8 +125,94 @@ export default class SquadCalc {
         const { server, session } = this.urlIntent;
         if (server)       this.initServerMode(server, session);
         else if (session) this.initSessionMode(session, this.urlIntent);
-        else              this.initStaticMode(this.urlIntent);
+        else              this.initStaticMode(this.urlIntent, () => this._openInitial3D());
         this.initFavoriteServers();
+    }
+
+    /**
+     * If the URL asked for the 3D view (?3d=1), opens it once on initial page load -
+     * after the map loads if the URL has no layer, or after the layer loads if it does.
+     */
+    _openInitial3D() {
+        if (!this.urlIntent.threeD || this.minimap.activeMap.no3D) return;
+        this.show3D();
+        this.simulation3D.open(this.minimap.activeMap, this.minimap.layer, this.minimap, null, this.urlIntent.threeDPosition);
+        // The share token's only useful once, to spawn the camera above - drop it back
+        // down to a bare "3d" flag so it doesn't linger in the address bar afterwards.
+        if (this.urlIntent.threeDPosition) this.updateUrlParams({ "3d": "" });
+    }
+
+    /**
+     * Opens the 3D view - shared by the map's own "3D" button and the target dialog's
+     * "See in 3D" button (squadTargetMarker.js, via App.open3D()).
+     * @param {?{firingSolution: object, angleType: string}} [arcRequest] - additionally
+     * highlights this exact weapon/target/angle - see
+     * Squad3DSimulation.open()/_drawProjectileArcs()
+     */
+    open3D(arcRequest = null) {
+        this.show3D();
+        this.simulation3D.open(this.minimap.activeMap, this.minimap.layer, this.minimap, arcRequest);
+        this.updateUrlParams({ "3d": "" });
+    }
+
+    /**
+     * Opens the 3D view standing at a clicked point on the 2D map - the right-click
+     * context menu's "3D" item (squadContextMenu.js).
+     * @param {object} latlng - Leaflet latlng to spawn the camera at
+     */
+    open3DAt(latlng) {
+        if (this.minimap.activeMap.no3D) return;
+        this.show3D();
+        this.simulation3D.open(this.minimap.activeMap, this.minimap.layer, this.minimap, null, null, latlng);
+        this.updateUrlParams({ "3d": "" });
+    }
+
+    /**
+     * Whether the 3D view (#threeDView) is currently shown.
+     * @returns {boolean}
+     */
+    get is3DOpen() {
+        return !this.threeDView.hidden;
+    }
+
+    /**
+     * Shows the 3D view container. It's a plain fixed <div>, not a modal dialog, so the
+     * header's map/layer selectors stay usable on top of it - see header.scss's
+     * .threeD-open rule. Callers still start the simulation themselves (open()).
+     */
+    show3D() {
+        threeDTooltips.hide();
+        threeDTooltips.disable();
+        this.threeDView.hidden = false;
+        document.body.classList.add("threeD-open");
+    }
+
+    /**
+     * Hides the 3D view and stops the simulation - Quit button, Esc, or switching
+     * to a map without 3D data.
+     */
+    hide3D() {
+        if (!this.is3DOpen) return;
+        this.threeDView.hidden = true;
+        document.body.classList.remove("threeD-open");
+        this.simulation3D.close();
+        setTimeout(() => threeDTooltips.enable(), 50);
+        this.updateUrlParams({ "3d": null });
+    }
+
+    /**
+     * Keeps an open 3D view in sync with the header's map/layer selectors - see
+     * Squad3DSimulation.refresh().
+     * @param {?SquadLayer} [layer] - defaults to the current layer; null right after a map
+     * change, before the new map's layer has loaded (minimap.layer is still the old one)
+     */
+    refresh3D(layer = this.minimap.layer) {
+        if (!this.is3DOpen) return;
+        if (this.minimap.activeMap.no3D) {
+            this.hide3D();
+            return;
+        }
+        this.simulation3D.refresh(this.minimap.activeMap, layer, this.minimap);
     }
 
     initServerMode(serverId, sessionId = null) {
@@ -158,8 +256,8 @@ export default class SquadCalc {
                 server.attributes.name,
                 server.mapName,
                 server.attributes.details.map,
-                server.team1,
-                server.team2,
+                server.team1FactionId || server.team1,
+                server.team2FactionId || server.team2,
                 server.attributes.details.squad_teamOne,
                 server.attributes.details.squad_teamTwo
             );
@@ -209,7 +307,7 @@ export default class SquadCalc {
         const applyLayer = () => {
             const urlLayerName = intent.layer.toLowerCase().replaceAll(" ", "");
             const match = this.LAYER_SELECTOR.find("option").filter((_, el) =>
-                $(el).text().toLowerCase().replaceAll(" ", "") === urlLayerName
+                ($(el).data("urlid") ?? "").toLowerCase() === urlLayerName
             );
 
             if (!match.length) {
@@ -281,10 +379,8 @@ export default class SquadCalc {
         $(".dropbtn10").select2();
         $(".dropbtn11").select2();
         
-        // Load maps 
-        MAPS.forEach((map, i) => {
-            this.MAP_SELECTOR.append(`<option data-i18n="maps:${map.name}" value="${i}"></option>`);
-        });        
+        // Load maps
+        this._rebuildMapSelector();
 
         // Add event listener
         this.MAP_SELECTOR.on("change", (event) => {
@@ -307,6 +403,10 @@ export default class SquadCalc {
             // Refresh layer selector
             this.loadLayers();
 
+            // Start loading the new map's terrain in an open 3D view right away - its
+            // layer follows on "layer:loaded"
+            this.refresh3D(null);
+
             if (broadcast && this.session.ws && this.session.ws.readyState === WebSocket.OPEN) {
                 this.session.ws.send(
                     JSON.stringify({
@@ -322,17 +422,18 @@ export default class SquadCalc {
 
         this.LAYER_SELECTOR.on("change", (event) => {
 
-            const selectedLayerText = this.LAYER_SELECTOR.find(":selected").text().replaceAll(" ", "");
+            const selectedLayerValue = this.LAYER_SELECTOR.find(":selected").data("urlid") ?? "";
+            const selectedLayerMod = this.LAYER_SELECTOR.find(":selected").data("mod");
             const broadcast = event.broadcast ?? true;
 
             // User cleared the layer selector, remove the layer and clean the URL
-            if (selectedLayerText === "") {
+            if (selectedLayerValue === "") {
                 this.updateUrlParams({ layer: null, team1: null, team1unit: null, team2: null, team2unit: null });
                 if (abortController) { abortController.abort(); } // Abort the ongoing fetch request
                 if (this.minimap.layer) this.minimap.layer.clear();
-                $(".btn-layer").hide();
-                $(".btn-share").hide();
+                $(".btn-layer, .btn-layer-info").hide();
                 $("#factionsTab, #factionsButton").hide();
+                this.refresh3D(null);
 
                 // Empty Factions&Units selectors
                 this.FACTION1_SELECTOR.empty();
@@ -357,9 +458,9 @@ export default class SquadCalc {
             
             // Update the the URL
             if (broadcast) {
-                this.updateUrlParams({ layer: selectedLayerText, team1: null, team1unit: null, team2: null, team2unit: null });
+                this.updateUrlParams({ layer: selectedLayerValue, team1: null, team1unit: null, team2: null, team2unit: null });
             } else {
-                this.updateUrlParams({ layer: selectedLayerText });
+                this.updateUrlParams({ layer: selectedLayerValue });
             }
 
             // Abort any in-progress layer fetch before starting a new one
@@ -382,10 +483,15 @@ export default class SquadCalc {
                 .then(layerData => {
                     if (!layerData) return; // prevent continuing on fetch failure
 
+                    // Warm the browser cache now so the layer info dialog's thumbnail
+                    // is already loaded by the time the user opens it, instead of
+                    // flashing the previous layer's image while this one loads.
+                    new Image().src = `${process.env.API_URL}/img/thumbnails/${encodeURIComponent(layerData.rawName)}.webp`;
+
                     if (this.minimap.layer) this.minimap.layer.clear();
-                    this.minimap.layer = new SquadLayer(this.minimap, layerData, broadcast);
+                    this.minimap.layer = new SquadLayer(this.minimap, layerData, broadcast, selectedLayerMod);
                     $(".btn-layer").addClass("active").show();
-                    $(".btn-share").show();
+                    $(".btn-layer-info").show();
 
                     if (broadcast && this.session.ws?.readyState === WebSocket.OPEN) {
                         this.session.ws.send(
@@ -399,6 +505,7 @@ export default class SquadCalc {
 
                     this.layerLoaded = true;
                     $(document).trigger("layer:loaded");
+                    this.refresh3D();
                     this.minimap.spin(false);
                 });
         });
@@ -410,9 +517,12 @@ export default class SquadCalc {
     loadLayers() {
         this.minimap.spin(true, this.minimap.spinOptions);
         $("#layerSelector").hide();
+        const selectedValue = this.LAYER_SELECTOR.val();
         this.LAYER_SELECTOR.empty();
 
-        fetchLayersByMap(this.minimap.activeMap.name).then(layers => {
+        const enabledMods = this._getUniqueMods().filter(mod => this.userSettings.isModEnabled(mod));
+
+        fetchLayersByMap(this.minimap.activeMap.name, enabledMods).then(layers => {
 
             if (layers.length === 0) {
                 this.minimap.spin(false);
@@ -423,7 +533,88 @@ export default class SquadCalc {
             // Re-empty just in case user changed map while the request was on the way
             this.LAYER_SELECTOR.empty();
             this.LAYER_SELECTOR.append("<option value=></option>");
-            layers.forEach((layer) => { this.LAYER_SELECTOR.append(`<option value=${layer.rawName}>${layer.shortName}</option>`); });
+
+            const vanillaLayers = layers.filter(layer => !layer.mod);
+            const vanillaContainer = enabledMods.length
+                ? $(`<optgroup label="${i18next.t("settings:vanilla", { defaultValue: "Vanilla" })}"></optgroup>`)
+                : this.LAYER_SELECTOR;
+
+            vanillaLayers.forEach((layer) => {
+                vanillaContainer.append(`<option value="${layer.rawName}" data-urlid="${layer.shortName.replaceAll(" ", "")}">${layer.shortName}</option>`);
+            });
+
+            if (enabledMods.length && vanillaContainer.children().length) this.LAYER_SELECTOR.append(vanillaContainer);
+
+            const mapName = this.minimap.activeMap.name;
+
+            enabledMods.forEach((modKey) => {
+                const label = i18next.t(`settings:${modKey}`, { defaultValue: modKey });
+                const optgroup = $(`<optgroup data-mod="${modKey}" label="${label}"></optgroup>`);
+
+                layers.filter(layer => layer.mod?.toLowerCase() === modKey.toLowerCase()).forEach((layer) => {
+                    // rawName sometimes carries an extra variant tag between the mod prefix and the
+                    // map name (e.g. "SU_GoingDark_Anvil_AAS_v1") that shortName doesn't reflect.
+                    // mapName itself can contain underscores (e.g. "Hrodna_Border"), so it's matched
+                    // as a token subsequence rather than a single token.
+                    const tokens = layer.rawName.split("_");
+                    const mapNameTokens = mapName.toLowerCase().split("_");
+                    let mapIdx = -1;
+                    for (let i = 0; i <= tokens.length - mapNameTokens.length; i++) {
+                        if (mapNameTokens.every((t, j) => tokens[i + j].toLowerCase() === t)) {
+                            mapIdx = i;
+                            break;
+                        }
+                    }
+                    const prefixTag = mapIdx > 1 ? tokens.slice(1, mapIdx).join(" ") : "";
+                    const tagsBeforeShortName = [prefixTag];
+
+                    // rawName can also carry an extra tag AFTER the version number that shortName
+                    // doesn't reflect (e.g. "SU_Chornivsk_RVAAS_v1_Large" vs "..._v1", or GC's
+                    // "GC_VenatorAssault_INV_V1_R" / "..._V1_S" faction-locked variants, sometimes
+                    // hyphenated onto the version token itself like "GC_Venator_SKM_V1-L").
+                    // Anything found after/attached to the version token is treated as a suffix tag.
+                    let suffixTag = "";
+                    const verIdx = tokens.findIndex(t => /^v\d+/i.test(t));
+                    if (verIdx !== -1) {
+                        const [, dashSuffix] = tokens[verIdx].split("-");
+                        const typeTokenIdx = verIdx - 1;
+                        const typeToken = typeTokenIdx >= 0 ? tokens[typeTokenIdx] : null;
+                        const firstWord = layer.shortName.trim().split(" ")[0];
+
+                        // A separate tag can also sit between the map name and the type token
+                        // (e.g. "SD_AlBasrah_Legacy_Invasion_v1" vs "SD_AlBasrah_Invasion_v1").
+                        if (mapIdx !== -1 && typeTokenIdx > mapIdx + mapNameTokens.length) {
+                            tagsBeforeShortName.push(tokens.slice(mapIdx + mapNameTokens.length, typeTokenIdx).join(" "));
+                        }
+
+                        let typeSuffix = "";
+                        if (typeToken && typeToken.toLowerCase() !== firstWord.toLowerCase()) {
+                            if (typeToken.length > firstWord.length && typeToken.toLowerCase().startsWith(firstWord.toLowerCase())) {
+                                // glued-on suffix, e.g. "SeedVehicle" vs "Seed"
+                                typeSuffix = typeToken.slice(firstWord.length);
+                            } else if (typeToken !== typeToken.toUpperCase()) {
+                                // A genuinely different mode name mapped to the same shortName
+                                // (e.g. "Rampage"/"Track_Attack" both showing as "Invasion"/"RAAS"),
+                                // as opposed to an all-caps abbreviation like "INV"/"SKM" that's just
+                                // shorthand for a shortName word it doesn't otherwise match.
+                                tagsBeforeShortName.push(typeToken);
+                            }
+                        }
+
+                        suffixTag = [typeSuffix, dashSuffix, ...tokens.slice(verIdx + 1)].filter(Boolean).join(" ");
+                    }
+
+                    const displayName = [...tagsBeforeShortName, layer.shortName.trim(), suffixTag].filter(Boolean).join(" ");
+
+                    optgroup.append(`<option value="${layer.rawName}" data-mod="${modKey}" data-urlid="${modKey}_${displayName.replaceAll(" ", "")}">${displayName}</option>`);
+                });
+
+                if (optgroup.children().length) this.LAYER_SELECTOR.append(optgroup);
+            });
+
+            if (this.LAYER_SELECTOR.find(`option[value="${selectedValue}"]`).length) {
+                this.LAYER_SELECTOR.val(selectedValue).trigger("change.select2");
+            }
 
             this.minimap.spin(false);
             $("#layerSelector").show();
@@ -508,11 +699,19 @@ export default class SquadCalc {
                 this.updateUrlParams({ layer: null, team1: null, team1unit: null, team2: null, team2unit: null });
             }
         } 
-        else { 
+        else {
             // mapIndex = Math.floor(Math.random() * MAPS.length); // pick a random map
             mapIndex = 0; // New Basrah
         }
-        
+
+        // A linked map may belong to a mod that isn't enabled yet - turn it on
+        // so the map, its layers and the mods panel all agree it's active
+        const requiredMod = MAPS[mapIndex].mod;
+        if (requiredMod && !this.userSettings.isModEnabled(requiredMod)) {
+            this.userSettings.setModEnabled(requiredMod, true);
+            this._rebuildMapSelector();
+        }
+
         this.MAP_SELECTOR.val(mapIndex);
         this.minimap = new squadMinimap("map", this.MAPSIZE, MAPS[mapIndex]);
         this.minimap.draw();
@@ -579,8 +778,8 @@ export default class SquadCalc {
         }
 
 
-        // Add Experimental weapons if wanted by user settings
-        this.toggleExperimentalWeapons();
+        // Populate the Mods settings panel and apply currently enabled mods
+        this.initModsPanel();
 
         // Add Events Listeners
         this.WEAPON_SELECTOR.on("change", () => { this.changeWeapon(); });
@@ -590,45 +789,110 @@ export default class SquadCalc {
     }
 
     /**
-     * Returns unique mod keys present in WEAPONS data
+     * Returns known mod keys - the explicit MODS list (source of truth, so a
+     * mod that only ships layers for vanilla maps still gets a settings toggle),
+     * unioned with any mod key found in WEAPONS/MAPS in case one was added
+     * there without being added to MODS yet.
      */
     _getUniqueMods() {
-        return [...new Set(WEAPONS.filter(w => w.mod).map(w => w.mod))].sort();
+        const weaponMods = WEAPONS.filter(w => w.mod).map(w => w.mod);
+        const mapMods = MAPS.filter(m => m.mod).map(m => m.mod);
+        return [...new Set([...MODS, ...weaponMods, ...mapMods])].sort();
     }
 
     /**
-     * Populate #modFiltersContainer with one checkbox per mod and show #modFiltersRow
+     * Populate #modsPanelContainer with one toggle tile per mod
      */
-    _renderModFilters() {
-        const mods = this._getUniqueMods();
-        const container = $("#modFiltersContainer");
+    _renderModTiles() {
+        const mods = this._getUniqueMods().sort((a, b) => {
+            const labelA = i18next.t(`settings:${a}`, { defaultValue: a });
+            const labelB = i18next.t(`settings:${b}`, { defaultValue: b });
+            return labelA.localeCompare(labelB);
+        });
+        const container = $("#modsPanelContainer");
         container.empty();
 
-        mods.forEach(modKey => {
-            const checked = this.userSettings.isModEnabled(modKey) ? "checked" : "";
+        const statsHtml = (layers, weapons, maps) => {
+            const parts = [];
+            if (layers > 0) parts.push(`<span>${i18next.t("settings:modLayersCount", { count: layers, defaultValue: `${layers} Layers` })}</span>`);
+            if (weapons > 0) parts.push(`<span>${i18next.t("settings:modWeaponsCount", { count: weapons, defaultValue: `${weapons} Weapons` })}</span>`);
+            if (maps > 0) parts.push(`<span>${i18next.t("settings:modMapsCount", { count: maps, defaultValue: `${maps} Maps` })}</span>`);
+            return `<span class="modTileStats">${parts.join("<span class=\"modTileStatsSeparator\">•</span>")}</span>`;
+        };
+
+        mods.forEach((modKey) => {
+            const active = this.userSettings.isModEnabled(modKey) ? "active" : "";
             const label = i18next.t(`settings:${modKey}`, { defaultValue: modKey });
+            const weapons = WEAPONS.filter(w => w.mod === modKey).length;
+            const layers = this.layerCounts?.[modKey.toLowerCase()] ?? 0;
+            const maps = MAPS.filter(m => m.mod === modKey).length;
             container.append(`
-                <label class="mcui-checkbox mod-filter-checkbox" data-mod="${modKey}">
-                    <input type="checkbox" class="modFilterCheckbox" data-mod="${modKey}" ${checked}>
-                    <span>
-                        <svg class="mcui-check" viewBox="-2 -2 35 35" aria-hidden="true">
-                            <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
-                        </svg>
-                    </span>
-                    <span class="mod-filter-label">${label}</span>
-                </label>
+                <button type="button" class="modToggleTile ${active}" data-mod="${modKey}">
+                    <img class="modTileLogo" src="/img/mods/${modKey.toLowerCase()}.webp" alt="" onerror="this.style.display='none'">
+                    <span class="modTileName" data-i18n="settings:${modKey}">${label}</span>
+                    ${statsHtml(layers, weapons, maps)}
+                </button>
             `);
         });
 
-        $(".modFilterCheckbox").on("change", (e) => {
-            const modKey = $(e.target).data("mod");
-            const enabled = $(e.target).is(":checked");
+        $(".modToggleTile").not(".locked").on("click", (e) => {
+            const tile = $(e.currentTarget);
+            const modKey = tile.data("mod");
+            const enabled = !tile.hasClass("active");
+            tile.toggleClass("active", enabled);
             this.userSettings.setModEnabled(modKey, enabled);
-            animateCSS($(e.target).closest("label"), "headShake");
             this._rebuildModdedWeapons();
+            const mapWasReset = this._rebuildMapSelector();
+            if (!mapWasReset && this.minimap.activeMap) this.loadLayers();
+        });
+    }
+
+    /**
+     * Rebuild the map selector: vanilla maps always shown, plus one optgroup
+     * per enabled mod that has its own maps (same mechanics as the layer selector).
+     * Falls back to the first vanilla map if the currently active map got hidden
+     * (e.g. its mod was just disabled). Returns true if that fallback fired.
+     */
+    _rebuildMapSelector() {
+        const selectedValue = this.MAP_SELECTOR.val();
+        this.MAP_SELECTOR.empty();
+
+        const enabledMods = this._getUniqueMods().filter(modKey => this.userSettings.isModEnabled(modKey));
+
+        const vanillaContainer = enabledMods.length
+            ? $(`<optgroup data-i18n-label="settings:vanilla" label="${i18next.t("settings:vanilla", { defaultValue: "Vanilla" })}"></optgroup>`)
+            : this.MAP_SELECTOR;
+
+        MAPS.forEach((map, i) => {
+            if (!map.mod) vanillaContainer.append(`<option data-i18n="maps:${map.name}" value="${i}">${i18next.t("maps:" + map.name)}</option>`);
         });
 
-        $("#modFiltersRow").show();
+        if (enabledMods.length && vanillaContainer.children().length) this.MAP_SELECTOR.append(vanillaContainer);
+
+        enabledMods.forEach(modKey => {
+            const label = i18next.t(`settings:${modKey}`, { defaultValue: modKey });
+            const optgroup = $(`<optgroup data-mod="${modKey}" data-i18n-label="settings:${modKey}" label="${label}"></optgroup>`);
+
+            MAPS.forEach((map, i) => {
+                if (map.mod === modKey) {
+                    optgroup.append(`<option data-i18n="maps:${map.name}" value="${i}">${i18next.t("maps:" + map.name)}</option>`);
+                }
+            });
+
+            if (optgroup.children().length) this.MAP_SELECTOR.append(optgroup);
+        });
+
+        if (this.MAP_SELECTOR.find(`option[value="${selectedValue}"]`).length) {
+            this.MAP_SELECTOR.val(selectedValue).trigger("change.select2");
+            return false;
+        }
+
+        if (this.minimap?.activeMap) {
+            this.MAP_SELECTOR.val(0).trigger("change");
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -644,7 +908,7 @@ export default class SquadCalc {
             if (!this.userSettings.isModEnabled(modKey)) return;
 
             const label = i18next.t(`settings:${modKey}`, { defaultValue: modKey });
-            const optgroup = $(`<optgroup data-mod="${modKey}" label="${label}"></optgroup>`);
+            const optgroup = $(`<optgroup data-mod="${modKey}" data-i18n-label="settings:${modKey}" label="${label}"></optgroup>`);
 
             for (let y = 0; y < WEAPONS.length; y++) {
                 if (WEAPONS[y].mod === modKey) {
@@ -663,23 +927,11 @@ export default class SquadCalc {
     }
 
     /**
-     * Add/Remove Experimental Weapons from Weapons dropdown list according to user settings
+     * Initialize the Mods settings panel and apply currently enabled mods to the weapon selector
      */
-    toggleExperimentalWeapons() {
-        if (this.userSettings.experimentalWeapons) {
-            this._renderModFilters();
-            this._rebuildModdedWeapons();
-        } else {
-            $("#modFiltersRow").hide();
-            $("#modFiltersContainer").empty();
-
-            const selectedIsModded = !!(WEAPONS[this.WEAPON_SELECTOR.val()]?.mod);
-            this.WEAPON_SELECTOR.find("optgroup[data-mod]").remove();
-
-            if (selectedIsModded) {
-                this.WEAPON_SELECTOR.val(0).trigger("change");
-            }
-        }
+    initModsPanel() {
+        this._renderModTiles();
+        this._rebuildModdedWeapons();
     }
 
 
@@ -694,11 +946,15 @@ export default class SquadCalc {
             servers: document.querySelector("#serversInformation"),
             shortcutCapture: document.querySelector("#shortcutCaptureDialog"),
             changelog: document.querySelector("#changelogDialog"),
+            layerInfo: document.querySelector("#layerInformation"),
         };
         this._changelogCache = null;
-        const { calc: calcInformation, weapon: weaponInformation, help: helpDialog, factions: factionsDialog, servers: serversInformation } = this._dialogs;
+        const { calc: calcInformation, weapon: weaponInformation, help: helpDialog, factions: factionsDialog, servers: serversInformation, layerInfo: layerInfoDialog } = this._dialogs;
 
-        $(".btn-delete, .btn-undo, .btn-layer, .returnBtn, #mapLayerMenu").hide();
+        this.threeDView = document.querySelector("#threeDView");
+        this.simulation3D = new Squad3DSimulation(document.querySelector(".threeDViewport"));
+
+        $(".btn-delete, .btn-undo, .btn-layer, .btn-layer-info, .returnBtn, #mapLayerMenu").hide();
 
         this.ui = localStorage.getItem("data-ui");
 
@@ -735,7 +991,8 @@ export default class SquadCalc {
         this.closeDialogOnClickOutside(helpDialog);
         this.closeDialogOnClickOutside(factionsDialog);
         this.closeDialogOnClickOutside(this._dialogs.changelog);
-        
+        this.closeDialogOnClickOutside(layerInfoDialog);
+
         const overlay = document.getElementById("dropOverlay");
         let dragCounter = 0;
         
@@ -793,6 +1050,22 @@ export default class SquadCalc {
         helpDialog.addEventListener("close", () => {
             setTimeout(() => settingsTooltips.enable(), 50);
         });
+
+        layerInfoDialog.addEventListener("close", () => {
+            setTimeout(() => layerInfoTooltips.enable(), 50);
+        });
+
+        // Esc closes the 3D view (like the modal dialog it used to be) once the pointer is
+        // released - while flying, the browser spends that Esc on exiting pointer lock
+        // and never delivers it to the page. In the drag-look fallback that first Esc does
+        // reach the page, so isFlying() skips it here and squad3DSimulation.js stops flying instead.
+        document.addEventListener("keydown", (event) => {
+            if (event.key !== "Escape" || !this.is3DOpen || this.simulation3D.isFlying()) return;
+            // Esc from a header select2 (or any other field) just closes/leaves that field -
+            // select2 has already closed its dropdown by the time this bubbles up here.
+            if ($(event.target).closest(".select2-container, input, textarea, select").length) return;
+            this.hide3D();
+        });
           
         window.addEventListener("drop", e => {
             e.preventDefault();
@@ -825,6 +1098,77 @@ export default class SquadCalc {
         });
         $(".btn-undo").on("click", () => { if (this.minimap.history.length > 0) this.minimap.history.at(-1).delete(); });
         $(".btn-layer").on("click", () => { this.minimap.layer.toggleVisibility(); });
+        $(".btn-layer-info").on("click", () => {
+            const layerData = this.minimap.layer?.layerData;
+            if (!layerData) return;
+
+            layerInfoTooltips.hide();
+            layerInfoTooltips.disable();
+
+            $(".infLayerMap").text(layerData.Name ?? layerData.rawName ?? "");
+            $(".infLayerGamemode").text(layerData.gamemode ?? "");
+            $(".infLayerVersion").text(layerData.layerVersion ?? "");
+            $(".infLayerSize").text(layerData.mapSize ?? "");
+            $(".infLayerTeam1Tickets").text(layerData.teamConfigs?.team1?.tickets ?? "");
+            $(".infLayerTeam2Tickets").text(layerData.teamConfigs?.team2?.tickets ?? "");
+
+            // The compact "unitType" token AdminChangeLayer/AdminSetNextLayer expect (e.g. "CombinedArms",
+            // "Mechanized") only shows up for a faction's non-default subfactions, in teamConfigs.factions'
+            // "types" list. The default subfaction (not always "CombinedArms" - some modded factions default
+            // to something else) isn't listed there, so fall back to the descriptive "type" name from the
+            // layer's units list, stripped of spaces and any parenthetical qualifier (e.g. "Mechanized
+            // (Wheeled)" -> "Mechanized"), which for a faction's default entry is always the plain type name.
+            const allUnits = [...(layerData.units?.team1Units ?? []), ...(layerData.units?.team2Units ?? [])];
+            const compactType = (raw) => raw ? raw.replace(/\s*\(.*?\)/g, "").replace(/\s+/g, "") : "";
+            const unitTypeOf = (teamKey, unitObjectName) => {
+                if (!unitObjectName) return "";
+                for (const faction of layerData.teamConfigs?.factions?.[`${teamKey}Units`] ?? []) {
+                    const match = faction.types?.find((t) => t.unit === unitObjectName);
+                    if (match) return match.unitType;
+                }
+                const unit = allUnits.find((u) => u.unitObjectName === unitObjectName);
+                return unit ? compactType(unit.type) : "";
+            };
+            const team1Faction = this.FACTION1_SELECTOR.val();
+            const team2Faction = this.FACTION2_SELECTOR.val();
+            const factionUnitArgs = (team1Faction && team2Faction)
+                ? ` ${team1Faction}+${unitTypeOf("team1", this.UNIT1_SELECTOR.val())} ${team2Faction}+${unitTypeOf("team2", this.UNIT2_SELECTOR.val())}`
+                : "";
+
+            $(".layerCommandInput").val(`AdminSetNextLayer ${layerData.rawName}${factionUnitArgs}`);
+            $(".layerChangeCommandInput").val(`AdminChangeLayer ${layerData.rawName}${factionUnitArgs}`);
+
+            $(".layerShareUrlInput").val(this.buildShareUrl());
+
+            $(".layerThumbnail")
+                .show()
+                .attr("src", `${process.env.API_URL}/img/thumbnails/${encodeURIComponent(layerData.rawName)}.webp`);
+
+            layerInfoDialog.showModal();
+        });
+        $(".btn-3d").on("click", () => {
+            if ($(".btn-3d").hasClass("locked")) return;
+            this.open3D();
+        });
+        $(".threeDQuitButton").on("click", () => this.hide3D());
+        $(".threeDShareButton").on("click", () => {
+            // Builds the URL for the clipboard only, same as buildShareUrl() - the
+            // sharer's own address bar isn't meant to change, just what gets copied.
+            const params = new URLSearchParams(window.location.search);
+            params.set("3d", this.simulation3D.getShareToken());
+            navigator.clipboard.writeText(`${window.location.origin}${window.location.pathname}?${params.toString()}`);
+            this.openToast("success", "copied", "");
+        });
+        $(".layerCommandCopyBtn").on("click", (event) => {
+            const input = event.currentTarget.closest(".layerCommandRow").querySelector("input");
+            if (navigator.clipboard?.writeText) {
+                navigator.clipboard.writeText(input.value);
+            } else {
+                input.select();
+                document.execCommand("copy");
+            }
+            this.openToast("success", "copied", "");
+        });
         $(".btn-drawingMode").on("click", () => { this.minimap.disableDrawingMode(); });
         $(".btn-legacy").on("click", () => { if (this.ui !== 0) this.switchUI(); });
         $("#factionsButton .factionBar-top").on("click", (e) => {
@@ -902,6 +1246,7 @@ export default class SquadCalc {
         });
 
         $("#mapLayerMenu").find("button.btn-hd").on("click", () => {
+            if ($(".btn-hd").hasClass("locked")) return;
             const VAL = !$(".btn-hd").hasClass("active");
             $(".btn-hd").toggleClass("active");
             this.userSettings.highQualityImages = VAL;
@@ -968,7 +1313,6 @@ export default class SquadCalc {
         weaponInformation.addEventListener("close", function(){
             // Remove listeners when closing weapon information to avoid stacking
             $("input[type=radio][name=angleChoice]").off();
-            $(".heightPadding input").off();
             $(".moveToBtn").off();
         });
         
@@ -990,13 +1334,11 @@ export default class SquadCalc {
 
         $("#settingsControls button[value='panel4']").on("click", () => this.initShortcutsPanel());
 
-        $(".btn-share").on("click", () => this.shareLoadout());
-
         this.show();
     }
 
 
-    shareLoadout() {
+    buildShareUrl() {
         const cur    = new URLSearchParams(window.location.search);
         const params = new URLSearchParams();
         if (cur.has("map"))   params.set("map", cur.get("map"));
@@ -1011,11 +1353,8 @@ export default class SquadCalc {
         if (t2) params.set("team2", t2);
         if (u2) params.set("team2unit", u2);
 
-        const url = `${window.location.origin}${window.location.pathname}?${params.toString()}`;
-        navigator.clipboard.writeText(url);
-        this.openToast("success", "copied", "");
+        return `${window.location.origin}${window.location.pathname}?${params.toString()}`;
     }
-
 
     closeToast() {
         const toast = document.querySelector("#toast");
@@ -1214,7 +1553,7 @@ export default class SquadCalc {
     handleKeydown(event) {
 
         const { calc, weapon, help, factions, servers, changelog } = this._dialogs;
-        if (weapon.open || calc.open || help.open || factions.open || servers.open || changelog.open) return;
+        if (weapon.open || calc.open || help.open || factions.open || servers.open || changelog.open || this.is3DOpen) return;
 
         if ($(event.target).is("input, textarea, select")) return;
 
@@ -1225,6 +1564,7 @@ export default class SquadCalc {
         }
 
         if (this.matchesShortcut(event, "toggleMap")) {
+            if (this.minimap.activeMap.singleLayer) return;
             const layers = ["topomap", "terrainmap", "basemap"];
             const currentLayer = $("#mapLayerMenu .layers.active").attr("value") || "basemap";
             const nextIndex = (layers.indexOf(currentLayer) + 1) % layers.length;
@@ -1730,6 +2070,7 @@ export default class SquadCalc {
     getPos(kp) {
         const FORMATTED_KEYPAD = this.formatKeyPad(kp);
         const PARTS = FORMATTED_KEYPAD.split("-");
+        const gridSize = this.minimap.gridSize;
         let interval;
         let lat = 0;
         let lng = 0;
@@ -1742,8 +2083,8 @@ export default class SquadCalc {
                 const LETTERINDEX = LETTERCODE - 65;
                 if (PARTS[i].charCodeAt(0) < 65) { return { lat: NaN, lng: NaN }; }
                 const KEYPADNB = Number(PARTS[i].slice(1)) - 1;
-                lat += 300 * LETTERINDEX;
-                lng += 300 * KEYPADNB;
+                lat += gridSize * LETTERINDEX;
+                lng += gridSize * KEYPADNB;
 
             } else {
                 // opposite of calculations in getKP()
@@ -1752,7 +2093,7 @@ export default class SquadCalc {
                 const subX = (SUB - 1) % 3;
                 const subY = 2 - (Math.ceil(SUB / 3) - 1);
 
-                interval = 300 / 3 ** i;
+                interval = gridSize / 3 ** i;
                 lat += interval * subX;
                 lng += interval * subY;
             }
@@ -1760,7 +2101,7 @@ export default class SquadCalc {
         }
 
         // at the end, add half of last interval, so it points to the center of the deepest sub-keypad
-        interval = 300 / 3 ** (i - 1);
+        interval = gridSize / 3 ** (i - 1);
         lat += interval / 2;
         lng += interval / 2;
 
@@ -1917,7 +2258,7 @@ export default class SquadCalc {
         const sortedParams = new URLSearchParams();
 
         // Add parameters in the order defined by paramOrder
-        ["map", "layer", "type", "session", "server"].forEach((param) => {
+        ["map", "layer", "type", "3d", "session", "server"].forEach((param) => {
             if (urlParams.has(param)) {
                 sortedParams.set(param, urlParams.get(param));
                 urlParams.delete(param);
@@ -1927,8 +2268,10 @@ export default class SquadCalc {
         // Add any remaining parameters
         for (const [key, value] of urlParams.entries()) sortedParams.set(key, value);
 
-        // Construct the new URL
-        const newUrl = `${window.location.pathname}?${sortedParams.toString()}`;
+        // Construct the new URL - bare flags (empty value, e.g. "3d") drop the
+        // trailing "=" that URLSearchParams.toString() would otherwise leave.
+        const query = sortedParams.toString().replace(/=(&|$)/g, "$1");
+        const newUrl = `${window.location.pathname}?${query}`;
         window.history.replaceState({}, "", newUrl);
     }
 

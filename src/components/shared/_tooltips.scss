@@ -97,6 +97,96 @@
         border-radius: 8px;
         padding: 8px;
     }
+    &[data-theme~='laneInfo'] {
+        background: rgba(30, 30, 30, 0.7);
+        backdrop-filter: blur(6px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+        border-radius: 8px;
+        text-align: left;
+        .tippy-content {
+            padding: 0;
+        }
+        &[data-placement^='top']>.tippy-arrow::before {
+            display: none;
+        }
+        &[data-placement^='bottom']>.tippy-arrow::before {
+            display: none;
+        }
+        &[data-placement^='left']>.tippy-arrow::before {
+            border-left-color: rgba(30, 30, 30, 0.7);
+        }
+        &[data-placement^='right']>.tippy-arrow::before {
+            border-right-color: rgba(30, 30, 30, 0.7);
+        }
+        .laneTooltipCard {
+            padding: 10px 14px;
+            min-width: 140px;
+            max-width: 260px;
+        }
+        .laneTooltipTitle {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding-bottom: 6px;
+            margin-bottom: 6px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        .laneTooltipName {
+            font-size: 1em;
+            font-weight: bold;
+            letter-spacing: 0.02em;
+            text-transform: uppercase;
+            color: variables.$mainTxtColor;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+        .laneTooltipTotal {
+            flex-shrink: 0;
+            font-size: 0.8em;
+            font-weight: bold;
+            color: variables.$mainTxtColor;
+            background: variables.$mainColor;
+            border-radius: 10px;
+            padding: 1px 8px;
+        }
+        .laneTooltipBody {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .laneTooltipStep {
+            font-size: 0.9em;
+            line-height: 1.35em;
+            color: rgb(210, 210, 210);
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            row-gap: 2px;
+            column-gap: 6px;
+        }
+        .laneTooltipStepLanes {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            span {
+                color: variables.$mainTxtColor;
+                font-weight: bold;
+                border-radius: 10px;
+                padding: 1px 7px;
+            }
+        }
+        .laneTooltipStepLead {
+            white-space: nowrap;
+        }
+        .laneTooltipStepValue {
+            flex-shrink: 0;
+            margin-left: auto;
+            color: #ffd479;
+            font-weight: bold;
+        }
+    }
     &[data-theme~='settingsTooltips'] {
         margin-top: 2px;
         font-size: 0.9em;

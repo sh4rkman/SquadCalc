@@ -1,0 +1,21 @@
+{
+    "deployables": "Deployables",
+    "Mortar": "Morteiro 81mm",
+    "UB-32": "UB-32",
+    "HellCannon": "Hell Cannon",
+    "vehicles": "Veículos",
+    "Tech.Mortar": "Morteiro móvel",
+    "Tech.UB-32": "UB-32 móvel",
+    "BM-21Grad": "BM-21 Grad",
+    "M1064M121": "M1064 M121",
+    "impact": "Impacto",
+    "nearSurface": "Aérea",
+    "Mk19": "MK19-RWS",
+    "modded": "Mods",
+    "M109": "M109A7 Paladin",
+    "T62.DUMP.TRUCK": "T62 Dump Truck",
+    "MTLB_FAB500": "MTLB БЕГЕМОТ",
+    "HIMARS": "M142 HIMARS",
+    "TOS-1A": "TOS-1A",
+    "type_63": "Type 63"
+}

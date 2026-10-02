@@ -1,6 +1,8 @@
 @use '../shared/variables';
 
-dialog {
+dialog, #threeDView {
+    // #threeDView is a plain <div> (not a modal dialog, so the header can sit on top of it)
+    // but still shares the dialogs' base look - font size, colors, etc.
     width: calc(100% - 10%);
     text-align: left;
     border-radius: 10px;
@@ -90,9 +92,9 @@ dialog {
             }
             p {
                 margin: 2em 0 0;
-                br { display: none; }
                 img { max-height: 26px; }
             }
+            > p br { display: none; }
         }
     }
     &#factionsDialog {
@@ -167,7 +169,424 @@ dialog {
         width: 90%;        
     }
     &#calcInformation {
-        overflow:hidden;
+        overflow: hidden;
+    }
+    &#layerInformation {
+        max-width: 800px;
+        .layerThumbnail {
+            border: solid rgba(255, 255, 255, 0.6) 3px;
+            display: block;
+            width: 250px;
+            margin: 0 auto 1.5em;
+            border-radius: 6px;
+        }
+        .layerCommandGroup {
+            clear: both;
+            margin: 0 1.25em 2em;
+        }
+        .layerCommandLabel {
+            display: block;
+            margin-bottom: 0.5em;
+            font-size: 0.9em;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .layerCommandRow {
+            position: relative;
+            input {
+                width: 100%;
+                height: auto;
+                padding: 0.1em 2.4em 0.1em 0.7em;
+                background-color: rgba(255, 255, 255, 0.08);
+                border: 1px solid rgba(255, 255, 255, 0.15);
+                border-radius: 3px;
+                color: variables.$mainTxtColor;
+                font-family: monospace;
+                font-size: 1.3em;
+                font-weight: normal;
+                text-transform: none;
+                cursor: text;
+            }
+            .layerCommandCopyBtn {
+                position: absolute;
+                top: 50%;
+                right: 0.4em;
+                transform: translateY(-50%);
+                width: 1.8em;
+                height: 1.8em;
+                padding: 0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background: transparent;
+                border: none;
+                border-radius: 3px;
+                color: variables.$mainTxtColor;
+                cursor: pointer;
+                transition: color 0.2s ease, background-color 0.2s ease;
+                svg {
+                    width: 1em;
+                    height: 1em;
+                    fill: currentcolor;
+                }
+                &:focus {
+                    outline: none;
+                }
+
+                @media (hover: hover) {
+                    &:hover {
+                        color: variables.$mainColor;
+                        background-color: rgba(255, 255, 255, 0.08);
+                    }
+                }
+            }
+        }
+    }
+    &#threeDView {
+        position: fixed;
+        inset: 0;
+        z-index: 3; // above #map_ui's buttons, below the header (raised by body.threeD-open)
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        height: 100%;
+        max-width: 100%;
+        max-height: 100%;
+        margin: 0;
+        border-radius: 0;
+        background: variables.$mainBGColor;
+        backdrop-filter: none;
+        &[hidden] { display: none; }
+        .threeDViewport {
+            position: relative;
+            flex: 1;
+            canvas { display: block; }
+        }
+        .threeDOverlay {
+            position: absolute;
+            inset: 0;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.55);
+            color: variables.$mainTxtColor;
+            padding: 0 1em;
+            user-select: none;
+            &[hidden] { display: none; }
+        }
+        .threeDOverlayCard {
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            gap: 0.9em;
+            width: 520px;
+            max-width: 100%;
+            background: rgba(20, 20, 24, 0.82);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+            padding: 1.6em 1.8em;
+            text-align: center;
+            font-size: 1.05em;
+            h3 {
+                margin: 0;
+                padding: 0;
+                font-size: 1.3em;
+                letter-spacing: 0.02em;
+            }
+            p { margin: 0; }
+        }
+        .threeDOverlaySubtitle {
+            margin-top: -0.8em;
+            padding-bottom: 0.5em;
+            font-size: 0.95em;
+            opacity: 0.65;
+        }
+        .threeDOverlayDivider {
+            width: 100%;
+            border: none;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            margin: 0;
+        }
+        .threeDLoading {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 1.2em;
+            background: variables.$mainBGColor;
+            color: variables.$mainTxtColor;
+            font-size: 1.6em;
+            font-weight: 600;
+            letter-spacing: 0.03em;
+            &[hidden] { display: none; }
+        }
+        .threeDLoadingSpinner {
+            width: 3em;
+            height: 3em;
+            border: 0.3em solid rgba(255, 255, 255, 0.15);
+            border-top-color: variables.$mainColor;
+            border-radius: 50%;
+            animation: three-d-loading-spin 0.9s linear infinite;
+        }
+        .threeDOverlayHint {
+            display: grid;
+            grid-template-columns: auto auto;
+            align-self: center;
+            place-items: center start;
+            gap: 0.5em 0.8em;
+            font-size: 1em;
+            opacity: 0.75;
+            // Hidden on touch (desktop-only keyboard/scroll hints) - the class's own
+            // unconditional `display: grid` above would otherwise beat the UA [hidden] rule.
+            &[hidden] { display: none; }
+        }
+        .threeDOverlayHintKey {
+            justify-self: end;
+            display: flex;
+            gap: 0.2em;
+            kbd {
+                background: rgba(255, 255, 255, 0.12);
+                border: 1px solid rgba(255, 255, 255, 0.25);
+                border-radius: 4px;
+                padding: 0.1em 0.4em;
+                font-size: 0.9em;
+            }
+        }
+        .threeDOverlayOptions {
+            display: flex;
+            flex-direction: column;
+            gap: 1.1em;
+        }
+        // Two columns of checkboxes, then the two selects side by side on their own row -
+        // single column again on narrow screens.
+        .threeDOverlayToggles, .threeDOverlaySelects {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.7em 2em;
+
+            @media (width < 36em) {
+                grid-template-columns: 1fr;
+            }
+        }
+        .threeDOverlaySelects {
+            padding-top: 1.1em;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        .threeDOverlayOption {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.8em;
+            height: 22px;
+            cursor: pointer;
+            select {
+                box-sizing: border-box;
+                height: 22px;
+                width: 8em;
+                background: rgba(255, 255, 255, 0.1);
+                color: variables.$mainTxtColor;
+                border: 1px solid rgba(255, 255, 255, 0.25);
+                border-radius: 4px;
+                padding: 0 0.6em;
+                font-size: 0.95em;
+                cursor: pointer;
+            }
+            input[type="checkbox"] {
+                width: 22px;
+                height: 22px;
+                margin: 0;
+                cursor: pointer;
+                accent-color: variables.$mainColor;
+            }
+        }
+        .threeDGoButton, .threeDShareButton, .threeDQuitButton {
+            // border-box + shared height, padding reset to 0 (a bare button has its own
+            // UA default) - without that reset, Go's borderless box and Quit's 1px-border
+            // box round to different pixel heights even with the same min-height.
+            box-sizing: border-box;
+            height: 2.9em;
+            padding: 0;
+            width: 100%;
+            border-radius: 8px;
+            font-size: 1.15em;
+            font-weight: 600;
+            letter-spacing: 0.03em;
+            text-transform: uppercase;
+            cursor: pointer;
+        }
+        .threeDGoButton {
+            margin-top: 0.3em;
+            border: none;
+            background: variables.$mainColor;
+            color: #fff;
+            transition: filter 0.15s ease, transform 0.1s ease;
+
+            @media (hover: hover) {
+                &:hover { filter: brightness(1.12); }
+            }
+            &:active { transform: scale(0.98); }
+        }
+        .threeDShareButton, .threeDQuitButton {
+            // Pulls in closer to the button above than the card's own 0.9em gap.
+            margin-top: -0.4em;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            background: transparent;
+            color: variables.$mainTxtColor;
+            transition: background-color 0.15s ease;
+
+            @media (hover: hover) {
+                &:hover { background: rgba(255, 255, 255, 0.08); }
+            }
+            &:active { opacity: 0.8; }
+        }
+        .threeDFpsCounter {
+            position: absolute;
+            top: 0.6em;
+            left: 0.6em;
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 1em;
+            pointer-events: none;
+            z-index: 1;
+            @include variables.light-text-outline;
+
+            .threeDFpsUnit {
+                margin-left: 0.15em;
+                font-size: 0.7em;
+            }
+        }
+        // Drag-look fallback only (see _setDragFlying()) - with no pointer lock, the
+        // browser may spend Esc on something else (the Steam overlay closes on it).
+        .threeDMenuButton {
+            position: absolute;
+            top: 0.8em;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1;
+            padding: 0.6em 1.6em;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.55);
+            color: #fff;
+            font-size: 1.15em;
+            font-weight: 600;
+            letter-spacing: 0.03em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: background-color 0.15s ease;
+
+            @media (hover: hover) {
+                &:hover { background: rgba(0, 0, 0, 0.75); }
+            }
+        }
+        .threeDCrosshair {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 16px;
+            height: 16px;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 1;
+            &::before, &::after {
+                content: "";
+                position: absolute;
+                background: rgba(255, 255, 255, 0.85);
+                box-shadow: 0 0 2px rgba(0, 0, 0, 0.8);
+            }
+            &::before {
+                left: 50%;
+                top: 0;
+                bottom: 0;
+                width: 2px;
+                transform: translateX(-50%);
+            }
+            &::after {
+                top: 50%;
+                left: 0;
+                right: 0;
+                height: 2px;
+                transform: translateY(-50%);
+            }
+        }
+        .threeDSpeedHUD {
+            position: absolute;
+            left: 50%;
+            bottom: 10%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5em;
+            background: rgba(0, 0, 0, 0.6);
+            color: variables.$mainTxtColor;
+            padding: 0.9em 1.6em;
+            border-radius: 10px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+            &.visible { opacity: 1; }
+        }
+        .threeDSpeedHUDLabel {
+            font-size: 1.05em;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            opacity: 0.75;
+        }
+        .threeDSpeedHUDRow {
+            display: flex;
+            align-items: center;
+            gap: 1em;
+        }
+        .threeDSpeedHUDBar {
+            width: 220px;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        .threeDSpeedHUDFill {
+            height: 100%;
+            background: variables.$mainColor;
+            border-radius: 5px;
+        }
+        .threeDSpeedHUDValue {
+            font-size: 1.15em;
+            min-width: 4ch;
+            text-align: right;
+        }
+        .threeDMinimap {
+            position: absolute;
+            right: 1em;
+            bottom: 1em;
+            width: 280px;
+            height: 280px;
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            border-radius: 6px;
+            overflow: hidden;
+            background: rgba(0, 0, 0, 0.4);
+        }
+        .threeDMinimapImage {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .threeDMinimapDot {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            width: 22px;
+            height: 22px;
+            filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.9));
+            transform: translate(-50%, -50%);
+        }
     }
     &#weaponInformation {
         max-width: 350px;
@@ -216,17 +635,6 @@ dialog {
                 text-align: center;
             }
         }
-        .heightPadding {
-            input{
-                width: 50px;
-                text-align: center;
-                font-size: 1em;
-                border: 1px solid #ddd;
-                border-radius: 4px;
-                display: inline-block;
-                vertical-align: middle;
-            }
-        }
         td {
             cursor: default;
             width: auto;
@@ -239,7 +647,7 @@ dialog {
 
 }
 
-#calcInformation, #weaponInformation {
+#calcInformation, #weaponInformation, #layerInformation {
     .sim {
         display: none;
         &.active {
@@ -272,6 +680,32 @@ dialog {
         margin-bottom: -5px;
         transform: rotate(180deg) scaleX(-1);
     }
+    .heightGraphWrapper {
+        position: relative;
+        clear: both;
+    }
+    .seeIn3DButton {
+        position: absolute;
+        top: 1.5em;
+        left: 1.5em;
+        z-index: 1;
+        padding: 0.9em;
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        border-radius: 4px;
+        background: rgba(17, 17, 17, 0.75);
+        backdrop-filter: blur(6px);
+        color: #fff;
+        font-size: 0.85em;
+        font-weight: bold;
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+        cursor: pointer;
+        transition: background-color 0.15s ease;
+
+        @media (hover: hover) {
+            &:hover { background: variables.$mainColor; }
+        }
+    }
 }
 
 #canvasControls {
@@ -290,4 +724,8 @@ dialog {
             color: white;
         }
     }
+}
+
+@keyframes three-d-loading-spin {
+    to { transform: rotate(360deg); }
 }

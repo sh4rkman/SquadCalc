@@ -38,11 +38,13 @@ import SquadCalc from "./js/squadCalc.js";
 var options = {
     supportedLanguages: [
         ["en", "EN"],
-        ["zh", "中文"],
-        ["uk", "UKR"],
-        ["ru", "РУС"],
+        ["de", "DE"],
         ["fr", "FR"],
-        ["de", "DE"]
+        ["pt", "PT-BR"],
+        ["ru", "РУС"],
+        ["tr", "TR"],
+        ["uk", "UKR"],
+        ["zh", "中文"]
     ],
     gravity: 9.78,
     mapSize: 256,

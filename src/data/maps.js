@@ -13,19 +13,16 @@ export const MAPS = [
                 corner0: [-2000, -2000],
                 corner1: [2000, 2000],
             },
-            heightmap: {
-                origin: [-2040, -2040],
-                size: [4081, 4081],
-                scale: [1, 1, 1],
-                BWlevels: [291, 873],
+            landscapeScale: [1, 1, 0.087813952],
+            zOffset: 2.0,
+            landscape3D: {
+                landscapeScale: [1, 1, 0.043029724],
+                zOffset: 2,
             },
-            heightmapPNG: {
-                scale: [1, 1, 0.087813952],
-            }
         }
     },
-    { 
-        name: "Anvil", 
+    {
+        name: "Anvil",
         mapURL: "/img/maps/anvil/",
         radiusExclusion: FOBEXCLUSIONS.medium,
         SDK_data: {
@@ -33,15 +30,12 @@ export const MAPS = [
                 corner0: [-2040, -2040],
                 corner1: [1020, 1020],
             },
-            heightmap: {
-                origin: [-2040, -2040],
-                size: [4081, 4081],
-                scale: [0.75, 0.75, 0.45],
-                BWlevels: [1825, 6640]
+            landscapeScale: [0.75, 0.75, 0.226426712],
+            zOffset: -71.5835,
+            landscape3D: {
+                landscapeScale: [0.75, 0.75, 0.226426712],
+                zOffset: -71.5835,
             },
-            heightmapPNG: {
-                scale: [0.75, 0.75, 0.226426712],
-            }
         }
     },
     // { 
@@ -53,12 +47,6 @@ export const MAPS = [
     //             corner0: [-1954, -2080],
     //             corner1: [1950, 1825],
     //         },
-    //         heightmap: {
-    //             origin: [-2016, -2142],
-    //             size: [4033, 4033],
-    //             scale: [1, 1, 1],
-    //             BWlevels: [0, 2360]
-    //         }
     //     }
     // },
     { 
@@ -70,15 +58,12 @@ export const MAPS = [
                 corner0: [-2299, -2127],
                 corner1: [2299, 2472],
             },
-            heightmap: {
-                origin: [-2040, -2142],
-                size: [4065, 4065],
-                scale: [1.003937, 1.003937, 0.8],
-                BWlevels: [2593, 7712]
+            landscapeScale: [1.003937, 1.003937, 0.358381824],
+            zOffset: -31.0188,
+            landscape3D: {
+                landscapeScale: [1.003937, 1.003937, 0.358284579],
+                zOffset: -0.9868,
             },
-            heightmapPNG: {
-                scale: [1.003937, 1.003937, 0.417170742],
-            }
         }
     },
     { 
@@ -90,15 +75,12 @@ export const MAPS = [
                 corner0: [-2464, -2664],
                 corner1: [1600, 1400],
             },
-            heightmap: {
-                origin: [-2464, -2664],
-                size: [8129, 4827],
-                scale: [0.5, 0.5, 4],
-                BWlevels: [1209, 1369]
+            landscapeScale: [0.5, 0.5, 0.982942589],
+            zOffset: -793.5477,
+            landscape3D: {
+                landscapeScale: [0.5, 0.5, 0.982942589],
+                zOffset: -793.5477,
             },
-            heightmapPNG: {
-                scale: [0.5, 0.5, 0.982942589],
-            }
         }
     },
     { 
@@ -110,15 +92,12 @@ export const MAPS = [
                 corner0: [-1315, -1545],
                 corner1: [1690, 1460],
             },
-            heightmap: {
-                origin: [-2040, -2040],
-                size: [4081, 4081],
-                scale: [1, 1, 1],
-                BWlevels: [39, 440]
+            landscapeScale: [1, 1, 0.14797459],
+            zOffset: -48.43,
+            landscape3D: {
+                landscapeScale: [1, 1, 0.065334541],
+                zOffset: -48.43,
             },
-            heightmapPNG: {
-                scale: [1, 1, 0.14797459],
-            }
         }
     },
     { 
@@ -130,15 +109,12 @@ export const MAPS = [
                 corner0: [-1326, -1326],
                 corner1: [448, 448],
             },
-            heightmap: {
-                origin: [-1598, -1866],
-                size: [2806, 2806],
-                scale: [1, 1, 3.2],
-                BWlevels: [0, 675]
+            landscapeScale: [1, 1, 0.20168671],
+            zOffset: -61.5903,
+            landscape3D: {
+                landscapeScale: [1, 1, 0.205997796],
+                zOffset: -63.789,
             },
-            heightmapPNG: {
-                scale: [1, 1, 0.20168671],
-            }
         }
     },
     { 
@@ -150,15 +126,12 @@ export const MAPS = [
                 corner0: [-2016, -2016],
                 corner1: [2015, 2015],
             },
-            heightmap: {
-                origin: [-2032, -2032],
-                size: [4065, 4065],
-                scale: [1, 1, 0.4],
-                BWlevels: [0, 5516]
+            landscapeScale: [1, 1, 0.274412178],
+            zOffset: -245.0,
+            landscape3D: {
+                landscapeScale: [1, 1, 0.227111487],
+                zOffset: -245,
             },
-            heightmapPNG: {
-                scale: [1, 1, 0.274412178],
-            }
         }
     },
     { 
@@ -170,19 +143,16 @@ export const MAPS = [
                 corner0: [-2032, -2032],
                 corner1: [2032, 2032],
             },
-            heightmap: {
-                origin: [-2032, -2032],
-                size: [4065, 4065],
-                scale: [1, 1, 10],
-                BWlevels: [750, 950]
+            landscapeScale: [1, 1, 0.173697718],
+            zOffset: -62.8744,
+            landscape3D: {
+                landscapeScale: [1, 1, 0.126346801],
+                zOffset: -62.8744,
             },
-            heightmapPNG: {
-                scale: [1, 1, 0.173697718],
-            }
         }
     },
-    { 
-        name: "Harju", 
+    {
+        name: "Harju",
         mapURL: "/img/maps/harju/",
         radiusExclusion: FOBEXCLUSIONS.medium,
         SDK_data: {
@@ -190,16 +160,12 @@ export const MAPS = [
                 corner0: [-2016, -2016],
                 corner1: [2016, 2016],
             },
-            heightmap: {
-                origin: [-2016, -2016],
-                size: [4032, 4032],
-                scale: [1, 1, 1],
-                BWlevels: [1349, 3241]
+            landscapeScale: [1, 1, 0.229927482],
+            zOffset: -21.1422,
+            landscape3D: {
+                landscapeScale: [1, 1, 0.124975537],
+                zOffset: -0.2,
             },
-            heightmapPNG: {
-                scale: [1, 1, 0.229927482],
-            }
-
         }
     },
     { 
@@ -211,15 +177,12 @@ export const MAPS = [
                 corner0: [-2004, -2004],
                 corner1: [2004, 2004],
             },
-            heightmap: {
-                origin: [-2040, -2040],
-                size: [4081, 4081],
-                scale: [1, 1, 1],
-                BWlevels: [4643, 5595]
+            landscapeScale: [1, 1, 0.185722727],
+            zOffset: -15.5078,
+            landscape3D: {
+                landscapeScale: [1, 1, 0.089362846],
+                zOffset: -15.5078,
             },
-            heightmapPNG: {
-                scale: [1, 1, 0.185722727],
-            }
         }
     },
     { 
@@ -231,15 +194,12 @@ export const MAPS = [
                 corner0: [-2016, -2016],
                 corner1: [2016, 2016],
             },
-            heightmap: {
-                origin: [-2016, -2016],
-                size: [4033, 4033],
-                scale: [1, 1, 1.35],
-                BWlevels: [5437, 6846]
+            landscapeScale: [1, 1, 0.387570609],
+            zOffset: 31.6808,
+            landscape3D: {
+                landscapeScale: [1, 1, 0.387570609],
+                zOffset: 31.6808,
             },
-            heightmapPNG: {
-                scale: [1, 1, 0.387570609],
-            }
         }
     },
     { 
@@ -251,15 +211,12 @@ export const MAPS = [
                 corner0: [-2300, -2300],
                 corner1: [2317, 2317],
             },
-            heightmap: {
-                origin: [-2016, -2016],
-                size: [4065, 4065],
-                scale: [1, 1, 0.75],
-                BWlevels: [0, 9775]
+            landscapeScale: [1, 1, 0.750167993],
+            zOffset: 9.4085,
+            landscape3D: {
+                landscapeScale: [1, 1, 0.750167993],
+                zOffset: 9.4085,
             },
-            heightmapPNG: {
-                scale: [1, 1, 0.750167993],
-            }
         }
     },
     { 
@@ -271,15 +228,12 @@ export const MAPS = [
                 corner0: [-1076, -1076],
                 corner1: [1420, 1420],
             },
-            heightmap: {
-                origin: [-1334, -1715],
-                size: [6097, 7367],
-                scale: [0.5, 0.5, 1],
-                BWlevels: [100, 264]
+            landscapeScale: [0.5, 0.5, 0.174065564],
+            zOffset: -255.0,
+            landscape3D: {
+                landscapeScale: [0.5, 0.5, 0.162908726],
+                zOffset: -249.31,
             },
-            heightmapPNG: {
-                scale: [0.5, 0.5, 0.174065564],
-            }
         }
     },
     { 
@@ -291,15 +245,12 @@ export const MAPS = [
                 corner0: [-2167, -2167],
                 corner1: [2167, 2167],
             },
-            heightmap: {
-                origin: [-2167, -2167],
-                size: [4336, 4336],
-                scale: [1, 1, 1.5],
-                BWlevels: [5006, 6887]
+            landscapeScale: [1, 1, 0.321048558],
+            zOffset: 1.9652,
+            landscape3D: {
+                landscapeScale: [1, 1, 0.298333727],
+                zOffset: 1.9652,
             },
-            heightmapPNG: {
-                scale: [1, 1, 0.321048558],
-            }
         }
     },
     { 
@@ -311,15 +262,12 @@ export const MAPS = [
                 corner0: [-881, -1132],
                 corner1: [880, 629],
             },
-            heightmap: {
-                origin: [-1386, -1260],
-                size: [2773, 1891],
-                scale: [1, 1, 0.5],
-                BWlevels: [6188, 8903]
+            landscapeScale: [1, 1, 0.248098348],
+            zOffset: 4.1729,
+            landscape3D: {
+                landscapeScale: [1, 1, 0.248098348],
+                zOffset: 4.1729,
             },
-            heightmapPNG: {
-                scale: [1, 1, 0.248098348],
-            }
         }
     },
     { 
@@ -331,15 +279,12 @@ export const MAPS = [
                 corner0: [-2016, -2016],
                 corner1: [2015, 2015],
             },
-            heightmap: {
-                origin: [-2032, -2032],
-                size: [4065, 4065],
-                scale: [1, 1, 3],
-                BWlevels: [2479, 5898]
+            landscapeScale: [1, 1, 0.403959641],
+            zOffset: 38.0,
+            landscape3D: {
+                landscapeScale: [1, 1, 0.403959641],
+                zOffset: 38,
             },
-            heightmapPNG: {
-                scale: [1, 1, 0.403959641],
-            }
         }
     },
     { 
@@ -351,15 +296,12 @@ export const MAPS = [
                 corner0: [-1200, -1100],
                 corner1: [1200, 1300],
             },
-            heightmap: {
-                origin: [-1545, -1260],
-                size: [3061, 2551],
-                scale: [1, 1, 1.2],
-                BWlevels: [2479, 5898]
+            landscapeScale: [1, 1, 0.493831859],
+            zOffset: -153.9385,
+            landscape3D: {
+                landscapeScale: [1, 1, 0.493831859],
+                zOffset: -153.9385,
             },
-            heightmapPNG: {
-                scale: [1, 1, 0.493831859],
-            }
         }
     },
     { 
@@ -371,15 +313,12 @@ export const MAPS = [
                 corner0: [-935, -1140],
                 corner1: [1820, 1615],
             },
-            heightmap: {
-                origin: [-1785, -1785],
-                size: [4081, 4081],
-                scale: [1, 1, 0.3],
-                BWlevels: [4326, 6683]
+            landscapeScale: [1, 1, 0.112586966],
+            zOffset: -8.7821,
+            landscape3D: {
+                landscapeScale: [1, 1, 0.060502473],
+                zOffset: -7.043,
             },
-            heightmapPNG: {
-                scale: [1, 1, 0.112586966],
-            }
         }
     },
     { 
@@ -391,15 +330,12 @@ export const MAPS = [
                 corner0: [-1390, -1402],
                 corner1: [1410, 1398],
             },
-            heightmap: {
-                origin: [-2016, -2016],
-                size: [4033, 4033],
-                scale: [1, 1, 1],
-                BWlevels: [4940, 5523]
+            landscapeScale: [1, 1, 0.205154741],
+            zOffset: -17.9298,
+            landscape3D: {
+                landscapeScale: [1, 1, 0.123498984],
+                zOffset: -17.9298,
             },
-            heightmapPNG: {
-                scale: [1, 1, 0.205154741],
-            }
         }
     },
     // { 
@@ -410,12 +346,6 @@ export const MAPS = [
     //         minimap: {
     //             corner0: [-1390, -1402],
     //             corner1: [1410, 1398],
-    //         },
-    //         heightmap: {
-    //             origin: [-2016, -2016],
-    //             size: [4033, 4033],
-    //             scale: [1, 1, 1],
-    //             BWlevels: [4940, 5523]
     //         },
     //         heightmapPNG: {
     //             scale: [1, 1, 0.4],
@@ -431,15 +361,12 @@ export const MAPS = [
                 corner0: [-2016, -2016],
                 corner1: [2016, 2016],
             },
-            heightmap: {
-                origin: [-2016, -2016],
-                size: [4033, 4033],
-                scale: [1, 1, 0.28],
-                BWlevels: [410, 9643]
+            landscapeScale: [1, 1, 0.317704444],
+            zOffset: -79.18,
+            landscape3D: {
+                landscapeScale: [1, 1, 0.118174655],
+                zOffset: 3.9,
             },
-            heightmapPNG: {
-                scale: [1, 1, 0.317704444],
-            }
         }
     },
     { 
@@ -451,15 +378,12 @@ export const MAPS = [
                 corner0: [-2300, -2050],
                 corner1: [2300, 2550],
             },
-            heightmap: {
-                origin: [-2040, -2040],
-                size: [4081, 4081],
-                scale: [1, 1, 1],
-                BWlevels: [1349, 3241]
+            landscapeScale: [1, 1, 0.233953671],
+            zOffset: 0.0,
+            landscape3D: {
+                landscapeScale: [1, 1, 0.11211708],
+                zOffset: 0,
             },
-            heightmapPNG: {
-                scale: [1, 1, 0.233953671],
-            }
         }
     },
     { 
@@ -476,15 +400,12 @@ export const MAPS = [
                 corner0: [-3611, -3293],
                 corner1: [3238, 3576],
             },
-            heightmap: {
-                origin: [-4811, -3947],
-                size: [7113, 5081],
-                scale: [1.2, 1.2, 3.5],
-                BWlevels: [952, 4074]
+            landscapeScale: [1.2, 1.2, 2.086916336],
+            zOffset: -360.7172,
+            landscape3D: {
+                landscapeScale: [1.2, 1.2, 1.955089913],
+                zOffset: -293.4857,
             },
-            heightmapPNG: {
-                scale: [1.2, 1.2, 2.086916336],
-            }
         }
     },
     { 
@@ -496,15 +417,12 @@ export const MAPS = [
                 corner0: [-640, -447],
                 corner1: [660, 853],
             },
-            heightmap: {
-                origin: [-683, -373],
-                size: [1427, 1055],
-                scale: [1, 1, 0.75],
-                BWlevels: [1375, 1854]
+            landscapeScale: [1, 1, 0.267739565],
+            zOffset: -138.0639,
+            landscape3D: {
+                landscapeScale: [1, 1, 0.267739745],
+                zOffset: -138.064,
             },
-            heightmapPNG: {
-                scale: [1, 1, 0.267739565],
-            }
         }
     },
     { 
@@ -516,15 +434,12 @@ export const MAPS = [
                 corner0: [-2340, -2340],
                 corner1: [2340, 2340],
             },
-            heightmap: {
-                origin: [-2287, -2287], // SDK is wrong, this is deduced instead
-                size: [4573, 4573],
-                scale: [1, 1, 1.25],
-                BWlevels: [3689, 4111]
+            landscapeScale: [1, 1, 0.152035884],
+            zOffset: -83.457,
+            landscape3D: {
+                landscapeScale: [1, 1, 0.148738475],
+                zOffset: -81.7753,
             },
-            heightmapPNG: {
-                scale: [1, 1, 0.152035884],
-            }
         }
     },
     { 
@@ -536,15 +451,425 @@ export const MAPS = [
                 corner0: [-3302, -3302], 
                 corner1: [3048, 3048],
             },
-            heightmap: {
-                origin: [-3302, -3302], // SDK is wrong, this is deduced instead
-                size: [6351, 6351],
-                scale: [1, 1, 4],
-                BWlevels: [0, 833]
+            landscapeScale: [1, 1, 0.485970247],
+            zOffset: -65.4916,
+            landscape3D: {
+                landscapeScale: [1, 1, 0.485970247],
+                zOffset: -65.4916,
             },
-            heightmapPNG: {
-                scale: [1, 1, 0.485970247],
-            }
+        }
+    },
+    // SPM
+    { 
+        name: "Hrodna_Border", 
+        mapURL: "/img/maps/MODS/SPM/hrodna/", 
+        radiusExclusion: FOBEXCLUSIONS.medium,
+        mod: "SuperMod",
+        SDK_data: {
+            minimap: {
+                corner0: [-2016, -2016], 
+                corner1: [2016, 2016],
+            },
+            landscapeScale: [1, 1, 0.485617783],
+        }
+    },
+    { 
+        name: "Chornivsk", 
+        mapURL: "/img/maps/MODS/SPM/chornivsk/", 
+        radiusExclusion: FOBEXCLUSIONS.medium,
+        mod: "SuperMod",
+        SDK_data: {
+            minimap: {
+                corner0: [-1649, -1547], 
+                corner1: [1535, 1637],
+            },
+            landscapeScale: [1, 1, 0.124958144],
+        }
+    },
+    //SD
+    {
+        name: "AlBasrah_legacy",
+        mapURL: "/img/maps/MODS/SD/albasrah_legacy/",
+        radiusExclusion: FOBEXCLUSIONS.medium,
+        mod: "SteelDivision",
+        SDK_data: {
+            minimap: {
+                corner0: [-1520,-1520],
+                corner1: [1520,1520],
+            },
+            landscapeScale: [1, 1, 0.084748958],
+            zOffset: -15.7523,
+            landscape3D: {
+                landscapeScale: [1, 1, 0.043778399],
+                zOffset: -10.81,
+            },
+        }
+    },
+    // GC
+    {
+        name: "Bespin",
+        mapURL: "/img/maps/MODS/GC/bespin/",
+        singleLayer: true,
+        mod: "GalacticContention",
+        radiusExclusion: FOBEXCLUSIONS.medium,
+        SDK_data: {
+            minimap: {
+                corner0: [-2031.92, -2031.92],
+                corner1: [2031.92, 2031.92],
+            },
+            landscapeScale: [1, 1, 4.947832833],
+        }
+    },
+    {
+        name: "Coruscant",
+        mapURL: "/img/maps/MODS/GC/coruscant/",
+        singleLayer: true,
+        mod: "GalacticContention",
+        radiusExclusion: FOBEXCLUSIONS.medium,
+        SDK_data: {
+            minimap: {
+                corner0: [-2000, -2000],
+                corner1: [2000, 2000],
+            },
+            landscapeScale: [1, 1, 12.178692268],
+        }
+    },
+    {
+        name: "Corvette",
+        mapURL: "/img/maps/MODS/GC/corvette/",
+        singleLayer: true,
+        mod: "GalacticContention",
+        radiusExclusion: FOBEXCLUSIONS.medium,
+        SDK_data: {
+            minimap: {
+                corner0: [-166.20, -78.11],
+                corner1: [-6.65, 81.44]
+            },
+            landscapeScale: [1, 1, 0.015758521],
+        }
+    },
+    {
+        name: "Felucia",
+        mapURL: "/img/maps/MODS/GC/felucia/",
+        singleLayer: true,
+        mod: "GalacticContention",
+        radiusExclusion: FOBEXCLUSIONS.medium,
+        SDK_data: {
+            minimap: {
+                corner0: [-789.93, -3999.91],
+                corner1: [1876.70, -1333.21],
+            },
+            landscapeScale: [1, 1, 0.667760064],
+        }
+    },
+    {
+        name: "Galban",
+        mapURL: "/img/maps/MODS/GC/galban/",
+        singleLayer: true,
+        mod: "GalacticContention",
+        radiusExclusion: FOBEXCLUSIONS.medium,
+        SDK_data: {
+            minimap: {
+                corner0: [-1784.99, -1784.97],
+                corner1: [1784.97, 1784.91],
+            },
+            landscapeScale: [1, 1, 4.036845955],
+        }
+    },
+    {
+        name: "Geonosis",
+        mapURL: "/img/maps/MODS/GC/geonosis/",
+        singleLayer: true,
+        mod: "GalacticContention",
+        radiusExclusion: FOBEXCLUSIONS.medium,
+        SDK_data: {
+            minimap: {
+                corner0: [-2015.67, -2015.67],
+                corner1: [2015.7, 2015.7],
+            },
+            landscapeScale: [1, 1, 7.295198568],
+        }
+    },
+    {
+        name: "Kashyyyk",
+        mapURL: "/img/maps/MODS/GC/kashyyyk/",
+        singleLayer: true,
+        mod: "GalacticContention",
+        radiusExclusion: FOBEXCLUSIONS.medium,
+        SDK_data: {
+            minimap: {
+                corner0: [-2106.43,-2814.39],
+                corner1: [1893.56, 1185.59],
+            },
+            landscapeScale: [1, 1, 0.368167],
+        }
+    },
+    {
+        name: "Kavado",
+        mapURL: "/img/maps/MODS/GC/kavado/",
+        singleLayer: true,
+        mod: "GalacticContention",
+        radiusExclusion: FOBEXCLUSIONS.medium,
+        SDK_data: {
+            minimap: {
+                corner0: [-1072.36, -2098.28],
+                corner1: [2052.09, 1026.17],
+            },
+            landscapeScale: [1, 1, 1.536714457],
+        }
+    },
+    {
+        name: "Mallidon",
+        mapURL: "/img/maps/MODS/GC/mallidon/",
+        singleLayer: true,
+        mod: "GalacticContention",
+        radiusExclusion: FOBEXCLUSIONS.medium,
+        SDK_data: {
+            minimap: {
+                corner0: [-2400, -2400],
+                corner1: [-400, -400]
+            },
+            landscapeScale: [1, 1, 0.754785829],
+        }
+    },
+    {
+        name: "Miniosis",
+        mapURL: "/img/maps/MODS/GC/miniosis/",
+        singleLayer: true,
+        mod: "GalacticContention",
+        radiusExclusion: FOBEXCLUSIONS.medium,
+        SDK_data: {
+            minimap: {
+                corner0: [-1020, -1020],
+                corner1: [1020, 1020]
+            },
+            landscapeScale: [1, 1, 0.891445085],
+        }
+    },
+    {
+        name: "Morak",
+        mapURL: "/img/maps/MODS/GC/morak/",
+        singleLayer: true,
+        mod: "GalacticContention",
+        radiusExclusion: FOBEXCLUSIONS.medium,
+        SDK_data: {
+            minimap: {
+                corner0: [-3250, -3250],
+                corner1: [3250, 3250]
+            },
+            landscapeScale: [1, 1, 2.244150079],
+        }
+    },
+    {
+        name: "MorakLegacy",
+        mapURL: "/img/maps/MODS/GC/moraklegacy/",
+        singleLayer: true,
+        mod: "GalacticContention",
+        radiusExclusion: FOBEXCLUSIONS.medium,
+        SDK_data: {
+            minimap: {
+                corner0: [-2102.47, -2301.85],
+                corner1: [2102.47, 2301.85]
+            },
+            landscapeScale: [1, 1, 1.821209448],
+        }
+    },
+    {
+        name: "Mygeeto",
+        mapURL: "/img/maps/MODS/GC/mygeeto/",
+        singleLayer: true,
+        mod: "GalacticContention",
+        radiusExclusion: FOBEXCLUSIONS.medium,
+        SDK_data: {
+            minimap: {
+                corner0: [-2000, -2000],
+                corner1: [2000, 2000],
+            },
+            landscapeScale: [1, 1, 7.458831189],
+        }
+    },
+    {
+        name: "NabooPlains",
+        mapURL: "/img/maps/MODS/GC/nabooplains/",
+        singleLayer: true,
+        mod: "GalacticContention",
+        radiusExclusion: FOBEXCLUSIONS.medium,
+        SDK_data: {
+            minimap: {
+                corner0: [-1967.98, -1967.98],
+                corner1: [1968.98, 1968.98],
+            },
+            landscapeScale: [1, 1, 0.355040546],
+        }
+    },
+    {
+        name: "Ortoplutonia",
+        mapURL: "/img/maps/MODS/GC/ortoplutonia/",
+        singleLayer: true,
+        mod: "GalacticContention",
+        radiusExclusion: FOBEXCLUSIONS.medium,
+        SDK_data: {
+            minimap: {
+                corner0: [-1999.95, -1999.95],
+                corner1: [2000.05, 2000.05],
+            },
+            landscapeScale: [1, 1, 1.211747024],
+        }
+    },
+    {
+        name: "Rhenvar",
+        mapURL: "/img/maps/MODS/GC/rhenvar/",
+        singleLayer: true,
+        mod: "GalacticContention",
+        radiusExclusion: FOBEXCLUSIONS.medium,
+        gridSize: 900,
+        SDK_data: {
+            minimap: {
+                corner0: [-4079.85, -4079.85],
+                corner1: [4053.6, 4053.6],
+            },
+            landscapeScale: [1, 1, 1.200851022],
+        }
+    },
+    {
+        name: "Ryloth",
+        mapURL: "/img/maps/MODS/GC/ryloth/",
+        singleLayer: true,
+        mod: "GalacticContention",
+        radiusExclusion: FOBEXCLUSIONS.medium,
+        no3D: true,
+        SDK_data: {
+            minimap: {
+                corner0: [-620, -620],
+                corner1: [620, 620],
+            },
+        }
+    },
+    // {
+    //     name: "Ryloth_Canyons",
+    //     mapURL: "/img/maps/MODS/GC/ryloth_canyons/",
+    //     singleLayer: true,
+    //     mod: "GalacticContention",
+    //     radiusExclusion: FOBEXCLUSIONS.medium,
+    //     SDK_data: {
+    //         minimap: {
+    //             corner0: [-220, -220],
+    //             corner1: [220, 220],
+    //         },
+    //     }
+    // },
+    {
+        name: "Sesid",
+        mapURL: "/img/maps/MODS/GC/sesid/",
+        singleLayer: true,
+        mod: "GalacticContention",
+        radiusExclusion: FOBEXCLUSIONS.medium,
+        SDK_data: {
+            minimap: {
+                corner0: [-1880, -1880],
+                corner1: [1880, 1880],
+            },
+            landscapeScale: [1, 1, 0.819146736],
+        }
+    },
+    {
+        name: "SesidEquator",
+        mapURL: "/img/maps/MODS/GC/sesidequator/",
+        singleLayer: true,
+        mod: "GalacticContention",
+        radiusExclusion: FOBEXCLUSIONS.medium,
+        SDK_data: {
+            minimap: {
+                corner0: [-2400, -2400],
+                corner1: [2400, 2400],
+            },
+            landscapeScale: [1, 1, 1.794266345],
+        }
+    },
+    {
+        name: "Sullust",
+        mapURL: "/img/maps/MODS/GC/sullust/",
+        singleLayer: true,
+        mod: "GalacticContention",
+        radiusExclusion: FOBEXCLUSIONS.medium,
+        SDK_data: {
+            minimap: {
+                corner0: [-1078.77, -1078.77],
+                corner1: [1079.56, 1079.56],
+            },
+            landscapeScale: [1, 1, 7.976126518],
+        }
+    },
+    {
+        name: "Tatooine",
+        mapURL: "/img/maps/MODS/GC/tatooine/",
+        singleLayer: true,
+        mod: "GalacticContention",
+        radiusExclusion: FOBEXCLUSIONS.medium,
+        SDK_data: {
+            minimap: {
+                corner0: [-1966.20, -1865.35],
+                corner1: [1579.80, 1680.65]
+            },
+            landscapeScale: [1, 1, 1.187478002],
+        }
+    },
+    {
+        name: "Umbara",
+        mapURL: "/img/maps/MODS/GC/umbara/",
+        singleLayer: true,
+        mod: "GalacticContention",
+        radiusExclusion: FOBEXCLUSIONS.medium,
+        SDK_data: {
+            minimap: {
+                corner0: [-800, -800],
+                corner1: [800, 800],
+            },
+            landscapeScale: [1, 1, 0.210430224],
+        }
+    },
+    {
+        name: "VenatorAssault",
+        mapURL: "/img/maps/MODS/GC/venator/",
+        singleLayer: true,
+        mod: "GalacticContention",
+        radiusExclusion: FOBEXCLUSIONS.medium,
+        no3D: true ,
+        SDK_data: {
+            minimap: {
+                corner0: [-400.3, -399.6],
+                corner1: [399.7, 400.4],
+            },
+            landscapeScale: [1, 1, 0.545954917],
+        }
+    },
+    {
+        name: "VenatorAssault2",
+        mapURL: "/img/maps/MODS/GC/venator2/",
+        singleLayer: true,
+        mod: "GalacticContention",
+        radiusExclusion: FOBEXCLUSIONS.medium,
+        no3D: true,
+        SDK_data: {
+            minimap: {
+                corner0: [-855.4, -462],
+                corner1: [644.6, 1038],
+            },
+            landscapeScale: [1, 1, 0.545954917],
+        }
+    },
+    {
+        name: "Yavin4",
+        mapURL: "/img/maps/MODS/GC/yavin4/",
+        singleLayer: true,
+        mod: "GalacticContention",
+        radiusExclusion: FOBEXCLUSIONS.medium,
+        SDK_data: {
+            minimap: {
+                corner0: [-1260.02, -1260.02],
+                corner1: [1260.02, 1260.02]
+            },
+            landscapeScale: [1, 1, 0.721582271],
         }
     },
     // Custom Map Template
@@ -566,21 +891,6 @@ export const MAPS = [
 
 
 /**
- * Calculates the final z-scaling of a heightmap,
- * by taking the black and white levels used in gimp to optimize the heightmap,
- * and the zScale of the UE4 landscape transform in meters from SquadSDK
- * @param {number} bLevel - optimized black level from original heightmap
- * @param {number} wLevel - optimized white level from original heightmap
- * @param {number} zScale - original zScale of landscape transform in SquadSDK in meters
- * @returns {number} final scaling
- */
-function scale(bLevel, wLevel, zScale) {
-    const levelRange = (wLevel - bLevel) / 10000;
-    return (512 * levelRange * zScale) / 512;
-}
-
-
-/**
  * Generates array with [x,y] dimensions of map, based on the minimap corner transforms from SquadSDK
  * @param {Number[]} fCorner - [x,y] positon of north west corner of minimap in SquadSDK
  * @param {Number[]} sCorner - [x,y] positon of south east corner of minimap in SquadSDK
@@ -593,67 +903,11 @@ function bounds(fCorner, sCorner) {
     return [xM, yM];
 }
 
-
-/**
- * Utility function to generate information needed to optimize heightmaps.
- * Generates information about scaling and cropping heightmaps so that they match the minimap and map dimensions.
- * Also calculates map dimensions.
- */
-function extraInfo() {
-
-    MAPS.forEach((map) => {
-
-        const e = map.SDK_data;
-        if (!e) {
-            console.warn(`${map.name} has no SDK Data!`);
-            return;
-        }
-
-        const mm = e.minimap;
-        const mmBounds = bounds(mm.corner0, mm.corner1);
-
-        const xO = e.heightmap.origin[0] - Math.min(mm.corner0[0], mm.corner1[0]);
-        const yO = e.heightmap.origin[1] - Math.min(mm.corner0[1], mm.corner1[1]);
-
-        // Map info
-        console.log(`${map.name}`);
-        console.log(`    * Map dimensions: [${mmBounds}]`);
-        console.log(`    * Heightmap dimensions : [${e.heightmap.size[0]},${e.heightmap.size[1]}], scale: [${e.heightmap.scale}]`);
-
-        // how to scale & crop heightmap in gimp
-        console.log("    * Minimap & Heightmap position :");
-        console.log(`        -> scale heightmap to: ${Math.round(e.heightmap.size[0] * e.heightmap.scale[0])}x${Math.round(e.heightmap.size[1] * e.heightmap.scale[1])}`);
-        console.log(`        -> set canvas size to: ${mmBounds[0]}x${mmBounds[1]} with offset: ${xO}x${yO}`);
-
-        // Warning if the heightmap is smaller than the minimap
-        if (e.heightmap.size[0] * e.heightmap.scale[0] < mmBounds[0] || e.heightmap.size[1] * e.heightmap.scale[1] < mmBounds[1]) {
-            console.warn("        -> heightmap is smaller than the minimap");
-        }
-
-        // Heightmap z-scaling & levels
-        console.log("    * Heightmap z-scaling & Levels :");
-        console.log(`        -> set levels to: ${e.heightmap.BWlevels[0]} <-> ${e.heightmap.BWlevels[1]}`);
-        console.log(`        -> final z-scale: ${scale(e.heightmap.BWlevels[0], e.heightmap.BWlevels[1], e.heightmap.scale[2])}`);
-        console.log("---");
-    });
-
-}
-
-// Only run this with `node src/data/maps.js mapinfo`
-if (typeof process !== "undefined" && process.argv?.[2] === "mapinfo") {
-    extraInfo();
-}
-
-// Compute size in meters and z-scaling from SDK data for each map
+// Compute size in meters for each map
 export function initMapsProperties() {
     MAPS.forEach((map) => {
         map.size = bounds(map.SDK_data.minimap.corner0, map.SDK_data.minimap.corner1)[0];
         map.sizeY = bounds(map.SDK_data.minimap.corner0, map.SDK_data.minimap.corner1)[1];
-        map.scaling = scale(
-            map.SDK_data?.heightmap?.BWlevels?.[0] ?? 0,
-            map.SDK_data?.heightmap?.BWlevels?.[1] ?? 0,
-            map.SDK_data?.heightmap?.scale?.[2] ?? 1
-        ) || 1;
     });
 }
 

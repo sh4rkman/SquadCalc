@@ -1,5 +1,7 @@
 {
+    "positionStep": "Position {{step}}",
     "basemode": "Basis-Karte",
+    "hdUnavailable": "HD-Version dieser Karte ist nicht verfügbar",
     "terrainmode": "Gelände-Karte",
     "topographicmode": "Topografische-Karte",
     "helpmode": "Häufige Waffenpositionen anzeigen",
@@ -22,7 +24,6 @@
     "spreadDesc": "Aufgrund der Streuung der Waffe (MOA) und der Projektillänge können Schüsse in einem elliptischen Muster streuen.",
     "moaDesc": "Minute of Angle (MOA) misst in der Artillerie die Waffenungenauigkeit und zeigt die Streuung der Schüsse an. Ein MOA entspricht 1/60 Grad.",
     "velocityDesc": "Die Mündungsgeschwindigkeit ist die Geschwindigkeit, mit der ein Projektil den Lauf einer Waffe verlässt, gemessen direkt beim Austritt. Sie beeinflusst Reichweite und Genauigkeit des Schusses.",
-    "heightPaddingDesc": "Wenn die Waffe über dem Boden platziert wird (z.B. auf Gebäuden oder Brücken), gib hier die zusätzliche Höhe an.",
     "smoothMapTooltip": "Fügt sanfte Animationen beim Zoomen oder Verschieben der Karte hinzu. Eine Seitenaktualisierung ist erforderlich",
     "moddedWeaponTooltip": "Fügt Waffenunterstützung für beliebte Mods hinzu (Steel Division, Global Escalation, Squad AdminTools, ...)",
     "damageRadiusTooltip": "Todesradius und 25-Schadens-Radius anzeigen",
@@ -59,6 +60,7 @@
     "invalidSession": "Ungültige Sitzungs-ID",
     "invalidSessionRules": "Sitzungs-ID muss 6-20 alphanumerische Zeichen enthalten",
     "toggleLayer": "Layer ein-/ausblenden",
+    "layerInfo": "Layer-Informationen",
     "fileNotSupported": "Datei wird nicht unterstützt",
     "openIssue": "Melde ein Problem auf Github/Discord, wenn du denkst, dass dies ein Fehler ist",
     "mapSaved": "Karte in Datei gespeichert",
@@ -85,5 +87,7 @@
     "legacyMode": "Zum einfachen Modus wechseln",
     "returnToMap": "Zur Kartenansicht wechseln",
     "settings": "Einstellungen",
-    "openFactionSelection": "Klicken um die Fraktionsauswahl zu öffnen"
+    "openFactionSelection": "Klicken um die Fraktionsauswahl zu öffnen",
+    "view3D": "3D-Ansicht",
+    "view3DUnavailable": "3D-Ansicht ist für diese Karte nicht verfügbar"
 }

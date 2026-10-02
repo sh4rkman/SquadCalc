@@ -404,9 +404,6 @@ export const squadWeaponMarker = squadMarker.extend({
             $("#angleChoiceLow").prop("checked", true);
         }
 
-        // Additional height
-        $(".heightPadding input").val(this.heightPadding);
-
         // Move To: load current weapon position as keypad
         const currentLatLng = this.getLatLng();
         $(".moveToInput").val(this.map.getKP(-currentLatLng.lat, currentLatLng.lng, 6));
@@ -416,27 +413,6 @@ export const squadWeaponMarker = squadMarker.extend({
         $("input[type=radio][name=angleChoice]").on("change", weapon, (e) => {
             weapon.angleType = e.target.value;
             this.map.updateTargets();
-        });
-
-        $(".heightPadding input").on("change", weapon, (e) => {
-            const input = e.currentTarget;
-            const MAXHEIGHTPADDING = 300;
-            input.value = Math.max(0, Math.min(input.value, MAXHEIGHTPADDING));
-            weapon.heightPadding = parseFloat(input.value);
-            this.map.updateTargets();
-        
-            // Update the marker in the session
-            if (App.session.ws && App.session.ws.readyState === WebSocket.OPEN) {
-                App.session.ws.send(
-                    JSON.stringify({
-                        type: "MOVING_WEAPON",
-                        uid: this.uid,
-                        lat: this._latlng.lat,
-                        lng: this._latlng.lng,
-                        heightPadding: input.value,
-                    })
-                );
-            }
         });
 
         $(".moveToBtn").on("click", weapon, (e) => {

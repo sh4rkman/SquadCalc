@@ -51,13 +51,6 @@ tippy("span[data-i18n='settings:mapAnimationSettings']", {
     },
 });
 
-tippy("span[data-i18n='settings:moddedWeapons']", {
-    ...commonToolipsSettings,
-    onShow(tip) {
-        tip.setContent(`${i18next.t("tooltips:moddedWeaponTooltip")}`);
-    },
-});
-
 tippy("span[data-i18n='settings:showAnimations']", {
     ...commonToolipsSettings,
     onShow(tip) {
@@ -285,9 +278,25 @@ tippy(".btn-hd", {
     ...commonMapMenuToolipsSettings,
     placement: "left",
     onShow(tip) {
-        tip.setContent(i18next.t("settings:highquality"));
+        const locked = tip.reference.classList.contains("locked");
+        tip.setContent(i18next.t(locked ? "tooltips:hdUnavailable" : "settings:highquality"));
     },
 });
+export const layerInfoTooltips = tippy(".btn-layer-info", {
+    ...commonMapMenuToolipsSettings,
+    placement: "left",
+    onShow(tip) {
+        tip.setContent(i18next.t("tooltips:layerInfo"));
+    },
+})[0];
+export const threeDTooltips = tippy(".btn-3d", {
+    ...commonMapMenuToolipsSettings,
+    placement: "left",
+    onShow(tip) {
+        const locked = tip.reference.classList.contains("locked");
+        tip.setContent(i18next.t(locked ? "tooltips:view3DUnavailable" : "tooltips:view3D"));
+    },
+})[0];
 tippy(".btn-legacy", {
     ...commonMapMenuToolipsSettings,
     onShow(tip) {
@@ -315,13 +324,6 @@ export const settingsTooltips = tippy(".btn-settings", {
         tip.setContent(i18next.t("tooltips:settings"));
     },
 })[0];
-tippy(".btn-share", {
-    ...commonMapMenuToolipsSettings,
-    placement: "left",
-    onShow(tip) {
-        tip.setContent(i18next.t("tooltips:shareSession"));
-    },
-});
 tippy(".btn-helpmap", {
     ...commonMapMenuToolipsSettings,
     onShow(tip) {
@@ -494,17 +496,5 @@ tippy(".infVelocityTooltip", {
     delay: [500, 0],
     onShow(tip) {
         tip.setContent(i18next.t("tooltips:velocityDesc"));
-    },
-});
-
-tippy(".infHeightPaddingTooltip", {
-    animation: "fade",
-    placement: "top",
-    touch: false,
-    appendTo: weaponDialog,
-    theme: "infTooltips",
-    delay: [500, 0],
-    onShow(tip) {
-        tip.setContent(i18next.t("tooltips:heightPaddingDesc"));
     },
 });

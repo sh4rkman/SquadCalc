@@ -583,6 +583,20 @@ export const squadTargetMarker = squadMarker.extend({
             if (simulation2){ cancelAnimationFrame(simulation2.animationFrame);}
         });
 
+        // Re-bound on every click since the firing solution/angle is per-target -
+        // .off() first so reopening on a different target doesn't stack listeners.
+        $("#sim1 .seeIn3DButton").off("click").on("click", () => {
+            DIALOG.close();
+            App.open3D({ firingSolution: this.firingSolution1, angleType: this.map.activeWeaponsMarkers.getLayers()[0].angleType });
+        });
+        $("#sim2 .seeIn3DButton").off("click");
+        if (simulation2) {
+            $("#sim2 .seeIn3DButton").on("click", () => {
+                DIALOG.close();
+                App.open3D({ firingSolution: this.firingSolution2, angleType: this.map.activeWeaponsMarkers.getLayers()[1].angleType });
+            });
+        }
+
         DIALOG.showModal();
     },
 

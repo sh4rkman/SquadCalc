@@ -15,14 +15,15 @@ export const squadVehicleMarker = Marker.extend({
     },
 
     // Constructor
-    initialize: function (latlng, spawner, vehicle, faction, dedicatedSpawn, options) {
-        
+    initialize: function (latlng, spawner, vehicle, faction, dedicatedSpawn, modFolder, options) {
+
         Marker.prototype.initialize.call(this, latlng, options);
 
         this.spawner = spawner;
         this.vehicle = vehicle;
         this.dedicatedSpawn = dedicatedSpawn;
         this.faction = faction;
+        this.modFolder = modFolder;
 
         this.setIcon(
             new Icon({
@@ -32,6 +33,16 @@ export const squadVehicleMarker = Marker.extend({
                 className: "vehSpawnIcon"
             })
         );
+
+        // Fallback if the vehicle has no dedicated icon
+        this.on("add", () => {
+            const img = this.getElement();
+            if (!img) return;
+            img.onerror = () => {
+                img.onerror = null;
+                img.src = "/img/icons/default/vehicles/map_truck_transport.svg";
+            };
+        });
 
         this.setRotationAngle(spawner.rotation_z + 90);
 
@@ -82,7 +93,7 @@ export const squadVehicleMarker = Marker.extend({
 
                 <div class="vehTitle">
                     <div class="vehName">${i18next.t(this.vehicle.type, { ns: "vehicles" })}</div>
-                    <img class="vehFlag" src="/img/flags/${this.faction}.webp" class="img-flag" />
+                    <img class="vehFlag" src="/img/flags/${this.modFolder}/${this.faction}.webp" class="img-flag" />
                 </div>
 
                 <div class="statsHolder">
@@ -93,7 +104,7 @@ export const squadVehicleMarker = Marker.extend({
                 </div>
 
                 ${this.getTagsHTML()}
-                <img src="/img/vehicles/${this.vehicle.type}.webp" onerror="this.onerror=null; this.src='/img/vehicles/placeholder.webp';"/>
+                <img src="/img/vehicles/${this.modFolder}/${this.vehicle.type}.webp" onerror="this.onerror=null; this.src='/img/vehicles/placeholder.webp';"/>
             </div>
         `;
         

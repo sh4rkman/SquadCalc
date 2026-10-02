@@ -53,7 +53,17 @@ export class SquadVehicleSpawner {
 
         if (config) {
             ({ halfWidth, halfHeight } = config);
-            const teamKey = this.data.type === "Team One" ? this.layer.team1VehicleSpawners : this.layer.team2VehicleSpawners;
+
+            let teamKey;
+            if (this.data.type === "Team One") {
+                teamKey = this.layer.team1VehicleSpawners;
+            } else if (this.data.type === "Team Two") {
+                teamKey = this.layer.team2VehicleSpawners;
+            } else {
+                // Training layers report "Neutral" for every spawner, real team is only encoded in the name prefix
+                teamKey = /^Team1/.test(this.data.name) ? this.layer.team1VehicleSpawners : this.layer.team2VehicleSpawners;
+            }
+
             teamKey[config.key].push(this.data);
         }
 

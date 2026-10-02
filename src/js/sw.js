@@ -18,8 +18,14 @@ registerRoute(
 
 
 // Cache map images for 30 days with StaleWhileRevalidate
+// Excludes "cors" mode requests (e.g. THREE.TextureLoader, which needs a real CORS
+// response to use the image as a WebGL texture): Leaflet loads these same URLs with
+// plain <img> tags (mode "no-cors"), and Cache Storage keys only by URL, so a cors-mode
+// fetch event could otherwise be served a cached opaque response from that no-cors
+// load - which the browser rejects. Letting cors requests bypass the SW avoids the
+// mismatch; the browser's own HTTP cache still applies.
 registerRoute(
-    ({ url }) => url.pathname.includes("/maps/") && url.pathname.endsWith(".webp"),
+    ({ url, request }) => url.pathname.includes("/maps/") && url.pathname.endsWith(".webp") && request.mode !== "cors",
     new StaleWhileRevalidate ({
         cacheName: "map-images",
         plugins: [

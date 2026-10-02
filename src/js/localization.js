@@ -11,7 +11,7 @@ export function loadLanguage(LANGUAGES) {
     const LANG_SELECTOR = $(".dropbtn4");
 
     i18next.use(HttpApi).init({
-        fallbackLng: false,
+        fallbackLng: "en",
         ns: [
             "tooltips",
             "settings",
@@ -97,6 +97,7 @@ function updateContent() {
     });
 
     if (App.minimap.layer) App.minimap.layer.polyline.updateMeasurements();
+    if (App.userSettings) App._renderModTiles();
    
     const selectorWidth = window.matchMedia("screen and (min-width: 124em) and (min-height: 68em)").matches ? "350px" : "250px";
 
@@ -130,7 +131,7 @@ function updateContent() {
         dropdownParent: $("#layerSelector"),
         allowClear: true,
         placeholder: layerPlaceholder,
-        minimumResultsForSearch: -1,
+        minimumResultsForSearch: 1,
         width: selectorWidth,
     });
 

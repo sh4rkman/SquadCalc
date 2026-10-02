@@ -424,11 +424,14 @@
                 fill: white;
             }
         }
-        &:disabled {
-            pointer-events: none;
+        &:disabled, &.locked {
+            cursor: not-allowed;
             background-color: #1e1e1e;
             svg path {
                 fill: #555;
+            }
+            &:hover svg {
+                transform: none;
             }
         }
         svg {
@@ -441,6 +444,17 @@
         &.btn-topomap svg {
             width: 1.4em;
             height: 1.4em;
+        }
+        &.btn-3d {
+            color: #fff;
+            font-size: 0.85em;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            // The shared :disabled/.locked rule above only dims an svg path's fill - this
+            // button has plain text instead, so it needs its own dimmed color here.
+            &.locked {
+                color: #555;
+            }
         }
         &#btn-map-choices svg {
             width: 1.3em;
