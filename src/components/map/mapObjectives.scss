@@ -15,6 +15,7 @@ $flag-circle-opacity: 0.2;
 
 // Leaflet's SVG renderer sets opacity as an attribute (stroke-opacity), not inline
 // style, but it's still a transitionable CSS property.
+
 .laneLine {
     transition: stroke-opacity 0.35s ease-in-out;
 }

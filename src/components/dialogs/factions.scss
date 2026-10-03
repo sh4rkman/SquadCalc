@@ -123,21 +123,17 @@
         text-transform: uppercase;
 
         @include variables.text-outline;
-
         .team-faction-name {
             font-size: 0.7em;
         }
-
         .team-faction-name:empty {
             display: none;
         }
-
         .team-label {
             font-size: 0.55em;
             font-weight: 700;
             opacity: 1;
         }
-
         .team-faction-name:empty ~ .team-label {
             font-size: 1em;
             font-weight: inherit;
