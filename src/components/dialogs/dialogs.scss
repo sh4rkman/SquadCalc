@@ -315,6 +315,12 @@ dialog, #threeDView {
                 border-width: 1px 0 0;
                 border-radius: 0;
                 padding: 1.2em 1em calc(1.2em + env(safe-area-inset-bottom));
+                // The height cap would otherwise make the flex column shrink its children
+                // (buttons included) to fit, instead of scrolling.
+                > * { flex-shrink: 0; }
+            }
+            .threeDGoButton, .threeDShareButton, .threeDQuitButton {
+                min-height: 44px; // comfortable touch target
             }
         }
         .threeDOverlaySubtitle {
@@ -382,16 +388,11 @@ dialog, #threeDView {
             flex-direction: column;
             gap: 1.1em;
         }
-        // Two columns of checkboxes, then the two selects side by side on their own row -
-        // single column again on narrow screens.
+        // Two columns of checkboxes, then the two selects side by side on their own row.
         .threeDOverlayToggles, .threeDOverlaySelects {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 0.7em 2em;
-
-            @media (width < 36em) {
-                grid-template-columns: 1fr;
-            }
         }
         .threeDOverlaySelects {
             padding-top: 1.1em;
