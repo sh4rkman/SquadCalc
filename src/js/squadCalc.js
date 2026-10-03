@@ -1055,18 +1055,6 @@ export default class SquadCalc {
             setTimeout(() => layerInfoTooltips.enable(), 50);
         });
 
-        // Esc closes the 3D view (like the modal dialog it used to be) once the pointer is
-        // released - while flying, the browser spends that Esc on exiting pointer lock
-        // and never delivers it to the page. In the drag-look fallback that first Esc does
-        // reach the page, so isFlying() skips it here and squad3DSimulation.js stops flying instead.
-        document.addEventListener("keydown", (event) => {
-            if (event.key !== "Escape" || !this.is3DOpen || this.simulation3D.isFlying()) return;
-            // Esc from a header select2 (or any other field) just closes/leaves that field -
-            // select2 has already closed its dropdown by the time this bubbles up here.
-            if ($(event.target).closest(".select2-container, input, textarea, select").length) return;
-            this.hide3D();
-        });
-          
         window.addEventListener("drop", e => {
             e.preventDefault();
 

@@ -43,6 +43,12 @@ const MARKER_WORLD_SIZE = 18;
 // Target markers read slightly smaller than weapon markers, to visually rank behind them.
 const TARGET_MARKER_WORLD_SIZE = MARKER_WORLD_SIZE * 0.75;
 
+// Right-click map markers (FOBs, HABs, vehicles...) - same size as targets.
+const STRAT_MARKER_WORLD_SIZE = MARKER_WORLD_SIZE * 0.75;
+
+// Canvas size (px) SVG marker icons are rasterized at - see _loadMarkerIconTexture().
+const SVG_ICON_RASTER_SIZE = 128;
+
 // Text size (meters) of a target's elevation/bearing label - see _drawMarkers()'s
 // _targetLabelText(). Smaller than a flag's LABEL_WORLD_HEIGHT since it's a secondary
 // annotation on a marker, not a flag name.
@@ -181,8 +187,10 @@ const STORAGE_KEYS = {
     arcsVisible: "settings-3d-arcs",
     treesVisible: "settings-3d-trees",
     propsVisible: "settings-3d-props",
+    markersVisible: "settings-3d-markers",
     crosshairVisible: "settings-3d-crosshair",
     fpsVisible: "settings-3d-fps",
+    controlsVisible: "settings-3d-controls",
     textureName: "settings-3d-texture",
 };
 
@@ -245,7 +253,7 @@ export default class Squad3DSimulation {
         this.terrainSize = 0;
         this.heights = null;
         this.gridResolution = GRID_RESOLUTION;
-        this.textureName = loadSetting(STORAGE_KEYS.textureName, "basemap"); // "basemap" | "topomap" - the select's own options.
+        this.textureName = loadSetting(STORAGE_KEYS.textureName, "basemap"); // "basemap" | "topomap" | "terrainmap" - the select's own options.
         this.sunLight = null;
         this.capzoneGroup = null;
         this.labelGroup = null;
@@ -262,8 +270,10 @@ export default class Squad3DSimulation {
         this.arcsVisible = loadSetting(STORAGE_KEYS.arcsVisible, "1") === "1";
         this.treesVisible = loadSetting(STORAGE_KEYS.treesVisible, "1") === "1";
         this.propsVisible = loadSetting(STORAGE_KEYS.propsVisible, "1") === "1";
+        this.markersVisible = loadSetting(STORAGE_KEYS.markersVisible, "1") === "1";
         this.crosshairVisible = loadSetting(STORAGE_KEYS.crosshairVisible, "1") === "1";
         this.fpsVisible = loadSetting(STORAGE_KEYS.fpsVisible, "1") === "1";
+        this.controlsVisible = loadSetting(STORAGE_KEYS.controlsVisible, "1") === "1";
         // Deployable glTF templates, cached and loaded once per asset type - see
         // _drawDeployables(). Instances are shallow clones sharing this geometry/material.
         this._deployableModels = {};
@@ -564,14 +574,16 @@ export default class Squad3DSimulation {
         this.crosshair = this.container.querySelector(".threeDCrosshair");
         this.fpsCounter = this.container.querySelector(".threeDFpsCounter");
         this.fpsValue = this.fpsCounter.querySelector(".threeDFpsValue");
+        this.controlsHint = this.container.querySelector(".threeDControlsHint");
 
         // Touch has no equivalent of pointer-lock-driven mouselook, so OrbitControls
         // drives the camera directly off touch drag/pinch instead - no lock step, and none
         // of PointerLockControls' lock/unlock/Enter-to-lock/wheel-speed wiring applies.
-        // The WASD/Scroll/Esc keyboard hints on the start card are desktop-only too.
+        // The keyboard/mouse controls panel is desktop-only too - its toggle stays in the
+        // grid, just disabled.
         if (this._orbitMode) {
-            const hint = this.container.querySelector(".threeDOverlayHint");
-            if (hint) hint.hidden = true;
+            this.container.querySelector(".threeDControlsOption").classList.add("disabled");
+            this.container.querySelector(".threeDControlsToggle").disabled = true;
         } else {
             // PointerLockControls dispatches "lock"/"unlock" BEFORE updating its own isLocked
             // flag, so reading this.controls.isLocked from inside these listeners would still
@@ -595,17 +607,8 @@ export default class Squad3DSimulation {
         // the cursor stays visible and the crosshair is hidden.
         this.renderer.domElement.addEventListener("click", (event) => {
             if (!this.isFlying()) return;
-            if (this._dragLookMode) {
-                if (this._dragDistance > DRAG_CLICK_THRESHOLD) return; // end of a drag-look, not a click
-                const rect = this.renderer.domElement.getBoundingClientRect();
-                _cursorNdc.set(
-                    ((event.clientX - rect.left) / rect.width) * 2 - 1,
-                    -((event.clientY - rect.top) / rect.height) * 2 + 1,
-                );
-                this._raycaster.setFromCamera(_cursorNdc, this.camera);
-            } else {
-                this._raycaster.setFromCamera(_screenCenter, this.camera);
-            }
+            if (this._dragLookMode && this._dragDistance > DRAG_CLICK_THRESHOLD) return; // end of a drag-look, not a click
+            this._setRayFromEvent(event);
 
             // Tier 1: capzone-only hit test. Capzones are semi-transparent/always-visible
             // (unlike 2D's hover-only reveal) and have no occlusion concept in 2D either,
@@ -640,6 +643,35 @@ export default class Squad3DSimulation {
             this._setClickMarkerLabel(distance);
             this.clickMarker.visible = true;
             this._updateMinimapClickMarker();
+        });
+
+        // Right-click while flying removes the eye marker, or deletes the right-click map
+        // marker (FOB, HAB, vehicle...) under the crosshair/cursor - the latter through the 2D marker's own delete(), so undo history
+        // and the session stay in sync. mousedown rather than contextmenu: under pointer
+        // lock the browser doesn't reliably fire contextmenu.
+        this.renderer.domElement.addEventListener("contextmenu", (event) => event.preventDefault());
+        this.renderer.domElement.addEventListener("mousedown", (event) => {
+            if (event.button !== 2 || !this.isFlying()) return;
+            this._setRayFromEvent(event);
+
+            // The eye marker draws on top of everything (depthTest off), so it's
+            // removable wherever it's visible - no ground occlusion check.
+            if (this.clickMarker.visible && this._raycaster.intersectObject(this.clickMarker, true).length) {
+                this.clickMarker.visible = false;
+                this._updateMinimapClickMarker();
+                return;
+            }
+
+            // Raycasts ignore `visible` - hidden markers must not be deletable.
+            if (!this.markerGroup.visible) return;
+            // Sprites ignore the terrain, so a marker hidden behind a hill must not be hit.
+            const groundDistance = this._rayTerrainDistance(this._raycaster.ray) ?? Infinity;
+            const hit = this._raycaster.intersectObjects(this.markerGroup.children, false)
+                .find((h) => h.object.userData.stratMarker && h.distance < groundDistance);
+            if (!hit) return;
+            hit.object.userData.stratMarker.delete();
+            this.markerGroup.remove(hit.object);
+            hit.object.material.dispose();
         });
 
         const goButton = this.container.querySelector(".threeDGoButton");
@@ -680,6 +712,11 @@ export default class Squad3DSimulation {
         this._setArcsVisible(this.arcsVisible);
         arcsToggle.addEventListener("change", () => this._setArcsVisible(arcsToggle.checked));
 
+        const markersToggle = options.querySelector(".threeDMarkersToggle");
+        markersToggle.checked = this.markersVisible;
+        this._setMarkersVisible(this.markersVisible);
+        markersToggle.addEventListener("change", () => this._setMarkersVisible(markersToggle.checked));
+
         const treesToggle = options.querySelector(".threeDTreesToggle");
         treesToggle.checked = this.treesVisible;
         this._setTreesVisible(this.treesVisible);
@@ -699,11 +736,25 @@ export default class Squad3DSimulation {
         fpsToggle.checked = this.fpsVisible;
         this._setFpsVisible(this.fpsVisible);
         fpsToggle.addEventListener("change", () => this._setFpsVisible(fpsToggle.checked));
+
+        const controlsToggle = options.querySelector(".threeDControlsToggle");
+        controlsToggle.checked = this.controlsVisible;
+        this._setControlsVisible(this.controlsVisible);
+        controlsToggle.addEventListener("change", () => this._setControlsVisible(controlsToggle.checked));
         const textureSelect = options.querySelector(".threeDTextureSelect");
         textureSelect.value = this.textureName;
-        textureSelect.addEventListener("change", async () => {
+        // select2 rather than the native dropdown - the browser draws a native option
+        // list itself, so its hover highlight can't be restyled. select2 fires its
+        // change through jQuery, which native addEventListener() listeners never see.
+        $(textureSelect).select2({
+            dropdownCssClass: "threeDSelectDropdown",
+            dropdownParent: $(this.container), // not the card - its mobile overflow would clip it
+            minimumResultsForSearch: -1,
+            width: "12em",
+        }).on("change", async () => {
             await this._setTexture(textureSelect.value);
-            textureSelect.value = this.textureName; // reverts the dropdown on load failure
+            // reverts the dropdown on load failure
+            $(textureSelect).val(this.textureName).trigger("change.select2");
         });
 
         window.addEventListener("keydown", (event) => {
@@ -714,10 +765,15 @@ export default class Squad3DSimulation {
                 return;
             }
 
-            // Drag-look has no browser-handled lock to release, so Esc is handled here
-            // instead - squadCalc's own Esc-closes-3D listener skips it while isFlying().
-            if (event.code === "Escape" && this._dragFlying) {
-                this._setDragFlying(false);
+            // Esc never closes the 3D view - only the Quit button does. Drag-look has no
+            // browser-handled lock to release, so Esc toggles between flying and the
+            // settings card here. With pointer lock, the browser spends the Esc that
+            // leaves flying itself, and won't let an Esc press re-lock (Esc doesn't count
+            // as a user gesture) - Enter or Go resume flying there instead.
+            if (event.code === "Escape" && this._dragLookMode && this._isOpen) {
+                // Esc in a select2 dropdown on the card just closes that dropdown.
+                if (!this._dragFlying && event.target.closest?.(".select2-container, input, textarea, select")) return;
+                this._setDragFlying(!this._dragFlying);
                 return;
             }
 
@@ -753,6 +809,25 @@ export default class Squad3DSimulation {
      * in the drag-look fallback. Always false in orbit mode (OrbitControls has no isLocked).
      * @returns {boolean}
      */
+    /**
+     * Points _raycaster from the crosshair (screen center), or from the cursor in
+     * drag-look mode, where the cursor stays visible and the crosshair is hidden.
+     * @param {MouseEvent} event
+     */
+    _setRayFromEvent(event) {
+        if (this._dragLookMode) {
+            const rect = this.renderer.domElement.getBoundingClientRect();
+            _cursorNdc.set(
+                ((event.clientX - rect.left) / rect.width) * 2 - 1,
+                -((event.clientY - rect.top) / rect.height) * 2 + 1,
+            );
+            this._raycaster.setFromCamera(_cursorNdc, this.camera);
+        } else {
+            this._raycaster.setFromCamera(_screenCenter, this.camera);
+        }
+    }
+
+
     isFlying() {
         return Boolean(this.controls?.isLocked) || this._dragFlying;
     }
@@ -905,9 +980,16 @@ export default class Squad3DSimulation {
         const base = `${process.env.API_URL}${activeMap.mapURL}`;
         this.minimapImage.src = `${base}basemap.webp`; // instant placeholder while the map loads - see open()'s _updateMinimapImage()
 
+        // Single-layer maps only ship basemap.webp - fall back to it rather than failing
+        // the whole load when the saved texture is topomap/terrainmap.
+        const loader = new THREE.TextureLoader();
         const [heightBuffer, texture] = await Promise.all([
             this._fetchHeightmap(base),
-            new THREE.TextureLoader().loadAsync(`${base}${this.textureName}.webp`),
+            loader.loadAsync(`${base}${this.textureName}.webp`).catch((error) => {
+                if (this.textureName === "basemap") throw error;
+                console.warn(`[3D] No ${this.textureName}.webp for this map, using basemap`);
+                return loader.loadAsync(`${base}basemap.webp`);
+            }),
         ]);
         texture.colorSpace = THREE.SRGBColorSpace;
         this._heightScale = this._landscapeCalibration(activeMap).heightScale;
@@ -1182,7 +1264,7 @@ export default class Squad3DSimulation {
      * Switches the terrain surface texture (e.g. basemap <-> topomap), fetching it fresh -
      * a different texture is a different file. The minimap keeps using basemap
      * regardless, for consistent navigation.
-     * @param {string} name - "basemap" | "topomap"
+     * @param {string} name - "basemap" | "topomap" | "terrainmap"
      */
     async _setTexture(name) {
         if (name === this.textureName || !this._lastActiveMap || !this.terrainMesh) return;
@@ -1252,6 +1334,17 @@ export default class Squad3DSimulation {
 
 
     /**
+     * Shows/hides the weapon, target and right-click map markers (see _drawMarkers()).
+     * @param {boolean} visible
+     */
+    _setMarkersVisible(visible) {
+        this.markersVisible = visible;
+        localStorage.setItem(STORAGE_KEYS.markersVisible, visible ? "1" : "0");
+        this.markerGroup.visible = visible;
+    }
+
+
+    /**
      * Shows/hides the tree/vegetation/generic-placeholder instances (see
      * squad3DTrees.js's loadTrees()).
      * @param {boolean} visible
@@ -1284,6 +1377,18 @@ export default class Squad3DSimulation {
         this.crosshairVisible = visible;
         localStorage.setItem(STORAGE_KEYS.crosshairVisible, visible ? "1" : "0");
         this._updateCrosshairVisibility();
+    }
+
+
+    /**
+     * Shows/hides the bottom-left keyboard/mouse controls panel - flying or on the
+     * settings card alike, but never in touch (orbit) mode, which has none of them.
+     * @param {boolean} visible
+     */
+    _setControlsVisible(visible) {
+        this.controlsVisible = visible;
+        localStorage.setItem(STORAGE_KEYS.controlsVisible, visible ? "1" : "0");
+        this.controlsHint.hidden = !visible || this._orbitMode;
     }
 
 
@@ -1829,22 +1934,33 @@ export default class Squad3DSimulation {
 
     /**
      * Loads (and caches) the icon texture for one marker icon URL. Only fetched once
-     * per URL for the simulation's lifetime.
+     * per URL for the simulation's lifetime. SVGs (the right-click map markers) are
+     * rasterized onto a canvas first - about half of them have no width/height
+     * attribute, which Firefox refuses to upload as a WebGL texture directly.
      * @param {string} url
      * @returns {Promise<THREE.Texture>}
      */
     _loadMarkerIconTexture(url) {
         if (!this._markerIconTextures[url]) {
-            this._markerIconTextures[url] = new THREE.TextureLoader().loadAsync(url);
+            this._markerIconTextures[url] = url.endsWith(".svg")
+                ? new THREE.ImageLoader().loadAsync(url).then((image) => {
+                    const canvas = document.createElement("canvas");
+                    canvas.width = canvas.height = SVG_ICON_RASTER_SIZE;
+                    canvas.getContext("2d").drawImage(image, 0, 0, SVG_ICON_RASTER_SIZE, SVG_ICON_RASTER_SIZE);
+                    const texture = new THREE.CanvasTexture(canvas);
+                    texture.colorSpace = THREE.SRGBColorSpace;
+                    return texture;
+                })
+                : new THREE.TextureLoader().loadAsync(url);
         }
         return this._markerIconTextures[url];
     }
 
 
     /**
-     * Places a camera-facing icon sprite for every weapon (mortar/artillery) and target
-     * marker currently placed on the 2D map (minimap.activeWeaponsMarkers /
-     * activeTargetsMarkers), dropped to ground level since a Leaflet-placed marker has
+     * Places a camera-facing icon sprite for every weapon (mortar/artillery), target and
+     * right-click map marker currently placed on the 2D map (minimap.activeWeaponsMarkers /
+     * activeTargetsMarkers / activeMarkers), dropped to ground level since a Leaflet-placed marker has
      * no location_z. Each target also gets a floating elevation/bearing text label,
      * drawn the same way as a flag name (see _createLabelSprite()) - see
      * _targetLabelText(). Snapshot taken once per open()/refresh(), like every other overlay here -
@@ -1859,11 +1975,12 @@ export default class Squad3DSimulation {
         const markers = [
             ...weapons.map((marker) => ({ marker, size: MARKER_WORLD_SIZE, isTarget: false })),
             ...(minimap?.activeTargetsMarkers?.getLayers() ?? []).map((marker) => ({ marker, size: TARGET_MARKER_WORLD_SIZE, isTarget: true })),
+            ...(minimap?.activeMarkers?.getLayers() ?? []).map((marker) => ({ marker, size: STRAT_MARKER_WORLD_SIZE, isTarget: false, isStrat: true })),
         ];
         const corner0 = activeMap.SDK_data?.minimap?.corner0;
         if (!corner0 || !markers.length) return;
 
-        for (const { marker, size, isTarget } of markers) {
+        for (const { marker, size, isTarget, isStrat } of markers) {
             const { x, z, u, v } = this._markerWorldPosition(marker, minimap, corner0);
             const groundY = this.terrainHeightAt(u, v);
             const y = groundY + size / 2;
@@ -1876,6 +1993,7 @@ export default class Squad3DSimulation {
             const sprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: texture, transparent: true, depthWrite: false }));
             sprite.scale.set(size, size, 1);
             sprite.position.set(x, y, z);
+            if (isStrat) sprite.userData.stratMarker = marker; // right-click delete target
             this.markerGroup.add(sprite);
 
             if (!isTarget) continue;
