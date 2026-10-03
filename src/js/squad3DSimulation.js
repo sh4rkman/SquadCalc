@@ -343,6 +343,7 @@ export default class Squad3DSimulation {
         }
 
         this.overlay.hidden = false;
+        this.menuButton.hidden = true; // orbit mode never hides it on close()
         this._resize();
 
         // open() can run again while already open (see refresh()) - only start once.
@@ -592,12 +593,11 @@ export default class Squad3DSimulation {
 
         const goButton = this.container.querySelector(".threeDGoButton");
         // OrbitControls needs no lock step - it's already live off touch input, so Go just
-        // dismisses the start card. Re-opening it isn't wired up yet on touch (no Esc);
-        // quitting and reopening the 3D view is the way back to it for now.
+        // dismisses the start card. With no Esc on touch, the menu button brings it back.
         goButton.addEventListener("click", () => this._startFlying());
 
         this.menuButton = this.container.querySelector(".threeDMenuButton");
-        this.menuButton.addEventListener("click", () => this._setDragFlying(false));
+        this.menuButton.addEventListener("click", () => this._backToMenu());
 
         this.speedHUD = this.container.querySelector(".threeDSpeedHUD");
         this.speedHUDFill = this.speedHUD.querySelector(".threeDSpeedHUDFill");
@@ -690,7 +690,7 @@ export default class Squad3DSimulation {
         window.addEventListener("wheel", (event) => {
             if (!this.isFlying()) return;
             event.preventDefault();
-            if(this.moveSpeedPercent === 1) this.moveSpeedPercent = 0; // since min is 1 we avoid speed being 6/11/16...
+            if (this.moveSpeedPercent === 1) this.moveSpeedPercent = 0; // since min is 1 we avoid speed being 6/11/16...
             this.moveSpeedPercent = THREE.MathUtils.clamp(this.moveSpeedPercent - event.deltaY * 0.05, 1, 100);
             this._showSpeedHUD();
         }, { passive: false });
@@ -713,6 +713,7 @@ export default class Squad3DSimulation {
     _startFlying() {
         if (this._orbitMode) {
             this.overlay.hidden = true;
+            this.menuButton.hidden = false;
             return;
         }
         if (this._dragLookMode) {
@@ -733,6 +734,20 @@ export default class Squad3DSimulation {
         } catch {
             this._enableDragLook();
         }
+    }
+
+
+    /**
+     * Menu button: brings the start card back. Only shown in orbit mode (touch, no Esc)
+     * and the drag-look fallback (no pointer lock to release).
+     */
+    _backToMenu() {
+        if (this._orbitMode) {
+            this.overlay.hidden = false;
+            this.menuButton.hidden = true;
+            return;
+        }
+        this._setDragFlying(false);
     }
 
 
