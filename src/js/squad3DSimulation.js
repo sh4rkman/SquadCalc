@@ -541,6 +541,10 @@ export default class Squad3DSimulation {
             // Just shy of the horizon - keeps the camera from ever orbiting below the
             // target's ground level (there's no "underground" view worth reaching here).
             this.controls.maxPolarAngle = Math.PI / 2 - 0.02;
+            // Two-finger pan slides the target across the ground like a map, instead of
+            // along the screen plane (which lifts it into the air or sinks it underground
+            // when looking at an angle) - see also _keepOrbitTargetOnGround().
+            this.controls.screenSpacePanning = false;
         } else {
             this.controls = new PointerLockControls(this.camera, this.renderer.domElement);
         }
@@ -2441,14 +2445,36 @@ export default class Squad3DSimulation {
 
             // OrbitControls owns the camera entirely (touch drag/pinch) and needs its own
             // per-frame update() for damping inertia - no WASD fly movement to apply.
-            if (this._orbitMode) this.controls.update();
-            else this._updateFlyMovement(delta);
+            if (this._orbitMode) {
+                this.controls.update();
+                this._keepOrbitTargetOnGround();
+            } else {
+                this._updateFlyMovement(delta);
+            }
             this._updateMinimapDot();
             this._updateClickMarkerDistance(delta);
             this._updateFpsCounter(delta);
             this.renderer.render(this.scene, this.camera);
         };
         renderFrame();
+    }
+
+
+    /**
+     * Orbit mode: pinch-zoom dollies towards controls.target and stops minDistance short
+     * of it, so a target left floating above the terrain (panning over a valley, a spawn
+     * target set above the ground) blocks zooming all the way down. Snaps the target onto
+     * the ground under it every frame, shifting the camera by the same amount so the view
+     * doesn't jump.
+     */
+    _keepOrbitTargetOnGround() {
+        if (!this.heights || !this.terrainSize) return;
+        const target = this.controls.target;
+        const groundY = this.terrainHeightAt(target.x / this.terrainSize + 0.5, target.z / this.terrainSize + 0.5);
+        const offsetY = groundY - target.y;
+        if (Math.abs(offsetY) < 0.01) return;
+        target.y += offsetY;
+        this.camera.position.y += offsetY;
     }
 
 

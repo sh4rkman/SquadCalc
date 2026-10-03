@@ -294,10 +294,28 @@ dialog, #threeDView {
             h3 {
                 margin: 0;
                 padding: 0;
-                font-size: 1.3em;
+                font-size: 1.8em;
                 letter-spacing: 0.02em;
             }
             p { margin: 0; }
+        }
+        // Phones (incl. landscape): a centered card ends up under the header's map/layer/
+        // server selectors, so it becomes a full-width bottom sheet instead - capped in
+        // height and scrollable, with room for the home indicator on notched phones.
+        @media (width < 48em), (height < 36em) {
+            .threeDOverlay {
+                align-items: flex-end;
+                padding: 0;
+            }
+            .threeDOverlayCard {
+                width: 100%;
+                max-height: 70dvh;
+                overflow-y: auto;
+                box-sizing: border-box;
+                border-width: 1px 0 0;
+                border-radius: 0;
+                padding: 1.2em 1em calc(1.2em + env(safe-area-inset-bottom));
+            }
         }
         .threeDOverlaySubtitle {
             margin-top: -0.8em;
