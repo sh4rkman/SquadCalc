@@ -565,8 +565,9 @@ dialog, #threeDView {
             position: absolute;
             right: 1em;
             bottom: 1em;
-            width: 280px;
-            height: 280px;
+            // Scale with the screen's smaller side: ~120px on phones, capped at 280px on desktop
+            width: clamp(110px, 30vmin, 280px);
+            height: clamp(110px, 30vmin, 280px);
             border: 2px solid rgba(255, 255, 255, 0.4);
             border-radius: 6px;
             overflow: hidden;
@@ -582,8 +583,8 @@ dialog, #threeDView {
             position: absolute;
             left: 50%;
             top: 50%;
-            width: 22px;
-            height: 22px;
+            width: clamp(14px, 2.4vmin, 22px);
+            height: clamp(14px, 2.4vmin, 22px);
             filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.9));
             transform: translate(-50%, -50%);
         }
