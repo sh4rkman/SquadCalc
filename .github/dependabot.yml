@@ -10,9 +10,16 @@ updates:
     schedule:
       interval: "weekly"
     target-branch: "dev"
+    groups:
+      actions-deps:
+        patterns: ["*"]
 
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
       interval: "weekly"
     target-branch: "dev"
+    groups:
+      npm-deps:
+        patterns: ["*"]
+        update-types: ["minor", "patch"]
