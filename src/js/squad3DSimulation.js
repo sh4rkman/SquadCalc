@@ -234,6 +234,8 @@ export default class Squad3DSimulation {
         this.minimapImage = container.querySelector(".threeDMinimapImage");
         this.minimapDot = container.querySelector(".threeDMinimapDot");
         this.minimapDot.src = "/img/icons/shared/camera.webp";
+        this.minimapClickMarker = container.querySelector(".threeDMinimapClickMarker");
+        this.minimapClickMarker.src = CLICK_MARKER_ICON_URL;
         this.scene = null;
         this.camera = null;
         this.renderer = null;
@@ -277,12 +279,6 @@ export default class Squad3DSimulation {
         this._isOpen = false; // between open() and close() - see refresh()
         this._frameId = null;
         this._onResize = () => this._resize();
-
-        // Safety net for accidental tab-close while flying (e.g. Ctrl+W) - registered only
-        // while the 3D view is actually open (see open()/close()), not for the app's
-        // whole lifetime. The browser ignores any custom message text and shows its own
-        // generic "leave site?" confirmation, but that's enough to let a misclick be undone.
-        this._onBeforeUnload = (event) => { event.preventDefault(); event.returnValue = ""; };
 
         // Rolling counters for the FPS HUD - updated once per FPS_UPDATE_INTERVAL instead
         // of every frame, so the displayed number doesn't flicker.
@@ -361,7 +357,10 @@ export default class Squad3DSimulation {
         // The camera is kept across close()/open() - only (re)placed for a different map
         // than it was last placed on, or an explicit spawn request (share link, context
         // menu point, "See in 3D").
-        if (this._cameraMapURL !== activeMap.mapURL) this.clickMarker.visible = false;
+        if (this._cameraMapURL !== activeMap.mapURL) {
+            this.clickMarker.visible = false;
+            this._updateMinimapClickMarker();
+        }
         if (arcRequest || sharedPosition || spawnLatLng || this._cameraMapURL !== activeMap.mapURL) {
             this._spawnCamera(activeMap, this._lastMinimap, arcRequest, sharedPosition, spawnLatLng);
             this._cameraMapURL = activeMap.mapURL;
@@ -374,7 +373,6 @@ export default class Squad3DSimulation {
         // open() can run again while already open (see refresh()) - only start once.
         if (this._frameId === null) {
             window.addEventListener("resize", this._onResize);
-            window.addEventListener("beforeunload", this._onBeforeUnload);
             this.clock.getDelta(); // drop the idle time since the last close()
             this._startLoop();
         }
@@ -461,7 +459,6 @@ export default class Squad3DSimulation {
     close() {
         this._isOpen = false;
         window.removeEventListener("resize", this._onResize);
-        window.removeEventListener("beforeunload", this._onBeforeUnload);
         this._stopLoop();
         if (!this._orbitMode) this.controls.unlock();
         this._setDragFlying(false);
@@ -636,11 +633,13 @@ export default class Squad3DSimulation {
             const distance = objectDistance ?? groundDistance;
             if (distance === null) {
                 this.clickMarker.visible = false;
+                this._updateMinimapClickMarker();
                 return;
             }
             ray.at(distance, this.clickMarker.position);
             this._setClickMarkerLabel(distance);
             this.clickMarker.visible = true;
+            this._updateMinimapClickMarker();
         });
 
         const goButton = this.container.querySelector(".threeDGoButton");
@@ -2396,6 +2395,20 @@ export default class Squad3DSimulation {
         this.camera.getWorldDirection(this._minimapForward);
         const heading = THREE.MathUtils.radToDeg(Math.atan2(this._minimapForward.x, -this._minimapForward.z));
         this.minimapDot.style.transform = `translate(-50%, -50%) rotate(${heading - 90}deg)`;
+    }
+
+
+    /**
+     * Mirrors the left-click eye marker onto the minimap (icon only, no distance).
+     * The marker only moves on click, so this runs then rather than every frame.
+     */
+    _updateMinimapClickMarker() {
+        this.minimapClickMarker.hidden = !this.clickMarker.visible || !this.terrainSize;
+        if (this.minimapClickMarker.hidden) return;
+        const u = THREE.MathUtils.clamp(this.clickMarker.position.x / this.terrainSize + 0.5, 0, 1);
+        const v = THREE.MathUtils.clamp(this.clickMarker.position.z / this.terrainSize + 0.5, 0, 1);
+        this.minimapClickMarker.style.left = `${u * 100}%`;
+        this.minimapClickMarker.style.top = `${v * 100}%`;
     }
 
 

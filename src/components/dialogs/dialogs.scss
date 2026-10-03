@@ -613,6 +613,14 @@ dialog, #threeDView {
             filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.9));
             transform: translate(-50%, -50%);
         }
+        .threeDMinimapClickMarker {
+            position: absolute;
+            width: clamp(14px, 2.4vmin, 22px);
+            height: clamp(14px, 2.4vmin, 22px);
+            filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.9));
+            transform: translate(-50%, -50%);
+            &[hidden] { display: none; }
+        }
     }
     &#weaponInformation {
         max-width: 350px;
