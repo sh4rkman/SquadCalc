@@ -314,7 +314,7 @@ dialog, #threeDView {
                 box-sizing: border-box;
                 border-width: 1px 0 0;
                 border-radius: 0;
-                padding: 1.2em 1em calc(1.2em + env(safe-area-inset-bottom));
+                padding: 1.2em 1em max(1.2em, env(safe-area-inset-bottom));
                 // The height cap would otherwise make the flex column shrink its children
                 // (buttons included) to fit, instead of scrolling.
                 > * { flex-shrink: 0; }
