@@ -218,6 +218,12 @@
                 fill: #fff;
                 pointer-events: none;
             }
+            &.mapBtnToggle-3d {
+                color: #fff;
+                font-size: 0.85em;
+                font-weight: 700;
+                letter-spacing: 0.02em;
+            }
             &.active {
                 background-color: variables.$mainColor;
                 border-color: variables.$mainColor;
