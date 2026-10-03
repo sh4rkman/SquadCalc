@@ -300,21 +300,21 @@ dialog, #threeDView {
             p { margin: 0; }
         }
         // Phones (incl. landscape): a centered card ends up under the header's map/layer/
-        // server selectors, so it becomes a full-width bottom sheet instead - capped in
-        // height and scrollable, with room for the home indicator on notched phones.
+        // server selectors, so it's pinned to the bottom edge, full width, instead -
+        // capped in height and scrollable so it never reaches the selectors.
         @media (width < 48em), (height < 36em) {
-            .threeDOverlay {
-                align-items: flex-end;
-                padding: 0;
-            }
             .threeDOverlayCard {
-                width: 100%;
-                max-height: 70dvh;
+                position: absolute;
+                right: 0;
+                bottom: 0;
+                left: 0;
+                width: auto;
+                max-height: 70%;
                 overflow-y: auto;
                 box-sizing: border-box;
                 border-width: 1px 0 0;
                 border-radius: 0;
-                padding: 1.2em 1em max(1.2em, env(safe-area-inset-bottom));
+                padding: 1.2em 1em;
                 // The height cap would otherwise make the flex column shrink its children
                 // (buttons included) to fit, instead of scrolling.
                 > * { flex-shrink: 0; }
