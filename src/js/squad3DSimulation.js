@@ -63,6 +63,11 @@ const ARC_TUBE_RADIUS = 0.8;
 // read, so it's averaged over this window instead.
 const FPS_UPDATE_INTERVAL = 0.5;
 
+// Seconds between click marker distance label refreshes while the camera moves - each
+// refresh that changes the value redraws the label's canvas texture, so it's capped
+// rather than done every frame.
+const CLICK_LABEL_UPDATE_INTERVAL = 0.1;
+
 // requestAnimationFrame fires at the display's own refresh rate (vsync-locked) with no
 // cap of its own - on a high-refresh monitor that's more render/movement-update work than
 // this scene needs. Frames still get requested at the display's full rate, but the actual
@@ -79,6 +84,25 @@ const _screenCenter = new THREE.Vector2(0, 0);
 // reused by its mouselook - see _setupFlyControls().
 const _cursorNdc = new THREE.Vector2();
 const _lookEuler = new THREE.Euler(0, 0, 0, "YXZ");
+
+// On-screen size of the left-click ground marker, as a fraction of the viewport height
+// scaled by the camera's fov (a sizeAttenuation: false sprite) - see _createClickMarker().
+const CLICK_MARKER_SCREEN_SIZE = 0.04;
+const CLICK_MARKER_ICON_URL = "/img/icons/shared/EyeIcon.png";
+
+// On-screen height of the click marker's distance label, same units as above.
+const CLICK_LABEL_SCREEN_HEIGHT = 0.035;
+
+// Scratch point for _rayTerrainDistance()'s march along the click ray.
+const _rayPoint = new THREE.Vector3();
+
+// Scratch objects for _rayPropsMeshDistance()'s per-part box/triangle tests.
+const _localRay = new THREE.Ray();
+const _inverseMatrix = new THREE.Matrix4();
+const _triA = new THREE.Vector3();
+const _triB = new THREE.Vector3();
+const _triC = new THREE.Vector3();
+const _hitPoint = new THREE.Vector3();
 
 // Pixels the mouse may move between press and release for it to still count as a
 // click (flag select) rather than a drag-look, in the drag-look fallback.
@@ -337,6 +361,7 @@ export default class Squad3DSimulation {
         // The camera is kept across close()/open() - only (re)placed for a different map
         // than it was last placed on, or an explicit spawn request (share link, context
         // menu point, "See in 3D").
+        if (this._cameraMapURL !== activeMap.mapURL) this.clickMarker.visible = false;
         if (arcRequest || sharedPosition || spawnLatLng || this._cameraMapURL !== activeMap.mapURL) {
             this._spawnCamera(activeMap, this._lastMinimap, arcRequest, sharedPosition, spawnLatLng);
             this._cameraMapURL = activeMap.mapURL;
@@ -455,7 +480,9 @@ export default class Squad3DSimulation {
 
         this.renderer = new THREE.WebGLRenderer({ antialias: true });
         this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-        this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        // Neutral rather than ACES Filmic: ACES washes out saturated colors, e.g. the
+        // click marker's green eye icon came out pale.
+        this.renderer.toneMapping = THREE.NeutralToneMapping;
         this.renderer.toneMappingExposure = 0.85;
         this.container.appendChild(this.renderer.domElement);
 
@@ -495,6 +522,14 @@ export default class Squad3DSimulation {
         this.scene.add(this.propsGroup);
         this.treesGroup = new THREE.Group();
         this.scene.add(this.treesGroup);
+        // Left-click ground marker: the ring plus a distance label, replaced on each click.
+        this.clickMarker = new THREE.Group();
+        this.clickMarker.visible = false;
+        this.clickMarker.add(this._createClickMarker());
+        this.clickMarkerLabel = null;
+        this._clickLabelDistance = null; // rounded meters the label currently shows
+        this._clickLabelAccumTime = 0;
+        this.scene.add(this.clickMarker);
 
         this.clock = new THREE.Clock();
         this._orbitMode = IS_TOUCH_DEVICE;
@@ -586,9 +621,22 @@ export default class Squad3DSimulation {
                 return;
             }
 
-            // Tier 2: debug fallback for anything that isn't a capzone.
-            const hit = this._raycaster.intersectObjects(this.scene.children, true)[0];
-            console.debug(hit ? hit.object : null);
+            // Tier 2: anything else drops the click marker on the first building, tree or
+            // ground point under the click, labelled with its straight-line distance from
+            // the camera (world units are meters). The ground comes from a heightmap march and
+            // buildings/trees are only tested up to it - a plain full-scene raycast tests
+            // every terrain/prop triangle and stalls the frame. Clicking the sky removes it.
+            const ray = this._raycaster.ray;
+            const groundDistance = this._rayTerrainDistance(ray);
+            const objectDistance = this._rayObjectDistance(groundDistance ?? this.terrainSize * 2);
+            const distance = objectDistance ?? groundDistance;
+            if (distance === null) {
+                this.clickMarker.visible = false;
+                return;
+            }
+            ray.at(distance, this.clickMarker.position);
+            this._setClickMarkerLabel(distance);
+            this.clickMarker.visible = true;
         });
 
         const goButton = this.container.querySelector(".threeDGoButton");
@@ -2091,6 +2139,58 @@ export default class Squad3DSimulation {
 
 
     /**
+     * The left-click ground marker: a billboarded eye icon (THREE.Sprite always faces the
+     * camera) kept at a fixed on-screen size whatever its distance, and drawn on top of
+     * everything. Lives in this.clickMarker, which is moved to each new click - see
+     * _setupFlyControls().
+     * @returns {THREE.Sprite}
+     */
+    _createClickMarker() {
+        const texture = new THREE.TextureLoader().load(CLICK_MARKER_ICON_URL);
+        texture.colorSpace = THREE.SRGBColorSpace;
+        const material = new THREE.SpriteMaterial({
+            map: texture,
+            sizeAttenuation: false,
+            depthTest: false,
+            depthWrite: false,
+        });
+        const sprite = new THREE.Sprite(material);
+        sprite.scale.set(CLICK_MARKER_SCREEN_SIZE, CLICK_MARKER_SCREEN_SIZE, 1);
+        sprite.renderOrder = 999;
+        return sprite;
+    }
+
+
+    /**
+     * Replaces the click marker's distance label (disposing the previous one's canvas
+     * texture), drawn like a flag label but at a fixed on-screen size and anchored just
+     * above the ring.
+     * @param {number} distance - meters, rounded for display
+     */
+    _setClickMarkerLabel(distance) {
+        this._clickLabelDistance = Math.round(distance);
+        const text = `${this._clickLabelDistance}m`;
+        if (this.clickMarkerLabel) {
+            this.clickMarker.remove(this.clickMarkerLabel);
+            this.clickMarkerLabel.material.map.dispose();
+            this.clickMarkerLabel.material.dispose();
+        }
+
+        const label = this._createLabelSprite(text);
+        const aspect = label.scale.x / label.scale.y;
+        label.material.sizeAttenuation = false;
+        label.scale.set(CLICK_LABEL_SCREEN_HEIGHT * aspect, CLICK_LABEL_SCREEN_HEIGHT, 1);
+        // Sprite.center shifts the sprite in its own (screen-facing) plane, so the label's
+        // bottom edge sits at the ring's top edge at any distance or viewing angle.
+        label.center.set(0.5, -(CLICK_MARKER_SCREEN_SIZE / 2) / CLICK_LABEL_SCREEN_HEIGHT);
+        label.renderOrder = 999;
+
+        this.clickMarkerLabel = label;
+        this.clickMarker.add(label);
+    }
+
+
+    /**
      * A billboarded text label (always faces the camera - THREE.Sprite's default behavior)
      * for a flag name or a target's elevation/bearing (see _targetLabelText()), rendered
      * on top of everything so distance/terrain never occludes it. `text` may hold several
@@ -2176,6 +2276,106 @@ export default class Squad3DSimulation {
 
 
     /**
+     * Distance along a ray to where it first meets the ground, from terrainHeightAt()
+     * samples: steps one grid cell at a time until the ray dips below the terrain, then
+     * bisects that last step. Ignores trees/props, so it's the ground under them.
+     * @param {THREE.Ray} ray - world-space, normalized direction
+     * @returns {number|null} meters, or null if the ray leaves the map without hitting
+     */
+    _rayTerrainDistance(ray) {
+        if (!this.heights || !this.terrainSize) return null;
+
+        const step = this.terrainSize / (this.gridResolution - 1);
+        const maxDistance = this.terrainSize * 2; // farther than any in-map point from any in-map camera
+        const isBelowGround = (distance) => {
+            ray.at(distance, _rayPoint);
+            const u = _rayPoint.x / this.terrainSize + 0.5;
+            const v = _rayPoint.z / this.terrainSize + 0.5;
+            if (u < 0 || u > 1 || v < 0 || v > 1) return false;
+            return _rayPoint.y <= this.terrainHeightAt(u, v);
+        };
+
+        let previous = 0;
+        for (let distance = step; distance <= maxDistance; distance += step) {
+            if (!isBelowGround(distance)) {
+                previous = distance;
+                continue;
+            }
+            // Bisect the crossing down to well under a meter.
+            let low = previous;
+            let high = distance;
+            for (let i = 0; i < 12; i++) {
+                const mid = (low + high) / 2;
+                if (isBelowGround(mid)) high = mid;
+                else low = mid;
+            }
+            return high;
+        }
+        return null;
+    }
+
+
+    /**
+     * Distance along the click ray (this._raycaster.ray) to the nearest visible building
+     * or tree closer than `far`. InstancedMeshes (trees/bushes, trees.bin's generic
+     * building placeholders) go through three.js's own raycast, which rejects each
+     * instance off its bounding sphere before any triangle test; props.bin's merged
+     * meshes go through _rayPropsMeshDistance().
+     * @param {number} far - meters; the ground distance, so nothing behind it is tested
+     * @returns {number|null} meters, or null if nothing is hit before `far`
+     */
+    _rayObjectDistance(far) {
+        const groups = [this.propsGroup, this.treesGroup].filter((group) => group.visible);
+        let nearest = far;
+
+        this._raycaster.far = far;
+        const instanced = groups.flatMap((group) => group.children.filter((child) => child.isInstancedMesh));
+        const hit = this._raycaster.intersectObjects(instanced, false)[0];
+        this._raycaster.far = Infinity;
+        if (hit) nearest = hit.distance;
+
+        for (const group of groups) {
+            for (const mesh of group.children) {
+                if (mesh.userData.parts) nearest = this._rayPropsMeshDistance(mesh, nearest);
+            }
+        }
+        return nearest < far ? nearest : null;
+    }
+
+
+    /**
+     * Click-ray test against one of props.bin's merged category meshes: checks each
+     * part's bounding box first (see loadProps()), then only the triangles of the parts
+     * whose box the ray crosses closer than the current nearest hit.
+     * @param {THREE.Mesh} mesh - with userData.parts
+     * @param {number} nearest - meters; the closest hit so far
+     * @returns {number} the new closest hit distance (unchanged if this mesh is behind it)
+     */
+    _rayPropsMeshDistance(mesh, nearest) {
+        // The props group is only translated (see _loadPropsAndTrees()), so distances
+        // along the local-space ray match world-space ones.
+        _localRay.copy(this._raycaster.ray).applyMatrix4(_inverseMatrix.copy(mesh.matrixWorld).invert());
+        const index = mesh.geometry.index;
+        const position = mesh.geometry.attributes.position;
+
+        for (const { box, start, count } of mesh.userData.parts) {
+            if (!_localRay.intersectBox(box, _hitPoint)) continue;
+            if (_hitPoint.distanceTo(_localRay.origin) >= nearest) continue;
+
+            for (let i = start; i < start + count; i += 3) {
+                _triA.fromBufferAttribute(position, index.getX(i));
+                _triB.fromBufferAttribute(position, index.getX(i + 1));
+                _triC.fromBufferAttribute(position, index.getX(i + 2));
+                if (!_localRay.intersectTriangle(_triA, _triB, _triC, false, _hitPoint)) continue;
+                const distance = _hitPoint.distanceTo(_localRay.origin);
+                if (distance < nearest) nearest = distance;
+            }
+        }
+        return nearest;
+    }
+
+
+    /**
      * Moves the minimap arrow to the camera's current position (the same normalized
      * (u, v) fraction terrainHeightAt() takes) and points it where the camera is facing.
      */
@@ -2244,10 +2444,28 @@ export default class Squad3DSimulation {
             if (this._orbitMode) this.controls.update();
             else this._updateFlyMovement(delta);
             this._updateMinimapDot();
+            this._updateClickMarkerDistance(delta);
             this._updateFpsCounter(delta);
             this.renderer.render(this.scene, this.camera);
         };
         renderFrame();
+    }
+
+
+    /**
+     * Keeps the click marker's label at the camera's current distance while it moves -
+     * checked at most every CLICK_LABEL_UPDATE_INTERVAL, and the label is only redrawn
+     * when the rounded value actually changed, so a still camera costs nothing.
+     * @param {number} delta - seconds since the last frame
+     */
+    _updateClickMarkerDistance(delta) {
+        if (!this.clickMarker.visible) return;
+        this._clickLabelAccumTime += delta;
+        if (this._clickLabelAccumTime < CLICK_LABEL_UPDATE_INTERVAL) return;
+        this._clickLabelAccumTime = 0;
+
+        const distance = this.camera.position.distanceTo(this.clickMarker.position);
+        if (Math.round(distance) !== this._clickLabelDistance) this._setClickMarkerLabel(distance);
     }
 
 

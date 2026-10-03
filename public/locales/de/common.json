@@ -25,6 +25,7 @@
     "threeDUpHint": "hoch",
     "threeDDownHint": "runter",
     "threeDReleaseHint": "freigeben",
+    "threeDClickHint": "Flagge wählen / Markierung setzen",
     "threeDBackToMenu": "Zurück zum Menü",
     "threeDSpeedHint": "Kamerageschwindigkeit",
     "threeDSpeed": "Kamerageschwindigkeit",

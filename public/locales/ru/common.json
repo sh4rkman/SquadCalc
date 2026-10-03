@@ -25,6 +25,7 @@
     "threeDUpHint": "вверх",
     "threeDDownHint": "вниз",
     "threeDReleaseHint": "отпустить",
+    "threeDClickHint": "выбрать флаг / поставить метку",
     "threeDBackToMenu": "Назад в меню",
     "threeDSpeedHint": "скорость камеры",
     "threeDSpeed": "Скорость камеры",

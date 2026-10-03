@@ -25,6 +25,7 @@
     "threeDUpHint": "monter",
     "threeDDownHint": "descendre",
     "threeDReleaseHint": "relâcher",
+    "threeDClickHint": "sélectionner un drapeau / placer un marqueur",
     "threeDBackToMenu": "Retour au menu",
     "threeDSpeedHint": "vitesse de la caméra",
     "threeDSpeed": "Vitesse de la caméra",

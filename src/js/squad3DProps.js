@@ -72,6 +72,8 @@ export async function loadProps(mapBase) {
         }
         geometry.setAttribute("color", new THREE.BufferAttribute(colorArr, 3));
 
+        geometry.computeBoundingBox();
+
         const prefix = part.label.split("_")[0];
         if (!byCategory.has(prefix)) byCategory.set(prefix, []);
         byCategory.get(prefix).push(geometry);
@@ -79,6 +81,20 @@ export async function loadProps(mapBase) {
 
     const meshes = [];
     for (const [prefix, geometries] of byCategory) {
+        // Merging loses each part's own bounds, so keep them alongside the slice of the
+        // merged index buffer it owns (mergeGeometries concatenates indices in input order).
+        // Lets click raycasts skip straight to the few parts the ray actually crosses
+        // instead of testing every triangle of the category - see
+        // Squad3DSimulation._rayPropsMeshDistance().
+        const parts = [];
+        let indexStart = 0;
+        for (const geometry of geometries) {
+            const indexCount = geometry.index.count;
+            parts.push({ box: geometry.boundingBox, start: indexStart, count: indexCount });
+            indexStart += indexCount;
+        }
+
+
         const material = new THREE.MeshStandardMaterial({
             vertexColors: true,
             roughness: 1,
@@ -89,6 +105,7 @@ export async function loadProps(mapBase) {
         });
         const mesh = new THREE.Mesh(mergeGeometries(geometries, false), material);
         mesh.name = prefix;
+        mesh.userData.parts = parts;
         meshes.push(mesh);
     }
     return meshes;

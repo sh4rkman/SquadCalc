@@ -29,6 +29,7 @@
     "threeDUpHint": "上升",
     "threeDDownHint": "下降",
     "threeDReleaseHint": "释放",
+    "threeDClickHint": "选择旗点 / 放置标记",
     "threeDBackToMenu": "返回菜单",
     "threeDSpeedHint": "镜头速度",
     "threeDSpeed": "镜头速度",

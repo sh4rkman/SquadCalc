@@ -29,6 +29,7 @@
     "threeDUpHint": "subir",
     "threeDDownHint": "descer",
     "threeDReleaseHint": "soltar",
+    "threeDClickHint": "selecionar bandeira / colocar marcador",
     "threeDBackToMenu": "Voltar ao menu",
     "threeDSpeedHint": "velocidade da câmera",
     "threeDSpeed": "Velocidade da Câmera",

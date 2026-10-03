@@ -25,6 +25,7 @@
     "threeDUpHint": "вгору",
     "threeDDownHint": "вниз",
     "threeDReleaseHint": "відпустити",
+    "threeDClickHint": "вибрати прапор / поставити мітку",
     "threeDBackToMenu": "Назад до меню",
     "threeDSpeedHint": "швидкість камери",
     "threeDSpeed": "Швидкість камери",

@@ -29,6 +29,7 @@
     "threeDUpHint": "up",
     "threeDDownHint": "down",
     "threeDReleaseHint": "release",
+    "threeDClickHint": "select flag / place marker",
     "threeDBackToMenu": "Back to menu",
     "threeDSpeedHint": "camera speed",
     "threeDSpeed": "Camera Speed",
