@@ -222,6 +222,74 @@
             }
         }
     }
+    // 3D view open: the 2D map itself becomes the 3D minimap, pinned bottom-right above
+    // #threeDView (z-index 3). It takes the pointer (for hover and flag clicks), but its
+    // background clicks/drags/wheel are blocked in JS - see
+    // Squad3DSimulation._attachLeafletMinimap() / _blockMinimapBackgroundEvent().
+    #map.threeDMinimapMode {
+        position: fixed !important; // Leaflet sets an inline position: relative on init
+        right: 1em;
+        bottom: 1em;
+        // Scale with the screen's smaller side: ~120px on phones, capped at 280px on desktop
+        width: clamp(110px, 30vmin, 280px);
+        height: clamp(110px, 30vmin, 280px);
+        z-index: 4;
+        border: 2px solid rgba(255, 255, 255, 0.4);
+        border-radius: 6px;
+        overflow: hidden;
+        cursor: default;
+        // Grows x2 from its bottom-right corner while hovered - the enlarged box still
+        // contains the original one, so the cursor never drops out of it mid-grow.
+        transform-origin: bottom right;
+        transition: transform 0.15s ease-out;
+
+        @media (hover: hover) {
+            &:hover { transform: scale(2); }
+        }
+        &.threeDMinimapHidden { visibility: hidden; }
+
+        // While the 3D settings menu is open, look like it sits under the menu: the same
+        // veil as .threeDOverlay's backdrop (dialogs.scss). It can't really go under it -
+        // that backdrop lives inside #threeDView's stacking context, below this one.
+        // Lifted while hovered (expanded).
+        &::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            z-index: 1001; // above every Leaflet pane/control
+            background: rgba(0, 0, 0, 0.55);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.15s ease-out;
+        }
+        body:has(#threeDView .threeDOverlay:not([hidden])) &:not(:hover)::after { opacity: 1; }
+        // Popups, and the flag-to-flag distance labels (leaflet-measure-path) - clutter here.
+        .leaflet-popup-pane, #dropOverlay, .leaflet-measure-path-measurement { display: none; }
+        .threeDMinimapCamera, .threeDMinimapClickMarker {
+            img {
+                position: absolute;
+                width: clamp(14px, 2.4vmin, 22px);
+                height: clamp(14px, 2.4vmin, 22px);
+                filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.9));
+                transform: translate(-50%, -50%);
+            }
+        }
+        .threeDMinimapCamera { z-index: 1000 !important; } // above every 2D marker
+
+        // Circle flags shrink here in whole pixels rather than through the transform scale
+        // every other marker gets (patchMinimapMarkerScaling() skips them): scaled by a
+        // fractional factor, their outline and background were pixel-snapped apart.
+        // Doubled class for specificity over mapObjectives.scss's per-state rules.
+        .leaflet-marker-pane .flag.circleFlag.circleFlag {
+            width: 16px !important;
+            height: 16px !important;
+            margin-left: -8px !important;
+            margin-top: -8px !important;
+            border-radius: 8px;
+            outline-width: 1px !important;
+            font-size: 0.7em !important;
+        }
+    }
     .hexagon-shape {
         cursor: pointer!important;
         transition: fill-opacity 0.15s ease, stroke-opacity 0.15s ease;

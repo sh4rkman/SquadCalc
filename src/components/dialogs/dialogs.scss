@@ -624,43 +624,7 @@ dialog, #threeDView {
             font-size: 1.15em;
             min-width: 4ch;
             text-align: right;
-        }
-        .threeDMinimap {
-            position: absolute;
-            right: 1em;
-            bottom: 1em;
-            // Scale with the screen's smaller side: ~120px on phones, capped at 280px on desktop
-            width: clamp(110px, 30vmin, 280px);
-            height: clamp(110px, 30vmin, 280px);
-            border: 2px solid rgba(255, 255, 255, 0.4);
-            border-radius: 6px;
-            overflow: hidden;
-            background: rgba(0, 0, 0, 0.4);
-        }
-        .threeDMinimapImage {
-            display: block;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        .threeDMinimapDot {
-            position: absolute;
-            left: 50%;
-            top: 50%;
-            width: clamp(14px, 2.4vmin, 22px);
-            height: clamp(14px, 2.4vmin, 22px);
-            filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.9));
-            transform: translate(-50%, -50%);
-        }
-        .threeDMinimapClickMarker {
-            position: absolute;
-            width: clamp(14px, 2.4vmin, 22px);
-            height: clamp(14px, 2.4vmin, 22px);
-            filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.9));
-            transform: translate(-50%, -50%);
-            &[hidden] { display: none; }
-        }
-    }
+        }    }
     &#weaponInformation {
         max-width: 350px;
         .moveToRow {

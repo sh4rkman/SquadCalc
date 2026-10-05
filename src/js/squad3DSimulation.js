@@ -1,11 +1,61 @@
 import * as THREE from "three";
 import { decode } from "fast-png";
+import { DivIcon, Marker } from "leaflet";
 import { PointerLockControls } from "three/addons/controls/PointerLockControls.js";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { RGBELoader } from "three/addons/loaders/RGBELoader.js";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { loadProps } from "./squad3DProps.js";
 import { loadTrees } from "./squad3DTrees.js";
+
+// Size factor for every 2D marker (icons and DivIcon text labels) while the 2D map is
+// the 3D minimap - see patchMinimapMarkerScaling().
+const MINIMAP_MARKER_SCALE = 0.55;
+
+// Pointer events stopped on the minimap's empty background - see _blockMinimapBackgroundEvent().
+// Only the single click: on mobile it creates a target (on desktop it's just a session
+// ping). Presses (drag-pan), double-click (create weapon/target on desktop) and
+// right-click (context menu) all go through to the 2D map.
+const MINIMAP_BLOCKED_EVENTS = ["click"];
+let minimapMarkerScalingPatched = false;
+
+/**
+ * Shrinks Leaflet markers while their map is the 3D minimap (#map.threeDMinimapMode),
+ * without recreating any icon. CSS alone can't: Leaflet positions a marker with an inline
+ * translate3d, and any CSS scale composes outside it - shrinking the marker's position
+ * too. So, like leaflet-rotatedMarker.js, this wraps Marker._setPos and appends scale()
+ * after the translate, around the icon's anchor (= minus its computed margins, which also
+ * covers CSS-overridden sizes like .circleFlag). Applied lazily on first use so it wraps
+ * after the rotation plugins' own _setPos overrides, never under them.
+ */
+function patchMinimapMarkerScaling() {
+    if (minimapMarkerScalingPatched) return;
+    minimapMarkerScalingPatched = true;
+
+    const proto_setPos = Marker.prototype._setPos;
+    Marker.include({
+        _setPos: function (pos) {
+            proto_setPos.call(this, pos);
+            const shrink = !this.options.minimapNoShrink && this._map?.getContainer().classList.contains("threeDMinimapMode");
+
+            for (const el of [this._icon, this._shadow]) {
+                if (!el) continue;
+                // Circle flags are resized by map.scss instead: at a fractional scale their
+                // outline and background get pixel-snapped apart.
+                if (shrink && !el.classList.contains("circleFlag")) {
+                    const style = getComputedStyle(el);
+                    el.style.transformOrigin = `${-parseFloat(style.marginLeft)}px ${-parseFloat(style.marginTop)}px`;
+                    el.style.transform += ` scale(${MINIMAP_MARKER_SCALE})`;
+                    el.dataset.minimapShrunk = "1";
+                } else if (el.dataset.minimapShrunk) {
+                    // A rotated marker's origin was just set again by the rotation plugin.
+                    if (!(el === this._icon && this.options.rotationAngle)) el.style.transformOrigin = "";
+                    delete el.dataset.minimapShrunk;
+                }
+            }
+        },
+    });
+}
 
 // Vertices per side of the terrain grid, sampled from the full-resolution heightmap.
 const GRID_RESOLUTION = 512;
@@ -74,6 +124,10 @@ const SPREAD_GROUND_OFFSET = 0.2;
 // fading out upward - see _createGroundBandMaterial().
 const GROUND_BAND_HEIGHT = 30;
 const GROUND_BAND_DEPTH = 1;
+
+// The FOB exclusion radius band reads lighter than the build radius one, like its
+// thinner line on the 2D map - see _drawMarkers().
+const FOB_EXCLUSION_BAND_OPACITY = 0.5;
 
 // Projectile arc tube radius (meters) - see _drawProjectileArcs().
 const ARC_TUBE_RADIUS = 0.8;
@@ -252,11 +306,30 @@ export default class Squad3DSimulation {
     constructor(container) {
         this.container = container;
         this.loadingScreen = container.querySelector(".threeDLoading");
-        this.minimapImage = container.querySelector(".threeDMinimapImage");
-        this.minimapDot = container.querySelector(".threeDMinimapDot");
-        this.minimapDot.src = "/img/icons/shared/camera.webp";
-        this.minimapClickMarker = container.querySelector(".threeDMinimapClickMarker");
-        this.minimapClickMarker.src = CLICK_MARKER_ICON_URL;
+
+        // The 2D Leaflet map itself doubles as the minimap while the view is open (shrunk
+        // into the bottom-right corner by CSS, read-only) - see _attachLeafletMinimap().
+        this._leafletMinimap = null;
+        this._leafletSavedView = null; // { center, zoom, minZoom } to restore on close
+        this._leafletDisabledHandlers = []; // pan/zoom handlers turned off while attached
+        this._hiddenLeafletGrid = null; // the keypad grid, taken off while attached - see _fitLeafletMinimap()
+        this._onMinimapBackgroundEvent = (event) => this._blockMinimapBackgroundEvent(event);
+        // Bubble-phase, added after Leaflet's own wheel listener on the same container: the
+        // minimap zooms first, then the event stops before reaching the window-level wheel
+        // listener that changes the 3D camera speed - see _setupFlyControls().
+        this._onMinimapWheel = (event) => event.stopPropagation();
+        this._minimapCameraMarker = new Marker([0, 0], {
+            icon: new DivIcon({ className: "threeDMinimapCamera", html: "<img src=\"/img/icons/shared/camera.webp\" alt=\"\">", iconSize: null }),
+            interactive: false,
+            keyboard: false,
+            minimapNoShrink: true, // see patchMinimapMarkerScaling()
+        });
+        this._minimapClickMarker = new Marker([0, 0], {
+            icon: new DivIcon({ className: "threeDMinimapClickMarker", html: `<img src="${CLICK_MARKER_ICON_URL}" alt="">`, iconSize: null }),
+            interactive: false,
+            keyboard: false,
+            minimapNoShrink: true,
+        });
         this.scene = null;
         this.camera = null;
         this.renderer = null;
@@ -378,6 +451,7 @@ export default class Squad3DSimulation {
         this._lastActiveMap = activeMap;
         this._lastMinimap = minimap;
         this._isOpen = true;
+        this._attachLeafletMinimap(minimap);
 
         await this._ensureMapLoaded(activeMap);
 
@@ -478,7 +552,6 @@ export default class Squad3DSimulation {
     _drawLayerOverlays(layer, activeMap, minimap, arcRequest) {
         this._drawCapzones(layer, activeMap);
         this._drawFlagPath(layer, activeMap);
-        this._updateMinimapImage(layer, activeMap);
         this._drawDeployables(layer, activeMap);
         this._drawMarkers(minimap, activeMap);
         this._drawTargetSpreads(minimap, activeMap);
@@ -493,6 +566,7 @@ export default class Squad3DSimulation {
         this._isOpen = false;
         window.removeEventListener("resize", this._onResize);
         this._stopLoop();
+        this._detachLeafletMinimap();
         if (!this._orbitMode) this.controls.unlock();
         this._setDragFlying(false);
         this._dragging = false;
@@ -603,10 +677,13 @@ export default class Squad3DSimulation {
         // drives the camera directly off touch drag/pinch instead - no lock step, and none
         // of PointerLockControls' lock/unlock/Enter-to-lock/wheel-speed wiring applies.
         // The keyboard/mouse controls panel is desktop-only too - its toggle stays in the
-        // grid, just disabled.
+        // grid, just disabled. So is the minimap: the 2D map sits above the whole 3D view
+        // (see _attachLeafletMinimap()), so on a small touch screen it covers the menu card.
         if (this._orbitMode) {
             this.container.querySelector(".threeDControlsOption").classList.add("disabled");
             this.container.querySelector(".threeDControlsToggle").disabled = true;
+            this.container.querySelector(".threeDMinimapToggle").closest(".threeDOverlayOption").classList.add("disabled");
+            this.container.querySelector(".threeDMinimapToggle").disabled = true;
         } else {
             // PointerLockControls dispatches "lock"/"unlock" BEFORE updating its own isLocked
             // flag, so reading this.controls.isLocked from inside these listeners would still
@@ -724,7 +801,6 @@ export default class Squad3DSimulation {
         this._setCapzonesVisible(this.capzonesVisible);
         capzonesToggle.addEventListener("change", () => this._setCapzonesVisible(capzonesToggle.checked));
 
-        this.minimap = this.container.querySelector(".threeDMinimap");
         const minimapToggle = options.querySelector(".threeDMinimapToggle");
         minimapToggle.checked = this.minimapVisible;
         this._setMinimapVisible(this.minimapVisible);
@@ -1005,7 +1081,6 @@ export default class Squad3DSimulation {
 
     async _loadTerrain(activeMap) {
         const base = `${process.env.API_URL}${activeMap.mapURL}`;
-        this.minimapImage.src = `${base}basemap.webp`; // instant placeholder while the map loads - see open()'s _updateMinimapImage()
 
         // Single-layer maps only ship basemap.webp - fall back to it rather than failing
         // the whole load when the saved texture is topomap/terrainmap.
@@ -1247,20 +1322,6 @@ export default class Squad3DSimulation {
 
 
     /**
-     * Points the minimap image at the selected layer's own thumbnail (the same one the
-     * layer-info dialog uses) instead of the bare map basemap, so the minimap actually
-     * shows the flags/capzones for that layer. Falls back to the basemap with no layer.
-     * @param {?SquadLayer} layer
-     * @param {object} activeMap
-     */
-    _updateMinimapImage(layer, activeMap) {
-        this.minimapImage.src = layer?.layerData?.rawName
-            ? `${process.env.API_URL}/img/thumbnails/${encodeURIComponent(layer.layerData.rawName)}.webp`
-            : `${process.env.API_URL}${activeMap.mapURL}basemap.webp`;
-    }
-
-
-    /**
      * (Re)builds the terrain mesh from the cached decoded heightmap/texture at
      * gridResolution, without touching the camera - see _loadTerrain().
      */
@@ -1337,13 +1398,144 @@ export default class Squad3DSimulation {
 
 
     /**
-     * Shows/hides the bottom-right minimap (basemap + camera dot).
+     * Shows/hides the bottom-right minimap (the shrunk 2D map + camera arrow). Hidden
+     * with visibility rather than display, so Leaflet keeps its size and fit.
      * @param {boolean} visible
      */
     _setMinimapVisible(visible) {
         this.minimapVisible = visible;
         localStorage.setItem(STORAGE_KEYS.minimapVisible, visible ? "1" : "0");
-        this.minimap.hidden = !visible;
+        this._leafletMinimap?.getContainer().classList.toggle("threeDMinimapHidden", !visible);
+    }
+
+
+    /**
+     * Turns the 2D Leaflet map into the minimap: the threeDMinimapMode class (map.scss)
+     * pins #map into the bottom-right corner above the 3D view and makes it read-only
+     * (no pointer events, popups hidden), so every flag, capzone, marker and range
+     * circle already drawn there shows up as-is and stays live. The current 2D view is
+     * saved and restored by _detachLeafletMinimap(). No-op if already attached.
+     * @param {?object} minimap - SquadMinimap instance
+     */
+    _attachLeafletMinimap(minimap) {
+        if (this._orbitMode) return; // touch: no minimap - see _setupFlyControls()
+        if (!minimap || this._leafletMinimap === minimap) {
+            this._fitLeafletMinimap();
+            return;
+        }
+        this._detachLeafletMinimap();
+
+        patchMinimapMarkerScaling();
+        this._leafletMinimap = minimap;
+        this._leafletSavedView = { center: minimap.getCenter(), zoom: minimap.getZoom(), minZoom: minimap.getMinZoom(), maxBounds: minimap.options.maxBounds, maxBoundsViscosity: minimap.options.maxBoundsViscosity };
+        minimap.setMaxBounds(minimap.imageBounds); // drag-panning stays on the map
+        minimap.options.maxBoundsViscosity = 1;
+        const container = minimap.getContainer();
+        container.classList.add("threeDMinimapMode");
+        container.classList.toggle("threeDMinimapHidden", !this.minimapVisible);
+        for (const type of MINIMAP_BLOCKED_EVENTS) container.addEventListener(type, this._onMinimapBackgroundEvent, true);
+        container.addEventListener("wheel", this._onMinimapWheel);
+        this._leafletDisabledHandlers = ["touchZoom", "doubleClickZoom", "boxZoom", "keyboard"]
+            .map((name) => minimap[name])
+            .filter((handler) => handler?.enabled());
+        this._leafletDisabledHandlers.forEach((handler) => handler.disable());
+        this._minimapCameraMarker.addTo(minimap);
+        this._fitLeafletMinimap();
+        this._repositionLeafletMarkers(minimap);
+        this._updateMinimapClickMarker();
+    }
+
+
+    /**
+     * Capture-phase guard on the minimap's container (see _attachLeafletMinimap()): the
+     * map takes the pointer so it can be hovered (x2 scale, map.scss) and its flags/markers
+     * stay clickable, but a single click on its empty background must not reach
+     * squadMinimap's own handler (a mobile tap places a target). Runs before Leaflet's
+     * listeners, including on the container itself. Everything else goes through - see
+     * MINIMAP_BLOCKED_EVENTS, and _onMinimapWheel for the 3D speed side of wheel zoom.
+     * @param {Event} event
+     */
+    _blockMinimapBackgroundEvent(event) {
+        if (event.target.closest?.(".leaflet-interactive")) return;
+        event.stopImmediatePropagation();
+    }
+
+
+    /**
+     * Re-runs every marker's _setPos(), so patchMinimapMarkerScaling() (un)shrinks them
+     * right after threeDMinimapMode is toggled - a fit/setView only repositions markers
+     * when the zoom actually changes.
+     * @param {object} minimap - SquadMinimap instance
+     */
+    _repositionLeafletMarkers(minimap) {
+        minimap.eachLayer((layer) => {
+            if (layer instanceof Marker) layer.update();
+        });
+    }
+
+
+    /**
+     * Fits the whole map into the minimap box. Leaflet's minZoom (sized for the full
+     * screen 2D view) is lowered so the fit can zoom out far enough for a ~250px box,
+     * then pinned at the fitted zoom so wheel zooming can't go out past the whole map.
+     */
+    _fitLeafletMinimap() {
+        const minimap = this._leafletMinimap;
+        if (!minimap) return;
+        minimap.invalidateSize({ pan: false });
+        minimap.setMinZoom(-5);
+        minimap.fitBounds(minimap.imageBounds, { animate: false });
+        minimap.setMinZoom(minimap.getZoom());
+
+        // No keypad grid on the minimap - it's just clutter at that size. Checked on every
+        // fit since squadMinimap.draw() builds a fresh grid on each map change.
+        const grid = minimap.grid;
+        if (grid && minimap.layerGroup.hasLayer(grid)) {
+            minimap.layerGroup.removeLayer(grid);
+            this._hiddenLeafletGrid = grid;
+        }
+    }
+
+
+    /**
+     * Gives the Leaflet map back to the 2D view, at the zoom/center it had before.
+     */
+    _detachLeafletMinimap() {
+        const minimap = this._leafletMinimap;
+        if (!minimap) return;
+        this._leafletMinimap = null;
+
+        this._minimapCameraMarker.remove();
+        this._minimapClickMarker.remove();
+        const container = minimap.getContainer();
+        container.classList.remove("threeDMinimapMode", "threeDMinimapHidden");
+        for (const type of MINIMAP_BLOCKED_EVENTS) container.removeEventListener(type, this._onMinimapBackgroundEvent, true);
+        container.removeEventListener("wheel", this._onMinimapWheel);
+        this._leafletDisabledHandlers.forEach((handler) => handler.enable());
+        this._leafletDisabledHandlers = [];
+        // Only the map's current grid - an older one hidden before a map change is gone.
+        if (this._hiddenLeafletGrid === minimap.grid) minimap.layerGroup.addLayer(minimap.grid);
+        this._hiddenLeafletGrid = null;
+        minimap.invalidateSize({ pan: false });
+        const { center, zoom, minZoom, maxBounds, maxBoundsViscosity } = this._leafletSavedView;
+        minimap.setMaxBounds(maxBounds ?? null);
+        minimap.options.maxBoundsViscosity = maxBoundsViscosity;
+        minimap.setView(center, zoom, { animate: false });
+        minimap.setMinZoom(minZoom);
+        this._repositionLeafletMarkers(minimap);
+    }
+
+
+    /**
+     * Leaflet lat/lng for a world X/Z position - the inverse of _latLngToWorldXZ().
+     * @param {number} x
+     * @param {number} z
+     * @param {object} minimap - SquadMinimap instance
+     * @returns {[number, number]}
+     */
+    _worldToLatLng(x, z, minimap) {
+        const half = this.terrainSize / 2;
+        return [-(z + half) * minimap.gameToMapScaleY, (x + half) * minimap.gameToMapScale];
     }
 
 
@@ -2006,6 +2198,9 @@ export default class Squad3DSimulation {
      */
     async _drawMarkers(minimap, activeMap) {
         this.markerGroup.clear();
+        // A newer redraw (refresh3DOverlays() fires on every 2D change) may start while this
+        // one awaits a texture - only the latest may keep adding, or sprites get doubled.
+        const drawId = this._markersDrawId = (this._markersDrawId ?? 0) + 1;
 
         const weapons = minimap?.activeWeaponsMarkers?.getLayers() ?? [];
         const markers = [
@@ -2024,7 +2219,7 @@ export default class Squad3DSimulation {
             const texture = await this._loadMarkerIconTexture(marker.getIcon().options.iconUrl);
 
             // The map (or the view) may have changed while the texture was loading.
-            if (this._lastActiveMap !== activeMap) return;
+            if (this._lastActiveMap !== activeMap || drawId !== this._markersDrawId) return;
 
             // Anchored at its bottom edge on the ground, so resizing never sinks it.
             const sprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: texture, transparent: true, depthWrite: false }));
@@ -2045,7 +2240,7 @@ export default class Squad3DSimulation {
                 const { circles1Size, circles1Color, circles2Size, circles2Color } = marker.options;
                 const bands = [];
                 if (circles1Size) bands.push(this._createFobRangeBand(x, groundY, z, circles1Size / minimap.gameToMapScale, circles1Color));
-                if (circles2Size) bands.push(this._createFobRangeBand(x, groundY, z, circles2Size / minimap.gameToMapScale, circles2Color || "white"));
+                if (circles2Size) bands.push(this._createFobRangeBand(x, groundY, z, circles2Size / minimap.gameToMapScale, circles2Color || "white", FOB_EXCLUSION_BAND_OPACITY));
                 bands.forEach((band) => this.markerGroup.add(band));
                 sprite.userData.rangeBands = bands; // removed along with the sprite on right-click delete
             }
@@ -2109,10 +2304,11 @@ export default class Squad3DSimulation {
      * @param {number} z - world Z of the FOB
      * @param {number} radius - meters
      * @param {string} color - CSS color
+     * @param {number} [opacity] - see _createGroundBandMaterial()
      * @returns {THREE.Mesh}
      */
-    _createFobRangeBand(x, y, z, radius, color) {
-        const mesh = new THREE.Mesh(this._fobSphereGeometry, this._createGroundBandMaterial(color));
+    _createFobRangeBand(x, y, z, radius, color, opacity = 1) {
+        const mesh = new THREE.Mesh(this._fobSphereGeometry, this._createGroundBandMaterial(color, opacity));
         mesh.position.set(x, y, z);
         mesh.scale.setScalar(radius);
         mesh.raycast = () => {}; // never a right-click delete target - only the FOB sprite is
@@ -2176,13 +2372,15 @@ export default class Squad3DSimulation {
      * [-GROUND_BAND_DEPTH, GROUND_BAND_HEIGHT] meters around it, leaving a wall that
      * follows the mesh/terrain intersection and fades out upward.
      * @param {string} color - CSS color
+     * @param {number} [opacity] - multiplier on the band's whole alpha
      * @returns {THREE.ShaderMaterial}
      */
-    _createGroundBandMaterial(color) {
+    _createGroundBandMaterial(color, opacity = 1) {
         return new THREE.ShaderMaterial({
             uniforms: {
                 ...this._terrainHeightUniforms,
                 uColor: { value: new THREE.Color(color) },
+                uOpacity: { value: opacity },
                 uBandHeight: { value: GROUND_BAND_HEIGHT },
                 uBandDepth: { value: GROUND_BAND_DEPTH },
             },
@@ -2201,6 +2399,7 @@ export default class Squad3DSimulation {
                 uniform vec3 uColor;
                 uniform float uBandHeight;
                 uniform float uBandDepth;
+                uniform float uOpacity;
                 varying vec3 vWorldPos;
 
                 float heightAt(ivec2 cell) {
@@ -2226,7 +2425,7 @@ export default class Squad3DSimulation {
                     float t = clamp(aboveGround / uBandHeight, 0.0, 1.0);
                     float wall = 0.35 * (1.0 - t) * (1.0 - t);
                     float groundLine = 0.5 * (1.0 - smoothstep(0.0, 1.5, abs(aboveGround)));
-                    gl_FragColor = vec4(uColor, wall + groundLine);
+                    gl_FragColor = vec4(uColor, (wall + groundLine) * uOpacity);
                     #include <colorspace_fragment>
                 }
             `,
@@ -2728,22 +2927,25 @@ export default class Squad3DSimulation {
 
 
     /**
-     * Moves the minimap arrow to the camera's current position (the same normalized
-     * (u, v) fraction terrainHeightAt() takes) and points it where the camera is facing.
+     * Moves the minimap's camera arrow (a Leaflet marker on the 2D map - see
+     * _attachLeafletMinimap()) to the camera's current position, kept on the map, and
+     * points it where the camera is facing.
      */
     _updateMinimapDot() {
-        if (!this.terrainSize) return;
-        const u = THREE.MathUtils.clamp(this.camera.position.x / this.terrainSize + 0.5, 0, 1);
-        const v = THREE.MathUtils.clamp(this.camera.position.z / this.terrainSize + 0.5, 0, 1);
-        this.minimapDot.style.left = `${u * 100}%`;
-        this.minimapDot.style.top = `${v * 100}%`;
+        const minimap = this._leafletMinimap;
+        if (!minimap || !this.terrainSize) return;
+        const half = this.terrainSize / 2;
+        const x = THREE.MathUtils.clamp(this.camera.position.x, -half, half);
+        const z = THREE.MathUtils.clamp(this.camera.position.z, -half, half);
+        this._minimapCameraMarker.setLatLng(this._worldToLatLng(x, z, minimap));
 
         // Heading clockwise from north (-Z, the minimap's "up"). camera.webp's own artwork
         // faces right (east) at 0deg rotation rather than up, so it needs a -90deg
         // correction to point up (i.e. north) when heading is 0.
         this.camera.getWorldDirection(this._minimapForward);
         const heading = THREE.MathUtils.radToDeg(Math.atan2(this._minimapForward.x, -this._minimapForward.z));
-        this.minimapDot.style.transform = `translate(-50%, -50%) rotate(${heading - 90}deg)`;
+        const arrow = this._minimapCameraMarker.getElement()?.firstElementChild;
+        if (arrow) arrow.style.transform = `translate(-50%, -50%) rotate(${heading - 90}deg)`;
     }
 
 
@@ -2752,12 +2954,13 @@ export default class Squad3DSimulation {
      * The marker only moves on click, so this runs then rather than every frame.
      */
     _updateMinimapClickMarker() {
-        this.minimapClickMarker.hidden = !this.clickMarker.visible || !this.terrainSize;
-        if (this.minimapClickMarker.hidden) return;
-        const u = THREE.MathUtils.clamp(this.clickMarker.position.x / this.terrainSize + 0.5, 0, 1);
-        const v = THREE.MathUtils.clamp(this.clickMarker.position.z / this.terrainSize + 0.5, 0, 1);
-        this.minimapClickMarker.style.left = `${u * 100}%`;
-        this.minimapClickMarker.style.top = `${v * 100}%`;
+        const minimap = this._leafletMinimap;
+        if (!minimap || !this.clickMarker.visible || !this.terrainSize) {
+            this._minimapClickMarker.remove();
+            return;
+        }
+        const { x, z } = this.clickMarker.position;
+        this._minimapClickMarker.setLatLng(this._worldToLatLng(x, z, minimap)).addTo(minimap);
     }
 
 
@@ -2793,6 +2996,7 @@ export default class Squad3DSimulation {
         this.camera.aspect = width / height;
         this.camera.updateProjectionMatrix();
         this.renderer.setSize(width, height);
+        this._fitLeafletMinimap(); // its box is sized in vmin
     }
 
 

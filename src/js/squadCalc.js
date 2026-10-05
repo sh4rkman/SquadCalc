@@ -215,6 +215,18 @@ export default class SquadCalc {
         this.simulation3D.refresh(this.minimap.activeMap, layer, this.minimap);
     }
 
+    /**
+     * Redraws an open 3D view's overlays after a change on the 2D map (often made from
+     * the 3D minimap itself): a weapon/target/map marker placed, moved or removed
+     * (squadMarker.js), or a flag clicked (SquadLayer._handleFlagClick()). Batched, so a
+     * burst of changes - a session sync, "clear all" - only redraws once.
+     */
+    refresh3DOverlays() {
+        if (!this.is3DOpen) return;
+        clearTimeout(this._refresh3DOverlaysTimeout);
+        this._refresh3DOverlaysTimeout = setTimeout(() => this.refresh3D(), 100);
+    }
+
     initServerMode(serverId, sessionId = null) {
         if (!this.squadServersBrowser) {
             this.squadServersBrowser = new SquadServersBrowser();
