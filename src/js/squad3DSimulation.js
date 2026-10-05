@@ -46,6 +46,13 @@ const TARGET_MARKER_WORLD_SIZE = MARKER_WORLD_SIZE * 0.75;
 // Right-click map markers (FOBs, HABs, vehicles...) - same size as targets.
 const STRAT_MARKER_WORLD_SIZE = MARKER_WORLD_SIZE * 0.75;
 
+// On-screen size limits (CSS px) for a weapon marker's icon sprite - between them it keeps
+// its real MARKER_WORLD_SIZE, so it still shrinks with distance, just never into an
+// unreadable dot far away or a huge billboard up close. Targets/map markers use the same
+// limits scaled down by their own size ratio - see _markerScaleFactor().
+const MARKER_MIN_SCREEN_PX = 30;
+const MARKER_MAX_SCREEN_PX = 96;
+
 // Canvas size (px) SVG marker icons are rasterized at - see _loadMarkerIconTexture().
 const SVG_ICON_RASTER_SIZE = 128;
 
@@ -62,11 +69,11 @@ const TARGET_LABEL_CLEARANCE = 3;
 // z-fighting with the terrain - see _drawTargetSpreads().
 const SPREAD_GROUND_OFFSET = 0.2;
 
-// FOB range spheres (build radius + exclusion radius) are only drawn as a band hugging the
-// ground: from FOB_BAND_DEPTH meters below the terrain to FOB_BAND_HEIGHT above it, fading
-// out upward - see _createFobRangeBand().
-const FOB_BAND_HEIGHT = 30;
-const FOB_BAND_DEPTH = 1;
+// FOB range spheres and weapon max range walls are only drawn as a band hugging the
+// ground: from GROUND_BAND_DEPTH meters below the terrain to GROUND_BAND_HEIGHT above it,
+// fading out upward - see _createGroundBandMaterial().
+const GROUND_BAND_HEIGHT = 30;
+const GROUND_BAND_DEPTH = 1;
 
 // Projectile arc tube radius (meters) - see _drawProjectileArcs().
 const ARC_TUBE_RADIUS = 0.8;
@@ -1284,6 +1291,8 @@ export default class Squad3DSimulation {
         this._terrainHeightUniforms.uHeightMap.value = heightTexture;
         this._terrainHeightUniforms.uGridRes.value = this.gridResolution;
         this._terrainHeightUniforms.uTerrainSize.value = this.terrainSize;
+        this._terrainMinY = this.heights.reduce((min, h) => Math.min(min, h), Infinity);
+        this._terrainMaxY = this.heights.reduce((max, h) => Math.max(max, h), -Infinity);
     }
 
 
@@ -2010,16 +2019,23 @@ export default class Squad3DSimulation {
         for (const { marker, size, isTarget, isStrat } of markers) {
             const { x, z, u, v } = this._markerWorldPosition(marker, minimap, corner0);
             const groundY = this.terrainHeightAt(u, v);
-            const y = groundY + size / 2;
+            const anchor = new THREE.Vector3(x, groundY, z);
 
             const texture = await this._loadMarkerIconTexture(marker.getIcon().options.iconUrl);
 
             // The map (or the view) may have changed while the texture was loading.
             if (this._lastActiveMap !== activeMap) return;
 
+            // Anchored at its bottom edge on the ground, so resizing never sinks it.
             const sprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: texture, transparent: true, depthWrite: false }));
+            sprite.center.set(0.5, 0);
+            sprite.position.copy(anchor);
             sprite.scale.set(size, size, 1);
-            sprite.position.set(x, y, z);
+            sprite.onBeforeRender = (renderer, scene, camera) => {
+                const scaled = size * this._markerScaleFactor(anchor, size, camera);
+                sprite.scale.set(scaled, scaled, 1);
+                sprite.updateMatrixWorld();
+            };
             if (isStrat) sprite.userData.stratMarker = marker; // right-click delete target
             this.markerGroup.add(sprite);
 
@@ -2034,23 +2050,60 @@ export default class Squad3DSimulation {
                 sprite.userData.rangeBands = bands; // removed along with the sprite on right-click delete
             }
 
+            if (!isTarget && !isStrat) {
+                const wall = this._createWeaponRangeWall(marker, minimap, corner0);
+                if (wall) this.markerGroup.add(wall);
+            }
+
             if (!isTarget) continue;
             const text = this._targetLabelText(marker, weapons);
             if (!text) continue;
 
+            // Scales along with its icon (same factor), bottom edge just above the icon's top.
             const label = this._createLabelSprite(text, undefined, TARGET_LABEL_WORLD_HEIGHT);
+            const labelBaseScale = label.scale.clone();
+            label.center.set(0.5, 0);
             label.position.set(x, groundY + size + TARGET_LABEL_CLEARANCE, z);
+            label.onBeforeRender = (renderer, scene, camera) => {
+                const factor = this._markerScaleFactor(anchor, size, camera);
+                label.scale.set(labelBaseScale.x * factor, labelBaseScale.y * factor, 1);
+                label.position.y = groundY + (size + TARGET_LABEL_CLEARANCE) * factor;
+                label.updateMatrixWorld();
+            };
             this.markerGroup.add(label);
         }
     }
 
 
     /**
+     * Scale factor (1 = real world size) keeping a marker icon between
+     * MARKER_MIN_SCREEN_PX and MARKER_MAX_SCREEN_PX tall on screen - scaled by
+     * baseSize / MARKER_WORLD_SIZE, so smaller markers keep their size ratio. Computed
+     * each frame from the sprite's onBeforeRender() (see _drawMarkers()).
+     * @param {THREE.Vector3} anchor - the marker's ground position
+     * @param {number} baseSize - the marker's world size (meters)
+     * @param {THREE.PerspectiveCamera} camera
+     * @returns {number}
+     */
+    _markerScaleFactor(anchor, baseSize, camera) {
+        const viewportHeight = this.renderer.domElement.clientHeight;
+        if (!viewportHeight) return 1;
+
+        const distance = camera.position.distanceTo(anchor);
+        const metersPerPixel = (2 * distance * Math.tan(THREE.MathUtils.degToRad(camera.fov) / 2)) / viewportHeight;
+        const ratio = baseSize / MARKER_WORLD_SIZE;
+        const size = THREE.MathUtils.clamp(
+            baseSize,
+            MARKER_MIN_SCREEN_PX * ratio * metersPerPixel,
+            MARKER_MAX_SCREEN_PX * ratio * metersPerPixel
+        );
+        return size / baseSize;
+    }
+
+
+    /**
      * One FOB range sphere (in-game FOB radii are 3D distances), drawn only where it
-     * meets the ground: the fragment shader samples the terrain height under each
-     * fragment (same grid as the terrain mesh, bilinear like its triangles) and discards
-     * everything outside [-FOB_BAND_DEPTH, FOB_BAND_HEIGHT] meters around it, leaving a
-     * wall that follows the true sphere/terrain intersection and fades out upward.
+     * meets the ground - see _createGroundBandMaterial().
      * @param {number} x - world X of the FOB
      * @param {number} y - world Y of the sphere's center (the FOB's ground height)
      * @param {number} z - world Z of the FOB
@@ -2059,12 +2112,79 @@ export default class Squad3DSimulation {
      * @returns {THREE.Mesh}
      */
     _createFobRangeBand(x, y, z, radius, color) {
-        const material = new THREE.ShaderMaterial({
+        const mesh = new THREE.Mesh(this._fobSphereGeometry, this._createGroundBandMaterial(color));
+        mesh.position.set(x, y, z);
+        mesh.scale.setScalar(radius);
+        mesh.raycast = () => {}; // never a right-click delete target - only the FOB sprite is
+        return mesh;
+    }
+
+
+    /**
+     * A weapon's max range outline (the 2D rangeMarker circle, or its terrain-aware
+     * precisionRangeMarker polygon when "realMaxRange" is on) as a vertical wall clipped
+     * to the ground band - see _createGroundBandMaterial(). Unlike a FOB radius, max
+     * range is a horizontal distance, so the wall is straight up rather than a sphere.
+     * @param {object} weapon - a squadWeaponMarker (minimap.activeWeaponsMarkers layer)
+     * @param {object} minimap - SquadMinimap instance
+     * @param {[number, number]} corner0 - activeMap.SDK_data.minimap.corner0
+     * @returns {?THREE.Mesh}
+     */
+    _createWeaponRangeWall(weapon, minimap, corner0) {
+        let points;
+        // Only on the map while "realMaxRange" is on - updateWeapon() removes it otherwise.
+        if (weapon.precisionRangeMarker && minimap.hasLayer(weapon.precisionRangeMarker)) {
+            points = weapon.precisionRangeMarker.getLatLngs()[0]
+                .map(({ lat, lng }) => this._latLngToWorldXZ(lat, lng, minimap, corner0));
+        } else {
+            const radius = weapon.rangeMarker.getRadius() / minimap.gameToMapScale;
+            if (!radius) return null;
+            const { x, z } = this._markerWorldPosition(weapon, minimap, corner0);
+            const segments = 256;
+            points = Array.from({ length: segments }, (_, i) => {
+                const angle = (i / segments) * Math.PI * 2;
+                return { x: x + radius * Math.cos(angle), z: z + radius * Math.sin(angle) };
+            });
+        }
+        if (points.length < 3) return null;
+
+        // Tall enough to cross the ground anywhere on the map; the shader keeps only the band.
+        const bottom = this._terrainMinY - GROUND_BAND_DEPTH;
+        const top = this._terrainMaxY + GROUND_BAND_HEIGHT;
+        const positions = [];
+        for (const { x, z } of points) positions.push(x, bottom, z, x, top, z);
+        const indices = [];
+        for (let i = 0; i < points.length; i++) {
+            const a = i * 2;
+            const b = ((i + 1) % points.length) * 2;
+            indices.push(a, b, a + 1, a + 1, b, b + 1);
+        }
+        const geometry = new THREE.BufferGeometry();
+        geometry.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
+        geometry.setIndex(indices);
+
+        const mesh = new THREE.Mesh(geometry, this._createGroundBandMaterial(weapon.maxDistCircleOn.color));
+        mesh.raycast = () => {};
+        return mesh;
+    }
+
+
+    /**
+     * Material that only draws a mesh where it passes near the ground: the fragment
+     * shader samples the terrain height under each fragment (same grid as the terrain
+     * mesh, bilinear like its triangles) and discards everything outside
+     * [-GROUND_BAND_DEPTH, GROUND_BAND_HEIGHT] meters around it, leaving a wall that
+     * follows the mesh/terrain intersection and fades out upward.
+     * @param {string} color - CSS color
+     * @returns {THREE.ShaderMaterial}
+     */
+    _createGroundBandMaterial(color) {
+        return new THREE.ShaderMaterial({
             uniforms: {
                 ...this._terrainHeightUniforms,
                 uColor: { value: new THREE.Color(color) },
-                uBandHeight: { value: FOB_BAND_HEIGHT },
-                uBandDepth: { value: FOB_BAND_DEPTH },
+                uBandHeight: { value: GROUND_BAND_HEIGHT },
+                uBandDepth: { value: GROUND_BAND_DEPTH },
             },
             vertexShader: /* glsl */ `
                 varying vec3 vWorldPos;
@@ -2115,12 +2235,6 @@ export default class Squad3DSimulation {
             side: THREE.DoubleSide,
             toneMapped: false,
         });
-
-        const mesh = new THREE.Mesh(this._fobSphereGeometry, material);
-        mesh.position.set(x, y, z);
-        mesh.scale.setScalar(radius);
-        mesh.raycast = () => {}; // never a right-click delete target - only the FOB sprite is
-        return mesh;
     }
 
 
