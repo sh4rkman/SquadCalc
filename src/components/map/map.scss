@@ -244,7 +244,10 @@
         transition: transform 0.15s ease-out;
 
         @media (hover: hover) {
-            &:hover { transform: scale(2); }
+            // Also while its right-click context menu is open: that tippy lives outside
+            // #map, so moving onto it ends :hover and would shrink the map from under it.
+            &:hover,
+            body:has(.tippy-box[data-theme~="contextmenu"]) & { transform: scale(2); }
         }
         &.threeDMinimapHidden { visibility: hidden; }
 
@@ -262,7 +265,10 @@
             pointer-events: none;
             transition: opacity 0.15s ease-out;
         }
-        body:has(#threeDView .threeDOverlay:not([hidden])) &:not(:hover)::after { opacity: 1; }
+        // Not while its context menu is open either - it's still expanded then (see above).
+        body:has(#threeDView .threeDOverlay:not([hidden])):not(:has(.tippy-box[data-theme~="contextmenu"])) &:not(:hover)::after {
+            opacity: 1;
+        }
         // Popups, and the flag-to-flag distance labels (leaflet-measure-path) - clutter here.
         .leaflet-popup-pane, #dropOverlay, .leaflet-measure-path-measurement { display: none; }
         .threeDMinimapCamera, .threeDMinimapClickMarker {
