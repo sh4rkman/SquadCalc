@@ -62,6 +62,12 @@ const TARGET_LABEL_CLEARANCE = 3;
 // z-fighting with the terrain - see _drawTargetSpreads().
 const SPREAD_GROUND_OFFSET = 0.2;
 
+// FOB range spheres (build radius + exclusion radius) are only drawn as a band hugging the
+// ground: from FOB_BAND_DEPTH meters below the terrain to FOB_BAND_HEIGHT above it, fading
+// out upward - see _createFobRangeBand().
+const FOB_BAND_HEIGHT = 30;
+const FOB_BAND_DEPTH = 1;
+
 // Projectile arc tube radius (meters) - see _drawProjectileArcs().
 const ARC_TUBE_RADIUS = 0.8;
 
@@ -281,6 +287,16 @@ export default class Squad3DSimulation {
         // Weapon/target marker icon textures, cached and loaded once per icon URL - see
         // _drawMarkers().
         this._markerIconTextures = {};
+
+        // Terrain heights as a float texture, shared by every FOB range band's shader so it
+        // can clip the sphere against the ground - see _rebuildTerrainMesh(). Uniform objects
+        // are shared (not copied) into each band material, so a terrain rebuild updates them all.
+        this._terrainHeightUniforms = {
+            uHeightMap: { value: null },
+            uGridRes: { value: 1 },
+            uTerrainSize: { value: 1 },
+        };
+        this._fobSphereGeometry = new THREE.SphereGeometry(1, 128, 64); // unit sphere, scaled per band
         this.sunDir = new THREE.Vector3();
         this._minimapForward = new THREE.Vector3();
         this.loadedMapURL = null;
@@ -672,6 +688,10 @@ export default class Squad3DSimulation {
             hit.object.userData.stratMarker.delete();
             this.markerGroup.remove(hit.object);
             hit.object.material.dispose();
+            for (const band of hit.object.userData.rangeBands ?? []) {
+                this.markerGroup.remove(band);
+                band.material.dispose();
+            }
         });
 
         const goButton = this.container.querySelector(".threeDGoButton");
@@ -1257,6 +1277,13 @@ export default class Squad3DSimulation {
         const material = new THREE.MeshStandardMaterial({ map: this._terrainTexture, roughness: 0.9, metalness: 0 });
         this.terrainMesh = new THREE.Mesh(geometry, material);
         this.scene.add(this.terrainMesh);
+
+        this._terrainHeightUniforms.uHeightMap.value?.dispose();
+        const heightTexture = new THREE.DataTexture(this.heights, this.gridResolution, this.gridResolution, THREE.RedFormat, THREE.FloatType);
+        heightTexture.needsUpdate = true;
+        this._terrainHeightUniforms.uHeightMap.value = heightTexture;
+        this._terrainHeightUniforms.uGridRes.value = this.gridResolution;
+        this._terrainHeightUniforms.uTerrainSize.value = this.terrainSize;
     }
 
 
@@ -1996,6 +2023,17 @@ export default class Squad3DSimulation {
             if (isStrat) sprite.userData.stratMarker = marker; // right-click delete target
             this.markerGroup.add(sprite);
 
+            if (isStrat && marker.icontype === "deployable_fob") {
+                // Same radii/colors as the 2D construction/exclusion circles (squadMarker.js's
+                // squadStratMarker), converted back from map scale to meters.
+                const { circles1Size, circles1Color, circles2Size, circles2Color } = marker.options;
+                const bands = [];
+                if (circles1Size) bands.push(this._createFobRangeBand(x, groundY, z, circles1Size / minimap.gameToMapScale, circles1Color));
+                if (circles2Size) bands.push(this._createFobRangeBand(x, groundY, z, circles2Size / minimap.gameToMapScale, circles2Color || "white"));
+                bands.forEach((band) => this.markerGroup.add(band));
+                sprite.userData.rangeBands = bands; // removed along with the sprite on right-click delete
+            }
+
             if (!isTarget) continue;
             const text = this._targetLabelText(marker, weapons);
             if (!text) continue;
@@ -2004,6 +2042,85 @@ export default class Squad3DSimulation {
             label.position.set(x, groundY + size + TARGET_LABEL_CLEARANCE, z);
             this.markerGroup.add(label);
         }
+    }
+
+
+    /**
+     * One FOB range sphere (in-game FOB radii are 3D distances), drawn only where it
+     * meets the ground: the fragment shader samples the terrain height under each
+     * fragment (same grid as the terrain mesh, bilinear like its triangles) and discards
+     * everything outside [-FOB_BAND_DEPTH, FOB_BAND_HEIGHT] meters around it, leaving a
+     * wall that follows the true sphere/terrain intersection and fades out upward.
+     * @param {number} x - world X of the FOB
+     * @param {number} y - world Y of the sphere's center (the FOB's ground height)
+     * @param {number} z - world Z of the FOB
+     * @param {number} radius - meters
+     * @param {string} color - CSS color
+     * @returns {THREE.Mesh}
+     */
+    _createFobRangeBand(x, y, z, radius, color) {
+        const material = new THREE.ShaderMaterial({
+            uniforms: {
+                ...this._terrainHeightUniforms,
+                uColor: { value: new THREE.Color(color) },
+                uBandHeight: { value: FOB_BAND_HEIGHT },
+                uBandDepth: { value: FOB_BAND_DEPTH },
+            },
+            vertexShader: /* glsl */ `
+                varying vec3 vWorldPos;
+                void main() {
+                    vec4 worldPos = modelMatrix * vec4(position, 1.0);
+                    vWorldPos = worldPos.xyz;
+                    gl_Position = projectionMatrix * viewMatrix * worldPos;
+                }
+            `,
+            fragmentShader: /* glsl */ `
+                uniform sampler2D uHeightMap;
+                uniform float uGridRes;
+                uniform float uTerrainSize;
+                uniform vec3 uColor;
+                uniform float uBandHeight;
+                uniform float uBandDepth;
+                varying vec3 vWorldPos;
+
+                float heightAt(ivec2 cell) {
+                    return texelFetch(uHeightMap, cell, 0).r;
+                }
+
+                // Same (u, v) mapping as terrainHeightAt(), bilinear between grid vertices.
+                float terrainHeight(vec2 xz) {
+                    float last = uGridRes - 1.0;
+                    vec2 grid = clamp((xz / uTerrainSize + 0.5) * last, 0.0, last);
+                    ivec2 c0 = ivec2(floor(grid));
+                    ivec2 c1 = min(c0 + 1, ivec2(int(last)));
+                    vec2 f = grid - vec2(c0);
+                    float top = mix(heightAt(c0), heightAt(ivec2(c1.x, c0.y)), f.x);
+                    float bottom = mix(heightAt(ivec2(c0.x, c1.y)), heightAt(c1), f.x);
+                    return mix(top, bottom, f.y);
+                }
+
+                void main() {
+                    float aboveGround = vWorldPos.y - terrainHeight(vWorldPos.xz);
+                    if (aboveGround < -uBandDepth || aboveGround > uBandHeight) discard;
+
+                    float t = clamp(aboveGround / uBandHeight, 0.0, 1.0);
+                    float wall = 0.35 * (1.0 - t) * (1.0 - t);
+                    float groundLine = 0.5 * (1.0 - smoothstep(0.0, 1.5, abs(aboveGround)));
+                    gl_FragColor = vec4(uColor, wall + groundLine);
+                    #include <colorspace_fragment>
+                }
+            `,
+            transparent: true,
+            depthWrite: false,
+            side: THREE.DoubleSide,
+            toneMapped: false,
+        });
+
+        const mesh = new THREE.Mesh(this._fobSphereGeometry, material);
+        mesh.position.set(x, y, z);
+        mesh.scale.setScalar(radius);
+        mesh.raycast = () => {}; // never a right-click delete target - only the FOB sprite is
+        return mesh;
     }
 
 
