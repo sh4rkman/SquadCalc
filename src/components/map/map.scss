@@ -247,28 +247,13 @@
             // Also while its right-click context menu is open: that tippy lives outside
             // #map, so moving onto it ends :hover and would shrink the map from under it.
             &:hover,
-            body:has(.tippy-box[data-theme~="contextmenu"]) & { transform: scale(2); }
+            body:has(.tippy-box[data-theme~="contextmenu"]) & { transform: scale(2.5); }
         }
         &.threeDMinimapHidden { visibility: hidden; }
 
-        // While the 3D settings menu is open, look like it sits under the menu: the same
-        // veil as .threeDOverlay's backdrop (dialogs.scss). It can't really go under it -
-        // that backdrop lives inside #threeDView's stacking context, below this one.
-        // Lifted while hovered (expanded).
-        &::after {
-            content: "";
-            position: absolute;
-            inset: 0;
-            z-index: 1001; // above every Leaflet pane/control
-            background: rgba(0, 0, 0, 0.55);
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.15s ease-out;
-        }
-        // Not while its context menu is open either - it's still expanded then (see above).
-        body:has(#threeDView .threeDOverlay:not([hidden])):not(:has(.tippy-box[data-theme~="contextmenu"])) &:not(:hover)::after {
-            opacity: 1;
-        }
+        // Weapon/FOB/HAB range circles: their 2-4px weights are too heavy at minimap size
+        .leaflet-overlay-pane path.circles { stroke-width: 1px; }
+
         // Popups, and the flag-to-flag distance labels (leaflet-measure-path) - clutter here.
         .leaflet-popup-pane, #dropOverlay, .leaflet-measure-path-measurement { display: none; }
         .threeDMinimapCamera, .threeDMinimapClickMarker {

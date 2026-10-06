@@ -32,8 +32,19 @@ export const squadMarker = Marker.extend({
 
         this.on("dragstart", this._handleDragStart, this);
         this.on("dragend", this._handleDragEnd, this);
-        // Keep an open 3D view's markers/arcs/ranges in sync - placed, moved or removed.
-        this.on("add remove dragend", () => App.refresh3DOverlays());
+        // Keep an open 3D view's markers/arcs/ranges in sync when moved
+        this.on("dragend", () => App.refresh3DOverlays());
+    },
+
+    // Placed/removed: hooked here rather than on "add"/"remove" events, as delete() calls off() before removing
+    onAdd: function (map) {
+        Marker.prototype.onAdd.call(this, map);
+        App.refresh3DOverlays();
+    },
+
+    onRemove: function (map) {
+        Marker.prototype.onRemove.call(this, map);
+        App.refresh3DOverlays();
     },
 
 

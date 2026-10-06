@@ -319,7 +319,7 @@ export default class Squad3DSimulation {
         // listener that changes the 3D camera speed - see _setupFlyControls().
         this._onMinimapWheel = (event) => event.stopPropagation();
         this._minimapCameraMarker = new Marker([0, 0], {
-            icon: new DivIcon({ className: "threeDMinimapCamera", html: "<img src=\"/img/icons/shared/camera.webp\" alt=\"\">", iconSize: null }),
+            icon: new DivIcon({ className: "threeDMinimapCamera", html: "<img src=\"/img/icons/shared/freecam.webp\" alt=\"\">", iconSize: null }),
             interactive: false,
             keyboard: false,
             minimapNoShrink: true, // see patchMinimapMarkerScaling()
@@ -2939,7 +2939,7 @@ export default class Squad3DSimulation {
         const z = THREE.MathUtils.clamp(this.camera.position.z, -half, half);
         this._minimapCameraMarker.setLatLng(this._worldToLatLng(x, z, minimap));
 
-        // Heading clockwise from north (-Z, the minimap's "up"). camera.webp's own artwork
+        // Heading clockwise from north (-Z, the minimap's "up"). freecam.webp's own artwork
         // faces right (east) at 0deg rotation rather than up, so it needs a -90deg
         // correction to point up (i.e. north) when heading is 0.
         this.camera.getWorldDirection(this._minimapForward);
