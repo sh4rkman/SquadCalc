@@ -569,9 +569,9 @@
                     gap: 0.3em;
                     margin-bottom: 0.3em;
                     &.warning {
-                        color: firebrick;
+                        color: variables.$mainColor;
                         .respawn-icon svg {
-                            fill: firebrick;
+                            fill: variables.$mainColor;
                         }
                     }
                     .respawn-icon, .ticket-icon {

@@ -455,8 +455,6 @@ dialog, #threeDView {
                 accent-color: variables.$mainColor;
             }
         }
-        // Open list of the Terrain Texture select2 - its firebrick hover/selected rows
-        // come from the shared dialog select2 rules at the top of this file.
         .threeDSelectDropdown {
             background: rgb(30, 30, 34);
             border: 1px solid rgba(255, 255, 255, 0.25);
