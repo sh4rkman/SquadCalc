@@ -134,6 +134,9 @@
                 text-shadow: 0 0 4px #ffffff75;
             }
         }
+        .themeFontSettings .toggleCheckbox {
+            color: variables.$mainColor;
+        }
         caption {
             margin: 0 0 10px;
             color: variables.$mainTxtColor;
