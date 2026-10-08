@@ -775,7 +775,11 @@ export default class SquadFactions {
 
         img.src = sanitizedVal ? `/img/flags/${this.squadLayer.modFolder}/${sanitizedVal}.webp` : "/img/flags/unknown.webp";
         img.addEventListener("error", () => { img.src = "/img/flags/unknown.webp"; }, { once: true });
-        btn.replaceChildren(img);
+        const teamLabel = document.createElement("span");
+        teamLabel.className = "team-label";
+        teamLabel.setAttribute("data-i18n", `common:team${team}`);
+        teamLabel.textContent = i18next.t(`team${team}`, { ns: "common" });
+        btn.replaceChildren(img, teamLabel);
 
         if (val) {
             const span = document.createElement("span");
