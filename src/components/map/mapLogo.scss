@@ -1,39 +1,5 @@
 @use "../shared/variables";
 
-@keyframes logo-stamp-kf {
-    0% {
-        transform: scale(3) translateY(-40px);
-        opacity: 0;
-        filter: blur(4px);
-    }
-    70% {
-        transform: scale(0.95) translateY(0);
-        opacity: 1;
-        filter: blur(0);
-    }
-    100% {
-        transform: scale(1);
-    }
-}
-
-@keyframes logo-stamp-out-kf {
-    0% {
-        transform: scale(1);
-        opacity: 1;
-        filter: blur(0);
-    }
-    30% {
-        transform: scale(0.95);
-        opacity: 1;
-        filter: blur(0);
-    }
-    100% {
-        transform: scale(3) translateY(-40px);
-        opacity: 0;
-        filter: blur(4px);
-    }
-}
-
 @keyframes drip-grow-kf {
     0% { transform: scaleY(0); }
     100% { transform: scaleY(1); }
@@ -60,9 +26,6 @@
 
 $drips-svg: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 30' preserveAspectRatio='none'><path d='M0,0 H100 V3 C96,3 95,5 95,9 C95,12 91,12 91,9 C91,5 89,3 84,3 C78,3 76,4 76,8 L76,22 C76,27 69,27 69,22 L69,8 C69,4 67,3 62,3 C55,3 53,4 53,7 C53,10 49,10 49,7 C49,4 46,3 40,3 C34,3 32,4 32,9 L32,15 C32,19 26,19 26,15 L26,9 C26,4 24,3 18,3 C12,3 10,4 10,7 L10,11 C10,14 6,14 6,11 L6,6 C6,4 4,3 0,3 Z'/></svg>";
 
-.logo-stamp { animation: logo-stamp-kf 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
-
-.logo-stamp-out { animation: logo-stamp-out-kf 0.5s cubic-bezier(0.55, 0, 0.45, 1) forwards; }
 
 .logo {
     @extend .unselectable;

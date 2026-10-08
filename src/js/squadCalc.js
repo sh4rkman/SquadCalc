@@ -1646,8 +1646,6 @@ export default class SquadCalc {
         setTimeout(() => this.minimap.changeLayer(), 800);
         setTimeout(() => {
             const logo = document.getElementById("loaderLogo");
-            logo.classList.remove("logo-stamp");
-            logo.classList.add("logo-stamp-out");
             $("#loader").fadeOut(500);
         }, 1800);
     }
