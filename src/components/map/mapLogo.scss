@@ -47,24 +47,21 @@ $drips-svg: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' vie
         }
         span:nth-child(1) {
             padding: 0 0 10px;
-            font-family: Butcherman, variables.$logoFont, cursive;
+            font-family: variables.$themeFont, variables.$logoFont, cursive;
             font-weight: normal;
             letter-spacing: 0.04em;
         }
         span:nth-child(2) {
             padding: 0 15px 10px;
-            background: linear-gradient(to right, variables.$mainColor 50%, variables.$mainBGColor 50%);
-            background-size: 200% 100%;
-            background-position: right bottom;
-            animation: 1s ease-out 0.3s 1 forwards loading;
+            background: variables.$mainColor;
             width: fit-content;
             margin: 0 auto;
             position: relative;
-            font-family: Butcherman, variables.$logoFont, cursive;
+            font-family: variables.$themeFont, variables.$logoFont, cursive;
             font-weight: normal;
             letter-spacing: 0.04em;
 
-            // Halloween: drips oozing from the bottom of the box once it's filled
+            // Halloween: drips oozing from the bottom of the box
             &::after {
                 content: "";
                 position: absolute;
@@ -76,7 +73,7 @@ $drips-svg: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' vie
                 mask: url($drips-svg) no-repeat 0 0 / 100% 100%;
                 transform: scaleY(0);
                 transform-origin: top;
-                animation: drip-grow-kf 1.4s cubic-bezier(0.5, 0, 0.75, 0) 1.2s forwards;
+                animation: drip-grow-kf 1s ease-out forwards;
                 pointer-events: none;
             }
 
@@ -91,7 +88,7 @@ $drips-svg: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' vie
                 border-radius: 50% / 60% 60% 40% 40%;
                 background-color: variables.$mainColor;
                 opacity: 0;
-                animation: drip-fall-kf 2.4s ease-in 2.6s infinite;
+                animation: drip-fall-kf 2.4s ease-in 1s infinite;
                 pointer-events: none;
             }
         }

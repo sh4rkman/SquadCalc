@@ -1638,15 +1638,11 @@ export default class SquadCalc {
      */
     show(){
         document.body.style.visibility = "visible";
-        // Recreate the map layer behind the loader splash : layers created during
-        // boot stay stuck in Firefox's slow synchronous-decode path, making zoom
-        // very laggy until the layer is recreated. Timed so the logo stamp
-        // animation (0.6s) is done and the fade-in (0.7s) ends before the
-        // loader starts fading out at 1.8s.
         setTimeout(() => this.minimap.changeLayer(), 800);
         setTimeout(() => {
-            const logo = document.getElementById("loaderLogo");
-            $("#loader").fadeOut(500);
+            $("#loader").fadeOut(500, () => {
+                if (!this.userSettings.disableThemeFont) this.openToast("success", "halloweenTitle", "halloweenFontHint");
+            });
         }, 1800);
     }
 

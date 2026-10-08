@@ -357,6 +357,10 @@
 $toastDistanceFromBottom: 65px;
 
 #toast {
+    // Always default font, even with the seasonal theme font on
+    --main-font: montserrat;
+    font-family: montserrat, Times, "Times New Roman", serif;
+    font-synthesis: initial;
     display: flex;
     align-items: center;
     max-width: 400px;
