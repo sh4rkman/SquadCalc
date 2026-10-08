@@ -28,6 +28,8 @@ $flag-circle-opacity: 0.2;
     display: flex;
     align-items: center;
     justify-content: center;
+
+    @include variables.theme-font(roboto, null);
     // &.main {
     //     //text-transform: uppercase;
     //     //border: solid red 1px;

@@ -125,6 +125,8 @@
         @include variables.text-outline;
         .team-faction-name {
             font-size: 0.7em;
+
+            @include variables.theme-font(variables.$mainFont);
         }
         .team-faction-name:empty {
             display: none;
@@ -133,6 +135,8 @@
             font-size: 0.55em;
             font-weight: 700;
             opacity: 1;
+
+            @include variables.theme-font(variables.$mainFont);
         }
         .team-faction-name:empty ~ .team-label {
             font-size: 1em;

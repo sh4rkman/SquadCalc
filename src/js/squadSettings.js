@@ -69,6 +69,14 @@ export default class SquadSettings {
                     $("body").toggleClass("map-crosshair", !this.cursor);
                 }
             },
+            disableThemeFont: {
+                key: "settings-disable-theme-font",
+                default: false,
+                selector: "#themeFontSettings",
+                onChange: () => {
+                    $("body").toggleClass("no-theme-font", this.disableThemeFont);
+                }
+            },
 
             // Weapon & Target Markers
             weaponDrag: {
@@ -635,6 +643,9 @@ export default class SquadSettings {
 
         // Apply cursor setting
         $("body").toggleClass("map-crosshair", !this.cursor);
+
+        // Apply seasonal theme font setting
+        $("body").toggleClass("no-theme-font", this.disableThemeFont);
 
         // Handle faction-dependent settings
         if (!this.enableFactions) {

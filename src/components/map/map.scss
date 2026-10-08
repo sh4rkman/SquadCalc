@@ -133,6 +133,8 @@
             @include variables.light-text-outline;
             font-family: variables.$logoFont, Times, "Times New Roman", serif;
             font-size: 1.1em;
+
+            @include variables.theme-font(variables.$logoFont, null);
         }
         .deployables {
             background-size: contain;

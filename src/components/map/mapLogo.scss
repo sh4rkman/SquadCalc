@@ -125,7 +125,7 @@ $drips-svg: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' vie
                 left: calc(72.5% - 0.04em);
                 width: 0.08em;
                 height: 0.1em;
-                border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+                border-radius: 50% / 60% 60% 40% 40%;
                 background-color: variables.$mainColor;
                 opacity: 0;
                 animation: drip-fall-kf 2.4s ease-in 2.6s infinite;

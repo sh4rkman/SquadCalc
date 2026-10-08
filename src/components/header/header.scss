@@ -193,6 +193,13 @@ header {
     span.select2-selection.select2-selection--single {
         outline: none;
     }
+    // Seasonal font on the map/layer/server/weapon dropdowns (selected value + list)
+    .mapSelector .select2-selection__rendered,
+    .mapSelector .select2-results__option,
+    #weaponSelector .select2-selection__rendered,
+    #weaponSelector .select2-results__option {
+        @include variables.theme-font(variables.$mainFont);
+    }
 }
 
 .select2-dropdown {
