@@ -354,7 +354,7 @@
 ************   TOAST   ***************
 **************************************/
 
-$toastDistanceFromBottom: 65px;
+$toastDistanceFromBottom: 80px;
 
 #toast {
     // Always default font, even with the seasonal theme font on
@@ -367,10 +367,12 @@ $toastDistanceFromBottom: 65px;
     width: fit-content;
     padding: 10px 14px;
     position: fixed;
-    border-radius: 5px;
+    border-radius: 10px;
     overflow: hidden;
-    background: white;
-    box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+    background: rgba(20, 20, 24, 0.82);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
     z-index: 5;
     bottom: 0;
     left: 50%;
@@ -383,7 +385,7 @@ $toastDistanceFromBottom: 65px;
     width: 30px;
     height: 30px;
     background: var(--secondary);
-    border-radius: 5px;
+    border-radius: 6px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -401,7 +403,7 @@ $toastDistanceFromBottom: 65px;
 #icon::before, #icon::after {
     position: absolute;
     content: "";
-    background: var(--secondary);
+    background: variables.$mainBGColor; // glyph cut out of the colored disc
     border-radius: 5px;
     top: 50%;
     left: 50%;
@@ -420,14 +422,14 @@ $toastDistanceFromBottom: 65px;
     font-size: 14px;
     font-weight: 600;
     letter-spacing: .05em;
-    color: #404040;
+    color: variables.$mainTxtColor;
 }
 
 #toast-message p {
     font-size: 10px;
     font-weight: bold;
     letter-spacing: .05em;
-    color: #606060;
+    color: rgba(255, 255, 255, 0.65);
 }
 
 #toast-close {
@@ -441,7 +443,7 @@ $toastDistanceFromBottom: 65px;
 }
 
 #toast-close:hover {
-    background: rgba(0,0,0,0.1);
+    background: rgba(255, 255, 255, 0.08);
 }
 
 #toast-close::before, #toast-close::after {
@@ -450,14 +452,14 @@ $toastDistanceFromBottom: 65px;
     height: 12px;
     width: 1px;
     border-radius: 5px;
-    background: #606060;
+    background: rgba(255, 255, 255, 0.6);
     top: 50%;
     left: 50%;
     transition: background 0.2s ease-in-out;
 }
 
 #toast-close:hover::before, #toast-close:hover::after {
-    background: #404040;
+    background: variables.$mainTxtColor;
 }
 
 #toast-close::before {
@@ -524,7 +526,7 @@ $toastDistanceFromBottom: 65px;
 
 .success {
     --primary: #2DD743;
-    --secondary: #E3FEE6;
+    --secondary: rgba(45, 215, 67, 0.15);
     #icon { 
         transform: rotate(-45deg); 
     }
@@ -543,7 +545,7 @@ $toastDistanceFromBottom: 65px;
 
 .warning {
     --primary: #F29208;
-    --secondary: #FFEEDF;
+    --secondary: rgba(242, 146, 8, 0.15);
     #icon::before {
         width: 3px;
         height: 3px;
@@ -558,7 +560,7 @@ $toastDistanceFromBottom: 65px;
 
 .error {
     --primary: #E63435;
-    --secondary: #FFEAEC;
+    --secondary: rgba(230, 52, 53, 0.15);
     #icon::before {
         width: 3px;
         height: 3px;
@@ -574,7 +576,7 @@ $toastDistanceFromBottom: 65px;
 
 .info {
     --primary: #42C0F2;
-    --secondary: #CFEFFC;
+    --secondary: rgba(66, 192, 242, 0.15);
     #icon::before {
         width: 3px;
         height: 7px;

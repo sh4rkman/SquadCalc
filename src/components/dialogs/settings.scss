@@ -134,8 +134,14 @@
                 text-shadow: 0 0 4px #ffffff75;
             }
         }
-        .themeFontSettings .toggleCheckbox {
-            color: variables.$mainColor;
+        .themeFontSettings {
+            // Always default font, even with the seasonal theme font on
+            --main-font: montserrat;
+            font-family: montserrat, Times, "Times New Roman", serif;
+            font-synthesis: initial;
+            .toggleCheckbox {
+                color: variables.$mainColor;
+            }
         }
         caption {
             margin: 0 0 10px;

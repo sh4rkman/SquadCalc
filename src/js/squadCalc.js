@@ -1307,6 +1307,8 @@ export default class SquadCalc {
                 const newUrl = `${url.origin}/?${params.toString()}`;
                 navigator.clipboard.writeText(newUrl);
                 this.openToast("success", "copied", "");
+            } else if (title === "tooltips:newVersion" && event.target.tagName !== "BUTTON") {
+                $("#openChangelog").trigger("click");
             }
         });
       
@@ -1640,10 +1642,17 @@ export default class SquadCalc {
         document.body.style.visibility = "visible";
         setTimeout(() => this.minimap.changeLayer(), 800);
         setTimeout(() => {
-            $("#loader").fadeOut(500, () => {
-                if (!this.userSettings.disableThemeFont) this.openToast("success", "halloweenTitle", "halloweenFontHint");
-            });
+            $("#loader").fadeOut(500, () => this.showNewVersionToast());
         }, 1800);
+    }
+
+    /**
+     * Announce a new version once, on the first load after an update
+     */
+    showNewVersionToast(){
+        if (localStorage.getItem("lastSeenVersion") === this.version) return;
+        localStorage.setItem("lastSeenVersion", this.version);
+        this.openToast("info", "newVersion", "clickToSeeChangelog");
     }
 
     /**
