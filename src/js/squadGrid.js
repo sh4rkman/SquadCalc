@@ -197,6 +197,8 @@ export default LayerGroup.extend({
         // Going east +1 to make it through floating point imprecision
         const startX = this.bounds.getWest();
         const endX = this.bounds.getEast();
+        let lastKpX = startX;
+        let colCount = 0;
 
         for (let x = startX, z = 0; x <= endX; x += intervalX) {
             const bot = {lat: this.bounds.getSouth(), lng: x};
@@ -226,6 +228,8 @@ export default LayerGroup.extend({
                 }
 
                 z += 1;
+                lastKpX = x;
+                colCount = z;
 
             } else if (this.isMultiple(s1X, x)) {
                 this.s1Lines.push(new Polyline([bot, top], this.lineStyleSUB1));
@@ -236,10 +240,25 @@ export default LayerGroup.extend({
             }
         }
 
+        // Label the last incomplete column if at least half of it is on the map
+        if (endX - lastKpX >= kpX / 2) {
+            this.labels.push(new Marker({lat: this.bounds.getNorth(), lng: lastKpX + kpX / 2}, {
+                interactive: false,
+                icon: new DivIcon({
+                    className: "gridText",
+                    html: (colCount + 9).toString(36).toUpperCase(),
+                    iconSize: [20, 20],
+                    iconAnchor: [10, 20]
+                })
+            }));
+        }
+
         // horizontal keypad lines, almost the same as for vertical lines
         // Going South +1 to make it through floating point imprecision
         const startY = this.bounds.getNorth();
         const endY = this.bounds.getSouth();
+        let lastKpY = startY;
+        let rowCount = 0;
 
         for (let y = startY, z = 0; y >= endY; y -= intervalY) {
             const left = {lat: y, lng: this.bounds.getWest()};
@@ -262,6 +281,8 @@ export default LayerGroup.extend({
                     }));
                 }
                 z+=1;
+                lastKpY = y;
+                rowCount = z;
 
             } else if (this.isMultiple(s1Y, y)) {
                 this.s1Lines.push(new Polyline([left, right], this.lineStyleSUB1));
@@ -270,6 +291,19 @@ export default LayerGroup.extend({
             } else {
                 console.warn(`no match! y = ${y}; y%:`, [y % kpX, y % s1X, y % s2X]);
             }
+        }
+
+        // Label the last incomplete row if at least half of it is on the map
+        if (lastKpY - endY >= kpY / 2) {
+            this.labels.push(new Marker({lat: lastKpY - kpY / 2, lng: this.bounds.getWest()}, {
+                interactive: false,
+                icon: new DivIcon({
+                    className: "gridText",
+                    html: rowCount,
+                    iconSize: [20, 20],
+                    iconAnchor: [20, 10]
+                })
+            }));
         }
 
 
