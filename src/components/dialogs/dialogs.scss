@@ -1,8 +1,6 @@
 @use '../shared/variables';
 
 dialog, #threeDView {
-    // #threeDView is a plain <div> (not a modal dialog, so the header can sit on top of it)
-    // but still shares the dialogs' base look - font size, colors, etc.
     width: calc(100% - 10%);
     text-align: left;
     border-radius: 10px;
