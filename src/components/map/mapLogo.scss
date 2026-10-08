@@ -24,7 +24,7 @@
     }
 }
 
-$drips-svg: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 30' preserveAspectRatio='none'><path d='M0,0 H100 V3 C96,3 95,5 95,9 C95,12 91,12 91,9 C91,5 89,3 84,3 C78,3 76,4 76,8 L76,22 C76,27 69,27 69,22 L69,8 C69,4 67,3 62,3 C55,3 53,4 53,7 C53,10 49,10 49,7 C49,4 46,3 40,3 C34,3 32,4 32,9 L32,15 C32,19 26,19 26,15 L26,9 C26,4 24,3 18,3 C12,3 10,4 10,7 L10,11 C10,14 6,14 6,11 L6,6 C6,4 4,3 0,3 Z'/></svg>";
+$drips-svg: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 30' preserveAspectRatio='none'><path d='M0,0 H100 V1 C96,1 95,4 95,9 C95,12 91,12 91,9 C91,4 89,1 84,1 C78,1 76,2 76,8 L76,22 C76,27 69,27 69,22 L69,8 C69,2 67,1 62,1 C55,1 53,2 53,7 C53,10 49,10 49,7 C49,2 46,1 40,1 C34,1 32,2 32,9 L32,15 C32,19 26,19 26,15 L26,9 C26,2 24,1 18,1 C12,1 10,2 10,7 L10,11 C10,14 6,14 6,11 L6,6 C6,2 4,1 0,1 Z'/></svg>";
 
 
 .logo {
@@ -46,7 +46,6 @@ $drips-svg: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' vie
             display: block;
         }
         .logoSkull {
-            display: block;
             width: 1em;
             height: 1em;
             fill: currentcolor;
@@ -58,7 +57,7 @@ $drips-svg: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' vie
             letter-spacing: 0.04em;
         }
         span:nth-of-type(2) {
-            padding: 0 15px 10px;
+            padding: 0 15px 0;
             background: variables.$mainColor;
             width: fit-content;
             margin: 0 auto;
