@@ -183,12 +183,10 @@ export default class SquadFactions {
 
         if (teamMain === "00-Team1 Main") {
             boatsAvailable = this.squadLayer.layerData.team1boats;
-            $("#team1PinButton").addClass("active").text(i18next.t("common:pinned"));
-            $("#team1PinButton").attr("data-i18n", "common:pinned");
+            this._setPinButtonState($("#team1PinButton"), true);
         } else {
             boatsAvailable = this.squadLayer.layerData.team2boats;
-            $("#team2PinButton").addClass("active").text(i18next.t("common:pinned"));
-            $("#team2PinButton").attr("data-i18n", "common:pinned");
+            this._setPinButtonState($("#team2PinButton"), true);
         }
 
         if (!this.squadLayer.layerData.commanderDisabled) {
@@ -330,12 +328,27 @@ export default class SquadFactions {
 
         // Now clear the pinned vehicles tab and reset Pin buttons
         $("#pinnedVehiclesTab").empty();
-        $(".btn-pin, #mapPinButton").removeClass("active").text(i18next.t("common:pinToMap"));
-        $(".btn-pin, #mapPinButton").attr("data-i18n", "common:pinToMap");
-        
+        this._setPinButtonState($(".btn-pin"), false);
+        $("#mapPinButton").removeClass("active").text(i18next.t("common:pinToMap"));
+        $("#mapPinButton").attr("data-i18n", "common:pinToMap");
+
         this.resetFactionsButton();
         this.pinned = false;
         this.pinnedFaction = "";
+    }
+
+
+    /**
+     * Toggle a factions dialog pin icon button between pinned/unpinned, keeping its tooltip in sync
+     * @param {jQuery} $btn - The pin button(s)
+     * @param {boolean} pinned - The new state
+     */
+    _setPinButtonState($btn, pinned) {
+        const key = pinned ? "common:pinned" : "common:pinToMap";
+        const label = i18next.t(key);
+        $btn.toggleClass("active", pinned)
+            .attr({ "title": label, "aria-label": label, "data-i18n-title": key, "data-i18n-aria-label": key })
+            .attr("aria-pressed", pinned);
     }
 
 
@@ -775,7 +788,11 @@ export default class SquadFactions {
 
         img.src = sanitizedVal ? `/img/flags/${this.squadLayer.modFolder}/${sanitizedVal}.webp` : "/img/flags/unknown.webp";
         img.addEventListener("error", () => { img.src = "/img/flags/unknown.webp"; }, { once: true });
-        btn.replaceChildren(img);
+        const teamLabel = document.createElement("span");
+        teamLabel.className = "team-label";
+        teamLabel.setAttribute("data-i18n", `common:team${team}`);
+        teamLabel.textContent = i18next.t(`team${team}`, { ns: "common" });
+        btn.replaceChildren(img, teamLabel);
 
         if (val) {
             const span = document.createElement("span");

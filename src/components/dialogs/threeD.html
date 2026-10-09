@@ -8,69 +8,59 @@
             <div class="threeDOverlayCard">
                 <h3 data-i18n="common:threeDView">3D Mode</h3>
                 <p class="threeDOverlaySubtitle" data-i18n="common:threeDViewSubtitle">Preview and explore the terrain</p>
-                <div class="threeDOverlayHint">
-                    <span class="threeDOverlayHintKey"><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd></span>
-                    <span data-i18n="common:threeDMoveHint">move</span>
-
-                    <span class="threeDOverlayHintKey"><kbd>Space</kbd></span>
-                    <span data-i18n="common:threeDUpHint">up</span>
-
-                    <span class="threeDOverlayHintKey"><kbd>Shift</kbd></span>
-                    <span data-i18n="common:threeDDownHint">down</span>
-
-                    <span class="threeDOverlayHintKey"><kbd>Scroll</kbd></span>
-                    <span data-i18n="common:threeDSpeedHint">speed</span>
-
-                    <span class="threeDOverlayHintKey"><kbd>Esc</kbd></span>
-                    <span data-i18n="common:threeDReleaseHint">release</span>
-                </div>
-
-                <hr class="threeDOverlayDivider">
 
                 <div class="threeDOverlayOptions">
                     <div class="threeDOverlayToggles">
                         <label class="threeDOverlayOption">
-                            <span data-i18n="common:threeDShowCapzones">Show Capzones</span>
+                            <span data-i18n="common:threeDShowCapzones">Capzones</span>
                             <input type="checkbox" class="threeDCapzonesToggle" checked>
                         </label>
                         <label class="threeDOverlayOption">
-                            <span data-i18n="common:threeDShowMinimap">Show Minimap</span>
+                            <span data-i18n="common:threeDShowMinimap">Minimap</span>
                             <input type="checkbox" class="threeDMinimapToggle" checked>
                         </label>
                         <label class="threeDOverlayOption">
-                            <span data-i18n="common:threeDShowPath">Show Path</span>
+                            <span data-i18n="common:threeDShowPath">Flag Path</span>
                             <input type="checkbox" class="threeDPathToggle" checked>
                         </label>
                         <label class="threeDOverlayOption">
-                            <span data-i18n="common:threeDShowTrajectories">Show Trajectories</span>
+                            <span data-i18n="common:threeDShowTrajectories">Trajectories</span>
                             <input type="checkbox" class="threeDArcsToggle" checked>
                         </label>
                         <label class="threeDOverlayOption">
-                            <span data-i18n="common:threeDShowTrees">Show Trees</span>
+                            <span data-i18n="common:threeDShowMarkers">Markers</span>
+                            <input type="checkbox" class="threeDMarkersToggle" checked>
+                        </label>
+                        <label class="threeDOverlayOption">
+                            <span data-i18n="common:threeDShowTrees">Trees</span>
                             <input type="checkbox" class="threeDTreesToggle" checked>
                         </label>
                         <label class="threeDOverlayOption">
-                            <span data-i18n="common:threeDShowBuildings">Show Buildings</span>
+                            <span data-i18n="common:threeDShowBuildings">Buildings</span>
                             <input type="checkbox" class="threeDPropsToggle" checked>
                         </label>
                         <label class="threeDOverlayOption">
-                            <span data-i18n="common:threeDShowCrosshair">Show Crosshair</span>
+                            <span data-i18n="common:threeDShowCrosshair">Crosshair</span>
                             <input type="checkbox" class="threeDCrosshairToggle" checked>
                         </label>
                         <label class="threeDOverlayOption">
-                            <span data-i18n="common:threeDShowFPS">Show FPS</span>
+                            <span data-i18n="common:threeDShowFPS">FPS</span>
                             <input type="checkbox" class="threeDFpsToggle" checked>
+                        </label>
+                        <label class="threeDOverlayOption threeDControlsOption">
+                            <span data-i18n="common:threeDShowControls">Controls</span>
+                            <input type="checkbox" class="threeDControlsToggle" checked>
                         </label>
                     </div>
                     <div class="threeDOverlaySelects">
                         <label class="threeDOverlayOption">
-                            <span data-i18n="common:threeDTexture">Texture</span>
+                            <span data-i18n="common:threeDTexture">Terrain Texture</span>
                             <select class="threeDTextureSelect">
                                 <option value="basemap" data-i18n="common:threeDBasemap" selected>Default</option>
+                                <option value="terrainmap" data-i18n="common:threeDTerrainmap">Terrain</option>
                                 <option value="topomap" data-i18n="common:threeDTopomap">Topographic</option>
                             </select>
-                        </label>
-                    </div>
+                        </label>                    </div>
                 </div>
 
                 <button type="button" class="threeDGoButton" data-i18n="common:threeDGo">Go</button>
@@ -79,7 +69,31 @@
             </div>
         </div>
         <div class="threeDCrosshair" hidden></div>
-        <button type="button" class="threeDMenuButton" data-i18n="common:threeDBackToMenu" hidden>Back to menu</button>
+        <div class="threeDControlsHint" hidden>
+            <span class="threeDControlsHintKey"><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd></span>
+            <span data-i18n="common:threeDMoveHint">move</span>
+
+            <span class="threeDControlsHintKey"><kbd>Space</kbd></span>
+            <span data-i18n="common:threeDUpHint">up</span>
+
+            <span class="threeDControlsHintKey"><kbd>Shift</kbd></span>
+            <span data-i18n="common:threeDDownHint">down</span>
+
+            <span class="threeDControlsHintKey"><kbd>Scroll</kbd></span>
+            <span data-i18n="common:threeDSpeedHint">speed</span>
+
+            <span class="threeDControlsHintKey"><kbd>Left Click</kbd></span>
+            <span data-i18n="common:threeDClickHint">select flag / place marker</span>
+
+            <span class="threeDControlsHintKey"><kbd>Right Click</kbd></span>
+            <span data-i18n="common:threeDRightClickHint">remove marker</span>
+
+            <span class="threeDControlsHintKey"><kbd>Esc</kbd></span>
+            <span data-i18n="common:threeDReleaseHint">back to menu</span>
+        </div>
+        <button type="button" class="threeDMenuButton" aria-label="Back to menu" hidden>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/></svg>
+        </button>
         <div class="threeDFpsCounter" hidden><span class="threeDFpsValue">0</span><span class="threeDFpsUnit">FPS</span></div>
         <div class="threeDSpeedHUD">
             <div class="threeDSpeedHUDLabel" data-i18n="common:threeDSpeed">Camera Speed</div>
@@ -87,10 +101,6 @@
                 <div class="threeDSpeedHUDBar"><div class="threeDSpeedHUDFill"></div></div>
                 <div class="threeDSpeedHUDValue">50%</div>
             </div>
-        </div>
-        <div class="threeDMinimap">
-            <img class="threeDMinimapImage" alt="">
-            <img class="threeDMinimapDot" alt="">
         </div>
     </div>
 </div>

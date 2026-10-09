@@ -1118,6 +1118,7 @@ export default class SquadLayer {
             console.debug(`[LAYER] Sent layer click update for flag #${flag.objectName}`);
         }
 
+        App.refresh3DOverlays(); // 3D capzones follow the selected flags
         return true;
     }
 

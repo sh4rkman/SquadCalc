@@ -69,6 +69,14 @@ export default class SquadSettings {
                     $("body").toggleClass("map-crosshair", !this.cursor);
                 }
             },
+            disableThemeFont: {
+                key: "settings-disable-theme-font",
+                default: false,
+                selector: "#themeFontSettings",
+                onChange: () => {
+                    $("body").toggleClass("no-theme-font", this.disableThemeFont);
+                }
+            },
 
             // Weapon & Target Markers
             weaponDrag: {
@@ -636,6 +644,9 @@ export default class SquadSettings {
         // Apply cursor setting
         $("body").toggleClass("map-crosshair", !this.cursor);
 
+        // Apply seasonal theme font setting
+        $("body").toggleClass("no-theme-font", this.disableThemeFont);
+
         // Handle faction-dependent settings
         if (!this.enableFactions) {
             $("#hideLowRespawnSettings").prop("disabled", true);
@@ -666,12 +677,13 @@ export default class SquadSettings {
         return [
             { key: "settings-btn-layers",  sharedContainer: "#mapBtnLayers",  buttons: ".btn-topomap, .btn-terrainmap, .btn-basemap", default: true },
             { key: "settings-btn-hd",      sharedContainer: null,             buttons: ".btn-hd",                                   default: true },
-            { key: "settings-btn-layer-info", sharedContainer: null,          buttons: ".btn-layer-info",                           default: true },
+            { key: "settings-btn-3d",      sharedContainer: null,             buttons: ".btn-3d",                                   default: true },
+            { key: "settings-btn-layer-info", sharedContainer: "#mapBtnMain", buttons: ".btn-layer-info",                           default: true },
             { key: "settings-btn-legacy",  sharedContainer: "#mapBtnMain",    buttons: ".btn-legacy",                                default: false },
             { key: "settings-btn-helpmap", sharedContainer: "#mapBtnMain",    buttons: ".btn-helpmap",                               default: false },
             { key: "settings-btn-focus",   sharedContainer: "#mapBtnMain",    buttons: ".btn-focus",                                 default: false },
             { key: "settings-btn-servers", sharedContainer: "#mapBtnServers", buttons: "#servers",                                  default: true },
-            { key: "settings-btn-session", sharedContainer: "#mapBtnServers", buttons: ".btn-session",                              default: true },
+            { key: "settings-btn-session", sharedContainer: "#mapBtnServers", buttons: "#sessionGroup",                             default: true },
             { key: "settings-btn-undo",        sharedContainer: "#mapBtnActions",     buttons: ".btn-undo",         default: true },
             { key: "settings-btn-delete",      sharedContainer: "#mapBtnActions",     buttons: ".btn-delete",       default: true },
             { key: "settings-btn-download",    sharedContainer: "#mapBtnMain",        buttons: ".btn-download",     default: false },

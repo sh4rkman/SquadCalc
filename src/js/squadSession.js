@@ -74,7 +74,7 @@ export default class SquadSession {
             $(".btn-session-users").html(1);
             $("#sessionActions").css("display", "flex");
             App.updateUrlParams({ session: data.sessionId });
-            App.openToast("success", "sessionCreated", "shareSession", true);
+            App.openToast("success", "sessionCreated", "shareSession");
             break;
         }
 

@@ -11,6 +11,7 @@
     "mapAnimationSettings": "平移/缩放动画",
     "highquality": "使用高清化的地图",
     "contextMenu": "右键点击添加自定义标记",
+    "disableThemeFont": "禁用万圣节字体",
     "gridOpacity": "网格不透明度",
     "zoomSensitivity": "缩放灵敏度",
     "fontSize": "字体大小",

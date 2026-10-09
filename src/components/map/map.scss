@@ -133,6 +133,8 @@
             @include variables.light-text-outline;
             font-family: variables.$logoFont, Times, "Times New Roman", serif;
             font-size: 1.1em;
+
+            @include variables.theme-font(variables.$logoFont, null);
         }
         .deployables {
             background-size: contain;
@@ -222,6 +224,65 @@
             }
         }
     }
+    // 3D view open: the 2D map itself becomes the 3D minimap, pinned bottom-right above
+    // #threeDView (z-index 3). It takes the pointer (for hover and flag clicks), but its
+    // background clicks/drags/wheel are blocked in JS - see
+    // Squad3DSimulation._attachLeafletMinimap() / _blockMinimapBackgroundEvent().
+    #map.threeDMinimapMode {
+        position: fixed !important; // Leaflet sets an inline position: relative on init
+        right: 1em;
+        bottom: 1em;
+        // Scale with the screen's smaller side: ~120px on phones, capped at 280px on desktop
+        width: clamp(110px, 30vmin, 280px);
+        height: clamp(110px, 30vmin, 280px);
+        z-index: 4;
+        border: 2px solid rgba(255, 255, 255, 0.4);
+        border-radius: 6px;
+        overflow: hidden;
+        cursor: default;
+        // Grows x2 from its bottom-right corner while hovered - the enlarged box still
+        // contains the original one, so the cursor never drops out of it mid-grow.
+        transform-origin: bottom right;
+        transition: transform 0.15s ease-out;
+
+        @media (hover: hover) {
+            // Also while its right-click context menu is open: that tippy lives outside
+            // #map, so moving onto it ends :hover and would shrink the map from under it.
+            &:hover,
+            body:has(.tippy-box[data-theme~="contextmenu"]) & { transform: scale(2.5); }
+        }
+        &.threeDMinimapHidden { visibility: hidden; }
+
+        // Weapon/FOB/HAB range circles: their 2-4px weights are too heavy at minimap size
+        .leaflet-overlay-pane path.circles { stroke-width: 1px; }
+
+        // Popups, and the flag-to-flag distance labels (leaflet-measure-path) - clutter here.
+        .leaflet-popup-pane, #dropOverlay, .leaflet-measure-path-measurement { display: none; }
+        .threeDMinimapCamera, .threeDMinimapClickMarker {
+            img {
+                position: absolute;
+                width: clamp(14px, 2.4vmin, 22px);
+                height: clamp(14px, 2.4vmin, 22px);
+                filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.9));
+                transform: translate(-50%, -50%);
+            }
+        }
+        .threeDMinimapCamera { z-index: 1000 !important; } // above every 2D marker
+
+        // Circle flags shrink here in whole pixels rather than through the transform scale
+        // every other marker gets (patchMinimapMarkerScaling() skips them): scaled by a
+        // fractional factor, their outline and background were pixel-snapped apart.
+        // Doubled class for specificity over mapObjectives.scss's per-state rules.
+        .leaflet-marker-pane .flag.circleFlag.circleFlag {
+            width: 16px !important;
+            height: 16px !important;
+            margin-left: -8px !important;
+            margin-top: -8px !important;
+            border-radius: 8px;
+            outline-width: 1px !important;
+            font-size: 0.7em !important;
+        }
+    }
     .hexagon-shape {
         cursor: pointer!important;
         transition: fill-opacity 0.15s ease, stroke-opacity 0.15s ease;
@@ -293,19 +354,25 @@
 ************   TOAST   ***************
 **************************************/
 
-$toastDistanceFromBottom: 65px;
+$toastDistanceFromBottom: 80px;
 
 #toast {
+    // Always default font, even with the seasonal theme font on
+    --main-font: montserrat;
+    font-family: montserrat, Times, "Times New Roman", serif;
+    font-synthesis: initial;
     display: flex;
     align-items: center;
     max-width: 400px;
     width: fit-content;
     padding: 10px 14px;
     position: fixed;
-    border-radius: 5px;
+    border-radius: 10px;
     overflow: hidden;
-    background: white;
-    box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+    background: rgba(20, 20, 24, 0.82);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
     z-index: 5;
     bottom: 0;
     left: 50%;
@@ -318,7 +385,7 @@ $toastDistanceFromBottom: 65px;
     width: 30px;
     height: 30px;
     background: var(--secondary);
-    border-radius: 5px;
+    border-radius: 6px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -336,7 +403,7 @@ $toastDistanceFromBottom: 65px;
 #icon::before, #icon::after {
     position: absolute;
     content: "";
-    background: var(--secondary);
+    background: variables.$mainBGColor; // glyph cut out of the colored disc
     border-radius: 5px;
     top: 50%;
     left: 50%;
@@ -355,14 +422,14 @@ $toastDistanceFromBottom: 65px;
     font-size: 14px;
     font-weight: 600;
     letter-spacing: .05em;
-    color: #404040;
+    color: variables.$mainTxtColor;
 }
 
 #toast-message p {
     font-size: 10px;
     font-weight: bold;
     letter-spacing: .05em;
-    color: #606060;
+    color: rgba(255, 255, 255, 0.65);
 }
 
 #toast-close {
@@ -376,7 +443,7 @@ $toastDistanceFromBottom: 65px;
 }
 
 #toast-close:hover {
-    background: rgba(0,0,0,0.1);
+    background: rgba(255, 255, 255, 0.08);
 }
 
 #toast-close::before, #toast-close::after {
@@ -385,14 +452,14 @@ $toastDistanceFromBottom: 65px;
     height: 12px;
     width: 1px;
     border-radius: 5px;
-    background: #606060;
+    background: rgba(255, 255, 255, 0.6);
     top: 50%;
     left: 50%;
     transition: background 0.2s ease-in-out;
 }
 
 #toast-close:hover::before, #toast-close:hover::after {
-    background: #404040;
+    background: variables.$mainTxtColor;
 }
 
 #toast-close::before {
@@ -459,7 +526,7 @@ $toastDistanceFromBottom: 65px;
 
 .success {
     --primary: #2DD743;
-    --secondary: #E3FEE6;
+    --secondary: rgba(45, 215, 67, 0.15);
     #icon { 
         transform: rotate(-45deg); 
     }
@@ -478,7 +545,7 @@ $toastDistanceFromBottom: 65px;
 
 .warning {
     --primary: #F29208;
-    --secondary: #FFEEDF;
+    --secondary: rgba(242, 146, 8, 0.15);
     #icon::before {
         width: 3px;
         height: 3px;
@@ -493,7 +560,7 @@ $toastDistanceFromBottom: 65px;
 
 .error {
     --primary: #E63435;
-    --secondary: #FFEAEC;
+    --secondary: rgba(230, 52, 53, 0.15);
     #icon::before {
         width: 3px;
         height: 3px;
@@ -509,7 +576,7 @@ $toastDistanceFromBottom: 65px;
 
 .info {
     --primary: #42C0F2;
-    --secondary: #CFEFFC;
+    --secondary: rgba(66, 192, 242, 0.15);
     #icon::before {
         width: 3px;
         height: 7px;

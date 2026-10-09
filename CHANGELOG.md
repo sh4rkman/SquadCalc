@@ -1,3 +1,30 @@
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge"> **46.1.0** *(2026-10-09)*
+
+👻 *(You can disable the horrible Halloween font in `Settings > Map`.)*
+
+</br><img src="https://img.shields.io/badge/-new%20features-green">
+- 3D Mode: The minimap is now a replica of the regular 2D map. You can interact with it (select flags, create markers and targets) without leaving 3D mode
+- 3D Mode: Left-click to place an "Observation Marker" that always shows its distance from the camera (Thanks grey275!)
+- 3D Mode: All markers created on the 2D map now also appear in 3D (Thanks grey275!)
+- 3D Mode: Added "Terrain" as an additional texture
+- A toast now shows what's new after each update
+- Reworked the 3D settings card
+- Updated the Fool's Road minimap
+- Reworked toast colors
+
+</br><img src="https://img.shields.io/badge/-bug%20fixes-b22">  
+- Fixed a UX bug when the Session button is hidden from the map menu
+- The map grid now displays the last column/row label when there's enough room for it
+- The 3D button can now be hidden from the map menu
+- 3D Mode: The minimap now scales with screen size and is hidden on mobile
+- 3D Mode: Controls are now shown while flying (with a setting to show/hide them)
+- 3D Mode: Fixed the bottom of the settings card being covered by the layer selector
+- 3D Mode: Added a button to exit "Flying Mode" on mobile
+- 3D Mode: Improved asset caching so assets are no longer re-downloaded every time
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
+
 # <img src="https://img.shields.io/badge/-major%20release-b22222?style=for-the-badge"> **46.0.0** *(2026-10-02)*
 
 SquadCalc now uses a new layer extractor tool made by **yobaNGE**: **[SquadPipeline](https://github.com/yobaNGE/squad-map-data-CUE4Parse)**.

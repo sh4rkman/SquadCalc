@@ -215,6 +215,18 @@ export default class SquadCalc {
         this.simulation3D.refresh(this.minimap.activeMap, layer, this.minimap);
     }
 
+    /**
+     * Redraws an open 3D view's overlays after a change on the 2D map (often made from
+     * the 3D minimap itself): a weapon/target/map marker placed, moved or removed
+     * (squadMarker.js), or a flag clicked (SquadLayer._handleFlagClick()). Batched, so a
+     * burst of changes - a session sync, "clear all" - only redraws once.
+     */
+    refresh3DOverlays() {
+        if (!this.is3DOpen) return;
+        clearTimeout(this._refresh3DOverlaysTimeout);
+        this._refresh3DOverlaysTimeout = setTimeout(() => this.refresh3D(), 100);
+    }
+
     initServerMode(serverId, sessionId = null) {
         if (!this.squadServersBrowser) {
             this.squadServersBrowser = new SquadServersBrowser();
@@ -1055,18 +1067,6 @@ export default class SquadCalc {
             setTimeout(() => layerInfoTooltips.enable(), 50);
         });
 
-        // Esc closes the 3D view (like the modal dialog it used to be) once the pointer is
-        // released - while flying, the browser spends that Esc on exiting pointer lock
-        // and never delivers it to the page. In the drag-look fallback that first Esc does
-        // reach the page, so isFlying() skips it here and squad3DSimulation.js stops flying instead.
-        document.addEventListener("keydown", (event) => {
-            if (event.key !== "Escape" || !this.is3DOpen || this.simulation3D.isFlying()) return;
-            // Esc from a header select2 (or any other field) just closes/leaves that field -
-            // select2 has already closed its dropdown by the time this bubbles up here.
-            if ($(event.target).closest(".select2-container, input, textarea, select").length) return;
-            this.hide3D();
-        });
-          
         window.addEventListener("drop", e => {
             e.preventDefault();
 
@@ -1307,6 +1307,8 @@ export default class SquadCalc {
                 const newUrl = `${url.origin}/?${params.toString()}`;
                 navigator.clipboard.writeText(newUrl);
                 this.openToast("success", "copied", "");
+            } else if (title === "tooltips:newVersion" && event.target.tagName !== "BUTTON") {
+                $("#openChangelog").trigger("click");
             }
         });
       
@@ -1638,18 +1640,19 @@ export default class SquadCalc {
      */
     show(){
         document.body.style.visibility = "visible";
-        // Recreate the map layer behind the loader splash : layers created during
-        // boot stay stuck in Firefox's slow synchronous-decode path, making zoom
-        // very laggy until the layer is recreated. Timed so the logo stamp
-        // animation (0.6s) is done and the fade-in (0.7s) ends before the
-        // loader starts fading out at 1.8s.
         setTimeout(() => this.minimap.changeLayer(), 800);
         setTimeout(() => {
-            const logo = document.getElementById("loaderLogo");
-            logo.classList.remove("logo-stamp");
-            logo.classList.add("logo-stamp-out");
-            $("#loader").fadeOut(500);
+            $("#loader").fadeOut(500, () => this.showNewVersionToast());
         }, 1800);
+    }
+
+    /**
+     * Announce a new version once, on the first load after an update
+     */
+    showNewVersionToast(){
+        if (localStorage.getItem("lastSeenVersion") === this.version) return;
+        localStorage.setItem("lastSeenVersion", this.version);
+        this.openToast("info", "newVersion", "clickToSeeChangelog");
     }
 
     /**

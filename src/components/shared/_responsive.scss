@@ -170,10 +170,6 @@
                 font-size: 1.4em;
             }
         }
-        .btn-pin {
-            max-width: 100px;
-            font-size: 0.8em;
-        }
         #factionMenu {
             font-size: 0.8em;
             #team1, #team2 {
@@ -312,6 +308,9 @@
         span {
             span {
                 display: inline-block;
+            }
+            .logoSkull {
+                vertical-align: middle;
             }
             span:nth-child(3) {
                 width: auto;

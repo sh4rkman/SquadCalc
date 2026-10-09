@@ -98,6 +98,7 @@ function updateContent() {
 
     if (App.minimap.layer) App.minimap.layer.polyline.updateMeasurements();
     if (App.userSettings) App._renderModTiles();
+    $(".threeDTextureSelect").trigger("change.select2"); // re-render its selected option's new text
    
     const selectorWidth = window.matchMedia("screen and (min-width: 124em) and (min-height: 68em)").matches ? "350px" : "250px";
 

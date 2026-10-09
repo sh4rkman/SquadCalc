@@ -163,8 +163,7 @@
             display: flex;
             align-items: center;
             flex-wrap: wrap;
-            row-gap: 2px;
-            column-gap: 6px;
+            gap: 2px 6px;
         }
         .laneTooltipStepLanes {
             display: flex;

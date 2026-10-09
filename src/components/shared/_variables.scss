@@ -1,5 +1,5 @@
 // Colors
-$mainColor: firebrick;
+$mainColor: rgb(207, 106, 12);
 $mainBGColor: #111;
 $mainTxtColor: #fff;
 $newColor: green;
@@ -11,8 +11,42 @@ $newColor: green;
 }
 
 // Fonts
-$mainFont: montserrat;
 $logoFont: oswald;
+$themeFont: "Creepster"; // seasonal font (Halloween), self-hosted below
+$themeFontScale: 130%; // Creepster is much narrower than montserrat, scale it up everywhere
+
+// Self-hosted so size-adjust can scale every use of the font at once
+@font-face {
+    font-family: Creepster;
+    src: url("/fonts/creepster.woff2") format("woff2");
+    font-display: swap;
+    size-adjust: $themeFontScale;
+}
+
+// $mainFont resolves at runtime so the seasonal font can be toggled from settings
+// ("no-theme-font" body class). font-synthesis: none avoids a faked bold on the
+// single-weight theme font.
+
+:root {
+    --main-font: montserrat;
+}
+
+body:not(.no-theme-font) {
+    --main-font: #{$themeFont}, montserrat;
+    font-synthesis: none;
+}
+
+$mainFont: var(--main-font);
+
+// Seasonal font override, disabled by the "no-theme-font" body class (settings toggle).
+// Overrides the element's own font-family/weight, which apply again when disabled.
+@mixin theme-font($fallback, $spacing: 0.04em) {
+    body:not(.no-theme-font) & {
+        font-family: $themeFont, $fallback;
+        font-weight: normal;
+        letter-spacing: $spacing;
+    }
+}
 
 
 /*

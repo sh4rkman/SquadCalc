@@ -1,11 +1,61 @@
 import * as THREE from "three";
 import { decode } from "fast-png";
+import { DivIcon, Marker } from "leaflet";
 import { PointerLockControls } from "three/addons/controls/PointerLockControls.js";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { RGBELoader } from "three/addons/loaders/RGBELoader.js";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { loadProps } from "./squad3DProps.js";
 import { loadTrees } from "./squad3DTrees.js";
+
+// Size factor for every 2D marker (icons and DivIcon text labels) while the 2D map is
+// the 3D minimap - see patchMinimapMarkerScaling().
+const MINIMAP_MARKER_SCALE = 0.55;
+
+// Pointer events stopped on the minimap's empty background - see _blockMinimapBackgroundEvent().
+// Only the single click: on mobile it creates a target (on desktop it's just a session
+// ping). Presses (drag-pan), double-click (create weapon/target on desktop) and
+// right-click (context menu) all go through to the 2D map.
+const MINIMAP_BLOCKED_EVENTS = ["click"];
+let minimapMarkerScalingPatched = false;
+
+/**
+ * Shrinks Leaflet markers while their map is the 3D minimap (#map.threeDMinimapMode),
+ * without recreating any icon. CSS alone can't: Leaflet positions a marker with an inline
+ * translate3d, and any CSS scale composes outside it - shrinking the marker's position
+ * too. So, like leaflet-rotatedMarker.js, this wraps Marker._setPos and appends scale()
+ * after the translate, around the icon's anchor (= minus its computed margins, which also
+ * covers CSS-overridden sizes like .circleFlag). Applied lazily on first use so it wraps
+ * after the rotation plugins' own _setPos overrides, never under them.
+ */
+function patchMinimapMarkerScaling() {
+    if (minimapMarkerScalingPatched) return;
+    minimapMarkerScalingPatched = true;
+
+    const proto_setPos = Marker.prototype._setPos;
+    Marker.include({
+        _setPos: function (pos) {
+            proto_setPos.call(this, pos);
+            const shrink = !this.options.minimapNoShrink && this._map?.getContainer().classList.contains("threeDMinimapMode");
+
+            for (const el of [this._icon, this._shadow]) {
+                if (!el) continue;
+                // Circle flags are resized by map.scss instead: at a fractional scale their
+                // outline and background get pixel-snapped apart.
+                if (shrink && !el.classList.contains("circleFlag")) {
+                    const style = getComputedStyle(el);
+                    el.style.transformOrigin = `${-parseFloat(style.marginLeft)}px ${-parseFloat(style.marginTop)}px`;
+                    el.style.transform += ` scale(${MINIMAP_MARKER_SCALE})`;
+                    el.dataset.minimapShrunk = "1";
+                } else if (el.dataset.minimapShrunk) {
+                    // A rotated marker's origin was just set again by the rotation plugin.
+                    if (!(el === this._icon && this.options.rotationAngle)) el.style.transformOrigin = "";
+                    delete el.dataset.minimapShrunk;
+                }
+            }
+        },
+    });
+}
 
 // Vertices per side of the terrain grid, sampled from the full-resolution heightmap.
 const GRID_RESOLUTION = 512;
@@ -43,6 +93,19 @@ const MARKER_WORLD_SIZE = 18;
 // Target markers read slightly smaller than weapon markers, to visually rank behind them.
 const TARGET_MARKER_WORLD_SIZE = MARKER_WORLD_SIZE * 0.75;
 
+// Right-click map markers (FOBs, HABs, vehicles...) - same size as targets.
+const STRAT_MARKER_WORLD_SIZE = MARKER_WORLD_SIZE * 0.75;
+
+// On-screen size limits (CSS px) for a weapon marker's icon sprite - between them it keeps
+// its real MARKER_WORLD_SIZE, so it still shrinks with distance, just never into an
+// unreadable dot far away or a huge billboard up close. Targets/map markers use the same
+// limits scaled down by their own size ratio - see _markerScaleFactor().
+const MARKER_MIN_SCREEN_PX = 30;
+const MARKER_MAX_SCREEN_PX = 96;
+
+// Canvas size (px) SVG marker icons are rasterized at - see _loadMarkerIconTexture().
+const SVG_ICON_RASTER_SIZE = 128;
+
 // Text size (meters) of a target's elevation/bearing label - see _drawMarkers()'s
 // _targetLabelText(). Smaller than a flag's LABEL_WORLD_HEIGHT since it's a secondary
 // annotation on a marker, not a flag name.
@@ -56,12 +119,27 @@ const TARGET_LABEL_CLEARANCE = 3;
 // z-fighting with the terrain - see _drawTargetSpreads().
 const SPREAD_GROUND_OFFSET = 0.2;
 
+// FOB range spheres and weapon max range walls are only drawn as a band hugging the
+// ground: from GROUND_BAND_DEPTH meters below the terrain to GROUND_BAND_HEIGHT above it,
+// fading out upward - see _createGroundBandMaterial().
+const GROUND_BAND_HEIGHT = 30;
+const GROUND_BAND_DEPTH = 1;
+
+// The FOB exclusion radius band reads lighter than the build radius one, like its
+// thinner line on the 2D map - see _drawMarkers().
+const FOB_EXCLUSION_BAND_OPACITY = 0.5;
+
 // Projectile arc tube radius (meters) - see _drawProjectileArcs().
 const ARC_TUBE_RADIUS = 0.8;
 
 // Seconds between FPS HUD updates - a plain per-frame 1/delta reading jitters too much to
 // read, so it's averaged over this window instead.
 const FPS_UPDATE_INTERVAL = 0.5;
+
+// Seconds between click marker distance label refreshes while the camera moves - each
+// refresh that changes the value redraws the label's canvas texture, so it's capped
+// rather than done every frame.
+const CLICK_LABEL_UPDATE_INTERVAL = 0.1;
 
 // requestAnimationFrame fires at the display's own refresh rate (vsync-locked) with no
 // cap of its own - on a high-refresh monitor that's more render/movement-update work than
@@ -79,6 +157,25 @@ const _screenCenter = new THREE.Vector2(0, 0);
 // reused by its mouselook - see _setupFlyControls().
 const _cursorNdc = new THREE.Vector2();
 const _lookEuler = new THREE.Euler(0, 0, 0, "YXZ");
+
+// On-screen size of the left-click ground marker, as a fraction of the viewport height
+// scaled by the camera's fov (a sizeAttenuation: false sprite) - see _createClickMarker().
+const CLICK_MARKER_SCREEN_SIZE = 0.04;
+const CLICK_MARKER_ICON_URL = "/img/icons/shared/EyeIcon.png";
+
+// On-screen height of the click marker's distance label, same units as above.
+const CLICK_LABEL_SCREEN_HEIGHT = 0.035;
+
+// Scratch point for _rayTerrainDistance()'s march along the click ray.
+const _rayPoint = new THREE.Vector3();
+
+// Scratch objects for _rayPropsMeshDistance()'s per-part box/triangle tests.
+const _localRay = new THREE.Ray();
+const _inverseMatrix = new THREE.Matrix4();
+const _triA = new THREE.Vector3();
+const _triB = new THREE.Vector3();
+const _triC = new THREE.Vector3();
+const _hitPoint = new THREE.Vector3();
 
 // Pixels the mouse may move between press and release for it to still count as a
 // click (flag select) rather than a drag-look, in the drag-look fallback.
@@ -157,8 +254,10 @@ const STORAGE_KEYS = {
     arcsVisible: "settings-3d-arcs",
     treesVisible: "settings-3d-trees",
     propsVisible: "settings-3d-props",
+    markersVisible: "settings-3d-markers",
     crosshairVisible: "settings-3d-crosshair",
     fpsVisible: "settings-3d-fps",
+    controlsVisible: "settings-3d-controls",
     textureName: "settings-3d-texture",
 };
 
@@ -207,9 +306,30 @@ export default class Squad3DSimulation {
     constructor(container) {
         this.container = container;
         this.loadingScreen = container.querySelector(".threeDLoading");
-        this.minimapImage = container.querySelector(".threeDMinimapImage");
-        this.minimapDot = container.querySelector(".threeDMinimapDot");
-        this.minimapDot.src = "/img/icons/shared/camera.webp";
+
+        // The 2D Leaflet map itself doubles as the minimap while the view is open (shrunk
+        // into the bottom-right corner by CSS, read-only) - see _attachLeafletMinimap().
+        this._leafletMinimap = null;
+        this._leafletSavedView = null; // { center, zoom, minZoom } to restore on close
+        this._leafletDisabledHandlers = []; // pan/zoom handlers turned off while attached
+        this._hiddenLeafletGrid = null; // the keypad grid, taken off while attached - see _fitLeafletMinimap()
+        this._onMinimapBackgroundEvent = (event) => this._blockMinimapBackgroundEvent(event);
+        // Bubble-phase, added after Leaflet's own wheel listener on the same container: the
+        // minimap zooms first, then the event stops before reaching the window-level wheel
+        // listener that changes the 3D camera speed - see _setupFlyControls().
+        this._onMinimapWheel = (event) => event.stopPropagation();
+        this._minimapCameraMarker = new Marker([0, 0], {
+            icon: new DivIcon({ className: "threeDMinimapCamera", html: "<img src=\"/img/icons/shared/freecam.webp\" alt=\"\">", iconSize: null }),
+            interactive: false,
+            keyboard: false,
+            minimapNoShrink: true, // see patchMinimapMarkerScaling()
+        });
+        this._minimapClickMarker = new Marker([0, 0], {
+            icon: new DivIcon({ className: "threeDMinimapClickMarker", html: `<img src="${CLICK_MARKER_ICON_URL}" alt="">`, iconSize: null }),
+            interactive: false,
+            keyboard: false,
+            minimapNoShrink: true,
+        });
         this.scene = null;
         this.camera = null;
         this.renderer = null;
@@ -219,7 +339,7 @@ export default class Squad3DSimulation {
         this.terrainSize = 0;
         this.heights = null;
         this.gridResolution = GRID_RESOLUTION;
-        this.textureName = loadSetting(STORAGE_KEYS.textureName, "basemap"); // "basemap" | "topomap" - the select's own options.
+        this.textureName = loadSetting(STORAGE_KEYS.textureName, "basemap"); // "basemap" | "topomap" | "terrainmap" - the select's own options.
         this.sunLight = null;
         this.capzoneGroup = null;
         this.labelGroup = null;
@@ -236,8 +356,10 @@ export default class Squad3DSimulation {
         this.arcsVisible = loadSetting(STORAGE_KEYS.arcsVisible, "1") === "1";
         this.treesVisible = loadSetting(STORAGE_KEYS.treesVisible, "1") === "1";
         this.propsVisible = loadSetting(STORAGE_KEYS.propsVisible, "1") === "1";
+        this.markersVisible = loadSetting(STORAGE_KEYS.markersVisible, "1") === "1";
         this.crosshairVisible = loadSetting(STORAGE_KEYS.crosshairVisible, "1") === "1";
         this.fpsVisible = loadSetting(STORAGE_KEYS.fpsVisible, "1") === "1";
+        this.controlsVisible = loadSetting(STORAGE_KEYS.controlsVisible, "1") === "1";
         // Deployable glTF templates, cached and loaded once per asset type - see
         // _drawDeployables(). Instances are shallow clones sharing this geometry/material.
         this._deployableModels = {};
@@ -245,6 +367,16 @@ export default class Squad3DSimulation {
         // Weapon/target marker icon textures, cached and loaded once per icon URL - see
         // _drawMarkers().
         this._markerIconTextures = {};
+
+        // Terrain heights as a float texture, shared by every FOB range band's shader so it
+        // can clip the sphere against the ground - see _rebuildTerrainMesh(). Uniform objects
+        // are shared (not copied) into each band material, so a terrain rebuild updates them all.
+        this._terrainHeightUniforms = {
+            uHeightMap: { value: null },
+            uGridRes: { value: 1 },
+            uTerrainSize: { value: 1 },
+        };
+        this._fobSphereGeometry = new THREE.SphereGeometry(1, 128, 64); // unit sphere, scaled per band
         this.sunDir = new THREE.Vector3();
         this._minimapForward = new THREE.Vector3();
         this.loadedMapURL = null;
@@ -253,12 +385,6 @@ export default class Squad3DSimulation {
         this._isOpen = false; // between open() and close() - see refresh()
         this._frameId = null;
         this._onResize = () => this._resize();
-
-        // Safety net for accidental tab-close while flying (e.g. Ctrl+W) - registered only
-        // while the 3D view is actually open (see open()/close()), not for the app's
-        // whole lifetime. The browser ignores any custom message text and shows its own
-        // generic "leave site?" confirmation, but that's enough to let a misclick be undone.
-        this._onBeforeUnload = (event) => { event.preventDefault(); event.returnValue = ""; };
 
         // Rolling counters for the FPS HUD - updated once per FPS_UPDATE_INTERVAL instead
         // of every frame, so the displayed number doesn't flicker.
@@ -325,6 +451,7 @@ export default class Squad3DSimulation {
         this._lastActiveMap = activeMap;
         this._lastMinimap = minimap;
         this._isOpen = true;
+        this._attachLeafletMinimap(minimap);
 
         await this._ensureMapLoaded(activeMap);
 
@@ -337,18 +464,22 @@ export default class Squad3DSimulation {
         // The camera is kept across close()/open() - only (re)placed for a different map
         // than it was last placed on, or an explicit spawn request (share link, context
         // menu point, "See in 3D").
+        if (this._cameraMapURL !== activeMap.mapURL) {
+            this.clickMarker.visible = false;
+            this._updateMinimapClickMarker();
+        }
         if (arcRequest || sharedPosition || spawnLatLng || this._cameraMapURL !== activeMap.mapURL) {
             this._spawnCamera(activeMap, this._lastMinimap, arcRequest, sharedPosition, spawnLatLng);
             this._cameraMapURL = activeMap.mapURL;
         }
 
         this.overlay.hidden = false;
+        this.menuButton.hidden = true; // orbit mode never hides it on close()
         this._resize();
 
         // open() can run again while already open (see refresh()) - only start once.
         if (this._frameId === null) {
             window.addEventListener("resize", this._onResize);
-            window.addEventListener("beforeunload", this._onBeforeUnload);
             this.clock.getDelta(); // drop the idle time since the last close()
             this._startLoop();
         }
@@ -421,7 +552,6 @@ export default class Squad3DSimulation {
     _drawLayerOverlays(layer, activeMap, minimap, arcRequest) {
         this._drawCapzones(layer, activeMap);
         this._drawFlagPath(layer, activeMap);
-        this._updateMinimapImage(layer, activeMap);
         this._drawDeployables(layer, activeMap);
         this._drawMarkers(minimap, activeMap);
         this._drawTargetSpreads(minimap, activeMap);
@@ -435,8 +565,8 @@ export default class Squad3DSimulation {
     close() {
         this._isOpen = false;
         window.removeEventListener("resize", this._onResize);
-        window.removeEventListener("beforeunload", this._onBeforeUnload);
         this._stopLoop();
+        this._detachLeafletMinimap();
         if (!this._orbitMode) this.controls.unlock();
         this._setDragFlying(false);
         this._dragging = false;
@@ -454,7 +584,9 @@ export default class Squad3DSimulation {
 
         this.renderer = new THREE.WebGLRenderer({ antialias: true });
         this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-        this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        // Neutral rather than ACES Filmic: ACES washes out saturated colors, e.g. the
+        // click marker's green eye icon came out pale.
+        this.renderer.toneMapping = THREE.NeutralToneMapping;
         this.renderer.toneMappingExposure = 0.85;
         this.container.appendChild(this.renderer.domElement);
 
@@ -494,6 +626,14 @@ export default class Squad3DSimulation {
         this.scene.add(this.propsGroup);
         this.treesGroup = new THREE.Group();
         this.scene.add(this.treesGroup);
+        // Left-click ground marker: the ring plus a distance label, replaced on each click.
+        this.clickMarker = new THREE.Group();
+        this.clickMarker.visible = false;
+        this.clickMarker.add(this._createClickMarker());
+        this.clickMarkerLabel = null;
+        this._clickLabelDistance = null; // rounded meters the label currently shows
+        this._clickLabelAccumTime = 0;
+        this.scene.add(this.clickMarker);
 
         this.clock = new THREE.Clock();
         this._orbitMode = IS_TOUCH_DEVICE;
@@ -505,6 +645,10 @@ export default class Squad3DSimulation {
             // Just shy of the horizon - keeps the camera from ever orbiting below the
             // target's ground level (there's no "underground" view worth reaching here).
             this.controls.maxPolarAngle = Math.PI / 2 - 0.02;
+            // Two-finger pan slides the target across the ground like a map, instead of
+            // along the screen plane (which lifts it into the air or sinks it underground
+            // when looking at an angle) - see also _keepOrbitTargetOnGround().
+            this.controls.screenSpacePanning = false;
         } else {
             this.controls = new PointerLockControls(this.camera, this.renderer.domElement);
         }
@@ -527,14 +671,19 @@ export default class Squad3DSimulation {
         this.crosshair = this.container.querySelector(".threeDCrosshair");
         this.fpsCounter = this.container.querySelector(".threeDFpsCounter");
         this.fpsValue = this.fpsCounter.querySelector(".threeDFpsValue");
+        this.controlsHint = this.container.querySelector(".threeDControlsHint");
 
         // Touch has no equivalent of pointer-lock-driven mouselook, so OrbitControls
         // drives the camera directly off touch drag/pinch instead - no lock step, and none
         // of PointerLockControls' lock/unlock/Enter-to-lock/wheel-speed wiring applies.
-        // The WASD/Scroll/Esc keyboard hints on the start card are desktop-only too.
+        // The keyboard/mouse controls panel is desktop-only too - its toggle stays in the
+        // grid, just disabled. So is the minimap: the 2D map sits above the whole 3D view
+        // (see _attachLeafletMinimap()), so on a small touch screen it covers the menu card.
         if (this._orbitMode) {
-            const hint = this.container.querySelector(".threeDOverlayHint");
-            if (hint) hint.hidden = true;
+            this.container.querySelector(".threeDControlsOption").classList.add("disabled");
+            this.container.querySelector(".threeDControlsToggle").disabled = true;
+            this.container.querySelector(".threeDMinimapToggle").closest(".threeDOverlayOption").classList.add("disabled");
+            this.container.querySelector(".threeDMinimapToggle").disabled = true;
         } else {
             // PointerLockControls dispatches "lock"/"unlock" BEFORE updating its own isLocked
             // flag, so reading this.controls.isLocked from inside these listeners would still
@@ -558,17 +707,8 @@ export default class Squad3DSimulation {
         // the cursor stays visible and the crosshair is hidden.
         this.renderer.domElement.addEventListener("click", (event) => {
             if (!this.isFlying()) return;
-            if (this._dragLookMode) {
-                if (this._dragDistance > DRAG_CLICK_THRESHOLD) return; // end of a drag-look, not a click
-                const rect = this.renderer.domElement.getBoundingClientRect();
-                _cursorNdc.set(
-                    ((event.clientX - rect.left) / rect.width) * 2 - 1,
-                    -((event.clientY - rect.top) / rect.height) * 2 + 1,
-                );
-                this._raycaster.setFromCamera(_cursorNdc, this.camera);
-            } else {
-                this._raycaster.setFromCamera(_screenCenter, this.camera);
-            }
+            if (this._dragLookMode && this._dragDistance > DRAG_CLICK_THRESHOLD) return; // end of a drag-look, not a click
+            this._setRayFromEvent(event);
 
             // Tier 1: capzone-only hit test. Capzones are semi-transparent/always-visible
             // (unlike 2D's hover-only reveal) and have no occlusion concept in 2D either,
@@ -585,19 +725,66 @@ export default class Squad3DSimulation {
                 return;
             }
 
-            // Tier 2: debug fallback for anything that isn't a capzone.
-            const hit = this._raycaster.intersectObjects(this.scene.children, true)[0];
-            console.debug(hit ? hit.object : null);
+            // Tier 2: anything else drops the click marker on the first building, tree or
+            // ground point under the click, labelled with its straight-line distance from
+            // the camera (world units are meters). The ground comes from a heightmap march and
+            // buildings/trees are only tested up to it - a plain full-scene raycast tests
+            // every terrain/prop triangle and stalls the frame. Clicking the sky removes it.
+            const ray = this._raycaster.ray;
+            const groundDistance = this._rayTerrainDistance(ray);
+            const objectDistance = this._rayObjectDistance(groundDistance ?? this.terrainSize * 2);
+            const distance = objectDistance ?? groundDistance;
+            if (distance === null) {
+                this.clickMarker.visible = false;
+                this._updateMinimapClickMarker();
+                return;
+            }
+            ray.at(distance, this.clickMarker.position);
+            this._setClickMarkerLabel(distance);
+            this.clickMarker.visible = true;
+            this._updateMinimapClickMarker();
+        });
+
+        // Right-click while flying removes the eye marker, or deletes the right-click map
+        // marker (FOB, HAB, vehicle...) under the crosshair/cursor - the latter through the 2D marker's own delete(), so undo history
+        // and the session stay in sync. mousedown rather than contextmenu: under pointer
+        // lock the browser doesn't reliably fire contextmenu.
+        this.renderer.domElement.addEventListener("contextmenu", (event) => event.preventDefault());
+        this.renderer.domElement.addEventListener("mousedown", (event) => {
+            if (event.button !== 2 || !this.isFlying()) return;
+            this._setRayFromEvent(event);
+
+            // The eye marker draws on top of everything (depthTest off), so it's
+            // removable wherever it's visible - no ground occlusion check.
+            if (this.clickMarker.visible && this._raycaster.intersectObject(this.clickMarker, true).length) {
+                this.clickMarker.visible = false;
+                this._updateMinimapClickMarker();
+                return;
+            }
+
+            // Raycasts ignore `visible` - hidden markers must not be deletable.
+            if (!this.markerGroup.visible) return;
+            // Sprites ignore the terrain, so a marker hidden behind a hill must not be hit.
+            const groundDistance = this._rayTerrainDistance(this._raycaster.ray) ?? Infinity;
+            const hit = this._raycaster.intersectObjects(this.markerGroup.children, false)
+                .find((h) => h.object.userData.stratMarker && h.distance < groundDistance);
+            if (!hit) return;
+            hit.object.userData.stratMarker.delete();
+            this.markerGroup.remove(hit.object);
+            hit.object.material.dispose();
+            for (const band of hit.object.userData.rangeBands ?? []) {
+                this.markerGroup.remove(band);
+                band.material.dispose();
+            }
         });
 
         const goButton = this.container.querySelector(".threeDGoButton");
         // OrbitControls needs no lock step - it's already live off touch input, so Go just
-        // dismisses the start card. Re-opening it isn't wired up yet on touch (no Esc);
-        // quitting and reopening the 3D view is the way back to it for now.
+        // dismisses the start card. With no Esc on touch, the menu button brings it back.
         goButton.addEventListener("click", () => this._startFlying());
 
         this.menuButton = this.container.querySelector(".threeDMenuButton");
-        this.menuButton.addEventListener("click", () => this._setDragFlying(false));
+        this.menuButton.addEventListener("click", () => this._backToMenu());
 
         this.speedHUD = this.container.querySelector(".threeDSpeedHUD");
         this.speedHUDFill = this.speedHUD.querySelector(".threeDSpeedHUDFill");
@@ -614,7 +801,6 @@ export default class Squad3DSimulation {
         this._setCapzonesVisible(this.capzonesVisible);
         capzonesToggle.addEventListener("change", () => this._setCapzonesVisible(capzonesToggle.checked));
 
-        this.minimap = this.container.querySelector(".threeDMinimap");
         const minimapToggle = options.querySelector(".threeDMinimapToggle");
         minimapToggle.checked = this.minimapVisible;
         this._setMinimapVisible(this.minimapVisible);
@@ -628,6 +814,11 @@ export default class Squad3DSimulation {
         arcsToggle.checked = this.arcsVisible;
         this._setArcsVisible(this.arcsVisible);
         arcsToggle.addEventListener("change", () => this._setArcsVisible(arcsToggle.checked));
+
+        const markersToggle = options.querySelector(".threeDMarkersToggle");
+        markersToggle.checked = this.markersVisible;
+        this._setMarkersVisible(this.markersVisible);
+        markersToggle.addEventListener("change", () => this._setMarkersVisible(markersToggle.checked));
 
         const treesToggle = options.querySelector(".threeDTreesToggle");
         treesToggle.checked = this.treesVisible;
@@ -648,11 +839,25 @@ export default class Squad3DSimulation {
         fpsToggle.checked = this.fpsVisible;
         this._setFpsVisible(this.fpsVisible);
         fpsToggle.addEventListener("change", () => this._setFpsVisible(fpsToggle.checked));
+
+        const controlsToggle = options.querySelector(".threeDControlsToggle");
+        controlsToggle.checked = this.controlsVisible;
+        this._setControlsVisible(this.controlsVisible);
+        controlsToggle.addEventListener("change", () => this._setControlsVisible(controlsToggle.checked));
         const textureSelect = options.querySelector(".threeDTextureSelect");
         textureSelect.value = this.textureName;
-        textureSelect.addEventListener("change", async () => {
+        // select2 rather than the native dropdown - the browser draws a native option
+        // list itself, so its hover highlight can't be restyled. select2 fires its
+        // change through jQuery, which native addEventListener() listeners never see.
+        $(textureSelect).select2({
+            dropdownCssClass: "threeDSelectDropdown",
+            dropdownParent: $(this.container), // not the card - its mobile overflow would clip it
+            minimumResultsForSearch: -1,
+            width: "12em",
+        }).on("change", async () => {
             await this._setTexture(textureSelect.value);
-            textureSelect.value = this.textureName; // reverts the dropdown on load failure
+            // reverts the dropdown on load failure
+            $(textureSelect).val(this.textureName).trigger("change.select2");
         });
 
         window.addEventListener("keydown", (event) => {
@@ -663,10 +868,15 @@ export default class Squad3DSimulation {
                 return;
             }
 
-            // Drag-look has no browser-handled lock to release, so Esc is handled here
-            // instead - squadCalc's own Esc-closes-3D listener skips it while isFlying().
-            if (event.code === "Escape" && this._dragFlying) {
-                this._setDragFlying(false);
+            // Esc never closes the 3D view - only the Quit button does. Drag-look has no
+            // browser-handled lock to release, so Esc toggles between flying and the
+            // settings card here. With pointer lock, the browser spends the Esc that
+            // leaves flying itself, and won't let an Esc press re-lock (Esc doesn't count
+            // as a user gesture) - Enter or Go resume flying there instead.
+            if (event.code === "Escape" && this._dragLookMode && this._isOpen) {
+                // Esc in a select2 dropdown on the card just closes that dropdown.
+                if (!this._dragFlying && event.target.closest?.(".select2-container, input, textarea, select")) return;
+                this._setDragFlying(!this._dragFlying);
                 return;
             }
 
@@ -690,7 +900,7 @@ export default class Squad3DSimulation {
         window.addEventListener("wheel", (event) => {
             if (!this.isFlying()) return;
             event.preventDefault();
-            if(this.moveSpeedPercent === 1) this.moveSpeedPercent = 0; // since min is 1 we avoid speed being 6/11/16...
+            if (this.moveSpeedPercent === 1) this.moveSpeedPercent = 0; // since min is 1 we avoid speed being 6/11/16...
             this.moveSpeedPercent = THREE.MathUtils.clamp(this.moveSpeedPercent - event.deltaY * 0.05, 1, 100);
             this._showSpeedHUD();
         }, { passive: false });
@@ -702,6 +912,25 @@ export default class Squad3DSimulation {
      * in the drag-look fallback. Always false in orbit mode (OrbitControls has no isLocked).
      * @returns {boolean}
      */
+    /**
+     * Points _raycaster from the crosshair (screen center), or from the cursor in
+     * drag-look mode, where the cursor stays visible and the crosshair is hidden.
+     * @param {MouseEvent} event
+     */
+    _setRayFromEvent(event) {
+        if (this._dragLookMode) {
+            const rect = this.renderer.domElement.getBoundingClientRect();
+            _cursorNdc.set(
+                ((event.clientX - rect.left) / rect.width) * 2 - 1,
+                -((event.clientY - rect.top) / rect.height) * 2 + 1,
+            );
+            this._raycaster.setFromCamera(_cursorNdc, this.camera);
+        } else {
+            this._raycaster.setFromCamera(_screenCenter, this.camera);
+        }
+    }
+
+
     isFlying() {
         return Boolean(this.controls?.isLocked) || this._dragFlying;
     }
@@ -713,6 +942,7 @@ export default class Squad3DSimulation {
     _startFlying() {
         if (this._orbitMode) {
             this.overlay.hidden = true;
+            this.menuButton.hidden = false;
             return;
         }
         if (this._dragLookMode) {
@@ -733,6 +963,20 @@ export default class Squad3DSimulation {
         } catch {
             this._enableDragLook();
         }
+    }
+
+
+    /**
+     * Menu button: brings the start card back. Only shown in orbit mode (touch, no Esc)
+     * and the drag-look fallback (no pointer lock to release).
+     */
+    _backToMenu() {
+        if (this._orbitMode) {
+            this.overlay.hidden = false;
+            this.menuButton.hidden = true;
+            return;
+        }
+        this._setDragFlying(false);
     }
 
 
@@ -837,11 +1081,17 @@ export default class Squad3DSimulation {
 
     async _loadTerrain(activeMap) {
         const base = `${process.env.API_URL}${activeMap.mapURL}`;
-        this.minimapImage.src = `${base}basemap.webp`; // instant placeholder while the map loads - see open()'s _updateMinimapImage()
 
+        // Single-layer maps only ship basemap.webp - fall back to it rather than failing
+        // the whole load when the saved texture is topomap/terrainmap.
+        const loader = new THREE.TextureLoader();
         const [heightBuffer, texture] = await Promise.all([
             this._fetchHeightmap(base),
-            new THREE.TextureLoader().loadAsync(`${base}${this.textureName}.webp`),
+            loader.loadAsync(`${base}${this.textureName}.webp`).catch((error) => {
+                if (this.textureName === "basemap") throw error;
+                console.warn(`[3D] No ${this.textureName}.webp for this map, using basemap`);
+                return loader.loadAsync(`${base}basemap.webp`);
+            }),
         ]);
         texture.colorSpace = THREE.SRGBColorSpace;
         this._heightScale = this._landscapeCalibration(activeMap).heightScale;
@@ -1072,20 +1322,6 @@ export default class Squad3DSimulation {
 
 
     /**
-     * Points the minimap image at the selected layer's own thumbnail (the same one the
-     * layer-info dialog uses) instead of the bare map basemap, so the minimap actually
-     * shows the flags/capzones for that layer. Falls back to the basemap with no layer.
-     * @param {?SquadLayer} layer
-     * @param {object} activeMap
-     */
-    _updateMinimapImage(layer, activeMap) {
-        this.minimapImage.src = layer?.layerData?.rawName
-            ? `${process.env.API_URL}/img/thumbnails/${encodeURIComponent(layer.layerData.rawName)}.webp`
-            : `${process.env.API_URL}${activeMap.mapURL}basemap.webp`;
-    }
-
-
-    /**
      * (Re)builds the terrain mesh from the cached decoded heightmap/texture at
      * gridResolution, without touching the camera - see _loadTerrain().
      */
@@ -1109,6 +1345,15 @@ export default class Squad3DSimulation {
         const material = new THREE.MeshStandardMaterial({ map: this._terrainTexture, roughness: 0.9, metalness: 0 });
         this.terrainMesh = new THREE.Mesh(geometry, material);
         this.scene.add(this.terrainMesh);
+
+        this._terrainHeightUniforms.uHeightMap.value?.dispose();
+        const heightTexture = new THREE.DataTexture(this.heights, this.gridResolution, this.gridResolution, THREE.RedFormat, THREE.FloatType);
+        heightTexture.needsUpdate = true;
+        this._terrainHeightUniforms.uHeightMap.value = heightTexture;
+        this._terrainHeightUniforms.uGridRes.value = this.gridResolution;
+        this._terrainHeightUniforms.uTerrainSize.value = this.terrainSize;
+        this._terrainMinY = this.heights.reduce((min, h) => Math.min(min, h), Infinity);
+        this._terrainMaxY = this.heights.reduce((max, h) => Math.max(max, h), -Infinity);
     }
 
 
@@ -1116,7 +1361,7 @@ export default class Squad3DSimulation {
      * Switches the terrain surface texture (e.g. basemap <-> topomap), fetching it fresh -
      * a different texture is a different file. The minimap keeps using basemap
      * regardless, for consistent navigation.
-     * @param {string} name - "basemap" | "topomap"
+     * @param {string} name - "basemap" | "topomap" | "terrainmap"
      */
     async _setTexture(name) {
         if (name === this.textureName || !this._lastActiveMap || !this.terrainMesh) return;
@@ -1153,13 +1398,144 @@ export default class Squad3DSimulation {
 
 
     /**
-     * Shows/hides the bottom-right minimap (basemap + camera dot).
+     * Shows/hides the bottom-right minimap (the shrunk 2D map + camera arrow). Hidden
+     * with visibility rather than display, so Leaflet keeps its size and fit.
      * @param {boolean} visible
      */
     _setMinimapVisible(visible) {
         this.minimapVisible = visible;
         localStorage.setItem(STORAGE_KEYS.minimapVisible, visible ? "1" : "0");
-        this.minimap.hidden = !visible;
+        this._leafletMinimap?.getContainer().classList.toggle("threeDMinimapHidden", !visible);
+    }
+
+
+    /**
+     * Turns the 2D Leaflet map into the minimap: the threeDMinimapMode class (map.scss)
+     * pins #map into the bottom-right corner above the 3D view and makes it read-only
+     * (no pointer events, popups hidden), so every flag, capzone, marker and range
+     * circle already drawn there shows up as-is and stays live. The current 2D view is
+     * saved and restored by _detachLeafletMinimap(). No-op if already attached.
+     * @param {?object} minimap - SquadMinimap instance
+     */
+    _attachLeafletMinimap(minimap) {
+        if (this._orbitMode) return; // touch: no minimap - see _setupFlyControls()
+        if (!minimap || this._leafletMinimap === minimap) {
+            this._fitLeafletMinimap();
+            return;
+        }
+        this._detachLeafletMinimap();
+
+        patchMinimapMarkerScaling();
+        this._leafletMinimap = minimap;
+        this._leafletSavedView = { center: minimap.getCenter(), zoom: minimap.getZoom(), minZoom: minimap.getMinZoom(), maxBounds: minimap.options.maxBounds, maxBoundsViscosity: minimap.options.maxBoundsViscosity };
+        minimap.setMaxBounds(minimap.imageBounds); // drag-panning stays on the map
+        minimap.options.maxBoundsViscosity = 1;
+        const container = minimap.getContainer();
+        container.classList.add("threeDMinimapMode");
+        container.classList.toggle("threeDMinimapHidden", !this.minimapVisible);
+        for (const type of MINIMAP_BLOCKED_EVENTS) container.addEventListener(type, this._onMinimapBackgroundEvent, true);
+        container.addEventListener("wheel", this._onMinimapWheel);
+        this._leafletDisabledHandlers = ["touchZoom", "doubleClickZoom", "boxZoom", "keyboard"]
+            .map((name) => minimap[name])
+            .filter((handler) => handler?.enabled());
+        this._leafletDisabledHandlers.forEach((handler) => handler.disable());
+        this._minimapCameraMarker.addTo(minimap);
+        this._fitLeafletMinimap();
+        this._repositionLeafletMarkers(minimap);
+        this._updateMinimapClickMarker();
+    }
+
+
+    /**
+     * Capture-phase guard on the minimap's container (see _attachLeafletMinimap()): the
+     * map takes the pointer so it can be hovered (x2 scale, map.scss) and its flags/markers
+     * stay clickable, but a single click on its empty background must not reach
+     * squadMinimap's own handler (a mobile tap places a target). Runs before Leaflet's
+     * listeners, including on the container itself. Everything else goes through - see
+     * MINIMAP_BLOCKED_EVENTS, and _onMinimapWheel for the 3D speed side of wheel zoom.
+     * @param {Event} event
+     */
+    _blockMinimapBackgroundEvent(event) {
+        if (event.target.closest?.(".leaflet-interactive")) return;
+        event.stopImmediatePropagation();
+    }
+
+
+    /**
+     * Re-runs every marker's _setPos(), so patchMinimapMarkerScaling() (un)shrinks them
+     * right after threeDMinimapMode is toggled - a fit/setView only repositions markers
+     * when the zoom actually changes.
+     * @param {object} minimap - SquadMinimap instance
+     */
+    _repositionLeafletMarkers(minimap) {
+        minimap.eachLayer((layer) => {
+            if (layer instanceof Marker) layer.update();
+        });
+    }
+
+
+    /**
+     * Fits the whole map into the minimap box. Leaflet's minZoom (sized for the full
+     * screen 2D view) is lowered so the fit can zoom out far enough for a ~250px box,
+     * then pinned at the fitted zoom so wheel zooming can't go out past the whole map.
+     */
+    _fitLeafletMinimap() {
+        const minimap = this._leafletMinimap;
+        if (!minimap) return;
+        minimap.invalidateSize({ pan: false });
+        minimap.setMinZoom(-5);
+        minimap.fitBounds(minimap.imageBounds, { animate: false });
+        minimap.setMinZoom(minimap.getZoom());
+
+        // No keypad grid on the minimap - it's just clutter at that size. Checked on every
+        // fit since squadMinimap.draw() builds a fresh grid on each map change.
+        const grid = minimap.grid;
+        if (grid && minimap.layerGroup.hasLayer(grid)) {
+            minimap.layerGroup.removeLayer(grid);
+            this._hiddenLeafletGrid = grid;
+        }
+    }
+
+
+    /**
+     * Gives the Leaflet map back to the 2D view, at the zoom/center it had before.
+     */
+    _detachLeafletMinimap() {
+        const minimap = this._leafletMinimap;
+        if (!minimap) return;
+        this._leafletMinimap = null;
+
+        this._minimapCameraMarker.remove();
+        this._minimapClickMarker.remove();
+        const container = minimap.getContainer();
+        container.classList.remove("threeDMinimapMode", "threeDMinimapHidden");
+        for (const type of MINIMAP_BLOCKED_EVENTS) container.removeEventListener(type, this._onMinimapBackgroundEvent, true);
+        container.removeEventListener("wheel", this._onMinimapWheel);
+        this._leafletDisabledHandlers.forEach((handler) => handler.enable());
+        this._leafletDisabledHandlers = [];
+        // Only the map's current grid - an older one hidden before a map change is gone.
+        if (this._hiddenLeafletGrid === minimap.grid) minimap.layerGroup.addLayer(minimap.grid);
+        this._hiddenLeafletGrid = null;
+        minimap.invalidateSize({ pan: false });
+        const { center, zoom, minZoom, maxBounds, maxBoundsViscosity } = this._leafletSavedView;
+        minimap.setMaxBounds(maxBounds ?? null);
+        minimap.options.maxBoundsViscosity = maxBoundsViscosity;
+        minimap.setView(center, zoom, { animate: false });
+        minimap.setMinZoom(minZoom);
+        this._repositionLeafletMarkers(minimap);
+    }
+
+
+    /**
+     * Leaflet lat/lng for a world X/Z position - the inverse of _latLngToWorldXZ().
+     * @param {number} x
+     * @param {number} z
+     * @param {object} minimap - SquadMinimap instance
+     * @returns {[number, number]}
+     */
+    _worldToLatLng(x, z, minimap) {
+        const half = this.terrainSize / 2;
+        return [-(z + half) * minimap.gameToMapScaleY, (x + half) * minimap.gameToMapScale];
     }
 
 
@@ -1182,6 +1558,17 @@ export default class Squad3DSimulation {
         this.arcsVisible = visible;
         localStorage.setItem(STORAGE_KEYS.arcsVisible, visible ? "1" : "0");
         this.arcGroup.visible = visible;
+    }
+
+
+    /**
+     * Shows/hides the weapon, target and right-click map markers (see _drawMarkers()).
+     * @param {boolean} visible
+     */
+    _setMarkersVisible(visible) {
+        this.markersVisible = visible;
+        localStorage.setItem(STORAGE_KEYS.markersVisible, visible ? "1" : "0");
+        this.markerGroup.visible = visible;
     }
 
 
@@ -1218,6 +1605,18 @@ export default class Squad3DSimulation {
         this.crosshairVisible = visible;
         localStorage.setItem(STORAGE_KEYS.crosshairVisible, visible ? "1" : "0");
         this._updateCrosshairVisibility();
+    }
+
+
+    /**
+     * Shows/hides the bottom-left keyboard/mouse controls panel - flying or on the
+     * settings card alike, but never in touch (orbit) mode, which has none of them.
+     * @param {boolean} visible
+     */
+    _setControlsVisible(visible) {
+        this.controlsVisible = visible;
+        localStorage.setItem(STORAGE_KEYS.controlsVisible, visible ? "1" : "0");
+        this.controlsHint.hidden = !visible || this._orbitMode;
     }
 
 
@@ -1763,22 +2162,33 @@ export default class Squad3DSimulation {
 
     /**
      * Loads (and caches) the icon texture for one marker icon URL. Only fetched once
-     * per URL for the simulation's lifetime.
+     * per URL for the simulation's lifetime. SVGs (the right-click map markers) are
+     * rasterized onto a canvas first - about half of them have no width/height
+     * attribute, which Firefox refuses to upload as a WebGL texture directly.
      * @param {string} url
      * @returns {Promise<THREE.Texture>}
      */
     _loadMarkerIconTexture(url) {
         if (!this._markerIconTextures[url]) {
-            this._markerIconTextures[url] = new THREE.TextureLoader().loadAsync(url);
+            this._markerIconTextures[url] = url.endsWith(".svg")
+                ? new THREE.ImageLoader().loadAsync(url).then((image) => {
+                    const canvas = document.createElement("canvas");
+                    canvas.width = canvas.height = SVG_ICON_RASTER_SIZE;
+                    canvas.getContext("2d").drawImage(image, 0, 0, SVG_ICON_RASTER_SIZE, SVG_ICON_RASTER_SIZE);
+                    const texture = new THREE.CanvasTexture(canvas);
+                    texture.colorSpace = THREE.SRGBColorSpace;
+                    return texture;
+                })
+                : new THREE.TextureLoader().loadAsync(url);
         }
         return this._markerIconTextures[url];
     }
 
 
     /**
-     * Places a camera-facing icon sprite for every weapon (mortar/artillery) and target
-     * marker currently placed on the 2D map (minimap.activeWeaponsMarkers /
-     * activeTargetsMarkers), dropped to ground level since a Leaflet-placed marker has
+     * Places a camera-facing icon sprite for every weapon (mortar/artillery), target and
+     * right-click map marker currently placed on the 2D map (minimap.activeWeaponsMarkers /
+     * activeTargetsMarkers / activeMarkers), dropped to ground level since a Leaflet-placed marker has
      * no location_z. Each target also gets a floating elevation/bearing text label,
      * drawn the same way as a flag name (see _createLabelSprite()) - see
      * _targetLabelText(). Snapshot taken once per open()/refresh(), like every other overlay here -
@@ -1788,38 +2198,242 @@ export default class Squad3DSimulation {
      */
     async _drawMarkers(minimap, activeMap) {
         this.markerGroup.clear();
+        // A newer redraw (refresh3DOverlays() fires on every 2D change) may start while this
+        // one awaits a texture - only the latest may keep adding, or sprites get doubled.
+        const drawId = this._markersDrawId = (this._markersDrawId ?? 0) + 1;
 
         const weapons = minimap?.activeWeaponsMarkers?.getLayers() ?? [];
         const markers = [
             ...weapons.map((marker) => ({ marker, size: MARKER_WORLD_SIZE, isTarget: false })),
             ...(minimap?.activeTargetsMarkers?.getLayers() ?? []).map((marker) => ({ marker, size: TARGET_MARKER_WORLD_SIZE, isTarget: true })),
+            ...(minimap?.activeMarkers?.getLayers() ?? []).map((marker) => ({ marker, size: STRAT_MARKER_WORLD_SIZE, isTarget: false, isStrat: true })),
         ];
         const corner0 = activeMap.SDK_data?.minimap?.corner0;
         if (!corner0 || !markers.length) return;
 
-        for (const { marker, size, isTarget } of markers) {
+        for (const { marker, size, isTarget, isStrat } of markers) {
             const { x, z, u, v } = this._markerWorldPosition(marker, minimap, corner0);
             const groundY = this.terrainHeightAt(u, v);
-            const y = groundY + size / 2;
+            const anchor = new THREE.Vector3(x, groundY, z);
 
             const texture = await this._loadMarkerIconTexture(marker.getIcon().options.iconUrl);
 
             // The map (or the view) may have changed while the texture was loading.
-            if (this._lastActiveMap !== activeMap) return;
+            if (this._lastActiveMap !== activeMap || drawId !== this._markersDrawId) return;
 
+            // Anchored at its bottom edge on the ground, so resizing never sinks it.
             const sprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: texture, transparent: true, depthWrite: false }));
+            sprite.center.set(0.5, 0);
+            sprite.position.copy(anchor);
             sprite.scale.set(size, size, 1);
-            sprite.position.set(x, y, z);
+            sprite.onBeforeRender = (renderer, scene, camera) => {
+                const scaled = size * this._markerScaleFactor(anchor, size, camera);
+                sprite.scale.set(scaled, scaled, 1);
+                sprite.updateMatrixWorld();
+            };
+            if (isStrat) sprite.userData.stratMarker = marker; // right-click delete target
             this.markerGroup.add(sprite);
+
+            if (isStrat && marker.icontype === "deployable_fob") {
+                // Same radii/colors as the 2D construction/exclusion circles (squadMarker.js's
+                // squadStratMarker), converted back from map scale to meters.
+                const { circles1Size, circles1Color, circles2Size, circles2Color } = marker.options;
+                const bands = [];
+                if (circles1Size) bands.push(this._createFobRangeBand(x, groundY, z, circles1Size / minimap.gameToMapScale, circles1Color));
+                if (circles2Size) bands.push(this._createFobRangeBand(x, groundY, z, circles2Size / minimap.gameToMapScale, circles2Color || "white", FOB_EXCLUSION_BAND_OPACITY));
+                bands.forEach((band) => this.markerGroup.add(band));
+                sprite.userData.rangeBands = bands; // removed along with the sprite on right-click delete
+            }
+
+            if (!isTarget && !isStrat) {
+                const wall = this._createWeaponRangeWall(marker, minimap, corner0);
+                if (wall) this.markerGroup.add(wall);
+            }
 
             if (!isTarget) continue;
             const text = this._targetLabelText(marker, weapons);
             if (!text) continue;
 
+            // Scales along with its icon (same factor), bottom edge just above the icon's top.
             const label = this._createLabelSprite(text, undefined, TARGET_LABEL_WORLD_HEIGHT);
+            const labelBaseScale = label.scale.clone();
+            label.center.set(0.5, 0);
             label.position.set(x, groundY + size + TARGET_LABEL_CLEARANCE, z);
+            label.onBeforeRender = (renderer, scene, camera) => {
+                const factor = this._markerScaleFactor(anchor, size, camera);
+                label.scale.set(labelBaseScale.x * factor, labelBaseScale.y * factor, 1);
+                label.position.y = groundY + (size + TARGET_LABEL_CLEARANCE) * factor;
+                label.updateMatrixWorld();
+            };
             this.markerGroup.add(label);
         }
+    }
+
+
+    /**
+     * Scale factor (1 = real world size) keeping a marker icon between
+     * MARKER_MIN_SCREEN_PX and MARKER_MAX_SCREEN_PX tall on screen - scaled by
+     * baseSize / MARKER_WORLD_SIZE, so smaller markers keep their size ratio. Computed
+     * each frame from the sprite's onBeforeRender() (see _drawMarkers()).
+     * @param {THREE.Vector3} anchor - the marker's ground position
+     * @param {number} baseSize - the marker's world size (meters)
+     * @param {THREE.PerspectiveCamera} camera
+     * @returns {number}
+     */
+    _markerScaleFactor(anchor, baseSize, camera) {
+        const viewportHeight = this.renderer.domElement.clientHeight;
+        if (!viewportHeight) return 1;
+
+        const distance = camera.position.distanceTo(anchor);
+        const metersPerPixel = (2 * distance * Math.tan(THREE.MathUtils.degToRad(camera.fov) / 2)) / viewportHeight;
+        const ratio = baseSize / MARKER_WORLD_SIZE;
+        const size = THREE.MathUtils.clamp(
+            baseSize,
+            MARKER_MIN_SCREEN_PX * ratio * metersPerPixel,
+            MARKER_MAX_SCREEN_PX * ratio * metersPerPixel
+        );
+        return size / baseSize;
+    }
+
+
+    /**
+     * One FOB range sphere (in-game FOB radii are 3D distances), drawn only where it
+     * meets the ground - see _createGroundBandMaterial().
+     * @param {number} x - world X of the FOB
+     * @param {number} y - world Y of the sphere's center (the FOB's ground height)
+     * @param {number} z - world Z of the FOB
+     * @param {number} radius - meters
+     * @param {string} color - CSS color
+     * @param {number} [opacity] - see _createGroundBandMaterial()
+     * @returns {THREE.Mesh}
+     */
+    _createFobRangeBand(x, y, z, radius, color, opacity = 1) {
+        const mesh = new THREE.Mesh(this._fobSphereGeometry, this._createGroundBandMaterial(color, opacity));
+        mesh.position.set(x, y, z);
+        mesh.scale.setScalar(radius);
+        mesh.raycast = () => {}; // never a right-click delete target - only the FOB sprite is
+        return mesh;
+    }
+
+
+    /**
+     * A weapon's max range outline (the 2D rangeMarker circle, or its terrain-aware
+     * precisionRangeMarker polygon when "realMaxRange" is on) as a vertical wall clipped
+     * to the ground band - see _createGroundBandMaterial(). Unlike a FOB radius, max
+     * range is a horizontal distance, so the wall is straight up rather than a sphere.
+     * @param {object} weapon - a squadWeaponMarker (minimap.activeWeaponsMarkers layer)
+     * @param {object} minimap - SquadMinimap instance
+     * @param {[number, number]} corner0 - activeMap.SDK_data.minimap.corner0
+     * @returns {?THREE.Mesh}
+     */
+    _createWeaponRangeWall(weapon, minimap, corner0) {
+        let points;
+        // Only on the map while "realMaxRange" is on - updateWeapon() removes it otherwise.
+        if (weapon.precisionRangeMarker && minimap.hasLayer(weapon.precisionRangeMarker)) {
+            points = weapon.precisionRangeMarker.getLatLngs()[0]
+                .map(({ lat, lng }) => this._latLngToWorldXZ(lat, lng, minimap, corner0));
+        } else {
+            const radius = weapon.rangeMarker.getRadius() / minimap.gameToMapScale;
+            if (!radius) return null;
+            const { x, z } = this._markerWorldPosition(weapon, minimap, corner0);
+            const segments = 256;
+            points = Array.from({ length: segments }, (_, i) => {
+                const angle = (i / segments) * Math.PI * 2;
+                return { x: x + radius * Math.cos(angle), z: z + radius * Math.sin(angle) };
+            });
+        }
+        if (points.length < 3) return null;
+
+        // Tall enough to cross the ground anywhere on the map; the shader keeps only the band.
+        const bottom = this._terrainMinY - GROUND_BAND_DEPTH;
+        const top = this._terrainMaxY + GROUND_BAND_HEIGHT;
+        const positions = [];
+        for (const { x, z } of points) positions.push(x, bottom, z, x, top, z);
+        const indices = [];
+        for (let i = 0; i < points.length; i++) {
+            const a = i * 2;
+            const b = ((i + 1) % points.length) * 2;
+            indices.push(a, b, a + 1, a + 1, b, b + 1);
+        }
+        const geometry = new THREE.BufferGeometry();
+        geometry.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
+        geometry.setIndex(indices);
+
+        const mesh = new THREE.Mesh(geometry, this._createGroundBandMaterial(weapon.maxDistCircleOn.color));
+        mesh.raycast = () => {};
+        return mesh;
+    }
+
+
+    /**
+     * Material that only draws a mesh where it passes near the ground: the fragment
+     * shader samples the terrain height under each fragment (same grid as the terrain
+     * mesh, bilinear like its triangles) and discards everything outside
+     * [-GROUND_BAND_DEPTH, GROUND_BAND_HEIGHT] meters around it, leaving a wall that
+     * follows the mesh/terrain intersection and fades out upward.
+     * @param {string} color - CSS color
+     * @param {number} [opacity] - multiplier on the band's whole alpha
+     * @returns {THREE.ShaderMaterial}
+     */
+    _createGroundBandMaterial(color, opacity = 1) {
+        return new THREE.ShaderMaterial({
+            uniforms: {
+                ...this._terrainHeightUniforms,
+                uColor: { value: new THREE.Color(color) },
+                uOpacity: { value: opacity },
+                uBandHeight: { value: GROUND_BAND_HEIGHT },
+                uBandDepth: { value: GROUND_BAND_DEPTH },
+            },
+            vertexShader: /* glsl */ `
+                varying vec3 vWorldPos;
+                void main() {
+                    vec4 worldPos = modelMatrix * vec4(position, 1.0);
+                    vWorldPos = worldPos.xyz;
+                    gl_Position = projectionMatrix * viewMatrix * worldPos;
+                }
+            `,
+            fragmentShader: /* glsl */ `
+                uniform sampler2D uHeightMap;
+                uniform float uGridRes;
+                uniform float uTerrainSize;
+                uniform vec3 uColor;
+                uniform float uBandHeight;
+                uniform float uBandDepth;
+                uniform float uOpacity;
+                varying vec3 vWorldPos;
+
+                float heightAt(ivec2 cell) {
+                    return texelFetch(uHeightMap, cell, 0).r;
+                }
+
+                // Same (u, v) mapping as terrainHeightAt(), bilinear between grid vertices.
+                float terrainHeight(vec2 xz) {
+                    float last = uGridRes - 1.0;
+                    vec2 grid = clamp((xz / uTerrainSize + 0.5) * last, 0.0, last);
+                    ivec2 c0 = ivec2(floor(grid));
+                    ivec2 c1 = min(c0 + 1, ivec2(int(last)));
+                    vec2 f = grid - vec2(c0);
+                    float top = mix(heightAt(c0), heightAt(ivec2(c1.x, c0.y)), f.x);
+                    float bottom = mix(heightAt(ivec2(c0.x, c1.y)), heightAt(c1), f.x);
+                    return mix(top, bottom, f.y);
+                }
+
+                void main() {
+                    float aboveGround = vWorldPos.y - terrainHeight(vWorldPos.xz);
+                    if (aboveGround < -uBandDepth || aboveGround > uBandHeight) discard;
+
+                    float t = clamp(aboveGround / uBandHeight, 0.0, 1.0);
+                    float wall = 0.35 * (1.0 - t) * (1.0 - t);
+                    float groundLine = 0.5 * (1.0 - smoothstep(0.0, 1.5, abs(aboveGround)));
+                    gl_FragColor = vec4(uColor, (wall + groundLine) * uOpacity);
+                    #include <colorspace_fragment>
+                }
+            `,
+            transparent: true,
+            depthWrite: false,
+            side: THREE.DoubleSide,
+            toneMapped: false,
+        });
     }
 
 
@@ -2076,6 +2690,58 @@ export default class Squad3DSimulation {
 
 
     /**
+     * The left-click ground marker: a billboarded eye icon (THREE.Sprite always faces the
+     * camera) kept at a fixed on-screen size whatever its distance, and drawn on top of
+     * everything. Lives in this.clickMarker, which is moved to each new click - see
+     * _setupFlyControls().
+     * @returns {THREE.Sprite}
+     */
+    _createClickMarker() {
+        const texture = new THREE.TextureLoader().load(CLICK_MARKER_ICON_URL);
+        texture.colorSpace = THREE.SRGBColorSpace;
+        const material = new THREE.SpriteMaterial({
+            map: texture,
+            sizeAttenuation: false,
+            depthTest: false,
+            depthWrite: false,
+        });
+        const sprite = new THREE.Sprite(material);
+        sprite.scale.set(CLICK_MARKER_SCREEN_SIZE, CLICK_MARKER_SCREEN_SIZE, 1);
+        sprite.renderOrder = 999;
+        return sprite;
+    }
+
+
+    /**
+     * Replaces the click marker's distance label (disposing the previous one's canvas
+     * texture), drawn like a flag label but at a fixed on-screen size and anchored just
+     * above the ring.
+     * @param {number} distance - meters, rounded for display
+     */
+    _setClickMarkerLabel(distance) {
+        this._clickLabelDistance = Math.round(distance);
+        const text = `${this._clickLabelDistance}m`;
+        if (this.clickMarkerLabel) {
+            this.clickMarker.remove(this.clickMarkerLabel);
+            this.clickMarkerLabel.material.map.dispose();
+            this.clickMarkerLabel.material.dispose();
+        }
+
+        const label = this._createLabelSprite(text);
+        const aspect = label.scale.x / label.scale.y;
+        label.material.sizeAttenuation = false;
+        label.scale.set(CLICK_LABEL_SCREEN_HEIGHT * aspect, CLICK_LABEL_SCREEN_HEIGHT, 1);
+        // Sprite.center shifts the sprite in its own (screen-facing) plane, so the label's
+        // bottom edge sits at the ring's top edge at any distance or viewing angle.
+        label.center.set(0.5, -(CLICK_MARKER_SCREEN_SIZE / 2) / CLICK_LABEL_SCREEN_HEIGHT);
+        label.renderOrder = 999;
+
+        this.clickMarkerLabel = label;
+        this.clickMarker.add(label);
+    }
+
+
+    /**
      * A billboarded text label (always faces the camera - THREE.Sprite's default behavior)
      * for a flag name or a target's elevation/bearing (see _targetLabelText()), rendered
      * on top of everything so distance/terrain never occludes it. `text` may hold several
@@ -2161,22 +2827,140 @@ export default class Squad3DSimulation {
 
 
     /**
-     * Moves the minimap arrow to the camera's current position (the same normalized
-     * (u, v) fraction terrainHeightAt() takes) and points it where the camera is facing.
+     * Distance along a ray to where it first meets the ground, from terrainHeightAt()
+     * samples: steps one grid cell at a time until the ray dips below the terrain, then
+     * bisects that last step. Ignores trees/props, so it's the ground under them.
+     * @param {THREE.Ray} ray - world-space, normalized direction
+     * @returns {number|null} meters, or null if the ray leaves the map without hitting
+     */
+    _rayTerrainDistance(ray) {
+        if (!this.heights || !this.terrainSize) return null;
+
+        const step = this.terrainSize / (this.gridResolution - 1);
+        const maxDistance = this.terrainSize * 2; // farther than any in-map point from any in-map camera
+        const isBelowGround = (distance) => {
+            ray.at(distance, _rayPoint);
+            const u = _rayPoint.x / this.terrainSize + 0.5;
+            const v = _rayPoint.z / this.terrainSize + 0.5;
+            if (u < 0 || u > 1 || v < 0 || v > 1) return false;
+            return _rayPoint.y <= this.terrainHeightAt(u, v);
+        };
+
+        let previous = 0;
+        for (let distance = step; distance <= maxDistance; distance += step) {
+            if (!isBelowGround(distance)) {
+                previous = distance;
+                continue;
+            }
+            // Bisect the crossing down to well under a meter.
+            let low = previous;
+            let high = distance;
+            for (let i = 0; i < 12; i++) {
+                const mid = (low + high) / 2;
+                if (isBelowGround(mid)) high = mid;
+                else low = mid;
+            }
+            return high;
+        }
+        return null;
+    }
+
+
+    /**
+     * Distance along the click ray (this._raycaster.ray) to the nearest visible building
+     * or tree closer than `far`. InstancedMeshes (trees/bushes, trees.bin's generic
+     * building placeholders) go through three.js's own raycast, which rejects each
+     * instance off its bounding sphere before any triangle test; props.bin's merged
+     * meshes go through _rayPropsMeshDistance().
+     * @param {number} far - meters; the ground distance, so nothing behind it is tested
+     * @returns {number|null} meters, or null if nothing is hit before `far`
+     */
+    _rayObjectDistance(far) {
+        const groups = [this.propsGroup, this.treesGroup].filter((group) => group.visible);
+        let nearest = far;
+
+        this._raycaster.far = far;
+        const instanced = groups.flatMap((group) => group.children.filter((child) => child.isInstancedMesh));
+        const hit = this._raycaster.intersectObjects(instanced, false)[0];
+        this._raycaster.far = Infinity;
+        if (hit) nearest = hit.distance;
+
+        for (const group of groups) {
+            for (const mesh of group.children) {
+                if (mesh.userData.parts) nearest = this._rayPropsMeshDistance(mesh, nearest);
+            }
+        }
+        return nearest < far ? nearest : null;
+    }
+
+
+    /**
+     * Click-ray test against one of props.bin's merged category meshes: checks each
+     * part's bounding box first (see loadProps()), then only the triangles of the parts
+     * whose box the ray crosses closer than the current nearest hit.
+     * @param {THREE.Mesh} mesh - with userData.parts
+     * @param {number} nearest - meters; the closest hit so far
+     * @returns {number} the new closest hit distance (unchanged if this mesh is behind it)
+     */
+    _rayPropsMeshDistance(mesh, nearest) {
+        // The props group is only translated (see _loadPropsAndTrees()), so distances
+        // along the local-space ray match world-space ones.
+        _localRay.copy(this._raycaster.ray).applyMatrix4(_inverseMatrix.copy(mesh.matrixWorld).invert());
+        const index = mesh.geometry.index;
+        const position = mesh.geometry.attributes.position;
+
+        for (const { box, start, count } of mesh.userData.parts) {
+            if (!_localRay.intersectBox(box, _hitPoint)) continue;
+            if (_hitPoint.distanceTo(_localRay.origin) >= nearest) continue;
+
+            for (let i = start; i < start + count; i += 3) {
+                _triA.fromBufferAttribute(position, index.getX(i));
+                _triB.fromBufferAttribute(position, index.getX(i + 1));
+                _triC.fromBufferAttribute(position, index.getX(i + 2));
+                if (!_localRay.intersectTriangle(_triA, _triB, _triC, false, _hitPoint)) continue;
+                const distance = _hitPoint.distanceTo(_localRay.origin);
+                if (distance < nearest) nearest = distance;
+            }
+        }
+        return nearest;
+    }
+
+
+    /**
+     * Moves the minimap's camera arrow (a Leaflet marker on the 2D map - see
+     * _attachLeafletMinimap()) to the camera's current position, kept on the map, and
+     * points it where the camera is facing.
      */
     _updateMinimapDot() {
-        if (!this.terrainSize) return;
-        const u = THREE.MathUtils.clamp(this.camera.position.x / this.terrainSize + 0.5, 0, 1);
-        const v = THREE.MathUtils.clamp(this.camera.position.z / this.terrainSize + 0.5, 0, 1);
-        this.minimapDot.style.left = `${u * 100}%`;
-        this.minimapDot.style.top = `${v * 100}%`;
+        const minimap = this._leafletMinimap;
+        if (!minimap || !this.terrainSize) return;
+        const half = this.terrainSize / 2;
+        const x = THREE.MathUtils.clamp(this.camera.position.x, -half, half);
+        const z = THREE.MathUtils.clamp(this.camera.position.z, -half, half);
+        this._minimapCameraMarker.setLatLng(this._worldToLatLng(x, z, minimap));
 
-        // Heading clockwise from north (-Z, the minimap's "up"). camera.webp's own artwork
+        // Heading clockwise from north (-Z, the minimap's "up"). freecam.webp's own artwork
         // faces right (east) at 0deg rotation rather than up, so it needs a -90deg
         // correction to point up (i.e. north) when heading is 0.
         this.camera.getWorldDirection(this._minimapForward);
         const heading = THREE.MathUtils.radToDeg(Math.atan2(this._minimapForward.x, -this._minimapForward.z));
-        this.minimapDot.style.transform = `translate(-50%, -50%) rotate(${heading - 90}deg)`;
+        const arrow = this._minimapCameraMarker.getElement()?.firstElementChild;
+        if (arrow) arrow.style.transform = `translate(-50%, -50%) rotate(${heading - 90}deg)`;
+    }
+
+
+    /**
+     * Mirrors the left-click eye marker onto the minimap (icon only, no distance).
+     * The marker only moves on click, so this runs then rather than every frame.
+     */
+    _updateMinimapClickMarker() {
+        const minimap = this._leafletMinimap;
+        if (!minimap || !this.clickMarker.visible || !this.terrainSize) {
+            this._minimapClickMarker.remove();
+            return;
+        }
+        const { x, z } = this.clickMarker.position;
+        this._minimapClickMarker.setLatLng(this._worldToLatLng(x, z, minimap)).addTo(minimap);
     }
 
 
@@ -2212,6 +2996,7 @@ export default class Squad3DSimulation {
         this.camera.aspect = width / height;
         this.camera.updateProjectionMatrix();
         this.renderer.setSize(width, height);
+        this._fitLeafletMinimap(); // its box is sized in vmin
     }
 
 
@@ -2226,13 +3011,53 @@ export default class Squad3DSimulation {
 
             // OrbitControls owns the camera entirely (touch drag/pinch) and needs its own
             // per-frame update() for damping inertia - no WASD fly movement to apply.
-            if (this._orbitMode) this.controls.update();
-            else this._updateFlyMovement(delta);
+            if (this._orbitMode) {
+                this.controls.update();
+                this._keepOrbitTargetOnGround();
+            } else {
+                this._updateFlyMovement(delta);
+            }
             this._updateMinimapDot();
+            this._updateClickMarkerDistance(delta);
             this._updateFpsCounter(delta);
             this.renderer.render(this.scene, this.camera);
         };
         renderFrame();
+    }
+
+
+    /**
+     * Orbit mode: pinch-zoom dollies towards controls.target and stops minDistance short
+     * of it, so a target left floating above the terrain (panning over a valley, a spawn
+     * target set above the ground) blocks zooming all the way down. Snaps the target onto
+     * the ground under it every frame, shifting the camera by the same amount so the view
+     * doesn't jump.
+     */
+    _keepOrbitTargetOnGround() {
+        if (!this.heights || !this.terrainSize) return;
+        const target = this.controls.target;
+        const groundY = this.terrainHeightAt(target.x / this.terrainSize + 0.5, target.z / this.terrainSize + 0.5);
+        const offsetY = groundY - target.y;
+        if (Math.abs(offsetY) < 0.01) return;
+        target.y += offsetY;
+        this.camera.position.y += offsetY;
+    }
+
+
+    /**
+     * Keeps the click marker's label at the camera's current distance while it moves -
+     * checked at most every CLICK_LABEL_UPDATE_INTERVAL, and the label is only redrawn
+     * when the rounded value actually changed, so a still camera costs nothing.
+     * @param {number} delta - seconds since the last frame
+     */
+    _updateClickMarkerDistance(delta) {
+        if (!this.clickMarker.visible) return;
+        this._clickLabelAccumTime += delta;
+        if (this._clickLabelAccumTime < CLICK_LABEL_UPDATE_INTERVAL) return;
+        this._clickLabelAccumTime = 0;
+
+        const distance = this.camera.position.distanceTo(this.clickMarker.position);
+        if (Math.round(distance) !== this._clickLabelDistance) this._setClickMarkerLabel(distance);
     }
 
 

@@ -2,7 +2,7 @@
 
 #helpDialog {
     width: 94%;
-    height: 625px;
+    height: 650px;
     max-width: 600px;
     font-size: 0.6em;
     font-weight: bold;
@@ -134,6 +134,15 @@
                 text-shadow: 0 0 4px #ffffff75;
             }
         }
+        .themeFontSettings {
+            // Always default font, even with the seasonal theme font on
+            --main-font: montserrat;
+            font-family: montserrat, Times, "Times New Roman", serif;
+            font-synthesis: initial;
+            .toggleCheckbox {
+                color: variables.$mainColor;
+            }
+        }
         caption {
             margin: 0 0 10px;
             color: variables.$mainTxtColor;
@@ -218,6 +227,12 @@
                 fill: #fff;
                 pointer-events: none;
             }
+            &.mapBtnToggle-3d {
+                color: #fff;
+                font-size: 0.85em;
+                font-weight: 700;
+                letter-spacing: 0.02em;
+            }
             &.active {
                 background-color: variables.$mainColor;
                 border-color: variables.$mainColor;
@@ -229,6 +244,7 @@
             &:focus {
                 outline: none;
             }
+
             @media (hover: hover) {
                 &:hover {
                     opacity: 1;
@@ -358,7 +374,7 @@ $bezier: cubic-bezier(0.65, 0.25, 0.56, 0.96);
         height: 1px;
         width: 1px;
         overflow: hidden;
-        clip: rect(1px, 1px, 1px, 1px);
+        clip-path: inset(50%);
     }
     input[type="checkbox"] + span,
     input[type="radio"] + span {

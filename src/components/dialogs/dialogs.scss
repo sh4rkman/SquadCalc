@@ -1,8 +1,6 @@
 @use '../shared/variables';
 
 dialog, #threeDView {
-    // #threeDView is a plain <div> (not a modal dialog, so the header can sit on top of it)
-    // but still shares the dialogs' base look - font size, colors, etc.
     width: calc(100% - 10%);
     text-align: left;
     border-radius: 10px;
@@ -15,6 +13,10 @@ dialog, #threeDView {
     max-width: 700px;
     overflow: visible;
     &#changelogDialog {
+        // Always default font, even with the seasonal theme font on
+        --main-font: montserrat;
+        font-family: montserrat, Times, "Times New Roman", serif;
+        font-synthesis: initial;
         background: variables.$mainBGColor;
         backdrop-filter: none;
         &::backdrop { background: transparent; }
@@ -281,7 +283,7 @@ dialog, #threeDView {
             flex-direction: column;
             align-items: stretch;
             gap: 0.9em;
-            width: 520px;
+            min-width: 360px; // sized to its content otherwise - varies with the language
             max-width: 100%;
             background: rgba(20, 20, 24, 0.82);
             backdrop-filter: blur(10px);
@@ -294,22 +296,44 @@ dialog, #threeDView {
             h3 {
                 margin: 0;
                 padding: 0;
-                font-size: 1.3em;
+                font-size: 1.8em;
                 letter-spacing: 0.02em;
             }
             p { margin: 0; }
         }
+        // Phones (incl. landscape): a centered card ends up under the header's map/layer/
+        // server selectors, so it's pinned to the bottom edge, full width, instead -
+        // capped in height and scrollable so it never reaches the selectors.
+        @media (width < 48em), (height < 36em) {
+            .threeDOverlayCard {
+                position: absolute;
+                right: 0;
+                bottom: 0;
+                left: 0;
+                width: auto;
+                min-width: 0;
+                max-height: 70%;
+                overflow-y: auto;
+                box-sizing: border-box;
+                border-width: 1px 0 0;
+                border-radius: 0;
+                padding: 1.2em 1em;
+                // The height cap would otherwise make the flex column shrink its children
+                // (buttons included) to fit, instead of scrolling.
+                > * { flex-shrink: 0; }
+            }
+            .threeDGoButton, .threeDShareButton, .threeDQuitButton {
+                min-height: 44px; // comfortable touch target
+            }
+        }
         .threeDOverlaySubtitle {
             margin-top: -0.8em;
-            padding-bottom: 0.5em;
-            font-size: 0.95em;
+            padding-bottom: 1.1em;
+            // same separator as above the selects (.threeDOverlaySelects) - 0.23 here
+            // since the opacity below fades the border too (0.23 * 0.65 ≈ 0.15)
+            border-bottom: 1px solid rgba(255, 255, 255, 0.23);
+            font-size: 1.2em;
             opacity: 0.65;
-        }
-        .threeDOverlayDivider {
-            width: 100%;
-            border: none;
-            border-top: 1px solid rgba(255, 255, 255, 0.15);
-            margin: 0;
         }
         .threeDLoading {
             position: absolute;
@@ -335,19 +359,32 @@ dialog, #threeDView {
             border-radius: 50%;
             animation: three-d-loading-spin 0.9s linear infinite;
         }
-        .threeDOverlayHint {
+        // Key bindings panel, bottom-left - above .threeDOverlay (z-index 2) so it stays
+        // readable while the settings card is open too.
+        .threeDControlsHint {
+            position: absolute;
+            left: 1em;
+            bottom: 1em;
+            z-index: 3;
             display: grid;
             grid-template-columns: auto auto;
-            align-self: center;
             place-items: center start;
-            gap: 0.5em 0.8em;
+            gap: 0.35em 0.7em;
+            padding: 0.6em 0.8em;
+            border-radius: 6px;
+            background: rgba(0, 0, 0, 0.35);
+            color: rgba(255, 255, 255, 0.85);
             font-size: 1em;
-            opacity: 0.75;
-            // Hidden on touch (desktop-only keyboard/scroll hints) - the class's own
-            // unconditional `display: grid` above would otherwise beat the UA [hidden] rule.
+            pointer-events: none;
+            // the class's own `display: grid` above would otherwise beat the UA [hidden] rule
             &[hidden] { display: none; }
         }
-        .threeDOverlayHintKey {
+        // Drag-look mode shows the back-to-menu button in that corner - sit above it
+        // (44px + its 1em offset) instead.
+        .threeDViewport:has(.threeDMenuButton:not([hidden])) .threeDControlsHint {
+            bottom: calc(1em + 44px + 0.6em);
+        }
+        .threeDControlsHintKey {
             justify-self: end;
             display: flex;
             gap: 0.2em;
@@ -364,20 +401,18 @@ dialog, #threeDView {
             flex-direction: column;
             gap: 1.1em;
         }
-        // Two columns of checkboxes, then the two selects side by side on their own row -
-        // single column again on narrow screens.
+        // Two columns of checkboxes, then the two selects side by side on their own row.
         .threeDOverlayToggles, .threeDOverlaySelects {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 0.7em 2em;
-
-            @media (width < 36em) {
-                grid-template-columns: 1fr;
-            }
         }
         .threeDOverlaySelects {
             padding-top: 1.1em;
             border-top: 1px solid rgba(255, 255, 255, 0.15);
+            // A lone select spans both columns - in one 1fr column it would force an
+            // equally wide empty second column, widening the whole card.
+            > :only-child { grid-column: 1 / -1; }
         }
         .threeDOverlayOption {
             display: flex;
@@ -386,17 +421,33 @@ dialog, #threeDView {
             gap: 0.8em;
             height: 22px;
             cursor: pointer;
-            select {
+            &.disabled { // Controls on touch - nothing to show there
+                opacity: 0.4;
+                cursor: default;
+                input { cursor: default; }
+            }
+            // The select itself is replaced by select2 (see squad3DSimulation.js) - this
+            // styles its closed box; the open list is .threeDSelectDropdown below.
+            .select2-container--default .select2-selection--single {
                 box-sizing: border-box;
                 height: 22px;
-                width: 8em;
                 background: rgba(255, 255, 255, 0.1);
-                color: variables.$mainTxtColor;
                 border: 1px solid rgba(255, 255, 255, 0.25);
                 border-radius: 4px;
-                padding: 0 0.6em;
                 font-size: 0.95em;
-                cursor: pointer;
+                .select2-selection__rendered {
+                    padding-left: 0.6em;
+                    line-height: 20px;
+                    text-align: left;
+                    text-transform: none;
+                }
+                .select2-selection__arrow {
+                    height: 20px;
+                    b { border-top-color: variables.$mainTxtColor; }
+                }
+            }
+            .select2-container--default.select2-container--open .select2-selection__arrow b {
+                border-color: transparent transparent variables.$mainTxtColor;
             }
             input[type="checkbox"] {
                 width: 22px;
@@ -405,6 +456,13 @@ dialog, #threeDView {
                 cursor: pointer;
                 accent-color: variables.$mainColor;
             }
+        }
+        .threeDSelectDropdown {
+            background: rgb(30, 30, 34);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            color: variables.$mainTxtColor;
+            font-size: 0.95em;
+            text-align: left;
         }
         .threeDGoButton, .threeDShareButton, .threeDQuitButton {
             // border-box + shared height, padding reset to 0 (a bare button has its own
@@ -454,32 +512,38 @@ dialog, #threeDView {
             font-size: 1em;
             pointer-events: none;
             z-index: 1;
-            @include variables.light-text-outline;
 
+            @include variables.light-text-outline;
             .threeDFpsUnit {
                 margin-left: 0.15em;
                 font-size: 0.7em;
             }
         }
-        // Drag-look fallback only (see _setDragFlying()) - with no pointer lock, the
-        // browser may spend Esc on something else (the Steam overlay closes on it).
+        // Drag-look fallback and touch/orbit mode only (see _backToMenu()) - with no pointer
+        // lock, the browser may spend Esc on something else (the Steam overlay closes on it),
+        // and touch has no Esc at all. Bottom left keeps it clear of the header selectors.
         .threeDMenuButton {
-            position: absolute;
-            top: 0.8em;
-            left: 50%;
-            transform: translateX(-50%);
+            position: fixed;
+            left: 1em;
+            bottom: 1em;
             z-index: 1;
-            padding: 0.6em 1.6em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 44px;
+            height: 44px;
+            padding: 0;
             border: 1px solid rgba(255, 255, 255, 0.25);
-            border-radius: 8px;
+            border-radius: 50%;
             background: rgba(0, 0, 0, 0.55);
-            color: #fff;
-            font-size: 1.15em;
-            font-weight: 600;
-            letter-spacing: 0.03em;
-            text-transform: uppercase;
             cursor: pointer;
             transition: background-color 0.15s ease;
+            &[hidden] { display: none; } // display: flex above would override the attribute
+            svg {
+                width: 18px;
+                height: 18px;
+                fill: #fff;
+            }
 
             @media (hover: hover) {
                 &:hover { background: rgba(0, 0, 0, 0.75); }
@@ -560,34 +624,7 @@ dialog, #threeDView {
             font-size: 1.15em;
             min-width: 4ch;
             text-align: right;
-        }
-        .threeDMinimap {
-            position: absolute;
-            right: 1em;
-            bottom: 1em;
-            width: 280px;
-            height: 280px;
-            border: 2px solid rgba(255, 255, 255, 0.4);
-            border-radius: 6px;
-            overflow: hidden;
-            background: rgba(0, 0, 0, 0.4);
-        }
-        .threeDMinimapImage {
-            display: block;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        .threeDMinimapDot {
-            position: absolute;
-            left: 50%;
-            top: 50%;
-            width: 22px;
-            height: 22px;
-            filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.9));
-            transform: translate(-50%, -50%);
-        }
-    }
+        }    }
     &#weaponInformation {
         max-width: 350px;
         .moveToRow {

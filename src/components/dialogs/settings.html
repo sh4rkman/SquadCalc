@@ -59,6 +59,26 @@
     <div id="panel1" class="panel active">
          
       <table class="userSettings">
+          <tbody>
+              <tr class="themeFontSettings">
+                  <td>
+                      <label class="mcui-checkbox">
+                          <input id="themeFontSettings" type="checkbox">
+                          <span>
+                            <svg class="mcui-check" viewBox="-2 -2 35 35" aria-hidden="true">
+                              <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
+                            </svg>
+                          </span>
+                        </label>
+                  </td>
+                  <td>
+                    <span data-i18n="settings:disableThemeFont" class="toggleCheckbox"></span>
+                  </td>
+              </tr>
+          </tbody>
+      </table>
+
+      <table class="userSettings">
           <caption data-i18n="settings:mapOptions"></caption>
           <tbody>
 
@@ -140,6 +160,8 @@
               <button type="button" class="mapBtnToggle active" data-key="settings-btn-hd" title="HD Images">
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path d="M0 96C0 60.7 28.7 32 64 32l448 0c35.3 0 64 28.7 64 64l0 320c0 35.3-28.7 64-64 64L64 480c-35.3 0-64-28.7-64-64L0 96zm304 88l0 144c0 13.3 10.7 24 24 24l56 0c53 0 96-43 96-96s-43-96-96-96l-56 0c-13.3 0-24 10.7-24 24zm80 24c26.5 0 48 21.5 48 48s-21.5 48-48 48l-32 0 0-96 32 0zM160 184c0-13.3-10.7-24-24-24s-24 10.7-24 24l0 72 0 72c0 13.3 10.7 24 24 24s24-10.7 24-24l0-48 64 0 0 48c0 13.3 10.7 24 24 24s24-10.7 24-24l0-72 0-72c0-13.3-10.7-24-24-24s-24 10.7-24 24l0 48-64 0 0-48z"/></svg>
               </button>
+
+              <button type="button" class="mapBtnToggle mapBtnToggle-3d active" data-key="settings-btn-3d" title="3D View">3D</button>
 
               <button type="button" class="mapBtnToggle active" data-key="settings-btn-layer-info" title="Layer Info">
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM216 336l24 0 0-64-24 0c-13.3 0-24-10.7-24-24s10.7-24 24-24l48 0c13.3 0 24 10.7 24 24l0 88 8 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-80 0c-13.3 0-24-10.7-24-24s10.7-24 24-24zm40-208a32 32 0 1 1 0 64 32 32 0 1 1 0-64z"/></svg>

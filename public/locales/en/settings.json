@@ -11,6 +11,7 @@
         "mapAnimationSettings": "Pan/Zoom Animations",
         "highquality": "Very High quality maps",
         "contextMenu": "Custom markers on right click",
+        "disableThemeFont": "Disable Halloween font",
         "gridOpacity": "Grid Opacity",
         "zoomSensitivity": "Zoom Sensitivity",
         "fontSize": "Font Size",
