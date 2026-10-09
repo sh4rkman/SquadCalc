@@ -45,29 +45,39 @@
 }
 
 .btn-pin {
-    color: #111;
-    background-color: white;
+    // Pin/unpin icon button, sits next to each team's unit picker
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: clamp(22px, 7vw, 32px);
+    height: clamp(34px, 11vw, 50px); // matches .unit-picker-btn
+    padding: 0;
+    border: none;
+    border-radius: 3px;
+    background-color: #111;
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.2);
     cursor: pointer;
-    text-align: center;
-    padding: 0.65em 1.2em;
-    font-size: 1em;
-    font-weight: bold;
-    margin: 0.5em auto;
-    width: 80%;
-    max-width: 200px;
-
-    @media screen and (width <= 35em) {
-        font-size: 1em;
-        padding: 0.75em 1em;
-    }
     transition: background-color 0.2s ease;
+    svg {
+        width: 40%;
+        height: 40%;
+        fill: #ccc;
+        transform: rotate(45deg);
+        transition: transform 0.2s ease, fill 0.2s ease;
+    }
     &:hover {
-        background-color: #e0e0e0;
+        background-color: #2a2a2a;
+        svg {
+            fill: white;
+        }
     }
     &.active {
         background-color: variables.$mainColor;
-        color: white;
-        text-transform: uppercase;
+        svg {
+            fill: white;
+            transform: none;
+        }
         &:hover {
             background-color: color.adjust(variables.$mainColor, $lightness: -8%);
         }
@@ -76,7 +86,7 @@
         cursor: not-allowed;
         opacity: 0.4;
         &:hover {
-            background-color: white;
+            background-color: #111;
         }
     }
 }
@@ -207,7 +217,7 @@
         .team-selectors {
             display: flex;
             flex-direction: row;
-            gap: clamp(0.35em, 1.5vw, 1em);
+            gap: 0.75em;
             justify-content: center;
             align-items: center;
             margin: 0.4em 0;
