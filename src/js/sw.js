@@ -55,6 +55,26 @@ registerRoute(
 );
 
 
+// Cache 3D assets (landscape.png, props.json/.bin, trees.json/.bin) for 30 days with
+// StaleWhileRevalidate. Must stay registered before the /api/ NetworkOnly route below,
+// which these URLs would otherwise match first. Each map's json/bin pairs share this
+// one cache and strategy, so they're served and revalidated together; a 404 (e.g. a
+// map without a landscape.png export) isn't cached.
+registerRoute(
+    ({ url }) => url.pathname.includes("/maps/") && url.pathname.includes("/3d/"),
+    new StaleWhileRevalidate ({
+        cacheName: "map-3d",
+        plugins: [
+            new ExpirationPlugin({
+                maxEntries: 150, // 5 files per map
+                maxAgeSeconds: 60 * 60 * 24 * 30, // 30 days
+                purgeOnQuotaError: true,
+            }),
+        ],
+    })
+);
+
+
 // Block all OTHER API requests from being cached
 registerRoute(
     ({ url }) => url.pathname.startsWith("/api/"),
