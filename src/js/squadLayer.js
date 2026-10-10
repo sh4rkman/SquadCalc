@@ -9,6 +9,7 @@ import { Curve } from "./libs/leaflet-curve.js";
 import { squadSpawnGroup } from "./squadSpawnGroup.js";
 import { squadCameraActor } from "./squadCameraActor.js";
 import { SquadVehicleSpawner } from "./squadVehicleSpawner.js";
+import { squadDeployableMarker } from "./squadDeployableMarker.js";
 import SquadLaneSolver from "./squadLaneSolver.js";
 
 export default class SquadLayer {
@@ -665,44 +666,22 @@ export default class SquadLayer {
      */
     createDeployables() {
 
-        let assetsMarkerParams = {
-            interactive: false,
-            keyboard: false,
-            zIndexOffset: -1000,
-            opacity: 0,
+        // Data icon names that don't match a file in /img/icons/default/deployables/
+        const ICON_ALIASES = {
+            "inventory_category_repair": "deployable_repairstation",
         };
 
         this.layerData.assets.deployables.forEach((asset) => {
+            if (!asset.icon) return;
 
+            const icon = ICON_ALIASES[asset.icon] ?? asset.icon;
             const latlng = this.convertToLatLng(asset.location_x, asset.location_y);
 
-            if (asset.type === "Repair Station") {
-                let marker = new Marker(latlng, {
-                    ...assetsMarkerParams,
-                    icon: new DivIcon({
-                        className: "deployables",
-                        iconSize: [30, 30]
-                    })
-                }).addTo(this.activeLayerMarkers);
-                const iconElement = marker.getElement();
-                iconElement.style.backgroundImage = "url('/img/icons/default/deployables/deployable_repairstation.svg')";
-                this.mainZones.assets.push(marker);
-            }
+            const marker = new squadDeployableMarker(latlng, asset, icon).addTo(this.activeLayerMarkers);
+            this.mainZones.assets.push(marker);
 
-            if (asset.type === "Ammo Crate") {
-                let marker = new Marker(latlng, {
-                    ...assetsMarkerParams,
-                    icon: new DivIcon({
-                        className: "deployables",
-                        iconSize: [25, 25]
-                    })
-                }).addTo(this.activeLayerMarkers);
-
-                const iconElement = marker.getElement();
-                iconElement.style.backgroundImage = "url('/img/icons/default/deployables/deployable_ammocrate.svg')";
-                this.mainZones.assets.push(marker);
-                this.mainZones.ammocrates.push(marker);
-            }
+            // Ammocrates are tracked separately so spawns can hide the ones near them
+            if (icon === "deployable_ammocrate") this.mainZones.ammocrates.push(marker);
         });
     }
 

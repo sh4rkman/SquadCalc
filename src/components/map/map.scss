@@ -363,8 +363,9 @@ $toastDistanceFromBottom: 80px;
     font-synthesis: initial;
     display: flex;
     align-items: center;
-    max-width: 400px;
+    max-width: min(400px, calc(100vw - 60px));
     width: fit-content;
+    box-sizing: border-box;
     padding: 10px 14px;
     position: fixed;
     border-radius: 10px;
@@ -375,8 +376,11 @@ $toastDistanceFromBottom: 80px;
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
     z-index: 5;
     bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
+    // left/right + auto margins instead of left: 50% so the shrink-to-fit
+    // width uses the full viewport rather than half of it
+    left: 0;
+    right: 0;
+    margin: 0 auto;
     cursor: pointer;
     visibility: hidden;
 }
@@ -474,13 +478,13 @@ $toastDistanceFromBottom: 80px;
     from {
         bottom: $toastDistanceFromBottom;
         opacity: 1;
-        transform: translateX(-50%) scale(1);
+        transform: scale(1);
         visibility: visible;
     }
     to {
         bottom: 0;
         opacity: 0;
-        transform: translateX(-50%) scale(0.5);
+        transform: scale(0.5);
         visibility: hidden;
     }
 }
@@ -489,13 +493,13 @@ $toastDistanceFromBottom: 80px;
     from {
         bottom: 0;
         opacity: 0;
-        transform: translateX(-50%) scale(0.5);
+        transform: scale(0.5);
         visibility: hidden;
     }
     to {
         bottom: $toastDistanceFromBottom;
         opacity: 1;
-        transform: translateX(-50%) scale(1);
+        transform: scale(1);
         visibility: visible;
     }
 }

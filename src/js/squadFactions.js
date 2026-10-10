@@ -609,8 +609,40 @@ export default class SquadFactions {
     }
 
 
+    /**
+     * Wiki + squad-armor.com links for a vehicle (faction dialog cards and vehicle marker dialog)
+     * @param {object} vehicle
+     * @param {string} faction - faction id, used to detect SuperMod vehicles
+     * @returns {string} html
+     */
+    getVehicleLinksHTML(vehicle, faction) {
+        const shortVehName = vehicle.type.split(" ")[0];
+        const layerName = App.LAYER_SELECTOR.val();
+        const isGCLayer = layerName?.startsWith("GC_");
+
+        const wikiBase = isGCLayer ? "https://galactic-contention.fandom.com" : "https://squad.fandom.com";
+        const wikiLink = `
+            <a class="tag wiki-link" href="${wikiBase}/wiki/${shortVehName}" target="_blank" title="${isGCLayer ? "galactic-contention.fandom.com" : "squad.fandom.com"}">
+                <span>WIKI</span>
+            </a>
+        `;
+
+        let armorLink = "";
+        if (vehicle.rawType && !isGCLayer) {
+            const armorSlug = vehicle.rawType.replace(/_C$/, "");
+            const modParam = (faction?.startsWith("SU_") || layerName?.startsWith("SU_")) ? "?mods=SuperMod" : "";
+            armorLink = `
+                <a class="tag armor-link" href="https://squad-armor.com/vehicles/${armorSlug}${modParam}" target="_blank" title="squad-armor.com">
+                    <span>SQUAD<br><span class="armor-yellow">ARMOR</span></span>
+                </a>
+            `;
+        }
+
+        return wikiLink + armorLink;
+    }
+
+
     getCardImgHTML(vehicle, LEFT = false){
-        let shortVehName = vehicle.type.split(" ")[0];
         let amphibious = "";
         if (vehicle.isAmphibious) {
             amphibious = `
@@ -637,32 +669,12 @@ export default class SquadFactions {
                 </div>
             `;
 
-        const layerName = App.LAYER_SELECTOR.val();
-        const isGCLayer = layerName?.startsWith("GC_");
-
-        const wikiBase = isGCLayer ? "https://galactic-contention.fandom.com" : "https://squad.fandom.com";
-        const wikiLink = `
-            <a class="tag wiki-link" href="${wikiBase}/wiki/${shortVehName}" target="_blank" title="${isGCLayer ? "galactic-contention.fandom.com" : "squad.fandom.com"}">
-                <span>WIKI</span>
-            </a>
-        `;
-
-        let armorLink = "";
-        if (vehicle.rawType && !isGCLayer) {
-            const armorSlug = vehicle.rawType.replace(/_C$/, "");
-            const faction = LEFT ? this.FACTION1_SELECTOR.val() : this.FACTION2_SELECTOR.val();
-            const modParam = (faction?.startsWith("SU_") || layerName?.startsWith("SU_")) ? "?mods=SuperMod" : "";
-            armorLink = `
-                <a class="tag armor-link" href="https://squad-armor.com/vehicles/${armorSlug}${modParam}" target="_blank" title="squad-armor.com">
-                    <span>SQUAD<br><span class="armor-yellow">ARMOR</span></span>
-                </a>
-            `;
-        }
+        const faction = LEFT ? this.FACTION1_SELECTOR.val() : this.FACTION2_SELECTOR.val();
 
         return `
             <div class="image">
                 <div class="tags">${passengersHTML}${amphibious}${ATGM}</div>
-                <div class="links">${wikiLink}${armorLink}</div>
+                <div class="links">${this.getVehicleLinksHTML(vehicle, faction)}</div>
                 <img src="/img/vehicles/${this.squadLayer.modFolder}/${vehicle.type}.webp" onerror="this.onerror=null; this.src='/img/vehicles/placeholder.webp';" ${LEFT ? "class=\"mirrored\"" : ""}/>
             </div>
         `;

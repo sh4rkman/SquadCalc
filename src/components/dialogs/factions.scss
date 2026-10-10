@@ -135,6 +135,7 @@
         @include variables.text-outline;
         .team-faction-name {
             font-size: 0.7em;
+            max-width: 14em;
 
             @include variables.theme-font(variables.$mainFont);
         }
