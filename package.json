@@ -46,7 +46,7 @@
     "html-loader": "^5.1.0",
     "html-webpack-plugin": "^5.6.3",
     "htmlhint": "^1.9.1",
-    "i18next": "^26.4.2",
+    "i18next": "^26.4.4",
     "i18next-http-backend": "^4.0.2",
     "jquery": "^3.7.1",
     "leaflet": "^2.0.0-alpha.1",
@@ -78,7 +78,7 @@
   },
   "dependencies": {
     "fast-png": "^8.0.0",
-    "marked": "^18.0.5",
+    "marked": "^18.1.1",
     "polygon-clipping": "^0.15.7"
   }
 }
