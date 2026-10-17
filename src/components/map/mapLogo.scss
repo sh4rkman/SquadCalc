@@ -58,7 +58,7 @@ $drips-svg: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' vie
         }
         span:nth-of-type(2) {
             border-radius: 6px 6px 0 0;
-            padding: 0 15px 0;
+            padding: 0 15px;
             background: variables.$mainColor;
             width: fit-content;
             margin: 0 auto;

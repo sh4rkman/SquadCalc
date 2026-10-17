@@ -55,7 +55,7 @@
     padding: 0;
     border: none;
     border-radius: 3px;
-    background-color: #111;
+    background-color: variables.$mainBGColor;
     box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.2);
     cursor: pointer;
     transition: background-color 0.2s ease;
@@ -69,13 +69,13 @@
     &:hover {
         background-color: #2a2a2a;
         svg {
-            fill: white;
+            fill: variables.$mainTxtColor;
         }
     }
     &.active {
         background-color: variables.$mainColor;
         svg {
-            fill: white;
+            fill: variables.$mainTxtColor;
             transform: none;
         }
         &:hover {
@@ -86,7 +86,7 @@
         cursor: not-allowed;
         opacity: 0.4;
         &:hover {
-            background-color: #111;
+            background-color: variables.$mainBGColor;
         }
     }
 }
@@ -155,7 +155,7 @@
             left: 50%;
             top: 50%;
             transform: translate(-50%, -50%);
-            color: #fff;
+            color: variables.$mainTxtColor;
             font-size: clamp(2em, 8vw, 7em);
             font-weight: 900;
             line-height: 1;
@@ -232,7 +232,7 @@
         .picker-btn {
             position: relative;
             cursor: pointer;
-            background: #111;
+            background: variables.$mainBGColor;
             box-shadow: 0 0 0 1px rgba(255,255,255,0.2);
             border-radius: 3px;
             display: flex;
@@ -264,7 +264,7 @@
                 align-items: center;
                 justify-content: center;
                 pointer-events: none;
-                color: white;
+                color: variables.$mainTxtColor;
                 font-size: clamp(0.8em, 2.5vw, 1.5em);
                 font-weight: 700;
                 letter-spacing: normal;
@@ -290,7 +290,7 @@
                 svg {
                     width: 1.4em;
                     height: 1.4em;
-                    fill: white;
+                    fill: variables.$mainTxtColor;
                 }
             }
             &:hover .picker-label {
@@ -350,7 +350,7 @@
                 svg {
                     width: 1.2em;
                     height: 1.2em;
-                    fill: white;
+                    fill: variables.$mainTxtColor;
                 }
             }
             &:hover .picker-label {
@@ -401,29 +401,29 @@
                     background: variables.$mainColor;
                     .vehicle-meta .delayHolder {
                         .count-delay {
-                            color: white;
+                            color: variables.$mainTxtColor;
                         }
                         .count-delay-icon svg {
-                            fill: white;
+                            fill: variables.$mainTxtColor;
                         }
                     } 
                     .vehicle-meta .respawnHolder {
                         .respawn {
-                            color: white;
+                            color: variables.$mainTxtColor;
                         }
                         .respawn-icon {
                             svg {
-                                fill: white!important;;
+                                fill: variables.$mainTxtColor!important;;
                             }
                         }
                     }
                     .vehicle-meta .ticketHolder {
                         .ticket {
-                            color: white;
+                            color: variables.$mainTxtColor;
                         }
                         .ticket-icon {
                             svg {
-                                fill: white;
+                                fill: variables.$mainTxtColor;
                             }
                         }
                     }
@@ -436,29 +436,29 @@
                 align-items: flex-start;
                 .vehicle-meta .delayHolder {
                     .count-delay {
-                        color: white;
+                        color: variables.$mainTxtColor;
                     }
                     .count-delay-icon svg {
-                        fill: white;
+                        fill: variables.$mainTxtColor;
                     }
                 } 
                 .vehicle-meta .respawnHolder {
                     .respawn {
-                        color: white;
+                        color: variables.$mainTxtColor;
                     }
                     .respawn-icon {
                         svg {
-                            fill: white!important;
+                            fill: variables.$mainTxtColor!important;
                         }
                     }
                 }
                  .vehicle-meta .ticketHolder {
                     .ticket {
-                        color: white;
+                        color: variables.$mainTxtColor;
                     }
                     .ticket-icon {
                         svg {
-                            fill: white;
+                            fill: variables.$mainTxtColor;
                         }
                     }
                 }
@@ -501,7 +501,7 @@
                             }
                             text-decoration: none;
                             > span {
-                                color: white;
+                                color: variables.$mainTxtColor;
                                 font-family: oswald, sans-serif;
                                 font-weight: bold;
                                 text-align: center;
@@ -574,7 +574,7 @@
             .vehicle-type {
                 font-size: 1.3em;
                 font-weight: bold;
-                color: #fff;
+                color: variables.$mainTxtColor;
                 cursor: pointer;
                 text-align: center;
                 white-space: nowrap;

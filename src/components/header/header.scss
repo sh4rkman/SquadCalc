@@ -135,7 +135,7 @@ header {
     .dropbtn3,
     .dropbtn5,
     .dropbtn6 {
-        color: #fff;
+        color: variables.$mainTxtColor;
         font-weight: bold;
         line-height: 2.188em;
         text-transform: uppercase;
@@ -182,7 +182,7 @@ header {
             opacity: 0.6;
         }
         .select2-selection--single .select2-selection__rendered {
-            color: #fff;
+            color: variables.$mainTxtColor;
         }
         .select2-selection--single {
             background-color: transparent;
@@ -263,7 +263,7 @@ header {
     background: rgba(255, 255, 255, 0.06);
     border: 1px solid rgba(255, 255, 255, 0.1) !important;
     border-radius: 4px;
-    color: #fff;
+    color: variables.$mainTxtColor;
     outline: none;
     padding: 0.4em 0.6em;
 }

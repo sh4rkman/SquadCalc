@@ -19,7 +19,7 @@
         }
     }
     .dropbtn4 {
-        color: #fff;
+        color: variables.$mainTxtColor;
         line-height: 1.5em;
         text-transform: uppercase;
         text-align: center;
@@ -224,11 +224,11 @@
             color: #ccc;
             svg {
                 height: 1.3em;
-                fill: #fff;
+                fill: variables.$mainTxtColor;
                 pointer-events: none;
             }
             &.mapBtnToggle-3d {
-                color: #fff;
+                color: variables.$mainTxtColor;
                 font-size: 0.85em;
                 font-weight: 700;
                 letter-spacing: 0.02em;
@@ -617,7 +617,7 @@ $bezier: cubic-bezier(0.65, 0.25, 0.56, 0.96);
             &#captureSave {
                 background-color: variables.$mainColor;
                 border-color: variables.$mainColor;
-                color: #fff;
+                color: variables.$mainTxtColor;
                 &:hover { opacity: 0.85; }
                 &:disabled {
                     opacity: 0.3;

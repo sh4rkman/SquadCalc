@@ -1,8 +1,9 @@
 // Colors
-$mainColor: rgb(207, 106, 12);
+$mainColor: #cf6a0c; // Halloween; restore firebrick
+$mainColorAccent: #913b06; // Halloween; restore #a31c1c
 $mainBGColor: #111;
 $mainTxtColor: #fff;
-$newColor: green;
+$newColor: #008000;
 
 
 :root {
@@ -120,58 +121,58 @@ button:focus {
 // Text-Shadows/Ouline
 @mixin text-outline {
     font-weight: bold;
-    text-shadow: 1px 1px 0 #111,
-    -1px 1px 0 #111,
-    1px -1px 0 #111,
-    -1px -1px 0 #111,
-   0 1px 0 #111,
-    0 -1px 0 #111,
-    -1px 0 0 #111,
-    1px 0 0 #111,
-    1px 2px 0 #111,
-    -1px 2px 0 #111,
-    1px -2px 0 #111,
-    -2px -2px 0 #111,
-    0 2px 0 #111,
-    0 -2px 0 #111,
-    -1px 0 0 #111,
-    1px 0 0 #111,
-    1px 1px 0 #111,
-    -1px 1px 0 #111,
-    1px -1px 0 #111,
-    -1px -1px 0 #111,
-    1px 2px 0 #111,
-    -1px 1px 0 #111,
-    1px -1px 0 #111,
-    -1px -1px 0 #111;
+    text-shadow: 1px 1px 0 $mainBGColor,
+    -1px 1px 0 $mainBGColor,
+    1px -1px 0 $mainBGColor,
+    -1px -1px 0 $mainBGColor,
+   0 1px 0 $mainBGColor,
+    0 -1px 0 $mainBGColor,
+    -1px 0 0 $mainBGColor,
+    1px 0 0 $mainBGColor,
+    1px 2px 0 $mainBGColor,
+    -1px 2px 0 $mainBGColor,
+    1px -2px 0 $mainBGColor,
+    -2px -2px 0 $mainBGColor,
+    0 2px 0 $mainBGColor,
+    0 -2px 0 $mainBGColor,
+    -1px 0 0 $mainBGColor,
+    1px 0 0 $mainBGColor,
+    1px 1px 0 $mainBGColor,
+    -1px 1px 0 $mainBGColor,
+    1px -1px 0 $mainBGColor,
+    -1px -1px 0 $mainBGColor,
+    1px 2px 0 $mainBGColor,
+    -1px 1px 0 $mainBGColor,
+    1px -1px 0 $mainBGColor,
+    -1px -1px 0 $mainBGColor;
 }
 
 @mixin light-text-outline {
     font-weight: bold;
-    text-shadow: 1px 1px 0 #111,
-    -1px 1px 0 #111,
-    1px -1px 0 #111,
-    -1px -1px 0 #111,
-   0 1px 0 #111,
-    0 -1px 0 #111,
-    -1px 0 0 #111,
-    1px 0 0 #111,
-    1px 1px 0 #111,
-    -1px 1px 0 #111,
-    1px -1px 0 #111,
-    -1px -1px 0 #111,
-    0 1px 0 #111,
-    0 -1px 0 #111,
-    -1px 0 0 #111,
-    1px 0 0 #111,
-    1px 1px 0 #111,
-    -1px 1px 0 #111,
-    1px -1px 0 #111,
-    -1px -1px 0 #111,
-    1px 1px 0 #111,
-    -1px 1px 0 #111,
-    1px -1px 0 #111,
-    -1px -1px 0 #111;
+    text-shadow: 1px 1px 0 $mainBGColor,
+    -1px 1px 0 $mainBGColor,
+    1px -1px 0 $mainBGColor,
+    -1px -1px 0 $mainBGColor,
+   0 1px 0 $mainBGColor,
+    0 -1px 0 $mainBGColor,
+    -1px 0 0 $mainBGColor,
+    1px 0 0 $mainBGColor,
+    1px 1px 0 $mainBGColor,
+    -1px 1px 0 $mainBGColor,
+    1px -1px 0 $mainBGColor,
+    -1px -1px 0 $mainBGColor,
+    0 1px 0 $mainBGColor,
+    0 -1px 0 $mainBGColor,
+    -1px 0 0 $mainBGColor,
+    1px 0 0 $mainBGColor,
+    1px 1px 0 $mainBGColor,
+    -1px 1px 0 $mainBGColor,
+    1px -1px 0 $mainBGColor,
+    -1px -1px 0 $mainBGColor,
+    1px 1px 0 $mainBGColor,
+    -1px 1px 0 $mainBGColor,
+    1px -1px 0 $mainBGColor,
+    -1px -1px 0 $mainBGColor;
 }
 
 .unselectable {

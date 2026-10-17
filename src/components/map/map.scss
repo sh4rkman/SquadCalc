@@ -163,7 +163,7 @@
             font-family: variables.$mainFont, Times, "Times New Roman", serif;
             position: absolute;
             font-size: var(--font-size-objtext);
-            color: white;
+            color: variables.$mainTxtColor;
             white-space: nowrap;
             transform-origin: 0;
             & > div {
