@@ -57,6 +57,7 @@ $drips-svg: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' vie
             letter-spacing: 0.04em;
         }
         span:nth-of-type(2) {
+            border-radius: 6px 6px 0 0;
             padding: 0 15px 0;
             background: variables.$mainColor;
             width: fit-content;
