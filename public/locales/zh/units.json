@@ -111,5 +111,12 @@
     "FastHeliRespawn": "Faster Helicopter Respawn",
     "VehicleCommander": "Commander can use vehicles to enable commander abilities",
     "NoMortar": "No Mortar Emplacements available",
-    "BM-21Grad+": "+1 extra BM-21 Grad"
+    "BM-21Grad+": "+1 extra BM-21 Grad",
+    "WeaponCrateHAB": "可放置一个更小但更脆弱的HAB，可用于补给弹药",
+    "AccessAA": "可使用防空阵地",
+    "AccessFieldGun": "可使用野战炮阵地",
+    "CAS": "可使用近距离空中支援直升机",
+    "TunnelHAB": "可放置隐藏的地道HAB",
+    "VBIED": "可使用简易爆炸装置车辆",
+    "ONLYLTV": "仅可使用轻型战术车辆"
 }

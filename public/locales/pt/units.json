@@ -118,5 +118,12 @@
     "FastHeliRespawn": "Respawn de helicóptero mais rápido",
     "VehicleCommander": "O comandante pode usar veículos para ativar as habilidades de comandante",
     "NoMortar": "Nenhum emplacement de morteiro disponível",
-    "BM-21Grad+": "+1 BM-21 Grad extra"
+    "BM-21Grad+": "+1 BM-21 Grad extra",
+    "WeaponCrateHAB": "Pode colocar um HAB menor, porém mais fraco, que permite remuniciar",
+    "AccessAA": "Posições antiaéreas disponíveis",
+    "AccessFieldGun": "Posições de canhão de campanha disponíveis",
+    "CAS": "Acesso a helicópteros de apoio aéreo aproximado",
+    "TunnelHAB": "Pode colocar um HAB de túnel oculto",
+    "VBIED": "Veículos explosivos improvisados disponíveis",
+    "ONLYLTV": "Apenas veículos táticos leves disponíveis"
 }

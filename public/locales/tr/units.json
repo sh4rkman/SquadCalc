@@ -118,5 +118,12 @@
     "FastHeliRespawn": "Daha Hızlı Helikopter Yeniden Doğması",
     "VehicleCommander": "Komutan, komutan yeteneklerini kullanmak için araçları kullanabilir",
     "NoMortar": "Havan Mevzisi yok",
-    "BM-21Grad+": "+1 ekstra BM-21 Grad"
+    "BM-21Grad+": "+1 ekstra BM-21 Grad",
+    "WeaponCrateHAB": "Yeniden mühimmat almayı sağlayan daha küçük ama daha zayıf bir HAB kurabilir",
+    "AccessAA": "Uçaksavar mevzileri mevcut",
+    "AccessFieldGun": "Sahra topu mevzileri mevcut",
+    "CAS": "Yakın hava desteği helikopterlerine erişim",
+    "TunnelHAB": "Gizli bir tünel HAB kurabilir",
+    "VBIED": "Bombalı araçlar mevcut",
+    "ONLYLTV": "Yalnızca hafif taktik araçlar mevcut"
 }

@@ -111,6 +111,13 @@
     "FastHeliRespawn": "Faster Helicopter Respawn",
     "VehicleCommander": "Commander can use vehicles to enable commander abilities",
     "NoMortar": "No Mortar Emplacements available",
-    "BM-21Grad+": "+1 extra BM-21 Grad"
+    "BM-21Grad+": "+1 extra BM-21 Grad",
+    "WeaponCrateHAB": "Kann ein kleineres, aber schwächeres HAB platzieren, an dem man aufmunitionieren kann",
+    "AccessAA": "Flugabwehrstellungen verfügbar",
+    "AccessFieldGun": "Feldgeschützstellungen verfügbar",
+    "CAS": "Zugang zu Luftnahunterstützungs-Hubschraubern",
+    "TunnelHAB": "Kann ein verstecktes Tunnel-HAB platzieren",
+    "VBIED": "Fahrzeuge mit Sprengsätzen verfügbar",
+    "ONLYLTV": "Nur leichte taktische Fahrzeuge verfügbar"
 }
       

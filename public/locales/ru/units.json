@@ -111,5 +111,12 @@
     "FastHeliRespawn": "Faster Helicopter Respawn",
     "VehicleCommander": "Commander can use vehicles to enable commander abilities",
     "NoMortar": "No Mortar Emplacements available",
-    "BM-21Grad+": "+1 extra BM-21 Grad"
+    "BM-21Grad+": "+1 extra BM-21 Grad",
+    "WeaponCrateHAB": "Может установить меньший, но более уязвимый HAB, позволяющий пополнять боезапас",
+    "AccessAA": "Доступны зенитные установки",
+    "AccessFieldGun": "Доступны полевые орудия",
+    "CAS": "Доступ к вертолётам непосредственной авиаподдержки",
+    "TunnelHAB": "Может установить скрытый туннельный HAB",
+    "VBIED": "Доступны заминированные автомобили",
+    "ONLYLTV": "Доступны только лёгкие тактические машины"
 }
