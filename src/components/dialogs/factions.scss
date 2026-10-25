@@ -136,8 +136,6 @@
         .team-faction-name {
             font-size: 0.7em;
             max-width: 14em;
-
-            @include variables.theme-font(variables.$mainFont);
         }
         .team-faction-name:empty {
             display: none;
@@ -272,7 +270,6 @@
                 transition: opacity 0.25s ease-in-out;
 
                 @include variables.text-outline;
-                @include variables.theme-font(variables.$mainFont);
             }
             &:hover .team-label:has(~ .picker-label) {
                 opacity: 0;

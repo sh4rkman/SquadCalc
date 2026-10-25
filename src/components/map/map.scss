@@ -133,8 +133,6 @@
             @include variables.light-text-outline;
             font-family: variables.$logoFont, Times, "Times New Roman", serif;
             font-size: 1.1em;
-
-            @include variables.theme-font(variables.$logoFont, null);
         }
         .deployables {
             background-size: contain;
@@ -357,10 +355,6 @@
 $toastDistanceFromBottom: 80px;
 
 #toast {
-    // Always default font, even with the seasonal theme font on
-    --main-font: montserrat;
-    font-family: montserrat, Times, "Times New Roman", serif;
-    font-synthesis: initial;
     display: flex;
     align-items: center;
     max-width: min(400px, calc(100vw - 60px));
