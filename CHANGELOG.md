@@ -1,3 +1,19 @@
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge"> **46.2.0** *(2026-11-01)*
+
+</br><img src="https://img.shields.io/badge/-new%20features-green">
+- Now display all emplacements (usefull for Jensens range)
+- Emplacement  marker on the map now are hoverable and open a tooltip
+- Vehicles and emplacements markers on the maps are now clickable and open a dialog with information and a bigger image
+- Updated images and data to SuperMod 10.3
+
+</br><img src="https://img.shields.io/badge/-bug%20fixes-b22">  
+- Fixed missing vehicle images for `BMP-1 ZU-23-2`, `BTR-D PKM`, `CH-178`, `Cobra II MG3 RWS`, `FV520 CTAS40`, `LAV III M2 RWS`, `LUV-A1 Logistics`, `LUV-A1 Transport`, `M113A2T M2`, `M113A2T Mk19`, `M113A3 C6`, `MTLB VMK`, `Modern Technical UB-32`, `Pickup Truck`, `Transport Modern Pickup`, `Transport Pickup Truck`, `ZSD89 APC QJZ89`, `ZSD89 APC QLZ87` & `ZSL10 QLZ87`
+- Fixed a team's unit icon missing from the faction bar and faction dialog when loading a server link while that team was on a boat-spawn unit variant (e.g. `_Boats` suffix)
+
+
+</br></br><!-- CHANGELOG SPLIT MARKER -->
+
+
 # <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge"> **46.1.0** *(2026-10-09)*
 
 👻 *(You can disable the horrible Halloween font in `Settings > Map`.)*
