@@ -2,7 +2,7 @@
 
 #helpDialog {
     width: 94%;
-    height: 650px;
+    height: 625px;
     max-width: 600px;
     font-size: 0.6em;
     font-weight: bold;
@@ -19,7 +19,7 @@
         }
     }
     .dropbtn4 {
-        color: #fff;
+        color: variables.$mainTxtColor;
         line-height: 1.5em;
         text-transform: uppercase;
         text-align: center;
@@ -134,15 +134,6 @@
                 text-shadow: 0 0 4px #ffffff75;
             }
         }
-        .themeFontSettings {
-            // Always default font, even with the seasonal theme font on
-            --main-font: montserrat;
-            font-family: montserrat, Times, "Times New Roman", serif;
-            font-synthesis: initial;
-            .toggleCheckbox {
-                color: variables.$mainColor;
-            }
-        }
         caption {
             margin: 0 0 10px;
             color: variables.$mainTxtColor;
@@ -224,11 +215,11 @@
             color: #ccc;
             svg {
                 height: 1.3em;
-                fill: #fff;
+                fill: variables.$mainTxtColor;
                 pointer-events: none;
             }
             &.mapBtnToggle-3d {
-                color: #fff;
+                color: variables.$mainTxtColor;
                 font-size: 0.85em;
                 font-weight: 700;
                 letter-spacing: 0.02em;
@@ -617,7 +608,7 @@ $bezier: cubic-bezier(0.65, 0.25, 0.56, 0.96);
             &#captureSave {
                 background-color: variables.$mainColor;
                 border-color: variables.$mainColor;
-                color: #fff;
+                color: variables.$mainTxtColor;
                 &:hover { opacity: 0.85; }
                 &:disabled {
                     opacity: 0.3;

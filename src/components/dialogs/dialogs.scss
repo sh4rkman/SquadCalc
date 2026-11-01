@@ -13,10 +13,6 @@ dialog, #threeDView {
     max-width: 700px;
     overflow: visible;
     &#changelogDialog {
-        // Always default font, even with the seasonal theme font on
-        --main-font: montserrat;
-        font-family: montserrat, Times, "Times New Roman", serif;
-        font-synthesis: initial;
         background: variables.$mainBGColor;
         backdrop-filter: none;
         &::backdrop { background: transparent; }
@@ -133,7 +129,7 @@ dialog, #threeDView {
             // explicit size: Safari collapses viewBox-only svg flex items to 0 height
             width: 100%;
             height: 100%;
-            fill: white;
+            fill: variables.$mainTxtColor;
         }
         &:hover {
             color: variables.$mainColor;
@@ -153,7 +149,7 @@ dialog, #threeDView {
         }
         .select2-selection--single .select2-selection__rendered {
             text-transform: uppercase;
-            color: #fff;
+            color: variables.$mainTxtColor;
         }
         .select2-selection--single {
             background-color: transparent;
@@ -172,6 +168,130 @@ dialog, #threeDView {
     }
     &#calcInformation {
         overflow: hidden;
+    }
+    &#spawnCardInformation {
+        max-width: 800px;
+        padding: 0;
+        overflow: hidden;
+        .spawnVehicleCard {
+            width: 100%;
+            font-size: 1.4em;
+            box-shadow: none;
+            backdrop-filter: none;
+            border-radius: 0;
+            // No top-only offsets from the tooltip card, so name and flag stay centered,
+            // and keep the title clear of the close button
+            .vehTitle {
+                align-items: center;
+                gap: 0.6em;
+                padding: 0.8em 3.5em 0 0.8em;
+                .vehName {
+                    flex: 1;
+                    padding: 0;
+                }
+                .vehFlag { margin: 0; }
+            }
+        }
+        .vehicleDialogCard {
+            .vehTitle {
+                justify-content: flex-start;
+            }
+            .vehIcon {
+                width: 2.2em;
+                height: 2.2em;
+                flex-shrink: 0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 0.25em;
+                background: rgba(255, 255, 255, 0.05);
+                img {
+                    width: 85%;
+                    margin: 0;
+                }
+            }
+            .image {
+                display: block; // .spawnVehicleCard > div is flex
+                position: relative;
+                margin-top: 1em;
+                padding: 0;
+                > img {
+                    display: block;
+                    margin: 0;
+                }
+            }
+            .tags, .links {
+                position: absolute;
+                bottom: 0.5em;
+                height: auto;
+                display: flex;
+                gap: 0.5em;
+                padding: 0;
+                z-index: 1;
+            }
+            .tags { left: 0.5em; }
+            .links { right: 0.5em; }
+            .tag {
+                position: relative;
+                width: 3.2em;
+                height: 3.2em;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                border-radius: 6px;
+                background: linear-gradient(160deg, rgba(45, 43, 43, 0.92), rgba(22, 21, 21, 0.92));
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.55);
+                img {
+                    width: 100%;
+                    margin: 0;
+                }
+                .passengers {
+                    margin-left: 13px;
+                    pointer-events: none;
+                }
+                &.armor-link, &.wiki-link {
+                    text-decoration: none;
+                    transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;
+                    > span {
+                        color: variables.$mainTxtColor;
+                        font-family: oswald, sans-serif;
+                        font-weight: bold;
+                        text-align: center;
+                        line-height: 1.3;
+                        letter-spacing: 0.05em;
+                    }
+                    .armor-yellow { color: #ffc40b; }
+
+                    @media (hover: hover) {
+                        &:hover {
+                            transform: scale(1.15);
+                            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.7);
+                        }
+                    }
+                }
+                &.wiki-link > span { font-size: 1.2em; }
+                &.armor-link > span { font-size: 0.8em; }
+            }
+            // single row when it fits, wraps on mobile / long translations
+            .statsHolder {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                font-size: 0.85em;
+                margin-top: 0.8em;
+                padding: 1em 1em 0;
+                gap: 0.8em 1.5em;
+            }
+            .respawnHolder, .delayHolder, .ticketHolder, .locationHolder {
+                width: auto;
+                white-space: nowrap;
+            }
+            // inherits the holder color, so warning/dedicated stats get a colored label too
+            .statLabel {
+                font-weight: normal;
+            }
+        }
     }
     &#layerInformation {
         max-width: 800px;
@@ -483,7 +603,7 @@ dialog, #threeDView {
             margin-top: 0.3em;
             border: none;
             background: variables.$mainColor;
-            color: #fff;
+            color: variables.$mainTxtColor;
             transition: filter 0.15s ease, transform 0.1s ease;
 
             @media (hover: hover) {
@@ -542,7 +662,7 @@ dialog, #threeDView {
             svg {
                 width: 18px;
                 height: 18px;
-                fill: #fff;
+                fill: variables.$mainTxtColor;
             }
 
             @media (hover: hover) {
@@ -648,7 +768,7 @@ dialog, #threeDView {
                 border-radius: 3px;
                 border: 1px solid variables.$mainColor;
                 background-color: variables.$mainColor;
-                color: #fff;
+                color: variables.$mainTxtColor;
                 cursor: pointer;
                 transition: opacity 0.2s ease;
                 &:hover {
@@ -731,7 +851,7 @@ dialog, #threeDView {
         border-radius: 4px;
         background: rgba(17, 17, 17, 0.75);
         backdrop-filter: blur(6px);
-        color: #fff;
+        color: variables.$mainTxtColor;
         font-size: 0.85em;
         font-weight: bold;
         text-transform: uppercase;
@@ -758,7 +878,7 @@ dialog, #threeDView {
         cursor: pointer;
         &.active {
             background-color: variables.$mainColor;
-            color: white;
+            color: variables.$mainTxtColor;
         }
     }
 }

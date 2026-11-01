@@ -121,7 +121,7 @@
             width: 44px;
             margin: 0 0.4em;
             aspect-ratio: 2 / 1;
-            background: #111;
+            background: variables.$mainBGColor;
             outline: 1px solid rgba(255, 255, 255, 0.05);
             border-radius: 2px;
             overflow: hidden;
@@ -139,7 +139,7 @@
                 right: 0;
                 top: 50%;
                 transform: translateY(-50%);
-                color: white;
+                color: variables.$mainTxtColor;
                 font-size: 9px;
                 font-weight: bold;
                 text-align: center;
@@ -213,13 +213,13 @@
         }
         .factionBar-label {
             text-align: center;
-            color: #fff;
+            color: variables.$mainTxtColor;
             font-size: 1.2em;
             margin: 0 0.5em;
         }
         &:has(.factionBar-content:hover) {
             background: rgba(10, 10, 10, 0.92);
-            color: #fff;
+            color: variables.$mainTxtColor;
             transform: scale(1.25);
             transform-origin: bottom center;
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
@@ -240,7 +240,7 @@
         }
         .factionBar-top:hover {
             .factionBar-chevron {
-                fill: #fff;
+                fill: variables.$mainTxtColor;
                 transform: rotate(180deg) scale(1.2);
             }
         }
@@ -311,7 +311,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
+            color: variables.$mainTxtColor;
             img {
                 cursor: pointer;
                 width: 30px;
@@ -376,7 +376,7 @@
                 width: 50%;
                 pointer-events: none;
                 svg {
-                    fill: white;
+                    fill: variables.$mainTxtColor;
                     width: 0.5em;
                 }
             }
@@ -387,7 +387,7 @@
                 font-size: 0.9em;
                 background-color: variables.$mainColor;
                 border-color: variables.$mainColor;
-                color: white;
+                color: variables.$mainTxtColor;
             }
         }
     }
@@ -410,10 +410,10 @@
         -webkit-backdrop-filter: blur(6px);
         &:hover {
             background: rgba(10, 10, 10, 0.92);
-            color: #fff;
+            color: variables.$mainTxtColor;
             svg {
                 transform: scale(1.1);
-                fill: #fff;
+                fill: variables.$mainTxtColor;
             }
         }
         &.active {
@@ -421,7 +421,7 @@
             border-top: variables.$mainColor;
             border: variables.$mainColor;
             svg path {
-                fill: white;
+                fill: variables.$mainTxtColor;
             }
         }
         &:disabled, &.locked {
@@ -436,7 +436,7 @@
         }
         svg {
             height: 1em;
-            fill: #fff;
+            fill: variables.$mainTxtColor;
         }
         &.btn-legacy svg {
             height: 0.8em;
@@ -446,7 +446,7 @@
             height: 1.4em;
         }
         &.btn-3d {
-            color: #fff;
+            color: variables.$mainTxtColor;
             font-size: 0.85em;
             font-weight: 700;
             letter-spacing: 0.02em;

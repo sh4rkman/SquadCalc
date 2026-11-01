@@ -15,7 +15,7 @@
             margin: -10px; // ugly hack
         }
         svg {
-            fill: white;
+            fill: variables.$mainTxtColor;
             height: 0.7em;
             width: 0.7em;
 
@@ -169,7 +169,7 @@
             transform: scale(1.1);
         }
         svg {
-            fill: white;
+            fill: variables.$mainTxtColor;
             height: 1em;
             width: 1em;
             transition: transform 0.3s ease;

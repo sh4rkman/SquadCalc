@@ -959,6 +959,7 @@ export default class SquadCalc {
             shortcutCapture: document.querySelector("#shortcutCaptureDialog"),
             changelog: document.querySelector("#changelogDialog"),
             layerInfo: document.querySelector("#layerInformation"),
+            spawnCard: document.querySelector("#spawnCardInformation"),
         };
         this._changelogCache = null;
         const { calc: calcInformation, weapon: weaponInformation, help: helpDialog, factions: factionsDialog, servers: serversInformation, layerInfo: layerInfoDialog } = this._dialogs;
@@ -1004,6 +1005,7 @@ export default class SquadCalc {
         this.closeDialogOnClickOutside(factionsDialog);
         this.closeDialogOnClickOutside(this._dialogs.changelog);
         this.closeDialogOnClickOutside(layerInfoDialog);
+        this.closeDialogOnClickOutside(this._dialogs.spawnCard);
 
         const overlay = document.getElementById("dropOverlay");
         let dragCounter = 0;
@@ -1690,6 +1692,16 @@ export default class SquadCalc {
                 dialog.close();
             }
         });
+    }
+
+    /**
+     * Opens the spawn card dialog (vehicle/deployable markers) with the given card HTML
+     * @param {string} html - card markup, same as the marker's hover tooltip
+     */
+    openSpawnCardDialog(html) {
+        const dialog = this._dialogs.spawnCard;
+        dialog.querySelector("#spawnCardContent").innerHTML = html;
+        dialog.showModal();
     }
 
     loadMapUIMode(){

@@ -135,7 +135,7 @@ header {
     .dropbtn3,
     .dropbtn5,
     .dropbtn6 {
-        color: #fff;
+        color: variables.$mainTxtColor;
         font-weight: bold;
         line-height: 2.188em;
         text-transform: uppercase;
@@ -182,7 +182,7 @@ header {
             opacity: 0.6;
         }
         .select2-selection--single .select2-selection__rendered {
-            color: #fff;
+            color: variables.$mainTxtColor;
         }
         .select2-selection--single {
             background-color: transparent;
@@ -192,13 +192,6 @@ header {
     }
     span.select2-selection.select2-selection--single {
         outline: none;
-    }
-    // Seasonal font on the map/layer/server/weapon dropdowns (selected value + list)
-    .mapSelector .select2-selection__rendered,
-    .mapSelector .select2-results__option,
-    #weaponSelector .select2-selection__rendered,
-    #weaponSelector .select2-results__option {
-        @include variables.theme-font(variables.$mainFont);
     }
 }
 
@@ -263,7 +256,7 @@ header {
     background: rgba(255, 255, 255, 0.06);
     border: 1px solid rgba(255, 255, 255, 0.1) !important;
     border-radius: 4px;
-    color: #fff;
+    color: variables.$mainTxtColor;
     outline: none;
     padding: 0.4em 0.6em;
 }
