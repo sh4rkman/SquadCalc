@@ -23,10 +23,9 @@ let minimapMarkerScalingPatched = false;
  * Shrinks Leaflet markers while their map is the 3D minimap (#map.threeDMinimapMode),
  * without recreating any icon. CSS alone can't: Leaflet positions a marker with an inline
  * translate3d, and any CSS scale composes outside it - shrinking the marker's position
- * too. So, like leaflet-rotatedMarker.js, this wraps Marker._setPos and appends scale()
- * after the translate, around the icon's anchor (= minus its computed margins, which also
- * covers CSS-overridden sizes like .circleFlag). Applied lazily on first use so it wraps
- * after the rotation plugins' own _setPos overrides, never under them.
+ * too. So this wraps Marker._setPos and appends scale() after the translate, around the
+ * icon's anchor (= minus its computed margins, which also covers CSS-overridden sizes
+ * like .circleFlag). Applied lazily on first use.
  */
 function patchMinimapMarkerScaling() {
     if (minimapMarkerScalingPatched) return;
@@ -48,8 +47,7 @@ function patchMinimapMarkerScaling() {
                     el.style.transform += ` scale(${MINIMAP_MARKER_SCALE})`;
                     el.dataset.minimapShrunk = "1";
                 } else if (el.dataset.minimapShrunk) {
-                    // A rotated marker's origin was just set again by the rotation plugin.
-                    if (!(el === this._icon && this.options.rotationAngle)) el.style.transformOrigin = "";
+                    el.style.transformOrigin = "";
                     delete el.dataset.minimapShrunk;
                 }
             }

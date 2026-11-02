@@ -1,7 +1,6 @@
 import { Marker, Icon, DomEvent } from "leaflet";
 import tippy from "tippy.js";
 import i18next from "i18next";
-import "./libs/leaflet-rotatedMarker.js";
 import { App } from "../app.js";
 
 const isMobile = matchMedia("(pointer: coarse)").matches;
@@ -46,7 +45,7 @@ export class squadVehicleMarker extends Marker {
             };
         });
 
-        this.setRotationAngle(spawner.rotation_z + 90);
+        this.setRotation(spawner.rotation_z + 90);
 
         // Hover card on desktop only, on mobile the click dialog replaces it
         if (!isMobile) {

@@ -238,7 +238,7 @@ class MarkerSymbol {
 
     buildSymbol(directionPoint) {
         if (this.options.rotate) {
-            this.options.markerOptions.rotationAngle =
+            this.options.markerOptions.rotation =
                 directionPoint.heading + (this.options.angleCorrection || 0);
         }
         return new Marker(directionPoint.latLng, this.options.markerOptions);

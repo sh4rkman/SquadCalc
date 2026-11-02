@@ -1,7 +1,6 @@
 import { Marker, Icon, DomEvent } from "leaflet";
 import tippy, { sticky } from "tippy.js";
 import i18next from "i18next";
-import "./libs/leaflet-rotatedMarker.js";
 
 const isMobile = matchMedia("(pointer: coarse)").matches;
 
@@ -33,7 +32,7 @@ export class squadCameraActor extends Marker {
             })
         );
 
-        this.setRotationAngle(camera.rotation_z);
+        this.setRotation(camera.rotation_z);
 
         if (!isMobile) {
             this.on("pointerover", this._handleOver, this);
