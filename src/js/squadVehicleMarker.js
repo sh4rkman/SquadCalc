@@ -1,24 +1,25 @@
-import { Marker, Icon, Browser, DomEvent } from "leaflet";
+import { Marker, Icon, DomEvent } from "leaflet";
 import tippy from "tippy.js";
 import i18next from "i18next";
 import "./libs/leaflet-rotatedMarker.js";
 import { App } from "../app.js";
 
+const isMobile = matchMedia("(pointer: coarse)").matches;
 
-export const squadVehicleMarker = Marker.extend({
+export class squadVehicleMarker extends Marker {
 
-    options: {
+    static defaultOptions = {
         draggable: false,
         riseOnHover: false,
         keyboard: false,
         animate: true,
         zIndexOffset: -1000
-    },
+    };
 
     // Constructor
-    initialize: function (latlng, spawner, vehicle, faction, dedicatedSpawn, modFolder, options) {
+    constructor(latlng, spawner, vehicle, faction, dedicatedSpawn, modFolder, options) {
 
-        Marker.prototype.initialize.call(this, latlng, options);
+        super(latlng, options);
 
         this.spawner = spawner;
         this.vehicle = vehicle;
@@ -48,7 +49,7 @@ export const squadVehicleMarker = Marker.extend({
         this.setRotationAngle(spawner.rotation_z + 90);
 
         // Hover card on desktop only, on mobile the click dialog replaces it
-        if (!Browser.mobile) {
+        if (!isMobile) {
             this.on("pointerover", this._handleOver, this);
             this.on("pointerout", this._handleOut, this);
         }
@@ -57,9 +58,9 @@ export const squadVehicleMarker = Marker.extend({
         // Catch this events and disable propagation
         this.on("contextmenu", this._handleCtxMenu, this);
         this.on("dblclick", this._handleCtxMenu, this);
-        
-    },
-   
+
+    }
+
 
     open(event) {
         const el = event.target._icon;
@@ -76,7 +77,7 @@ export const squadVehicleMarker = Marker.extend({
             onHidden: (tip) => this._cleanup(tip),
             onShow: (tip) => this._onShow(tip),
         });
-    },
+    }
 
 
     _onShow(tip) {
@@ -86,7 +87,7 @@ export const squadVehicleMarker = Marker.extend({
         tip.popper.addEventListener("contextmenu", e => e.preventDefault());
 
         this.tip.setContent(this.getCardHTML());
-    },
+    }
 
 
     getCardHTML() {
@@ -109,7 +110,7 @@ export const squadVehicleMarker = Marker.extend({
                 <img src="/img/vehicles/${this.modFolder}/${this.vehicle.type}.webp" onerror="this.onerror=null; this.src='/img/vehicles/placeholder.webp';"/>
             </div>
         `;
-    },
+    }
 
 
     /**
@@ -144,7 +145,7 @@ export const squadVehicleMarker = Marker.extend({
                 </div>
             </div>
         `;
-    },
+    }
 
 
     /**
@@ -156,7 +157,7 @@ export const squadVehicleMarker = Marker.extend({
     _labelHTML(key, labeled) {
         if (!labeled) return "";
         return `<span class="statLabel">${i18next.t(key, { ns: "common" })}:</span>`;
-    },
+    }
 
 
     getTagsHTML(withTitles = false) {
@@ -172,7 +173,7 @@ export const squadVehicleMarker = Marker.extend({
                 ${tags.map(tag => `<div class="tag">${tag}</div>`).join("")}
             </div>
         `;
-    },
+    }
 
 
     getLocationHTML(labeled = false) {
@@ -191,7 +192,7 @@ export const squadVehicleMarker = Marker.extend({
                 ${dedicatedSpawnInfo}
             </span>
         `;
-    },
+    }
 
 
 
@@ -209,7 +210,7 @@ export const squadVehicleMarker = Marker.extend({
                 </span>
             </span>
         `;
-    },
+    }
 
     getRespawnHTML(labeled = false) {
         if (!this.vehicle.respawnTime) return "";
@@ -226,7 +227,7 @@ export const squadVehicleMarker = Marker.extend({
                 ${html}
             </span>
         `;
-    },
+    }
 
     getDelayHTML(labeled = false) {
         if (this.vehicle.delay == 0 || !this.vehicle.delay) return "";
@@ -241,14 +242,14 @@ export const squadVehicleMarker = Marker.extend({
                 <span> ${this.vehicle.delay} ${i18next.t("common:min")} </span>
             </div>
         `;
-    },
+    }
 
 
 
     _cleanup(tip) {
         if (tip._cleanup) tip._cleanup();
         tip.destroy();
-    },
+    }
 
 
     /**
@@ -256,15 +257,15 @@ export const squadVehicleMarker = Marker.extend({
      * @param {event} [event] - event
      * @returns {event} - sfsdfsdfsdfsd
      */
-    _handleOver: function(event){
+    _handleOver(event){
         this.open(event);
-    },
+    }
 
 
     _handleClick(event) {
         this._handleOut(event);
         App.openSpawnCardDialog(this.getDialogHTML());
-    },
+    }
 
 
     _handleOut(event) {
@@ -272,12 +273,12 @@ export const squadVehicleMarker = Marker.extend({
         if (el._tippy) {
             el._tippy.hide();
         }
-    },
+    }
 
     _handleCtxMenu(event) {
         DomEvent.preventDefault(event);   // prevent browser menu
         DomEvent.stopPropagation(event);  // stop Leaflet listeners
-        return false;  
+        return false;
     }
 
-});
+}

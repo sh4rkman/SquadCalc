@@ -1,23 +1,24 @@
-import { Marker, Icon, Browser, DomEvent } from "leaflet";
+import { Marker, Icon, DomEvent } from "leaflet";
 import tippy, { sticky } from "tippy.js";
 import i18next from "i18next";
 import "./libs/leaflet-rotatedMarker.js";
 
+const isMobile = matchMedia("(pointer: coarse)").matches;
 
-export const squadCameraActor = Marker.extend({
+export class squadCameraActor extends Marker {
 
-    options: {
+    static defaultOptions = {
         draggable: false,
         riseOnHover: false,
         keyboard: false,
         animate: true,
         zIndexOffset: -900
-    },
+    };
 
     // Constructor
-    initialize: function (latlng, camera, layer, options) {
-        
-        Marker.prototype.initialize.call(this, latlng, options);
+    constructor(latlng, camera, layer, options) {
+
+        super(latlng, options);
 
         this.data = camera;
         this.layer = layer;
@@ -34,7 +35,7 @@ export const squadCameraActor = Marker.extend({
 
         this.setRotationAngle(camera.rotation_z);
 
-        if (!Browser.mobile) {
+        if (!isMobile) {
             this.on("pointerover", this._handleOver, this);
             this.on("pointerout", this._handleOut, this);
         } else {
@@ -44,8 +45,8 @@ export const squadCameraActor = Marker.extend({
         // Catch this events and disable propagation
         this.on("contextmenu", this._handleContextMenu, this);
         this.on("dblclick", this._handleUnwantedActions, this);
-        
-    },
+
+    }
 
 
     open(event) {
@@ -70,17 +71,17 @@ export const squadCameraActor = Marker.extend({
 
 
         // On mobile manually trigger without delay
-        if (Browser.mobile) el._tippy.show();
+        if (isMobile) el._tippy.show();
 
-    },
+    }
 
     hide() {
         this.removeFrom(this.layer.activeLayerMarkers);
-    },
+    }
 
     show() {
         this.addTo(this.layer.activeLayerMarkers);
-    },
+    }
 
     _onShow(tip) {
         this.tip = tip;
@@ -101,25 +102,25 @@ export const squadCameraActor = Marker.extend({
         `;
         
         this.tip.setContent(html);
-    },
+    }
 
 
 
     _cleanup(tip) {
         if (tip._cleanup) tip._cleanup();
         tip.destroy();
-    },
+    }
 
 
-    _handleOver: function(event){
+    _handleOver(event){
         this.open(event);
-    },
+    }
 
 
     _handleOut(event) {
         const el = event.target._icon;
         if (el._tippy) el._tippy.hide();
-    },
+    }
 
     _handleContextMenu(event) {
         DomEvent.preventDefault(event);
@@ -132,13 +133,13 @@ export const squadCameraActor = Marker.extend({
         // remove marker from map
         this.remove();
         this.layer.cameraActor = null;
-    },
+    }
 
 
     _handleUnwantedActions(event) {
         DomEvent.preventDefault(event);
         DomEvent.stopPropagation(event);
-        return false;  
+        return false;
     }
 
-});
+}

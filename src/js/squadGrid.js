@@ -2,7 +2,7 @@
  *  OrigineFile: L.SimpleGraticule.js
  *  Desc: A graticule for Leaflet maps in the L.CRS.Simple coordinate system.
  *  Auth: Andrew Blakey (ablakey@gmail.com)
- * 
+ *
  *  Adapted to Squad by Robert "Endebert" Ende (https://github.com/Endebert/squadmc)
  *  slighty edited by Maxime "sharkman" Boussard for squadcalc
  */
@@ -19,14 +19,14 @@ import {
  *
  * @type {LayerGroup} - squadGrid layer object
  */
-export default LayerGroup.extend({
+export default class squadGrid extends LayerGroup {
     // grid line arrays for each (sub-)keypad
-    kpLines: [],
-    s1Lines: [],
-    s2Lines: [],
+    kpLines = [];
+    s1Lines = [];
+    s2Lines = [];
 
     // Polyline styles & options
-    lineStyleKP: {
+    lineStyleKP = {
         stroke: true,
         color: "#000",
         opacity: 1,
@@ -34,9 +34,9 @@ export default LayerGroup.extend({
         interactive: false,
         clickable: false,
         zIndex: 202,
-    },
+    };
 
-    lineStyleSUB1: {
+    lineStyleSUB1 = {
         stroke: true,
         color: "#000",
         opacity: 0.5,
@@ -44,9 +44,9 @@ export default LayerGroup.extend({
         interactive: false,
         clickable: false,
         zIndex: 201,
-    },
+    };
 
-    lineStyleSUB2: {
+    lineStyleSUB2 = {
         stroke: true,
         color: "#fff",
         opacity: 0,
@@ -54,18 +54,18 @@ export default LayerGroup.extend({
         interactive: false,
         clickable: false,
         zIndex: 200,
-    },
+    };
 
-    initialize(map, options) {
-        LayerGroup.prototype.initialize.call(this);
+    constructor(map, options) {
+        super();
         Util.setOptions(this, options);
         this.map = map;
         this.opacity = options?.opacity ?? 0.8;
-    },
+    }
 
     clearLines() {
         this.eachLayer(this.removeLayer, this);
-    },
+    }
 
     /**
    * Set bounds for grid, to limit it on the map
@@ -77,26 +77,26 @@ export default LayerGroup.extend({
             this.redraw();
             this.updateLineOpacity();
         }
-    },
+    }
 
     onAdd(map) {
         this.map = map;
         map.on("zoomend", this.updateLineOpacity, this);
         this.redraw();
         this.updateLineOpacity();
-    },
+    }
 
     onRemove(map) {
         // remove listener for view change
         map.off("zoomend", this.updateLineOpacity, this);
         this.clearLines();
-    },
+    }
 
 
     setOpacity(opacity) {
         this.opacity = opacity;
         this.updateLineOpacity();
-    },
+    }
 
 
     /**
@@ -121,14 +121,14 @@ export default LayerGroup.extend({
             this.setLinesOpacity(this.kpLines, 1 * this.opacity);
             this.setLinesOpacity(this.s1Lines, 0.6 * this.opacity);
             this.setLinesOpacity(this.s2Lines, 0);
-        } 
+        }
         else {
             this.setLinesWeight(this.kpLines, 1.5 * this.opacity);
             this.setLinesOpacity(this.kpLines, 1 * this.opacity);
             this.setLinesOpacity(this.s1Lines, 0);
             this.setLinesOpacity(this.s2Lines, 0);
         }
-    },
+    }
 
     /**
     * Updates the opacity for all lines in the lines array to the desired opacity value.
@@ -142,7 +142,7 @@ export default LayerGroup.extend({
         lines.forEach((line) => {
             line.setStyle({ opacity });
         });
-    },
+    }
 
 
     /**
@@ -157,15 +157,15 @@ export default LayerGroup.extend({
         lines.forEach((line) => {
             line.setStyle({ weight });
         });
-    },
+    }
 
     /**
     * Redraws the grid inside the current view bounds.
     */
     redraw() {
-        
+
         if (!this.bounds) return;
-        
+
         // clear old grid lines
         this.clearLines();
 
@@ -192,7 +192,7 @@ export default LayerGroup.extend({
         this.s1Lines = [];
         this.s2Lines = [];
         this.labels = [];
-        
+
         // vertical keypad lines
         // Going east +1 to make it through floating point imprecision
         const startX = this.bounds.getWest();
@@ -315,13 +315,13 @@ export default LayerGroup.extend({
 
         // Make label unfocusable with tab to avoid users panning the map while alt-tabbing
         for (const element of document.querySelectorAll(".gridText")) element.setAttribute("tabindex", "-1");
-    },
-    
+    }
+
     /**
      * Returns true if 'a' is a multiple of 'b' with a precision up to 4 decimals
      * @param a
      * @param b
-     * @returns {boolean} true if 'a' is a multiple of 'b', false otherwise              
+     * @returns {boolean} true if 'a' is a multiple of 'b', false otherwise
      */
     isMultiple(a, b) {
         const t = b / a;
@@ -329,4 +329,4 @@ export default LayerGroup.extend({
         const d = t >= r ? t - r : r - t;
         return d < 0.0001;
     }
-});
+}

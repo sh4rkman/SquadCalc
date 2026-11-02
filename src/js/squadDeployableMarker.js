@@ -1,23 +1,24 @@
-import { Marker, DivIcon, Browser, DomEvent } from "leaflet";
+import { Marker, DivIcon, DomEvent } from "leaflet";
 import tippy from "tippy.js";
 import { App } from "../app.js";
 
+const isMobile = matchMedia("(pointer: coarse)").matches;
 
-export const squadDeployableMarker = Marker.extend({
+export class squadDeployableMarker extends Marker {
 
-    options: {
+    static defaultOptions = {
         draggable: false,
         riseOnHover: false,
         keyboard: false,
         zIndexOffset: -1000,
         opacity: 0,
         iconSize: 30,
-    },
+    };
 
     // Constructor
-    initialize: function (latlng, asset, icon, options) {
+    constructor(latlng, asset, icon, options) {
 
-        Marker.prototype.initialize.call(this, latlng, options);
+        super(latlng, options);
 
         this.asset = asset;
         this.icon = icon;
@@ -36,7 +37,7 @@ export const squadDeployableMarker = Marker.extend({
         });
 
         // Hover card on desktop only, on mobile the click dialog replaces it
-        if (!Browser.mobile) {
+        if (!isMobile) {
             this.on("pointerover", this._handleOver, this);
             this.on("pointerout", this._handleOut, this);
         }
@@ -45,7 +46,7 @@ export const squadDeployableMarker = Marker.extend({
         // Catch this events and disable propagation
         this.on("contextmenu", this._handleCtxMenu, this);
         this.on("dblclick", this._handleCtxMenu, this);
-    },
+    }
 
 
     open(event) {
@@ -63,7 +64,7 @@ export const squadDeployableMarker = Marker.extend({
             onHidden: (tip) => this._cleanup(tip),
             onShow: (tip) => this._onShow(tip),
         });
-    },
+    }
 
 
     getCardHTML() {
@@ -76,7 +77,7 @@ export const squadDeployableMarker = Marker.extend({
                 <img src="/img/deployables/${this.asset.type}.webp" onerror="this.onerror=null; this.src='/img/vehicles/placeholder.webp';"/>
             </div>
         `;
-    },
+    }
 
 
     _onShow(tip) {
@@ -92,7 +93,7 @@ export const squadDeployableMarker = Marker.extend({
         tip.popper.querySelectorAll("img").forEach(img => {
             img.addEventListener("load", () => tip.popperInstance?.update());
         });
-    },
+    }
 
 
     getFlagHTML() {
@@ -105,33 +106,33 @@ export const squadDeployableMarker = Marker.extend({
         if (!faction) return "";
 
         return `<img class="vehFlag" src="/img/flags/${layer.modFolder}/${faction}.webp" onerror="this.onerror=null; this.src='/img/flags/unknown.webp';"/>`;
-    },
+    }
 
 
     _cleanup(tip) {
         if (tip._cleanup) tip._cleanup();
         tip.destroy();
-    },
+    }
 
 
     _handleOver(event) {
         // Markers are kept on the map with opacity 0 when hidden, don't show a card for those
         if (this.options.opacity === 0) return;
         this.open(event);
-    },
+    }
 
 
     _handleClick(event) {
         if (this.options.opacity === 0) return;
         this._handleOut(event);
         App.openSpawnCardDialog(this.getCardHTML());
-    },
+    }
 
 
     _handleOut(event) {
         const el = event.target._icon;
         if (el._tippy) el._tippy.hide();
-    },
+    }
 
 
     _handleCtxMenu(event) {
@@ -140,4 +141,4 @@ export const squadDeployableMarker = Marker.extend({
         return false;
     }
 
-});
+}

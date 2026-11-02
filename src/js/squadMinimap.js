@@ -1,4 +1,4 @@
-import {Icon, ImageOverlay, TileLayer, Map, CRS, SVG, Util, LayerGroup, Popup, LatLngBounds, LatLng, Browser } from "leaflet";
+import {Icon, ImageOverlay, TileLayer, Map, SimpleCRS, SVG, LayerGroup, Popup, LatLngBounds, LatLng } from "leaflet";
 import squadGrid from "./squadGrid.js";
 import squadHeightmap from "./squadHeightmaps.js";
 import { App } from "../app.js";
@@ -18,13 +18,15 @@ import "./libs/leaflet-spin.js";
 import "./libs/leaflet-imageoverlay-rotated.js";
 
 
+const isMobile = matchMedia("(pointer: coarse)").matches;
+
 /**
  * Squad Minimap
  * Custom Leaflet Map for Squad, managing basemaps, mouse behaviours, and more
  * @extends {Map} - Leaflet Map
  * @class squadMinimap
  */
-export const squadMinimap = Map.extend({
+export class squadMinimap extends Map {
 
     /**
      * Initialize Map
@@ -33,14 +35,14 @@ export const squadMinimap = Map.extend({
      * @param {Object} [defaultMap] - squad map to initialize
      * @param {Array} [options]
      */
-    initialize: function (id, pixelSize, defaultMap, options) {
+    constructor(id, pixelSize, defaultMap, options) {
 
         let customOptions = {
             attributionControl: false,
             boxZoom: false,
             center: [-pixelSize/2, pixelSize/2],
             closePopupOnClick: false,
-            crs: CRS.Simple,
+            crs: SimpleCRS,
             doubleClickZoom: false,
             maxZoom: 8,
             minZoom: 1,
@@ -56,8 +58,7 @@ export const squadMinimap = Map.extend({
             zoomAnimation: App.userSettings.smoothMap,
         };
 
-        Util.setOptions(this, customOptions);
-        Map.prototype.initialize.call(this, id, options);
+        super(id, { ...customOptions, ...options });
         this.activeMap = defaultMap;
         this.pixelSize = pixelSize;
         this.imageBounds = new LatLngBounds({lat: 0, lng:0}, {lat: -this.pixelSize, lng: this.pixelSize});
@@ -90,7 +91,7 @@ export const squadMinimap = Map.extend({
         this.contextMenu = new squadContextMenu();
 
         
-        if (!Browser.mobile) {
+        if (!isMobile) {
             // On desktop create markers with a double click
             this.on("click", function(e) { this._handleclick(e); });
             this.on("dblclick", function(e) { this._handleDoubleClick(e); });
@@ -114,13 +115,13 @@ export const squadMinimap = Map.extend({
         this.currentLine = null;
         this.points = [];
 
-    },
+    }
 
 
     /**
      * Initiate Heightmap & Grid then load layer
      */
-    draw: function(){
+    draw(){
 
         this.gameToMapScale = this.pixelSize / this.activeMap.size;
         this.gameToMapScaleY = this.pixelSize / this.activeMap.sizeY;
@@ -160,13 +161,13 @@ export const squadMinimap = Map.extend({
 
         // load map
         this.changeLayer(true);
-    },
+    }
 
 
     /**
      * remove existing layer and replace it
      */
-    changeLayer: function(changemap = false) {
+    changeLayer(changemap = false) {
         const LAYERMODE = this.activeMap.singleLayer ? "basemap" : $("#mapLayerMenu .active").attr("value");
         const OLDLAYER = this.activeLayer;
 
@@ -223,13 +224,13 @@ export const squadMinimap = Map.extend({
             this.toggleHeatmap();
         }
 
-    },
+    }
 
 
     /**
      * Show/Hide heatmap of commonly used
      */
-    toggleHeatmap: function(){
+    toggleHeatmap(){
 
         if ($(".btn-helpmap").hasClass("active")){
             this.spin(true, this.spinOptions);
@@ -257,24 +258,24 @@ export const squadMinimap = Map.extend({
             this.removeLayer(this.heatmap);
             this.heatmap = null;
         }
-    },
+    }
 
 
     /**
      * Force the Browser to decode of the current map image
      * Hack for Chrome lag when first zooming inside a 4k image
      */
-    decode: function(){
+    decode(){
         const IMG = new Image();
         IMG.src = this.activeLayer._url;
         IMG.decode();
-    },
+    }
 
 
     /**
      * Reset map by clearing every Markers/Layers
      */
-    clear: function(){
+    clear(){
 
         // Clear Every existing Markers
         this.markersGroup.clearLayers();
@@ -298,26 +299,26 @@ export const squadMinimap = Map.extend({
 
         // Reset map view
         this.setView([-this.pixelSize/2, this.pixelSize/2], 2);
-    },
+    }
 
     
     /**
      * Recalc and update every target marker on the minimap
      */
-    updateTargets: function(copy = false){
+    updateTargets(copy = false){
         // Update existent targets
         this.activeTargetsMarkers.eachLayer(function (target) {
             target.updateCalc(copy);
             target.updateIcon();
         });
-    },
+    }
 
 
     /**
      * Fade Out existing targets except the hovered one
      * @param {squadTargetMarker} hoveredTarget - Target that is hovered
      */
-    fadeOtherTargets: function(hoveredTarget){
+    fadeOtherTargets(hoveredTarget){
         this.activeTargetsMarkers.eachLayer((target) => {
             if (target != hoveredTarget) {
                 target.off("pointerover");
@@ -332,86 +333,86 @@ export const squadMinimap = Map.extend({
                 target.grid.hide();
             }
         });
-    },
+    }
 
 
     /**
     * Recalc and update every target spread circle
     */
-    updateTargetsSpreads: function(){
+    updateTargetsSpreads(){
         // Update existent targets
         this.activeTargetsMarkers.eachLayer(function (target) {
             target.updateSpread();
             target.updateDamageRadius();
         });
-    },
+    }
 
 
     /**
      * Delete every target markers on the map
      */
-    deleteTargets: function(){
+    deleteTargets(){
         this.activeTargetsMarkers.eachLayer(function (target) {
             target.delete();
         });
-    },
+    }
 
 
     /**
      * Delete every target markers on the map
      */
-    deletePolylines: function(){
+    deletePolylines(){
         this.activePolylines.forEach(function (poly) {
             poly.delete();
         });
-    },
+    }
 
 
     /**
      * Delete every Contextmenu markers on the map
      */
-    deleteMarkers: function(){
+    deleteMarkers(){
         this.activeMarkers.eachLayer(function (marker) {
             marker.delete();
         });
-    },
+    }
 
 
     /**
      * Delete every Contextmenu Circle on the map
      */
-    deleteCircles: function(){
+    deleteCircles(){
         this.activeCircles.forEach(function (circle) {
             circle.delete();
         });
-    },
+    }
 
 
     /**
      * Delete every Contextmenu Arrows on the map
      */
-    deleteArrows: function(){
+    deleteArrows(){
         this.activeArrows.forEach(arrow => {
             arrow.delete();
         });
-    },
+    }
 
 
     /**
      * Delete every Contextmenu markers on the map
      */
-    deleteRectangles: function(){
+    deleteRectangles(){
         this.activeRectangles.forEach(rectangle => {
             rectangle.delete();
         });
-    },
+    }
 
 
     /**
      * Return true if there is at least one marker on the map
      * @returns {Boolean}
      */
-    hasMarkers: function(){
+    hasMarkers(){
         return (
             this.activeArrows.length > 0 ||
             this.activeMarkers.getLayers().length > 0 ||
@@ -420,18 +421,18 @@ export const squadMinimap = Map.extend({
             this.activeCircles.length > 0 ||
             this.activePolylines.length > 0
         );
-    },
+    }
 
 
     /**
      * Recalc and update every target marker on the minimap
      */
-    updateWeapons: function(){
+    updateWeapons(){
         // Update existent targets
         this.activeWeaponsMarkers.eachLayer(function (weapon) {
             weapon.updateWeapon();
         });
-    },
+    }
 
 
     /**
@@ -441,7 +442,7 @@ export const squadMinimap = Map.extend({
      * @param precision - Optionnal, current map zoom by default
      * @returns {string} keypad coordinates as string, e.g. "A5-3-7"
      */
-    getKP: function(lat, lng, precision = Math.round(this.getZoom())) {
+    getKP(lat, lng, precision = Math.round(this.getZoom())) {
         // to minimize confusion
         const x = lng * this.mapToGameScale;
         const y = lat * this.mapToGameScale;
@@ -502,7 +503,7 @@ export const squadMinimap = Map.extend({
         default:
             return `${kpLetter}${kpNumber}-${subNumber}-${sub2Number}-${sub3Number}-${sub4Number}`;
         }
-    },
+    }
 
     /**
      * Add a new weapon marker to the minimap
@@ -542,7 +543,7 @@ export const squadMinimap = Map.extend({
             );
         }
 
-    },
+    }
 
     /**
      * Add a new target marker to the minimap
@@ -583,7 +584,7 @@ export const squadMinimap = Map.extend({
                 target.updateIcon(); // Update icon to remove the animation class, it was causing painfull DOM bug otherwise
             }, 250);
         }
-    },
+    }
 
     /**
      * Update Mouse Location Content
@@ -593,7 +594,7 @@ export const squadMinimap = Map.extend({
         const KP = this.getKP(-latlng.lat, latlng.lng);
         this.mouseLocationPopup.setLatLng(latlng).openOn(this);
         this.mouseLocationPopup.setContent(`<span>${KP.substring(0, 7)}</span><span class="subkp">${KP.substring(7, 11)}</span>`);
-    },
+    }
 
 
     /**
@@ -601,7 +602,7 @@ export const squadMinimap = Map.extend({
      * If in Session, create a visual ping and send it to the session
      * @param {event} event
      */
-    _handleclick: function(event) {
+    _handleclick(event) {
 
         // If in drawing mode, ignore context menu
         if (this.drawingMode) return;
@@ -617,14 +618,14 @@ export const squadMinimap = Map.extend({
                 );
             }
         }
-    },
+    }
 
     
     /**
      * Right-Click
      * Place a new WeaponMarker / Open ContextMenu
      */
-    _handleContextMenu: function(event) {
+    _handleContextMenu(event) {
         // If out of bounds
         if (!this.imageBounds.contains(event.latlng)) return 1;
 
@@ -637,14 +638,14 @@ export const squadMinimap = Map.extend({
             this.createWeapon(event.latlng);
         }
 
-    },
+    }
 
 
     /**
      * Double-Click
      * Create a new target, or weapon is none exists
      */
-    _handleDoubleClick: function (event) {
+    _handleDoubleClick(event) {
 
         // If out of bounds
         if (!this.imageBounds.contains(event.latlng)) return 1;
@@ -659,22 +660,22 @@ export const squadMinimap = Map.extend({
         }
 
         this.createTarget(event.latlng, event);
-    },
+    }
 
 
     /**
      * Mouse-Out of minimap
      * Hide mouse keypad popup when leaving map
      */
-    _handleMouseOut: function() {
+    _handleMouseOut() {
         this.mouseLocationPopup.close();
-    },
+    }
 
 
     /**
      * Display and update hovered keypad under cursor
      */
-    _handleMouseMove: function (event) {
+    _handleMouseMove(event) {
 
         // If out of bounds
         if (!this.imageBounds.contains(event.latlng)) {
@@ -683,13 +684,13 @@ export const squadMinimap = Map.extend({
         } 
 
         this.updateMouseLocationPopup(event.latlng);
-    },
+    }
 
 
     /**
      * map zoomend event handler
      */
-    _handleZoom: function() {
+    _handleZoom() {
 
         // Update keypadUnderMouse precision
         if (App.userSettings.keypadUnderCursor && App.hasMouse){
@@ -716,7 +717,7 @@ export const squadMinimap = Map.extend({
             this.layer.vehicleSpawners.forEach(spawn => { spawn.hide(); });
         }
 
-    },
+    }
 
     createMarker(latlng, team, category, icon, uid = false) {
         let markerOptions = { icon: "", circlesOnHover: false, team: team, category: category, icontype: icon, uid: uid };
@@ -803,7 +804,7 @@ export const squadMinimap = Map.extend({
             );
         }
         
-    },
+    }
 
 
     disableDrawingMode() {
@@ -811,7 +812,7 @@ export const squadMinimap = Map.extend({
         this.drawingMode = false;
         $("#map").css("cursor", App.userSettings.cursor ? "default" : "crosshair");
         $(".btn-drawingMode").hide();
-    },
+    }
 
 
     enableDrawingMode() {
@@ -819,10 +820,10 @@ export const squadMinimap = Map.extend({
         this.drawingMode = true;
         $("#map").css("cursor", "pointer");
         $(".btn-drawingMode").show();
-    },
+    }
 
 
-    createCircle: function (color, uid = false) {
+    createCircle(color, uid = false) {
         let isDrawing = true;
         let circle = null;
         const startLatLng = this.contextMenu.mainContextMenu.e.latlng;
@@ -879,9 +880,9 @@ export const squadMinimap = Map.extend({
         this.on("pointermove", handleMouseMove);
         this.once("click", handleClick);
         this.on("contextmenu", handleRightClick);
-    },
+    }
 
-    createArrow: function (color, uid = false) {
+    createArrow(color, uid = false) {
         let isDrawing = false;
         let arrow = null;
     
@@ -940,10 +941,10 @@ export const squadMinimap = Map.extend({
             this.once("click", handleClick); // Finalize the arrow on click
             this.on("contextmenu", handleRightClick); // Cancel on right-click
         }
-    },
+    }
 
 
-    createRectangle: function (color, uid = false) {
+    createRectangle(color, uid = false) {
         let isDrawing = true;
         let rectangle = null;
         const startLatLng = this.contextMenu.mainContextMenu.e.latlng;
@@ -996,6 +997,6 @@ export const squadMinimap = Map.extend({
         this.on("pointermove", handleMouseMove);
         this.once("click", handleClick);
         this.on("contextmenu", handleRightClick);
-    },
+    }
 
-});
+}

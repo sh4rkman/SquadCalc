@@ -53,11 +53,6 @@ var SpinMapInitHook = function () {
 Object.assign(LeafletMap.prototype, SpinMapMixin);
 
 // Add init hook (replaces L.Map.addInitHook)
-const originalInitialize = LeafletMap.prototype.initialize;
-LeafletMap.prototype.initialize = function(id, options) {
-    const result = originalInitialize.call(this, id, options);
-    SpinMapInitHook.call(this);
-    return result;
-};
+LeafletMap.addInitHook(SpinMapInitHook);
 
 export default SpinMapMixin;

@@ -11,25 +11,26 @@ import { Marker, Polyline, Polygon, LayerGroup, Util, Layer, DomUtil, Circle } f
 (function() {
     "use strict";
 
-    Marker.Measurement = Layer.extend({
-        options: {
+    class Measurement extends Layer {
+        static defaultOptions = {
             pane: "markerPane"
-        },
+        };
 
-        initialize: function(latlng, measurement, title, rotation, options) {
+        constructor(latlng, measurement, title, rotation, options) {
+            super(options);
             Util.setOptions(this, options);
             this._latlng = latlng;
             this._measurement = measurement;
             this._title = title;
             this._rotation = rotation;
-        },
+        }
 
-        addTo: function(map) {
+        addTo(map) {
             map.addLayer(this);
             return this;
-        },
+        }
 
-        onAdd: function(map) {
+        onAdd(map) {
             this._map = map;
             let pane = this.getPane ? this.getPane() : map.getPanes().markerPane;
             let el = this._element = DomUtil.create("div", "leaflet-zoom-animated leaflet-measure-path-measurement", pane);
@@ -40,26 +41,28 @@ import { Marker, Polyline, Polygon, LayerGroup, Util, Layer, DomUtil, Circle } f
             map.on("zoomanim", this._animateZoom, this);
 
             this._setPosition();
-        },
+        }
 
-        onRemove: function(map) {
+        onRemove(map) {
             map.off("zoomanim", this._animateZoom, this);
             let pane = this.getPane ? this.getPane() : map.getPanes().markerPane;
             pane.removeChild(this._element);
             this._map = null;
-        },
+        }
 
-        _setPosition: function() {
+        _setPosition() {
             DomUtil.setPosition(this._element, this._map.latLngToLayerPoint(this._latlng));
             this._element.style.transform += " rotate(" + this._rotation + "rad)";
-        },
+        }
 
-        _animateZoom: function(opt) {
+        _animateZoom(opt) {
             var pos = this._map._latLngToNewLayerPoint(this._latlng, opt.zoom, opt.center).round();
             DomUtil.setPosition(this._element, pos);
             this._element.style.transform += " rotate(" + this._rotation + "rad)";
         }
-    });
+    }
+
+    Marker.Measurement = Measurement;
 
     Marker.measurement = function(latLng, measurement, title, rotation, options) {
         return new Marker.Measurement(latLng, measurement, title, rotation, options);

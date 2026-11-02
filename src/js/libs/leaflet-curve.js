@@ -13,10 +13,8 @@ import { Path, LatLngBounds, LatLng, Util } from "leaflet";
 
 export class Curve extends Path {
 
-    // Leaflet 2 layers init via initialize(), not a real ES constructor
-    // (Class.constructor calls Util.setOptions(this) with no args, so
-    // options passed to a plain `constructor()` override here are dropped).
-    initialize(path, options) {
+    constructor(path, options) {
+        super(options);
         Util.setOptions(this, options);
         this._setPath(path);
     }

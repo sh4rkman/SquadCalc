@@ -8,22 +8,22 @@
 * The patch change the visualClick to be manually triggered and its color to be set
 */
 
-import { Map, Marker, Handler, DivIcon, Browser} from "leaflet";
+import { Map, Marker, Handler, DivIcon } from "leaflet";
 
-Map.VisualClick = Handler.extend({
+Map.VisualClick = class extends Handler {
 
-    _makeVisualIcon: function(color){
+    _visualIcon = null;
+
+    _makeVisualIcon(color){
         var touchMode = this._map.options.visualClickMode === "touch" ? true : false;
         return new DivIcon({
             className: "leaflet-visualclick-icon" + (touchMode ? "-touch" : "") + " " + color,
             iconSize: [0, 0],
             clickable: false
         });
-    },
+    }
 
-    _visualIcon: null,
-
-    triggerVisualClick: function(latlng, color = "white") {
+    triggerVisualClick(latlng, color = "white") {
 
         var map = this._map;
 
@@ -40,23 +40,17 @@ Map.VisualClick = Handler.extend({
         }.bind(this), map.options.visualClick.removeTimeout || 450);    // Should somewhat match the css animation to prevent loops
 
         return true;
-    },
+    }
 
-    addHooks: function () {
-        if (this._map.options.visualClickPane === "ie10-visual-click-pane") {
-            this._map.createPane("ie10-visual-click-pane");
-        }
-    },
+    addHooks() {}
 
-});
+};
 
 
 Map.mergeOptions({
-    visualClick: Browser.any3d ? true : false, //Can be true, desktop, touch, false. Not straight forward to use L.Browser.touch flag because true on IE10
-    visualClickMode: Browser.touch && Browser.mobile ? "touch" : "desktop", //Not straight forward to use only L.Browser.touch flag because true on IE10 - so this is slightly better
-    visualClickPane: (Browser.ie && document.documentMode === 10) ?
-        "ie10-visual-click-pane" :
-        "shadowPane"	// Map pane where the pulse markers will be shown
+    visualClick: true,
+    visualClickMode: matchMedia("(pointer: coarse)").matches ? "touch" : "desktop",
+    visualClickPane: "shadowPane"	// Map pane where the pulse markers will be shown
 });
 
 Map.addInitHook("addHandler", "visualClick", Map.VisualClick);

@@ -1,10 +1,12 @@
 
 import { App } from "../app.js";
-import { DivIcon, Browser } from "leaflet";
+import { DivIcon } from "leaflet";
 import { animateCSS } from "./animations.js";
 import i18next from "i18next";
 import { squadVehicleMarker } from "./squadVehicleMarker.js";
 import tippy from "tippy.js";
+
+const isMobile = matchMedia("(pointer: coarse)").matches;
 
 export default class SquadFactions {
 
@@ -458,7 +460,7 @@ export default class SquadFactions {
      * @param {*} event
      */
     openCard(event) {
-        if ($(event.target).closest(".vehicle-type").length && !Browser.mobile) return;
+        if ($(event.target).closest(".vehicle-type").length && !isMobile) return;
         if ($(event.target).closest(".armor-link, .wiki-link").length) return;
 
         const $card = $(event.currentTarget);
@@ -1101,7 +1103,7 @@ export default class SquadFactions {
             // Handle click-to-copy
             $(".vehicle-card").off("click").on("click", (event) => { this.openCard(event); });
 
-            if (!Browser.mobile) $(".vehicle-type").off("click").on("click", (event) => { this.copyVehicleName(event); });
+            if (!isMobile) $(".vehicle-type").off("click").on("click", (event) => { this.copyVehicleName(event); });
             this.renderUnitBtn(1);
 
             // Load Commanders Icons & Tooltips
@@ -1171,7 +1173,7 @@ export default class SquadFactions {
             this.loadCharacteristics("#team2Characteristics", selectedUnit);
 
             // Handle click-to-copy
-            if (!Browser.mobile) $(".vehicle-type").off("click").on("click", (event) => { this.copyVehicleName(event); });
+            if (!isMobile) $(".vehicle-type").off("click").on("click", (event) => { this.copyVehicleName(event); });
             $(".vehicle-card").off("click").on("click", (event) => { this.openCard(event); });
             this.renderUnitBtn(2);
 

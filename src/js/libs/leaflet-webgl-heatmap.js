@@ -10,12 +10,12 @@ import {
     DomUtil, Util, Renderer, LatLng, DomEvent 
 } from "leaflet";
 
-export default Renderer.extend({
+export default class extends Renderer {
 
     // tested on Leaflet 1.0.3
-    version: "0.2.7",
+    version = "0.2.7";
 
-    options: {
+    static defaultOptions = {
         // @option size: Number
         // corresponds with units below
         size: 30000,
@@ -25,12 +25,15 @@ export default Renderer.extend({
         opacity: 1,
         gradientTexture: false,
         alphaRange: 1,
-        // @option padding: 
+        // @option padding:
         // don't add padding (0 helps with zoomanim)
         padding: 0
-    },
+    };
 
-    _initContainer: function() {
+    // data handling state
+    data = [];
+
+    _initContainer() {
         var container = this._container = DomUtil.create("canvas", "leaflet-zoom-animated"),
             options = this.options;
 
@@ -46,7 +49,7 @@ export default Renderer.extend({
             });
         } catch (e) {
             console.error(e);
-            
+
             // setup for webgl-less unit testing
             this.gl = {
                 clear: function () {},
@@ -59,30 +62,30 @@ export default Renderer.extend({
         }
 
         this._container = container;
-    },
+    }
 
-    onAdd: function() {
+    onAdd() {
         // save this to a shorter method
         this.size = this.options.size;
 
-        Renderer.prototype.onAdd.call(this);
+        super.onAdd();
 
         this.resize();
-    },
+    }
 
     // onRemove-ish
-    _destroyContainer: function () {
+    _destroyContainer() {
         delete this.gl;
         this._container.remove();
         DomEvent.off(this._container);
         delete this._container;
-    },
+    }
 
     // events
 
-    getEvents: function() {
-        var events = Renderer.prototype.getEvents.call(this);
-        
+    getEvents() {
+        var events = super.getEvents();
+
         // Replace Util.extend with Object.assign or spread operator
         Object.assign(events, {
             resize: this.resize,
@@ -91,9 +94,9 @@ export default Renderer.extend({
         });
 
         return events;
-    },
+    }
 
-    resize: function() {
+    resize() {
         var canvas = this._container,
             size = this._map.getSize();
 
@@ -102,25 +105,25 @@ export default Renderer.extend({
 
         this.gl.adjustSize();
         this.draw();
-    },
+    }
 
-    reposition: function() {
+    reposition() {
         // canvas moves opposite to map pane's position
         var pos = this._map
             ._getMapPanePos()
             .multiplyBy(-1);
 
         DomUtil.setPosition(this._container, pos);
-    },
+    }
 
-    _update: function() {
-        Renderer.prototype._update.call(this);
+    _update() {
+        super._update();
         this.draw();
-    },
+    }
 
     // draw function
 
-    draw: function() {
+    draw() {
         var map = this._map,
             heatmap = this.gl,
             data = this.data,
@@ -158,50 +161,48 @@ export default Renderer.extend({
 
         }
         heatmap.display();
-    },
+    }
 
-    // scale methods 
+    // scale methods
 
-    _scalem: function(latlng) {
+    _scalem(latlng) {
         // necessary to maintain accurately sized circles
         // to change scale to miles (for example), you will need to convert 40075017 (equatorial circumference of the Earth in metres) to miles
         var map = this._map,
             // lngRadius = (this.size / 2) * 360 / Math.cos((Math.PI / 180) * latlng.lat),
-            lngRadius = (this.size / 2), // Patch for no earth projection  
+            lngRadius = (this.size / 2), // Patch for no earth projection
             latlng2 = new LatLng(latlng.lat, latlng.lng - lngRadius),
             point = map.latLngToLayerPoint(latlng),
             point2 = map.latLngToLayerPoint(latlng2);
 
         return Math.max(Math.round(point.x - point2.x), 1);
-    },
+    }
 
-    _scalepx: function() {
+    _scalepx() {
         return this.size;
-    },
+    }
 
     // data handling methods
 
-    data: [],
-
-    addDataPoint: function(lat, lon, value) {
+    addDataPoint(lat, lon, value) {
         this.data.push([lat, lon, value / 100]);
-    },
+    }
 
-    setData: function(dataset) {
+    setData(dataset) {
         // format: [[lat, lon, intensity],...]
         this.data = dataset;
         this._multiply = null;
         this.draw();
-    },
+    }
 
-    clear: function() {
+    clear() {
         this.setData([]);
-    },
+    }
 
     // affects original points
-    multiply: function(n) {
+    multiply(n) {
         this._multiply = n;
         this.draw();
     }
 
-});
+}

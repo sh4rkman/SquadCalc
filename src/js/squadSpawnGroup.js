@@ -1,23 +1,24 @@
-import { Marker, Icon, Browser, DomEvent } from "leaflet";
+import { Marker, Icon, DomEvent } from "leaflet";
 import { App } from "../app.js";
 import tippy, { sticky } from "tippy.js";
 import i18next from "i18next";
 
+const isMobile = matchMedia("(pointer: coarse)").matches;
 
-export const squadSpawnGroup = Marker.extend({
+export class squadSpawnGroup extends Marker {
 
-    options: {
+    static defaultOptions = {
         draggable: false,
         riseOnHover: false,
         keyboard: false,
         animate: true,
         zIndexOffset: -900
-    },
+    };
 
     // Constructor
-    initialize: function (latlng, spawnGroup, layer, options) {
-        
-        Marker.prototype.initialize.call(this, latlng, options);
+    constructor(latlng, spawnGroup, layer, options) {
+
+        super(latlng, options);
 
         this.data = spawnGroup;
         this.layer = layer;
@@ -33,7 +34,7 @@ export const squadSpawnGroup = Marker.extend({
                 className: "vehSpawnIcon"
             }));
 
-        if (!Browser.mobile) {
+        if (!isMobile) {
             this.on("pointerover", this._handleOver, this);
             this.on("pointerout", this._handleOut, this);
         } else {
@@ -43,8 +44,8 @@ export const squadSpawnGroup = Marker.extend({
         // Catch this events and disable propagation
         this.on("contextmenu", this._handleContextMenu, this);
         this.on("dblclick", this._handleUnwantedActions, this);
-        
-    },
+
+    }
 
 
     open(event) {
@@ -69,9 +70,9 @@ export const squadSpawnGroup = Marker.extend({
 
 
         // On mobile manually trigger without delay
-        if (Browser.mobile) el._tippy.show();
+        if (isMobile) el._tippy.show();
 
-    },
+    }
 
 
     _onShow(tip) {
@@ -118,7 +119,7 @@ export const squadSpawnGroup = Marker.extend({
         `;
         
         this.tip.setContent(html);
-    },
+    }
 
 
     getDelayHTML() {
@@ -142,7 +143,7 @@ export const squadSpawnGroup = Marker.extend({
                 <span> ${delay}</span>
             </div>
         `;
-    },
+    }
 
 
     getSpawningEnabledHTML() {
@@ -159,25 +160,25 @@ export const squadSpawnGroup = Marker.extend({
                 <span> ${i18next.t("common:disabledSpawn")}</span>
             </div>
         `;
-    },
+    }
 
 
 
     _cleanup(tip) {
         if (tip._cleanup) tip._cleanup();
         tip.destroy();
-    },
+    }
 
 
-    _handleOver: function(event){
+    _handleOver(event){
         this.open(event);
-    },
+    }
 
 
     _handleOut(event) {
         const el = event.target._icon;
         if (el._tippy) el._tippy.hide();
-    },
+    }
 
     _handleContextMenu(event) {
         DomEvent.preventDefault(event);
@@ -194,7 +195,7 @@ export const squadSpawnGroup = Marker.extend({
         // remove marker from map
         this.remove();
 
-    },
+    }
 
 
 
@@ -213,14 +214,14 @@ export const squadSpawnGroup = Marker.extend({
 
         // Remove the found ammobox;
         nearbyAssets.forEach(asset => { asset.remove(); });
-    },
+    }
 
 
 
     _handleUnwantedActions(event) {
         DomEvent.preventDefault(event);
         DomEvent.stopPropagation(event);
-        return false;  
+        return false;
     }
 
-});
+}

@@ -25,9 +25,11 @@
 import { DomUtil, ImageOverlay, LatLng, Util, Bounds, LatLngBounds } from "leaflet";
 
 
-ImageOverlay.Rotated = ImageOverlay.extend({
+class Rotated extends ImageOverlay {
 
-    initialize: function (image, topleft, topright, bottomleft, options) {
+    constructor(image, topleft, topright, bottomleft, options) {
+
+        super(undefined, undefined, options);
 
         if (typeof (image) === "string") {
             this._url = image;
@@ -41,10 +43,10 @@ ImageOverlay.Rotated = ImageOverlay.extend({
         this._bottomLeft = new LatLng(bottomleft);
 
         Util.setOptions(this, options);
-    },
+    }
 
 
-    onAdd: function (map) {
+    onAdd(map) {
         if (!this._image) {
             this._initImage();
 
@@ -62,16 +64,16 @@ ImageOverlay.Rotated = ImageOverlay.extend({
 
         this.getPane().appendChild(this._image);
         this._reset();
-    },
+    }
 
 
-    onRemove: function(map) {
+    onRemove(map) {
         map.off("zoomend resetview", this._reset, this);
-        ImageOverlay.prototype.onRemove.call(this, map);
-    },
+        super.onRemove(map);
+    }
 
 
-    _initImage: function () {
+    _initImage() {
         var img = this._rawImage;
         if (this._url) {
             img = DomUtil.create("img");
@@ -105,10 +107,10 @@ ImageOverlay.Rotated = ImageOverlay.extend({
         }.bind(this);
 
         img.alt = this.options.alt;
-    },
+    }
 
 
-    _reset: function () {
+    _reset() {
         var div = this._image;
 
         if (!this._map) {
@@ -159,18 +161,18 @@ ImageOverlay.Rotated = ImageOverlay.extend({
 			(vectorY.x/imgH) + ", " + (vectorY.y/imgH) + ", " +
 			pxTopLeftInDiv.x + ", " + pxTopLeftInDiv.y + ")";
 
-    },
+    }
 
 
-    reposition: function(topleft, topright, bottomleft) {
+    reposition(topleft, topright, bottomleft) {
         this._topLeft    = new LatLng(topleft);
         this._topRight   = new LatLng(topright);
         this._bottomLeft = new LatLng(bottomleft);
         this._reset();
-    },
+    }
 
 
-    setUrl: function (url) {
+    setUrl(url) {
         this._url = url;
 
         if (this._rawImage) {
@@ -178,7 +180,9 @@ ImageOverlay.Rotated = ImageOverlay.extend({
         }
         return this;
     }
-});
+}
+
+ImageOverlay.Rotated = Rotated;
 
 /* 🍂factory imageOverlay.rotated(imageUrl: String|HTMLImageElement|HTMLCanvasElement, topleft: LatLng, topright: LatLng, bottomleft: LatLng, options?: ImageOverlay options)
  * Instantiates a rotated/skewed image overlay, given the image URL and

@@ -20,24 +20,24 @@ Map.mergeOptions({
 });
 
 
-Map.SmoothWheelZoom = Handler.extend({
+Map.SmoothWheelZoom = class extends Handler {
 
-    addHooks: function () {
+    addHooks() {
         DomEvent.on(this._map._container, "wheel", this._onWheelScroll, this);
-    },
+    }
 
-    removeHooks: function () {
+    removeHooks() {
         DomEvent.off(this._map._container, "wheel", this._onWheelScroll, this);
-    },
+    }
 
-    _onWheelScroll: function (e) {
+    _onWheelScroll(e) {
         if (!this._isWheeling) {
             this._onWheelStart(e);
         }
         this._onWheeling(e);
-    },
+    }
 
-    _onWheelStart: function (e) {
+    _onWheelStart(e) {
         var map = this._map;
         this._isWheeling = true;
         this._wheelMousePosition = map.pointerEventToContainerPoint(e);
@@ -57,9 +57,9 @@ Map.SmoothWheelZoom = Handler.extend({
         this._prevZoom = map.getZoom();
 
         this._zoomAnimationId = requestAnimationFrame(this._updateWheelZoom.bind(this));
-    },
+    }
 
-    _onWheeling: function (e) {
+    _onWheeling(e) {
         var map = this._map;
 
         this._goalZoom = this._goalZoom + DomEvent.getWheelDelta(e) * 0.003 * map.options.smoothSensitivity;
@@ -74,15 +74,15 @@ Map.SmoothWheelZoom = Handler.extend({
 
         DomEvent.preventDefault(e);
         DomEvent.stopPropagation(e);
-    },
+    }
 
-    _onWheelEnd: function () {
+    _onWheelEnd() {
         this._isWheeling = false;
         cancelAnimationFrame(this._zoomAnimationId);
         this._map._moveEnd(true);
-    },
+    }
 
-    _updateWheelZoom: function () {
+    _updateWheelZoom() {
         var map = this._map;
         var delta = this._wheelMousePosition.subtract(this._centerPoint);
 
@@ -115,6 +115,6 @@ Map.SmoothWheelZoom = Handler.extend({
         this._zoomAnimationId = requestAnimationFrame(this._updateWheelZoom.bind(this));
     }
 
-});
+};
 
 Map.addInitHook("addHandler", "smoothWheelZoom", Map.SmoothWheelZoom );

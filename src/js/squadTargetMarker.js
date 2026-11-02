@@ -12,14 +12,14 @@ import i18next from "i18next";
 const CARPET_MAX_TARGETS = 10;
 const GRID_MAX_SIDE = 5;
 
-export const squadTargetMarker = squadMarker.extend({
+export class squadTargetMarker extends squadMarker {
 
-    initialize: function (latlng, options, map) {
+    constructor(latlng, options, map) {
 
-        squadMarker.prototype.initialize.call(this, latlng, options, map);
+        super(latlng, options, map);
 
         if (options.uid) this.fromSession = true;
-        
+
         let popUpOptions_weapon1 = {
             autoPan: false,
             autoClose: false,
@@ -100,7 +100,7 @@ export const squadTargetMarker = squadMarker.extend({
         // Calc PopUps
         this.calcMarker1 = new Popup(popUpOptions_weapon1).setLatLng(latlng).addTo(this.map.markersGroup);
         this.calcMarker2 = new Popup(popUpOptions_weapon2).setLatLng(latlng).addTo(this.map.markersGroup);
-        
+
         // posPopUp
         this.posPopUp = new Popup(this.posPopUpOptions).setLatLng(latlng).addTo(this.map.markersGroup).close();
         this.updateCalcPopUps();
@@ -108,7 +108,7 @@ export const squadTargetMarker = squadMarker.extend({
         const [html1, clipboard1] = this.getContent(this.firingSolution1, this.map.activeWeaponsMarkers.getLayers()[0].angleType);
         this.calcMarker1.setContent(html1).openOn(this.map);
         if (App.userSettings.copyTarget && !options.uid && !options.skipApiReport) navigator.clipboard.writeText(clipboard1);
-        
+
 
         // If two weapons already on the map
         if (this.map.activeWeaponsMarkers.getLayers().length === 2) {
@@ -128,7 +128,7 @@ export const squadTargetMarker = squadMarker.extend({
         this.spreadMarker1 = new Ellipse(latlng, [0, 0], 0, this.spreadOptionsOff).addTo(this.map.markersGroup);
         this.spreadMarker11 = new Ellipse(latlng, [0, 0], 0, this.spreadOptionsOff).addTo(this.map.markersGroup);
         this.spreadMarker2 = new Ellipse(latlng, [0, 0], 0, this.spreadOptionsOff).addTo(this.map.markersGroup);
-        
+
         this.updateSpread();
 
         // Initiate Damage Ellipse
@@ -151,14 +151,14 @@ export const squadTargetMarker = squadMarker.extend({
             this.on("pointerout", this._handleMouseOut, this);
         }
 
-    },
+    }
 
-    
+
     /**
      * Update the Calculation PopUps position
      * according to marker type selected in user settings (Large/Minimal)
      */
-    updateCalcPopUps: function(){
+    updateCalcPopUps(){
         if (!App.userSettings.targetAnimation) {
             this.calcMarker1.options.offset = [-60, 15];
             this.calcMarker2.options.offset = [63, 15];
@@ -169,13 +169,13 @@ export const squadTargetMarker = squadMarker.extend({
         }
         this.calcMarker1.update();
         this.calcMarker2.update();
-    },
+    }
 
 
     /**
      * Remove the target marker and every object tied
      */
-    delete: function(broadcast = true){
+    delete(broadcast = true){
 
         if (broadcast && App.session.ws && App.session.ws.readyState === WebSocket.OPEN) {
             App.session.ws.send(JSON.stringify({ type: "DELETE_TARGET", uid: this.uid}));
@@ -201,22 +201,22 @@ export const squadTargetMarker = squadMarker.extend({
 
         this.grid.clear();
         this.removeLineToTarget();
-        
+
         // Remove the marker itself
         this.removeFrom(this.map.markersGroup).removeFrom(this.map.activeTargetsMarkers).remove();
-    
+
         // If that was the last Marker on the map, hide "delete/undo" buttons
         if (!this.map.hasMarkers()) $(".btn-delete, .btn-undo").hide();
-    },
+    }
 
 
     /**
      * Returns the HTML content for the calculation popups
-     * @param {SquadFiringSolution} firingSolution 
-     * @param {String} angleType 
+     * @param {SquadFiringSolution} firingSolution
+     * @param {String} angleType
      * @returns {String[]} - [HTML content, summary text]
      */
-    getContent: function (firingSolution, angleType) {
+    getContent(firingSolution, angleType) {
         const DIST = firingSolution.distance;
         const BEARING = firingSolution.bearing;
         let heightDiff = firingSolution.heightDiff.toFixed(0);
@@ -228,8 +228,8 @@ export const squadTargetMarker = squadMarker.extend({
 
         /**
          * Formats elevation and time of flight values
-         * @param {Object} elevationData 
-         * @param {Number} timeOfFlight 
+         * @param {Object} elevationData
+         * @param {Number} timeOfFlight
          * @returns {[string, string]} - [elevation, timeOfFlight]
          */
         const formatElevationData = (elevationData, timeOfFlight) => {
@@ -275,7 +275,7 @@ export const squadTargetMarker = squadMarker.extend({
         }
 
         let content;
-        
+
         // Checks if last three elevation digits option is enabled and if selected weapon is "Mortar"
         // TODO move this in the previous if statement when other weapons are supported
         if (App.userSettings.lastDigits && ["Mortar"].includes(App.activeWeapon.name)){
@@ -289,24 +289,24 @@ export const squadTargetMarker = squadMarker.extend({
         if (App.userSettings.showDistance) content += `<br><span class=bearingUiCalc>${DIST.toFixed(0)}<span data-i18n="common:m">${i18next.t("common:m")}</span></span>`;
         if (App.userSettings.showHeight) content += `<br><span class=bearingUiCalc>${heightDiff}<span data-i18n="common:m">${i18next.t("common:m")}</span></span>`;
         return [content, `${i18next.t("common:elevation")}: ${elevation} - ${i18next.t("common:bearing")}: ${BEARING.toFixed(1)}°`];
-    },
+    }
 
 
 
     /*
     * Update target spread ellipses according to it's firing solutions
     */
-    updateSpread: function(){
+    updateSpread(){
         let spreadParameters;
         const weapons = this.map.activeWeaponsMarkers.getLayers();
         const gameToMapScale = this.map.gameToMapScale;
-    
+
         // No spread wanted, return
         if (!App.userSettings.spreadRadius) {
             this.disableSpreadRadii();
             return;
         }
-    
+
         const setSpreadMarker = (marker, firingSolution, layerIndex, reverse = false) => {
             const angleType = weapons[layerIndex].angleType;
             let elevation;
@@ -315,7 +315,7 @@ export const squadTargetMarker = squadMarker.extend({
             } else {
                 elevation = angleType === "high" ? firingSolution.elevation.high.rad : firingSolution.elevation.low.rad;
             }
-            
+
             if (!isNaN(elevation)) {
                 if (reverse) {
                     spreadParameters = angleType === "high" ? firingSolution.spreadParameters.low : firingSolution.spreadParameters.high;
@@ -329,16 +329,16 @@ export const squadTargetMarker = squadMarker.extend({
                 marker.setStyle(this.spreadOptionsOff);
             }
         };
-    
+
         // Spread for Weapon1
         setSpreadMarker(this.spreadMarker1, this.firingSolution1, 0);
-    
+
         if (App.userSettings.lowAndHigh &&
             App.activeWeapon.name != "Mortar" &&
              App.activeWeapon.name != "UB-32" &&
               App.activeWeapon.name != "M1064M121" &&
                App.activeWeapon.name != "Mk19" &&
-                App.activeWeapon.name != "BTR4-30mm") {  
+                App.activeWeapon.name != "BTR4-30mm") {
             setSpreadMarker(this.spreadMarker11, this.firingSolution1, 0, true);
         } else {
             this.spreadMarker11.setStyle(this.spreadOptionsOff);
@@ -350,40 +350,40 @@ export const squadTargetMarker = squadMarker.extend({
         } else {
             this.spreadMarker2.setStyle(this.spreadOptionsOff);
         }
-    },
+    }
 
 
-    disableDamageRadii: function() {
+    disableDamageRadii() {
         this.hundredDamageRadius.setStyle(this.spreadOptionsOff);
         this.twentyFiveDamageRadius.setStyle(this.spreadOptionsOff);
-    },
+    }
 
 
-    disableSpreadRadii: function() {
+    disableSpreadRadii() {
         this.spreadMarker1.setStyle(this.spreadOptionsOff);
         this.spreadMarker11.setStyle(this.spreadOptionsOff);
         this.spreadMarker2.setStyle(this.spreadOptionsOff);
-    },
+    }
 
 
     /*
     * Update target damage radius ellipses according to it's firing solutions
     */
-    updateDamageRadius: function() {
-        
+    updateDamageRadius() {
+
         // If damage radius is disabled, turn off the circles and exit
         if (!App.userSettings.damageRadius) {
             this.disableDamageRadii();
             return;
         }
-    
+
         // Calculate damage radii based on map scale
         const RADIUS100 = App.activeWeapon.hundredDamageRadius * this.map.gameToMapScale;
         const RADIUS25 = App.activeWeapon.twentyFiveDamageRadius * this.map.gameToMapScale;
-    
+
         // Check if first firing solution is valid
         const hasFiringSolution1 = !isNaN(this.firingSolution1.elevation.high.rad) || !isNaN(this.firingSolution1.elevation.low.rad);
-    
+
         // Default to first marker and bearing
         let baseRadiiX = this.spreadMarker1.getRadius().x;
         let baseRadiiY = this.spreadMarker1.getRadius().y;
@@ -392,13 +392,13 @@ export const squadTargetMarker = squadMarker.extend({
         // If two markers exist, do some additional checks
         if (this.map.activeWeaponsMarkers.getLayers().length == 2) {
             const hasFiringSolution2 = !isNaN(this.firingSolution2.elevation.high.rad) || !isNaN(this.firingSolution2.elevation.low.rad);
-            
+
             // If no valid solutions, turn off circles
             if (!hasFiringSolution1 && !hasFiringSolution2) {
                 this.disableDamageRadii();
                 return;
             }
-    
+
             // Adjust radii and bearing based on which solutions are valid
             if (!hasFiringSolution1) {
                 baseRadiiX = this.spreadMarker2.getRadius().x;
@@ -411,8 +411,8 @@ export const squadTargetMarker = squadMarker.extend({
             } else {
                 // If there are two firing solutions, draw a circle with the biggest radius found in the spreads
                 baseRadiiX = Math.max(
-                    this.spreadMarker1.getRadius().x, 
-                    this.spreadMarker2.getRadius().x, 
+                    this.spreadMarker1.getRadius().x,
+                    this.spreadMarker2.getRadius().x,
                     this.spreadMarker1.getRadius().y,
                     this.spreadMarker2.getRadius().y
                 );
@@ -427,14 +427,14 @@ export const squadTargetMarker = squadMarker.extend({
              App.activeWeapon.name != "UB-32" &&
               App.activeWeapon.name != "M1064M121" &&
                App.activeWeapon.name != "Mk19") {
-            baseRadiiX = Math.max(this.spreadMarker1.getRadius().x, this.spreadMarker11.getRadius().x);  
+            baseRadiiX = Math.max(this.spreadMarker1.getRadius().x, this.spreadMarker11.getRadius().x);
             baseRadiiY = Math.max(this.spreadMarker1.getRadius().y, this.spreadMarker11.getRadius().y);
         }
-    
+
         // Determine radii based on spread radius setting
         const hundredRadii = App.userSettings.spreadRadius ? [baseRadiiX + RADIUS100, baseRadiiY + RADIUS100] : [RADIUS100, RADIUS100];
         const twentyFiveRadii = App.userSettings.spreadRadius ? [baseRadiiX + RADIUS25, baseRadiiY + RADIUS25] : [RADIUS25, RADIUS25];
-    
+
         // Set radii, styles, and tilt
         this.hundredDamageRadius.setRadius(hundredRadii);
         this.twentyFiveDamageRadius.setRadius(twentyFiveRadii);
@@ -442,13 +442,13 @@ export const squadTargetMarker = squadMarker.extend({
         this.twentyFiveDamageRadius.setStyle(this.twentyFiveDamageCircleOn);
         this.hundredDamageRadius.setTilt(baseBearing);
         this.twentyFiveDamageRadius.setTilt(baseBearing);
-    },
+    }
 
 
     /*
     * Update target calculationPopups according to it's firing solutions
     */
-    updateCalc: function(copy = false){
+    updateCalc(copy = false){
         let clipboard;
         this.firingSolution1 = new SquadFiringSolution(this.map.activeWeaponsMarkers.getLayers()[0].getLatLng(), this.getLatLng(), this.map, this.map.activeWeaponsMarkers.getLayers()[0].heightPadding);
         const [html1, clipboard1] = this.getContent(this.firingSolution1, this.map.activeWeaponsMarkers.getLayers()[0].angleType);
@@ -475,21 +475,21 @@ export const squadTargetMarker = squadMarker.extend({
         this.updateSpread();
         this.updateDamageRadius();
         if (copy && App.userSettings.copyTarget) navigator.clipboard.writeText(clipboard);
-    },
+    }
 
 
     /**
      * Set/Update the target icon according to it's firing solutions and user settings
      * @param {Boolean} animated - If the icon should be animated when set
      */
-    updateIcon: function (animated = false) {
+    updateIcon(animated = false) {
         const weapons = this.map.activeWeaponsMarkers.getLayers();
         const angleType = weapons[0].angleType;
         const elevationKey = angleType === "high" ? "high" : "low";
-    
+
         const elevation = this.firingSolution1.elevation[elevationKey]?.rad;
         const elevation2 = weapons.length === 2 ? this.firingSolution2.elevation[elevationKey]?.rad : null;
-    
+
         const isSingleWeapon = weapons.length === 1;
         const bothElevationsInvalid = isNaN(elevation) && isNaN(elevation2);
         const isDisabled = (isSingleWeapon && isNaN(elevation)) || (!isSingleWeapon && bothElevationsInvalid);
@@ -552,9 +552,9 @@ export const squadTargetMarker = squadMarker.extend({
             };
         })(this));
 
-    },
+    }
 
-    _handleClick: function() {
+    _handleClick() {
         const DIALOG = document.getElementById("calcInformation");
         let simulation2;
         let weaponPos2;
@@ -598,10 +598,10 @@ export const squadTargetMarker = squadMarker.extend({
         }
 
         DIALOG.showModal();
-    },
+    }
 
     // Keep the marker on map & update calc while dragging
-    _handleDrag: function (event) {
+    _handleDrag(event) {
 
         // When dragging marker out of bounds, block it at the edge
         event = this.keepOnMap(event);
@@ -627,11 +627,11 @@ export const squadTargetMarker = squadMarker.extend({
         if (!App.hasMouse) return;
 
         // Update bearing/elevation/spread marker
-        this.updateCalc();  
-    },
+        this.updateCalc();
+    }
 
-    
-    _handleDragStart: function () {
+
+    _handleDragStart() {
         this.isDragging = true;
         this.map.mouseLocationPopup.close();
         this.map.off("pointermove", this.map._handleMouseMove);
@@ -648,14 +648,14 @@ export const squadTargetMarker = squadMarker.extend({
             // Set a different offset when several weapons are on the map
             let offset = this.map.activeWeaponsMarkers.getLayers()[1] ? [0, -20] : [0, -10];
             this.posPopUp.options.offset = offset;
-            this.posPopUp.openOn(this.map); 
+            this.posPopUp.openOn(this.map);
         }
-        
+
         this.miniCircle.setStyle({opacity: 1});
-    },
+    }
 
     // Hide stuff, do a final update and send data to API
-    _handleDragEnd: function (event) {
+    _handleDragEnd(event) {
 
         // Send the MOVING_WEAPON event to the server
         if (App.session.ws && App.session.ws.readyState === WebSocket.OPEN) {
@@ -675,7 +675,7 @@ export const squadTargetMarker = squadMarker.extend({
         this.isDragging = false;
         this.posPopUp.close();
         this.miniCircle.setStyle({opacity: 0});
-        
+
         // update one last time when drag end
         this.updateCalc(true);
         this.updateIcon();
@@ -687,10 +687,10 @@ export const squadTargetMarker = squadMarker.extend({
             weapon: App.activeWeapon.name,
             map: App.minimap.activeMap.name,
         });
-    },
+    }
 
     // Delete targetMarker on right clic
-    _handleContextMenu: function(e){
+    _handleContextMenu(e){
 
         // Avoid other target keeping fading
         clearTimeout(this.mouseOverTimeout);
@@ -714,16 +714,16 @@ export const squadTargetMarker = squadMarker.extend({
 
         // We can now safely start deleting
         this.delete();
-    },
+    }
 
     // On Hovering for more than 500ms hide other targets
-    _handleMouseOver: function() {
+    _handleMouseOver() {
         this.mouseOverTimeout = setTimeout(() => {
             if (!this.isDragging) this.map.fadeOtherTargets(this); // Hide other targets
         }, 500);
-    },
+    }
 
-    _handleMouseOut: function() {
+    _handleMouseOut() {
 
         // Cancel the timeout if the user moves the mouse out before 1 second
         clearTimeout(this.mouseOverTimeout);
@@ -744,9 +744,9 @@ export const squadTargetMarker = squadMarker.extend({
                 target.grid.show();
             });
         }
-    },
+    }
 
-    getFirstAvailableWeapon: function () {
+    getFirstAvailableWeapon() {
         if (
             this.map.activeWeaponsMarkers.getLayers().length === 2 &&
             isNaN(this.firingSolution1.elevation.high.rad) && isNaN(this.firingSolution1.elevation.low.rad) &&
@@ -756,15 +756,15 @@ export const squadTargetMarker = squadMarker.extend({
         }
 
         return [this.firingSolution1, this.map.activeWeaponsMarkers.getLayers()[0]];
-    },
+    }
 
-    drawLineToTarget: function () {
-        
+    drawLineToTarget() {
+
         if (!App.userSettings.lineToTarget) return;
 
         // Remove existing lines
         this.removeLineToTarget();
-        
+
         let lines = [];
 
         if (!isNaN(this.firingSolution1.elevation.high.rad) || !isNaN(this.firingSolution1.elevation.low.rad)) {
@@ -782,22 +782,22 @@ export const squadTargetMarker = squadMarker.extend({
                 showMeasurements: false,
             }).addTo(this.map.markersGroup));
         }
-    },
+    }
 
-    removeLineToTarget: function () {
+    removeLineToTarget() {
         if (this.linesBetweenTargets.length > 0) {
             for (const linesBetweenTarget of this.linesBetweenTargets) {
                 linesBetweenTarget.removeFrom(this.map.markersGroup).remove();
             }
         }
-    },
+    }
 
-    _handlePointerDown: function (e) {
+    _handlePointerDown(e) {
         if (e.originalEvent.altKey) return this._startCarpetDrag(e);
         if (e.originalEvent.shiftKey) return this._startRectangleDrag(e);
-    },
+    }
 
-    _startCarpetDrag: function (e) {
+    _startCarpetDrag(e) {
         e.originalEvent.preventDefault();
         this.dragging.disable();
         this.map.dragging.disable();
@@ -862,9 +862,9 @@ export const squadTargetMarker = squadMarker.extend({
 
         document.addEventListener("pointermove", onPointerMove);
         document.addEventListener("pointerup", onPointerUp);
-    },
+    }
 
-    _getCarpetPositions: function (start, end) {
+    _getCarpetPositions(start, end) {
         const dlat = end.lat - start.lat;
         const dlng = end.lng - start.lng;
         const totalDist = Math.hypot(dlat, dlng);
@@ -882,17 +882,17 @@ export const squadTargetMarker = squadMarker.extend({
             positions.push({ lat: start.lat + dlat * t, lng: start.lng + dlng * t });
         }
         return positions;
-    },
+    }
 
     // Spacing between targets, based on the spread ellipse radius in a given
     // compass direction (e.g. the direction the player is dragging)
-    _getStepAtBearing: function (bearingDeg) {
+    _getStepAtBearing(bearingDeg) {
         const [fs, weaponMarker] = this.getFirstAvailableWeapon();
         const radius = fs.getSpreadRadiusAtBearing(bearingDeg, weaponMarker.angleType);
         return radius * this.map.gameToMapScale;
-    },
+    }
 
-    _startRectangleDrag: function (e) {
+    _startRectangleDrag(e) {
         e.originalEvent.preventDefault();
         this.dragging.disable();
         this.map.dragging.disable();
@@ -965,11 +965,11 @@ export const squadTargetMarker = squadMarker.extend({
 
         document.addEventListener("pointermove", onPointerMove);
         document.addEventListener("pointerup", onPointerUp);
-    },
+    }
 
     // Clamps the drag endpoint so the resulting rectangle never exceeds
     // GRID_MAX_SIDE targets per axis
-    _clampGridEnd: function (start, end) {
+    _clampGridEnd(start, end) {
         const dlat = end.lat - start.lat;
         const dlng = end.lng - start.lng;
         const maxOffsetLat = (GRID_MAX_SIDE - 1) * this._gridStepLat;
@@ -978,12 +978,12 @@ export const squadTargetMarker = squadMarker.extend({
             lat: start.lat + Math.sign(dlat) * Math.min(Math.abs(dlat), maxOffsetLat),
             lng: start.lng + Math.sign(dlng) * Math.min(Math.abs(dlng), maxOffsetLng),
         };
-    },
+    }
 
     // Fills the rectangle whose diagonal goes from start to end with a grid of
     // targets spaced by _gridStepLat/_gridStepLng on each axis, skipping `start`
     // itself (already a target), capped to a GRID_MAX_SIDE x GRID_MAX_SIDE square
-    _getGridPositions: function (start, end) {
+    _getGridPositions(start, end) {
         const dlat = end.lat - start.lat;
         const dlng = end.lng - start.lng;
         const countLat = Math.min(Math.floor(Math.abs(dlat) / this._gridStepLat), GRID_MAX_SIDE - 1);
@@ -999,5 +999,5 @@ export const squadTargetMarker = squadMarker.extend({
             }
         }
         return positions;
-    },
-});
+    }
+}

@@ -6,7 +6,7 @@
  * and creates standalone classes instead of extending L namespace
  */
 
-import { DomUtil, FeatureGroup, LatLng, LatLngBounds, Marker, Point, Polyline, Polygon, Util } from "leaflet";
+import { FeatureGroup, LatLng, LatLngBounds, Marker, Point, Polyline, Polygon, Util } from "leaflet";
 
 // Helper functions
 function pointDistance(ptA, ptB) {
@@ -96,48 +96,50 @@ function projectPatternOnPointPath(pts, pattern) {
 
 
 // Rotated Marker support
-(function() {
-    const proto_initIcon = Marker.prototype._initIcon;
-    const proto_setPos = Marker.prototype._setPos;
-    const oldIE = (DomUtil.TRANSFORM === "msTransform");
-
-    Marker.addInitHook(function() {
-        const iconOptions = this.options.icon && this.options.icon.options;
-        const iconAnchor = iconOptions && this.options.icon.options.iconAnchor;
-        const anchorStr = iconAnchor ? (iconAnchor[0] + "px " + iconAnchor[1] + "px") : null;
-        this.options.rotationOrigin = this.options.rotationOrigin || anchorStr || "center bottom";
-        this.options.rotationAngle = this.options.rotationAngle || 0;
-        this.on("drag", (e) => e.target._applyRotation());
-    });
-
-    Marker.include({
-        _initIcon: function() { proto_initIcon.call(this); },
-        _setPos: function(pos) {
-            proto_setPos.call(this, pos);
-            this._applyRotation();
-        },
-        _applyRotation: function() {
-            if (this.options.rotationAngle) {
-                this._icon.style[DomUtil.TRANSFORM + "Origin"] = this.options.rotationOrigin;
-                if (oldIE) {
-                    this._icon.style[DomUtil.TRANSFORM] = "rotate(" + this.options.rotationAngle + "deg)";
-                } else {
-                    this._icon.style[DomUtil.TRANSFORM] += " rotateZ(" + this.options.rotationAngle + "deg)";
-                }
-            }
-        },
-        setRotationAngle: function(angle) {
-            this.options.rotationAngle = angle;
-            this.update();
-            return this;
-        },
-        setRotationOrigin: function(origin) {
-            this.options.rotationOrigin = origin;
-            this.update();
-            return this;
-        }
-    });
-})();
+// Disabled: duplicate of leaflet-rotatedMarker.js (already migrated to Leaflet 2),
+// and this copy still referenced the removed DomUtil.TRANSFORM constant.
+// (function() {
+//     const proto_initIcon = Marker.prototype._initIcon;
+//     const proto_setPos = Marker.prototype._setPos;
+//     const oldIE = (DomUtil.TRANSFORM === "msTransform");
+//
+//     Marker.addInitHook(function() {
+//         const iconOptions = this.options.icon && this.options.icon.options;
+//         const iconAnchor = iconOptions && this.options.icon.options.iconAnchor;
+//         const anchorStr = iconAnchor ? (iconAnchor[0] + "px " + iconAnchor[1] + "px") : null;
+//         this.options.rotationOrigin = this.options.rotationOrigin || anchorStr || "center bottom";
+//         this.options.rotationAngle = this.options.rotationAngle || 0;
+//         this.on("drag", (e) => e.target._applyRotation());
+//     });
+//
+//     Marker.include({
+//         _initIcon: function() { proto_initIcon.call(this); },
+//         _setPos: function(pos) {
+//             proto_setPos.call(this, pos);
+//             this._applyRotation();
+//         },
+//         _applyRotation: function() {
+//             if (this.options.rotationAngle) {
+//                 this._icon.style[DomUtil.TRANSFORM + "Origin"] = this.options.rotationOrigin;
+//                 if (oldIE) {
+//                     this._icon.style[DomUtil.TRANSFORM] = "rotate(" + this.options.rotationAngle + "deg)";
+//                 } else {
+//                     this._icon.style[DomUtil.TRANSFORM] += " rotateZ(" + this.options.rotationAngle + "deg)";
+//                 }
+//             }
+//         },
+//         setRotationAngle: function(angle) {
+//             this.options.rotationAngle = angle;
+//             this.update();
+//             return this;
+//         },
+//         setRotationOrigin: function(origin) {
+//             this.options.rotationOrigin = origin;
+//             this.update();
+//             return this;
+//         }
+//     });
+// })();
 
 
 // Symbol namespace - standalone object (not attached to L)
@@ -252,19 +254,19 @@ const isCoordArray = (ll) => Array.isArray(ll) && isCoord(ll[0]);
 
 
 // PolylineDecorator - standalone class (not attached to L)
-const PolylineDecorator = FeatureGroup.extend({
-    options: { patterns: [] },
+class PolylineDecorator extends FeatureGroup {
+    static defaultOptions = { patterns: [] };
 
-    initialize: function(paths, options) {
-        FeatureGroup.prototype.initialize.call(this);
+    constructor(paths, options) {
+        super();
         Util.setOptions(this, options);
         this._map = null;
         this._paths = this._initPaths(paths);
         this._bounds = this._initBounds();
         this._patterns = this._initPatterns(this.options.patterns);
-    },
+    }
 
-    _initPaths: function(input, isPolygon) {
+    _initPaths(input, isPolygon) {
         if (isCoordArray(input)) {
             const coords = isPolygon ? input.concat([input[0]]) : input;
             return [coords];
@@ -273,80 +275,80 @@ const PolylineDecorator = FeatureGroup.extend({
             return this._initPaths(input.getLatLngs(), input instanceof Polygon);
         }
         if (Array.isArray(input)) {
-            return input.reduce((flatArray, p) => 
+            return input.reduce((flatArray, p) =>
                 flatArray.concat(this._initPaths(p, isPolygon)), []);
         }
         return [];
-    },
+    }
 
-    _initPatterns: function(patternDefs) {
+    _initPatterns(patternDefs) {
         return patternDefs.map(this._parsePatternDef);
-    },
+    }
 
-    setPatterns: function(patterns) {
+    setPatterns(patterns) {
         this.options.patterns = patterns;
         this._patterns = this._initPatterns(this.options.patterns);
         this.redraw();
-    },
+    }
 
-    setPaths: function(paths) {
+    setPaths(paths) {
         this._paths = this._initPaths(paths);
         this._bounds = this._initBounds();
         this.redraw();
-    },
+    }
 
-    _parsePatternDef: function(patternDef) {
+    _parsePatternDef(patternDef) {
         return {
             symbolFactory: patternDef.symbol,
             offset: parseRelativeOrAbsoluteValue(patternDef.offset),
             endOffset: parseRelativeOrAbsoluteValue(patternDef.endOffset),
             repeat: parseRelativeOrAbsoluteValue(patternDef.repeat)
         };
-    },
+    }
 
-    onAdd: function(map) {
+    onAdd(map) {
         this._map = map;
         this._draw();
         this._map.on("moveend", this.redraw, this);
-    },
+    }
 
-    onRemove: function(map) {
+    onRemove(map) {
         this._map.off("moveend", this.redraw, this);
         this._map = null;
-        FeatureGroup.prototype.onRemove.call(this, map);
-    },
+        super.onRemove(map);
+    }
 
-    _initBounds: function() {
+    _initBounds() {
         const allPathCoords = this._paths.reduce((acc, path) => acc.concat(path), []);
         return new LatLngBounds(allPathCoords);
-    },
+    }
 
-    getBounds: function() { return this._bounds; },
+    getBounds() { return this._bounds; }
 
-    _buildSymbols: function(latLngs, symbolFactory, directionPoints) {
+    _buildSymbols(latLngs, symbolFactory, directionPoints) {
         return directionPoints.map((directionPoint, i) => {
             return symbolFactory.buildSymbol(
                 directionPoint, latLngs, this._map, i, directionPoints.length
             );
         });
-    },
+    }
 
-    _getDirectionPoints: function(latLngs, pattern) {
+    _getDirectionPoints(latLngs, pattern) {
         if (latLngs.length < 2) return [];
         const pathAsPoints = latLngs.map(latLng => this._map.project(latLng));
         return projectPatternOnPointPath(pathAsPoints, pattern).map(point => ({
             latLng: this._map.unproject(new Point(point.pt.x, point.pt.y)),
             heading: point.heading
         }));
-    },
+    }
 
-    redraw: function() {
+    redraw() {
         if (!this._map) return;
         this.clearLayers();
         this._draw();
-    },
+    }
 
-    _getPatternLayers: function(pattern) {
+    _getPatternLayers(pattern) {
         const mapBounds = this._map.getBounds().pad(0.1);
         return this._paths.map(path => {
             const directionPoints = this._getDirectionPoints(path, pattern)
@@ -355,13 +357,13 @@ const PolylineDecorator = FeatureGroup.extend({
                 this._buildSymbols(path, pattern.symbolFactory, directionPoints)
             );
         });
-    },
+    }
 
-    _draw: function() {
+    _draw() {
         this._patterns.map(pattern => this._getPatternLayers(pattern))
             .forEach(layers => this.addLayer(new FeatureGroup(layers)));
     }
-});
+}
 
 // Factory function
 const polylineDecorator = (paths, options) => new PolylineDecorator(paths, options);

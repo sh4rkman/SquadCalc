@@ -19,14 +19,15 @@
 
 import { Path, Canvas, SVG, Util, Point, Bounds } from "leaflet";
 
-const Ellipse = Path.extend({
-    options: {
+class Ellipse extends Path {
+    static defaultOptions = {
         fill: true,
         startAngle: 0,
         endAngle: 359.9
-    },
+    };
 
-    initialize(latlng, radii, tilt, options) {
+    constructor(latlng, radii, tilt, options) {
+        super(options);
         Util.setOptions(this, options);
         this._latlng = latlng;
 
@@ -40,22 +41,22 @@ const Ellipse = Path.extend({
             this._mRadiusX = radii[0];
             this._mRadiusY = radii[1];
         }
-    },
+    }
 
     setRadius(radii) {
         this._mRadiusX = radii[0];
         this._mRadiusY = radii[1];
         return this.redraw();
-    },
+    }
 
     getRadius() {
         return new Point(this._mRadiusX, this._mRadiusY);
-    },
+    }
 
     setTilt(tilt) {
         this._tiltDeg = tilt;
         return this.redraw();
-    },
+    }
 
     getBounds() {
         const lngRadius = this._getLngRadius();
@@ -66,7 +67,7 @@ const Ellipse = Path.extend({
             [latlng.lat - latRadius, latlng.lng - lngRadius],
             [latlng.lat + latRadius, latlng.lng + lngRadius]
         ];
-    },
+    }
 
     // @method setLatLng(latLng: LatLng): this
     // Sets the position of a circle marker to a new location.
@@ -74,15 +75,13 @@ const Ellipse = Path.extend({
         this._latlng = latlng;
         this.redraw();
         return this.fire("move", {latlng: this._latlng});
-    },
+    }
 
     // @method getLatLng(): LatLng
     // Returns the current geographical position of the circle marker
     getLatLng() {
         return this._latlng;
-    },
-
-    setStyle: Path.prototype.setStyle,
+    }
 
     _project() {
         const lngRadius = this._getLngRadius();
@@ -97,7 +96,7 @@ const Ellipse = Path.extend({
         this._tilt = Math.PI * this._tiltDeg / 180;
         this._endPointParams = this._centerPointToEndPoint();
         this._updateBounds();
-    },
+    }
 
     _updateBounds() {
         // http://math.stackexchange.com/questions/91132/how-to-get-the-limits-of-rotated-ellipse
@@ -112,25 +111,25 @@ const Ellipse = Path.extend({
         const w = this._clickTolerance();
         const p = [halfWidth + w, halfHeight + w];
         this._pxBounds = new Bounds(this._point.subtract(p), this._point.add(p));
-    },
+    }
 
     _update() {
         if (this._map) {
             this._updatePath();
         }
-    },
+    }
 
     _updatePath() {
         this._renderer._updateEllipse(this);
-    },
+    }
 
     _getLatRadius() {
         return this._mRadiusY;
-    },
+    }
 
     _getLngRadius() {
         return this._mRadiusX;
-    },
+    }
 
     _centerPointToEndPoint() {
         // Convert between center point parameterization of an ellipse
@@ -160,11 +159,11 @@ const Ellipse = Path.extend({
         const sweep = (delta > 0) ? 1 : 0;
 
         return {x0, y0, tilt: phi, largeArc, sweep, x1, y1};
-    },
+    }
 
     _empty() {
         return this._radiusX && this._radiusY && !this._renderer._bounds.intersects(this._pxBounds);
-    },
+    }
 
     _containsPoint(p) {
         // http://stackoverflow.com/questions/7946187/point-and-ellipse-rotated-position-test-algorithm
@@ -176,7 +175,7 @@ const Ellipse = Path.extend({
         const sumB = sin * dx - cos * dy;
         return sumA * sumA / (this._radiusX * this._radiusX)  + sumB * sumB / (this._radiusY * this._radiusY) <= 1;
     }
-});
+}
 
 // Extend SVG renderer
 SVG.include({
