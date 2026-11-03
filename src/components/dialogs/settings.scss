@@ -18,37 +18,91 @@
             display: block;
         }
     }
-    .dropbtn4 {
+    .langSelect {
         color: variables.$mainTxtColor;
         line-height: 1.5em;
         text-transform: uppercase;
         text-align: center;
-        background-color: var(--themecolor, variables.$mainBGColor);
         z-index: 1;
         width: max-content;
         min-width: max-content;
-        select {
-            -moz-appearance: none;
-            -webkit-appearance: none;
-            appearance: none;
-            background-color: transparent;
-            background-image: none;
-            border: none;
-            box-shadow: none;
-        }
+        position: relative;
         &:focus {
             outline: none;
         }
-        .select2 {
+        .ts-control {
+            color: variables.$mainTxtColor;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.4em;
             background-color: transparent;
-        }
-        .select2-container {
-            @include variables.text-outline;
-            background-color: transparent;
-            border-bottom: 1px solid variables.$mainTxtColor;
+            border: none;
+            border-radius: 0;
+            box-shadow: none;
             line-height: 2.188em;
-            padding-bottom: 0.3em;
+            padding: 0 0 0.3em;
             text-transform: uppercase;
+            cursor: pointer;
+            > input {
+                display: none !important;
+            }
+            &::after {
+                content: "";
+                width: 0;
+                height: 0;
+                margin-left: 0.2em;
+                border-left: 4px solid transparent;
+                border-right: 4px solid transparent;
+                border-top: 5px solid variables.$mainTxtColor;
+                transition: transform 0.15s ease;
+            }
+        }
+        &.dropdown-active .ts-control::after {
+            transform: rotate(180deg);
+        }
+        .ts-dropdown {
+            color: variables.$mainTxtColor;
+            background: rgba(17, 17, 17, 0.92);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 6px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+            width: max-content !important;
+            min-width: 100%;
+            margin-top: 0.3em;
+            overflow: hidden;
+        }
+        .ts-dropdown-content {
+            max-height: none;
+        }
+        .option,
+        .lngOption {
+            display: flex;
+            align-items: center;
+            gap: 0.5em;
+        }
+        .option {
+            padding: 0.5em 1em;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            &.active {
+                background-color: variables.$mainColor;
+                color: variables.$mainTxtColor;
+            }
+            &.selected {
+                background-color: variables.$mainColor;
+                opacity: 0.6;
+            }
+        }
+        .lngFlag {
+            font-size: 1.2em;
+            line-height: 1;
+        }
+        .lngCode {
+            font-size: 0.9em;
         }
     }
     h3 {

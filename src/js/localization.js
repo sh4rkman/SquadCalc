@@ -1,15 +1,28 @@
 import i18next from "i18next";
 import HttpApi from "i18next-http-backend";
+import TomSelect from "tom-select";
 import { App } from "../app.js";
 import pkg from "../../package.json";
 const { version } = pkg;
+
+// Flag emoji per supported language code. "uk" is the Ukrainian language, not the UK.
+const LANG_FLAGS = {
+    en: "🇬🇧",
+    de: "🇩🇪",
+    fr: "🇫🇷",
+    pt: "🇧🇷",
+    ru: "🇷🇺",
+    tr: "🇹🇷",
+    uk: "🇺🇦",
+    zh: "🇨🇳",
+};
+
+let langSelect;
 
 /**
  * Update every label with the correct localization text
  */
 export function loadLanguage(LANGUAGES) {
-    const LANG_SELECTOR = $(".dropbtn4");
-
     i18next.use(HttpApi).init({
         fallbackLng: "en",
         ns: [
@@ -31,22 +44,36 @@ export function loadLanguage(LANGUAGES) {
         getLanguage(LANGUAGES);
     });
 
-
-    LANG_SELECTOR.select2({
-        dropdownCssClass: "dropbtn4",
-        dropdownParent: $("#helpDialog"),
-        minimumResultsForSearch: -1,
+    langSelect = new TomSelect("#lngDropbtn", {
+        options: LANGUAGES.map(([code, label]) => ({ value: code, text: label })),
+        maxItems: 1,
+        controlInput: null,
+        render: {
+            option: renderLangOption,
+            item: renderLangOption,
+        },
     });
 
-    LANGUAGES.forEach(function(lng) {
-        LANG_SELECTOR.append(`<option value=${lng[0]}>${lng[1]}</option>`);
+    langSelect.on("change", function(value) {
+        i18next.changeLanguage(value, updateContent);
+        localStorage.setItem("settings-language", value);
+        $("html").attr("lang", value);
     });
+}
 
-    $(document).on("change", ".dropbtn4", function() { 
-        i18next.changeLanguage(this.value, updateContent);
-        localStorage.setItem("settings-language", this.value);
-        $("html").attr("lang", this.value);
-    });
+/**
+ * Flag + code, used for both the selected item and the dropdown options
+ * @param {{value: string, text: string}} data
+ * @param {Function} escape
+ * @returns {string} html
+ */
+function renderLangOption(data, escape) {
+    return `
+        <div class="lngOption">
+            <span class="lngFlag">${LANG_FLAGS[data.value] || ""}</span>
+            <span class="lngCode">${escape(data.text)}</span>
+        </div>
+    `;
 }
 
 /**
@@ -69,7 +96,7 @@ function getLanguage(LANGUAGES){
         localStorage.setItem("settings-language", language);
     }
 
-    $(".dropbtn4").val(language).trigger("change");
+    langSelect.setValue(language);
 }
 
 /**
