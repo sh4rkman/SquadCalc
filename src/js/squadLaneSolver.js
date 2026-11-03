@@ -169,8 +169,14 @@ export default class SquadLaneSolver {
                 // This route cannot carry the flag at all.
                 if (!hits.length) { viable = false; break; }
 
-                // Only one cluster on this route can hold it, and only one way. Lock it.
-                if (hits.length === 1 && hits[0].overlap.length === 1) {
+                // Only one cluster on this route can hold it. Lock it.
+                // Disabled the `overlap.length === 1` requirement for now: a flag owning several ids
+                // in the same step (e.g. two assets sharing one display name, like Tallil RAAS v1's
+                // A4-FortifiedATC/A4-FortifiedATC2) never locked the step, so sibling candidates at
+                // that step (A4-AirfieldOutpost) never got excluded and stayed visible after confirm.
+                // Locking to overlap[0] alone is an approximation - fine for display since a confirmed
+                // flag renders via select() regardless of its own probability math - but not a full fix.
+                if (hits.length === 1) {
                     const { index, overlap } = hits[0];
                     if (locks.has(index) && locks.get(index) !== overlap[0]) { viable = false; break; }
                     locks.set(index, overlap[0]);
