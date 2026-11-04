@@ -209,7 +209,7 @@ $hover: rgba(variables.$mainTxtColor, 0.06);
     .settings-section {
         display: flex;
         flex-direction: column;
-        gap: 20px;
+        gap: 15px;
         & + .settings-section {
             padding-top: 16px;
             border-top: 1px solid $line;
@@ -235,7 +235,7 @@ $hover: rgba(variables.$mainTxtColor, 0.06);
     .settings-field {
         display: flex;
         flex-direction: column;
-        gap: 10px;
+        gap: 5px;
         label {
             font-size: 0.9em;
             font-weight: 600;
