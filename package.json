@@ -79,6 +79,7 @@
   "dependencies": {
     "fast-png": "^8.0.0",
     "marked": "^18.1.1",
-    "polygon-clipping": "^0.15.7"
+    "polygon-clipping": "^0.15.7",
+    "tom-select": "^2.6.2"
   }
 }
