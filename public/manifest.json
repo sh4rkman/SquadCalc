@@ -70,6 +70,13 @@
             "type": "image/webp",
             "form_factor": "wide",
             "label": "Legacy Mode"
+        },
+        {
+            "src": "/img/github/desktop_ui_8.webp",
+            "sizes": "800x553",
+            "type": "image/webp",
+            "form_factor": "wide",
+            "label": "3D Mode"
         }
     ]
 }
