@@ -1,598 +1,956 @@
 @use '../shared/variables';
 
-#helpDialog {
-    width: 94%;
-    height: 625px;
-    max-width: 600px;
-    font-size: 0.6em;
-    font-weight: bold;
-    #lngSelector {
-        position: absolute;
-        right: 50px;
-        top: 8px;
-        font-weight: bold;
+// Full-screen settings dialog (#settingsDialog)
+// All colors derive from shared/_variables.scss
+$line: rgba(variables.$mainTxtColor, 0.15);
+$muted: rgba(variables.$mainTxtColor, 0.6);
+$hover: rgba(variables.$mainTxtColor, 0.06);
+
+#settingsDialog {
+    // Reset the global `dialog` styles from dialogs.scss
+    width: 100vw;
+    height: 100vh;
+    max-width: none;
+    max-height: none;
+    margin: 0;
+    padding: 0;
+    border-radius: 0;
+    background: variables.$mainBGColor;
+    backdrop-filter: none;
+    box-shadow: none;
+    font-size: 16px;
+    text-align: left;
+    letter-spacing: normal;
+    overflow: hidden;
+    &[open] {
+        display: flex;
     }
-    .panel {
-        display: none;
-        &.active {
-            display: block;
-        }
+    &::backdrop {
+        background: variables.$mainBGColor;
     }
-    .langSelect {
+    .settings-page {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+        width: 100%;
+        max-width: 1200px;
+        min-height: 0;
+        margin: 0 auto;
+        padding: 24px;
+    }
+    .settings-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        padding-bottom: 16px;
+        border-bottom: 1px solid $line;
+        flex-shrink: 0;
+    }
+    .settings-title {
+        margin: 0;
+        padding: 0;
         color: variables.$mainTxtColor;
-        line-height: 1.5em;
-        text-transform: uppercase;
-        text-align: center;
-        z-index: 1;
-        width: max-content;
-        min-width: max-content;
+        font-size: 2em;
+        font-weight: bold;
+        letter-spacing: normal;
+        line-height: 1;
+        white-space: nowrap;
+    }
+    // Settings search (header, right side next to the close button)
+    .settings-search {
         position: relative;
-        &:focus {
-            outline: none;
-        }
-        .ts-control {
+        flex: 0 1 300px; // Up to 300px, shrinks on narrow screens
+        min-width: 0;
+        margin-left: auto; // Pushed to the right, next to the close button
+        input {
+            width: 100%;
+            height: 36px; // Same as .settings-close (box-sizing: border-box, so border included)
+            padding: 0 12px 0 34px;
+            border: 1px solid $line;
+            border-radius: 6px;
+            background: transparent;
             color: variables.$mainTxtColor;
+            font-size: 0.9em;
+            letter-spacing: normal;
+            text-align: left;
+            outline: none;
+            transition: border-color 0.15s ease;
+            &::placeholder {
+                color: $muted;
+            }
+            &:focus {
+                border-color: variables.$mainColor;
+            }
+        }
+    }
+    .settings-search-icon {
+        position: absolute;
+        top: 50%;
+        left: 11px;
+        width: 15px;
+        height: 15px;
+        color: $muted;
+        transform: translateY(-50%);
+        pointer-events: none;
+    }
+    // Language picker (header, between search and close button)
+    .settings-lang {
+        flex-shrink: 0;
+    }
+    // Doubled class so it wins over the generic .settings-select skin defined further down
+    .settings-select.settings-lang-select {
+        // tom-select forces padding-right with !important, its variable is the way to reserve the caret space
+        --ts-pr-caret: 30px;
+        width: auto;
+        .ts-control {
+            height: 36px;
+            padding: 0 30px 0 10px;
+            &::after {
+                right: 11px;
+            }
+        }
+        // Right-aligned so the list doesn't overflow the screen edge
+        .ts-dropdown {
+            right: 0;
+            left: auto;
+            width: max-content !important;
+            min-width: 100%;
+        }
+    }
+    .settings-close {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 36px;
+        height: 36px;
+        border: 1px solid $line;
+        border-radius: 6px;
+        background: transparent;
+        color: variables.$mainTxtColor;
+        cursor: pointer;
+        transition: background-color 0.15s ease, border-color 0.15s ease;
+        svg {
+            width: 18px;
+            height: 18px;
+        }
+        &:hover {
+            border-color: variables.$mainColor;
+            background: variables.$mainColor;
+        }
+    }
+    .settings-layout {
+        display: flex;
+        gap: 32px;
+        flex: 1;
+        min-height: 0;
+    }
+    .settings-tabs {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        flex-shrink: 0;
+        width: max-content;
+        min-width: 180px;
+    }
+    .settings-tabs-divider {
+        flex-shrink: 0;
+        height: 1px;
+        margin: 8px 12px;
+        background: $line;
+    }
+    .settings-tab {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px;
+        border: none;
+        border-radius: 6px;
+        background: transparent;
+        color: variables.$mainTxtColor;
+        font-size: 0.9em;
+        font-weight: bold;
+        letter-spacing: 0.02em;
+        text-align: left;
+        white-space: nowrap;
+        cursor: pointer;
+        transition: background-color 0.15s ease, color 0.15s ease;
+        svg {
+            width: 16px;
+            height: 16px;
+            flex-shrink: 0;
+            fill: currentcolor;
+        }
+        &:hover {
+            background: rgba(variables.$mainColor, 0.08);
+        }
+        &.active,
+        &.active:hover {
+            background: rgba(variables.$mainColor, 0.18);
+            color: variables.$mainTxtColor;
+        }
+    }
+    .settings-body {
+        flex: 1;
+        min-width: 0;
+        padding-top: 8px;
+        overflow-y: auto;
+        color: $muted;
+    }
+    .settings-panel {
+        display: none;
+        flex-direction: column;
+        gap: 24px;
+        max-width: 960px;
+        &.active {
+            display: flex;
+        }
+    }
+    .settings-section {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        & + .settings-section {
+            padding-top: 16px;
+            border-top: 1px solid $line;
+        }
+    }
+    .settings-section-title {
+        padding: 0; // Cancels the global `dialog h3` padding from dialogs.scss
+        color: variables.$mainTxtColor;
+        font-size: 0.8em;
+        font-weight: bold;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        opacity: 0.6;
+    }
+    // Two columns when there's room, falls back to one column on narrow widths
+    .settings-section-columns {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 20px 32px;
+        // Caps the grid so it never fits 3 columns (3 × 260px + 2 × 32px = 844px)
+        max-width: 800px;
+    }
+    .settings-field {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        label {
+            font-size: 0.9em;
+            font-weight: 600;
+            color: variables.$mainTxtColor;
+        }
+    }
+    .settings-checkbox {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        width: max-content;
+        cursor: pointer;
+        user-select: none;
+        input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            margin: 0;
+            accent-color: variables.$mainColor;
+            cursor: pointer;
+        }
+    }
+    // Range slider: track filled with $mainColor up to the thumb (--fill set from JS),
+    // with a tick at the default value and a min / default / max scale underneath (built from JS)
+    $thumb: 16px;
+    .settings-range {
+        display: flex;
+        align-items: flex-start;
+        gap: 14px;
+        width: 100%;
+        max-width: 360px;
+    }
+    .settings-range-track {
+        position: relative;
+        flex: 1;
+        min-width: 0;
+        input[type="range"] {
+            --fill: 50%;
+            position: relative;
+            z-index: 1;
+            display: block;
+            width: 100%;
+            height: $thumb;
+            margin: 0;
+            border: none;
+            background: transparent;
+            outline: none;
+            cursor: pointer;
+            appearance: none;
+            &::-webkit-slider-runnable-track {
+                height: 4px;
+                border-radius: 2px;
+                background: linear-gradient(to right, variables.$mainColor var(--fill), $line var(--fill));
+            }
+            // Firefox: unfilled track + native progress bar for the filled part.
+            // Both need explicit border/height, otherwise Firefox's defaults show through.
+            &::-moz-range-track {
+                height: 4px;
+                border: none;
+                border-radius: 2px;
+                background: $line;
+                box-shadow: none;
+            }
+            &::-moz-range-progress {
+                height: 4px;
+                border: none;
+                border-radius: 2px;
+                background: variables.$mainColor;
+            }
+            &::-moz-focus-outer {
+                border: 0;
+            }
+            &::-webkit-slider-thumb {
+                width: $thumb;
+                height: $thumb;
+                margin-top: -6px;
+                border: 2px solid variables.$mainBGColor;
+                border-radius: 50%;
+                background: variables.$mainColor;
+                box-shadow: 0 0 0 0 rgba(variables.$mainColor, 0.3);
+                transition: box-shadow 0.15s ease;
+                appearance: none;
+            }
+            &::-moz-range-thumb {
+                box-sizing: border-box;
+                width: $thumb;
+                height: $thumb;
+                border: 2px solid variables.$mainBGColor;
+                border-radius: 50%;
+                background: variables.$mainColor;
+                box-shadow: 0 0 0 0 rgba(variables.$mainColor, 0.3);
+                transition: box-shadow 0.15s ease;
+            }
+            &:hover::-webkit-slider-thumb,
+            &:focus-visible::-webkit-slider-thumb {
+                box-shadow: 0 0 0 6px rgba(variables.$mainColor, 0.3);
+            }
+            &:hover::-moz-range-thumb,
+            &:focus-visible::-moz-range-thumb {
+                box-shadow: 0 0 0 6px rgba(variables.$mainColor, 0.3);
+            }
+        }
+    }
+    // Default value marker, centered on where the thumb sits at that value
+    .settings-range-tick {
+        position: absolute;
+        top: calc($thumb / 2 - 6px);
+        left: calc($thumb / 2 + (100% - $thumb) * var(--pos));
+        width: 2px;
+        height: 12px;
+        border-radius: 1px;
+        background: $muted;
+        transform: translateX(-50%);
+        pointer-events: none;
+    }
+    .settings-range-scale {
+        position: relative;
+        height: 1.2em;
+        margin-top: 6px;
+        font-size: 0.75em;
+        font-variant-numeric: tabular-nums;
+        color: $muted;
+        span {
+            position: absolute;
+            top: 0;
+            white-space: nowrap;
+        }
+        .settings-range-min {
+            left: 0;
+        }
+        .settings-range-max {
+            right: 0;
+        }
+        .settings-range-default {
+            left: calc($thumb / 2 + (100% - $thumb) * var(--pos));
+            transform: translateX(-50%);
+        }
+    }
+    // Multi-select toggle chips (each chip is a visually hidden checkbox)
+    .settings-chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+    .settings-field .settings-chip {
+        position: relative;
+        font-size: 0.85em;
+        font-weight: 600;
+        cursor: pointer;
+        user-select: none;
+        input {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            opacity: 0;
+            pointer-events: none;
+        }
+    }
+    .settings-chip-body {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 12px;
+        border: 1px solid $line;
+        border-radius: 999px;
+        color: $muted;
+        transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+    }
+    .settings-chip-icon {
+        width: 12px;
+        height: 12px;
+        flex-shrink: 0;
+    }
+    // Checkbox-like box: empty when unchecked, filled with a check when checked
+    .settings-chip-box {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 14px;
+        height: 14px;
+        flex-shrink: 0;
+        border: 1.5px solid currentcolor;
+        border-radius: 3px;
+        transition: background-color 0.15s ease, border-color 0.15s ease;
+        .settings-chip-icon {
+            width: 10px;
+            height: 10px;
+            opacity: 0;
+            transition: opacity 0.15s ease;
+        }
+    }
+    // Optional icon inside a chip (e.g. Map Toolbar buttons)
+    .settings-chip-glyph {
+        width: 14px;
+        height: 14px;
+        flex-shrink: 0;
+        fill: currentcolor;
+    }
+    .settings-chip-glyph-text {
+        width: auto;
+        height: auto;
+        font-size: 0.85em;
+        font-weight: bold;
+        line-height: 1;
+    }
+    .settings-chip:hover .settings-chip-body {
+        background: $hover;
+        color: variables.$mainTxtColor;
+    }
+    .settings-chip input:checked + .settings-chip-body {
+        border-color: variables.$mainColor;
+        background: rgba(variables.$mainColor, 0.18);
+        color: variables.$mainTxtColor;
+        .settings-chip-box {
+            border-color: variables.$mainColor;
+            background: variables.$mainColor;
+            .settings-chip-icon {
+                opacity: 1;
+            }
+        }
+    }
+    .settings-chip input:focus-visible + .settings-chip-body {
+        outline: 2px solid rgba(variables.$mainColor, 0.6);
+        outline-offset: 2px;
+    }
+    // Always-on value (elevation): shown as selected but not toggleable
+    .settings-field .settings-chip-locked {
+        cursor: default;
+        .settings-chip-body {
+            opacity: 0.6;
+        }
+    }
+    .settings-field-hint {
+        font-size: 0.75em;
+        color: $muted;
+    }
+
+    // TomSelect dropdown (dark skin, overrides tom-select.css defaults)
+    .settings-select {
+        --ts-pr-caret: 36px; // Reserves the caret space (see tom-select's padding-right rule)
+        width: 220px;
+        max-width: 100%;
+        .ts-control {
             display: flex;
             align-items: center;
-            justify-content: center;
-            gap: 0.4em;
-            background-color: transparent;
-            border: none;
-            border-radius: 0;
+            padding: 9px 36px 9px 14px;
+            border: 1px solid $line;
+            border-radius: 6px;
+            background: transparent;
             box-shadow: none;
-            line-height: 2.188em;
-            padding: 0 0 0.3em;
-            text-transform: uppercase;
+            color: variables.$mainTxtColor;
+            font-size: 0.9em;
+            font-weight: 600;
             cursor: pointer;
+            transition: border-color 0.15s ease, background-color 0.15s ease;
             > input {
                 display: none !important;
             }
             &::after {
                 content: "";
-                width: 0;
-                height: 0;
-                margin-left: 0.2em;
-                border-left: 4px solid transparent;
-                border-right: 4px solid transparent;
-                border-top: 5px solid variables.$mainTxtColor;
+                position: absolute;
+                top: 50%;
+                right: 14px;
+                width: 6px;
+                height: 6px;
+                margin-top: -5px;
+                border: solid $muted;
+                border-width: 0 2px 2px 0;
+                transform: rotate(45deg);
                 transition: transform 0.15s ease;
+            }
+            &:hover {
+                background: $hover;
+                border-color: rgba(variables.$mainTxtColor, 0.25);
             }
         }
         &.dropdown-active .ts-control::after {
-            transform: rotate(180deg);
+            margin-top: -1px;
+            transform: rotate(-135deg);
         }
         .ts-dropdown {
-            color: variables.$mainTxtColor;
-            background: rgba(17, 17, 17, 0.92);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            margin-top: 6px;
+            padding: 4px;
+            border: 1px solid $line;
             border-radius: 6px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
-            width: max-content !important;
-            min-width: 100%;
-            margin-top: 0.3em;
-            overflow: hidden;
+            background: variables.$mainBGColor;
+            box-shadow: 0 8px 24px -8px rgba(variables.$mainBGColor, 0.8);
+            color: variables.$mainTxtColor;
         }
         .ts-dropdown-content {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
             max-height: none;
         }
-        .option,
-        .lngOption {
-            display: flex;
-            align-items: center;
-            gap: 0.5em;
-        }
         .option {
-            padding: 0.5em 1em;
+            padding: 7px 10px;
+            border-radius: 4px;
+            font-size: 0.9em;
             cursor: pointer;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
             &.active {
-                background-color: variables.$mainColor;
+                background: $hover;
                 color: variables.$mainTxtColor;
             }
             &.selected {
-                background-color: variables.$mainColor;
-                opacity: 0.6;
-            }
-        }
-        .lngFlag {
-            font-size: 1.2em;
-            line-height: 1;
-        }
-        .lngCode {
-            font-size: 0.9em;
-        }
-    }
-    h3 {
-        font-size: 1.3em;
-    }
-    #panel2 {
-        table {
-            font-size: 0.95em;
-        }
-    }
-    table {
-        border: none;
-        margin: 0 0 1.5em 3em;
-        &.shortcuts {
-            padding-top: 1.5em;
-            thead th {
-                font-size: 1.1em;
+                background: rgba(variables.$mainColor, 0.18);
                 color: variables.$mainTxtColor;
-                opacity: 0.5;
-                padding-bottom: 10px;
-                font-weight: bold;
-                text-transform: uppercase;
-                letter-spacing: 1px;
-                text-align: left;
-            }
-            td {
-                &:nth-child(1) {
-                    padding: 12px 0;
-                    white-space: nowrap;
-                }
-                &.arrow {
-                    padding: 0 16px;
-                    opacity: 0.3;
-                    font-size: 1.4em;
-                }
-            }
-            kbd {
-                display: inline-block;
-                padding: 4px 10px;
-                font-size: 1.8em;
-                font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-                background-color: #2a2a2a;
-                border: 1px solid #555;
-                border-radius: 3px;
-                box-shadow: 0 1px 2px rgba(0,0,0,0.4);
-                color: #ddd;
-            }
-            .shortcut-row {
-                cursor: pointer;
-                transition: opacity 0.15s ease;
-                &:hover { opacity: 0.7; }
-                &.is-custom .shortcut-key-cell kbd {
-                    border-color: variables.$mainColor;
-                    color: variables.$mainColor;
-                }
-                .shortcut-edit {
-                    padding-left: 16px;
-                    opacity: 0;
-                    transition: opacity 0.15s ease;
-                    svg {
-                        height: 1.2em;
-                        width: 1.2em;
-                        fill: variables.$mainTxtColor;
-                    }
-                }
-                &:hover .shortcut-edit { opacity: 0.5; }
-            }
-        }
-        &.userSettings {
-            td {
-                padding: 0;
-                border: none;
-                &:nth-child(1) {
-                    width: 30px;
-                }
-            }
-        }
-        .toggleCheckbox {
-            @extend .unselectable;
-            cursor: pointer;
-            &:hover {
-                transition: text-shadow 0.3s ease, color 0.3s ease;
-                text-shadow: 0 0 4px #ffffff75;
-            }
-        }
-        caption {
-            margin: 0 0 10px;
-            color: variables.$mainTxtColor;
-            font-style: normal;
-            font-size: 1.3em;
-            text-align: left;
-            font-family: variables.$mainFont, Times, "Times New Roman", serif;
-        }
-        &#links {
-            bottom: 0;
-            right: 0;
-            position: absolute;
-            width: auto;
-            font-size: 1.6em;
-            float: right;
-            margin: 0 0.5em 0.5em 0;
-            td {
-                border: none;
-                padding: 0 0.4em;
-            }
-            a, button {
-                margin: 0;
-                background: none;
-                border: none;
-                padding: 0;
-                cursor: pointer;
-            }
-            svg {
-                height: 1.1em;
-                width: 1.1em;
-                fill: variables.$mainTxtColor;
-                &:hover {
-                    cursor: pointer;
-                    transition: all 0.2s ease;
-                    transform: scale(0.9);
-                    fill: variables.$mainColor;
-                }
             }
         }
     }
-    #settingsVersion {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        margin: 0 0 1em 2em;
+    .settings-langOption {
         display: flex;
-        flex-direction: row;
         align-items: center;
-        gap: 0.4em;
-        span {
-            font-size: 0.9em;
+        gap: 8px;
+    }
+    .settings-langFlag {
+        font-size: 1.1em;
+        line-height: 1;
+    }
+
+    // Shortcuts list: one row per action, keys on the right
+    .settings-shortcuts,
+    .settings-mods {
+        display: flex;
+        flex-direction: column;
+        max-width: 720px;
+        border: 1px solid $line;
+        border-radius: 6px;
+        overflow: hidden;
+    }
+    .settings-shortcut-field + .settings-shortcut-field {
+        border-top: 1px solid $line;
+    }
+    .settings-shortcut {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        width: 100%;
+        padding: 18px 14px;
+        border: none;
+        background: transparent;
+        color: variables.$mainTxtColor;
+        font-size: 0.9em;
+        letter-spacing: normal;
+        text-align: left;
+        cursor: pointer;
+        transition: background-color 0.15s ease;
+        &:hover {
+            background: $hover;
+        }
+        &:hover .settings-shortcut-edit {
+            opacity: 1;
+        }
+        &:focus-visible {
+            outline: 2px solid rgba(variables.$mainColor, 0.6);
+            outline-offset: -2px;
+        }
+    }
+    .settings-shortcut-label {
+        flex: 1;
+        min-width: 0;
+    }
+    .settings-shortcut-custom {
+        padding: 2px 8px;
+        border-radius: 999px;
+        background: rgba(variables.$mainColor, 0.18);
+        color: variables.$mainTxtColor;
+        font-size: 0.75em;
+        font-weight: bold;
+    }
+    // "+" separators come from formatShortcutHTML() as text, so they take the muted color
+    .settings-shortcut-keys {
+        flex-shrink: 0;
+        color: $muted;
+        font-size: 0.85em;
+        white-space: nowrap;
+        kbd {
+            display: inline-block;
+            min-width: 32px;
+            padding: 4px 10px;
+            border: 1px solid $line;
+            border-bottom-width: 2px;
+            border-radius: 4px;
+            background: $hover;
             color: variables.$mainTxtColor;
-            opacity: 0.6;
-            letter-spacing: 0.5px;
-            &.separator {
-                opacity: 0.4;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+            font-size: 1.15em;
+            text-align: center;
+        }
+    }
+    .settings-shortcut-edit {
+        width: 14px;
+        height: 14px;
+        flex-shrink: 0;
+        color: $muted;
+        opacity: 0;
+        transition: opacity 0.15s ease;
+    }
+
+    // Mods list: logo, name + counts, checkbox box on the right
+    .settings-mod-field + .settings-mod-field {
+        border-top: 1px solid $line;
+    }
+    .settings-field .settings-mod {
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 16px 18px;
+        font-size: 1em;
+        font-weight: normal;
+        cursor: pointer;
+        user-select: none;
+        transition: background-color 0.15s ease;
+        &:hover {
+            background: $hover;
+        }
+        input {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            opacity: 0;
+            pointer-events: none;
+        }
+        // Bigger box than in the chips
+        .settings-chip-box {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            color: $muted;
+            .settings-chip-icon {
+                width: 14px;
+                height: 14px;
             }
-            &.error {
-                color: variables.$mainColor;
+        }
+        input:checked + .settings-chip-box {
+            border-color: variables.$mainColor;
+            background: variables.$mainColor;
+            color: variables.$mainTxtColor;
+            .settings-chip-icon {
                 opacity: 1;
             }
         }
+        input:focus-visible + .settings-chip-box {
+            outline: 2px solid rgba(variables.$mainColor, 0.6);
+            outline-offset: 2px;
+        }
     }
-    #mapBtnToggles {
+    .settings-mod-logo {
+        width: 36px;
+        height: 36px;
+        flex-shrink: 0;
+        border-radius: 6px;
+        object-fit: contain;
+    }
+    .settings-mod-text {
         display: flex;
-        flex-wrap: wrap;
-        gap: 4px;
-        .mapBtnToggle {
-            width: 30px;
-            height: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: rgba(17, 17, 17, 0.75);
-            border: rgba(255, 255, 255, 0.08) solid 1px;
-            border-radius: 3px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            color: #ccc;
-            svg {
-                height: 1.3em;
-                fill: variables.$mainTxtColor;
-                pointer-events: none;
-            }
-            &.mapBtnToggle-3d {
-                color: variables.$mainTxtColor;
-                font-size: 0.85em;
-                font-weight: 700;
-                letter-spacing: 0.02em;
-            }
-            &.active {
-                background-color: variables.$mainColor;
-                border-color: variables.$mainColor;
-            }
-            &:not(.active) {
-                opacity: 0.3;
-                filter: grayscale(1);
-            }
-            &:focus {
-                outline: none;
-            }
+        flex: 1;
+        flex-direction: column;
+        gap: 2px;
+        min-width: 0;
+    }
+    .settings-mod-name {
+        color: variables.$mainTxtColor;
+        font-size: 0.9em;
+        font-weight: 600;
+    }
 
-            @media (hover: hover) {
-                &:hover {
-                    opacity: 1;
-                    filter: none;
-                }
-            }
-        }
-    }
-    .slidersHolders {
-        width: 100%;
-        height: auto;
-        display: inline-block;
-        .slidersTables {
-            width: 85%;
-            margin: 0 0 0 3em;
-            td {      
-                &:nth-child(1) {
-                    width: 40%;
-                }
-                &:nth-child(2) {
-                    width: 60%;
-                    .slider-wrapper {
-                        position: relative;
-                        height: 37px;
-                        display: flex;
-                        align-items: center;
-                        .ticks {
-                            position: absolute;
-                            width: calc(100% - 16px);
-                            left: 8px;
-                            top: 50%;
-                            height: 0;
-                            pointer-events: none;
-                            .tick {
-                                position: absolute;
-                                transform: translateX(-50%) translateY(-50%);
-                                width: 1px;
-                                height: 8px;
-                                background: #979797;
-                            }
-                            .tick::after {
-                                content: attr(data-value);
-                                position: absolute;
-                                top: 16px;
-                                left: 50%;
-                                transform: translateX(-50%);
-                                font-size: 0.8em;
-                                color: #8b8b8b;
-                            }
-                            .default-tick::after {
-                                color: #aaa;
-                            }
-                        }           
-                        input[type="range"] {
-                            // Chrome ignores ::-webkit-slider-thumb styling
-                            // unless the input itself drops native appearance
-                            -webkit-appearance: none;
-                            appearance: none;
-                            width: 100%;
-                            height: 2px;
-                            border-radius: 1px;
-                            background: rgba(255, 255, 255, 0.25);
-                            outline: none;
-                            position: relative;
-                            z-index: 1;
-                            cursor: pointer;
-                        }
-                        input[type="range"]::-webkit-slider-thumb {
-                            -webkit-appearance: none;
-                            width: 16px;
-                            height: 16px;
-                            background: linear-gradient(135deg, variables.$mainColor 0%, variables.$mainColor 100%);
-                            border: 2px solid rgba(255, 255, 255, 0.1);
-                            border-radius: 50%;
-                            cursor: pointer;
-                            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4), 0 0 0 0 rgba(178, 34, 34, 0);
-                            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-                        }
-                        input[type="range"]::-webkit-slider-thumb:hover {
-                            transform: scale(1.15);
-                            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5), 0 0 0 4px rgba(178, 34, 34, 0.2);
-                            border-color: rgba(255, 255, 255, 0.2);
-                        }
-                        input[type="range"]::-moz-range-thumb {
-                            width: 16px;
-                            height: 16px;
-                            background: linear-gradient(135deg, variables.$mainColor 0%, variables.$mainColor 100%);
-                            border: 1px solid rgba(255, 255, 255, 0.7);
-                            border-radius: 50%;
-                            cursor: pointer;
-                            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4), 0 0 0 0 rgba(178, 34, 34, 0);
-                            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-                        }
-                        input[type="range"]::-moz-range-thumb:hover {
-                            transform: scale(1.15);
-                            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5), 0 0 0 4px rgba(178, 34, 34, 0.2);
-                            border-color: rgba(255, 255, 255, 0.2);
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
-
-.new {
-    @extend .unselectable;
-    color: red;
-    text-transform: uppercase;
-    letter-spacing: 0;
-}
-
-
-$bezier: cubic-bezier(0.65, 0.25, 0.56, 0.96);
-
-.mcui-checkbox,
-.mcui-radio {
-    display: flex;
-    align-items: center;
-    user-select: none;
-    padding: 0.313em 0;
-    box-sizing: border-box;
-    input[type="checkbox"],
-    input[type="radio"] {
-        position: absolute !important;
-        height: 1px;
-        width: 1px;
-        overflow: hidden;
-        clip-path: inset(50%);
-    }
-    input[type="checkbox"] + span,
-    input[type="radio"] + span {
-        border: 2px solid variables.$mainColor;
-        height: 1.5em;
-        width: 1.5em;
-        box-sizing: border-box;
-        border-radius: 2px;
-        position: relative;
-        background-color: white;
-    }
-    input[type="checkbox"]:checked + span {
-        border-color: variables.$mainColor;
-        transition: border-color 107ms $bezier;
-        .mcui-check {
-            opacity: 1;
-            transition: opacity 107ms $bezier;
-            polyline {
-            animation: dash-check 107ms $bezier forwards;
-            }
-        }
-    }
-    input[type="checkbox"]:disabled + span {
-        background-color: grey;
-        border: none;
-        pointer-events: none;
-        .mcui-check {
-            color: #111;
-        }
-    }
-    input[type="checkbox"]:not(:disabled) + span:active {
-        transform: scale(0.9);
-    }
-}
-
-.mcui-check {
-    height: 100%;
-    width: 100%;
-    transform: scale(1);
-    color: variables.$mainColor;
-    opacity: 0;
-    &:hover:not([disabled]){
-        cursor: pointer;
-    }
-    polyline {
-      fill: none;
-      transform-origin: 50% 50%;
-      stroke-width: 5px;
-      stroke-dasharray: 22.7714;
-      stroke: currentcolor;
-    }
-}
-  
-@supports (display: grid) {
-    .mcui-check {
-        polyline {
-            stroke-dashoffset: 22.7714;
-        }
-    }
-}
-
-#modsPanelContainer {
-    display: flex;
-    flex-direction: column;
-    gap: 0.95em;
-    padding: 0.4em 1.5em 0.2em;
-    .modToggleTile {
+    // Changelog (rendered from CHANGELOG.md with marked)
+    .settings-changelog {
         display: flex;
         flex-direction: column;
-        gap: 0.3em;
-        width: 100%;
-        min-height: 4.6em;
-        position: relative;
-        color: variables.$mainTxtColor;
-        background-color: #000;
-        border: 1px solid #555;
-        border-radius: 4px;
-        padding: 0.85em 1.2em;
-        font-size: 1.08em;
-        font-weight: bold;
-        text-align: left;
-        cursor: pointer;
-        overflow: hidden;
-        transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
-        // Hover effect only for devices that support true hover (desktop)
-        @media (hover: hover) {
-            &:hover:not(.locked) {
-                border-color: variables.$mainColor;
-                background-color: rgba(variables.$mainColor, 0.12);
-            }
-        }
-        .modTileLogo {
-            position: absolute;
-            top: 0;
-            right: 0;
-            height: 100%;
-            width: 4.6em;
-            border-radius: 0 3px 3px 0;
-            object-fit: cover;
-        }
-        .modTileName {
-            font-size: 1em;
-            padding-right: 4.3em;
-        }
-        .modTileStats {
+        gap: 16px;
+        max-width: 900px;
+        color: rgba(variables.$mainTxtColor, 0.85);
+        font-size: 0.9em;
+        letter-spacing: normal;
+        line-height: 1.6;
+        h1 {
             display: flex;
             align-items: center;
-            gap: 0.55em;
-            font-size: 0.82em;
+            gap: 10px;
+            margin: 0 0 12px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid $line;
+            color: variables.$mainTxtColor;
+            font-size: 1.1em;
             font-weight: bold;
-            opacity: 0.7;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            .modTileStatsSeparator {
-                opacity: 0.5;
+            &:first-child {
+                margin-top: 0;
+            }
+            strong {
+                order: 1;
+                font-size: 1.3em;
+            }
+            em {
+                order: 2;
+                color: $muted;
+                font-size: 0.85em;
+            }
+            img {
+                order: 3;
+                max-height: 22px;
+                margin: 0 0 0 auto; // Global img rule has margin: auto, which would center it
             }
         }
-        &.active {
-            background-color: variables.$mainColor;
-            border-color: variables.$mainColor;
-            color: variables.$mainTxtColor;
+        // One card per release (built in squadCalc.js)
+        .settings-release {
+            padding: 20px 24px;
+            border: 1px solid $line;
+            border-radius: 8px;
+            > :last-child {
+                margin-bottom: 0;
+            }
         }
-        &.locked {
-            cursor: not-allowed;
-            opacity: 0.85;
+        p {
+            margin: 16px 0 6px;
+            img {
+                display: inline-block;
+                max-height: 20px;
+                vertical-align: middle;
+            }
+        }
+        // The markdown uses </br> for spacing, the margins above handle it
+        > p br {
+            display: none;
+        }
+        ul {
+            margin: 0;
+            padding-left: 1.4em;
+        }
+        li {
+            margin: 4px 0;
+            &::marker {
+                color: variables.$mainColor;
+            }
+        }
+        a {
+            color: variables.$mainColor;
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+        code {
+            padding: 1px 6px;
+            border: 1px solid $line;
+            border-radius: 4px;
+            background: $hover;
+            color: variables.$mainTxtColor;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+            font-size: 0.9em;
+        }
+    }
+
+    // About: label / value rows
+    // Shrinks to its content so the row dividers stop where the text does
+    .settings-about {
+        display: flex;
+        flex-direction: column;
+        align-self: flex-start;
+        max-width: 100%;
+    }
+    .settings-about-row {
+        display: flex;
+        align-items: baseline;
+        gap: 16px;
+        padding: 12px 0;
+        border-bottom: 1px solid $line;
+        font-size: 0.9em;
+        &:last-child {
+            border-bottom: none;
+        }
+    }
+    .settings-about-label {
+        color: variables.$mainTxtColor;
+        font-weight: bold;
+        // Fixed width so the values line up in a column
+        flex-shrink: 0;
+        min-width: 120px;
+        white-space: nowrap;
+    }
+    .settings-about-value {
+        color: variables.$mainTxtColor;
+        text-align: left;
+        overflow-wrap: anywhere;
+        &.error {
+            color: variables.$mainColor;
+        }
+    }
+    // Link cards (About > Links)
+    .settings-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 12px;
+        max-width: 720px;
+    }
+    .settings-card {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        padding: 18px;
+        border: 1px solid $line;
+        border-radius: 8px;
+        color: variables.$mainTxtColor;
+        text-decoration: none;
+        transition: background-color 0.15s ease, border-color 0.15s ease;
+        &:hover {
+            border-color: variables.$mainColor;
+            background: rgba(variables.$mainColor, 0.08);
+            .settings-card-icon,
+            .settings-card-arrow {
+                color: variables.$mainColor;
+            }
+        }
+        &:focus-visible {
+            outline: 2px solid rgba(variables.$mainColor, 0.6);
+            outline-offset: 2px;
+        }
+    }
+    .settings-card-icon {
+        width: 28px;
+        height: 28px;
+        margin-bottom: 6px;
+        color: $muted;
+        fill: currentcolor;
+        transition: color 0.15s ease;
+    }
+    .settings-card-arrow {
+        position: absolute;
+        top: 14px;
+        right: 14px;
+        width: 14px;
+        height: 14px;
+        color: $muted;
+        transition: color 0.15s ease;
+    }
+    .settings-card-title {
+        font-size: 0.9em;
+        font-weight: 600;
+    }
+
+    // Search mode: every panel is shown, only matching fields stay visible
+    .settings-hidden {
+        display: none !important;
+    }
+    .settings-panel-title {
+        display: none;
+        padding: 0; // Cancels the global `dialog h2` padding from dialogs.scss
+        color: variables.$mainTxtColor;
+        font-size: 1.1em;
+        font-weight: bold;
+    }
+    .settings-search-empty {
+        font-size: 0.9em;
+        color: $muted;
+    }
+    &.settings-searching {
+        .settings-body {
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+        }
+        .settings-panel {
+            display: flex;
+        }
+        .settings-panel-title {
+            display: block;
+        }
+        .settings-tab.active {
+            background: transparent;
+        }
+        .settings-tab.active:hover {
+            background: rgba(variables.$mainColor, 0.08);
+        }
+    }
+
+    // Mobile: tabs move above the content as a horizontal, scrollable bar
+    @media screen and (width < 48em) {
+        .settings-page {
+            padding: 16px;
+        }
+        .settings-title {
+            font-size: 1.4em;
+        }
+        .settings-layout {
+            flex-direction: column;
+            gap: 16px;
+        }
+        .settings-tabs {
+            flex-direction: row;
+            flex-shrink: 0;
+            width: auto;
+            min-width: 0;
+            overflow-x: auto;
+            scrollbar-width: none;
+            &::-webkit-scrollbar {
+                display: none;
+            }
+        }
+        .settings-tab {
+            flex-shrink: 0;
+        }
+        // Vertical line in the horizontal tab bar
+        .settings-tabs-divider {
+            width: 1px;
+            height: auto;
+            margin: 6px 4px;
+        }
+        .settings-body {
+            padding-top: 0;
         }
     }
 }
 
-#settingsControls {
-    margin: 0 0 1.3em;
-    text-align: center;
-    width: 100%;
-    button {
-        color: variables.$mainBGColor;
-        background-color: white;
-        width: 17%;
-        margin-bottom: 1em;
-        vertical-align: middle;
-        height: 18px;
-        cursor: pointer;
-        font-weight: bold;
-        transition: background-color 0.3s ease, width 0.3s ease;
-        span {
-            vertical-align: middle;
-            display: inline-flex;
-        }
-        &:hover {
-            background-color: grey;
-        }
-        &.active {
-            background-color: variables.$mainColor;
-            color: variables.$mainTxtColor;
-            padding-bottom: 0;
-            height: 25px;
-            width: 22%;
-            svg {
-                display: inline-block;
-                fill: variables.$mainTxtColor;
-            }
-        }
-        svg {
-            height: 1.5em;
-            width: 1.5em;
-            display: none;
-            fill: variables.$mainBGColor;
-            &#flagsvg{
-                height: 1.2em;
-                width: 1.2em;
-            }
-        }
-    }
-}
+// Key capture dialog for Settings > Shortcuts (opened on top of #settingsDialog)
 
 #shortcutCaptureDialog {
     width: 480px;

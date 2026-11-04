@@ -17,6 +17,18 @@ const LANG_FLAGS = {
     zh: "🇨🇳",
 };
 
+// Native language names shown in the language picker
+const LANG_NAMES = {
+    en: "English",
+    de: "Deutsch",
+    fr: "Français",
+    pt: "Português (Brasil)",
+    ru: "Русский",
+    tr: "Türkçe",
+    uk: "Українська",
+    zh: "中文",
+};
+
 let langSelect;
 
 /**
@@ -44,34 +56,41 @@ export function loadLanguage(LANGUAGES) {
         getLanguage(LANGUAGES);
     });
 
-    langSelect = new TomSelect("#lngDropbtn", {
-        options: LANGUAGES.map(([code, label]) => ({ value: code, text: label })),
+    langSelect = new TomSelect("#settingsLangSelect", {
+        options: LANGUAGES.map(([code, label]) => ({ value: code, text: LANG_NAMES[code] || code, short: label })),
         maxItems: 1,
         controlInput: null,
         render: {
             option: renderLangOption,
-            item: renderLangOption,
+            item: renderLangItem,
         },
     });
 
-    langSelect.on("change", function(value) {
-        i18next.changeLanguage(value, updateContent);
-        localStorage.setItem("settings-language", value);
-        $("html").attr("lang", value);
-    });
+    langSelect.on("change", onLanguageChange);
 }
 
 /**
- * Flag + code, used for both the selected item and the dropdown options
+ * Apply a new language
+ * @param {string} value - language code
+ */
+function onLanguageChange(value) {
+    if (!value) return;
+    i18next.changeLanguage(value, updateContent);
+    localStorage.setItem("settings-language", value);
+    $("html").attr("lang", value);
+}
+
+/**
+ * Flag + native name, used for the dropdown options
  * @param {{value: string, text: string}} data
  * @param {Function} escape
  * @returns {string} html
  */
 function renderLangOption(data, escape) {
     return `
-        <div class="lngOption">
-            <span class="lngFlag">${LANG_FLAGS[data.value] || ""}</span>
-            <span class="lngCode">${escape(data.text)}</span>
+        <div class="settings-langOption">
+            <span class="settings-langFlag">${LANG_FLAGS[data.value] || ""}</span>
+            <span>${escape(data.text)}</span>
         </div>
     `;
 }
@@ -80,6 +99,21 @@ function renderLangOption(data, escape) {
  * Find what language to use
  * Priority Order : LocalStorage > navigator.language > English
  */
+/**
+ * Flag + short label (EN, FR, ...), used for the selected item in the header
+ * @param {{value: string, short: string}} data
+ * @param {Function} escape
+ * @returns {string} html
+ */
+function renderLangItem(data, escape) {
+    return `
+        <div class="settings-langOption">
+            <span class="settings-langFlag">${LANG_FLAGS[data.value] || ""}</span>
+            <span>${escape(data.short || data.value.toUpperCase())}</span>
+        </div>
+    `;
+}
+
 function getLanguage(LANGUAGES){
     const browserLanguage = navigator.language.split("-")[0].toLowerCase();
     const supportedLanguagesCodes = LANGUAGES.map(pair => pair[0]);
@@ -124,7 +158,7 @@ function updateContent() {
     });
 
     if (App.minimap.layer) App.minimap.layer.polyline.updateMeasurements();
-    if (App.userSettings) App._renderModTiles();
+    if (App.userSettings) App._renderMods();
     $(".threeDTextureSelect").trigger("change.select2"); // re-render its selected option's new text
    
     const selectorWidth = window.matchMedia("screen and (min-width: 124em) and (min-height: 68em)").matches ? "350px" : "250px";

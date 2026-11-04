@@ -1,887 +1,503 @@
-<dialog id="helpDialog" class="animate__animated animate__zoomIn">
+<!-- Settings dialog (full screen) -->
+<dialog id="settingsDialog">
+    <div class="settings-page">
 
-    <form method="dialog">
-        <button class="closeModal">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM175 175c9.4-9.4 24.6-9.4 33.9 0l47 47 47-47c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9l-47 47 47 47c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0l-47-47-47 47c-9.4 9.4-24.6 9.4-33.9 0s-9.4-24.6 0-33.9l47-47-47-47c-9.4-9.4-9.4-24.6 0-33.9z"/></svg>
-        </button>
-    </form>
-
-    <div id="lngSelector" class="dropdown">
-        <select id="lngDropbtn" class="langSelect unselectable" tabindex="-1">
-        </select>
-    </div>
-
-    <h2 data-i18n="settings:SettingsTitle">Settings</h2>
-
-    <div id="settingsControls">
-        <button type="button" class="active" value="panel1" aria-label="panel1">
-            <span data-i18n="settings:map"></span>
-            <span>
-                <svg class="animate__animated animate__fadeInRight" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">
-                    <path d="M384 476.1L192 421.2l0-385.3L384 90.8l0 385.3zm32-1.2l0-386.5L543.1 37.5c15.8-6.3 32.9 5.3 32.9 22.3l0 334.8c0 9.8-6 18.6-15.1 22.3L416 474.8zM15.1 95.1L160 37.2l0 386.5L32.9 474.5C17.1 480.8 0 469.2 0 452.2L0 117.4c0-9.8 6-18.6 15.1-22.3z"/>
-                </svg>
-            </span>
-        </button>
-        <button type="button" value="panel2" aria-label="panel2">
-            <span data-i18n="settings:mortars"></span>
-            <span>
-                <svg class="animate__animated animate__fadeInRight" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512">
-                    <path d="M49.1 353.8L26.5 365.1C2.8 376.9-6.8 405.8 5.1 429.5s40.7 33.3 64.4 21.5L92 439.7c42.7 41.2 108.3 53.2 164.4 25.1c6.1-3.2 14.8-8.1 25.4-14.5C265.5 427 256 398.6 256 368c0-79.5 64.5-144 144-144c52.4 0 98.3 28 123.5 69.9c32.9-21.9 62.9-41.9 86-57.4c26.7-17.9 35.7-52.7 21.4-81.5L600.2 93.5c-14.4-28.7-47.7-42.4-78-31.8C414.8 99.3 177.1 183.2 127.6 207.2c-56.1 28-85.9 87.7-78.5 146.6zM400 480a112 112 0 1 0 0-224 112 112 0 1 0 0 224zm0-144a32 32 0 1 1 0 64 32 32 0 1 1 0-64z"/>
-                </svg>
-            </span>
+    <div class="settings-header">
+        <h1 class="settings-title" data-i18n="settings:SettingsTitle">Settings</h1>
+        <div class="settings-search">
+            <svg class="settings-search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+            <input id="settingsSearch" type="search" autocomplete="off" spellcheck="false" placeholder="Search settings" data-i18n-placeholder="settings:searchPlaceholder" aria-label="Search settings">
+        </div>
+        <div class="settings-lang">
+            <select id="settingsLangSelect" class="settings-select settings-lang-select" tabindex="-1" aria-label="Language" data-i18n-aria-label="settings:language"></select>
+        </div>
+        <form method="dialog">
+            <button class="settings-close" aria-label="close">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
             </button>
-        <button type="button" value="panel3" aria-label="panel3">
-            <span data-i18n="settings:layer"></span>
-            <span>
-                <svg id="flagsvg" class="animate__animated animate__fadeInRight" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
-                    <path d="M64 32C64 14.3 49.7 0 32 0S0 14.3 0 32L0 64 0 368 0 480c0 17.7 14.3 32 32 32s32-14.3 32-32l0-128 64.3-16.1c41.1-10.3 84.6-5.5 122.5 13.4c44.2 22.1 95.5 24.8 141.7 7.4l34.7-13c12.5-4.7 20.8-16.6 20.8-30l0-247.7c0-23-24.2-38-44.8-27.7l-9.6 4.8c-46.3 23.2-100.8 23.2-147.1 0c-35.1-17.6-75.4-22-113.5-12.5L64 48l0-16z"/>
-                </svg>
-            </span>
-        </button>
-            <button type="button" value="panel4" aria-label="panel4">
-            <span data-i18n="settings:shortcuts"></span>
-            <span>
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
-                    <path d="M96 128C60.7 128 32 156.7 32 192L32 448C32 483.3 60.7 512 96 512L544 512C579.3 512 608 483.3 608 448L608 192C608 156.7 579.3 128 544 128L96 128zM112 192L144 192C152.8 192 160 199.2 160 208L160 240C160 248.8 152.8 256 144 256L112 256C103.2 256 96 248.8 96 240L96 208C96 199.2 103.2 192 112 192zM96 304C96 295.2 103.2 288 112 288L144 288C152.8 288 160 295.2 160 304L160 336C160 344.8 152.8 352 144 352L112 352C103.2 352 96 344.8 96 336L96 304zM208 192L240 192C248.8 192 256 199.2 256 208L256 240C256 248.8 248.8 256 240 256L208 256C199.2 256 192 248.8 192 240L192 208C192 199.2 199.2 192 208 192zM192 304C192 295.2 199.2 288 208 288L240 288C248.8 288 256 295.2 256 304L256 336C256 344.8 248.8 352 240 352L208 352C199.2 352 192 344.8 192 336L192 304zM208 384L432 384C440.8 384 448 391.2 448 400L448 432C448 440.8 440.8 448 432 448L208 448C199.2 448 192 440.8 192 432L192 400C192 391.2 199.2 384 208 384zM288 208C288 199.2 295.2 192 304 192L336 192C344.8 192 352 199.2 352 208L352 240C352 248.8 344.8 256 336 256L304 256C295.2 256 288 248.8 288 240L288 208zM304 288L336 288C344.8 288 352 295.2 352 304L352 336C352 344.8 344.8 352 336 352L304 352C295.2 352 288 344.8 288 336L288 304C288 295.2 295.2 288 304 288zM384 208C384 199.2 391.2 192 400 192L432 192C440.8 192 448 199.2 448 208L448 240C448 248.8 440.8 256 432 256L400 256C391.2 256 384 248.8 384 240L384 208zM400 288L432 288C440.8 288 448 295.2 448 304L448 336C448 344.8 440.8 352 432 352L400 352C391.2 352 384 344.8 384 336L384 304C384 295.2 391.2 288 400 288zM480 208C480 199.2 487.2 192 496 192L528 192C536.8 192 544 199.2 544 208L544 240C544 248.8 536.8 256 528 256L496 256C487.2 256 480 248.8 480 240L480 208zM496 288L528 288C536.8 288 544 295.2 544 304L544 336C544 344.8 536.8 352 528 352L496 352C487.2 352 480 344.8 480 336L480 304C480 295.2 487.2 288 496 288z"/>
-                </svg>
-            </span>
-        </button>
-        <button type="button" value="panel5" aria-label="panel5">
-            <span data-i18n="settings:mods"></span>
-            <span>
-                <svg class="animate__animated animate__fadeInRight" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
-                    <path d="M541.4 162.6C549 155 561.7 156.9 565.5 166.9C572.3 184.6 576 203.9 576 224C576 312.4 504.4 384 416 384C398.5 384 381.6 381.2 365.8 376L178.9 562.9C150.8 591 105.2 591 77.1 562.9C49 534.8 49 489.2 77.1 461.1L264 274.2C258.8 258.4 256 241.6 256 224C256 135.6 327.6 64 416 64C436.1 64 455.4 67.7 473.1 74.5C483.1 78.3 484.9 91 477.4 98.6L388.7 187.3C385.7 190.3 384 194.4 384 198.6L384 240C384 248.8 391.2 256 400 256L441.4 256C445.6 256 449.7 254.3 452.7 251.3L541.4 162.6z"/>
-                </svg>
-            </span>
-        </button>
+        </form>
     </div>
 
-    <div id="panel1" class="panel active">
-         
-      <table class="userSettings">
-          <caption data-i18n="settings:mapOptions"></caption>
-          <tbody>
+    <div class="settings-layout">
+        <nav class="settings-tabs">
+            <button type="button" class="settings-tab active" value="map">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path d="M384 476.1L192 421.2l0-385.3L384 90.8l0 385.3zm32-1.2l0-386.5L543.1 37.5c15.8-6.3 32.9 5.3 32.9 22.3l0 334.8c0 9.8-6 18.6-15.1 22.3L416 474.8zM15.1 95.1L160 37.2l0 386.5L32.9 474.5C17.1 480.8 0 469.2 0 452.2L0 117.4c0-9.8 6-18.6 15.1-22.3z"/></svg>
+                <span data-i18n="settings:map">Map</span>
+            </button>
+            <button type="button" class="settings-tab" value="mortars">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><path d="M49.1 353.8L26.5 365.1C2.8 376.9-6.8 405.8 5.1 429.5s40.7 33.3 64.4 21.5L92 439.7c42.7 41.2 108.3 53.2 164.4 25.1c6.1-3.2 14.8-8.1 25.4-14.5C265.5 427 256 398.6 256 368c0-79.5 64.5-144 144-144c52.4 0 98.3 28 123.5 69.9c32.9-21.9 62.9-41.9 86-57.4c26.7-17.9 35.7-52.7 21.4-81.5L600.2 93.5c-14.4-28.7-47.7-42.4-78-31.8C414.8 99.3 177.1 183.2 127.6 207.2c-56.1 28-85.9 87.7-78.5 146.6zM400 480a112 112 0 1 0 0-224 112 112 0 1 0 0 224zm0-144a32 32 0 1 1 0 64 32 32 0 1 1 0-64z"/></svg>
+                <span data-i18n="settings:mortars">Mortars</span>
+            </button>
+            <button type="button" class="settings-tab" value="layer">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M64 32C64 14.3 49.7 0 32 0S0 14.3 0 32L0 64 0 368 0 480c0 17.7 14.3 32 32 32s32-14.3 32-32l0-128 64.3-16.1c41.1-10.3 84.6-5.5 122.5 13.4c44.2 22.1 95.5 24.8 141.7 7.4l34.7-13c12.5-4.7 20.8-16.6 20.8-30l0-247.7c0-23-24.2-38-44.8-27.7l-9.6 4.8c-46.3 23.2-100.8 23.2-147.1 0c-35.1-17.6-75.4-22-113.5-12.5L64 48l0-16z"/></svg>
+                <span data-i18n="settings:layer">Layers</span>
+            </button>
+            <button type="button" class="settings-tab factionSettings" value="factions">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path d="M480 64L448 64C439.2 64 432 71.2 432 80C432 88.8 439.2 96 448 96L448 196.3C438.4 201.8 432 212.2 432 224L432 256C414.3 256 400 270.3 400 288L400 432C400 449.7 414.3 464 432 464L448 464L448 560C448 568.8 455.2 576 464 576L523.5 576C533.9 576 541.5 566.2 539 556.1L516 464L560 464C568.8 464 576 456.8 576 448L576 432C576 423.2 568.8 416 560 416L512 416L512 389.3L565.1 371.6C571.6 369.4 576 363.3 576 356.4L576 271.9C576 263.1 568.8 255.9 560 255.9L544 255.9C535.2 255.9 528 263.1 528 271.9L528 327.9L512 333.2L512 223.9C512 212.1 505.6 201.7 496 196.2L496 80C496 71.2 488.8 64 480 64zM288 272C182 272 96 358 96 464L96 512C96 529.7 110.3 544 128 544C145.7 544 160 529.7 160 512L160 464C160 431.5 172.1 401.9 192 379.3L192 576L352 576L352 282.9C332 275.8 310.4 272 288 272zM344 152C344 112.2 311.8 80 272 80C232.2 80 200 112.2 200 152C200 191.8 232.2 224 272 224C311.8 224 344 191.8 344 152z"/></svg>
+                <span data-i18n="settings:factions">Factions</span>
+            </button>
+            <button type="button" class="settings-tab" value="shortcuts">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path d="M96 128C60.7 128 32 156.7 32 192L32 448C32 483.3 60.7 512 96 512L544 512C579.3 512 608 483.3 608 448L608 192C608 156.7 579.3 128 544 128L96 128zM112 192L144 192C152.8 192 160 199.2 160 208L160 240C160 248.8 152.8 256 144 256L112 256C103.2 256 96 248.8 96 240L96 208C96 199.2 103.2 192 112 192zM96 304C96 295.2 103.2 288 112 288L144 288C152.8 288 160 295.2 160 304L160 336C160 344.8 152.8 352 144 352L112 352C103.2 352 96 344.8 96 336L96 304zM208 192L240 192C248.8 192 256 199.2 256 208L256 240C256 248.8 248.8 256 240 256L208 256C199.2 256 192 248.8 192 240L192 208C192 199.2 199.2 192 208 192zM192 304C192 295.2 199.2 288 208 288L240 288C248.8 288 256 295.2 256 304L256 336C256 344.8 248.8 352 240 352L208 352C199.2 352 192 344.8 192 336L192 304zM208 384L432 384C440.8 384 448 391.2 448 400L448 432C448 440.8 440.8 448 432 448L208 448C199.2 448 192 440.8 192 432L192 400C192 391.2 199.2 384 208 384zM288 208C288 199.2 295.2 192 304 192L336 192C344.8 192 352 199.2 352 208L352 240C352 248.8 344.8 256 336 256L304 256C295.2 256 288 248.8 288 240L288 208zM304 288L336 288C344.8 288 352 295.2 352 304L352 336C352 344.8 344.8 352 336 352L304 352C295.2 352 288 344.8 288 336L288 304C288 295.2 295.2 288 304 288zM384 208C384 199.2 391.2 192 400 192L432 192C440.8 192 448 199.2 448 208L448 240C448 248.8 440.8 256 432 256L400 256C391.2 256 384 248.8 384 240L384 208zM400 288L432 288C440.8 288 448 295.2 448 304L448 336C448 344.8 440.8 352 432 352L400 352C391.2 352 384 344.8 384 336L384 304C384 295.2 391.2 288 400 288zM480 208C480 199.2 487.2 192 496 192L528 192C536.8 192 544 199.2 544 208L544 240C544 248.8 536.8 256 528 256L496 256C487.2 256 480 248.8 480 240L480 208zM496 288L528 288C536.8 288 544 295.2 544 304L544 336C544 344.8 536.8 352 528 352L496 352C487.2 352 480 344.8 480 336L480 304C480 295.2 487.2 288 496 288z"/></svg>
+                <span data-i18n="settings:shortcuts">Shortcuts</span>
+            </button>
+            <button type="button" class="settings-tab" value="mods">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path d="M541.4 162.6C549 155 561.7 156.9 565.5 166.9C572.3 184.6 576 203.9 576 224C576 312.4 504.4 384 416 384C398.5 384 381.6 381.2 365.8 376L178.9 562.9C150.8 591 105.2 591 77.1 562.9C49 534.8 49 489.2 77.1 461.1L264 274.2C258.8 258.4 256 241.6 256 224C256 135.6 327.6 64 416 64C436.1 64 455.4 67.7 473.1 74.5C483.1 78.3 484.9 91 477.4 98.6L388.7 187.3C385.7 190.3 384 194.4 384 198.6L384 240C384 248.8 391.2 256 400 256L441.4 256C445.6 256 449.7 254.3 452.7 251.3L541.4 162.6z"/></svg>
+                <span data-i18n="settings:mods">Mods</span>
+            </button>
+            <!-- Separates settings tabs from changelog/about -->
+            <span class="settings-tabs-divider" role="separator"></span>
+            <button type="button" class="settings-tab" value="changelog">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path d="M320 128C426 128 512 214 512 320C512 426 426 512 320 512C254.8 512 197.1 479.5 162.4 429.7C152.3 415.2 132.3 411.7 117.8 421.8C103.3 431.9 99.8 451.9 109.9 466.4C156.1 532.6 233 576 320 576C461.4 576 576 461.4 576 320C576 178.6 461.4 64 320 64C234.3 64 158.5 106.1 112 170.7L112 144C112 126.3 97.7 112 80 112C62.3 112 48 126.3 48 144L48 256C48 273.7 62.3 288 80 288L104.6 288C105.1 288 105.6 288 106.1 288L192.1 288C209.8 288 224.1 273.7 224.1 256C224.1 238.3 209.8 224 192.1 224L153.8 224C186.9 166.6 249 128 320 128zM344 216C344 202.7 333.3 192 320 192C306.7 192 296 202.7 296 216L296 320C296 326.4 298.5 332.5 303 337L375 409C384.4 418.4 399.6 418.4 408.9 409C418.2 399.6 418.3 384.4 408.9 375.1L343.9 310.1L343.9 216z"/></svg>
+                <span data-i18n="settings:changelog">ChangeLog</span>
+            </button>
+            <button type="button" class="settings-tab" value="about">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path d="M320 576C461.4 576 576 461.4 576 320C576 178.6 461.4 64 320 64C178.6 64 64 178.6 64 320C64 461.4 178.6 576 320 576zM288 224C288 206.3 302.3 192 320 192C337.7 192 352 206.3 352 224C352 241.7 337.7 256 320 256C302.3 256 288 241.7 288 224zM280 288L328 288C341.3 288 352 298.7 352 312L352 400L360 400C373.3 400 384 410.7 384 424C384 437.3 373.3 448 360 448L280 448C266.7 448 256 437.3 256 424C256 410.7 266.7 400 280 400L304 400L304 336L280 336C266.7 336 256 325.3 256 312C256 298.7 266.7 288 280 288z"/></svg>
+                <span data-i18n="settings:about">About</span>
+            </button>
+        </nav>
 
-              <tr id="keypadUnderCursorSettingRow">
-                  <td >
-                      <label class="mcui-checkbox" >
-                          <input id="keypadUnderCursorSetting" type="checkbox">
-                          <span>
-                            <svg class="mcui-check" viewBox="-2 -2 35 35" aria-hidden="true">
-                              <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
-                            </svg>
-                          </span>
+        <section class="settings-body">
+
+            <p class="settings-search-empty" data-i18n="settings:searchNoResults" hidden>No settings found</p>
+
+            <div class="settings-panel active" data-panel="map">
+                <section class="settings-section">
+                    <div class="settings-field">
+                        <label class="settings-checkbox">
+                            <input id="settingsKeypadUnderCursor" type="checkbox">
+                            <span data-i18n="settings:showKeypad">Keypads under Cursor</span>
                         </label>
-                  </td>
-                  <td> 
-                      <span data-i18n="settings:showKeypad" class="toggleCheckbox"></span>
-                      <br>
-                      <span id="KPSettingSubText" class="settingsSubtext"></span>
-                  </td>
-              </tr>
-
-              <tr class="cursorChoiceSettings">
-                  <td>
-                      <label class="mcui-checkbox">
-                          <input id="cursorChoiceSettings" type="checkbox">
-                          <span>
-                            <svg class="mcui-check" viewBox="-2 -2 35 35" aria-hidden="true">
-                              <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
-                            </svg>
-                          </span>
+                        <p class="settings-field-hint" data-i18n="tooltips:showKeypadTooltip">Display the keypad currently hovered under the cursor</p>
+                    </div>
+                    <div class="settings-field">
+                        <label class="settings-checkbox">
+                            <input id="settingsClassicCursor" type="checkbox">
+                            <span data-i18n="settings:useClassicCursor">Use Classic Cursor</span>
                         </label>
-                  </td>
-                  <td><span data-i18n="settings:useClassicCursor" class="toggleCheckbox"></span></td>
-              </tr>
-
-              <tr class="mapAnimationSettings">
-                  <td>
-                      <label class="mcui-checkbox">
-                          <input id="mapAnimationSettings" type="checkbox">
-                          <span>
-                            <svg class="mcui-check" viewBox="-2 -2 35 35" aria-hidden="true">
-                              <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
-                            </svg>
-                          </span>
+                        <p class="settings-field-hint" data-i18n="tooltips:useClassicCursorTooltip">Replace crosshair with default cursor</p>
+                    </div>
+                    <div class="settings-field">
+                        <label class="settings-checkbox">
+                            <input id="settingsMapAnimation" type="checkbox">
+                            <span data-i18n="settings:mapAnimationSettings">Pan/Zoom Animations</span>
                         </label>
-                  </td>
-                  <td>
-                    <span data-i18n="settings:mapAnimationSettings" class="toggleCheckbox"></span>
-                  </td>
-              </tr>
-
-              <tr class="contextMenuSettings">
-                  <td>
-                      <label class="mcui-checkbox">
-                          <input id="contextMenuSettings" type="checkbox">
-                          <span>
-                            <svg class="mcui-check" viewBox="-2 -2 35 35" aria-hidden="true">
-                              <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
-                            </svg>
-                          </span>
+                        <p class="settings-field-hint" data-i18n="tooltips:smoothMapTooltip">Add smooth animations when zooming or panning the map. A page refresh is needed</p>
+                    </div>
+                </section>
+                <section class="settings-section">
+                    <h3 class="settings-section-title" data-i18n="settings:mapButtons">Map Toolbar</h3>
+                    <div class="settings-field">
+                        <p class="settings-field-hint" data-i18n="settings:mapButtonsHint">Choose which buttons stay on the map toolbar, the others are moved to its ⋯ menu</p>
+                        <div class="settings-chips">
+                            <label class="settings-chip">
+                                <input type="checkbox" data-toolbar-key="settings-btn-layers">
+                                <span class="settings-chip-body"><span class="settings-chip-box"><svg class="settings-chip-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><svg class="settings-chip-glyph" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path d="M296.5 69.2C311.4 62.3 328.6 62.3 343.5 69.2L562.1 170.2C570.6 174.1 576 182.6 576 192C576 201.4 570.6 209.9 562.1 213.8L343.5 314.8C328.6 321.7 311.4 321.7 296.5 314.8L77.9 213.8C69.4 209.8 64 201.3 64 192C64 182.7 69.4 174.1 77.9 170.2L296.5 69.2zM112.1 282.4L276.4 358.3C304.1 371.1 336 371.1 363.7 358.3L528 282.4L562.1 298.2C570.6 302.1 576 310.6 576 320C576 329.4 570.6 337.9 562.1 341.8L343.5 442.8C328.6 449.7 311.4 449.7 296.5 442.8L77.9 341.8C69.4 337.8 64 329.3 64 320C64 310.7 69.4 302.1 77.9 298.2L112 282.4zM77.9 426.2L112 410.4L276.3 486.3C304 499.1 335.9 499.1 363.6 486.3L527.9 410.4L562 426.2C570.5 430.1 575.9 438.6 575.9 448C575.9 457.4 570.5 465.9 562 469.8L343.4 570.8C328.5 577.7 311.3 577.7 296.4 570.8L77.9 469.8C69.4 465.8 64 457.3 64 448C64 438.7 69.4 430.1 77.9 426.2z"/></svg><span data-i18n="settings:toolbarLayers">Map Layers</span></span>
+                            </label>
+                            <label class="settings-chip">
+                                <input type="checkbox" data-toolbar-key="settings-btn-hd">
+                                <span class="settings-chip-body"><span class="settings-chip-box"><svg class="settings-chip-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><svg class="settings-chip-glyph" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path d="M0 96C0 60.7 28.7 32 64 32l448 0c35.3 0 64 28.7 64 64l0 320c0 35.3-28.7 64-64 64L64 480c-35.3 0-64-28.7-64-64L0 96zm304 88l0 144c0 13.3 10.7 24 24 24l56 0c53 0 96-43 96-96s-43-96-96-96l-56 0c-13.3 0-24 10.7-24 24zm80 24c26.5 0 48 21.5 48 48s-21.5 48-48 48l-32 0 0-96 32 0zM160 184c0-13.3-10.7-24-24-24s-24 10.7-24 24l0 72 0 72c0 13.3 10.7 24 24 24s24-10.7 24-24l0-48 64 0 0 48c0 13.3 10.7 24 24 24s24-10.7 24-24l0-72 0-72c0-13.3-10.7-24-24-24s-24 10.7-24 24l0 48-64 0 0-48z"/></svg><span data-i18n="settings:toolbarHd">HD Images</span></span>
+                            </label>
+                            <label class="settings-chip">
+                                <input type="checkbox" data-toolbar-key="settings-btn-3d">
+                                <span class="settings-chip-body"><span class="settings-chip-box"><svg class="settings-chip-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span class="settings-chip-glyph settings-chip-glyph-text" aria-hidden="true">3D</span><span data-i18n="settings:toolbar3d">3D View</span></span>
+                            </label>
+                            <label class="settings-chip">
+                                <input type="checkbox" data-toolbar-key="settings-btn-layer-info">
+                                <span class="settings-chip-body"><span class="settings-chip-box"><svg class="settings-chip-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><svg class="settings-chip-glyph" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM216 336l24 0 0-64-24 0c-13.3 0-24-10.7-24-24s10.7-24 24-24l48 0c13.3 0 24 10.7 24 24l0 88 8 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-80 0c-13.3 0-24-10.7-24-24s10.7-24 24-24zm40-208a32 32 0 1 1 0 64 32 32 0 1 1 0-64z"/></svg><span data-i18n="settings:toolbarLayerInfo">Layer Info</span></span>
+                            </label>
+                            <label class="settings-chip">
+                                <input type="checkbox" data-toolbar-key="settings-btn-legacy">
+                                <span class="settings-chip-body"><span class="settings-chip-box"><svg class="settings-chip-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><svg class="settings-chip-glyph" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><path d="M32 32C14.3 32 0 46.3 0 64S14.3 96 32 96l576 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L32 32zm0 384c-17.7 0-32 14.3-32 32s14.3 32 32 32l576 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L32 416zM7 167c-9.4 9.4-9.4 24.6 0 33.9l55 55L7 311c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l55-55 55 55c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-55-55 55-55c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-55 55L41 167c-9.4-9.4-24.6-9.4-33.9 0zM265 167c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l55 55-55 55c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l55-55 55 55c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-55-55 55-55c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-55 55-55-55zM455 167c-9.4 9.4-9.4 24.6 0 33.9l55 55-55 55c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l55-55 55 55c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-55-55 55-55c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-55 55-55-55c-9.4-9.4-24.6-9.4-33.9 0z"/></svg><span data-i18n="settings:toolbarLegacy">Legacy UI</span></span>
+                            </label>
+                            <label class="settings-chip">
+                                <input type="checkbox" data-toolbar-key="settings-btn-helpmap">
+                                <span class="settings-chip-body"><span class="settings-chip-box"><svg class="settings-chip-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><svg class="settings-chip-glyph" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM288 176c0-44.2-35.8-80-80-80s-80 35.8-80 80c0 48.8 46.5 111.6 68.6 138.6c6 7.3 16.8 7.3 22.7 0c22.1-27 68.6-89.8 68.6-138.6zm-112 0a32 32 0 1 1 64 0 32 32 0 1 1 -64 0z"/></svg><span data-i18n="settings:toolbarHeatmap">Heatmap</span></span>
+                            </label>
+                            <label class="settings-chip">
+                                <input type="checkbox" data-toolbar-key="settings-btn-focus">
+                                <span class="settings-chip-body"><span class="settings-chip-box"><svg class="settings-chip-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><svg class="settings-chip-glyph" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M32 32C14.3 32 0 46.3 0 64l0 96c0 17.7 14.3 32 32 32s32-14.3 32-32l0-64 64 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L32 32zM64 352c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 96c0 17.7 14.3 32 32 32l96 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-64 0 0-64zM320 32c-17.7 0-32 14.3-32 32s14.3 32 32 32l64 0 0 64c0 17.7 14.3 32 32 32s32-14.3 32-32l0-96c0-17.7-14.3-32-32-32l-96 0zM448 352c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 64-64 0c-17.7 0-32 14.3-32 32s14.3 32 32 32l96 0c17.7 0 32-14.3 32-32l0-96z"/></svg><span data-i18n="settings:toolbarFocus">Focus Mode</span></span>
+                            </label>
+                            <label class="settings-chip">
+                                <input type="checkbox" data-toolbar-key="settings-btn-download">
+                                <span class="settings-chip-body"><span class="settings-chip-box"><svg class="settings-chip-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><svg class="settings-chip-glyph" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path d="M64 0C28.7 0 0 28.7 0 64L0 448c0 35.3 28.7 64 64 64l256 0c35.3 0 64-28.7 64-64l0-288-128 0c-17.7 0-32-14.3-32-32L224 0 64 0zM256 0l0 128 128 0L256 0zM216 232l0 102.1 31-31c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9l-72 72c-9.4 9.4-24.6 9.4-33.9 0l-72-72c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l31 31L168 232c0-13.3 10.7-24 24-24s24 10.7 24 24z"/></svg><span data-i18n="settings:toolbarDownload">Download</span></span>
+                            </label>
+                            <label class="settings-chip">
+                                <input type="checkbox" data-toolbar-key="settings-btn-upload">
+                                <span class="settings-chip-body"><span class="settings-chip-box"><svg class="settings-chip-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><svg class="settings-chip-glyph" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="128 64 384 512"><path d="M128 128C128 92.7 156.7 64 192 64L341.5 64C358.5 64 374.8 70.7 386.8 82.7L493.3 189.3C505.3 201.3 512 217.6 512 234.6L512 512C512 547.3 483.3 576 448 576L192 576C156.7 576 128 547.3 128 512L128 128zM336 122.5L336 216C336 229.3 346.7 240 360 240L453.5 240L336 122.5zM337 327C327.6 317.6 312.4 317.6 303.1 327L239.1 391C229.7 400.4 229.7 415.6 239.1 424.9C248.5 434.2 263.7 434.3 273 424.9L296 401.9L296 488C296 501.3 306.7 512 320 512C333.3 512 344 501.3 344 488L344 401.9L367 424.9C376.4 434.3 391.6 434.3 400.9 424.9C410.2 415.5 410.3 400.3 400.9 391L336.9 327z"/></svg><span data-i18n="settings:toolbarUpload">Upload</span></span>
+                            </label>
+                            <label class="settings-chip">
+                                <input type="checkbox" data-toolbar-key="settings-btn-servers">
+                                <span class="settings-chip-body"><span class="settings-chip-box"><svg class="settings-chip-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><svg class="settings-chip-glyph" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M64 32C28.7 32 0 60.7 0 96l0 64c0 35.3 28.7 64 64 64l384 0c35.3 0 64-28.7 64-64l0-64c0-35.3-28.7-64-64-64L64 32zm280 72a24 24 0 1 1 0 48 24 24 0 1 1 0-48zm48 24a24 24 0 1 1 48 0 24 24 0 1 1 -48 0zM64 288c-35.3 0-64 28.7-64 64l0 64c0 35.3 28.7 64 64 64l384 0c35.3 0 64-28.7 64-64l0-64c0-35.3-28.7-64-64-64L64 288zm280 72a24 24 0 1 1 0 48 24 24 0 1 1 0-48zm56 24a24 24 0 1 1 48 0 24 24 0 1 1 -48 0z"/></svg><span data-i18n="settings:toolbarServers">Servers</span></span>
+                            </label>
+                            <label class="settings-chip">
+                                <input type="checkbox" data-toolbar-key="settings-btn-session">
+                                <span class="settings-chip-body"><span class="settings-chip-box"><svg class="settings-chip-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><svg class="settings-chip-glyph" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><path d="M96 384a64 64 0 1 0 0-128 64 64 0 1 0 0 128zM64 416c-35.3 0-64 28.7-64 64c0 17.7 14.3 32 32 32l128 0c17.7 0 32-14.3 32-32c0-35.3-28.7-64-64-64l-64 0zm256-32a64 64 0 1 0 0-128 64 64 0 1 0 0 128zm-32 32c-35.3 0-64 28.7-64 64c0 17.7 14.3 32 32 32l128 0c17.7 0 32-14.3 32-32c0-35.3-28.7-64-64-64l-64 0zm320-96a64 64 0 1 0 -128 0 64 64 0 1 0 128 0zM448 480c0 17.7 14.3 32 32 32l128 0c17.7 0 32-14.3 32-32c0-35.3-28.7-64-64-64l-64 0c-35.3 0-64 28.7-64 64zM544 48L96 48c-8.8 0-16 7.2-16 16l0 161.3c-18.3 3.1-34.8 11.3-48 23.1L32 64C32 28.7 60.7 0 96 0L544 0c35.3 0 64 28.7 64 64l0 184.4c-13.2-11.8-29.7-20.1-48-23.1L560 64c0-8.8-7.2-16-16-16z"/></svg><span data-i18n="settings:toolbarSession">Session</span></span>
+                            </label>
+                            <label class="settings-chip">
+                                <input type="checkbox" data-toolbar-key="settings-btn-undo">
+                                <span class="settings-chip-body"><span class="settings-chip-box"><svg class="settings-chip-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><svg class="settings-chip-glyph" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M135.2 17.7L128 32 32 32C14.3 32 0 46.3 0 64S14.3 96 32 96l384 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-96 0-7.2-14.3C307.4 6.8 296.3 0 284.2 0L163.8 0c-12.1 0-23.2 6.8-28.6 17.7zM416 128L32 128 53.2 467c1.6 25.3 22.6 45 47.9 45l245.8 0c25.3 0 46.3-19.7 47.9-45L416 128zM217.8 199.9c8.9 9.9 8.1 25-1.8 33.9L182.5 264l57.5 0c48.6 0 88 39.4 88 88l0 40c0 13.3-10.7 24-24 24s-24-10.7-24-24l0-40c0-22.1-17.9-40-40-40l-57.5 0 33.5 30.2c9.9 8.9 10.7 24 1.8 33.9s-24 10.7-33.9 1.8l-80-72c-5.1-4.6-7.9-11-7.9-17.8s2.9-13.3 7.9-17.8l80-72c9.9-8.9 25-8.1 33.9 1.8z"/></svg><span data-i18n="settings:toolbarUndo">Undo</span></span>
+                            </label>
+                            <label class="settings-chip">
+                                <input type="checkbox" data-toolbar-key="settings-btn-delete">
+                                <span class="settings-chip-body"><span class="settings-chip-box"><svg class="settings-chip-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><svg class="settings-chip-glyph" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M163.8 0L284.2 0c12.1 0 23.2 6.8 28.6 17.7L320 32l96 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 96C14.3 96 0 81.7 0 64S14.3 32 32 32l96 0 7.2-14.3C140.6 6.8 151.7 0 163.8 0zM32 128l384 0L394.8 467c-1.6 25.3-22.6 45-47.9 45l-245.8 0c-25.3 0-46.3-19.7-47.9-45L32 128zM143 239c-9.4 9.4-9.4 24.6 0 33.9l47 47-47 47c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l47-47 47 47c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-47-47 47-47c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-47 47-47-47c-9.4-9.4-24.6-9.4-33.9 0z"/></svg><span data-i18n="settings:toolbarDelete">Delete</span></span>
+                            </label>
+                        </div>
+                    </div>
+                </section>
+                <section class="settings-section settings-section-columns">
+                    <div class="settings-field">
+                        <label for="settingsGridOpacity" data-i18n="settings:gridOpacity">Grid Opacity</label>
+                        <p class="settings-field-hint" data-i18n="settings:gridOpacityHint">Opacity of the keypad grid drawn over the map</p>
+                        <div class="settings-range">
+                            <div class="settings-range-track">
+                                <input id="settingsGridOpacity" type="range" min="0" max="1" step="0.05" value="0.8" data-default="0.8" data-display-min="0" data-display-max="100">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="settings-field">
+                        <label for="settingsZoomSensitivity" data-i18n="settings:zoomSensitivity">Zoom Sensitivity</label>
+                        <p class="settings-field-hint" data-i18n="settings:zoomSensitivityHint">How fast the mouse wheel zooms the map</p>
+                        <div class="settings-range">
+                            <div class="settings-range-track">
+                                <input id="settingsZoomSensitivity" type="range" min="1" max="3" step="0.1" value="2" data-default="2" data-display-min="50" data-display-max="150">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="settings-field">
+                        <label for="settingsFontSize" data-i18n="settings:fontSize">Font Size</label>
+                        <p class="settings-field-hint" data-i18n="settings:fontSizeHint">Size of objective names and firing solutions</p>
+                        <div class="settings-range">
+                            <div class="settings-range-track">
+                                <input id="settingsFontSize" type="range" min="1" max="5" step="1" value="3" data-default="3" data-display-min="50" data-display-max="150">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="settings-field">
+                        <label for="settingsMarkerSize" data-i18n="settings:markerSize">Markers Size</label>
+                        <p class="settings-field-hint" data-i18n="settings:markerSizeHint">Size of weapon, target and custom markers</p>
+                        <div class="settings-range">
+                            <div class="settings-range-track">
+                                <input id="settingsMarkerSize" type="range" min="1" max="5" step="0.25" value="3" data-default="3" data-display-min="50" data-display-max="150">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="settings-field">
+                        <label for="settingsBrightness" data-i18n="settings:brightness">Brightness</label>
+                        <p class="settings-field-hint" data-i18n="settings:brightnessHint">Brightness of the map image</p>
+                        <div class="settings-range">
+                            <div class="settings-range-track">
+                                <input id="settingsBrightness" type="range" min="0.5" max="1.5" step="0.05" value="1" data-default="1" data-display-min="50" data-display-max="150">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="settings-field">
+                        <label for="settingsContrast" data-i18n="settings:contrast">Contrast</label>
+                        <p class="settings-field-hint" data-i18n="settings:contrastHint">Contrast of the map image</p>
+                        <div class="settings-range">
+                            <div class="settings-range-track">
+                                <input id="settingsContrast" type="range" min="0.5" max="1.5" step="0.05" value="1" data-default="1" data-display-min="50" data-display-max="150">
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+            <div class="settings-panel" data-panel="mortars">
+                <section class="settings-section">
+                    <h3 class="settings-section-title" data-i18n="settings:weaponOptions">Weapons Options</h3>
+                    <div class="settings-field">
+                        <label class="settings-checkbox">
+                            <input id="settingsWeaponDrag" type="checkbox">
+                            <span data-i18n="settings:weaponDrag">Keypads while dragging</span>
                         </label>
-                  </td>
-                  <td>
-                    <span data-i18n="settings:contextMenu" class="toggleCheckbox"></span>
-                  </td>
-              </tr>
+                        <p class="settings-field-hint" data-i18n="tooltips:markerDragTooltip">Display grid while dragging</p>
+                    </div>
+                    <div class="settings-field">
+                        <label class="settings-checkbox">
+                            <input id="settingsRealMaxRange" type="checkbox">
+                            <span data-i18n="settings:realMaxRange">Use Real Max Range</span>
+                        </label>
+                        <p class="settings-field-hint" data-i18n="tooltips:showMaxRangeTooltip">Compute max range in every direction taking heights into account</p>
+                    </div>
+                </section>
+                <section class="settings-section">
+                    <h3 class="settings-section-title" data-i18n="settings:targetOptions">Targets Options</h3>
+                    <div class="settings-field">
+                        <label data-i18n="settings:targetInfo">Target Information</label>
+                        <p class="settings-field-hint" data-i18n="settings:targetInfoHint">Choose what's displayed next to each target</p>
+                        <div class="settings-chips">
+                            <label class="settings-chip settings-chip-locked">
+                                <input id="settingsElevation" type="checkbox" checked disabled>
+                                <span class="settings-chip-body"><svg class="settings-chip-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg><span data-i18n="common:elevation">Elevation</span></span>
+                            </label>
+                            <label class="settings-chip">
+                                <input id="settingsBearing" type="checkbox">
+                                <span class="settings-chip-body"><span class="settings-chip-box"><svg class="settings-chip-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span data-i18n="settings:showBearing">Bearing</span></span>
+                            </label>
+                            <label class="settings-chip">
+                                <input id="settingsTimeOfFlight" type="checkbox">
+                                <span class="settings-chip-body"><span class="settings-chip-box"><svg class="settings-chip-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span data-i18n="settings:showTimeOfFlight">Time of Flight</span></span>
+                            </label>
+                            <label class="settings-chip">
+                                <input id="settingsDistance" type="checkbox">
+                                <span class="settings-chip-body"><span class="settings-chip-box"><svg class="settings-chip-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span data-i18n="settings:showDistance">Distance</span></span>
+                            </label>
+                            <label class="settings-chip">
+                                <input id="settingsHeightDiff" type="checkbox">
+                                <span class="settings-chip-body"><span class="settings-chip-box"><svg class="settings-chip-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span data-i18n="settings:showHeightDiff">Height Difference</span></span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="settings-field">
+                        <label class="settings-checkbox">
+                            <input id="settingsTargetAnimation" type="checkbox">
+                            <span data-i18n="settings:showAnimations">Use Large Icons</span>
+                        </label>
+                        <p class="settings-field-hint" data-i18n="tooltips:targetAnimationTooltip">Disable to replace target markers icon with minimalistic circles</p>
+                    </div>
+                    <div class="settings-field">
+                        <label class="settings-checkbox">
+                            <input id="settingsTargetDrag" type="checkbox">
+                            <span data-i18n="settings:targetDrag">Keypads while dragging</span>
+                        </label>
+                        <p class="settings-field-hint" data-i18n="tooltips:markerDragTooltip">Display grid while dragging</p>
+                    </div>
+                    <div class="settings-field">
+                        <label class="settings-checkbox">
+                            <input id="settingsTargetCopy" type="checkbox">
+                            <span data-i18n="settings:copyTarget">Auto-copy Target to clipboard</span>
+                        </label>
+                        <p class="settings-field-hint" data-i18n="tooltips:copyTargetTooltip">After placing/dragging a target, automatically copy the calculations to clipboard</p>
+                    </div>
+                    <div class="settings-field">
+                        <label class="settings-checkbox">
+                            <input id="settingsLowAndHigh" type="checkbox">
+                            <span data-i18n="settings:lowAndHigh">Show both Low and High angles</span>
+                        </label>
+                        <p class="settings-field-hint" data-i18n="tooltips:lowAndHighTooltip">Show both high and low angle for weapons that can shoot in both modes</p>
+                    </div>
+                    <div class="settings-field">
+                        <label class="settings-checkbox">
+                            <input id="settingsLastDigits" type="checkbox">
+                            <span data-i18n="settings:lastDigits">Compact Elevation display</span>
+                        </label>
+                        <p class="settings-field-hint" data-i18n="tooltips:lastDigitsTooltip">Show only the last three digits of elevation values (e.g. 193 instead of 1193)</p>
+                    </div>
+                    <div class="settings-field">
+                        <label class="settings-checkbox">
+                            <input id="settingsSpreadRadius" type="checkbox">
+                            <span data-i18n="settings:showSpread">Spread Radius</span>
+                        </label>
+                        <p class="settings-field-hint" data-i18n="tooltips:showSpreadTooltip">Display possible rounds' dispersion area around the targets</p>
+                    </div>
+                    <div class="settings-field">
+                        <label class="settings-checkbox">
+                            <input id="settingsDamageRadius" type="checkbox">
+                            <span data-i18n="settings:showDamage">Damage Radiuses</span>
+                        </label>
+                        <p class="settings-field-hint" data-i18n="settings:showDamageHint">Display the damage radiuses around the targets</p>
+                    </div>
+                    <div class="settings-field">
+                        <label class="settings-checkbox">
+                            <input id="settingsTargetGrid" type="checkbox">
+                            <span data-i18n="settings:targetGrid">Deviation Grid</span>
+                        </label>
+                        <p class="settings-field-hint" data-i18n="tooltips:targetGridTooltip">Displays a grid around the targets: vertical lines show angle deviation (2°), and horizontal arcs show elevation deviation (10 mils or 1° depending on the weapon's unit system)</p>
+                    </div>
+                    <div class="settings-field">
+                        <label class="settings-checkbox">
+                            <input id="settingsLineToTarget" type="checkbox">
+                            <span data-i18n="settings:lineToTarget">Line to target</span>
+                        </label>
+                        <p class="settings-field-hint" data-i18n="tooltips:lineToTargetTooltip">Draws a line between the weapon and the target</p>
+                    </div>
+                </section>
+            </div>
+            <div class="settings-panel" data-panel="layer">
+                <section class="settings-section">
+                    <h3 class="settings-section-title" data-i18n="settings:LaneFinderOptions">Layers Options</h3>
+                    <div class="settings-field">
+                        <label class="settings-checkbox">
+                            <input id="settingsShowMainZones" type="checkbox">
+                            <span data-i18n="settings:showMainZones">Show Main Zones</span>
+                        </label>
+                        <p class="settings-field-hint" data-i18n="tooltips:showMainZonesTooltip">Show protection and no-deploy zones for each main</p>
+                    </div>
 
-          </tbody>
-      </table>
+                    <div class="settings-field">
+                        <label class="settings-checkbox">
+                            <input id="settingsShowMainAssets" type="checkbox">
+                            <span data-i18n="settings:showMainAssets">Show Main Assets</span>
+                        </label>
+                        <p class="settings-field-hint" data-i18n="tooltips:showMainAssetsTooltip">Show repair stations, ammo crates and other main assets on the map</p>
+                    </div>
+                    <div class="settings-field">
+                        <label class="settings-checkbox">
+                            <input id="settingsShowMapBorders" type="checkbox">
+                            <span data-i18n="settings:showMapBorders">Show Layer Map Border</span>
+                        </label>
+                        <p class="settings-field-hint" data-i18n="settings:showMapBordersHint">Show the playable area border of the layer</p>
+                    </div>
+                    <div class="settings-field">
+                        <label class="settings-checkbox">
+                            <input id="settingsRespawnCam" type="checkbox">
+                            <span data-i18n="settings:respawnCam">Show Respawn Camera Position</span>
+                        </label>
+                        <p class="settings-field-hint" data-i18n="settings:respawnCamHint">Show where the respawn screen camera is located on the map</p>
+                    </div>
+                    <div class="settings-field">
+                        <label class="settings-checkbox">
+                            <input id="settingsCirclesFlags" type="checkbox">
+                            <span data-i18n="settings:circlesFlags">Show Flags as circles</span>
+                        </label>
+                        <p class="settings-field-hint" data-i18n="settings:circlesFlagsHint">Display objectives as circles instead of faction flags</p>
+                    </div>
+                    <div class="settings-field">
+                        <label class="settings-checkbox">
+                            <input id="settingsShowFlagsDistance" type="checkbox">
+                            <span data-i18n="settings:showFlagsDistance">Show distance between flags</span>
+                        </label>
+                        <p class="settings-field-hint" data-i18n="settings:showFlagsDistanceHint">Show the distance between connected flags</p>
+                    </div>
+                    <div class="settings-field">
+                        <label class="settings-checkbox">
+                            <input id="settingsShowNextFlagPercentage" type="checkbox">
+                            <span data-i18n="settings:showNextFlagPercentage">Show Flags Probabilities</span>
+                        </label>
+                        <p class="settings-field-hint" data-i18n="settings:showNextFlagPercentageHint">Show each flag's chance of being the next objective</p>
+                    </div>
+                    <div class="settings-field">
+                        <label class="settings-checkbox">
+                            <input id="settingsCapZoneOnHover" type="checkbox">
+                            <span data-i18n="settings:capZoneOnHover">Only show capzones when hovering</span>
+                        </label>
+                        <p class="settings-field-hint" data-i18n="tooltips:capZoneOnHoverTooltip">Instead of showing capzones at all times, only show them when hovering over a flag</p>
+                    </div>
+                    <div class="settings-field">
+                        <label class="settings-checkbox">
+                            <input id="settingsRevealLayerOnHover" type="checkbox">
+                            <span data-i18n="settings:revealLayerOnHover">Reveal layer when hovering a flag</span>
+                        </label>
+                        <p class="settings-field-hint" data-i18n="tooltips:revealLayerOnHoverTooltip">Hovering a flag will fade out the unreachable flags if this flag happens to be clicked</p>
+                    </div>
+                </section>
+            </div>
 
-      <table class="userSettings">
-          <caption><span data-i18n="settings:mapButtons"></span></caption>
-          <tbody><tr><td colspan="2"><div id="mapBtnToggles">
+            <div class="settings-panel factionSettings" data-panel="factions">
+                <section class="settings-section">
+                    <h3 class="settings-section-title" data-i18n="settings:factionsOptions">Factions Options</h3>
+                    <!-- Hidden for now
+                    <div class="settings-field">
+                        <label class="settings-checkbox">
+                            <input id="settingsEnableFactions" type="checkbox">
+                            <span data-i18n="settings:enableFactions">Enable Factions</span>
+                        </label>
+                        <p class="settings-field-hint" data-i18n="tooltips:enableFactionsTooltip">After selecting a layer, enable Factions and Vehicles features</p>
+                    </div>
+                    -->
+                    <div class="settings-field">
+                        <label class="settings-checkbox">
+                            <input id="settingsDefaultFactions" type="checkbox">
+                            <span data-i18n="settings:defaultFactions">Auto-Select Layer's Default Factions</span>
+                        </label>
+                        <p class="settings-field-hint" data-i18n="tooltips:defaultFactionsTooltip">After picking a Layer, pre-select its default factions</p>
+                    </div>
+                    <div class="settings-field">
+                        <label class="settings-checkbox">
+                            <input id="settingsHideLowRespawn" type="checkbox">
+                            <span data-i18n="settings:hideLowRespawn">Only Track High Respawn Times Vehicles</span>
+                        </label>
+                        <p class="settings-field-hint" data-i18n="tooltips:hideLowRespawnTooltip">When pinning a faction to the map, only show Vehicles with a 10 min or more respawn time</p>
+                    </div>
+                    <div class="settings-field">
+                        <label class="settings-checkbox">
+                            <input id="settingsDisableSounds" type="checkbox">
+                            <span data-i18n="settings:disableSounds">Disable Respawn Notification Sounds</span>
+                        </label>
+                        <p class="settings-field-hint" data-i18n="settings:disableSoundsHint">Mute the voice notification played when a tracked vehicle respawns</p>
+                    </div>
+                    <div class="settings-field">
+                        <label class="settings-checkbox">
+                            <input id="settingsMinimizeFactionBar" type="checkbox">
+                            <span data-i18n="settings:minimizeFactionBar">Minimize Faction Bar by Default</span>
+                        </label>
+                        <p class="settings-field-hint" data-i18n="tooltips:minimizeFactionBarTooltip">Start with the faction bar collapsed, click the chevron to expand it</p>
+                    </div>
+                </section>
+            </div>
+            <div class="settings-panel" data-panel="shortcuts">
+                <section class="settings-section">
+                    <h3 class="settings-section-title" data-i18n="settings:shortcutsOptions">Keyboard Shortcuts</h3>
+                    <p class="settings-field-hint" data-i18n="settings:shortcutsHint">Click a shortcut to change it</p>
+                    <!-- Rows built from SquadCalc.SHORTCUT_ACTIONS in squadCalc.js -->
+                    <div class="settings-shortcuts"></div>
+                </section>
+            </div>
+            <div class="settings-panel" data-panel="mods">
+                <section class="settings-section">
+                    <h3 class="settings-section-title" data-i18n="settings:modsOptions">Available Mods</h3>
+                    <p class="settings-field-hint" data-i18n="settings:modsHint">Enable the mods you play to add their maps, layers and weapons</p>
+                    <!-- Rows built by _renderMods() in squadCalc.js -->
+                    <div class="settings-mods"></div>
+                </section>
+            </div>
+            <div class="settings-panel" data-panel="changelog">
+                <!-- Filled from CHANGELOG.md the first time the tab is opened (squadCalc.js) -->
+                <div class="settings-changelog"></div>
+            </div>
+            <div class="settings-panel" data-panel="about">
+                <section class="settings-section">
+                    <h3 class="settings-section-title" data-i18n="settings:aboutVersion">Version</h3>
+                    <div class="settings-about">
+                        <div class="settings-about-row">
+                            <span class="settings-about-label">SquadCalc</span>
+                            <span id="settingsAppVersion" class="settings-about-value"></span>
+                        </div>
+                        <div class="settings-about-row">
+                            <span class="settings-about-label" data-i18n="settings:aboutGameData">Game data</span>
+                            <!-- Filled by checkApiHealth() in squadCalcAPI.js -->
+                            <span id="settingsGameDataVersion" class="settings-about-value">…</span>
+                        </div>
+                    </div>
+                </section>
+                <section class="settings-section">
+                    <h3 class="settings-section-title" data-i18n="settings:aboutLinks">Links</h3>
+                    <div class="settings-cards">
+                        <a class="settings-card" href="https://discord.gg/BNPAc5kEJP" target="_blank" rel="noopener noreferrer">
+                            <svg class="settings-card-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg>
+                            <svg class="settings-card-icon" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><path d="M524.531,69.836a1.5,1.5,0,0,0-.764-.7A485.065,485.065,0,0,0,404.081,32.03a1.816,1.816,0,0,0-1.923.91,337.461,337.461,0,0,0-14.9,30.6,447.848,447.848,0,0,0-134.426,0,309.541,309.541,0,0,0-15.135-30.6,1.89,1.89,0,0,0-1.924-.91A483.689,483.689,0,0,0,116.085,69.137a1.712,1.712,0,0,0-.788.676C39.068,183.651,18.186,294.69,28.43,404.354a2.016,2.016,0,0,0,.765,1.375A487.666,487.666,0,0,0,176.02,479.918a1.9,1.9,0,0,0,2.063-.676A348.2,348.2,0,0,0,208.12,430.4a1.86,1.86,0,0,0-1.019-2.588,321.173,321.173,0,0,1-45.868-21.853,1.885,1.885,0,0,1-.185-3.126c3.082-2.309,6.166-4.711,9.109-7.137a1.819,1.819,0,0,1,1.9-.256c96.229,43.917,200.41,43.917,295.5,0a1.812,1.812,0,0,1,1.924.233c2.944,2.426,6.027,4.851,9.132,7.16a1.884,1.884,0,0,1-.162,3.126,301.407,301.407,0,0,1-45.89,21.83,1.875,1.875,0,0,0-1,2.611,391.055,391.055,0,0,0,30.014,48.815,1.864,1.864,0,0,0,2.063.7A486.048,486.048,0,0,0,610.7,405.729a1.882,1.882,0,0,0,.765-1.352C623.729,277.594,590.933,167.465,524.531,69.836ZM222.491,337.58c-28.972,0-52.844-26.587-52.844-59.239S193.056,219.1,222.491,219.1c29.665,0,53.306,26.82,52.843,59.239C275.334,310.993,251.924,337.58,222.491,337.58Zm195.38,0c-28.971,0-52.843-26.587-52.843-59.239S388.437,219.1,417.871,219.1c29.667,0,53.307,26.82,52.844,59.239C470.715,310.993,447.538,337.58,417.871,337.58Z"/></svg>
+                            <span class="settings-card-title" data-i18n="settings:discord">Official Discord</span>
+                        </a>
+                        <a class="settings-card" href="https://github.com/sh4rkman/SquadCalc" target="_blank" rel="noopener noreferrer">
+                            <svg class="settings-card-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg>
+                            <svg class="settings-card-icon" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+                            <span class="settings-card-title" data-i18n="settings:github">View code on Github</span>
+                        </a>
+                        <a class="settings-card" href="https://github.com/sh4rkman/SquadCalc/wiki" target="_blank" rel="noopener noreferrer">
+                            <svg class="settings-card-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg>
+                            <svg class="settings-card-icon" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M96 0C43 0 0 43 0 96L0 416c0 53 43 96 96 96l288 0 32 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l0-64c17.7 0 32-14.3 32-32l0-320c0-17.7-14.3-32-32-32L384 0 96 0zm0 384l256 0 0 64L96 448c-17.7 0-32-14.3-32-32s14.3-32 32-32zm32-240c0-8.8 7.2-16 16-16l192 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-192 0c-8.8 0-16-7.2-16-16zm16 48l192 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-192 0c-8.8 0-16-7.2-16-16s7.2-16 16-16z"/></svg>
+                            <span class="settings-card-title" data-i18n="settings:wiki">SquadCalc Wiki</span>
+                        </a>
+                    </div>
+                </section>
+            </div>
 
-              <button type="button" class="mapBtnToggle active" data-key="settings-btn-layers" title="Map Layers">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path d="M296.5 69.2C311.4 62.3 328.6 62.3 343.5 69.2L562.1 170.2C570.6 174.1 576 182.6 576 192C576 201.4 570.6 209.9 562.1 213.8L343.5 314.8C328.6 321.7 311.4 321.7 296.5 314.8L77.9 213.8C69.4 209.8 64 201.3 64 192C64 182.7 69.4 174.1 77.9 170.2L296.5 69.2zM112.1 282.4L276.4 358.3C304.1 371.1 336 371.1 363.7 358.3L528 282.4L562.1 298.2C570.6 302.1 576 310.6 576 320C576 329.4 570.6 337.9 562.1 341.8L343.5 442.8C328.6 449.7 311.4 449.7 296.5 442.8L77.9 341.8C69.4 337.8 64 329.3 64 320C64 310.7 69.4 302.1 77.9 298.2L112 282.4zM77.9 426.2L112 410.4L276.3 486.3C304 499.1 335.9 499.1 363.6 486.3L527.9 410.4L562 426.2C570.5 430.1 575.9 438.6 575.9 448C575.9 457.4 570.5 465.9 562 469.8L343.4 570.8C328.5 577.7 311.3 577.7 296.4 570.8L77.9 469.8C69.4 465.8 64 457.3 64 448C64 438.7 69.4 430.1 77.9 426.2z"/></svg>
-              </button>
-
-              <button type="button" class="mapBtnToggle active" data-key="settings-btn-hd" title="HD Images">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path d="M0 96C0 60.7 28.7 32 64 32l448 0c35.3 0 64 28.7 64 64l0 320c0 35.3-28.7 64-64 64L64 480c-35.3 0-64-28.7-64-64L0 96zm304 88l0 144c0 13.3 10.7 24 24 24l56 0c53 0 96-43 96-96s-43-96-96-96l-56 0c-13.3 0-24 10.7-24 24zm80 24c26.5 0 48 21.5 48 48s-21.5 48-48 48l-32 0 0-96 32 0zM160 184c0-13.3-10.7-24-24-24s-24 10.7-24 24l0 72 0 72c0 13.3 10.7 24 24 24s24-10.7 24-24l0-48 64 0 0 48c0 13.3 10.7 24 24 24s24-10.7 24-24l0-72 0-72c0-13.3-10.7-24-24-24s-24 10.7-24 24l0 48-64 0 0-48z"/></svg>
-              </button>
-
-              <button type="button" class="mapBtnToggle mapBtnToggle-3d active" data-key="settings-btn-3d" title="3D View">3D</button>
-
-              <button type="button" class="mapBtnToggle active" data-key="settings-btn-layer-info" title="Layer Info">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM216 336l24 0 0-64-24 0c-13.3 0-24-10.7-24-24s10.7-24 24-24l48 0c13.3 0 24 10.7 24 24l0 88 8 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-80 0c-13.3 0-24-10.7-24-24s10.7-24 24-24zm40-208a32 32 0 1 1 0 64 32 32 0 1 1 0-64z"/></svg>
-              </button>
-
-              <button type="button" class="mapBtnToggle" data-key="settings-btn-legacy" title="Legacy UI">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><path d="M32 32C14.3 32 0 46.3 0 64S14.3 96 32 96l576 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L32 32zm0 384c-17.7 0-32 14.3-32 32s14.3 32 32 32l576 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L32 416zM7 167c-9.4 9.4-9.4 24.6 0 33.9l55 55L7 311c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l55-55 55 55c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-55-55 55-55c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-55 55L41 167c-9.4-9.4-24.6-9.4-33.9 0zM265 167c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l55 55-55 55c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l55-55 55 55c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-55-55 55-55c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-55 55-55-55zM455 167c-9.4 9.4-9.4 24.6 0 33.9l55 55-55 55c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l55-55 55 55c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-55-55 55-55c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-55 55-55-55c-9.4-9.4-24.6-9.4-33.9 0z"/></svg>
-              </button>
-
-              <button type="button" class="mapBtnToggle" data-key="settings-btn-helpmap" title="Heatmap">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM288 176c0-44.2-35.8-80-80-80s-80 35.8-80 80c0 48.8 46.5 111.6 68.6 138.6c6 7.3 16.8 7.3 22.7 0c22.1-27 68.6-89.8 68.6-138.6zm-112 0a32 32 0 1 1 64 0 32 32 0 1 1 -64 0z"/></svg>
-              </button>
-
-              <button type="button" class="mapBtnToggle" data-key="settings-btn-focus" title="Focus Mode">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M32 32C14.3 32 0 46.3 0 64l0 96c0 17.7 14.3 32 32 32s32-14.3 32-32l0-64 64 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L32 32zM64 352c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 96c0 17.7 14.3 32 32 32l96 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-64 0 0-64zM320 32c-17.7 0-32 14.3-32 32s14.3 32 32 32l64 0 0 64c0 17.7 14.3 32 32 32s32-14.3 32-32l0-96c0-17.7-14.3-32-32-32l-96 0zM448 352c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 64-64 0c-17.7 0-32 14.3-32 32s14.3 32 32 32l96 0c17.7 0 32-14.3 32-32l0-96z"/></svg>
-              </button>
-
-              <button type="button" class="mapBtnToggle" data-key="settings-btn-download" title="Download">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path d="M64 0C28.7 0 0 28.7 0 64L0 448c0 35.3 28.7 64 64 64l256 0c35.3 0 64-28.7 64-64l0-288-128 0c-17.7 0-32-14.3-32-32L224 0 64 0zM256 0l0 128 128 0L256 0zM216 232l0 102.1 31-31c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9l-72 72c-9.4 9.4-24.6 9.4-33.9 0l-72-72c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l31 31L168 232c0-13.3 10.7-24 24-24s24 10.7 24 24z"/></svg>
-              </button>
-
-              <button type="button" class="mapBtnToggle" data-key="settings-btn-upload" title="Upload">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="128 64 384 512"><path d="M128 128C128 92.7 156.7 64 192 64L341.5 64C358.5 64 374.8 70.7 386.8 82.7L493.3 189.3C505.3 201.3 512 217.6 512 234.6L512 512C512 547.3 483.3 576 448 576L192 576C156.7 576 128 547.3 128 512L128 128zM336 122.5L336 216C336 229.3 346.7 240 360 240L453.5 240L336 122.5zM337 327C327.6 317.6 312.4 317.6 303.1 327L239.1 391C229.7 400.4 229.7 415.6 239.1 424.9C248.5 434.2 263.7 434.3 273 424.9L296 401.9L296 488C296 501.3 306.7 512 320 512C333.3 512 344 501.3 344 488L344 401.9L367 424.9C376.4 434.3 391.6 434.3 400.9 424.9C410.2 415.5 410.3 400.3 400.9 391L336.9 327z"/></svg>
-              </button>
-
-              <button type="button" class="mapBtnToggle active" data-key="settings-btn-servers" title="Servers">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M64 32C28.7 32 0 60.7 0 96l0 64c0 35.3 28.7 64 64 64l384 0c35.3 0 64-28.7 64-64l0-64c0-35.3-28.7-64-64-64L64 32zm280 72a24 24 0 1 1 0 48 24 24 0 1 1 0-48zm48 24a24 24 0 1 1 48 0 24 24 0 1 1 -48 0zM64 288c-35.3 0-64 28.7-64 64l0 64c0 35.3 28.7 64 64 64l384 0c35.3 0 64-28.7 64-64l0-64c0-35.3-28.7-64-64-64L64 288zm280 72a24 24 0 1 1 0 48 24 24 0 1 1 0-48zm56 24a24 24 0 1 1 48 0 24 24 0 1 1 -48 0z"/></svg>
-              </button>
-
-              <button type="button" class="mapBtnToggle active" data-key="settings-btn-session" title="Session">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><path d="M96 384a64 64 0 1 0 0-128 64 64 0 1 0 0 128zM64 416c-35.3 0-64 28.7-64 64c0 17.7 14.3 32 32 32l128 0c17.7 0 32-14.3 32-32c0-35.3-28.7-64-64-64l-64 0zm256-32a64 64 0 1 0 0-128 64 64 0 1 0 0 128zm-32 32c-35.3 0-64 28.7-64 64c0 17.7 14.3 32 32 32l128 0c17.7 0 32-14.3 32-32c0-35.3-28.7-64-64-64l-64 0zm320-96a64 64 0 1 0 -128 0 64 64 0 1 0 128 0zM448 480c0 17.7 14.3 32 32 32l128 0c17.7 0 32-14.3 32-32c0-35.3-28.7-64-64-64l-64 0c-35.3 0-64 28.7-64 64zM544 48L96 48c-8.8 0-16 7.2-16 16l0 161.3c-18.3 3.1-34.8 11.3-48 23.1L32 64C32 28.7 60.7 0 96 0L544 0c35.3 0 64 28.7 64 64l0 184.4c-13.2-11.8-29.7-20.1-48-23.1L560 64c0-8.8-7.2-16-16-16z"/></svg>
-              </button>
-
-              <button type="button" class="mapBtnToggle active" data-key="settings-btn-undo" title="Undo">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M135.2 17.7L128 32 32 32C14.3 32 0 46.3 0 64S14.3 96 32 96l384 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-96 0-7.2-14.3C307.4 6.8 296.3 0 284.2 0L163.8 0c-12.1 0-23.2 6.8-28.6 17.7zM416 128L32 128 53.2 467c1.6 25.3 22.6 45 47.9 45l245.8 0c25.3 0 46.3-19.7 47.9-45L416 128zM217.8 199.9c8.9 9.9 8.1 25-1.8 33.9L182.5 264l57.5 0c48.6 0 88 39.4 88 88l0 40c0 13.3-10.7 24-24 24s-24-10.7-24-24l0-40c0-22.1-17.9-40-40-40l-57.5 0 33.5 30.2c9.9 8.9 10.7 24 1.8 33.9s-24 10.7-33.9 1.8l-80-72c-5.1-4.6-7.9-11-7.9-17.8s2.9-13.3 7.9-17.8l80-72c9.9-8.9 25-8.1 33.9 1.8z"/></svg>
-              </button>
-
-              <button type="button" class="mapBtnToggle active" data-key="settings-btn-delete" title="Delete">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M163.8 0L284.2 0c12.1 0 23.2 6.8 28.6 17.7L320 32l96 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 96C14.3 96 0 81.7 0 64S14.3 32 32 32l96 0 7.2-14.3C140.6 6.8 151.7 0 163.8 0zM32 128l384 0L394.8 467c-1.6 25.3-22.6 45-47.9 45l-245.8 0c-25.3 0-46.3-19.7-47.9-45L32 128zM143 239c-9.4 9.4-9.4 24.6 0 33.9l47 47-47 47c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l47-47 47 47c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-47-47 47-47c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-47 47-47-47c-9.4-9.4-24.6-9.4-33.9 0z"/></svg>
-              </button>
-
-
-          </div></td></tr></tbody>
-      </table>
-
-      <div class="slidersHolders">
-        <table class="slidersTables">
-          <tbody>
-              <tr>
-                  <td class="noborder">
-                    <span data-i18n="settings:gridOpacity"></span>
-                  </td> 
-                  <td class="noborder">
-                      <div class="slider-wrapper">
-                        <div class="ticks" id="gridTicks"></div>
-                        <input type="range" id="gridSlider" min="0" max="1" step="0.05">
-                      </div>
-                  </td>
-              </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <div class="slidersHolders">
-        <table class="slidersTables">
-          <tbody>
-              <tr>
-                  <td class="noborder">
-                    <span data-i18n="settings:zoomSensitivity"></span>
-                  </td> 
-                  <td class="noborder">
-                      <div class="slider-wrapper">
-                        <div class="ticks" id="zoomTicks"></div>
-                        <input type="range" id="zoomSlider" min="1" max="3" step="0.1">
-                      </div>
-                  </td>
-              </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <div class="slidersHolders">
-        <table class="slidersTables">
-          <tbody>
-              <tr>
-                  <td class="noborder">
-                    <span data-i18n="settings:fontSize"></span>
-                  </td> 
-                  <td class="noborder">
-                      <div class="slider-wrapper">
-                        <div class="ticks" id="fontTicks"></div>
-                        <input type="range" id="fontSlider" min="1" max="5" step="1">
-                      </div>
-                  </td>
-              </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <div class="slidersHolders">
-        <table class="slidersTables">
-          <tbody>
-              <tr>
-                  <td class="noborder">
-                    <span data-i18n="settings:markerSize"></span>
-                  </td> 
-                  <td class="noborder">
-                      <div class="slider-wrapper">
-                        <div class="ticks" id="markerTicks"></div>
-                        <input type="range" id="markerSlider" min="1" max="5" step="0.25">
-                      </div>
-                  </td>
-              </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <div class="slidersHolders">
-        <table class="slidersTables">
-          <tbody>
-              <tr>
-                  <td class="noborder">
-                    <span data-i18n="settings:brightness"></span>
-                  </td> 
-                  <td class="noborder">
-                      <div class="slider-wrapper">
-                        <div class="ticks" id="brightnessTicks"></div>
-                        <input type="range" id="brightnessSlider" min="0.5" max="1.5" step="0.05">
-                      </div>
-                  </td>
-              </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <div class="slidersHolders">
-        <table class="slidersTables">
-          <tbody>
-              <tr>
-                  <td class="noborder">
-                    <span data-i18n="settings:contrast"></span>
-                  </td> 
-                  <td class="noborder">
-                      <div class="slider-wrapper">
-                        <div class="ticks" id="contrastTicks"></div>
-                        <input type="range" id="contrastSlider" min="0.5" max="1.5" step="0.05">
-                      </div>
-                  </td>
-              </tr>
-          </tbody>
-        </table>
-      </div>
-
+        </section>
     </div>
 
-    <div id="panel2" class="panel">
-
-      <table class="userSettings">
-        <caption data-i18n="settings:weaponOptions"></caption>
-        <tbody>
-
-          <tr class="weaponDragSetting">
-            <td>
-                <label class="mcui-checkbox">
-                    <input id="weaponDragSetting" type="checkbox">
-                    <span>
-                      <svg class="mcui-check" viewBox="-2 -2 35 35" aria-hidden="true">
-                        <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
-                      </svg>
-                    </span>
-                  </label>
-            </td>
-            <td>
-              <span data-i18n="settings:weaponDrag" class="toggleCheckbox"></span>
-            </td>
-          </tr>
-
-          <tr>
-            <td>
-                <label class="mcui-checkbox">
-                    <input id="realMaxRangeSettings" type="checkbox">
-                    <span>
-                      <svg class="mcui-check" viewBox="-2 -2 35 35" aria-hidden="true">
-                        <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
-                      </svg>
-                    </span>
-                  </label>
-            </td>
-            <td>
-              <span data-i18n="settings:realMaxRange" class="toggleCheckbox"></span>
-            </td>
-          </tr>
-
-        </tbody>
-    </table>
-
-
-    <table class="userSettings">
-
-      <caption data-i18n="settings:targetOptions"></caption>
-        <tbody>
-          <tr class="targetAnimationSettings">
-            <td>
-                <label class="mcui-checkbox">
-                    <input id="targetAnimationSettings" type="checkbox">
-                    <span>
-                      <svg class="mcui-check" viewBox="-2 -2 35 35" aria-hidden="true">
-                        <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
-                      </svg>
-                    </span>
-                  </label>
-            </td>
-            <td>
-              <span data-i18n="settings:showAnimations" class="toggleCheckbox"></span>
-            </td>
-          </tr>
-
-          <tr>
-            <td>
-                <label class="mcui-checkbox">
-                  <input id="targetDragSetting" type="checkbox">
-                  <span>
-                    <svg class="mcui-check" viewBox="-2 -2 35 35" aria-hidden="true">
-                      <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
-                    </svg>
-                  </span>
-                </label>
-            </td>
-            <td>
-              <span data-i18n="settings:targetDrag" class="toggleCheckbox"></span>
-            </td>
-          </tr>
-
-          <tr>
-            <td>
-                <label class="mcui-checkbox">
-                  <input id="targetCopySetting" type="checkbox">
-                  <span>
-                    <svg class="mcui-check" viewBox="-2 -2 35 35" aria-hidden="true">
-                      <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
-                    </svg>
-                  </span>
-                </label>
-            </td>
-            <td>
-              <span data-i18n="settings:copyTarget" class="toggleCheckbox"></span>
-            </td>
-          </tr>
-
-          <tr>
-            <td>
-                <label class="mcui-checkbox">
-                  <input id="lowAndHighSetting" type="checkbox">
-                  <span>
-                    <svg class="mcui-check" viewBox="-2 -2 35 35" aria-hidden="true">
-                      <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
-                    </svg>
-                  </span>
-                </label>
-            </td>
-            <td>
-              <span data-i18n="settings:lowAndHigh" class="toggleCheckbox"></span>
-            </td>
-          </tr>
-
-          <tr>
-            <td>
-                <label class="mcui-checkbox">
-                  <input id="lastDigitsSetting" type="checkbox">
-                  <span>
-                    <svg class="mcui-check" viewBox="-2 -2 35 35" aria-hidden="true">
-                      <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
-                    </svg>
-                  </span>
-                </label>
-            </td>
-            <td>
-              <span data-i18n="settings:lastDigits" class="toggleCheckbox"></span>
-            </td>
-          </tr>
-
-          <tr>
-              <td>
-                  <label class="mcui-checkbox">
-                      <input id="spreadRadiusSetting" type="checkbox">
-                      <span>
-                        <svg class="mcui-check" viewBox="-2 -2 35 35" aria-hidden="true">
-                          <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
-                        </svg>
-                      </span>
-                    </label>
-              </td>
-              <td><span data-i18n="settings:showSpread" class="toggleCheckbox"></span></td>
-          </tr>
-
-          <tr class="damageRadiusSetting">
-              <td>
-                  <label class="mcui-checkbox">
-                      <input id="damageRadiusSetting" type="checkbox">
-                      <span>
-                        <svg class="mcui-check" viewBox="-2 -2 35 35" aria-hidden="true">
-                          <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
-                        </svg>
-                      </span>
-                  </label>
-              </td>
-              <td><span data-i18n="settings:showDamage" class="toggleCheckbox"></span></td>
-          </tr>
-
-          <tr class="targetGridSetting">
-              <td>
-                  <label class="mcui-checkbox">
-                      <input id="targetGridSetting" type="checkbox">
-                      <span>
-                        <svg class="mcui-check" viewBox="-2 -2 35 35" aria-hidden="true">
-                          <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
-                        </svg>
-                      </span>
-                  </label>
-              </td>
-              <td>
-                <span data-i18n="settings:targetGrid" class="toggleCheckbox"></span>
-              </td>
-          </tr>
-          <tr class="lineToTargetSetting">
-              <td>
-                  <label class="mcui-checkbox">
-                      <input id="lineToTargetSetting" type="checkbox">
-                      <span>
-                        <svg class="mcui-check" viewBox="-2 -2 35 35" aria-hidden="true">
-                          <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
-                        </svg>
-                      </span>
-                  </label>
-              </td>
-              <td>
-                <span data-i18n="settings:lineToTarget" class="toggleCheckbox"></span>
-              </td>
-          </tr>
-
-
-
-        </tbody>
-    </table>
-
-    <table class="userSettings">
-      <tbody>
-        <tr>
-          <td>
-              <label class="mcui-checkbox">
-                  <input id="bearingSetting" type="checkbox">
-                  <span>
-                    <svg class="mcui-check" viewBox="-2 -2 35 35" aria-hidden="true">
-                      <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
-                    </svg>
-                  </span>
-                </label>
-          </td>
-          <td><span data-i18n="settings:showBearing" class="toggleCheckbox"></span></td>
-      </tr>
-
-      <tr>
-          <td>
-              <label class="mcui-checkbox">
-                  <input id="distanceSetting" type="checkbox">
-                  <span>
-                    <svg class="mcui-check" viewBox="-2 -2 35 35" aria-hidden="true">
-                      <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
-                    </svg>
-                  </span>
-                </label>
-          </td>
-          <td><span data-i18n="settings:showDistance" class="toggleCheckbox"></span></td>
-      </tr>
-
-      <tr>
-          <td>
-              <label class="mcui-checkbox">
-                  <input id="timeOfFlightSetting" type="checkbox">
-                  <span>
-                    <svg class="mcui-check" viewBox="-2 -2 35 35" aria-hidden="true">
-                      <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
-                    </svg>
-                  </span>
-                </label>
-          </td>
-          <td><span data-i18n="settings:showTimeOfFlight" class="toggleCheckbox"></span></td>
-      </tr>
-
-      <tr>
-          <td>
-              <label class="mcui-checkbox">
-                  <input id="heightSetting" type="checkbox">
-                  <span>
-                    <svg class="mcui-check" viewBox="-2 -2 35 35" aria-hidden="true">
-                      <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
-                    </svg>
-                  </span>
-                </label>
-          </td>
-          <td><span data-i18n="settings:showHeightDiff" class="toggleCheckbox"></span></td>
-      </tr>
-
-      </tbody>
-  </table>
-
     </div>
+</dialog>
 
-    <div id="panel3" class="panel">
-      <table class="userSettings">
-        <caption data-i18n="settings:LaneFinderOptions"></caption>
-
-        <tbody>
-
-          <tr>
-            <td>
-                <label class="mcui-checkbox">
-                  <input id="showMainZonesSettings" type="checkbox">
-                  <span>
-                    <svg class="mcui-check" viewBox="-2 -2 35 35" aria-hidden="true">
-                      <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
-                    </svg>
-                  </span>
-                </label>
-            </td>
-            <td>
-              <span data-i18n="settings:showMainZones" class="toggleCheckbox"></span>
-            </td>
-          </tr>
-
-          <tr>
-            <td>
-                <label class="mcui-checkbox">
-                  <input id="showMainAssetsSettings" type="checkbox">
-                  <span>
-                    <svg class="mcui-check" viewBox="-2 -2 35 35" aria-hidden="true">
-                      <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
-                    </svg>
-                  </span>
-                </label>
-            </td>
-            <td>
-              <span data-i18n="settings:showMainAssets" class="toggleCheckbox"></span>
-            </td>
-          </tr>
-
-          <tr class="">
-            <td>
-                <label class="mcui-checkbox">
-                  <input id="showMapBordersSettings" type="checkbox">
-                  <span>
-                    <svg class="mcui-check" viewBox="-2 -2 35 35" aria-hidden="true">
-                      <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
-                    </svg>
-                  </span>
-                </label>
-            </td>
-            <td>
-              <span data-i18n="settings:showMapBorders" class="toggleCheckbox"></span>
-            </td>
-          </tr>
-
-          <tr>
-            <td>
-                <label class="mcui-checkbox">
-                  <input id="respawnCamSettings" type="checkbox">
-                  <span>
-                    <svg class="mcui-check" viewBox="-2 -2 35 35" aria-hidden="true">
-                      <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
-                    </svg>
-                  </span>
-                </label>
-            </td>
-            <td>
-              <span data-i18n="settings:respawnCam" class="toggleCheckbox"></span>
-            </td>
-          </tr>
-
-          <tr>
-            <td>
-                <label class="mcui-checkbox">
-                  <input id="circlesFlagsSettings" type="checkbox">
-                  <span>
-                    <svg class="mcui-check" viewBox="-2 -2 35 35" aria-hidden="true">
-                      <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
-                    </svg>
-                  </span>
-                </label>
-            </td>
-            <td>
-              <span data-i18n="settings:circlesFlags" class="toggleCheckbox"></span>
-            </td>
-          </tr>
-
-          <tr class="showFlagsDistanceSettings">
-            <td>
-                <label class="mcui-checkbox">
-                  <input id="showFlagsDistanceSettings" type="checkbox">
-                  <span>
-                    <svg class="mcui-check" viewBox="-2 -2 35 35" aria-hidden="true">
-                      <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
-                    </svg>
-                  </span>
-                </label>
-            </td>
-            <td>
-              <span data-i18n="settings:showFlagsDistance" class="toggleCheckbox"></span>
-            </td>
-          </tr>
-
-          <tr class="showNextFlagPercentage">
-            <td>
-                <label class="mcui-checkbox">
-                  <input id="showNextFlagPercentageSettings" type="checkbox">
-                  <span>
-                    <svg class="mcui-check" viewBox="-2 -2 35 35" aria-hidden="true">
-                      <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
-                    </svg>
-                  </span>
-                </label>
-            </td>
-            <td>
-              <span data-i18n="settings:showNextFlagPercentage" class="toggleCheckbox"></span>
-            </td>
-          </tr>
-
-          <tr class="capZoneOnHoverSettings">
-            <td>
-                <label class="mcui-checkbox">
-                    <input id="capZoneOnHoverSettings" type="checkbox">
-                    <span>
-                      <svg class="mcui-check" viewBox="-2 -2 35 35" aria-hidden="true">
-                        <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
-                      </svg>
-                    </span>
-                  </label>
-            </td>
-            <td>
-              <span data-i18n="settings:capZoneOnHover" class="toggleCheckbox"></span>
-            </td>
-          </tr>
-          
-          <tr class="revealLayerOnHover">
-            <td>
-                <label class="mcui-checkbox">
-                    <input id="revealLayerOnHoverSettings" type="checkbox">
-                    <span>
-                      <svg class="mcui-check" viewBox="-2 -2 35 35" aria-hidden="true">
-                        <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
-                      </svg>
-                    </span>
-                  </label>
-            </td>
-            <td>
-              <span data-i18n="settings:revealLayerOnHover" class="toggleCheckbox"></span>
-            </td>
-          </tr>
-
-          <!-- <tr class="copyNextFlagsSettings">
-            <td>
-                <label class="mcui-checkbox">
-                  <input id="copyNextFlagsSettings" type="checkbox">
-                  <span>
-                    <svg class="mcui-check" viewBox="-2 -2 35 35" aria-hidden="true">
-                      <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
-                    </svg>
-                  </span>
-                </label>
-            </td>
-            <td>
-              <span data-i18n="settings:copyNextFlags" class="toggleCheckbox"></span>
-            </td>
-          </tr> -->
-
-        </tbody>
-      </table>
-
-      <table class="userSettings factionSettings">
-        <caption data-i18n="settings:factionsOptions"></caption>
-
-        <tbody>
-
-          <tr class="enableFactionsTooltip">
-            <td>
-                <label class="mcui-checkbox">
-                    <input id="enableFactionsSettings" type="checkbox">
-                    <span>
-                      <svg class="mcui-check" viewBox="-2 -2 35 35" aria-hidden="true">
-                        <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
-                      </svg>
-                    </span>
-                  </label>
-            </td>
-            <td>
-              <span data-i18n="settings:enableFactions" class="toggleCheckbox"></span>
-            </td>
-          </tr>
-
-          <tr class="">
-            <td>
-                <label class="mcui-checkbox">
-                    <input id="defaultFactionsSettings" type="checkbox">
-                    <span>
-                      <svg class="mcui-check" viewBox="-2 -2 35 35" aria-hidden="true">
-                        <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
-                      </svg>
-                    </span>
-                  </label>
-            </td>
-            <td>
-              <span data-i18n="settings:defaultFactions" class="toggleCheckbox"></span>
-            </td>
-          </tr>
-
-          <tr class="">
-            <td>
-                <label class="mcui-checkbox">
-                    <input id="hideLowRespawnSettings" type="checkbox">
-                    <span>
-                      <svg class="mcui-check" viewBox="-2 -2 35 35" aria-hidden="true">
-                        <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
-                      </svg>
-                    </span>
-                  </label>
-            </td>
-            <td>
-              <span data-i18n="settings:hideLowRespawn" class="toggleCheckbox"></span>
-            </td>
-          </tr>
-
-          <tr class="">
-            <td>
-                <label class="mcui-checkbox">
-                    <input id="disableSoundsSettings" type="checkbox">
-                    <span>
-                      <svg class="mcui-check" viewBox="-2 -2 35 35" aria-hidden="true">
-                        <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
-                      </svg>
-                    </span>
-                  </label>
-            </td>
-            <td>
-              <span data-i18n="settings:disableSounds" class="toggleCheckbox"></span>
-            </td>
-          </tr>
-
-          <tr class="minimizeFactionBarTooltip">
-            <td>
-                <label class="mcui-checkbox">
-                    <input id="minimizeFactionBarSettings" type="checkbox">
-                    <span>
-                      <svg class="mcui-check" viewBox="-2 -2 35 35" aria-hidden="true">
-                        <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
-                      </svg>
-                    </span>
-                  </label>
-            </td>
-            <td>
-              <span data-i18n="settings:minimizeFactionBar" class="toggleCheckbox"></span>
-            </td>
-          </tr>
-
-
-        </tbody>
-      </table>
+<!-- Key capture for Settings > Shortcuts (opened on top of #settingsDialog) -->
+<dialog id="shortcutCaptureDialog" class="animate__animated animate__zoomIn">
+    <p class="capture-title"></p>
+    <div class="capture-key-display">
+        <span class="capture-listening" data-i18n="settings:captureListening"></span>
+        <span class="capture-preview"></span>
     </div>
-
-
-    <div id="panel4" class="panel">
-        <table class="shortcuts">
-            <thead>
-                <tr>
-                    <th data-i18n="settings:shortcutKey"></th>
-                    <th></th>
-                    <th data-i18n="settings:shortcutAction"></th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
+    <p class="capture-conflict"></p>
+    <div class="capture-buttons">
+        <button id="captureReset" data-i18n="settings:captureReset"></button>
+        <button id="captureCancel" data-i18n="settings:captureCancel"></button>
+        <button id="captureSave" data-i18n="settings:captureSave"></button>
     </div>
-
-    <div id="panel5" class="panel">
-        <table class="userSettings">
-            <caption data-i18n="settings:modsOptions"></caption>
-            <tbody>
-                <tr>
-                    <td colspan="2">
-                        <div id="modsPanelContainer"></div>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-
-    <dialog id="shortcutCaptureDialog" class="animate__animated animate__zoomIn">
-        <p class="capture-title"></p>
-        <div class="capture-key-display">
-            <span class="capture-listening" data-i18n="settings:captureListening"></span>
-            <span class="capture-preview"></span>
-        </div>
-        <p class="capture-conflict"></p>
-        <div class="capture-buttons">
-            <button id="captureReset" data-i18n="settings:captureReset"></button>
-            <button id="captureCancel" data-i18n="settings:captureCancel"></button>
-            <button id="captureSave" data-i18n="settings:captureSave"></button>
-        </div>
-    </dialog>
-
-    <div id="settingsVersion">
-        <span id="appVersion"></span>
-        <span class="separator">|</span>
-        <span id="gameDataVersion"></span>
-    </div>
-
-    <table id="links">
-        <tbody>
-            <tr>
-                <td>
-                    <a class="fab-action" href="https://discord.gg/BNPAc5kEJP" target="_blank" rel="noopener noreferrer" aria-label="discord" data-i18n-title="settings:discord">
-                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><path d="M524.531,69.836a1.5,1.5,0,0,0-.764-.7A485.065,485.065,0,0,0,404.081,32.03a1.816,1.816,0,0,0-1.923.91,337.461,337.461,0,0,0-14.9,30.6,447.848,447.848,0,0,0-134.426,0,309.541,309.541,0,0,0-15.135-30.6,1.89,1.89,0,0,0-1.924-.91A483.689,483.689,0,0,0,116.085,69.137a1.712,1.712,0,0,0-.788.676C39.068,183.651,18.186,294.69,28.43,404.354a2.016,2.016,0,0,0,.765,1.375A487.666,487.666,0,0,0,176.02,479.918a1.9,1.9,0,0,0,2.063-.676A348.2,348.2,0,0,0,208.12,430.4a1.86,1.86,0,0,0-1.019-2.588,321.173,321.173,0,0,1-45.868-21.853,1.885,1.885,0,0,1-.185-3.126c3.082-2.309,6.166-4.711,9.109-7.137a1.819,1.819,0,0,1,1.9-.256c96.229,43.917,200.41,43.917,295.5,0a1.812,1.812,0,0,1,1.924.233c2.944,2.426,6.027,4.851,9.132,7.16a1.884,1.884,0,0,1-.162,3.126,301.407,301.407,0,0,1-45.89,21.83,1.875,1.875,0,0,0-1,2.611,391.055,391.055,0,0,0,30.014,48.815,1.864,1.864,0,0,0,2.063.7A486.048,486.048,0,0,0,610.7,405.729a1.882,1.882,0,0,0,.765-1.352C623.729,277.594,590.933,167.465,524.531,69.836ZM222.491,337.58c-28.972,0-52.844-26.587-52.844-59.239S193.056,219.1,222.491,219.1c29.665,0,53.306,26.82,52.843,59.239C275.334,310.993,251.924,337.58,222.491,337.58Zm195.38,0c-28.971,0-52.843-26.587-52.843-59.239S388.437,219.1,417.871,219.1c29.667,0,53.307,26.82,52.844,59.239C470.715,310.993,447.538,337.58,417.871,337.58Z"/></svg>
-                    </a>
-                </td>
-                <td>
-                    <a class="fab-action" href="https://github.com/sh4rkman/SquadCalc" target="_blank" rel="noopener noreferrer" aria-label="github" data-i18n-title="settings:github">
-                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
-                    </a>
-                </td>
-                <td>
-                  <button class="fab-action" id="openChangelog" type="button" aria-label="changelog" data-i18n-title="settings:changelog">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path d="M64 0C28.7 0 0 28.7 0 64L0 448c0 35.3 28.7 64 64 64l256 0c35.3 0 64-28.7 64-64l0-288-128 0c-17.7 0-32-14.3-32-32L224 0 64 0zM256 0l0 128 128 0L256 0zM112 256l160 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-160 0c-8.8 0-16-7.2-16-16s7.2-16 16-16zm0 64l160 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-160 0c-8.8 0-16-7.2-16-16s7.2-16 16-16zm0 64l160 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-160 0c-8.8 0-16-7.2-16-16s7.2-16 16-16z"/></svg>
-                  </button>
-              </td>
-              <td>
-                <a class="fab-action" href="https://github.com/sh4rkman/SquadCalc/wiki" target="_blank" rel="noopener noreferrer" aria-label="wiki" data-i18n-title="settings:wiki">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M96 0C43 0 0 43 0 96L0 416c0 53 43 96 96 96l288 0 32 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l0-64c17.7 0 32-14.3 32-32l0-320c0-17.7-14.3-32-32-32L384 0 96 0zm0 384l256 0 0 64L96 448c-17.7 0-32-14.3-32-32s14.3-32 32-32zm32-240c0-8.8 7.2-16 16-16l192 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-192 0c-8.8 0-16-7.2-16-16zm16 48l192 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-192 0c-8.8 0-16-7.2-16-16s7.2-16 16-16z"/></svg>
-                </a>
-            </td>
-            </tr>
-        </tbody>
-    </table>
-
 </dialog>

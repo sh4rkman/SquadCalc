@@ -1,6 +1,4 @@
-import { animateCSS } from "./animations.js";
 import SquadFactions from "./squadFactions.js";
-import packageInfo from "../../package.json";
 
 
 /**
@@ -30,12 +28,10 @@ export default class SquadSettings {
         this.loadSliders();
         this.bindCheckboxes();
         this.bindSliders();
-        this.bindLabelClicks();
         this.loadButtonToggles();
         this.bindButtonToggles();
         this.bindMenuButtons();
         this.applyInitialState();
-        $("#appVersion").text(`SquadCalc v${packageInfo.version}`);
     }
 
 
@@ -49,7 +45,7 @@ export default class SquadSettings {
             keypadUnderCursor: {
                 key: "settings-keypad-cursor",
                 default: false,
-                selector: "#keypadUnderCursorSetting",
+                selector: "#settingsKeypadUnderCursor",
                 requiresMouse: true,
                 onChange: (val) => {
                     if (val) {
@@ -63,7 +59,7 @@ export default class SquadSettings {
             cursor: {
                 key: "settings-cursor",
                 default: false,
-                selector: "#cursorChoiceSettings",
+                selector: "#settingsClassicCursor",
                 requiresMouse: true,
                 onChange: () => {
                     $("body").toggleClass("map-crosshair", !this.cursor);
@@ -74,41 +70,41 @@ export default class SquadSettings {
             weaponDrag: {
                 key: "settings-weapon-drag",
                 default: true,
-                selector: "#weaponDragSetting"
+                selector: "#settingsWeaponDrag"
             },
             targetDrag: {
                 key: "settings-target-drag",
                 default: true,
-                selector: "#targetDragSetting"
+                selector: "#settingsTargetDrag"
             },
             spreadRadius: {
                 key: "settings-spread-radius",
                 default: true,
-                selector: "#spreadRadiusSetting",
+                selector: "#settingsSpreadRadius",
                 onChange: () => this.app.minimap.updateTargetsSpreads()
             },
             damageRadius: {
                 key: "settings-damage-radius",
                 default: true,
-                selector: "#damageRadiusSetting",
+                selector: "#settingsDamageRadius",
                 onChange: () => this.app.minimap.updateTargetsSpreads()
             },
             targetGrid: {
                 key: "settings-target-grid",
                 default: false,
-                selector: "#targetGridSetting",
+                selector: "#settingsTargetGrid",
                 onChange: () => this.app.minimap.updateTargets()
             },
             lineToTarget: {
                 key: "settings-line-to-target",
                 default: false,
-                selector: "#lineToTargetSetting",
+                selector: "#settingsLineToTarget",
                 onChange: () => this.app.minimap.updateTargets()
             },
             targetAnimation: {
                 key: "settings-target-animation",
                 default: true,
-                selector: "#targetAnimationSettings",
+                selector: "#settingsTargetAnimation",
                 onChange: () => {
                     this.app.minimap.activeTargetsMarkers.eachLayer((target) => {
                         target.updateCalcPopUps();
@@ -119,50 +115,50 @@ export default class SquadSettings {
             realMaxRange: {
                 key: "settings-real-max-range",
                 default: false,
-                selector: "#realMaxRangeSettings",
+                selector: "#settingsRealMaxRange",
                 onChange: () => this.app.minimap.updateWeapons()
             },
             // Calculation Display
             lowAndHigh: {
                 key: "settings-low-high",
                 default: false,
-                selector: "#lowAndHighSetting",
+                selector: "#settingsLowAndHigh",
                 onChange: () => this.app.minimap.updateTargets()
             },
             lastDigits: {
                 key: "settings-last-digits",
                 default: false,
-                selector: "#lastDigitsSetting",
+                selector: "#settingsLastDigits",
                 onChange: () => this.app.minimap.updateTargets()
             },
             showBearing: {
                 key: "settings-show-bearing",
                 default: true,
-                selector: "#bearingSetting",
+                selector: "#settingsBearing",
                 onChange: () => this.app.minimap.updateTargets()
             },
             showDistance: {
                 key: "settings-show-distance",
                 default: false,
-                selector: "#distanceSetting",
+                selector: "#settingsDistance",
                 onChange: () => this.app.minimap.updateTargets()
             },
             showTimeOfFlight: {
                 key: "settings-show-timeofflight",
                 default: false,
-                selector: "#timeOfFlightSetting",
+                selector: "#settingsTimeOfFlight",
                 onChange: () => this.app.minimap.updateTargets()
             },
             showHeight: {
                 key: "settings-show-height",
                 default: false,
-                selector: "#heightSetting",
+                selector: "#settingsHeightDiff",
                 onChange: () => this.app.minimap.updateTargets()
             },
             copyTarget: {
                 key: "settings-copy-target",
                 default: false,
-                selector: "#targetCopySetting"
+                selector: "#settingsTargetCopy"
             },
 
 
@@ -170,20 +166,20 @@ export default class SquadSettings {
             enableFactions: {
                 key: "settings-enable-factions",
                 default: true,
-                selector: "#enableFactionsSettings",
-                controls: ["#hideLowRespawnSettings", "#disableSoundsSettings", "#defaultFactionsSettings", "#minimizeFactionBarSettings"],
+                selector: "#settingsEnableFactions",
+                controls: ["#settingsHideLowRespawn", "#settingsDisableSounds", "#settingsDefaultFactions", "#settingsMinimizeFactionBar"],
                 onChange: (val) => {
                     if (!val) {
                         $("#factionsTab, #factionsButton").hide();
-                        $("#hideLowRespawnSettings").prop("disabled", true);
-                        $("#disableSoundsSettings").prop("disabled", true);
-                        $("#defaultFactionsSettings").prop("disabled", true);
-                        $("#minimizeFactionBarSettings").prop("disabled", true);
+                        $("#settingsHideLowRespawn").prop("disabled", true);
+                        $("#settingsDisableSounds").prop("disabled", true);
+                        $("#settingsDefaultFactions").prop("disabled", true);
+                        $("#settingsMinimizeFactionBar").prop("disabled", true);
                     } else {
-                        $("#hideLowRespawnSettings").prop("disabled", false);
-                        $("#disableSoundsSettings").prop("disabled", false);
-                        $("#defaultFactionsSettings").prop("disabled", false);
-                        $("#minimizeFactionBarSettings").prop("disabled", false);
+                        $("#settingsHideLowRespawn").prop("disabled", false);
+                        $("#settingsDisableSounds").prop("disabled", false);
+                        $("#settingsDefaultFactions").prop("disabled", false);
+                        $("#settingsMinimizeFactionBar").prop("disabled", false);
                         if (this.app.minimap.layer) {
                             this.app.minimap.layer.factions = new SquadFactions(this.app.minimap.layer);
                             $("#factionsTab, #factionsButton").show();
@@ -194,17 +190,17 @@ export default class SquadSettings {
             defaultFactions: {
                 key: "settings-default-factions",
                 default: true,
-                selector: "#defaultFactionsSettings"
+                selector: "#settingsDefaultFactions"
             },
             disableSounds: {
                 key: "settings-disable-sounds",
                 default: false,
-                selector: "#disableSoundsSettings"
+                selector: "#settingsDisableSounds"
             },
             minimizeFactionBar: {
                 key: "settings-minimize-factionbar",
                 default: false,
-                selector: "#minimizeFactionBarSettings",
+                selector: "#settingsMinimizeFactionBar",
                 onLoad: (val) => {
                     $("#factionsButton").toggleClass("collapsed", val);
                 },
@@ -215,7 +211,7 @@ export default class SquadSettings {
             hideLowRespawn: {
                 key: "settings-hide-lowrespawn",
                 default: true,
-                selector: "#hideLowRespawnSettings",
+                selector: "#settingsHideLowRespawn",
                 onChange: () => {
                     if ($(".btn-pin.active").length === 0) return;
 
@@ -245,7 +241,7 @@ export default class SquadSettings {
             showRespawnCam: {
                 key: "settings-show-respawn-cam",
                 default: true,
-                selector: "#respawnCamSettings",
+                selector: "#settingsRespawnCam",
                 onChange: (val) => {
                     if (val) {
                         this.app.minimap.layer.cameraActor?.show();
@@ -257,12 +253,12 @@ export default class SquadSettings {
             revealLayerOnHover: {
                 key: "settings-reveal-onHover",
                 default: true,
-                selector: "#revealLayerOnHoverSettings"
+                selector: "#settingsRevealLayerOnHover"
             },
             capZoneOnHover: {
                 key: "settings-capZone-onHover",
                 default: false,
-                selector: "#capZoneOnHoverSettings",
+                selector: "#settingsCapZoneOnHover",
                 onChange: (val) => {
                     if (!this.app.minimap.layer) return;
                     if (this.app.minimap.getZoom() <= this.app.minimap.detailedZoomThreshold) return;
@@ -279,7 +275,7 @@ export default class SquadSettings {
             circlesFlags: {
                 key: "settings-circles-flags",
                 default: true,
-                selector: "#circlesFlagsSettings",
+                selector: "#settingsCirclesFlags",
                 onChange: () => {
                     if (this.app.minimap.layer) {
                         this.app.minimap.layer.flags.forEach(flag => flag.update());
@@ -292,7 +288,7 @@ export default class SquadSettings {
             showNextFlagsPercentages: {
                 key: "settings-show-next-flags-percentages",
                 default: true,
-                selector: "#showNextFlagPercentageSettings",
+                selector: "#settingsShowNextFlagPercentage",
                 onChange: (val) => {
                     if (this.app.minimap.layer) {
                         if (val) {
@@ -310,7 +306,7 @@ export default class SquadSettings {
             showFlagsDistance: {
                 key: "settings-show-flags-distance",
                 default: true,
-                selector: "#showFlagsDistanceSettings",
+                selector: "#settingsShowFlagsDistance",
                 onChange: (val) => {
                     if (this.app.minimap.layer) {
                         if (val) {
@@ -327,7 +323,7 @@ export default class SquadSettings {
             showMapBorders: {
                 key: "settings-show-map-borders",
                 default: true,
-                selector: "#showMapBordersSettings",
+                selector: "#settingsShowMapBorders",
                 onChange: (val) => {
                     if (this.app.minimap.layer.borders) {
                         this.app.minimap.layer.borders.setStyle({
@@ -340,7 +336,7 @@ export default class SquadSettings {
             showMainZones: {
                 key: "settings-show-mainzones",
                 default: true,
-                selector: "#showMainZonesSettings",
+                selector: "#settingsShowMainZones",
                 onChange: (val) => {
                     this.app.minimap.layer.mainZones.rectangles.forEach((rectangle) => {
                         rectangle.setStyle({
@@ -353,7 +349,7 @@ export default class SquadSettings {
             showMainAssets: {
                 key: "settings-show-mainassets",
                 default: true,
-                selector: "#showMainAssetsSettings",
+                selector: "#settingsShowMainAssets",
                 onChange: (val) => {
                     if (this.app.minimap.getZoom() > this.app.minimap.detailedZoomThreshold) {
                         this.app.minimap.layer.mainZones.assets.forEach(asset => {
@@ -377,12 +373,12 @@ export default class SquadSettings {
             smoothMap: {
                 key: "settings-smooth-map",
                 default: false,
-                selector: "#mapAnimationSettings"
+                selector: "#settingsMapAnimation"
             },
             contextMenu: {
                 key: "settings-contextmenu",
                 default: true,
-                selector: "#contextMenuSettings"
+                selector: null  // Not exposed in the settings dialog anymore, keeps its stored value
             },
             highQualityImages: {
                 key: "settings-highquality-images",
@@ -398,32 +394,20 @@ export default class SquadSettings {
 
     /**
      * Slider setting definitions
-     * Values must match HTML input attributes
+     * Range (min/max/step) lives on the <input type="range"> in settings.html
      */
     getSliderDefinitions() {
         return {
             fontSize: {
                 key: "settings-font-size",
-                min: 0.5,
                 default: 3,
-                max: 1.5,
-                selector: "#fontSlider",
-                ticksSelector: "#fontTicks",
-                tickValues: [0.5, 1, 1.5],
-                defaultTickIndex: 1,
-                formatTick: (val) => `${val * 100}%`,
+                selector: "#settingsFontSize",
                 onChange: () => this.app.changeFontSize()
             },
             markerSize: {
                 key: "settings-marker-size",
-                min: 0.5,
                 default: 3,
-                max: 1.5,
-                selector: "#markerSlider",
-                ticksSelector: "#markerTicks",
-                tickValues: [0.5, 1, 1.5],
-                defaultTickIndex: 1,
-                formatTick: (val) => `${val * 100}%`,
+                selector: "#settingsMarkerSize",
                 onChange: () => {
                     this.app.minimap.activeMarkers.eachLayer((marker) => { marker.updateIconSize(); });
                     this.app.minimap.activeTargetsMarkers.eachLayer((target) => { target.updateIcon(); });
@@ -432,28 +416,16 @@ export default class SquadSettings {
             },
             gridOpacity: {
                 key: "settings-grid-opacity",
-                min: 0,
                 default: 0.8,
-                max: 1,
-                selector: "#gridSlider",
-                ticksSelector: "#gridTicks",
-                tickValues: [0, 0.8, 1],
-                defaultTickIndex: 1,
-                formatTick: (val) => `${val * 100}%`,
+                selector: "#settingsGridOpacity",
                 onChange: () => {
                     this.app.minimap.grid.setOpacity(this.gridOpacity);
                 }
             },
             zoomSensitivity: {
                 key: "settings-zoom-sensitivity",
-                min: 0.5,
                 default: 2,
-                max: 1.5,
-                selector: "#zoomSlider",
-                ticksSelector: "#zoomTicks",
-                tickValues: [0.5, 1, 1.5],
-                defaultTickIndex: 1,
-                formatTick: (val) => `${val * 100}%`,
+                selector: "#settingsZoomSensitivity",
                 onChange: () => {
                     this.app.minimap.options.smoothSensitivity = this.zoomSensitivity;
                     this.app.minimap.options.wheelPxPerZoomLevel = 120 / this.zoomSensitivity;
@@ -461,26 +433,14 @@ export default class SquadSettings {
             },
             brightness: {
                 key: "settings-brightness",
-                min: 0.5,
                 default: 1,
-                max: 1.5,
-                selector: "#brightnessSlider",
-                ticksSelector: "#brightnessTicks",
-                tickValues: [0.5, 1, 1.5],
-                defaultTickIndex: 1,
-                formatTick: (val) => `${val * 100}%`,
+                selector: "#settingsBrightness",
                 onChange: () => this.applyMapFilter()
             },
             contrast: {
                 key: "settings-contrast",
-                min: 0.5,
                 default: 1,
-                max: 1.5,
-                selector: "#contrastSlider",
-                ticksSelector: "#contrastTicks",
-                tickValues: [0.5, 1, 1.5],
-                defaultTickIndex: 1,
-                formatTick: (val) => `${val * 100}%`,
+                selector: "#settingsContrast",
                 onChange: () => this.applyMapFilter()
             }
         };
@@ -541,33 +501,8 @@ export default class SquadSettings {
                 slider.value = this[name];
             }
 
-            // Create tick marks
-            this.createSliderTicks(def);
         });
     }
-
-    /**
-     * Create tick marks for a slider
-     */
-    createSliderTicks(def) {
-        const ticks = document.getElementById(def.ticksSelector.replace("#", ""));
-        if (!ticks) return;
-
-        def.tickValues.forEach((val, index) => {
-            const tick = document.createElement("div");
-            tick.className = "tick";
-            tick.setAttribute("data-value", def.formatTick(val));
-            
-            const percent = ((val - def.min) / (def.max - def.min)) * 100;
-            tick.style.left = percent + "%";
-            
-            if (index === def.defaultTickIndex) {
-                tick.classList.add("default-tick");
-            }
-            ticks.appendChild(tick);
-        });
-    }
-
 
     /**
      * Bind change events to all checkboxes
@@ -602,19 +537,6 @@ export default class SquadSettings {
     }
 
     /**
-     * Bind click events to setting labels for toggle behavior
-     */
-    bindLabelClicks() {
-        $(".toggleCheckbox").on("click", function() {
-            const checkbox = $(this).closest("tr").find("input[type='checkbox']");
-            if (checkbox.prop("disabled")) return;
-            checkbox.prop("checked", !checkbox.prop("checked")).trigger("change");
-            animateCSS($(this).closest("td"), "headShake");
-        });
-    }
-
-
-    /**
      * Apply initial state after loading (e.g., CSS filters, cursor, map mode)
      */
     applyInitialState() {
@@ -638,10 +560,10 @@ export default class SquadSettings {
 
         // Handle faction-dependent settings
         if (!this.enableFactions) {
-            $("#hideLowRespawnSettings").prop("disabled", true);
-            $("#disableSoundsSettings").prop("disabled", true);
-            $("#defaultFactionsSettings").prop("disabled", true);
-            $("#minimizeFactionBarSettings").prop("disabled", true);
+            $("#settingsHideLowRespawn").prop("disabled", true);
+            $("#settingsDisableSounds").prop("disabled", true);
+            $("#settingsDefaultFactions").prop("disabled", true);
+            $("#settingsMinimizeFactionBar").prop("disabled", true);
         }
 
         // Hide factions if disabled via environment
@@ -726,20 +648,18 @@ export default class SquadSettings {
             const stored = localStorage.getItem(def.key);
             const val = stored === null ? def.default : stored === "1";
             if (!val) this._moveButtonsToMenu(def);
-            $(`.mapBtnToggle[data-key="${def.key}"]`).toggleClass("active", val);
+            $(`#settingsDialog input[data-toolbar-key="${def.key}"]`).prop("checked", val);
         });
         this._updateDotsButton();
     }
 
     bindButtonToggles() {
-        $(".mapBtnToggle").on("click", (e) => {
-            const btn = $(e.currentTarget);
-            const key = btn.data("key");
+        $("#settingsDialog").on("change", "input[data-toolbar-key]", (e) => {
+            const key = e.currentTarget.dataset.toolbarKey;
             const def = this.getButtonToggleDefinitions().find(d => d.key === key);
             if (!def) return;
 
-            const newVal = !btn.hasClass("active");
-            btn.toggleClass("active", newVal);
+            const newVal = e.currentTarget.checked;
             localStorage.setItem(key, newVal ? 1 : 0);
 
             if (newVal) {

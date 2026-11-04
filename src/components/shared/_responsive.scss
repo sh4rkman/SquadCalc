@@ -118,19 +118,6 @@
             }
         }
     }
-    #modsPanelContainer {
-        gap: 0.7em;
-        .modToggleTile {
-            min-height: 6em;
-            padding: 1.1em 1.3em;
-            .modTileLogo {
-                width: 6em;
-            }
-            .modTileName {
-                padding-right: 5.7em;
-            }
-        }
-    }
     #characteristics .characteristics img {
         height: 30px;
     }
@@ -217,7 +204,7 @@
             }
         }
     }
-    #helpDialog, #changelogDialog, #layerInformation {
+    #layerInformation {
         width: 100vw;
         height: 100dvh;
         max-width: 100%;
@@ -402,13 +389,6 @@
         &#layerInformation {
             max-width: 800px;
         }
-        &#helpDialog {
-            font-size: 0.7em;
-            width: 600px;
-            table {
-               width: 90%;
-            }
-        }
     }
 }
 
@@ -548,10 +528,6 @@
 
 /* Fix for mobile devices - prevent hover states from sticking on specific elements */
 @media (hover: none) {
-    // Settings controls buttons
-    #settingsControls button:not(.active):hover {
-        background-color: inherit !important;
-    }
     // Dialog close buttons
     .closeModal:hover {
         background-color: inherit !important;

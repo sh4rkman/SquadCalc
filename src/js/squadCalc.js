@@ -813,50 +813,56 @@ export default class SquadCalc {
     }
 
     /**
-     * Populate #modsPanelContainer with one toggle tile per mod
+     * Populate the settings dialog Mods tab with one row per mod
+     * Re-run once layer counts arrive from the API (see checkApiHealth())
      */
-    _renderModTiles() {
+    _renderMods() {
+        const $list = $("#settingsDialog .settings-mods");
+        if (!$list.length) return;
+        $list.empty();
+
         const mods = this._getUniqueMods().sort((a, b) => {
             const labelA = i18next.t(`settings:${a}`, { defaultValue: a });
             const labelB = i18next.t(`settings:${b}`, { defaultValue: b });
             return labelA.localeCompare(labelB);
         });
-        const container = $("#modsPanelContainer");
-        container.empty();
-
-        const statsHtml = (layers, weapons, maps) => {
-            const parts = [];
-            if (layers > 0) parts.push(`<span>${i18next.t("settings:modLayersCount", { count: layers, defaultValue: `${layers} Layers` })}</span>`);
-            if (weapons > 0) parts.push(`<span>${i18next.t("settings:modWeaponsCount", { count: weapons, defaultValue: `${weapons} Weapons` })}</span>`);
-            if (maps > 0) parts.push(`<span>${i18next.t("settings:modMapsCount", { count: maps, defaultValue: `${maps} Maps` })}</span>`);
-            return `<span class="modTileStats">${parts.join("<span class=\"modTileStatsSeparator\">•</span>")}</span>`;
-        };
 
         mods.forEach((modKey) => {
-            const active = this.userSettings.isModEnabled(modKey) ? "active" : "";
             const label = i18next.t(`settings:${modKey}`, { defaultValue: modKey });
-            const weapons = WEAPONS.filter(w => w.mod === modKey).length;
             const layers = this.layerCounts?.[modKey.toLowerCase()] ?? 0;
+            const weapons = WEAPONS.filter(w => w.mod === modKey).length;
             const maps = MAPS.filter(m => m.mod === modKey).length;
-            container.append(`
-                <button type="button" class="modToggleTile ${active}" data-mod="${modKey}">
-                    <img class="modTileLogo" src="/img/mods/${modKey.toLowerCase()}.webp" alt="" onerror="this.style.display='none'">
-                    <span class="modTileName" data-i18n="settings:${modKey}">${label}</span>
-                    ${statsHtml(layers, weapons, maps)}
-                </button>
+            const stats = [];
+            if (layers > 0) stats.push(i18next.t("settings:modLayersCount", { count: layers, defaultValue: `${layers} Layers` }));
+            if (weapons > 0) stats.push(i18next.t("settings:modWeaponsCount", { count: weapons, defaultValue: `${weapons} Weapons` }));
+            if (maps > 0) stats.push(i18next.t("settings:modMapsCount", { count: maps, defaultValue: `${maps} Maps` }));
+            const checked = this.userSettings.isModEnabled(modKey) ? " checked" : "";
+
+            $list.append(`
+                <div class="settings-field settings-mod-field">
+                    <label class="settings-mod">
+                        <img class="settings-mod-logo" src="/img/mods/${modKey.toLowerCase()}.webp" alt="" onerror="this.style.visibility='hidden'">
+                        <span class="settings-mod-text">
+                            <span class="settings-mod-name settings-search-text" data-i18n="settings:${modKey}">${label}</span>
+                            <span class="settings-field-hint">${stats.join(" • ")}</span>
+                        </span>
+                        <input type="checkbox" data-mod="${modKey}"${checked}>
+                        <span class="settings-chip-box"><svg class="settings-chip-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>
+                    </label>
+                </div>
             `);
         });
 
-        $(".modToggleTile").not(".locked").on("click", (e) => {
-            const tile = $(e.currentTarget);
-            const modKey = tile.data("mod");
-            const enabled = !tile.hasClass("active");
-            tile.toggleClass("active", enabled);
-            this.userSettings.setModEnabled(modKey, enabled);
-            this._rebuildModdedWeapons();
-            const mapWasReset = this._rebuildMapSelector();
-            if (!mapWasReset && this.minimap.activeMap) this.loadLayers();
-        });
+        // Delegated so it survives re-renders, bound once
+        if (!this._modsToggleBound) {
+            this._modsToggleBound = true;
+            $list.on("change", "input[data-mod]", (e) => {
+                this.userSettings.setModEnabled(e.currentTarget.dataset.mod, e.currentTarget.checked);
+                this._rebuildModdedWeapons();
+                const mapWasReset = this._rebuildMapSelector();
+                if (!mapWasReset && this.minimap.activeMap) this.loadLayers();
+            });
+        }
     }
 
     /**
@@ -942,7 +948,7 @@ export default class SquadCalc {
      * Initialize the Mods settings panel and apply currently enabled mods to the weapon selector
      */
     initModsPanel() {
-        this._renderModTiles();
+        this._renderMods();
         this._rebuildModdedWeapons();
     }
 
@@ -953,16 +959,15 @@ export default class SquadCalc {
         this._dialogs = {
             calc:    document.querySelector("#calcInformation"),
             weapon:  document.querySelector("#weaponInformation"),
-            help:    document.querySelector("#helpDialog"),
             factions:document.querySelector("#factionsDialog"),
+            settings: document.querySelector("#settingsDialog"),
             servers: document.querySelector("#serversInformation"),
             shortcutCapture: document.querySelector("#shortcutCaptureDialog"),
-            changelog: document.querySelector("#changelogDialog"),
             layerInfo: document.querySelector("#layerInformation"),
             spawnCard: document.querySelector("#spawnCardInformation"),
         };
         this._changelogCache = null;
-        const { calc: calcInformation, weapon: weaponInformation, help: helpDialog, factions: factionsDialog, servers: serversInformation, layerInfo: layerInfoDialog } = this._dialogs;
+        const { calc: calcInformation, weapon: weaponInformation, factions: factionsDialog, servers: serversInformation, layerInfo: layerInfoDialog } = this._dialogs;
 
         this.threeDView = document.querySelector("#threeDView");
         this.simulation3D = new Squad3DSimulation(document.querySelector(".threeDViewport"));
@@ -1001,9 +1006,7 @@ export default class SquadCalc {
         this.closeDialogOnClickOutside(calcInformation);
         this.closeDialogOnClickOutside(weaponInformation);
         this.closeDialogOnClickOutside(serversInformation);
-        this.closeDialogOnClickOutside(helpDialog);
         this.closeDialogOnClickOutside(factionsDialog);
-        this.closeDialogOnClickOutside(this._dialogs.changelog);
         this.closeDialogOnClickOutside(layerInfoDialog);
         this.closeDialogOnClickOutside(this._dialogs.spawnCard);
 
@@ -1061,7 +1064,132 @@ export default class SquadCalc {
             setTimeout(() => serverBrowserTooltips.enable(), 50);
         });
 
-        helpDialog.addEventListener("close", () => {
+        // Settings dialog
+        const settingsDialog = document.getElementById("settingsDialog");
+        $(settingsDialog).on("click", ".settings-tab", (event) => {
+            $(settingsDialog).find(".settings-tab").removeClass("active");
+            $(event.currentTarget).addClass("active");
+            // Mobile top bar: bring the selected tab fully into view
+            event.currentTarget.scrollIntoView({ block: "nearest", inline: "nearest" });
+            $(settingsDialog).find(".settings-panel").removeClass("active")
+                .filter(`[data-panel="${event.currentTarget.value}"]`).addClass("active");
+        });
+        // Range sliders: fill the track up to the thumb, and show a
+        // min / default / max scale with a tick at the default value 
+        // Labels map the input range linearly onto data-display-min/max (in %), like the old ticks did
+        const formatRange = (input, value) => {
+            const min = Number(input.min);
+            const max = Number(input.max);
+            const displayMin = Number(input.dataset.displayMin ?? min * 100);
+            const displayMax = Number(input.dataset.displayMax ?? max * 100);
+            const ratio = (value - min) / (max - min);
+            return `${Math.round(displayMin + ratio * (displayMax - displayMin))}%`;
+        };
+        const buildRangeScale = (input) => {
+            const min = Number(input.min);
+            const max = Number(input.max);
+            const def = Number(input.dataset.default ?? input.value);
+            const pos = (def - min) / (max - min);
+            const $track = $(input).closest(".settings-range-track");
+            $track.css("--pos", pos);
+            $track.append($("<span>", { class: "settings-range-tick", "aria-hidden": "true" }));
+            const $scale = $("<div>", { class: "settings-range-scale", "aria-hidden": "true" });
+            $scale.append($("<span>", { class: "settings-range-min", text: formatRange(input, min) }));
+            // Skip the default label when it sits on min or max, it would overlap
+            if (pos > 0 && pos < 1) $scale.append($("<span>", { class: "settings-range-default", text: formatRange(input, def) }));
+            $scale.append($("<span>", { class: "settings-range-max", text: formatRange(input, max) }));
+            $track.append($scale);
+        };
+        const updateRange = (input) => {
+            const percent = (input.value - input.min) / (input.max - input.min) * 100;
+            input.style.setProperty("--fill", `${percent}%`);
+        };
+        $(settingsDialog).find(".settings-range input[type=range]").each((_, input) => {
+            buildRangeScale(input);
+            updateRange(input);
+        });
+        $(settingsDialog).on("input", ".settings-range input[type=range]", (event) => updateRange(event.currentTarget));
+        // Shortcuts tab (rebuilt after every change in openShortcutCapture())
+        this.initShortcutsPanel();
+
+        // Search: filter fields by label/hint text across every panel
+        const $settings = $(settingsDialog);
+        const $settingsSearch = $("#settingsSearch");
+        // Give each panel a title (the tab label), only visible while searching
+        $settings.find(".settings-panel").each((_, panel) => {
+            const $tabLabel = $settings.find(`.settings-tab[value="${panel.dataset.panel}"] span[data-i18n]`);
+            $(panel).prepend($("<h2>", {
+                class: "settings-panel-title",
+                "data-i18n": $tabLabel.attr("data-i18n"),
+                text: $tabLabel.text(),
+            }));
+        });
+        const normalizeSearch = (str) => str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+        const filterSettings = (query) => {
+            const q = normalizeSearch(query.trim());
+            $settings.toggleClass("settings-searching", q !== "");
+            if (!q) {
+                $settings.find(".settings-hidden").removeClass("settings-hidden");
+                $settings.find(".settings-search-empty").prop("hidden", true);
+                return;
+            }
+            let total = 0;
+            $settings.find(".settings-panel").each((_, panel) => {
+                let panelCount = 0;
+                $(panel).find(".settings-section").each((_, section) => {
+                    let sectionCount = 0;
+                    $(section).find(".settings-field").each((_, field) => {
+                        const text = $(field).find("label, .settings-field-hint, .settings-search-text").text();
+                        const match = normalizeSearch(text).includes(q);
+                        $(field).toggleClass("settings-hidden", !match);
+                        if (match) sectionCount++;
+                    });
+                    $(section).toggleClass("settings-hidden", sectionCount === 0);
+                    panelCount += sectionCount;
+                });
+                $(panel).toggleClass("settings-hidden", panelCount === 0);
+                total += panelCount;
+            });
+            $settings.find(".settings-search-empty").prop("hidden", total > 0);
+        };
+        $settingsSearch.on("input", () => filterSettings($settingsSearch.val()));
+        // Esc clears the search first, and only closes the dialog when it's already empty
+        $settingsSearch.on("keydown", (event) => {
+            if (event.key === "Escape" && $settingsSearch.val() !== "") {
+                event.preventDefault();
+                $settingsSearch.val("");
+                filterSettings("");
+            }
+        });
+        // Picking a tab leaves search mode
+        $settings.on("click", ".settings-tab", () => {
+            if ($settingsSearch.val() === "") return;
+            $settingsSearch.val("");
+            filterSettings("");
+        });
+
+        // Changelog tab: render CHANGELOG.md on first open
+        $settings.on("click", ".settings-tab[value=changelog]", async () => {
+            const $changelog = $settings.find(".settings-changelog");
+            if ($changelog.data("loaded")) return;
+            $changelog.data("loaded", true);
+            if (!this._changelogCache) {
+                const { default: changelogMd } = await import("../../CHANGELOG.md");
+                this._changelogCache = marked.parse(changelogMd, { renderer: changelogRenderer });
+            }
+            $changelog.html(this._changelogCache);
+            // Group each release (its h1 + everything until the next h1) into a card
+            $changelog.children("h1").each((_, heading) => {
+                const $release = $("<article>", { class: "settings-release" });
+                $(heading).before($release);
+                $release.append($(heading).nextUntil("h1").addBack());
+            });
+        });
+
+        // About tab
+        $("#settingsAppVersion").text(`v${this.version}`);
+
+        settingsDialog.addEventListener("close", () => {
             setTimeout(() => settingsTooltips.enable(), 50);
         });
 
@@ -1178,25 +1306,7 @@ export default class SquadCalc {
             $("#factionsButton").toggleClass("collapsed");
         });
         $("#factionsButton button.btn-faction").on("click", () => { $("#factionsDialog")[0].showModal(); });
-        $(".btn-settings").on("click", () => {
-            settingsTooltips.hide();
-            settingsTooltips.disable();
-            helpDialog.showModal();
-        });
-
-        $(document).on("click", "#openChangelog", async () => {
-            const changelogDialog = this._dialogs.changelog;
-            const contentEl = document.getElementById("changelogContent");
-            changelogDialog.showModal();
-            if (this._changelogCache) {
-                contentEl.innerHTML = this._changelogCache;
-                return;
-            }
-            const { default: changelogMd } = await import("../../CHANGELOG.md");
-            const html = marked.parse(changelogMd, { renderer: changelogRenderer });
-            this._changelogCache = html;
-            contentEl.innerHTML = html;
-        });
+        $(".btn-settings").on("click", () => this.openSettings());
 
         $("#mapLayerMenu").find("button.btn-session").on("click", () => {
             if ($(".btn-session").hasClass("active")) {
@@ -1310,7 +1420,7 @@ export default class SquadCalc {
                 navigator.clipboard.writeText(newUrl);
                 this.openToast("success", "copied", "");
             } else if (title === "tooltips:newVersion" && event.target.tagName !== "BUTTON") {
-                $("#openChangelog").trigger("click");
+                this.openSettings("changelog");
             }
         });
       
@@ -1328,15 +1438,7 @@ export default class SquadCalc {
             $("#"+$(event.currentTarget).val()).addClass("active");
         });
 
-        $("#settingsControls button").on("click", (event) => {
-            if ($(event.currentTarget).hasClass("active")){ return;}
-            $("#settingsControls > .active").first().removeClass("active");
-            $(event.currentTarget).addClass("active");
-            $(".panel.active").removeClass("active");
-            $("#"+$(event.currentTarget).val()).addClass("active");
-        });
 
-        $("#settingsControls button[value='panel4']").on("click", () => this.initShortcutsPanel());
 
         this.show();
     }
@@ -1358,6 +1460,18 @@ export default class SquadCalc {
         if (u2) params.set("team2unit", u2);
 
         return `${window.location.origin}${window.location.pathname}?${params.toString()}`;
+    }
+
+    /**
+     * Open the settings dialog, optionally on a given tab
+     * @param {string} [tab] - value of a .settings-tab (e.g. "changelog", "mods")
+     */
+    openSettings(tab) {
+        const dialog = document.getElementById("settingsDialog");
+        settingsTooltips.hide();
+        settingsTooltips.disable();
+        if (!dialog.open) dialog.showModal();
+        if (tab) $(dialog).find(`.settings-tab[value="${tab}"]`).trigger("click");
     }
 
     closeToast() {
@@ -1441,29 +1555,28 @@ export default class SquadCalc {
     }
 
     initShortcutsPanel() {
-        const tbody = $("#panel4 .shortcuts tbody");
-        tbody.empty();
+        const $list = $("#settingsDialog .settings-shortcuts");
+        const editIcon = "<svg class='settings-shortcut-edit' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' aria-hidden='true'><path d='M12 20h9'/><path d='M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z'/></svg>";
+        $list.empty();
 
         for (const { id, i18nKey } of SquadCalc.SHORTCUT_ACTIONS) {
-            const sc = this.shortcuts[id];
-            const isCustom = JSON.stringify(sc) !== JSON.stringify(SquadCalc.DEFAULT_SHORTCUTS[id]);
-            const $row = $(`
-                <tr class="shortcut-row${isCustom ? " is-custom" : ""}" data-action="${id}">
-                    <td class="shortcut-key-cell">${this.formatShortcutHTML(sc)}</td>
-                    <td class="arrow">→</td>
-                    <td class="shortcut-desc" data-i18n="${i18nKey}"></td>
-                    <td class="shortcut-edit">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M362.7 19.3L314.3 67.7 444.3 197.7l48.4-48.4c25-25 25-65.5 0-90.5L453.3 19.3c-25-25-65.5-25-90.5 0zm-71 71L58.6 323.5c-10.4 10.4-18 23.3-22.2 37.4L1 481.2C-1.5 489.7 .8 498.8 7 505s15.3 8.5 23.7 6.1l120.3-35.4c14.1-4.2 27-11.8 37.4-22.2L421.7 220.3 291.7 90.3z"/></svg>
-                    </td>
-                </tr>
-            `);
+            const shortcut = this.shortcuts[id];
+            const isCustom = JSON.stringify(shortcut) !== JSON.stringify(SquadCalc.DEFAULT_SHORTCUTS[id]);
+            const $row = $("<button>", { type: "button", class: "settings-shortcut", "data-action": id });
+            $row.append($("<span>", { class: "settings-shortcut-label settings-search-text", "data-i18n": i18nKey }));
+            if (isCustom) $row.append($("<span>", { class: "settings-shortcut-custom", "data-i18n": "settings:shortcutCustom", text: "Custom" }));
+            $row.append($("<span>", { class: "settings-shortcut-keys", html: this.formatShortcutHTML(shortcut) }));
+            $row.append(editIcon);
             $row.on("click", () => this.openShortcutCapture(id));
-            tbody.append($row);
+            $list.append($("<div>", { class: "settings-field settings-shortcut-field" }).append($row));
         }
 
-        $("#panel4 .shortcuts [data-i18n]").each(function() {
-            this.textContent = i18next.t(this.dataset.i18n);
-        });
+        // On rebuilds (after a change) the language is already loaded, translate right away
+        if (i18next.isInitialized) {
+            $list.find("[data-i18n]").each(function() {
+                this.textContent = i18next.t(this.dataset.i18n);
+            });
+        }
     }
 
     openShortcutCapture(actionId) {
@@ -1556,8 +1669,8 @@ export default class SquadCalc {
 
     handleKeydown(event) {
 
-        const { calc, weapon, help, factions, servers, changelog } = this._dialogs;
-        if (weapon.open || calc.open || help.open || factions.open || servers.open || changelog.open || this.is3DOpen) return;
+        const { calc, weapon, settings, factions, servers } = this._dialogs;
+        if (weapon.open || calc.open || settings.open || factions.open || servers.open || this.is3DOpen) return;
 
         if ($(event.target).is("input, textarea, select")) return;
 
