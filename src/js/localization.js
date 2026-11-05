@@ -161,8 +161,6 @@ function updateContent() {
     // Choices (map/layer/server/weapon/shell/texture selectors) has no live DOM sync
     // like select2 - its option labels were snapshotted at the last setChoices() call,
     // so a language change needs an explicit rebuild instead of a destroy()/re-init().
-    // Layer/server names come from the API (not i18next keys) so only their rarely-
-    // seen placeholder text goes stale here - not worth a refetch just to fix that.
     if (App.mapSelect) App._rebuildMapSelector();
     if (App.weaponSelect) {
         App._rebuildModdedWeapons();

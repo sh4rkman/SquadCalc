@@ -700,6 +700,12 @@ export default class SquadCalc {
                 if (mod) option.attr("data-mod", mod);
             });
 
+            // Choices' rendered placeholder (closed value + dropdown row) isn't the native
+            // <option> the generic data-i18n loop would normally catch - tag it directly so
+            // a later language switch retranslates it like everything else.
+            this.LAYER_SELECTOR.find("option[value='']").attr("data-i18n", "common:layerPlaceholder");
+            this.LAYER_SELECTOR.closest(".dropdown").find(".choices__placeholder").attr("data-i18n", "common:layerPlaceholder");
+
             if (selectedStillExists) {
                 this.LAYER_SELECTOR.trigger("change");
             }
@@ -776,6 +782,9 @@ export default class SquadCalc {
         unavailableValues.forEach(value => {
             this.SERVER_SELECTOR.find("option").filter((_, el) => el.value === value).attr("title", "Modded layer");
         });
+
+        this.SERVER_SELECTOR.find("option[value='']").attr("data-i18n", "common:favServers");
+        this.SERVER_SELECTOR.closest(".dropdown").find(".choices__placeholder").attr("data-i18n", "common:favServers");
 
         this.SERVER_SELECTOR.trigger("change");
         $("#serverSelector").show();
