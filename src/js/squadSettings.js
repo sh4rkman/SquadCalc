@@ -387,6 +387,71 @@ export default class SquadSettings {
                 onLoad: (val) => {
                     if (val) $(".btn-hd").addClass("active");
                 }
+            },
+
+
+            // 3D Mode - mirrors the in-3D-view overlay card's own toggles (same
+            // localStorage keys as Squad3DSimulation's STORAGE_KEYS); setToggle()
+            // there applies the change live and keeps that card's checkbox in sync.
+            threeDCapzones: {
+                key: "settings-3d-capzones",
+                default: true,
+                selector: "#settings3dCapzones",
+                onChange: (val) => this.app.simulation3D.setToggle("capzonesVisible", val)
+            },
+            threeDMinimap: {
+                key: "settings-3d-minimap",
+                default: true,
+                selector: "#settings3dMinimap",
+                onChange: (val) => this.app.simulation3D.setToggle("minimapVisible", val)
+            },
+            threeDPath: {
+                key: "settings-3d-path",
+                default: true,
+                selector: "#settings3dPath",
+                onChange: (val) => this.app.simulation3D.setToggle("pathVisible", val)
+            },
+            threeDArcs: {
+                key: "settings-3d-arcs",
+                default: true,
+                selector: "#settings3dArcs",
+                onChange: (val) => this.app.simulation3D.setToggle("arcsVisible", val)
+            },
+            threeDMarkers: {
+                key: "settings-3d-markers",
+                default: true,
+                selector: "#settings3dMarkers",
+                onChange: (val) => this.app.simulation3D.setToggle("markersVisible", val)
+            },
+            threeDTrees: {
+                key: "settings-3d-trees",
+                default: true,
+                selector: "#settings3dTrees",
+                onChange: (val) => this.app.simulation3D.setToggle("treesVisible", val)
+            },
+            threeDProps: {
+                key: "settings-3d-props",
+                default: true,
+                selector: "#settings3dProps",
+                onChange: (val) => this.app.simulation3D.setToggle("propsVisible", val)
+            },
+            threeDCrosshair: {
+                key: "settings-3d-crosshair",
+                default: true,
+                selector: "#settings3dCrosshair",
+                onChange: (val) => this.app.simulation3D.setToggle("crosshairVisible", val)
+            },
+            threeDFps: {
+                key: "settings-3d-fps",
+                default: true,
+                selector: "#settings3dFps",
+                onChange: (val) => this.app.simulation3D.setToggle("fpsVisible", val)
+            },
+            threeDControls: {
+                key: "settings-3d-controls",
+                default: true,
+                selector: "#settings3dControls",
+                onChange: (val) => this.app.simulation3D.setToggle("controlsVisible", val)
             }
         };
     }

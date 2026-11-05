@@ -1080,6 +1080,10 @@ export default class SquadCalc {
 
         this.threeDView = document.querySelector("#threeDView");
         this.simulation3D = new Squad3DSimulation(document.querySelector(".threeDViewport"));
+        // Settings dialog's "3D" tab mirrors the in-3D-view overlay card's own options -
+        // the show/hide toggles go through SquadSettings (see squadSettings.js), but
+        // there's no equivalent there for the texture <select>.
+        this.simulation3D.bindSettingsTextureSelect();
 
         $(".btn-delete, .btn-undo, .btn-layer, .btn-layer-info, .returnBtn, #mapLayerMenu").hide();
 

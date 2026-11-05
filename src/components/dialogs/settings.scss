@@ -187,6 +187,14 @@ $hover: rgba(variables.$mainTxtColor, 0.06);
             flex-shrink: 0;
             fill: currentcolor;
         }
+        // No suitable icon glyph for "3D" - a text badge instead, same width slot as svg above
+        .settings-tab-glyph-text {
+            width: 16px;
+            flex-shrink: 0;
+            font-size: 0.8em;
+            font-weight: bold;
+            text-align: center;
+        }
         &:hover {
             background: rgba(variables.$mainColor, 0.08);
         }
@@ -262,6 +270,18 @@ $hover: rgba(variables.$mainTxtColor, 0.06);
             accent-color: variables.$mainColor;
             cursor: pointer;
         }
+    }
+    // Plain native <select> (e.g. the 3D tab's terrain texture) - the rest of the app
+    // uses Choices.js, but that's one extra JS wiring too many for a single dropdown here
+    .settings-select {
+        width: max-content;
+        padding: 6px 10px;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        border-radius: 4px;
+        color: variables.$mainTxtColor;
+        font-size: 0.9em;
+        cursor: pointer;
     }
     // Range slider: track filled with $mainColor up to the thumb (--fill set from JS),
     // with a tick at the default value and a min / default / max scale underneath (built from JS)

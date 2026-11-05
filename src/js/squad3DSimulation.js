@@ -261,6 +261,23 @@ const STORAGE_KEYS = {
     textureName: "settings-3d-texture",
 };
 
+// Each of these toggles is mirrored in the main Settings dialog (settings.html's
+// data-panel="3d"), on top of the in-3D-view overlay card's own copy - both read/write
+// the same STORAGE_KEYS entry above, and setToggle() below is the single place that
+// applies a change and keeps the other UI's checkbox in sync.
+const TOGGLE_HANDLERS = {
+    capzonesVisible: { setter: "_setCapzonesVisible", cardClass: "threeDCapzonesToggle", panelId: "settings3dCapzones" },
+    minimapVisible: { setter: "_setMinimapVisible", cardClass: "threeDMinimapToggle", panelId: "settings3dMinimap" },
+    pathVisible: { setter: "_setPathVisible", cardClass: "threeDPathToggle", panelId: "settings3dPath" },
+    arcsVisible: { setter: "_setArcsVisible", cardClass: "threeDArcsToggle", panelId: "settings3dArcs" },
+    markersVisible: { setter: "_setMarkersVisible", cardClass: "threeDMarkersToggle", panelId: "settings3dMarkers" },
+    treesVisible: { setter: "_setTreesVisible", cardClass: "threeDTreesToggle", panelId: "settings3dTrees" },
+    propsVisible: { setter: "_setPropsVisible", cardClass: "threeDPropsToggle", panelId: "settings3dProps" },
+    crosshairVisible: { setter: "_setCrosshairVisible", cardClass: "threeDCrosshairToggle", panelId: "settings3dCrosshair" },
+    fpsVisible: { setter: "_setFpsVisible", cardClass: "threeDFpsToggle", panelId: "settings3dFps" },
+    controlsVisible: { setter: "_setControlsVisible", cardClass: "threeDControlsToggle", panelId: "settings3dControls" },
+};
+
 /**
  * Reads one of STORAGE_KEYS, or falls back to `fallback` if unset.
  * @param {string} key
@@ -799,51 +816,51 @@ export default class Squad3DSimulation {
         const capzonesToggle = options.querySelector(".threeDCapzonesToggle");
         capzonesToggle.checked = this.capzonesVisible;
         this._setCapzonesVisible(this.capzonesVisible);
-        capzonesToggle.addEventListener("change", () => this._setCapzonesVisible(capzonesToggle.checked));
+        capzonesToggle.addEventListener("change", () => this.setToggle("capzonesVisible", capzonesToggle.checked));
 
         const minimapToggle = options.querySelector(".threeDMinimapToggle");
         minimapToggle.checked = this.minimapVisible;
         this._setMinimapVisible(this.minimapVisible);
-        minimapToggle.addEventListener("change", () => this._setMinimapVisible(minimapToggle.checked));
+        minimapToggle.addEventListener("change", () => this.setToggle("minimapVisible", minimapToggle.checked));
 
         const pathToggle = options.querySelector(".threeDPathToggle");
         pathToggle.checked = this.pathVisible;
-        pathToggle.addEventListener("change", () => this._setPathVisible(pathToggle.checked));
+        pathToggle.addEventListener("change", () => this.setToggle("pathVisible", pathToggle.checked));
 
         const arcsToggle = options.querySelector(".threeDArcsToggle");
         arcsToggle.checked = this.arcsVisible;
         this._setArcsVisible(this.arcsVisible);
-        arcsToggle.addEventListener("change", () => this._setArcsVisible(arcsToggle.checked));
+        arcsToggle.addEventListener("change", () => this.setToggle("arcsVisible", arcsToggle.checked));
 
         const markersToggle = options.querySelector(".threeDMarkersToggle");
         markersToggle.checked = this.markersVisible;
         this._setMarkersVisible(this.markersVisible);
-        markersToggle.addEventListener("change", () => this._setMarkersVisible(markersToggle.checked));
+        markersToggle.addEventListener("change", () => this.setToggle("markersVisible", markersToggle.checked));
 
         const treesToggle = options.querySelector(".threeDTreesToggle");
         treesToggle.checked = this.treesVisible;
         this._setTreesVisible(this.treesVisible);
-        treesToggle.addEventListener("change", () => this._setTreesVisible(treesToggle.checked));
+        treesToggle.addEventListener("change", () => this.setToggle("treesVisible", treesToggle.checked));
 
         const propsToggle = options.querySelector(".threeDPropsToggle");
         propsToggle.checked = this.propsVisible;
         this._setPropsVisible(this.propsVisible);
-        propsToggle.addEventListener("change", () => this._setPropsVisible(propsToggle.checked));
+        propsToggle.addEventListener("change", () => this.setToggle("propsVisible", propsToggle.checked));
 
         const crosshairToggle = options.querySelector(".threeDCrosshairToggle");
         crosshairToggle.checked = this.crosshairVisible;
         this._setCrosshairVisible(this.crosshairVisible);
-        crosshairToggle.addEventListener("change", () => this._setCrosshairVisible(crosshairToggle.checked));
+        crosshairToggle.addEventListener("change", () => this.setToggle("crosshairVisible", crosshairToggle.checked));
 
         const fpsToggle = options.querySelector(".threeDFpsToggle");
         fpsToggle.checked = this.fpsVisible;
         this._setFpsVisible(this.fpsVisible);
-        fpsToggle.addEventListener("change", () => this._setFpsVisible(fpsToggle.checked));
+        fpsToggle.addEventListener("change", () => this.setToggle("fpsVisible", fpsToggle.checked));
 
         const controlsToggle = options.querySelector(".threeDControlsToggle");
         controlsToggle.checked = this.controlsVisible;
         this._setControlsVisible(this.controlsVisible);
-        controlsToggle.addEventListener("change", () => this._setControlsVisible(controlsToggle.checked));
+        controlsToggle.addEventListener("change", () => this.setToggle("controlsVisible", controlsToggle.checked));
         const textureSelect = options.querySelector(".threeDTextureSelect");
         textureSelect.value = this.textureName;
         // Choices rather than the native dropdown - the browser draws a native option
@@ -854,11 +871,7 @@ export default class Squad3DSimulation {
             itemSelectText: "",
             position: "auto",
         });
-        textureSelect.addEventListener("change", async () => {
-            await this._setTexture(textureSelect.value);
-            // reverts the dropdown on load failure
-            this.textureSelect.setChoiceByValue(this.textureName);
-        });
+        textureSelect.addEventListener("change", () => this.setTextureChoice(textureSelect.value));
 
         window.addEventListener("keydown", (event) => {
             const action = KEY_BINDINGS[event.code];
@@ -1656,6 +1669,71 @@ export default class Squad3DSimulation {
         this.fpsVisible = visible;
         localStorage.setItem(STORAGE_KEYS.fpsVisible, visible ? "1" : "0");
         this.fpsCounter.hidden = !visible;
+    }
+
+
+    /**
+     * Applies one of TOGGLE_HANDLERS' toggles, from either UI that can change it (the
+     * overlay card's own option, or its mirror in the main Settings dialog). The real
+     * setters touch THREE.Group/DOM refs that don't exist until _initScene() has run at
+     * least once (see open()) - call those live only once that's happened, otherwise
+     * just persist the value for the next open() to read. Either way, syncs the other
+     * UI's checkbox so they never show different values.
+     * @param {string} name - a TOGGLE_HANDLERS key, e.g. "capzonesVisible"
+     * @param {boolean} visible
+     */
+    setToggle(name, visible) {
+        const handler = TOGGLE_HANDLERS[name];
+        if (!handler) return;
+
+        if (this.renderer) {
+            this[handler.setter](visible);
+        } else {
+            this[name] = visible;
+            localStorage.setItem(STORAGE_KEYS[name], visible ? "1" : "0");
+        }
+
+        const cardToggle = this.container.querySelector(`.${handler.cardClass}`);
+        if (cardToggle) cardToggle.checked = visible;
+        const panelToggle = document.getElementById(handler.panelId);
+        if (panelToggle) panelToggle.checked = visible;
+    }
+
+
+    /**
+     * Applies the terrain texture choice, from either the overlay card's own select or
+     * its mirror in the main Settings dialog. Mirrors _setTexture()'s live reload when
+     * a terrain is actually loaded, otherwise just persists the choice for the next
+     * open() to read (textureName is read straight from localStorage - see constructor).
+     * @param {string} name - "basemap" | "topomap" | "terrainmap"
+     */
+    async setTextureChoice(name) {
+        if (this.terrainMesh) {
+            await this._setTexture(name);
+        } else {
+            this.textureName = name;
+            localStorage.setItem(STORAGE_KEYS.textureName, name);
+        }
+        // Reverts either select to whatever textureName ended up as (unchanged on a
+        // load failure - see _setTexture()).
+        this.textureSelect?.setChoiceByValue(this.textureName);
+        const panelSelect = document.getElementById("settings3dTexture");
+        if (panelSelect) panelSelect.value = this.textureName;
+    }
+
+
+    /**
+     * Wires the terrain texture <select> mirrored in the main Settings dialog
+     * (settings.html's data-panel="3d"). The show/hide toggles there go through
+     * SquadSettings' generic checkbox system instead (see squadSettings.js) - there's
+     * no equivalent there for a <select>. Called once at app boot (loadUI()), unlike
+     * the overlay card's own select, which waits for the first _initScene().
+     */
+    bindSettingsTextureSelect() {
+        const select = document.getElementById("settings3dTexture");
+        if (!select) return;
+        select.value = this.textureName;
+        select.addEventListener("change", () => this.setTextureChoice(select.value));
     }
 
 
