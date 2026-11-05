@@ -1,9 +1,7 @@
 // Node Modules
 import "purecss/build/pure-min.css";
 import "purecss/build/grids-responsive-min.css";
-import "select2/dist/css/select2.min.css";
-import "select2/dist/js/select2.min.js";
-import "tom-select/dist/css/tom-select.css";
+import "choices.js/public/assets/styles/choices.css";
 import "animate.css";
 import "leaflet/dist/leaflet.css";
 

@@ -118,55 +118,6 @@ export default class SquadFactions {
 
 
     /**
-     * * Format the factions for the select2 results and options
-     * * @param {Object} state - The select2 state object
-     * * @param {boolean} isSelection - Whether the state is a result (true) or an option (false)
-     * */
-    formatFactions(state, isSelection = false) {
-        if (!state.id) return state.text;
-        const translationId = this._translationId(state.element.value);
-        const imgHtml = `<img src="/img/flags/${this.squadLayer.modFolder}/${state.element.value}.webp" class="img-flag" />`;
-        if (isSelection) return $(`
-            <span class="countryFlags" data-i18n-title="factions:${translationId}_displayName" title="${i18next.t(translationId + "_displayName", { ns: "factions" }) }">
-                ${imgHtml}
-            </span>
-        `);
-        return $(`
-            <span class="countryFlags" title="${i18next.t(translationId + "_displayName", { ns: "factions" }) }">
-                <p>${imgHtml}</p>
-                <span class="flag-label" data-i18n="factions:${translationId}">
-                    ${i18next.t("factions:" + translationId)}
-                </span>
-            </span>
-        `);
-    }
-
-
-    /**
-     * * Format the units for the select2 results and options
-     * * * @param {Object} state - The select2 state object
-     * * * @param {boolean} isSelection - Whether the option is a result (true) or an option (false)
-     * */
-    formatUnits(state, isSelection = false) {
-        if (!state.id) return state.text;
-        const $element = $(state.element);
-        const type = $element.data("type");
-        const name = $element.data("name");
-        const icon = $element.data("icon");
-
-        return $(`
-            <div class="unit-option">
-                ${isSelection ? "" : `<img src="/img/units/${icon}.webp" class="unit-logo${isSelection ? " selection" : ""}" alt="${state.text}" />`}
-                <div class="unit-texts">
-                    <div class="unit-type" data-i18n="units:${type}">${i18next.t(type, { ns: "units" })}</div>
-                    ${isSelection ? "" : `<div class="unit-name" data-i18n="units:${name}">${i18next.t(name, { ns: "units" })}</div>`}
-                </div>
-            </div>
-        `);
-    }
-
-
-    /**
      * * * Pin the selected unit to the map and start a timer for its respawn time
      * * @param {Array} teamfaction - The faction data for the selected unit
      * * @param {string} country - The country code for the flag icon (RGF, USA, etc.)
@@ -1343,52 +1294,5 @@ export default class SquadFactions {
 
     }
 
-
-    initDropdowns() {
-        let factionPlaceholder = i18next.t("common:faction");
-        let unitPlaceholder = i18next.t("common:unit");
-
-        // Initialize Select2 with the structured data
-
-        this.FACTION1_SELECTOR.select2({
-            dropdownCssClass: "dropbtn",
-            dropdownParent: $("#faction1"),
-            allowClear: true,
-            placeholder: factionPlaceholder,
-            width: "100px",
-            minimumResultsForSearch: -1,
-            templateResult: (state) => this.formatFactions(state, false),
-            templateSelection: (state) => this.formatFactions(state, true),
-        });
-
-        this.FACTION2_SELECTOR.select2({
-            dropdownCssClass: "dropbtn",
-            dropdownParent: $("#faction2"),
-            allowClear: true,
-            placeholder: factionPlaceholder,
-            width: "100px",
-            minimumResultsForSearch: -1,
-            templateResult: (state) => this.formatFactions(state, false),
-            templateSelection: (state) => this.formatFactions(state, true),
-        });
-
-        this.UNIT1_SELECTOR.select2({
-            dropdownCssClass: "dropbtn",
-            dropdownParent: $("#unit1"),
-            placeholder: unitPlaceholder,
-            minimumResultsForSearch: -1,
-            templateResult: (state) => this.formatUnits(state, false),
-            templateSelection: (state) => this.formatUnits(state, true),
-        });
-
-        this.UNIT2_SELECTOR.select2({
-            dropdownCssClass: "dropbtn",
-            dropdownParent: $("#unit2"),
-            placeholder: unitPlaceholder,
-            minimumResultsForSearch: -1,
-            templateResult: (state) => this.formatUnits(state, false),
-            templateSelection: (state) => this.formatUnits(state, true),
-        });
-    }
 
 }

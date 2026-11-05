@@ -426,7 +426,8 @@ export default class SquadServersBrowser {
             $("#servers").removeClass("active");
             this.selectedServer = null;
             App.updateUrlParams({ server: null });
-            App.SERVER_SELECTOR.val("").trigger("change.select2");
+            App.serverSelect.setChoiceByValue("");
+            App.SERVER_SELECTOR.trigger("change");
 
             // stop sync
             if (this.syncInterval) {
@@ -445,7 +446,8 @@ export default class SquadServersBrowser {
         const server = this.serversData.find(s => s.id == row.data("serverid"));
 
         App.updateUrlParams({ server: server.id });
-        App.SERVER_SELECTOR.val(server.id).trigger("change.select2");
+        App.serverSelect.setChoiceByValue(String(server.id));
+        App.SERVER_SELECTOR.trigger("change");
 
         // Update the selected server and layer
         this.selectedServer = server.id;
@@ -565,7 +567,8 @@ export default class SquadServersBrowser {
                 $(document).one("layers:loaded", setLayerAndFactions);
                 return;
             }
-            App.LAYER_SELECTOR.val(layerIndex).trigger($.Event("change", { broadcast: true }));
+            App.layerSelect.setChoiceByValue(String(layerIndex));
+            App.LAYER_SELECTOR.trigger($.Event("change", { broadcast: true }));
             $(document).one("layer:loaded", applyFactions);
         };
 
@@ -579,7 +582,8 @@ export default class SquadServersBrowser {
 
         // Map needs to change — loadLayers() fires layers:loaded
         if (currentMapIndex !== mapIndex) {
-            App.MAP_SELECTOR.val(mapIndex).trigger($.Event("change", { broadcast: true }));
+            App.mapSelect.setChoiceByValue(String(mapIndex));
+            App.MAP_SELECTOR.trigger($.Event("change", { broadcast: true }));
             $(document).one("layers:loaded", setLayerAndFactions);
             return;
         }

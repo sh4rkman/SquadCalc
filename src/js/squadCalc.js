@@ -15,6 +15,7 @@ import SquadFiringSolution from "./squadFiringSolution.js";
 import SquadSettings from "./squadSettings.js";
 import packageInfo from "../../package.json";
 import { marked, Renderer } from "marked";
+import Choices from "choices.js";
 
 const changelogRenderer = new Renderer();
 changelogRenderer.link = ({ href, title, text }) => {
@@ -246,7 +247,8 @@ export default class SquadCalc {
 
             if (!server.team1 || !server.team2 || !server.mapName) {
                 this.updateUrlParams({ server: null });
-                this.SERVER_SELECTOR.val("").trigger("change.select2");
+                this.serverSelect.setChoiceByValue("");
+                this.SERVER_SELECTOR.trigger("change");
                 this.loadLayers();
                 this.initStaticMode(this.urlIntent);
                 return;
@@ -329,6 +331,7 @@ export default class SquadCalc {
             }
 
             match.prop("selected", true);
+            this.layerSelect.setChoiceByValue(match.val());
 
             if (intent.team1 || intent.team2 || onLayerLoaded) {
                 $(document).one("layer:loaded", () => {
@@ -365,10 +368,81 @@ export default class SquadCalc {
      */
     loadMapSelector() {
 
+        // TEMP DEBUG: keeps dropdowns open while devtools steals focus - remove after debugging
+        this._disableBlurClose = (instance) => {
+            instance.containerOuter.element.removeEventListener("blur", instance._onBlur);
+            instance.input.element.removeEventListener("blur", instance._onBlur);
+        };
+
+        // With searchChoices:false, Choices never re-renders the dropdown on input, so
+        // hide/show the already-rendered rows ourselves by text match instead of going
+        // through setChoices() - that keeps real optgroups (nothing gets rebuilt) and
+        // never touches the backing <select>'s actual selected option, unlike rebuilding
+        // the choice set every keystroke (which risks losing or faking the selection).
+        this._wireGroupedSearch = (instance) => {
+            instance.input.element.addEventListener("input", (e) => {
+                const q = e.target.value.trim().toLowerCase();
+                const rows = instance.choiceList.element.querySelectorAll(".choices__item--selectable");
+                rows.forEach((row) => {
+                    const match = !q || row.textContent.toLowerCase().includes(q);
+                    row.classList.toggle("choices__item--search-hidden", !match);
+                });
+                // the visible heading text sits in a .choices__heading child, but that div
+                // has no siblings of its own - the group wrapper (.choices__group) is what's
+                // actually a sibling of the item rows that follow it, up to the next group
+                instance.choiceList.element.querySelectorAll(".choices__group").forEach((group) => {
+                    let sibling = group.nextElementSibling;
+                    let anyVisible = false;
+                    while (sibling && !sibling.classList.contains("choices__group")) {
+                        if (!sibling.classList.contains("choices__item--search-hidden")) anyVisible = true;
+                        sibling = sibling.nextElementSibling;
+                    }
+                    group.classList.toggle("choices__item--search-hidden", !anyVisible);
+                });
+            });
+            // nothing re-renders the dropdown on close (unlike setChoices-driven filtering),
+            // so the hidden rows from the last search would otherwise still be hidden next
+            // time it opens - reset on close instead of on open, since choiceList can get
+            // rebuilt in between (mod toggle, map change) and lose our classes anyway
+            instance.passedElement.element.addEventListener("hideDropdown", () => {
+                instance.input.element.value = "";
+                instance.choiceList.element.querySelectorAll(".choices__item--search-hidden").forEach((el) => {
+                    el.classList.remove("choices__item--search-hidden");
+                });
+            });
+        };
+
         // Initiate Maps&Layers Dropdown
-        this.MAP_SELECTOR.select2();
-        this.LAYER_SELECTOR.select2();
-        this.SERVER_SELECTOR.select2({ minimumResultsForSearch: Infinity, dropdownParent: $("#serverSelector"), allowClear: true });
+        this.mapSelect = new Choices(this.MAP_SELECTOR[0], {
+            searchEnabled: true,
+            searchChoices: false,
+            searchResultLimit: -1,
+            shouldSort: false,
+            itemSelectText: "",
+        });
+        this.layerSelect = new Choices(this.LAYER_SELECTOR[0], {
+            searchEnabled: true,
+            // Choices' own Fuse search flattens groups and drops optgroup headers from
+            // the results - searchChoices:false skips that internal filtering (keeps the
+            // search box UI) so _wireGroupedSearch() below can filter+setChoices() itself,
+            // which keeps real optgroups since isSearching never flips true.
+            searchChoices: false,
+            searchResultLimit: -1,
+            shouldSort: false,
+            itemSelectText: "",
+            removeItemButton: true,
+            removeItemButtonAlignLeft: true,
+        });
+        this.serverSelect = new Choices(this.SERVER_SELECTOR[0], {
+            searchEnabled: false,
+            shouldSort: false,
+            itemSelectText: "",
+            removeItemButton: true,
+            removeItemButtonAlignLeft: true,
+        });
+        [this.mapSelect, this.layerSelect, this.serverSelect].forEach(this._disableBlurClose);
+        this._wireGroupedSearch(this.mapSelect);
+        this._wireGroupedSearch(this.layerSelect);
         this.SERVER_SELECTOR.on("change", (event) => {
             const serverId = event.target.value;
             if (!serverId) {
@@ -385,12 +459,6 @@ export default class SquadCalc {
             this.updateUrlParams({ server: serverId });
             this.initServerMode(serverId);
         });
-        this.FACTION1_SELECTOR.select2();
-        $(".dropbtn8").select2();
-        $(".dropbtn9").select2();
-        $(".dropbtn10").select2();
-        $(".dropbtn11").select2();
-        
         // Load maps
         this._rebuildMapSelector();
 
@@ -530,7 +598,6 @@ export default class SquadCalc {
         this.minimap.spin(true, this.minimap.spinOptions);
         $("#layerSelector").hide();
         const selectedValue = this.LAYER_SELECTOR.val();
-        this.LAYER_SELECTOR.empty();
 
         const enabledMods = this._getUniqueMods().filter(mod => this.userSettings.isModEnabled(mod));
 
@@ -542,28 +609,21 @@ export default class SquadCalc {
                 return;
             }
 
-            // Re-empty just in case user changed map while the request was on the way
-            this.LAYER_SELECTOR.empty();
-            this.LAYER_SELECTOR.append("<option value=></option>");
-
-            const vanillaLayers = layers.filter(layer => !layer.mod);
-            const vanillaContainer = enabledMods.length
-                ? $(`<optgroup label="${i18next.t("settings:vanilla", { defaultValue: "Vanilla" })}"></optgroup>`)
-                : this.LAYER_SELECTOR;
-
-            vanillaLayers.forEach((layer) => {
-                vanillaContainer.append(`<option value="${layer.rawName}" data-urlid="${layer.shortName.replaceAll(" ", "")}">${layer.shortName}</option>`);
-            });
-
-            if (enabledMods.length && vanillaContainer.children().length) this.LAYER_SELECTOR.append(vanillaContainer);
-
+            // Choices has no live DOM sync (unlike select2) - built as a plain array for
+            // setChoices() below. data-urlid/data-mod aren't part of what Choices understands
+            // as value/label, so they're patched onto the real <option>s it creates afterward -
+            // they're read elsewhere via jQuery .data() (the LAYER_SELECTOR change handler,
+            // initStaticMode()).
+            const meta = new Map();
             const mapName = this.minimap.activeMap.name;
 
-            enabledMods.forEach((modKey) => {
-                const label = i18next.t(`settings:${modKey}`, { defaultValue: modKey });
-                const optgroup = $(`<optgroup data-mod="${modKey}" label="${label}"></optgroup>`);
+            const vanillaChoices = layers.filter(layer => !layer.mod).map((layer) => {
+                meta.set(layer.rawName, { urlid: layer.shortName.replaceAll(" ", "") });
+                return { value: layer.rawName, label: layer.shortName };
+            });
 
-                layers.filter(layer => layer.mod?.toLowerCase() === modKey.toLowerCase()).forEach((layer) => {
+            const moddedGroups = enabledMods.map((modKey) => {
+                const modChoices = layers.filter(layer => layer.mod?.toLowerCase() === modKey.toLowerCase()).map((layer) => {
                     // rawName sometimes carries an extra variant tag between the mod prefix and the
                     // map name (e.g. "SU_GoingDark_Anvil_AAS_v1") that shortName doesn't reflect.
                     // mapName itself can contain underscores (e.g. "Hrodna_Border"), so it's matched
@@ -618,14 +678,34 @@ export default class SquadCalc {
 
                     const displayName = [...tagsBeforeShortName, layer.shortName.trim(), suffixTag].filter(Boolean).join(" ");
 
-                    optgroup.append(`<option value="${layer.rawName}" data-mod="${modKey}" data-urlid="${modKey}_${displayName.replaceAll(" ", "")}">${displayName}</option>`);
+                    meta.set(layer.rawName, { urlid: `${modKey}_${displayName.replaceAll(" ", "")}`, mod: modKey });
+                    return { value: layer.rawName, label: displayName };
                 });
 
-                if (optgroup.children().length) this.LAYER_SELECTOR.append(optgroup);
+                return { label: i18next.t(`settings:${modKey}`, { defaultValue: modKey }), choices: modChoices };
+            }).filter(group => group.choices.length);
+
+            const allLayerChoices = [...vanillaChoices, ...moddedGroups.flatMap(group => group.choices)];
+            const selectedStillExists = allLayerChoices.some(choice => choice.value === selectedValue);
+            if (selectedStillExists) {
+                allLayerChoices.find(choice => choice.value === selectedValue).selected = true;
+            }
+
+            const placeholder = { value: "", label: i18next.t("common:layerPlaceholder"), placeholder: true, selected: !selectedStillExists };
+            const choices = enabledMods.length
+                ? [placeholder, { label: i18next.t("settings:vanilla", { defaultValue: "Vanilla" }), choices: vanillaChoices }, ...moddedGroups]
+                : [placeholder, ...vanillaChoices];
+
+            this.layerSelect.setChoices(choices, "value", "label", true, true, true);
+
+            meta.forEach(({ urlid, mod }, value) => {
+                const option = this.LAYER_SELECTOR.find("option").filter((_, el) => el.value === value);
+                option.attr("data-urlid", urlid);
+                if (mod) option.attr("data-mod", mod);
             });
 
-            if (this.LAYER_SELECTOR.find(`option[value="${selectedValue}"]`).length) {
-                this.LAYER_SELECTOR.val(selectedValue).trigger("change.select2");
+            if (selectedStillExists) {
+                this.LAYER_SELECTOR.trigger("change");
             }
 
             this.minimap.spin(false);
@@ -679,20 +759,29 @@ export default class SquadCalc {
 
 
     buildFavoriteServersDropdown(servers) {
-        this.SERVER_SELECTOR.empty();
-        this.SERVER_SELECTOR.append("<option value=\"\"></option>");
         const currentServerId = this.squadServersBrowser?.selectedServer ?? this.urlIntent.server;
-        servers.forEach(server => {
+        const unavailableValues = [];
+
+        const serverChoices = servers.map(server => {
             const unavailable = !server.team1 || !server.team2 || !server.mapName;
             const isActive = !unavailable && currentServerId && String(currentServerId) === String(server.id);
-            const option = new Option(server.attributes.name, server.id, false, isActive);
-            if (unavailable) {
-                option.disabled = true;
-                option.title = "Modded layer";
-            }
-            this.SERVER_SELECTOR.append(option);
+            if (unavailable) unavailableValues.push(String(server.id));
+            return {
+                value: String(server.id),
+                label: server.attributes.name,
+                disabled: unavailable,
+                selected: isActive,
+            };
         });
-        this.SERVER_SELECTOR.trigger("change.select2");
+
+        // title isn't part of what Choices understands as a choice - patched onto the
+        // real <option> afterward, same as loadLayers()'s data-urlid/data-mod.
+        this.serverSelect.setChoices([{ value: "", label: i18next.t("common:favServers"), placeholder: true }, ...serverChoices], "value", "label", true, true, true);
+        unavailableValues.forEach(value => {
+            this.SERVER_SELECTOR.find("option").filter((_, el) => el.value === value).attr("title", "Modded layer");
+        });
+
+        this.SERVER_SELECTOR.trigger("change");
         $("#serverSelector").show();
     }
 
@@ -724,7 +813,7 @@ export default class SquadCalc {
             this._rebuildMapSelector();
         }
 
-        this.MAP_SELECTOR.val(mapIndex);
+        this.mapSelect.setChoiceByValue(String(mapIndex));
         this.minimap = new squadMinimap("map", this.MAPSIZE, MAPS[mapIndex]);
         this.minimap.draw();
 
@@ -766,31 +855,23 @@ export default class SquadCalc {
         });
         
         // Initiate Weapons & Shells Dropdown
-        this.WEAPON_SELECTOR.select2({
-            dropdownCssClass: "dropbtn2",
-            dropdownParent: $("#weaponSelector"),
-            minimumResultsForSearch: -1,
+        this.weaponSelect = new Choices(this.WEAPON_SELECTOR[0], {
+            searchEnabled: true,
+            searchChoices: false,
+            searchResultLimit: -1,
+            shouldSort: false,
+            itemSelectText: "",
         });
-
-        this.SHELL_SELECTOR.select2({
-            dropdownCssClass: "dropbtn3",
-            dropdownParent: $("#ammoSelector"),
-            minimumResultsForSearch: -1,
+        this.shellSelect = new Choices(this.SHELL_SELECTOR[0], {
+            searchEnabled: false,
+            shouldSort: false,
+            itemSelectText: "",
         });
-
-        // Load Weapons
-        for (const type of WEAPONSTYPE) {
-            this.WEAPON_SELECTOR.append(`<optgroup data-i18n-label=weapons:${type}>`);
-            for (const [index, weapon] of WEAPONS.entries()) {
-                if (weapon.type === type) {
-                    this.WEAPON_SELECTOR.append(`<option data-i18n=weapons:${weapon.name} value=${index}></option>`);
-                }
-            }
-            this.WEAPON_SELECTOR.append("</optgroup>");
-        }
-
+        [this.weaponSelect, this.shellSelect].forEach(this._disableBlurClose);
+        this._wireGroupedSearch(this.weaponSelect);
 
         // Populate the Mods settings panel and apply currently enabled mods
+        // (this also does the weapon selector's first build, see _rebuildModdedWeapons())
         this.initModsPanel();
 
         // Add Events Listeners
@@ -873,40 +954,39 @@ export default class SquadCalc {
      */
     _rebuildMapSelector() {
         const selectedValue = this.MAP_SELECTOR.val();
-        this.MAP_SELECTOR.empty();
-
         const enabledMods = this._getUniqueMods().filter(modKey => this.userSettings.isModEnabled(modKey));
 
-        const vanillaContainer = enabledMods.length
-            ? $(`<optgroup data-i18n-label="settings:vanilla" label="${i18next.t("settings:vanilla", { defaultValue: "Vanilla" })}"></optgroup>`)
-            : this.MAP_SELECTOR;
+        // Choices has no live DOM sync (unlike select2) - every rebuild goes through
+        // setChoices() with a plain data array instead of appending <option>s.
+        const mapChoice = (map, i) => ({ value: String(i), label: i18next.t("maps:" + map.name), selected: String(i) === selectedValue });
 
-        MAPS.forEach((map, i) => {
-            if (!map.mod) vanillaContainer.append(`<option data-i18n="maps:${map.name}" value="${i}">${i18next.t("maps:" + map.name)}</option>`);
-        });
+        const vanillaMaps = MAPS.map((map, i) => ({ map, i })).filter(({ map }) => !map.mod).map(({ map, i }) => mapChoice(map, i));
 
-        if (enabledMods.length && vanillaContainer.children().length) this.MAP_SELECTOR.append(vanillaContainer);
+        const choices = enabledMods.length
+            ? [{ label: i18next.t("settings:vanilla", { defaultValue: "Vanilla" }), choices: vanillaMaps }]
+            : vanillaMaps;
 
         enabledMods.forEach(modKey => {
-            const label = i18next.t(`settings:${modKey}`, { defaultValue: modKey });
-            const optgroup = $(`<optgroup data-mod="${modKey}" data-i18n-label="settings:${modKey}" label="${label}"></optgroup>`);
-
-            MAPS.forEach((map, i) => {
-                if (map.mod === modKey) {
-                    optgroup.append(`<option data-i18n="maps:${map.name}" value="${i}">${i18next.t("maps:" + map.name)}</option>`);
-                }
-            });
-
-            if (optgroup.children().length) this.MAP_SELECTOR.append(optgroup);
+            const modMaps = MAPS.map((map, i) => ({ map, i })).filter(({ map }) => map.mod === modKey).map(({ map, i }) => mapChoice(map, i));
+            if (modMaps.length) {
+                choices.push({ label: i18next.t(`settings:${modKey}`, { defaultValue: modKey }), choices: modMaps });
+            }
         });
 
-        if (this.MAP_SELECTOR.find(`option[value="${selectedValue}"]`).length) {
-            this.MAP_SELECTOR.val(selectedValue).trigger("change.select2");
+        this.mapSelect.setChoices(choices, "value", "label", true, true, true);
+
+        const selectedStillExists = MAPS.some((map, i) =>
+            String(i) === selectedValue && (!map.mod || enabledMods.includes(map.mod))
+        );
+
+        if (selectedStillExists) {
+            this.MAP_SELECTOR.trigger("change");
             return false;
         }
 
         if (this.minimap?.activeMap) {
-            this.MAP_SELECTOR.val(0).trigger("change");
+            this.mapSelect.setChoiceByValue("0");
+            this.MAP_SELECTOR.trigger("change");
             return true;
         }
 
@@ -914,33 +994,55 @@ export default class SquadCalc {
     }
 
     /**
-     * Rebuild per-mod optgroups in the weapon selector based on currently enabled mods
+     * Build the weapon selector's choices: vanilla optgroups by WEAPONSTYPE, plus
+     * one optgroup per enabled mod. Choices has no live DOM sync (unlike select2),
+     * so every rebuild - initial load, mod toggling, post-i18n-load refresh - goes
+     * through this same full array instead of patching individual <optgroup>s.
+     * @param {string} selectedValue
+     */
+    _buildWeaponChoices(selectedValue) {
+        const weaponChoice = (weapon, index) => ({
+            value: String(index),
+            label: i18next.t("weapons:" + weapon.name),
+            selected: String(index) === selectedValue,
+        });
+
+        const choices = WEAPONSTYPE.map(type => ({
+            label: i18next.t(`weapons:${type}`),
+            choices: WEAPONS
+                .map((weapon, index) => ({ weapon, index }))
+                .filter(({ weapon }) => weapon.type === type)
+                .map(({ weapon, index }) => weaponChoice(weapon, index)),
+        })).filter(group => group.choices.length);
+
+        this._getUniqueMods().forEach(modKey => {
+            if (!this.userSettings.isModEnabled(modKey)) return;
+
+            const modWeapons = WEAPONS
+                .map((weapon, index) => ({ weapon, index }))
+                .filter(({ weapon }) => weapon.mod === modKey)
+                .map(({ weapon, index }) => weaponChoice(weapon, index));
+
+            if (modWeapons.length) {
+                choices.push({ label: i18next.t(`settings:${modKey}`, { defaultValue: modKey }), choices: modWeapons });
+            }
+        });
+
+        return choices;
+    }
+
+    /**
+     * Rebuild the weapon selector's optgroups based on currently enabled mods
      */
     _rebuildModdedWeapons() {
         const selectedValue = this.WEAPON_SELECTOR.val();
         const selectedIsModded = !!(WEAPONS[selectedValue]?.mod);
 
-        this.WEAPON_SELECTOR.find("optgroup[data-mod]").remove();
-
-        this._getUniqueMods().forEach(modKey => {
-            if (!this.userSettings.isModEnabled(modKey)) return;
-
-            const label = i18next.t(`settings:${modKey}`, { defaultValue: modKey });
-            const optgroup = $(`<optgroup data-mod="${modKey}" data-i18n-label="settings:${modKey}" label="${label}"></optgroup>`);
-
-            for (let y = 0; y < WEAPONS.length; y++) {
-                if (WEAPONS[y].mod === modKey) {
-                    optgroup.append(`<option data-i18n="weapons:${WEAPONS[y].name}" value="${y}">${i18next.t("weapons:" + WEAPONS[y].name)}</option>`);
-                }
-            }
-
-            if (optgroup.children().length) {
-                this.WEAPON_SELECTOR.append(optgroup);
-            }
-        });
+        this.weaponSelect.setChoices(this._buildWeaponChoices(selectedValue), "value", "label", true, true, true);
 
         if (selectedIsModded) {
-            this.WEAPON_SELECTOR.val(0).trigger("change");
+            this.weaponSelect.setChoiceByValue("0");
+            this.WEAPON_SELECTOR.trigger("change");
         }
     }
 
@@ -1115,6 +1217,7 @@ export default class SquadCalc {
         // Search: filter fields by label/hint text across every panel
         const $settings = $(settingsDialog);
         const $settingsSearch = $("#settingsSearch");
+        const $settingsSearchClear = $("#settingsSearchClear");
         // Give each panel a title (the tab label), only visible while searching
         $settings.find(".settings-panel").each((_, panel) => {
             const $tabLabel = $settings.find(`.settings-tab[value="${panel.dataset.panel}"] span[data-i18n]`);
@@ -1152,19 +1255,29 @@ export default class SquadCalc {
             });
             $settings.find(".settings-search-empty").prop("hidden", total > 0);
         };
-        $settingsSearch.on("input", () => filterSettings($settingsSearch.val()));
+        $settingsSearch.on("input", () => {
+            $settingsSearchClear.prop("hidden", $settingsSearch.val() === "");
+            filterSettings($settingsSearch.val());
+        });
         // Esc clears the search first, and only closes the dialog when it's already empty
         $settingsSearch.on("keydown", (event) => {
             if (event.key === "Escape" && $settingsSearch.val() !== "") {
                 event.preventDefault();
                 $settingsSearch.val("");
+                $settingsSearchClear.prop("hidden", true);
                 filterSettings("");
             }
+        });
+        $settingsSearchClear.on("click", () => {
+            $settingsSearch.val("").trigger("focus");
+            $settingsSearchClear.prop("hidden", true);
+            filterSettings("");
         });
         // Picking a tab leaves search mode
         $settings.on("click", ".settings-tab", () => {
             if ($settingsSearch.val() === "") return;
             $settingsSearch.val("");
+            $settingsSearchClear.prop("hidden", true);
             filterSettings("");
         });
 
@@ -1847,15 +1960,13 @@ export default class SquadCalc {
         }
 
         // Load SHELL_SELECTOR with weapon.shells
-        this.SHELL_SELECTOR.empty();    
-        this.activeWeapon.shells.forEach((shell, index) => {
-            this.SHELL_SELECTOR.append(`
-                <option data-i18n=weapons:${shell.name} value=${index}>
-                    ${i18next.t("weapons:" + shell.name)}
-                </option>`
-            );
-        });
-        this.SHELL_SELECTOR.val(0).trigger("change");
+        const shellChoices = this.activeWeapon.shells.map((shell, index) => ({
+            value: String(index),
+            label: i18next.t("weapons:" + shell.name),
+            selected: index === 0,
+        }));
+        this.shellSelect.setChoices(shellChoices, "value", "label", true, true, true);
+        this.SHELL_SELECTOR.trigger("change");
 
         $("#mortarImg").attr("src", `/img/weapons/${this.activeWeapon.name}.webp`);
         
@@ -1875,7 +1986,7 @@ export default class SquadCalc {
     getWeapon() {
         let weapon = localStorage.getItem("data-weapon");
         if (weapon === null || isNaN(weapon) || weapon === "") { weapon = 0; }
-        $(".dropbtn2").val(weapon);
+        this.weaponSelect.setChoiceByValue(String(weapon));
         this.changeWeapon();
     }
 
@@ -2315,7 +2426,8 @@ export default class SquadCalc {
                 const data = JSON.parse(event.target.result);
                 console.debug("Parsed JSON:", data);
 
-                $(".dropbtn").val(data.activeMap).trigger($.Event("change", { broadcast: true }));
+                this.mapSelect.setChoiceByValue(String(data.activeMap));
+                this.MAP_SELECTOR.trigger($.Event("change", { broadcast: true }));
 
                 data.markers.forEach(marker => { this.minimap.createMarker(new LatLng(marker.lat, marker.lng), marker.team, marker.category, marker.icon, marker.uid); });
                 data.arrows.forEach(arrow => { new MapArrow(this.minimap, arrow.color, arrow.latlngs[0], arrow.latlngs[1], arrow.uid); });
@@ -2332,7 +2444,8 @@ export default class SquadCalc {
                 });
 
                 $(document).one("layers:loaded", () => {
-                    this.LAYER_SELECTOR.val(data.activeLayer).trigger($.Event("change", { broadcast: true }));
+                    this.layerSelect.setChoiceByValue(String(data.activeLayer));
+                    this.LAYER_SELECTOR.trigger($.Event("change", { broadcast: true }));
                     $(document).one("layer:loaded", () => {
                         data.selectedFlags.forEach(flag => {
                             this.minimap.layer.flags.forEach((layerFlag) => {

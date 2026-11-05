@@ -17,10 +17,6 @@ dialog, #threeDView {
         max-height: 100%;
         width: 100%;
         height: 100%;
-        .select2-results__options {
-            max-height: 70vh;
-            overflow-y: scroll;
-        }
     }
     &::backdrop {
         backdrop-filter: none;
@@ -55,27 +51,6 @@ dialog, #threeDView {
                 fill: variables.$mainColor;
             }
         }
-    }
-    .select2-container--default {
-        .select2-results__option--highlighted[aria-selected] {
-            background-color: variables.$mainColor;
-        }
-        .select2-results__option--selected {
-            background-color: variables.$mainColor;
-            opacity: 0.5;
-        }
-        .select2-selection--single .select2-selection__rendered {
-            text-transform: uppercase;
-            color: variables.$mainTxtColor;
-        }
-        .select2-selection--single {
-            background-color: transparent;
-            border: none;
-            color: variables.$mainTxtColor;
-        }
-    }
-    span.select2-selection.select2-selection--single {
-        outline: none;
     }
     table {
         float: left;
@@ -463,28 +438,52 @@ dialog, #threeDView {
                 cursor: default;
                 input { cursor: default; }
             }
-            // The select itself is replaced by select2 (see squad3DSimulation.js) - this
-            // styles its closed box; the open list is .threeDSelectDropdown below.
-            .select2-container--default .select2-selection--single {
-                box-sizing: border-box;
-                height: 22px;
-                background: rgba(255, 255, 255, 0.1);
-                border: 1px solid rgba(255, 255, 255, 0.25);
-                border-radius: 4px;
-                font-size: 0.95em;
-                .select2-selection__rendered {
-                    padding-left: 0.6em;
+            // The select itself is replaced by Choices (see squad3DSimulation.js) - this
+            // styles both its closed box and its open list, which Choices nests right
+            // inside it (no dropdownParent-style escape hatch like select2 had).
+            .choices {
+                width: 10em;
+                flex-shrink: 0;
+                margin-bottom: 0;
+
+                --choices-inner-one-padding: 0;
+                --choices-text-color: #{variables.$mainTxtColor}; // drives the caret color
+                // Library default is 14px, absolute - .choices__item sets its own
+                // font-size from this var directly (relative to .choices__list--dropdown's
+                // own size below, so it must not also set its own font-size - that'd
+                // compound the two and make the options too small)
+                --choices-font-size-md: 0.85em;
+                .choices__inner {
+                    box-sizing: border-box;
+                    min-height: 0;
+                    height: 22px;
+                    padding: 0 24px 0 0.6em;
+                    background: rgba(255, 255, 255, 0.1);
+                    border: 1px solid rgba(255, 255, 255, 0.25);
+                    border-radius: 4px;
+                    font-size: 0.75em;
+                    color: variables.$mainTxtColor;
+                }
+                .choices__list--single {
+                    padding: 0;
                     line-height: 20px;
+                }
+                .choices__list--dropdown {
+                    background: rgb(30, 30, 34);
+                    border: 1px solid rgba(255, 255, 255, 0.25);
+                    color: variables.$mainTxtColor;
                     text-align: left;
-                    text-transform: none;
                 }
-                .select2-selection__arrow {
-                    height: 20px;
-                    b { border-top-color: variables.$mainTxtColor; }
+                .choices__item--choice {
+                    &.is-highlighted {
+                        background: rgba(variables.$mainColor, 0.18);
+                        color: variables.$mainTxtColor;
+                    }
+                    &.is-selected {
+                        background: rgba(variables.$mainColor, 0.35) !important;
+                        color: variables.$mainTxtColor;
+                    }
                 }
-            }
-            .select2-container--default.select2-container--open .select2-selection__arrow b {
-                border-color: transparent transparent variables.$mainTxtColor;
             }
             input[type="checkbox"] {
                 width: 22px;
@@ -493,13 +492,6 @@ dialog, #threeDView {
                 cursor: pointer;
                 accent-color: variables.$mainColor;
             }
-        }
-        .threeDSelectDropdown {
-            background: rgb(30, 30, 34);
-            border: 1px solid rgba(255, 255, 255, 0.25);
-            color: variables.$mainTxtColor;
-            font-size: 0.95em;
-            text-align: left;
         }
         .threeDGoButton, .threeDShareButton, .threeDQuitButton {
             // border-box + shared height, padding reset to 0 (a bare button has its own

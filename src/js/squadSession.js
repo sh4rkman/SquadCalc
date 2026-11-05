@@ -83,7 +83,8 @@ export default class SquadSession {
             console.debug("[SESSION] Session data: ", data);
 
             // Update MAP with custom event to skip the broadcast
-            App.MAP_SELECTOR.val(data.mapState.activeMap).trigger($.Event("change", { broadcast: false }));
+            App.mapSelect.setChoiceByValue(String(data.mapState.activeMap));
+            App.MAP_SELECTOR.trigger($.Event("change", { broadcast: false }));
 
             // Create every existing marker in the session
             // Wait for the heightmap to be loaded before creating the markers
@@ -100,7 +101,8 @@ export default class SquadSession {
             if (App.minimap.layer) App.minimap.layer._resetLayer();
 
             $(document).one("layers:loaded", () => {
-                App.LAYER_SELECTOR.val(data.mapState.activeLayer).trigger($.Event("change", { broadcast: false }));
+                App.layerSelect.setChoiceByValue(String(data.mapState.activeLayer));
+                App.LAYER_SELECTOR.trigger($.Event("change", { broadcast: false }));
                 
                 $(document).one("layer:loaded", () => {
 
@@ -382,7 +384,8 @@ export default class SquadSession {
 
         // Trigger a map change with a custom event to skip the update
         case "UPDATE_MAP": {
-            App.MAP_SELECTOR.val(data.activeMap).trigger($.Event("change", { broadcast: false }));
+            App.mapSelect.setChoiceByValue(String(data.activeMap));
+            App.MAP_SELECTOR.trigger($.Event("change", { broadcast: false }));
             break;
         }
 
@@ -399,7 +402,8 @@ export default class SquadSession {
 
         // Trigger a layer change with a custom event to skip the update
         case "UPDATE_LAYER": {
-            App.LAYER_SELECTOR.val(data.layer).trigger($.Event("change", { broadcast: false }));
+            App.layerSelect.setChoiceByValue(String(data.layer));
+            App.LAYER_SELECTOR.trigger($.Event("change", { broadcast: false }));
             break;
         }
 

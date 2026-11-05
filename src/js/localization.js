@@ -1,6 +1,6 @@
 import i18next from "i18next";
 import HttpApi from "i18next-http-backend";
-import TomSelect from "tom-select";
+import Choices from "choices.js";
 import { App } from "../app.js";
 import pkg from "../../package.json";
 const { version } = pkg;
@@ -56,17 +56,38 @@ export function loadLanguage(LANGUAGES) {
         getLanguage(LANGUAGES);
     });
 
-    langSelect = new TomSelect("#settingsLangSelect", {
-        options: LANGUAGES.map(([code, label]) => ({ value: code, text: LANG_NAMES[code] || code, short: label })),
-        maxItems: 1,
-        controlInput: null,
-        render: {
-            option: renderLangOption,
-            item: renderLangItem,
+    const { item: defaultItemTemplate, choice: defaultChoiceTemplate } = Choices.defaults.templates;
+    langSelect = new Choices("#settingsLangSelect", {
+        choices: LANGUAGES.map(([code, label]) => ({
+            value: code,
+            label: LANG_NAMES[code] || code,
+            customProperties: { short: label, flag: LANG_FLAGS[code] || "" },
+        })),
+        searchEnabled: false,
+        shouldSort: false,
+        itemSelectText: "",
+        callbackOnCreateTemplates(template, escapeForTemplate) {
+            return {
+                // Selected item shown in the header: flag + short code (EN, FR, ...)
+                item(options, choice, removeItemButton) {
+                    const el = defaultItemTemplate.call(this, options, choice, removeItemButton);
+                    const short = choice.customProperties?.short || choice.value.toUpperCase();
+                    el.classList.add("settings-langOption");
+                    el.innerHTML = `<span class="settings-langFlag">${choice.customProperties?.flag || ""}</span><span>${escapeForTemplate(options.allowHTML, short)}</span>`;
+                    return el;
+                },
+                // Dropdown row: flag + native name (English, Deutsch, ...)
+                choice(options, choice, selectText, groupName) {
+                    const el = defaultChoiceTemplate.call(this, options, choice, selectText, groupName);
+                    el.classList.add("settings-langOption");
+                    el.innerHTML = `<span class="settings-langFlag">${choice.customProperties?.flag || ""}</span><span>${el.innerHTML}</span>`;
+                    return el;
+                },
+            };
         },
     });
 
-    langSelect.on("change", onLanguageChange);
+    $("#settingsLangSelect").on("change", (event) => onLanguageChange(event.target.value));
 }
 
 /**
@@ -81,39 +102,9 @@ function onLanguageChange(value) {
 }
 
 /**
- * Flag + native name, used for the dropdown options
- * @param {{value: string, text: string}} data
- * @param {Function} escape
- * @returns {string} html
- */
-function renderLangOption(data, escape) {
-    return `
-        <div class="settings-langOption">
-            <span class="settings-langFlag">${LANG_FLAGS[data.value] || ""}</span>
-            <span>${escape(data.text)}</span>
-        </div>
-    `;
-}
-
-/**
  * Find what language to use
  * Priority Order : LocalStorage > navigator.language > English
  */
-/**
- * Flag + short label (EN, FR, ...), used for the selected item in the header
- * @param {{value: string, short: string}} data
- * @param {Function} escape
- * @returns {string} html
- */
-function renderLangItem(data, escape) {
-    return `
-        <div class="settings-langOption">
-            <span class="settings-langFlag">${LANG_FLAGS[data.value] || ""}</span>
-            <span>${escape(data.short || data.value.toUpperCase())}</span>
-        </div>
-    `;
-}
-
 function getLanguage(LANGUAGES){
     const browserLanguage = navigator.language.split("-")[0].toLowerCase();
     const supportedLanguagesCodes = LANGUAGES.map(pair => pair[0]);
@@ -130,7 +121,7 @@ function getLanguage(LANGUAGES){
         localStorage.setItem("settings-language", language);
     }
 
-    langSelect.setValue(language);
+    langSelect.setChoiceByValue(language);
 }
 
 /**
@@ -159,91 +150,16 @@ function updateContent() {
 
     if (App.minimap.layer) App.minimap.layer.polyline.updateMeasurements();
     if (App.userSettings) App._renderMods();
-    $(".threeDTextureSelect").trigger("change.select2"); // re-render its selected option's new text
-   
-    const selectorWidth = window.matchMedia("screen and (min-width: 124em) and (min-height: 68em)").matches ? "350px" : "250px";
 
-    let layerPlaceholder = i18next.t("common:layerPlaceholder");
-    let factionPlaceholder = i18next.t("common:faction");
-    let unitPlaceholder = i18next.t("common:unit");
-
-    $(".dropbtn").select2("destroy").select2({
-        dropdownCssClass: "dropbtn",
-        dropdownParent: $("#mapSelector"),
-        minimumResultsForSearch: 1,
-        width: selectorWidth,
-    });
-
-    $(".dropbtn2").select2("destroy").select2({
-        dropdownCssClass: "dropbtn",
-        dropdownParent: $("#weaponSelector"),
-        minimumResultsForSearch: 1,
-        width: selectorWidth,
-    });
-
-    $(".dropbtn3").select2("destroy").select2({
-        dropdownCssClass: "dropbtn",
-        dropdownParent: $("#ammoSelector"),
-        minimumResultsForSearch: -1,
-        width: selectorWidth,
-    });
-
-    $(".dropbtn5").select2("destroy").select2({
-        dropdownCssClass: "dropbtn",
-        dropdownParent: $("#layerSelector"),
-        allowClear: true,
-        placeholder: layerPlaceholder,
-        minimumResultsForSearch: 1,
-        width: selectorWidth,
-    });
-
-    $(".dropbtn6").select2("destroy").select2({
-        dropdownParent: $("#serverSelector"),
-        allowClear: true,
-        placeholder: i18next.t("common:favServers"),
-        minimumResultsForSearch: Infinity,
-        width: selectorWidth,
-    });
-
-    if (App.minimap.layer?.faction) {
-
-        $(".dropbtn8").select2("destroy").select2({
-            dropdownCssClass: "dropbtn",
-            dropdownParent: $("#faction1"),
-            allowClear: true,
-            placeholder: factionPlaceholder,
-            minimumResultsForSearch: -1,
-            templateResult: (state) => App.minimap.layer.factions.formatFactions(state, false),
-            templateSelection: (state) => App.minimap.layer.factions.formatFactions(state, true),
-        });
-
-        $(".dropbtn9").select2("destroy").select2({
-            dropdownCssClass: "dropbtn",
-            dropdownParent: $("#unit1"),
-            placeholder: unitPlaceholder,
-            minimumResultsForSearch: -1,
-            templateResult: (state) => App.minimap.layer.factions.formatUnits(state, false),
-            templateSelection: (state) => App.minimap.layer.factions.formatUnits(state, true),
-        });
-
-        $(".dropbtn10").select2("destroy").select2({
-            dropdownCssClass: "dropbtn",
-            dropdownParent: $("#faction2"),
-            allowClear: true,
-            placeholder: factionPlaceholder,
-            minimumResultsForSearch: -1,
-            templateResult: (state) => App.minimap.layer.factions.formatFactions(state, false),
-            templateSelection: (state) => App.minimap.layer.factions.formatFactions(state, true),
-        });
-
-        $(".dropbtn11").select2("destroy").select2({
-            dropdownCssClass: "dropbtn",
-            dropdownParent: $("#unit2"),
-            placeholder: unitPlaceholder,
-            minimumResultsForSearch: -1,
-            templateResult: (state) => App.minimap.layer.factions.formatUnits(state, false),
-            templateSelection: (state) => App.minimap.layer.factions.formatUnits(state, true),
-        });
+    // Choices (map/layer/server/weapon/shell/texture selectors) has no live DOM sync
+    // like select2 - its option labels were snapshotted at the last setChoices() call,
+    // so a language change needs an explicit rebuild instead of a destroy()/re-init().
+    // Layer/server names come from the API (not i18next keys) so only their rarely-
+    // seen placeholder text goes stale here - not worth a refetch just to fix that.
+    if (App.mapSelect) App._rebuildMapSelector();
+    if (App.weaponSelect) {
+        App._rebuildModdedWeapons();
+        App.changeWeapon();
     }
-    
+    App.simulation3D?._rebuildTextureChoices();
 }

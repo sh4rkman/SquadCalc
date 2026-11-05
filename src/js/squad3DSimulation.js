@@ -7,6 +7,8 @@ import { RGBELoader } from "three/addons/loaders/RGBELoader.js";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { loadProps } from "./squad3DProps.js";
 import { loadTrees } from "./squad3DTrees.js";
+import Choices from "choices.js";
+import i18next from "i18next";
 
 // Size factor for every 2D marker (icons and DivIcon text labels) while the 2D map is
 // the 3D minimap - see patchMinimapMarkerScaling().
@@ -844,18 +846,18 @@ export default class Squad3DSimulation {
         controlsToggle.addEventListener("change", () => this._setControlsVisible(controlsToggle.checked));
         const textureSelect = options.querySelector(".threeDTextureSelect");
         textureSelect.value = this.textureName;
-        // select2 rather than the native dropdown - the browser draws a native option
-        // list itself, so its hover highlight can't be restyled. select2 fires its
-        // change through jQuery, which native addEventListener() listeners never see.
-        $(textureSelect).select2({
-            dropdownCssClass: "threeDSelectDropdown",
-            dropdownParent: $(this.container), // not the card - its mobile overflow would clip it
-            minimumResultsForSearch: -1,
-            width: "12em",
-        }).on("change", async () => {
+        // Choices rather than the native dropdown - the browser draws a native option
+        // list itself, so its hover highlight can't be restyled.
+        this.textureSelect = new Choices(textureSelect, {
+            searchEnabled: false,
+            shouldSort: false,
+            itemSelectText: "",
+            position: "auto",
+        });
+        textureSelect.addEventListener("change", async () => {
             await this._setTexture(textureSelect.value);
             // reverts the dropdown on load failure
-            $(textureSelect).val(this.textureName).trigger("change.select2");
+            this.textureSelect.setChoiceByValue(this.textureName);
         });
 
         window.addEventListener("keydown", (event) => {
@@ -872,8 +874,8 @@ export default class Squad3DSimulation {
             // leaves flying itself, and won't let an Esc press re-lock (Esc doesn't count
             // as a user gesture) - Enter or Go resume flying there instead.
             if (event.code === "Escape" && this._dragLookMode && this._isOpen) {
-                // Esc in a select2 dropdown on the card just closes that dropdown.
-                if (!this._dragFlying && event.target.closest?.(".select2-container, input, textarea, select")) return;
+                // Esc in the texture dropdown on the card just closes that dropdown.
+                if (!this._dragFlying && event.target.closest?.(".choices, input, textarea, select")) return;
                 this._setDragFlying(!this._dragFlying);
                 return;
             }
@@ -882,7 +884,7 @@ export default class Squad3DSimulation {
             // while the 3D view is actually open - this listener stays registered
             // for the app's whole lifetime, not just while it's shown. Not applicable
             // in orbit mode - controls.lock() doesn't exist on OrbitControls. Also skipped
-            // while typing in a header select2 search box, which now sits on top of the view.
+            // while typing in a header dropdown's search box, which now sits on top of the view.
             if (!this._orbitMode && !this.isFlying() && (event.code === "Enter" || event.code === "NumpadEnter")
                 && this._isOpen && !event.target.closest?.("input, textarea, select")) {
                 event.preventDefault();
@@ -1380,6 +1382,21 @@ export default class Squad3DSimulation {
         this._terrainTexture = texture;
         this.terrainMesh.material.map = texture;
         this.terrainMesh.material.needsUpdate = true;
+    }
+
+    /**
+     * Re-translates the texture dropdown's labels after a language change. Choices has
+     * no live DOM sync (unlike select2) - its choices are rebuilt from the underlying
+     * <option>s' own data-i18n keys instead of patching labels in place.
+     */
+    _rebuildTextureChoices() {
+        if (!this.textureSelect) return;
+        const select = this.textureSelect.passedElement.element;
+        const choices = [...select.options].map((option) => {
+            const [ns, key] = option.dataset.i18n.split(":");
+            return { value: option.value, label: i18next.t(key, { ns }), selected: option.value === select.value };
+        });
+        this.textureSelect.setChoices(choices, "value", "label", true);
     }
 
 

@@ -56,7 +56,6 @@
     "robotstxt-webpack-plugin": "^8.0.0",
     "sass": "^1.106.1",
     "sass-loader": "^17.0.1",
-    "select2": "^4.1.0",
     "spin.js": "^4.1.2",
     "style-loader": "^4.0.0",
     "stylelint": "^17.16.0",
@@ -77,9 +76,9 @@
     "glob": "^14.0.2"
   },
   "dependencies": {
+    "choices.js": "^11.2.4",
     "fast-png": "^8.0.0",
     "marked": "^18.1.1",
-    "polygon-clipping": "^0.15.7",
-    "tom-select": "^2.6.2"
+    "polygon-clipping": "^0.15.7"
   }
 }

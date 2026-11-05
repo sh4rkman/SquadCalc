@@ -29,29 +29,30 @@ header {
         &.active {
             visibility: visible;
         }
-        .select2-results__options {
+        .choices__list--dropdown .choices__list {
             font-weight: 600;
             font-size: 0.85em;
         }
         #weaponSelector {
-            .select2-results__options {
+            .choices__list--dropdown .choices__list {
                 max-height: 400px;
             }
-        } 
-        .select2-results__group {
+        }
+        .choices__heading {
             color: rgba(255, 255, 255, .7);
             padding-top: 10px;
             font-weight: 900;
             text-align: left;
             padding-left: 15px;
             font-size: 1.1em;
+            border-bottom: none;
         }
         #ammoSelector {
             padding-top: 1em;
         }
     }
     // Chromium clips backdrop-filter at any ancestor holding a filled (fill-mode)
-    // opacity animation, killing the select2 dropdown blur. fadeIn ends at the
+    // opacity animation, killing the dropdown blur. fadeIn ends at the
     // natural opacity anyway, so drop the fill and let the animation be discarded.
     .mapSelector .dropdown,
     .weaponSelector {
@@ -62,68 +63,60 @@ header {
         z-index: 5;
         pointer-events: none;
         position: relative;
-        .select2-container--disabled {
-            background-color: transparent;
-            .select2-selection__rendered {
-                background-color: transparent;
-            }
-        }
         #serverSelector {
             display: none;
             z-index: 4;
             position: relative;
             padding-bottom: 1em;
-            .select2-container {
+            .choices {
                 max-width: 250px;
             }
-            .select2-selection__rendered {
-                overflow: hidden;
+            .choices__list--single .choices__item {
+                // overflow:hidden (unlike clip) makes the browser fall back to the bottom
+                // margin edge for this block's baseline instead of its text, which shifted
+                // the whole inline-block .choices__list--single up within .choices__inner
+                overflow: clip;
                 text-overflow: ellipsis;
                 white-space: nowrap;
             }
-            .select2-results__options {
+            .choices__list--dropdown .choices__list {
                 font-size: 0.9em;
                 max-height: 300px;
-            }
-            .select2-results__option {
-                white-space: normal;
-                font-size: 0.75em;
-                line-height: 1.4em;
-                word-break: break-all;
-                padding: 0.5em 0.8em;
             }
         }
         #mapSelector {
             z-index: 3;
             position: relative;
-            .select2-results__options {
+            .choices__list--dropdown .choices__list {
                 font-size: 0.9em;
                 max-height: 400px;
             }
-            .select2-results__group {
+            .choices__heading {
                 color: rgba(255, 255, 255, .7);
                 padding-top: 10px;
                 font-weight: 900;
                 text-align: left;
                 padding-left: 15px;
                 font-size: 1em;
+                border-bottom: none;
             }
         }
         #layerSelector {
             z-index: 2;
             padding-top: 1em;
             position: relative;
-            .select2-results__options {
+            .choices__list--dropdown .choices__list {
                 font-size: 0.9em;
                 max-height: 300px;
             }
-            .select2-results__group {
+            .choices__heading {
                 color: rgba(255, 255, 255, .7);
                 padding-top: 10px;
                 font-weight: 900;
                 text-align: left;
                 padding-left: 15px;
                 font-size: 1em;
+                border-bottom: none;
             }
         }
     }
@@ -155,122 +148,177 @@ header {
             outline: none;
         }
     }
-    .select2 {
-        background-color: transparent;
-    }
-    .select2-container {
+    .choices {
         @include variables.text-outline;
+        display: inline-block;
+        // choices.js hardcodes a fixed font-size (px, not em) on .choices - reset so
+        // the em-based sizes throughout this file compute against the page's 16px
+        // base, same as this control's old select2/tom-select incarnations did.
         font-size: 0.8em;
         pointer-events: all;
-        background-color: transparent;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.3);
         min-width: 250px;
         max-width: 250px;
         padding-bottom: 0;
+        margin-bottom: 0;
         text-transform: uppercase;
-        transition: border-color 0.2s ease;
-        &:hover, &.select2-container--open {
+        // choices.js draws its dropdown caret with a border-triangle using this
+        // variable (default #333, invisible on a dark control) - #888 matches the
+        // arrow color this control has always used.
+        --choices-text-color: #888;
+        // the select-one .choices__inner gets a 7.5px bottom padding by default
+        // (for the search input it sometimes renders inline) - this control
+        // never wants that gap, so 0 it via the same variable
+        --choices-inner-one-padding: 0;
+        // also drives .choices__list--dropdown's own background below, but that's
+        // pinned dark with !important there regardless - this value only actually
+        // reaches the search input inside the dropdown
+        --choices-bg-color-dropdown: rgba(255, 255, 255, 0.06);
+        // drives the dropdown-row background for BOTH .is-highlighted (hover/keyboard
+        // focus) and .is-selected (the current value, idle) identically - the opacity
+        // split between the two states below is a separate, var-free override
+        --choices-highlighted-color: #{variables.$mainColor};
+        // drives .choices__list--dropdown's own border below (no override needed there)
+        --choices-keyline-color: rgba(255, 255, 255, 0.08);
+        // the clear button's keyboard-focus ring - unstyled otherwise, defaults to a
+        // teal/blue that clashes with this theme
+        --choices-highlight-color: #{variables.$mainColor};
+        // dropdown-row padding (default 10px) - also feeds the search input's
+        // padding, but that's separately overridden below regardless
+        --choices-dropdown-item-padding: 5px;
+        // dropdown-row and search-box text size (default 14px) - .choices__inner's
+        // own use of this var is already overridden by font-size:inherit below
+        --choices-font-size-md: 12px;
+        // the attribute selector in choices.js's own `.choices[data-type*="select-one"]
+        // .choices__button{opacity:.25}` outranks a plain `.choices__button` descendant
+        // rule - matched back here with `&` so this override actually wins
+        &[data-type*="select-one"] .choices__button {
+            // flips the button's black cross icon to white (no var/icon swap needed -
+            // choices.js only exposes the icon itself as a CSS var, not a color/theme)
+            filter: invert(1);
+            opacity: 0.6;
+            &:hover, &:focus {
+                opacity: 1;
+            }
+        }
+        .choices__inner {
+            display: block;
+            text-align: center;
+            border: none;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 0;
+            padding: 0 1.4em 0 0.6em;
+            background: none;
+            box-shadow: none;
+            color: variables.$mainTxtColor;
+            line-height: 2.188em;
+            min-height: 0;
+            font-size: inherit;
+            transition: border-color 0.2s ease;
+        }
+        &:hover .choices__inner,
+        &.is-open .choices__inner {
             border-bottom-color: rgba(255, 255, 255, 0.75);
         }
-    }
-    .select2-container--default {
-        .select2-results__option--highlighted[aria-selected] {
-            background-color: variables.$mainColor;
-        }
-        .select2-results__option--selected {
-            background-color: variables.$mainColor;
-            opacity: 0.6;
-        }
-        .select2-selection--single .select2-selection__rendered {
+        .choices__list--single .choices__item,
+        .choices__input {
             color: variables.$mainTxtColor;
         }
-        .select2-selection--single {
-            background-color: transparent;
-            border: none;
-            color: variables.$mainTxtColor;
-        }
-    }
-    span.select2-selection.select2-selection--single {
-        outline: none;
     }
 }
 
-.select2-dropdown {
-    background: rgba(17, 17, 17, 0.92);
+// choices.js renders its dropdown in place (as a child of .choices) rather than
+// select2's body-level panel, so these are scoped under header instead of global.
+
+header .choices__list--dropdown {
+    background: rgba(17, 17, 17, 0.92) !important;
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    // border color comes from --choices-keyline-color above
     border-radius: 6px;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
     overflow: hidden;
+    animation: choices-dropdown-fade 0.15s ease;
 }
 
-.select2-dropdown--below {
-    animation: select2-slide-down 0.15s ease;
-}
-
-.select2-dropdown--above {
-    animation: select2-slide-up 0.15s ease;
-}
-
-@keyframes select2-slide-down {
-    from { 
-        opacity: 0; 
-    }
-    to { 
-        opacity: 1;
-    }
-}
-
-@keyframes select2-slide-up {
-    from { 
+@keyframes choices-dropdown-fade {
+    from {
         opacity: 0;
     }
-    to { 
+    to {
         opacity: 1;
     }
 }
 
-
-// Our custom `.select2-results__options { max-height: … }` rules above
-// unintentionally also match select2's nested per-optgroup `<ul>`
-// (`.select2-results__options--nested`), capping its height with no
-// overflow rule set. The overflow then spills visibly onto the next
-// group below. Only the top-level list should ever be height-capped.
-
-.select2-results__options--nested {
-    max-height: none !important;
-}
-
-.select2-results__option {
-    padding: 0.55em 1em;
-    line-height: 0.75em;
+header .choices__item--selectable {
     transition: background-color 0.15s ease;
     letter-spacing: 0.05em;
-    &[aria-disabled="true"] {
+    // background-color itself comes from --choices-highlighted-color above (shared
+    // by both states) - color/opacity aren't var-driven, and the library never sets
+    // either itself, so no specificity fight needed to override them here
+    &.is-highlighted {
+        color: #fff;
+    }
+    &.is-selected {
+        opacity: 0.6;
+    }
+    &.choices__item--disabled {
         cursor: not-allowed;
     }
 }
 
-.select2-search--dropdown .select2-search__field {
-    background: rgba(255, 255, 255, 0.06);
+// manually hidden by _wireGroupedSearch() in squadCalc.js - see comment there
+
+header .choices__item--search-hidden {
+    display: none;
+}
+
+// select-one + groups is a special case in choices.js: it renders the placeholder
+// choice as its own clickable row above the groups (a built-in way to click back
+// to "nothing selected"), bypassing the filter that normally keeps a placeholder
+// out of the dropdown list. The clear button already covers that, so hide it here -
+// scoped to the dropdown list only, since the closed box's current-value display
+// uses this same .choices__item.choices__placeholder pair of classes to show the
+// placeholder text and must stay visible.
+
+header .choices__list--dropdown .choices__item.choices__placeholder {
+    display: none;
+}
+
+
+// background comes from --choices-bg-color-dropdown above - border/radius/padding
+// have no equivalent variable, so still need to match choices.js's own
+// `.choices[data-type*="select-one"] .choices__input` specificity here (its border
+// rules outrank a plain `.choices__list--dropdown .choices__input`).
+
+header .choices[data-type*="select-one"] .choices__input {
     border: 1px solid rgba(255, 255, 255, 0.1) !important;
     border-radius: 4px;
     color: variables.$mainTxtColor;
     outline: none;
     padding: 0.4em 0.6em;
+    margin: 5px 2%;
+    width: 96%;
 }
 
-.select2-container--default.select2-container--disabled .select2-selection--single {
+header .choices.is-disabled .choices__inner {
     background-color: transparent;
     cursor: not-allowed;
-    .select2-selection__rendered {
+    .choices__list--single .choices__item {
         color: rgba(255, 255, 255, 0.3);
         font-style: italic;
     }
 }
 
-.select2-container--default .select2-selection--single .select2-selection__clear {
-    float: left;
+// removeItemButtonAlignLeft only reorders the button in the DOM - for a select-one
+// control its position still comes from choices.js's own hardcoded `right: 0`, so
+// moving it next to the text (away from the dropdown caret on the right, same side
+// this control's old select2 clear button sat on) needs its own override here, only
+// on the two selectors with removeItemButton enabled (layer, server).
+
+#serverSelector .choices[data-type*="select-one"] .choices__button,
+#layerSelector .choices[data-type*="select-one"] .choices__button {
+    right: auto;
+    left: 0;
+    margin-left: 10px;
     margin-right: 0;
 }

@@ -7,9 +7,12 @@
         <div class="settings-search">
             <svg class="settings-search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
             <input id="settingsSearch" type="search" autocomplete="off" spellcheck="false" placeholder="Search settings" data-i18n-placeholder="settings:searchPlaceholder" aria-label="Search settings">
+            <button type="button" id="settingsSearchClear" class="settings-search-clear" aria-label="Clear search" hidden>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="M6 6l12 12"/></svg>
+            </button>
         </div>
         <div class="settings-lang">
-            <select id="settingsLangSelect" class="settings-select settings-lang-select" tabindex="-1" aria-label="Language" data-i18n-aria-label="settings:language"></select>
+            <select id="settingsLangSelect" tabindex="-1" aria-label="Language" data-i18n-aria-label="settings:language"></select>
         </div>
         <form method="dialog">
             <button class="settings-close" aria-label="close">

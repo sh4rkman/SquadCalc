@@ -9,17 +9,17 @@
 @media (height >= 35em) {
     header {
         .mapSelector #mapSelector {
-            .select2-results__options {
+            .choices__list--dropdown .choices__list {
                 max-height: 470px;
             }
         }
         .mapSelector #layerSelector {
-            .select2-results__options {
+            .choices__list--dropdown .choices__list {
                 max-height: 350px;
             }
         }
         .weaponSelector #weaponSelector {
-            .select2-results__options {
+            .choices__list--dropdown .choices__list {
                 max-height: 450px;
             }
         }
@@ -32,18 +32,18 @@
 @media (height >= 45em) {
     header {
         .mapSelector #mapSelector {
-            .select2-results__options {
+            .choices__list--dropdown .choices__list {
                 // line-height: 0.85em;
                 max-height: 770px;
             }
         }
         .mapSelector #layerSelector {
-            .select2-results__options {
+            .choices__list--dropdown .choices__list {
                 max-height: 600px;
             }
         }
         .weaponSelector #weaponSelector {
-            .select2-results__options {
+            .choices__list--dropdown .choices__list {
                 max-height: 650px;
             }
         }
@@ -56,12 +56,12 @@
 @media (height >= 50em) {
     header {
         .mapSelector #mapSelector {
-            .select2-results__options {
+            .choices__list--dropdown .choices__list {
                 max-height: 650px;
             }
         }
         .mapSelector #layerSelector {
-            .select2-results__options {
+            .choices__list--dropdown .choices__list {
                 max-height: 650px;
             }
         }
@@ -74,16 +74,8 @@
    ***************************************************/
 
 @media screen and (width <= 48em) {
-.unit-logo {
+.respawnText, .delayText, .ticketText {
         display: none;
-    }
-    .respawnText, .delayText, .ticketText {
-        display: none;
-    }
-    .countryFlags {
-        .img-flag {
-            width: 40px;
-        }
     }
     #factionsDialog #factionVehicles .vehicle-card .image {
         .tags, .links {
@@ -141,20 +133,6 @@
                 .vehicle-meta {
                     flex-shrink: 0;
                 }
-            }
-        }
-        .select2-container {
-            min-width: 100px;
-            max-width: 175px;
-            padding-bottom: 0.1em;
-            .select2-selection--single {
-                height: 24px;
-            }
-            .unit-option .unit-type {
-                font-size: 1.5em;
-            }
-             .unit-option .unit-name {
-                font-size: 1.4em;
             }
         }
         #factionMenu {
@@ -260,7 +238,7 @@
             left: 1em;
             position: fixed;
             width: auto;
-            .select2-container {
+            .choices {
                 float: left;
                 font-size: 1em;
             }
@@ -275,14 +253,14 @@
             top: 0;
             margin-top: 0;
             width: auto;
-            .select2-container {
+            .choices {
                 float: right;
                 font-size: 1em;
                 padding-bottom: 0.3em;
             }
             #serverSelector {
                 padding-bottom: 3em;
-                .select2-container {
+                .choices {
                     max-width: 250px;
                 }
             }
@@ -372,7 +350,7 @@
 
 @media screen and (width >= 62em) {
     header {
-        .select2-container {
+        .choices {
             font-size: 1em;
             min-width: 250px;
         }
@@ -397,7 +375,7 @@
 
 @media screen and (width >= 62em) {
     header {
-        .select2-container {
+        .choices {
             max-width: 250px;
         }
     }
@@ -409,9 +387,9 @@
 @media screen and (width >= 87.5em) {
     header {
         // Match base rules specificity in header.scss so these actually apply
-        .weaponSelector .select2-results__options,
-        .mapSelector #mapSelector .select2-results__options,
-        .mapSelector #layerSelector .select2-results__options {
+        .weaponSelector .choices__list--dropdown .choices__list,
+        .mapSelector #mapSelector .choices__list--dropdown .choices__list,
+        .mapSelector #layerSelector .choices__list--dropdown .choices__list {
             font-size: 0.9em;
         }
     }
@@ -434,16 +412,16 @@
                 padding: 2em 1.5em 0 0;
                 #serverSelector {
                     padding-bottom: 5em;
-                    .select2-container {
+                    .choices {
                         min-width: 300px;
                         max-width: 300px;
                         padding-bottom: 1em;
                         font-size: 1.25em;
                     }
-                    .select2-selection__placeholder {
+                    .choices__placeholder {
                         font-size: 1.05em;
                     }
-                    .select2-selection__rendered {
+                    .choices__list--single .choices__item {
                         font-size: 1.1em;
                     }
                 }
@@ -456,25 +434,25 @@
             #ammoSelector,
             .mapSelector #mapSelector,
             .mapSelector #layerSelector {
-                .select2-container {
+                .choices {
                     min-width: 300px;
                     max-width: 300px;
                     padding-bottom: 1em;
                     font-size: 1.25em;
                 }
-                .select2-results__options {
+                .choices__list--dropdown .choices__list {
                     font-size: 0.9em;
                     // line-height: 1.3em;
                     max-height: 1250px;
                 }
-                .select2-selection__placeholder {
+                .choices__placeholder {
                     font-size: 1.05em;
                 }
-                .select2-selection__rendered {
+                .choices__list--single .choices__item {
                     font-size: 1.1em;
                 }
             }
-            .mapSelector #layerSelector .select2-results__options {
+            .mapSelector #layerSelector .choices__list--dropdown .choices__list {
                 max-height: 1000px;
             }
         }
