@@ -338,6 +338,18 @@ export const MAPS = [
             },
         }
     },
+    { 
+        name: "OskilRiver", 
+        mapURL: "/img/maps/oskilriver/",
+        radiusExclusion: FOBEXCLUSIONS.medium,
+        SDK_data: {
+            minimap: {
+                corner0: [-1900, -1900],
+                corner1: [1900, 1900],
+            },
+            landscapeScale: [1, 1, 0.205154741],
+        }
+    },
     // { 
     //     name: "Narva_f", 
     //     mapURL: "/img/maps/narva-flooded/",
