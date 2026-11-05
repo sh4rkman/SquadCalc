@@ -260,12 +260,6 @@ export default class SquadCalc {
             this.squadServersBrowser.selectedServer = server.id;
             this.squadServersBrowser.selectedLayer = server.attributes.details.map;
 
-            // Ensure layers are loaded for the server's map before switching layer
-            if (!this.layersLoaded) {
-                console.debug("Layers not loaded yet, loading layers for server map");
-                this.loadLayers();
-            }
-
             this.squadServersBrowser.switchLayer(
                 server.attributes.name,
                 server.mapName,
@@ -456,6 +450,10 @@ export default class SquadCalc {
                 }
                 return;
             }
+            // buildFavoriteServersDropdown() re-triggers "change" just to refresh its own
+            // Choices UI selection - skip re-running server mode when it's already active
+            if (this.squadServersBrowser && String(this.squadServersBrowser.selectedServer) === String(serverId)) return;
+
             this.updateUrlParams({ server: serverId });
             this.initServerMode(serverId);
         });
@@ -556,9 +554,7 @@ export default class SquadCalc {
                     }
                     $("#factionsTab, #factionsButton").hide();
                     this.minimap.spin(false);
-
-                    // Stop the chain
-                    throw error;
+                    // falls through to .then() below with layerData undefined, which bails out
                 })
                 .then(layerData => {
                     if (!layerData) return; // prevent continuing on fetch failure
@@ -979,8 +975,10 @@ export default class SquadCalc {
             String(i) === selectedValue && (!map.mod || enabledMods.includes(map.mod))
         );
 
+        // Selection didn't actually move - setChoices() above already marked it selected,
+        // no need to re-trigger "change" (which would wipe the map and reload the layer
+        // for nothing, since map/layer never changed)
         if (selectedStillExists) {
-            this.MAP_SELECTOR.trigger("change");
             return false;
         }
 

@@ -5,16 +5,18 @@ import { App } from "../app.js";
 import pkg from "../../package.json";
 const { version } = pkg;
 
-// Flag emoji per supported language code. "uk" is the Ukrainian language, not the UK.
+// Flag icon (public/img/lang/<code>.svg) per supported language code - emoji flags fall
+// back to plain two-letter text on Windows (no flag glyphs in its emoji font), so these are
+// rendered as actual images instead. "uk" is the Ukrainian language, not the UK.
 const LANG_FLAGS = {
-    en: "🇬🇧",
-    de: "🇩🇪",
-    fr: "🇫🇷",
-    pt: "🇧🇷",
-    ru: "🇷🇺",
-    tr: "🇹🇷",
-    uk: "🇺🇦",
-    zh: "🇨🇳",
+    en: "gb",
+    de: "de",
+    fr: "fr",
+    pt: "br",
+    ru: "ru",
+    tr: "tr",
+    uk: "ua",
+    zh: "cn",
 };
 
 // Native language names shown in the language picker
@@ -35,7 +37,10 @@ let langSelect;
  * Update every label with the correct localization text
  */
 export function loadLanguage(LANGUAGES) {
+    const language = resolveLanguage(LANGUAGES);
+
     i18next.use(HttpApi).init({
+        lng: language,
         fallbackLng: "en",
         ns: [
             "tooltips",
@@ -53,7 +58,9 @@ export function loadLanguage(LANGUAGES) {
         }
     }, function(err) {
         if (err) return console.error(err);
-        getLanguage(LANGUAGES);
+        langSelect.setChoiceByValue(language);
+        $("html").attr("lang", language);
+        updateContent();
     });
 
     const { item: defaultItemTemplate, choice: defaultChoiceTemplate } = Choices.defaults.templates;
@@ -73,14 +80,14 @@ export function loadLanguage(LANGUAGES) {
                     const el = defaultItemTemplate.call(this, options, choice, removeItemButton);
                     const short = choice.customProperties?.short || choice.value.toUpperCase();
                     el.classList.add("settings-langOption");
-                    el.innerHTML = `<span class="settings-langFlag">${choice.customProperties?.flag || ""}</span><span>${escapeForTemplate(options.allowHTML, short)}</span>`;
+                    el.innerHTML = `<img class="settings-langFlag" src="/img/lang/${choice.customProperties?.flag}.svg" alt="" /><span>${escapeForTemplate(options.allowHTML, short)}</span>`;
                     return el;
                 },
                 // Dropdown row: flag + native name (English, Deutsch, ...)
                 choice(options, choice, selectText, groupName) {
                     const el = defaultChoiceTemplate.call(this, options, choice, selectText, groupName);
                     el.classList.add("settings-langOption");
-                    el.innerHTML = `<span class="settings-langFlag">${choice.customProperties?.flag || ""}</span><span>${el.innerHTML}</span>`;
+                    el.innerHTML = `<img class="settings-langFlag" src="/img/lang/${choice.customProperties?.flag}.svg" alt="" /><span>${el.innerHTML}</span>`;
                     return el;
                 },
             };
@@ -105,7 +112,7 @@ function onLanguageChange(value) {
  * Find what language to use
  * Priority Order : LocalStorage > navigator.language > English
  */
-function getLanguage(LANGUAGES){
+function resolveLanguage(LANGUAGES){
     const browserLanguage = navigator.language.split("-")[0].toLowerCase();
     const supportedLanguagesCodes = LANGUAGES.map(pair => pair[0]);
     let language = localStorage.getItem("settings-language");
@@ -121,7 +128,7 @@ function getLanguage(LANGUAGES){
         localStorage.setItem("settings-language", language);
     }
 
-    langSelect.setChoiceByValue(language);
+    return language;
 }
 
 /**

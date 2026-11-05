@@ -571,8 +571,13 @@ $hover: rgba(variables.$mainTxtColor, 0.06);
         gap: 8px;
     }
     .settings-langFlag {
-        font-size: 1.1em;
-        line-height: 1;
+        width: 1.2em;
+        height: 0.9em;
+        flex-shrink: 0;
+        border-radius: 2px;
+        // global `img { margin: auto }` reset (_variables.scss) eats flex free space
+        // and shoves this off-center otherwise
+        margin: 0;
     }
 
     // Shortcuts list: one row per action, keys on the right

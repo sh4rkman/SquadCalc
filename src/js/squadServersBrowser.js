@@ -547,13 +547,31 @@ export default class SquadServersBrowser {
         const currentMapIndex = parseInt(App.MAP_SELECTOR.val());
         const currentLayerIndex = App.LAYER_SELECTOR.val();
 
+        // Selects unit on SELECTOR only if the server-reported unit actually made it into
+        // the options loadUnits() just built for the chosen faction. The server can report
+        // an on-water loadout tag ("_Boats"/"-Boats") that layer data doesn't define as its
+        // own entry - try the non-boat variant next. If neither exists, leave loadUnits()'s
+        // own first-option fallback in place instead of deselecting it.
+        const selectReportedUnit = (SELECTOR, unit) => {
+            if (SELECTOR.find(`option[value="${unit}"]`).length) {
+                SELECTOR.val(unit).trigger($.Event("change", { broadcast: false }));
+                return;
+            }
+            const landUnit = unit.replace(/[-_]Boats/, "");
+            if (landUnit !== unit && SELECTOR.find(`option[value="${landUnit}"]`).length) {
+                SELECTOR.val(landUnit).trigger($.Event("change", { broadcast: false }));
+            } else {
+                console.debug(`[SERVER] Reported unit not found in dropdown: ${unit}`);
+            }
+        };
+
         const applyFactions = () => {
             if (team1 && team2) {
                 App.FACTION1_SELECTOR.val(team1).trigger($.Event("change", { broadcast: false }));
                 App.FACTION2_SELECTOR.val(team2).trigger($.Event("change", { broadcast: false }));
                 if (unit1 && unit2) {
-                    App.UNIT1_SELECTOR.val(unit1).trigger($.Event("change", { broadcast: false }));
-                    App.UNIT2_SELECTOR.val(unit2).trigger($.Event("change", { broadcast: false }));
+                    selectReportedUnit(App.UNIT1_SELECTOR, unit1);
+                    selectReportedUnit(App.UNIT2_SELECTOR, unit2);
                 }
                 // Strip any team params that default faction loading may have written
                 App.updateUrlParams({ team1: null, team1unit: null, team2: null, team2unit: null });
@@ -594,6 +612,7 @@ export default class SquadServersBrowser {
             setLayerAndFactions();
         } else {
             $(document).one("layers:loaded", setLayerAndFactions);
+            App.loadLayers();
         }
     }
 
