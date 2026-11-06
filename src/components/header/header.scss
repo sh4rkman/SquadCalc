@@ -26,6 +26,16 @@ header {
         padding-top: 1em;
         pointer-events: none;
         visibility: hidden;
+        // !important: _variables.scss's base rule also matches `.pure-g [class*="pure-u"]`
+        // (specificity 0,2,0) and this div carries a pure-u-* class - without it that rule
+        // wins over this one's plain class selector (0,1,0) and montserrat inherits down
+        // into every .choices__item row instead of this.
+        font-family: variables.$logoFont !important;
+        // the global `input` rule in _variables.scss sets a direct font-family on every
+        // <input>, which always wins over an inherited one regardless of ancestor specificity
+        input {
+            font-family: variables.$logoFont;
+        }
         &.active {
             visibility: visible;
         }
@@ -39,13 +49,24 @@ header {
             }
         }
         .choices__heading {
-            color: rgba(255, 255, 255, .7);
-            padding-top: 10px;
-            font-weight: 900;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 16px 15px 12px;
+            padding: 0;
+            color: #fff;
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 0.15em;
             text-align: left;
-            padding-left: 15px;
-            font-size: 1.1em;
+            font-size: .85em;
             border-bottom: none;
+            &::after {
+                content: "";
+                flex: 1;
+                height: 1px;
+                background: rgba(variables.$mainColor, .5);
+            }
         }
         #ammoSelector {
             padding-top: 1em;
@@ -63,6 +84,11 @@ header {
         z-index: 5;
         pointer-events: none;
         position: relative;
+        // !important: see the matching comment on .weaponSelector above
+        font-family: variables.$logoFont !important;
+        input {
+            font-family: variables.$logoFont;
+        }
         #serverSelector {
             display: none;
             z-index: 4;
@@ -92,13 +118,24 @@ header {
                 max-height: 400px;
             }
             .choices__heading {
-                color: rgba(255, 255, 255, .7);
-                padding-top: 10px;
-                font-weight: 900;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                margin: 16px 15px 12px;
+                padding: 0;
+            color: #fff;
+                text-transform: uppercase;
+                font-weight: 700;
+                letter-spacing: 0.15em;
                 text-align: left;
-                padding-left: 15px;
-                font-size: 1em;
+                font-size: .8em;
                 border-bottom: none;
+                &::after {
+                    content: "";
+                    flex: 1;
+                    height: 1px;
+                    background: rgba(variables.$mainColor, .5);
+                }
             }
         }
         #layerSelector {
@@ -110,13 +147,24 @@ header {
                 max-height: 300px;
             }
             .choices__heading {
-                color: rgba(255, 255, 255, .7);
-                padding-top: 10px;
-                font-weight: 900;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                margin: 16px 15px 12px;
+                padding: 0;
+            color: #fff;
+                text-transform: uppercase;
+                font-weight: 700;
+                letter-spacing: 0.15em;
                 text-align: left;
-                padding-left: 15px;
-                font-size: 1em;
+                font-size: .8em;
                 border-bottom: none;
+                &::after {
+                    content: "";
+                    flex: 1;
+                    height: 1px;
+                    background: rgba(variables.$mainColor, .5);
+                }
             }
         }
     }
@@ -185,6 +233,9 @@ header {
         // dropdown-row padding (default 10px) - also feeds the search input's
         // padding, but that's separately overridden below regardless
         --choices-dropdown-item-padding: 5px;
+        // choices.js's default (4px 16px 4px 4px) is asymmetric for the dropdown
+        // caret's room - handled by .choices__inner's own padding instead
+        --choices-list-single-padding: 4px;
         // dropdown-row and search-box text size (default 14px) - .choices__inner's
         // own use of this var is already overridden by font-size:inherit below
         --choices-font-size-md: 12px;
@@ -206,7 +257,7 @@ header {
             border: none;
             border-bottom: 1px solid rgba(255, 255, 255, 0.3);
             border-radius: 0;
-            padding: 0 1.4em 0 0.6em;
+            padding: 0 0.6em;
             background: none;
             box-shadow: none;
             color: variables.$mainTxtColor;
