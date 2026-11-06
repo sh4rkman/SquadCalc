@@ -219,12 +219,15 @@ export class squadWeaponMarker extends squadMarker {
      */
     updateWeapon(){
 
-        const MAXRADIUS = App.activeWeapon.getMaxDistance() * this.map.gameToMapScale;
-        const MINRADIUS = App.activeWeapon.minDistance * this.map.gameToMapScale;
+        // written directly onto the style objects since Leaflet's setStyle() re-applies
+        // options.radius if present - a stale value here would silently undo setRadius()
+        // as soon as setStyle() runs below
+        this.maxDistCircleOn.radius = App.activeWeapon.getMaxDistance() * this.map.gameToMapScale;
+        this.minDistCircleOn.radius = App.activeWeapon.minDistance * this.map.gameToMapScale;
 
         this.angleType = App.activeWeapon.angleType;
-        this.minRangeMarker.setRadius(MINRADIUS);
-        this.rangeMarker.setRadius(MAXRADIUS);
+        this.minRangeMarker.setRadius(this.minDistCircleOn.radius);
+        this.rangeMarker.setRadius(this.maxDistCircleOn.radius);
 
         // Update MinRange circle opacity
         if (this.minRangeMarker.getRadius() != 0) {
