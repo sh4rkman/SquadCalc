@@ -23,7 +23,7 @@ header {
     }
     .weaponSelector {
         z-index: 4;
-        padding-top: 1em;
+        padding-top: 0.5em;
         pointer-events: none;
         visibility: hidden;
         // !important: _variables.scss's base rule also matches `.pure-g [class*="pure-u"]`
@@ -80,8 +80,8 @@ header {
         animation-fill-mode: none;
     }
     .mapSelector {
-        padding-top: 1em;
         z-index: 5;
+        padding-top: 0.5em;
         pointer-events: none;
         position: relative;
         // !important: see the matching comment on .weaponSelector above
