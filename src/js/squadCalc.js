@@ -397,6 +397,15 @@ export default class SquadCalc {
                 rows.forEach((row) => {
                     const match = !q || row.textContent.toLowerCase().includes(q);
                     row.classList.toggle("choices__item--search-hidden", !match);
+                    // Choices' arrow-key nav walks siblings by [data-choice-selectable] alone,
+                    // not visibility - drop it on hide so hidden rows get skipped instead of
+                    // silently receiving the highlight while invisible.
+                    if (match) {
+                        row.dataset.choiceSelectable = "";
+                    } else {
+                        delete row.dataset.choiceSelectable;
+                        row.classList.remove("is-highlighted");
+                    }
                 });
                 // the visible heading text sits in a .choices__heading child, but that div
                 // has no siblings of its own - the group wrapper (.choices__group) is what's
@@ -410,6 +419,14 @@ export default class SquadCalc {
                     }
                     group.classList.toggle("choices__item--search-hidden", !anyVisible);
                 });
+                // select2 auto-highlighted the first match so Enter selected it right away -
+                // mirror that instead of leaving nothing highlighted until an arrow key is pressed
+                const firstMatch = instance.choiceList.element.querySelector(".choices__item--selectable:not(.choices__item--search-hidden)");
+                if (firstMatch) {
+                    instance._highlightChoice(firstMatch);
+                } else {
+                    instance._removeHighlightedChoices();
+                }
             });
             // nothing re-renders the dropdown on close (unlike setChoices-driven filtering),
             // so the hidden rows from the last search would otherwise still be hidden next
@@ -419,6 +436,7 @@ export default class SquadCalc {
                 instance.input.element.value = "";
                 instance.choiceList.element.querySelectorAll(".choices__item--search-hidden").forEach((el) => {
                     el.classList.remove("choices__item--search-hidden");
+                    el.dataset.choiceSelectable = "";
                 });
             });
         };
