@@ -347,8 +347,8 @@ header .choices[data-type*="select-one"] .choices__input {
     color: variables.$mainTxtColor;
     outline: none;
     padding: 0.4em 0.6em;
-    margin: 5px 2%;
-    width: 96%;
+    margin: 10px 4% 0;
+    width: 92%;
 }
 
 header .choices.is-disabled .choices__inner {
