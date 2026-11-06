@@ -127,7 +127,7 @@ export default class SquadLayer {
 
         if (process.env.DISABLE_FACTIONS != "true") {
             this.factions = new SquadFactions(this, broadcast);
-            if (App.userSettings.enableFactions) $("#factionsTab, #factionsButton").show();
+            document.querySelectorAll("#factionsTab, #factionsButton").forEach((el) => el.style.display = "block");
         }
 
         // If already zoomed in, reveal capzones/main assets
@@ -1432,7 +1432,7 @@ export default class SquadLayer {
             this.polyline.hideMeasurements();
             this.pathLines.forEach((line) => line.hideMeasurements());
             this.isVisible = false;
-            $(".btn-layer").removeClass("active");
+            document.querySelectorAll(".btn-layer").forEach((el) => el.classList.remove("active"));
             this.hideAllCapzones();
             this.cameraActor?.hide();
             this.setMainZoneOpacity(false);
@@ -1450,7 +1450,7 @@ export default class SquadLayer {
                 this.polyline.showMeasurements(measurementOptions);
                 this.pathLines.forEach((line) => line.showMeasurements(measurementOptions));
             }
-            $(".btn-layer").addClass("active");
+            document.querySelectorAll(".btn-layer").forEach((el) => el.classList.add("active"));
             this.isVisible = true;
 
             if (this.map.getZoom() > this.map.detailedZoomThreshold) {
@@ -1484,8 +1484,11 @@ export default class SquadLayer {
         this.phaseNumber.removeFrom(this.map).clearLayers();
         this.phaseAeras.removeFrom(this.map).clearLayers();
         if (this.factions) this.factions.unpinUnit();
-        $(".btn-layer").removeClass("active").hide();
-        $(".btn-layer-info").hide();
+        document.querySelectorAll(".btn-layer").forEach((el) => {
+            el.classList.remove("active");
+            el.style.display = "none";
+        });
+        document.querySelectorAll(".btn-layer-info").forEach((el) => el.style.display = "none");
         this.spawnGroups = [];
         this.vehicleSpawners = [];
         this.hexs = [];

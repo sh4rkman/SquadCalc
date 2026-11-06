@@ -4,11 +4,11 @@ import i18next from "i18next";
 export default class Simulation {
 
     constructor(div, firingSolution, heightPath, angleType, activeWeaponUnit, padding = 0, weaponIndex = 0, targetIndex = null) {
-        this.div = $(div);
+        this.div = document.querySelector(div);
         this.firingSolution = firingSolution;
         this.heightPath = heightPath;
         this.angleType = angleType;
-        this.canvas = this.div.find("canvas").get(0);
+        this.canvas = this.div.querySelector("canvas");
         this.ctx = this.canvas.getContext("2d");
         this.padding = padding * this.canvas.width;
         this.weaponIndex = weaponIndex;
@@ -53,17 +53,17 @@ export default class Simulation {
      * Populate the simulation table with info
      */
     buildTables(){
-        this.div.find(".infBearing").first().text(this.firingSolution.bearing.toFixed(1)+i18next.t("common:°"));
-        this.div.find(".infDistance").first().text(this.firingSolution.distance.toFixed(1)+i18next.t("common:m"));
-        this.div.find(".infWHeight").first().text(this.firingSolution.weaponHeight.toFixed(1)+i18next.t("common:m"));
-        this.div.find(".infTHeight").first().text(this.firingSolution.targetHeight.toFixed(1)+i18next.t("common:m"));
-        this.div.find(".infDHeight").first().text(this.firingSolution.heightDiff.toFixed(1)+i18next.t("common:m"));
+        this.div.querySelector(".infBearing").textContent = this.firingSolution.bearing.toFixed(1)+i18next.t("common:°");
+        this.div.querySelector(".infDistance").textContent = this.firingSolution.distance.toFixed(1)+i18next.t("common:m");
+        this.div.querySelector(".infWHeight").textContent = this.firingSolution.weaponHeight.toFixed(1)+i18next.t("common:m");
+        this.div.querySelector(".infTHeight").textContent = this.firingSolution.targetHeight.toFixed(1)+i18next.t("common:m");
+        this.div.querySelector(".infDHeight").textContent = this.firingSolution.heightDiff.toFixed(1)+i18next.t("common:m");
 
 
         if (isNaN(this.firingSolution.elevation.high.rad) && isNaN(this.firingSolution.elevation.low.rad)) {
-            this.div.find(".infElevation").first().text("---");
-            this.div.find(".infTimeOfFlight").first().text("---");
-            this.div.find(".infSpread").first().text("---");
+            this.div.querySelector(".infElevation").textContent = "---";
+            this.div.querySelector(".infTimeOfFlight").textContent = "---";
+            this.div.querySelector(".infSpread").textContent = "---";
         } else {
 
             if (App.userSettings.lowAndHigh &&
@@ -105,21 +105,21 @@ export default class Simulation {
 
                 
 
-                this.div.find(".infElevation").first().text(`${elevationlow} / ${elevationhigh}`);
-                this.div.find(".infTimeOfFlight").first().text(`${timeOfFlightlow} / ${timeOfFlighthigh}`);
-                this.div.find(".infSpread").first().text(`
-                    H:${this.firingSolution.spreadParameters.low.semiMajorAxis.toFixed(0)}/${this.firingSolution.spreadParameters.high.semiMajorAxis.toFixed(0) + i18next.t("common:m")} 
+                this.div.querySelector(".infElevation").textContent = `${elevationlow} / ${elevationhigh}`;
+                this.div.querySelector(".infTimeOfFlight").textContent = `${timeOfFlightlow} / ${timeOfFlighthigh}`;
+                this.div.querySelector(".infSpread").textContent = `
+                    H:${this.firingSolution.spreadParameters.low.semiMajorAxis.toFixed(0)}/${this.firingSolution.spreadParameters.high.semiMajorAxis.toFixed(0) + i18next.t("common:m")}
                     V:${Math.max(this.firingSolution.spreadParameters.low.semiMinorAxis, this.firingSolution.spreadParameters.high.semiMinorAxis).toFixed(0) + i18next.t("common:m")}
-                `); // Vertical spread is almost the same for both angles, so we take the highest value and call it a day
+                `; // Vertical spread is almost the same for both angles, so we take the highest value and call it a day
 
             } else {
 
                 if (this.angleType === "high"){
-                    this.div.find(".infTimeOfFlight").first().text(this.firingSolution.timeOfFlight.high.toFixed(1)+i18next.t("common:s"));
-                    this.div.find(".infSpread").first().text(`H:${this.firingSolution.spreadParameters.high.semiMajorAxis.toFixed(1) + i18next.t("common:m")} V:${this.firingSolution.spreadParameters.high.semiMinorAxis.toFixed(1) + i18next.t("common:m")}`);
+                    this.div.querySelector(".infTimeOfFlight").textContent = this.firingSolution.timeOfFlight.high.toFixed(1)+i18next.t("common:s");
+                    this.div.querySelector(".infSpread").textContent = `H:${this.firingSolution.spreadParameters.high.semiMajorAxis.toFixed(1) + i18next.t("common:m")} V:${this.firingSolution.spreadParameters.high.semiMinorAxis.toFixed(1) + i18next.t("common:m")}`;
                     switch (App.activeWeapon.unit) {
                     case "mil":
-                        this.div.find(".infElevation").first().text(`${this.firingSolution.elevation.high.mil.toFixed(1)}mil`);
+                        this.div.querySelector(".infElevation").textContent = `${this.firingSolution.elevation.high.mil.toFixed(1)}mil`;
                         break;
                     case "degMin": {
                         // Convert degrees to degrees + minutes
@@ -129,19 +129,19 @@ export default class Simulation {
                             degrees += 1;
                             minutes = 0;
                         }
-                        this.div.find(".infElevation").first().text(`${degrees}°${minutes.toString().padStart(2, "0")}' (${this.firingSolution.elevation.high.deg.toFixed(2)+i18next.t("common:°")})`);
+                        this.div.querySelector(".infElevation").textContent = `${degrees}°${minutes.toString().padStart(2, "0")}' (${this.firingSolution.elevation.high.deg.toFixed(2)+i18next.t("common:°")})`;
                         break;
                     }
                     default:
-                        this.div.find(".infElevation").first().text(this.firingSolution.elevation.low.deg.toFixed(2)+i18next.t("common:°"));
+                        this.div.querySelector(".infElevation").textContent = this.firingSolution.elevation.low.deg.toFixed(2)+i18next.t("common:°");
                     }
                 } else {
-                    this.div.find(".infTimeOfFlight").first().text(this.firingSolution.timeOfFlight.low.toFixed(1)+i18next.t("common:s"));
-                    this.div.find(".infSpread").first().text(`H:${this.firingSolution.spreadParameters.low.semiMajorAxis.toFixed(1) + i18next.t("common:m")} V:${this.firingSolution.spreadParameters.low.semiMinorAxis.toFixed(1) + i18next.t("common:m")}`);
+                    this.div.querySelector(".infTimeOfFlight").textContent = this.firingSolution.timeOfFlight.low.toFixed(1)+i18next.t("common:s");
+                    this.div.querySelector(".infSpread").textContent = `H:${this.firingSolution.spreadParameters.low.semiMajorAxis.toFixed(1) + i18next.t("common:m")} V:${this.firingSolution.spreadParameters.low.semiMinorAxis.toFixed(1) + i18next.t("common:m")}`;
                     
                     switch (App.activeWeapon.unit) {
                     case "mil":
-                        this.div.find(".infElevation").first().text(`${this.firingSolution.elevation.low.mil.toFixed(1)}mil`);
+                        this.div.querySelector(".infElevation").textContent = `${this.firingSolution.elevation.low.mil.toFixed(1)}mil`;
                         break;
                     case "degMin": {
                         // Convert degrees to degrees + minutes
@@ -151,11 +151,11 @@ export default class Simulation {
                             degrees += 1;
                             minutes = 0;
                         }
-                        this.div.find(".infElevation").first().text(`${degrees}°${minutes.toString().padStart(2, "0")}' (${this.firingSolution.elevation.low.deg.toFixed(2)+i18next.t("common:°")})`);
+                        this.div.querySelector(".infElevation").textContent = `${degrees}°${minutes.toString().padStart(2, "0")}' (${this.firingSolution.elevation.low.deg.toFixed(2)+i18next.t("common:°")})`;
                         break;
                     }
                     default:
-                        this.div.find(".infElevation").first().text(this.firingSolution.elevation.low.deg.toFixed(2)+i18next.t("common:°"));
+                        this.div.querySelector(".infElevation").textContent = this.firingSolution.elevation.low.deg.toFixed(2)+i18next.t("common:°");
                     }
 
                 }

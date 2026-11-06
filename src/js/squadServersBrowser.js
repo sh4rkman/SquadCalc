@@ -2,6 +2,7 @@ import i18next from "i18next";
 import { App } from "../app.js";
 import { MAPS } from "../data/maps.js";
 import { serverBrowserTooltips } from "./tooltips.js";
+import { triggerChange } from "./domUtils.js";
 import Fuse from "fuse.js";
 
 export default class SquadServersBrowser {
@@ -96,7 +97,7 @@ export default class SquadServersBrowser {
         this.renderTable(this.serversData);
 
         // Trigger custom event
-        $(document).trigger("servers:loaded");
+        document.dispatchEvent(new CustomEvent("servers:loaded"));
     }
 
 
@@ -184,7 +185,7 @@ export default class SquadServersBrowser {
             this.favorites.add(serverId);
         }
         this.saveFavorites();
-        $(document).trigger("favorites:changed", [{ favorites: this.favorites, servers: this.serversData }]);
+        document.dispatchEvent(new CustomEvent("favorites:changed", { detail: { favorites: this.favorites, servers: this.serversData } }));
     }
 
 
@@ -406,28 +407,27 @@ export default class SquadServersBrowser {
      * - Updates the active server and layer
      * - Starts or stops automatic syncing
      * - Switches the map/layer/factions/units to match the selected server
-     * @param {jQuery<HTMLElement>} row - The clicked table row as a jQuery object.
+     * @param {HTMLElement} row - The clicked table row.
      */
     handleRowClicks(row, event) {
 
         // Ignore disabled rows
-        if (!row || row.hasClass("unavailable")) return;
+        if (!row || row.classList.contains("unavailable")) return;
 
         // Ignore clicks on header rows
-        if (row.closest("thead").length) return;
+        if (row.closest("thead")) return;
 
         // Ignore clicks on favorite button - check the actual clicked element
-        const clickedElement = $(event.target);
-        if (clickedElement.closest(".favorite-btn").length) return;
+        if (event.target.closest(".favorite-btn")) return;
 
         // --- UNSELECT ---
-        if (row.hasClass("selected")) {
-            row.removeClass("selected");
-            $("#servers").removeClass("active");
+        if (row.classList.contains("selected")) {
+            row.classList.remove("selected");
+            document.getElementById("servers").classList.remove("active");
             this.selectedServer = null;
             App.updateUrlParams({ server: null });
             App.serverSelect.setChoiceByValue("");
-            App.SERVER_SELECTOR.trigger("change");
+            triggerChange(App.SERVER_SELECTOR, true);
 
             // stop sync
             if (this.syncInterval) {
@@ -438,16 +438,16 @@ export default class SquadServersBrowser {
         }
 
         // --- SELECT ---
-        $(".servers-table tr").removeClass("selected");
-        row.addClass("selected");
-        $("#servers").addClass("active");
+        document.querySelectorAll(".servers-table tr").forEach((el) => el.classList.remove("selected"));
+        row.classList.add("selected");
+        document.getElementById("servers").classList.add("active");
 
         // Retrieve fresh data from the serversData array in case it has changed since rendering
-        const server = this.serversData.find(s => s.id == row.data("serverid"));
+        const server = this.serversData.find(s => s.id == row.dataset.serverid);
 
         App.updateUrlParams({ server: server.id });
         App.serverSelect.setChoiceByValue(String(server.id));
-        App.SERVER_SELECTOR.trigger("change");
+        triggerChange(App.SERVER_SELECTOR, true);
 
         // Update the selected server and layer
         this.selectedServer = server.id;
@@ -481,13 +481,15 @@ export default class SquadServersBrowser {
         // Load the HTML Table
         serversList.innerHTML = this.generateTableHTML();
 
-        // Rows Click Handler
-        $(".servers-table").on("click", "tr", (event) => { this.handleRowClicks($(event.currentTarget), event);});
-
-        // Favorite button click handler - use event delegation on the table
-        $(".servers-table").on("click", ".favorite-btn", (event) => {
-            event.stopPropagation();
-            this.handleFavoriteClick(event);
+        // Rows Click Handler + favorite button click handler - event delegation on the table
+        document.querySelector(".servers-table").addEventListener("click", (event) => {
+            if (event.target.closest(".favorite-btn")) {
+                event.stopPropagation();
+                this.handleFavoriteClick(event);
+                return;
+            }
+            const row = event.target.closest("tr");
+            if (row) this.handleRowClicks(row, event);
         });
 
         // Search input listener
@@ -544,8 +546,8 @@ export default class SquadServersBrowser {
         if (!mapName || !serverName || !layerIndex) return;
 
         const mapIndex = MAPS.findIndex(m => m.name.toLowerCase() === mapName.toLowerCase());
-        const currentMapIndex = parseInt(App.MAP_SELECTOR.val());
-        const currentLayerIndex = App.LAYER_SELECTOR.val();
+        const currentMapIndex = parseInt(App.MAP_SELECTOR.value);
+        const currentLayerIndex = App.LAYER_SELECTOR.value;
 
         // Selects unit on SELECTOR only if the server-reported unit actually made it into
         // the options loadUnits() just built for the chosen faction. The server can report
@@ -553,13 +555,15 @@ export default class SquadServersBrowser {
         // own entry - try the non-boat variant next. If neither exists, leave loadUnits()'s
         // own first-option fallback in place instead of deselecting it.
         const selectReportedUnit = (SELECTOR, unit) => {
-            if (SELECTOR.find(`option[value="${unit}"]`).length) {
-                SELECTOR.val(unit).trigger($.Event("change", { broadcast: false }));
+            if (SELECTOR.querySelector(`option[value="${unit}"]`)) {
+                SELECTOR.value = unit;
+                triggerChange(SELECTOR, false);
                 return;
             }
             const landUnit = unit.replace(/[-_]Boats/, "");
-            if (landUnit !== unit && SELECTOR.find(`option[value="${landUnit}"]`).length) {
-                SELECTOR.val(landUnit).trigger($.Event("change", { broadcast: false }));
+            if (landUnit !== unit && SELECTOR.querySelector(`option[value="${landUnit}"]`)) {
+                SELECTOR.value = landUnit;
+                triggerChange(SELECTOR, false);
             } else {
                 console.debug(`[SERVER] Reported unit not found in dropdown: ${unit}`);
             }
@@ -567,8 +571,10 @@ export default class SquadServersBrowser {
 
         const applyFactions = () => {
             if (team1 && team2) {
-                App.FACTION1_SELECTOR.val(team1).trigger($.Event("change", { broadcast: false }));
-                App.FACTION2_SELECTOR.val(team2).trigger($.Event("change", { broadcast: false }));
+                App.FACTION1_SELECTOR.value = team1;
+                triggerChange(App.FACTION1_SELECTOR, false);
+                App.FACTION2_SELECTOR.value = team2;
+                triggerChange(App.FACTION2_SELECTOR, false);
                 if (unit1 && unit2) {
                     selectReportedUnit(App.UNIT1_SELECTOR, unit1);
                     selectReportedUnit(App.UNIT2_SELECTOR, unit2);
@@ -581,16 +587,16 @@ export default class SquadServersBrowser {
         };
 
         const setLayerAndFactions = () => {
-            if (!App.LAYER_SELECTOR.find(`option[value="${layerIndex}"]`).length) {
-                $(document).one("layers:loaded", setLayerAndFactions);
+            if (!App.LAYER_SELECTOR.querySelector(`option[value="${layerIndex}"]`)) {
+                document.addEventListener("layers:loaded", setLayerAndFactions, { once: true });
                 return;
             }
             App.layerSelect.setChoiceByValue(String(layerIndex));
-            App.LAYER_SELECTOR.trigger($.Event("change", { broadcast: true }));
-            $(document).one("layer:loaded", applyFactions);
+            triggerChange(App.LAYER_SELECTOR, true);
+            document.addEventListener("layer:loaded", applyFactions, { once: true });
         };
 
-        $("#serversInformation")[0].close();
+        document.getElementById("serversInformation").close();
 
         // Already on the right map and layer — factions only
         if (currentMapIndex === mapIndex && currentLayerIndex === layerIndex) {
@@ -601,17 +607,17 @@ export default class SquadServersBrowser {
         // Map needs to change — loadLayers() fires layers:loaded
         if (currentMapIndex !== mapIndex) {
             App.mapSelect.setChoiceByValue(String(mapIndex));
-            App.MAP_SELECTOR.trigger($.Event("change", { broadcast: true }));
-            $(document).one("layers:loaded", setLayerAndFactions);
+            triggerChange(App.MAP_SELECTOR, true);
+            document.addEventListener("layers:loaded", setLayerAndFactions, { once: true });
             return;
         }
 
         // Same map, different layer
-        const layersReady = App.LAYER_SELECTOR.find("option[value]:not([value=''])").length > 0;
+        const layersReady = Array.from(App.LAYER_SELECTOR.options).some((el) => el.value !== "");
         if (layersReady) {
             setLayerAndFactions();
         } else {
-            $(document).one("layers:loaded", setLayerAndFactions);
+            document.addEventListener("layers:loaded", setLayerAndFactions, { once: true });
             App.loadLayers();
         }
     }

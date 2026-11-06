@@ -98,7 +98,7 @@ export class squadDeployableMarker extends Marker {
 
     getFlagHTML() {
         const layer = App.minimap.layer;
-        if (!layer?.factions || !App.userSettings.enableFactions || process.env.DISABLE_FACTIONS == "true") return "";
+        if (!layer?.factions || process.env.DISABLE_FACTIONS == "true") return "";
 
         // Neutral/unknown team deployables don't belong to a faction
         const selectors = { "Team One": layer.factions.FACTION1_SELECTOR, "Team Two": layer.factions.FACTION2_SELECTOR };

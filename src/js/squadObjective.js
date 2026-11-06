@@ -181,8 +181,8 @@ export class SquadObjective {
             dropdownSelector = ".dropbtn10";
         }
 
-        fileName = $(dropdownSelector).val();
-        const isMainFallback = !fileName || !App.userSettings.enableFactions;
+        fileName = document.querySelector(dropdownSelector).value;
+        const isMainFallback = !fileName;
         const folder = isMainFallback ? "" : `${this.layer.modFolder}/`;
         if (isMainFallback) {
             fileName = App.userSettings.circlesFlags ? "main_circle" : "main";
@@ -240,14 +240,16 @@ export class SquadObjective {
 
             nameTextClassName += " main";
 
-            if (process.env.DISABLE_FACTIONS != "true" && App.userSettings.enableFactions) {
+            if (process.env.DISABLE_FACTIONS != "true") {
 
                 if (this.objectName === "00-Team1 Main") {
                     html = `<span><span data-i18n="common:team1">${i18next.t("team1", { ns: "common" })}</span>`;
-                    if ($(".dropbtn8").val() != null) html += ` : <span data-i18n="factions:${translationId($(".dropbtn8").val())}">${i18next.t(translationId($(".dropbtn8").val()), { ns: "factions" })}</span>`;
+                    const faction1 = document.querySelector(".dropbtn8").value;
+                    if (faction1 != null) html += ` : <span data-i18n="factions:${translationId(faction1)}">${i18next.t(translationId(faction1), { ns: "factions" })}</span>`;
                 } else {
                     html = `<span><span data-i18n="common:team2">${i18next.t("team2", { ns: "common" })}</span>`;
-                    if ($(".dropbtn10").val() != null) html += ` : <span data-i18n="factions:${translationId($(".dropbtn10").val())}">${i18next.t(translationId($(".dropbtn10").val()), { ns: "factions" })}</span>`;
+                    const faction2 = document.querySelector(".dropbtn10").value;
+                    if (faction2 != null) html += ` : <span data-i18n="factions:${translationId(faction2)}">${i18next.t(translationId(faction2), { ns: "factions" })}</span>`;
                 }
                 html += "</span>";
 
@@ -519,7 +521,7 @@ export class SquadObjective {
         this._hidePercentageTooltip();
         this.layer.hideLanes();
 
-        if (this.isMain && App.userSettings.enableFactions && process.env.DISABLE_FACTIONS != "true") {
+        if (this.isMain && process.env.DISABLE_FACTIONS != "true") {
             this.ctxMenu = new FactionCtxMenu(this.layer, this.objCluster.objectDisplayName).open(e);
             return;
         }
@@ -604,9 +606,9 @@ export class SquadObjective {
         // if opacity = 0, this.flag can't be clicked
         // css cursor is set to default on hover
         if (value === 0){
-            $(".flag").css("pointer-events", "none");
+            document.querySelectorAll(".flag").forEach((el) => el.style.pointerEvents = "none");
         } else {
-            $(".flag").css("pointer-events", "all");
+            document.querySelectorAll(".flag").forEach((el) => el.style.pointerEvents = "all");
         }
     }
 

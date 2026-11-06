@@ -206,7 +206,9 @@ export class squadTargetMarker extends squadMarker {
         this.removeFrom(this.map.markersGroup).removeFrom(this.map.activeTargetsMarkers).remove();
 
         // If that was the last Marker on the map, hide "delete/undo" buttons
-        if (!this.map.hasMarkers()) $(".btn-delete, .btn-undo").hide();
+        if (!this.map.hasMarkers()) {
+            document.querySelectorAll(".btn-delete, .btn-undo").forEach((el) => el.style.display = "none");
+        }
     }
 
 
@@ -559,18 +561,18 @@ export class squadTargetMarker extends squadMarker {
         let simulation2;
         let weaponPos2;
 
-        $("#sim1").addClass("active");
-        $("#sim2").removeClass("active");
-        $("#canvasControls > .active").first().removeClass("active");
-        $("#canvasControls > button").first().addClass("active");
+        document.getElementById("sim1").classList.add("active");
+        document.getElementById("sim2").classList.remove("active");
+        document.querySelector("#canvasControls > .active")?.classList.remove("active");
+        document.querySelector("#canvasControls > button")?.classList.add("active");
 
         const weaponPos1 = this.map.activeWeaponsMarkers.getLayers()[0].getLatLng();
         const { path: heightPath1, weaponIndex: weaponIndex1, targetIndex: targetIndex1 } = this._map.heightmap.getHeightPath(weaponPos1, this.getLatLng());
         const simulation1 = new SquadSimulation("#sim1", this.firingSolution1, heightPath1, this.map.activeWeaponsMarkers.getLayers()[0].angleType, App.activeWeapon.unit, 0, weaponIndex1, targetIndex1);
-        $("#canvasControls").css("display", "none");
+        document.getElementById("canvasControls").style.display = "none";
 
         if (this.map.activeWeaponsMarkers.getLayers().length === 2){
-            $("#canvasControls").css("display", "block");
+            document.getElementById("canvasControls").style.display = "block";
             weaponPos2 = this.map.activeWeaponsMarkers.getLayers()[1].getLatLng();
             const { path: heightPath2, weaponIndex: weaponIndex2, targetIndex: targetIndex2 } = this._map.heightmap.getHeightPath(weaponPos2, this.getLatLng());
             simulation2 = new SquadSimulation("#sim2", this.firingSolution2, heightPath2, this.map.activeWeaponsMarkers.getLayers()[1].angleType, App.activeWeapon.unit, 0, weaponIndex2, targetIndex2);
@@ -584,17 +586,23 @@ export class squadTargetMarker extends squadMarker {
         });
 
         // Re-bound on every click since the firing solution/angle is per-target -
-        // .off() first so reopening on a different target doesn't stack listeners.
-        $("#sim1 .seeIn3DButton").off("click").on("click", () => {
+        // remove the previous handler first so reopening on a different target doesn't stack listeners.
+        const sim1Button = document.querySelector("#sim1 .seeIn3DButton");
+        if (sim1Button._clickHandler) sim1Button.removeEventListener("click", sim1Button._clickHandler);
+        sim1Button._clickHandler = () => {
             DIALOG.close();
             App.open3D({ firingSolution: this.firingSolution1, angleType: this.map.activeWeaponsMarkers.getLayers()[0].angleType });
-        });
-        $("#sim2 .seeIn3DButton").off("click");
+        };
+        sim1Button.addEventListener("click", sim1Button._clickHandler);
+
+        const sim2Button = document.querySelector("#sim2 .seeIn3DButton");
+        if (sim2Button._clickHandler) sim2Button.removeEventListener("click", sim2Button._clickHandler);
         if (simulation2) {
-            $("#sim2 .seeIn3DButton").on("click", () => {
+            sim2Button._clickHandler = () => {
                 DIALOG.close();
                 App.open3D({ firingSolution: this.firingSolution2, angleType: this.map.activeWeaponsMarkers.getLayers()[1].angleType });
-            });
+            };
+            sim2Button.addEventListener("click", sim2Button._clickHandler);
         }
 
         DIALOG.showModal();

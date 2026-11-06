@@ -58,7 +58,7 @@ export default class SquadHeightmap {
         } catch {
             console.error("[HEIGHTMAP] Failed to load PNG heightmap:", url);
         } finally {
-            $(document).trigger("heightmap:loaded");
+            document.dispatchEvent(new CustomEvent("heightmap:loaded"));
         }
     }
 

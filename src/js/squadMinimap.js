@@ -20,6 +20,21 @@ import "./libs/leaflet-imageoverlay-rotated.js";
 
 const isMobile = matchMedia("(pointer: coarse)").matches;
 
+function fadeTo(el, duration, targetOpacity, callback) {
+    const start = parseFloat(getComputedStyle(el).opacity) || 0;
+    const startTime = performance.now();
+    function step(now) {
+        const progress = Math.min((now - startTime) / duration, 1);
+        el.style.opacity = start + (targetOpacity - start) * progress;
+        if (progress < 1) {
+            requestAnimationFrame(step);
+        } else {
+            callback?.();
+        }
+    }
+    requestAnimationFrame(step);
+}
+
 /**
  * Squad Minimap
  * Custom Leaflet Map for Squad, managing basemaps, mouse behaviours, and more
@@ -142,22 +157,22 @@ export class squadMinimap extends Map {
         // Some maps only ship a basemap - disable the other layer buttons
         // and fall back to basemap visually (URL type param is left untouched)
         const singleLayer = this.activeMap.singleLayer === true;
-        $(".btn-topomap, .btn-terrainmap").prop("disabled", singleLayer);
+        document.querySelectorAll(".btn-topomap, .btn-terrainmap").forEach((el) => el.disabled = singleLayer);
         // .btn-hd stays a real (non-disabled) button so its tippy tooltip
         // can still show on hover/touch to explain why it's locked
-        $(".btn-hd").toggleClass("locked", singleLayer);
+        document.querySelector(".btn-hd").classList.toggle("locked", singleLayer);
         if (singleLayer) {
-            $("#mapLayerMenu .layers").removeClass("active");
-            $(".btn-basemap").addClass("active");
-            $(".btn-hd").removeClass("active");
+            document.querySelectorAll("#mapLayerMenu .layers").forEach((el) => el.classList.remove("active"));
+            document.querySelector(".btn-basemap").classList.add("active");
+            document.querySelector(".btn-hd").classList.remove("active");
         } else {
-            $(".btn-hd").toggleClass("active", App.userSettings.highQualityImages);
+            document.querySelector(".btn-hd").classList.toggle("active", App.userSettings.highQualityImages);
         }
 
         // Some maps (e.g. fully underground ones) have no meaningful surface terrain -
         // same locked-but-hoverable treatment as .btn-hd above, so the tooltip can still
         // explain why.
-        $(".btn-3d").toggleClass("locked", this.activeMap.no3D === true);
+        document.querySelector(".btn-3d").classList.toggle("locked", this.activeMap.no3D === true);
 
         // load map
         this.changeLayer(true);
@@ -168,7 +183,7 @@ export class squadMinimap extends Map {
      * remove existing layer and replace it
      */
     changeLayer(changemap = false) {
-        const LAYERMODE = this.activeMap.singleLayer ? "basemap" : $("#mapLayerMenu .active").attr("value");
+        const LAYERMODE = this.activeMap.singleLayer ? "basemap" : document.querySelector("#mapLayerMenu .active").getAttribute("value");
         const OLDLAYER = this.activeLayer;
 
         // Show spinner
@@ -193,7 +208,7 @@ export class squadMinimap extends Map {
             imagePath = `${process.env.API_URL}${imagePath}.webp`;
             this.activeLayer = new ImageOverlay(imagePath, this.imageBounds);
             this.activeLayer.addTo(this.layerGroup);
-            $(this.activeLayer.getElement()).css("opacity", 0);
+            this.activeLayer.getElement().style.opacity = 0;
         }
     
 
@@ -204,7 +219,7 @@ export class squadMinimap extends Map {
             }
             else {
                 // Animate the opacity of the new layer
-                $(this.activeLayer.getElement()).fadeTo(700, 1, () => {
+                fadeTo(this.activeLayer.getElement(), 700, 1, () => {
                     if (OLDLAYER) OLDLAYER.remove();
                     this.spin(false);
                 });
@@ -232,7 +247,7 @@ export class squadMinimap extends Map {
      */
     toggleHeatmap(){
 
-        if ($(".btn-helpmap").hasClass("active")){
+        if (document.querySelector(".btn-helpmap").classList.contains("active")){
             this.spin(true, this.spinOptions);
             if (this.heatmap) this.heatmap.remove();
             fetchMarkersByMap(this.activeMap.name, App.activeWeapon.name)
@@ -249,7 +264,7 @@ export class squadMinimap extends Map {
                 })
                 .catch(error => {
                     this.spin(false);
-                    $(".btn-helpmap").removeClass("active");
+                    document.querySelector(".btn-helpmap").classList.remove("active");
                     App.openToast("error", "error", "apiError");
                     console.debug("Error fetching markers:", error);
                 });
@@ -293,9 +308,9 @@ export class squadMinimap extends Map {
         if (this.layer) this.layer.clear();
 
         // Empty and clear buttons of DOM elements
-        $(".dropbtn8, .dropbtn9, .dropbtn10, .dropbtn11").empty();
-        $("#factionsTab, #factionsButton, .btn-delete, .btn-undo").hide();
-        if (App.ui != 0) $(".weaponSelector").removeClass("active animate__fadeIn");
+        document.querySelectorAll(".dropbtn8, .dropbtn9, .dropbtn10, .dropbtn11").forEach((el) => el.replaceChildren());
+        document.querySelectorAll("#factionsTab, #factionsButton, .btn-delete, .btn-undo").forEach((el) => el.style.display = "none");
+        if (App.ui != 0) document.querySelector(".weaponSelector").classList.remove("active", "animate__fadeIn");
 
         // Reset map view
         this.setView([-this.pixelSize/2, this.pixelSize/2], 2);
@@ -516,10 +531,10 @@ export class squadMinimap extends Map {
             newMarker = new squadWeaponMarker(latlng, {uid: uid, heightPadding: heightPadding}, this)
                 .addTo(this.markersGroup).addTo(this.activeWeaponsMarkers);
             newMarker.updateIcon();
-            const $ws = $(".weaponSelector");
-            $ws.removeClass("animate__fadeIn");
-            $ws[0].offsetWidth; // force reflow to restart animation
-            $ws.addClass("active animate__fadeIn");
+            const ws = document.querySelector(".weaponSelector");
+            ws.classList.remove("animate__fadeIn");
+            void ws.offsetWidth; // force reflow to restart animation
+            ws.classList.add("active", "animate__fadeIn");
         } else if (this.activeWeaponsMarkers.getLayers().length === 1) {
             newMarker = new squadWeaponMarker(latlng, {uid: uid, heightPadding: heightPadding}, this).addTo(this.markersGroup).addTo(this.activeWeaponsMarkers);
             newMarker.updateIcon();
@@ -571,7 +586,7 @@ export class squadMinimap extends Map {
         // Add Item to history
         this.history.push(target);
 
-        $(".btn-delete, .btn-undo").show();
+        document.querySelectorAll(".btn-delete, .btn-undo").forEach((el) => el.style.removeProperty("display"));
 
         if (App.userSettings.targetAnimation){
             if (this.activeWeaponsMarkers.getLayers().length === 1) {
@@ -785,7 +800,7 @@ export class squadMinimap extends Map {
 
         // Add Item to history
         this.history.push(newMarker);
-        $(".btn-delete, .btn-undo").show();
+        document.querySelectorAll(".btn-delete, .btn-undo").forEach((el) => el.style.removeProperty("display"));
 
         if (!uid && App.session.ws && App.session.ws.readyState === WebSocket.OPEN) {
             console.debug("[SESSION] Creating a marker with uid", newMarker.uid);
@@ -810,16 +825,16 @@ export class squadMinimap extends Map {
     disableDrawingMode() {
         this.dragging.enable();
         this.drawingMode = false;
-        $("#map").css("cursor", App.userSettings.cursor ? "default" : "crosshair");
-        $(".btn-drawingMode").hide();
+        document.getElementById("map").style.cursor = App.userSettings.cursor ? "default" : "crosshair";
+        document.querySelector(".btn-drawingMode").style.display = "none";
     }
 
 
     enableDrawingMode() {
         this.dragging.disable();
         this.drawingMode = true;
-        $("#map").css("cursor", "pointer");
-        $(".btn-drawingMode").show();
+        document.getElementById("map").style.cursor = "pointer";
+        document.querySelector(".btn-drawingMode").style.removeProperty("display");
     }
 
 
@@ -846,7 +861,7 @@ export class squadMinimap extends Map {
         const handleClick = () => {
             if (isDrawing && circle) {
                 isDrawing = false;
-                this.off("mousemove", handleMouseMove);
+                this.off("pointermove", handleMouseMove);
     
                 //if (!circle.uid) circle.uid = uuidv4();
     

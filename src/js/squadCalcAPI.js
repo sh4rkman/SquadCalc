@@ -84,19 +84,23 @@ export const checkApiHealth = async () => {
             const data = await response.json();
             if (data.status === "OK") {
                 console.log(`Connected to ${process.env.API_URL}`);
-                if (data.version) $("#settingsGameDataVersion").text(`Squad v${data.version}`);
+                if (data.version) document.getElementById("settingsGameDataVersion").textContent = `Squad v${data.version}`;
                 App.layerCounts = data.layers || {};
                 App._renderMods();
                 App.applyUrlIntent();
             }
         } else {
             console.error("Not connected to SquadCalc API");
-            $("#settingsGameDataVersion").text("Disconnected from API").addClass("error");
+            const el = document.getElementById("settingsGameDataVersion");
+            el.textContent = "Disconnected from API";
+            el.classList.add("error");
         }
     } catch (error) {
         console.error("[API] Not connected to SquadCalc API");
         console.debug("[API]", error);
-        $("#settingsGameDataVersion").text("Disconnected from API").addClass("error");
+        const el = document.getElementById("settingsGameDataVersion");
+        el.textContent = "Disconnected from API";
+        el.classList.add("error");
     }
 };
 

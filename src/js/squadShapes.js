@@ -3,6 +3,14 @@ import { App } from "../app.js";
 import { Polyline, DomEvent, Circle, Rectangle } from "leaflet";
 import { PolylineDecorator, PolylineSymbol } from "./libs/leaflet-polylinedecorator.js";
 
+function showButtons(selector) {
+    document.querySelectorAll(selector).forEach((el) => el.style.removeProperty("display"));
+}
+
+function hideButtons(selector) {
+    document.querySelectorAll(selector).forEach((el) => el.style.display = "none");
+}
+
 export class MapDrawing {
     
     constructor(map, color, latlngs, uid = null) {
@@ -40,7 +48,7 @@ export class MapDrawing {
 
         // Add Item to history
         this.map.history.push(this);
-        $(".btn-delete, .btn-undo").show();
+        showButtons(".btn-delete, .btn-undo");
 
         if (broadcast && App.session.ws && App.session.ws.readyState === WebSocket.OPEN) {
             console.debug("[SESSION] Sending new draw with uid", this.uid);
@@ -77,7 +85,7 @@ export class MapDrawing {
         this.map.history = this.map.history.filter(object => object !== this);
 
         // If that was the last Marker on the map, hide "delete all" buttons
-        if (!this.map.hasMarkers()) $(".btn-delete, .btn-undo").hide();
+        if (!this.map.hasMarkers()) hideButtons(".btn-delete, .btn-undo");
     }
 }
 
@@ -139,7 +147,7 @@ export class MapArrow {
         // Add Item to history
         this.map.history.push(this);
 
-        $(".btn-delete, .btn-undo, .btn-download").show();
+        showButtons(".btn-delete, .btn-undo, .btn-download");
     }
 
 
@@ -169,7 +177,7 @@ export class MapArrow {
         this.map.history = this.map.history.filter(object => object !== this);
 
         // If that was the last Marker on the map, hide "delete all" buttons
-        if (!this.map.hasMarkers()) $(".btn-delete, .btn-undo, .btn-download").hide();
+        if (!this.map.hasMarkers()) hideButtons(".btn-delete, .btn-undo, .btn-download");
     }
 }
 
@@ -211,7 +219,7 @@ export class MapRectangle {
         // Add Item to history
         this.map.history.push(this);
 
-        $(".btn-delete, .btn-undo, .btn-download").show();
+        showButtons(".btn-delete, .btn-undo, .btn-download");
     }
 
     // Removes the rectangle from the map
@@ -234,7 +242,7 @@ export class MapRectangle {
         this.map.history = this.map.history.filter(object => object !== this);
 
         // If no more markers, hide "delete all" buttons
-        if (!this.map.hasMarkers()) $(".btn-delete, .btn-undo, .btn-download").hide();
+        if (!this.map.hasMarkers()) hideButtons(".btn-delete, .btn-undo, .btn-download");
     }
 }
 
@@ -276,7 +284,7 @@ export class MapCircle {
         // Add Item to history
         this.map.history.push(this);
 
-        $(".btn-delete, .btn-undo").show();
+        showButtons(".btn-delete, .btn-undo");
     }
 
     // Removes the circle from the map
@@ -301,6 +309,6 @@ export class MapCircle {
         this.map.history = this.map.history.filter(object => object !== this);
 
         // If that was the last Circle on the map, hide "delete all" buttons
-        if (!this.map.hasMarkers()) $(".btn-delete, .btn-undo").hide();
+        if (!this.map.hasMarkers()) hideButtons(".btn-delete, .btn-undo");
     }
 }

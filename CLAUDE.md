@@ -84,14 +84,11 @@ App.sanitize(str); // HTML escape utility (static method)
 ## Stack
 - **Bundler**: webpack 5, entry `src/app.js`, output `dist/` with `[contenthash]`
 - **CSS**: SCSS per component via sass-loader
-- **UI**: jQuery + select2 for dropdowns, Leaflet for the map
+- **UI**: vanilla JS (no jQuery), Choices.js for dropdowns, Leaflet for the map
 - **i18n**: i18next with http-backend
-- **Animations**: `animateCSS($el, "animationName")` from `src/js/animations.js`
+- **Animations**: `animateCSS(el, "animationName")` from `src/js/animations.js`
 
 ## Changelog
 - File: `CHANGELOG.md`
 - Format: shields.io badges (`-new%20features-green`, `-bug%20fixes-b22`, `-minor%20release-cd6f68`)
 - Version bump also required in `package.json`
-
-## Never commit
-User manages all git commits — never run `git commit`.

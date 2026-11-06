@@ -59,7 +59,7 @@ export function loadLanguage(LANGUAGES) {
     }, function(err) {
         if (err) return console.error(err);
         langSelect.setChoiceByValue(language);
-        $("html").attr("lang", language);
+        document.documentElement.lang = language;
         updateContent();
     });
 
@@ -94,7 +94,7 @@ export function loadLanguage(LANGUAGES) {
         },
     });
 
-    $("#settingsLangSelect").on("change", (event) => onLanguageChange(event.target.value));
+    document.getElementById("settingsLangSelect").addEventListener("change", (event) => onLanguageChange(event.target.value));
 }
 
 /**
@@ -105,7 +105,7 @@ function onLanguageChange(value) {
     if (!value) return;
     i18next.changeLanguage(value, updateContent);
     localStorage.setItem("settings-language", value);
-    $("html").attr("lang", value);
+    document.documentElement.lang = value;
 }
 
 /**
@@ -167,4 +167,21 @@ function updateContent() {
         App.changeWeapon();
     }
     App.simulation3D?._rebuildTextureChoices();
+
+    // The layer/server selectors' placeholder choice is also snapshotted (by setChoices())
+    // at whatever i18next.t() returned when it was built - often the raw key, since that
+    // first build runs before i18next's async backend has loaded. The generic data-i18n
+    // loop above fixes the text currently on screen, but Choices re-renders the placeholder
+    // from this stale cached label when the selection is cleared - refresh it too.
+    refreshChoicesPlaceholder(App.layerSelect, "common:layerPlaceholder");
+    refreshChoicesPlaceholder(App.serverSelect, "common:favServers");
+}
+
+function refreshChoicesPlaceholder(instance, key) {
+    if (!instance) return;
+    const translated = i18next.t(key);
+    const placeholderChoice = instance._store?.choices?.find(choice => choice.placeholder);
+    if (placeholderChoice) placeholderChoice.label = translated;
+    instance._placeholderValue = translated;
+    instance.containerOuter?.element?.querySelector(".choices__placeholder")?.replaceChildren(translated);
 }

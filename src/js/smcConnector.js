@@ -60,13 +60,13 @@ async function setupWebSockets() {
             clearInterval(connectionInterval);
 
             // HD Maps are not compatible with squadmortaroverlay
-            if ($(".btn-hd").hasClass("active")) {
+            if (document.querySelector(".btn-hd").classList.contains("active")) {
                 App.userSettings.highQualityImages = false;
-                $(".btn-hd").removeClass("active");
+                document.querySelector(".btn-hd").classList.remove("active");
                 App.minimap.spin(false);
                 App.minimap.changeLayer();
             }
-            $(".btn-hd").prop("disabled", true);
+            document.querySelector(".btn-hd").disabled = true;
         });
 
         socketMap.addEventListener("message", async (event) => {
@@ -108,7 +108,7 @@ async function setupWebSockets() {
  * Handles WebSocket disconnection events
  */
 function handleDisconnect() {
-    $(".btn-hd").prop("disabled", false);
+    document.querySelector(".btn-hd").disabled = false;
     startConnectionAttempts();
 }
 

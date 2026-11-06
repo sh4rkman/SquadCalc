@@ -117,8 +117,8 @@ export class Weapon {
      * @returns {void} 
      */
     changeShell(){
-        const SHELL_NUM = $(".dropbtn3").val();
-        const WEAPON_NUM = $(".dropbtn2").val();
+        const SHELL_NUM = document.querySelector(".dropbtn3").value;
+        const WEAPON_NUM = document.querySelector(".dropbtn2").value;
         const SHELL_DATA = WEAPONS[WEAPON_NUM].shells[SHELL_NUM];
 
         const explosionParams = [

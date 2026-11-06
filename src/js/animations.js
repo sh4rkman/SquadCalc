@@ -1,25 +1,23 @@
 /**
  * Give a animate.css class to a given element (https://animate.style/)
- * @param {text} [element] - jQuery Object to animate
+ * @param {Element} [element] - DOM element to animate
  * @param {text} [animation] - animation name to apply
  */
-export function animateCSS($element, animation, prefix = "animate__") {
+export function animateCSS(element, animation, prefix = "animate__") {
     return new Promise((resolve) => {
         const animationName = `${prefix}${animation}`;
-        const hasAnimationClass = $element.hasClass(`${prefix}animated`);
-        
-        $element.addClass(`${prefix}animated ${animationName}`);
+        const hasAnimationClass = element.classList.contains(`${prefix}animated`);
+
+        element.classList.add(`${prefix}animated`, animationName);
 
         function handleAnimationEnd(event) {
-            // Remove the classes from the jQuery object
             event.stopPropagation();
-            $element.removeClass(`${animationName}`);
-            if (!hasAnimationClass) $element.removeClass(`${prefix}animated`);
+            element.classList.remove(animationName);
+            if (!hasAnimationClass) element.classList.remove(`${prefix}animated`);
             resolve("Animation ended");
         }
 
-        // Use the on() method to attach the event handler
-        $element.on("animationend", handleAnimationEnd);
+        element.addEventListener("animationend", handleAnimationEnd, { once: true });
     });
 }
 
@@ -105,9 +103,8 @@ function render(particles, ctx, width, height) {
 
 export function animateCalc(goal, duration, destination) {
     // Ensure target is a number
-    const element = $(`#${destination}`);
-    let target = element.html();
-    target = isNaN(element.html()) ? 0 : Number(element.html());
+    const element = document.getElementById(destination);
+    let target = isNaN(element.textContent) ? 0 : Number(element.textContent);
 
     const increment = Math.abs(goal - target) / (duration / 16);
 
@@ -115,13 +112,13 @@ export function animateCalc(goal, duration, destination) {
     const decimalPlaces = Number.isInteger(Number(goal)) ? 0 : 1;
 
     function updateCount(current) {
-        element.text(current.toFixed(decimalPlaces));
+        element.textContent = current.toFixed(decimalPlaces);
 
         // Determine the animation direction
         if ((target < goal && current < goal) || (target > goal && current > goal)) {
             requestAnimationFrame(() => updateCount(target < goal ? current + increment : current - increment));
         } else {
-            element.text(goal);
+            element.textContent = goal;
         }
     }
 

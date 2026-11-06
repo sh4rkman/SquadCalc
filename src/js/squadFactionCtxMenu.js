@@ -1,6 +1,7 @@
 import tippy, {sticky} from "tippy.js";
 import i18next from "i18next";
 import { translationId } from "./squadObjective.js";
+import { triggerChange } from "./domUtils.js";
 
 export class FactionCtxMenu {
     constructor(layer, flagName) {
@@ -53,9 +54,10 @@ export class FactionCtxMenu {
     openUnitsCtxMenu(factionId) {
         let html = "<div class='faction-grid animate__animated animate__fadeIn animate__faster'>";
         
-        if (this.FACTION_SELECTOR.val() != factionId) {
+        if (this.FACTION_SELECTOR.value != factionId) {
             if (this.flagName === this.layer.factions.pinnedFaction) this.layer.factions.unpinUnit();
-            this.FACTION_SELECTOR.val(factionId).trigger($.Event("change", { broadcast: true }));
+            this.FACTION_SELECTOR.value = factionId;
+            triggerChange(this.FACTION_SELECTOR, true);
         }
 
         this.FACTIONS.forEach(faction => {
@@ -65,7 +67,7 @@ export class FactionCtxMenu {
                     const unit = this.UNITS.find(u => u.unitObjectName === unitId);
                     if (!unit) return;
 
-                    const selected = this.UNIT_SELECTOR.val() === unitId ? "_selected" : "";
+                    const selected = this.UNIT_SELECTOR.value === unitId ? "_selected" : "";
                     html += `<div class="faction-item units ${selected}" id="${unit.unitObjectName}" title="${i18next.t(unit.type, { ns: "units" })} - ${i18next.t(unit.displayName, { ns: "units" })}">
                         <img 
                             src="/img/units/${unit.unitIcon}.webp" 
@@ -91,7 +93,10 @@ export class FactionCtxMenu {
 
         // If that unit is already pinned, set the button to "pinned"
         if (this.layer.factions.pinned && this.flagName === this.layer.factions.pinnedFaction) {
-            $("#mapPinButton").addClass("active").text(i18next.t("common:pinned")).attr("data-i18n", "common:pinned");
+            const pinButton = document.getElementById("mapPinButton");
+            pinButton.classList.add("active");
+            pinButton.textContent = i18next.t("common:pinned");
+            pinButton.setAttribute("data-i18n", "common:pinned");
         }
 
         this._attachUnitHandlers();
@@ -100,7 +105,7 @@ export class FactionCtxMenu {
     openFactionsCtxMenu() {
         let html = "<div class='faction-grid animate__animated animate__fadeIn animate__faster'>";
         this.FACTIONS.forEach(faction => {
-            const selected = this.FACTION_SELECTOR.val() === faction.factionID ? "_selected" : "";
+            const selected = this.FACTION_SELECTOR.value === faction.factionID ? "_selected" : "";
             const translation = translationId(faction.factionID);
             html += `<div class="faction-item ${selected}" id="${faction.factionID}" title="${i18next.t(translation + "_displayName", { ns: "factions" })}">
                 <img src="/img/flags/${this.layer.modFolder}/${faction.factionID}.webp" onerror="this.onerror=null;this.src='/img/flags/unknown.webp';"/>
@@ -131,18 +136,20 @@ export class FactionCtxMenu {
 
 
     _handleFactionCtxMenu(event){
-        if ($(event.currentTarget).hasClass("_selected")){
-            $(event.currentTarget).removeClass("_selected");
-            this.FACTION_SELECTOR.val("").trigger($.Event("change", { broadcast: true }));
-        } 
+        if (event.currentTarget.classList.contains("_selected")){
+            event.currentTarget.classList.remove("_selected");
+            this.FACTION_SELECTOR.value = "";
+            triggerChange(this.FACTION_SELECTOR, true);
+        }
     }
 
 
     _handleUnitCtxMenu(event){
-        if ($(event.currentTarget).hasClass("_selected")){
-            $(event.currentTarget).removeClass("_selected");
-            this.UNIT_SELECTOR.val("").trigger($.Event("change", { broadcast: true }));
-        } 
+        if (event.currentTarget.classList.contains("_selected")){
+            event.currentTarget.classList.remove("_selected");
+            this.UNIT_SELECTOR.value = "";
+            triggerChange(this.UNIT_SELECTOR, true);
+        }
     }
 
     
@@ -154,24 +161,27 @@ export class FactionCtxMenu {
 
         const handleClickUnit = (ev) => {
             const unitId = ev.currentTarget.id;
-            if (this.UNIT_SELECTOR.val() !== unitId) {
+            if (this.UNIT_SELECTOR.value !== unitId) {
                 if (this.flagName === this.layer.factions.pinnedFaction) this.layer.factions.unpinUnit();
                 tip.popper.querySelectorAll(".faction-item.units._selected").forEach(item => item.classList.remove("_selected"));
                 ev.currentTarget.classList.add("_selected");
                 pinButton.classList.remove("active");
                 pinButton.textContent = i18next.t("common:pinToMap");
-                this.UNIT_SELECTOR.val(unitId).trigger($.Event("change", { broadcast: true }));
+                this.UNIT_SELECTOR.value = unitId;
+                triggerChange(this.UNIT_SELECTOR, true);
             }
         };
 
         const handleClickPin = (ev) => {
-            const $btn = $(ev.currentTarget);
-            if ($btn.hasClass("active")) {
+            const btn = ev.currentTarget;
+            if (btn.classList.contains("active")) {
                 this.layer.factions.unpinUnit();
-                $btn.removeClass("active").text(i18next.t("common:pinToMap"));
+                btn.classList.remove("active");
+                btn.textContent = i18next.t("common:pinToMap");
             } else {
-                this.layer.factions.pinUnit(this.UNITS, this.FACTION_SELECTOR.val(), this.UNIT_SELECTOR.val(), this.flagName);
-                $btn.addClass("active").text(i18next.t("common:pinned"));
+                this.layer.factions.pinUnit(this.UNITS, this.FACTION_SELECTOR.value, this.UNIT_SELECTOR.value, this.flagName);
+                btn.classList.add("active");
+                btn.textContent = i18next.t("common:pinned");
                 //tip.hide();
             }
         };

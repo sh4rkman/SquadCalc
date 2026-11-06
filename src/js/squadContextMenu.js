@@ -23,7 +23,6 @@ export default class SquadContextMenu {
             arrow: false,
             offset: [58, -15],
             onHide: () => {
-                $(".ctxButton").off("click");
                 document.removeEventListener("contextmenu", this.boundHandleContextMenu);
             },
             onShow: (tip) => {
@@ -55,35 +54,34 @@ export default class SquadContextMenu {
 
 
                 this.setIcons(tip);
-
-                // Delay the event listeners to let the DOM update
-                setTimeout(() => {
-
-                    $(".ctxButton").on("click", (event) => {
-
-                        const target = event.originalEvent.target;
-
-                        // Add additional options for specific markers
-                        if (target.dataset.icon === "middleContext") { 
-                            App.minimap.createWeapon(tip.e.latlng);
-                            this.close();
-                            return;
-                        } 
-
-                        // Open3D mode
-                        if (target.dataset.icon === "3D") {
-                            App.open3DAt(tip.e.latlng);
-                            this.close();
-                            return;
-                        }
-
-                        App.minimap.createMarker(tip.e.latlng, target.dataset.team, target.dataset.category, target.dataset.icon);     
-                        this.close();
-                    });
-
-                }, 0);
-
             }
+        });
+
+        // Delegated once on the popper (stable across show/hide cycles) instead of
+        // re-binding on every onShow, which stacked duplicate listeners if two
+        // shows happened before the previous setTimeout-scheduled bind ran.
+        this.mainContextMenu.popper.addEventListener("click", (event) => {
+            const target = event.target.closest(".ctxButton")?.querySelector("[data-icon]");
+            if (!target) return;
+
+            const tip = this.mainContextMenu;
+
+            // Add additional options for specific markers
+            if (target.dataset.icon === "middleContext") {
+                App.minimap.createWeapon(tip.e.latlng);
+                this.close();
+                return;
+            }
+
+            // Open3D mode
+            if (target.dataset.icon === "3D") {
+                App.open3DAt(tip.e.latlng);
+                this.close();
+                return;
+            }
+
+            App.minimap.createMarker(tip.e.latlng, target.dataset.team, target.dataset.category, target.dataset.icon);
+            this.close();
         });
 
         this.weaponContextMenu = tippy(document.querySelector("#map"), {
@@ -97,10 +95,6 @@ export default class SquadContextMenu {
             duration: 0,
             arrow: false,
             offset: [0, 15],
-            onHide: () => {
-                $(".shapeButton").off("click");
-                $(".penButton").off("click");
-            },
             onShow: (tip) => {
                 tip.setContent(
                     `
@@ -128,77 +122,67 @@ export default class SquadContextMenu {
                 );
 
                 this.setIcons(tip);
+            }
+        });
 
-                setTimeout(() => {
-                    $(".penButton").on("click", (event) => {
+        // Delegated once on the popper, same reasoning as mainContextMenu above.
+        this.weaponContextMenu.popper.addEventListener("click", (event) => {
+            const penTarget = event.target.closest(".penButton")?.querySelector("span");
+            if (penTarget) {
+                const color = [...penTarget.classList].find(cls => cls !== "pen");
 
-                        // Extract the color from the clicked element
-                        let targetElement = event.target.closest(".shapeButton span");
+                App.minimap.on("pointerdown", (e) => {
+                    if (!App.minimap.drawingMode)  return;
+                    if (e.originalEvent.button !== 0) return;
+                    App.minimap.drawing = true;
+                    App.minimap.points = [e.latlng];
+                    App.minimap.currentLine = new MapDrawing(App.minimap, color, App.minimap.points);
+                });
 
-                        // Catch weird clicks outside the span
-                        if (!targetElement) return;
+                App.minimap.on("pointermove", (e) => {
+                    if (!App.minimap.drawingMode) return;
+                    if (!App.minimap.drawing) return;
+                    App.minimap.points.push(e.latlng);
+                    App.minimap.currentLine.polyline.setLatLngs(App.minimap.points);
+                });
 
-                        const color = [...targetElement.classList].find(cls => cls !== "pen");
+                App.minimap.on("pointerup", () => {
+                    if (!App.minimap.drawingMode) return;
+                    if (!App.minimap.drawing) return;
 
-                        App.minimap.on("pointerdown", (e) => {
-                            if (!App.minimap.drawingMode)  return;
-                            if (e.originalEvent.button !== 0) return;
-                            App.minimap.drawing = true;
-                            App.minimap.points = [e.latlng];
-                            App.minimap.currentLine = new MapDrawing(App.minimap, color, App.minimap.points);
-                        });
+                    // Avoid creating lines with less than 2 points
+                    if (App.minimap.currentLine.polyline.getLatLngs().length < 2) {
+                        App.minimap.currentLine.delete();
+                        return;
+                    }
 
-                        App.minimap.on("pointermove", (e) => {
-                            if (!App.minimap.drawingMode) return;
-                            if (!App.minimap.drawing) return;
-                            App.minimap.points.push(e.latlng);
-                            App.minimap.currentLine.polyline.setLatLngs(App.minimap.points);
-                        });
-                
-                        App.minimap.on("pointerup", () => {
-                            if (!App.minimap.drawingMode) return;
-                            if (!App.minimap.drawing) return;
-                
-                            // Avoid creating lines with less than 2 points
-                            if (App.minimap.currentLine.polyline.getLatLngs().length < 2) {
-                                App.minimap.currentLine.delete();
-                                return;
-                            }
+                    App.minimap.currentLine.finalize();
+                    App.minimap.drawing = false;
+                    App.minimap.currentLine = null;
+                });
 
-                            App.minimap.currentLine.finalize();
-                            App.minimap.drawing = false;
-                            App.minimap.currentLine = null;
-                        });
+                App.minimap.enableDrawingMode();
+                this.close();
+                return;
+            }
 
-                        App.minimap.enableDrawingMode();
-                        this.close();
-                    });
+            const shapeTarget = event.target.closest(".shapeButton")?.querySelector("span");
+            if (shapeTarget) {
+                // Extract the shape type (arrow, rectangle, circle)
+                const shape = ["arrow", "rectangle", "circle"].find(type => shapeTarget.classList.contains(type));
 
+                // Extract the color (any other class that isn't the shape itself)
+                const color = [...shapeTarget.classList].find(cls => cls !== shape);
 
-                    $(".shapeButton").on("click", (event) => {
-                        let targetElement = event.target.closest(".shapeButton span"); // Ensure we get the <span> inside the button
-                    
-                        if (!targetElement) return;
-                                       
-                        // Extract the shape type (arrow, rectangle, circle)
-                        const shape = ["arrow", "rectangle", "circle"].find(type => targetElement.classList.contains(type));
-                    
-                        // Extract the color (any other class that isn't the shape itself)
-                        const color = [...targetElement.classList].find(cls => cls !== shape);
-                    
-                        if (shape && color) {
-                        // Call the corresponding method dynamically
-                            const methodName = `create${shape.charAt(0).toUpperCase() + shape.slice(1)}`;
-                            if (typeof App.minimap[methodName] === "function") {
-                                App.minimap[methodName](color);
-                            }
-                        }
-                    
-                        this.close();
-                    });
-                }, 0);
+                if (shape && color) {
+                    // Call the corresponding method dynamically
+                    const methodName = `create${shape.charAt(0).toUpperCase() + shape.slice(1)}`;
+                    if (typeof App.minimap[methodName] === "function") {
+                        App.minimap[methodName](color);
+                    }
+                }
 
-
+                this.close();
             }
         });
     }

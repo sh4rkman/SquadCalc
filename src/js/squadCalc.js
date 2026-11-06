@@ -4,6 +4,7 @@ import { MODS } from "../data/mods.js";
 import { squadMinimap } from "./squadMinimap.js";
 import { Weapon } from "./squadWeapons.js";
 import { animateCSS, animateCalc } from "./animations.js";
+import { triggerChange } from "./domUtils.js";
 import { loadLanguage } from "./localization.js";
 import { tooltip_save, createSessionTooltips, leaveSessionTooltips } from "./tooltips.js";
 import { checkApiHealth, fetchLayersByMap, fetchLayerByName } from "./squadCalcAPI.js";
@@ -22,6 +23,22 @@ changelogRenderer.link = ({ href, title, text }) => {
     const titleAttr = title ? ` title="${title}"` : "";
     return `<a href="${href}"${titleAttr} target="_blank" rel="noopener noreferrer">${text}</a>`;
 };
+
+function fadeOut(el, duration, callback) {
+    const start = parseFloat(getComputedStyle(el).opacity) || 1;
+    const startTime = performance.now();
+    function step(now) {
+        const progress = Math.min((now - startTime) / duration, 1);
+        el.style.opacity = start * (1 - progress);
+        if (progress < 1) {
+            requestAnimationFrame(step);
+        } else {
+            el.style.display = "none";
+            callback?.();
+        }
+    }
+    requestAnimationFrame(step);
+}
 import i18next from "i18next";
 import SquadLayer from "./squadLayer.js";
 import Squad3DSimulation, { decodeShareToken } from "./squad3DSimulation.js";
@@ -70,15 +87,15 @@ export default class SquadCalc {
         this.shortcuts = this.loadShortcuts();
         this.activeWeapon = "";
         this.hasMouse = matchMedia("(pointer:fine)").matches;
-        this.MAP_SELECTOR = $(".dropbtn");
-        this.WEAPON_SELECTOR = $(".dropbtn2");
-        this.SHELL_SELECTOR = $(".dropbtn3");
-        this.LAYER_SELECTOR = $(".dropbtn5");
-        this.SERVER_SELECTOR = $(".dropbtn6");
-        this.FACTION1_SELECTOR = $(".dropbtn8");
-        this.FACTION2_SELECTOR = $(".dropbtn10");
-        this.UNIT1_SELECTOR = $(".dropbtn9");
-        this.UNIT2_SELECTOR = $(".dropbtn11");
+        this.MAP_SELECTOR = document.querySelector(".dropbtn");
+        this.WEAPON_SELECTOR = document.querySelector(".dropbtn2");
+        this.SHELL_SELECTOR = document.querySelector(".dropbtn3");
+        this.LAYER_SELECTOR = document.querySelector(".dropbtn5");
+        this.SERVER_SELECTOR = document.querySelector(".dropbtn6");
+        this.FACTION1_SELECTOR = document.querySelector(".dropbtn8");
+        this.FACTION2_SELECTOR = document.querySelector(".dropbtn10");
+        this.UNIT1_SELECTOR = document.querySelector(".dropbtn9");
+        this.UNIT2_SELECTOR = document.querySelector(".dropbtn11");
         this.session = false;
         this.version = packageInfo.version;
     }
@@ -248,7 +265,7 @@ export default class SquadCalc {
             if (!server.team1 || !server.team2 || !server.mapName) {
                 this.updateUrlParams({ server: null });
                 this.serverSelect.setChoiceByValue("");
-                this.SERVER_SELECTOR.trigger("change");
+                triggerChange(this.SERVER_SELECTOR, true);
                 this.loadLayers();
                 this.initStaticMode(this.urlIntent);
                 return;
@@ -270,9 +287,9 @@ export default class SquadCalc {
                 server.attributes.details.squad_teamTwo
             );
 
-            $("#serversTableBody tr").removeClass("selected");
-            $(`#serversTableBody tr[data-serverid="${serverId}"]`).addClass("selected");
-            $("#servers").addClass("active");
+            document.querySelectorAll("#serversTableBody tr").forEach((el) => el.classList.remove("selected"));
+            document.querySelector(`#serversTableBody tr[data-serverid="${serverId}"]`)?.classList.add("selected");
+            document.getElementById("servers").classList.add("active");
 
             if (this.squadServersBrowser.syncInterval) clearInterval(this.squadServersBrowser.syncInterval);
             this.squadServersBrowser.syncInterval = setInterval(
@@ -286,12 +303,12 @@ export default class SquadCalc {
         if (this.squadServersBrowser.serversData) {
             setup();
         } else {
-            $(document).one("servers:loaded", setup);
+            document.addEventListener("servers:loaded", setup, { once: true });
         }
     }
 
     initSessionMode(sessionId, intent = null) {
-        $(".btn-session").addClass("active");
+        document.querySelectorAll(".btn-session").forEach((el) => el.classList.add("active"));
         createSessionTooltips.disable();
         leaveSessionTooltips.enable();
 
@@ -302,7 +319,7 @@ export default class SquadCalc {
         } else if (this.layersLoaded) {
             startSession();
         } else {
-            $(document).one("layers:loaded", startSession);
+            document.addEventListener("layers:loaded", startSession, { once: true });
         }
     }
 
@@ -314,46 +331,46 @@ export default class SquadCalc {
 
         const applyLayer = () => {
             const urlLayerName = intent.layer.toLowerCase().replaceAll(" ", "");
-            const match = this.LAYER_SELECTOR.find("option").filter((_, el) =>
-                ($(el).data("urlid") ?? "").toLowerCase() === urlLayerName
+            const match = Array.from(this.LAYER_SELECTOR.options).find((el) =>
+                (el.dataset.urlid ?? "").toLowerCase() === urlLayerName
             );
 
-            if (!match.length) {
+            if (!match) {
                 this.updateUrlParams({ layer: null });
                 onLayerLoaded?.();
                 return;
             }
 
-            match.prop("selected", true);
-            this.layerSelect.setChoiceByValue(match.val());
+            match.selected = true;
+            this.layerSelect.setChoiceByValue(match.value);
 
             if (intent.team1 || intent.team2 || onLayerLoaded) {
-                $(document).one("layer:loaded", () => {
+                document.addEventListener("layer:loaded", () => {
                     [
                         { faction: intent.team1, unit: intent.team1unit, fSel: this.FACTION1_SELECTOR, uSel: this.UNIT1_SELECTOR },
                         { faction: intent.team2, unit: intent.team2unit, fSel: this.FACTION2_SELECTOR, uSel: this.UNIT2_SELECTOR },
                     ].forEach(({ faction, unit, fSel, uSel }) => {
                         if (faction) {
-                            const fm = fSel.find("option").filter((_, el) => el.value.toLowerCase() === faction.toLowerCase());
-                            if (fm.length) fSel.val(fm.val()).trigger($.Event("change", { broadcast: false }));
+                            const fm = Array.from(fSel.options).find((el) => el.value.toLowerCase() === faction.toLowerCase());
+                            if (fm) { fSel.value = fm.value; triggerChange(fSel, false); }
                         }
                         if (unit) {
-                            const um = uSel.find("option").filter((_, el) => el.value.toLowerCase() === unit.toLowerCase());
-                            if (um.length) uSel.val(um.val()).trigger($.Event("change", { broadcast: false }));
+                            const um = Array.from(uSel.options).find((el) => el.value.toLowerCase() === unit.toLowerCase());
+                            if (um) { uSel.value = um.value; triggerChange(uSel, false); }
                         }
                     });
                     this.updateUrlParams({ team1: null, team1unit: null, team2: null, team2unit: null });
                     onLayerLoaded?.();
-                });
+                }, { once: true });
             }
 
-            this.LAYER_SELECTOR.trigger($.Event("change", { broadcast: false }));
+            triggerChange(this.LAYER_SELECTOR, false);
         };
 
         if (this.layersLoaded) {
             applyLayer();
         } else {
-            $(document).one("layers:loaded", applyLayer);
+            document.addEventListener("layers:loaded", applyLayer, { once: true });
         }
     }
 
@@ -407,14 +424,14 @@ export default class SquadCalc {
         };
 
         // Initiate Maps&Layers Dropdown
-        this.mapSelect = new Choices(this.MAP_SELECTOR[0], {
+        this.mapSelect = new Choices(this.MAP_SELECTOR, {
             searchEnabled: true,
             searchChoices: false,
             searchResultLimit: -1,
             shouldSort: false,
             itemSelectText: "",
         });
-        this.layerSelect = new Choices(this.LAYER_SELECTOR[0], {
+        this.layerSelect = new Choices(this.LAYER_SELECTOR, {
             searchEnabled: true,
             // Choices' own Fuse search flattens groups and drops optgroup headers from
             // the results - searchChoices:false skips that internal filtering (keeps the
@@ -427,7 +444,7 @@ export default class SquadCalc {
             removeItemButton: true,
             removeItemButtonAlignLeft: true,
         });
-        this.serverSelect = new Choices(this.SERVER_SELECTOR[0], {
+        this.serverSelect = new Choices(this.SERVER_SELECTOR, {
             searchEnabled: false,
             shouldSort: false,
             itemSelectText: "",
@@ -437,12 +454,12 @@ export default class SquadCalc {
         [this.mapSelect, this.layerSelect, this.serverSelect].forEach(this._disableBlurClose);
         this._wireGroupedSearch(this.mapSelect);
         this._wireGroupedSearch(this.layerSelect);
-        this.SERVER_SELECTOR.on("change", (event) => {
+        this.SERVER_SELECTOR.addEventListener("change", (event) => {
             const serverId = event.target.value;
             if (!serverId) {
                 this.updateUrlParams({ server: null });
-                $("#serversTableBody tr").removeClass("selected");
-                $("#servers").removeClass("active");
+                document.querySelectorAll("#serversTableBody tr").forEach((el) => el.classList.remove("selected"));
+                document.getElementById("servers").classList.remove("active");
                 if (this.squadServersBrowser) {
                     this.squadServersBrowser.selectedServer = null;
                     clearInterval(this.squadServersBrowser.syncInterval);
@@ -461,7 +478,7 @@ export default class SquadCalc {
         this._rebuildMapSelector();
 
         // Add event listener
-        this.MAP_SELECTOR.on("change", (event) => {
+        this.MAP_SELECTOR.addEventListener("change", (event) => {
 
             // Update the minimap with the selected map
             this.minimap.activeMap = MAPS.find((_, index) => index == event.target.value);
@@ -489,19 +506,19 @@ export default class SquadCalc {
                 this.session.ws.send(
                     JSON.stringify({
                         type: "UPDATE_MAP",
-                        activeMap: this.MAP_SELECTOR.val(),
+                        activeMap: this.MAP_SELECTOR.value,
                     })
                 );
-                console.debug(`Sent map update for map #${this.MAP_SELECTOR.val()}`);
+                console.debug(`Sent map update for map #${this.MAP_SELECTOR.value}`);
             }
         });
 
         let abortController = null;
 
-        this.LAYER_SELECTOR.on("change", (event) => {
+        this.LAYER_SELECTOR.addEventListener("change", (event) => {
 
-            const selectedLayerValue = this.LAYER_SELECTOR.find(":selected").data("urlid") ?? "";
-            const selectedLayerMod = this.LAYER_SELECTOR.find(":selected").data("mod");
+            const selectedLayerValue = this.LAYER_SELECTOR.selectedOptions[0]?.dataset.urlid ?? "";
+            const selectedLayerMod = this.LAYER_SELECTOR.selectedOptions[0]?.dataset.mod;
             const broadcast = event.broadcast ?? true;
 
             // User cleared the layer selector, remove the layer and clean the URL
@@ -509,15 +526,15 @@ export default class SquadCalc {
                 this.updateUrlParams({ layer: null, team1: null, team1unit: null, team2: null, team2unit: null });
                 if (abortController) { abortController.abort(); } // Abort the ongoing fetch request
                 if (this.minimap.layer) this.minimap.layer.clear();
-                $(".btn-layer, .btn-layer-info").hide();
-                $("#factionsTab, #factionsButton").hide();
+                document.querySelectorAll(".btn-layer, .btn-layer-info").forEach((el) => el.style.display = "none");
+                document.querySelectorAll("#factionsTab, #factionsButton").forEach((el) => el.style.display = "none");
                 this.refresh3D(null);
 
                 // Empty Factions&Units selectors
-                this.FACTION1_SELECTOR.empty();
-                this.UNIT1_SELECTOR.empty();
-                this.FACTION2_SELECTOR.empty();
-                this.UNIT2_SELECTOR.empty();
+                this.FACTION1_SELECTOR.replaceChildren();
+                this.UNIT1_SELECTOR.replaceChildren();
+                this.FACTION2_SELECTOR.replaceChildren();
+                this.UNIT2_SELECTOR.replaceChildren();
 
                 if (broadcast && this.session.ws && this.session.ws.readyState === WebSocket.OPEN) {
                     this.session.ws.send(
@@ -531,8 +548,8 @@ export default class SquadCalc {
                 return;
             }
 
-            $(".dropbtn8").empty();
-            $(".dropbtn10").empty();
+            document.querySelector(".dropbtn8").replaceChildren();
+            document.querySelector(".dropbtn10").replaceChildren();
             
             // Update the the URL
             if (broadcast) {
@@ -552,7 +569,7 @@ export default class SquadCalc {
                         this.openToast("error", "error", "apiError");
                         console.error("Error fetching layer data:", error);
                     }
-                    $("#factionsTab, #factionsButton").hide();
+                    document.querySelectorAll("#factionsTab, #factionsButton").forEach((el) => el.style.display = "none");
                     this.minimap.spin(false);
                     // falls through to .then() below with layerData undefined, which bails out
                 })
@@ -566,8 +583,10 @@ export default class SquadCalc {
 
                     if (this.minimap.layer) this.minimap.layer.clear();
                     this.minimap.layer = new SquadLayer(this.minimap, layerData, broadcast, selectedLayerMod);
-                    $(".btn-layer").addClass("active").show();
-                    $(".btn-layer-info").show();
+                    const btnLayer = document.querySelector(".btn-layer");
+                    btnLayer.classList.add("active");
+                    btnLayer.style.removeProperty("display");
+                    document.querySelector(".btn-layer-info").style.removeProperty("display");
 
                     if (broadcast && this.session.ws?.readyState === WebSocket.OPEN) {
                         this.session.ws.send(
@@ -580,7 +599,7 @@ export default class SquadCalc {
                     }
 
                     this.layerLoaded = true;
-                    $(document).trigger("layer:loaded");
+                    document.dispatchEvent(new CustomEvent("layer:loaded"));
                     this.refresh3D();
                     this.minimap.spin(false);
                 });
@@ -592,8 +611,8 @@ export default class SquadCalc {
      */
     loadLayers() {
         this.minimap.spin(true, this.minimap.spinOptions);
-        $("#layerSelector").hide();
-        const selectedValue = this.LAYER_SELECTOR.val();
+        document.getElementById("layerSelector").style.display = "none";
+        const selectedValue = this.LAYER_SELECTOR.value;
 
         const enabledMods = this._getUniqueMods().filter(mod => this.userSettings.isModEnabled(mod));
 
@@ -695,29 +714,30 @@ export default class SquadCalc {
             this.layerSelect.setChoices(choices, "value", "label", true, true, true);
 
             meta.forEach(({ urlid, mod }, value) => {
-                const option = this.LAYER_SELECTOR.find("option").filter((_, el) => el.value === value);
-                option.attr("data-urlid", urlid);
-                if (mod) option.attr("data-mod", mod);
+                const option = Array.from(this.LAYER_SELECTOR.options).find((el) => el.value === value);
+                if (!option) return;
+                option.setAttribute("data-urlid", urlid);
+                if (mod) option.setAttribute("data-mod", mod);
             });
 
             // Choices' rendered placeholder (closed value + dropdown row) isn't the native
             // <option> the generic data-i18n loop would normally catch - tag it directly so
             // a later language switch retranslates it like everything else.
-            this.LAYER_SELECTOR.find("option[value='']").attr("data-i18n", "common:layerPlaceholder");
-            this.LAYER_SELECTOR.closest(".dropdown").find(".choices__placeholder").attr("data-i18n", "common:layerPlaceholder");
+            this.LAYER_SELECTOR.querySelector("option[value='']")?.setAttribute("data-i18n", "common:layerPlaceholder");
+            this.LAYER_SELECTOR.closest(".dropdown").querySelector(".choices__placeholder")?.setAttribute("data-i18n", "common:layerPlaceholder");
 
             if (selectedStillExists) {
-                this.LAYER_SELECTOR.trigger("change");
+                triggerChange(this.LAYER_SELECTOR, true);
             }
 
             this.minimap.spin(false);
-            $("#layerSelector").show();
+            document.getElementById("layerSelector").style.removeProperty("display");
 
             this.layersLoaded = true;
-            $(document).trigger("layers:loaded");
+            document.dispatchEvent(new CustomEvent("layers:loaded"));
 
         }).catch(error => {
-            $("#layerSelector").hide();
+            document.getElementById("layerSelector").style.display = "none";
             this.minimap.spin(false);
             this.openToast("error", "error", "apiError_layers");
             console.debug("Error fetching layers from API:", error);
@@ -780,14 +800,17 @@ export default class SquadCalc {
         // real <option> afterward, same as loadLayers()'s data-urlid/data-mod.
         this.serverSelect.setChoices([{ value: "", label: i18next.t("common:favServers"), placeholder: true }, ...serverChoices], "value", "label", true, true, true);
         unavailableValues.forEach(value => {
-            this.SERVER_SELECTOR.find("option").filter((_, el) => el.value === value).attr("title", "Modded layer");
+            this.SERVER_SELECTOR.querySelectorAll("option").forEach((el) => {
+                if (el.value === value) el.setAttribute("title", "Modded layer");
+            });
         });
 
-        this.SERVER_SELECTOR.find("option[value='']").attr("data-i18n", "common:favServers");
-        this.SERVER_SELECTOR.closest(".dropdown").find(".choices__placeholder").attr("data-i18n", "common:favServers");
+        this.SERVER_SELECTOR.querySelector("option[value='']")?.setAttribute("data-i18n", "common:favServers");
+        this.SERVER_SELECTOR.closest(".dropdown").querySelector(".choices__placeholder")?.setAttribute("data-i18n", "common:favServers");
 
-        this.SERVER_SELECTOR.trigger("change");
-        $("#serverSelector").show();
+        triggerChange(this.SERVER_SELECTOR, true);
+        // #serverSelector's own stylesheet rule sets display:none - removeProperty wouldn't undo that
+        document.getElementById("serverSelector").style.display = "block";
     }
 
 
@@ -860,14 +883,14 @@ export default class SquadCalc {
         });
         
         // Initiate Weapons & Shells Dropdown
-        this.weaponSelect = new Choices(this.WEAPON_SELECTOR[0], {
+        this.weaponSelect = new Choices(this.WEAPON_SELECTOR, {
             searchEnabled: true,
             searchChoices: false,
             searchResultLimit: -1,
             shouldSort: false,
             itemSelectText: "",
         });
-        this.shellSelect = new Choices(this.SHELL_SELECTOR[0], {
+        this.shellSelect = new Choices(this.SHELL_SELECTOR, {
             searchEnabled: false,
             shouldSort: false,
             itemSelectText: "",
@@ -880,8 +903,8 @@ export default class SquadCalc {
         this.initModsPanel();
 
         // Add Events Listeners
-        this.WEAPON_SELECTOR.on("change", () => { this.changeWeapon(); });
-        this.SHELL_SELECTOR.on("change", () => { this.activeWeapon.changeShell(); });
+        this.WEAPON_SELECTOR.addEventListener("change", () => { this.changeWeapon(); });
+        this.SHELL_SELECTOR.addEventListener("change", () => { this.activeWeapon.changeShell(); });
         
         this.getWeapon();
     }
@@ -903,9 +926,9 @@ export default class SquadCalc {
      * Re-run once layer counts arrive from the API (see checkApiHealth())
      */
     _renderMods() {
-        const $list = $("#settingsDialog .settings-mods");
-        if (!$list.length) return;
-        $list.empty();
+        const list = document.querySelector("#settingsDialog .settings-mods");
+        if (!list) return;
+        list.replaceChildren();
 
         const mods = this._getUniqueMods().sort((a, b) => {
             const labelA = i18next.t(`settings:${a}`, { defaultValue: a });
@@ -924,7 +947,7 @@ export default class SquadCalc {
             if (maps > 0) stats.push(i18next.t("settings:modMapsCount", { count: maps, defaultValue: `${maps} Maps` }));
             const checked = this.userSettings.isModEnabled(modKey) ? " checked" : "";
 
-            $list.append(`
+            list.insertAdjacentHTML("beforeend", `
                 <div class="settings-field settings-mod-field">
                     <label class="settings-mod">
                         <img class="settings-mod-logo" src="/img/mods/${modKey.toLowerCase()}.webp" alt="" onerror="this.style.visibility='hidden'">
@@ -942,8 +965,9 @@ export default class SquadCalc {
         // Delegated so it survives re-renders, bound once
         if (!this._modsToggleBound) {
             this._modsToggleBound = true;
-            $list.on("change", "input[data-mod]", (e) => {
-                this.userSettings.setModEnabled(e.currentTarget.dataset.mod, e.currentTarget.checked);
+            list.addEventListener("change", (e) => {
+                if (!e.target.matches("input[data-mod]")) return;
+                this.userSettings.setModEnabled(e.target.dataset.mod, e.target.checked);
                 this._rebuildModdedWeapons();
                 const mapWasReset = this._rebuildMapSelector();
                 if (!mapWasReset && this.minimap.activeMap) this.loadLayers();
@@ -958,7 +982,7 @@ export default class SquadCalc {
      * (e.g. its mod was just disabled). Returns true if that fallback fired.
      */
     _rebuildMapSelector() {
-        const selectedValue = this.MAP_SELECTOR.val();
+        const selectedValue = this.MAP_SELECTOR.value;
         const enabledMods = this._getUniqueMods().filter(modKey => this.userSettings.isModEnabled(modKey));
 
         // Choices has no live DOM sync (unlike select2) - every rebuild goes through
@@ -993,7 +1017,7 @@ export default class SquadCalc {
 
         if (this.minimap?.activeMap) {
             this.mapSelect.setChoiceByValue("0");
-            this.MAP_SELECTOR.trigger("change");
+            triggerChange(this.MAP_SELECTOR, true);
             return true;
         }
 
@@ -1042,14 +1066,14 @@ export default class SquadCalc {
      * Rebuild the weapon selector's optgroups based on currently enabled mods
      */
     _rebuildModdedWeapons() {
-        const selectedValue = this.WEAPON_SELECTOR.val();
+        const selectedValue = this.WEAPON_SELECTOR.value;
         const selectedIsModded = !!(WEAPONS[selectedValue]?.mod);
 
         this.weaponSelect.setChoices(this._buildWeaponChoices(selectedValue), "value", "label", true, true, true);
 
         if (selectedIsModded) {
             this.weaponSelect.setChoiceByValue("0");
-            this.WEAPON_SELECTOR.trigger("change");
+            triggerChange(this.WEAPON_SELECTOR, true);
         }
     }
 
@@ -1085,7 +1109,7 @@ export default class SquadCalc {
         // there's no equivalent there for the texture <select>.
         this.simulation3D.bindSettingsTextureSelect();
 
-        $(".btn-delete, .btn-undo, .btn-layer, .btn-layer-info, .returnBtn, #mapLayerMenu").hide();
+        document.querySelectorAll(".btn-delete, .btn-undo, .btn-layer, .btn-layer-info, .returnBtn, #mapLayerMenu").forEach((el) => el.style.display = "none");
 
         this.ui = localStorage.getItem("data-ui");
 
@@ -1096,24 +1120,24 @@ export default class SquadCalc {
 
         if (this.ui == 1) this.loadMapUIMode();
         else {
-            $(".returnBtn").show();
-            $(".weaponSelector").addClass("active");
+            document.querySelectorAll(".returnBtn").forEach((el) => el.style.removeProperty("display"));
+            document.querySelector(".weaponSelector").classList.add("active");
         }
 
         // Add Events listeners
 
         // LEGACY MODE
-        $("#mortar-location").on("input", () => { this.shoot("weapon"); });
-        $("#target-location").on("input",  () => { this.shoot("target"); });
-        $("#mortar-location").on("keypress", (event) => { this.filterInput(event); });
-        $("#target-location").on("keypress", (event) => { this.filterInput(event); });
-        $(document).on("input", ".friendlyname", (event) => { this.resizeInput(event.target); });
-        $(window).on("resize", () => { this.resizeInputsOnResize(); });
-        $(document).on("click", ".del", (event) => { this.removeSaves(event.target); });
-        $(document).on("click", ".savespan", (event) => { this.copySave($(event.target)); });
-        $(".savespan").on("click", (event) => { this.copySave(event); });
-        $("#savebutton").on("click",  () => { this.saveCalc(); });
-        $("#copy").on("click", (event) => { this.copyCalc(event); });
+        document.getElementById("mortar-location").addEventListener("input", () => { this.shoot("weapon"); });
+        document.getElementById("target-location").addEventListener("input",  () => { this.shoot("target"); });
+        document.getElementById("mortar-location").addEventListener("keypress", (event) => { this.filterInput(event); });
+        document.getElementById("target-location").addEventListener("keypress", (event) => { this.filterInput(event); });
+        document.addEventListener("input", (event) => { if (event.target.closest(".friendlyname")) this.resizeInput(event.target); });
+        window.addEventListener("resize", () => { this.resizeInputsOnResize(); });
+        document.addEventListener("click", (event) => { if (event.target.closest(".del")) this.removeSaves(event.target); });
+        document.addEventListener("click", (event) => { if (event.target.closest(".savespan")) this.copySave(event.target); });
+        document.querySelectorAll(".savespan").forEach((el) => el.addEventListener("click", (event) => { this.copySave(event); }));
+        document.getElementById("savebutton").addEventListener("click",  () => { this.saveCalc(); });
+        document.getElementById("copy").addEventListener("click", (event) => { this.copyCalc(event); });
 
         // MAP MODE
         this.closeDialogOnClickOutside(calcInformation);
@@ -1150,24 +1174,25 @@ export default class SquadCalc {
             overlay.style.display = "none";
         });
 
-        $(document).on("click", "#servers", () => {
+        document.addEventListener("click", (event) => {
+            if (!event.target.closest("#servers")) return;
             serverBrowserTooltips.hide();
             serverBrowserTooltips.disable();
             if (!this.squadServersBrowser) {
                 this.squadServersBrowser = new SquadServersBrowser();
                 this.squadServersBrowser.init();
             }
-            $("#serversInformation")[0].showModal();
+            document.getElementById("serversInformation").showModal();
 
             // Focus search input at the end
             const searchInput = document.getElementById("serverSearch");
             if (searchInput) searchInput.focus();
         });
 
-        $(document).on("favorites:changed", (_event, { favorites, servers }) => {
+        document.addEventListener("favorites:changed", ({ detail: { favorites, servers } }) => {
             const favoriteServers = (servers || []).filter(s => favorites.has(String(s.id)));
             if (favoriteServers.length === 0) {
-                $("#serverSelector").hide();
+                document.getElementById("serverSelector").style.display = "none";
                 return;
             }
             this.buildFavoriteServersDropdown(favoriteServers);
@@ -1179,13 +1204,15 @@ export default class SquadCalc {
 
         // Settings dialog
         const settingsDialog = document.getElementById("settingsDialog");
-        $(settingsDialog).on("click", ".settings-tab", (event) => {
-            $(settingsDialog).find(".settings-tab").removeClass("active");
-            $(event.currentTarget).addClass("active");
+        settingsDialog.addEventListener("click", (event) => {
+            const tab = event.target.closest(".settings-tab");
+            if (!tab) return;
+            settingsDialog.querySelectorAll(".settings-tab").forEach((el) => el.classList.remove("active"));
+            tab.classList.add("active");
             // Mobile top bar: bring the selected tab fully into view
-            event.currentTarget.scrollIntoView({ block: "nearest", inline: "nearest" });
-            $(settingsDialog).find(".settings-panel").removeClass("active")
-                .filter(`[data-panel="${event.currentTarget.value}"]`).addClass("active");
+            tab.scrollIntoView({ block: "nearest", inline: "nearest" });
+            settingsDialog.querySelectorAll(".settings-panel").forEach((el) => el.classList.remove("active"));
+            settingsDialog.querySelector(`.settings-panel[data-panel="${tab.value}"]`)?.classList.add("active");
         });
         // Range sliders: fill the track up to the thumb, and show a
         // min / default / max scale with a tick at the default value 
@@ -1198,120 +1225,141 @@ export default class SquadCalc {
             const ratio = (value - min) / (max - min);
             return `${Math.round(displayMin + ratio * (displayMax - displayMin))}%`;
         };
+        const makeSpan = (className, text) => {
+            const span = document.createElement("span");
+            span.className = className;
+            span.setAttribute("aria-hidden", "true");
+            span.textContent = text;
+            return span;
+        };
         const buildRangeScale = (input) => {
             const min = Number(input.min);
             const max = Number(input.max);
             const def = Number(input.dataset.default ?? input.value);
             const pos = (def - min) / (max - min);
-            const $track = $(input).closest(".settings-range-track");
-            $track.css("--pos", pos);
-            $track.append($("<span>", { class: "settings-range-tick", "aria-hidden": "true" }));
-            const $scale = $("<div>", { class: "settings-range-scale", "aria-hidden": "true" });
-            $scale.append($("<span>", { class: "settings-range-min", text: formatRange(input, min) }));
+            const track = input.closest(".settings-range-track");
+            track.style.setProperty("--pos", pos);
+            track.appendChild(makeSpan("settings-range-tick", ""));
+            const scale = document.createElement("div");
+            scale.className = "settings-range-scale";
+            scale.setAttribute("aria-hidden", "true");
+            scale.appendChild(makeSpan("settings-range-min", formatRange(input, min)));
             // Skip the default label when it sits on min or max, it would overlap
-            if (pos > 0 && pos < 1) $scale.append($("<span>", { class: "settings-range-default", text: formatRange(input, def) }));
-            $scale.append($("<span>", { class: "settings-range-max", text: formatRange(input, max) }));
-            $track.append($scale);
+            if (pos > 0 && pos < 1) scale.appendChild(makeSpan("settings-range-default", formatRange(input, def)));
+            scale.appendChild(makeSpan("settings-range-max", formatRange(input, max)));
+            track.appendChild(scale);
         };
         const updateRange = (input) => {
             const percent = (input.value - input.min) / (input.max - input.min) * 100;
             input.style.setProperty("--fill", `${percent}%`);
         };
-        $(settingsDialog).find(".settings-range input[type=range]").each((_, input) => {
+        settingsDialog.querySelectorAll(".settings-range input[type=range]").forEach((input) => {
             buildRangeScale(input);
             updateRange(input);
         });
-        $(settingsDialog).on("input", ".settings-range input[type=range]", (event) => updateRange(event.currentTarget));
+        settingsDialog.addEventListener("input", (event) => {
+            if (event.target.matches(".settings-range input[type=range]")) updateRange(event.target);
+        });
         // Shortcuts tab (rebuilt after every change in openShortcutCapture())
         this.initShortcutsPanel();
 
         // Search: filter fields by label/hint text across every panel
-        const $settings = $(settingsDialog);
-        const $settingsSearch = $("#settingsSearch");
-        const $settingsSearchClear = $("#settingsSearchClear");
+        const settingsSearch = document.getElementById("settingsSearch");
+        const settingsSearchClear = document.getElementById("settingsSearchClear");
         // Give each panel a title (the tab label), only visible while searching
-        $settings.find(".settings-panel").each((_, panel) => {
-            const $tabLabel = $settings.find(`.settings-tab[value="${panel.dataset.panel}"] span[data-i18n]`);
-            $(panel).prepend($("<h2>", {
-                class: "settings-panel-title",
-                "data-i18n": $tabLabel.attr("data-i18n"),
-                text: $tabLabel.text(),
-            }));
+        settingsDialog.querySelectorAll(".settings-panel").forEach((panel) => {
+            const tabLabel = settingsDialog.querySelector(`.settings-tab[value="${panel.dataset.panel}"] span[data-i18n]`);
+            const h2 = document.createElement("h2");
+            h2.className = "settings-panel-title";
+            h2.setAttribute("data-i18n", tabLabel.getAttribute("data-i18n"));
+            h2.textContent = tabLabel.textContent;
+            panel.prepend(h2);
         });
         const normalizeSearch = (str) => str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
         const filterSettings = (query) => {
             const q = normalizeSearch(query.trim());
-            $settings.toggleClass("settings-searching", q !== "");
+            settingsDialog.classList.toggle("settings-searching", q !== "");
             if (!q) {
-                $settings.find(".settings-hidden").removeClass("settings-hidden");
-                $settings.find(".settings-search-empty").prop("hidden", true);
+                settingsDialog.querySelectorAll(".settings-hidden").forEach((el) => el.classList.remove("settings-hidden"));
+                settingsDialog.querySelectorAll(".settings-search-empty").forEach((el) => el.hidden = true);
                 return;
             }
             let total = 0;
-            $settings.find(".settings-panel").each((_, panel) => {
+            settingsDialog.querySelectorAll(".settings-panel").forEach((panel) => {
                 let panelCount = 0;
-                $(panel).find(".settings-section").each((_, section) => {
+                panel.querySelectorAll(".settings-section").forEach((section) => {
                     let sectionCount = 0;
-                    $(section).find(".settings-field").each((_, field) => {
-                        const text = $(field).find("label, .settings-field-hint, .settings-search-text").text();
+                    section.querySelectorAll(".settings-field").forEach((field) => {
+                        const text = Array.from(field.querySelectorAll("label, .settings-field-hint, .settings-search-text"))
+                            .map((el) => el.textContent).join("");
                         const match = normalizeSearch(text).includes(q);
-                        $(field).toggleClass("settings-hidden", !match);
+                        field.classList.toggle("settings-hidden", !match);
                         if (match) sectionCount++;
                     });
-                    $(section).toggleClass("settings-hidden", sectionCount === 0);
+                    section.classList.toggle("settings-hidden", sectionCount === 0);
                     panelCount += sectionCount;
                 });
-                $(panel).toggleClass("settings-hidden", panelCount === 0);
+                panel.classList.toggle("settings-hidden", panelCount === 0);
                 total += panelCount;
             });
-            $settings.find(".settings-search-empty").prop("hidden", total > 0);
+            settingsDialog.querySelectorAll(".settings-search-empty").forEach((el) => el.hidden = total > 0);
         };
-        $settingsSearch.on("input", () => {
-            $settingsSearchClear.prop("hidden", $settingsSearch.val() === "");
-            filterSettings($settingsSearch.val());
+        settingsSearch.addEventListener("input", () => {
+            settingsSearchClear.hidden = settingsSearch.value === "";
+            filterSettings(settingsSearch.value);
         });
         // Esc clears the search first, and only closes the dialog when it's already empty
-        $settingsSearch.on("keydown", (event) => {
-            if (event.key === "Escape" && $settingsSearch.val() !== "") {
+        settingsSearch.addEventListener("keydown", (event) => {
+            if (event.key === "Escape" && settingsSearch.value !== "") {
                 event.preventDefault();
-                $settingsSearch.val("");
-                $settingsSearchClear.prop("hidden", true);
+                settingsSearch.value = "";
+                settingsSearchClear.hidden = true;
                 filterSettings("");
             }
         });
-        $settingsSearchClear.on("click", () => {
-            $settingsSearch.val("").trigger("focus");
-            $settingsSearchClear.prop("hidden", true);
+        settingsSearchClear.addEventListener("click", () => {
+            settingsSearch.value = "";
+            settingsSearch.focus();
+            settingsSearchClear.hidden = true;
             filterSettings("");
         });
         // Picking a tab leaves search mode
-        $settings.on("click", ".settings-tab", () => {
-            if ($settingsSearch.val() === "") return;
-            $settingsSearch.val("");
-            $settingsSearchClear.prop("hidden", true);
+        settingsDialog.addEventListener("click", (event) => {
+            if (!event.target.closest(".settings-tab")) return;
+            if (settingsSearch.value === "") return;
+            settingsSearch.value = "";
+            settingsSearchClear.hidden = true;
             filterSettings("");
         });
 
         // Changelog tab: render CHANGELOG.md on first open
-        $settings.on("click", ".settings-tab[value=changelog]", async () => {
-            const $changelog = $settings.find(".settings-changelog");
-            if ($changelog.data("loaded")) return;
-            $changelog.data("loaded", true);
+        settingsDialog.addEventListener("click", async (event) => {
+            if (!event.target.closest(".settings-tab[value=changelog]")) return;
+            const changelog = settingsDialog.querySelector(".settings-changelog");
+            if (changelog._loaded) return;
+            changelog._loaded = true;
             if (!this._changelogCache) {
                 const { default: changelogMd } = await import("../../CHANGELOG.md");
                 this._changelogCache = marked.parse(changelogMd, { renderer: changelogRenderer });
             }
-            $changelog.html(this._changelogCache);
+            changelog.innerHTML = this._changelogCache;
             // Group each release (its h1 + everything until the next h1) into a card
-            $changelog.children("h1").each((_, heading) => {
-                const $release = $("<article>", { class: "settings-release" });
-                $(heading).before($release);
-                $release.append($(heading).nextUntil("h1").addBack());
+            Array.from(changelog.children).filter((el) => el.tagName === "H1").forEach((heading) => {
+                const release = document.createElement("article");
+                release.className = "settings-release";
+                heading.before(release);
+                const toMove = [heading];
+                let sib = heading.nextElementSibling;
+                while (sib && sib.tagName !== "H1") {
+                    toMove.push(sib);
+                    sib = sib.nextElementSibling;
+                }
+                toMove.forEach((el) => release.appendChild(el));
             });
         });
 
         // About tab
-        $("#settingsAppVersion").text(`v${this.version}`);
+        document.getElementById("settingsAppVersion").textContent = `v${this.version}`;
 
         settingsDialog.addEventListener("close", () => {
             setTimeout(() => settingsTooltips.enable(), 50);
@@ -1330,7 +1378,7 @@ export default class SquadCalc {
             if (file) this.loadMapStateFromFile(file);
         });
 
-        $(".btn-delete").on("click", () => {
+        document.querySelector(".btn-delete").addEventListener("click", () => {
             this.minimap.deleteTargets();
             this.minimap.deleteMarkers();
             this.minimap.deleteArrows();
@@ -1339,8 +1387,8 @@ export default class SquadCalc {
             this.minimap.deletePolylines();
         });
 
-        $(".btn-download").on("click", () => { this.saveMapStateToFile(); });
-        $(".btn-upload").on("click", () => {
+        document.querySelector(".btn-download").addEventListener("click", () => { this.saveMapStateToFile(); });
+        document.querySelector(".btn-upload").addEventListener("click", () => {
             const input = document.createElement("input");
             input.type = "file";
             input.accept = ".squadcalc,.json";
@@ -1350,21 +1398,21 @@ export default class SquadCalc {
             };
             input.click();
         });
-        $(".btn-undo").on("click", () => { if (this.minimap.history.length > 0) this.minimap.history.at(-1).delete(); });
-        $(".btn-layer").on("click", () => { this.minimap.layer.toggleVisibility(); });
-        $(".btn-layer-info").on("click", () => {
+        document.querySelector(".btn-undo").addEventListener("click", () => { if (this.minimap.history.length > 0) this.minimap.history.at(-1).delete(); });
+        document.querySelector(".btn-layer").addEventListener("click", () => { this.minimap.layer.toggleVisibility(); });
+        document.querySelector(".btn-layer-info").addEventListener("click", () => {
             const layerData = this.minimap.layer?.layerData;
             if (!layerData) return;
 
             layerInfoTooltips.hide();
             layerInfoTooltips.disable();
 
-            $(".infLayerMap").text(layerData.Name ?? layerData.rawName ?? "");
-            $(".infLayerGamemode").text(layerData.gamemode ?? "");
-            $(".infLayerVersion").text(layerData.layerVersion ?? "");
-            $(".infLayerSize").text(layerData.mapSize ?? "");
-            $(".infLayerTeam1Tickets").text(layerData.teamConfigs?.team1?.tickets ?? "");
-            $(".infLayerTeam2Tickets").text(layerData.teamConfigs?.team2?.tickets ?? "");
+            document.querySelector(".infLayerMap").textContent = layerData.Name ?? layerData.rawName ?? "";
+            document.querySelector(".infLayerGamemode").textContent = layerData.gamemode ?? "";
+            document.querySelector(".infLayerVersion").textContent = layerData.layerVersion ?? "";
+            document.querySelector(".infLayerSize").textContent = layerData.mapSize ?? "";
+            document.querySelector(".infLayerTeam1Tickets").textContent = layerData.teamConfigs?.team1?.tickets ?? "";
+            document.querySelector(".infLayerTeam2Tickets").textContent = layerData.teamConfigs?.team2?.tickets ?? "";
 
             // The compact "unitType" token AdminChangeLayer/AdminSetNextLayer expect (e.g. "CombinedArms",
             // "Mechanized") only shows up for a faction's non-default subfactions, in teamConfigs.factions'
@@ -1383,29 +1431,29 @@ export default class SquadCalc {
                 const unit = allUnits.find((u) => u.unitObjectName === unitObjectName);
                 return unit ? compactType(unit.type) : "";
             };
-            const team1Faction = this.FACTION1_SELECTOR.val();
-            const team2Faction = this.FACTION2_SELECTOR.val();
+            const team1Faction = this.FACTION1_SELECTOR.value;
+            const team2Faction = this.FACTION2_SELECTOR.value;
             const factionUnitArgs = (team1Faction && team2Faction)
-                ? ` ${team1Faction}+${unitTypeOf("team1", this.UNIT1_SELECTOR.val())} ${team2Faction}+${unitTypeOf("team2", this.UNIT2_SELECTOR.val())}`
+                ? ` ${team1Faction}+${unitTypeOf("team1", this.UNIT1_SELECTOR.value)} ${team2Faction}+${unitTypeOf("team2", this.UNIT2_SELECTOR.value)}`
                 : "";
 
-            $(".layerCommandInput").val(`AdminSetNextLayer ${layerData.rawName}${factionUnitArgs}`);
-            $(".layerChangeCommandInput").val(`AdminChangeLayer ${layerData.rawName}${factionUnitArgs}`);
+            document.querySelector(".layerCommandInput").value = `AdminSetNextLayer ${layerData.rawName}${factionUnitArgs}`;
+            document.querySelector(".layerChangeCommandInput").value = `AdminChangeLayer ${layerData.rawName}${factionUnitArgs}`;
 
-            $(".layerShareUrlInput").val(this.buildShareUrl());
+            document.querySelector(".layerShareUrlInput").value = this.buildShareUrl();
 
-            $(".layerThumbnail")
-                .show()
-                .attr("src", `${process.env.API_URL}/img/thumbnails/${encodeURIComponent(layerData.rawName)}.webp`);
+            const thumbnail = document.querySelector(".layerThumbnail");
+            thumbnail.style.removeProperty("display");
+            thumbnail.setAttribute("src", `${process.env.API_URL}/img/thumbnails/${encodeURIComponent(layerData.rawName)}.webp`);
 
             layerInfoDialog.showModal();
         });
-        $(".btn-3d").on("click", () => {
-            if ($(".btn-3d").hasClass("locked")) return;
+        document.querySelector(".btn-3d").addEventListener("click", () => {
+            if (document.querySelector(".btn-3d").classList.contains("locked")) return;
             this.open3D();
         });
-        $(".threeDQuitButton").on("click", () => this.hide3D());
-        $(".threeDShareButton").on("click", () => {
+        document.querySelector(".threeDQuitButton").addEventListener("click", () => this.hide3D());
+        document.querySelector(".threeDShareButton").addEventListener("click", () => {
             // Builds the URL for the clipboard only, same as buildShareUrl() - the
             // sharer's own address bar isn't meant to change, just what gets copied.
             const params = new URLSearchParams(window.location.search);
@@ -1413,7 +1461,7 @@ export default class SquadCalc {
             navigator.clipboard.writeText(`${window.location.origin}${window.location.pathname}?${params.toString()}`);
             this.openToast("success", "copied", "");
         });
-        $(".layerCommandCopyBtn").on("click", (event) => {
+        document.querySelector(".layerCommandCopyBtn").addEventListener("click", (event) => {
             const input = event.currentTarget.closest(".layerCommandRow").querySelector("input");
             if (navigator.clipboard?.writeText) {
                 navigator.clipboard.writeText(input.value);
@@ -1423,75 +1471,75 @@ export default class SquadCalc {
             }
             this.openToast("success", "copied", "");
         });
-        $(".btn-drawingMode").on("click", () => { this.minimap.disableDrawingMode(); });
-        $(".btn-legacy").on("click", () => { if (this.ui !== 0) this.switchUI(); });
-        $("#factionsButton .factionBar-top").on("click", (e) => {
+        document.querySelector(".btn-drawingMode").addEventListener("click", () => { this.minimap.disableDrawingMode(); });
+        document.querySelector(".btn-legacy").addEventListener("click", () => { if (this.ui !== 0) this.switchUI(); });
+        document.querySelector("#factionsButton .factionBar-top").addEventListener("click", (e) => {
             e.stopPropagation();
-            $("#factionsButton").toggleClass("collapsed");
+            document.getElementById("factionsButton").classList.toggle("collapsed");
         });
-        $("#factionsButton button.btn-faction").on("click", () => { $("#factionsDialog")[0].showModal(); });
-        $(".btn-settings").on("click", () => this.openSettings());
+        document.querySelector("#factionsButton button.btn-faction").addEventListener("click", () => { document.getElementById("factionsDialog").showModal(); });
+        document.querySelector(".btn-settings").addEventListener("click", () => this.openSettings());
 
-        $("#mapLayerMenu").find("button.btn-session").on("click", () => {
-            if ($(".btn-session").hasClass("active")) {
-                
+        document.querySelector("#mapLayerMenu button.btn-session").addEventListener("click", () => {
+            if (document.querySelector(".btn-session").classList.contains("active")) {
+
                 // Quit session
                 if (this.session) {
                     this.session.ws.close();
                     this.session = false;
                 }
-                
+
                 // Update UI
-                $(".btn-session").removeClass("active");
+                document.querySelectorAll(".btn-session").forEach((el) => el.classList.remove("active"));
                 leaveSessionTooltips.disable();
                 createSessionTooltips.enable();
                 //this.openToast("error", "Session quit", "You have quit the session.");
-                
+
             } else {
                 // Create session
                 this.session = new SquadSession();
-                $(".btn-session").addClass("active");
+                document.querySelectorAll(".btn-session").forEach((el) => el.classList.add("active"));
                 createSessionTooltips.disable();
                 leaveSessionTooltips.enable();
             }
         });
 
 
-        $("#mapLayerMenu").find("button.layers").on("click", (event) => {
+        document.querySelectorAll("#mapLayerMenu button.layers").forEach((btn) => btn.addEventListener("click", (event) => {
 
-            if ($(event.currentTarget).hasClass("active")) { return; }
-            const VAL = $(event.currentTarget).attr("value");
+            if (event.currentTarget.classList.contains("active")) { return; }
+            const VAL = event.currentTarget.getAttribute("value");
 
             if (VAL === "helpmap") {
-                $(".btn-"+VAL).toggleClass("active");
+                document.querySelector(".btn-"+VAL).classList.toggle("active");
                 this.minimap.toggleHeatmap();
                 return;
             }
 
-            $("#mapLayerMenu").find(".layers").removeClass("active");
-            $(".btn-"+VAL).addClass("active");
+            document.querySelectorAll("#mapLayerMenu .layers").forEach((el) => el.classList.remove("active"));
+            document.querySelector(".btn-"+VAL).classList.add("active");
             this.updateUrlParams({ type: VAL === "basemap" ? null : VAL });
             localStorage.setItem("settings-map-mode", VAL);
             this.userSettings.layerMode = VAL;
             this.minimap.changeLayer();
-        });
+        }));
 
-        $("#mapLayerMenu").find("button.btn-helpmap").on("click", () => {
-            $(".btn-helpmap").toggleClass("active");
+        document.querySelector("#mapLayerMenu button.btn-helpmap").addEventListener("click", () => {
+            document.querySelector(".btn-helpmap").classList.toggle("active");
             this.minimap.toggleHeatmap();
         });
 
-        $("#mapLayerMenu").find("button.btn-hd").on("click", () => {
-            if ($(".btn-hd").hasClass("locked")) return;
-            const VAL = !$(".btn-hd").hasClass("active");
-            $(".btn-hd").toggleClass("active");
+        document.querySelector("#mapLayerMenu button.btn-hd").addEventListener("click", () => {
+            if (document.querySelector(".btn-hd").classList.contains("locked")) return;
+            const VAL = !document.querySelector(".btn-hd").classList.contains("active");
+            document.querySelector(".btn-hd").classList.toggle("active");
             this.userSettings.highQualityImages = VAL;
             localStorage.setItem("settings-highquality-images", +VAL);
             this.minimap.changeLayer();
         });
 
-        $(".fontSizeSelector input").on("change", (event) => {
-            this.userSettings.fontSize = Math.max(1, Math.min($(event.target).val(), 5));
+        document.querySelector(".fontSizeSelector input")?.addEventListener("change", (event) => {
+            this.userSettings.fontSize = Math.max(1, Math.min(event.target.value, 5));
             localStorage.setItem("settings-font-size", this.userSettings.fontSize);
             this.changeFontSize();
         });
@@ -1508,18 +1556,18 @@ export default class SquadCalc {
 
         if (this.hasMouse) {
 
-            $("#mapLayerMenu").find("button.btn-focus").on("click", () => {
-                $("header").hide();
-                $("#background").hide();
-                $("#mapLayerMenu").hide();
+            document.querySelector("#mapLayerMenu button.btn-focus").addEventListener("click", () => {
+                document.querySelector("header").style.display = "none";
+                document.getElementById("background").style.display = "none";
+                document.getElementById("mapLayerMenu").style.display = "none";
                 this.openToast("success", "focusMode", "enterToExit");
             });
 
-            $(document).on("keydown", (event) => this.handleKeydown(event));
+            document.addEventListener("keydown", (event) => this.handleKeydown(event));
 
 
         } else {
-            $(".btn-focus").hide();
+            document.querySelector(".btn-focus").style.display = "none";
         }
 
         this._countdown = null;
@@ -1550,17 +1598,21 @@ export default class SquadCalc {
       
         weaponInformation.addEventListener("close", function(){
             // Remove listeners when closing weapon information to avoid stacking
-            $("input[type=radio][name=angleChoice]").off();
-            $(".moveToBtn").off();
+            // (handler refs stored on the elements by squadMarker.js's _handleClick)
+            document.querySelectorAll("input[type=radio][name=angleChoice]").forEach((el) => {
+                if (el._changeHandler) el.removeEventListener("change", el._changeHandler);
+            });
+            const moveToBtn = document.querySelector(".moveToBtn");
+            if (moveToBtn._clickHandler) moveToBtn.removeEventListener("click", moveToBtn._clickHandler);
         });
         
-        $("#canvasControls button").on("click", (event) => {
-            if ($(event.currentTarget).hasClass("active")){ return;}
-            $("#canvasControls > .active").first().removeClass("active");
-            $(event.currentTarget).addClass("active");
-            $(".sim.active").removeClass("active");
-            $("#"+$(event.currentTarget).val()).addClass("active");
-        });
+        document.querySelectorAll("#canvasControls button").forEach((btn) => btn.addEventListener("click", (event) => {
+            if (event.currentTarget.classList.contains("active")){ return;}
+            document.querySelector("#canvasControls > .active")?.classList.remove("active");
+            event.currentTarget.classList.add("active");
+            document.querySelector(".sim.active")?.classList.remove("active");
+            document.getElementById(event.currentTarget.value)?.classList.add("active");
+        }));
 
 
 
@@ -1574,10 +1626,10 @@ export default class SquadCalc {
         if (cur.has("map"))   params.set("map", cur.get("map"));
         if (cur.has("layer")) params.set("layer", cur.get("layer"));
 
-        const t1 = this.FACTION1_SELECTOR.val();
-        const u1 = this.UNIT1_SELECTOR.val();
-        const t2 = this.FACTION2_SELECTOR.val();
-        const u2 = this.UNIT2_SELECTOR.val();
+        const t1 = this.FACTION1_SELECTOR.value;
+        const u1 = this.UNIT1_SELECTOR.value;
+        const t2 = this.FACTION2_SELECTOR.value;
+        const u2 = this.UNIT2_SELECTOR.value;
         if (t1) params.set("team1", t1);
         if (u1) params.set("team1unit", u1);
         if (t2) params.set("team2", t2);
@@ -1595,7 +1647,7 @@ export default class SquadCalc {
         settingsTooltips.hide();
         settingsTooltips.disable();
         if (!dialog.open) dialog.showModal();
-        if (tab) $(dialog).find(`.settings-tab[value="${tab}"]`).trigger("click");
+        if (tab) dialog.querySelector(`.settings-tab[value="${tab}"]`)?.click();
     }
 
     closeToast() {
@@ -1627,19 +1679,21 @@ export default class SquadCalc {
     }
 
     toggleFocusMode() {
-        if ($("header").is(":hidden")) {
-            $("header").show();
-            $("#mapLayerMenu").show();
-            $("#background").show();
-            if (this.minimap.layer && this.userSettings.enableFactions) {
-                $("#factionsButton").show();
+        const header = document.querySelector("header");
+        if (getComputedStyle(header).display === "none") {
+            header.style.removeProperty("display");
+            document.getElementById("mapLayerMenu").style.removeProperty("display");
+            document.getElementById("background").style.removeProperty("display");
+            if (this.minimap.layer) {
+                // #factionsButton's own stylesheet rule sets display:none - removeProperty wouldn't undo that
+                document.getElementById("factionsButton").style.display = "block";
             }
             this.closeToast();
         } else {
-            $("header").hide();
-            $("#background").hide();
-            $("#mapLayerMenu").hide();
-            $("#factionsButton").hide();
+            header.style.display = "none";
+            document.getElementById("background").style.display = "none";
+            document.getElementById("mapLayerMenu").style.display = "none";
+            document.getElementById("factionsButton").style.display = "none";
             this.openToast("success", "focusMode", "enterToExit");
         }
     }
@@ -1679,26 +1733,50 @@ export default class SquadCalc {
     }
 
     initShortcutsPanel() {
-        const $list = $("#settingsDialog .settings-shortcuts");
+        const list = document.querySelector("#settingsDialog .settings-shortcuts");
         const editIcon = "<svg class='settings-shortcut-edit' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' aria-hidden='true'><path d='M12 20h9'/><path d='M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z'/></svg>";
-        $list.empty();
+        list.replaceChildren();
 
         for (const { id, i18nKey } of SquadCalc.SHORTCUT_ACTIONS) {
             const shortcut = this.shortcuts[id];
             const isCustom = JSON.stringify(shortcut) !== JSON.stringify(SquadCalc.DEFAULT_SHORTCUTS[id]);
-            const $row = $("<button>", { type: "button", class: "settings-shortcut", "data-action": id });
-            $row.append($("<span>", { class: "settings-shortcut-label settings-search-text", "data-i18n": i18nKey }));
-            if (isCustom) $row.append($("<span>", { class: "settings-shortcut-custom", "data-i18n": "settings:shortcutCustom", text: "Custom" }));
-            $row.append($("<span>", { class: "settings-shortcut-keys", html: this.formatShortcutHTML(shortcut) }));
-            $row.append(editIcon);
-            $row.on("click", () => this.openShortcutCapture(id));
-            $list.append($("<div>", { class: "settings-field settings-shortcut-field" }).append($row));
+
+            const row = document.createElement("button");
+            row.type = "button";
+            row.className = "settings-shortcut";
+            row.setAttribute("data-action", id);
+
+            const label = document.createElement("span");
+            label.className = "settings-shortcut-label settings-search-text";
+            label.setAttribute("data-i18n", i18nKey);
+            row.appendChild(label);
+
+            if (isCustom) {
+                const custom = document.createElement("span");
+                custom.className = "settings-shortcut-custom";
+                custom.setAttribute("data-i18n", "settings:shortcutCustom");
+                custom.textContent = "Custom";
+                row.appendChild(custom);
+            }
+
+            const keys = document.createElement("span");
+            keys.className = "settings-shortcut-keys";
+            keys.innerHTML = this.formatShortcutHTML(shortcut);
+            row.appendChild(keys);
+
+            row.insertAdjacentHTML("beforeend", editIcon);
+            row.addEventListener("click", () => this.openShortcutCapture(id));
+
+            const field = document.createElement("div");
+            field.className = "settings-field settings-shortcut-field";
+            field.appendChild(row);
+            list.appendChild(field);
         }
 
         // On rebuilds (after a change) the language is already loaded, translate right away
         if (i18next.isInitialized) {
-            $list.find("[data-i18n]").each(function() {
-                this.textContent = i18next.t(this.dataset.i18n);
+            list.querySelectorAll("[data-i18n]").forEach((el) => {
+                el.textContent = i18next.t(el.dataset.i18n);
             });
         }
     }
@@ -1796,7 +1874,7 @@ export default class SquadCalc {
         const { calc, weapon, settings, factions, servers } = this._dialogs;
         if (weapon.open || calc.open || settings.open || factions.open || servers.open || this.is3DOpen) return;
 
-        if ($(event.target).is("input, textarea, select")) return;
+        if (event.target.matches("input, textarea, select")) return;
 
         if (this.matchesShortcut(event, "switchUI")) {
             event.preventDefault();
@@ -1807,11 +1885,11 @@ export default class SquadCalc {
         if (this.matchesShortcut(event, "toggleMap")) {
             if (this.minimap.activeMap.singleLayer) return;
             const layers = ["topomap", "terrainmap", "basemap"];
-            const currentLayer = $("#mapLayerMenu .layers.active").attr("value") || "basemap";
+            const currentLayer = document.querySelector("#mapLayerMenu .layers.active")?.getAttribute("value") || "basemap";
             const nextIndex = (layers.indexOf(currentLayer) + 1) % layers.length;
             const nextLayer = layers[nextIndex];
-            $("#mapLayerMenu").find(".layers").removeClass("active");
-            $(".btn-" + nextLayer).addClass("active");
+            document.querySelectorAll("#mapLayerMenu .layers").forEach((el) => el.classList.remove("active"));
+            document.querySelector(".btn-" + nextLayer).classList.add("active");
             this.updateUrlParams({ type: nextLayer === "basemap" ? null : nextLayer });
             localStorage.setItem("settings-map-mode", nextLayer);
             this.userSettings.layerMode = nextLayer;
@@ -1881,7 +1959,7 @@ export default class SquadCalc {
         document.body.style.visibility = "visible";
         setTimeout(() => this.minimap.changeLayer(), 800);
         setTimeout(() => {
-            $("#loader").fadeOut(500, () => this.showNewVersionToast());
+            fadeOut(document.getElementById("loader"), 500, () => this.showNewVersionToast());
         }, 1800);
     }
 
@@ -1903,18 +1981,20 @@ export default class SquadCalc {
 
         if (this.ui == 0) {
             this.loadMapUIMode();
-            $(".returnBtn").hide();
-            if (this.minimap.hasMarkers()) $(".btn-delete, .btn-undo").show();
+            document.querySelectorAll(".returnBtn").forEach((el) => el.style.display = "none");
+            if (this.minimap.hasMarkers()) {
+                document.querySelectorAll(".btn-delete, .btn-undo").forEach((el) => el.style.removeProperty("display"));
+            }
             return;
         }
 
-        $(".returnBtn").show();
-        $("#map_ui").addClass("hidden");
-        $("#classic_ui").removeClass("hidden");
-        $("header").removeClass("ui");
-        $("#mapLayerMenu").hide();
-        $("#layerSelector").hide();
-        $(".weaponSelector").addClass("active");
+        document.querySelectorAll(".returnBtn").forEach((el) => el.style.removeProperty("display"));
+        document.getElementById("map_ui").classList.add("hidden");
+        document.getElementById("classic_ui").classList.remove("hidden");
+        document.querySelector("header").classList.remove("ui");
+        document.getElementById("mapLayerMenu").style.display = "none";
+        document.getElementById("layerSelector").style.display = "none";
+        document.querySelector(".weaponSelector").classList.add("active");
         this.ui = 0;
         localStorage.setItem("data-ui", 0);
 
@@ -1942,13 +2022,13 @@ export default class SquadCalc {
     }
 
     loadMapUIMode(){
-        $("#classic_ui").addClass("hidden");
-        $("#map_ui").removeClass("hidden");
-        $("header").addClass("ui");
-        $("#mapLayerMenu").show();
-        if (this.LAYER_SELECTOR.find("option").length > 1) $("#layerSelector").show();
+        document.getElementById("classic_ui").classList.add("hidden");
+        document.getElementById("map_ui").classList.remove("hidden");
+        document.querySelector("header").classList.add("ui");
+        document.getElementById("mapLayerMenu").style.removeProperty("display");
+        if (this.LAYER_SELECTOR.options.length > 1) document.getElementById("layerSelector").style.removeProperty("display");
         if (this.minimap.activeWeaponsMarkers.getLayers().length === 0) {
-            $(".weaponSelector").removeClass("active animate__fadeIn");
+            document.querySelector(".weaponSelector").classList.remove("active", "animate__fadeIn");
         }
         this.ui = 1;
         localStorage.setItem("data-ui", 1);
@@ -1959,15 +2039,15 @@ export default class SquadCalc {
      * save current weapon into browser cache
      */
     changeWeapon() {
-        const WEAPON = this.WEAPON_SELECTOR.val();
+        const WEAPON = this.WEAPON_SELECTOR.value;
 
         localStorage.setItem("data-weapon", WEAPON);
         this.activeWeapon = WEAPONS[WEAPON];
     
         if (this.activeWeapon.shells.length > 1) {
-            $("#ammoSelector").show();
+            document.getElementById("ammoSelector").style.removeProperty("display");
         } else {
-            $("#ammoSelector").hide();
+            document.getElementById("ammoSelector").style.display = "none";
         }
 
         // Load SHELL_SELECTOR with weapon.shells
@@ -1977,9 +2057,9 @@ export default class SquadCalc {
             selected: index === 0,
         }));
         this.shellSelect.setChoices(shellChoices, "value", "label", true, true, true);
-        this.SHELL_SELECTOR.trigger("change");
+        triggerChange(this.SHELL_SELECTOR, true);
 
-        $("#mortarImg").attr("src", `/img/weapons/${this.activeWeapon.name}.webp`);
+        document.getElementById("mortarImg").setAttribute("src", `/img/weapons/${this.activeWeapon.name}.webp`);
         
         this.shoot();
     
@@ -2006,29 +2086,29 @@ export default class SquadCalc {
      * @returns {target} elevation + bearing
      */
     shoot(inputChanged = "") {
-        const MORTAR_LOC = $("#mortar-location");
-        const TARGET_LOC = $("#target-location");
-        const a = MORTAR_LOC.val();
-        const b = TARGET_LOC.val();
+        const MORTAR_LOC = document.getElementById("mortar-location");
+        const TARGET_LOC = document.getElementById("target-location");
+        const a = MORTAR_LOC.value;
+        const b = TARGET_LOC.value;
         let aPos;
         let bPos;
 
         this.resetCalc();
 
         // store current cursor positions on input
-        let startA = MORTAR_LOC[0].selectionStart;
-        let startB = TARGET_LOC[0].selectionStart;
+        let startA = MORTAR_LOC.selectionStart;
+        let startB = TARGET_LOC.selectionStart;
 
         // format keypads
-        MORTAR_LOC.val(this.formatKeyPad(a));
-        TARGET_LOC.val(this.formatKeyPad(b));
+        MORTAR_LOC.value = this.formatKeyPad(a);
+        TARGET_LOC.value = this.formatKeyPad(b);
 
         // If keypads are imprecises, do nothing
         if (a.length < 3 || b.length < 3) {
             // disable tooltip and copy function
-            $("#copy").removeClass("copy");
-            $("#bearingNum").html("xxx");
-            $("#elevationNum").html("xxxx");
+            document.getElementById("copy").classList.remove("copy");
+            document.getElementById("bearingNum").innerHTML = "xxx";
+            document.getElementById("elevationNum").innerHTML = "xxxx";
             return 1;
         }
 
@@ -2077,12 +2157,12 @@ export default class SquadCalc {
         animateCalc(bearing.toFixed(1), 500, "bearingNum");
         animateCalc(elevation.toFixed(this.activeWeapon.elevationPrecision), 500, "elevationNum");
 
-        if (this.activeWeapon.name != "Mortar" && this.activeWeapon.name != "UB-32") $("#highlow").addClass("active");
-        if (this.activeWeapon.getAngleType() === -1) $("#highlowicon").css({ transform: "rotate(0deg)"});
-        else $("#highlowicon").css({transform: "rotate(180deg)"});
+        if (this.activeWeapon.name != "Mortar" && this.activeWeapon.name != "UB-32") document.getElementById("highlow").classList.add("active");
+        if (this.activeWeapon.getAngleType() === -1) document.getElementById("highlowicon").style.transform = "rotate(0deg)";
+        else document.getElementById("highlowicon").style.transform = "rotate(180deg)";
 
         // show actions button
-        $("#savebutton").removeClass("hidden");
+        document.getElementById("savebutton").classList.remove("hidden");
     }
 
 
@@ -2114,20 +2194,24 @@ export default class SquadCalc {
      */
     showError(msg, issue) {
 
-        if (issue === "mortar") $("#mortar-location").addClass("error2");
-        else if (issue === "target") $("#target-location").addClass("error2");
-        else $("#target-location, #mortar-location").addClass("error2");
+        if (issue === "mortar") document.getElementById("mortar-location").classList.add("error2");
+        else if (issue === "target") document.getElementById("target-location").classList.add("error2");
+        else document.querySelectorAll("#target-location, #mortar-location").forEach((el) => el.classList.add("error2"));
 
         // Rework the #setting div to display a single message
-        $("#bearing").addClass("hidden").removeClass("pure-u-10-24");
-        $("#elevation").addClass("hidden").removeClass("pure-u-10-24");
-        $("#errorMsg").removeClass("pure-u-4-24").addClass("pure-u-1").addClass("errorMsg");
-        $("#errorMsg").html(msg);
+        document.getElementById("bearing").classList.add("hidden");
+        document.getElementById("bearing").classList.remove("pure-u-10-24");
+        document.getElementById("elevation").classList.add("hidden");
+        document.getElementById("elevation").classList.remove("pure-u-10-24");
+        const errorMsg = document.getElementById("errorMsg");
+        errorMsg.classList.remove("pure-u-4-24");
+        errorMsg.classList.add("pure-u-1", "errorMsg");
+        errorMsg.innerHTML = msg;
 
         // remove the pointer cursor & tooltip
-        $("#copy").removeClass("copy");
-        $("#settings").css({ "border-color": "var(--main-color)" });
-        animateCSS($("#settings"), "shakeX");
+        document.getElementById("copy").classList.remove("copy");
+        document.getElementById("settings").style.borderColor = "var(--main-color)";
+        animateCSS(document.getElementById("settings"), "shakeX");
     }
 
 
@@ -2137,32 +2221,38 @@ export default class SquadCalc {
     resetCalc() {
 
         // First, reset any errors
-        $("#settings").css({ "border-color": "#fff" });
-        $("#target-location").removeClass("error2");
-        $("#mortar-location").removeClass("error2");
+        document.getElementById("settings").style.borderColor = "#fff";
+        document.getElementById("target-location").classList.remove("error2");
+        document.getElementById("mortar-location").classList.remove("error2");
 
         // prepare result divs
-        $("#bearing").removeClass("hidden").addClass("pure-u-10-24");
-        $("#elevation").removeClass("hidden").addClass("pure-u-10-24");
-        $("#errorMsg").addClass("pure-u-4-24").removeClass("errorMsg").removeClass("pure-u-1").html("-");
-        $("#savebutton").addClass("hidden");
-        $("#highlow").removeClass("active");
+        document.getElementById("bearing").classList.remove("hidden");
+        document.getElementById("bearing").classList.add("pure-u-10-24");
+        document.getElementById("elevation").classList.remove("hidden");
+        document.getElementById("elevation").classList.add("pure-u-10-24");
+        const errorMsg = document.getElementById("errorMsg");
+        errorMsg.classList.add("pure-u-4-24");
+        errorMsg.classList.remove("errorMsg", "pure-u-1");
+        errorMsg.innerHTML = "-";
+        document.getElementById("savebutton").classList.add("hidden");
+        document.getElementById("highlow").classList.remove("active");
 
         // draw pointer cursor on results
-        $("#copy").addClass("copy");
+        document.getElementById("copy").classList.add("copy");
     }
 
     /**
      * Copy Saved calcs to clipboard
      */
-    copySave(COPY_ZONE) {
+    copySave(copyZone) {
         let text2copy;
+        const prev = copyZone.previousElementSibling;
 
-        if (COPY_ZONE.prev().val().length === 0) text2copy = COPY_ZONE.prev().attr("placeholder").trim() + COPY_ZONE.text().trim();
-        else text2copy = COPY_ZONE.prev().val().trim() + COPY_ZONE.text().trim();
+        if (prev.value.length === 0) text2copy = prev.getAttribute("placeholder").trim() + copyZone.textContent.trim();
+        else text2copy = prev.value.trim() + copyZone.textContent.trim();
 
         navigator.clipboard.writeText(text2copy);
-        animateCSS(COPY_ZONE.parent(), "headShake");
+        animateCSS(copyZone.parentElement, "headShake");
     }
 
     /**
@@ -2174,7 +2264,7 @@ export default class SquadCalc {
         const TEXTPARTS = [];
 
         // If empty string, return
-        if (text.length === 0) { return; }
+        if (text.length === 0) { return ""; }
 
         const TEXTND = text.toUpperCase().split("-").join("");
         TEXTPARTS.push(TEXTND.slice(0, 3));
@@ -2194,7 +2284,7 @@ export default class SquadCalc {
      *  * @param {object} a - saved calcs to remove
      */
     removeSaves(a) {
-        if ($(".saved_list p").length === 1) { $("#saved").addClass("hidden"); }
+        if (document.querySelectorAll(".saved_list p").length === 1) { document.getElementById("saved").classList.add("hidden"); }
         a.closest("p").remove();
     }
 
@@ -2207,10 +2297,10 @@ export default class SquadCalc {
      * @param {string} inputChanged - "mortar" or "target"
      */
     setCursor(startA, startB, a, b, inputChanged) {
-        const MORTAR_LOC = $("#mortar-location");
-        const TARGET_LOC = $("#target-location");
-        const MORTAR_LENGTH = MORTAR_LOC.val().length;
-        const TARGET_LENGTH = TARGET_LOC.val().length;
+        const MORTAR_LOC = document.getElementById("mortar-location");
+        const TARGET_LOC = document.getElementById("target-location");
+        const MORTAR_LENGTH = MORTAR_LOC.value.length;
+        const TARGET_LENGTH = TARGET_LOC.value.length;
 
         a = a.length;
         b = b.length;
@@ -2222,12 +2312,12 @@ export default class SquadCalc {
 
         if (startA >= 3) startA += (a > MORTAR_LENGTH) ? -1 : 1;
         if (startB >= 3) startB += (b > TARGET_LENGTH) ? -1 : 1;
-        
-        if (inputChanged === "weapon") MORTAR_LOC[0].setSelectionRange(startA, startA);
-        else if (inputChanged === "target") TARGET_LOC[0].setSelectionRange(startB, startB);
+
+        if (inputChanged === "weapon") MORTAR_LOC.setSelectionRange(startA, startA);
+        else if (inputChanged === "target") TARGET_LOC.setSelectionRange(startB, startB);
         else {
-            MORTAR_LOC[0].setSelectionRange(startA, startA);
-            TARGET_LOC[0].setSelectionRange(startB, startB);
+            MORTAR_LOC.setSelectionRange(startA, startA);
+            TARGET_LOC.setSelectionRange(startB, startB);
         }
     }
 
@@ -2239,15 +2329,16 @@ export default class SquadCalc {
      */
     resizeInput(i) {
         const content = i.value.length === 0 ? i.placeholder : i.value;
-        $("#ruler").text(content); // Use text() to escape content safely
-        i.style.width = `${$("#ruler").width() * 1.05}px`;
+        const ruler = document.getElementById("ruler");
+        ruler.textContent = content; // Use textContent to escape content safely
+        i.style.width = `${ruler.getBoundingClientRect().width * 1.05}px`;
     }
 
     /**
      * Resize every saved name
      */
     resizeInputsOnResize() {
-        $(".saved_list :input").each((_, element) => { this.resizeInput($(element)[0]); });
+        document.querySelectorAll(".saved_list input, .saved_list textarea, .saved_list select, .saved_list button").forEach((element) => { this.resizeInput(element); });
     }
 
 
@@ -2256,13 +2347,18 @@ export default class SquadCalc {
      */
     saveCalc() {
 
-        if ($(".saved_list p").length === 4) $(".saved_list p").first().remove();
-        
-        $(".saved_list").append(
+        const savedList = document.querySelector(".saved_list");
+        if (savedList.querySelectorAll("p").length === 4) savedList.querySelector("p").remove();
+
+        const targetLocationValue = document.getElementById("target-location").value;
+        const bearingNumText = document.getElementById("bearingNum").textContent;
+        const elevationNumText = document.getElementById("elevationNum").textContent;
+
+        savedList.insertAdjacentHTML("beforeend",
             `<p class=savedrow>
-                <input maxlength=20 spellcheck=false placeholder="${$("#target-location").val()}" class=friendlyname></input>
-                <span class=savespan> 
-                    ➜ ${$("#bearingNum").text()} - ${$("#elevationNum").text()}
+                <input maxlength=20 spellcheck=false placeholder="${targetLocationValue}" class=friendlyname></input>
+                <span class=savespan>
+                    ➜ ${bearingNumText} - ${elevationNumText}
                 </span>
                 <span class="del">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM160 128l41.4 0 11.3-11.3c3-3 7.1-4.7 11.3-4.7l64 0c4.2 0 8.3 1.7 11.3 4.7L310.6 128l41.4 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-192 0c-8.8 0-16-7.2-16-16s7.2-16 16-16zm0 64l192 0L338.4 354.7c-1.4 16.6-15.2 29.3-31.9 29.3l-101.1 0c-16.6 0-30.5-12.8-31.9-29.3L160 192z"/></svg>
@@ -2270,12 +2366,14 @@ export default class SquadCalc {
             </p>`
         );
 
-        // resize the inserted input according the the placeholder length 
-        $(".saved_list p").find("input").last().width(`${$("#target-location").val().length * 1.2}ch`);
+        // resize the inserted input according the the placeholder length
+        const savedInputs = savedList.querySelectorAll("p input");
+        savedInputs[savedInputs.length - 1].style.width = `${targetLocationValue.length * 1.2}ch`;
 
         // display it
-        $("#saved").removeClass("hidden");
-        animateCSS($(".saved_list p").last(), "fadeInDown");
+        document.getElementById("saved").classList.remove("hidden");
+        const savedRows = document.querySelectorAll(".saved_list p");
+        animateCSS(savedRows[savedRows.length - 1], "fadeInDown");
         tooltip_save.disable();
     }
 
@@ -2284,17 +2382,17 @@ export default class SquadCalc {
      * @param {event} event - click event that triggered copy
      */
     copyCalc(event) {
-        
+
         // If calcs aren't ready, do nothing
-        if (!$(".copy").hasClass("copy")) return 1;
+        if (!document.querySelector(".copy").classList.contains("copy")) return 1;
 
         if (event.target.id === "highlowicon" || event.target.id === "highlow") {
-            if ($("#highlow").hasClass("active")) this.changeHighLow();
+            if (document.getElementById("highlow").classList.contains("active")) this.changeHighLow();
             return 1;
         }
 
-        animateCSS($(".copy"), "headShake");
-        navigator.clipboard.writeText(`${$("#target-location").val()} ➜ ${$("#bearingNum").text()} - ${$("#elevationNum").text()}`);
+        animateCSS(document.querySelector(".copy"), "headShake");
+        navigator.clipboard.writeText(`${document.getElementById("target-location").value} ➜ ${document.getElementById("bearingNum").textContent} - ${document.getElementById("elevationNum").textContent}`);
         this.openToast("success", "copied", "");
 
     }
@@ -2303,7 +2401,7 @@ export default class SquadCalc {
      * Toggle high/low angles
      */
     changeHighLow(){
-        const transformValue = $("#highlowicon").css("transform");
+        const transformValue = getComputedStyle(document.getElementById("highlowicon")).transform;
         if (transformValue === "none" || transformValue === "matrix(1, 0, 0, 1, 0, 0)") this.activeWeapon.angleType = "low";
         else this.activeWeapon.angleType = "high";
         this.shoot();
@@ -2367,11 +2465,11 @@ export default class SquadCalc {
         const rectangles = [];
         const draws = [];
         const hexs = [];
-        const activeWeapon = this.WEAPON_SELECTOR.val();
-        const activeMap = this.MAP_SELECTOR.val();
-        const activeLayer = this.LAYER_SELECTOR.val();
-        const team1 = [this.FACTION1_SELECTOR.val(), this.UNIT1_SELECTOR.val()];
-        const team2 = [this.FACTION2_SELECTOR.val(), this.UNIT2_SELECTOR.val()];
+        const activeWeapon = this.WEAPON_SELECTOR.value;
+        const activeMap = this.MAP_SELECTOR.value;
+        const activeLayer = this.LAYER_SELECTOR.value;
+        const team1 = [this.FACTION1_SELECTOR.value, this.UNIT1_SELECTOR.value];
+        const team2 = [this.FACTION2_SELECTOR.value, this.UNIT2_SELECTOR.value];
         const teams = [team1, team2];
         const selectedFlags = [];
         const version = this.version;
@@ -2438,7 +2536,7 @@ export default class SquadCalc {
                 console.debug("Parsed JSON:", data);
 
                 this.mapSelect.setChoiceByValue(String(data.activeMap));
-                this.MAP_SELECTOR.trigger($.Event("change", { broadcast: true }));
+                triggerChange(this.MAP_SELECTOR, true);
 
                 data.markers.forEach(marker => { this.minimap.createMarker(new LatLng(marker.lat, marker.lng), marker.team, marker.category, marker.icon, marker.uid); });
                 data.arrows.forEach(arrow => { new MapArrow(this.minimap, arrow.color, arrow.latlngs[0], arrow.latlngs[1], arrow.uid); });
@@ -2446,18 +2544,18 @@ export default class SquadCalc {
                 data.rectangles.forEach(rectangle => { new MapRectangle(this.minimap, rectangle.color, rectangle.bounds._southWest, rectangle.bounds._northEast, rectangle.uid); });
                 data.draws.forEach(draw => { new MapDrawing(this.minimap, draw.color, draw.latlngs, draw.uid).finalize(false); });
 
-                $(document).one("heightmap:loaded", () => {
+                document.addEventListener("heightmap:loaded", () => {
                     if (Array.isArray(data.weapons) && data.weapons.length > 0) {
                         data.weapons.forEach(weapon => { this.minimap.createWeapon(new LatLng(weapon.lat, weapon.lng)); });
                         data.targets.forEach(target => { this.minimap.createTarget(new LatLng(target.lat, target.lng), false); });
                     }
                     this.openToast("success", "importSuccess", "");
-                });
+                }, { once: true });
 
-                $(document).one("layers:loaded", () => {
+                document.addEventListener("layers:loaded", () => {
                     this.layerSelect.setChoiceByValue(String(data.activeLayer));
-                    this.LAYER_SELECTOR.trigger($.Event("change", { broadcast: true }));
-                    $(document).one("layer:loaded", () => {
+                    triggerChange(this.LAYER_SELECTOR, true);
+                    document.addEventListener("layer:loaded", () => {
                         data.selectedFlags.forEach(flag => {
                             this.minimap.layer.flags.forEach((layerFlag) => {
                                 if (layerFlag.objectName != flag) return;
@@ -2465,12 +2563,16 @@ export default class SquadCalc {
                                 this.minimap.layer._handleFlagClick(layerFlag);
                             });
                         });
-                        this.FACTION1_SELECTOR.val(data.teams[0][0]).trigger($.Event("change", { broadcast: false }));
-                        this.FACTION2_SELECTOR.val(data.teams[1][0]).trigger($.Event("change", { broadcast: false }));
-                        this.UNIT1_SELECTOR.val(data.teams[0][1]).trigger($.Event("change", { broadcast: false }));
-                        this.UNIT2_SELECTOR.val(data.teams[1][1]).trigger($.Event("change", { broadcast: false }));
-                    });
-                });
+                        this.FACTION1_SELECTOR.value = data.teams[0][0];
+                        triggerChange(this.FACTION1_SELECTOR, false);
+                        this.FACTION2_SELECTOR.value = data.teams[1][0];
+                        triggerChange(this.FACTION2_SELECTOR, false);
+                        this.UNIT1_SELECTOR.value = data.teams[0][1];
+                        triggerChange(this.UNIT1_SELECTOR, false);
+                        this.UNIT2_SELECTOR.value = data.teams[1][1];
+                        triggerChange(this.UNIT2_SELECTOR, false);
+                    }, { once: true });
+                }, { once: true });
             } catch (err) {
                 console.debug("Not valid JSON", err);
                 this.openToast("error", "fileNotSupported", "");

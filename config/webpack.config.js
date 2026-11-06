@@ -1,6 +1,5 @@
 import Dotenv from 'dotenv-webpack';
 import path from 'path';
-import webpack from 'webpack';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 import CssMinimizerPlugin from 'css-minimizer-webpack-plugin';
 import TerserPlugin from 'terser-webpack-plugin';
@@ -82,9 +81,6 @@ export default async (env) => {
             // Copy Public Assets to /dist/
             new CopyWebpackPlugin({
                 patterns: [{ from: path.resolve(__dirname, '../public'), to: path.resolve(__dirname, '../dist') }],
-            }),
-            new webpack.ProvidePlugin({
-                $: "jquery", jQuery: "jquery", "window.jQuery": "jquery'", "window.$": "jquery"
             }),
             new RobotstxtPlugin({
                 policy: SEARCH_ENGINES ? [{ userAgent: "*", allow: "/" }] : [{ userAgent: "*", disallow: "/" }],

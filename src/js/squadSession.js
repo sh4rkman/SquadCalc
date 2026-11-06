@@ -3,6 +3,7 @@ import { App } from "../app.js";
 import { LatLng } from "leaflet";
 import { createSessionTooltips, leaveSessionTooltips } from "./tooltips.js";
 import { MapDrawing, MapArrow, MapCircle, MapRectangle } from "./squadShapes.js";
+import { triggerChange } from "./domUtils.js";
 
 
 export default class SquadSession {
@@ -27,10 +28,10 @@ export default class SquadSession {
         App.updateUrlParams({ session: null });
 
         // Update UI
-        $(".btn-session").removeClass("active");
+        document.querySelectorAll(".btn-session").forEach((el) => el.classList.remove("active"));
         leaveSessionTooltips.disable();
         createSessionTooltips.enable();
-        $("#sessionActions").css("display", "none");
+        document.getElementById("sessionActions").style.display = "none";
 
         // Open a toast message based on the close event
 
@@ -71,8 +72,8 @@ export default class SquadSession {
 
         case "SESSION_CREATED": {
             console.debug("[SESSION] New Session created : " + data.sessionId);
-            $(".btn-session-users").html(1);
-            $("#sessionActions").css("display", "flex");
+            document.querySelectorAll(".btn-session-users").forEach((el) => el.textContent = 1);
+            document.getElementById("sessionActions").style.display = "flex";
             App.updateUrlParams({ session: data.sessionId });
             App.openToast("success", "sessionCreated", "shareSession");
             break;
@@ -84,27 +85,27 @@ export default class SquadSession {
 
             // Update MAP with custom event to skip the broadcast
             App.mapSelect.setChoiceByValue(String(data.mapState.activeMap));
-            App.MAP_SELECTOR.trigger($.Event("change", { broadcast: false }));
+            triggerChange(App.MAP_SELECTOR, false);
 
             // Create every existing marker in the session
             // Wait for the heightmap to be loaded before creating the markers
             // Otherwise, the markers will be created with the default height of 0
-            $(document).one("heightmap:loaded", () => {
+            document.addEventListener("heightmap:loaded", () => {
                 data.mapState.weapons.forEach(weapon => {
-                    App.minimap.createWeapon(new LatLng(weapon.lat, weapon.lng), weapon.uid, weapon.heightPadding);        
+                    App.minimap.createWeapon(new LatLng(weapon.lat, weapon.lng), weapon.uid, weapon.heightPadding);
                 });
                 data.mapState.targets.forEach(target => {
                     App.minimap.createTarget(new LatLng(target.lat, target.lng), false, target.uid);
                 });
-            });
+            }, { once: true });
 
             if (App.minimap.layer) App.minimap.layer._resetLayer();
 
-            $(document).one("layers:loaded", () => {
+            document.addEventListener("layers:loaded", () => {
                 App.layerSelect.setChoiceByValue(String(data.mapState.activeLayer));
-                App.LAYER_SELECTOR.trigger($.Event("change", { broadcast: false }));
-                
-                $(document).one("layer:loaded", () => {
+                triggerChange(App.LAYER_SELECTOR, false);
+
+                document.addEventListener("layer:loaded", () => {
 
                     // App.minimap.layer._resetLayer(); break AAS when joining a session in AAS mode
 
@@ -138,12 +139,16 @@ export default class SquadSession {
                     // Load Factions and Units
                     if (!data.mapState.teams || data.mapState.teams.length === 0) return;
 
-                    App.FACTION1_SELECTOR.val(data.mapState.teams[0][0]).trigger($.Event("change", { broadcast: false }));
-                    App.FACTION2_SELECTOR.val(data.mapState.teams[1][0]).trigger($.Event("change", { broadcast: false }));
-                    App.UNIT1_SELECTOR.val(data.mapState.teams[0][1]).trigger($.Event("change", { broadcast: false }));
-                    App.UNIT2_SELECTOR.val(data.mapState.teams[1][1]).trigger($.Event("change", { broadcast: false }));
-                
-                });
+                    App.FACTION1_SELECTOR.value = data.mapState.teams[0][0];
+                    triggerChange(App.FACTION1_SELECTOR, false);
+                    App.FACTION2_SELECTOR.value = data.mapState.teams[1][0];
+                    triggerChange(App.FACTION2_SELECTOR, false);
+                    App.UNIT1_SELECTOR.value = data.mapState.teams[0][1];
+                    triggerChange(App.UNIT1_SELECTOR, false);
+                    App.UNIT2_SELECTOR.value = data.mapState.teams[1][1];
+                    triggerChange(App.UNIT2_SELECTOR, false);
+
+                }, { once: true });
 
                 data.mapState.markers.forEach(marker => {
                     App.minimap.createMarker(new LatLng(marker.lat, marker.lng), marker.team, marker.category, marker.icon, marker.uid);
@@ -161,14 +166,14 @@ export default class SquadSession {
                     new MapDrawing(App.minimap, draw.color, draw.latlngs, draw.uid).finalize(false);
                 });
 
-            });
+            }, { once: true });
 
             // Update UI for joining the session
             App.openToast("success", "sessionJoined", "");
 
             // Show participants count
-            $(".btn-session-users").html(data.sessionUsers);
-            $("#sessionActions").css("display", "flex");
+            document.querySelectorAll(".btn-session-users").forEach((el) => el.textContent = data.sessionUsers);
+            document.getElementById("sessionActions").style.display = "flex";
 
             this.wsActiveUsers = data.sessionUsers;
             break;
@@ -193,7 +198,7 @@ export default class SquadSession {
 
         case "ACTIVE_MEMBERS_UPDATED": {
             console.debug("[SESSION] New Session Users Count: ", data.sessionUsers);
-            $(".btn-session-users").html(data.sessionUsers);
+            document.querySelectorAll(".btn-session-users").forEach((el) => el.textContent = data.sessionUsers);
 
             // Only one left in the session
             if (data.sessionUsers === 1) {
@@ -364,9 +369,11 @@ export default class SquadSession {
         case "UPDATE_FACTION": {
             console.debug("[SESSION] Received new faction: ", data.faction);
             if (data.teamIndex === 0) {
-                App.FACTION1_SELECTOR.val(data.faction).trigger($.Event("change", { broadcast: false }));
+                App.FACTION1_SELECTOR.value = data.faction;
+                triggerChange(App.FACTION1_SELECTOR, false);
             } else if (data.teamIndex === 1) {
-                App.FACTION2_SELECTOR.val(data.faction).trigger($.Event("change", { broadcast: false }));
+                App.FACTION2_SELECTOR.value = data.faction;
+                triggerChange(App.FACTION2_SELECTOR, false);
             }
             break;
         }
@@ -375,9 +382,11 @@ export default class SquadSession {
         case "UPDATE_UNIT": {
             console.debug("[SESSION] Received new unit: ", data.faction);
             if (data.teamIndex === 0) {
-                App.minimap.layer.factions.UNIT1_SELECTOR.val(data.faction).trigger($.Event("change", { broadcast: false }));
+                App.minimap.layer.factions.UNIT1_SELECTOR.value = data.faction;
+                triggerChange(App.minimap.layer.factions.UNIT1_SELECTOR, false);
             } else if (data.teamIndex === 1) {
-                App.minimap.layer.factions.UNIT2_SELECTOR.val(data.faction).trigger($.Event("change", { broadcast: false }));
+                App.minimap.layer.factions.UNIT2_SELECTOR.value = data.faction;
+                triggerChange(App.minimap.layer.factions.UNIT2_SELECTOR, false);
             }
             break;
         }
@@ -385,7 +394,7 @@ export default class SquadSession {
         // Trigger a map change with a custom event to skip the update
         case "UPDATE_MAP": {
             App.mapSelect.setChoiceByValue(String(data.activeMap));
-            App.MAP_SELECTOR.trigger($.Event("change", { broadcast: false }));
+            triggerChange(App.MAP_SELECTOR, false);
             break;
         }
 
@@ -403,7 +412,7 @@ export default class SquadSession {
         // Trigger a layer change with a custom event to skip the update
         case "UPDATE_LAYER": {
             App.layerSelect.setChoiceByValue(String(data.layer));
-            App.LAYER_SELECTOR.trigger($.Event("change", { broadcast: false }));
+            triggerChange(App.LAYER_SELECTOR, false);
             break;
         }
 

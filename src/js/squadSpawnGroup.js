@@ -1,5 +1,4 @@
 import { Marker, Icon, DomEvent } from "leaflet";
-import { App } from "../app.js";
 import tippy, { sticky } from "tippy.js";
 import i18next from "i18next";
 
@@ -81,8 +80,8 @@ export class squadSpawnGroup extends Marker {
         let team, teamName;
 
         if (this.data.team === "Team One" || this.data.team === "Team Neutral") {
-            if (this.layer.factions?.FACTION1_SELECTOR.val() && App.userSettings.enableFactions && process.env.DISABLE_FACTIONS != "true") {
-                team = this.layer.factions.FACTION1_SELECTOR.val();
+            if (this.layer.factions?.FACTION1_SELECTOR.value && process.env.DISABLE_FACTIONS != "true") {
+                team = this.layer.factions.FACTION1_SELECTOR.value;
                 teamName = i18next.t(`factions:${team.replace(/^SU_/, "").replace(/-\d+$/, "").replace(/P[12]$/, "")}`);
             } 
             else {
@@ -91,8 +90,8 @@ export class squadSpawnGroup extends Marker {
             }
         } 
         else {
-            if (this.layer.factions?.FACTION2_SELECTOR.val() && App.userSettings.enableFactions && process.env.DISABLE_FACTIONS != "true") {
-                team = this.layer.factions.FACTION2_SELECTOR.val();
+            if (this.layer.factions?.FACTION2_SELECTOR.value && process.env.DISABLE_FACTIONS != "true") {
+                team = this.layer.factions.FACTION2_SELECTOR.value;
                 teamName = i18next.t(`factions:${team.replace(/^SU_/, "").replace(/-\d+$/, "").replace(/P[12]$/, "")}`);
             } 
             else {

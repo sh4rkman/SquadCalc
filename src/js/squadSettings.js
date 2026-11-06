@@ -1,6 +1,3 @@
-import SquadFactions from "./squadFactions.js";
-
-
 /**
  * Centralized settings management for SquadCalc.
  * Handles loading, saving, and UI binding for all user preferences.
@@ -62,7 +59,7 @@ export default class SquadSettings {
                 selector: "#settingsClassicCursor",
                 requiresMouse: true,
                 onChange: () => {
-                    $("body").toggleClass("map-crosshair", !this.cursor);
+                    document.body.classList.toggle("map-crosshair", !this.cursor);
                 }
             },
 
@@ -163,30 +160,6 @@ export default class SquadSettings {
 
 
             // Factions & Layer
-            enableFactions: {
-                key: "settings-enable-factions",
-                default: true,
-                selector: "#settingsEnableFactions",
-                controls: ["#settingsHideLowRespawn", "#settingsDisableSounds", "#settingsDefaultFactions", "#settingsMinimizeFactionBar"],
-                onChange: (val) => {
-                    if (!val) {
-                        $("#factionsTab, #factionsButton").hide();
-                        $("#settingsHideLowRespawn").prop("disabled", true);
-                        $("#settingsDisableSounds").prop("disabled", true);
-                        $("#settingsDefaultFactions").prop("disabled", true);
-                        $("#settingsMinimizeFactionBar").prop("disabled", true);
-                    } else {
-                        $("#settingsHideLowRespawn").prop("disabled", false);
-                        $("#settingsDisableSounds").prop("disabled", false);
-                        $("#settingsDefaultFactions").prop("disabled", false);
-                        $("#settingsMinimizeFactionBar").prop("disabled", false);
-                        if (this.app.minimap.layer) {
-                            this.app.minimap.layer.factions = new SquadFactions(this.app.minimap.layer);
-                            $("#factionsTab, #factionsButton").show();
-                        }
-                    }
-                }
-            },
             defaultFactions: {
                 key: "settings-default-factions",
                 default: true,
@@ -202,10 +175,10 @@ export default class SquadSettings {
                 default: false,
                 selector: "#settingsMinimizeFactionBar",
                 onLoad: (val) => {
-                    $("#factionsButton").toggleClass("collapsed", val);
+                    document.getElementById("factionsButton").classList.toggle("collapsed", val);
                 },
                 onChange: (val) => {
-                    $("#factionsButton").toggleClass("collapsed", val);
+                    document.getElementById("factionsButton").classList.toggle("collapsed", val);
                 }
             },
             hideLowRespawn: {
@@ -213,27 +186,27 @@ export default class SquadSettings {
                 default: true,
                 selector: "#settingsHideLowRespawn",
                 onChange: () => {
-                    if ($(".btn-pin.active").length === 0) return;
+                    const activePinBtn = document.querySelector(".btn-pin.active");
+                    if (!activePinBtn) return;
 
                     // Clear all pinned vehicles & remove timers
-                    $("#pinnedVehiclesTab .pinnedVehicles").each(function() {
-                        const $vehicleDiv = $(this);
-                        const timerId = $vehicleDiv.data("timerId");
+                    document.querySelectorAll("#pinnedVehiclesTab .pinnedVehicles").forEach((vehicleDiv) => {
+                        const timerId = vehicleDiv.dataset.timerId;
                         if (timerId) clearInterval(timerId);
-                        $vehicleDiv.removeClass("active");
-                        $vehicleDiv.removeData("timerId");
+                        vehicleDiv.classList.remove("active");
+                        delete vehicleDiv.dataset.timerId;
                     });
-                    $("#pinnedVehiclesTab").empty();
+                    document.getElementById("pinnedVehiclesTab").replaceChildren();
 
                     let factionData, country, faction;
-                    if ($(".btn-pin.active")[0]?.id === "team1PinButton") {
+                    if (activePinBtn.id === "team1PinButton") {
                         factionData = this.app.minimap.layer.layerData.units.team1Units;
-                        country = $(".dropbtn8").val();
-                        faction = $(".dropbtn9").val();
+                        country = document.querySelector(".dropbtn8").value;
+                        faction = document.querySelector(".dropbtn9").value;
                     } else {
                         factionData = this.app.minimap.layer.layerData.units.team2Units;
-                        country = $(".dropbtn10").val();
-                        faction = $(".dropbtn11").val();
+                        country = document.querySelector(".dropbtn10").value;
+                        faction = document.querySelector(".dropbtn11").value;
                     }
                     this.app.minimap.layer.factions.pinUnit(factionData, country, faction);
                 }
@@ -385,7 +358,7 @@ export default class SquadSettings {
                 default: false,
                 selector: null,  // Uses button, not checkbox
                 onLoad: (val) => {
-                    if (val) $(".btn-hd").addClass("active");
+                    if (val) document.querySelector(".btn-hd").classList.add("active");
                 }
             },
 
@@ -520,8 +493,10 @@ export default class SquadSettings {
             // Handle mouse-dependent settings
             if (def.requiresMouse && !this.app.hasMouse) {
                 this[name] = false;
-                if (def.selector) {
-                    $(def.selector).prop("disabled", true).prop("checked", false);
+                const el = def.selector && document.querySelector(def.selector);
+                if (el) {
+                    el.disabled = true;
+                    el.checked = false;
                 }
                 return;
             }
@@ -535,8 +510,9 @@ export default class SquadSettings {
             }
 
             // Update checkbox state
-            if (def.selector) {
-                $(def.selector).prop("checked", this[name]);
+            const checkboxEl = def.selector && document.querySelector(def.selector);
+            if (checkboxEl) {
+                checkboxEl.checked = this[name];
             }
 
             // Call onLoad if defined
@@ -575,10 +551,11 @@ export default class SquadSettings {
     bindCheckboxes() {
         Object.entries(this.definitions).forEach(([name, def]) => {
             if (!def.selector) return;
+            const el = document.querySelector(def.selector);
+            if (!el) return;
 
-            $(def.selector).on("change", () => {
-                const val = $(def.selector).is(":checked");
-                this.set(name, val);
+            el.addEventListener("change", () => {
+                this.set(name, el.checked);
             });
         });
     }
@@ -609,11 +586,12 @@ export default class SquadSettings {
         const currentUrl = new URL(window.location);
         const mapMode = currentUrl.searchParams.get("type");
 
-        if ($(".btn-" + mapMode).length) {
-            $(".btn-" + mapMode).addClass("active");
+        const mapModeButton = document.querySelector(".btn-" + mapMode);
+        if (mapModeButton) {
+            mapModeButton.classList.add("active");
         } else {
             // Default to basemap button
-            $(".btn-basemap").addClass("active");
+            document.querySelector(".btn-basemap").classList.add("active");
             this.app.updateUrlParams({type: null});
         }
 
@@ -621,23 +599,15 @@ export default class SquadSettings {
         this.applyMapFilter();
 
         // Apply cursor setting
-        $("body").toggleClass("map-crosshair", !this.cursor);
-
-        // Handle faction-dependent settings
-        if (!this.enableFactions) {
-            $("#settingsHideLowRespawn").prop("disabled", true);
-            $("#settingsDisableSounds").prop("disabled", true);
-            $("#settingsDefaultFactions").prop("disabled", true);
-            $("#settingsMinimizeFactionBar").prop("disabled", true);
-        }
+        document.body.classList.toggle("map-crosshair", !this.cursor);
 
         // Hide factions if disabled via environment
         if (process.env.DISABLE_FACTIONS === "true") {
-            $(".factionSettings").hide();
+            document.querySelectorAll(".factionSettings").forEach((el) => el.style.display = "none");
         }
 
         // Load target image
-        $("#targetImg").attr("src", "/img/target.webp");
+        document.getElementById("targetImg").setAttribute("src", "/img/target.webp");
     }
 
     /**
@@ -646,7 +616,7 @@ export default class SquadSettings {
     applyMapFilter() {
         const brightness = this.brightness * 100;
         const contrast = this.contrast * 100;
-        $("#map").css("filter", `brightness(${brightness}%) contrast(${contrast}%)`);
+        document.getElementById("map").style.filter = `brightness(${brightness}%) contrast(${contrast}%)`;
     }
 
     getButtonToggleDefinitions() {
@@ -670,39 +640,38 @@ export default class SquadSettings {
     _updateSharedContainer(containerSelector) {
         if (!containerSelector) return;
         const defs = this.getButtonToggleDefinitions().filter(d => d.sharedContainer === containerSelector);
-        const anyVisible = defs.some(d => !$(d.buttons).data("placeholder"));
-        $(containerSelector).toggle(anyVisible);
+        const anyVisible = defs.some(d => !document.querySelector(d.buttons)._placeholder);
+        document.querySelector(containerSelector).style.display = anyVisible ? "" : "none";
     }
 
     _updateDotsButton() {
         const anyDemoted = this.getButtonToggleDefinitions().some(d =>
-            $(d.buttons).data("placeholder")
+            document.querySelector(d.buttons)._placeholder
         );
-        $("#mapBtnTools").toggle(anyDemoted);
+        document.getElementById("mapBtnTools").style.display = anyDemoted ? "" : "none";
     }
 
     _moveButtonsToMenu(def) {
-        const $dotsGroup = $("#mapBtnTools .btnLayersGroup");
-        $(def.buttons).each((_, el) => {
-            const $el = $(el);
-            const $placeholder = $("<span class=\"btn-placeholder\"></span>");
-            $el.before($placeholder);
-            $el.data("placeholder", $placeholder);
-            $dotsGroup.append($el);
+        const dotsGroup = document.querySelector("#mapBtnTools .btnLayersGroup");
+        document.querySelectorAll(def.buttons).forEach((el) => {
+            const placeholder = document.createElement("span");
+            placeholder.className = "btn-placeholder";
+            el.before(placeholder);
+            el._placeholder = placeholder;
+            dotsGroup.appendChild(el);
         });
         this._updateSharedContainer(def.sharedContainer);
         this._updateDotsButton();
     }
 
     _restoreButtons(def) {
-        $(def.buttons).each((_, el) => {
-            const $el = $(el);
-            const $placeholder = $el.data("placeholder");
-            if ($placeholder && $placeholder.length) {
-                $placeholder.before($el);
-                $placeholder.remove();
+        document.querySelectorAll(def.buttons).forEach((el) => {
+            const placeholder = el._placeholder;
+            if (placeholder) {
+                placeholder.before(el);
+                placeholder.remove();
             }
-            $el.removeData("placeholder");
+            delete el._placeholder;
         });
         this._updateSharedContainer(def.sharedContainer);
         this._updateDotsButton();
@@ -713,18 +682,19 @@ export default class SquadSettings {
             const stored = localStorage.getItem(def.key);
             const val = stored === null ? def.default : stored === "1";
             if (!val) this._moveButtonsToMenu(def);
-            $(`#settingsDialog input[data-toolbar-key="${def.key}"]`).prop("checked", val);
+            document.querySelector(`#settingsDialog input[data-toolbar-key="${def.key}"]`).checked = val;
         });
         this._updateDotsButton();
     }
 
     bindButtonToggles() {
-        $("#settingsDialog").on("change", "input[data-toolbar-key]", (e) => {
-            const key = e.currentTarget.dataset.toolbarKey;
+        document.getElementById("settingsDialog").addEventListener("change", (e) => {
+            if (!e.target.matches("input[data-toolbar-key]")) return;
+            const key = e.target.dataset.toolbarKey;
             const def = this.getButtonToggleDefinitions().find(d => d.key === key);
             if (!def) return;
 
-            const newVal = e.currentTarget.checked;
+            const newVal = e.target.checked;
             localStorage.setItem(key, newVal ? 1 : 0);
 
             if (newVal) {
@@ -739,7 +709,8 @@ export default class SquadSettings {
      * Bind settings button event (switch to map mode from legacy)
      */
     bindMenuButtons() {
-        $(document).on("click", ".returnBtn", (event) => {
+        document.addEventListener("click", (event) => {
+            if (!event.target.closest(".returnBtn")) return;
             event.preventDefault();
             this.app.switchUI();
         });

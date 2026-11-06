@@ -387,55 +387,63 @@ export class squadWeaponMarker extends squadMarker {
         const DIALOG = document.getElementById("weaponInformation");
 
         let name = i18next.t("weapons:" + App.activeWeapon.name);
-        if (App.activeWeapon.shells.length > 1) name += ` (${$(".dropbtn3 option:selected").text().trim()})`;
+        if (App.activeWeapon.shells.length > 1) name += ` (${document.querySelector(".dropbtn3").selectedOptions[0].textContent.trim()})`;
 
         // Logo
-        $(".weaponIcon").first().attr("src", `/img/weapons/${App.activeWeapon.name}.webp`);
-        $("#dialogWeaponTitle").text(name);
-        $(".infRange").first().text(`${App.activeWeapon.minDistance + i18next.t("common:m")} - ${App.activeWeapon.maxDistance.toFixed(0) + i18next.t("common:m")}`);
-        $(".infMOA").first().text(`${App.activeWeapon.moa} (${(App.activeWeapon.moa / 60).toFixed(1) + i18next.t("common:°")})`);
-        $(".infMinDistance").first().text(App.activeWeapon.minDistance + i18next.t("common:m"));
-        $(".infMaxDistance").first().text(App.activeWeapon.maxDistance.toFixed(1) + i18next.t("common:m"));
-        $(".infExplosionDamage").first().text(App.activeWeapon.shells[$(".dropbtn3").val() || 0].explosionDamage);
-        $(".inf100damage").first().text(App.activeWeapon.hundredDamageRadius.toFixed(1) + i18next.t("common:m"));
-        $(".inf25damage").first().text(App.activeWeapon.twentyFiveDamageRadius.toFixed(1) + i18next.t("common:m"));
-        $(".infVelocity").first().text(`${App.activeWeapon.velocity + i18next.t("common:m")}/${i18next.t("common:s")}`);
+        document.querySelector(".weaponIcon")?.setAttribute("src", `/img/weapons/${App.activeWeapon.name}.webp`);
+        document.getElementById("dialogWeaponTitle").textContent = name;
+        document.querySelector(".infRange").textContent = `${App.activeWeapon.minDistance + i18next.t("common:m")} - ${App.activeWeapon.maxDistance.toFixed(0) + i18next.t("common:m")}`;
+        document.querySelector(".infMOA").textContent = `${App.activeWeapon.moa} (${(App.activeWeapon.moa / 60).toFixed(1) + i18next.t("common:°")})`;
+        if (document.querySelector(".infMinDistance")) document.querySelector(".infMinDistance").textContent = App.activeWeapon.minDistance + i18next.t("common:m");
+        if (document.querySelector(".infMaxDistance")) document.querySelector(".infMaxDistance").textContent = App.activeWeapon.maxDistance.toFixed(1) + i18next.t("common:m");
+        document.querySelector(".infExplosionDamage").textContent = App.activeWeapon.shells[document.querySelector(".dropbtn3").value || 0].explosionDamage;
+        document.querySelector(".inf100damage").textContent = App.activeWeapon.hundredDamageRadius.toFixed(1) + i18next.t("common:m");
+        document.querySelector(".inf25damage").textContent = App.activeWeapon.twentyFiveDamageRadius.toFixed(1) + i18next.t("common:m");
+        document.querySelector(".infVelocity").textContent = `${App.activeWeapon.velocity + i18next.t("common:m")}/${i18next.t("common:s")}`;
 
         if (["Mortar", "UB-32"].includes(App.activeWeapon.name)) {
-            $("#angleChoice").hide();
+            document.getElementById("angleChoice").style.display = "none";
         } else {
-            $("#angleChoice").show();
+            document.getElementById("angleChoice").style.removeProperty("display");
         }
 
 
         // Angle
         if (this.angleType ==="high"){
-            $("#angleChoiceHigh").prop("checked", true);
-            $("#angleChoiceLow").prop("checked", false);
+            document.getElementById("angleChoiceHigh").checked = true;
+            document.getElementById("angleChoiceLow").checked = false;
         } else {
-            $("#angleChoiceHigh").prop("checked", false);
-            $("#angleChoiceLow").prop("checked", true);
+            document.getElementById("angleChoiceHigh").checked = false;
+            document.getElementById("angleChoiceLow").checked = true;
         }
 
         // Move To: load current weapon position as keypad
         const currentLatLng = this.getLatLng();
-        $(".moveToInput").val(this.map.getKP(-currentLatLng.lat, currentLatLng.lng, 6));
+        document.querySelector(".moveToInput").value = this.map.getKP(-currentLatLng.lat, currentLatLng.lng, 6);
 
-        // Add listener that update angle/height & refresh targets
+        // Add listener that update angle/height & refresh targets - re-bound on every
+        // click since the weapon reference changes, de-dup like sim1Button/sim2Button above
         weapon = weapon.sourceTarget;
-        $("input[type=radio][name=angleChoice]").on("change", weapon, (e) => {
-            weapon.angleType = e.target.value;
-            this.map.updateTargets();
+        document.querySelectorAll("input[type=radio][name=angleChoice]").forEach((el) => {
+            if (el._changeHandler) el.removeEventListener("change", el._changeHandler);
+            el._changeHandler = (e) => {
+                weapon.angleType = e.target.value;
+                this.map.updateTargets();
+            };
+            el.addEventListener("change", el._changeHandler);
         });
 
-        $(".moveToBtn").on("click", weapon, (e) => {
-            if (weapon.moveToKeypad($(".moveToInput").val())) {
+        const moveToBtn = document.querySelector(".moveToBtn");
+        if (moveToBtn._clickHandler) moveToBtn.removeEventListener("click", moveToBtn._clickHandler);
+        moveToBtn._clickHandler = (e) => {
+            if (weapon.moveToKeypad(document.querySelector(".moveToInput").value)) {
                 const newLatLng = weapon.getLatLng();
-                $(".moveToInput").val(weapon.map.getKP(-newLatLng.lat, newLatLng.lng, 6));
+                document.querySelector(".moveToInput").value = weapon.map.getKP(-newLatLng.lat, newLatLng.lng, 6);
             } else {
-                animateCSS($(e.currentTarget).closest(".moveToRow"), "headShake");
+                animateCSS(e.currentTarget.closest(".moveToRow"), "headShake");
             }
-        });
+        };
+        moveToBtn.addEventListener("click", moveToBtn._clickHandler);
 
         DIALOG.showModal();
     }
@@ -578,7 +586,7 @@ export class squadWeaponMarker extends squadMarker {
 
         if (this.map.activeWeaponsMarkers.getLayers().length === 0) {
             this.map.deleteTargets();
-            $(".weaponSelector").removeClass("active animate__fadeIn");
+            document.querySelector(".weaponSelector").classList.remove("active", "animate__fadeIn");
         } else {
             // Set default icon on remaining weapon
             this.map.activeWeaponsMarkers.getLayers()[0].updateIcon();
@@ -652,8 +660,8 @@ export class squadStratMarker extends squadMarker {
         this.on("drag", this._handleDrag, this);
         this.on("dragStart", this._handleDragStart, this);
         this.on("dragEnd", this._handleDragEnd, this);
-        this.on("mouseover", this._handleMouseOver, this);
-        this.on("mouseout", this._handleMouseOut, this);
+        this.on("pointerover", this._handleMouseOver, this);
+        this.on("pointerout", this._handleMouseOut, this);
         this.on("click", this._handleClick, this);
         this.on("dblclick", this._handleDblclick, this);
         this.on("contextmenu", this._handleContextMenu, this);
@@ -710,7 +718,9 @@ export class squadStratMarker extends squadMarker {
         this.removeFrom(this.map.markersGroup).removeFrom(this.map.activeMarkers);
 
         // If that was the last Marker on the map, hide "delete all" buttons
-        if (!this.map.hasMarkers()) $(".btn-delete, .btn-undo").hide();
+        if (!this.map.hasMarkers()) {
+            document.querySelectorAll(".btn-delete, .btn-undo").forEach((el) => el.style.display = "none");
+        }
 
         this.remove();
     }
@@ -741,14 +751,14 @@ export class squadStratMarker extends squadMarker {
         }
 
         this.map.mouseLocationPopup.close();
-        this.map.off("mousemove", this.map._handleMouseMove);
+        this.map.off("pointermove", this.map._handleMouseMove);
         this.posPopUp.openOn(this.map);
     }
 
 
     _handleDragEnd() {
 
-        if (App.userSettings.keypadUnderCursor) this.map.on("mousemove", this.map._handleMouseMove);
+        if (App.userSettings.keypadUnderCursor) this.map.on("pointermove", this.map._handleMouseMove);
 
         this.isDragging = false;
         this.posPopUp.close();
