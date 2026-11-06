@@ -22,46 +22,48 @@
     </div>
 
     <div class="settings-layout">
-        <nav class="settings-tabs">
-            <button type="button" class="settings-tab active" value="map">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path d="M384 476.1L192 421.2l0-385.3L384 90.8l0 385.3zm32-1.2l0-386.5L543.1 37.5c15.8-6.3 32.9 5.3 32.9 22.3l0 334.8c0 9.8-6 18.6-15.1 22.3L416 474.8zM15.1 95.1L160 37.2l0 386.5L32.9 474.5C17.1 480.8 0 469.2 0 452.2L0 117.4c0-9.8 6-18.6 15.1-22.3z"/></svg>
-                <span data-i18n="settings:map">Map</span>
-            </button>
-            <button type="button" class="settings-tab" value="mortars">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><path d="M49.1 353.8L26.5 365.1C2.8 376.9-6.8 405.8 5.1 429.5s40.7 33.3 64.4 21.5L92 439.7c42.7 41.2 108.3 53.2 164.4 25.1c6.1-3.2 14.8-8.1 25.4-14.5C265.5 427 256 398.6 256 368c0-79.5 64.5-144 144-144c52.4 0 98.3 28 123.5 69.9c32.9-21.9 62.9-41.9 86-57.4c26.7-17.9 35.7-52.7 21.4-81.5L600.2 93.5c-14.4-28.7-47.7-42.4-78-31.8C414.8 99.3 177.1 183.2 127.6 207.2c-56.1 28-85.9 87.7-78.5 146.6zM400 480a112 112 0 1 0 0-224 112 112 0 1 0 0 224zm0-144a32 32 0 1 1 0 64 32 32 0 1 1 0-64z"/></svg>
-                <span data-i18n="settings:mortars">Mortars</span>
-            </button>
-            <button type="button" class="settings-tab" value="layer">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M64 32C64 14.3 49.7 0 32 0S0 14.3 0 32L0 64 0 368 0 480c0 17.7 14.3 32 32 32s32-14.3 32-32l0-128 64.3-16.1c41.1-10.3 84.6-5.5 122.5 13.4c44.2 22.1 95.5 24.8 141.7 7.4l34.7-13c12.5-4.7 20.8-16.6 20.8-30l0-247.7c0-23-24.2-38-44.8-27.7l-9.6 4.8c-46.3 23.2-100.8 23.2-147.1 0c-35.1-17.6-75.4-22-113.5-12.5L64 48l0-16z"/></svg>
-                <span data-i18n="settings:layer">Layers</span>
-            </button>
-            <button type="button" class="settings-tab factionSettings" value="factions">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path d="M480 64L448 64C439.2 64 432 71.2 432 80C432 88.8 439.2 96 448 96L448 196.3C438.4 201.8 432 212.2 432 224L432 256C414.3 256 400 270.3 400 288L400 432C400 449.7 414.3 464 432 464L448 464L448 560C448 568.8 455.2 576 464 576L523.5 576C533.9 576 541.5 566.2 539 556.1L516 464L560 464C568.8 464 576 456.8 576 448L576 432C576 423.2 568.8 416 560 416L512 416L512 389.3L565.1 371.6C571.6 369.4 576 363.3 576 356.4L576 271.9C576 263.1 568.8 255.9 560 255.9L544 255.9C535.2 255.9 528 263.1 528 271.9L528 327.9L512 333.2L512 223.9C512 212.1 505.6 201.7 496 196.2L496 80C496 71.2 488.8 64 480 64zM288 272C182 272 96 358 96 464L96 512C96 529.7 110.3 544 128 544C145.7 544 160 529.7 160 512L160 464C160 431.5 172.1 401.9 192 379.3L192 576L352 576L352 282.9C332 275.8 310.4 272 288 272zM344 152C344 112.2 311.8 80 272 80C232.2 80 200 112.2 200 152C200 191.8 232.2 224 272 224C311.8 224 344 191.8 344 152z"/></svg>
-                <span data-i18n="settings:factions">Factions</span>
-            </button>
-            <button type="button" class="settings-tab" value="3d">
-                <span class="settings-tab-glyph-text" aria-hidden="true">3D</span>
-                <span data-i18n="settings:threeD">3D</span>
-            </button>
-            <button type="button" class="settings-tab" value="shortcuts">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path d="M96 128C60.7 128 32 156.7 32 192L32 448C32 483.3 60.7 512 96 512L544 512C579.3 512 608 483.3 608 448L608 192C608 156.7 579.3 128 544 128L96 128zM112 192L144 192C152.8 192 160 199.2 160 208L160 240C160 248.8 152.8 256 144 256L112 256C103.2 256 96 248.8 96 240L96 208C96 199.2 103.2 192 112 192zM96 304C96 295.2 103.2 288 112 288L144 288C152.8 288 160 295.2 160 304L160 336C160 344.8 152.8 352 144 352L112 352C103.2 352 96 344.8 96 336L96 304zM208 192L240 192C248.8 192 256 199.2 256 208L256 240C256 248.8 248.8 256 240 256L208 256C199.2 256 192 248.8 192 240L192 208C192 199.2 199.2 192 208 192zM192 304C192 295.2 199.2 288 208 288L240 288C248.8 288 256 295.2 256 304L256 336C256 344.8 248.8 352 240 352L208 352C199.2 352 192 344.8 192 336L192 304zM208 384L432 384C440.8 384 448 391.2 448 400L448 432C448 440.8 440.8 448 432 448L208 448C199.2 448 192 440.8 192 432L192 400C192 391.2 199.2 384 208 384zM288 208C288 199.2 295.2 192 304 192L336 192C344.8 192 352 199.2 352 208L352 240C352 248.8 344.8 256 336 256L304 256C295.2 256 288 248.8 288 240L288 208zM304 288L336 288C344.8 288 352 295.2 352 304L352 336C352 344.8 344.8 352 336 352L304 352C295.2 352 288 344.8 288 336L288 304C288 295.2 295.2 288 304 288zM384 208C384 199.2 391.2 192 400 192L432 192C440.8 192 448 199.2 448 208L448 240C448 248.8 440.8 256 432 256L400 256C391.2 256 384 248.8 384 240L384 208zM400 288L432 288C440.8 288 448 295.2 448 304L448 336C448 344.8 440.8 352 432 352L400 352C391.2 352 384 344.8 384 336L384 304C384 295.2 391.2 288 400 288zM480 208C480 199.2 487.2 192 496 192L528 192C536.8 192 544 199.2 544 208L544 240C544 248.8 536.8 256 528 256L496 256C487.2 256 480 248.8 480 240L480 208zM496 288L528 288C536.8 288 544 295.2 544 304L544 336C544 344.8 536.8 352 528 352L496 352C487.2 352 480 344.8 480 336L480 304C480 295.2 487.2 288 496 288z"/></svg>
-                <span data-i18n="settings:shortcuts">Shortcuts</span>
-            </button>
-            <button type="button" class="settings-tab" value="mods">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path d="M541.4 162.6C549 155 561.7 156.9 565.5 166.9C572.3 184.6 576 203.9 576 224C576 312.4 504.4 384 416 384C398.5 384 381.6 381.2 365.8 376L178.9 562.9C150.8 591 105.2 591 77.1 562.9C49 534.8 49 489.2 77.1 461.1L264 274.2C258.8 258.4 256 241.6 256 224C256 135.6 327.6 64 416 64C436.1 64 455.4 67.7 473.1 74.5C483.1 78.3 484.9 91 477.4 98.6L388.7 187.3C385.7 190.3 384 194.4 384 198.6L384 240C384 248.8 391.2 256 400 256L441.4 256C445.6 256 449.7 254.3 452.7 251.3L541.4 162.6z"/></svg>
-                <span data-i18n="settings:mods">Mods</span>
-            </button>
-            <!-- Separates settings tabs from changelog/about -->
-            <span class="settings-tabs-divider" role="separator"></span>
-            <button type="button" class="settings-tab" value="changelog">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path d="M320 128C426 128 512 214 512 320C512 426 426 512 320 512C254.8 512 197.1 479.5 162.4 429.7C152.3 415.2 132.3 411.7 117.8 421.8C103.3 431.9 99.8 451.9 109.9 466.4C156.1 532.6 233 576 320 576C461.4 576 576 461.4 576 320C576 178.6 461.4 64 320 64C234.3 64 158.5 106.1 112 170.7L112 144C112 126.3 97.7 112 80 112C62.3 112 48 126.3 48 144L48 256C48 273.7 62.3 288 80 288L104.6 288C105.1 288 105.6 288 106.1 288L192.1 288C209.8 288 224.1 273.7 224.1 256C224.1 238.3 209.8 224 192.1 224L153.8 224C186.9 166.6 249 128 320 128zM344 216C344 202.7 333.3 192 320 192C306.7 192 296 202.7 296 216L296 320C296 326.4 298.5 332.5 303 337L375 409C384.4 418.4 399.6 418.4 408.9 409C418.2 399.6 418.3 384.4 408.9 375.1L343.9 310.1L343.9 216z"/></svg>
-                <span data-i18n="settings:changelog">ChangeLog</span>
-            </button>
-            <button type="button" class="settings-tab" value="about">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path d="M320 576C461.4 576 576 461.4 576 320C576 178.6 461.4 64 320 64C178.6 64 64 178.6 64 320C64 461.4 178.6 576 320 576zM288 224C288 206.3 302.3 192 320 192C337.7 192 352 206.3 352 224C352 241.7 337.7 256 320 256C302.3 256 288 241.7 288 224zM280 288L328 288C341.3 288 352 298.7 352 312L352 400L360 400C373.3 400 384 410.7 384 424C384 437.3 373.3 448 360 448L280 448C266.7 448 256 437.3 256 424C256 410.7 266.7 400 280 400L304 400L304 336L280 336C266.7 336 256 325.3 256 312C256 298.7 266.7 288 280 288z"/></svg>
-                <span data-i18n="settings:about">About</span>
-            </button>
-        </nav>
+        <div class="settings-tabs-wrap">
+            <nav class="settings-tabs">
+                <button type="button" class="settings-tab active" value="map">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path d="M384 476.1L192 421.2l0-385.3L384 90.8l0 385.3zm32-1.2l0-386.5L543.1 37.5c15.8-6.3 32.9 5.3 32.9 22.3l0 334.8c0 9.8-6 18.6-15.1 22.3L416 474.8zM15.1 95.1L160 37.2l0 386.5L32.9 474.5C17.1 480.8 0 469.2 0 452.2L0 117.4c0-9.8 6-18.6 15.1-22.3z"/></svg>
+                    <span data-i18n="settings:map">Map</span>
+                </button>
+                <button type="button" class="settings-tab" value="mortars">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><path d="M49.1 353.8L26.5 365.1C2.8 376.9-6.8 405.8 5.1 429.5s40.7 33.3 64.4 21.5L92 439.7c42.7 41.2 108.3 53.2 164.4 25.1c6.1-3.2 14.8-8.1 25.4-14.5C265.5 427 256 398.6 256 368c0-79.5 64.5-144 144-144c52.4 0 98.3 28 123.5 69.9c32.9-21.9 62.9-41.9 86-57.4c26.7-17.9 35.7-52.7 21.4-81.5L600.2 93.5c-14.4-28.7-47.7-42.4-78-31.8C414.8 99.3 177.1 183.2 127.6 207.2c-56.1 28-85.9 87.7-78.5 146.6zM400 480a112 112 0 1 0 0-224 112 112 0 1 0 0 224zm0-144a32 32 0 1 1 0 64 32 32 0 1 1 0-64z"/></svg>
+                    <span data-i18n="settings:mortars">Mortars</span>
+                </button>
+                <button type="button" class="settings-tab" value="layer">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M64 32C64 14.3 49.7 0 32 0S0 14.3 0 32L0 64 0 368 0 480c0 17.7 14.3 32 32 32s32-14.3 32-32l0-128 64.3-16.1c41.1-10.3 84.6-5.5 122.5 13.4c44.2 22.1 95.5 24.8 141.7 7.4l34.7-13c12.5-4.7 20.8-16.6 20.8-30l0-247.7c0-23-24.2-38-44.8-27.7l-9.6 4.8c-46.3 23.2-100.8 23.2-147.1 0c-35.1-17.6-75.4-22-113.5-12.5L64 48l0-16z"/></svg>
+                    <span data-i18n="settings:layer">Layers</span>
+                </button>
+                <button type="button" class="settings-tab factionSettings" value="factions">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path d="M480 64L448 64C439.2 64 432 71.2 432 80C432 88.8 439.2 96 448 96L448 196.3C438.4 201.8 432 212.2 432 224L432 256C414.3 256 400 270.3 400 288L400 432C400 449.7 414.3 464 432 464L448 464L448 560C448 568.8 455.2 576 464 576L523.5 576C533.9 576 541.5 566.2 539 556.1L516 464L560 464C568.8 464 576 456.8 576 448L576 432C576 423.2 568.8 416 560 416L512 416L512 389.3L565.1 371.6C571.6 369.4 576 363.3 576 356.4L576 271.9C576 263.1 568.8 255.9 560 255.9L544 255.9C535.2 255.9 528 263.1 528 271.9L528 327.9L512 333.2L512 223.9C512 212.1 505.6 201.7 496 196.2L496 80C496 71.2 488.8 64 480 64zM288 272C182 272 96 358 96 464L96 512C96 529.7 110.3 544 128 544C145.7 544 160 529.7 160 512L160 464C160 431.5 172.1 401.9 192 379.3L192 576L352 576L352 282.9C332 275.8 310.4 272 288 272zM344 152C344 112.2 311.8 80 272 80C232.2 80 200 112.2 200 152C200 191.8 232.2 224 272 224C311.8 224 344 191.8 344 152z"/></svg>
+                    <span data-i18n="settings:factions">Factions</span>
+                </button>
+                <button type="button" class="settings-tab" value="3d">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path d="M288.3 61.5C308.1 50.1 332.5 50.1 352.3 61.5L528.2 163C548 174.4 560.2 195.6 560.2 218.4L560.2 421.4C560.2 444.3 548 465.4 528.2 476.8L352.3 578.5C332.5 589.9 308.1 589.9 288.3 578.5L112.5 477C92.7 465.6 80.5 444.4 80.5 421.6L80.5 218.6C80.5 195.7 92.7 174.6 112.5 163.2L288.3 61.5zM496.1 421.5L496.1 255.4L352.3 338.4L352.3 504.5L496.1 421.5z"/></svg>
+                    <span data-i18n="settings:threeD">3D</span>
+                </button>
+                <button type="button" class="settings-tab" value="shortcuts">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path d="M96 128C60.7 128 32 156.7 32 192L32 448C32 483.3 60.7 512 96 512L544 512C579.3 512 608 483.3 608 448L608 192C608 156.7 579.3 128 544 128L96 128zM112 192L144 192C152.8 192 160 199.2 160 208L160 240C160 248.8 152.8 256 144 256L112 256C103.2 256 96 248.8 96 240L96 208C96 199.2 103.2 192 112 192zM96 304C96 295.2 103.2 288 112 288L144 288C152.8 288 160 295.2 160 304L160 336C160 344.8 152.8 352 144 352L112 352C103.2 352 96 344.8 96 336L96 304zM208 192L240 192C248.8 192 256 199.2 256 208L256 240C256 248.8 248.8 256 240 256L208 256C199.2 256 192 248.8 192 240L192 208C192 199.2 199.2 192 208 192zM192 304C192 295.2 199.2 288 208 288L240 288C248.8 288 256 295.2 256 304L256 336C256 344.8 248.8 352 240 352L208 352C199.2 352 192 344.8 192 336L192 304zM208 384L432 384C440.8 384 448 391.2 448 400L448 432C448 440.8 440.8 448 432 448L208 448C199.2 448 192 440.8 192 432L192 400C192 391.2 199.2 384 208 384zM288 208C288 199.2 295.2 192 304 192L336 192C344.8 192 352 199.2 352 208L352 240C352 248.8 344.8 256 336 256L304 256C295.2 256 288 248.8 288 240L288 208zM304 288L336 288C344.8 288 352 295.2 352 304L352 336C352 344.8 344.8 352 336 352L304 352C295.2 352 288 344.8 288 336L288 304C288 295.2 295.2 288 304 288zM384 208C384 199.2 391.2 192 400 192L432 192C440.8 192 448 199.2 448 208L448 240C448 248.8 440.8 256 432 256L400 256C391.2 256 384 248.8 384 240L384 208zM400 288L432 288C440.8 288 448 295.2 448 304L448 336C448 344.8 440.8 352 432 352L400 352C391.2 352 384 344.8 384 336L384 304C384 295.2 391.2 288 400 288zM480 208C480 199.2 487.2 192 496 192L528 192C536.8 192 544 199.2 544 208L544 240C544 248.8 536.8 256 528 256L496 256C487.2 256 480 248.8 480 240L480 208zM496 288L528 288C536.8 288 544 295.2 544 304L544 336C544 344.8 536.8 352 528 352L496 352C487.2 352 480 344.8 480 336L480 304C480 295.2 487.2 288 496 288z"/></svg>
+                    <span data-i18n="settings:shortcuts">Shortcuts</span>
+                </button>
+                <button type="button" class="settings-tab" value="mods">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path d="M541.4 162.6C549 155 561.7 156.9 565.5 166.9C572.3 184.6 576 203.9 576 224C576 312.4 504.4 384 416 384C398.5 384 381.6 381.2 365.8 376L178.9 562.9C150.8 591 105.2 591 77.1 562.9C49 534.8 49 489.2 77.1 461.1L264 274.2C258.8 258.4 256 241.6 256 224C256 135.6 327.6 64 416 64C436.1 64 455.4 67.7 473.1 74.5C483.1 78.3 484.9 91 477.4 98.6L388.7 187.3C385.7 190.3 384 194.4 384 198.6L384 240C384 248.8 391.2 256 400 256L441.4 256C445.6 256 449.7 254.3 452.7 251.3L541.4 162.6z"/></svg>
+                    <span data-i18n="settings:mods">Mods</span>
+                </button>
+                <!-- Separates settings tabs from changelog/about -->
+                <span class="settings-tabs-divider" role="separator"></span>
+                <button type="button" class="settings-tab" value="changelog">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path d="M320 128C426 128 512 214 512 320C512 426 426 512 320 512C254.8 512 197.1 479.5 162.4 429.7C152.3 415.2 132.3 411.7 117.8 421.8C103.3 431.9 99.8 451.9 109.9 466.4C156.1 532.6 233 576 320 576C461.4 576 576 461.4 576 320C576 178.6 461.4 64 320 64C234.3 64 158.5 106.1 112 170.7L112 144C112 126.3 97.7 112 80 112C62.3 112 48 126.3 48 144L48 256C48 273.7 62.3 288 80 288L104.6 288C105.1 288 105.6 288 106.1 288L192.1 288C209.8 288 224.1 273.7 224.1 256C224.1 238.3 209.8 224 192.1 224L153.8 224C186.9 166.6 249 128 320 128zM344 216C344 202.7 333.3 192 320 192C306.7 192 296 202.7 296 216L296 320C296 326.4 298.5 332.5 303 337L375 409C384.4 418.4 399.6 418.4 408.9 409C418.2 399.6 418.3 384.4 408.9 375.1L343.9 310.1L343.9 216z"/></svg>
+                    <span data-i18n="settings:changelog">ChangeLog</span>
+                </button>
+                <button type="button" class="settings-tab" value="about">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path d="M320 576C461.4 576 576 461.4 576 320C576 178.6 461.4 64 320 64C178.6 64 64 178.6 64 320C64 461.4 178.6 576 320 576zM288 224C288 206.3 302.3 192 320 192C337.7 192 352 206.3 352 224C352 241.7 337.7 256 320 256C302.3 256 288 241.7 288 224zM280 288L328 288C341.3 288 352 298.7 352 312L352 400L360 400C373.3 400 384 410.7 384 424C384 437.3 373.3 448 360 448L280 448C266.7 448 256 437.3 256 424C256 410.7 266.7 400 280 400L304 400L304 336L280 336C266.7 336 256 325.3 256 312C256 298.7 266.7 288 280 288z"/></svg>
+                    <span data-i18n="settings:about">About</span>
+                </button>
+            </nav>
+        </div>
 
         <section class="settings-body">
 
@@ -69,6 +71,7 @@
 
             <div class="settings-panel active" data-panel="map">
                 <section class="settings-section">
+                    <h3 class="settings-section-title" data-i18n="settings:mapOptions">Map Options</h3>
                     <div class="settings-field">
                         <label class="settings-checkbox">
                             <input id="settingsKeypadUnderCursor" type="checkbox">
@@ -89,6 +92,62 @@
                             <span data-i18n="settings:mapAnimationSettings">Pan/Zoom Animations</span>
                         </label>
                         <p class="settings-field-hint" data-i18n="tooltips:smoothMapTooltip">Add smooth animations when zooming or panning the map. A page refresh is needed</p>
+                    </div>
+                </section>
+                <section class="settings-section settings-section-columns">
+                    <div class="settings-field">
+                        <label for="settingsGridOpacity" data-i18n="settings:gridOpacity">Grid Opacity</label>
+                        <p class="settings-field-hint" data-i18n="settings:gridOpacityHint">Opacity of the keypad grid drawn over the map</p>
+                        <div class="settings-range">
+                            <div class="settings-range-track">
+                                <input id="settingsGridOpacity" type="range" min="0" max="1" step="0.05" value="0.8" data-default="0.8" data-display-min="0" data-display-max="100">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="settings-field">
+                        <label for="settingsZoomSensitivity" data-i18n="settings:zoomSensitivity">Zoom Sensitivity</label>
+                        <p class="settings-field-hint" data-i18n="settings:zoomSensitivityHint">How fast the mouse wheel zooms the map</p>
+                        <div class="settings-range">
+                            <div class="settings-range-track">
+                                <input id="settingsZoomSensitivity" type="range" min="1" max="3" step="0.1" value="2" data-default="2" data-display-min="50" data-display-max="150">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="settings-field">
+                        <label for="settingsFontSize" data-i18n="settings:fontSize">Font Size</label>
+                        <p class="settings-field-hint" data-i18n="settings:fontSizeHint">Size of objective names and firing solutions</p>
+                        <div class="settings-range">
+                            <div class="settings-range-track">
+                                <input id="settingsFontSize" type="range" min="1" max="5" step="1" value="3" data-default="3" data-display-min="50" data-display-max="150">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="settings-field">
+                        <label for="settingsMarkerSize" data-i18n="settings:markerSize">Markers Size</label>
+                        <p class="settings-field-hint" data-i18n="settings:markerSizeHint">Size of weapon, target and custom markers</p>
+                        <div class="settings-range">
+                            <div class="settings-range-track">
+                                <input id="settingsMarkerSize" type="range" min="1" max="5" step="0.25" value="3" data-default="3" data-display-min="50" data-display-max="150">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="settings-field">
+                        <label for="settingsBrightness" data-i18n="settings:brightness">Brightness</label>
+                        <p class="settings-field-hint" data-i18n="settings:brightnessHint">Brightness of the map image</p>
+                        <div class="settings-range">
+                            <div class="settings-range-track">
+                                <input id="settingsBrightness" type="range" min="0.5" max="1.5" step="0.05" value="1" data-default="1" data-display-min="50" data-display-max="150">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="settings-field">
+                        <label for="settingsContrast" data-i18n="settings:contrast">Contrast</label>
+                        <p class="settings-field-hint" data-i18n="settings:contrastHint">Contrast of the map image</p>
+                        <div class="settings-range">
+                            <div class="settings-range-track">
+                                <input id="settingsContrast" type="range" min="0.5" max="1.5" step="0.05" value="1" data-default="1" data-display-min="50" data-display-max="150">
+                            </div>
+                        </div>
                     </div>
                 </section>
                 <section class="settings-section">
@@ -148,62 +207,6 @@
                                 <input type="checkbox" data-toolbar-key="settings-btn-delete">
                                 <span class="settings-chip-body"><span class="settings-chip-box"><svg class="settings-chip-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><svg class="settings-chip-glyph" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M163.8 0L284.2 0c12.1 0 23.2 6.8 28.6 17.7L320 32l96 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 96C14.3 96 0 81.7 0 64S14.3 32 32 32l96 0 7.2-14.3C140.6 6.8 151.7 0 163.8 0zM32 128l384 0L394.8 467c-1.6 25.3-22.6 45-47.9 45l-245.8 0c-25.3 0-46.3-19.7-47.9-45L32 128zM143 239c-9.4 9.4-9.4 24.6 0 33.9l47 47-47 47c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l47-47 47 47c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-47-47 47-47c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-47 47-47-47c-9.4-9.4-24.6-9.4-33.9 0z"/></svg><span data-i18n="settings:toolbarDelete">Delete</span></span>
                             </label>
-                        </div>
-                    </div>
-                </section>
-                <section class="settings-section settings-section-columns">
-                    <div class="settings-field">
-                        <label for="settingsGridOpacity" data-i18n="settings:gridOpacity">Grid Opacity</label>
-                        <p class="settings-field-hint" data-i18n="settings:gridOpacityHint">Opacity of the keypad grid drawn over the map</p>
-                        <div class="settings-range">
-                            <div class="settings-range-track">
-                                <input id="settingsGridOpacity" type="range" min="0" max="1" step="0.05" value="0.8" data-default="0.8" data-display-min="0" data-display-max="100">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="settings-field">
-                        <label for="settingsZoomSensitivity" data-i18n="settings:zoomSensitivity">Zoom Sensitivity</label>
-                        <p class="settings-field-hint" data-i18n="settings:zoomSensitivityHint">How fast the mouse wheel zooms the map</p>
-                        <div class="settings-range">
-                            <div class="settings-range-track">
-                                <input id="settingsZoomSensitivity" type="range" min="1" max="3" step="0.1" value="2" data-default="2" data-display-min="50" data-display-max="150">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="settings-field">
-                        <label for="settingsFontSize" data-i18n="settings:fontSize">Font Size</label>
-                        <p class="settings-field-hint" data-i18n="settings:fontSizeHint">Size of objective names and firing solutions</p>
-                        <div class="settings-range">
-                            <div class="settings-range-track">
-                                <input id="settingsFontSize" type="range" min="1" max="5" step="1" value="3" data-default="3" data-display-min="50" data-display-max="150">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="settings-field">
-                        <label for="settingsMarkerSize" data-i18n="settings:markerSize">Markers Size</label>
-                        <p class="settings-field-hint" data-i18n="settings:markerSizeHint">Size of weapon, target and custom markers</p>
-                        <div class="settings-range">
-                            <div class="settings-range-track">
-                                <input id="settingsMarkerSize" type="range" min="1" max="5" step="0.25" value="3" data-default="3" data-display-min="50" data-display-max="150">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="settings-field">
-                        <label for="settingsBrightness" data-i18n="settings:brightness">Brightness</label>
-                        <p class="settings-field-hint" data-i18n="settings:brightnessHint">Brightness of the map image</p>
-                        <div class="settings-range">
-                            <div class="settings-range-track">
-                                <input id="settingsBrightness" type="range" min="0.5" max="1.5" step="0.05" value="1" data-default="1" data-display-min="50" data-display-max="150">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="settings-field">
-                        <label for="settingsContrast" data-i18n="settings:contrast">Contrast</label>
-                        <p class="settings-field-hint" data-i18n="settings:contrastHint">Contrast of the map image</p>
-                        <div class="settings-range">
-                            <div class="settings-range-track">
-                                <input id="settingsContrast" type="range" min="0.5" max="1.5" step="0.05" value="1" data-default="1" data-display-min="50" data-display-max="150">
-                            </div>
                         </div>
                     </div>
                 </section>

@@ -1232,6 +1232,15 @@ export default class SquadCalc {
             settingsDialog.querySelectorAll(".settings-panel").forEach((el) => el.classList.remove("active"));
             settingsDialog.querySelector(`.settings-panel[data-panel="${tab.value}"]`)?.classList.add("active");
         });
+        // Mobile top bar: touch-dragging scrolls it fine, but a mouse has no drag
+        // gesture and the scrollbar is hidden there - redirect the vertical wheel
+        // into horizontal scroll so it's still reachable without a touchscreen
+        const settingsTabs = settingsDialog.querySelector(".settings-tabs");
+        settingsTabs.addEventListener("wheel", (event) => {
+            if (settingsTabs.scrollWidth <= settingsTabs.clientWidth) return;
+            event.preventDefault();
+            settingsTabs.scrollLeft += event.deltaY;
+        });
         // Range sliders: fill the track up to the thumb, and show a
         // min / default / max scale with a tick at the default value 
         // Labels map the input range linearly onto data-display-min/max (in %), like the old ticks did
@@ -1665,6 +1674,10 @@ export default class SquadCalc {
         settingsTooltips.hide();
         settingsTooltips.disable();
         if (!dialog.open) dialog.showModal();
+        // showModal() auto-focuses the first focusable descendant (the search box) absent
+        // an explicit autofocus target - on touch devices that pops the virtual keyboard
+        // immediately, so move focus back to the dialog itself there
+        if (!this.hasMouse) dialog.querySelector("#settingsSearch")?.blur();
         if (tab) dialog.querySelector(`.settings-tab[value="${tab}"]`)?.click();
     }
 

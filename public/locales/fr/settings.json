@@ -12,6 +12,7 @@
     "aboutVersion": "Version",
     "aboutGameData": "Données du jeu",
     "aboutLinks": "Liens",
+    "mapOptions": "Options de la carte",
     "mapButtons": "Barre d'outils",
     "mapButtonsHint": "Choisissez les boutons qui restent dans la barre d'outils de la carte, les autres sont déplacés dans son menu ⋯",
     "toolbarLayers": "Fonds de carte",

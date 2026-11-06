@@ -12,6 +12,7 @@
         "aboutVersion": "Sürüm",
         "aboutGameData": "Oyun verileri",
         "aboutLinks": "Bağlantılar",
+    "mapOptions": "Harita Seçenekleri",
     "mapButtons": "Harita Araç Çubuğu",
     "mapButtonsHint": "Harita araç çubuğunda hangi düğmelerin kalacağını seçin, diğerleri ⋯ menüsüne taşınır",
     "toolbarLayers": "Harita katmanları",

@@ -228,6 +228,23 @@
     }
 }
 
+// Matches #settingsDialog's own `width < 48em` mobile breakpoint in settings.scss
+@media screen and (width < 48em) {
+    // The language selector's closed value shows flag + short code (e.g. "EN") -
+    // on narrow screens drop the code, keep just the flag. The dropdown rows
+    // (flag + native language name) are untouched.
+    #settingsDialog .settings-lang .choices__list--single .settings-langOption span {
+        display: none;
+    }
+    #settingsDialog .settings-lang .choices__list--single {
+        padding: 0;
+    }
+    // Search placeholder already says "Search settings" - the title is redundant
+    #settingsDialog .settings-title {
+        display: none;
+    }
+}
+
 /* ≥ 768px */
 
 @media screen and (width >= 48em) {

@@ -12,6 +12,7 @@
     "aboutVersion": "Version",
     "aboutGameData": "Spieldaten",
     "aboutLinks": "Links",
+    "mapOptions": "Kartenoptionen",
     "mapButtons": "Kartenwerkzeugleiste",
     "mapButtonsHint": "Wähle, welche Schaltflächen in der Kartenwerkzeugleiste bleiben, die anderen werden in ihr ⋯ Menü verschoben",
     "toolbarLayers": "Kartenebenen",

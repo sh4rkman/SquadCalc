@@ -12,6 +12,7 @@
     "aboutVersion": "版本",
     "aboutGameData": "游戏数据",
     "aboutLinks": "链接",
+    "mapOptions": "地图选项",
     "mapButtons": "地图工具栏",
     "mapButtonsHint": "选择保留在地图工具栏上的按钮，其余按钮会移到 ⋯ 菜单中",
     "toolbarLayers": "地图图层",

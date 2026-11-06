@@ -12,6 +12,7 @@
         "aboutVersion": "Version",
         "aboutGameData": "Game data",
         "aboutLinks": "Links",
+    "mapOptions": "Map Options",
     "mapButtons": "Map Toolbar",
     "mapButtonsHint": "Choose which buttons stay on the map toolbar, the others are moved to its ⋯ menu",
     "toolbarLayers": "Map Layers",
