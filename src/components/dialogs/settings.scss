@@ -51,10 +51,12 @@ $hover: rgba(variables.$mainTxtColor, 0.06);
         margin: 0;
         padding: 0;
         color: variables.$mainTxtColor;
+        font-family: variables.$logoFont;
         font-size: 2em;
         font-weight: bold;
         letter-spacing: normal;
         line-height: 1;
+        text-transform: uppercase;
         white-space: nowrap;
     }
     // Settings search (header, right side next to the close button)
@@ -174,10 +176,12 @@ $hover: rgba(variables.$mainTxtColor, 0.06);
         border-radius: 6px;
         background: transparent;
         color: variables.$mainTxtColor;
-        font-size: 0.9em;
+        font-family: variables.$logoFont;
+        font-size: 1.1em;
         font-weight: bold;
         letter-spacing: 0.02em;
         text-align: left;
+        text-transform: uppercase;
         white-space: nowrap;
         cursor: pointer;
         transition: background-color 0.15s ease, color 0.15s ease;
@@ -232,11 +236,11 @@ $hover: rgba(variables.$mainTxtColor, 0.06);
     .settings-section-title {
         padding: 0; // Cancels the global `dialog h3` padding from dialogs.scss
         color: variables.$mainTxtColor;
-        font-size: 0.8em;
+        font-family: variables.$logoFont;
+        font-size: 1em;
         font-weight: bold;
         letter-spacing: 0.08em;
         text-transform: uppercase;
-        opacity: 0.6;
     }
     // Two columns when there's room, falls back to one column on narrow widths
     .settings-section-columns {
