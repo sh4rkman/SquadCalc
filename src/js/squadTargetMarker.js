@@ -516,7 +516,7 @@ export class squadTargetMarker extends squadMarker {
             }
         }
 
-        let iconOptions = {};
+        let iconOptions;
 
         if (App.userSettings.targetAnimation) {
             // Create the scaling full target marker
@@ -538,22 +538,14 @@ export class squadTargetMarker extends squadMarker {
             };
         }
 
-        // hack leaflet to avoid unwanted click event
-        // https://github.com/Leaflet/Leaflet/issues/5067
-        setTimeout((function (this2) {
-            return function () {
-                //this2.setIcon(icon);
-                this2.setIcon(
-                    new Icon({
-                        iconUrl: iconURL,
-                        shadowUrl: "/img/markers/weapons/marker_shadow.webp",
-                        ...iconOptions,
-                        className: iconClassName
-                    })
-                );
-            };
-        })(this));
-
+        this.setIcon(
+            new Icon({
+                iconUrl: iconURL,
+                shadowUrl: "/img/markers/weapons/marker_shadow.webp",
+                ...iconOptions,
+                className: iconClassName
+            })
+        );
     }
 
     _handleClick() {
