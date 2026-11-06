@@ -15,6 +15,7 @@ export default class SquadSettings {
         this.app = app;
         this.definitions = this.getCheckboxDefinitions();
         this.sliderDefinitions = this.getSliderDefinitions();
+        this.segmentedDefinitions = this.getSegmentedDefinitions();
     }
 
     /**
@@ -23,8 +24,10 @@ export default class SquadSettings {
     init() {
         this.loadCheckboxes();
         this.loadSliders();
+        this.loadSegmented();
         this.bindCheckboxes();
         this.bindSliders();
+        this.bindSegmented();
         this.loadButtonToggles();
         this.bindButtonToggles();
         this.bindMenuButtons();
@@ -245,19 +248,6 @@ export default class SquadSettings {
 
 
             // Flags & Zones
-            circlesFlags: {
-                key: "settings-circles-flags",
-                default: true,
-                selector: "#settingsCirclesFlags",
-                onChange: () => {
-                    if (this.app.minimap.layer) {
-                        this.app.minimap.layer.flags.forEach(flag => flag.update());
-                        if (!this.app.minimap.layer.isVisible) {
-                            this.app.minimap.layer.toggleVisibility();
-                        }
-                    }
-                }
-            },
             showNextFlagsPercentages: {
                 key: "settings-show-next-flags-percentages",
                 default: true,
@@ -486,6 +476,30 @@ export default class SquadSettings {
 
 
     /**
+     * Segmented-control setting definitions (2+ mutually exclusive buttons,
+     * value stored as the clicked button's data-value) - same boolean storage
+     * (0/1 in localStorage) as a checkbox, just a different widget
+     */
+    getSegmentedDefinitions() {
+        return {
+            circlesFlags: {
+                key: "settings-circles-flags",
+                default: true,
+                selector: "#settingsCirclesFlags",
+                onChange: () => {
+                    if (this.app.minimap.layer) {
+                        this.app.minimap.layer.flags.forEach(flag => flag.update());
+                        if (!this.app.minimap.layer.isVisible) {
+                            this.app.minimap.layer.toggleVisibility();
+                        }
+                    }
+                }
+            }
+        };
+    }
+
+
+    /**
      * Load all checkbox settings from localStorage
      */
     loadCheckboxes() {
@@ -575,6 +589,49 @@ export default class SquadSettings {
                     def.onChange(this[name]);
                 }
             };
+        });
+    }
+
+    /**
+     * Load all segmented-control settings from localStorage
+     */
+    loadSegmented() {
+        Object.entries(this.segmentedDefinitions).forEach(([name, def]) => {
+            const stored = localStorage.getItem(def.key);
+            if (stored === null || isNaN(stored) || stored === "") {
+                localStorage.setItem(def.key, def.default ? 1 : 0);
+                this[name] = def.default;
+            } else {
+                this[name] = stored === "1" || stored === "true";
+            }
+
+            const container = def.selector && document.querySelector(def.selector);
+            if (!container) return;
+            container.querySelectorAll(".settings-segment").forEach((btn) => {
+                btn.classList.toggle("active", (btn.dataset.value === "1") === this[name]);
+            });
+        });
+    }
+
+    /**
+     * Bind click events to all segmented controls
+     */
+    bindSegmented() {
+        Object.entries(this.segmentedDefinitions).forEach(([name, def]) => {
+            const container = def.selector && document.querySelector(def.selector);
+            if (!container) return;
+
+            container.addEventListener("click", (event) => {
+                const btn = event.target.closest(".settings-segment");
+                if (!btn) return;
+                const value = btn.dataset.value === "1";
+                if (value === this[name]) return;
+
+                container.querySelectorAll(".settings-segment").forEach((el) => {
+                    el.classList.toggle("active", el === btn);
+                });
+                this.set(name, value);
+            });
         });
     }
 
@@ -722,7 +779,7 @@ export default class SquadSettings {
      * @param {*} value - New value
      */
     set(name, value) {
-        const def = this.definitions[name] || this.sliderDefinitions[name];
+        const def = this.definitions[name] || this.sliderDefinitions[name] || this.segmentedDefinitions[name];
         if (!def) {
             console.warn(`Unknown setting: ${name}`);
             return;

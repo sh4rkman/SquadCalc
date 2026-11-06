@@ -352,11 +352,12 @@
                         <p class="settings-field-hint" data-i18n="settings:respawnCamHint">Show where the respawn screen camera is located on the map</p>
                     </div>
                     <div class="settings-field">
-                        <label class="settings-checkbox">
-                            <input id="settingsCirclesFlags" type="checkbox">
-                            <span data-i18n="settings:circlesFlags">Show Flags as circles</span>
-                        </label>
+                        <label data-i18n="settings:circlesFlags">Flags Shape</label>
                         <p class="settings-field-hint" data-i18n="settings:circlesFlagsHint">Display objectives as circles instead of faction flags</p>
+                        <div class="settings-segmented" id="settingsCirclesFlags" role="radiogroup" aria-label="Flags Shape" data-i18n-aria-label="settings:circlesFlags">
+                            <button type="button" class="settings-segment" data-value="0" data-i18n="settings:flagShapeFlag">Flag</button>
+                            <button type="button" class="settings-segment" data-value="1" data-i18n="settings:flagShapeCircle">Circle</button>
+                        </div>
                     </div>
                     <div class="settings-field">
                         <label class="settings-checkbox">

@@ -275,6 +275,37 @@ $hover: rgba(variables.$mainTxtColor, 0.06);
             cursor: pointer;
         }
     }
+    // Two (or more) mutually exclusive buttons acting as one control - used where a
+    // checkbox would be misleading (it's not an on/off toggle, it's a choice of shape/mode)
+    // but a <select> would be overkill for just 2 options
+    .settings-segmented {
+        display: inline-flex;
+        width: max-content;
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        border-radius: 6px;
+        overflow: hidden;
+    }
+    .settings-segment {
+        padding: 6px 14px;
+        background: transparent;
+        color: variables.$mainTxtColor;
+        font-family: variables.$logoFont;
+        font-size: 0.8em;
+        font-weight: bold;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: background-color 0.15s ease, color 0.15s ease;
+        & + & {
+            border-left: 1px solid rgba(255, 255, 255, 0.25);
+        }
+        &:hover {
+            background: $hover;
+        }
+        &.active {
+            background: variables.$mainColor;
+            color: #fff;
+        }
+    }
     // Plain native <select> (e.g. the 3D tab's terrain texture) - the rest of the app
     // uses Choices.js, but that's one extra JS wiring too many for a single dropdown here
     .settings-select {
