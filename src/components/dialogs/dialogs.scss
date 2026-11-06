@@ -21,7 +21,13 @@ dialog, #threeDView {
     &::backdrop {
         backdrop-filter: none;
     }
-    h2, h3 {
+    h2 {
+        padding: 1.25em;
+        font-family: variables.$logoFont;
+        text-transform: uppercase;
+        font-size: 2em;
+    }
+    h3 {
         padding: 1.25em;
     }
     .closeModal {
@@ -60,6 +66,10 @@ dialog, #threeDView {
     }
     &#calcInformation {
         overflow: hidden;
+        font-family: variables.$logoFont;
+        input, button, select {
+            font-family: variables.$logoFont;
+        }
     }
     &#spawnCardInformation {
         max-width: 800px;
@@ -187,6 +197,10 @@ dialog, #threeDView {
     }
     &#layerInformation {
         max-width: 800px;
+        font-family: variables.$logoFont;
+        input, button, select {
+            font-family: variables.$logoFont;
+        }
         .layerThumbnail {
             border: solid rgba(255, 255, 255, 0.6) 3px;
             display: block;
@@ -656,6 +670,12 @@ dialog, #threeDView {
         }    }
     &#weaponInformation {
         max-width: 350px;
+        font-family: variables.$logoFont;
+        // the global `input, button, select` rule in _variables.scss sets a direct
+        // font-family on those tags, which always wins over an inherited one
+        input, button, select {
+            font-family: variables.$logoFont;
+        }
         .moveToRow {
             display: flex;
             align-items: center;
