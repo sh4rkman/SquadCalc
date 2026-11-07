@@ -235,13 +235,17 @@ $hover: rgba(variables.$mainTxtColor, 0.06);
         letter-spacing: 0.08em;
         text-transform: uppercase;
     }
-    // Two columns when there's room, falls back to one column on narrow widths
+    // Two columns when there's room, falls back to one column on narrow widths.
+    // No max-width: fills its container exactly like a plain .settings-field does,
+    // so columns line up with the rest of the panel instead of being capped shorter.
     .settings-section-columns {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 20px 32px;
-        // Matches .settings-field's natural width so both line up
-        max-width: 940px;
+
+        @media (width <= 600px) {
+            grid-template-columns: 1fr;
+        }
     }
     .settings-field {
         display: flex;
@@ -907,7 +911,9 @@ $hover: rgba(variables.$mainTxtColor, 0.06);
     }
     .settings-about-label {
         color: variables.$mainTxtColor;
+        font-family: variables.$logoFont;
         font-weight: bold;
+        text-transform: uppercase;
         // Fixed width so the values line up in a column
         flex-shrink: 0;
         min-width: 120px;
