@@ -102,7 +102,7 @@ export class squadDeployableMarker extends Marker {
 
         // Neutral/unknown team deployables don't belong to a faction
         const selectors = { "Team One": layer.factions.FACTION1_SELECTOR, "Team Two": layer.factions.FACTION2_SELECTOR };
-        const faction = selectors[this.asset.team]?.val();
+        const faction = selectors[this.asset.team]?.value;
         if (!faction) return "";
 
         return `<img class="vehFlag" src="/img/flags/${layer.modFolder}/${faction}.webp" onerror="this.onerror=null; this.src='/img/flags/unknown.webp';"/>`;
