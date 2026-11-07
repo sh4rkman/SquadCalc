@@ -240,8 +240,8 @@ $hover: rgba(variables.$mainTxtColor, 0.06);
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
         gap: 20px 32px;
-        // Caps the grid so it never fits 3 columns (3 × 260px + 2 × 32px = 844px)
-        max-width: 800px;
+        // Matches .settings-field's natural width so both line up
+        max-width: 940px;
     }
     .settings-field {
         display: flex;

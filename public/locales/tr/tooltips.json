@@ -31,7 +31,6 @@
     "showSpreadTooltip": "Hedeflerin etrafındaki olası mermi dağılım alanını gösterir",
     "showMaxRangeTooltip": "Yükseklikleri dikkate alarak her yöndeki maksimum menzili hesaplar",
     "useClassicCursorTooltip": "Artı göstergesini (crosshair) varsayılan imleç ile değiştirir",
-    "targetAnimationTooltip": "Hedef işaretçi simgesini minimalist dairelerle değiştirmek için devre dışı bırakın",
     "markerDragTooltip": "Sürüklerken ızgarayı gösterir",
     "lastDigitsTooltip": "Yükseliş değerlerinin yalnızca son üç hanesini gösterir (örn. 1193 yerine 193)",
     "copyTargetTooltip": "Bir hedef yerleştirildikten veya sürüklendikten sonra hesaplamaları otomatik olarak panoya kopyalar",

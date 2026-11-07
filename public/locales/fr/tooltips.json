@@ -31,7 +31,6 @@
     "showSpreadTooltip": "Affiche la dispersion possible des projectiles autour des cibles",
     "showMaxRangeTooltip": "Calcule la portée maximale dans chaque direction en tenant compte des hauteurs",  
     "useClassicCursorTooltip": "Remplace le réticule par le curseur par défaut de votre systeme",
-    "targetAnimationTooltip": "Désactiver pour remplacer l'icône des marqueurs par des cercles minimalistes",
     "lastDigitsTooltip": "Affiche uniquement les trois derniers chiffres de l'élévation (ex. 193 au lieu de 1193)",
     "markerDragTooltip": "Affiche la grille lors du déplacement",
     "copyTargetTooltip": "Après avoir placé/déplacé une cible, copie automatiquement les calculs dans le presse-papiers",

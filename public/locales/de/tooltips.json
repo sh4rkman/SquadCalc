@@ -31,7 +31,6 @@
     "showSpreadTooltip": "Möglichen Streubereich der Geschosse um die Ziele anzeigen",
     "showMaxRangeTooltip": "Maximale Reichweite in alle Richtungen unter Berücksichtigung der Höhen berechnen",
     "useClassicCursorTooltip": "Fadenkreuz durch Standard-Cursor ersetzen",
-    "targetAnimationTooltip": "Deaktivieren, um Zielmarkierungssymbole durch minimalistische Kreise zu ersetzen",
     "lastDigitsTooltip": "Nur die letzten drei Ziffern des Höhenwerts anzeigen (z. B. 193 statt 1193)",
     "markerDragTooltip": "Raster beim Ziehen anzeigen",
     "copyTargetTooltip": "Nach dem Platzieren/Ziehen eines Ziels die Berechnungen automatisch in die Zwischenablage kopieren",

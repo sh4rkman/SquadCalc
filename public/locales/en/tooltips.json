@@ -31,7 +31,6 @@
     "showSpreadTooltip": "Display possible rounds' dispersion area around the targets",
     "showMaxRangeTooltip": "Compute max range in every direction taking heights into account",
     "useClassicCursorTooltip": "Replace crosshair with default cursor",
-    "targetAnimationTooltip": "Disable to replace target markers icon with minimalistic circles",
     "markerDragTooltip": "Display grid while dragging",
     "lastDigitsTooltip": "Show only the last three digits of elevation values (e.g. 193 instead of 1193)",
     "copyTargetTooltip": "After placing/dragging a target, automatically copy the calculations to clipboard",

@@ -31,7 +31,6 @@
     "showSpreadTooltip": "显示目标周围可能的弹着点区域",
     "showMaxRangeTooltip": "计算每个方向的最大范围，同时考虑高度",
     "useClassicCursorTooltip": "使用系统的鼠标样式",
-    "targetAnimationTooltip": "禁用以将标记图标替换为简约的圆形",
     "lastDigitsTooltip": "仅显示海拔值的后三位数字（例如 193 而不是 1193）",
     "markerDragTooltip": "拖动时显示网格坐标",
     "copyTargetTooltip": "放置/拖动目标后，自动将计算结果复制到剪贴板",
