@@ -55,7 +55,9 @@
     "showDamage": "Schadensradien anzeigen",
     "showDamageHint": "Zeigt die Schadensradien um die Ziele an",
     "targetGrid": "Abweichungsraster",
-    "showAnimations": "Große Symbole verwenden",
+    "showAnimations": "Symbolstil",
+    "iconStyleMinimal": "Minimal",
+    "iconStyleLarge": "Groß",
     "copyTarget": "Ziel automatisch in Zwischenablage kopieren",
     "lowAndHigh": "Sowohl flache als auch steile Winkel anzeigen",
     "showBearing": "Peilung",
@@ -117,5 +119,10 @@
     "discord": "Offizieller Discord",
     "github": "Code auf Github ansehen",
     "changelog": "Änderungsprotokoll",
-    "wiki": "SquadCalc Wiki"
+    "wiki": "SquadCalc Wiki",
+    "otherSites": "Andere Webseiten",
+    "squadGuessr": "SquadGuessr",
+    "squadGuessrHint": "Errate den Ort im Spiel anhand eines Squad-Screenshots",
+    "squadBuild": "SquadBuild",
+    "squadBuildHint": "Erstelle und teile eigene Layer"
 }

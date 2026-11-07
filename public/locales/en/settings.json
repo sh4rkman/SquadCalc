@@ -56,7 +56,9 @@
         "showDamageHint": "Display the damage radiuses around the targets",
         "targetGrid": "Deviation Grid",
         "lineToTarget": "Line to target",
-        "showAnimations": "Use Large Icons",
+        "showAnimations": "Icon Style",
+        "iconStyleMinimal": "Minimal",
+        "iconStyleLarge": "Large",
         "copyTarget": "Auto-copy Target to clipboard",
         "lowAndHigh": "Show both Low and High angles",
         "lastDigits": "Compact Elevation display",
@@ -130,5 +132,10 @@
     "discord": "Official Discord",
     "github": "View code on Github",
     "changelog": "ChangeLog",
-    "wiki": "SquadCalc Wiki"
+    "wiki": "SquadCalc Wiki",
+    "otherSites": "Other Websites",
+    "squadGuessr": "SquadGuessr",
+    "squadGuessrHint": "Guess the in-game location from a Squad screenshot",
+    "squadBuild": "SquadBuild",
+    "squadBuildHint": "Create and share your own layers"
 }

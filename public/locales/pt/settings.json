@@ -56,7 +56,9 @@
     "showDamageHint": "Exibe os raios de dano ao redor dos alvos",
     "targetGrid": "Grade de Desvio",
     "lineToTarget": "Linha até o alvo",
-    "showAnimations": "Usar ícones grandes",
+    "showAnimations": "Estilo do ícone",
+    "iconStyleMinimal": "Minimalista",
+    "iconStyleLarge": "Grande",
     "copyTarget": "Copiar alvo automaticamente",
     "lowAndHigh": "Mostrar ângulos alto e baixo",
     "lastDigits": "Exibição compacta da elevação",
@@ -117,5 +119,10 @@
     "discord": "Discord Oficial",
     "github": "Ver o código no Github",
     "changelog": "ChangeLog",
-    "wiki": "SquadCalc Wiki"
+    "wiki": "SquadCalc Wiki",
+    "otherSites": "Outros Sites",
+    "squadGuessr": "SquadGuessr",
+    "squadGuessrHint": "Adivinhe o local no jogo a partir de uma captura de tela do Squad",
+    "squadBuild": "SquadBuild",
+    "squadBuildHint": "Crie e compartilhe seus próprios layers"
 }

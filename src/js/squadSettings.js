@@ -22,6 +22,8 @@ export default class SquadSettings {
      * Initialize all settings - call after DOM is ready
      */
     init() {
+        document.getElementById("squadGuessrLogo").src = "/img/logos/squadguessr.webp";
+        document.getElementById("squadBuildLogo").src = "/img/logos/squadbuild.webp";
         this.loadCheckboxes();
         this.loadSliders();
         this.loadSegmented();
@@ -100,17 +102,6 @@ export default class SquadSettings {
                 default: false,
                 selector: "#settingsLineToTarget",
                 onChange: () => this.app.minimap.updateTargets()
-            },
-            targetAnimation: {
-                key: "settings-target-animation",
-                default: true,
-                selector: "#settingsTargetAnimation",
-                onChange: () => {
-                    this.app.minimap.activeTargetsMarkers.eachLayer((target) => {
-                        target.updateCalcPopUps();
-                        target.updateIcon();
-                    });
-                }
             },
             realMaxRange: {
                 key: "settings-real-max-range",
@@ -493,6 +484,17 @@ export default class SquadSettings {
                             this.app.minimap.layer.toggleVisibility();
                         }
                     }
+                }
+            },
+            targetAnimation: {
+                key: "settings-target-animation",
+                default: true,
+                selector: "#settingsTargetAnimation",
+                onChange: () => {
+                    this.app.minimap.activeTargetsMarkers.eachLayer((target) => {
+                        target.updateCalcPopUps();
+                        target.updateIcon();
+                    });
                 }
             }
         };

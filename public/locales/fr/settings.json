@@ -55,7 +55,9 @@
     "showDamage": "Rayons de dégâts",
     "showDamageHint": "Affiche les rayons de dégâts autour des cibles",
     "targetGrid": "Grille de déviation",
-    "showAnimations": "Grandes icônes",
+    "showAnimations": "Style d'icône",
+    "iconStyleMinimal": "Minimal",
+    "iconStyleLarge": "Grande",
     "copyTarget": "Copier automatiquement les cibles",
     "lowAndHigh": "Afficher les angles bas et hauts",
     "showBearing": "Angle d'orientation",
@@ -117,5 +119,10 @@
     "changelog": "Journal des modifications",
     "github": "Voir le code sur Github",
     "discord": "Discord Officiel",
-    "wiki": "Wiki"
+    "wiki": "Wiki",
+    "otherSites": "Autres sites",
+    "squadGuessr": "SquadGuessr",
+    "squadGuessrHint": "Devinez où a été prise une capture d'écran du jeu Squad",
+    "squadBuild": "SquadBuild",
+    "squadBuildHint": "Créez et partagez vos propres layers"
 }

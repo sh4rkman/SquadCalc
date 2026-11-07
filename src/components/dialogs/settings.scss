@@ -268,6 +268,11 @@ $hover: rgba(variables.$mainTxtColor, 0.06);
             cursor: pointer;
         }
     }
+    .settings-field-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
     // Two (or more) mutually exclusive buttons acting as one control - used where a
     // checkbox would be misleading (it's not an on/off toggle, it's a choice of shape/mode)
     // but a <select> would be overkill for just 2 options
@@ -920,12 +925,20 @@ $hover: rgba(variables.$mainTxtColor, 0.06);
             background: rgba(variables.$mainColor, 0.08);
             .settings-card-icon,
             .settings-card-arrow {
-                color: variables.$mainColor;
+                color: variables.$mainTxtColor;
             }
         }
         &:focus-visible {
             outline: 2px solid rgba(variables.$mainColor, 0.6);
             outline-offset: 2px;
+        }
+    }
+    .settings-card-brand {
+        align-items: center;
+        text-align: center;
+        .settings-card-logo {
+            width: 180px;
+            margin-bottom: 2px;
         }
     }
     .settings-card-icon {
@@ -945,9 +958,23 @@ $hover: rgba(variables.$mainTxtColor, 0.06);
         color: $muted;
         transition: color 0.15s ease;
     }
+    .settings-card-logo {
+        width: 140px;
+        height: auto;
+        margin-bottom: 6px;
+    }
+    .settings-card-hint {
+        font-size: 0.75em;
+        color: $muted;
+        // reserves 2 lines so a one-line hint doesn't shrink the card and misalign
+        // its logo against a sibling card whose hint actually wraps
+        min-height: 2.4em;
+    }
     .settings-card-title {
         font-size: 0.9em;
         font-weight: 600;
+        font-family: variables.$logoFont;
+        text-transform: uppercase;
     }
 
     // Search mode: every panel is shown, only matching fields stay visible

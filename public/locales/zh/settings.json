@@ -55,7 +55,9 @@
     "showDamage": "显示伤害半径",
     "showDamageHint": "显示目标周围的伤害半径",
     "targetGrid": "偏差网格",
-    "showAnimations": "使用大图标",
+    "showAnimations": "图标样式",
+    "iconStyleMinimal": "简约",
+    "iconStyleLarge": "大图标",
     "copyTarget": "自动复制计算结果",
     "lowAndHigh": "显示低角度和高角度",
     "showBearing": "显示方位",
@@ -117,5 +119,10 @@
     "changelog": "更新日志",
     "github": "在GitHub上查看本开源项目的代码！",
     "discord": "官方Discord频道",
-    "wiki": "SquadCalc wiki"
+    "wiki": "SquadCalc wiki",
+    "otherSites": "其他网站",
+    "squadGuessr": "SquadGuessr",
+    "squadGuessrHint": "根据Squad游戏截图猜测地图位置",
+    "squadBuild": "SquadBuild",
+    "squadBuildHint": "创建并分享你自己的图层"
 }

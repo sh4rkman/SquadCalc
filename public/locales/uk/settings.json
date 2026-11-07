@@ -55,7 +55,9 @@
     "showDamage": "радіуси ураження",
     "showDamageHint": "Показує радіуси ураження навколо цілей",
     "targetGrid": "Сітка відхилень",
-    "showAnimations": "Використовувати великі значки",
+    "showAnimations": "Стиль іконки",
+    "iconStyleMinimal": "Мінімальний",
+    "iconStyleLarge": "Великий",
     "copyTarget": "Автокопіювання цілей",
     "lowAndHigh": "Показати низькі та високі кути",
     "lastDigits": "Компактне відображення висоти",
@@ -117,5 +119,10 @@
     "changelog": "Зміни",
     "github": "Переглянути код на Github",
     "discord": "Офіційний Discord",
-    "wiki": "Вікі"
+    "wiki": "Вікі",
+    "otherSites": "Інші сайти",
+    "squadGuessr": "SquadGuessr",
+    "squadGuessrHint": "Вгадайте місце на карті за скриншотом із Squad",
+    "squadBuild": "SquadBuild",
+    "squadBuildHint": "Створюйте та діліться власними шарами"
 }

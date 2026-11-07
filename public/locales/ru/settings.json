@@ -56,7 +56,9 @@
     "showDamageHint": "Показывает радиусы урона вокруг целей",
     "targetGrid": "Сетка отклонений",
     "lineToTarget": "Линия до цели",
-    "showAnimations": "Использовать большие значки",
+    "showAnimations": "Стиль значка",
+    "iconStyleMinimal": "Минимальный",
+    "iconStyleLarge": "Крупный",
     "copyTarget": "Автокопирование целей",
     "lowAndHigh": "Показать и низкие, и высокие углы",
     "showBearing": "Показать пеленг (азимут)",
@@ -117,5 +119,10 @@
     "changelog": "Журнал изменений",
     "github": "Просмотреть код на Github",
     "discord": "Официальный Discord",
-    "wiki": "Вики"
+    "wiki": "Вики",
+    "otherSites": "Другие сайты",
+    "squadGuessr": "SquadGuessr",
+    "squadGuessrHint": "Угадайте место на карте по скриншоту из Squad",
+    "squadBuild": "SquadBuild",
+    "squadBuildHint": "Создавайте и делитесь своими слоями"
 }

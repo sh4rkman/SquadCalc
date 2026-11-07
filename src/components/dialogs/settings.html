@@ -212,7 +212,7 @@
                 </section>
             </div>
             <div class="settings-panel" data-panel="mortars">
-                <section class="settings-section">
+                <section class="settings-section settings-section-columns">
                     <h3 class="settings-section-title" data-i18n="settings:weaponOptions">Weapons Options</h3>
                     <div class="settings-field">
                         <label class="settings-checkbox">
@@ -258,10 +258,13 @@
                         </div>
                     </div>
                     <div class="settings-field">
-                        <label class="settings-checkbox">
-                            <input id="settingsTargetAnimation" type="checkbox">
-                            <span data-i18n="settings:showAnimations">Use Large Icons</span>
-                        </label>
+                        <div class="settings-field-row">
+                            <label data-i18n="settings:showAnimations">Icon Style</label>
+                            <div class="settings-segmented" id="settingsTargetAnimation" role="radiogroup" aria-label="Icon Style" data-i18n-aria-label="settings:showAnimations">
+                                <button type="button" class="settings-segment" data-value="0" data-i18n="settings:iconStyleMinimal">Minimal</button>
+                                <button type="button" class="settings-segment" data-value="1" data-i18n="settings:iconStyleLarge">Large</button>
+                            </div>
+                        </div>
                         <p class="settings-field-hint" data-i18n="tooltips:targetAnimationTooltip">Disable to replace target markers icon with minimalistic circles</p>
                     </div>
                     <div class="settings-field">
@@ -326,6 +329,16 @@
                 <section class="settings-section">
                     <h3 class="settings-section-title" data-i18n="settings:LaneFinderOptions">Layers Options</h3>
                     <div class="settings-field">
+                        <div class="settings-field-row">
+                            <label data-i18n="settings:circlesFlags">Flags Shape</label>
+                            <div class="settings-segmented" id="settingsCirclesFlags" role="radiogroup" aria-label="Flags Shape" data-i18n-aria-label="settings:circlesFlags">
+                                <button type="button" class="settings-segment" data-value="0" data-i18n="settings:flagShapeFlag">Flag</button>
+                                <button type="button" class="settings-segment" data-value="1" data-i18n="settings:flagShapeCircle">Circle</button>
+                            </div>
+                        </div>
+                        <p class="settings-field-hint" data-i18n="settings:circlesFlagsHint">Display objectives as circles instead of faction flags</p>
+                    </div>
+                    <div class="settings-field">
                         <label class="settings-checkbox">
                             <input id="settingsShowMainZones" type="checkbox">
                             <span data-i18n="settings:showMainZones">Show Main Zones</span>
@@ -353,14 +366,6 @@
                             <span data-i18n="settings:respawnCam">Show Respawn Camera Position</span>
                         </label>
                         <p class="settings-field-hint" data-i18n="settings:respawnCamHint">Show where the respawn screen camera is located on the map</p>
-                    </div>
-                    <div class="settings-field">
-                        <label data-i18n="settings:circlesFlags">Flags Shape</label>
-                        <p class="settings-field-hint" data-i18n="settings:circlesFlagsHint">Display objectives as circles instead of faction flags</p>
-                        <div class="settings-segmented" id="settingsCirclesFlags" role="radiogroup" aria-label="Flags Shape" data-i18n-aria-label="settings:circlesFlags">
-                            <button type="button" class="settings-segment" data-value="0" data-i18n="settings:flagShapeFlag">Flag</button>
-                            <button type="button" class="settings-segment" data-value="1" data-i18n="settings:flagShapeCircle">Circle</button>
-                        </div>
                     </div>
                     <div class="settings-field">
                         <label class="settings-checkbox">
@@ -566,6 +571,21 @@
                             <svg class="settings-card-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg>
                             <svg class="settings-card-icon" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M96 0C43 0 0 43 0 96L0 416c0 53 43 96 96 96l288 0 32 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l0-64c17.7 0 32-14.3 32-32l0-320c0-17.7-14.3-32-32-32L384 0 96 0zm0 384l256 0 0 64L96 448c-17.7 0-32-14.3-32-32s14.3-32 32-32zm32-240c0-8.8 7.2-16 16-16l192 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-192 0c-8.8 0-16-7.2-16-16zm16 48l192 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-192 0c-8.8 0-16-7.2-16-16s7.2-16 16-16z"/></svg>
                             <span class="settings-card-title" data-i18n="settings:wiki">SquadCalc Wiki</span>
+                        </a>
+                    </div>
+                </section>
+                <section class="settings-section">
+                    <h3 class="settings-section-title" data-i18n="settings:otherSites">Other Websites</h3>
+                    <div class="settings-cards">
+                        <a class="settings-card settings-card-brand" href="https://squadguessr.app" target="_blank" rel="noopener noreferrer" aria-label="SquadGuessr" data-i18n-aria-label="settings:squadGuessr">
+                            <svg class="settings-card-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg>
+                            <img id="squadGuessrLogo" class="settings-card-logo" alt="SquadGuessr">
+                            <span class="settings-card-hint" data-i18n="settings:squadGuessrHint">Guess the in-game location from a Squad screenshot</span>
+                        </a>
+                        <a class="settings-card settings-card-brand" href="https://build.squadcalc.app/" target="_blank" rel="noopener noreferrer" aria-label="SquadBuild" data-i18n-aria-label="settings:squadBuild">
+                            <svg class="settings-card-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg>
+                            <img id="squadBuildLogo" class="settings-card-logo" alt="SquadBuild">
+                            <span class="settings-card-hint" data-i18n="settings:squadBuildHint">Create your own layers</span>
                         </a>
                     </div>
                 </section>
