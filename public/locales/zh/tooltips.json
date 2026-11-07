@@ -80,6 +80,7 @@
     "returnToMap": "切换到地图模式",
     "settings": "设置",
     "openFactionSelection": "点击打开派系选择",
+    "smoTooltip": "SquadMortarOverlay 运行时同步你的目标",
     "view3D": "3D视图",
     "view3DUnavailable": "该地图不支持3D视图"
 }

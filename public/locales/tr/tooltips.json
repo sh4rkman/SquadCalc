@@ -80,6 +80,7 @@
     "returnToMap": "Harita moduna geç",
     "settings": "Ayarlar",
     "openFactionSelection": "Taraf seçimini açmak için tıklayın",
+    "smoTooltip": "SquadMortarOverlay çalışırken hedeflerinizi onunla senkronize eder",
     "view3D": "3D Görünüm",
     "view3DUnavailable": "3D Görünüm bu harita için kullanılamıyor"
 }

@@ -81,5 +81,6 @@
     "legacyMode": "Alternar para o modo simples",
     "returnToMap": "Alternar para o modo mapa",
     "settings": "Configurações",
-    "openFactionSelection": "Clique para abrir a seleção de facções"
+    "openFactionSelection": "Clique para abrir a seleção de facções",
+    "smoTooltip": "Sincroniza seus alvos com o SquadMortarOverlay quando ele estiver em execução"
 }

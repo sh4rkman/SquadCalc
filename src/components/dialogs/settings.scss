@@ -267,6 +267,20 @@ $hover: rgba(variables.$mainTxtColor, 0.06);
             accent-color: variables.$mainColor;
             cursor: pointer;
         }
+        .smo-status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #e33;
+            display: none;
+            transition: background 0.2s ease;
+        }
+        input:checked ~ .smo-status-dot {
+            display: inline-block;
+        }
+        .smo-status-dot.connected {
+            background: #3c3;
+        }
     }
     .settings-field-row {
         display: flex;
@@ -529,6 +543,11 @@ $hover: rgba(variables.$mainTxtColor, 0.06);
     .settings-field-hint {
         font-size: 0.75em;
         color: $muted;
+        a {
+            color: variables.$mainColor;
+            text-decoration: none;
+            &:hover { text-decoration: underline; }
+        }
     }
 
     // Choices.js wrapper built from #settingsLangSelect (dark skin + header sizing).

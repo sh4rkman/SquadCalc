@@ -1,3 +1,5 @@
+import { initWebSocket, stopWebSocket } from "./smcConnector.js";
+
 /**
  * Centralized settings management for SquadCalc.
  * Handles loading, saving, and UI binding for all user preferences.
@@ -108,6 +110,12 @@ export default class SquadSettings {
                 default: false,
                 selector: "#settingsRealMaxRange",
                 onChange: () => this.app.minimap.updateWeapons()
+            },
+            smo: {
+                key: "settings-smo",
+                default: false,
+                selector: "#settingsSMO",
+                onChange: (value) => value ? initWebSocket() : stopWebSocket()
             },
             // Calculation Display
             lowAndHigh: {
@@ -663,6 +671,11 @@ export default class SquadSettings {
         // Hide factions if disabled via environment
         if (process.env.DISABLE_FACTIONS === "true") {
             document.querySelectorAll(".factionSettings").forEach((el) => el.style.display = "none");
+        }
+
+        // Hide SquadMortarOverlay connector setting if disabled via environment
+        if (process.env.SMO_WEBSOCKET !== "true") {
+            document.querySelectorAll(".smoSettings").forEach((el) => el.style.display = "none");
         }
 
         // Load target image

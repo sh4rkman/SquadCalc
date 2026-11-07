@@ -80,6 +80,7 @@
     "returnToMap": "Passer en mode carte",
     "settings": "Paramètres",
     "openFactionSelection": "Cliquer pour ouvrir la sélection de faction",
+    "smoTooltip": "Synchronisez vos cibles avec SquadMortarOverlay quand il est lancé",
     "view3D": "Vue 3D",
     "view3DUnavailable": "La vue 3D n'est pas disponible pour cette carte"
 }

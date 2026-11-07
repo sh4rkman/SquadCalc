@@ -81,5 +81,6 @@
     "settings": "Настройки",
     "openFactionSelection": "Нажмите для открытия выбора фракции",
     "view3D": "3D-вид",
-    "view3DUnavailable": "3D-вид недоступен для этой карты"
+    "view3DUnavailable": "3D-вид недоступен для этой карты",
+    "smoTooltip": "Синхронизирует ваши цели с SquadMortarOverlay, когда он запущен"
 }

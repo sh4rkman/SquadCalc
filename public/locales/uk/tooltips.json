@@ -80,6 +80,7 @@
     "returnToMap": "Перейти до режиму карти",
     "settings": "Налаштування",
     "openFactionSelection": "Натисніть, щоб відкрити вибір фракції",
+    "smoTooltip": "Синхронізує ваші цілі з SquadMortarOverlay, коли він запущений",
     "view3D": "3D-вигляд",
     "view3DUnavailable": "3D-вигляд недоступний для цієї карти"
 }
