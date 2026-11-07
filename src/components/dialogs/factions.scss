@@ -103,6 +103,7 @@
             top: 50%;
             transform: translate(-50%, -50%);
             color: variables.$mainTxtColor;
+            font-family: variables.$logoFont;
             font-size: clamp(2em, 8vw, 7em);
             font-weight: 900;
             line-height: 1;

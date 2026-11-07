@@ -191,7 +191,9 @@
         padding: 0;
         .vehName {
             padding: 10px 10px 0;
+            font-family: variables.$logoFont;
             font-size: 1.4em;
+            text-transform: uppercase;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -329,7 +331,9 @@
         border-bottom: 1px solid rgba(128, 128, 128, 0.616);
         .spawnName {
             padding: 0.5em 0;
-            font-size: 0.85em;
+            font-family: variables.$logoFont;
+            font-size: 1.1em;
+            text-transform: uppercase;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
