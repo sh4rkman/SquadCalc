@@ -57,7 +57,7 @@ export class SquadObjective {
                 keyboard: false,
                 html: html,
                 iconSize: [300, 20],
-                iconAnchor: App.userSettings.circlesFlags ? [150, 38] : [150, 32],
+                iconAnchor: App.userSettings.circlesFlags ? [150, 38] : [150, 34],
                 shadowUrl: "../img/icons/markers/weapons/marker_shadow.webp",
                 shadowSize: [0, 0],
             })
@@ -269,7 +269,7 @@ export class SquadObjective {
                 keyboard: false,
                 html: html,
                 iconSize: [300, 20],
-                iconAnchor: App.userSettings.circlesFlags ? [150, 38] : [150, 32],
+                iconAnchor: App.userSettings.circlesFlags ? [150, 38] : [150, 34],
                 shadowUrl: "../img/icons/markers/weapons/marker_shadow.webp",
                 shadowSize: [0, 0],
             })
