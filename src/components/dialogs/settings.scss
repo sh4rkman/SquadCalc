@@ -621,6 +621,7 @@ $hover: rgba(variables.$mainTxtColor, 0.06);
         .choices__list--dropdown {
             right: 0;
             left: auto;
+            z-index: 2; // beats the range sliders' z-index: 1
             width: max-content;
             min-width: 100%;
             margin-top: 6px;
