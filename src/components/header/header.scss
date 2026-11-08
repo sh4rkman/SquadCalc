@@ -281,7 +281,7 @@ header {
 // select2's body-level panel, so these are scoped under header instead of global.
 
 header .choices__list--dropdown {
-    background: rgba(17, 17, 17, 0.92) !important;
+    background: rgba(17, 17, 17, 0.85) !important;
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     // border color comes from --choices-keyline-color above
@@ -298,6 +298,16 @@ header .choices__list--dropdown {
     to {
         opacity: 1;
     }
+}
+
+// Only the first group's heading should lose its top margin (stacks with .choices__input's own bottom margin otherwise)
+
+header .choices__heading {
+    margin-top: 0 !important;
+}
+
+header .choices__group ~ .choices__group > .choices__heading {
+    margin-top: 16px !important;
 }
 
 header .choices__item--selectable {
