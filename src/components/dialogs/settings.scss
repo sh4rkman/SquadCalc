@@ -9,7 +9,7 @@ $hover: rgba(variables.$mainTxtColor, 0.06);
 #settingsDialog {
     // Reset the global `dialog` styles from dialogs.scss
     width: 100vw;
-    height: 100vh;
+    height: 100dvh;
     max-width: none;
     max-height: none;
     margin: 0;
