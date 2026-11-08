@@ -23,8 +23,9 @@ $flag-circle-opacity: 0.2;
 .objText {
     @include variables.light-text-outline;
     font-size: var(--font-size-objtext);
-    font-family: roboto, Verdana, Geneva, Tahoma, sans-serif;
+    font-family: variables.$logoFont;
     letter-spacing: 0.02em;
+    text-transform: uppercase;
     display: flex;
     align-items: center;
     justify-content: center;

@@ -238,7 +238,7 @@ header {
         --choices-list-single-padding: 4px;
         // dropdown-row and search-box text size (default 14px) - .choices__inner's
         // own use of this var is already overridden by font-size:inherit below
-        --choices-font-size-md: 12px;
+        --choices-font-size-md: 14px;
         // the attribute selector in choices.js's own `.choices[data-type*="select-one"]
         // .choices__button{opacity:.25}` outranks a plain `.choices__button` descendant
         // rule - matched back here with `&` so this override actually wins
@@ -347,7 +347,7 @@ header .choices[data-type*="select-one"] .choices__input {
     color: variables.$mainTxtColor;
     outline: none;
     padding: 0.4em 0.6em;
-    margin: 10px 4% 0;
+    margin: 10px 4%;
     width: 92%;
 }
 
