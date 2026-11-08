@@ -76,6 +76,8 @@
         "circlesFlagsHint": "Choose how the layer's flags are shown on the map",
         "flagShapeFlag": "Flag",
         "flagShapeCircle": "Circle",
+        "showFlagsPath": "Show path between flags",
+        "showFlagsPathHint": "Draw the line connecting confirmed flags",
         "showFlagsDistance": "Show distance between flags",
         "showFlagsDistanceHint": "Show the distance between connected flags",
         "showMainZones": "Show Main Zones",

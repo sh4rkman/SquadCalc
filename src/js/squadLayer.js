@@ -37,7 +37,7 @@ export default class SquadLayer {
         this.path = [];
         this.polyline = new Polyline(this.path, {
             color: "white",
-            opacity: 0.9,
+            opacity: App.userSettings.showFlagsPath ? 0.9 : 0,
             showMeasurements: true,
             measurementOptions: {
                 minPixelDistance: 50,
@@ -45,7 +45,7 @@ export default class SquadLayer {
             }
         }).addTo(this.activeLayerMarkers);
 
-        if (!App.userSettings.showFlagsDistance) this.polyline.hideMeasurements();
+        if (!App.userSettings.showFlagsDistance || !App.userSettings.showFlagsPath) this.polyline.hideMeasurements();
 
         // On randomized layers the chain is drawn as one polyline per run of adjacent
         // confirmed points, so no line crosses a gap the user has not confirmed.
@@ -1339,7 +1339,7 @@ export default class SquadLayer {
     _createPathLine(latlngs) {
         const line = new Polyline(latlngs, {
             color: "white",
-            opacity: this.isVisible ? 0.9 : 0,
+            opacity: this.isVisible && App.userSettings.showFlagsPath ? 0.9 : 0,
             showMeasurements: true,
             measurementOptions: {
                 minPixelDistance: 50,
@@ -1347,7 +1347,7 @@ export default class SquadLayer {
             }
         }).addTo(this.activeLayerMarkers);
 
-        if (!App.userSettings.showFlagsDistance || !this.isVisible) line.hideMeasurements();
+        if (!App.userSettings.showFlagsDistance || !App.userSettings.showFlagsPath || !this.isVisible) line.hideMeasurements();
 
         return line;
     }
@@ -1397,8 +1397,9 @@ export default class SquadLayer {
     _setOpacity(value){
         
         // Polyline opacity
-        this.polyline.setStyle({ opacity: value });
-        this.pathLines.forEach((line) => line.setStyle({ opacity: value }));
+        const pathOpacity = App.userSettings.showFlagsPath ? value : 0;
+        this.polyline.setStyle({ opacity: pathOpacity });
+        this.pathLines.forEach((line) => line.setStyle({ opacity: pathOpacity }));
 
         // Flags opacity
         this.flags.forEach((flag) => {
@@ -1426,6 +1427,26 @@ export default class SquadLayer {
     }
 
 
+    /**
+     * Show or hide the path drawn between confirmed flags, independent of layer visibility.
+     * @param {boolean} val
+     */
+    _setPathVisibility(val) {
+        const opacity = val && this.isVisible ? 0.9 : 0;
+        this.polyline.setStyle({ opacity });
+        this.pathLines.forEach((line) => line.setStyle({ opacity }));
+
+        if (val && this.isVisible && App.userSettings.showFlagsDistance) {
+            const measurementOptions = { minPixelDistance: 50, scaling: this.map.mapToGameScale };
+            this.polyline.showMeasurements(measurementOptions);
+            this.pathLines.forEach((line) => line.showMeasurements(measurementOptions));
+        } else {
+            this.polyline.hideMeasurements();
+            this.pathLines.forEach((line) => line.hideMeasurements());
+        }
+    }
+
+
     toggleVisibility() {
         if (this.isVisible) {
             this._setOpacity(0);
@@ -1445,7 +1466,7 @@ export default class SquadLayer {
             this.hexs.forEach((hex => { hex.show();}));
             this._setOpacity(1);
             this.setMainZoneOpacity(true);
-            if (App.userSettings.showFlagsDistance) {
+            if (App.userSettings.showFlagsDistance && App.userSettings.showFlagsPath) {
                 const measurementOptions = { minPixelDistance: 50, scaling: this.map.mapToGameScale };
                 this.polyline.showMeasurements(measurementOptions);
                 this.pathLines.forEach((line) => line.showMeasurements(measurementOptions));

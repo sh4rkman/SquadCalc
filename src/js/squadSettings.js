@@ -265,6 +265,14 @@ export default class SquadSettings {
                     }
                 }
             },
+            showFlagsPath: {
+                key: "settings-show-flags-path",
+                default: true,
+                selector: "#settingsShowFlagsPath",
+                onChange: (val) => {
+                    if (this.app.minimap.layer) this.app.minimap.layer._setPathVisibility(val);
+                }
+            },
             showFlagsDistance: {
                 key: "settings-show-flags-distance",
                 default: true,
