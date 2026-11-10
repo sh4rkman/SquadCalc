@@ -27,15 +27,16 @@ export function stopWebSocket() {
     isConnecting = false;
     cleanup();
     document.querySelector(".btn-hd").disabled = false;
-    setStatusDot(false);
+    setStatusBadge(false);
 }
 
 /**
- * Reflects the connection state on the settings checkbox's status dot
+ * Reflects the connection state on the settings checkbox's status badge
+ * ("Connecting..." / "Connected")
  * @param {boolean} connected
  */
-function setStatusDot(connected) {
-    document.getElementById("smoStatusDot")?.classList.toggle("connected", connected);
+function setStatusBadge(connected) {
+    document.getElementById("smoStatusBadge")?.classList.toggle("connected", connected);
 }
 
 /**
@@ -78,7 +79,7 @@ async function setupWebSockets() {
             App.openToast("success", "connectedTo", "squadMortarOverlay");
             isConnecting = false;
             clearInterval(connectionInterval);
-            setStatusDot(true);
+            setStatusBadge(true);
 
             // HD Maps are not compatible with squadmortaroverlay
             if (document.querySelector(".btn-hd").classList.contains("active")) {
@@ -130,7 +131,7 @@ async function setupWebSockets() {
  */
 function handleDisconnect() {
     document.querySelector(".btn-hd").disabled = false;
-    setStatusDot(false);
+    setStatusBadge(false);
     startConnectionAttempts();
 }
 

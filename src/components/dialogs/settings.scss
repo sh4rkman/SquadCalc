@@ -271,19 +271,36 @@ $hover: rgba(variables.$mainTxtColor, 0.06);
             accent-color: variables.$mainColor;
             cursor: pointer;
         }
-        .smo-status-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: #e33;
+        // Only shown while the connector is enabled - muted while it polls
+        // for SquadMortarOverlay.exe, green once the sockets are open
+        .smo-status-badge {
             display: none;
-            transition: background 0.2s ease;
+            font-family: variables.$logoFont;
+            font-size: 0.65em;
+            font-weight: 700;
+            letter-spacing: 0.03em;
+            line-height: 1;
+            text-transform: uppercase;
+            padding: 5px;
+            border-radius: 4px;
+            color: #ccc;
+            background: rgba(255, 255, 255, 0.12);
+            .smo-status-connected {
+                display: none;
+            }
+            &.connected {
+                color: #111;
+                background: #3c3;
+                .smo-status-connecting {
+                    display: none;
+                }
+                .smo-status-connected {
+                    display: inline;
+                }
+            }
         }
-        input:checked ~ .smo-status-dot {
+        input:checked ~ .smo-status-badge {
             display: inline-block;
-        }
-        .smo-status-dot.connected {
-            background: #3c3;
         }
     }
     .settings-field-row {

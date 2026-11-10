@@ -68,6 +68,8 @@
     "mortarOtherOptions": "Autre",
     "smo": "Connecteur Squad Mortar Overlay",
     "smoLink": "(voir leur page)",
+    "smoConnecting": "Connexion...",
+    "smoConnected": "Connecté",
     "lastDigits": "Affichage compact de l'élévation",
     "LaneFinderOptions": "Options de recherche de voie",
     "capZoneOnHover": "Montrer les zones de capture au survol",

@@ -69,6 +69,8 @@
     "mortarOtherOptions": "Інше",
     "smo": "З'єднання з Squad Mortar Overlay",
     "smoLink": "(дивіться їхню сторінку)",
+    "smoConnecting": "Підключення...",
+    "smoConnected": "Підключено",
     "LaneFinderOptions": "Параметри пошуку смуг",
     "capZoneOnHover": "Зони при наведенні",
     "revealLayerOnHover": "Показати шар при наведенні на прапор",

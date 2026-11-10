@@ -59,6 +59,8 @@
         "mortarOtherOptions": "Other",
         "smo": "Squad Mortar Overlay connector",
         "smoLink": "(see their page)",
+        "smoConnecting": "Connecting...",
+        "smoConnected": "Connected",
         "showAnimations": "Icon Style",
         "iconStyleMinimal": "Minimal",
         "iconStyleLarge": "Large",

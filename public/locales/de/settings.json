@@ -68,6 +68,8 @@
     "mortarOtherOptions": "Sonstiges",
     "smo": "Squad Mortar Overlay-Verbindung",
     "smoLink": "(siehe ihre Seite)",
+    "smoConnecting": "Verbinde...",
+    "smoConnected": "Verbunden",
     "lastDigits": "Kompakte Höhenanzeige",
     "LaneFinderOptions": "Routen-Finder-Optionen",
     "capZoneOnHover": "Eroberungszonen nur beim Überfahren anzeigen",
