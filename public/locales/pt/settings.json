@@ -59,6 +59,8 @@
     "mortarOtherOptions": "Outros",
     "smo": "Conector do Squad Mortar Overlay",
     "smoLink": "(veja a página deles)",
+    "smoConnecting": "Conectando...",
+    "smoConnected": "Conectado",
     "showAnimations": "Estilo do ícone",
     "iconStyleMinimal": "Minimalista",
     "iconStyleLarge": "Grande",

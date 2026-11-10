@@ -59,6 +59,8 @@
     "mortarOtherOptions": "Другое",
     "smo": "Коннектор Squad Mortar Overlay",
     "smoLink": "(см. их страницу)",
+    "smoConnecting": "Подключение...",
+    "smoConnected": "Подключено",
     "showAnimations": "Стиль значка",
     "iconStyleMinimal": "Минимальный",
     "iconStyleLarge": "Крупный",

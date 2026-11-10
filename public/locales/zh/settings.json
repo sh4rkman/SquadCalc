@@ -68,6 +68,8 @@
     "mortarOtherOptions": "其他",
     "smo": "Squad Mortar Overlay 连接器",
     "smoLink": "(查看他们的页面)",
+    "smoConnecting": "连接中...",
+    "smoConnected": "已连接",
     "lastDigits": "精简海拔显示",
     "factionsOptions": "阵营选项",
     "defaultFactions": "自动选择阵营",

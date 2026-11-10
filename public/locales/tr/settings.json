@@ -64,6 +64,8 @@
         "mortarOtherOptions": "Diğer",
         "smo": "Squad Mortar Overlay bağlayıcısı",
         "smoLink": "(sayfalarına bakın)",
+        "smoConnecting": "Bağlanıyor...",
+        "smoConnected": "Bağlandı",
         "showAnimations": "Simge Stili",
         "iconStyleMinimal": "Minimal",
         "iconStyleLarge": "Büyük",
