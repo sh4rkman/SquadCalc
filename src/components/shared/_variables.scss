@@ -9,6 +9,9 @@ $newColor: #008000;
 :root {
     --main-color: #{$mainColor}; // Interpolation so we can use this color in JS
     color-scheme: dark;
+    // choices.js default (4px 16px 4px 4px) reserves room for its caret inside the
+    // closed value - every dropdown here pads .choices__inner instead
+    --choices-list-single-padding: 0;
 }
 
 // Fonts

@@ -233,9 +233,6 @@ header {
         // dropdown-row padding (default 10px) - also feeds the search input's
         // padding, but that's separately overridden below regardless
         --choices-dropdown-item-padding: 5px;
-        // choices.js's default (4px 16px 4px 4px) is asymmetric for the dropdown
-        // caret's room - handled by .choices__inner's own padding instead
-        --choices-list-single-padding: 4px;
         // dropdown-row and search-box text size (default 14px) - .choices__inner's
         // own use of this var is already overridden by font-size:inherit below
         --choices-font-size-md: 14px;
