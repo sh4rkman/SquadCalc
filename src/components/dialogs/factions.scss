@@ -213,7 +213,8 @@
                 justify-content: center;
                 pointer-events: none;
                 color: variables.$mainTxtColor;
-                font-size: clamp(0.8em, 2.5vw, 1.5em);
+                font-family: variables.$logoFont;
+                font-size: clamp(0.9em, 2.8vw, 1.7em);
                 font-weight: 700;
                 letter-spacing: normal;
                 text-transform: uppercase;
@@ -519,8 +520,10 @@
             flex-grow: 1;
             letter-spacing: normal;
             .vehicle-type {
-                font-size: 1.3em;
+                font-family: variables.$logoFont;
+                font-size: 1.4em;
                 font-weight: bold;
+                text-transform: uppercase;
                 color: variables.$mainTxtColor;
                 cursor: pointer;
                 text-align: center;

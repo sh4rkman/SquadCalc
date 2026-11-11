@@ -140,8 +140,10 @@
                 top: 50%;
                 transform: translateY(-50%);
                 color: variables.$mainTxtColor;
-                font-size: 9px;
+                font-family: variables.$logoFont;
+                font-size: 11px;
                 font-weight: bold;
+                text-transform: uppercase;
                 text-align: center;
                 letter-spacing: 0.5px;
                 overflow: hidden;
