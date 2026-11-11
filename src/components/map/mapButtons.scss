@@ -328,12 +328,14 @@
             margin-right: 5px;
             white-space: nowrap;
             font-weight: bold;
+            font-family: variables.$logoFont;
             .pinedVehiclesName {
                 letter-spacing: 1px;
                 flex-shrink: 1;
                 overflow: hidden;
                 text-overflow: ellipsis;
                 white-space: nowrap;
+                text-transform: uppercase;
             }
             .pinedVehiclesTimer {
                 flex-shrink: 0;
