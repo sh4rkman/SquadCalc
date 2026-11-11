@@ -395,7 +395,8 @@ export default class SquadCalc {
                 const q = e.target.value.trim().toLowerCase();
                 const rows = instance.choiceList.element.querySelectorAll(".choices__item--selectable");
                 rows.forEach((row) => {
-                    const match = !q || row.textContent.toLowerCase().includes(q);
+                    const text = row.textContent.toLowerCase();
+                    const match = !q || text.includes(q) || text.replace(/\s+/g, "").includes(q);
                     row.classList.toggle("choices__item--search-hidden", !match);
                     // Choices' arrow-key nav walks siblings by [data-choice-selectable] alone,
                     // not visibility - drop it on hide so hidden rows get skipped instead of
