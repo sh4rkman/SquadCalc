@@ -1127,7 +1127,7 @@ export default class SquadCalc {
         // there's no equivalent there for the texture <select>.
         this.simulation3D.bindSettingsTextureSelect();
 
-        document.querySelectorAll(".btn-delete, .btn-undo, .btn-layer, .btn-layer-info, .returnBtn, #mapLayerMenu").forEach((el) => el.style.display = "none");
+        document.querySelectorAll(".btn-delete, .btn-undo, .btn-layer, .btn-layer-info, .returnBtn, #mapLayerMenu, #layerSelector").forEach((el) => el.style.display = "none");
 
         this.ui = localStorage.getItem("data-ui");
 
