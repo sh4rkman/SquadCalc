@@ -461,7 +461,7 @@
                 color: #555;
             }
         }
-        &#btn-map-choices svg {
+        &[id^="btn-map-"][id$="-choices"] svg {
             width: 1.3em;
             height: 1.3em;
         }
