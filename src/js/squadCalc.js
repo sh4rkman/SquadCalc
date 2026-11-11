@@ -470,6 +470,9 @@ export default class SquadCalc {
             removeItemButton: true,
             removeItemButtonAlignLeft: true,
         });
+        this.mapSelect.containerOuter.element.setAttribute("aria-label", "Select map");
+        this.layerSelect.containerOuter.element.setAttribute("aria-label", "Select layer");
+        this.serverSelect.containerOuter.element.setAttribute("aria-label", "Select server");
         [this.mapSelect, this.layerSelect, this.serverSelect].forEach(this._disableBlurClose);
         this._wireGroupedSearch(this.mapSelect);
         this._wireGroupedSearch(this.layerSelect);
@@ -914,6 +917,8 @@ export default class SquadCalc {
             shouldSort: false,
             itemSelectText: "",
         });
+        this.weaponSelect.containerOuter.element.setAttribute("aria-label", "Select weapon");
+        this.shellSelect.containerOuter.element.setAttribute("aria-label", "Select ammo type");
         [this.weaponSelect, this.shellSelect].forEach(this._disableBlurClose);
         this._wireGroupedSearch(this.weaponSelect);
 

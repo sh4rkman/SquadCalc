@@ -94,6 +94,8 @@ export function loadLanguage(LANGUAGES) {
         },
     });
 
+    langSelect.containerOuter.element.setAttribute("aria-label", document.getElementById("settingsLangSelect").getAttribute("aria-label") || "Language");
+
     document.getElementById("settingsLangSelect").addEventListener("change", (event) => onLanguageChange(event.target.value));
 }
 

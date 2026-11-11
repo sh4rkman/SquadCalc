@@ -99,12 +99,13 @@ export default class SquadFactions {
         el.replaceChildren(img, label);
     }
 
-    setBarUnit(id, icon) {
+    setBarUnit(id, icon, name) {
         const el = document.querySelector(id);
         if (!el) return;
         if (icon) {
             const img = document.createElement("img");
             img.src = `/img/units/${encodeURIComponent(String(icon).trim())}.webp`;
+            img.alt = name ?? "";
             el.replaceChildren(img);
         } else {
             el.replaceChildren();
@@ -114,8 +115,8 @@ export default class SquadFactions {
     resetFactionsButton() {
         this.setBarFlag("#factionBarFlag1", this.FACTION1_SELECTOR.value);
         this.setBarFlag("#factionBarFlag2", this.FACTION2_SELECTOR.value);
-        this.setBarUnit("#factionBarUnit1", this.UNIT1_SELECTOR.selectedOptions[0]?.dataset.icon);
-        this.setBarUnit("#factionBarUnit2", this.UNIT2_SELECTOR.selectedOptions[0]?.dataset.icon);
+        this.setBarUnit("#factionBarUnit1", this.UNIT1_SELECTOR.selectedOptions[0]?.dataset.icon, this.UNIT1_SELECTOR.selectedOptions[0]?.text);
+        this.setBarUnit("#factionBarUnit2", this.UNIT2_SELECTOR.selectedOptions[0]?.dataset.icon, this.UNIT2_SELECTOR.selectedOptions[0]?.text);
     }
 
 
@@ -1050,7 +1051,7 @@ export default class SquadFactions {
             document.getElementById("team1Characteristics").replaceChildren();
 
             if (document.getElementById("team1PinButton").classList.contains("active")) this.unpinUnit();
-            this.setBarUnit("#factionBarUnit1", this.UNIT1_SELECTOR.selectedOptions[0]?.dataset.icon);
+            this.setBarUnit("#factionBarUnit1", this.UNIT1_SELECTOR.selectedOptions[0]?.dataset.icon, this.UNIT1_SELECTOR.selectedOptions[0]?.text);
 
             // Clear spawned vehicles
             this.squadLayer.activeFaction1Markers.clearLayers();
@@ -1116,7 +1117,7 @@ export default class SquadFactions {
             document.getElementById("team2Characteristics").replaceChildren();
 
             if (document.getElementById("team2PinButton").classList.contains("active")) this.unpinUnit();
-            this.setBarUnit("#factionBarUnit2", this.UNIT2_SELECTOR.selectedOptions[0]?.dataset.icon);
+            this.setBarUnit("#factionBarUnit2", this.UNIT2_SELECTOR.selectedOptions[0]?.dataset.icon, this.UNIT2_SELECTOR.selectedOptions[0]?.text);
 
             // Clear spawned vehicles 
             this.squadLayer.activeFaction2Markers.clearLayers();
