@@ -581,7 +581,7 @@ export default class SquadFactions {
             <div class="vehicle-card animate__animated animate__fadeIn animate__faster">
                 <div class="card-content">
                     <div class="vehicle-icon">
-                        <img src="/img/icons/default/vehicles/${vehicle.icon}.svg" alt='${vehicle.type}' onerror="this.onerror=null; this.src='/img/icons/default/vehicles/map_truck_transport.svg';">
+                        <img src="/img/icons/default/vehicles/${vehicle.icon}.svg" alt='${vehicle.type}' loading="lazy" decoding="async" onerror="this.onerror=null; this.src='/img/icons/default/vehicles/map_truck_transport.svg';">
                     </div>
                     <div class="vehicle-icon">
                         <div class="vehicle-count">×${vehicle.count}</div>
@@ -634,7 +634,7 @@ export default class SquadFactions {
         if (vehicle.isAmphibious) {
             amphibious = `
                 <div class="tag">
-                    <img src="/img/icons/shared/amphibious.webp" title="${i18next.t("amphibious", { ns: "common" })}">
+                    <img src="/img/icons/shared/amphibious.webp" loading="lazy" decoding="async" title="${i18next.t("amphibious", { ns: "common" })}">
                 </div>
             `;
         }
@@ -643,7 +643,7 @@ export default class SquadFactions {
         if (vehicle.ATGM) {
             ATGM = `
                 <div class="tag">
-                    <img src="/img/icons/shared/ATGM.webp" title="${i18next.t("atgm", { ns: "common" })}">
+                    <img src="/img/icons/shared/ATGM.webp" loading="lazy" decoding="async" title="${i18next.t("atgm", { ns: "common" })}">
                 </div>
             `;
         }
@@ -652,7 +652,7 @@ export default class SquadFactions {
         let passengersHTML = `
                 <div class="tag">
                     <div class="passenger">${totalSeats}</div>
-                    <img src="/img/icons/shared/passenger.webp" title="${i18next.t("passengers", { ns: "common" })}">
+                    <img src="/img/icons/shared/passenger.webp" loading="lazy" decoding="async" title="${i18next.t("passengers", { ns: "common" })}">
                 </div>
             `;
 
@@ -662,7 +662,7 @@ export default class SquadFactions {
             <div class="image">
                 <div class="tags">${passengersHTML}${amphibious}${ATGM}</div>
                 <div class="links">${this.getVehicleLinksHTML(vehicle, faction)}</div>
-                <img src="/img/vehicles/${this.squadLayer.modFolder}/${vehicle.type}.webp" onerror="this.onerror=null; this.src='/img/vehicles/placeholder.webp';" ${LEFT ? "class=\"mirrored\"" : ""}/>
+                <img src="/img/vehicles/${this.squadLayer.modFolder}/${vehicle.type}.webp" loading="lazy" decoding="async" onerror="this.onerror=null; this.src='/img/vehicles/placeholder.webp';" ${LEFT ? "class=\"mirrored\"" : ""}/>
             </div>
         `;
     }
@@ -1269,6 +1269,7 @@ export default class SquadFactions {
 
                 document.querySelector(DIV).insertAdjacentHTML("beforeend", `
                     <img src="/img/icons/shared/characteristics/${asset[1]}.webp"
+                    loading="lazy" decoding="async"
                     class="unit-characteristic"
                     data-tippy-characteristic="${asset[1]}"
                     />
@@ -1313,6 +1314,7 @@ export default class SquadFactions {
         Object.values(selectedUnit.commanderAssets).forEach(asset => {
             document.querySelector(DIV).insertAdjacentHTML("beforeend", `
                 <img src="/img/commander/${this.squadLayer.modFolder}/${asset.icon}.webp"
+                    loading="lazy" decoding="async"
                     onerror="this.onerror=null; this.src='/img/commander/unknown.webp';"
                     class="commander-asset"
                     data-tippy-name="${asset.displayName}"
