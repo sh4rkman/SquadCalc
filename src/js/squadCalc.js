@@ -974,7 +974,7 @@ export default class SquadCalc {
             list.insertAdjacentHTML("beforeend", `
                 <div class="settings-field settings-mod-field">
                     <label class="settings-mod">
-                        <img class="settings-mod-logo" src="/img/mods/${modKey.toLowerCase()}.webp" alt="" onerror="this.style.visibility='hidden'">
+                        <img class="settings-mod-logo" src="/img/mods/${modKey.toLowerCase()}.webp" alt="" loading="lazy" decoding="async" onerror="this.style.visibility='hidden'">
                         <span class="settings-mod-text">
                             <span class="settings-mod-name settings-search-text" data-i18n="settings:${modKey}">${label}</span>
                             <span class="settings-field-hint">${stats.join(" • ")}</span>
