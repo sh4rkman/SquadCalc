@@ -140,8 +140,10 @@
                 top: 50%;
                 transform: translateY(-50%);
                 color: variables.$mainTxtColor;
-                font-size: 9px;
+                font-family: variables.$logoFont;
+                font-size: 11px;
                 font-weight: bold;
+                text-transform: uppercase;
                 text-align: center;
                 letter-spacing: 0.5px;
                 overflow: hidden;
@@ -326,12 +328,14 @@
             margin-right: 5px;
             white-space: nowrap;
             font-weight: bold;
+            font-family: variables.$logoFont;
             .pinedVehiclesName {
                 letter-spacing: 1px;
                 flex-shrink: 1;
                 overflow: hidden;
                 text-overflow: ellipsis;
                 white-space: nowrap;
+                text-transform: uppercase;
             }
             .pinedVehiclesTimer {
                 flex-shrink: 0;
@@ -457,7 +461,7 @@
                 color: #555;
             }
         }
-        &#btn-map-choices svg {
+        &[id^="btn-map-"][id$="-choices"] svg {
             width: 1.3em;
             height: 1.3em;
         }

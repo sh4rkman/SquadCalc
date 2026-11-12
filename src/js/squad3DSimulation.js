@@ -871,6 +871,7 @@ export default class Squad3DSimulation {
             itemSelectText: "",
             position: "auto",
         });
+        this.textureSelect.containerOuter.element.setAttribute("aria-label", "Select texture");
         textureSelect.addEventListener("change", () => this.setTextureChoice(textureSelect.value));
 
         window.addEventListener("keydown", (event) => {

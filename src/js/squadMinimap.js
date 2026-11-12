@@ -209,6 +209,7 @@ export class squadMinimap extends Map {
             this.activeLayer = new ImageOverlay(imagePath, this.imageBounds);
             this.activeLayer.addTo(this.layerGroup);
             this.activeLayer.getElement().style.opacity = 0;
+            this.activeLayer.getElement().fetchPriority = "high";
         }
     
 

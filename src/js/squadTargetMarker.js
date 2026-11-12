@@ -516,6 +516,12 @@ export class squadTargetMarker extends squadMarker {
             }
         }
 
+        // Skip the DOM churn of rebuilding the <img> when nothing visually changed
+        // (called every pointermove while dragging to flip the disabled state)
+        const iconKey = `${iconURL}|${iconClassName || ""}`;
+        if (iconKey === this._iconKey) return;
+        this._iconKey = iconKey;
+
         let iconOptions;
 
         if (App.userSettings.targetAnimation) {
@@ -628,6 +634,7 @@ export class squadTargetMarker extends squadMarker {
 
         // Update bearing/elevation/spread marker
         this.updateCalc();
+        this.updateIcon();
     }
 
 

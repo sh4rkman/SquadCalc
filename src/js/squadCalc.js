@@ -395,7 +395,8 @@ export default class SquadCalc {
                 const q = e.target.value.trim().toLowerCase();
                 const rows = instance.choiceList.element.querySelectorAll(".choices__item--selectable");
                 rows.forEach((row) => {
-                    const match = !q || row.textContent.toLowerCase().includes(q);
+                    const text = row.textContent.toLowerCase();
+                    const match = !q || text.includes(q) || text.replace(/\s+/g, "").includes(q);
                     row.classList.toggle("choices__item--search-hidden", !match);
                     // Choices' arrow-key nav walks siblings by [data-choice-selectable] alone,
                     // not visibility - drop it on hide so hidden rows get skipped instead of
@@ -469,6 +470,9 @@ export default class SquadCalc {
             removeItemButton: true,
             removeItemButtonAlignLeft: true,
         });
+        this.mapSelect.containerOuter.element.setAttribute("aria-label", "Select map");
+        this.layerSelect.containerOuter.element.setAttribute("aria-label", "Select layer");
+        this.serverSelect.containerOuter.element.setAttribute("aria-label", "Select server");
         [this.mapSelect, this.layerSelect, this.serverSelect].forEach(this._disableBlurClose);
         this._wireGroupedSearch(this.mapSelect);
         this._wireGroupedSearch(this.layerSelect);
@@ -913,6 +917,8 @@ export default class SquadCalc {
             shouldSort: false,
             itemSelectText: "",
         });
+        this.weaponSelect.containerOuter.element.setAttribute("aria-label", "Select weapon");
+        this.shellSelect.containerOuter.element.setAttribute("aria-label", "Select ammo type");
         [this.weaponSelect, this.shellSelect].forEach(this._disableBlurClose);
         this._wireGroupedSearch(this.weaponSelect);
 
@@ -1127,7 +1133,7 @@ export default class SquadCalc {
         // there's no equivalent there for the texture <select>.
         this.simulation3D.bindSettingsTextureSelect();
 
-        document.querySelectorAll(".btn-delete, .btn-undo, .btn-layer, .btn-layer-info, .returnBtn, #mapLayerMenu").forEach((el) => el.style.display = "none");
+        document.querySelectorAll(".btn-delete, .btn-undo, .btn-layer, .btn-layer-info, .returnBtn, #mapLayerMenu, #layerSelector").forEach((el) => el.style.display = "none");
 
         this.ui = localStorage.getItem("data-ui");
 

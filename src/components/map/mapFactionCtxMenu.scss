@@ -63,8 +63,10 @@
     left: 0;
     right: 0;
     color: variables.$mainTxtColor;
-    font-size: 11px;
+    font-family: variables.$logoFont;
+    font-size: 14px;
     font-weight: bold;
+    text-transform: uppercase;
     text-align: center;
     letter-spacing: 0.5px;
     padding: 2px 4px;
@@ -88,7 +90,7 @@
     line-break: loose;
     &.units {
         max-width: 400px;
-        height: 65px;
+        height: 70px;
         width: 70px;
         &:active {
             transform: scale(0.95);
@@ -125,7 +127,7 @@
 
 .faction-item.units .faction-label {
     position: absolute;
-    font-size: 10px;
+    font-size: 11px;
     line-height: 1.1em;
     letter-spacing: normal;
     padding: 0 2px;

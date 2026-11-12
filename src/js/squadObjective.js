@@ -234,7 +234,11 @@ export class SquadObjective {
             })
         }).addTo(this.layerGroup);
 
-        if (!this.isMain){ 
+        this.flag.getElement().setAttribute("aria-label", this.isMain
+            ? i18next.t(this.objectName === "00-Team1 Main" ? "team1" : "team2", { ns: "common" })
+            : this.name);
+
+        if (!this.isMain){
             html = this.name;
         } else {
 
