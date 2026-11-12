@@ -90,7 +90,7 @@
     line-break: loose;
     &.units {
         max-width: 400px;
-        height: 65px;
+        height: 70px;
         width: 70px;
         &:active {
             transform: scale(0.95);
@@ -127,7 +127,7 @@
 
 .faction-item.units .faction-label {
     position: absolute;
-    font-size: 12px;
+    font-size: 11px;
     line-height: 1.1em;
     letter-spacing: normal;
     padding: 0 2px;

@@ -197,11 +197,8 @@ header {
         }
     }
     .choices {
-        @include variables.text-outline;
+        @include variables.light-text-outline;
         display: inline-block;
-        // choices.js hardcodes a fixed font-size (px, not em) on .choices - reset so
-        // the em-based sizes throughout this file compute against the page's 16px
-        // base, same as this control's old select2/tom-select incarnations did.
         font-size: 0.8em;
         pointer-events: all;
         min-width: 250px;
@@ -209,36 +206,14 @@ header {
         padding-bottom: 0;
         margin-bottom: 0;
         text-transform: uppercase;
-        // choices.js draws its dropdown caret with a border-triangle using this
-        // variable (default #333, invisible on a dark control) - #888 matches the
-        // arrow color this control has always used.
-        --choices-text-color: #888;
-        // the select-one .choices__inner gets a 7.5px bottom padding by default
-        // (for the search input it sometimes renders inline) - this control
-        // never wants that gap, so 0 it via the same variable
+        --choices-text-color: #ffffffb6;
         --choices-inner-one-padding: 0;
-        // also drives .choices__list--dropdown's own background below, but that's
-        // pinned dark with !important there regardless - this value only actually
-        // reaches the search input inside the dropdown
         --choices-bg-color-dropdown: rgba(255, 255, 255, 0.06);
-        // drives the dropdown-row background for BOTH .is-highlighted (hover/keyboard
-        // focus) and .is-selected (the current value, idle) identically - the opacity
-        // split between the two states below is a separate, var-free override
         --choices-highlighted-color: #{variables.$mainColor};
-        // drives .choices__list--dropdown's own border below (no override needed there)
         --choices-keyline-color: rgba(255, 255, 255, 0.08);
-        // the clear button's keyboard-focus ring - unstyled otherwise, defaults to a
-        // teal/blue that clashes with this theme
         --choices-highlight-color: #{variables.$mainColor};
-        // dropdown-row padding (default 10px) - also feeds the search input's
-        // padding, but that's separately overridden below regardless
         --choices-dropdown-item-padding: 5px;
-        // dropdown-row and search-box text size (default 14px) - .choices__inner's
-        // own use of this var is already overridden by font-size:inherit below
         --choices-font-size-md: 14px;
-        // the attribute selector in choices.js's own `.choices[data-type*="select-one"]
-        // .choices__button{opacity:.25}` outranks a plain `.choices__button` descendant
-        // rule - matched back here with `&` so this override actually wins
         &[data-type*="select-one"] .choices__button {
             // flips the button's black cross icon to white (no var/icon swap needed -
             // choices.js only exposes the icon itself as a CSS var, not a color/theme)
