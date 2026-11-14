@@ -30,6 +30,12 @@ export default class SquadLayer {
         this.objectives = layerData.objectives;
         this.gamemode = layerData.gamemode;
 
+        // Some modded layers are tagged AAS/Seed/Skirmish but ship RAAS-shaped data (links under lanes/clusters, not points)
+        if (["AAS", "Seed", "Skirmish"].includes(this.gamemode) && !this.capturePoints?.points?.links) {
+            console.debug(`[LAYER] "${this.gamemode}" layer has no capturePoints.points.links, treating as RAAS`);
+            this.gamemode = "RAAS";
+        }
+
         [this.offset_x, this.offset_y] = this.getLayerOffsets(this.layerData.mapTextureCorners);
         this.isVisible = true;
 
@@ -261,13 +267,6 @@ export default class SquadLayer {
      * AAS - SEED - Skirmish
      */
     initPredictiveLayer(){
-
-        if (!this.capturePoints?.points?.links) {
-            console.debug(`[LAYER] initPredictiveLayer: missing capturePoints.points.links for gamemode "${this.gamemode}", falling back to initRandomizedLayer`);
-            this.gamemode = "RAAS";
-            this.initRandomizedLayer();
-            return;
-        }
 
         // Set Paths
         Object.values(this.capturePoints.points.links).forEach(link => {
