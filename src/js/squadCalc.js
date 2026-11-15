@@ -1494,15 +1494,17 @@ export default class SquadCalc {
             navigator.clipboard.writeText(`${window.location.origin}${window.location.pathname}?${params.toString()}`);
             this.openToast("success", "copied", "");
         });
-        document.querySelector(".layerCommandCopyBtn").addEventListener("click", (event) => {
-            const input = event.currentTarget.closest(".layerCommandRow").querySelector("input");
-            if (navigator.clipboard?.writeText) {
-                navigator.clipboard.writeText(input.value);
-            } else {
-                input.select();
-                document.execCommand("copy");
-            }
-            this.openToast("success", "copied", "");
+        document.querySelectorAll(".layerCommandCopyBtn").forEach((btn) => {
+            btn.addEventListener("click", (event) => {
+                const input = event.currentTarget.closest(".layerCommandRow").querySelector("input");
+                if (navigator.clipboard?.writeText) {
+                    navigator.clipboard.writeText(input.value);
+                } else {
+                    input.select();
+                    document.execCommand("copy");
+                }
+                this.openToast("success", "copied", "");
+            });
         });
         document.querySelector(".btn-drawingMode").addEventListener("click", () => { this.minimap.disableDrawingMode(); });
         document.querySelector(".btn-legacy").addEventListener("click", () => { if (this.ui !== 0) this.switchUI(); });
