@@ -1,3 +1,30 @@
+# <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge"> **46.3.0** *(2026-11-XX)*
+
+</br><img src="https://img.shields.io/badge/-new%20features-green">
+- Added Oskil River
+- Updated BlackCoast, Gorodok, Goosebay, Manicouagan and Yehorivka minimaps
+- Settings have been fully reworked
+  - You can know research settings by keywords
+  - Each setting now have a proper description directly under it
+  - Splitted layer and factions settings in two separate panel  
+  - Added a new settings to enable/disable SquadMortarOverlay connection. SquadCalc won't trigger scarry security message from the browser *"squadcalc.app wants to access your local network.."* unless you enable it.
+  - Added a new setting to show/hide the layer path between flags (thanks creabled!)
+  - Removed settings
+
+</br><img src="https://img.shields.io/badge/-%20improv%20-orange">
+
+- Dragging a marker outside of max range now update its icon while dragging instead of on left clic release
+- Migrated to Leaflet v2.0.0-beta.5 ([#529](https://github.com/sh4rkman/SquadCalc/issues/529))
+  - Placing a marker won't throw an 404 anymore (fix [#273](https://github.com/sh4rkman/SquadCalc/issues/273))
+  - Tons of performance improvements
+  - Tons of accessibility improvements
+- Reworked dropdowns (Migrated from select2 to choices.js, dropped jQuery entierely)
+
+
+</br><img src="https://img.shields.io/badge/-bug%20fixes-b22">  
+- Fixed a rare bug in flag selection for Tallil_RAAS_v2 (thanks jellyfish!)
+
+
 # <img src="https://img.shields.io/badge/-minor%20release-cd6f68?style=for-the-badge"> **46.2.0** *(2026-11-01)*
 
 </br><img src="https://img.shields.io/badge/-new%20features-green">
