@@ -60,6 +60,15 @@ export default class SquadSettings {
                     }
                 }
             },
+            xmasTheme: {
+                key: "settings-xmas-theme",
+                default: true,
+                selector: "#settingsXmasTheme",
+                onChange: (val) => {
+                    if (val) this.app.xmas.enable();
+                    else this.app.xmas.disable();
+                }
+            },
             cursor: {
                 key: "settings-cursor",
                 default: false,

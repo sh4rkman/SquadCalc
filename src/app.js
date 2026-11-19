@@ -22,6 +22,7 @@ import "./components/dialogs/servers.scss";
 
 import "./components/shared/_tooltips.scss";
 import "./components/shared/_responsive.scss";
+import "./components/shared/snow.scss";
 
 import "./components/contextMenu/contextMenu.scss";
 

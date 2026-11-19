@@ -1,0 +1,37 @@
+body.xmas-theme {
+    #snow1, #snow2 {
+        display: none;
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+        pointer-events: none;
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+        .snowflake {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 10px;
+            height: 10px;
+            background: linear-gradient(white, white);
+            border-radius: 50%;
+            filter: drop-shadow(0 0 10px white);
+            opacity: var(--opacity);
+            transform: translate(var(--x-start), -10px) scale(var(--scale));
+            animation: snow-fall var(--duration) var(--delay) linear infinite;
+        }
+    }
+}
+
+@keyframes snow-fall {
+    0% {
+        transform: translate(var(--x-start), -10px) scale(var(--scale));
+    }
+    50% {
+        transform: translate(var(--x-mid), var(--y-mid)) scale(var(--scale));
+    }
+    100% {
+        transform: translate(var(--x-end), var(--y-end)) scale(var(--scale));
+    }
+}

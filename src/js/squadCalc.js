@@ -14,6 +14,7 @@ import SquadServersBrowser from "./squadServersBrowser.js";
 import SquadSession from "./squadSession.js";
 import SquadFiringSolution from "./squadFiringSolution.js";
 import SquadSettings from "./squadSettings.js";
+import SquadXmas from "./squadXmas.js";
 import packageInfo from "../../package.json";
 import { marked, Renderer } from "marked";
 import Choices from "choices.js";
@@ -84,6 +85,7 @@ export default class SquadCalc {
         this.gravity = options.gravity;
         this.debug = options.debug;
         this.userSettings = new SquadSettings(this);
+        this.xmas = new SquadXmas(this);
         this.shortcuts = this.loadShortcuts();
         this.activeWeapon = "";
         this.hasMouse = matchMedia("(pointer:fine)").matches;
@@ -105,6 +107,7 @@ export default class SquadCalc {
         loadLanguage(this.supportedLanguages);
         initMapsProperties();
         this.userSettings.init();
+        this.xmas.init();
         this.loadMapSelector();
         this.loadMinimap();
         this.loadWeapons();
